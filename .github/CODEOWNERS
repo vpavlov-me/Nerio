@@ -1,0 +1,11 @@
+# Nerio is maintainer-led. This file becomes enforceable when the main-branch ruleset requires code owner approval.
+
+# Default ownership
+* @vpavlov-me
+
+# Repository governance
+/.github/ @vpavlov-me
+/.github/CODEOWNERS @vpavlov-me
+/AGENTS.md @vpavlov-me
+/PROJECT.md @vpavlov-me
+/LICENSE @vpavlov-me

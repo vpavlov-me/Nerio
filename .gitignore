@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+.next/
+out/
+dist/
+build/
+coverage/
+storybook-static/
+.turbo/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Tooling
+*.tsbuildinfo
+*.log
+
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/

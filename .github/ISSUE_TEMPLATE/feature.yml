@@ -1,0 +1,46 @@
+name: Feature proposal
+description: Propose a component, pattern, token capability, or developer-tooling improvement.
+title: "feat: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Nerio is maintainer-led. Please describe the product problem before proposing an API or visual solution.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Who has this problem and what currently makes the work difficult?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed direction
+      description: Describe the smallest useful capability. Avoid final API decisions unless they are essential.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include existing Nerio components, native HTML, or application-level composition where relevant.
+  - type: textarea
+    id: accessibility
+    attributes:
+      label: Accessibility and interaction notes
+      description: Mention expected keyboard behavior, focus management, semantics, validation, or screen-reader considerations.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Product evidence
+      description: Add screenshots, flows, references, or examples from a real product context.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and documentation.
+          required: true
+        - label: I understand that this proposal may need discussion before implementation begins.
+          required: true
