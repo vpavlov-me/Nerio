@@ -1,0 +1,45 @@
+# Nerio agent instructions
+
+This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions.
+
+## Product constraints
+
+- Build a source-first React design system for SaaS, fintech, crypto, and internal tools.
+- Use **Base UI** as the sole primitive layer. Do not add Radix UI, shadcn/ui, Headless UI, Ariakit, or another overlapping primitive system.
+- Use Next.js, React, TypeScript, Tailwind CSS v4, pnpm workspaces, and Turborepo.
+- The project may adopt ideas compatible with registry-based distribution, but it must have its own `nerio` CLI, own registry format, own documentation, and own component APIs. Do not depend on the shadcn CLI, registry, or package.
+- All public-facing docs, UI copy, code comments, and issue templates must be written in English.
+
+## Design-system rules
+
+- Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
+- Preserve three theme contracts from the beginning: Neutral Light, Neutral Dark, and Fintech Blue. Support Comfortable density by default and Compact density through tokens.
+- Default to semantic names such as `--n-color-surface`, not visual names such as `--blue-600`, outside the primitive token layer.
+- Every component must have a predictable anatomy, accessible interaction model, keyboard behavior, visible focus treatment, disabled/loading states where relevant, and a small API surface.
+- Prefer composition and explicit slots over expansive boolean-prop APIs.
+- Use `data-slot`, `data-state`, and `data-variant` attributes deliberately so components remain inspectable and easy to customize.
+- Icons must be passed through the Nerio icon adapter. Lucide is the default implementation; components must not become tightly coupled to Lucide.
+
+## Engineering rules
+
+- Keep server and client boundaries deliberate in Next.js. Add `use client` only where an interaction actually requires it.
+- Use TypeScript strict mode. Avoid `any`, unsafe assertions, and silent error handling.
+- Do not introduce dependencies without a clear documented reason.
+- Use workspace package boundaries. Avoid imports that bypass package public exports.
+- Build only the scope requested; do not create speculative components or an oversized abstraction layer.
+- Maintain a clean lint, typecheck, test, and build result before considering a task complete.
+
+## Documentation and AI rules
+
+- Every released component needs a docs page with purpose, anatomy, variants, states, usage snippets, accessibility notes, and guidance on when not to use it.
+- Documentation must show usage snippets and live previews. Do not expose a full component source dump in public docs.
+- Registry items must carry structured metadata for dependencies, Base UI primitives, slots, variants, required tokens, and installation instructions.
+- Keep `llms.txt`, component manifests, and MCP responses aligned with the actual component API.
+
+## Workflow
+
+1. Inspect the current workspace and relevant documentation.
+2. State a concise implementation plan in the pull request or task output.
+3. Implement the smallest complete vertical slice.
+4. Add or update docs, examples, types, and metadata in the same change.
+5. Run the repository checks and report exact results.
