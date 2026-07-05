@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Nerio discussions
+    url: https://github.com/vpavlov-me/Nerio/discussions
+    about: Ask implementation questions or share ideas once GitHub Discussions is enabled.
+  - name: Security report
+    url: https://github.com/vpavlov-me/Nerio/security/advisories/new
+    about: Report a suspected vulnerability privately. Do not use public issues.
