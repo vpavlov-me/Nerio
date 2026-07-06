@@ -1,0 +1,30 @@
+{
+  "name": "@nerio/adapters",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-table": "^8.21.3",
+    "lucide-react": "^0.561.0",
+    "react-hook-form": "^7.68.0",
+    "recharts": "^3.6.0",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@nerio/config": "workspace:*",
+    "@types/react": "^19.2.7",
+    "eslint": "^9.39.2",
+    "react": "^19.2.3",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "react": ">=19"
+  }
+}

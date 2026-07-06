@@ -1,0 +1,175 @@
+@import "tailwindcss";
+@import "@nerio/ui/styles.css";
+
+html,
+body {
+  min-block-size: 100%;
+}
+
+body {
+  font-size: var(--n-font-size-md);
+  line-height: var(--n-line-height-normal);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+  min-block-size: 100vh;
+}
+
+.workspace-sidebar {
+  background: var(--n-color-surface);
+  border-inline-end: 1px solid var(--n-color-border-subtle);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: var(--n-space-6);
+  padding: var(--n-space-5);
+}
+
+.workspace-brand {
+  align-items: center;
+  display: flex;
+  font-weight: var(--n-font-weight-bold);
+  gap: var(--n-space-3);
+}
+
+.workspace-brand span:first-child {
+  background: var(--n-color-action-primary);
+  border-radius: var(--n-radius-md);
+  block-size: 1.75rem;
+  inline-size: 1.75rem;
+}
+
+.workspace-nav {
+  display: grid;
+  gap: var(--n-space-1);
+}
+
+.workspace-nav button {
+  background: transparent;
+  border: 0;
+  border-radius: var(--n-radius-md);
+  color: var(--n-color-text-secondary);
+  cursor: pointer;
+  padding: var(--n-space-3);
+  text-align: start;
+}
+
+.workspace-nav button[data-state="active"],
+.workspace-nav button:hover {
+  background: var(--n-color-surface-muted);
+  color: var(--n-color-text-primary);
+}
+
+.workspace-main {
+  display: grid;
+  gap: var(--n-space-6);
+  padding: var(--n-space-6);
+}
+
+.workspace-topbar {
+  align-items: center;
+  display: flex;
+  gap: var(--n-space-4);
+  justify-content: space-between;
+}
+
+.workspace-title h1 {
+  font-size: var(--n-font-size-3xl);
+  line-height: var(--n-line-height-tight);
+  margin: 0;
+}
+
+.workspace-title p {
+  color: var(--n-color-text-secondary);
+  margin: var(--n-space-2) 0 0;
+}
+
+.workspace-controls {
+  align-items: center;
+  display: flex;
+  gap: var(--n-space-2);
+}
+
+.workspace-grid {
+  display: grid;
+  gap: var(--n-space-4);
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.grid {
+  display: grid;
+  gap: var(--n-space-4);
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+.span-4 {
+  grid-column: span 4;
+}
+
+.span-8 {
+  grid-column: span 8;
+}
+
+.span-12 {
+  grid-column: span 12;
+}
+
+.chart {
+  align-items: end;
+  block-size: 12rem;
+  display: flex;
+  gap: var(--n-space-2);
+}
+
+.chart span {
+  background: var(--n-color-action-primary);
+  border-radius: var(--n-radius-sm) var(--n-radius-sm) 0 0;
+  flex: 1;
+  opacity: 0.8;
+}
+
+.activity-feed {
+  display: grid;
+  gap: var(--n-space-3);
+}
+
+.activity-item {
+  display: grid;
+  gap: var(--n-space-1);
+}
+
+.activity-item strong {
+  font-size: var(--n-font-size-sm);
+}
+
+.activity-item span {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-sm);
+}
+
+.team-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-3);
+}
+
+@media (max-width: 980px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-sidebar {
+    position: static;
+  }
+
+  .span-3,
+  .span-4,
+  .span-8 {
+    grid-column: span 12;
+  }
+}

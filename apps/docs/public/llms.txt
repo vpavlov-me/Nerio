@@ -1,0 +1,15 @@
+# Nerio
+
+Nerio is an open-source, source-first design system for modern digital products. It is universal and domain-agnostic: suitable for SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, and data-rich workflows.
+
+Use primitive tokens only for raw values. Use semantic tokens such as `--n-color-surface`, `--n-color-text-primary`, `--n-color-action-primary`, `--n-font-sans`, and `--n-font-mono` in product and component code. Use component tokens for local contracts such as `--n-button-height-md` and `--n-dialog-width-md`.
+
+Geist Sans is the default UI font and Geist Mono is the default technical font. Components must consume font tokens, not hard-coded app font class names.
+
+Themes are selected at runtime on the root element with `data-theme="neutral-light"`, `data-theme="neutral-dark"`, or `data-theme="nerio-blue"`. Density is selected with `data-density="comfortable"` or `data-density="compact"`.
+
+Prefer composition, explicit slots, semantic HTML, visible focus states, and accessible labels. Use Nerio's icon adapter for Lucide or custom SVG React components.
+
+Registry usage: `nerio init` creates `nerio.json`, `nerio add button` copies Button source from the local registry, and `nerio doctor` validates configuration.
+
+AI agents should select the smallest component set that matches the workflow, avoid domain-specific assumptions, keep examples universal, and never introduce shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive libraries.

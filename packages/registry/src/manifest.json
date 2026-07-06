@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "0.1.0",
+  "items": [
+    {
+      "name": "button",
+      "title": "Button",
+      "description": "Triggers a user action.",
+      "category": "actions",
+      "dependencies": ["react", "@nerio/tokens", "clsx"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "packages/ui/src/components.tsx",
+          "target": "components/nerio/components.tsx"
+        },
+        {
+          "source": "packages/ui/src/lib/cn.ts",
+          "target": "components/nerio/lib/cn.ts"
+        },
+        {
+          "source": "packages/ui/src/styles.css",
+          "target": "components/nerio/styles.css"
+        }
+      ],
+      "baseUiPrimitives": ["button"],
+      "slots": ["root", "icon", "label"],
+      "variants": ["primary", "secondary", "ghost", "destructive"],
+      "requiredTokens": [
+        "--n-button-height-md",
+        "--n-button-radius",
+        "--n-color-action-primary",
+        "--n-color-action-on-primary",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Use a native button element.",
+        "Provide discernible text or aria-label for icon-only actions.",
+        "Keep visible focus treatment enabled.",
+        "Use loading to prevent duplicate submissions."
+      ],
+      "usage": "import { Button } from '@nerio/ui';\n\n<Button>Save changes</Button>"
+    }
+  ]
+}

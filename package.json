@@ -1,0 +1,20 @@
+{
+  "name": "nerio",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "build": "turbo build",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "devDependencies": {
+    "@nerio/config": "workspace:*",
+    "prettier": "^3.7.4",
+    "turbo": "^2.10.3",
+    "typescript": "^5.9.3"
+  }
+}

@@ -4,7 +4,7 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 
 ## Product constraints
 
-- Build a source-first React design system for SaaS, fintech, crypto, and internal tools.
+- Build a source-first React design system for modern digital products across SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, and data-rich workflows.
 - Use **Base UI** as the sole primitive layer. Do not add Radix UI, shadcn/ui, Headless UI, Ariakit, or another overlapping primitive system.
 - Use Next.js, React, TypeScript, Tailwind CSS v4, pnpm workspaces, and Turborepo.
 - The project may adopt ideas compatible with registry-based distribution, but it must have its own `nerio` CLI, own registry format, own documentation, and own component APIs. Do not depend on the shadcn CLI, registry, or package.
@@ -13,7 +13,7 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 ## Design-system rules
 
 - Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
-- Preserve three theme contracts from the beginning: Neutral Light, Neutral Dark, and Fintech Blue. Support Comfortable density by default and Compact density through tokens.
+- Preserve three theme contracts from the beginning: Neutral Light, Neutral Dark, and Nerio Blue. Support Comfortable density by default and Compact density through tokens.
 - Default to semantic names such as `--n-color-surface`, not visual names such as `--blue-600`, outside the primitive token layer.
 - Every component must have a predictable anatomy, accessible interaction model, keyboard behavior, visible focus treatment, disabled/loading states where relevant, and a small API surface.
 - Prefer composition and explicit slots over expansive boolean-prop APIs.

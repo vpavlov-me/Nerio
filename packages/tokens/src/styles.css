@@ -1,0 +1,137 @@
+:root {
+  color-scheme: light;
+  --n-font-geist:
+    "Geist", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --n-font-geist-mono: "Geist Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --n-font-sans: var(--n-font-geist);
+  --n-font-mono: var(--n-font-geist-mono);
+
+  --n-gray-0: #ffffff;
+  --n-gray-50: #f8fafc;
+  --n-gray-100: #f1f5f9;
+  --n-gray-200: #e2e8f0;
+  --n-gray-300: #cbd5e1;
+  --n-gray-500: #64748b;
+  --n-gray-700: #334155;
+  --n-gray-800: #1e293b;
+  --n-gray-900: #0f172a;
+  --n-gray-950: #020617;
+  --n-blue-50: #eff6ff;
+  --n-blue-100: #dbeafe;
+  --n-blue-500: #2563eb;
+  --n-blue-600: #1d4ed8;
+  --n-blue-700: #1e40af;
+  --n-red-500: #dc2626;
+  --n-green-500: #16a34a;
+
+  --n-space-0: 0;
+  --n-space-1: 0.25rem;
+  --n-space-2: 0.5rem;
+  --n-space-3: 0.75rem;
+  --n-space-4: 1rem;
+  --n-space-5: 1.25rem;
+  --n-space-6: 1.5rem;
+  --n-space-8: 2rem;
+  --n-space-10: 2.5rem;
+  --n-space-12: 3rem;
+
+  --n-radius-sm: 0.25rem;
+  --n-radius-md: 0.375rem;
+  --n-radius-lg: 0.5rem;
+  --n-radius-xl: 0.75rem;
+  --n-shadow-sm: 0 1px 2px rgb(15 23 42 / 0.08);
+  --n-shadow-md: 0 16px 40px rgb(15 23 42 / 0.14);
+  --n-duration-fast: 120ms;
+  --n-duration-normal: 180ms;
+
+  --n-font-size-xs: 0.75rem;
+  --n-font-size-sm: 0.875rem;
+  --n-font-size-md: 1rem;
+  --n-font-size-lg: 1.125rem;
+  --n-font-size-xl: 1.25rem;
+  --n-font-size-2xl: 1.5rem;
+  --n-font-size-3xl: 2rem;
+  --n-line-height-tight: 1.2;
+  --n-line-height-normal: 1.5;
+  --n-line-height-relaxed: 1.65;
+  --n-font-weight-regular: 400;
+  --n-font-weight-medium: 500;
+  --n-font-weight-semibold: 600;
+  --n-font-weight-bold: 700;
+
+  --n-color-canvas: var(--n-gray-50);
+  --n-color-surface: var(--n-gray-0);
+  --n-color-surface-raised: var(--n-gray-0);
+  --n-color-surface-muted: var(--n-gray-100);
+  --n-color-text-primary: var(--n-gray-950);
+  --n-color-text-secondary: var(--n-gray-700);
+  --n-color-text-tertiary: var(--n-gray-500);
+  --n-color-border-subtle: var(--n-gray-200);
+  --n-color-border-strong: var(--n-gray-300);
+  --n-color-action-primary: var(--n-gray-950);
+  --n-color-action-primary-hover: var(--n-gray-800);
+  --n-color-action-on-primary: var(--n-gray-0);
+  --n-color-danger: var(--n-red-500);
+  --n-color-success: var(--n-green-500);
+  --n-focus-ring: 0 0 0 3px rgb(37 99 235 / 0.24);
+
+  --n-button-height-sm: 2rem;
+  --n-button-height-md: 2.5rem;
+  --n-button-height-lg: 2.875rem;
+  --n-button-radius: var(--n-radius-md);
+  --n-input-height-md: 2.5rem;
+  --n-dialog-width-md: 34rem;
+  --n-overlay-z-index: 50;
+}
+
+:root[data-theme="neutral-dark"] {
+  color-scheme: dark;
+  --n-color-canvas: var(--n-gray-950);
+  --n-color-surface: #0b1220;
+  --n-color-surface-raised: #111827;
+  --n-color-surface-muted: #162033;
+  --n-color-text-primary: #f8fafc;
+  --n-color-text-secondary: #cbd5e1;
+  --n-color-text-tertiary: #94a3b8;
+  --n-color-border-subtle: #243044;
+  --n-color-border-strong: #3a475f;
+  --n-color-action-primary: #f8fafc;
+  --n-color-action-primary-hover: #e2e8f0;
+  --n-color-action-on-primary: #020617;
+}
+
+:root[data-theme="nerio-blue"] {
+  --n-color-canvas: #f4f7fb;
+  --n-color-surface: #ffffff;
+  --n-color-surface-raised: #ffffff;
+  --n-color-surface-muted: #eaf1ff;
+  --n-color-text-primary: #08111f;
+  --n-color-text-secondary: #31425f;
+  --n-color-text-tertiary: #65758f;
+  --n-color-border-subtle: #c9d7ee;
+  --n-color-border-strong: #9eb4d6;
+  --n-color-action-primary: var(--n-blue-600);
+  --n-color-action-primary-hover: var(--n-blue-700);
+  --n-color-action-on-primary: #ffffff;
+}
+
+:root[data-density="compact"] {
+  --n-space-3: 0.625rem;
+  --n-space-4: 0.875rem;
+  --n-space-5: 1rem;
+  --n-button-height-sm: 1.75rem;
+  --n-button-height-md: 2.125rem;
+  --n-button-height-lg: 2.5rem;
+  --n-input-height-md: 2.125rem;
+}
+
+html {
+  background: var(--n-color-canvas);
+  font-family: var(--n-font-sans);
+}
+
+body {
+  background: var(--n-color-canvas);
+  color: var(--n-color-text-primary);
+  margin: 0;
+}

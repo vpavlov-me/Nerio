@@ -2,12 +2,12 @@
 
 ## Mission
 
-Nerio is an open-source, source-first design system for adaptable SaaS and fintech interfaces. It should demonstrate strong product-design judgment, practical system thinking, and AI-native implementation practices while remaining useful as the shared base for future products.
+Nerio is an open-source, source-first design system for modern digital products. It should demonstrate strong product-design judgment, practical system thinking, accessible engineering, and AI-native implementation practices while remaining useful as the shared base for future products.
 
 ## Primary users
 
-- Product designers and engineers building SaaS products.
-- Teams working on fintech, crypto, wealth-management, and data-heavy interfaces.
+- Product designers and engineers building modern digital products.
+- Teams working on SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, and data-rich workflows.
 - AI coding agents that need clear component contracts and reliable implementation guidance.
 
 ## Product position
@@ -31,7 +31,7 @@ Nerio is independent from shadcn/ui. It shares the source-distribution philosoph
 ```text
 apps/
   docs/          Public documentation, live previews, and playgrounds
-  demo-bank/     A realistic banking dashboard used as the visual showcase
+  demo-app/      A realistic universal product workspace used as the visual showcase
 
 packages/
   tokens/        Token source, generated CSS variables, themes, density contracts
@@ -62,7 +62,7 @@ The first release must support:
 
 - `neutral-light`
 - `neutral-dark`
-- `fintech-blue`
+- `nerio-blue`
 - `comfortable` density as default
 - `compact` density as an opt-in attribute or class
 
@@ -78,7 +78,7 @@ Deliver a functional monorepo and a polished foundation suitable for public revi
 4. Base UI-backed core components: Button, IconButton, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
 6. Public docs application with navigation, theme/density switcher, component preview, usage snippets, anatomy, variants, states, and accessibility notes.
-7. Demo Bank dashboard that uses the published components rather than bespoke UI.
+7. Nerio Workspace demo app that uses the published components rather than bespoke UI.
 8. Registry foundations and a minimal `nerio add button` vertical slice.
 9. `llms.txt` and a minimal MCP component-index endpoint or package.
 
@@ -95,5 +95,5 @@ Deliver a functional monorepo and a polished foundation suitable for public revi
 
 - WCAG 2.2 AA is the target for color contrast, focus, keyboard access, labels, semantics, and overlay behavior.
 - Mobile and desktop behavior must be intentional.
-- Components must remain visually calm, neutral, and suitable for dense data products.
-- The demo must make the system look credible in a real banking context, not like a component catalog pasted onto a page.
+- Components must remain visually calm, neutral, and suitable for both editorial product surfaces and dense operational interfaces.
+- The demo must make the system look credible in a real universal product workspace, not like a component catalog pasted onto a page.
