@@ -42,10 +42,10 @@ For Actions, begin with GitHub-owned actions and explicitly pinned third-party a
 
 Set the repository description to:
 
-> Source-first React design system for adaptable SaaS and fintech interfaces.
+> Source-first React design system for modern digital products.
 
 Suggested topics:
 
-`design-system`, `react`, `nextjs`, `tailwindcss`, `base-ui`, `typescript`, `fintech`, `saas`, `accessibility`, `ai-tools`, `mcp`
+`design-system`, `react`, `nextjs`, `tailwindcss`, `base-ui`, `typescript`, `product-design`, `accessibility`, `ai-tools`, `mcp`
 
 Add a social preview image once Nerio's first visual identity is ready.

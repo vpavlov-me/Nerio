@@ -1,0 +1,28 @@
+{
+  "name": "@nerio/demo-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nerio/adapters": "workspace:*",
+    "@nerio/tokens": "workspace:*",
+    "@nerio/ui": "workspace:*",
+    "next": "^16.2.10",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@nerio/config": "workspace:*",
+    "@types/node": "^24.10.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3"
+  }
+}

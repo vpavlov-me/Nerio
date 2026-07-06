@@ -1,14 +1,14 @@
 # Nerio
 
-**A source-first design system for adaptable SaaS and fintech interfaces.**
+**A source-first design system for modern digital products.**
 
-Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so products can start consistent and stay adaptable.
+Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
 > Status: Foundation in progress. The first public release is under active development.
 
 ## What Nerio is for
 
-- Product interfaces for SaaS, fintech, crypto, and internal operations tools.
+- Product interfaces for SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, and data-rich workflows.
 - A neutral visual baseline that can become a distinct product brand through tokens and themes.
 - Components installed as editable source code, not locked behind a UI package.
 - Accessibility aligned with WCAG 2.2 AA.
@@ -38,7 +38,7 @@ Nerio is an open-source React design system built for teams that need a reliable
 ```text
 apps/
   docs/          Public documentation and component playground
-  demo-bank/     Showcase product built entirely with Nerio
+  demo-app/      Universal showcase product built entirely with Nerio
 
 packages/
   tokens/        Design tokens, themes, and CSS variable contracts
@@ -55,7 +55,7 @@ Nerio will ship with:
 
 - Neutral Light
 - Neutral Dark
-- Fintech Blue
+- Nerio Blue
 - Comfortable density by default, with Compact density available through tokens
 
 ## Initial scope

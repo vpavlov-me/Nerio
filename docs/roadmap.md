@@ -6,7 +6,7 @@
 - [ ] Token architecture and first theme contracts
 - [ ] Core Base UI-backed components
 - [ ] Public docs application and live component previews
-- [ ] Demo Bank showcase application
+- [ ] Nerio Workspace demo application
 - [ ] Registry proof of concept and `nerio add button`
 - [ ] Initial AI guidance: `llms.txt` and MCP component discovery
 - [ ] CI, release workflow, and DCO enforcement
@@ -17,7 +17,7 @@
 - [ ] Navigation, command menu, and searchable selection
 - [ ] Overlay patterns and notifications
 - [ ] Data table adapter and empty/loading/error patterns
-- [ ] Chart adapter and financial data examples
+- [ ] Chart adapter and universal analytics examples
 - [ ] Calendar and date picker
 - [ ] File upload
 

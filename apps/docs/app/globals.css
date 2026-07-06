@@ -1,0 +1,207 @@
+@import "tailwindcss";
+@import "@nerio/ui/styles.css";
+
+html,
+body {
+  min-block-size: 100%;
+}
+
+body {
+  font-size: var(--n-font-size-md);
+  line-height: var(--n-line-height-normal);
+}
+
+body::before {
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 3.95rem,
+      var(--n-color-border-subtle) 4rem,
+      transparent 4.05rem
+    ),
+    linear-gradient(var(--n-color-border-subtle) 1px, transparent 1px);
+  background-size: 4rem 4rem;
+  content: "";
+  inset: 0;
+  opacity: 0.18;
+  pointer-events: none;
+  position: fixed;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+code,
+pre {
+  font-family: var(--n-font-mono);
+}
+
+.docs-shell {
+  display: grid;
+  min-block-size: 100vh;
+  position: relative;
+}
+
+.docs-header {
+  align-items: center;
+  backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--n-color-canvas) 86%, transparent);
+  border-block-end: 1px solid var(--n-color-border-subtle);
+  display: flex;
+  gap: var(--n-space-4);
+  inset-block-start: 0;
+  justify-content: space-between;
+  padding: var(--n-space-4) var(--n-space-6);
+  position: sticky;
+  z-index: 20;
+}
+
+.brand {
+  align-items: center;
+  display: inline-flex;
+  font-weight: var(--n-font-weight-bold);
+  gap: var(--n-space-3);
+}
+
+.brand-mark {
+  background: var(--n-color-action-primary);
+  border-radius: var(--n-radius-md);
+  block-size: 1.5rem;
+  inline-size: 1.5rem;
+}
+
+.docs-controls {
+  align-items: center;
+  display: flex;
+  gap: var(--n-space-2);
+}
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: 17rem minmax(0, 1fr);
+}
+
+.docs-sidebar {
+  border-inline-end: 1px solid var(--n-color-border-subtle);
+  min-block-size: calc(100vh - 4.5rem);
+  padding: var(--n-space-6);
+  position: sticky;
+  top: 4.5rem;
+}
+
+.docs-sidebar nav {
+  display: grid;
+  gap: var(--n-space-2);
+}
+
+.docs-sidebar a {
+  border-radius: var(--n-radius-md);
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+  padding: var(--n-space-2) var(--n-space-3);
+}
+
+.docs-sidebar a:hover {
+  background: var(--n-color-surface-muted);
+  color: var(--n-color-text-primary);
+}
+
+.docs-main {
+  margin-inline: auto;
+  max-inline-size: 72rem;
+  padding: var(--n-space-10) var(--n-space-6) var(--n-space-12);
+  width: 100%;
+}
+
+.hero {
+  display: grid;
+  gap: var(--n-space-6);
+  padding-block: var(--n-space-12);
+}
+
+.hero h1,
+.doc-page h1 {
+  font-size: clamp(2.25rem, 7vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+  margin: 0;
+  max-inline-size: 12ch;
+}
+
+.hero p,
+.doc-lede {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-lg);
+  line-height: var(--n-line-height-relaxed);
+  margin: 0;
+  max-inline-size: 42rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-3);
+}
+
+.grid {
+  display: grid;
+  gap: var(--n-space-4);
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.doc-page {
+  display: grid;
+  gap: var(--n-space-8);
+}
+
+.doc-page h1 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.doc-section {
+  display: grid;
+  gap: var(--n-space-4);
+}
+
+.preview {
+  background: var(--n-color-surface);
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: var(--n-radius-lg);
+  display: grid;
+  gap: var(--n-space-4);
+  padding: var(--n-space-5);
+}
+
+.preview-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-3);
+}
+
+.code-block {
+  background: var(--n-color-surface-muted);
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: var(--n-radius-lg);
+  color: var(--n-color-text-secondary);
+  overflow: auto;
+  padding: var(--n-space-4);
+}
+
+@media (max-width: 760px) {
+  .docs-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .docs-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-sidebar {
+    min-block-size: auto;
+    position: static;
+  }
+}

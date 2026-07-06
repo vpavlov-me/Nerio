@@ -1,0 +1,22 @@
+{
+  "name": "@nerio/cli",
+  "version": "0.0.0",
+  "private": true,
+  "bin": {
+    "nerio": "./src/index.js"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nerio/registry": "workspace:*"
+  },
+  "devDependencies": {
+    "@nerio/config": "workspace:*",
+    "@types/node": "^24.10.2",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3"
+  }
+}
