@@ -46,7 +46,7 @@ packages/
 
 ### 1. Primitive tokens
 
-Raw values with no semantic meaning. Examples: `--n-blue-500`, `--n-space-4`, `--n-radius-md`.
+Raw values with no semantic meaning. Examples: `--n-purple-500`, `--n-space-4`, `--n-radius-md`.
 
 ### 2. Semantic tokens
 
@@ -56,24 +56,27 @@ Intent-based tokens that themes remap. Examples: `--n-color-surface`, `--n-color
 
 Local contracts used when an individual component needs controlled customization. Examples: `--n-button-height-md`, `--n-dialog-width-md`.
 
+See `DESIGN_SYSTEM.md` for the full token architecture, visual direction, color usage, density, interaction, and component rules.
+
 ## Theme contract
 
 The first release must support:
 
-- `neutral-light`
-- `neutral-dark`
-- `nerio-blue`
-- `comfortable` density as default
-- `compact` density as an opt-in attribute or class
+- `purple-light` as the default Nerio theme;
+- `neutral-light`;
+- `neutral-dark`;
+- `fintech-blue-light`;
+- `comfortable` density as default;
+- `compact` density as an opt-in attribute or class.
 
-Theme and density changes must work through CSS variables without rebuilding component source.
+Theme and density changes must work through CSS variables without rebuilding component source. The token architecture must make future variants such as `purple-dark` and `fintech-blue-dark` possible without changing component source.
 
 ## First implementation milestone
 
 Deliver a functional monorepo and a polished foundation suitable for public review:
 
 1. Workspace tooling, linting, formatting, typechecking, build scripts, and CI.
-2. Token package with the three themes and two density modes.
+2. Token package with the initial theme presets and two density modes.
 3. Shared utility package or exports where needed for `cn`, types, and style contracts.
 4. Base UI-backed core components: Button, IconButton, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
@@ -95,5 +98,5 @@ Deliver a functional monorepo and a polished foundation suitable for public revi
 
 - WCAG 2.2 AA is the target for color contrast, focus, keyboard access, labels, semantics, and overlay behavior.
 - Mobile and desktop behavior must be intentional.
-- Components must remain visually calm, neutral, and suitable for both editorial product surfaces and dense operational interfaces.
+- Components must remain visually calm, neutral-first, and suitable for both editorial product surfaces and dense operational interfaces.
 - The demo must make the system look credible in a real universal product workspace, not like a component catalog pasted onto a page.
