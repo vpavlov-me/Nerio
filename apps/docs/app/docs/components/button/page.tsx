@@ -1,11 +1,5 @@
-import { StandardDocPage } from "../../../../components/doc-page";
+import { ButtonDoc } from "../../../../components/button-doc";
 
 export default function Page() {
-  return (
-    <StandardDocPage
-      title="Button"
-      lede="Buttons trigger actions, submit workflows, and expose intent through concise variants."
-      kind="button"
-    />
-  );
+  return <ButtonDoc />;
 }

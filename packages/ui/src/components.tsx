@@ -1,16 +1,22 @@
 "use client";
 
 import * as React from "react";
-import { Checkbox as BaseCheckbox } from "@base-ui-components/react/checkbox";
-import { Dialog as BaseDialog } from "@base-ui-components/react/dialog";
-import { Menu as BaseMenu } from "@base-ui-components/react/menu";
-import { Popover as BasePopover } from "@base-ui-components/react/popover";
-import { Select as BaseSelect } from "@base-ui-components/react/select";
-import { Switch as BaseSwitch } from "@base-ui-components/react/switch";
-import { Tooltip as BaseTooltip } from "@base-ui-components/react/tooltip";
+import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
+import { Dialog as BaseDialog } from "@base-ui/react/dialog";
+import { Menu as BaseMenu } from "@base-ui/react/menu";
+import { Popover as BasePopover } from "@base-ui/react/popover";
+import { Select as BaseSelect } from "@base-ui/react/select";
+import { Switch as BaseSwitch } from "@base-ui/react/switch";
+import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import { cn } from "./lib/cn";
+import { Button, type ButtonProps } from "./components/button";
+import { Icon, type IconComponent } from "./components/icon";
+import { Spinner } from "./components/spinner";
 
-type IconComponent = React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>;
+export { Button, Icon, Spinner };
+export type { ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
+export type { IconComponent, IconProps } from "./components/icon";
+export type { SpinnerProps } from "./components/spinner";
 
 function triggerContent(trigger: React.ReactNode) {
   if (React.isValidElement<{ children?: React.ReactNode }>(trigger)) {
@@ -20,52 +26,6 @@ function triggerContent(trigger: React.ReactNode) {
   return trigger;
 }
 
-export function Icon({ icon: IconSvg, className }: { icon: IconComponent; className?: string }) {
-  return <IconSvg aria-hidden className={cn("n-icon", className)} />;
-}
-
-type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
-type ButtonSize = "sm" | "md" | "lg";
-
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  loading?: boolean;
-  leadingIcon?: IconComponent;
-  trailingIcon?: IconComponent;
-}
-
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  {
-    className,
-    variant = "primary",
-    size = "md",
-    loading,
-    leadingIcon,
-    trailingIcon,
-    children,
-    disabled,
-    ...props
-  },
-  ref,
-) {
-  return (
-    <button
-      ref={ref}
-      className={cn("n-button", className)}
-      data-slot="root"
-      data-variant={variant}
-      data-size={size}
-      disabled={disabled || loading}
-      {...props}
-    >
-      {loading ? <Spinner size="sm" /> : leadingIcon ? <Icon icon={leadingIcon} /> : null}
-      <span data-slot="label">{children}</span>
-      {trailingIcon ? <Icon icon={trailingIcon} /> : null}
-    </button>
-  );
-});
-
 export interface IconButtonProps extends Omit<
   ButtonProps,
   "leadingIcon" | "trailingIcon" | "children"
@@ -74,7 +34,7 @@ export interface IconButtonProps extends Omit<
   label: string;
 }
 
-export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
+export const IconButton = React.forwardRef<HTMLElement, IconButtonProps>(function IconButton(
   { icon, label, className, ...props },
   ref,
 ) {
@@ -95,10 +55,6 @@ export function Badge({
   return (
     <span className={cn("n-badge", className)} data-slot="root" data-variant={variant} {...props} />
   );
-}
-
-export function Spinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  return <span className="n-spinner" data-slot="root" data-size={size} aria-label="Loading" />;
 }
 
 export function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {

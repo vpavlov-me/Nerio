@@ -1,0 +1,36 @@
+const path = require("node:path");
+const { Client } = require("@modelcontextprotocol/sdk/client/index.js");
+const { StdioClientTransport } = require("@modelcontextprotocol/sdk/client/stdio.js");
+
+async function verify() {
+  const client = new Client({ name: "nerio-mcp-fixture", version: "0.1.0" });
+  const transport = new StdioClientTransport({
+    command: process.execPath,
+    args: [path.resolve(__dirname, "../src/server.js")],
+  });
+
+  try {
+    await client.connect(transport);
+    const listed = await client.listTools();
+    const names = listed.tools.map((tool) => tool.name).sort();
+    const expected = ["get_component", "get_component_usage", "list_components"];
+    if (JSON.stringify(names) !== JSON.stringify(expected)) {
+      throw new Error(`Unexpected MCP tools: ${names.join(", ")}`);
+    }
+
+    const result = await client.callTool({ name: "get_component", arguments: { name: "button" } });
+    const payload = JSON.parse(result.content[0].text);
+    if (payload.name !== "button" || payload.baseUiPrimitives[0] !== "button") {
+      throw new Error("MCP get_component returned invalid Button metadata.");
+    }
+  } finally {
+    await client.close();
+  }
+
+  console.log("MCP fixture passed over the official stdio transport.");
+}
+
+verify().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

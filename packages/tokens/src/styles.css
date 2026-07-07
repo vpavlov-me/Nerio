@@ -72,6 +72,7 @@
   --n-color-action-primary-hover: var(--n-gray-800);
   --n-color-action-on-primary: var(--n-gray-0);
   --n-color-danger: var(--n-red-500);
+  --n-color-text-on-danger: var(--n-gray-0);
   --n-color-success: var(--n-green-500);
   --n-focus-ring: 0 0 0 3px rgb(37 99 235 / 0.24);
 

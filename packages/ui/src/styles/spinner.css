@@ -1,0 +1,41 @@
+.n-visually-hidden {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.n-spinner {
+  animation: n-spin 800ms linear infinite;
+  border: 2px solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: 999px;
+  block-size: 1rem;
+  display: inline-block;
+  inline-size: 1rem;
+}
+
+.n-spinner[data-size="sm"] {
+  block-size: 0.875rem;
+  inline-size: 0.875rem;
+}
+
+.n-spinner[data-size="lg"] {
+  block-size: 1.25rem;
+  inline-size: 1.25rem;
+}
+
+@keyframes n-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n-spinner {
+    animation-duration: 1600ms;
+  }
+}

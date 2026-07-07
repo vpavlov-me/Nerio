@@ -9,7 +9,9 @@
     "typecheck": "turbo typecheck",
     "build": "turbo build",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "test:cli": "pnpm --filter @nerio/cli test:fixture",
+    "test:mcp": "pnpm --filter @nerio/mcp test:fixture"
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",

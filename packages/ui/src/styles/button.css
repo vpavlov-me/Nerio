@@ -1,0 +1,84 @@
+.n-button {
+  align-items: center;
+  block-size: var(--n-button-height-md);
+  border: 1px solid transparent;
+  border-radius: var(--n-button-radius);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: var(--n-font-size-sm);
+  font-weight: var(--n-font-weight-medium);
+  gap: var(--n-space-2);
+  justify-content: center;
+  padding: 0 var(--n-space-4);
+  transition:
+    background var(--n-duration-fast),
+    border-color var(--n-duration-fast),
+    color var(--n-duration-fast),
+    opacity var(--n-duration-fast);
+  white-space: nowrap;
+}
+
+.n-button:focus-visible {
+  box-shadow: var(--n-focus-ring);
+  outline: 0;
+}
+
+.n-button:disabled,
+.n-button[data-disabled] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.n-button[data-variant="primary"] {
+  background: var(--n-color-action-primary);
+  color: var(--n-color-action-on-primary);
+}
+
+.n-button[data-variant="primary"]:hover:not(:disabled) {
+  background: var(--n-color-action-primary-hover);
+}
+
+.n-button[data-variant="secondary"] {
+  background: var(--n-color-surface);
+  border-color: var(--n-color-border-strong);
+  color: var(--n-color-text-primary);
+}
+
+.n-button[data-variant="secondary"]:hover:not(:disabled) {
+  background: var(--n-color-surface-muted);
+}
+
+.n-button[data-variant="ghost"] {
+  background: transparent;
+  color: var(--n-color-text-secondary);
+}
+
+.n-button[data-variant="ghost"]:hover:not(:disabled) {
+  background: var(--n-color-surface-muted);
+  color: var(--n-color-text-primary);
+}
+
+.n-button[data-variant="destructive"] {
+  background: var(--n-color-danger);
+  color: var(--n-color-text-on-danger);
+}
+
+.n-button[data-size="sm"] {
+  block-size: var(--n-button-height-sm);
+  padding-inline: var(--n-space-3);
+}
+
+.n-button[data-size="lg"] {
+  block-size: var(--n-button-height-lg);
+  padding-inline: var(--n-space-5);
+}
+
+.n-button [data-slot="icon"] {
+  align-items: center;
+  display: inline-flex;
+}
+
+.n-icon-button {
+  inline-size: var(--n-button-height-md);
+  padding: 0;
+}

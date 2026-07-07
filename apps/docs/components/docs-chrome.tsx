@@ -64,9 +64,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           />
           <Button
             variant="secondary"
-            onClick={() => navigator.clipboard.writeText("pnpm add @nerio/ui")}
+            onClick={() => navigator.clipboard.writeText("nerio add button")}
           >
-            Copy install
+            Copy command
           </Button>
         </div>
       </header>

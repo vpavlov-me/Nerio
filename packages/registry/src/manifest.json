@@ -1,44 +1,72 @@
 {
   "schemaVersion": "0.1.0",
+  "name": "nerio",
   "items": [
     {
       "name": "button",
       "title": "Button",
       "description": "Triggers a user action.",
       "category": "actions",
-      "dependencies": ["react", "@nerio/tokens", "clsx"],
+      "dependencies": ["@base-ui/react", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
-          "source": "packages/ui/src/components.tsx",
-          "target": "components/nerio/components.tsx"
+          "source": "../../ui/src/components/button.tsx",
+          "target": "components/button.tsx",
+          "role": "component"
         },
         {
-          "source": "packages/ui/src/lib/cn.ts",
-          "target": "components/nerio/lib/cn.ts"
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
         },
         {
-          "source": "packages/ui/src/styles.css",
-          "target": "components/nerio/styles.css"
+          "source": "../../ui/src/components/spinner.tsx",
+          "target": "components/spinner.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/button.css",
+          "target": "styles/button.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/spinner.css",
+          "target": "styles/spinner.css",
+          "role": "style"
         }
       ],
       "baseUiPrimitives": ["button"],
       "slots": ["root", "icon", "label"],
       "variants": ["primary", "secondary", "ghost", "destructive"],
       "requiredTokens": [
+        "--n-button-height-sm",
         "--n-button-height-md",
+        "--n-button-height-lg",
         "--n-button-radius",
         "--n-color-action-primary",
+        "--n-color-action-primary-hover",
         "--n-color-action-on-primary",
+        "--n-color-text-on-danger",
         "--n-focus-ring"
       ],
       "accessibility": [
-        "Use a native button element.",
-        "Provide discernible text or aria-label for icon-only actions.",
-        "Keep visible focus treatment enabled.",
-        "Use loading to prevent duplicate submissions."
+        "Uses the Base UI Button primitive and renders a native button by default.",
+        "Provide concise visible text or an accessible name.",
+        "Loading disables repeat activation and exposes aria-busy.",
+        "Keep the visible focus treatment enabled."
       ],
-      "usage": "import { Button } from '@nerio/ui';\n\n<Button>Save changes</Button>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\n\n<Button variant=\"primary\">Save changes</Button>"
     }
   ]
 }
