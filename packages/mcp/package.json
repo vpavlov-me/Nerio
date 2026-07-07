@@ -11,10 +11,13 @@
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
+    "test:fixture": "node fixtures/verify.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nerio/registry": "workspace:*"
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@nerio/registry": "workspace:*",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",

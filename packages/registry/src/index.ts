@@ -7,7 +7,11 @@ export interface RegistryItem {
   category: string;
   dependencies: string[];
   registryDependencies: string[];
-  files: Array<{ source: string; target: string }>;
+  files: Array<{
+    source: string;
+    target: string;
+    role: "component" | "style" | "utility";
+  }>;
   baseUiPrimitives: string[];
   slots: string[];
   variants: string[];

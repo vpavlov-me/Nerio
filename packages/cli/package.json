@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
+    "test:fixture": "node fixtures/verify.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

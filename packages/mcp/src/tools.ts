@@ -23,6 +23,7 @@ export function get_component_usage(name: string) {
     name: item.name,
     title: item.title,
     usage: item.usage,
+    slots: item.slots,
     variants: item.variants,
     accessibility: item.accessibility,
   };

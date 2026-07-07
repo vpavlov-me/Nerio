@@ -1,4 +1,7 @@
 @import "@nerio/tokens/styles.css";
+@import "./styles/icon.css";
+@import "./styles/spinner.css";
+@import "./styles/button.css";
 
 * {
   box-sizing: border-box;
@@ -11,33 +14,6 @@ textarea {
   font: inherit;
 }
 
-.n-icon {
-  block-size: 1em;
-  inline-size: 1em;
-  stroke-width: 1.8;
-}
-
-.n-button {
-  align-items: center;
-  block-size: var(--n-button-height-md);
-  border: 1px solid transparent;
-  border-radius: var(--n-button-radius);
-  cursor: pointer;
-  display: inline-flex;
-  font-size: var(--n-font-size-sm);
-  font-weight: var(--n-font-weight-medium);
-  gap: var(--n-space-2);
-  justify-content: center;
-  padding: 0 var(--n-space-4);
-  transition:
-    background var(--n-duration-fast),
-    border-color var(--n-duration-fast),
-    color var(--n-duration-fast),
-    opacity var(--n-duration-fast);
-  white-space: nowrap;
-}
-
-.n-button:focus-visible,
 .n-input:focus-visible,
 .n-textarea:focus-visible,
 .n-checkbox:focus-visible,
@@ -46,56 +22,6 @@ textarea {
 .n-dropdown button:focus-visible {
   box-shadow: var(--n-focus-ring);
   outline: 0;
-}
-
-.n-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.n-button[data-variant="primary"] {
-  background: var(--n-color-action-primary);
-  color: var(--n-color-action-on-primary);
-}
-
-.n-button[data-variant="primary"]:hover:not(:disabled) {
-  background: var(--n-color-action-primary-hover);
-}
-
-.n-button[data-variant="secondary"] {
-  background: var(--n-color-surface);
-  border-color: var(--n-color-border-strong);
-  color: var(--n-color-text-primary);
-}
-
-.n-button[data-variant="ghost"] {
-  background: transparent;
-  color: var(--n-color-text-secondary);
-}
-
-.n-button[data-variant="ghost"]:hover:not(:disabled) {
-  background: var(--n-color-surface-muted);
-  color: var(--n-color-text-primary);
-}
-
-.n-button[data-variant="destructive"] {
-  background: var(--n-color-danger);
-  color: white;
-}
-
-.n-button[data-size="sm"] {
-  block-size: var(--n-button-height-sm);
-  padding-inline: var(--n-space-3);
-}
-
-.n-button[data-size="lg"] {
-  block-size: var(--n-button-height-lg);
-  padding-inline: var(--n-space-5);
-}
-
-.n-icon-button {
-  inline-size: var(--n-button-height-md);
-  padding: 0;
 }
 
 .n-badge {
@@ -121,32 +47,6 @@ textarea {
 
 .n-badge[data-variant="info"] {
   color: var(--n-color-action-primary);
-}
-
-.n-spinner {
-  animation: n-spin 800ms linear infinite;
-  border: 2px solid currentColor;
-  border-block-start-color: transparent;
-  border-radius: 999px;
-  display: inline-block;
-  inline-size: 1rem;
-  block-size: 1rem;
-}
-
-.n-spinner[data-size="sm"] {
-  inline-size: 0.875rem;
-  block-size: 0.875rem;
-}
-
-.n-spinner[data-size="lg"] {
-  inline-size: 1.25rem;
-  block-size: 1.25rem;
-}
-
-@keyframes n-spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .n-skeleton {

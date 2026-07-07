@@ -1,5 +1,16 @@
 export type { LucideIcon } from "lucide-react";
-export { Search, Settings, Bell, ChevronDown, Plus, Check, X } from "lucide-react";
+export {
+  ArrowRight,
+  Bell,
+  Check,
+  ChevronDown,
+  Copy,
+  Plus,
+  Save,
+  Search,
+  Settings,
+  X,
+} from "lucide-react";
 export type { ColumnDef } from "@tanstack/react-table";
 export { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 export {
