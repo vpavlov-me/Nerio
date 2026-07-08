@@ -36,7 +36,7 @@ Keep these files aligned when component scope changes.
 | Component / Area | Status | Package | Notes |
 |---|---|---|---|
 | Tokens | Implemented initial | `@nerio/tokens` | Color, spacing, radius, typography, motion |
-| Themes | Implemented initial | `@nerio/tokens` | Brand themes: `purple`, `neutral`, `fintech-blue` |
+| Themes | Implemented initial | `@nerio/tokens` | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables |
 | Modes | Implemented initial | `@nerio/tokens` | Color modes: `system`, `light`, `dark` |
 | Density | Implemented initial | `@nerio/tokens` | Density modes: `comfortable`, `compact` |
 | Typography | Planned | `@nerio/ui` | Text, heading, code primitives |
