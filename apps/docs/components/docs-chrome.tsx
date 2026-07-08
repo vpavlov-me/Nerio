@@ -24,7 +24,7 @@ const nav: Array<{ href: string; label: string }> = [
 ];
 
 export function DocsChrome({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeValue] = React.useState("neutral-light");
+  const [theme, setThemeValue] = React.useState("purple-light");
   const [density, setDensityValue] = React.useState("comfortable");
   const setTheme = (value: string) => {
     setThemeValue(value);
@@ -48,9 +48,10 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             value={theme}
             onChange={setTheme}
             options={[
+              { label: "Purple light", value: "purple-light" },
               { label: "Neutral light", value: "neutral-light" },
               { label: "Neutral dark", value: "neutral-dark" },
-              { label: "Nerio blue", value: "nerio-blue" },
+              { label: "Fintech blue light", value: "fintech-blue-light" },
             ]}
           />
           <Select
