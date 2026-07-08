@@ -21,6 +21,12 @@ Pro should save time on complex SaaS, fintech, crypto, data-rich dashboard, and 
 
 Keep these files aligned when component scope changes.
 
+## Status values
+
+- `Implemented initial`: available in the current source with an initial API and styling pass.
+- `Planned`: approved for the tier, not implemented yet.
+- `Future`: expected later, not part of the first Core milestone.
+
 ---
 
 ## Core components
@@ -29,70 +35,73 @@ Keep these files aligned when component scope changes.
 
 | Component / Area | Status | Package | Notes |
 |---|---|---|---|
-| Tokens | Planned | `@nerio/tokens` | Color, spacing, radius, typography, motion |
-| Themes | Planned | `@nerio/tokens` | `purple-light`, `neutral-light`, `neutral-dark`, `fintech-blue-light` |
+| Tokens | Implemented initial | `@nerio/tokens` | Color, spacing, radius, typography, motion |
+| Themes | Implemented initial | `@nerio/tokens` | `purple-light`, `neutral-light`, `neutral-dark`, `fintech-blue-light` |
 | Typography | Planned | `@nerio/ui` | Text, heading, code primitives |
-| Icon Adapter | Planned | `@nerio/adapters` | Adapter API, Lucide default implementation |
+| Icon Adapter | Implemented initial | `@nerio/ui` / `@nerio/adapters` | Current `Icon` export in `@nerio/ui`; adapter package remains part of the architecture |
 
 ### Actions
 
 | Component | Status | Package | Notes |
 |---|---|---|---|
-| Button | Planned | `@nerio/ui` | Variants, sizes, loading, icon slots |
-| IconButton | Planned | `@nerio/ui` | Accessible icon-only action |
+| Button | Implemented initial | `@nerio/ui` | Variants, sizes, loading, icon slots |
+| IconButton | Implemented initial | `@nerio/ui` | Accessible icon-only action |
 | Link | Planned | `@nerio/ui` | Styled link primitive |
 
 ### Forms
 
 | Component | Status | Package | Notes |
 |---|---|---|---|
-| Input | Planned | `@nerio/ui` | Text input |
-| Textarea | Planned | `@nerio/ui` | Multiline input |
-| Label | Planned | `@nerio/ui` | Accessible form label |
-| Field | Planned | `@nerio/ui` | Label, help text, error, description |
+| Input | Implemented initial | `@nerio/ui` | Text input |
+| Textarea | Implemented initial | `@nerio/ui` | Multiline input |
+| Label | Implemented initial | `@nerio/ui` | Accessible form label |
+| Field | Implemented initial | `@nerio/ui` | Label, help text, error, description |
+| FormMessage | Implemented initial | `@nerio/ui` | Field message/error text |
 | FormGroup | Planned | `@nerio/ui` | Form layout primitive |
-| Checkbox | Planned | `@nerio/ui` | Basic checkbox |
+| Checkbox | Implemented initial | `@nerio/ui` | Basic checkbox |
 | Radio Group | Planned | `@nerio/ui` | Basic radio selection |
-| Switch | Planned | `@nerio/ui` | Toggle control |
-| Select | Planned | `@nerio/ui` | Base select |
+| Switch | Implemented initial | `@nerio/ui` | Toggle control |
+| Select | Implemented initial | `@nerio/ui` | Base select |
 
 ### Overlays
 
 | Component | Status | Package | Notes |
 |---|---|---|---|
-| Dialog | Planned | `@nerio/ui` | Modal primitive |
+| Dialog | Implemented initial | `@nerio/ui` | Modal primitive |
 | Sheet | Planned | `@nerio/ui` | Basic side panel |
-| Popover | Planned | `@nerio/ui` | Floating content |
-| Tooltip | Planned | `@nerio/ui` | Short contextual help |
-| Dropdown Menu | Planned | `@nerio/ui` | Basic menu |
+| Popover | Implemented initial | `@nerio/ui` | Floating content |
+| Tooltip | Implemented initial | `@nerio/ui` | Short contextual help |
+| Dropdown Menu | Implemented initial | `@nerio/ui` | Basic menu |
 
 ### Data display
 
 | Component | Status | Package | Notes |
 |---|---|---|---|
-| Card | Planned | `@nerio/ui` | Surface primitive |
-| Badge | Planned | `@nerio/ui` | Status and metadata |
-| Avatar | Planned | `@nerio/ui` | User/entity avatar |
-| Table | Planned | `@nerio/ui` | Basic table only |
+| Card | Implemented initial | `@nerio/ui` | Surface primitive |
+| Badge | Implemented initial | `@nerio/ui` | Status and metadata |
+| Avatar | Implemented initial | `@nerio/ui` | User/entity avatar |
+| Table | Implemented initial | `@nerio/ui` | Basic table only |
 | List | Planned | `@nerio/ui` | Basic list primitive |
-| Separator | Planned | `@nerio/ui` | Layout divider |
+| Separator | Implemented initial | `@nerio/ui` | Layout divider |
+| KeyValue | Implemented initial | `@nerio/ui` | Simple definition-list value display |
+| Stat | Implemented initial | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro. |
 
 ### Feedback
 
 | Component | Status | Package | Notes |
 |---|---|---|---|
 | Alert | Planned | `@nerio/ui` | Inline feedback |
-| Toast | Planned | `@nerio/ui` | Temporary notification |
-| Progress | Planned | `@nerio/ui` | Progress indicator |
-| Skeleton | Planned | `@nerio/ui` | Loading placeholder |
-| Empty State | Planned | `@nerio/ui` | Basic empty state |
-| Spinner | Planned | `@nerio/ui` | Loading indicator |
+| Toast | Implemented initial | `@nerio/ui` | Temporary notification |
+| Progress | Implemented initial | `@nerio/ui` | Progress indicator |
+| Skeleton | Implemented initial | `@nerio/ui` | Loading placeholder |
+| Empty State | Implemented initial | `@nerio/ui` | Basic empty state |
+| Spinner | Implemented initial | `@nerio/ui` | Loading indicator |
 
 ### Navigation and layout
 
 | Component | Status | Package | Notes |
 |---|---|---|---|
-| Tabs | Planned | `@nerio/ui` | Basic tabs |
+| Tabs | Implemented initial | `@nerio/ui` | Basic tabs |
 | Breadcrumbs | Planned | `@nerio/ui` | Hierarchy navigation |
 | Pagination | Planned | `@nerio/ui` | Basic pagination |
 | Sidebar Primitive | Planned | `@nerio/ui` | Layout primitive only |
@@ -116,7 +125,7 @@ Keep these files aligned when component scope changes.
 
 | Component | Status | Package | Notes |
 |---|---|---|---|
-| KPI Card | Planned | `@nerio/pro` | Metric with trend |
+| KPI Card | Planned | `@nerio/pro` | Advanced metric with trend, comparison, state, actions, and chart context |
 | KPI Group | Planned | `@nerio/pro` | Dashboard metric cluster |
 | Trend Chip | Planned | `@nerio/pro` | Positive/negative/neutral movement |
 | Chart Card | Planned | `@nerio/pro` | Chart wrapper and metadata |
@@ -181,6 +190,8 @@ Keep these files aligned when component scope changes.
 | Dialog | Core | Common overlay primitive |
 | Basic Table | Core | Generic data display |
 | DataGrid | Pro | Advanced data workflow |
+| Basic Stat | Core | Simple metric display |
+| KPI Card | Pro | Advanced dashboard metric pattern |
 | Sidebar Primitive | Core | Layout building block |
 | AppSidebar | Pro | Product-ready composition |
 | Empty State | Core | Basic feedback pattern |
