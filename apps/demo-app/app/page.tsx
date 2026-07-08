@@ -30,6 +30,15 @@ const activity = [
   ["Jordan shared an analytics snapshot", "Yesterday"],
 ];
 
+const themeOptions = [
+  { label: "Purple", value: "purple" },
+  { label: "Blue", value: "blue" },
+  { label: "Green", value: "green" },
+  { label: "Orange", value: "orange" },
+  { label: "Red", value: "red" },
+  { label: "Neutral", value: "neutral" },
+];
+
 export default function DemoApp() {
   const [query, setQuery] = React.useState("");
   const [showToast, setShowToast] = React.useState(false);
@@ -74,16 +83,7 @@ export default function DemoApp() {
           ))}
         </nav>
         <div className="workspace-controls">
-          <Select
-            label="Theme"
-            value={theme}
-            onChange={setTheme}
-            options={[
-              { label: "Purple", value: "purple" },
-              { label: "Neutral", value: "neutral" },
-              { label: "Fintech Blue", value: "fintech-blue" },
-            ]}
-          />
+          <Select label="Theme" value={theme} onChange={setTheme} options={themeOptions} />
           <Select
             label="Mode"
             value={mode}
