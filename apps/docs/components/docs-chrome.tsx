@@ -23,6 +23,15 @@ const nav: Array<{ href: string; label: string }> = [
   { href: "/docs/ai", label: "AI tooling" },
 ];
 
+const themeOptions = [
+  { label: "Purple", value: "purple" },
+  { label: "Blue", value: "blue" },
+  { label: "Green", value: "green" },
+  { label: "Orange", value: "orange" },
+  { label: "Red", value: "red" },
+  { label: "Neutral", value: "neutral" },
+];
+
 export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState("system");
@@ -55,16 +64,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           <span>Nerio</span>
         </Link>
         <div className="docs-controls">
-          <Select
-            label="Theme"
-            value={theme}
-            onChange={setTheme}
-            options={[
-              { label: "Purple", value: "purple" },
-              { label: "Neutral", value: "neutral" },
-              { label: "Fintech Blue", value: "fintech-blue" },
-            ]}
-          />
+          <Select label="Theme" value={theme} onChange={setTheme} options={themeOptions} />
           <Select
             label="Mode"
             value={mode}
