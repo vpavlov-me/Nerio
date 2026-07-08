@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <StandardDocPage
       title="Themes"
-      lede="Purple Light, Neutral Light, Neutral Dark, and Fintech Blue Light are runtime CSS-variable themes selected through root attributes."
+      lede="Nerio separates brand themes from color modes: use data-theme for Purple, Neutral, or Fintech Blue, data-mode for System, Light, or Dark, and data-density for Comfortable or Compact."
     />
   );
 }
