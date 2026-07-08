@@ -16,13 +16,13 @@ Use primitive tokens only for raw values. Use semantic tokens such as `--n-color
 
 Geist Sans is the default UI font and Geist Mono is the default technical font. Components must consume font tokens, not hard-coded app font class names.
 
-Nerio separates theme, mode, and density. Theme is selected with `data-theme="purple"`, `data-theme="neutral"`, or `data-theme="fintech-blue"`. Mode is selected with `data-mode="system"`, `data-mode="light"`, or `data-mode="dark"`. Density is selected with `data-density="comfortable"` or `data-density="compact"`.
+Nerio separates theme, mode, and density. Theme is selected with `data-theme="purple"`, `data-theme="blue"`, `data-theme="green"`, `data-theme="orange"`, `data-theme="red"`, `data-theme="neutral"`, or a custom product theme. Mode is selected with `data-mode="system"`, `data-mode="light"`, or `data-mode="dark"`. Density is selected with `data-density="comfortable"` or `data-density="compact"`.
 
 Default runtime attributes: `data-theme="purple" data-mode="system" data-density="comfortable"`.
 
-Do not create or use combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `fintech-blue-light`, or `fintech-blue-dark`.
+Do not create or use combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `blue-light`, `blue-dark`, `red-light`, or `red-dark`. Do not create vertical-specific Core preset names such as `fintech-blue`; use generic brand color names.
 
-Purple is the default branded accent. Use it with restraint for primary actions, selection, active states, focus, links, small progress signals, the primary chart series, and brand moments. Do not use purple for broad page backgrounds, routine icons, card backgrounds, standard borders, or secondary actions.
+Brand color is a restrained accent. Use it for primary actions, selection, active states, focus, links, small progress signals, the primary chart series, and brand moments. Do not use brand color for broad page backgrounds, routine icons, card backgrounds, standard borders, or secondary actions.
 
 Prefer composition, explicit slots, semantic HTML, visible focus states, and accessible labels. Use Nerio's icon adapter for Lucide or custom SVG React components.
 
