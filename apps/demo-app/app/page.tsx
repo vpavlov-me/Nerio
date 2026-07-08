@@ -33,15 +33,26 @@ const activity = [
 export default function DemoApp() {
   const [query, setQuery] = React.useState("");
   const [showToast, setShowToast] = React.useState(false);
-  const [theme, setThemeValue] = React.useState("purple-light");
+  const [theme, setThemeValue] = React.useState("purple");
+  const [mode, setModeValue] = React.useState("system");
   const [density, setDensityValue] = React.useState("comfortable");
   const filtered = projects.filter((project) =>
     project.name.toLowerCase().includes(query.toLowerCase()),
   );
 
+  React.useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.setAttribute("data-mode", mode);
+    document.documentElement.setAttribute("data-density", density);
+  }, [theme, mode, density]);
+
   const setTheme = (value: string) => {
     setThemeValue(value);
     document.documentElement.setAttribute("data-theme", value);
+  };
+  const setMode = (value: string) => {
+    setModeValue(value);
+    document.documentElement.setAttribute("data-mode", value);
   };
   const setDensity = (value: string) => {
     setDensityValue(value);
@@ -68,10 +79,19 @@ export default function DemoApp() {
             value={theme}
             onChange={setTheme}
             options={[
-              { label: "Purple light", value: "purple-light" },
-              { label: "Neutral light", value: "neutral-light" },
-              { label: "Neutral dark", value: "neutral-dark" },
-              { label: "Fintech blue light", value: "fintech-blue-light" },
+              { label: "Purple", value: "purple" },
+              { label: "Neutral", value: "neutral" },
+              { label: "Fintech Blue", value: "fintech-blue" },
+            ]}
+          />
+          <Select
+            label="Mode"
+            value={mode}
+            onChange={setMode}
+            options={[
+              { label: "System", value: "system" },
+              { label: "Light", value: "light" },
+              { label: "Dark", value: "dark" },
             ]}
           />
           <Select
