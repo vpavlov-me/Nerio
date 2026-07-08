@@ -52,7 +52,7 @@ apps/
   demo-app/      Universal showcase product built with Nerio Core
 
 packages/
-  tokens/        Design tokens, themes, and CSS variable contracts
+  tokens/        Design tokens, themes, modes, and CSS variable contracts
   ui/            Core component source and public registry items
   adapters/      Icons, forms, tables, and charts
   cli/           `nerio` project and component commands
@@ -65,15 +65,21 @@ data/
 
 Future Pro implementation may live in a private repository or private workspace. Core must never depend on Pro. Pro may depend on Core.
 
-## Themes
+## Theme, mode, and density
 
-Nerio will ship with:
+Nerio separates three runtime axes:
 
-- Purple Light as the default branded theme
-- Neutral Light
-- Neutral Dark
-- Fintech Blue Light
-- Comfortable density by default, with Compact density available through tokens
+- Theme: Purple, Neutral, Fintech Blue
+- Mode: System, Light, Dark
+- Density: Comfortable, Compact
+
+Default runtime attributes:
+
+```html
+<html data-theme="purple" data-mode="system" data-density="comfortable">
+```
+
+Theme controls brand/accent personality. Mode controls light/dark/system color mode. Density controls spacing and control sizing.
 
 ## Initial Core scope
 
