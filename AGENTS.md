@@ -34,7 +34,7 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 ## Design-system rules
 
 - Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
-- Theme, mode, and density are separate axes:
+- Theme, mode, and density are the only v1 runtime appearance axes:
   - `data-theme="purple" | "blue" | "green" | "orange" | "red" | "neutral"` controls brand/accent personality.
   - `data-mode="system" | "light" | "dark"` controls color mode.
   - `data-density="comfortable" | "compact"` controls spacing and control density.
@@ -42,7 +42,10 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 - Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `blue-dark`, or `red-light`.
 - Do not create vertical-specific theme names such as `fintech-blue` for Core presets. Use generic brand color names by default.
 - Custom product themes are allowed by adding a new `data-theme` value and overriding CSS variables. They must still use the same `data-mode` and `data-density` axes.
-- Theme, mode, and density changes must work through CSS variables without rebuilding component source.
+- Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable in v1, but they are not separate runtime axes.
+- Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale` unless a later architecture decision explicitly promotes them to runtime axes.
+- Developers may customize typography, radius, motion, spacing, or contrast by overriding CSS variables such as `--n-font-sans`, `--n-font-mono`, `--n-radius-md`, `--n-radius-lg`, `--n-duration-normal`, and semantic color variables.
+- Theme, mode, density, and token overrides must work through CSS variables without rebuilding component source.
 - Default to semantic names such as `--n-color-surface`, not visual names such as `--n-purple-600`, outside the primitive token layer.
 - Components must use semantic or component aliases only; do not consume raw palette tokens directly.
 - Every component must have a predictable anatomy, accessible interaction model, keyboard behavior, visible focus treatment, disabled/loading states where relevant, and a small API surface.
