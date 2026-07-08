@@ -1,14 +1,35 @@
 # Nerio agent instructions
 
-This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions and `DESIGN_SYSTEM.md` before changing tokens, themes, shared component styles, demos, or visual documentation.
+This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, shared component styles, demos, or visual documentation, and `COMPONENTS.md` before adding or moving components.
 
 ## Product constraints
 
 - Build a source-first React design system for modern digital products across SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, and data-rich workflows.
+- Nerio has two product layers: **Nerio Core** and **Nerio Pro**.
+- **Nerio Core** is the open-source foundation: tokens, themes, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery.
+- **Nerio Pro** is the paid advanced layer: complex product components, templates, premium themes, Figma assets, advanced registry items, and Pro MCP/AI tooling.
+- Core = building blocks. Pro = product-ready solutions.
 - Use **Base UI** as the sole primitive layer. Do not add Radix UI, shadcn/ui, Headless UI, Ariakit, or another overlapping primitive system.
 - Use Next.js, React, TypeScript, Tailwind CSS v4, pnpm workspaces, and Turborepo.
 - The project may adopt ideas compatible with registry-based distribution, but it must have its own `nerio` CLI, own registry format, own documentation, and own component APIs. Do not depend on the shadcn CLI, registry, or package.
 - All public-facing docs, UI copy, code comments, and issue templates must be written in English.
+
+## Product positioning
+
+- Nerio Core remains universal and domain-agnostic.
+- SaaS, fintech, crypto, data-rich dashboards, and AI products are priority use cases, especially for Pro patterns and templates.
+- Do not position the whole project as fintech-only, crypto-only, banking-only, or SaaS-only.
+- Pro components may be domain-specific when they provide clear product value.
+
+## Package and tier boundaries
+
+- Core packages live under the public workspace and include `packages/tokens`, `packages/ui`, `packages/adapters`, `packages/cli`, `packages/mcp`, and `packages/config`.
+- Future Pro packages may live in a private repository or private workspace and may depend on Core.
+- Core must never import from Pro.
+- Pro may import from Core.
+- Before adding a component, check `COMPONENTS.md` and `data/component-catalog.json`.
+- If a component is an advanced composition, domain-specific pattern, or template-like workflow, it usually belongs in Pro.
+- Do not move advanced data grids, dashboard systems, billing flows, AI chat shells, or fintech/crypto-specific components into Core unless `COMPONENTS.md` is explicitly updated.
 
 ## Design-system rules
 
@@ -47,13 +68,16 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 
 - Every released component needs a docs page with purpose, anatomy, variants, states, usage snippets, accessibility notes, and guidance on when not to use it.
 - Documentation must show usage snippets and live previews. Do not expose a full component source dump in public docs.
-- Registry items must carry structured metadata for dependencies, Base UI primitives, slots, variants, required tokens, and installation instructions.
-- Keep `llms.txt`, component manifests, and MCP responses aligned with the actual component API.
+- Mark Pro components clearly as `Pro` in docs, navigation, manifests, and previews.
+- Public Pro documentation may include descriptions, previews, API shape, and installation CTA, but must not expose private Pro source code.
+- Registry items must carry structured metadata for dependencies, Base UI primitives, slots, variants, required tokens, installation instructions, and product tier.
+- Keep `llms.txt`, component manifests, `data/component-catalog.json`, and MCP responses aligned with the actual component API.
 
 ## Workflow
 
 1. Inspect the current workspace and relevant documentation.
-2. State a concise implementation plan in the pull request or task output.
-3. Implement the smallest complete vertical slice.
-4. Add or update docs, examples, types, and metadata in the same change.
-5. Run the repository checks and report exact results.
+2. Check `COMPONENTS.md` and `data/component-catalog.json` before creating or moving components.
+3. State a concise implementation plan in the pull request or task output.
+4. Implement the smallest complete vertical slice.
+5. Add or update docs, examples, types, registry metadata, and component catalog entries in the same change.
+6. Run the repository checks and report exact results.
