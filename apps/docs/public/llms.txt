@@ -2,11 +2,23 @@
 
 Nerio is an open-source, source-first design system for modern digital products. It is universal and domain-agnostic: suitable for SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, and data-rich workflows.
 
+Nerio has two product layers: Nerio Core and Nerio Pro.
+
+Nerio Core is the open-source foundation: tokens, themes, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery.
+
+Nerio Pro is the paid advanced layer: complex product components, templates, premium themes, Figma assets, advanced registry items, and Pro MCP/AI tooling.
+
+Core = building blocks. Pro = product-ready solutions.
+
+Use `COMPONENTS.md` and `data/component-catalog.json` as the source of truth for Core/Pro component tiering.
+
 Use primitive tokens only for raw values. Use semantic tokens such as `--n-color-surface`, `--n-color-text-primary`, `--n-color-action-primary`, `--n-font-sans`, and `--n-font-mono` in product and component code. Use component tokens for local contracts such as `--n-button-height-md` and `--n-dialog-width-md`.
 
 Geist Sans is the default UI font and Geist Mono is the default technical font. Components must consume font tokens, not hard-coded app font class names.
 
-Themes are selected at runtime on the root element with `data-theme="neutral-light"`, `data-theme="neutral-dark"`, or `data-theme="nerio-blue"`. Density is selected with `data-density="comfortable"` or `data-density="compact"`.
+Themes are selected at runtime on the root element with `data-theme="purple-light"`, `data-theme="neutral-light"`, `data-theme="neutral-dark"`, or `data-theme="fintech-blue-light"`. Density is selected with `data-density="comfortable"` or `data-density="compact"`.
+
+Purple is the default branded accent. Use it with restraint for primary actions, selection, active states, focus, links, small progress signals, the primary chart series, and brand moments. Do not use purple for broad page backgrounds, routine icons, card backgrounds, standard borders, or secondary actions.
 
 Prefer composition, explicit slots, semantic HTML, visible focus states, and accessible labels. Use Nerio's icon adapter for Lucide or custom SVG React components.
 
@@ -14,4 +26,4 @@ Registry usage: `nerio init` creates `nerio.json`, `nerio add button` installs B
 
 The read-only MCP server uses the official Model Context Protocol stdio transport. Its tools are `list_components`, `get_component`, and `get_component_usage`; all responses come from the same Nerio registry metadata used by the CLI.
 
-AI agents should select the smallest component set that matches the workflow, avoid domain-specific assumptions, keep examples universal, and never introduce shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive libraries.
+AI agents should select the smallest component set that matches the workflow, avoid unnecessary domain-specific assumptions in Core, use Pro for advanced product workflows, keep examples universal unless the task explicitly asks for a vertical, and never introduce shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive libraries.
