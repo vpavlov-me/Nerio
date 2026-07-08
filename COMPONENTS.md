@@ -39,6 +39,10 @@ Keep these files aligned when component scope changes.
 | Themes | Implemented initial | `@nerio/tokens` | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables |
 | Modes | Implemented initial | `@nerio/tokens` | Color modes: `system`, `light`, `dark` |
 | Density | Implemented initial | `@nerio/tokens` | Density modes: `comfortable`, `compact` |
+| Typography Tokens | Implemented initial | `@nerio/tokens` | Token-customizable font variables. Not a v1 runtime axis. |
+| Radius Tokens | Implemented initial | `@nerio/tokens` | Token-customizable radius variables. Not a v1 runtime axis. |
+| Motion Tokens | Implemented initial | `@nerio/tokens` | Token-customizable duration/motion variables. Not a v1 runtime axis. |
+| Contrast Tokens | Planned | `@nerio/tokens` | Token-customizable semantic contrast variables. Not a v1 runtime axis. |
 | Typography | Planned | `@nerio/ui` | Text, heading, code primitives |
 | Icon Adapter | Implemented initial | `@nerio/ui` / `@nerio/adapters` | Current `Icon` export in `@nerio/ui`; adapter package remains part of the architecture |
 
@@ -199,6 +203,7 @@ Keep these files aligned when component scope changes.
 | Empty State | Core | Basic feedback pattern |
 | Illustrated Empty State templates | Pro | Product-ready pattern library |
 | Theme tokens | Core | Foundation |
+| Typography/radius/motion tokens | Core | Token-customizable foundation, not v1 runtime axes |
 | Premium brand themes | Pro | Commercial design asset |
 | Command Primitive | Core | Generic command structure |
 | Command Palette | Pro | Full product pattern |
