@@ -33,7 +33,7 @@ const activity = [
 export default function DemoApp() {
   const [query, setQuery] = React.useState("");
   const [showToast, setShowToast] = React.useState(false);
-  const [theme, setThemeValue] = React.useState("neutral-light");
+  const [theme, setThemeValue] = React.useState("purple-light");
   const [density, setDensityValue] = React.useState("comfortable");
   const filtered = projects.filter((project) =>
     project.name.toLowerCase().includes(query.toLowerCase()),
@@ -68,9 +68,10 @@ export default function DemoApp() {
             value={theme}
             onChange={setTheme}
             options={[
-              { label: "Light", value: "neutral-light" },
-              { label: "Dark", value: "neutral-dark" },
-              { label: "Blue", value: "nerio-blue" },
+              { label: "Purple light", value: "purple-light" },
+              { label: "Neutral light", value: "neutral-light" },
+              { label: "Neutral dark", value: "neutral-dark" },
+              { label: "Fintech blue light", value: "fintech-blue-light" },
             ]}
           />
           <Select
