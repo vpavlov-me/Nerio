@@ -6,13 +6,24 @@ Nerio is an open-source React design system built for teams that need a reliable
 
 > Status: Foundation in progress. The first public release is under active development.
 
+## Product model
+
+Nerio has two product layers:
+
+- **Nerio Core**: the open-source foundation for tokens, themes, primitive and base UI components, public documentation, public registry, CLI, and public MCP/component discovery.
+- **Nerio Pro**: the future paid layer for advanced product components, templates, premium themes, Figma assets, advanced registry items, and Pro MCP/AI tooling.
+
+Core = building blocks. Pro = product-ready solutions.
+
 ## What Nerio is for
 
-- Product interfaces for SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, and data-rich workflows.
+- Product interfaces for SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, AI interfaces, and data-rich workflows.
 - A neutral visual baseline that can become a distinct product brand through tokens and themes.
 - Components installed as editable source code, not locked behind a UI package.
 - Accessibility aligned with WCAG 2.2 AA.
 - Practical AI workflows through structured component metadata, an MCP server, and `llms.txt`.
+
+Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboard, and AI products are priority use cases for Pro patterns and templates, not constraints on the whole system.
 
 ## Principles
 
@@ -38,29 +49,39 @@ Nerio is an open-source React design system built for teams that need a reliable
 ```text
 apps/
   docs/          Public documentation and component playground
-  demo-app/      Universal showcase product built entirely with Nerio
+  demo-app/      Universal showcase product built with Nerio Core
 
 packages/
   tokens/        Design tokens, themes, and CSS variable contracts
-  ui/            Component source and registry items
+  ui/            Core component source and public registry items
   adapters/      Icons, forms, tables, and charts
   cli/           `nerio` project and component commands
-  mcp/           AI discovery and composition tools
+  mcp/           Public AI discovery and composition tools
   config/        Shared TypeScript, linting, and build configuration
+
+data/
+  component-catalog.json   Machine-readable Core/Pro component catalog
 ```
+
+Future Pro implementation may live in a private repository or private workspace. Core must never depend on Pro. Pro may depend on Core.
 
 ## Themes
 
 Nerio will ship with:
 
+- Purple Light as the default branded theme
 - Neutral Light
 - Neutral Dark
-- Nerio Blue
+- Fintech Blue Light
 - Comfortable density by default, with Compact density available through tokens
 
-## Initial scope
+## Initial Core scope
 
-The first release will establish the token foundation and core component categories: actions, inputs and forms, overlays, navigation, feedback, data display, layout, and common product patterns. Complex elements such as a data table, date picker, command menu, combobox, file upload, and chart adapters will be added incrementally with production-quality examples.
+The first release will establish the token foundation and Core component categories: actions, forms, overlays, navigation, feedback, data display, layout primitives, and common reusable building blocks.
+
+Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows, finance/crypto widgets, AI chat shells, premium themes, Figma assets, and templates belong to Nerio Pro unless the component matrix says otherwise.
+
+See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
 
 ## Contributing
 
