@@ -1,6 +1,16 @@
 {
   "schemaVersion": 1,
   "project": "Nerio",
+  "runtimeAxes": {
+    "theme": ["purple", "neutral", "fintech-blue"],
+    "mode": ["system", "light", "dark"],
+    "density": ["comfortable", "compact"]
+  },
+  "defaultRuntimeAttributes": {
+    "data-theme": "purple",
+    "data-mode": "system",
+    "data-density": "comfortable"
+  },
   "statusValues": {
     "implemented-initial": "Available in the current source with an initial API and styling pass.",
     "planned": "Approved for the tier, not implemented yet.",
@@ -9,17 +19,19 @@
   "tiers": {
     "core": {
       "name": "Nerio Core",
-      "description": "Open-source foundation, tokens, themes, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery."
+      "description": "Open-source foundation, tokens, themes, modes, density, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery."
     },
     "pro": {
       "name": "Nerio Pro",
-      "description": "Paid advanced product components, templates, premium themes, Figma assets, advanced registry items, and Pro MCP/AI tooling."
+      "description": "Paid advanced product components, templates, premium brand themes, Figma assets, advanced registry items, and Pro MCP/AI tooling."
     }
   },
   "rule": "Core = building blocks. Pro = product-ready solutions.",
   "components": [
     { "name": "Tokens", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Color, spacing, radius, typography, motion, semantic tokens, and component tokens." },
-    { "name": "Themes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Initial runtime themes: purple-light, neutral-light, neutral-dark, and fintech-blue-light." },
+    { "name": "Themes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Brand/accent themes: purple, neutral, and fintech-blue." },
+    { "name": "Modes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Color modes: system, light, and dark." },
+    { "name": "Density", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Density modes: comfortable and compact." },
     { "name": "Typography", "tier": "core", "package": "@nerio/ui", "category": "foundation", "status": "planned", "description": "Text, heading, and code primitives based on semantic font tokens." },
     { "name": "Icon", "tier": "core", "package": "@nerio/ui", "category": "foundation", "status": "implemented-initial", "description": "Icon component using the current icon adapter direction." },
     { "name": "Icon Adapter", "tier": "core", "package": "@nerio/adapters", "category": "foundation", "status": "planned", "description": "Dedicated icon adapter API with Lucide as the default implementation and support for custom React SVG components." },
