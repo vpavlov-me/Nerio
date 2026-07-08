@@ -35,11 +35,13 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 
 - Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
 - Theme, mode, and density are separate axes:
-  - `data-theme="purple" | "neutral" | "fintech-blue"` controls brand/accent personality.
+  - `data-theme="purple" | "blue" | "green" | "orange" | "red" | "neutral"` controls brand/accent personality.
   - `data-mode="system" | "light" | "dark"` controls color mode.
   - `data-density="comfortable" | "compact"` controls spacing and control density.
-- Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, or `fintech-blue-dark`.
 - `purple` is the default theme, `system` is the default mode, and `comfortable` is the default density.
+- Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `blue-dark`, or `red-light`.
+- Do not create vertical-specific theme names such as `fintech-blue` for Core presets. Use generic brand color names by default.
+- Custom product themes are allowed by adding a new `data-theme` value and overriding CSS variables. They must still use the same `data-mode` and `data-density` axes.
 - Theme, mode, and density changes must work through CSS variables without rebuilding component source.
 - Default to semantic names such as `--n-color-surface`, not visual names such as `--n-purple-600`, outside the primitive token layer.
 - Components must use semantic or component aliases only; do not consume raw palette tokens directly.
@@ -52,8 +54,8 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 
 - Treat `DESIGN_SYSTEM.md` as the detailed visual source of truth.
 - Build neutral-first interfaces: hierarchy comes primarily from typography, spacing, layout, and contrast.
-- Purple is a constrained accent for primary actions, selection, active states, focus, links, small progress signals, the primary chart series, and brand moments.
-- Do not use purple as the default color for headings, normal icons, card backgrounds, standard borders, secondary actions, routine navigation, or broad page backgrounds.
+- Purple is the default constrained accent for primary actions, selection, active states, focus, links, small progress signals, the primary chart series, and brand moments.
+- Do not use brand colors as the default color for headings, normal icons, card backgrounds, standard borders, secondary actions, routine navigation, or broad page backgrounds.
 - Do not use drop shadows or glows. Use whitespace, surface contrast, restrained borders, and backdrops to establish hierarchy and overlays.
 - Use borders sparingly. Do not surround every content group with a card or border.
 - Default component density is Comfortable. Compact must be implemented through tokens, not parallel components.
