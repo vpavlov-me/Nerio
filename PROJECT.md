@@ -96,6 +96,24 @@ Do not create vertical-specific Core preset names such as `fintech-blue`. Core p
 
 Theme, mode, and density changes must work through CSS variables without rebuilding component source.
 
+## V1 token-customizable appearance values
+
+Font, radius, motion, spacing, shadow/elevation, and contrast are customizable through tokens in v1, but they are not separate runtime axes.
+
+Developers may override variables such as:
+
+- `--n-font-sans`
+- `--n-font-mono`
+- `--n-radius-sm`
+- `--n-radius-md`
+- `--n-radius-lg`
+- `--n-radius-xl`
+- `--n-duration-fast`
+- `--n-duration-normal`
+- semantic color and contrast variables
+
+Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale` in v1. These may become future runtime axes only after an explicit architecture decision.
+
 ## Core component scope
 
 Nerio Core includes foundation and base reusable components: Button, IconButton, Link, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive.
@@ -113,7 +131,7 @@ Pro should sell time savings and product judgment, not duplicate Core components
 Deliver a functional monorepo and a polished Core foundation suitable for public review:
 
 1. Workspace tooling, linting, formatting, typechecking, build scripts, and CI.
-2. Token package with the initial preset themes, custom theme support, modes, and density modes.
+2. Token package with the initial preset themes, custom theme support, modes, density modes, and token-customizable font/radius/motion values.
 3. Shared utility package or exports where needed for `cn`, types, and style contracts.
 4. Base UI-backed core components: Button, IconButton, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
@@ -125,6 +143,7 @@ Deliver a functional monorepo and a polished Core foundation suitable for public
 
 ## Explicitly out of scope for the first milestone
 
+- Additional runtime appearance axes such as `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale`.
 - Full Figma synchronization.
 - A complete visual-regression test suite.
 - A large template marketplace.
