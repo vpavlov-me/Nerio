@@ -17,7 +17,7 @@ Current Core workspace target:
 
 ```text
 packages/tokens
-  -> Token source, CSS variables, themes, density contracts
+  -> Token source, CSS variables, themes, modes, density contracts
 
 packages/ui
   -> Core components, utilities, styles, public registry source items
@@ -45,7 +45,7 @@ Future Pro target:
 
 @nerio/pro-themes
   -> Depends on @nerio/tokens
-  -> Premium themes
+  -> Premium brand themes
 
 @nerio/pro-registry
   -> Depends on Core registry contracts
@@ -72,6 +72,20 @@ Not allowed in Core:
 ```ts
 import { DataGrid } from "@nerio/pro";
 ```
+
+## Appearance runtime rule
+
+Theme, mode, and density are separate runtime axes:
+
+```html
+<html data-theme="purple" data-mode="system" data-density="comfortable">
+```
+
+- `data-theme` controls brand/accent personality: `purple`, `neutral`, `fintech-blue`.
+- `data-mode` controls color mode: `system`, `light`, `dark`.
+- `data-density` controls spacing and control sizing: `comfortable`, `compact`.
+
+Do not encode mode into theme names. Names such as `purple-light`, `neutral-dark`, and `fintech-blue-light` are not valid Nerio runtime values.
 
 ## Distribution
 
@@ -139,7 +153,7 @@ Examples:
 - Basic Empty State: Core
 - Illustrated Empty State patterns: Pro
 - Theme tokens: Core
-- Premium themes: Pro
+- Premium brand themes: Pro
 - Command Primitive: Core
 - Command Palette: Pro
 - AI Chat Shell: Pro
