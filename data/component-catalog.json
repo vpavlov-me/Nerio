@@ -6,6 +6,26 @@
     "mode": ["system", "light", "dark"],
     "density": ["comfortable", "compact"]
   },
+  "tokenCustomizableValues": [
+    "font",
+    "radius",
+    "motion",
+    "spacing",
+    "shadow/elevation",
+    "contrast"
+  ],
+  "futureRuntimeAxes": [
+    "radius",
+    "font",
+    "motion",
+    "contrast",
+    "scale"
+  ],
+  "runtimeAxisPolicy": {
+    "v1": "Only theme, mode, and density are runtime appearance axes in v1.",
+    "notAllowedInV1": ["data-font", "data-radius", "data-motion", "data-contrast", "data-scale"],
+    "description": "Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable through CSS variables in v1, but they are not separate runtime axes."
+  },
   "customThemeSupport": {
     "enabled": true,
     "description": "Product teams may add custom data-theme values by overriding the same semantic and component CSS variables. Custom themes must still use the shared data-mode and data-density axes."
@@ -23,7 +43,7 @@
   "tiers": {
     "core": {
       "name": "Nerio Core",
-      "description": "Open-source foundation, tokens, brand themes, modes, density, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery."
+      "description": "Open-source foundation, tokens, brand themes, modes, density, token-customizable appearance values, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery."
     },
     "pro": {
       "name": "Nerio Pro",
@@ -36,6 +56,9 @@
     { "name": "Themes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Brand/accent themes: purple, blue, green, orange, red, neutral, plus custom theme support." },
     { "name": "Modes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Color modes: system, light, and dark." },
     { "name": "Density", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Density modes: comfortable and compact." },
+    { "name": "Typography Tokens", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Token-customizable font variables such as --n-font-sans and --n-font-mono. Not a v1 runtime axis." },
+    { "name": "Radius Tokens", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Token-customizable radius variables such as --n-radius-sm, --n-radius-md, --n-radius-lg, and --n-radius-xl. Not a v1 runtime axis." },
+    { "name": "Motion Tokens", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Token-customizable motion variables such as --n-duration-fast and --n-duration-normal. Not a v1 runtime axis." },
     { "name": "Typography", "tier": "core", "package": "@nerio/ui", "category": "foundation", "status": "planned", "description": "Text, heading, and code primitives based on semantic font tokens." },
     { "name": "Icon", "tier": "core", "package": "@nerio/ui", "category": "foundation", "status": "implemented-initial", "description": "Icon component using the current icon adapter direction." },
     { "name": "Icon Adapter", "tier": "core", "package": "@nerio/adapters", "category": "foundation", "status": "planned", "description": "Dedicated icon adapter API with Lucide as the default implementation and support for custom React SVG components." },
