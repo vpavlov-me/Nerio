@@ -77,7 +77,8 @@ See `DESIGN_SYSTEM.md` for the full token architecture, visual direction, color 
 
 The first release must support three separate runtime axes:
 
-- themes: `purple`, `neutral`, `fintech-blue`;
+- preset themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`;
+- custom themes: any product-defined `data-theme` value that remaps the same semantic/component variables;
 - modes: `system`, `light`, `dark`;
 - densities: `comfortable`, `compact`.
 
@@ -89,7 +90,9 @@ Default runtime attributes:
 
 Theme controls brand/accent personality. Mode controls light/dark/system color mode. Density controls spacing and control sizing.
 
-Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `fintech-blue-light`, or `fintech-blue-dark`.
+Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `blue-light`, `blue-dark`, `red-light`, or `red-dark`.
+
+Do not create vertical-specific Core preset names such as `fintech-blue`. Core presets should use generic brand color names.
 
 Theme, mode, and density changes must work through CSS variables without rebuilding component source.
 
@@ -110,7 +113,7 @@ Pro should sell time savings and product judgment, not duplicate Core components
 Deliver a functional monorepo and a polished Core foundation suitable for public review:
 
 1. Workspace tooling, linting, formatting, typechecking, build scripts, and CI.
-2. Token package with the initial themes, modes, and density modes.
+2. Token package with the initial preset themes, custom theme support, modes, and density modes.
 3. Shared utility package or exports where needed for `cn`, types, and style contracts.
 4. Base UI-backed core components: Button, IconButton, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
