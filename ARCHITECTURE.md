@@ -81,11 +81,13 @@ Theme, mode, and density are separate runtime axes:
 <html data-theme="purple" data-mode="system" data-density="comfortable">
 ```
 
-- `data-theme` controls brand/accent personality: `purple`, `neutral`, `fintech-blue`.
+- `data-theme` controls brand/accent personality: `purple`, `blue`, `green`, `orange`, `red`, `neutral`, or custom.
 - `data-mode` controls color mode: `system`, `light`, `dark`.
 - `data-density` controls spacing and control sizing: `comfortable`, `compact`.
 
-Do not encode mode into theme names. Names such as `purple-light`, `neutral-dark`, and `fintech-blue-light` are not valid Nerio runtime values.
+Do not encode mode into theme names. Names such as `purple-light`, `neutral-dark`, `blue-light`, and `red-dark` are not valid Nerio runtime values.
+
+Do not use vertical-specific Core preset names such as `fintech-blue`. Core presets should use generic brand color names.
 
 ## Distribution
 
