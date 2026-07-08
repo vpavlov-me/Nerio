@@ -36,7 +36,9 @@ Keep these files aligned when component scope changes.
 | Component / Area | Status | Package | Notes |
 |---|---|---|---|
 | Tokens | Implemented initial | `@nerio/tokens` | Color, spacing, radius, typography, motion |
-| Themes | Implemented initial | `@nerio/tokens` | `purple-light`, `neutral-light`, `neutral-dark`, `fintech-blue-light` |
+| Themes | Implemented initial | `@nerio/tokens` | Brand themes: `purple`, `neutral`, `fintech-blue` |
+| Modes | Implemented initial | `@nerio/tokens` | Color modes: `system`, `light`, `dark` |
+| Density | Implemented initial | `@nerio/tokens` | Density modes: `comfortable`, `compact` |
 | Typography | Planned | `@nerio/ui` | Text, heading, code primitives |
 | Icon Adapter | Implemented initial | `@nerio/ui` / `@nerio/adapters` | Current `Icon` export in `@nerio/ui`; adapter package remains part of the architecture |
 
@@ -197,7 +199,7 @@ Keep these files aligned when component scope changes.
 | Empty State | Core | Basic feedback pattern |
 | Illustrated Empty State templates | Pro | Product-ready pattern library |
 | Theme tokens | Core | Foundation |
-| Premium themes | Pro | Commercial design asset |
+| Premium brand themes | Pro | Commercial design asset |
 | Command Primitive | Core | Generic command structure |
 | Command Palette | Pro | Full product pattern |
 | Basic chat primitives | Optional Core | Generic structure only |
