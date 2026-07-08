@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document is the visual and token source of truth for Nerio. Read it before introducing or changing tokens, themes, shared component styles, demo screens, examples, or documentation.
+This document is the visual and token source of truth for Nerio. Read it before introducing or changing tokens, themes, modes, density, shared component styles, demo screens, examples, or documentation.
 
 Nerio is a source-first React design system for modern digital products. It should feel minimal, calm, professional, accessible, and flexible enough for SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, AI interfaces, and data-rich workflows.
 
@@ -32,29 +32,79 @@ This is a guardrail, not literal pixel accounting.
 - Spacious, structured, and quiet.
 - Clear at both comfortable and compact densities.
 
-## Theme contracts
+## Theme, mode, and density contracts
 
-The initial theme presets are:
-
-- `purple-light` — default Nerio theme;
-- `neutral-light`;
-- `neutral-dark`;
-- `fintech-blue-light`.
-
-Themes and density must resolve through CSS variables without rebuilding component source. Theme architecture must allow future variants such as `purple-dark` and `fintech-blue-dark` by remapping tokens only.
-
-Recommended runtime attributes:
+Nerio uses three independent runtime axes:
 
 ```html
-<html data-theme="purple-light" data-density="comfortable">
+<html data-theme="purple" data-mode="system" data-density="comfortable">
 ```
 
-### Default purple-light theme
+### Theme
 
-`purple-light` remains visually neutral-first:
+Theme controls the brand/accent personality. It must not encode light or dark mode.
 
-- canvas and most surfaces are clean neutral whites and balanced grays;
-- default text is near-black neutral, never purple;
+Initial themes:
+
+- `purple` — default branded Nerio theme;
+- `neutral`;
+- `fintech-blue`.
+
+Theme changes should primarily affect:
+
+- primary actions;
+- selected and active states;
+- focus rings;
+- links and interactive text;
+- selected surfaces;
+- primary chart series;
+- restrained brand moments.
+
+Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `fintech-blue-light`, or `fintech-blue-dark`.
+
+### Mode
+
+Mode controls the light/dark/system color mode.
+
+Initial modes:
+
+- `system` — default, follows `prefers-color-scheme`;
+- `light`;
+- `dark`.
+
+Mode changes should primarily affect:
+
+- canvas;
+- surfaces;
+- text color;
+- border color;
+- overlay surfaces;
+- backdrop treatment.
+
+### Density
+
+Density controls interface spacing and control sizing.
+
+Initial densities:
+
+- `comfortable` — default;
+- `compact`.
+
+Density changes should primarily affect:
+
+- spacing tokens;
+- control heights;
+- row heights;
+- compact layout rhythm.
+
+Theme, mode, and density changes must resolve through CSS variables without rebuilding component source.
+
+## Default purple theme
+
+The default `purple` theme remains visually neutral-first:
+
+- canvas and most surfaces are mode-driven neutral whites, grays, or dark surfaces;
+- default text is neutral, never purple;
 - cards, tables, panels, and forms are neutral surfaces;
 - purple is reserved for primary actions, selected states, focus, links, small progress indicators, the primary chart series, and brand moments;
 - hover states should use neutral surface changes before using purple;
@@ -80,7 +130,7 @@ Primitive tokens are public and overrideable. Components must not consume primit
 
 ### 2. Semantic tokens
 
-Semantic tokens map product intent to a theme value. Use semantic names outside the primitive layer.
+Semantic tokens map product intent to a theme and mode value. Use semantic names outside the primitive layer.
 
 Examples:
 
@@ -181,8 +231,8 @@ Components use semantic or component aliases only. Do not use raw palette values
 
 Brand, mode, density, and future contrast settings should remain composable rather than producing duplicated components.
 
-- brand: purple, neutral, fintech-blue;
-- mode: light, dark;
+- theme: purple, neutral, fintech-blue;
+- mode: system, light, dark;
 - density: comfortable, compact;
 - contrast: standard, high-contrast later.
 
