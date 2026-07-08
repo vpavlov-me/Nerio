@@ -19,7 +19,7 @@ Scope:
 
 - Monorepo tooling, linting, formatting, typechecking, build scripts, and CI
 - Token package
-- Theme axis: `purple`, `neutral`, `fintech-blue`
+- Theme axis: `purple`, `blue`, `green`, `orange`, `red`, `neutral`, plus custom theme support
 - Mode axis: `system`, `light`, `dark`
 - Density axis: `comfortable`, `compact`
 - Default runtime attributes: `data-theme="purple" data-mode="system" data-density="comfortable"`
