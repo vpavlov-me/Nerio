@@ -75,6 +75,22 @@ Custom product themes are allowed by adding a new `data-theme` value and overrid
 
 Purple is the default branded Nerio theme and must be used as a restrained accent, not as the default color for broad surfaces, headings, routine icons, or secondary UI.
 
+## V1 token-customizable values
+
+Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable in v1, but they are not separate runtime axes.
+
+Do not introduce these runtime attributes in v1:
+
+- `data-font`
+- `data-radius`
+- `data-motion`
+- `data-contrast`
+- `data-scale`
+
+Developers may customize those values by overriding CSS variables such as `--n-font-sans`, `--n-font-mono`, `--n-radius-md`, `--n-radius-lg`, `--n-duration-normal`, spacing tokens, and semantic color variables.
+
+Future runtime axes for radius, font, motion, contrast, or scale require a separate architecture decision.
+
 ## Typography
 
 Geist is the default typeface through semantic font tokens. Components consume `--n-font-sans` and `--n-font-mono` rather than depending on app-specific font class names.
