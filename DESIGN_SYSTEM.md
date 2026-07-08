@@ -4,7 +4,9 @@
 
 This document is the visual and token source of truth for Nerio. Read it before introducing or changing tokens, themes, shared component styles, demo screens, examples, or documentation.
 
-Nerio is a source-first React design system for modern SaaS products, dashboards, settings, operational tools, and data-rich workflows. It should feel minimal, calm, professional, accessible, and flexible enough for a broad range of product brands.
+Nerio is a source-first React design system for modern digital products. It should feel minimal, calm, professional, accessible, and flexible enough for SaaS applications, consumer products, marketplaces, dashboards, internal tools, content platforms, creator tools, productivity products, AI interfaces, and data-rich workflows.
+
+Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboard, and AI products are priority use cases for Pro patterns and templates, not constraints on the whole system.
 
 ## Visual direction
 
@@ -218,205 +220,24 @@ Neutrals carry the interface. Required roles include:
 surface.canvas
 surface.default
 surface.subtle
-surface.sunken
 surface.raised
 surface.overlay
-
 text.primary
 text.secondary
 text.tertiary
-text.disabled
-
 border.subtle
 border.default
 border.strong
-border.interactive
-
-background.hover
-background.pressed
-background.selected-neutral
 ```
 
-The neutral scale should be clean and balanced, without a strongly visible blue, purple, or warm tint.
+### Borders and shadows
 
-### Semantic colors
+Use borders sparingly. Do not surround every content group with a card or border.
 
-Use semantic colors only when they add meaning:
+Do not use drop shadows or glows as a default hierarchy tool. Prefer spacing, surface contrast, restrained borders, and backdrops.
 
-- positive and negative product changes;
-- validation feedback;
-- destructive actions;
-- operational status;
-- category distinction in charts when comparison is required.
+## Density
 
-Use neutral styles for common low-salience statuses such as draft, inactive, paused, and pending review.
+Comfortable is the default density.
 
-## Foundations
-
-### Spacing and layout
-
-Use a 4px base grid. A 2px value is acceptable only for optical alignment, hairlines, and small internal corrections.
-
-Expose semantic layout tokens for page gutters, content widths, sidebars, navigation rails, panels, dialogs, workspace gaps, section gaps, and stack gaps.
-
-Use container-aware layouts where possible. Prefer container queries for components used inside split views, resizable panes, and dense workspaces.
-
-### Radius
-
-Use a soft but restrained radius profile:
-
-```txt
-radius.control   = around 8px
-radius.container = around 12px
-radius.overlay   = around 16px
-radius.round     = full pill or circle
-```
-
-Do not make every element excessively rounded.
-
-### Borders and elevation
-
-- Default shadow is `none`.
-- Do not use drop shadows or glows for cards, panels, menus, dialogs, drawers, popovers, or tooltips.
-- Overlays rely on surface contrast, z-index, a restrained border, and backdrop treatment.
-- Use borders sparingly and keep them thin, low-contrast, and structural.
-- Prefer whitespace and dividers over enclosing every page region in a card.
-
-### Density
-
-Density is token-driven, not component-driven.
-
-- `comfortable` is the default;
-- `compact` is an opt-in mode.
-
-Default primary control height is `32px`.
-
-Density affects at least control height, component padding, table rows, list rows, navigation density, section spacing, and overlay padding.
-
-Recommended control sizes:
-
-```txt
-xs = 24px
-sm = 28px
-md = 32px
-lg = 36px
-xl = 40px
-```
-
-## Typography and icons
-
-Use a variable sans-serif stack. Inter is the reference default unless the codebase defines an equivalent default through tokens.
-
-The typography system must remain themeable. Required roles include:
-
-- display;
-- heading;
-- body;
-- label;
-- caption;
-- metric;
-- metric label;
-- table cell;
-- table header;
-- code;
-- mono.
-
-Minimum UI font size is `12px`. Numeric and metric roles should use `tabular-nums`.
-
-Typography, spacing, and contrast should create most hierarchy instead of color.
-
-Icon rules:
-
-- default stroke weight: `1.5px`;
-- normalize sizing, stroke, alignment, and inherited color through the Nerio icon adapter;
-- default icon color inherits secondary neutral text;
-- purple icon color is reserved for active, selected, focused, or primary contexts.
-
-## Interaction and accessibility
-
-Every interactive component must explicitly support:
-
-- default;
-- hover;
-- pressed;
-- selected;
-- disabled;
-- loading;
-- read-only;
-- drag where relevant;
-- focus-visible.
-
-Focus treatment:
-
-```txt
-2px ring
-2px offset
-minimum 3:1 contrast against adjacent UI
-```
-
-Additional requirements:
-
-- target WCAG 2.2 AA for text, controls, focus, labels, keyboard use, and overlays;
-- minimum pointer target is 24px;
-- offer touch-friendly variants where appropriate;
-- preserve visible keyboard focus;
-- support reduced motion;
-- use soft functional durations only: 120ms fast, 180ms standard, 240ms slow.
-
-Do not use motion as decoration.
-
-## Component rules
-
-### Buttons
-
-- Primary: purple fill; one primary action per local context.
-- Secondary: neutral surface and subtle border.
-- Tertiary: text-only or quiet neutral action.
-- Destructive: semantic red only for genuinely destructive outcomes.
-
-### Navigation and tabs
-
-- Default: neutral text on transparent background.
-- Hover: subtle neutral surface.
-- Active: dark text with a light lavender surface, a thin purple indicator, underline, or active icon.
-- Avoid heavy purple pills for routine navigation.
-
-### Cards and panels
-
-Cards, panels, tables, and forms use neutral surfaces by default. Do not create a card grid for every content grouping. Use a small purple detail only when it strengthens hierarchy, such as a focused field, selected item, primary action, or progress signal.
-
-### Statuses
-
-Soft treatment is the default. Use colored dots or icons with restrained backgrounds and mostly neutral labels. Use strong status treatments only for urgent, critical, destructive, or high-salience states.
-
-### Charts
-
-- One primary selected series may be purple.
-- Comparison series should be neutral gray.
-- Green and red are used only for explicit positive or negative meaning.
-- Categorical palettes should be restrained and low-saturation.
-- Gridlines, axes, labels, and tooltip chrome remain neutral.
-
-## Responsive behavior
-
-Use intentional responsive behavior rather than generic scaling.
-
-- Side panels become bottom sheets on narrow screens when appropriate.
-- Tables may use horizontal scroll, condensed columns, or a detail pattern based on data priority.
-- Preserve the data model when adapting tables rather than hiding important information without an alternative path.
-- Design dashboard and workspace components for persistent sidebars, resizable panels, and dense desktop layouts.
-
-## Implementation guardrails
-
-- Do not hard-code raw colors, typography, radii, shadows, or spacing in components when a token applies.
-- Do not add a new component variant where token composition solves the problem.
-- Prefer composition and explicit slots over expansive boolean-prop APIs.
-- Preserve predictable anatomy, keyboard behavior, visible focus, disabled states, loading states, and small APIs.
-- Keep all docs, public UI copy, comments, and examples in English.
-- Do not reference external design systems in code, docs, examples, or copy.
-
-## Example quality bar
-
-The demo and documentation should show realistic SaaS interfaces built from Nerio components, not static mockups or a catalog of isolated cards. Prioritize scenarios such as settings, team and permissions, billing, data tables, and operational dashboards.
-
-A valid example should demonstrate neutral-first hierarchy, restrained purple usage, accessible focus states, density support, semantic statuses, and real data-heavy composition.
+Compact is an opt-in density for dense operational views. Compact must be implemented through tokens and CSS variables, not separate compact components.
