@@ -34,7 +34,7 @@ This is a guardrail, not literal pixel accounting.
 
 ## Theme, mode, and density contracts
 
-Nerio uses three independent runtime axes:
+Nerio v1 uses three independent runtime axes:
 
 ```html
 <html data-theme="purple" data-mode="system" data-density="comfortable">
@@ -105,6 +105,40 @@ Density changes should primarily affect:
 - compact layout rhythm.
 
 Theme, mode, and density changes must resolve through CSS variables without rebuilding component source.
+
+## Token-customizable appearance values
+
+Font, radius, motion, spacing, shadow/elevation, and contrast are customizable through tokens in v1, but they are not separate runtime axes yet.
+
+Do not introduce these attributes in v1:
+
+```html
+<html data-font="geist" data-radius="soft" data-motion="normal" data-contrast="standard">
+```
+
+Developers may customize those values by overriding CSS variables instead:
+
+```css
+:root {
+  --n-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --n-font-mono: "JetBrains Mono", monospace;
+  --n-radius-sm: 0.25rem;
+  --n-radius-md: 0.5rem;
+  --n-radius-lg: 0.75rem;
+  --n-radius-xl: 1rem;
+  --n-duration-normal: 160ms;
+}
+```
+
+Potential future runtime axes include:
+
+- `data-radius="sharp" | "soft" | "rounded"`;
+- `data-font="geist" | "system" | "custom"`;
+- `data-motion="normal" | "reduced"`;
+- `data-contrast="standard" | "high"`;
+- `data-scale="default" | "large"`.
+
+These future axes should not be implemented until the project explicitly promotes them through an architecture decision.
 
 ## Default purple theme
 
@@ -236,12 +270,13 @@ Components use semantic or component aliases only. Do not use raw palette values
 
 ### 4. Theme sets
 
-Theme, mode, density, and future contrast settings should remain composable rather than producing duplicated components.
+Theme, mode, density, and future appearance settings should remain composable rather than producing duplicated components.
 
 - theme: purple, blue, green, orange, red, neutral, or custom;
 - mode: system, light, dark;
 - density: comfortable, compact;
-- contrast: standard, high-contrast later.
+- token-customizable in v1: font, radius, motion, spacing, shadow/elevation, contrast;
+- future runtime axes: radius, font, motion, contrast, scale.
 
 ## Color usage
 
