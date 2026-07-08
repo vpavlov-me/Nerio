@@ -2,9 +2,13 @@
   "schemaVersion": 1,
   "project": "Nerio",
   "runtimeAxes": {
-    "theme": ["purple", "neutral", "fintech-blue"],
+    "theme": ["purple", "blue", "green", "orange", "red", "neutral"],
     "mode": ["system", "light", "dark"],
     "density": ["comfortable", "compact"]
+  },
+  "customThemeSupport": {
+    "enabled": true,
+    "description": "Product teams may add custom data-theme values by overriding the same semantic and component CSS variables. Custom themes must still use the shared data-mode and data-density axes."
   },
   "defaultRuntimeAttributes": {
     "data-theme": "purple",
@@ -19,7 +23,7 @@
   "tiers": {
     "core": {
       "name": "Nerio Core",
-      "description": "Open-source foundation, tokens, themes, modes, density, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery."
+      "description": "Open-source foundation, tokens, brand themes, modes, density, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery."
     },
     "pro": {
       "name": "Nerio Pro",
@@ -29,7 +33,7 @@
   "rule": "Core = building blocks. Pro = product-ready solutions.",
   "components": [
     { "name": "Tokens", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Color, spacing, radius, typography, motion, semantic tokens, and component tokens." },
-    { "name": "Themes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Brand/accent themes: purple, neutral, and fintech-blue." },
+    { "name": "Themes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Brand/accent themes: purple, blue, green, orange, red, neutral, plus custom theme support." },
     { "name": "Modes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Color modes: system, light, and dark." },
     { "name": "Density", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "implemented-initial", "description": "Density modes: comfortable and compact." },
     { "name": "Typography", "tier": "core", "package": "@nerio/ui", "category": "foundation", "status": "planned", "description": "Text, heading, and code primitives based on semantic font tokens." },
