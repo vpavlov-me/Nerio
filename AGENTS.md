@@ -1,6 +1,6 @@
 # Nerio agent instructions
 
-This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, shared component styles, demos, or visual documentation, and `COMPONENTS.md` before adding or moving components.
+This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation, and `COMPONENTS.md` before adding or moving components.
 
 ## Product constraints
 
@@ -34,8 +34,13 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 ## Design-system rules
 
 - Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
-- Preserve four initial theme presets: `purple-light` as the default, `neutral-light`, `neutral-dark`, and `fintech-blue-light`. Support Comfortable density by default and Compact density through tokens.
-- Theme and density changes must work through CSS variables without rebuilding component source.
+- Theme, mode, and density are separate axes:
+  - `data-theme="purple" | "neutral" | "fintech-blue"` controls brand/accent personality.
+  - `data-mode="system" | "light" | "dark"` controls color mode.
+  - `data-density="comfortable" | "compact"` controls spacing and control density.
+- Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, or `fintech-blue-dark`.
+- `purple` is the default theme, `system` is the default mode, and `comfortable` is the default density.
+- Theme, mode, and density changes must work through CSS variables without rebuilding component source.
 - Default to semantic names such as `--n-color-surface`, not visual names such as `--n-purple-600`, outside the primitive token layer.
 - Components must use semantic or component aliases only; do not consume raw palette tokens directly.
 - Every component must have a predictable anatomy, accessible interaction model, keyboard behavior, visible focus treatment, disabled/loading states where relevant, and a small API surface.
