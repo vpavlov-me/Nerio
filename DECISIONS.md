@@ -55,7 +55,7 @@ Future Pro implementation may live in a private repository or private workspace.
 
 Nerio separates brand theme, color mode, and density:
 
-- theme: `purple`, `neutral`, `fintech-blue`;
+- theme: `purple`, `blue`, `green`, `orange`, `red`, `neutral`, or custom;
 - mode: `system`, `light`, `dark`;
 - density: `comfortable`, `compact`.
 
@@ -67,7 +67,11 @@ Default runtime attributes:
 
 Theme controls brand/accent personality. Mode controls light/dark/system color mode. Density controls spacing and control sizing.
 
-Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `fintech-blue-light`, or `fintech-blue-dark`.
+Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `blue-light`, `blue-dark`, `red-light`, or `red-dark`.
+
+Do not create vertical-specific Core preset names such as `fintech-blue`. Core presets should use generic brand color names.
+
+Custom product themes are allowed by adding a new `data-theme` value and overriding CSS variables. Custom themes must still use the same mode and density axes.
 
 Purple is the default branded Nerio theme and must be used as a restrained accent, not as the default color for broad surfaces, headings, routine icons, or secondary UI.
 
