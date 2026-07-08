@@ -75,7 +75,7 @@ import { DataGrid } from "@nerio/pro";
 
 ## Appearance runtime rule
 
-Theme, mode, and density are separate runtime axes:
+Theme, mode, and density are the only v1 runtime appearance axes:
 
 ```html
 <html data-theme="purple" data-mode="system" data-density="comfortable">
@@ -88,6 +88,26 @@ Theme, mode, and density are separate runtime axes:
 Do not encode mode into theme names. Names such as `purple-light`, `neutral-dark`, `blue-light`, and `red-dark` are not valid Nerio runtime values.
 
 Do not use vertical-specific Core preset names such as `fintech-blue`. Core presets should use generic brand color names.
+
+## Token override rule
+
+Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable in v1, not runtime axes.
+
+Allowed in v1:
+
+```css
+:root {
+  --n-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --n-radius-md: 0.5rem;
+  --n-duration-normal: 160ms;
+}
+```
+
+Not allowed in v1 without a new architecture decision:
+
+```html
+<html data-font="inter" data-radius="soft" data-motion="normal" data-contrast="standard">
+```
 
 ## Distribution
 
