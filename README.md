@@ -67,7 +67,7 @@ Future Pro implementation may live in a private repository or private workspace.
 
 ## Theme, mode, and density
 
-Nerio separates three runtime axes:
+Nerio exposes three v1 runtime axes:
 
 - Theme: Purple, Blue, Green, Orange, Red, Neutral, or custom
 - Mode: System, Light, Dark
@@ -82,6 +82,8 @@ Default runtime attributes:
 Theme controls brand/accent personality. Mode controls light/dark/system color mode. Density controls spacing and control sizing.
 
 Preset themes are generic brand colors. Product teams can add custom themes by defining a new `data-theme` value and overriding semantic/component variables.
+
+Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable in v1, but they are not separate runtime axes. Customize them through CSS variables such as `--n-font-sans`, `--n-radius-md`, and `--n-duration-normal` rather than attributes such as `data-font` or `data-radius`.
 
 ## Initial Core scope
 
