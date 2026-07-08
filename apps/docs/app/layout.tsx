@@ -22,7 +22,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      data-theme="neutral-light"
+      data-theme="purple"
+      data-mode="system"
       data-density="comfortable"
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
