@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "project": "Nerio",
+  "tiers": {
+    "core": {
+      "name": "Nerio Core",
+      "description": "Open-source foundation, tokens, themes, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery."
+    },
+    "pro": {
+      "name": "Nerio Pro",
+      "description": "Paid advanced product components, templates, premium themes, Figma assets, advanced registry items, and Pro MCP/AI tooling."
+    }
+  },
+  "rule": "Core = building blocks. Pro = product-ready solutions.",
+  "components": [
+    { "name": "Tokens", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "planned", "description": "Color, spacing, radius, typography, motion, semantic tokens, and component tokens." },
+    { "name": "Themes", "tier": "core", "package": "@nerio/tokens", "category": "foundation", "status": "planned", "description": "Initial runtime themes: purple-light, neutral-light, neutral-dark, and fintech-blue-light." },
+    { "name": "Typography", "tier": "core", "package": "@nerio/ui", "category": "foundation", "status": "planned", "description": "Text, heading, and code primitives based on semantic font tokens." },
+    { "name": "Icon Adapter", "tier": "core", "package": "@nerio/adapters", "category": "foundation", "status": "planned", "description": "Icon adapter API with Lucide as the default implementation and support for custom React SVG components." },
+
+    { "name": "Button", "tier": "core", "package": "@nerio/ui", "category": "actions", "status": "planned", "description": "Primary action component with variants, sizes, loading state, and icon slots." },
+    { "name": "IconButton", "tier": "core", "package": "@nerio/ui", "category": "actions", "status": "planned", "description": "Accessible icon-only action component." },
+    { "name": "Link", "tier": "core", "package": "@nerio/ui", "category": "actions", "status": "planned", "description": "Styled link primitive for text and navigation actions." },
+
+    { "name": "Input", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Text input component." },
+    { "name": "Textarea", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Multiline text input component." },
+    { "name": "Label", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Accessible form label component." },
+    { "name": "Field", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Form field wrapper with label, description, help text, and error states." },
+    { "name": "FormGroup", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Layout primitive for grouping form fields." },
+    { "name": "Checkbox", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Basic checkbox control." },
+    { "name": "Radio Group", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Basic radio selection control." },
+    { "name": "Switch", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Toggle control for binary settings." },
+    { "name": "Select", "tier": "core", "package": "@nerio/ui", "category": "forms", "status": "planned", "description": "Base select component." },
+
+    { "name": "Dialog", "tier": "core", "package": "@nerio/ui", "category": "overlays", "status": "planned", "description": "Accessible modal primitive." },
+    { "name": "Sheet", "tier": "core", "package": "@nerio/ui", "category": "overlays", "status": "planned", "description": "Basic side panel primitive." },
+    { "name": "Popover", "tier": "core", "package": "@nerio/ui", "category": "overlays", "status": "planned", "description": "Floating content primitive." },
+    { "name": "Tooltip", "tier": "core", "package": "@nerio/ui", "category": "overlays", "status": "planned", "description": "Short contextual help component." },
+    { "name": "Dropdown Menu", "tier": "core", "package": "@nerio/ui", "category": "overlays", "status": "planned", "description": "Basic dropdown menu component." },
+
+    { "name": "Card", "tier": "core", "package": "@nerio/ui", "category": "data-display", "status": "planned", "description": "Surface primitive for grouped content." },
+    { "name": "Badge", "tier": "core", "package": "@nerio/ui", "category": "data-display", "status": "planned", "description": "Status and metadata label." },
+    { "name": "Avatar", "tier": "core", "package": "@nerio/ui", "category": "data-display", "status": "planned", "description": "User or entity avatar component." },
+    { "name": "Table", "tier": "core", "package": "@nerio/ui", "category": "data-display", "status": "planned", "description": "Basic table for simple data display." },
+    { "name": "List", "tier": "core", "package": "@nerio/ui", "category": "data-display", "status": "planned", "description": "Basic list primitive." },
+    { "name": "Separator", "tier": "core", "package": "@nerio/ui", "category": "data-display", "status": "planned", "description": "Layout divider component." },
+
+    { "name": "Alert", "tier": "core", "package": "@nerio/ui", "category": "feedback", "status": "planned", "description": "Inline feedback message." },
+    { "name": "Toast", "tier": "core", "package": "@nerio/ui", "category": "feedback", "status": "planned", "description": "Temporary notification component." },
+    { "name": "Progress", "tier": "core", "package": "@nerio/ui", "category": "feedback", "status": "planned", "description": "Progress indicator." },
+    { "name": "Skeleton", "tier": "core", "package": "@nerio/ui", "category": "feedback", "status": "planned", "description": "Loading placeholder component." },
+    { "name": "Empty State", "tier": "core", "package": "@nerio/ui", "category": "feedback", "status": "planned", "description": "Basic empty state component." },
+    { "name": "Spinner", "tier": "core", "package": "@nerio/ui", "category": "feedback", "status": "planned", "description": "Loading indicator." },
+
+    { "name": "Tabs", "tier": "core", "package": "@nerio/ui", "category": "navigation", "status": "planned", "description": "Basic tabs component." },
+    { "name": "Breadcrumbs", "tier": "core", "package": "@nerio/ui", "category": "navigation", "status": "planned", "description": "Hierarchy navigation component." },
+    { "name": "Pagination", "tier": "core", "package": "@nerio/ui", "category": "navigation", "status": "planned", "description": "Basic pagination component." },
+    { "name": "Sidebar Primitive", "tier": "core", "package": "@nerio/ui", "category": "navigation", "status": "planned", "description": "Low-level sidebar layout primitive." },
+    { "name": "Command Primitive", "tier": "core", "package": "@nerio/ui", "category": "navigation", "status": "planned", "description": "Low-level command menu structure." },
+
+    { "name": "DataGrid", "tier": "pro", "package": "@nerio/pro", "category": "data-heavy-ui", "status": "planned", "description": "Advanced data grid with sorting, filtering, column visibility, saved views, and bulk actions." },
+    { "name": "Advanced Table", "tier": "pro", "package": "@nerio/pro", "category": "data-heavy-ui", "status": "planned", "description": "Advanced table pattern with density controls, row actions, and bulk workflows." },
+    { "name": "Filter Bar", "tier": "pro", "package": "@nerio/pro", "category": "data-heavy-ui", "status": "planned", "description": "Complex filter bar for data-heavy products." },
+    { "name": "Saved Views", "tier": "pro", "package": "@nerio/pro", "category": "data-heavy-ui", "status": "planned", "description": "Named saved states for filters, tables, and product views." },
+    { "name": "Column Settings", "tier": "pro", "package": "@nerio/pro", "category": "data-heavy-ui", "status": "planned", "description": "Column visibility, ordering, and table configuration UI." },
+
+    { "name": "KPI Card", "tier": "pro", "package": "@nerio/pro", "category": "dashboards", "status": "planned", "description": "Metric card with trend, comparison, and context." },
+    { "name": "KPI Group", "tier": "pro", "package": "@nerio/pro", "category": "dashboards", "status": "planned", "description": "Dashboard metric cluster." },
+    { "name": "Trend Chip", "tier": "pro", "package": "@nerio/pro", "category": "dashboards", "status": "planned", "description": "Positive, negative, or neutral movement indicator." },
+    { "name": "Chart Card", "tier": "pro", "package": "@nerio/pro", "category": "dashboards", "status": "planned", "description": "Chart wrapper with metadata, timeframe controls, and states." },
+    { "name": "Activity Feed", "tier": "pro", "package": "@nerio/pro", "category": "dashboards", "status": "planned", "description": "Product activity timeline." },
+    { "name": "Analytics Panel", "tier": "pro", "package": "@nerio/pro", "category": "dashboards", "status": "planned", "description": "Advanced analytics section pattern." },
+
+    { "name": "AppShell", "tier": "pro", "package": "@nerio/pro", "category": "saas-admin", "status": "planned", "description": "Full application layout pattern." },
+    { "name": "AppSidebar", "tier": "pro", "package": "@nerio/pro", "category": "saas-admin", "status": "planned", "description": "Product-ready sidebar with workspace switcher, navigation, and user menu." },
+    { "name": "Settings Layout", "tier": "pro", "package": "@nerio/pro", "category": "saas-admin", "status": "planned", "description": "Settings page structure with navigation and content layout." },
+    { "name": "Billing Settings", "tier": "pro", "package": "@nerio/pro", "category": "saas-admin", "status": "planned", "description": "Plan, invoices, and payment method management UI." },
+    { "name": "Team Members", "tier": "pro", "package": "@nerio/pro", "category": "saas-admin", "status": "planned", "description": "Team member list, invites, and basic management pattern." },
+    { "name": "Roles & Permissions", "tier": "pro", "package": "@nerio/pro", "category": "saas-admin", "status": "planned", "description": "Permission and role management UI." },
+    { "name": "Audit Log", "tier": "pro", "package": "@nerio/pro", "category": "saas-admin", "status": "planned", "description": "Security and admin event log pattern." },
+
+    { "name": "Portfolio Card", "tier": "pro", "package": "@nerio/pro", "category": "finance-crypto", "status": "planned", "description": "Portfolio summary component." },
+    { "name": "Asset Row", "tier": "pro", "package": "@nerio/pro", "category": "finance-crypto", "status": "planned", "description": "Asset or token row pattern." },
+    { "name": "Transaction List", "tier": "pro", "package": "@nerio/pro", "category": "finance-crypto", "status": "planned", "description": "Finance or crypto transaction list pattern." },
+    { "name": "Wallet Connector UI", "tier": "pro", "package": "@nerio/pro", "category": "finance-crypto", "status": "planned", "description": "Wallet connection and account selection pattern." },
+    { "name": "Balance Visibility", "tier": "pro", "package": "@nerio/pro", "category": "finance-crypto", "status": "planned", "description": "Hide/show sensitive financial values." },
+    { "name": "PnL Components", "tier": "pro", "package": "@nerio/pro", "category": "finance-crypto", "status": "planned", "description": "Profit and loss display components." },
+    { "name": "Risk Badge", "tier": "pro", "package": "@nerio/pro", "category": "finance-crypto", "status": "planned", "description": "Risk status indicator." },
+
+    { "name": "AI Chat Shell", "tier": "pro", "package": "@nerio/pro", "category": "ai-interfaces", "status": "planned", "description": "Full AI chat interface shell." },
+    { "name": "Prompt Input", "tier": "pro", "package": "@nerio/pro", "category": "ai-interfaces", "status": "planned", "description": "AI prompt composer with actions and attachments." },
+    { "name": "Message", "tier": "pro", "package": "@nerio/pro", "category": "ai-interfaces", "status": "planned", "description": "Assistant or user message component." },
+    { "name": "Sources", "tier": "pro", "package": "@nerio/pro", "category": "ai-interfaces", "status": "planned", "description": "Citations and source display pattern." },
+    { "name": "Tool Call", "tier": "pro", "package": "@nerio/pro", "category": "ai-interfaces", "status": "planned", "description": "Tool execution status and result UI." },
+    { "name": "Reasoning Block", "tier": "pro", "package": "@nerio/pro", "category": "ai-interfaces", "status": "planned", "description": "Collapsible reasoning or progress block." },
+    { "name": "Attachment", "tier": "pro", "package": "@nerio/pro", "category": "ai-interfaces", "status": "planned", "description": "File attachment display and state pattern." },
+    { "name": "Code Block", "tier": "pro", "package": "@nerio/pro", "category": "ai-interfaces", "status": "planned", "description": "Code response block for AI and developer workflows." },
+
+    { "name": "Universal Workspace Template", "tier": "pro", "package": "@nerio/pro", "category": "templates", "status": "planned", "description": "General SaaS/admin product template." },
+    { "name": "Banking Dashboard Template", "tier": "pro", "package": "@nerio/pro", "category": "templates", "status": "planned", "description": "Fintech dashboard template." },
+    { "name": "Crypto Portfolio Dashboard Template", "tier": "pro", "package": "@nerio/pro", "category": "templates", "status": "planned", "description": "Crypto and portfolio product template." },
+    { "name": "Admin Settings Template", "tier": "pro", "package": "@nerio/pro", "category": "templates", "status": "planned", "description": "SaaS settings product template." },
+    { "name": "Billing Portal Template", "tier": "pro", "package": "@nerio/pro", "category": "templates", "status": "planned", "description": "Subscription management product template." },
+    { "name": "AI Assistant Template", "tier": "pro", "package": "@nerio/pro", "category": "templates", "status": "planned", "description": "AI assistant product template." }
+  ]
+}
