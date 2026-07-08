@@ -44,7 +44,7 @@ apps/
   demo-app/      A realistic universal product workspace used as the visual showcase
 
 packages/
-  tokens/        Token source, generated CSS variables, themes, density contracts
+  tokens/        Token source, generated CSS variables, themes, modes, density contracts
   ui/            Core components, utilities, styles, and public registry source items
   adapters/      Icons, forms, tables, charts
   cli/           `nerio init`, `nerio add`, `nerio doctor`
@@ -65,7 +65,7 @@ Raw values with no semantic meaning. Examples: `--n-purple-500`, `--n-space-4`, 
 
 ### 2. Semantic tokens
 
-Intent-based tokens that themes remap. Examples: `--n-color-surface`, `--n-color-text-primary`, `--n-color-border-subtle`, `--n-color-action-primary`.
+Intent-based tokens that themes and modes remap. Examples: `--n-color-surface`, `--n-color-text-primary`, `--n-color-border-subtle`, `--n-color-action-primary`.
 
 ### 3. Component tokens
 
@@ -73,18 +73,25 @@ Local contracts used when an individual component needs controlled customization
 
 See `DESIGN_SYSTEM.md` for the full token architecture, visual direction, color usage, density, interaction, and component rules.
 
-## Theme contract
+## Theme, mode, and density contract
 
-The first release must support:
+The first release must support three separate runtime axes:
 
-- `purple-light` as the default Nerio theme;
-- `neutral-light`;
-- `neutral-dark`;
-- `fintech-blue-light`;
-- `comfortable` density as default;
-- `compact` density as an opt-in attribute or class.
+- themes: `purple`, `neutral`, `fintech-blue`;
+- modes: `system`, `light`, `dark`;
+- densities: `comfortable`, `compact`.
 
-Theme and density changes must work through CSS variables without rebuilding component source. The token architecture must make future variants such as `purple-dark` and `fintech-blue-dark` possible without changing component source.
+Default runtime attributes:
+
+```html
+<html data-theme="purple" data-mode="system" data-density="comfortable">
+```
+
+Theme controls brand/accent personality. Mode controls light/dark/system color mode. Density controls spacing and control sizing.
+
+Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `fintech-blue-light`, or `fintech-blue-dark`.
+
+Theme, mode, and density changes must work through CSS variables without rebuilding component source.
 
 ## Core component scope
 
@@ -103,11 +110,11 @@ Pro should sell time savings and product judgment, not duplicate Core components
 Deliver a functional monorepo and a polished Core foundation suitable for public review:
 
 1. Workspace tooling, linting, formatting, typechecking, build scripts, and CI.
-2. Token package with the initial theme presets and two density modes.
+2. Token package with the initial themes, modes, and density modes.
 3. Shared utility package or exports where needed for `cn`, types, and style contracts.
 4. Base UI-backed core components: Button, IconButton, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
-6. Public docs application with navigation, theme/density switcher, component preview, usage snippets, anatomy, variants, states, and accessibility notes.
+6. Public docs application with navigation, theme/mode/density switcher, component preview, usage snippets, anatomy, variants, states, and accessibility notes.
 7. Nerio Workspace demo app that uses the published components rather than bespoke UI.
 8. Registry foundations and a minimal `nerio add button` vertical slice.
 9. `llms.txt` and a minimal MCP component-index endpoint or package.
