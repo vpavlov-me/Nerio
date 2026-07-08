@@ -10,17 +10,17 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboa
 
 ## Visual direction
 
-### Neutral-first UI, purple-led interaction
+### Neutral-first UI, brand-led interaction
 
 Nerio uses a neutral-first visual language. Most interface hierarchy comes from typography, whitespace, layout, grouping, and contrast rather than color.
 
-Purple is a controlled brand and interaction accent. It communicates priority, selection, focus, and primary actions. It must not become the visual default for the entire product surface.
+Brand color is a controlled interaction accent. It communicates priority, selection, focus, and primary actions. It must not become the visual default for the entire product surface.
 
 Use this distribution as a design-review principle:
 
 - approximately 90% neutral structure;
 - approximately 7% semantic feedback color;
-- approximately 3% purple brand emphasis.
+- approximately 3% brand emphasis.
 
 This is a guardrail, not literal pixel accounting.
 
@@ -44,11 +44,18 @@ Nerio uses three independent runtime axes:
 
 Theme controls the brand/accent personality. It must not encode light or dark mode.
 
-Initial themes:
+Initial preset themes:
 
 - `purple` — default branded Nerio theme;
-- `neutral`;
-- `fintech-blue`.
+- `blue`;
+- `green`;
+- `orange`;
+- `red`;
+- `neutral`.
+
+These are generic brand color presets. Do not introduce vertical-specific Core preset names such as `fintech-blue`.
+
+Product teams may add custom themes by defining a new `data-theme` value and overriding the same semantic/component variables. Custom themes must still use the same `data-mode` and `data-density` axes.
 
 Theme changes should primarily affect:
 
@@ -60,7 +67,7 @@ Theme changes should primarily affect:
 - primary chart series;
 - restrained brand moments.
 
-Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `fintech-blue-light`, or `fintech-blue-dark`.
+Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `blue-light`, `blue-dark`, `red-light`, or `red-dark`.
 
 ### Mode
 
@@ -119,7 +126,7 @@ Nerio uses four token layers.
 
 Raw values with no contextual meaning. They include:
 
-- neutral, purple, blue, green, amber, red, cyan, and magenta palettes;
+- neutral, purple, blue, green, orange, red, amber, cyan, and magenta palettes;
 - typography families, weights, sizes, line heights, and tracking;
 - spacing, radii, border widths, motion, z-index, breakpoints, and icon sizes;
 - chart palettes.
@@ -229,18 +236,18 @@ Components use semantic or component aliases only. Do not use raw palette values
 
 ### 4. Theme sets
 
-Brand, mode, density, and future contrast settings should remain composable rather than producing duplicated components.
+Theme, mode, density, and future contrast settings should remain composable rather than producing duplicated components.
 
-- theme: purple, neutral, fintech-blue;
+- theme: purple, blue, green, orange, red, neutral, or custom;
 - mode: system, light, dark;
 - density: comfortable, compact;
 - contrast: standard, high-contrast later.
 
 ## Color usage
 
-### Purple
+### Brand color
 
-Purple is reserved for:
+Brand color is reserved for:
 
 - primary calls to action;
 - selected and active states;
@@ -250,7 +257,7 @@ Purple is reserved for:
 - the selected or primary data series in charts;
 - logo, empty states, and restrained brand highlights.
 
-Do not use purple as the default color for:
+Do not use brand color as the default color for:
 
 - headings;
 - ordinary icons;
