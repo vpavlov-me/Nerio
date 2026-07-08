@@ -19,13 +19,10 @@ Scope:
 
 - Monorepo tooling, linting, formatting, typechecking, build scripts, and CI
 - Token package
-- Theme system
-- `purple-light` default theme
-- `neutral-light` theme
-- `neutral-dark` theme
-- `fintech-blue-light` theme
-- Comfortable density
-- Compact density through tokens
+- Theme axis: `purple`, `neutral`, `fintech-blue`
+- Mode axis: `system`, `light`, `dark`
+- Density axis: `comfortable`, `compact`
+- Default runtime attributes: `data-theme="purple" data-mode="system" data-density="comfortable"`
 - Public docs app
 - Public registry foundation
 - `nerio init`
@@ -103,7 +100,7 @@ Goal: expand Nerio into a broader design/dev ecosystem.
 Scope:
 
 - Theme Builder
-- More premium themes
+- More premium brand themes
 - More product templates
 - AI agent skills
 - MCP documentation tools
