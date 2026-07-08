@@ -90,24 +90,28 @@
   --n-overlay-z-index: 50;
 }
 
-:root[data-theme="purple-light"] {
-  color-scheme: light;
-  --n-color-canvas: var(--n-gray-50);
-  --n-color-surface: var(--n-gray-0);
-  --n-color-surface-raised: var(--n-gray-0);
-  --n-color-surface-muted: var(--n-gray-100);
-  --n-color-text-primary: var(--n-gray-950);
-  --n-color-text-secondary: var(--n-gray-700);
-  --n-color-text-tertiary: var(--n-gray-500);
-  --n-color-border-subtle: var(--n-gray-200);
-  --n-color-border-strong: var(--n-gray-300);
+:root[data-theme="purple"] {
   --n-color-action-primary: var(--n-purple-600);
   --n-color-action-primary-hover: var(--n-purple-700);
   --n-color-action-on-primary: var(--n-gray-0);
   --n-focus-ring: 0 0 0 2px rgb(109 40 217 / 0.26);
 }
 
-:root[data-theme="neutral-light"] {
+:root[data-theme="neutral"] {
+  --n-color-action-primary: var(--n-gray-950);
+  --n-color-action-primary-hover: var(--n-gray-800);
+  --n-color-action-on-primary: var(--n-gray-0);
+  --n-focus-ring: 0 0 0 2px rgb(15 23 42 / 0.22);
+}
+
+:root[data-theme="fintech-blue"] {
+  --n-color-action-primary: var(--n-blue-600);
+  --n-color-action-primary-hover: var(--n-blue-700);
+  --n-color-action-on-primary: #ffffff;
+  --n-focus-ring: 0 0 0 2px rgb(37 99 235 / 0.24);
+}
+
+:root[data-mode="light"] {
   color-scheme: light;
   --n-color-canvas: var(--n-gray-50);
   --n-color-surface: var(--n-gray-0);
@@ -118,13 +122,9 @@
   --n-color-text-tertiary: var(--n-gray-500);
   --n-color-border-subtle: var(--n-gray-200);
   --n-color-border-strong: var(--n-gray-300);
-  --n-color-action-primary: var(--n-gray-950);
-  --n-color-action-primary-hover: var(--n-gray-800);
-  --n-color-action-on-primary: var(--n-gray-0);
-  --n-focus-ring: 0 0 0 2px rgb(15 23 42 / 0.22);
 }
 
-:root[data-theme="neutral-dark"] {
+:root[data-mode="dark"] {
   color-scheme: dark;
   --n-color-canvas: var(--n-gray-950);
   --n-color-surface: #0b1220;
@@ -135,27 +135,21 @@
   --n-color-text-tertiary: #94a3b8;
   --n-color-border-subtle: #243044;
   --n-color-border-strong: #3a475f;
-  --n-color-action-primary: #f8fafc;
-  --n-color-action-primary-hover: #e2e8f0;
-  --n-color-action-on-primary: #020617;
-  --n-focus-ring: 0 0 0 2px rgb(248 250 252 / 0.26);
 }
 
-:root[data-theme="fintech-blue-light"] {
-  color-scheme: light;
-  --n-color-canvas: #f4f7fb;
-  --n-color-surface: #ffffff;
-  --n-color-surface-raised: #ffffff;
-  --n-color-surface-muted: #eaf1ff;
-  --n-color-text-primary: #08111f;
-  --n-color-text-secondary: #31425f;
-  --n-color-text-tertiary: #65758f;
-  --n-color-border-subtle: #c9d7ee;
-  --n-color-border-strong: #9eb4d6;
-  --n-color-action-primary: var(--n-blue-600);
-  --n-color-action-primary-hover: var(--n-blue-700);
-  --n-color-action-on-primary: #ffffff;
-  --n-focus-ring: 0 0 0 2px rgb(37 99 235 / 0.24);
+@media (prefers-color-scheme: dark) {
+  :root[data-mode="system"] {
+    color-scheme: dark;
+    --n-color-canvas: var(--n-gray-950);
+    --n-color-surface: #0b1220;
+    --n-color-surface-raised: #111827;
+    --n-color-surface-muted: #162033;
+    --n-color-text-primary: #f8fafc;
+    --n-color-text-secondary: #cbd5e1;
+    --n-color-text-tertiary: #94a3b8;
+    --n-color-border-subtle: #243044;
+    --n-color-border-strong: #3a475f;
+  }
 }
 
 :root[data-density="compact"] {
