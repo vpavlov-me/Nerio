@@ -22,6 +22,8 @@ Scope:
 - Theme axis: `purple`, `blue`, `green`, `orange`, `red`, `neutral`, plus custom theme support
 - Mode axis: `system`, `light`, `dark`
 - Density axis: `comfortable`, `compact`
+- Token-customizable values: font, radius, motion, spacing, shadow/elevation, contrast
+- No additional runtime appearance axes in v1: no `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale`
 - Default runtime attributes: `data-theme="purple" data-mode="system" data-density="comfortable"`
 - Public docs app
 - Public registry foundation
@@ -100,6 +102,7 @@ Goal: expand Nerio into a broader design/dev ecosystem.
 Scope:
 
 - Theme Builder
+- Optional future runtime axes for radius, font, motion, contrast, or scale after explicit architecture decisions
 - More premium brand themes
 - More product templates
 - AI agent skills
