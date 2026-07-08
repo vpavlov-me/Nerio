@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <StandardDocPage
       title="Themes"
-      lede="Neutral Light, Neutral Dark, and Nerio Blue are runtime CSS-variable themes selected through root attributes."
+      lede="Purple Light, Neutral Light, Neutral Dark, and Fintech Blue Light are runtime CSS-variable themes selected through root attributes."
     />
   );
 }
