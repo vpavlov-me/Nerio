@@ -69,7 +69,7 @@ Future Pro implementation may live in a private repository or private workspace.
 
 Nerio separates three runtime axes:
 
-- Theme: Purple, Neutral, Fintech Blue
+- Theme: Purple, Blue, Green, Orange, Red, Neutral, or custom
 - Mode: System, Light, Dark
 - Density: Comfortable, Compact
 
@@ -80,6 +80,8 @@ Default runtime attributes:
 ```
 
 Theme controls brand/accent personality. Mode controls light/dark/system color mode. Density controls spacing and control sizing.
+
+Preset themes are generic brand colors. Product teams can add custom themes by defining a new `data-theme` value and overriding semantic/component variables.
 
 ## Initial Core scope
 
