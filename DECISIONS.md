@@ -51,11 +51,25 @@ Core implementation currently lives in public workspace packages such as `packag
 
 Future Pro implementation may live in a private repository or private workspace.
 
-## Themes
+## Theme, mode, and density axes
 
-The initial runtime themes are `purple-light`, `neutral-light`, `neutral-dark`, and `fintech-blue-light`.
+Nerio separates brand theme, color mode, and density:
 
-`purple-light` is the default branded Nerio theme. Purple must be used as a restrained accent, not as the default color for broad surfaces, headings, routine icons, or secondary UI.
+- theme: `purple`, `neutral`, `fintech-blue`;
+- mode: `system`, `light`, `dark`;
+- density: `comfortable`, `compact`.
+
+Default runtime attributes:
+
+```html
+<html data-theme="purple" data-mode="system" data-density="comfortable">
+```
+
+Theme controls brand/accent personality. Mode controls light/dark/system color mode. Density controls spacing and control sizing.
+
+Do not create combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `fintech-blue-light`, or `fintech-blue-dark`.
+
+Purple is the default branded Nerio theme and must be used as a restrained accent, not as the default color for broad surfaces, headings, routine icons, or secondary UI.
 
 ## Typography
 
