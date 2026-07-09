@@ -6,7 +6,8 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "validate:docs": "node scripts/validate-docs.mjs"
   },
   "dependencies": {
     "@nerio/adapters": "workspace:*",

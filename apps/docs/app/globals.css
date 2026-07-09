@@ -655,7 +655,8 @@ pre {
 }
 
 .state-grid,
-.guidance-grid {
+.guidance-grid,
+.reference-grid {
   display: grid;
   gap: var(--n-space-4);
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -669,9 +670,22 @@ pre {
 }
 
 .state-grid p,
-.guidance-grid p {
+.guidance-grid p,
+.reference-grid p {
   color: var(--n-color-text-secondary);
   margin: 0;
+}
+
+.reference-grid > div {
+  border-block-start: 1px solid var(--n-color-border-subtle);
+  display: grid;
+  gap: var(--n-space-2);
+  padding-block: var(--n-space-3);
+}
+
+.reference-grid code {
+  color: var(--n-color-text-primary);
+  font-size: var(--n-font-size-sm);
 }
 
 .anatomy-list {
@@ -864,7 +878,8 @@ pre {
   }
 
   .state-grid,
-  .guidance-grid {
+  .guidance-grid,
+  .reference-grid {
     grid-template-columns: 1fr;
   }
 
