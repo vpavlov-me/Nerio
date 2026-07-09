@@ -323,7 +323,7 @@
       "title": "Avatar",
       "description": "Identifies a person, team, or entity.",
       "category": "data-display",
-      "dependencies": ["react"],
+      "dependencies": ["clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
