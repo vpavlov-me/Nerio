@@ -82,7 +82,9 @@ const expectedOverlayAndTabsFiles = [
   "components/toast.tsx",
   "components/tooltip.tsx",
   "lib/cn.ts",
+  "lib/motion.ts",
   "styles/icon.css",
+  "styles/motion.css",
   "styles/overlays.css",
   "styles/tabs.css",
   "styles/toast.css",
@@ -277,10 +279,36 @@ async function verify() {
     );
     if (
       !tabsSource.includes("@base-ui/react/tabs") ||
+      !tabsSource.includes("tabs.find((tab) => !tab.disabled)") ||
+      !tabsSource.includes("React.forwardRef<HTMLDivElement") ||
       tabsSource.includes("onClick={()") ||
       tabsSource.includes("onKeyDown")
     ) {
       throw new Error("Installed Tabs source does not preserve Base UI-owned selection.");
+    }
+
+    const dropdownSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/dropdown-menu.tsx"),
+      "utf8",
+    );
+    if (
+      !dropdownSource.includes("destructive") ||
+      !dropdownSource.includes("disabled={item.disabled}") ||
+      !dropdownSource.includes("onOpenChange")
+    ) {
+      throw new Error("Installed DropdownMenu source is missing item state or open control.");
+    }
+
+    const toastSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/toast.tsx"),
+      "utf8",
+    );
+    if (
+      !toastSource.includes("createToastManager") ||
+      !toastSource.includes("Dismiss notification") ||
+      !toastSource.includes("data?.tone")
+    ) {
+      throw new Error("Installed Toast source is missing manager, tone, or dismiss contract.");
     }
 
     const alertSource = fs.readFileSync(

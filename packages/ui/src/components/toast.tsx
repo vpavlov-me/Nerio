@@ -2,7 +2,9 @@
 
 import * as React from "react";
 import { Toast as BaseToast } from "@base-ui/react/toast";
+import { X } from "@nerio/adapters";
 import { cn } from "../lib/cn";
+import { Icon } from "./icon";
 
 export type ToastTone = "neutral" | "success" | "danger";
 
@@ -78,7 +80,7 @@ function ToastList() {
           <BaseToast.Description data-slot="description" />
         </div>
         <BaseToast.Close className="n-toast__close" aria-label="Dismiss notification">
-          x
+          <Icon icon={X} />
         </BaseToast.Close>
       </BaseToast.Content>
     </BaseToast.Root>

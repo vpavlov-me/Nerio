@@ -75,13 +75,13 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Overlays
 
-| Component     | Status              | Package     | Notes                 |
-| ------------- | ------------------- | ----------- | --------------------- |
-| Dialog        | quality-pass-needed | `@nerio/ui` | Modal primitive       |
-| Sheet         | planned             | `@nerio/ui` | Basic side panel      |
-| Popover       | quality-pass-needed | `@nerio/ui` | Floating content      |
-| Tooltip       | quality-pass-needed | `@nerio/ui` | Short contextual help |
-| Dropdown Menu | quality-pass-needed | `@nerio/ui` | Basic menu            |
+| Component     | Status      | Package     | Notes                                                                                             |
+| ------------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------- |
+| Dialog        | stable-core | `@nerio/ui` | Modal primitive with title, description, close, controlled state, ref, and Base UI focus behavior |
+| Sheet         | planned     | `@nerio/ui` | Basic side panel                                                                                  |
+| Popover       | stable-core | `@nerio/ui` | Floating content with optional context, controlled state, ref, and overlay tokens                 |
+| Tooltip       | stable-core | `@nerio/ui` | Short non-essential contextual help through Base UI                                               |
+| Dropdown Menu | stable-core | `@nerio/ui` | Basic menu with disabled and destructive items                                                    |
 
 ### Data display
 
@@ -98,24 +98,24 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Feedback
 
-| Component   | Status              | Package     | Notes                  |
-| ----------- | ------------------- | ----------- | ---------------------- |
-| Alert       | implemented-initial | `@nerio/ui` | Inline feedback        |
-| Toast       | quality-pass-needed | `@nerio/ui` | Temporary notification |
-| Progress    | stable-core         | `@nerio/ui` | Progress indicator     |
-| Skeleton    | stable-core         | `@nerio/ui` | Loading placeholder    |
-| Empty State | stable-core         | `@nerio/ui` | Basic empty state      |
-| Spinner     | stable-core         | `@nerio/ui` | Loading indicator      |
+| Component   | Status              | Package     | Notes                                                                             |
+| ----------- | ------------------- | ----------- | --------------------------------------------------------------------------------- |
+| Alert       | implemented-initial | `@nerio/ui` | Inline feedback                                                                   |
+| Toast       | stable-core         | `@nerio/ui` | Temporary notification with Base UI manager, viewport, tones, and dismiss control |
+| Progress    | stable-core         | `@nerio/ui` | Progress indicator                                                                |
+| Skeleton    | stable-core         | `@nerio/ui` | Loading placeholder                                                               |
+| Empty State | stable-core         | `@nerio/ui` | Basic empty state                                                                 |
+| Spinner     | stable-core         | `@nerio/ui` | Loading indicator                                                                 |
 
 ### Navigation and layout
 
-| Component         | Status              | Package     | Notes                   |
-| ----------------- | ------------------- | ----------- | ----------------------- |
-| Tabs              | quality-pass-needed | `@nerio/ui` | Basic tabs              |
-| Breadcrumbs       | planned             | `@nerio/ui` | Hierarchy navigation    |
-| Pagination        | planned             | `@nerio/ui` | Basic pagination        |
-| Sidebar Primitive | planned             | `@nerio/ui` | Layout primitive only   |
-| Command Primitive | planned             | `@nerio/ui` | Basic command structure |
+| Component         | Status      | Package     | Notes                                                                                     |
+| ----------------- | ----------- | ----------- | ----------------------------------------------------------------------------------------- |
+| Tabs              | stable-core | `@nerio/ui` | Basic tabs with first-enabled default selection, disabled tabs, controlled state, and ref |
+| Breadcrumbs       | planned     | `@nerio/ui` | Hierarchy navigation                                                                      |
+| Pagination        | planned     | `@nerio/ui` | Basic pagination                                                                          |
+| Sidebar Primitive | planned     | `@nerio/ui` | Layout primitive only                                                                     |
+| Command Primitive | planned     | `@nerio/ui` | Basic command structure                                                                   |
 
 ---
 

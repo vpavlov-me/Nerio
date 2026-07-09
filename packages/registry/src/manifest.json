@@ -725,7 +725,7 @@
       "title": "RadioGroup",
       "description": "Chooses one option from a small set.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
       "registryDependencies": ["form-message"],
       "files": [
         {
@@ -1133,21 +1133,25 @@
         "--n-color-text-primary",
         "--n-color-text-tertiary",
         "--n-color-action-primary",
+        "--n-motion-hover-duration",
+        "--n-motion-hover-easing",
         "--n-focus-ring"
       ],
       "accessibility": [
         "Uses the Base UI Tabs primitive.",
         "Delegates keyboard navigation, selected state, and disabled tabs to Base UI.",
-        "Each tab is paired with a panel by value."
+        "Each tab is paired with a panel by value.",
+        "When defaultValue is omitted, the first enabled tab is selected; empty tab arrays render without runtime errors.",
+        "Supports controlled value, uncontrolled defaultValue, disabled tabs, and forwarded refs."
       ],
-      "usage": "import { Tabs } from '@/components/nerio/components/tabs';\n\n<Tabs tabs={[{ label: 'Overview', value: 'overview', content: '...' }]} />"
+      "usage": "import { Tabs } from '@/components/nerio/components/tabs';\n\n<Tabs tabs={[{ label: 'Overview', value: 'overview', content: '...' }, { label: 'Archive', value: 'archive', content: '...', disabled: true }]} />"
     },
     {
       "name": "dialog",
       "title": "Dialog",
       "description": "Focuses a short decision or task above the current surface.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -1159,6 +1163,16 @@
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
         },
         {
           "source": "../../ui/src/styles/icon.css",
@@ -1191,14 +1205,20 @@
         "--n-overlay-backdrop",
         "--n-overlay-foreground",
         "--n-overlay-shadow",
+        "--n-motion-overlay-enter-duration",
+        "--n-motion-overlay-enter-easing",
+        "--n-motion-overlay-exit-duration",
+        "--n-motion-overlay-exit-easing",
         "--n-focus-ring"
       ],
       "accessibility": [
         "Uses the Base UI Dialog primitive.",
         "Includes a title and optional description.",
-        "Focus is trapped while the dialog is open and returns to the trigger on close."
+        "Focus is trapped while the dialog is open and returns to the trigger on close.",
+        "Includes an aria-label=\"Close dialog\" close button rendered through the Nerio icon adapter.",
+        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded popup ref."
       ],
-      "usage": "import { Dialog } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\">...</Dialog>"
+      "usage": "import { Dialog } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\" description=\"Choose collaborators and permissions.\">...</Dialog>"
     },
     {
       "name": "popover",
@@ -1212,6 +1232,16 @@
           "source": "../../ui/src/components/popover.tsx",
           "target": "components/popover.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
         },
         {
           "source": "../../ui/src/styles/overlays.css",
@@ -1229,14 +1259,19 @@
         "--n-overlay-border",
         "--n-overlay-foreground",
         "--n-overlay-shadow",
+        "--n-motion-overlay-enter-duration",
+        "--n-motion-overlay-enter-easing",
+        "--n-motion-overlay-exit-duration",
+        "--n-motion-overlay-exit-easing",
         "--n-focus-ring"
       ],
       "accessibility": [
         "Uses the Base UI Popover primitive.",
         "Keep essential form submission or destructive confirmation outside transient popovers.",
-        "Provide title or description when the content needs context."
+        "Provide title or description when the content needs context.",
+        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded popup ref."
       ],
-      "usage": "import { Popover } from '@/components/nerio/components/popover';\n\n<Popover trigger=\"Filters\" title=\"View filters\">...</Popover>"
+      "usage": "import { Popover } from '@/components/nerio/components/popover';\n\n<Popover trigger=\"Filters\" title=\"View filters\" description=\"Refine this list.\">...</Popover>"
     },
     {
       "name": "dropdown-menu",
@@ -1250,6 +1285,16 @@
           "source": "../../ui/src/components/dropdown-menu.tsx",
           "target": "components/dropdown-menu.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
         },
         {
           "source": "../../ui/src/styles/overlays.css",
@@ -1267,14 +1312,20 @@
         "--n-overlay-border",
         "--n-overlay-shadow",
         "--n-color-status-danger",
+        "--n-motion-overlay-enter-duration",
+        "--n-motion-overlay-enter-easing",
+        "--n-motion-overlay-exit-duration",
+        "--n-motion-overlay-exit-easing",
         "--n-focus-ring"
       ],
       "accessibility": [
         "Uses the Base UI Menu primitive.",
         "Items are keyboard reachable and can be disabled.",
-        "Use destructive tone only for irreversible or high-risk commands."
+        "Disabled items stay visible but cannot be selected.",
+        "Use destructive tone only for irreversible or high-risk commands.",
+        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded menu popup ref."
       ],
-      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ label: 'Rename' }]} />"
+      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ label: 'Rename' }, { label: 'Duplicate', disabled: true }, { label: 'Archive', destructive: true }]} />"
     },
     {
       "name": "tooltip",
@@ -1295,6 +1346,16 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
+        },
+        {
           "source": "../../ui/src/styles/overlays.css",
           "target": "styles/overlays.css",
           "role": "style"
@@ -1309,12 +1370,17 @@
         "--n-overlay-background",
         "--n-overlay-border",
         "--n-overlay-foreground",
-        "--n-overlay-shadow"
+        "--n-overlay-shadow",
+        "--n-motion-overlay-enter-duration",
+        "--n-motion-overlay-enter-easing",
+        "--n-motion-overlay-exit-duration",
+        "--n-motion-overlay-exit-easing"
       ],
       "accessibility": [
         "Uses the Base UI Tooltip primitive.",
         "Do not put required information only inside a tooltip.",
-        "Keep tooltip text short and specific."
+        "Keep tooltip text short and specific.",
+        "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed."
       ],
       "usage": "import { Tooltip } from '@/components/nerio/components/tooltip';\n\n<Tooltip label=\"Copies the share link\">...</Tooltip>"
     },
@@ -1323,7 +1389,7 @@
       "title": "Toast",
       "description": "Acknowledges short-lived product events without interrupting work.",
       "category": "feedback",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -1332,9 +1398,19 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
         },
         {
           "source": "../../ui/src/styles/toast.css",
@@ -1353,14 +1429,19 @@
         "--n-overlay-shadow",
         "--n-color-status-success",
         "--n-color-status-danger",
+        "--n-motion-reveal-duration",
+        "--n-motion-reveal-easing",
+        "--n-motion-focus-duration",
+        "--n-motion-focus-easing",
         "--n-focus-ring"
       ],
       "accessibility": [
         "Uses the Base UI Toast primitive and manager.",
         "Use low priority for routine confirmations and high priority only for urgent updates.",
+        "Managed toasts include an aria-labeled dismiss control rendered through the Nerio icon adapter.",
         "Keep messages concise and avoid replacing persistent error UI with a toast."
       ],
-      "usage": "import { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\n<ToastProvider><ToastViewport /></ToastProvider>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: 'Saved', data: { tone: 'success' } })}>Save</Button>;\n}\n\n<ToastProvider><SaveButton /><ToastViewport /></ToastProvider>"
     }
   ]
 }

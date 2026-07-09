@@ -63,7 +63,8 @@ Core packages must never depend on Pro packages.
 Allowed:
 
 ```ts
-import { Button } from "@nerio/ui";
+import { Card } from "@nerio/ui";
+import { Button } from "@nerio/ui/client";
 import { DataGrid } from "@nerio/pro";
 ```
 

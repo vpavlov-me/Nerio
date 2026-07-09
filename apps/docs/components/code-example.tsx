@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Check, Copy } from "@nerio/adapters";
-import { IconButton } from "@nerio/ui";
+import { IconButton } from "@nerio/ui/client";
 
 type CodeTokenKind =
   | "attribute"

@@ -45,8 +45,8 @@
   transform: translateX(var(--toast-swipe-movement-x))
     translateY(calc(var(--toast-swipe-movement-y) - (var(--toast-index) * 0.75rem)));
   transition:
-    transform var(--n-duration-normal),
-    opacity var(--n-duration-fast);
+    transform var(--n-motion-reveal-duration) var(--n-motion-reveal-easing),
+    opacity var(--n-motion-focus-duration) var(--n-motion-focus-easing);
   z-index: calc(var(--n-overlay-z-index) - var(--toast-index));
 }
 

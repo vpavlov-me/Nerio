@@ -1,4 +1,5 @@
-import { Badge, Button, Card, Progress, Table } from "@nerio/ui";
+import { Badge, Card, Progress, Table } from "@nerio/ui";
+import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 
 const themes = [

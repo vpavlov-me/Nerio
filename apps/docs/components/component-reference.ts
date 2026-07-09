@@ -39,9 +39,9 @@ export type ComponentMetadata = {
 };
 
 export const snippets: Record<string, string> = {
-  button: "import { Button } from '@nerio/ui';\n\n<Button>Save project</Button>",
+  button: "import { Button } from '@nerio/ui/client';\n\n<Button>Save project</Button>",
   "icon-button":
-    "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@nerio/ui';\n\n<IconButton icon={Search} label=\"Search\" />",
+    "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@nerio/ui/client';\n\n<IconButton icon={Search} label=\"Search\" />",
   link: "import { Link } from '@nerio/ui';\n\n<Link href=\"/docs\">Read the docs</Link>",
   badge: "import { Badge } from '@nerio/ui';\n\n<Badge variant=\"success\">Published</Badge>",
   alert:
@@ -49,7 +49,7 @@ export const snippets: Record<string, string> = {
   spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
   skeleton: "import { Skeleton } from '@nerio/ui';\n\n<Skeleton aria-label=\"Loading\" />",
   "empty-state":
-    'import { Button, EmptyState } from \'@nerio/ui\';\n\n<EmptyState title="No collections" description="Create one to start organizing work." action={<Button>Create collection</Button>} />',
+    "import { EmptyState } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<EmptyState title=\"No collections\" description=\"Create one to start organizing work.\" action={<Button>Create collection</Button>} />",
   input:
     'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required /></Field>',
   textarea:
@@ -60,23 +60,25 @@ export const snippets: Record<string, string> = {
     'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use at least 3 characters." invalid><Input /></Field>',
   "form-message":
     "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
-  checkbox: "import { Checkbox } from '@nerio/ui';\n\n<Checkbox aria-label=\"Include archived\" />",
+  checkbox:
+    "import { Checkbox } from '@nerio/ui/client';\n\n<Checkbox aria-label=\"Include archived\" />",
   "radio-group":
-    'import { RadioGroup } from \'@nerio/ui\';\n\n<RadioGroup label="Visibility" name="visibility" options={[{ label: "Public", value: "public" }, { label: "Private", value: "private" }]} />',
-  switch: "import { Switch } from '@nerio/ui';\n\n<Switch aria-label=\"Enable notifications\" />",
+    'import { RadioGroup } from \'@nerio/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" options={[{ label: "Public", value: "public" }, { label: "Private", value: "private" }]} />',
+  switch:
+    "import { Switch } from '@nerio/ui/client';\n\n<Switch aria-label=\"Enable notifications\" />",
   dialog:
-    'import { Dialog } from \'@nerio/ui\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
+    'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
-    'import { Select } from \'@nerio/ui\';\n\n<Select label="Status" name="status" placeholder="Choose status" message="Choose the closest workflow state." options={[{ label: \'Active\', value: \'active\' }]} />',
+    'import { Select } from \'@nerio/ui/client\';\n\n<Select label="Status" name="status" placeholder="Choose status" message="Choose the closest workflow state." options={[{ label: \'Active\', value: \'active\' }]} />',
   toast:
-    "import { Button, ToastProvider, ToastViewport, useToastManager } from '@nerio/ui';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: \"Saved\" })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>",
-  tabs: 'import { Tabs } from \'@nerio/ui\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }]} />',
+    'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: "Saved", data: { tone: "success" } })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>',
+  tabs: 'import { Tabs } from \'@nerio/ui/client\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }, { label: "Archive", value: "archive", content: "...", disabled: true }]} />',
   tooltip:
-    "import { Button, Tooltip } from '@nerio/ui';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
+    "import { Button, Tooltip } from '@nerio/ui/client';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
   popover:
-    'import { Popover } from \'@nerio/ui\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
+    'import { Popover } from \'@nerio/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { DropdownMenu } from \'@nerio/ui\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
+    'import { DropdownMenu } from \'@nerio/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
   card: "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nerio/ui';\n\n<Card>\n  <CardHeader>\n    <CardTitle>Launch workspace</CardTitle>\n    <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>",
   separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
   avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
@@ -103,7 +105,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     layer: "core",
     category: "Actions",
     package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    importPath: "@nerio/ui/client",
     related: ["IconButton", "Link", "DropdownMenu"],
     anatomy: ["button", "button-icon", "button-label"],
     motion: ["hover", "press", "focus"],
@@ -892,7 +894,19 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Visible", description: "Appears briefly in the viewport." },
       { title: "Dismissed", description: "Can be removed by timeout or close action." },
     ],
-    accessibility: ["Use concise messages and avoid essential decisions inside a toast."],
+    accessibility: [
+      "Use concise messages and avoid essential decisions inside a toast.",
+      "Base UI handles the managed toast live region and dismiss behavior.",
+      "Keep persistent error text in the page or form; a danger toast can only supplement it.",
+    ],
+    api: [
+      {
+        title: "ToastProvider",
+        description: "Wraps the client surface and configures limit/timeout.",
+      },
+      { title: "ToastViewport", description: "Portal target for managed toasts." },
+      { title: "useToastManager", description: "Adds neutral, success, or danger toast messages." },
+    ],
     guidance: {
       do: ["Confirm background events like saved, copied, or sent."],
       dont: ["Do not use Toast for destructive confirmations or blocking errors."],
@@ -904,6 +918,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-shadow",
       "--n-color-status-success",
       "--n-color-status-danger",
+      "--n-motion-reveal-duration",
+      "--n-motion-focus-duration",
     ],
   },
   card: {
@@ -1125,9 +1141,26 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Selected", description: "Active tab and visible panel." },
       { title: "Focus", description: "Keyboard focus on the current trigger." },
       { title: "Disabled", description: "Unavailable tab remains visible but inactive." },
+      {
+        title: "Empty",
+        description: "An empty tabs array renders an empty root without panels or runtime errors.",
+      },
     ],
     accessibility: [
       "Use tabs only for related views; rely on Base UI for keyboard navigation between triggers.",
+      "When no defaultValue is supplied, Nerio selects the first enabled tab instead of a disabled tab.",
+    ],
+    api: [
+      {
+        title: "tabs",
+        description: "Array of label, value, content, and optional disabled state.",
+      },
+      { title: "value / onValueChange", description: "Controlled selection by tab value." },
+      {
+        title: "defaultValue",
+        description:
+          "Uncontrolled initial selection; omitted value falls back to the first enabled tab.",
+      },
     ],
     guidance: {
       do: ["Use for Overview, Activity, Settings, and similar local panels."],
@@ -1140,6 +1173,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-color-text-primary",
       "--n-color-text-tertiary",
       "--n-color-action-primary",
+      "--n-motion-hover-duration",
       "--n-focus-ring",
     ],
   },
@@ -1163,6 +1197,16 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Use a clear title, keep focus contained, and avoid opening dialogs from dialogs.",
+      "Base UI handles modal focus trapping, Escape dismissal, outside dismissal, and return focus.",
+      "Use open/defaultOpen/onOpenChange when state must be coordinated by the parent.",
+    ],
+    api: [
+      { title: "trigger", description: "React node or text that opens the dialog." },
+      {
+        title: "title / description",
+        description: "Accessible dialog heading and optional context.",
+      },
+      { title: "bodyClassName", description: "Optional class hook for the body slot." },
     ],
     guidance: {
       do: ["Use for short decisions that need context without a route change."],
@@ -1176,6 +1220,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-backdrop",
       "--n-overlay-foreground",
       "--n-overlay-shadow",
+      "--n-motion-overlay-enter-duration",
+      "--n-motion-overlay-exit-duration",
       "--n-focus-ring",
     ],
   },
@@ -1192,7 +1238,16 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Open", description: "Panel is visible and keyboard reachable." },
       { title: "Closed", description: "Panel is removed from the layer." },
     ],
-    accessibility: ["Do not hide essential page content only inside a hover-only popover."],
+    accessibility: [
+      "Do not hide essential page content only inside a transient popover.",
+      "Use title or description when popover content needs context.",
+      "Use open/defaultOpen/onOpenChange only when the parent needs to coordinate state.",
+    ],
+    api: [
+      { title: "trigger", description: "React node or text that opens the popover." },
+      { title: "title / description", description: "Optional context before the body content." },
+      { title: "children", description: "Interactive or supporting content inside the popup." },
+    ],
     guidance: {
       do: ["Use for filters, quick metadata, or lightweight editing controls."],
       dont: ["Do not use Popover for destructive confirmations."],
@@ -1204,6 +1259,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-border",
       "--n-overlay-foreground",
       "--n-overlay-shadow",
+      "--n-motion-overlay-enter-duration",
     ],
   },
   tooltip: {
@@ -1220,6 +1276,12 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Tooltips must support keyboard focus and must not contain required instructions.",
+      "Use disabled when a tooltip should be suppressed for a disabled or unavailable trigger.",
+    ],
+    api: [
+      { title: "label", description: "Short non-essential explanatory content." },
+      { title: "children", description: "Trigger element; text children are wrapped in a span." },
+      { title: "disabled", description: "Prevents tooltip display while preserving the trigger." },
     ],
     guidance: {
       do: ["Use to name icon-only actions or clarify dense metadata."],
@@ -1232,6 +1294,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-border",
       "--n-overlay-foreground",
       "--n-overlay-shadow",
+      "--n-motion-overlay-enter-duration",
     ],
   },
   "dropdown-menu": {
@@ -1255,6 +1318,17 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Disabled", description: "Unavailable items stay in context without activation." },
     ],
     accessibility: ["Keep labels action-oriented and support keyboard navigation through Base UI."],
+    api: [
+      {
+        title: "items",
+        description: "Small list of label, onSelect, disabled, and destructive flags.",
+      },
+      { title: "disabled item", description: "Stays visible in context without activation." },
+      {
+        title: "destructive item",
+        description: "Marks risky commands without changing the whole menu tone.",
+      },
+    ],
     guidance: {
       do: ["Use for Rename, Duplicate, Archive, and similar secondary commands."],
       dont: ["Do not hide the primary page action inside a menu."],
@@ -1266,6 +1340,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-border",
       "--n-overlay-shadow",
       "--n-color-status-danger",
+      "--n-motion-overlay-enter-duration",
       "--n-focus-ring",
     ],
   },

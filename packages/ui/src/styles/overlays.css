@@ -16,6 +16,13 @@
   z-index: var(--n-overlay-z-index);
 }
 
+.n-tooltip-popup[data-ending-style],
+.n-popover__content[data-ending-style],
+.n-dropdown[data-ending-style] {
+  animation: n-overlay-exit var(--n-motion-overlay-exit-duration)
+    var(--n-motion-overlay-exit-easing);
+}
+
 .n-backdrop {
   background: var(--n-overlay-backdrop);
   inset: 0;
@@ -25,6 +32,8 @@
 }
 
 .n-dialog {
+  animation: n-dialog-enter var(--n-motion-overlay-enter-duration)
+    var(--n-motion-overlay-enter-easing);
   background: var(--n-overlay-background);
   border: 1px solid var(--n-overlay-border);
   border-radius: var(--n-radius-lg);
@@ -36,6 +45,10 @@
   position: fixed;
   transform: translate(-50%, -50%);
   z-index: calc(var(--n-overlay-z-index) + 1);
+}
+
+.n-dialog[data-ending-style] {
+  animation: n-dialog-exit var(--n-motion-overlay-exit-duration) var(--n-motion-overlay-exit-easing);
 }
 
 .n-dialog__header {
@@ -175,4 +188,34 @@
 .n-dropdown__item:focus-visible {
   box-shadow: var(--n-focus-ring);
   outline: 0;
+}
+
+@keyframes n-dialog-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + var(--n-motion-translate-sm))) scale(0.98);
+  }
+}
+
+@keyframes n-dialog-exit {
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + var(--n-motion-translate-sm))) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n-dialog {
+    animation-name: n-dialog-fade-only;
+  }
+
+  .n-dialog[data-ending-style] {
+    animation-name: n-dialog-fade-only;
+  }
+}
+
+@keyframes n-dialog-fade-only {
+  from {
+    opacity: 0;
+  }
 }

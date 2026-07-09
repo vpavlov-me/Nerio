@@ -26,8 +26,8 @@ import {
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, DropdownMenu, Icon, IconButton, Input, Select } from "@nerio/ui";
-import type { IconComponent } from "@nerio/ui";
+import { Badge, Button, DropdownMenu, Icon, IconButton, Input, Select } from "@nerio/ui/client";
+import type { IconComponent } from "@nerio/ui/client";
 
 const version = "v0.1.0";
 const repoUrl = "https://github.com/vpavlov-me/Nerio";

@@ -96,6 +96,14 @@ Do not create vertical-specific Core preset names such as `fintech-blue`. Core p
 
 Theme, mode, and density changes must work through CSS variables without rebuilding component source.
 
+## UI package entrypoints
+
+`@nerio/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
+
+Interactive Base UI-backed components are exported from `@nerio/ui/client`, which is the client-only entrypoint for Button, IconButton, Checkbox, RadioGroup, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
+
+`@nerio/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
+
 ## V1 token-customizable appearance values
 
 Font, radius, motion, spacing, shadow/elevation, and contrast are customizable through tokens in v1, but they are not separate runtime axes.

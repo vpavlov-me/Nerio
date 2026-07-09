@@ -7,6 +7,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
+    "./client": "./src/client.ts",
     "./styles.css": "./src/styles.css"
   },
   "scripts": {

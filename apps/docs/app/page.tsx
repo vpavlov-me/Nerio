@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Badge, Button, Card, EmptyState, Stat } from "@nerio/ui";
+import { Badge, Card, EmptyState, Stat } from "@nerio/ui";
+import { Button } from "@nerio/ui/client";
 
 export default function HomePage() {
   return (

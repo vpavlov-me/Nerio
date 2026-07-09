@@ -4,8 +4,12 @@ import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Button } from "./button";
 import { cn } from "../lib/cn";
+import { motionClasses } from "../lib/motion";
 
-export interface PopoverProps {
+export interface PopoverProps extends Pick<
+  React.ComponentProps<typeof BasePopover.Root>,
+  "defaultOpen" | "onOpenChange" | "open"
+> {
   trigger: React.ReactNode;
   children: React.ReactNode;
   title?: React.ReactNode;
@@ -13,9 +17,12 @@ export interface PopoverProps {
   className?: string;
 }
 
-export function Popover({ trigger, title, description, children, className }: PopoverProps) {
+export const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(function Popover(
+  { trigger, title, description, children, className, open, defaultOpen, onOpenChange },
+  ref,
+) {
   return (
-    <BasePopover.Root>
+    <BasePopover.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <BasePopover.Trigger
         render={
           React.isValidElement(trigger) ? trigger : <Button variant="secondary">{trigger}</Button>
@@ -23,7 +30,11 @@ export function Popover({ trigger, title, description, children, className }: Po
       />
       <BasePopover.Portal>
         <BasePopover.Positioner className="n-popover-positioner">
-          <BasePopover.Popup className={cn("n-popover__content", className)} data-slot="content">
+          <BasePopover.Popup
+            ref={ref}
+            className={cn("n-popover__content", motionClasses.overlayEnter, className)}
+            data-slot="content"
+          >
             {title ? (
               <BasePopover.Title className="n-popover__title" data-slot="title">
                 {title}
@@ -42,4 +53,4 @@ export function Popover({ trigger, title, description, children, className }: Po
       </BasePopover.Portal>
     </BasePopover.Root>
   );
-}
+});

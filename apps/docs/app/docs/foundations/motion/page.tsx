@@ -1,6 +1,5 @@
 import {
   Badge,
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -9,6 +8,7 @@ import {
   Skeleton,
   Table,
 } from "@nerio/ui";
+import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 
 type TokenRow = readonly [label: string, token: string, value: string, use: string];

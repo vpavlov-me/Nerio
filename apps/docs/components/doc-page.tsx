@@ -45,7 +45,7 @@ import {
   ToastViewport,
   Tooltip,
   useToastManager,
-} from "@nerio/ui";
+} from "@nerio/ui/client";
 import { CodeBlock, CodeExample } from "./code-example";
 import {
   anatomyFromSlots,
@@ -470,6 +470,12 @@ function Preview({ kind }: { kind: string }) {
                 value: "settings",
                 content: "Permissions and workflow preferences are edited here.",
               },
+              {
+                label: "Archive",
+                value: "archive",
+                content: "Archived content is unavailable in this preview.",
+                disabled: true,
+              },
             ]}
           />
         ) : null}
@@ -492,7 +498,7 @@ function Preview({ kind }: { kind: string }) {
             trigger="Actions"
             items={[
               { label: "Rename" },
-              { label: "Duplicate" },
+              { label: "Duplicate", disabled: true },
               { label: "Archive", destructive: true },
             ]}
           />
@@ -579,16 +585,30 @@ function ToastDemoButton() {
   const toast = useToastManager();
 
   return (
-    <Button
-      onClick={() =>
-        toast.add({
-          title: "Collection saved",
-          description: "The update is visible to your team.",
-          data: { tone: "success" },
-        })
-      }
-    >
-      Show toast
-    </Button>
+    <>
+      <Button
+        onClick={() =>
+          toast.add({
+            title: "Collection saved",
+            description: "The update is visible to your team.",
+            data: { tone: "success" },
+          })
+        }
+      >
+        Success toast
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() =>
+          toast.add({
+            title: "Sync failed",
+            description: "Keep the inline error visible until the issue is resolved.",
+            data: { tone: "danger" },
+          })
+        }
+      >
+        Danger toast
+      </Button>
+    </>
   );
 }

@@ -26,7 +26,7 @@ import {
   Stat,
   Table,
   Toast,
-} from "@nerio/ui";
+} from "@nerio/ui/client";
 
 const projects = [
   {

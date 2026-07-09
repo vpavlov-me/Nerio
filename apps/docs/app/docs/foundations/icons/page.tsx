@@ -44,7 +44,8 @@ function CustomLogoIcon(props: { className?: string; "aria-hidden"?: boolean }) 
 }
 
 const usage = `import { Search } from '@nerio/adapters';
-import { Icon, IconButton } from '@nerio/ui';
+import { Icon } from '@nerio/ui';
+import { IconButton } from '@nerio/ui/client';
 
 <Icon icon={Search} />
 <IconButton icon={Search} label="Search workspace" />`;

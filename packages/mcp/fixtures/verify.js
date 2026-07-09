@@ -151,9 +151,24 @@ async function verify() {
     if (
       !tabsUsage.baseUiPrimitives.includes("tabs") ||
       !tabsUsage.requiredTokens.includes("--n-tabs-trigger-height") ||
-      !tabsUsage.accessibility.some((item) => item.includes("Delegates keyboard navigation"))
+      !tabsUsage.requiredTokens.includes("--n-motion-hover-duration") ||
+      !tabsUsage.accessibility.some((item) => item.includes("first enabled tab"))
     ) {
       throw new Error("MCP Tabs usage is missing Base UI, token, or accessibility metadata.");
+    }
+
+    const dialogUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "dialog" },
+    });
+    const dialogUsage = JSON.parse(dialogUsageResult.content[0].text);
+    if (
+      !dialogUsage.requiredTokens.includes("--n-dialog-width-md") ||
+      !dialogUsage.requiredTokens.includes("--n-motion-overlay-enter-duration") ||
+      !dialogUsage.dependencies.includes("@nerio/adapters") ||
+      !dialogUsage.accessibility.some((item) => item.includes("Close dialog"))
+    ) {
+      throw new Error("MCP Dialog usage is missing overlay, adapter, or close metadata.");
     }
 
     const tooltipUsageResult = await client.callTool({
@@ -166,6 +181,33 @@ async function verify() {
       !tooltipUsage.requiredTokens.includes("--n-overlay-foreground")
     ) {
       throw new Error("MCP Tooltip usage is missing overlay token metadata.");
+    }
+
+    const dropdownUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "dropdown-menu" },
+    });
+    const dropdownUsage = JSON.parse(dropdownUsageResult.content[0].text);
+    if (
+      !dropdownUsage.requiredTokens.includes("--n-dropdown-min-width") ||
+      !dropdownUsage.accessibility.some((item) => item.includes("Disabled items")) ||
+      !dropdownUsage.accessibility.some((item) => item.includes("destructive"))
+    ) {
+      throw new Error("MCP DropdownMenu usage is missing disabled/destructive metadata.");
+    }
+
+    const toastUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "toast" },
+    });
+    const toastUsage = JSON.parse(toastUsageResult.content[0].text);
+    if (
+      !toastUsage.dependencies.includes("@nerio/adapters") ||
+      !toastUsage.files.some((file) => file.target === "components/icon.tsx") ||
+      !toastUsage.accessibility.some((item) => item.includes("dismiss control")) ||
+      !toastUsage.usage.includes("ToastProvider")
+    ) {
+      throw new Error("MCP Toast usage is missing provider, icon, or dismiss metadata.");
     }
 
     const listResult = await client.callTool({ name: "list_components", arguments: {} });

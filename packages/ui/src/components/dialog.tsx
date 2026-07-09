@@ -7,23 +7,40 @@ import { Button } from "./button";
 import { Icon } from "./icon";
 import { cn } from "../lib/cn";
 
-export interface DialogProps {
+export interface DialogProps extends Pick<
+  React.ComponentProps<typeof BaseDialog.Root>,
+  "defaultOpen" | "onOpenChange" | "open"
+> {
   trigger: React.ReactNode;
   title: React.ReactNode;
   description?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  bodyClassName?: string;
 }
 
-export function Dialog({ trigger, title, description, children, className }: DialogProps) {
+export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(function Dialog(
+  {
+    trigger,
+    title,
+    description,
+    children,
+    className,
+    bodyClassName,
+    open,
+    defaultOpen,
+    onOpenChange,
+  },
+  ref,
+) {
   return (
-    <BaseDialog.Root>
+    <BaseDialog.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <BaseDialog.Trigger
         render={React.isValidElement(trigger) ? trigger : <Button>{trigger}</Button>}
       />
       <BaseDialog.Portal>
         <BaseDialog.Backdrop className="n-backdrop" data-slot="backdrop" />
-        <BaseDialog.Popup className={cn("n-dialog", className)} data-slot="content">
+        <BaseDialog.Popup ref={ref} className={cn("n-dialog", className)} data-slot="content">
           <header className="n-dialog__header" data-slot="header">
             <div className="n-dialog__heading" data-slot="heading">
               <BaseDialog.Title className="n-dialog__title" data-slot="title">
@@ -39,11 +56,11 @@ export function Dialog({ trigger, title, description, children, className }: Dia
               <Icon icon={X} />
             </BaseDialog.Close>
           </header>
-          <div className="n-dialog__body" data-slot="body">
+          <div className={cn("n-dialog__body", bodyClassName)} data-slot="body">
             {children}
           </div>
         </BaseDialog.Popup>
       </BaseDialog.Portal>
     </BaseDialog.Root>
   );
-}
+});

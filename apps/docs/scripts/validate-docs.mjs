@@ -122,6 +122,51 @@ function rawPrimitiveTokenUsages() {
     });
 }
 
+function uiEntrypointFailures() {
+  const indexSource = read("packages/ui/src/index.ts");
+  const clientSource = read("packages/ui/src/client.ts");
+  const packageJson = JSON.parse(read("packages/ui/package.json"));
+  const failures = [];
+  const clientOnlyExports = [
+    "button",
+    "checkbox",
+    "dialog",
+    "dropdown-menu",
+    "icon-button",
+    "popover",
+    "radio-group",
+    "select",
+    "switch",
+    "tabs",
+    "toast",
+    "tooltip",
+  ];
+
+  if (/^\s*["']use client["'];?/m.test(indexSource)) {
+    failures.push("packages/ui/src/index.ts: default entrypoint must not include use client");
+  }
+
+  for (const exportName of clientOnlyExports) {
+    if (indexSource.includes(`./components/${exportName}`)) {
+      failures.push(`packages/ui/src/index.ts: exports client-only ${exportName}`);
+    }
+  }
+
+  if (!clientSource.startsWith('"use client";')) {
+    failures.push("packages/ui/src/client.ts: client entrypoint must start with use client");
+  }
+
+  if (packageJson.exports?.["./client"] !== "./src/client.ts") {
+    failures.push("packages/ui/package.json: missing ./client export");
+  }
+
+  if (packageJson.exports?.["./styles.css"] !== "./src/styles.css") {
+    failures.push("packages/ui/package.json: styles.css export changed");
+  }
+
+  return failures;
+}
+
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
 const componentCatalog = JSON.parse(read("data/component-catalog.json"));
@@ -176,6 +221,7 @@ const missingRegistryFiles = registryFileFailures(manifest.items);
 const duplicateTargets = duplicateRegistryTargets(manifest.items);
 const registryDependenciesMissing = missingRegistryDependencies(manifest.items);
 const rawPrimitiveTokens = rawPrimitiveTokenUsages();
+const uiEntrypointIssues = uiEntrypointFailures();
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -206,6 +252,7 @@ reportMissing("Registry dependencies missing from manifest", registryDependencie
 reportMissing("Implemented registry items missing from component catalog", registryWithoutCatalog);
 reportMissing("Implemented catalog components missing registry metadata", catalogWithoutRegistry);
 reportMissing("Raw primitive palette tokens used in component CSS", rawPrimitiveTokens);
+reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 
 const failures = [
   missingNav,
@@ -225,6 +272,7 @@ const failures = [
   registryWithoutCatalog,
   catalogWithoutRegistry,
   rawPrimitiveTokens,
+  uiEntrypointIssues,
 ].flat();
 
 if (failures.length > 0) {

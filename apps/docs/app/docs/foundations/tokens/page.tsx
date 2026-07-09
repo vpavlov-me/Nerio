@@ -1,4 +1,5 @@
-import { Badge, Button, Card, Input, Progress, Separator, Table } from "@nerio/ui";
+import { Badge, Card, Input, Progress, Separator, Table } from "@nerio/ui";
+import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 
 const tokenLayers = [

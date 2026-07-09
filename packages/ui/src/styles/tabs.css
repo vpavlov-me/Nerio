@@ -43,8 +43,8 @@
   inset-block-end: -1px;
   position: absolute;
   transition:
-    inset-inline-start var(--n-duration-fast),
-    inline-size var(--n-duration-fast);
+    inset-inline-start var(--n-motion-hover-duration) var(--n-motion-hover-easing),
+    inline-size var(--n-motion-hover-duration) var(--n-motion-hover-easing);
 }
 
 .n-tabs__panel {

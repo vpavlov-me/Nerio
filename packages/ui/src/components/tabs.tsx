@@ -13,23 +13,32 @@ export interface TabItem {
 
 export interface TabsProps extends Omit<
   React.ComponentProps<typeof BaseTabs.Root>,
-  "children" | "onChange" | "onValueChange"
+  "children" | "defaultValue" | "onChange" | "onValueChange" | "value"
 > {
   tabs: TabItem[];
-  value?: string;
-  defaultValue?: string;
+  value?: string | null;
+  defaultValue?: string | null;
   onChange?: (value: string) => void;
+  onValueChange?: (value: string) => void;
 }
 
-export function Tabs({ tabs, value, defaultValue, onChange, className, ...props }: TabsProps) {
+export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(function Tabs(
+  { tabs, value, defaultValue, onChange, onValueChange, className, ...props },
+  ref,
+) {
+  const fallbackValue =
+    defaultValue !== undefined ? defaultValue : (tabs.find((tab) => !tab.disabled)?.value ?? null);
+
   return (
     <BaseTabs.Root
+      ref={ref}
       className={cn("n-tabs", className)}
       data-slot="root"
       value={value}
-      defaultValue={defaultValue ?? tabs[0]?.value}
+      defaultValue={fallbackValue}
       onValueChange={(nextValue) => {
         if (typeof nextValue === "string") {
+          onValueChange?.(nextValue);
           onChange?.(nextValue);
         }
       }}
@@ -47,7 +56,9 @@ export function Tabs({ tabs, value, defaultValue, onChange, className, ...props 
             {tab.label}
           </BaseTabs.Tab>
         ))}
-        <BaseTabs.Indicator className="n-tabs__indicator" data-slot="indicator" />
+        {tabs.length > 0 ? (
+          <BaseTabs.Indicator className="n-tabs__indicator" data-slot="indicator" />
+        ) : null}
       </BaseTabs.List>
       {tabs.map((tab) => (
         <BaseTabs.Panel
@@ -61,4 +72,4 @@ export function Tabs({ tabs, value, defaultValue, onChange, className, ...props 
       ))}
     </BaseTabs.Root>
   );
-}
+});

@@ -93,6 +93,12 @@ Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows,
 
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
 
+## Package entrypoints
+
+`@nerio/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, Switch, and IconButton are exported from `@nerio/ui/client`. Styles remain available through `@nerio/ui/styles.css`.
+
+Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
+
 ## Contributing
 
 Nerio welcomes issues and pull requests. All contributions are reviewed by maintainers to preserve the system's API, visual consistency, accessibility standards, and long-term direction.

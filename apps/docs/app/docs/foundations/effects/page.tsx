@@ -1,4 +1,5 @@
-import { Badge, Button, Card, Separator, Table } from "@nerio/ui";
+import { Badge, Card, Separator, Table } from "@nerio/ui";
+import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 
 type TokenExample = readonly [label: string, token: string, description: string];
