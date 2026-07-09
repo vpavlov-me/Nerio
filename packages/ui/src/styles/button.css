@@ -30,37 +30,41 @@
 }
 
 .n-button[data-variant="primary"] {
-  background: var(--n-color-action-primary);
-  color: var(--n-color-action-on-primary);
+  background: var(--n-button-background-primary);
+  color: var(--n-button-foreground-primary);
 }
 
 .n-button[data-variant="primary"]:hover:not(:disabled) {
-  background: var(--n-color-action-primary-hover);
+  background: var(--n-button-background-primary-hover);
+}
+
+.n-button[data-variant="primary"]:active:not(:disabled) {
+  background: var(--n-button-background-primary-active);
 }
 
 .n-button[data-variant="secondary"] {
-  background: var(--n-color-surface);
-  border-color: var(--n-color-border-strong);
-  color: var(--n-color-text-primary);
+  background: var(--n-button-background-secondary);
+  border-color: var(--n-button-border-secondary);
+  color: var(--n-button-foreground-secondary);
 }
 
 .n-button[data-variant="secondary"]:hover:not(:disabled) {
-  background: var(--n-color-surface-muted);
+  background: var(--n-button-background-secondary-hover);
 }
 
 .n-button[data-variant="ghost"] {
   background: transparent;
-  color: var(--n-color-text-secondary);
+  color: var(--n-button-foreground-ghost);
 }
 
 .n-button[data-variant="ghost"]:hover:not(:disabled) {
-  background: var(--n-color-surface-muted);
+  background: var(--n-button-background-ghost-hover);
   color: var(--n-color-text-primary);
 }
 
 .n-button[data-variant="destructive"] {
-  background: var(--n-color-danger);
-  color: var(--n-color-text-on-danger);
+  background: var(--n-button-background-destructive);
+  color: var(--n-button-foreground-destructive);
 }
 
 .n-button[data-size="sm"] {
@@ -79,6 +83,7 @@
 }
 
 .n-icon-button {
-  inline-size: var(--n-button-height-md);
+  border-radius: var(--n-icon-button-radius);
+  inline-size: var(--n-icon-button-size-md);
   padding: 0;
 }

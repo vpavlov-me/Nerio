@@ -1,17 +1,21 @@
 .n-select-trigger {
   align-items: center;
-  background: var(--n-color-surface);
-  border: 1px solid var(--n-color-border-strong);
-  border-radius: var(--n-radius-md);
-  color: var(--n-color-text-primary);
+  background: var(--n-input-background);
+  border: 1px solid var(--n-input-border);
+  border-radius: var(--n-input-radius);
+  color: var(--n-input-foreground);
   cursor: pointer;
   display: inline-flex;
   gap: var(--n-space-3);
   justify-content: space-between;
-  min-block-size: var(--n-input-height-md);
+  min-block-size: var(--n-select-height-md);
   padding: 0 var(--n-space-3);
   text-align: start;
   width: 100%;
+}
+
+.n-select-trigger:hover:not(:disabled) {
+  border-color: var(--n-input-border-hover);
 }
 
 .n-select-trigger:focus-visible {
@@ -19,11 +23,28 @@
   outline: 0;
 }
 
+.n-select-trigger[data-invalid],
+.n-select-trigger[aria-invalid="true"] {
+  border-color: var(--n-input-border-danger);
+}
+
+.n-select-trigger[data-placeholder] {
+  color: var(--n-input-placeholder);
+}
+
+.n-select-trigger:disabled,
+.n-select-trigger[data-disabled] {
+  background: var(--n-input-disabled-background);
+  color: var(--n-input-disabled-foreground);
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
 .n-select-popup {
-  background: var(--n-color-surface-raised);
-  border: 1px solid var(--n-color-border-subtle);
+  background: var(--n-overlay-background);
+  border: 1px solid var(--n-overlay-border);
   border-radius: var(--n-radius-lg);
-  box-shadow: var(--n-shadow-md);
+  box-shadow: var(--n-overlay-shadow);
   min-inline-size: 12rem;
   padding: var(--n-space-2);
   z-index: var(--n-overlay-z-index);

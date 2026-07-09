@@ -1,5 +1,5 @@
 .n-toast-viewport {
-  inline-size: min(calc(100vw - (var(--n-space-4) * 2)), 24rem);
+  inline-size: min(calc(100vw - (var(--n-space-4) * 2)), var(--n-toast-width));
   inset-block-end: var(--n-space-4);
   inset-inline-end: var(--n-space-4);
   position: fixed;
@@ -7,10 +7,10 @@
 }
 
 .n-toast {
-  background: var(--n-color-surface-raised);
-  border: 1px solid var(--n-color-border-subtle);
+  background: var(--n-overlay-background);
+  border: 1px solid var(--n-overlay-border);
   border-radius: var(--n-radius-lg);
-  box-shadow: var(--n-shadow-md);
+  box-shadow: var(--n-overlay-shadow);
   color: var(--n-color-text-secondary);
   display: grid;
   gap: var(--n-space-1);

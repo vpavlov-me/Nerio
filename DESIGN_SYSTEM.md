@@ -250,6 +250,8 @@ input.border
 input.border-hover
 input.border-focus
 input.focus-ring
+input.disabled-background
+input.disabled-foreground
 
 navigation.item.background-hover
 navigation.item.background-active
@@ -257,16 +259,24 @@ navigation.item.indicator-active
 
 table.row.background-hover
 table.row.background-selected
+table.cell.padding-x
+table.cell.padding-y
 
 badge.status-soft.*
 badge.status-strong.*
 
-dialog.background
-dialog.border
-dialog.backdrop
+overlay.background
+overlay.border
+overlay.backdrop
+overlay.foreground
+overlay.shadow
 ```
 
 Components use semantic or component aliases only. Do not use raw palette values in component styles.
+
+Public registry metadata and documentation token chips are validated against
+`packages/tokens/src/styles.css`. Any token listed in registry `requiredTokens` or component
+reference token arrays must exist as a real `--n-*` CSS variable.
 
 ### 4. Theme sets
 

@@ -46,4 +46,21 @@ export { Avatar, type AvatarProps } from "./components/avatar";
 export { Progress, type ProgressProps } from "./components/progress";
 export { Stat, type StatProps } from "./components/stat";
 export { KeyValue, type KeyValueProps } from "./components/key-value";
-export { Table, type TableProps } from "./components/table";
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+  type TableBodyProps,
+  type TableCaptionProps,
+  type TableCellProps,
+  type TableFooterProps,
+  type TableHeadProps,
+  type TableHeaderProps,
+  type TableProps,
+  type TableRowProps,
+} from "./components/table";

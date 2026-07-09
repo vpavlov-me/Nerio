@@ -2,7 +2,7 @@
   align-items: center;
   background: var(--n-color-surface-muted);
   border: 1px solid var(--n-color-border-subtle);
-  border-radius: var(--n-radius-full);
+  border-radius: var(--n-badge-radius);
   color: var(--n-color-text-secondary);
   display: inline-flex;
   font-size: var(--n-font-size-xs);
@@ -12,15 +12,15 @@
 }
 
 .n-badge[data-variant="success"] {
-  color: var(--n-color-success);
+  color: var(--n-color-status-success);
 }
 
 .n-badge[data-variant="danger"] {
-  color: var(--n-color-danger);
+  color: var(--n-color-status-danger);
 }
 
 .n-badge[data-variant="info"] {
-  color: var(--n-color-action-primary);
+  color: var(--n-color-status-info);
 }
 
 .n-skeleton {
@@ -42,7 +42,7 @@
   border-radius: var(--n-radius-lg);
   color: var(--n-color-text-secondary);
   display: grid;
-  gap: var(--n-space-3);
+  gap: var(--n-empty-state-gap);
   justify-items: center;
   padding: var(--n-space-8);
   text-align: center;
@@ -79,7 +79,7 @@
 
 .n-progress [role="progressbar"] {
   background: var(--n-color-surface-muted);
-  border-radius: var(--n-radius-full);
+  border-radius: var(--n-progress-radius);
   block-size: var(--n-progress-height);
   overflow: hidden;
 }

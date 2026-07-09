@@ -1,6 +1,6 @@
 .n-field {
   display: grid;
-  gap: var(--n-space-2);
+  gap: var(--n-field-gap);
 }
 
 .n-field__description,
@@ -18,13 +18,18 @@
 
 .n-input,
 .n-textarea {
-  background: var(--n-color-surface);
-  border: 1px solid var(--n-color-border-strong);
-  border-radius: var(--n-radius-md);
-  color: var(--n-color-text-primary);
+  background: var(--n-input-background);
+  border: 1px solid var(--n-input-border);
+  border-radius: var(--n-input-radius);
+  color: var(--n-input-foreground);
   min-block-size: var(--n-input-height-md);
   padding: 0 var(--n-space-3);
   width: 100%;
+}
+
+.n-input:hover:not(:disabled),
+.n-textarea:hover:not(:disabled) {
+  border-color: var(--n-input-border-hover);
 }
 
 .n-input:focus-visible,
@@ -39,30 +44,30 @@
 .n-textarea[data-invalid],
 .n-input[aria-invalid="true"],
 .n-textarea[aria-invalid="true"] {
-  border-color: var(--n-color-danger);
+  border-color: var(--n-input-border-danger);
 }
 
 .n-input:disabled,
 .n-textarea:disabled {
-  background: var(--n-color-surface-muted);
-  color: var(--n-color-text-tertiary);
+  background: var(--n-input-disabled-background);
+  color: var(--n-input-disabled-foreground);
   cursor: not-allowed;
   opacity: 0.75;
 }
 
 .n-textarea {
-  min-block-size: 6rem;
+  min-block-size: var(--n-textarea-min-height);
   padding-block: var(--n-space-3);
   resize: vertical;
 }
 
 .n-input::placeholder,
 .n-textarea::placeholder {
-  color: var(--n-color-text-tertiary);
+  color: var(--n-input-placeholder);
 }
 
 .n-form-message {
-  color: var(--n-color-danger);
+  color: var(--n-color-status-danger);
   font-size: var(--n-font-size-sm);
   margin: 0;
 }
@@ -72,14 +77,14 @@
 }
 
 .n-form-message[data-tone="success"] {
-  color: var(--n-color-success);
+  color: var(--n-color-status-success);
 }
 
 .n-checkbox {
   align-items: center;
   background: var(--n-color-surface);
   border: 1px solid var(--n-color-border-strong);
-  border-radius: var(--n-radius-sm);
+  border-radius: var(--n-checkbox-radius);
   block-size: var(--n-checkbox-size);
   color: var(--n-color-action-on-primary);
   cursor: pointer;

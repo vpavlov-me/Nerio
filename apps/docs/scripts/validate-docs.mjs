@@ -48,12 +48,25 @@ function reportMissing(title, values) {
   for (const value of values) console.error(`  - ${value}`);
 }
 
+function extractNerioTokens(source) {
+  return unique([...source.matchAll(/--n-[a-z0-9-]+/g)].map((match) => match[0]));
+}
+
+function registryRequiredTokens(items) {
+  return unique(
+    items.flatMap((item) =>
+      Array.isArray(item.requiredTokens) ? item.requiredTokens.filter(Boolean) : [],
+    ),
+  );
+}
+
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
 
 const docsChrome = read("apps/docs/components/docs-chrome.tsx");
 const componentReference = read("apps/docs/components/component-reference.ts");
 const dynamicRoute = read("apps/docs/app/docs/components/[slug]/page.tsx");
+const tokenStyles = read("packages/tokens/src/styles.css");
 
 const navSlugs = unique(matchAll(docsChrome, /href: "\/docs\/components\/([^"]+)"/g));
 const dynamicRouteSlugs = unique(
@@ -89,6 +102,11 @@ const missingReference = registrySlugs.filter((slug) => !referenceCoverage.inclu
 const referenceWithoutRegistry = referenceCoverage.filter((slug) => !registrySlugs.includes(slug));
 const missingSnippet = registrySlugs.filter((slug) => !snippetSlugs.includes(slug));
 const snippetWithoutRegistry = snippetSlugs.filter((slug) => !registrySlugs.includes(slug));
+const definedTokens = extractNerioTokens(tokenStyles);
+const registryTokens = registryRequiredTokens(manifest.items);
+const referenceTokens = extractNerioTokens(componentReference);
+const missingRegistryTokens = registryTokens.filter((token) => !definedTokens.includes(token));
+const missingReferenceTokens = referenceTokens.filter((token) => !definedTokens.includes(token));
 
 reportMissing("Registry items missing from component navigation", missingNav);
 reportMissing("Component navigation entries missing from registry", navWithoutRegistry);
@@ -98,6 +116,8 @@ reportMissing("Registry items missing docs reference coverage", missingReference
 reportMissing("Docs reference entries missing from registry", referenceWithoutRegistry);
 reportMissing("Registry items missing usage snippets", missingSnippet);
 reportMissing("Usage snippets missing from registry", snippetWithoutRegistry);
+reportMissing("Registry requiredTokens missing from token CSS", missingRegistryTokens);
+reportMissing("Docs component reference tokens missing from token CSS", missingReferenceTokens);
 
 const failures = [
   missingNav,
@@ -108,10 +128,14 @@ const failures = [
   referenceWithoutRegistry,
   missingSnippet,
   snippetWithoutRegistry,
+  missingRegistryTokens,
+  missingReferenceTokens,
 ].flat();
 
 if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log(`Docs registry alignment verified for ${registrySlugs.length} components.`);
+console.log(
+  `Docs registry alignment verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
+);

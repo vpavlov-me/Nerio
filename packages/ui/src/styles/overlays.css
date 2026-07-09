@@ -5,7 +5,7 @@
 
 .n-tooltip-popup {
   background: var(--n-color-text-primary);
-  border-radius: var(--n-radius-md);
+  border-radius: var(--n-tooltip-radius);
   color: var(--n-color-canvas);
   font-size: var(--n-font-size-xs);
   max-inline-size: 18rem;
@@ -15,7 +15,7 @@
 }
 
 .n-backdrop {
-  background: rgb(2 6 23 / 0.52);
+  background: var(--n-overlay-backdrop);
   inset: 0;
   isolation: isolate;
   position: fixed;
@@ -23,10 +23,10 @@
 }
 
 .n-dialog {
-  background: var(--n-color-surface-raised);
-  border: 1px solid var(--n-color-border-subtle);
+  background: var(--n-overlay-background);
+  border: 1px solid var(--n-overlay-border);
   border-radius: var(--n-radius-lg);
-  box-shadow: var(--n-shadow-md);
+  box-shadow: var(--n-overlay-shadow);
   inset-block-start: 50%;
   inset-inline-start: 50%;
   inline-size: min(calc(100vw - (var(--n-space-4) * 2)), var(--n-dialog-width-md));
@@ -63,7 +63,7 @@
 }
 
 .n-dialog__body {
-  color: var(--n-color-text-secondary);
+  color: var(--n-overlay-foreground);
   display: grid;
   gap: var(--n-space-4);
 }
@@ -101,18 +101,18 @@
 
 .n-popover__content,
 .n-dropdown {
-  background: var(--n-color-surface-raised);
-  border: 1px solid var(--n-color-border-subtle);
+  background: var(--n-overlay-background);
+  border: 1px solid var(--n-overlay-border);
   border-radius: var(--n-radius-lg);
-  box-shadow: var(--n-shadow-md);
-  min-inline-size: 14rem;
+  box-shadow: var(--n-overlay-shadow);
+  min-inline-size: var(--n-dropdown-min-width);
   padding: var(--n-space-2);
 }
 
 .n-popover__content {
   display: grid;
   gap: var(--n-space-2);
-  max-inline-size: 20rem;
+  max-inline-size: var(--n-popover-width-md);
 }
 
 .n-popover__title {
