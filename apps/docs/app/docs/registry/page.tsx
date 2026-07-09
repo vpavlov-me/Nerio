@@ -1,4 +1,4 @@
-import { getRegistryItem } from "@nerio/registry";
+import { registry } from "@nerio/registry";
 import { Badge } from "@nerio/ui";
 import { CodeExample } from "../../../components/code-example";
 
@@ -15,8 +15,6 @@ const config = `{
 }`;
 
 export default function Page() {
-  const button = getRegistryItem("button");
-
   return (
     <article className="doc-page">
       <header>
@@ -48,14 +46,16 @@ export default function Page() {
 
       <section className="doc-section">
         <div className="section-heading">
-          <h2>Button installation</h2>
-          <Badge>{button?.files.length ?? 0} files</Badge>
+          <h2>Available source items</h2>
+          <Badge>{registry.length} items</Badge>
         </div>
         <div className="anatomy-list">
-          {button?.files.map((file) => (
-            <div key={file.target}>
-              <code>{file.target}</code>
-              <span>{file.role}</span>
+          {registry.map((item) => (
+            <div key={item.name}>
+              <code>{item.name}</code>
+              <span>
+                {item.category} · {item.files.length} files · {item.baseUiPrimitives.join(", ")}
+              </span>
             </div>
           ))}
         </div>

@@ -78,7 +78,7 @@ import { DataGrid } from "@nerio/pro";
 Theme, mode, and density are the only v1 runtime appearance axes:
 
 ```html
-<html data-theme="purple" data-mode="system" data-density="comfortable">
+<html data-theme="purple" data-mode="system" data-density="comfortable"></html>
 ```
 
 - `data-theme` controls brand/accent personality: `purple`, `blue`, `green`, `orange`, `red`, `neutral`, or custom.
@@ -106,7 +106,7 @@ Allowed in v1:
 Not allowed in v1 without a new architecture decision:
 
 ```html
-<html data-font="inter" data-radius="soft" data-motion="normal" data-contrast="standard">
+<html data-font="inter" data-radius="soft" data-motion="normal" data-contrast="standard"></html>
 ```
 
 ## Distribution

@@ -85,7 +85,7 @@ The first release must support three separate runtime axes:
 Default runtime attributes:
 
 ```html
-<html data-theme="purple" data-mode="system" data-density="comfortable">
+<html data-theme="purple" data-mode="system" data-density="comfortable"></html>
 ```
 
 Theme controls brand/accent personality. Mode controls light/dark/system color mode. Density controls spacing and control sizing.

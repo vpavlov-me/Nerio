@@ -28,7 +28,7 @@ Brand color is a restrained accent. Use it for primary actions, selection, activ
 
 Prefer composition, explicit slots, semantic HTML, visible focus states, and accessible labels. Use Nerio's icon adapter for Lucide or custom SVG React components.
 
-Registry usage: `nerio init` creates `nerio.json`, `nerio add button` installs Button and its direct source dependencies, and `nerio doctor` validates configuration and registry metadata. Registries may be local filesystem paths or HTTP URLs. Existing changed files are not overwritten unless `--overwrite` is explicitly provided.
+Registry usage: `nerio init` creates `nerio.json`, `nerio add button` installs Button and its direct source dependencies, and `nerio doctor` validates configuration and registry metadata. The registry also exposes first source items for Select, Tabs, Dialog, Popover, DropdownMenu, Tooltip, and Toast. Registries may be local filesystem paths or HTTP URLs. Existing changed files are not overwritten unless `--overwrite` is explicitly provided.
 
 The read-only MCP server uses the official Model Context Protocol stdio transport. Its tools are `list_components`, `get_component`, and `get_component_usage`; all responses come from the same Nerio registry metadata used by the CLI.
 

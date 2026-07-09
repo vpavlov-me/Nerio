@@ -23,6 +23,14 @@ async function verify() {
     if (payload.name !== "button" || payload.baseUiPrimitives[0] !== "button") {
       throw new Error("MCP get_component returned invalid Button metadata.");
     }
+
+    const listResult = await client.callTool({ name: "list_components", arguments: {} });
+    const components = JSON.parse(listResult.content[0].text);
+    for (const required of ["button", "dialog", "select", "tabs", "toast"]) {
+      if (!components.some((component) => component.name === required)) {
+        throw new Error(`MCP list_components did not include ${required}.`);
+      }
+    }
   } finally {
     await client.close();
   }

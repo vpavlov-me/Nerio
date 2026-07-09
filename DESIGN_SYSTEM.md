@@ -37,7 +37,7 @@ This is a guardrail, not literal pixel accounting.
 Nerio v1 uses three independent runtime axes:
 
 ```html
-<html data-theme="purple" data-mode="system" data-density="comfortable">
+<html data-theme="purple" data-mode="system" data-density="comfortable"></html>
 ```
 
 ### Theme
@@ -113,7 +113,7 @@ Font, radius, motion, spacing, shadow/elevation, and contrast are customizable t
 Do not introduce these attributes in v1:
 
 ```html
-<html data-font="geist" data-radius="soft" data-motion="normal" data-contrast="standard">
+<html data-font="geist" data-radius="soft" data-motion="normal" data-contrast="standard"></html>
 ```
 
 Developers may customize those values by overriding CSS variables instead:
