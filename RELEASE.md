@@ -17,9 +17,9 @@ pnpm build
 pnpm pack:check
 ```
 
-CI must pass before release. Confirm the docs app builds successfully before release.
+CI must pass before release. Maintainers can also trigger CI manually from GitHub Actions when they need to verify the gate outside a pull request or `main` push.
 
-CI is a validation gate only. It does not publish packages, configure npm tokens, create release tags, or approve a release.
+CI uses a stable Node LTS baseline and is a validation gate only. It does not publish packages, configure npm tokens, create release tags, or approve a release.
 
 ## Versioning
 

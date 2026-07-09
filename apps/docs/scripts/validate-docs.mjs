@@ -215,10 +215,36 @@ function packageReadinessFailures() {
       "pnpm build",
       "pnpm pack:check",
     ];
+    const forbiddenWorkflowStrings = [
+      "npm publish",
+      "NPM_TOKEN",
+      "contents: write",
+      "id-token: write",
+      "release",
+      "tag",
+    ];
 
     for (const command of requiredCommands) {
       if (!ciWorkflow.includes(command)) {
         failures.push(`.github/workflows/ci.yml: missing ${command}`);
+      }
+    }
+
+    if (!ciWorkflow.includes("workflow_dispatch:")) {
+      failures.push(".github/workflows/ci.yml: missing workflow_dispatch trigger");
+    }
+
+    if (!ciWorkflow.includes("node-version: 22")) {
+      failures.push(".github/workflows/ci.yml: expected Node LTS baseline node-version: 22");
+    }
+
+    if (!ciWorkflow.includes("permissions:") || !ciWorkflow.includes("contents: read")) {
+      failures.push(".github/workflows/ci.yml: missing read-only contents permission");
+    }
+
+    for (const forbidden of forbiddenWorkflowStrings) {
+      if (ciWorkflow.includes(forbidden)) {
+        failures.push(`.github/workflows/ci.yml: forbidden publishing string ${forbidden}`);
       }
     }
   }
