@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -68,8 +68,63 @@ function registryRequiredTokens(items) {
   );
 }
 
+function slugify(value) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function registryFileFailures(items) {
+  const manifestDir = join(root, "packages/registry/src");
+  return items.flatMap((item) =>
+    item.files
+      .filter((file) => !existsSync(resolve(manifestDir, file.source)))
+      .map((file) => `${item.name}: ${file.source}`),
+  );
+}
+
+function duplicateRegistryTargets(items) {
+  return items.flatMap((item) => {
+    const seen = new Set();
+    const duplicates = new Set();
+
+    for (const file of item.files) {
+      if (seen.has(file.target)) duplicates.add(file.target);
+      seen.add(file.target);
+    }
+
+    return [...duplicates].sort().map((target) => `${item.name}: ${target}`);
+  });
+}
+
+function missingRegistryDependencies(items) {
+  const names = new Set(items.map((item) => item.name));
+
+  return items.flatMap((item) =>
+    item.registryDependencies
+      .filter((dependency) => !names.has(dependency))
+      .map((dependency) => `${item.name}: ${dependency}`),
+  );
+}
+
+function rawPrimitiveTokenUsages() {
+  const stylesDir = join(root, "packages/ui/src/styles");
+  const primitiveTokenPattern = /--n-(purple|blue|green|orange|red|amber|cyan|magenta|gray)-[0-9]/g;
+
+  return readdirSync(stylesDir)
+    .filter((file) => file.endsWith(".css"))
+    .flatMap((file) => {
+      const source = readFileSync(join(stylesDir, file), "utf8");
+      const tokens = unique([...source.matchAll(primitiveTokenPattern)].map((match) => match[0]));
+      return tokens.map((token) => `${file}: ${token}`);
+    });
+}
+
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
+const componentCatalog = JSON.parse(read("data/component-catalog.json"));
 
 const docsChrome = read("apps/docs/components/docs-chrome.tsx");
 const componentReference = read("apps/docs/components/component-reference.ts");
@@ -117,6 +172,22 @@ const referenceTokens = extractNerioTokens(componentReference);
 const missingTokenReferences = referencedTokens.filter((token) => !definedTokens.includes(token));
 const missingRegistryTokens = registryTokens.filter((token) => !definedTokens.includes(token));
 const missingReferenceTokens = referenceTokens.filter((token) => !definedTokens.includes(token));
+const missingRegistryFiles = registryFileFailures(manifest.items);
+const duplicateTargets = duplicateRegistryTargets(manifest.items);
+const registryDependenciesMissing = missingRegistryDependencies(manifest.items);
+const rawPrimitiveTokens = rawPrimitiveTokenUsages();
+const catalogBySlug = new Map(
+  componentCatalog.components.map((component) => [slugify(component.name), component]),
+);
+const registryWithoutCatalog = registrySlugs.filter((slug) => !catalogBySlug.has(slug));
+const registrySlugSet = new Set(registrySlugs);
+const foundationOnlyCategories = new Set(["foundation"]);
+const catalogWithoutRegistry = componentCatalog.components
+  .filter((component) => !["planned", "future"].includes(component.status))
+  .filter((component) => !foundationOnlyCategories.has(component.category))
+  .map((component) => ({ component, slug: slugify(component.name) }))
+  .filter(({ slug }) => !registrySlugSet.has(slug))
+  .map(({ component, slug }) => `${component.name} (${slug})`);
 
 reportMissing("Registry items missing from component navigation", missingNav);
 reportMissing("Component navigation entries missing from registry", navWithoutRegistry);
@@ -129,6 +200,12 @@ reportMissing("Usage snippets missing from registry", snippetWithoutRegistry);
 reportMissing("Token CSS references missing from token CSS", missingTokenReferences);
 reportMissing("Registry requiredTokens missing from token CSS", missingRegistryTokens);
 reportMissing("Docs component reference tokens missing from token CSS", missingReferenceTokens);
+reportMissing("Registry item source files missing", missingRegistryFiles);
+reportMissing("Registry item duplicate target paths", duplicateTargets);
+reportMissing("Registry dependencies missing from manifest", registryDependenciesMissing);
+reportMissing("Implemented registry items missing from component catalog", registryWithoutCatalog);
+reportMissing("Implemented catalog components missing registry metadata", catalogWithoutRegistry);
+reportMissing("Raw primitive palette tokens used in component CSS", rawPrimitiveTokens);
 
 const failures = [
   missingNav,
@@ -142,6 +219,12 @@ const failures = [
   missingTokenReferences,
   missingRegistryTokens,
   missingReferenceTokens,
+  missingRegistryFiles,
+  duplicateTargets,
+  registryDependenciesMissing,
+  registryWithoutCatalog,
+  catalogWithoutRegistry,
+  rawPrimitiveTokens,
 ].flat();
 
 if (failures.length > 0) {

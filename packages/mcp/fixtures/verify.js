@@ -124,7 +124,8 @@ async function verify() {
     if (
       !alertUsage.requiredTokens.includes("--n-alert-padding") ||
       !alertUsage.variants.includes("warning") ||
-      !alertUsage.files.some((file) => file.target === "components/icon.tsx")
+      !alertUsage.files.some((file) => file.target === "components/icon.tsx") ||
+      !alertUsage.accessibility.some((item) => item.includes("do not announce by default"))
     ) {
       throw new Error("MCP Alert usage is missing tone, token, or icon adapter metadata.");
     }
@@ -140,6 +141,31 @@ async function verify() {
       !radioUsage.requiredTokens.includes("--n-radio-size")
     ) {
       throw new Error("MCP RadioGroup usage is missing Base UI, dependency, or token metadata.");
+    }
+
+    const tabsUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "tabs" },
+    });
+    const tabsUsage = JSON.parse(tabsUsageResult.content[0].text);
+    if (
+      !tabsUsage.baseUiPrimitives.includes("tabs") ||
+      !tabsUsage.requiredTokens.includes("--n-tabs-trigger-height") ||
+      !tabsUsage.accessibility.some((item) => item.includes("Delegates keyboard navigation"))
+    ) {
+      throw new Error("MCP Tabs usage is missing Base UI, token, or accessibility metadata.");
+    }
+
+    const tooltipUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "tooltip" },
+    });
+    const tooltipUsage = JSON.parse(tooltipUsageResult.content[0].text);
+    if (
+      !tooltipUsage.requiredTokens.includes("--n-overlay-background") ||
+      !tooltipUsage.requiredTokens.includes("--n-overlay-foreground")
+    ) {
+      throw new Error("MCP Tooltip usage is missing overlay token metadata.");
     }
 
     const listResult = await client.callTool({ name: "list_components", arguments: {} });

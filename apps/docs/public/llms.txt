@@ -12,7 +12,7 @@ Core = building blocks. Pro = product-ready solutions.
 
 Use `COMPONENTS.md` and `data/component-catalog.json` as the source of truth for Core/Pro component tiering.
 
-Current roadmap focus is Phase 2B Core coverage expansion in narrow slices after Phase 2A stabilization. Add only the explicitly requested Phase 2B components for a task; do not dump the full Phase 2B list into one PR. A Core component should not move to `stable-core` until its API, accessibility, tokens, registry metadata, docs, CLI fixture, MCP metadata, and validation checks are aligned.
+Current roadmap focus is Phase 2A Core quality stabilization. Harden existing Core foundations and components before continuing Phase 2B expansion. Do not add Phase 2B components unless a task explicitly asks for that slice. A Core component should not move to `stable-core` until its API, accessibility, tokens, registry metadata, docs, CLI fixture, MCP metadata, and validation checks are aligned.
 
 Use primitive tokens only for raw values. Use semantic tokens such as `--n-color-surface-default`, `--n-color-text-primary`, `--n-color-action-primary`, `--n-color-border-default`, `--n-font-sans`, and `--n-font-mono` in product code. Components should prefer component tokens for local contracts such as `--n-button-background-primary`, `--n-input-border`, `--n-dialog-width-md`, `--n-overlay-background`, and `--n-table-cell-padding-x`.
 

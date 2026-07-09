@@ -444,7 +444,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     states: [{ title: "Visible", description: "Alerts are inline and persistent by default." }],
     accessibility: [
-      "Danger alerts use alert semantics by default; other tones use status semantics.",
+      'Static inline alerts are not live regions by default; pass role="status" or role="alert" only for dynamic updates that need announcement.',
       "Use clear text; tone and icon must not carry the only meaning.",
     ],
     guidance: {
@@ -1127,13 +1127,21 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Disabled", description: "Unavailable tab remains visible but inactive." },
     ],
     accessibility: [
-      "Use tabs only for related views; preserve keyboard navigation between triggers.",
+      "Use tabs only for related views; rely on Base UI for keyboard navigation between triggers.",
     ],
     guidance: {
       do: ["Use for Overview, Activity, Settings, and similar local panels."],
       dont: ["Do not use Tabs for global navigation or unrelated destinations."],
     },
-    tokens: ["--n-tabs-trigger-height", "--n-tabs-radius", ...sharedTokens],
+    tokens: [
+      "--n-tabs-trigger-height",
+      "--n-tabs-radius",
+      "--n-color-border-subtle",
+      "--n-color-text-primary",
+      "--n-color-text-tertiary",
+      "--n-color-action-primary",
+      "--n-focus-ring",
+    ],
   },
   dialog: {
     category: "Navigation and overlays",
@@ -1217,7 +1225,14 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use to name icon-only actions or clarify dense metadata."],
       dont: ["Do not put buttons, links, or critical content inside Tooltip."],
     },
-    tokens: ["--n-tooltip-radius", "--n-overlay-z-index"],
+    tokens: [
+      "--n-tooltip-radius",
+      "--n-overlay-z-index",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-foreground",
+      "--n-overlay-shadow",
+    ],
   },
   "dropdown-menu": {
     category: "Navigation and overlays",
@@ -1251,6 +1266,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-border",
       "--n-overlay-shadow",
       "--n-color-status-danger",
+      "--n-focus-ring",
     ],
   },
 };

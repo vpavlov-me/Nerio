@@ -79,12 +79,12 @@
 }
 
 .n-stat strong {
-  font-size: var(--n-font-size-2xl);
+  font-size: var(--n-stat-value-size);
   line-height: var(--n-line-height-tight);
 }
 
 .n-stat em {
-  color: var(--n-color-success);
+  color: var(--n-stat-trend-color);
   font-size: var(--n-font-size-sm);
   font-style: normal;
 }

@@ -240,7 +240,7 @@
   --n-chart-categorical-3: var(--n-green-600);
   --n-chart-categorical-4: var(--n-orange-600);
   --n-chart-categorical-5: var(--n-magenta-600);
-  --n-focus-ring: 0 0 0 2px rgb(109 40 217 / 0.26);
+  --n-focus-ring: 0 0 0 2px var(--n-color-focus-offset), 0 0 0 4px rgb(109 40 217 / 0.26);
 
   --n-button-height-sm: 2rem;
   --n-button-height-md: 2.5rem;
@@ -322,6 +322,8 @@
   --n-card-gap: var(--n-space-4);
   --n-card-radius: var(--n-radius-lg);
   --n-stat-gap: var(--n-space-2);
+  --n-stat-value-size: var(--n-font-size-2xl);
+  --n-stat-trend-color: var(--n-color-success);
   --n-key-value-gap: var(--n-space-1);
   --n-table-border: var(--n-color-border-subtle);
   --n-table-header-background: var(--n-color-surface-subtle);
@@ -361,7 +363,7 @@
   --n-color-focus-ring: var(--n-purple-600);
   --n-chart-primary: var(--n-purple-600);
   --n-chart-categorical-1: var(--n-purple-600);
-  --n-focus-ring: 0 0 0 2px rgb(109 40 217 / 0.26);
+  --n-focus-ring: 0 0 0 2px var(--n-color-focus-offset), 0 0 0 4px rgb(109 40 217 / 0.26);
 }
 
 :root[data-theme="blue"] {
@@ -374,7 +376,7 @@
   --n-color-focus-ring: var(--n-blue-600);
   --n-chart-primary: var(--n-blue-600);
   --n-chart-categorical-1: var(--n-blue-600);
-  --n-focus-ring: 0 0 0 2px rgb(37 99 235 / 0.24);
+  --n-focus-ring: 0 0 0 2px var(--n-color-focus-offset), 0 0 0 4px rgb(37 99 235 / 0.24);
 }
 
 :root[data-theme="green"] {
@@ -387,7 +389,7 @@
   --n-color-focus-ring: var(--n-green-600);
   --n-chart-primary: var(--n-green-600);
   --n-chart-categorical-1: var(--n-green-600);
-  --n-focus-ring: 0 0 0 2px rgb(22 163 74 / 0.24);
+  --n-focus-ring: 0 0 0 2px var(--n-color-focus-offset), 0 0 0 4px rgb(22 163 74 / 0.24);
 }
 
 :root[data-theme="orange"] {
@@ -400,7 +402,7 @@
   --n-color-focus-ring: var(--n-orange-600);
   --n-chart-primary: var(--n-orange-600);
   --n-chart-categorical-1: var(--n-orange-600);
-  --n-focus-ring: 0 0 0 2px rgb(249 115 22 / 0.24);
+  --n-focus-ring: 0 0 0 2px var(--n-color-focus-offset), 0 0 0 4px rgb(249 115 22 / 0.24);
 }
 
 :root[data-theme="red"] {
@@ -413,7 +415,7 @@
   --n-color-focus-ring: var(--n-red-600);
   --n-chart-primary: var(--n-red-600);
   --n-chart-categorical-1: var(--n-red-600);
-  --n-focus-ring: 0 0 0 2px rgb(220 38 38 / 0.24);
+  --n-focus-ring: 0 0 0 2px var(--n-color-focus-offset), 0 0 0 4px rgb(220 38 38 / 0.24);
 }
 
 :root[data-theme="neutral"] {
@@ -426,7 +428,7 @@
   --n-color-focus-ring: var(--n-gray-900);
   --n-chart-primary: var(--n-gray-900);
   --n-chart-categorical-1: var(--n-gray-900);
-  --n-focus-ring: 0 0 0 2px rgb(15 23 42 / 0.22);
+  --n-focus-ring: 0 0 0 2px var(--n-color-focus-offset), 0 0 0 4px rgb(15 23 42 / 0.22);
 }
 
 :root[data-mode="light"] {

@@ -22,17 +22,14 @@ export interface TabsProps extends Omit<
 }
 
 export function Tabs({ tabs, value, defaultValue, onChange, className, ...props }: TabsProps) {
-  const [internalValue, setInternalValue] = React.useState(defaultValue ?? tabs[0]?.value);
-  const currentValue = value ?? internalValue;
-
   return (
     <BaseTabs.Root
       className={cn("n-tabs", className)}
       data-slot="root"
-      value={currentValue}
+      value={value}
+      defaultValue={defaultValue ?? tabs[0]?.value}
       onValueChange={(nextValue) => {
         if (typeof nextValue === "string") {
-          setInternalValue(nextValue);
           onChange?.(nextValue);
         }
       }}
@@ -45,18 +42,6 @@ export function Tabs({ tabs, value, defaultValue, onChange, className, ...props 
             className="n-tabs__tab"
             data-slot="tab"
             disabled={tab.disabled}
-            onClick={() => {
-              if (!tab.disabled) {
-                setInternalValue(tab.value);
-                onChange?.(tab.value);
-              }
-            }}
-            onKeyDown={(event) => {
-              if (!tab.disabled && (event.key === "Enter" || event.key === " ")) {
-                setInternalValue(tab.value);
-                onChange?.(tab.value);
-              }
-            }}
             value={tab.value}
           >
             {tab.label}

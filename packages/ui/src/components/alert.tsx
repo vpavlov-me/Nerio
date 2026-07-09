@@ -23,7 +23,7 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert
       className={cn("n-alert", className)}
       data-slot="root"
       data-tone={tone}
-      role={role ?? (tone === "danger" ? "alert" : "status")}
+      role={role}
       {...props}
     >
       {IconComponent ? (

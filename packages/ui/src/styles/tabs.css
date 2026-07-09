@@ -13,12 +13,13 @@
 .n-tabs__tab {
   background: transparent;
   border: 0;
-  border-radius: var(--n-radius-sm) var(--n-radius-sm) 0 0;
+  block-size: var(--n-tabs-trigger-height);
+  border-radius: var(--n-tabs-radius) var(--n-tabs-radius) 0 0;
   color: var(--n-color-text-tertiary);
   cursor: pointer;
   font-size: var(--n-font-size-sm);
   font-weight: var(--n-font-weight-medium);
-  padding: var(--n-space-3) var(--n-space-1);
+  padding: 0 var(--n-space-2);
 }
 
 .n-tabs__tab[data-selected],

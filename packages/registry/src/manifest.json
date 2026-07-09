@@ -384,7 +384,7 @@
         "--n-color-status-danger"
       ],
       "accessibility": [
-        "Uses status semantics by default and alert semantics for danger tone.",
+        "Static inline alerts do not announce by default; pass role=\"status\" or role=\"alert\" only for dynamic updates that need announcement.",
         "Tone is supported by text; do not rely on color alone.",
         "Optional icons must pass through the Nerio icon adapter."
       ],
@@ -554,7 +554,7 @@
       "baseUiPrimitives": [],
       "slots": ["root", "label", "value", "trend"],
       "variants": [],
-      "requiredTokens": ["--n-stat-gap", "--n-font-size-2xl", "--n-color-success"],
+      "requiredTokens": ["--n-stat-gap", "--n-stat-value-size", "--n-stat-trend-color"],
       "accessibility": [
         "Use clear labels so values remain understandable out of context.",
         "Keep trend text textual; do not encode direction by color alone.",
@@ -1117,6 +1117,8 @@
       "slots": ["root", "list", "tab", "indicator", "panel"],
       "variants": ["horizontal"],
       "requiredTokens": [
+        "--n-tabs-trigger-height",
+        "--n-tabs-radius",
         "--n-color-border-subtle",
         "--n-color-text-primary",
         "--n-color-text-tertiary",
@@ -1125,7 +1127,7 @@
       ],
       "accessibility": [
         "Uses the Base UI Tabs primitive.",
-        "Supports keyboard navigation, selected state, and disabled tabs.",
+        "Delegates keyboard navigation, selected state, and disabled tabs to Base UI.",
         "Each tab is paired with a panel by value."
       ],
       "usage": "import { Tabs } from '@/components/nerio/components/tabs';\n\n<Tabs tabs={[{ label: 'Overview', value: 'overview', content: '...' }]} />"
@@ -1291,7 +1293,14 @@
       "baseUiPrimitives": ["tooltip"],
       "slots": ["content"],
       "variants": [],
-      "requiredTokens": ["--n-tooltip-radius", "--n-overlay-z-index"],
+      "requiredTokens": [
+        "--n-tooltip-radius",
+        "--n-overlay-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-foreground",
+        "--n-overlay-shadow"
+      ],
       "accessibility": [
         "Uses the Base UI Tooltip primitive.",
         "Do not put required information only inside a tooltip.",

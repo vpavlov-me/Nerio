@@ -4,9 +4,11 @@
 }
 
 .n-tooltip-popup {
-  background: var(--n-color-text-primary);
+  background: var(--n-overlay-background);
+  border: 1px solid var(--n-overlay-border);
   border-radius: var(--n-tooltip-radius);
-  color: var(--n-color-canvas);
+  box-shadow: var(--n-overlay-shadow);
+  color: var(--n-overlay-foreground);
   font-size: var(--n-font-size-xs);
   max-inline-size: 18rem;
   padding: var(--n-space-2);

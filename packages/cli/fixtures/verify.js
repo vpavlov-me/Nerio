@@ -73,6 +73,20 @@ const expectedFeedbackFiles = [
   "styles/feedback.css",
   "styles/spinner.css",
 ];
+const expectedOverlayAndTabsFiles = [
+  "components/dialog.tsx",
+  "components/dropdown-menu.tsx",
+  "components/icon.tsx",
+  "components/popover.tsx",
+  "components/tabs.tsx",
+  "components/toast.tsx",
+  "components/tooltip.tsx",
+  "lib/cn.ts",
+  "styles/icon.css",
+  "styles/overlays.css",
+  "styles/tabs.css",
+  "styles/toast.css",
+];
 
 function run(cwd, ...args) {
   return new Promise((resolve, reject) => {
@@ -170,6 +184,11 @@ async function verify() {
     await run(localTarget, "add", "skeleton");
     await run(localTarget, "add", "spinner");
     await run(localTarget, "add", "empty-state");
+    await run(localTarget, "add", "tabs");
+    await run(localTarget, "add", "popover");
+    await run(localTarget, "add", "dropdown-menu");
+    await run(localTarget, "add", "tooltip");
+    await run(localTarget, "add", "toast");
     assertInstall(localTarget);
     assertInstall(localTarget, expectedDialogFiles);
     assertFiles(localTarget, expectedFieldFiles);
@@ -214,6 +233,7 @@ async function verify() {
     assertFiles(localTarget, expectedPhase2BFiles);
     assertFiles(localTarget, expectedDisplayFiles);
     assertFiles(localTarget, expectedFeedbackFiles);
+    assertFiles(localTarget, expectedOverlayAndTabsFiles);
 
     const tableSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/table.tsx"),
@@ -248,6 +268,26 @@ async function verify() {
       !radioSource.includes("aria-labelledby")
     ) {
       throw new Error("Installed RadioGroup source does not preserve Base UI label wiring.");
+    }
+
+    const tabsSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/tabs.tsx"),
+      "utf8",
+    );
+    if (
+      !tabsSource.includes("@base-ui/react/tabs") ||
+      tabsSource.includes("onClick={()") ||
+      tabsSource.includes("onKeyDown")
+    ) {
+      throw new Error("Installed Tabs source does not preserve Base UI-owned selection.");
+    }
+
+    const alertSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/alert.tsx"),
+      "utf8",
+    );
+    if (alertSource.includes('tone === "danger" ? "alert" : "status"')) {
+      throw new Error("Installed Alert source still defaults static alerts to live regions.");
     }
 
     await run(urlTarget, "init", "--registry", manifestUrl);
