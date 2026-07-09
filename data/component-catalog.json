@@ -133,7 +133,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "actions",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Primary action component with variants, sizes, loading state, and icon slots."
     },
     {
@@ -141,7 +141,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "actions",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Accessible icon-only action component."
     },
     {

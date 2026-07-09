@@ -115,8 +115,73 @@ export function variantsFromRegistry(variants: string[], fallback: ReferenceSect
 }
 
 export const componentReference: Record<string, ComponentReference> = {
+  button: {
+    category: "Actions",
+    purpose:
+      "Use Button for explicit product actions that submit, save, create, continue, or trigger a workflow.",
+    anatomy: [
+      {
+        title: "root",
+        description:
+          "Base UI button primitive with variant, size, disabled, loading, and focus states.",
+      },
+      {
+        title: "icon",
+        description: "Optional leading or trailing icon rendered through Nerio's icon adapter.",
+      },
+      {
+        title: "label",
+        description: "Visible action text that stays present while loading.",
+      },
+    ],
+    variants: [
+      { title: "Primary", description: "Strongest action in the local decision." },
+      { title: "Secondary", description: "Supporting action with a visible boundary." },
+      { title: "Ghost", description: "Low-emphasis action for dense or repeated surfaces." },
+      { title: "Destructive", description: "Risky action that needs explicit intent." },
+    ],
+    states: [
+      {
+        title: "Default, hover, and active",
+        description: "Variant tokens control interaction feedback.",
+      },
+      { title: "Focus", description: "Focus-visible uses the shared Nerio focus ring." },
+      { title: "Loading", description: "Disables repeat activation and exposes aria-busy." },
+      { title: "Disabled", description: "Prevents activation while preserving layout." },
+    ],
+    accessibility: [
+      "Renders native button behavior through Base UI unless a custom render element is supplied.",
+      "Use concise visible text or provide an accessible name.",
+      "Loading sets aria-busy and disables repeat activation.",
+      "Icons are decorative by default; the button label carries the action meaning.",
+      "Do not rely on color alone to communicate destructive or disabled meaning.",
+    ],
+    guidance: {
+      do: ["Use one primary action per local decision and keep labels action-oriented."],
+      dont: ["Do not use Button for navigation when a semantic link describes the interaction."],
+    },
+    tokens: [
+      "--n-button-height-sm",
+      "--n-button-height-md",
+      "--n-button-height-lg",
+      "--n-button-radius",
+      "--n-button-background-primary",
+      "--n-button-background-primary-hover",
+      "--n-button-background-primary-active",
+      "--n-button-foreground-primary",
+      "--n-button-background-secondary",
+      "--n-button-background-secondary-hover",
+      "--n-button-border-secondary",
+      "--n-button-foreground-secondary",
+      "--n-button-background-ghost-hover",
+      "--n-button-foreground-ghost",
+      "--n-button-background-destructive",
+      "--n-button-foreground-destructive",
+      "--n-focus-ring",
+    ],
+  },
   "icon-button": {
-    category: "Actions and feedback",
+    category: "Actions",
     purpose:
       "Use IconButton for compact actions where surrounding context or an accessible label supplies the meaning.",
     anatomy: [
@@ -128,6 +193,10 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "icon",
         description:
           "Icon rendered through Nerio's icon adapter so Lucide and custom SVGs share one contract.",
+      },
+      {
+        title: "label",
+        description: "Required accessible label rendered as visually hidden text.",
       },
     ],
     variants: [
@@ -147,6 +216,10 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       { title: "Default", description: "Renders a compact square target with tokenized sizing." },
       {
+        title: "Small, medium, and large",
+        description: "Size follows explicit icon-button size aliases.",
+      },
+      {
         title: "Hover and focus",
         description: "Shows surface feedback and the shared focus ring.",
       },
@@ -154,9 +227,15 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "Disabled",
         description: "Removes activation while keeping the control discoverable.",
       },
+      {
+        title: "Loading",
+        description: "Uses the Button loading contract to prevent repeat activation.",
+      },
     ],
     accessibility: [
-      "Always provide a label because the visible icon is not an accessible name.",
+      "Always provide a label because the visible icon is decorative.",
+      "The icon is rendered through the Nerio icon adapter and remains decorative.",
+      "Loading and disabled states prevent repeat activation through the Button contract.",
       "Use familiar icons and pair unfamiliar actions with Tooltip.",
       "Keep destructive icon-only actions close to confirming context.",
     ],
@@ -164,7 +243,13 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for toolbar actions, command rows, and compact page chrome."],
       dont: ["Do not use an icon-only control when the action needs explanation to be safe."],
     },
-    tokens: ["--n-icon-button-size-md", "--n-icon-button-radius", ...sharedTokens],
+    tokens: [
+      "--n-icon-button-size-sm",
+      "--n-icon-button-size-md",
+      "--n-icon-button-size-lg",
+      "--n-icon-button-radius",
+      "--n-focus-ring",
+    ],
   },
   badge: {
     category: "Actions and feedback",
@@ -421,11 +506,7 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Tell users how to fix an error."],
       dont: ["Do not use vague messages like Invalid value."],
     },
-    tokens: [
-      "--n-color-text-tertiary",
-      "--n-color-status-danger",
-      "--n-color-status-success",
-    ],
+    tokens: ["--n-color-text-tertiary", "--n-color-status-danger", "--n-color-status-success"],
   },
   checkbox: {
     category: "Forms",
@@ -502,8 +583,12 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-select-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border",
       "--n-input-border-focus",
       "--n-input-placeholder",
+      "--n-overlay-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-shadow",
@@ -710,7 +795,6 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-table-header-background",
       "--n-table-row-background-hover",
       "--n-table-row-background-selected",
-      "--n-font-size-sm",
     ],
   },
   tabs: {
@@ -792,6 +876,7 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-popover-width-md",
+      "--n-overlay-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",
@@ -817,7 +902,7 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use to name icon-only actions or clarify dense metadata."],
       dont: ["Do not put buttons, links, or critical content inside Tooltip."],
     },
-    tokens: ["--n-tooltip-radius", "--n-overlay-shadow", ...sharedTokens],
+    tokens: ["--n-tooltip-radius", "--n-overlay-z-index"],
   },
   "dropdown-menu": {
     category: "Navigation and overlays",
@@ -846,10 +931,10 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-dropdown-min-width",
+      "--n-overlay-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-shadow",
-      "--n-color-text-secondary",
       "--n-color-status-danger",
     ],
   },
