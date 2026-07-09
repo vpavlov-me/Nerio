@@ -20,15 +20,10 @@ export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   invalid?: boolean;
 }
 
-export function Field({
-  label,
-  description,
-  message,
-  children,
-  invalid = false,
-  className,
-  ...props
-}: FieldProps) {
+export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field(
+  { label, description, message, children, invalid = false, className, ...props },
+  ref,
+) {
   const generatedId = React.useId();
   const childId = React.isValidElement<FieldControlProps>(children) ? children.props.id : undefined;
   const controlId = childId ?? generatedId;
@@ -38,6 +33,7 @@ export function Field({
 
   return (
     <div
+      ref={ref}
       className={cn("n-field", className)}
       data-invalid={invalid ? "" : undefined}
       data-slot="root"
@@ -73,4 +69,4 @@ export function Field({
       ) : null}
     </div>
   );
-}
+});

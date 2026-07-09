@@ -267,12 +267,17 @@ function Preview({ kind }: { kind: string }) {
           />
         ) : null}
         {kind === "input" ? (
-          <Field
-            label="Collection name"
-            description="Use a short name that your team will recognize."
-          >
-            <Input placeholder="Launch materials" />
-          </Field>
+          <div className="form-preview-stack">
+            <Field
+              label="Collection name"
+              description="Use a short name that your team will recognize."
+            >
+              <Input placeholder="Launch materials" required />
+            </Field>
+            <Field label="Disabled input" description="Shown when editing is unavailable.">
+              <Input placeholder="Archived collection" disabled />
+            </Field>
+          </div>
         ) : null}
         {kind === "textarea" ? (
           <Field
@@ -289,13 +294,18 @@ function Preview({ kind }: { kind: string }) {
           </div>
         ) : null}
         {kind === "field" ? (
-          <Field
-            label="Project name"
-            description="Names appear in navigation, tables, and activity."
-            message="Use at least 3 characters."
-          >
-            <Input placeholder="Q3" />
-          </Field>
+          <div className="form-preview-stack">
+            <Field
+              label="Project name"
+              description="Names appear in navigation, tables, and activity."
+              message="Use a clear internal name."
+            >
+              <Input placeholder="Launch workspace" />
+            </Field>
+            <Field label="Short code" message="Use at least 3 characters." invalid>
+              <Input placeholder="Q3" />
+            </Field>
+          </div>
         ) : null}
         {kind === "form-message" ? (
           <div className="form-preview-stack">
@@ -327,14 +337,24 @@ function Preview({ kind }: { kind: string }) {
           </Dialog>
         ) : null}
         {kind === "select" ? (
-          <Select
-            label="Status"
-            options={[
-              { label: "Active", value: "active" },
-              { label: "Draft", value: "draft" },
-              { label: "Archived", value: "archived" },
-            ]}
-          />
+          <div className="form-preview-stack">
+            <Select
+              label="Status"
+              placeholder="Choose status"
+              message="Choose the closest workflow state."
+              options={[
+                { label: "Active", value: "active" },
+                { label: "Draft", value: "draft" },
+                { label: "Archived", value: "archived" },
+              ]}
+            />
+            <Select
+              label="Disabled select"
+              placeholder="Unavailable"
+              disabled
+              options={[{ label: "Active", value: "active" }]}
+            />
+          </div>
         ) : null}
         {kind === "toast" ? (
           <ToastProvider>

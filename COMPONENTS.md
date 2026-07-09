@@ -62,16 +62,16 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 | Component   | Status              | Package     | Notes                                |
 | ----------- | ------------------- | ----------- | ------------------------------------ |
-| Input       | quality-pass-needed | `@nerio/ui` | Text input                           |
-| Textarea    | quality-pass-needed | `@nerio/ui` | Multiline input                      |
-| Label       | quality-pass-needed | `@nerio/ui` | Accessible form label                |
-| Field       | quality-pass-needed | `@nerio/ui` | Label, help text, error, description |
-| FormMessage | quality-pass-needed | `@nerio/ui` | Field message/error text             |
+| Input       | stable-core         | `@nerio/ui` | Text input                           |
+| Textarea    | stable-core         | `@nerio/ui` | Multiline input                      |
+| Label       | stable-core         | `@nerio/ui` | Accessible form label                |
+| Field       | stable-core         | `@nerio/ui` | Label, help text, error, description |
+| FormMessage | stable-core         | `@nerio/ui` | Field message/error text             |
 | FormGroup   | planned             | `@nerio/ui` | Form layout primitive                |
 | Checkbox    | quality-pass-needed | `@nerio/ui` | Basic checkbox                       |
 | Radio Group | planned             | `@nerio/ui` | Basic radio selection                |
 | Switch      | quality-pass-needed | `@nerio/ui` | Toggle control                       |
-| Select      | quality-pass-needed | `@nerio/ui` | Base select                          |
+| Select      | stable-core         | `@nerio/ui` | Base select                          |
 
 ### Overlays
 

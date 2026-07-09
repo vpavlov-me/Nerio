@@ -157,7 +157,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Text input component."
     },
     {
@@ -165,7 +165,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Multiline text input component."
     },
     {
@@ -173,7 +173,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Accessible form label component."
     },
     {
@@ -181,7 +181,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Form field wrapper with label, description, help text, and error states."
     },
     {
@@ -189,7 +189,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Field message or error text."
     },
     {
@@ -229,7 +229,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Base select component."
     },
     {

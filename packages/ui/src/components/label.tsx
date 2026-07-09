@@ -5,6 +5,9 @@ import { cn } from "../lib/cn";
 
 export type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement>;
 
-export function Label({ className, ...props }: LabelProps) {
-  return <label className={cn("n-label", className)} data-slot="root" {...props} />;
-}
+export const Label = React.forwardRef<HTMLLabelElement, LabelProps>(function Label(
+  { className, ...props },
+  ref,
+) {
+  return <label ref={ref} className={cn("n-label", className)} data-slot="root" {...props} />;
+});

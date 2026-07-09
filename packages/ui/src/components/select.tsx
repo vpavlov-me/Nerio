@@ -13,10 +13,12 @@ export interface SelectOption {
   disabled?: boolean;
 }
 
-export interface SelectProps {
+export interface SelectProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "defaultValue" | "onChange"
+> {
   label: string;
   options: SelectOption[];
-  id?: string;
   name?: string;
   form?: string;
   required?: boolean;
@@ -27,8 +29,6 @@ export interface SelectProps {
   description?: React.ReactNode;
   message?: React.ReactNode;
   placeholder?: React.ReactNode;
-  className?: string;
-  "aria-describedby"?: string;
   "aria-invalid"?: boolean | "true" | "false" | "grammar" | "spelling";
   value?: string;
   defaultValue?: string;
@@ -36,28 +36,32 @@ export interface SelectProps {
   onChange?: (value: string) => void;
 }
 
-export function Select({
-  label,
-  options,
-  id,
-  name,
-  form,
-  required,
-  readOnly,
-  autoComplete,
-  disabled,
-  invalid = false,
-  description,
-  message,
-  placeholder = "Select",
-  className,
-  "aria-describedby": ariaDescribedBy,
-  "aria-invalid": ariaInvalid,
-  value,
-  defaultValue,
-  onValueChange,
-  onChange,
-}: SelectProps) {
+export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Select(
+  {
+    label,
+    options,
+    id,
+    name,
+    form,
+    required,
+    readOnly,
+    autoComplete,
+    disabled,
+    invalid = false,
+    description,
+    message,
+    placeholder = "Select",
+    className,
+    "aria-describedby": ariaDescribedBy,
+    "aria-invalid": ariaInvalid,
+    value,
+    defaultValue,
+    onValueChange,
+    onChange,
+    ...props
+  },
+  ref,
+) {
   const generatedId = React.useId();
   const controlId = id ?? generatedId;
   const descriptionId = description ? `${controlId}-description` : undefined;
@@ -67,9 +71,11 @@ export function Select({
 
   return (
     <div
+      ref={ref}
       className={cn("n-field n-select-field", className)}
       data-invalid={invalid ? "" : undefined}
       data-slot="root"
+      {...props}
     >
       <label className="n-label" data-slot="label" htmlFor={controlId}>
         {label}
@@ -146,4 +152,4 @@ export function Select({
       ) : null}
     </div>
   );
-}
+});
