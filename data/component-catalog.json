@@ -277,7 +277,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Surface primitive for grouped content."
     },
     {
@@ -285,7 +285,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Status and metadata label."
     },
     {
@@ -293,7 +293,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "User or entity avatar component."
     },
     {
@@ -301,7 +301,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Basic table for simple data display."
     },
     {
@@ -317,7 +317,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Layout divider component."
     },
     {
@@ -325,7 +325,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Simple definition-list value display."
     },
     {
@@ -333,7 +333,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Basic metric display. Advanced KPI cards belong to Pro."
     },
     {
@@ -357,7 +357,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Progress indicator."
     },
     {
@@ -365,7 +365,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Loading placeholder component."
     },
     {
@@ -373,7 +373,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Basic empty state component."
     },
     {
@@ -381,7 +381,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Loading indicator."
     },
     {

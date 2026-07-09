@@ -139,10 +139,11 @@
       "variants": ["neutral", "success", "danger", "info"],
       "requiredTokens": [
         "--n-badge-height",
-        "--n-radius-full",
-        "--n-color-surface-muted",
-        "--n-color-border-subtle",
-        "--n-color-text-secondary"
+        "--n-badge-radius",
+        "--n-color-status-success",
+        "--n-color-status-danger",
+        "--n-color-status-info",
+        "--n-color-status-neutral"
       ],
       "accessibility": [
         "Use concise text that does not rely on color alone.",
@@ -182,10 +183,9 @@
         "--n-spinner-size-sm",
         "--n-spinner-size-md",
         "--n-spinner-size-lg",
-        "--n-radius-full",
-        "--n-color-action-primary",
-        "--n-color-border-subtle",
-        "--n-font-size-sm"
+        "--n-spinner-border-width",
+        "--n-spinner-duration",
+        "--n-radius-full"
       ],
       "accessibility": [
         "Expose a label when loading status is not otherwise announced.",
@@ -221,7 +221,7 @@
       "baseUiPrimitives": [],
       "slots": ["root"],
       "variants": [],
-      "requiredTokens": ["--n-skeleton-height", "--n-color-surface-muted", "--n-radius-md"],
+      "requiredTokens": ["--n-skeleton-height", "--n-skeleton-duration", "--n-radius-md"],
       "accessibility": [
         "Skeleton is hidden from assistive technology by default.",
         "Pair loading regions with an accessible status when the wait is meaningful.",
@@ -234,13 +234,18 @@
       "title": "EmptyState",
       "description": "Explains missing content and offers a next action when useful.",
       "category": "feedback",
-      "dependencies": ["react"],
+      "dependencies": ["clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
           "source": "../../ui/src/components/empty-state.tsx",
           "target": "components/empty-state.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/styles/feedback.css",
@@ -251,12 +256,7 @@
       "baseUiPrimitives": [],
       "slots": ["root", "mark", "title", "description", "action"],
       "variants": [],
-      "requiredTokens": [
-        "--n-empty-state-mark-size",
-        "--n-color-border-strong",
-        "--n-color-text-primary",
-        "--n-color-text-secondary"
-      ],
+      "requiredTokens": ["--n-empty-state-mark-size", "--n-empty-state-gap"],
       "accessibility": [
         "Use a clear title and description instead of decorative empty copy.",
         "Provide one primary action only when there is an obvious recovery path.",
@@ -291,12 +291,7 @@
       "baseUiPrimitives": [],
       "slots": ["root"],
       "variants": [],
-      "requiredTokens": [
-        "--n-color-surface",
-        "--n-color-border-subtle",
-        "--n-radius-lg",
-        "--n-shadow-sm"
-      ],
+      "requiredTokens": ["--n-card-padding", "--n-card-radius", "--n-shadow-sm"],
       "accessibility": [
         "Use Card to group related content, not to decorate every section.",
         "Provide semantic headings inside cards when the content needs structure.",
@@ -344,13 +339,18 @@
       "title": "Avatar",
       "description": "Identifies a person, team, or entity.",
       "category": "data-display",
-      "dependencies": ["react"],
+      "dependencies": ["clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
           "source": "../../ui/src/components/avatar.tsx",
           "target": "components/avatar.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/styles/display.css",
@@ -361,12 +361,7 @@
       "baseUiPrimitives": [],
       "slots": ["root", "image", "fallback"],
       "variants": ["image", "fallback"],
-      "requiredTokens": [
-        "--n-avatar-size-md",
-        "--n-radius-full",
-        "--n-color-surface-muted",
-        "--n-color-border-subtle"
-      ],
+      "requiredTokens": ["--n-avatar-size-md", "--n-radius-full"],
       "accessibility": [
         "Use the name prop to generate fallback initials.",
         "Images receive the supplied name as alt text.",
@@ -379,13 +374,18 @@
       "title": "Progress",
       "description": "Shows completion for a task, upload, or workflow.",
       "category": "feedback",
-      "dependencies": ["react"],
+      "dependencies": ["clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
           "source": "../../ui/src/components/progress.tsx",
           "target": "components/progress.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/styles/feedback.css",
@@ -396,14 +396,9 @@
       "baseUiPrimitives": [],
       "slots": ["root", "label", "indicator"],
       "variants": [],
-      "requiredTokens": [
-        "--n-progress-height",
-        "--n-radius-full",
-        "--n-color-surface-muted",
-        "--n-color-action-primary"
-      ],
+      "requiredTokens": ["--n-progress-height", "--n-progress-radius", "--n-color-action-primary"],
       "accessibility": [
-        "Clamps aria-valuenow between 0 and 100.",
+        "Clamps aria-valuenow between 0 and 100 and exposes an accessible progressbar name.",
         "Provide a label when the surrounding context does not name the progress.",
         "Use determinate progress only when a reliable value exists."
       ],
@@ -426,12 +421,7 @@
       "baseUiPrimitives": [],
       "slots": ["root", "label", "value", "trend"],
       "variants": [],
-      "requiredTokens": [
-        "--n-font-size-2xl",
-        "--n-line-height-tight",
-        "--n-color-text-tertiary",
-        "--n-color-success"
-      ],
+      "requiredTokens": ["--n-stat-gap", "--n-font-size-2xl", "--n-color-success"],
       "accessibility": [
         "Use clear labels so values remain understandable out of context.",
         "Keep trend text textual; do not encode direction by color alone.",
@@ -444,13 +434,18 @@
       "title": "KeyValue",
       "description": "Displays compact metadata as a label and value pair.",
       "category": "data-display",
-      "dependencies": ["react"],
+      "dependencies": ["clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
           "source": "../../ui/src/components/key-value.tsx",
           "target": "components/key-value.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/styles/display.css",
@@ -461,7 +456,7 @@
       "baseUiPrimitives": [],
       "slots": ["root", "label", "value"],
       "variants": [],
-      "requiredTokens": ["--n-color-text-tertiary", "--n-font-size-sm"],
+      "requiredTokens": ["--n-key-value-gap", "--n-font-size-sm"],
       "accessibility": [
         "Use inside a dl when presenting multiple metadata pairs.",
         "Keep labels concise and stable.",
@@ -506,7 +501,7 @@
       ],
       "accessibility": [
         "Use semantic table sections, headers, rows, and cells.",
-        "Prefer TanStack Table through @nerio/adapters for complex data behavior.",
+        "Keep sorting, filtering, pagination, selection, and advanced table behavior out of this Core primitive.",
         "Keep dense operational tables scannable with clear column labels."
       ],
       "usage": "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/nerio/components/table';\n\n<Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table>"

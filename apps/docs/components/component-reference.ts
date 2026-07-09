@@ -278,14 +278,23 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use concise labels such as Draft, Ready, Shared, or Blocked."],
       dont: ["Do not use badges as buttons or navigation targets."],
     },
-    tokens: ["--n-badge-radius", "--n-badge-height", ...sharedTokens],
+    tokens: [
+      "--n-badge-radius",
+      "--n-badge-height",
+      "--n-color-status-success",
+      "--n-color-status-danger",
+      "--n-color-status-info",
+    ],
   },
   spinner: {
     category: "Actions and feedback",
     purpose: "Use Spinner for short loading moments when progress cannot be measured.",
     anatomy: [
       { title: "root", description: "Inline loading indicator with an accessible label." },
-      { title: "track", description: "Tokenized circular motion using semantic action color." },
+      {
+        title: "track",
+        description: "Tokenized circular motion that inherits current text color.",
+      },
     ],
     variants: [
       {
@@ -305,7 +314,14 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for quick work such as saving, filtering, or refreshing."],
       dont: ["Do not use Spinner for long tasks where determinate Progress is available."],
     },
-    tokens: ["--n-spinner-size-md", "--n-duration-normal", "--n-color-action-primary"],
+    tokens: [
+      "--n-spinner-size-sm",
+      "--n-spinner-size-md",
+      "--n-spinner-size-lg",
+      "--n-spinner-border-width",
+      "--n-spinner-duration",
+      "--n-radius-full",
+    ],
   },
   skeleton: {
     category: "Actions and feedback",
@@ -328,7 +344,7 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Match the approximate dimensions of the content that will load."],
       dont: ["Do not show skeletons after data has failed; switch to an error or empty state."],
     },
-    tokens: ["--n-color-surface-muted", "--n-radius-md", "--n-duration-normal"],
+    tokens: ["--n-skeleton-height", "--n-skeleton-duration", "--n-radius-md"],
   },
   "empty-state": {
     category: "Actions and feedback",
@@ -354,12 +370,15 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Empty", description: "Default state for no records or no matching filters." },
       { title: "Filtered", description: "Pair with a reset action when filters hide all results." },
     ],
-    accessibility: ["Keep the action reachable after the explanatory text in reading order."],
+    accessibility: [
+      "Keep the title, description, and optional action clear in reading order.",
+      "Use the optional action only when there is an obvious recovery path.",
+    ],
     guidance: {
       do: ["Use product language like projects, collections, collaborators, or activity."],
       dont: ["Do not blame users or use domain-specific assumptions."],
     },
-    tokens: ["--n-empty-state-gap", "--n-color-text-secondary", ...sharedTokens],
+    tokens: ["--n-empty-state-mark-size", "--n-empty-state-gap"],
   },
   input: {
     category: "Forms",
@@ -680,7 +699,7 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for repeated summaries, project cards, or compact object groups."],
       dont: ["Do not put cards inside cards or wrap entire page sections as decorative cards."],
     },
-    tokens: ["--n-card-padding", "--n-card-radius", "--n-shadow-sm", ...sharedTokens],
+    tokens: ["--n-card-padding", "--n-card-radius", "--n-shadow-sm"],
   },
   separator: {
     category: "Layout and display",
@@ -706,7 +725,7 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use separators sparingly to support scanability."],
       dont: ["Do not use separators as a replacement for spacing rhythm."],
     },
-    tokens: ["--n-color-border-subtle", "--n-space-3"],
+    tokens: ["--n-color-border-subtle"],
   },
   avatar: {
     category: "Layout and display",
@@ -731,7 +750,7 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Pair avatars with names in dense lists when possible."],
       dont: ["Do not rely on avatar color as the only identifier."],
     },
-    tokens: ["--n-avatar-size-md", "--n-radius-full", ...sharedTokens],
+    tokens: ["--n-avatar-size-md", "--n-radius-full"],
   },
   progress: {
     category: "Layout and display",
@@ -746,7 +765,10 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "In progress", description: "Value is between start and complete." },
       { title: "Complete", description: "Value reaches 100." },
     ],
-    accessibility: ["Expose a label and numeric value for assistive technologies."],
+    accessibility: [
+      "Expose a label and numeric value for assistive technologies.",
+      "Use Spinner instead when work cannot be measured reliably.",
+    ],
     guidance: {
       do: ["Use when progress can be measured."],
       dont: ["Do not fake precision for unknown work; use Spinner instead."],
@@ -768,10 +790,13 @@ export const componentReference: Record<string, ComponentReference> = {
       "Keep labels and values readable together; do not encode meaning only in trend color.",
     ],
     guidance: {
-      do: ["Use for dashboard summaries and compact analytics."],
-      dont: ["Do not overload one Stat with multiple metrics."],
+      do: ["Use for one simple metric with a clear label."],
+      dont: [
+        "Do not overload one Stat with multiple metrics.",
+        "Do not turn Stat into KPI Card; advanced dashboard cards belong to Pro.",
+      ],
     },
-    tokens: ["--n-stat-gap", "--n-font-size-2xl", ...sharedTokens],
+    tokens: ["--n-stat-gap", "--n-font-size-2xl", "--n-color-success"],
   },
   "key-value": {
     category: "Layout and display",
@@ -812,7 +837,10 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: ["Use real table markup for tabular data and concise column headers."],
     guidance: {
       do: ["Use for comparable records and operational lists."],
-      dont: ["Do not use Table for layout grids or card collections."],
+      dont: [
+        "Do not use Table for layout grids or card collections.",
+        "Do not add sorting, filtering, pagination, selection, or DataGrid behavior to this Core primitive; those belong to Pro or adapters.",
+      ],
     },
     tokens: [
       "--n-table-cell-padding-y",

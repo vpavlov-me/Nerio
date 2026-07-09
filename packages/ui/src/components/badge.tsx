@@ -7,8 +7,17 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
 }
 
-export function Badge({ className, variant = "neutral", ...props }: BadgeProps) {
+export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
+  { className, variant = "neutral", ...props },
+  ref,
+) {
   return (
-    <span className={cn("n-badge", className)} data-slot="root" data-variant={variant} {...props} />
+    <span
+      ref={ref}
+      className={cn("n-badge", className)}
+      data-slot="root"
+      data-variant={variant}
+      {...props}
+    />
   );
-}
+});

@@ -9,8 +9,8 @@
 }
 
 .n-spinner {
-  animation: n-spin 800ms linear infinite;
-  border: 2px solid currentColor;
+  animation: n-spin var(--n-spinner-duration) linear infinite;
+  border: var(--n-spinner-border-width) solid currentColor;
   border-block-start-color: transparent;
   border-radius: var(--n-radius-full);
   block-size: var(--n-spinner-size-md);

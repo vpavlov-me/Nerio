@@ -1,15 +1,19 @@
 import * as React from "react";
+import { cn } from "../lib/cn";
 
-export interface KeyValueProps {
+export interface KeyValueProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string;
   value: React.ReactNode;
 }
 
-export function KeyValue({ label, value }: KeyValueProps) {
+export const KeyValue = React.forwardRef<HTMLDivElement, KeyValueProps>(function KeyValue(
+  { className, label, value, ...props },
+  ref,
+) {
   return (
-    <div className="n-key-value" data-slot="root">
+    <div ref={ref} className={cn("n-key-value", className)} data-slot="root" {...props}>
       <dt data-slot="label">{label}</dt>
       <dd data-slot="value">{value}</dd>
     </div>
   );
-}
+});
