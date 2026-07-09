@@ -99,6 +99,33 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 
 Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
 
+```tsx
+import { Alert, Card, Link, Table } from "@nerio/ui";
+import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
+import "@nerio/ui/styles.css";
+```
+
+## Registry CLI
+
+The `nerio` CLI installs editable source files into a consuming app:
+
+```bash
+nerio init
+nerio list
+nerio info button
+nerio add button --dry-run
+nerio add button
+nerio doctor
+```
+
+`nerio list` and `nerio info <component>` read the configured registry. `nerio add` writes component source and registry dependencies into the configured `components` directory.
+
+## Pre-release status
+
+The root workspace and apps are private. The Core packages intended for a future public pre-release are `@nerio/tokens`, `@nerio/ui`, `@nerio/adapters`, `@nerio/registry`, `@nerio/cli`, and `@nerio/mcp`. `@nerio/config` remains private internal tooling.
+
+Do not publish packages from this repository until maintainers explicitly approve the release process.
+
 ## Contributing
 
 Nerio welcomes issues and pull requests. All contributions are reviewed by maintainers to preserve the system's API, visual consistency, accessibility standards, and long-term direction.

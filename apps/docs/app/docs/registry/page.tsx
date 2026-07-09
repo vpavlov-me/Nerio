@@ -6,6 +6,8 @@ const init = `nerio init \\
   --registry https://raw.githubusercontent.com/vpavlov-me/Nerio/main/packages/registry/src/manifest.json
 
 nerio doctor
+nerio list
+nerio info button
 nerio add button
 nerio add input --dry-run`;
 
@@ -33,6 +35,7 @@ export default function Page() {
         <p>
           <code>init</code> creates configuration, <code>doctor</code> validates the manifest, and{" "}
           <code>add</code> writes the selected component and source dependencies. Use{" "}
+          <code>list</code> to discover components, <code>info</code> to inspect metadata, and{" "}
           <code>--dry-run</code> to review the install plan first.
         </p>
       </section>
@@ -73,6 +76,14 @@ export default function Page() {
         <ul className="doc-list">
           <li>Metadata declares dependencies, files, Base UI primitives, slots, and variants.</li>
           <li>Required tokens make styling dependencies explicit for products and AI agents.</li>
+          <li>
+            <code>list</code> prints component name, title, and category from the configured
+            registry.
+          </li>
+          <li>
+            <code>info &lt;component&gt;</code> prints dependencies, registry dependencies, files,
+            tokens, and usage.
+          </li>
           <li>Registry dependencies are traversed before the requested component is installed.</li>
           <li>
             <code>--dry-run</code> prints every target file without writing to the project.

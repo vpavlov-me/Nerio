@@ -167,6 +167,38 @@ function uiEntrypointFailures() {
   return failures;
 }
 
+function packageReadinessFailures() {
+  const rootPackage = JSON.parse(read("package.json"));
+  const tokensPackage = JSON.parse(read("packages/tokens/package.json"));
+  const cliPackage = JSON.parse(read("packages/cli/package.json"));
+  const failures = [];
+  const expectedRootScripts = [
+    "format:check",
+    "lint",
+    "typecheck",
+    "validate:docs",
+    "test:cli",
+    "test:mcp",
+    "build",
+  ];
+
+  for (const script of expectedRootScripts) {
+    if (!rootPackage.scripts?.[script]) {
+      failures.push(`package.json: missing ${script} script`);
+    }
+  }
+
+  if (tokensPackage.exports?.["./styles.css"] !== "./src/styles.css") {
+    failures.push("packages/tokens/package.json: missing ./styles.css export");
+  }
+
+  if (cliPackage.bin?.nerio !== "./src/index.js") {
+    failures.push("packages/cli/package.json: missing nerio bin entry");
+  }
+
+  return failures;
+}
+
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
 const componentCatalog = JSON.parse(read("data/component-catalog.json"));
@@ -222,6 +254,7 @@ const duplicateTargets = duplicateRegistryTargets(manifest.items);
 const registryDependenciesMissing = missingRegistryDependencies(manifest.items);
 const rawPrimitiveTokens = rawPrimitiveTokenUsages();
 const uiEntrypointIssues = uiEntrypointFailures();
+const packageReadinessIssues = packageReadinessFailures();
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -253,6 +286,7 @@ reportMissing("Implemented registry items missing from component catalog", regis
 reportMissing("Implemented catalog components missing registry metadata", catalogWithoutRegistry);
 reportMissing("Raw primitive palette tokens used in component CSS", rawPrimitiveTokens);
 reportMissing("UI package entrypoint issues", uiEntrypointIssues);
+reportMissing("Package readiness issues", packageReadinessIssues);
 
 const failures = [
   missingNav,
@@ -273,6 +307,7 @@ const failures = [
   catalogWithoutRegistry,
   rawPrimitiveTokens,
   uiEntrypointIssues,
+  packageReadinessIssues,
 ].flat();
 
 if (failures.length > 0) {
@@ -280,5 +315,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Docs registry alignment verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
+  `Docs registry, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
 );

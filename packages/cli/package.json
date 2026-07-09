@@ -1,7 +1,12 @@
 {
   "name": "@nerio/cli",
   "version": "0.0.0",
+  "description": "Nerio source registry command-line tools.",
   "private": true,
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
   "bin": {
     "nerio": "./src/index.js"
   },

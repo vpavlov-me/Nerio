@@ -1,7 +1,12 @@
 {
   "name": "@nerio/mcp",
   "version": "0.0.0",
+  "description": "Nerio Model Context Protocol server for component discovery.",
   "private": true,
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
   "bin": {
     "nerio-mcp": "./src/server.js"
   },

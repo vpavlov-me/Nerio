@@ -52,6 +52,17 @@ Scope:
 
 Goal: add missing Core components after the foundation is stable.
 
+### Pre-release readiness
+
+Before continuing broad Phase 2B expansion, prepare Core for a future public pre-release without publishing:
+
+- audit package metadata, exports, bins, and intended public/private boundaries;
+- keep CI aligned with format, lint, typecheck, docs validation, CLI fixture, MCP fixture, and build checks;
+- maintain concise changelog and manual release notes;
+- document package imports, client imports, styles, and source installs;
+- improve CLI discovery with `list`, `info`, and clearer help;
+- document that npm publishing requires maintainer approval.
+
 Scope:
 
 - Actions: Link

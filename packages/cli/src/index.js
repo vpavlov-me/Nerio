@@ -7,7 +7,7 @@ const DEFAULT_REGISTRY =
 const cwd = process.cwd();
 const args = process.argv.slice(2);
 const command = args[0];
-const itemName = command === "add" ? args[1] : undefined;
+const itemName = command === "add" || command === "info" ? args[1] : undefined;
 
 function option(name) {
   const index = args.indexOf(name);
@@ -16,6 +16,50 @@ function option(name) {
 
 function hasFlag(name) {
   return args.includes(name);
+}
+
+function help(commandName) {
+  const sections = {
+    init: [
+      "Usage: nerio init [--registry <path-or-url>] [--components <directory>]",
+      "",
+      "Create nerio.json for source-installed components.",
+    ],
+    add: [
+      "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite]",
+      "",
+      "Install an editable source component and its registry dependencies.",
+    ],
+    list: [
+      "Usage: nerio list [--registry <path-or-url>]",
+      "",
+      "List component names, titles, and categories from the configured registry.",
+    ],
+    info: [
+      "Usage: nerio info <component> [--registry <path-or-url>]",
+      "",
+      "Show registry metadata, dependencies, tokens, files, and usage for one component.",
+    ],
+    doctor: [
+      "Usage: nerio doctor [--registry <path-or-url>]",
+      "",
+      "Validate nerio.json and the configured registry manifest.",
+    ],
+    root: [
+      "Usage: nerio <command> [options]",
+      "",
+      "Commands:",
+      "  nerio init     Create nerio.json",
+      "  nerio add      Install editable source components",
+      "  nerio list     List registry components",
+      "  nerio info     Show metadata for one component",
+      "  nerio doctor   Validate configuration and registry metadata",
+      "",
+      "Run nerio <command> --help for command options.",
+    ],
+  };
+
+  return (sections[commandName] || sections.root).join("\n");
 }
 
 function isUrl(value) {
@@ -172,6 +216,45 @@ async function add(name) {
   }
 }
 
+async function list() {
+  const config = readConfig(false);
+  const registry = registryLocation(config);
+  const manifest = await readManifest(registry);
+
+  for (const item of manifest.items) {
+    console.log(`${item.name}\t${item.title}\t${item.category}`);
+  }
+}
+
+function formatList(values) {
+  return values?.length ? values.join(", ") : "none";
+}
+
+async function info(name) {
+  if (!name || name.startsWith("--")) {
+    throw new Error("Usage: nerio info <component> [--registry <path-or-url>]");
+  }
+
+  const config = readConfig(false);
+  const registry = registryLocation(config);
+  const manifest = await readManifest(registry);
+  const item = manifest.items.find((entry) => entry.name === name);
+  if (!item) {
+    throw new Error(`Unknown registry item: ${name}`);
+  }
+
+  console.log(`${item.title} (${item.name})`);
+  console.log(`Description: ${item.description}`);
+  console.log(`Category: ${item.category}`);
+  console.log(`Dependencies: ${formatList(item.dependencies)}`);
+  console.log(`Registry dependencies: ${formatList(item.registryDependencies)}`);
+  console.log(`Files: ${item.files.length}`);
+  console.log(`Required tokens: ${formatList(item.requiredTokens)}`);
+  console.log("");
+  console.log("Usage:");
+  console.log(item.usage);
+}
+
 async function doctor() {
   const config = readConfig(true);
   if (!config.schemaVersion || !config.registry || !config.components) {
@@ -219,11 +302,18 @@ async function doctor() {
 }
 
 async function main() {
+  if (hasFlag("--help") || hasFlag("-h")) {
+    console.log(help(command));
+    return;
+  }
+
   if (command === "init") await init();
   else if (command === "add") await add(itemName);
+  else if (command === "list") await list();
+  else if (command === "info") await info(itemName);
   else if (command === "doctor") await doctor();
   else {
-    console.log("Usage: nerio <init|add|doctor>");
+    console.log(help("root"));
     process.exitCode = command ? 1 : 0;
   }
 }

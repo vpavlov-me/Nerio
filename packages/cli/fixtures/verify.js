@@ -159,6 +159,32 @@ async function verify() {
   try {
     await run(localTarget, "init", "--registry", manifest);
     await run(localTarget, "doctor");
+    const helpOutput = await run(localTarget, "--help");
+    if (!helpOutput.includes("nerio list") || !helpOutput.includes("nerio info")) {
+      throw new Error("Help output does not include list and info commands.");
+    }
+    const addHelpOutput = await run(localTarget, "add", "--help");
+    if (!addHelpOutput.includes("nerio add <component>") || !addHelpOutput.includes("--dry-run")) {
+      throw new Error("Add help output does not describe the source install options.");
+    }
+    const listOutput = await run(localTarget, "list");
+    if (
+      !listOutput.includes("button\tButton\tactions") ||
+      !listOutput.includes("alert\tAlert\tfeedback")
+    ) {
+      throw new Error("List output did not include registry component name, title, and category.");
+    }
+    const infoOutput = await run(localTarget, "info", "button");
+    if (
+      !infoOutput.includes("Button (button)") ||
+      !infoOutput.includes("Dependencies:") ||
+      !infoOutput.includes("Registry dependencies: none") ||
+      !infoOutput.includes("Required tokens:") ||
+      !infoOutput.includes("Usage:") ||
+      !infoOutput.includes('<Button variant="primary">Save changes</Button>')
+    ) {
+      throw new Error("Info output did not include the expected registry metadata.");
+    }
     const dryRunOutput = await run(localTarget, "add", "input", "--dry-run");
     if (
       !dryRunOutput.includes("Would add Input") ||
@@ -320,6 +346,14 @@ async function verify() {
     }
 
     await run(urlTarget, "init", "--registry", manifestUrl);
+    const urlListOutput = await run(urlTarget, "list", "--registry", manifestUrl);
+    if (!urlListOutput.includes("button\tButton\tactions")) {
+      throw new Error("List output did not work with an HTTP registry override.");
+    }
+    const urlInfoOutput = await run(urlTarget, "info", "button", "--registry", manifestUrl);
+    if (!urlInfoOutput.includes("Button (button)") || !urlInfoOutput.includes("Files:")) {
+      throw new Error("Info output did not work with an HTTP registry override.");
+    }
     await run(urlTarget, "add", "button");
     await run(urlTarget, "doctor");
     assertInstall(urlTarget);

@@ -1,7 +1,12 @@
 {
   "name": "@nerio/tokens",
   "version": "0.0.0",
+  "description": "Nerio Core design tokens, themes, modes, density, and CSS variable contracts.",
   "private": true,
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
   "sideEffects": [
     "./src/styles.css"
   ],

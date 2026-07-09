@@ -1,7 +1,12 @@
 {
   "name": "@nerio/adapters",
   "version": "0.0.0",
+  "description": "Nerio Core adapters for icons, forms, tables, and charts.",
   "private": true,
+  "license": "MIT",
+  "files": [
+    "src"
+  ],
   "exports": {
     ".": "./src/index.ts"
   },

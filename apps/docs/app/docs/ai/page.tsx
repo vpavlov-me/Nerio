@@ -10,6 +10,10 @@ const mcpConfig = `{
   }
 }`;
 
+const packageImports = `import { Alert, Card, Link, Table } from "@nerio/ui";
+import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
+import "@nerio/ui/styles.css";`;
+
 export default function Page() {
   return (
     <article className="doc-page">
@@ -53,6 +57,15 @@ export default function Page() {
             </span>
           </div>
         </div>
+      </section>
+
+      <section className="doc-section">
+        <h2>Import model</h2>
+        <CodeExample code={packageImports} label="Package imports" />
+        <p>
+          Agents should keep static components on the server-safe <code>@nerio/ui</code> entrypoint
+          and use <code>@nerio/ui/client</code> only for interactive Base UI-backed components.
+        </p>
       </section>
 
       <section className="doc-section">
