@@ -136,9 +136,13 @@ async function add(name) {
     for (const file of item.files) {
       const source = resolveSource(registry, file.source);
       const target = resolveTarget(config.components, file.target);
+      if (hasFlag("--dry-run")) {
+        written.push(path.relative(cwd, target));
+        continue;
+      }
+
       const content = await readText(source);
       fs.mkdirSync(path.dirname(target), { recursive: true });
-
       if (fs.existsSync(target) && !hasFlag("--overwrite")) {
         if (fs.readFileSync(target, "utf8") === content) {
           skipped.push(path.relative(cwd, target));
@@ -155,7 +159,14 @@ async function add(name) {
   }
 
   const item = items.get(name);
-  console.log(`Added ${item.title}: ${written.length} files written, ${skipped.length} unchanged.`);
+  if (hasFlag("--dry-run")) {
+    console.log(`Would add ${item.title}: ${written.length} files.`);
+    for (const file of written) console.log(`- ${file}`);
+  } else {
+    console.log(
+      `Added ${item.title}: ${written.length} files written, ${skipped.length} unchanged.`,
+    );
+  }
   if (item.dependencies?.length) {
     console.log(`Package dependencies: ${item.dependencies.join(", ")}`);
   }
@@ -170,8 +181,29 @@ async function doctor() {
   const registry = registryLocation(config);
   const manifest = await readManifest(registry);
   for (const item of manifest.items) {
-    if (!item.name || !item.title || !Array.isArray(item.files)) {
-      throw new Error("Every registry item must define name, title, and files.");
+    if (
+      !item.name ||
+      !item.title ||
+      !item.description ||
+      !item.category ||
+      !Array.isArray(item.files)
+    ) {
+      throw new Error(
+        "Every registry item must define name, title, description, category, and files.",
+      );
+    }
+    for (const field of [
+      "dependencies",
+      "registryDependencies",
+      "baseUiPrimitives",
+      "slots",
+      "variants",
+      "requiredTokens",
+      "accessibility",
+    ]) {
+      if (!Array.isArray(item[field])) {
+        throw new Error(`Registry item ${item.name} must define ${field} as an array.`);
+      }
     }
     for (const file of item.files) {
       if (!file.source || !file.target || !file.role) {

@@ -38,7 +38,8 @@ server.registerTool(
   "get_component_usage",
   {
     title: "Get Nerio component usage",
-    description: "Read usage, variants, slots, and accessibility guidance for one component.",
+    description:
+      "Read usage, install files, tokens, primitives, variants, slots, and accessibility guidance.",
     inputSchema: { name: z.string().min(1) },
     annotations: readOnly,
   },

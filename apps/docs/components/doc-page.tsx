@@ -92,6 +92,45 @@ export function StandardDocPage({
             "Use this component as a token-driven Nerio building block inside product workflows."}
         </p>
       </section>
+      {registryItem ? (
+        <section className="doc-section">
+          <h2 id="implementation-contract">Implementation contract</h2>
+          <div className="reference-grid">
+            <div>
+              <code>Registry item</code>
+              <p>
+                {registryItem.name} installs {registryItem.files.length} source file
+                {registryItem.files.length === 1 ? "" : "s"} into the configured components
+                directory.
+              </p>
+            </div>
+            <div>
+              <code>Base UI</code>
+              <p>
+                {registryItem.baseUiPrimitives.length
+                  ? registryItem.baseUiPrimitives.join(", ")
+                  : "No interactive primitive required."}
+              </p>
+            </div>
+            <div>
+              <code>Registry dependencies</code>
+              <p>
+                {registryItem.registryDependencies.length
+                  ? registryItem.registryDependencies.join(", ")
+                  : "None."}
+              </p>
+            </div>
+            <div>
+              <code>Package dependencies</code>
+              <p>
+                {registryItem.dependencies.length
+                  ? registryItem.dependencies.join(", ")
+                  : "No external package dependency."}
+              </p>
+            </div>
+          </div>
+        </section>
+      ) : null}
       <section className="doc-section">
         <h2 id="anatomy">Anatomy</h2>
         <ReferenceGrid items={anatomy} />

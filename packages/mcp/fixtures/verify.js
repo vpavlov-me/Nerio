@@ -24,6 +24,15 @@ async function verify() {
       throw new Error("MCP get_component returned invalid Button metadata.");
     }
 
+    const usageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "button" },
+    });
+    const usage = JSON.parse(usageResult.content[0].text);
+    if (!usage.requiredTokens.includes("--n-button-height-md") || !usage.files.length) {
+      throw new Error("MCP get_component_usage did not include install and token metadata.");
+    }
+
     const listResult = await client.callTool({ name: "list_components", arguments: {} });
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [

@@ -22,9 +22,16 @@ export function get_component_usage(name: string) {
   return {
     name: item.name,
     title: item.title,
+    description: item.description,
+    category: item.category,
     usage: item.usage,
+    dependencies: item.dependencies,
+    registryDependencies: item.registryDependencies,
+    files: item.files,
+    baseUiPrimitives: item.baseUiPrimitives,
     slots: item.slots,
     variants: item.variants,
+    requiredTokens: item.requiredTokens,
     accessibility: item.accessibility,
   };
 }
