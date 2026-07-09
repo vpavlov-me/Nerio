@@ -58,6 +58,7 @@ Before continuing broad Phase 2B expansion, prepare Core for a future public pre
 
 - audit package metadata, exports, bins, and intended public/private boundaries;
 - keep CI aligned with format, lint, typecheck, docs validation, CLI fixture, MCP fixture, and build checks;
+- run package pack dry-runs for intended public Core packages before any manual publishing decision;
 - maintain concise changelog and manual release notes;
 - document package imports, client imports, styles, and source installs;
 - improve CLI discovery with `list`, `info`, and clearer help;

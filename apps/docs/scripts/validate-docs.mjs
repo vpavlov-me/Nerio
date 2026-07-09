@@ -180,6 +180,7 @@ function packageReadinessFailures() {
     "test:cli",
     "test:mcp",
     "build",
+    "pack:check",
   ];
 
   for (const script of expectedRootScripts) {
@@ -194,6 +195,32 @@ function packageReadinessFailures() {
 
   if (cliPackage.bin?.nerio !== "./src/index.js") {
     failures.push("packages/cli/package.json: missing nerio bin entry");
+  }
+
+  if (!existsSync(join(root, "scripts/pack-check.mjs"))) {
+    failures.push("scripts/pack-check.mjs: missing package dry-run script");
+  }
+
+  if (!existsSync(join(root, ".github/workflows/ci.yml"))) {
+    failures.push(".github/workflows/ci.yml: missing CI workflow");
+  } else {
+    const ciWorkflow = read(".github/workflows/ci.yml");
+    const requiredCommands = [
+      "pnpm format:check",
+      "pnpm lint",
+      "pnpm typecheck",
+      "pnpm validate:docs",
+      "pnpm test:cli",
+      "pnpm test:mcp",
+      "pnpm build",
+      "pnpm pack:check",
+    ];
+
+    for (const command of requiredCommands) {
+      if (!ciWorkflow.includes(command)) {
+        failures.push(`.github/workflows/ci.yml: missing ${command}`);
+      }
+    }
   }
 
   return failures;
