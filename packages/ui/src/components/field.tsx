@@ -25,13 +25,15 @@ export function Field({
   description,
   message,
   children,
-  invalid = Boolean(message),
+  invalid = false,
   className,
   ...props
 }: FieldProps) {
-  const id = React.useId();
-  const descriptionId = description ? `${id}-description` : undefined;
-  const messageId = message ? `${id}-message` : undefined;
+  const generatedId = React.useId();
+  const childId = React.isValidElement<FieldControlProps>(children) ? children.props.id : undefined;
+  const controlId = childId ?? generatedId;
+  const descriptionId = description ? `${controlId}-description` : undefined;
+  const messageId = message ? `${controlId}-message` : undefined;
   const describedBy = [descriptionId, messageId].filter(Boolean).join(" ") || undefined;
 
   return (
@@ -41,14 +43,14 @@ export function Field({
       data-slot="root"
       {...props}
     >
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={controlId}>{label}</Label>
       {React.isValidElement<FieldControlProps>(children)
         ? React.cloneElement(children, {
-            id: children.props.id ?? id,
+            id: controlId,
             "aria-describedby":
               [children.props["aria-describedby"], describedBy].filter(Boolean).join(" ") ||
               undefined,
-            "aria-invalid": children.props["aria-invalid"] ?? invalid,
+            "aria-invalid": children.props["aria-invalid"] ?? (invalid ? true : undefined),
             invalid: children.props.invalid ?? invalid,
           })
         : children}

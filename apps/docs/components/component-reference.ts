@@ -33,7 +33,7 @@ export const snippets: Record<string, string> = {
   label:
     'import { Input, Label } from \'@nerio/ui\';\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" />',
   field:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" message="Use at least 3 characters."><Input /></Field>',
+    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" message="Use a clear internal name."><Input /></Field>',
   "form-message":
     "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
   checkbox: "import { Checkbox } from '@nerio/ui';\n\n<Checkbox aria-label=\"Include archived\" />",
@@ -41,7 +41,7 @@ export const snippets: Record<string, string> = {
   dialog:
     'import { Dialog } from \'@nerio/ui\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
-    "import { Select } from '@nerio/ui';\n\n<Select label=\"Status\" options={[{ label: 'Active', value: 'active' }]} />",
+    "import { Select } from '@nerio/ui';\n\n<Select label=\"Status\" placeholder=\"Choose status\" options={[{ label: 'Active', value: 'active' }]} />",
   toast:
     "import { Button, ToastProvider, ToastViewport, useToastManager } from '@nerio/ui';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: \"Saved\" })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>",
   tabs: 'import { Tabs } from \'@nerio/ui\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }]} />',
@@ -59,7 +59,7 @@ export const snippets: Record<string, string> = {
   "key-value":
     'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
   table:
-    "import { Table } from '@nerio/ui';\n\n<Table><thead><tr><th>Name</th></tr></thead><tbody><tr><td>Roadmap</td></tr></tbody></Table>",
+    "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@nerio/ui';\n\n<Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table>",
 };
 
 export const sharedTokens = [
@@ -371,7 +371,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Error", description: "Use for failed validation with a clear message." },
     ],
     states: [
-      { title: "Neutral", description: "Description supports successful entry." },
+      { title: "Neutral", description: "Description and message can provide helper text." },
       { title: "Invalid", description: "Message explains how to recover." },
     ],
     accessibility: [
@@ -381,7 +381,7 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use Field as the default wrapper for production form rows."],
       dont: ["Do not scatter messages away from the control they describe."],
     },
-    tokens: ["--n-field-gap", "--n-color-danger", ...sharedTokens],
+    tokens: ["--n-field-gap", "--n-color-status-danger", ...sharedTokens],
   },
   "form-message": {
     category: "Forms",
@@ -451,7 +451,7 @@ export const componentReference: Record<string, ComponentReference> = {
     purpose: "Use Select when a user chooses one option from a compact, known set.",
     anatomy: [
       { title: "trigger", description: "Button-like control that opens the option list." },
-      { title: "value", description: "Currently selected option." },
+      { title: "value", description: "Current selection or placeholder text." },
       { title: "content", description: "Layered list rendered through Base UI portal behavior." },
       { title: "item", description: "Selectable option with highlighted and selected states." },
     ],
@@ -463,13 +463,20 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Keyboard or pointer focus indicates the next selection.",
       },
       { title: "Disabled", description: "Prevents choosing unavailable options." },
+      {
+        title: "Invalid",
+        description: "Connects error text and aria-invalid when validation fails.",
+      },
     ],
-    accessibility: ["Use a visible label and ensure options are short enough to scan."],
+    accessibility: [
+      "Use a visible label and ensure options are short enough to scan.",
+      "Use placeholder text only as a hint, not as the accessible name.",
+    ],
     guidance: {
       do: ["Use for status, owner, view mode, and compact configuration choices."],
       dont: ["Do not use Select for large searchable datasets."],
     },
-    tokens: ["--n-select-height-md", "--n-overlay-shadow", ...sharedTokens],
+    tokens: ["--n-select-height-md", "--n-input-border", "--n-overlay-shadow", ...sharedTokens],
   },
   toast: {
     category: "Actions and feedback",
@@ -640,8 +647,10 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use Table to present structured records for scanning, comparison, and repeated operations.",
     anatomy: [
       { title: "table", description: "Native table structure for tabular data." },
-      { title: "thead", description: "Column labels." },
-      { title: "tbody", description: "Rows of related records." },
+      { title: "header", description: "Column labels." },
+      { title: "body", description: "Rows of related records." },
+      { title: "row", description: "A native table row." },
+      { title: "head", description: "A native table header cell." },
       { title: "cell", description: "Individual data values and compact actions." },
     ],
     variants: [
@@ -656,7 +665,12 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for comparable records and operational lists."],
       dont: ["Do not use Table for layout grids or card collections."],
     },
-    tokens: ["--n-table-cell-padding", "--n-color-border-subtle", ...sharedTokens],
+    tokens: [
+      "--n-table-cell-padding-y",
+      "--n-table-cell-padding-x",
+      "--n-table-border",
+      ...sharedTokens,
+    ],
   },
   tabs: {
     category: "Navigation and overlays",
@@ -706,7 +720,12 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for short decisions that need context without a route change."],
       dont: ["Do not use Dialog for long, multi-page workflows."],
     },
-    tokens: ["--n-dialog-width-md", "--n-overlay-shadow", ...sharedTokens],
+    tokens: [
+      "--n-dialog-width-md",
+      "--n-overlay-background",
+      "--n-overlay-shadow",
+      ...sharedTokens,
+    ],
   },
   popover: {
     category: "Navigation and overlays",

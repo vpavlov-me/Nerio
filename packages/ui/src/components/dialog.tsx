@@ -2,7 +2,9 @@
 
 import * as React from "react";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
+import { X } from "@nerio/adapters";
 import { Button } from "./button";
+import { Icon } from "./icon";
 import { cn } from "../lib/cn";
 
 export interface DialogProps {
@@ -34,7 +36,7 @@ export function Dialog({ trigger, title, description, children, className }: Dia
               ) : null}
             </div>
             <BaseDialog.Close className="n-dialog__close" aria-label="Close dialog">
-              x
+              <Icon icon={X} />
             </BaseDialog.Close>
           </header>
           <div className="n-dialog__body" data-slot="body">

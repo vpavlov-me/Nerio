@@ -1,9 +1,9 @@
 .n-card {
   background: var(--n-color-surface);
   border: 1px solid var(--n-color-border-subtle);
-  border-radius: var(--n-radius-lg);
+  border-radius: var(--n-card-radius);
   box-shadow: var(--n-shadow-sm);
-  padding: var(--n-space-5);
+  padding: var(--n-card-padding);
 }
 
 .n-separator {
@@ -35,7 +35,7 @@
 
 .n-stat {
   display: grid;
-  gap: var(--n-space-2);
+  gap: var(--n-stat-gap);
 }
 
 .n-stat > span,
@@ -57,7 +57,7 @@
 
 .n-key-value {
   display: grid;
-  gap: var(--n-space-1);
+  gap: var(--n-key-value-gap);
 }
 
 .n-key-value dd,
@@ -73,12 +73,28 @@
 
 .n-table th,
 .n-table td {
-  border-block-end: 1px solid var(--n-color-border-subtle);
-  padding: var(--n-space-3);
+  border-block-end: 1px solid var(--n-table-border);
+  padding: var(--n-table-cell-padding);
   text-align: start;
 }
 
 .n-table th {
+  background: var(--n-table-header-background);
   color: var(--n-color-text-tertiary);
   font-weight: var(--n-font-weight-medium);
+}
+
+.n-table tr:hover td {
+  background: var(--n-table-row-background-hover);
+}
+
+.n-table tr[data-selected] td {
+  background: var(--n-table-row-background-selected);
+}
+
+.n-table caption {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-sm);
+  margin-block-end: var(--n-space-2);
+  text-align: start;
 }

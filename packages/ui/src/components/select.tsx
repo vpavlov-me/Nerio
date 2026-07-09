@@ -4,6 +4,8 @@ import * as React from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { Check, ChevronDown } from "@nerio/adapters";
 import { Icon } from "./icon";
+import { FormMessage } from "./form-message";
+import { cn } from "../lib/cn";
 
 export interface SelectOption {
   label: string;
@@ -14,35 +16,75 @@ export interface SelectOption {
 export interface SelectProps {
   label: string;
   options: SelectOption[];
+  id?: string;
+  name?: string;
+  disabled?: boolean;
+  invalid?: boolean;
+  description?: React.ReactNode;
+  message?: React.ReactNode;
+  placeholder?: React.ReactNode;
+  className?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean | "true" | "false" | "grammar" | "spelling";
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
 }
 
-export function Select({ label, options, value, defaultValue, onChange }: SelectProps) {
-  const fallbackValue = defaultValue ?? value ?? options[0]?.value;
+export function Select({
+  label,
+  options,
+  id,
+  name,
+  disabled,
+  invalid = false,
+  description,
+  message,
+  placeholder = "Select",
+  className,
+  "aria-describedby": ariaDescribedBy,
+  "aria-invalid": ariaInvalid,
+  value,
+  defaultValue,
+  onChange,
+}: SelectProps) {
+  const generatedId = React.useId();
+  const controlId = id ?? generatedId;
+  const descriptionId = description ? `${controlId}-description` : undefined;
+  const messageId = message ? `${controlId}-message` : undefined;
+  const describedBy =
+    [ariaDescribedBy, descriptionId, messageId].filter(Boolean).join(" ") || undefined;
 
   return (
-    <div className="n-field n-select-field" data-slot="root">
-      <span className="n-label" data-slot="label">
+    <div
+      className={cn("n-field n-select-field", className)}
+      data-invalid={invalid ? "" : undefined}
+      data-slot="root"
+    >
+      <label className="n-label" data-slot="label" htmlFor={controlId}>
         {label}
-      </span>
+      </label>
       <BaseSelect.Root<string>
+        id={controlId}
+        name={name}
+        disabled={disabled}
         value={value}
-        defaultValue={fallbackValue}
+        defaultValue={defaultValue}
         items={options}
         onValueChange={(nextValue) => {
-          if (nextValue) {
+          if (typeof nextValue === "string") {
             onChange?.(nextValue);
           }
         }}
       >
-        <BaseSelect.Trigger className="n-select-trigger" aria-label={label} data-slot="trigger">
-          <BaseSelect.Value>
-            {(selectedValue) =>
-              options.find((option) => option.value === selectedValue)?.label ?? "Select"
-            }
-          </BaseSelect.Value>
+        <BaseSelect.Trigger
+          className="n-select-trigger"
+          aria-describedby={describedBy}
+          aria-invalid={ariaInvalid ?? (invalid ? true : undefined)}
+          data-invalid={invalid ? "" : undefined}
+          data-slot="trigger"
+        >
+          <BaseSelect.Value placeholder={placeholder} />
           <BaseSelect.Icon data-slot="icon">
             <Icon icon={ChevronDown} />
           </BaseSelect.Icon>
@@ -70,6 +112,16 @@ export function Select({ label, options, value, defaultValue, onChange }: Select
           </BaseSelect.Positioner>
         </BaseSelect.Portal>
       </BaseSelect.Root>
+      {description ? (
+        <p className="n-field__description" data-slot="description" id={descriptionId}>
+          {description}
+        </p>
+      ) : null}
+      {message ? (
+        <FormMessage id={messageId} tone={invalid ? "danger" : "neutral"}>
+          {message}
+        </FormMessage>
+      ) : null}
     </div>
   );
 }
