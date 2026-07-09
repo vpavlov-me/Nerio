@@ -143,6 +143,48 @@ async function verify() {
       throw new Error("MCP RadioGroup usage is missing Base UI, dependency, or token metadata.");
     }
 
+    const formGroupUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "form-group" },
+    });
+    const formGroupUsage = JSON.parse(formGroupUsageResult.content[0].text);
+    if (
+      formGroupUsage.baseUiPrimitives.length !== 0 ||
+      !formGroupUsage.registryDependencies.includes("form-message") ||
+      !formGroupUsage.requiredTokens.includes("--n-form-group-gap") ||
+      !formGroupUsage.accessibility.some((item) => item.includes("fieldset"))
+    ) {
+      throw new Error("MCP FormGroup usage is missing native, dependency, or token metadata.");
+    }
+
+    const checkboxUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "checkbox" },
+    });
+    const checkboxUsage = JSON.parse(checkboxUsageResult.content[0].text);
+    if (
+      !checkboxUsage.baseUiPrimitives.includes("checkbox") ||
+      !checkboxUsage.requiredTokens.includes("--n-checkbox-radius") ||
+      !checkboxUsage.requiredTokens.includes("--n-input-border-danger") ||
+      !checkboxUsage.accessibility.some((item) => item.includes("aria-invalid"))
+    ) {
+      throw new Error("MCP Checkbox usage is missing Base UI, invalid, or token metadata.");
+    }
+
+    const switchUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "switch" },
+    });
+    const switchUsage = JSON.parse(switchUsageResult.content[0].text);
+    if (
+      !switchUsage.baseUiPrimitives.includes("switch") ||
+      switchUsage.dependencies.includes("@nerio/adapters") ||
+      !switchUsage.requiredTokens.includes("--n-switch-thumb-offset") ||
+      !switchUsage.accessibility.some((item) => item.includes("immediate on/off settings"))
+    ) {
+      throw new Error("MCP Switch usage is missing Base UI, dependency, or token metadata.");
+    }
+
     const listUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "list" },
@@ -259,6 +301,7 @@ async function verify() {
       "toast",
       "input",
       "field",
+      "form-group",
       "checkbox",
       "switch",
       "icon-button",

@@ -81,6 +81,46 @@
   color: var(--n-color-status-success);
 }
 
+.n-form-group {
+  border: 0;
+  display: grid;
+  gap: var(--n-form-group-gap);
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.n-form-group__content {
+  display: grid;
+  gap: var(--n-field-gap);
+}
+
+.n-form-group[data-layout="inline"] .n-form-group__content {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-form-group-inline-gap);
+}
+
+.n-form-group__title {
+  color: var(--n-form-group-title-color);
+  display: block;
+  font-size: var(--n-font-size-sm);
+  font-weight: var(--n-font-weight-semibold);
+  margin: 0;
+  padding: 0;
+}
+
+.n-form-group__description {
+  color: var(--n-form-group-description-color);
+  font-size: var(--n-font-size-sm);
+  margin: 0;
+}
+
+.n-form-group[data-invalid] .n-form-message {
+  color: var(--n-form-group-message-color);
+}
+
 .n-checkbox {
   align-items: center;
   background: var(--n-color-surface);
@@ -97,6 +137,11 @@
 .n-checkbox[data-checked] {
   background: var(--n-color-action-primary);
   border-color: var(--n-color-action-primary);
+}
+
+.n-checkbox[data-invalid],
+.n-checkbox[aria-invalid="true"] {
+  border-color: var(--n-input-border-danger);
 }
 
 .n-checkbox[data-disabled] {

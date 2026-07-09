@@ -24,6 +24,7 @@ const tokenLayers = [
     examples: [
       "--n-button-height-md",
       "--n-input-height-md",
+      "--n-form-group-gap",
       "--n-dialog-width-md",
       "--n-overlay-z-index",
     ],
@@ -60,6 +61,7 @@ const componentTokens = [
   ["Button height", "--n-button-height-md"],
   ["Button radius", "--n-button-radius"],
   ["Input height", "--n-input-height-md"],
+  ["Form group gap", "--n-form-group-gap"],
   ["Badge height", "--n-badge-height"],
   ["Avatar size", "--n-avatar-size-md"],
   ["Progress height", "--n-progress-height"],

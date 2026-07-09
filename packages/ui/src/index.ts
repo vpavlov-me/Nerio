@@ -19,6 +19,7 @@ export {
   type FormMessageProps,
   type FormMessageTone,
 } from "./components/form-message";
+export { FormGroup, type FormGroupProps } from "./components/form-group";
 export {
   Card,
   CardContent,

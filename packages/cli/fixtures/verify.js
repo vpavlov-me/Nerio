@@ -24,6 +24,12 @@ const expectedFieldFiles = [
   "lib/cn.ts",
   "styles/forms.css",
 ];
+const expectedFormGroupFiles = [
+  "components/form-group.tsx",
+  "components/form-message.tsx",
+  "lib/cn.ts",
+  "styles/forms.css",
+];
 const expectedBaseFormFiles = [
   "components/checkbox.tsx",
   "components/icon.tsx",
@@ -204,6 +210,7 @@ async function verify() {
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
     await run(localTarget, "add", "field");
+    await run(localTarget, "add", "form-group");
     await run(localTarget, "add", "checkbox");
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "select");
@@ -243,6 +250,39 @@ async function verify() {
       throw new Error("Installed Field source did not preserve the ref and aria wiring contract.");
     }
     assertFiles(localTarget, expectedBaseFormFiles);
+    assertFiles(localTarget, expectedFormGroupFiles);
+    const formGroupSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/form-group.tsx"),
+      "utf8",
+    );
+    if (
+      !formGroupSource.includes("React.forwardRef<HTMLFieldSetElement") ||
+      !formGroupSource.includes("<fieldset") ||
+      !formGroupSource.includes("<legend") ||
+      !formGroupSource.includes("aria-describedby={describedBy}") ||
+      !formGroupSource.includes('role={invalid ? "alert" : undefined}')
+    ) {
+      throw new Error("Installed FormGroup source did not preserve fieldset and aria wiring.");
+    }
+    const checkboxSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/checkbox.tsx"),
+      "utf8",
+    );
+    if (
+      !checkboxSource.includes("@base-ui/react/checkbox") ||
+      !checkboxSource.includes("invalid?: boolean") ||
+      !checkboxSource.includes("aria-invalid") ||
+      !checkboxSource.includes("Icon icon={Check}")
+    ) {
+      throw new Error("Installed Checkbox source is missing Base UI, invalid, or icon contract.");
+    }
+    const switchSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/switch.tsx"),
+      "utf8",
+    );
+    if (!switchSource.includes("@base-ui/react/switch") || !switchSource.includes("forwardRef")) {
+      throw new Error("Installed Switch source is missing Base UI or ref support.");
+    }
     assertFiles(localTarget, expectedSelectFiles);
     const selectSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/select.tsx"),

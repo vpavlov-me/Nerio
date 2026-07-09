@@ -85,6 +85,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/label", label: "Label", icon: Circle },
       { href: "/docs/components/field", label: "Field", icon: Circle },
       { href: "/docs/components/form-message", label: "FormMessage", icon: Circle },
+      { href: "/docs/components/form-group", label: "FormGroup", icon: Circle },
       { href: "/docs/components/checkbox", label: "Checkbox", icon: Circle },
       { href: "/docs/components/radio-group", label: "RadioGroup", icon: Circle },
       { href: "/docs/components/switch", label: "Switch", icon: Circle },

@@ -197,32 +197,32 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "planned",
-      "description": "Layout primitive for grouping form fields."
+      "status": "stable-core",
+      "description": "Server-safe fieldset primitive for grouping related fields or controls with title, description, message, invalid state, and stack or inline layout."
     },
     {
       "name": "Checkbox",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "quality-pass-needed",
-      "description": "Basic checkbox control."
+      "status": "stable-core",
+      "description": "Client-only Base UI checkbox for independent options with checked, disabled, invalid, and form metadata support."
     },
     {
       "name": "Radio Group",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
-      "description": "Basic radio selection control."
+      "status": "stable-core",
+      "description": "Client-only Base UI radio selection control with group label, description, message, disabled options, and controlled or uncontrolled values."
     },
     {
       "name": "Switch",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "quality-pass-needed",
-      "description": "Toggle control for binary settings."
+      "status": "stable-core",
+      "description": "Client-only Base UI toggle control for immediate binary settings with checked, disabled, and form metadata support."
     },
     {
       "name": "Select",
