@@ -43,6 +43,10 @@ export const snippets: Record<string, string> = {
   "icon-button":
     "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@nerio/ui/client';\n\n<IconButton icon={Search} label=\"Search\" />",
   link: "import { Link } from '@nerio/ui';\n\n<Link href=\"/docs\">Read the docs</Link>",
+  breadcrumbs:
+    "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
+  pagination:
+    "import { Pagination } from '@nerio/ui';\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ label: '1', href: '/docs/page/1' }, { label: '2', href: '/docs/page/2', current: true }, { label: '3', href: '/docs/page/3' }]} />",
   badge: "import { Badge } from '@nerio/ui';\n\n<Badge variant=\"success\">Published</Badge>",
   alert:
     "import { Circle } from '@nerio/adapters';\nimport { Alert } from '@nerio/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
@@ -88,6 +92,7 @@ export const snippets: Record<string, string> = {
     'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
   table:
     "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@nerio/ui';\n\n<Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table>",
+  list: "import { List } from '@nerio/ui';\n\n<List items={[{ title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
 };
 
 export const sharedTokens = [
@@ -147,6 +152,45 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     ],
     motion: ["none by default"],
     accessibility: ["semantic heading content supplied by consumers", "avoid nested cards"],
+  },
+  breadcrumbs: {
+    name: "Breadcrumbs",
+    description: "Shows hierarchy navigation with native anchors and current page semantics.",
+    status: "beta",
+    layer: "core",
+    category: "Navigation",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["Link", "Pagination", "Tabs"],
+    anatomy: ["root", "list", "item", "link", "current", "separator"],
+    motion: ["hover", "focus"],
+    accessibility: ["nav landmark", "ordered list semantics", "aria-current page"],
+  },
+  pagination: {
+    name: "Pagination",
+    description: "Provides previous, next, and page links without owning pagination state.",
+    status: "beta",
+    layer: "core",
+    category: "Navigation",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["Breadcrumbs", "Link", "Table"],
+    anatomy: ["root", "list", "item", "previous", "page", "next"],
+    motion: ["hover", "focus"],
+    accessibility: ["nav landmark", "aria-current page", "non-focusable disabled controls"],
+  },
+  list: {
+    name: "List",
+    description: "Presents simple structured items with optional descriptions and native links.",
+    status: "beta",
+    layer: "core",
+    category: "Layout and display",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["Card", "Table", "Link"],
+    anatomy: ["root", "item", "body", "link", "title", "description", "meta"],
+    motion: ["hover", "focus"],
+    accessibility: ["semantic ul or ol", "native anchors", "natural reading order"],
   },
 };
 
@@ -318,6 +362,127 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-link-color-muted",
       "--n-link-underline-offset",
       "--n-link-underline-thickness",
+      "--n-focus-ring",
+    ],
+  },
+  breadcrumbs: {
+    category: "Navigation",
+    purpose:
+      "Use Breadcrumbs to show the current page position in a hierarchy and provide native anchor links back to parent levels.",
+    anatomy: [
+      { title: "root", description: 'Nav landmark with aria-label="Breadcrumb" by default.' },
+      { title: "list", description: "Ordered list that preserves hierarchy semantics." },
+      { title: "item", description: "One hierarchy level in the trail." },
+      { title: "link", description: "Native anchor for parent destinations." },
+      { title: "current", description: 'Current page item marked with aria-current="page".' },
+      { title: "separator", description: "Decorative separator hidden from assistive technology." },
+    ],
+    variants: [
+      {
+        title: "Default",
+        description: "Single semantic trail with parent links and a current page.",
+      },
+    ],
+    states: [
+      { title: "Linked parent", description: "Parent items render native anchors." },
+      { title: "Current page", description: 'The final item is text with aria-current="page".' },
+      { title: "Focus", description: "Linked items use the shared Nerio focus ring." },
+    ],
+    accessibility: [
+      "Keep the default breadcrumb label unless the page has multiple navigation landmarks that need clearer names.",
+      "Use ordered list semantics so the hierarchy is available beyond visual separators.",
+      "Separators are decorative and must not be announced.",
+      "Current page state uses aria-current and stronger text weight, not color alone.",
+    ],
+    api: [
+      {
+        title: "items",
+        description:
+          "Array of labels with optional href values and current flags for parent destinations.",
+      },
+      {
+        title: "aria-label",
+        description: "Defaults to Breadcrumb and can be customized for local context.",
+      },
+      {
+        title: "className",
+        description: "Extends the nav root without replacing tokenized defaults.",
+      },
+    ],
+    guidance: {
+      do: ["Use for hierarchical docs, settings, object detail, and nested product pages."],
+      dont: ["Do not use Breadcrumbs as a sidebar, tabs replacement, or command navigation."],
+    },
+    tokens: [
+      "--n-breadcrumbs-gap",
+      "--n-breadcrumbs-separator-color",
+      "--n-link-color",
+      "--n-link-color-muted",
+      "--n-focus-ring",
+    ],
+  },
+  pagination: {
+    category: "Navigation",
+    purpose:
+      "Use Pagination when the product already has page URLs and needs basic previous, next, and page navigation.",
+    anatomy: [
+      { title: "root", description: 'Nav landmark with aria-label="Pagination" by default.' },
+      { title: "list", description: "List of page navigation controls." },
+      { title: "previous", description: "Previous-page link or non-focusable disabled text." },
+      { title: "page", description: "Page link with optional current state." },
+      { title: "next", description: "Next-page link or non-focusable disabled text." },
+    ],
+    variants: [{ title: "Default", description: "Link-based pagination with no client state." }],
+    states: [
+      {
+        title: "Current",
+        description: 'Current page uses aria-current="page" and stronger visual treatment.',
+      },
+      {
+        title: "Disabled",
+        description: "Unavailable previous or next controls are not focusable.",
+      },
+      { title: "Focus", description: "Links use the shared Nerio focus ring." },
+    ],
+    accessibility: [
+      "Provide stable page labels and clear previous/next labels.",
+      'Current page uses aria-current="page".',
+      "Disabled controls render as aria-disabled text instead of inactive anchors.",
+      "Do not rely on color alone for current or disabled states.",
+    ],
+    api: [
+      {
+        title: "pages",
+        description: "Array of page labels, hrefs, current flags, and optional disabled states.",
+      },
+      {
+        title: "previousHref / nextHref",
+        description: "When omitted, the control renders disabled and is not focusable.",
+      },
+      {
+        title: "previousLabel / nextLabel",
+        description: "Visible labels for the boundary controls.",
+      },
+      {
+        title: "className",
+        description: "Extends the nav root without replacing tokenized defaults.",
+      },
+    ],
+    guidance: {
+      do: ["Use with server-rendered list pages, docs archives, and simple result sets."],
+      dont: [
+        "Do not add page calculation, data fetching, or table state management to Pagination.",
+      ],
+    },
+    tokens: [
+      "--n-pagination-gap",
+      "--n-pagination-item-size",
+      "--n-pagination-radius",
+      "--n-pagination-background",
+      "--n-pagination-background-hover",
+      "--n-pagination-background-current",
+      "--n-pagination-border",
+      "--n-pagination-border-current",
       "--n-focus-ring",
     ],
   },
@@ -1126,6 +1291,64 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-table-header-background",
       "--n-table-row-background-hover",
       "--n-table-row-background-selected",
+    ],
+  },
+  list: {
+    category: "Layout and display",
+    purpose:
+      "Use List to present short structured items that are not tabular data and do not need selection behavior.",
+    anatomy: [
+      { title: "root", description: "Semantic ul by default or ol when ordered is true." },
+      { title: "item", description: "One structured list item." },
+      { title: "link", description: "Native anchor wrapper when an item has href." },
+      { title: "title", description: "Primary item label." },
+      { title: "description", description: "Optional supporting item copy." },
+      { title: "meta", description: "Optional compact metadata in the trailing slot." },
+    ],
+    variants: [
+      { title: "Unordered", description: "Default semantic list for peer items." },
+      { title: "Ordered", description: "Use ordered when sequence or rank matters." },
+    ],
+    states: [
+      { title: "Static", description: "Items without href render as non-interactive content." },
+      { title: "Linked", description: "Items with href render native anchors." },
+      { title: "Focus", description: "Linked items use the shared Nerio focus ring." },
+    ],
+    accessibility: [
+      "Choose unordered or ordered semantics based on content meaning.",
+      "Use href only for real destinations; do not create fake interactive list rows.",
+      "Do not use List for selectable listbox, command menu, activity feed, or table behavior.",
+    ],
+    api: [
+      {
+        title: "items",
+        description: "Array of title, description, meta, href, leading, and trailing values.",
+      },
+      {
+        title: "ordered",
+        description: "Renders an ol when sequence matters; otherwise renders a ul.",
+      },
+      {
+        title: "className",
+        description: "Extends the list root without replacing tokenized defaults.",
+      },
+    ],
+    guidance: {
+      do: ["Use for docs links, settings summaries, compact resources, and simple object lists."],
+      dont: [
+        "Do not use List for DataGrid, command palette, sidebar navigation, or selectable listbox patterns.",
+      ],
+    },
+    tokens: [
+      "--n-list-gap",
+      "--n-list-item-padding",
+      "--n-list-item-gap",
+      "--n-list-item-radius",
+      "--n-list-item-background",
+      "--n-list-item-background-hover",
+      "--n-list-item-border",
+      "--n-list-item-border-hover",
+      "--n-focus-ring",
     ],
   },
   tabs: {

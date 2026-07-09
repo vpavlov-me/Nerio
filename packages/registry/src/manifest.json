@@ -650,6 +650,63 @@
       "usage": "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/nerio/components/table';\n\n<Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table>"
     },
     {
+      "name": "list",
+      "title": "List",
+      "description": "Presents simple structured lists with optional descriptions, metadata, and native links.",
+      "category": "data-display",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/list.tsx",
+          "target": "components/list.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/display.css",
+          "target": "styles/display.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": [
+        "root",
+        "item",
+        "body",
+        "link",
+        "leading",
+        "content",
+        "title",
+        "description",
+        "trailing",
+        "meta"
+      ],
+      "variants": ["unordered", "ordered"],
+      "requiredTokens": [
+        "--n-list-gap",
+        "--n-list-item-padding",
+        "--n-list-item-gap",
+        "--n-list-item-radius",
+        "--n-list-item-background",
+        "--n-list-item-background-hover",
+        "--n-list-item-border",
+        "--n-list-item-border-hover",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses semantic ul by default and semantic ol when ordered is true.",
+        "Items with href render native anchors instead of fake interactive containers.",
+        "Optional description and metadata remain in the natural reading order.",
+        "Do not use List for selectable listbox, command menu, or data table behavior."
+      ],
+      "usage": "import { List } from '@/components/nerio/components/list';\n\n<List items={[{ title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />"
+    },
+    {
       "name": "select",
       "title": "Select",
       "description": "Chooses one option from a compact list.",
@@ -1145,6 +1202,94 @@
         "Supports controlled value, uncontrolled defaultValue, disabled tabs, and forwarded refs."
       ],
       "usage": "import { Tabs } from '@/components/nerio/components/tabs';\n\n<Tabs tabs={[{ label: 'Overview', value: 'overview', content: '...' }, { label: 'Archive', value: 'archive', content: '...', disabled: true }]} />"
+    },
+    {
+      "name": "breadcrumbs",
+      "title": "Breadcrumbs",
+      "description": "Shows hierarchy navigation with native anchors and a current page item.",
+      "category": "navigation",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/breadcrumbs.tsx",
+          "target": "components/breadcrumbs.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/navigation.css",
+          "target": "styles/navigation.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "list", "item", "link", "current", "separator"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-breadcrumbs-gap",
+        "--n-breadcrumbs-separator-color",
+        "--n-link-color",
+        "--n-link-color-muted",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Renders a nav landmark with aria-label=\"Breadcrumb\" by default.",
+        "Uses ordered list semantics for the hierarchy trail.",
+        "Marks the current page with aria-current=\"page\".",
+        "Separators are decorative and hidden from assistive technology."
+      ],
+      "usage": "import { Breadcrumbs } from '@/components/nerio/components/breadcrumbs';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />"
+    },
+    {
+      "name": "pagination",
+      "title": "Pagination",
+      "description": "Provides basic previous, next, and page navigation without owning pagination state.",
+      "category": "navigation",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/pagination.tsx",
+          "target": "components/pagination.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/navigation.css",
+          "target": "styles/navigation.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "list", "item", "previous", "page", "next"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-pagination-gap",
+        "--n-pagination-item-size",
+        "--n-pagination-radius",
+        "--n-pagination-background",
+        "--n-pagination-background-hover",
+        "--n-pagination-background-current",
+        "--n-pagination-border",
+        "--n-pagination-border-current",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Renders a nav landmark with aria-label=\"Pagination\" by default.",
+        "Marks the current page with aria-current=\"page\".",
+        "Disabled previous and next controls render as non-focusable text with aria-disabled.",
+        "Visible labels carry state; color is not the only indicator."
+      ],
+      "usage": "import { Pagination } from '@/components/nerio/components/pagination';\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ label: '1', href: '/docs/page/1' }, { label: '2', href: '/docs/page/2', current: true }, { label: '3', href: '/docs/page/3' }]} />"
     },
     {
       "name": "dialog",

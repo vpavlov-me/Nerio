@@ -309,8 +309,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "planned",
-      "description": "Basic list primitive."
+      "status": "implemented-initial",
+      "description": "Basic structured list primitive with optional descriptions, metadata, and native links."
     },
     {
       "name": "Separator",
@@ -397,16 +397,16 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "navigation",
-      "status": "planned",
-      "description": "Hierarchy navigation component."
+      "status": "implemented-initial",
+      "description": "Hierarchy navigation component with ordered list semantics and current page support."
     },
     {
       "name": "Pagination",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "navigation",
-      "status": "planned",
-      "description": "Basic pagination component."
+      "status": "implemented-initial",
+      "description": "Basic previous, next, and page navigation component without state ownership."
     },
     {
       "name": "Sidebar Primitive",

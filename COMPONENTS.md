@@ -85,16 +85,16 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Data display
 
-| Component | Status      | Package     | Notes                                                   |
-| --------- | ----------- | ----------- | ------------------------------------------------------- |
-| Card      | stable-core | `@nerio/ui` | Surface primitive                                       |
-| Badge     | stable-core | `@nerio/ui` | Status and metadata                                     |
-| Avatar    | stable-core | `@nerio/ui` | User/entity avatar                                      |
-| Table     | stable-core | `@nerio/ui` | Basic table only                                        |
-| List      | planned     | `@nerio/ui` | Basic list primitive                                    |
-| Separator | stable-core | `@nerio/ui` | Layout divider                                          |
-| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                    |
-| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro. |
+| Component | Status              | Package     | Notes                                                                                  |
+| --------- | ------------------- | ----------- | -------------------------------------------------------------------------------------- |
+| Card      | stable-core         | `@nerio/ui` | Surface primitive                                                                      |
+| Badge     | stable-core         | `@nerio/ui` | Status and metadata                                                                    |
+| Avatar    | stable-core         | `@nerio/ui` | User/entity avatar                                                                     |
+| Table     | stable-core         | `@nerio/ui` | Basic table only                                                                       |
+| List      | implemented-initial | `@nerio/ui` | Basic structured list primitive with optional descriptions, metadata, and native links |
+| Separator | stable-core         | `@nerio/ui` | Layout divider                                                                         |
+| KeyValue  | stable-core         | `@nerio/ui` | Simple definition-list value display                                                   |
+| Stat      | stable-core         | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                |
 
 ### Feedback
 
@@ -109,13 +109,13 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Navigation and layout
 
-| Component         | Status      | Package     | Notes                                                                                     |
-| ----------------- | ----------- | ----------- | ----------------------------------------------------------------------------------------- |
-| Tabs              | stable-core | `@nerio/ui` | Basic tabs with first-enabled default selection, disabled tabs, controlled state, and ref |
-| Breadcrumbs       | planned     | `@nerio/ui` | Hierarchy navigation                                                                      |
-| Pagination        | planned     | `@nerio/ui` | Basic pagination                                                                          |
-| Sidebar Primitive | planned     | `@nerio/ui` | Layout primitive only                                                                     |
-| Command Primitive | planned     | `@nerio/ui` | Basic command structure                                                                   |
+| Component         | Status              | Package     | Notes                                                                                     |
+| ----------------- | ------------------- | ----------- | ----------------------------------------------------------------------------------------- |
+| Tabs              | stable-core         | `@nerio/ui` | Basic tabs with first-enabled default selection, disabled tabs, controlled state, and ref |
+| Breadcrumbs       | implemented-initial | `@nerio/ui` | Hierarchy navigation with ordered list semantics and current page support                 |
+| Pagination        | implemented-initial | `@nerio/ui` | Basic previous, next, and page navigation without state ownership                         |
+| Sidebar Primitive | planned             | `@nerio/ui` | Layout primitive only                                                                     |
+| Command Primitive | planned             | `@nerio/ui` | Basic command structure                                                                   |
 
 ---
 

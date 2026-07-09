@@ -58,11 +58,18 @@ const expectedDisplayFiles = [
   "components/avatar.tsx",
   "components/card.tsx",
   "components/key-value.tsx",
+  "components/list.tsx",
   "components/separator.tsx",
   "components/stat.tsx",
   "components/table.tsx",
   "lib/cn.ts",
   "styles/display.css",
+];
+const expectedNavigationFiles = [
+  "components/breadcrumbs.tsx",
+  "components/pagination.tsx",
+  "lib/cn.ts",
+  "styles/navigation.css",
 ];
 const expectedFeedbackFiles = [
   "components/empty-state.tsx",
@@ -170,7 +177,8 @@ async function verify() {
     const listOutput = await run(localTarget, "list");
     if (
       !listOutput.includes("button\tButton\tactions") ||
-      !listOutput.includes("alert\tAlert\tfeedback")
+      !listOutput.includes("alert\tAlert\tfeedback") ||
+      !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation")
     ) {
       throw new Error("List output did not include registry component name, title, and category.");
     }
@@ -208,11 +216,14 @@ async function verify() {
     await run(localTarget, "add", "separator");
     await run(localTarget, "add", "stat");
     await run(localTarget, "add", "table");
+    await run(localTarget, "add", "list");
     await run(localTarget, "add", "progress");
     await run(localTarget, "add", "skeleton");
     await run(localTarget, "add", "spinner");
     await run(localTarget, "add", "empty-state");
     await run(localTarget, "add", "tabs");
+    await run(localTarget, "add", "breadcrumbs");
+    await run(localTarget, "add", "pagination");
     await run(localTarget, "add", "popover");
     await run(localTarget, "add", "dropdown-menu");
     await run(localTarget, "add", "tooltip");
@@ -261,6 +272,7 @@ async function verify() {
     }
     assertFiles(localTarget, expectedPhase2BFiles);
     assertFiles(localTarget, expectedDisplayFiles);
+    assertFiles(localTarget, expectedNavigationFiles);
     assertFiles(localTarget, expectedFeedbackFiles);
     assertFiles(localTarget, expectedOverlayAndTabsFiles);
 
@@ -270,6 +282,45 @@ async function verify() {
     );
     if (!tableSource.includes('scope = "col"')) {
       throw new Error("Installed Table source does not preserve column header scope.");
+    }
+
+    const listSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/list.tsx"),
+      "utf8",
+    );
+    if (
+      !listSource.includes('const Root = ordered ? "ol" : "ul"') ||
+      !listSource.includes('<a className="n-list__link"')
+    ) {
+      throw new Error("Installed List source does not preserve semantic list and native links.");
+    }
+
+    const breadcrumbsSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/breadcrumbs.tsx"),
+      "utf8",
+    );
+    if (
+      !breadcrumbsSource.includes('"aria-label": ariaLabel = "Breadcrumb"') ||
+      !breadcrumbsSource.includes('aria-current={isCurrent ? "page" : undefined}') ||
+      !breadcrumbsSource.includes("aria-hidden")
+    ) {
+      throw new Error(
+        "Installed Breadcrumbs source does not preserve landmark, current page, or separator semantics.",
+      );
+    }
+
+    const paginationSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/pagination.tsx"),
+      "utf8",
+    );
+    if (
+      !paginationSource.includes('"aria-label": ariaLabel = "Pagination"') ||
+      !paginationSource.includes('aria-current={page.current ? "page" : undefined}') ||
+      !paginationSource.includes('aria-disabled="true"')
+    ) {
+      throw new Error(
+        "Installed Pagination source does not preserve landmark, current page, or disabled semantics.",
+      );
     }
 
     const progressSource = fs.readFileSync(

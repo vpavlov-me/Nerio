@@ -7,6 +7,7 @@ import {
   Alert,
   Avatar,
   Badge,
+  Breadcrumbs,
   Button,
   Card,
   CardContent,
@@ -24,6 +25,8 @@ import {
   KeyValue,
   Label,
   Link,
+  List,
+  Pagination,
   Popover,
   Progress,
   RadioGroup,
@@ -569,6 +572,44 @@ function Preview({ kind }: { kind: string }) {
               </TableRow>
             </TableBody>
           </Table>
+        ) : null}
+        {kind === "list" ? (
+          <List
+            items={[
+              {
+                title: "Tokens",
+                description: "CSS variable foundation for themes, modes, and density.",
+                href: "/docs/foundations/tokens",
+                meta: "Foundation",
+              },
+              {
+                title: "Components",
+                description: "Composable Core primitives installed as source.",
+                href: "/docs/components/button",
+                meta: "Core",
+              },
+            ]}
+          />
+        ) : null}
+        {kind === "breadcrumbs" ? (
+          <Breadcrumbs
+            items={[
+              { label: "Docs", href: "/docs" },
+              { label: "Components", href: "/docs/components/button" },
+              { label: "Button" },
+            ]}
+          />
+        ) : null}
+        {kind === "pagination" ? (
+          <Pagination
+            previousHref="/docs/components/breadcrumbs"
+            nextHref="/docs/components/list"
+            pages={[
+              { label: "1", href: "/docs/components/breadcrumbs" },
+              { label: "2", href: "/docs/components/pagination", current: true },
+              { label: "3", href: "/docs/components/list" },
+            ]}
+          />
         ) : null}
       </div>
       <div className="preview-row">

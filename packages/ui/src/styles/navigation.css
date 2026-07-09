@@ -1,0 +1,92 @@
+.n-breadcrumbs {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+}
+
+.n-breadcrumbs__list,
+.n-pagination__list {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-breadcrumbs-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.n-breadcrumbs__item {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--n-breadcrumbs-gap);
+  min-inline-size: 0;
+}
+
+.n-breadcrumbs__link {
+  color: var(--n-link-color-muted);
+  text-decoration: none;
+}
+
+.n-breadcrumbs__link:hover {
+  color: var(--n-link-color);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--n-link-underline-thickness);
+  text-underline-offset: var(--n-link-underline-offset);
+}
+
+.n-breadcrumbs__link:focus-visible,
+.n-pagination__control:focus-visible {
+  border-radius: var(--n-radius-sm);
+  box-shadow: var(--n-focus-ring);
+  outline: 0;
+}
+
+.n-breadcrumbs__current {
+  color: var(--n-color-text-primary);
+  font-weight: var(--n-font-weight-medium);
+}
+
+.n-breadcrumbs__separator {
+  color: var(--n-breadcrumbs-separator-color);
+}
+
+.n-pagination {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+}
+
+.n-pagination__list {
+  gap: var(--n-pagination-gap);
+}
+
+.n-pagination__control {
+  align-items: center;
+  background: var(--n-pagination-background);
+  border: 1px solid var(--n-pagination-border);
+  border-radius: var(--n-pagination-radius);
+  color: var(--n-color-text-secondary);
+  display: inline-flex;
+  font-weight: var(--n-font-weight-medium);
+  justify-content: center;
+  min-block-size: var(--n-pagination-item-size);
+  min-inline-size: var(--n-pagination-item-size);
+  padding: 0 var(--n-space-3);
+  text-decoration: none;
+}
+
+.n-pagination__control:hover {
+  background: var(--n-pagination-background-hover);
+  color: var(--n-color-text-primary);
+}
+
+.n-pagination__control[data-current] {
+  background: var(--n-pagination-background-current);
+  border-color: var(--n-pagination-border-current);
+  color: var(--n-color-text-primary);
+  font-weight: var(--n-font-weight-semibold);
+}
+
+.n-pagination__control[data-disabled] {
+  color: var(--n-color-text-disabled);
+  cursor: not-allowed;
+  opacity: 0.72;
+}

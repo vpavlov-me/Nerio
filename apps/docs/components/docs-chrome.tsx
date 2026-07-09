@@ -101,12 +101,15 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/stat", label: "Stat", icon: Circle },
       { href: "/docs/components/key-value", label: "KeyValue", icon: ListTree },
       { href: "/docs/components/table", label: "Table", icon: ListTree },
+      { href: "/docs/components/list", label: "List", icon: ListTree },
     ],
   },
   {
     title: "Navigation and overlays",
     items: [
       { href: "/docs/components/tabs", label: "Tabs", icon: Layers },
+      { href: "/docs/components/breadcrumbs", label: "Breadcrumbs", icon: ListTree },
+      { href: "/docs/components/pagination", label: "Pagination", icon: ListTree },
       { href: "/docs/components/dialog", label: "Dialog", icon: PanelLeft },
       { href: "/docs/components/popover", label: "Popover", icon: PanelLeft },
       { href: "/docs/components/tooltip", label: "Tooltip", icon: Circle },

@@ -86,9 +86,21 @@ const componentDocs: Record<string, { title: string; lede: string }> = {
     title: "Table",
     lede: "Tables present structured records for scanning, comparison, and repeated operational use.",
   },
+  list: {
+    title: "List",
+    lede: "Lists present simple structured items with descriptions, metadata, and native links.",
+  },
   tabs: {
     title: "Tabs",
     lede: "Tabs switch between related panels without leaving the current product context.",
+  },
+  breadcrumbs: {
+    title: "Breadcrumbs",
+    lede: "Breadcrumbs show hierarchy navigation with ordered list semantics and current page support.",
+  },
+  pagination: {
+    title: "Pagination",
+    lede: "Pagination provides basic previous, next, and page links without owning data or page state.",
   },
   tooltip: {
     title: "Tooltip",
