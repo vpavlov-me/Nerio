@@ -34,7 +34,7 @@ import {
   Tooltip,
   useToastManager,
 } from "@nerio/ui";
-import { CodeExample } from "./code-example";
+import { CodeBlock, CodeExample } from "./code-example";
 import {
   anatomyFromSlots,
   componentReference,
@@ -455,9 +455,7 @@ function Preview({ kind }: { kind: string }) {
           {copied ? "Copied" : "Copy code"}
         </Button>
       </div>
-      <pre className="code-block">
-        <code>{snippet}</code>
-      </pre>
+      <CodeBlock code={snippet} label={`${kind} preview code`} />
     </section>
   );
 }

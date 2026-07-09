@@ -813,6 +813,39 @@ pre {
   min-inline-size: 100%;
 }
 
+.code-token-keyword {
+  color: var(--n-color-action-primary);
+  font-weight: 600;
+}
+
+.code-token-string {
+  color: var(--n-color-status-success);
+}
+
+.code-token-tag,
+.code-token-function {
+  color: var(--n-color-status-info);
+}
+
+.code-token-attribute,
+.code-token-variable {
+  color: var(--n-color-text-primary);
+}
+
+.code-token-number {
+  color: var(--n-color-status-warning);
+}
+
+.code-token-comment {
+  color: var(--n-color-text-tertiary);
+  font-style: italic;
+}
+
+.code-token-operator,
+.code-token-punctuation {
+  color: var(--n-color-text-tertiary);
+}
+
 @media (max-width: 980px) {
   .docs-header {
     grid-template-columns: 1fr;
