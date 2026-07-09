@@ -1,5 +1,5 @@
-import { Badge, Card, Progress, Table } from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+import { Badge, Card, Field, FormGroup, Progress, Table } from "@nerio/ui";
+import { Button, Checkbox, Switch } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 
 const themes = [
@@ -97,6 +97,15 @@ export default function Page() {
             </p>
           </div>
           <Progress label="Shared context" value={72} />
+          <FormGroup title="Notification theme check" layout="inline">
+            <Field label="Product updates">
+              <Checkbox aria-label="Product updates" defaultChecked />
+            </Field>
+            <label className="inline-control">
+              <Switch aria-label="Notify collaborators" defaultChecked />
+              <span>Notify collaborators</span>
+            </label>
+          </FormGroup>
           <div className="preview-row">
             <Button>Primary action</Button>
             <Button variant="secondary">Secondary</Button>

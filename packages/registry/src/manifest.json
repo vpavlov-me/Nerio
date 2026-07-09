@@ -780,9 +780,9 @@
     {
       "name": "radio-group",
       "title": "RadioGroup",
-      "description": "Chooses one option from a small set.",
+      "description": "Chooses one option from a small visible set.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "clsx", "react"],
       "registryDependencies": ["form-message"],
       "files": [
         {
@@ -805,7 +805,7 @@
         "option-description",
         "message"
       ],
-      "variants": [],
+      "variants": ["default", "invalid", "disabled"],
       "requiredTokens": [
         "--n-radio-size",
         "--n-radio-dot-size",
@@ -818,11 +818,13 @@
         "--n-focus-ring"
       ],
       "accessibility": [
-        "Uses Base UI Radio Group and Radio primitives.",
-        "Associates the visible group label, description, and message with the radiogroup.",
-        "Supports disabled options, required, invalid, controlled, and uncontrolled values."
+        "Uses Base UI Radio Group and Radio primitives for keyboard behavior.",
+        "Associates the visible group label with aria-labelledby.",
+        "Connects description and message text through aria-describedby.",
+        "Supports disabled options, required, invalid, controlled, and uncontrolled values.",
+        "Validation messages use role=\"alert\" only when invalid is true."
       ],
-      "usage": "import { RadioGroup } from '@/components/nerio/components/radio-group';\n\n<RadioGroup label=\"Visibility\" name=\"visibility\" options={[{ label: 'Public', value: 'public' }, { label: 'Private', value: 'private' }]} />"
+      "usage": "import { RadioGroup } from '@/components/nerio/components/radio-group';\n\n<RadioGroup label=\"Visibility\" name=\"visibility\" defaultValue=\"team\" options={[{ label: 'Private', value: 'private' }, { label: 'Team', value: 'team' }]} />"
     },
     {
       "name": "input",
@@ -1060,6 +1062,53 @@
       "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Shown in workspace navigation.\" message=\"Use at least 3 characters.\" invalid><Input /></Field>"
     },
     {
+      "name": "form-group",
+      "title": "FormGroup",
+      "description": "Groups related fields or controls with an optional title, description, message, and layout.",
+      "category": "forms",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": ["form-message"],
+      "files": [
+        {
+          "source": "../../ui/src/components/form-group.tsx",
+          "target": "components/form-group.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/forms.css",
+          "target": "styles/forms.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "title", "description", "content", "message"],
+      "variants": ["stack", "inline", "invalid"],
+      "requiredTokens": [
+        "--n-form-group-gap",
+        "--n-form-group-inline-gap",
+        "--n-form-group-title-color",
+        "--n-form-group-description-color",
+        "--n-form-group-message-color",
+        "--n-field-gap",
+        "--n-color-text-primary",
+        "--n-color-text-tertiary",
+        "--n-color-status-danger"
+      ],
+      "accessibility": [
+        "Renders a fieldset and uses legend when title is supplied.",
+        "Associates description and message text through aria-describedby.",
+        "Invalid state is explicit through invalid or aria-invalid and does not own validation logic.",
+        "Validation messages use role=\"alert\" only when invalid is true.",
+        "Does not force a single control pattern or add form submission behavior."
+      ],
+      "usage": "import { FormGroup } from '@/components/nerio/components/form-group';\n\n<FormGroup title=\"Notifications\" description=\"Choose which updates should be sent by email.\">Notification controls go here.</FormGroup>"
+    },
+    {
       "name": "checkbox",
       "title": "Checkbox",
       "description": "Toggles an independent form option.",
@@ -1095,28 +1144,33 @@
       ],
       "baseUiPrimitives": ["checkbox"],
       "slots": ["root", "indicator"],
-      "variants": ["checked", "unchecked", "disabled"],
+      "variants": ["checked", "unchecked", "invalid", "disabled"],
       "requiredTokens": [
         "--n-checkbox-size",
+        "--n-checkbox-radius",
         "--n-color-surface",
         "--n-color-border-strong",
         "--n-color-action-primary",
         "--n-color-action-on-primary",
+        "--n-input-border-danger",
         "--n-focus-ring"
       ],
       "accessibility": [
-        "Uses the Base UI Checkbox primitive.",
-        "Provide an accessible label through a visible label or aria-label.",
-        "Disabled state prevents interaction and reduces emphasis."
+        "Uses the Base UI Checkbox primitive for keyboard and checked-state behavior.",
+        "Provide a visible label or accessible name with aria-label or aria-labelledby.",
+        "Supports checked, defaultChecked, onCheckedChange, disabled, required, name, value, form, id, and aria-describedby through the Base UI root props.",
+        "Invalid state is explicit through invalid or aria-invalid and does not announce errors automatically.",
+        "Disabled state prevents interaction and reduces emphasis.",
+        "The check indicator renders through the Nerio icon adapter."
       ],
-      "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<Checkbox aria-label=\"Include archived\" />"
+      "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<label><Checkbox name=\"includeArchived\" defaultChecked /> Include archived</label>"
     },
     {
       "name": "switch",
       "title": "Switch",
       "description": "Toggles an immediate binary setting.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -1150,11 +1204,14 @@
         "--n-focus-ring"
       ],
       "accessibility": [
-        "Uses the Base UI Switch primitive.",
-        "Use for settings that apply immediately.",
-        "Provide a visible label or aria-label."
+        "Uses the Base UI Switch primitive for keyboard and checked-state behavior.",
+        "Use Switch for immediate on/off settings, not multi-select form choices.",
+        "Provide a visible label or accessible name with aria-label or aria-labelledby.",
+        "Supports checked, defaultChecked, onCheckedChange, disabled, required, name, value, form, id, and aria-describedby through the Base UI root props.",
+        "Disabled state prevents interaction and reduces emphasis.",
+        "Do not use Switch for long-running or destructive actions."
       ],
-      "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<Switch aria-label=\"Compact density\" />"
+      "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<label><Switch aria-label=\"Notify collaborators\" defaultChecked /> Notify collaborators</label>"
     },
     {
       "name": "tabs",

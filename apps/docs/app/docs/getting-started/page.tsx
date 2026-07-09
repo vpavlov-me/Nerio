@@ -1,7 +1,7 @@
 import { CodeExample } from "../../../components/code-example";
 
-const packageImports = `import { Alert, Card, Link, Table } from "@nerio/ui";
-import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
+const packageImports = `import { Alert, Card, Field, FormGroup, Link, Table } from "@nerio/ui";
+import { Button, Checkbox, Dialog, RadioGroup, Select, Switch, ToastProvider } from "@nerio/ui/client";
 import "@nerio/ui/styles.css";`;
 
 const sourceInstall = `nerio init
@@ -28,8 +28,9 @@ export default function Page() {
         <CodeExample code={packageImports} label="Package imports" />
         <p>
           <code>@nerio/ui</code> is the server-safe entrypoint for static Core components and
-          utilities. <code>@nerio/ui/client</code> contains interactive Base UI-backed components.{" "}
-          <code>@nerio/ui/styles.css</code> imports tokens and component styles.
+          utilities, including Field and FormGroup. <code>@nerio/ui/client</code> contains
+          interactive Base UI-backed components such as Checkbox, RadioGroup, Switch, Select, and
+          Dialog. <code>@nerio/ui/styles.css</code> imports tokens and component styles.
         </p>
       </section>
 

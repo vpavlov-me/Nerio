@@ -8,7 +8,9 @@ const init = `nerio init \\
 nerio doctor
 nerio list
 nerio info button
+nerio info form-group
 nerio add button
+nerio add form-group
 nerio add input --dry-run`;
 
 const config = `{
@@ -75,6 +77,11 @@ export default function Page() {
         <h2>Registry contract</h2>
         <ul className="doc-list">
           <li>Metadata declares dependencies, files, Base UI primitives, slots, and variants.</li>
+          <li>
+            Server-safe form items such as <code>form-group</code> declare no Base UI primitive;
+            interactive controls such as <code>checkbox</code>, <code>radio-group</code>, and{" "}
+            <code>switch</code> declare their Base UI primitive contracts.
+          </li>
           <li>Required tokens make styling dependencies explicit for products and AI agents.</li>
           <li>
             <code>list</code> prints component name, title, and category from the configured

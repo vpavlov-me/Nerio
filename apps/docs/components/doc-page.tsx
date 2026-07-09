@@ -19,6 +19,7 @@ import {
   DropdownMenu,
   EmptyState,
   Field,
+  FormGroup,
   FormMessage,
   IconButton,
   Input,
@@ -394,6 +395,19 @@ function Preview({ kind }: { kind: string }) {
             <FormMessage tone="neutral">This will be visible to collaborators.</FormMessage>
             <FormMessage tone="success">Looks good.</FormMessage>
           </div>
+        ) : null}
+        {kind === "form-group" ? (
+          <FormGroup
+            title="Notifications"
+            description="Choose which updates should be sent by email."
+          >
+            <Field label="Product updates">
+              <Checkbox aria-label="Product updates" />
+            </Field>
+            <Field label="Security alerts">
+              <Checkbox aria-label="Security alerts" defaultChecked />
+            </Field>
+          </FormGroup>
         ) : null}
         {kind === "checkbox" ? (
           <label className="inline-control">

@@ -64,12 +64,14 @@ export const snippets: Record<string, string> = {
     'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use at least 3 characters." invalid><Input /></Field>',
   "form-message":
     "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
+  "form-group":
+    'import { Field, FormGroup } from \'@nerio/ui\';\nimport { Checkbox } from \'@nerio/ui/client\';\n\n<FormGroup title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
   checkbox:
-    "import { Checkbox } from '@nerio/ui/client';\n\n<Checkbox aria-label=\"Include archived\" />",
+    "import { Checkbox } from '@nerio/ui/client';\n\n<label><Checkbox name=\"includeArchived\" defaultChecked /> Include archived</label>",
   "radio-group":
-    'import { RadioGroup } from \'@nerio/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" options={[{ label: "Public", value: "public" }, { label: "Private", value: "private" }]} />',
+    'import { RadioGroup } from \'@nerio/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team" options={[{ label: "Private", value: "private" }, { label: "Team", value: "team" }]} />',
   switch:
-    "import { Switch } from '@nerio/ui/client';\n\n<Switch aria-label=\"Enable notifications\" />",
+    "import { Switch } from '@nerio/ui/client';\n\n<label><Switch aria-label=\"Notify collaborators\" defaultChecked /> Notify collaborators</label>",
   dialog:
     'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
@@ -924,14 +926,41 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       { title: "Unchecked", description: "Option is available but not selected." },
       { title: "Checked", description: "Option is selected." },
+      { title: "Invalid", description: "Explicit invalid state maps to aria-invalid." },
       { title: "Disabled", description: "Option is unavailable." },
     ],
-    accessibility: ["Use visible label text and keep the clickable target comfortable."],
+    accessibility: [
+      "Checkbox is interactive and imports from @nerio/ui/client.",
+      "Use a visible label, aria-label, or aria-labelledby so the option has an accessible name.",
+      "Base UI owns keyboard and checked-state behavior.",
+      "Use invalid or aria-invalid to expose validation state; connect help or error text with aria-describedby.",
+      "Disabled state prevents interaction.",
+      "The indicator uses the Nerio icon adapter.",
+    ],
+    api: [
+      {
+        title: "checked / defaultChecked / onCheckedChange",
+        description: "Controlled and uncontrolled checked-state APIs from the Base UI root.",
+      },
+      {
+        title: "name / value / form / required / disabled",
+        description: "Native form metadata is preserved through the Base UI root props.",
+      },
+      { title: "invalid", description: "Sets data-invalid and aria-invalid when true." },
+      { title: "className", description: "Extends the root control." },
+    ],
     guidance: {
-      do: ["Use for independent choices and multi-select filters."],
+      do: ["Use for independent choices, agreement controls, and multi-select filters."],
       dont: ["Do not use Checkbox for immediate on/off settings; use Switch instead."],
     },
-    tokens: ["--n-checkbox-size", "--n-checkbox-radius", ...sharedTokens],
+    tokens: [
+      "--n-checkbox-size",
+      "--n-checkbox-radius",
+      "--n-color-action-primary",
+      "--n-color-action-on-primary",
+      "--n-input-border-danger",
+      "--n-focus-ring",
+    ],
   },
   "radio-group": {
     category: "Forms",
@@ -951,9 +980,26 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Invalid", description: "Connects validation message and invalid state." },
     ],
     accessibility: [
+      "RadioGroup is interactive and imports from @nerio/ui/client.",
       "Uses Base UI Radio Group and Radio primitives.",
       "Connects label, description, and message through accessible ids.",
       "Supports controlled and uncontrolled value APIs.",
+      'Invalid messages use role="alert" only when invalid is true.',
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled and uncontrolled value APIs for one selected option.",
+      },
+      {
+        title: "options",
+        description: "Short visible set with label, value, description, and disabled.",
+      },
+      {
+        title: "label / description / message",
+        description: "Text slots wired to aria-labelledby and aria-describedby.",
+      },
+      { title: "invalid", description: "Sets invalid state on the group and message." },
     ],
     guidance: {
       do: ["Use for two to six visible choices where comparison matters."],
@@ -985,12 +1031,99 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "On", description: "Setting is enabled." },
       { title: "Disabled", description: "Setting cannot be changed." },
     ],
-    accessibility: ["Use a label that describes the setting, not the current visual state."],
+    accessibility: [
+      "Switch is interactive and imports from @nerio/ui/client.",
+      "Use for immediate binary settings; use Checkbox for independent options that are submitted as part of a form.",
+      "Use a visible label, aria-label, or aria-labelledby so the setting has an accessible name.",
+      "Base UI owns keyboard and checked-state behavior.",
+      "Disabled state prevents interaction.",
+      "Do not use Switch for long-running or destructive actions.",
+    ],
+    api: [
+      {
+        title: "checked / defaultChecked / onCheckedChange",
+        description: "Controlled and uncontrolled checked-state APIs from the Base UI root.",
+      },
+      {
+        title: "name / value / form / required / disabled",
+        description: "Native form metadata is preserved through the Base UI root props.",
+      },
+      { title: "className", description: "Extends the root switch." },
+    ],
     guidance: {
       do: ["Use for preferences like notifications or compact mode."],
-      dont: ["Do not use Switch for selecting multiple unrelated options."],
+      dont: [
+        "Do not use Switch for selecting multiple unrelated options or for destructive actions.",
+      ],
     },
-    tokens: ["--n-switch-width", "--n-switch-thumb-size", "--n-color-action-primary"],
+    tokens: [
+      "--n-switch-height",
+      "--n-switch-width",
+      "--n-switch-thumb-size",
+      "--n-switch-thumb-offset",
+      "--n-color-action-primary",
+      "--n-focus-ring",
+    ],
+  },
+  "form-group": {
+    category: "Forms",
+    purpose:
+      "Use FormGroup to group related fields or controls with a semantic title, optional description, optional message, and stack or inline layout.",
+    anatomy: [
+      { title: "root", description: "Server-safe fieldset wrapper." },
+      { title: "title", description: "Legend text that names the group." },
+      {
+        title: "description",
+        description: "Optional supporting text connected by aria-describedby.",
+      },
+      {
+        title: "content",
+        description: "Native children composition for Field, Checkbox, Switch, or custom controls.",
+      },
+      { title: "message", description: "Optional group-level help or validation message." },
+    ],
+    variants: [
+      { title: "Stack", description: "Default vertical layout for related fields." },
+      { title: "Inline", description: "Compact wrapping layout for short controls." },
+    ],
+    states: [
+      { title: "Default", description: "Groups related controls without owning validation logic." },
+      {
+        title: "Invalid",
+        description:
+          "Exposes aria-invalid and uses alert semantics only for active invalid messages.",
+      },
+    ],
+    accessibility: [
+      "FormGroup is server-safe and imports from @nerio/ui.",
+      "Renders fieldset and legend when a title is supplied.",
+      "Associates description and message text through aria-describedby.",
+      "Invalid state is explicit and does not add schema or validation-library behavior.",
+      "Do not use FormGroup as a replacement for Field when there is only one labeled control.",
+    ],
+    api: [
+      { title: "title / description / message", description: "Optional group text slots." },
+      { title: "layout", description: "stack or inline." },
+      {
+        title: "invalid",
+        description: "Sets data-invalid, aria-invalid, and alert semantics for message.",
+      },
+      { title: "className", description: "Extends the fieldset root." },
+    ],
+    guidance: {
+      do: ["Use for related notification preferences, radio-like sections, and field clusters."],
+      dont: [
+        "Do not add form submission, validation-library integration, or schema behavior to FormGroup.",
+      ],
+    },
+    tokens: [
+      "--n-form-group-gap",
+      "--n-form-group-inline-gap",
+      "--n-form-group-title-color",
+      "--n-form-group-description-color",
+      "--n-form-group-message-color",
+      "--n-field-gap",
+    ],
   },
   select: {
     category: "Forms",

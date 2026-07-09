@@ -311,6 +311,11 @@
   --n-select-height-md: var(--n-input-height-md);
   --n-textarea-min-height: 6rem;
   --n-field-gap: var(--n-space-2);
+  --n-form-group-gap: var(--n-space-3);
+  --n-form-group-inline-gap: var(--n-space-4);
+  --n-form-group-title-color: var(--n-color-text-primary);
+  --n-form-group-description-color: var(--n-color-text-tertiary);
+  --n-form-group-message-color: var(--n-color-status-danger);
   --n-checkbox-size: 1rem;
   --n-checkbox-radius: var(--n-radius-sm);
   --n-radio-size: 1rem;
@@ -606,6 +611,8 @@
   --n-spinner-size-md: 0.875rem;
   --n-spinner-size-lg: 1.125rem;
   --n-input-height-md: 2.125rem;
+  --n-form-group-gap: var(--n-space-2);
+  --n-form-group-inline-gap: var(--n-space-3);
   --n-checkbox-size: 0.875rem;
   --n-radio-size: 0.875rem;
   --n-radio-dot-size: 0.3125rem;

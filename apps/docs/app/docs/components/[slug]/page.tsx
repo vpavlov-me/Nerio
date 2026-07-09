@@ -58,6 +58,10 @@ const componentDocs: Record<string, { title: string; lede: string }> = {
     title: "FormMessage",
     lede: "Form messages communicate validation, help, and error states close to their controls.",
   },
+  "form-group": {
+    title: "FormGroup",
+    lede: "Form groups collect related controls with fieldset semantics, optional context, and stack or inline layout.",
+  },
   card: {
     title: "Card",
     lede: "Cards group related product information without creating nested or decorative panels.",

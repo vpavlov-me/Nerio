@@ -60,18 +60,18 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Forms
 
-| Component   | Status              | Package     | Notes                                |
-| ----------- | ------------------- | ----------- | ------------------------------------ |
-| Input       | stable-core         | `@nerio/ui` | Text input                           |
-| Textarea    | stable-core         | `@nerio/ui` | Multiline input                      |
-| Label       | stable-core         | `@nerio/ui` | Accessible form label                |
-| Field       | stable-core         | `@nerio/ui` | Label, help text, error, description |
-| FormMessage | stable-core         | `@nerio/ui` | Field message/error text             |
-| FormGroup   | planned             | `@nerio/ui` | Form layout primitive                |
-| Checkbox    | quality-pass-needed | `@nerio/ui` | Basic checkbox                       |
-| Radio Group | implemented-initial | `@nerio/ui` | Basic radio selection                |
-| Switch      | quality-pass-needed | `@nerio/ui` | Toggle control                       |
-| Select      | stable-core         | `@nerio/ui` | Base select                          |
+| Component   | Status      | Package     | Notes                                                                                      |
+| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------ |
+| Input       | stable-core | `@nerio/ui` | Text input                                                                                 |
+| Textarea    | stable-core | `@nerio/ui` | Multiline input                                                                            |
+| Label       | stable-core | `@nerio/ui` | Accessible form label                                                                      |
+| Field       | stable-core | `@nerio/ui` | Label, help text, error, description                                                       |
+| FormMessage | stable-core | `@nerio/ui` | Field message/error text                                                                   |
+| FormGroup   | stable-core | `@nerio/ui` | Fieldset group with title, description, message, invalid state, and stack or inline layout |
+| Checkbox    | stable-core | `@nerio/ui` | Base UI checkbox for independent options                                                   |
+| Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with label, description, message, and disabled options             |
+| Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings                                               |
+| Select      | stable-core | `@nerio/ui` | Base select                                                                                |
 
 ### Overlays
 
