@@ -2,12 +2,7 @@
 
 import * as React from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
-import { Dialog as BaseDialog } from "@base-ui/react/dialog";
-import { Menu as BaseMenu } from "@base-ui/react/menu";
-import { Popover as BasePopover } from "@base-ui/react/popover";
-import { Select as BaseSelect } from "@base-ui/react/select";
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
-import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import { cn } from "./lib/cn";
 import { Button, type ButtonProps } from "./components/button";
 import { Icon, type IconComponent } from "./components/icon";
@@ -17,14 +12,26 @@ export { Button, Icon, Spinner };
 export type { ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
 export type { IconComponent, IconProps } from "./components/icon";
 export type { SpinnerProps } from "./components/spinner";
-
-function triggerContent(trigger: React.ReactNode) {
-  if (React.isValidElement<{ children?: React.ReactNode }>(trigger)) {
-    return trigger.props.children;
-  }
-
-  return trigger;
-}
+export { Select, type SelectOption, type SelectProps } from "./components/select";
+export { Tabs, type TabItem, type TabsProps } from "./components/tabs";
+export { Tooltip, type TooltipProps } from "./components/tooltip";
+export { Dialog, type DialogProps } from "./components/dialog";
+export { Popover, type PopoverProps } from "./components/popover";
+export {
+  DropdownMenu,
+  type DropdownMenuItem,
+  type DropdownMenuProps,
+} from "./components/dropdown-menu";
+export {
+  Toast,
+  ToastProvider,
+  ToastViewport,
+  toastManager,
+  useToastManager,
+  type ToastData,
+  type ToastProps,
+  type ToastTone,
+} from "./components/toast";
 
 export interface IconButtonProps extends Omit<
   ButtonProps,
@@ -76,23 +83,6 @@ export function EmptyState({
       <h3>{title}</h3>
       <p>{description}</p>
       {action ? <div>{action}</div> : null}
-    </div>
-  );
-}
-
-export function Toast({
-  title,
-  description,
-  tone = "neutral",
-}: {
-  title: string;
-  description?: string;
-  tone?: "neutral" | "success" | "danger";
-}) {
-  return (
-    <div className="n-toast" data-slot="root" data-variant={tone} role="status">
-      <strong>{title}</strong>
-      {description ? <span>{description}</span> : null}
     </div>
   );
 }
@@ -175,63 +165,6 @@ export const Switch = React.forwardRef<HTMLElement, React.ComponentProps<typeof 
   },
 );
 
-export function Select({
-  label,
-  options,
-  value,
-  onChange,
-}: {
-  label: string;
-  options: Array<{ label: string; value: string }>;
-  value?: string;
-  onChange?: (value: string) => void;
-}) {
-  const fallbackValue = value ?? options[0]?.value;
-
-  return (
-    <div className="n-field n-select-field" data-slot="root">
-      <span className="n-label">{label}</span>
-      <BaseSelect.Root<string>
-        value={value}
-        defaultValue={fallbackValue}
-        items={options}
-        onValueChange={(nextValue) => {
-          if (nextValue) {
-            onChange?.(nextValue);
-          }
-        }}
-      >
-        <BaseSelect.Trigger className="n-select-trigger" aria-label={label}>
-          <BaseSelect.Value>
-            {(selectedValue) =>
-              options.find((option) => option.value === selectedValue)?.label ?? "Select"
-            }
-          </BaseSelect.Value>
-          <BaseSelect.Icon aria-hidden>⌄</BaseSelect.Icon>
-        </BaseSelect.Trigger>
-        <BaseSelect.Portal>
-          <BaseSelect.Positioner className="n-popover-positioner">
-            <BaseSelect.Popup className="n-select-popup">
-              <BaseSelect.List>
-                {options.map((option) => (
-                  <BaseSelect.Item
-                    key={option.value}
-                    className="n-select-item"
-                    value={option.value}
-                  >
-                    <BaseSelect.ItemText>{option.label}</BaseSelect.ItemText>
-                    <BaseSelect.ItemIndicator>✓</BaseSelect.ItemIndicator>
-                  </BaseSelect.Item>
-                ))}
-              </BaseSelect.List>
-            </BaseSelect.Popup>
-          </BaseSelect.Positioner>
-        </BaseSelect.Portal>
-      </BaseSelect.Root>
-    </div>
-  );
-}
-
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <section className={cn("n-card", className)} data-slot="root" {...props} />;
 }
@@ -286,152 +219,4 @@ export function KeyValue({ label, value }: { label: string; value: React.ReactNo
 
 export function Table({ className, ...props }: React.TableHTMLAttributes<HTMLTableElement>) {
   return <table className={cn("n-table", className)} data-slot="root" {...props} />;
-}
-
-export function Tabs({
-  tabs,
-  value,
-  onChange,
-}: {
-  tabs: Array<{ label: string; value: string; content: React.ReactNode }>;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  const active = tabs.find((tab) => tab.value === value);
-
-  if (!active) {
-    return null;
-  }
-
-  return (
-    <div className="n-tabs" data-slot="root">
-      <div role="tablist">
-        {tabs.map((tab) => (
-          <button
-            key={tab.value}
-            role="tab"
-            type="button"
-            aria-selected={tab.value === active.value}
-            data-state={tab.value === active.value ? "active" : "inactive"}
-            onClick={() => onChange(tab.value)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-      <div role="tabpanel">{active.content}</div>
-    </div>
-  );
-}
-
-export function Tooltip({ label, children }: { label: string; children: React.ReactNode }) {
-  const trigger = React.isValidElement(children) ? children : <span>{children}</span>;
-
-  return (
-    <BaseTooltip.Provider>
-      <BaseTooltip.Root>
-        <BaseTooltip.Trigger render={trigger} />
-        <BaseTooltip.Portal>
-          <BaseTooltip.Positioner>
-            <BaseTooltip.Popup className="n-tooltip-popup" data-slot="content">
-              {label}
-            </BaseTooltip.Popup>
-          </BaseTooltip.Positioner>
-        </BaseTooltip.Portal>
-      </BaseTooltip.Root>
-    </BaseTooltip.Provider>
-  );
-}
-
-export function Dialog({
-  trigger,
-  title,
-  children,
-}: {
-  trigger: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <BaseDialog.Root>
-      <BaseDialog.Trigger
-        className="n-button"
-        data-slot="root"
-        data-variant="primary"
-        data-size="md"
-      >
-        <span data-slot="label">{triggerContent(trigger)}</span>
-      </BaseDialog.Trigger>
-      <BaseDialog.Portal>
-        <BaseDialog.Backdrop className="n-backdrop" data-slot="backdrop" />
-        <BaseDialog.Popup className="n-dialog" data-slot="content">
-          <header>
-            <BaseDialog.Title>{title}</BaseDialog.Title>
-            <BaseDialog.Close aria-label="Close">x</BaseDialog.Close>
-          </header>
-          {children}
-        </BaseDialog.Popup>
-      </BaseDialog.Portal>
-    </BaseDialog.Root>
-  );
-}
-
-export function Popover({
-  trigger,
-  children,
-}: {
-  trigger: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <BasePopover.Root>
-      <BasePopover.Trigger
-        className="n-button"
-        data-slot="root"
-        data-variant="secondary"
-        data-size="md"
-      >
-        <span data-slot="label">{triggerContent(trigger)}</span>
-      </BasePopover.Trigger>
-      <BasePopover.Portal>
-        <BasePopover.Positioner className="n-popover-positioner">
-          <BasePopover.Popup className="n-popover__content" data-slot="content">
-            {children}
-          </BasePopover.Popup>
-        </BasePopover.Positioner>
-      </BasePopover.Portal>
-    </BasePopover.Root>
-  );
-}
-
-export function DropdownMenu({
-  trigger,
-  items,
-}: {
-  trigger: React.ReactNode;
-  items: Array<{ label: string; onSelect?: () => void }>;
-}) {
-  return (
-    <BaseMenu.Root>
-      <BaseMenu.Trigger
-        className="n-button"
-        data-slot="root"
-        data-variant="secondary"
-        data-size="md"
-      >
-        <span data-slot="label">{triggerContent(trigger)}</span>
-      </BaseMenu.Trigger>
-      <BaseMenu.Portal>
-        <BaseMenu.Positioner>
-          <BaseMenu.Popup className="n-dropdown" data-slot="content">
-            {items.map((item) => (
-              <BaseMenu.Item key={item.label} onClick={item.onSelect}>
-                {item.label}
-              </BaseMenu.Item>
-            ))}
-          </BaseMenu.Popup>
-        </BaseMenu.Positioner>
-      </BaseMenu.Portal>
-    </BaseMenu.Root>
-  );
 }

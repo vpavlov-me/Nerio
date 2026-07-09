@@ -1,7 +1,22 @@
 "use client";
 
 import * as React from "react";
-import { Badge, Button, Card, Dialog, Field, Input, Select, Toast } from "@nerio/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  Dialog,
+  DropdownMenu,
+  Field,
+  Input,
+  Popover,
+  Select,
+  Tabs,
+  ToastProvider,
+  ToastViewport,
+  Tooltip,
+  useToastManager,
+} from "@nerio/ui";
 
 const snippets: Record<string, string> = {
   button: "import { Button } from '@nerio/ui';\n\n<Button>Save project</Button>",
@@ -12,7 +27,14 @@ const snippets: Record<string, string> = {
   select:
     "import { Select } from '@nerio/ui';\n\n<Select label=\"Status\" options={[{ label: 'Active', value: 'active' }]} />",
   toast:
-    'import { Toast } from \'@nerio/ui\';\n\n<Toast title="Saved" description="Your changes are ready." />',
+    "import { Button, ToastProvider, ToastViewport, useToastManager } from '@nerio/ui';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: \"Saved\" })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>",
+  tabs: 'import { Tabs } from \'@nerio/ui\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }]} />',
+  tooltip:
+    "import { Button, Tooltip } from '@nerio/ui';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
+  popover:
+    'import { Popover } from \'@nerio/ui\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
+  "dropdown-menu":
+    'import { DropdownMenu } from \'@nerio/ui\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
 };
 
 export function StandardDocPage({
@@ -105,7 +127,11 @@ function Preview({ kind }: { kind: keyof typeof snippets }) {
           </Field>
         ) : null}
         {kind === "dialog" ? (
-          <Dialog trigger="Open dialog" title="Share collection">
+          <Dialog
+            trigger="Open dialog"
+            title="Share collection"
+            description="Choose how this collection should be shared."
+          >
             <p>Choose collaborators and permissions before sharing this workspace collection.</p>
             <Button>Send invite</Button>
           </Dialog>
@@ -121,10 +147,54 @@ function Preview({ kind }: { kind: keyof typeof snippets }) {
           />
         ) : null}
         {kind === "toast" ? (
-          <Toast
-            title="Collection saved"
-            description="The update is visible to your team."
-            tone="success"
+          <ToastProvider>
+            <ToastDemoButton />
+            <ToastViewport />
+          </ToastProvider>
+        ) : null}
+        {kind === "tabs" ? (
+          <Tabs
+            tabs={[
+              {
+                label: "Overview",
+                value: "overview",
+                content: "Recent activity, ownership, and status are grouped here.",
+              },
+              {
+                label: "Files",
+                value: "files",
+                content: "Documents, assets, and supporting material stay in this panel.",
+              },
+              {
+                label: "Settings",
+                value: "settings",
+                content: "Permissions and workflow preferences are edited here.",
+              },
+            ]}
+          />
+        ) : null}
+        {kind === "tooltip" ? (
+          <Tooltip label="Copies the share link to your clipboard.">
+            <Button variant="secondary">Copy link</Button>
+          </Tooltip>
+        ) : null}
+        {kind === "popover" ? (
+          <Popover
+            trigger="Filters"
+            title="View filters"
+            description="Refine the workspace list without leaving the page."
+          >
+            <Button size="sm">Apply filters</Button>
+          </Popover>
+        ) : null}
+        {kind === "dropdown-menu" ? (
+          <DropdownMenu
+            trigger="Actions"
+            items={[
+              { label: "Rename" },
+              { label: "Duplicate" },
+              { label: "Archive", destructive: true },
+            ]}
           />
         ) : null}
       </div>
@@ -137,5 +207,23 @@ function Preview({ kind }: { kind: keyof typeof snippets }) {
         <code>{snippet}</code>
       </pre>
     </section>
+  );
+}
+
+function ToastDemoButton() {
+  const toast = useToastManager();
+
+  return (
+    <Button
+      onClick={() =>
+        toast.add({
+          title: "Collection saved",
+          description: "The update is visible to your team.",
+          data: { tone: "success" },
+        })
+      }
+    >
+      Show toast
+    </Button>
   );
 }

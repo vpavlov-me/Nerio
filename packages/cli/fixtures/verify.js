@@ -16,6 +16,7 @@ const expectedFiles = [
   "styles/icon.css",
   "styles/spinner.css",
 ];
+const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
 
 function run(cwd, ...args) {
   return new Promise((resolve, reject) => {
@@ -30,8 +31,8 @@ function run(cwd, ...args) {
   });
 }
 
-function assertInstall(target) {
-  for (const file of expectedFiles) {
+function assertInstall(target, files = expectedFiles) {
+  for (const file of files) {
     if (!fs.existsSync(path.join(target, "components/nerio", file))) {
       throw new Error(`Missing installed file: ${file}`);
     }
@@ -84,7 +85,9 @@ async function verify() {
     await run(localTarget, "doctor");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "button");
+    await run(localTarget, "add", "dialog");
     assertInstall(localTarget);
+    assertInstall(localTarget, expectedDialogFiles);
 
     await run(urlTarget, "init", "--registry", manifestUrl);
     await run(urlTarget, "add", "button");
@@ -95,7 +98,7 @@ async function verify() {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
 
-  console.log("CLI fixture passed for local-path and URL registries.");
+  console.log("CLI fixture passed for local-path, URL, and registry dependency installs.");
 }
 
 verify().catch((error) => {

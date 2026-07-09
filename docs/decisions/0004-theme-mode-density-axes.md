@@ -25,7 +25,7 @@ Nerio separates runtime appearance into three independent v1 axes:
 Default runtime attributes:
 
 ```html
-<html data-theme="purple" data-mode="system" data-density="comfortable">
+<html data-theme="purple" data-mode="system" data-density="comfortable"></html>
 ```
 
 Initial preset values:

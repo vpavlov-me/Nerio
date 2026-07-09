@@ -67,6 +67,268 @@
         "Keep the visible focus treatment enabled."
       ],
       "usage": "import { Button } from '@/components/nerio/components/button';\n\n<Button variant=\"primary\">Save changes</Button>"
+    },
+    {
+      "name": "select",
+      "title": "Select",
+      "description": "Chooses one option from a compact list.",
+      "category": "forms",
+      "dependencies": ["@base-ui/react", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/select.tsx",
+          "target": "components/select.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/select.css",
+          "target": "styles/select.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["select"],
+      "slots": ["root", "label", "trigger", "content", "item"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-input-height-md",
+        "--n-color-surface",
+        "--n-color-surface-raised",
+        "--n-color-border-strong",
+        "--n-color-border-subtle",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Select primitive.",
+        "The visible label is also provided as the trigger accessible name.",
+        "Options support disabled states and keyboard navigation."
+      ],
+      "usage": "import { Select } from '@/components/nerio/components/select';\n\n<Select label=\"Status\" options={[{ label: 'Active', value: 'active' }]} />"
+    },
+    {
+      "name": "tabs",
+      "title": "Tabs",
+      "description": "Switches between related panels in the same context.",
+      "category": "navigation",
+      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/tabs.tsx",
+          "target": "components/tabs.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/tabs.css",
+          "target": "styles/tabs.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["tabs"],
+      "slots": ["root", "list", "tab", "indicator", "panel"],
+      "variants": ["horizontal"],
+      "requiredTokens": [
+        "--n-color-border-subtle",
+        "--n-color-text-primary",
+        "--n-color-text-tertiary",
+        "--n-color-action-primary",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Tabs primitive.",
+        "Supports keyboard navigation, selected state, and disabled tabs.",
+        "Each tab is paired with a panel by value."
+      ],
+      "usage": "import { Tabs } from '@/components/nerio/components/tabs';\n\n<Tabs tabs={[{ label: 'Overview', value: 'overview', content: '...' }]} />"
+    },
+    {
+      "name": "dialog",
+      "title": "Dialog",
+      "description": "Focuses a short decision or task above the current surface.",
+      "category": "overlays",
+      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/dialog.tsx",
+          "target": "components/dialog.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/overlays.css",
+          "target": "styles/overlays.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["dialog"],
+      "slots": ["backdrop", "content", "header", "heading", "title", "description", "body"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-dialog-width-md",
+        "--n-overlay-z-index",
+        "--n-color-surface-raised",
+        "--n-color-border-subtle",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Dialog primitive.",
+        "Includes a title and optional description.",
+        "Focus is trapped while the dialog is open and returns to the trigger on close."
+      ],
+      "usage": "import { Dialog } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\">...</Dialog>"
+    },
+    {
+      "name": "popover",
+      "title": "Popover",
+      "description": "Reveals contextual controls or details near a trigger.",
+      "category": "overlays",
+      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/popover.tsx",
+          "target": "components/popover.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/overlays.css",
+          "target": "styles/overlays.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["popover"],
+      "slots": ["content", "title", "description", "body"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-overlay-z-index",
+        "--n-color-surface-raised",
+        "--n-color-border-subtle",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Popover primitive.",
+        "Keep essential form submission or destructive confirmation outside transient popovers.",
+        "Provide title or description when the content needs context."
+      ],
+      "usage": "import { Popover } from '@/components/nerio/components/popover';\n\n<Popover trigger=\"Filters\" title=\"View filters\">...</Popover>"
+    },
+    {
+      "name": "dropdown-menu",
+      "title": "DropdownMenu",
+      "description": "Groups secondary commands behind a compact trigger.",
+      "category": "overlays",
+      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/dropdown-menu.tsx",
+          "target": "components/dropdown-menu.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/overlays.css",
+          "target": "styles/overlays.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["menu"],
+      "slots": ["content", "item"],
+      "variants": ["default", "destructive"],
+      "requiredTokens": [
+        "--n-overlay-z-index",
+        "--n-color-surface-raised",
+        "--n-color-border-subtle",
+        "--n-color-danger",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Menu primitive.",
+        "Items are keyboard reachable and can be disabled.",
+        "Use destructive tone only for irreversible or high-risk commands."
+      ],
+      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ label: 'Rename' }]} />"
+    },
+    {
+      "name": "tooltip",
+      "title": "Tooltip",
+      "description": "Clarifies compact controls without carrying essential meaning.",
+      "category": "overlays",
+      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/tooltip.tsx",
+          "target": "components/tooltip.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/overlays.css",
+          "target": "styles/overlays.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["tooltip"],
+      "slots": ["content"],
+      "variants": [],
+      "requiredTokens": ["--n-overlay-z-index", "--n-color-text-primary", "--n-color-canvas"],
+      "accessibility": [
+        "Uses the Base UI Tooltip primitive.",
+        "Do not put required information only inside a tooltip.",
+        "Keep tooltip text short and specific."
+      ],
+      "usage": "import { Tooltip } from '@/components/nerio/components/tooltip';\n\n<Tooltip label=\"Copies the share link\">...</Tooltip>"
+    },
+    {
+      "name": "toast",
+      "title": "Toast",
+      "description": "Acknowledges short-lived product events without interrupting work.",
+      "category": "feedback",
+      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/toast.tsx",
+          "target": "components/toast.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/toast.css",
+          "target": "styles/toast.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["toast"],
+      "slots": ["viewport", "root", "content", "title", "description"],
+      "variants": ["neutral", "success", "danger"],
+      "requiredTokens": [
+        "--n-overlay-z-index",
+        "--n-color-surface-raised",
+        "--n-color-border-subtle",
+        "--n-color-success",
+        "--n-color-danger",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Toast primitive and manager.",
+        "Use low priority for routine confirmations and high priority only for urgent updates.",
+        "Keep messages concise and avoid replacing persistent error UI with a toast."
+      ],
+      "usage": "import { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\n<ToastProvider><ToastViewport /></ToastProvider>"
     }
   ]
 }
