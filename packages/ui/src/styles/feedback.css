@@ -1,0 +1,91 @@
+.n-badge {
+  align-items: center;
+  background: var(--n-color-surface-muted);
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: var(--n-radius-full);
+  color: var(--n-color-text-secondary);
+  display: inline-flex;
+  font-size: var(--n-font-size-xs);
+  font-weight: var(--n-font-weight-medium);
+  min-block-size: var(--n-badge-height);
+  padding: 0 var(--n-space-2);
+}
+
+.n-badge[data-variant="success"] {
+  color: var(--n-color-success);
+}
+
+.n-badge[data-variant="danger"] {
+  color: var(--n-color-danger);
+}
+
+.n-badge[data-variant="info"] {
+  color: var(--n-color-action-primary);
+}
+
+.n-skeleton {
+  animation: n-pulse 1.5s ease-in-out infinite;
+  background: var(--n-color-surface-muted);
+  border-radius: var(--n-radius-md);
+  min-block-size: var(--n-skeleton-height);
+}
+
+@keyframes n-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.n-empty-state {
+  align-items: center;
+  border: 1px dashed var(--n-color-border-strong);
+  border-radius: var(--n-radius-lg);
+  color: var(--n-color-text-secondary);
+  display: grid;
+  gap: var(--n-space-3);
+  justify-items: center;
+  padding: var(--n-space-8);
+  text-align: center;
+}
+
+.n-empty-state h3 {
+  color: var(--n-color-text-primary);
+  font-size: var(--n-font-size-lg);
+  margin: 0;
+}
+
+.n-empty-state p {
+  margin: 0;
+  max-inline-size: 32rem;
+}
+
+.n-empty-state__mark {
+  background: var(--n-color-action-primary);
+  border-radius: var(--n-radius-md);
+  block-size: var(--n-empty-state-mark-size);
+  inline-size: var(--n-empty-state-mark-size);
+  opacity: 0.14;
+}
+
+.n-progress {
+  display: grid;
+  gap: var(--n-space-2);
+}
+
+.n-progress > span {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+}
+
+.n-progress [role="progressbar"] {
+  background: var(--n-color-surface-muted);
+  border-radius: var(--n-radius-full);
+  block-size: var(--n-progress-height);
+  overflow: hidden;
+}
+
+.n-progress [role="progressbar"] span {
+  background: var(--n-color-action-primary);
+  block-size: 100%;
+  display: block;
+}

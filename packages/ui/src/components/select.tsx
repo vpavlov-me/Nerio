@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
+import { Check, ChevronDown } from "@nerio/adapters";
+import { Icon } from "./icon";
 
 export interface SelectOption {
   label: string;
@@ -41,7 +43,9 @@ export function Select({ label, options, value, defaultValue, onChange }: Select
               options.find((option) => option.value === selectedValue)?.label ?? "Select"
             }
           </BaseSelect.Value>
-          <BaseSelect.Icon aria-hidden>⌄</BaseSelect.Icon>
+          <BaseSelect.Icon data-slot="icon">
+            <Icon icon={ChevronDown} />
+          </BaseSelect.Icon>
         </BaseSelect.Trigger>
         <BaseSelect.Portal>
           <BaseSelect.Positioner className="n-popover-positioner">
@@ -56,7 +60,9 @@ export function Select({ label, options, value, defaultValue, onChange }: Select
                     value={option.value}
                   >
                     <BaseSelect.ItemText>{option.label}</BaseSelect.ItemText>
-                    <BaseSelect.ItemIndicator>✓</BaseSelect.ItemIndicator>
+                    <BaseSelect.ItemIndicator data-slot="indicator">
+                      <Icon icon={Check} />
+                    </BaseSelect.ItemIndicator>
                   </BaseSelect.Item>
                 ))}
               </BaseSelect.List>

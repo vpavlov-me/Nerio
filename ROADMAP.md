@@ -68,6 +68,10 @@ Scope:
 - Analytics Panel
 - AppShell
 - AppSidebar
+- Documentation Shell
+- Documentation Sidebar
+- Page Table of Contents
+- Documentation Search
 - Settings Layout
 - Billing Settings
 - Team Members

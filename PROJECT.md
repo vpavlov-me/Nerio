@@ -122,9 +122,11 @@ Core should be strong enough to build real products without a paid license. It s
 
 ## Pro component scope
 
-Nerio Pro includes advanced product-ready components and templates: DataGrid, Advanced Table, Filter Bar, Saved Views, Column Settings, KPI Card, KPI Group, Trend Chip, Chart Card, Activity Feed, Analytics Panel, AppShell, AppSidebar, Settings Layout, Billing Settings, Team Members, Roles & Permissions, Audit Log, Portfolio Card, Asset Row, Transaction List, Wallet Connector UI, Balance Visibility, PnL components, Risk Badge, AI Chat Shell, Prompt Input, Message, Sources, Tool Call, Reasoning Block, Attachment, Code Block, and product templates.
+Nerio Pro includes advanced product-ready components and templates: DataGrid, Advanced Table, Filter Bar, Saved Views, Column Settings, KPI Card, KPI Group, Trend Chip, Chart Card, Activity Feed, Analytics Panel, AppShell, AppSidebar, Settings Layout, Billing Settings, Team Members, Roles & Permissions, Audit Log, Documentation Shell, Documentation Header, Documentation Sidebar, Page Table of Contents, Documentation Search, Portfolio Card, Asset Row, Transaction List, Wallet Connector UI, Balance Visibility, PnL components, Risk Badge, AI Chat Shell, Prompt Input, Message, Sources, Tool Call, Reasoning Block, Attachment, Code Block, and product templates.
 
 Pro should sell time savings and product judgment, not duplicate Core components.
+
+The public documentation application may use app-local shell code to showcase Nerio, but reusable documentation layouts such as a full docs shell, grouped docs sidebar, page table of contents, and global docs search belong to Nerio Pro. They must be composed from Core primitives and tokens rather than being added to Core as product-ready patterns.
 
 ## First implementation milestone
 

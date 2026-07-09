@@ -1,17 +1,33 @@
 "use client";
 
 import * as React from "react";
+import { Search } from "@nerio/adapters";
 import {
+  Avatar,
   Badge,
   Button,
   Card,
+  Checkbox,
   Dialog,
   DropdownMenu,
+  EmptyState,
   Field,
+  FormMessage,
+  IconButton,
   Input,
+  KeyValue,
+  Label,
   Popover,
+  Progress,
   Select,
+  Separator,
+  Skeleton,
+  Spinner,
+  Stat,
+  Switch,
   Tabs,
+  Table,
+  Textarea,
   ToastProvider,
   ToastViewport,
   Tooltip,
@@ -20,8 +36,25 @@ import {
 
 const snippets: Record<string, string> = {
   button: "import { Button } from '@nerio/ui';\n\n<Button>Save project</Button>",
+  "icon-button":
+    "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@nerio/ui';\n\n<IconButton icon={Search} label=\"Search\" />",
+  badge: "import { Badge } from '@nerio/ui';\n\n<Badge variant=\"success\">Published</Badge>",
+  spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
+  skeleton: "import { Skeleton } from '@nerio/ui';\n\n<Skeleton aria-label=\"Loading\" />",
+  "empty-state":
+    'import { Button, EmptyState } from \'@nerio/ui\';\n\n<EmptyState title="No collections" description="Create one to start organizing work." action={<Button>Create collection</Button>} />',
   input:
     'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name"><Input placeholder="Q3 planning" /></Field>',
+  textarea:
+    'import { Field, Textarea } from \'@nerio/ui\';\n\n<Field label="Notes"><Textarea placeholder="Add context" /></Field>',
+  label:
+    'import { Input, Label } from \'@nerio/ui\';\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" />',
+  field:
+    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" message="Use at least 3 characters."><Input /></Field>',
+  "form-message":
+    "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
+  checkbox: "import { Checkbox } from '@nerio/ui';\n\n<Checkbox aria-label=\"Include archived\" />",
+  switch: "import { Switch } from '@nerio/ui';\n\n<Switch aria-label=\"Enable notifications\" />",
   dialog:
     'import { Dialog } from \'@nerio/ui\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
@@ -35,6 +68,15 @@ const snippets: Record<string, string> = {
     'import { Popover } from \'@nerio/ui\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
     'import { DropdownMenu } from \'@nerio/ui\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
+  card: "import { Card } from '@nerio/ui';\n\n<Card>Project summary</Card>",
+  separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
+  avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
+  progress: "import { Progress } from '@nerio/ui';\n\n<Progress label=\"Completion\" value={68} />",
+  stat: 'import { Stat } from \'@nerio/ui\';\n\n<Stat label="Active projects" value="12" trend="+3 this week" />',
+  "key-value":
+    'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
+  table:
+    "import { Table } from '@nerio/ui';\n\n<Table><thead><tr><th>Name</th></tr></thead><tbody><tr><td>Roadmap</td></tr></tbody></Table>",
 };
 
 export function StandardDocPage({
@@ -44,7 +86,7 @@ export function StandardDocPage({
 }: {
   title: string;
   lede: string;
-  kind?: keyof typeof snippets;
+  kind?: string;
 }) {
   return (
     <article className="doc-page">
@@ -93,7 +135,7 @@ export function StandardDocPage({
   );
 }
 
-function Preview({ kind }: { kind: keyof typeof snippets }) {
+function Preview({ kind }: { kind: string }) {
   const [copied, setCopied] = React.useState(false);
   const snippet = snippets[kind] ?? "";
 
@@ -118,6 +160,30 @@ function Preview({ kind }: { kind: keyof typeof snippets }) {
             <Button loading>Saving</Button>
           </>
         ) : null}
+        {kind === "icon-button" ? <IconButton icon={Search} label="Search workspace" /> : null}
+        {kind === "badge" ? (
+          <>
+            <Badge>Draft</Badge>
+            <Badge variant="success">Published</Badge>
+            <Badge variant="info">Shared</Badge>
+            <Badge variant="danger">Blocked</Badge>
+          </>
+        ) : null}
+        {kind === "spinner" ? <Spinner label="Loading activity" /> : null}
+        {kind === "skeleton" ? (
+          <div className="form-preview-stack" aria-label="Loading project summary">
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+          </div>
+        ) : null}
+        {kind === "empty-state" ? (
+          <EmptyState
+            title="No collections"
+            description="Create a collection to organize projects, notes, and shared context."
+            action={<Button size="sm">Create collection</Button>}
+          />
+        ) : null}
         {kind === "input" ? (
           <Field
             label="Collection name"
@@ -125,6 +191,48 @@ function Preview({ kind }: { kind: keyof typeof snippets }) {
           >
             <Input placeholder="Launch materials" />
           </Field>
+        ) : null}
+        {kind === "textarea" ? (
+          <Field
+            label="Notes"
+            description="Add context that helps collaborators understand this item."
+          >
+            <Textarea placeholder="Add launch context, decisions, or open questions." />
+          </Field>
+        ) : null}
+        {kind === "label" ? (
+          <div className="form-preview-stack">
+            <Label htmlFor="preview-project-name">Project name</Label>
+            <Input id="preview-project-name" placeholder="Roadmap refresh" />
+          </div>
+        ) : null}
+        {kind === "field" ? (
+          <Field
+            label="Project name"
+            description="Names appear in navigation, tables, and activity."
+            message="Use at least 3 characters."
+          >
+            <Input placeholder="Q3" />
+          </Field>
+        ) : null}
+        {kind === "form-message" ? (
+          <div className="form-preview-stack">
+            <FormMessage>Use at least 3 characters.</FormMessage>
+            <FormMessage tone="neutral">This will be visible to collaborators.</FormMessage>
+            <FormMessage tone="success">Looks good.</FormMessage>
+          </div>
+        ) : null}
+        {kind === "checkbox" ? (
+          <label className="inline-control">
+            <Checkbox defaultChecked />
+            <span>Include archived collections</span>
+          </label>
+        ) : null}
+        {kind === "switch" ? (
+          <label className="inline-control">
+            <Switch defaultChecked />
+            <span>Notify collaborators</span>
+          </label>
         ) : null}
         {kind === "dialog" ? (
           <Dialog
@@ -196,6 +304,68 @@ function Preview({ kind }: { kind: keyof typeof snippets }) {
               { label: "Archive", destructive: true },
             ]}
           />
+        ) : null}
+        {kind === "card" ? (
+          <Card className="preview-card">
+            <Badge variant="info">Active</Badge>
+            <strong>Launch workspace</strong>
+            <p>Plan assets, owners, and milestones in one focused surface.</p>
+          </Card>
+        ) : null}
+        {kind === "separator" ? (
+          <div className="form-preview-stack">
+            <span>Overview</span>
+            <Separator />
+            <span>Activity</span>
+          </div>
+        ) : null}
+        {kind === "avatar" ? (
+          <>
+            <Avatar name="Maya Chen" />
+            <Avatar name="Nerio Team" />
+            <Avatar name="Alex Rivera" />
+          </>
+        ) : null}
+        {kind === "progress" ? (
+          <div className="form-preview-stack">
+            <Progress label="Collection completion" value={68} />
+          </div>
+        ) : null}
+        {kind === "stat" ? (
+          <>
+            <Stat label="Active projects" value="12" trend="+3 this week" />
+            <Stat label="Open tasks" value="34" trend="8 due today" />
+          </>
+        ) : null}
+        {kind === "key-value" ? (
+          <dl className="preview-key-values">
+            <KeyValue label="Owner" value="Product team" />
+            <KeyValue label="Updated" value="Today" />
+            <KeyValue label="Status" value={<Badge variant="success">Ready</Badge>} />
+          </dl>
+        ) : null}
+        {kind === "table" ? (
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Owner</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Roadmap refresh</td>
+                <td>Active</td>
+                <td>Maya</td>
+              </tr>
+              <tr>
+                <td>Content audit</td>
+                <td>Draft</td>
+                <td>Alex</td>
+              </tr>
+            </tbody>
+          </Table>
         ) : null}
       </div>
       <div className="preview-row">
