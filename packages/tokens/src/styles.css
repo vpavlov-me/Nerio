@@ -240,6 +240,9 @@
   --n-spinner-size-sm: 0.875rem;
   --n-spinner-size-md: 1rem;
   --n-spinner-size-lg: 1.25rem;
+  --n-spinner-border-width: 2px;
+  --n-spinner-duration: 800ms;
+  --n-skeleton-duration: 1.5s;
   --n-input-height-md: 2.5rem;
   --n-input-radius: var(--n-radius-md);
   --n-input-background: var(--n-color-surface-default);

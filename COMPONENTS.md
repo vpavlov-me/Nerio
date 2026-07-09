@@ -85,16 +85,16 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Data display
 
-| Component | Status              | Package     | Notes                                                   |
-| --------- | ------------------- | ----------- | ------------------------------------------------------- |
-| Card      | quality-pass-needed | `@nerio/ui` | Surface primitive                                       |
-| Badge     | quality-pass-needed | `@nerio/ui` | Status and metadata                                     |
-| Avatar    | quality-pass-needed | `@nerio/ui` | User/entity avatar                                      |
-| Table     | quality-pass-needed | `@nerio/ui` | Basic table only                                        |
-| List      | planned             | `@nerio/ui` | Basic list primitive                                    |
-| Separator | quality-pass-needed | `@nerio/ui` | Layout divider                                          |
-| KeyValue  | quality-pass-needed | `@nerio/ui` | Simple definition-list value display                    |
-| Stat      | quality-pass-needed | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro. |
+| Component | Status      | Package     | Notes                                                   |
+| --------- | ----------- | ----------- | ------------------------------------------------------- |
+| Card      | stable-core | `@nerio/ui` | Surface primitive                                       |
+| Badge     | stable-core | `@nerio/ui` | Status and metadata                                     |
+| Avatar    | stable-core | `@nerio/ui` | User/entity avatar                                      |
+| Table     | stable-core | `@nerio/ui` | Basic table only                                        |
+| List      | planned     | `@nerio/ui` | Basic list primitive                                    |
+| Separator | stable-core | `@nerio/ui` | Layout divider                                          |
+| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                    |
+| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro. |
 
 ### Feedback
 
@@ -102,10 +102,10 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | ----------- | ------------------- | ----------- | ---------------------- |
 | Alert       | planned             | `@nerio/ui` | Inline feedback        |
 | Toast       | quality-pass-needed | `@nerio/ui` | Temporary notification |
-| Progress    | quality-pass-needed | `@nerio/ui` | Progress indicator     |
-| Skeleton    | quality-pass-needed | `@nerio/ui` | Loading placeholder    |
-| Empty State | quality-pass-needed | `@nerio/ui` | Basic empty state      |
-| Spinner     | quality-pass-needed | `@nerio/ui` | Loading indicator      |
+| Progress    | stable-core         | `@nerio/ui` | Progress indicator     |
+| Skeleton    | stable-core         | `@nerio/ui` | Loading placeholder    |
+| Empty State | stable-core         | `@nerio/ui` | Basic empty state      |
+| Spinner     | stable-core         | `@nerio/ui` | Loading indicator      |
 
 ### Navigation and layout
 

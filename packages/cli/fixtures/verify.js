@@ -43,13 +43,24 @@ const expectedSelectFiles = [
 ];
 const expectedIconButtonFiles = [...expectedFiles, "components/icon-button.tsx"];
 const expectedDisplayFiles = [
+  "components/avatar.tsx",
   "components/card.tsx",
+  "components/key-value.tsx",
+  "components/separator.tsx",
   "components/stat.tsx",
   "components/table.tsx",
   "lib/cn.ts",
   "styles/display.css",
 ];
-const expectedFeedbackFiles = ["components/empty-state.tsx", "styles/feedback.css"];
+const expectedFeedbackFiles = [
+  "components/empty-state.tsx",
+  "components/progress.tsx",
+  "components/skeleton.tsx",
+  "components/spinner.tsx",
+  "lib/cn.ts",
+  "styles/feedback.css",
+  "styles/spinner.css",
+];
 
 function run(cwd, ...args) {
   return new Promise((resolve, reject) => {
@@ -135,8 +146,14 @@ async function verify() {
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "icon-button");
+    await run(localTarget, "add", "avatar");
+    await run(localTarget, "add", "key-value");
+    await run(localTarget, "add", "separator");
     await run(localTarget, "add", "stat");
     await run(localTarget, "add", "table");
+    await run(localTarget, "add", "progress");
+    await run(localTarget, "add", "skeleton");
+    await run(localTarget, "add", "spinner");
     await run(localTarget, "add", "empty-state");
     assertInstall(localTarget);
     assertInstall(localTarget, expectedDialogFiles);
@@ -146,6 +163,22 @@ async function verify() {
     assertFiles(localTarget, expectedIconButtonFiles);
     assertFiles(localTarget, expectedDisplayFiles);
     assertFiles(localTarget, expectedFeedbackFiles);
+
+    const tableSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/table.tsx"),
+      "utf8",
+    );
+    if (!tableSource.includes('scope = "col"')) {
+      throw new Error("Installed Table source does not preserve column header scope.");
+    }
+
+    const progressSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/progress.tsx"),
+      "utf8",
+    );
+    if (!progressSource.includes("aria-labelledby") || !progressSource.includes("aria-valuenow")) {
+      throw new Error("Installed Progress source does not preserve accessible progress metadata.");
+    }
 
     await run(urlTarget, "init", "--registry", manifestUrl);
     await run(urlTarget, "add", "button");

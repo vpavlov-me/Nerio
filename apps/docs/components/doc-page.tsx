@@ -28,6 +28,11 @@ import {
   Switch,
   Tabs,
   Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
   Textarea,
   ToastProvider,
   ToastViewport,
@@ -428,25 +433,25 @@ function Preview({ kind }: { kind: string }) {
         ) : null}
         {kind === "table" ? (
           <Table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Owner</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Roadmap refresh</td>
-                <td>Active</td>
-                <td>Maya</td>
-              </tr>
-              <tr>
-                <td>Content audit</td>
-                <td>Draft</td>
-                <td>Alex</td>
-              </tr>
-            </tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Owner</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Roadmap refresh</TableCell>
+                <TableCell>Active</TableCell>
+                <TableCell>Maya</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Content audit</TableCell>
+                <TableCell>Draft</TableCell>
+                <TableCell>Alex</TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         ) : null}
       </div>

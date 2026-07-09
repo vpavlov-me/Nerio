@@ -6,9 +6,13 @@ export interface SpinnerProps extends React.HTMLAttributes<HTMLSpanElement> {
   label?: string;
 }
 
-export function Spinner({ className, size = "md", label = "Loading", ...props }: SpinnerProps) {
+export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(function Spinner(
+  { className, size = "md", label = "Loading", ...props },
+  ref,
+) {
   return (
     <span
+      ref={ref}
       className={cn("n-spinner", className)}
       data-slot="root"
       data-size={size}
@@ -18,4 +22,4 @@ export function Spinner({ className, size = "md", label = "Loading", ...props }:
       <span className="n-visually-hidden">{label}</span>
     </span>
   );
-}
+});

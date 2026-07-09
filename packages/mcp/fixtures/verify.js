@@ -33,6 +33,31 @@ async function verify() {
       throw new Error("MCP get_component_usage did not include install and token metadata.");
     }
 
+    const tableUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "table" },
+    });
+    const tableUsage = JSON.parse(tableUsageResult.content[0].text);
+    if (
+      !tableUsage.requiredTokens.includes("--n-table-border") ||
+      tableUsage.requiredTokens.includes("--n-font-size-sm") ||
+      !tableUsage.usage.includes("TableHeader")
+    ) {
+      throw new Error("MCP Table usage is not aligned with the Core table registry contract.");
+    }
+
+    const progressUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "progress" },
+    });
+    const progressUsage = JSON.parse(progressUsageResult.content[0].text);
+    if (
+      !progressUsage.requiredTokens.includes("--n-progress-radius") ||
+      !progressUsage.accessibility.some((item) => item.includes("accessible progressbar name"))
+    ) {
+      throw new Error("MCP Progress usage is missing accessible progress metadata.");
+    }
+
     const listResult = await client.callTool({ name: "list_components", arguments: {} });
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [
