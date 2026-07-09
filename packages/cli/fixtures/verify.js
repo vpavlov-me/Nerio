@@ -42,6 +42,18 @@ const expectedSelectFiles = [
   "styles/icon.css",
 ];
 const expectedIconButtonFiles = [...expectedFiles, "components/icon-button.tsx"];
+const expectedPhase2BFiles = [
+  "components/alert.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/link.tsx",
+  "components/radio-group.tsx",
+  "lib/cn.ts",
+  "styles/actions.css",
+  "styles/feedback.css",
+  "styles/forms.css",
+  "styles/icon.css",
+];
 const expectedDisplayFiles = [
   "components/avatar.tsx",
   "components/card.tsx",
@@ -146,6 +158,9 @@ async function verify() {
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "icon-button");
+    await run(localTarget, "add", "link");
+    await run(localTarget, "add", "alert");
+    await run(localTarget, "add", "radio-group");
     await run(localTarget, "add", "avatar");
     await run(localTarget, "add", "key-value");
     await run(localTarget, "add", "separator");
@@ -161,6 +176,7 @@ async function verify() {
     assertFiles(localTarget, expectedBaseFormFiles);
     assertFiles(localTarget, expectedSelectFiles);
     assertFiles(localTarget, expectedIconButtonFiles);
+    assertFiles(localTarget, expectedPhase2BFiles);
     assertFiles(localTarget, expectedDisplayFiles);
     assertFiles(localTarget, expectedFeedbackFiles);
 
@@ -178,6 +194,25 @@ async function verify() {
     );
     if (!progressSource.includes("aria-labelledby") || !progressSource.includes("aria-valuenow")) {
       throw new Error("Installed Progress source does not preserve accessible progress metadata.");
+    }
+
+    const linkSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/link.tsx"),
+      "utf8",
+    );
+    if (!linkSource.includes("AnchorHTMLAttributes") || !linkSource.includes("forwardRef")) {
+      throw new Error("Installed Link source does not preserve native anchor/ref support.");
+    }
+
+    const radioSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/radio-group.tsx"),
+      "utf8",
+    );
+    if (
+      !radioSource.includes("@base-ui/react/radio-group") ||
+      !radioSource.includes("aria-labelledby")
+    ) {
+      throw new Error("Installed RadioGroup source does not preserve Base UI label wiring.");
     }
 
     await run(urlTarget, "init", "--registry", manifestUrl);

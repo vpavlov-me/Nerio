@@ -35,6 +35,7 @@
 .n-input:focus-visible,
 .n-textarea:focus-visible,
 .n-checkbox:focus-visible,
+.n-radio:focus-visible,
 .n-switch:focus-visible {
   box-shadow: var(--n-focus-ring);
   outline: 0;
@@ -108,6 +109,73 @@
   display: inline-flex;
   font-size: var(--n-font-size-xs);
   line-height: 1;
+}
+
+.n-radio-field [role="radiogroup"] {
+  display: grid;
+  gap: var(--n-space-2);
+}
+
+.n-radio-option {
+  align-items: start;
+  color: var(--n-color-text-secondary);
+  cursor: pointer;
+  display: inline-grid;
+  gap: var(--n-space-2);
+  grid-template-columns: auto 1fr;
+}
+
+.n-radio-option[data-disabled] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.n-radio {
+  align-items: center;
+  background: var(--n-input-background);
+  border: 1px solid var(--n-input-border);
+  border-radius: var(--n-radio-radius);
+  block-size: var(--n-radio-size);
+  color: var(--n-color-action-primary);
+  cursor: pointer;
+  display: inline-flex;
+  inline-size: var(--n-radio-size);
+  justify-content: center;
+  margin-block-start: 0.125rem;
+}
+
+.n-radio:hover:not([data-disabled]) {
+  border-color: var(--n-input-border-hover);
+}
+
+.n-radio[data-checked] {
+  border-color: var(--n-color-action-primary);
+}
+
+.n-radio[data-disabled] {
+  cursor: not-allowed;
+}
+
+.n-radio[data-invalid],
+.n-radio-field[data-invalid] .n-radio {
+  border-color: var(--n-input-border-danger);
+}
+
+.n-radio__indicator {
+  background: currentColor;
+  border-radius: var(--n-radio-radius);
+  block-size: var(--n-radio-dot-size);
+  inline-size: var(--n-radio-dot-size);
+}
+
+.n-radio-option__content {
+  display: grid;
+  gap: var(--n-space-1);
+}
+
+.n-radio-option__content [data-slot="option-description"] {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-sm);
 }
 
 .n-switch {

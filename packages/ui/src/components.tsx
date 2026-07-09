@@ -1,6 +1,7 @@
 "use client";
 export { Button } from "./components/button";
 export type { ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
+export { Link, type LinkProps, type LinkVariant } from "./components/link";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps } from "./components/icon";
 export { IconButton, type IconButtonProps } from "./components/icon-button";
@@ -9,6 +10,7 @@ export type { SpinnerProps } from "./components/spinner";
 export { Badge, type BadgeProps, type BadgeVariant } from "./components/badge";
 export { Skeleton, type SkeletonProps } from "./components/skeleton";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
+export { Alert, type AlertProps, type AlertTone } from "./components/alert";
 export { Input, type InputProps } from "./components/input";
 export { Textarea, type TextareaProps } from "./components/textarea";
 export { Label, type LabelProps } from "./components/label";
@@ -19,6 +21,7 @@ export {
   type FormMessageTone,
 } from "./components/form-message";
 export { Checkbox, type CheckboxProps } from "./components/checkbox";
+export { RadioGroup, type RadioGroupOption, type RadioGroupProps } from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
 export { Select, type SelectOption, type SelectProps } from "./components/select";
 export { Tabs, type TabItem, type TabsProps } from "./components/tabs";

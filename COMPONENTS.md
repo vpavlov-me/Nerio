@@ -56,7 +56,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | ---------- | ------------------- | ----------- | ------------------------------------ |
 | Button     | quality-pass-needed | `@nerio/ui` | Variants, sizes, loading, icon slots |
 | IconButton | quality-pass-needed | `@nerio/ui` | Accessible icon-only action          |
-| Link       | planned             | `@nerio/ui` | Styled link primitive                |
+| Link       | implemented-initial | `@nerio/ui` | Styled link primitive                |
 
 ### Forms
 
@@ -69,7 +69,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | FormMessage | quality-pass-needed | `@nerio/ui` | Field message/error text             |
 | FormGroup   | planned             | `@nerio/ui` | Form layout primitive                |
 | Checkbox    | quality-pass-needed | `@nerio/ui` | Basic checkbox                       |
-| Radio Group | planned             | `@nerio/ui` | Basic radio selection                |
+| Radio Group | implemented-initial | `@nerio/ui` | Basic radio selection                |
 | Switch      | quality-pass-needed | `@nerio/ui` | Toggle control                       |
 | Select      | quality-pass-needed | `@nerio/ui` | Base select                          |
 
@@ -100,7 +100,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 | Component   | Status              | Package     | Notes                  |
 | ----------- | ------------------- | ----------- | ---------------------- |
-| Alert       | planned             | `@nerio/ui` | Inline feedback        |
+| Alert       | implemented-initial | `@nerio/ui` | Inline feedback        |
 | Toast       | quality-pass-needed | `@nerio/ui` | Temporary notification |
 | Progress    | stable-core         | `@nerio/ui` | Progress indicator     |
 | Skeleton    | stable-core         | `@nerio/ui` | Loading placeholder    |

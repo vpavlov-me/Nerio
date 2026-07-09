@@ -1,0 +1,24 @@
+.n-link {
+  color: var(--n-link-color);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--n-link-underline-thickness);
+  text-underline-offset: var(--n-link-underline-offset);
+}
+
+.n-link:hover {
+  color: var(--n-link-color-hover);
+}
+
+.n-link:focus-visible {
+  border-radius: var(--n-radius-sm);
+  box-shadow: var(--n-focus-ring);
+  outline: 0;
+}
+
+.n-link[data-variant="muted"] {
+  color: var(--n-link-color-muted);
+}
+
+.n-link[data-variant="muted"]:hover {
+  color: var(--n-link-color);
+}

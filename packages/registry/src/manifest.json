@@ -95,6 +95,48 @@
       "usage": "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@/components/nerio/components/icon-button';\n\n<IconButton icon={Search} label=\"Search\" />"
     },
     {
+      "name": "link",
+      "title": "Link",
+      "description": "Styles native anchors for inline text and navigation.",
+      "category": "actions",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/link.tsx",
+          "target": "components/link.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/actions.css",
+          "target": "styles/actions.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": ["default", "muted"],
+      "requiredTokens": [
+        "--n-link-color",
+        "--n-link-color-hover",
+        "--n-link-color-muted",
+        "--n-link-underline-offset",
+        "--n-link-underline-thickness",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Renders a native anchor and supports native anchor attributes.",
+        "Use link text that describes the destination or result.",
+        "Do not use Link as a button replacement for in-place actions."
+      ],
+      "usage": "import { Link } from '@/components/nerio/components/link';\n\n<Link href=\"/docs\">Read the docs</Link>"
+    },
+    {
       "name": "badge",
       "title": "Badge",
       "description": "Labels status, category, or lightweight metadata.",
@@ -247,6 +289,62 @@
         "Do not use toasts to explain an empty page state."
       ],
       "usage": "import { EmptyState } from '@/components/nerio/components/empty-state';\n\n<EmptyState title=\"No collections\" description=\"Create one to start organizing work.\" />"
+    },
+    {
+      "name": "alert",
+      "title": "Alert",
+      "description": "Communicates inline feedback with a clear tone.",
+      "category": "feedback",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/alert.tsx",
+          "target": "components/alert.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/feedback.css",
+          "target": "styles/feedback.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "icon", "content", "title", "description"],
+      "variants": ["neutral", "info", "success", "warning", "danger"],
+      "requiredTokens": [
+        "--n-alert-gap",
+        "--n-alert-padding",
+        "--n-alert-radius",
+        "--n-alert-border",
+        "--n-alert-background",
+        "--n-alert-icon-size",
+        "--n-color-status-info",
+        "--n-color-status-success",
+        "--n-color-status-warning",
+        "--n-color-status-danger"
+      ],
+      "accessibility": [
+        "Uses status semantics by default and alert semantics for danger tone.",
+        "Tone is supported by text; do not rely on color alone.",
+        "Optional icons must pass through the Nerio icon adapter."
+      ],
+      "usage": "import { Circle } from '@nerio/adapters';\nimport { Alert } from '@/components/nerio/components/alert';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>"
     },
     {
       "name": "card",
@@ -557,6 +655,53 @@
         "Options support disabled states and keyboard navigation."
       ],
       "usage": "import { Select } from '@/components/nerio/components/select';\n\n<Select label=\"Status\" name=\"status\" placeholder=\"Choose status\" options={[{ label: 'Active', value: 'active' }]} />"
+    },
+    {
+      "name": "radio-group",
+      "title": "RadioGroup",
+      "description": "Chooses one option from a small set.",
+      "category": "forms",
+      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "registryDependencies": ["form-message"],
+      "files": [
+        {
+          "source": "../../ui/src/components/radio-group.tsx",
+          "target": "components/radio-group.tsx",
+          "role": "component"
+        }
+      ],
+      "baseUiPrimitives": ["radio-group", "radio"],
+      "slots": [
+        "root",
+        "label",
+        "description",
+        "group",
+        "option",
+        "control",
+        "indicator",
+        "option-content",
+        "option-label",
+        "option-description",
+        "message"
+      ],
+      "variants": [],
+      "requiredTokens": [
+        "--n-radio-size",
+        "--n-radio-dot-size",
+        "--n-radio-radius",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-danger",
+        "--n-color-action-primary",
+        "--n-field-gap",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses Base UI Radio Group and Radio primitives.",
+        "Associates the visible group label, description, and message with the radiogroup.",
+        "Supports disabled options, required, invalid, controlled, and uncontrolled values."
+      ],
+      "usage": "import { RadioGroup } from '@/components/nerio/components/radio-group';\n\n<RadioGroup label=\"Visibility\" name=\"visibility\" options={[{ label: 'Public', value: 'public' }, { label: 'Private', value: 'private' }]} />"
     },
     {
       "name": "input",

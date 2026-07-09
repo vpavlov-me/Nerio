@@ -6,9 +6,17 @@ const componentDocs: Record<string, { title: string; lede: string }> = {
     title: "IconButton",
     lede: "Icon buttons expose compact actions with accessible labels and tokenized focus states.",
   },
+  link: {
+    title: "Link",
+    lede: "Links style native anchors for inline navigation and text destinations.",
+  },
   badge: {
     title: "Badge",
     lede: "Badges label status, category, or lightweight metadata without becoming primary actions.",
+  },
+  alert: {
+    title: "Alert",
+    lede: "Alerts communicate inline feedback with clear tone, text, and accessible semantics.",
   },
   spinner: {
     title: "Spinner",
@@ -33,6 +41,10 @@ const componentDocs: Record<string, { title: string; lede: string }> = {
   checkbox: {
     title: "Checkbox",
     lede: "Checkboxes toggle independent options and support clear checked, unchecked, and disabled states.",
+  },
+  "radio-group": {
+    title: "RadioGroup",
+    lede: "Radio groups let people choose one option from a short visible set.",
   },
   switch: {
     title: "Switch",

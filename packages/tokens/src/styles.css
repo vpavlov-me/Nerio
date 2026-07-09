@@ -229,6 +229,17 @@
   --n-button-foreground-destructive: var(--n-color-text-on-danger);
   --n-icon-button-size-md: var(--n-button-height-md);
   --n-icon-button-radius: var(--n-button-radius);
+  --n-link-color: var(--n-color-action-primary);
+  --n-link-color-hover: var(--n-color-action-primary-hover);
+  --n-link-color-muted: var(--n-color-text-secondary);
+  --n-link-underline-offset: 0.16em;
+  --n-link-underline-thickness: 0.08em;
+  --n-alert-gap: var(--n-space-3);
+  --n-alert-padding: var(--n-space-4);
+  --n-alert-radius: var(--n-radius-lg);
+  --n-alert-border: var(--n-color-border-subtle);
+  --n-alert-background: var(--n-color-surface-subtle);
+  --n-alert-icon-size: 1rem;
   --n-badge-height: 1.5rem;
   --n-badge-radius: var(--n-radius-full);
   --n-avatar-size-md: 2rem;
@@ -259,6 +270,9 @@
   --n-field-gap: var(--n-space-2);
   --n-checkbox-size: 1rem;
   --n-checkbox-radius: var(--n-radius-sm);
+  --n-radio-size: 1rem;
+  --n-radio-dot-size: 0.375rem;
+  --n-radio-radius: var(--n-radius-full);
   --n-switch-height: 1.25rem;
   --n-switch-width: 2.25rem;
   --n-switch-thumb-size: 0.875rem;
@@ -524,6 +538,8 @@
   --n-spinner-size-lg: 1.125rem;
   --n-input-height-md: 2.125rem;
   --n-checkbox-size: 0.875rem;
+  --n-radio-size: 0.875rem;
+  --n-radio-dot-size: 0.3125rem;
   --n-switch-height: 1.125rem;
   --n-switch-width: 2rem;
   --n-switch-thumb-size: 0.75rem;
