@@ -57,25 +57,26 @@
   --n-radius-md: 0.375rem;
   --n-radius-lg: 0.5rem;
   --n-radius-xl: 0.75rem;
+  --n-radius-full: 999rem;
   --n-shadow-sm: none;
   --n-shadow-md: none;
   --n-duration-fast: 120ms;
   --n-duration-normal: 180ms;
 
   --n-font-size-xs: 0.75rem;
-  --n-font-size-sm: 0.875rem;
-  --n-font-size-md: 1rem;
-  --n-font-size-lg: 1.125rem;
-  --n-font-size-xl: 1.25rem;
-  --n-font-size-2xl: 1.5rem;
-  --n-font-size-3xl: 2rem;
+  --n-font-size-sm: 0.8125rem;
+  --n-font-size-md: 0.875rem;
+  --n-font-size-lg: 1rem;
+  --n-font-size-xl: 1.125rem;
+  --n-font-size-2xl: 1.25rem;
+  --n-font-size-3xl: 1.5rem;
   --n-line-height-tight: 1.2;
   --n-line-height-normal: 1.5;
   --n-line-height-relaxed: 1.65;
   --n-font-weight-regular: 400;
   --n-font-weight-medium: 500;
   --n-font-weight-semibold: 600;
-  --n-font-weight-bold: 700;
+  --n-font-weight-bold: var(--n-font-weight-semibold);
 
   --n-color-canvas: var(--n-gray-50);
   --n-color-surface: var(--n-gray-0);
@@ -100,7 +101,20 @@
   --n-button-height-md: 2.5rem;
   --n-button-height-lg: 2.875rem;
   --n-button-radius: var(--n-radius-md);
+  --n-badge-height: 1.5rem;
+  --n-avatar-size-md: 2rem;
+  --n-progress-height: 0.5rem;
+  --n-skeleton-height: 1rem;
+  --n-empty-state-mark-size: 2rem;
+  --n-spinner-size-sm: 0.875rem;
+  --n-spinner-size-md: 1rem;
+  --n-spinner-size-lg: 1.25rem;
   --n-input-height-md: 2.5rem;
+  --n-checkbox-size: 1rem;
+  --n-switch-height: 1.25rem;
+  --n-switch-width: 2.25rem;
+  --n-switch-thumb-size: 0.875rem;
+  --n-switch-thumb-offset: 1rem;
   --n-dialog-width-md: 34rem;
   --n-overlay-z-index: 50;
 }
@@ -207,7 +221,20 @@
   --n-button-height-sm: 1.75rem;
   --n-button-height-md: 2.125rem;
   --n-button-height-lg: 2.5rem;
+  --n-badge-height: 1.375rem;
+  --n-avatar-size-md: 1.75rem;
+  --n-progress-height: 0.375rem;
+  --n-skeleton-height: 0.875rem;
+  --n-empty-state-mark-size: 1.75rem;
+  --n-spinner-size-sm: 0.75rem;
+  --n-spinner-size-md: 0.875rem;
+  --n-spinner-size-lg: 1.125rem;
   --n-input-height-md: 2.125rem;
+  --n-checkbox-size: 0.875rem;
+  --n-switch-height: 1.125rem;
+  --n-switch-width: 2rem;
+  --n-switch-thumb-size: 0.75rem;
+  --n-switch-thumb-offset: 0.875rem;
 }
 
 html {

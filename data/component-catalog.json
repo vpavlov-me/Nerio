@@ -136,7 +136,7 @@
       "description": "Primary action component with variants, sizes, loading state, and icon slots."
     },
     {
-      "name": "IconButton",
+      "name": "Icon Button",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "actions",
@@ -185,7 +185,7 @@
       "description": "Form field wrapper with label, description, help text, and error states."
     },
     {
-      "name": "FormMessage",
+      "name": "Form Message",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
@@ -323,7 +323,7 @@
       "description": "Layout divider component."
     },
     {
-      "name": "KeyValue",
+      "name": "Key Value",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
@@ -574,6 +574,47 @@
       "category": "saas-admin",
       "status": "planned",
       "description": "Security and admin event log pattern."
+    },
+
+    {
+      "name": "Documentation Shell",
+      "tier": "pro",
+      "package": "@nerio/pro",
+      "category": "documentation-ui",
+      "status": "planned",
+      "description": "Product-ready documentation layout with header, grouped sidebar, content region, and page table of contents."
+    },
+    {
+      "name": "Documentation Header",
+      "tier": "pro",
+      "package": "@nerio/pro",
+      "category": "documentation-ui",
+      "status": "planned",
+      "description": "Documentation header with product identity, version, global search, theme controls, and project actions."
+    },
+    {
+      "name": "Documentation Sidebar",
+      "tier": "pro",
+      "package": "@nerio/pro",
+      "category": "documentation-ui",
+      "status": "planned",
+      "description": "Grouped documentation navigation with active state and search-filtered items."
+    },
+    {
+      "name": "Page Table of Contents",
+      "tier": "pro",
+      "package": "@nerio/pro",
+      "category": "documentation-ui",
+      "status": "planned",
+      "description": "Sticky in-page navigation generated from content headings."
+    },
+    {
+      "name": "Documentation Search",
+      "tier": "pro",
+      "package": "@nerio/pro",
+      "category": "documentation-ui",
+      "status": "planned",
+      "description": "Search command pattern for documentation navigation and content discovery."
     },
 
     {

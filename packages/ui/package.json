@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
+    "@nerio/adapters": "workspace:*",
     "@nerio/tokens": "workspace:*",
     "clsx": "^2.1.1"
   },

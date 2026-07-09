@@ -26,7 +26,27 @@ async function verify() {
 
     const listResult = await client.callTool({ name: "list_components", arguments: {} });
     const components = JSON.parse(listResult.content[0].text);
-    for (const required of ["button", "dialog", "select", "tabs", "toast"]) {
+    for (const required of [
+      "button",
+      "dialog",
+      "select",
+      "tabs",
+      "toast",
+      "input",
+      "field",
+      "checkbox",
+      "switch",
+      "icon-button",
+      "badge",
+      "skeleton",
+      "empty-state",
+      "card",
+      "avatar",
+      "progress",
+      "stat",
+      "key-value",
+      "table",
+    ]) {
       if (!components.some((component) => component.name === required)) {
         throw new Error(`MCP list_components did not include ${required}.`);
       }

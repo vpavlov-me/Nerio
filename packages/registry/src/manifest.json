@@ -7,7 +7,7 @@
       "title": "Button",
       "description": "Triggers a user action.",
       "category": "actions",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -69,11 +69,435 @@
       "usage": "import { Button } from '@/components/nerio/components/button';\n\n<Button variant=\"primary\">Save changes</Button>"
     },
     {
+      "name": "icon-button",
+      "title": "IconButton",
+      "description": "Triggers an icon-only action with an accessible label.",
+      "category": "actions",
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/icon-button.tsx",
+          "target": "components/icon-button.tsx",
+          "role": "component"
+        }
+      ],
+      "baseUiPrimitives": ["button"],
+      "slots": ["root", "icon"],
+      "variants": ["primary", "secondary", "ghost", "destructive"],
+      "requiredTokens": ["--n-button-height-md", "--n-button-radius", "--n-focus-ring"],
+      "accessibility": [
+        "Requires a label prop so icon-only actions have an accessible name.",
+        "Uses the Button component contract for disabled, loading, size, and focus behavior.",
+        "Pass icons through the Nerio icon adapter API."
+      ],
+      "usage": "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@/components/nerio/components/icon-button';\n\n<IconButton icon={Search} label=\"Search\" />"
+    },
+    {
+      "name": "badge",
+      "title": "Badge",
+      "description": "Labels status, category, or lightweight metadata.",
+      "category": "data-display",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/badge.tsx",
+          "target": "components/badge.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/feedback.css",
+          "target": "styles/feedback.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": ["neutral", "success", "danger", "info"],
+      "requiredTokens": [
+        "--n-badge-height",
+        "--n-radius-full",
+        "--n-color-surface-muted",
+        "--n-color-border-subtle",
+        "--n-color-text-secondary"
+      ],
+      "accessibility": [
+        "Use concise text that does not rely on color alone.",
+        "Avoid using Badge as a button or link.",
+        "Prefer semantic variant names over custom one-off colors."
+      ],
+      "usage": "import { Badge } from '@/components/nerio/components/badge';\n\n<Badge variant=\"success\">Published</Badge>"
+    },
+    {
+      "name": "spinner",
+      "title": "Spinner",
+      "description": "Indicates a short loading moment.",
+      "category": "feedback",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/spinner.tsx",
+          "target": "components/spinner.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/spinner.css",
+          "target": "styles/spinner.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "label"],
+      "variants": ["sm", "md", "lg"],
+      "requiredTokens": [
+        "--n-spinner-size-sm",
+        "--n-spinner-size-md",
+        "--n-spinner-size-lg",
+        "--n-radius-full",
+        "--n-color-action-primary",
+        "--n-color-border-subtle",
+        "--n-font-size-sm"
+      ],
+      "accessibility": [
+        "Expose a label when loading status is not otherwise announced.",
+        "Use for short waits and prefer Skeleton when layout should be reserved.",
+        "Do not use several independent spinners in the same region."
+      ],
+      "usage": "import { Spinner } from '@/components/nerio/components/spinner';\n\n<Spinner label=\"Loading activity\" />"
+    },
+    {
+      "name": "skeleton",
+      "title": "Skeleton",
+      "description": "Reserves layout while content is loading.",
+      "category": "feedback",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/skeleton.tsx",
+          "target": "components/skeleton.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/feedback.css",
+          "target": "styles/feedback.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": [],
+      "requiredTokens": ["--n-skeleton-height", "--n-color-surface-muted", "--n-radius-md"],
+      "accessibility": [
+        "Skeleton is hidden from assistive technology by default.",
+        "Pair loading regions with an accessible status when the wait is meaningful.",
+        "Reserve stable dimensions to avoid layout shift."
+      ],
+      "usage": "import { Skeleton } from '@/components/nerio/components/skeleton';\n\n<Skeleton />"
+    },
+    {
+      "name": "empty-state",
+      "title": "EmptyState",
+      "description": "Explains missing content and offers a next action when useful.",
+      "category": "feedback",
+      "dependencies": ["react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/empty-state.tsx",
+          "target": "components/empty-state.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/feedback.css",
+          "target": "styles/feedback.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "mark", "title", "description", "action"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-empty-state-mark-size",
+        "--n-color-border-strong",
+        "--n-color-text-primary",
+        "--n-color-text-secondary"
+      ],
+      "accessibility": [
+        "Use a clear title and description instead of decorative empty copy.",
+        "Provide one primary action only when there is an obvious recovery path.",
+        "Do not use toasts to explain an empty page state."
+      ],
+      "usage": "import { EmptyState } from '@/components/nerio/components/empty-state';\n\n<EmptyState title=\"No collections\" description=\"Create one to start organizing work.\" />"
+    },
+    {
+      "name": "card",
+      "title": "Card",
+      "description": "Groups related product information on a quiet surface.",
+      "category": "data-display",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/card.tsx",
+          "target": "components/card.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/display.css",
+          "target": "styles/display.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-color-surface",
+        "--n-color-border-subtle",
+        "--n-radius-lg",
+        "--n-shadow-sm"
+      ],
+      "accessibility": [
+        "Use Card to group related content, not to decorate every section.",
+        "Provide semantic headings inside cards when the content needs structure.",
+        "Avoid nesting cards inside cards."
+      ],
+      "usage": "import { Card } from '@/components/nerio/components/card';\n\n<Card>Project summary</Card>"
+    },
+    {
+      "name": "separator",
+      "title": "Separator",
+      "description": "Divides related sections without adding visual noise.",
+      "category": "data-display",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/separator.tsx",
+          "target": "components/separator.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/display.css",
+          "target": "styles/display.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": [],
+      "requiredTokens": ["--n-color-border-subtle"],
+      "accessibility": [
+        "Renders an hr element for semantic separation.",
+        "Use for related sections, not as a replacement for spacing.",
+        "Keep separators subtle across themes."
+      ],
+      "usage": "import { Separator } from '@/components/nerio/components/separator';\n\n<Separator />"
+    },
+    {
+      "name": "avatar",
+      "title": "Avatar",
+      "description": "Identifies a person, team, or entity.",
+      "category": "data-display",
+      "dependencies": ["react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/avatar.tsx",
+          "target": "components/avatar.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/display.css",
+          "target": "styles/display.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "image", "fallback"],
+      "variants": ["image", "fallback"],
+      "requiredTokens": [
+        "--n-avatar-size-md",
+        "--n-radius-full",
+        "--n-color-surface-muted",
+        "--n-color-border-subtle"
+      ],
+      "accessibility": [
+        "Use the name prop to generate fallback initials.",
+        "Images receive the supplied name as alt text.",
+        "Do not rely on Avatar alone for critical identification in dense lists."
+      ],
+      "usage": "import { Avatar } from '@/components/nerio/components/avatar';\n\n<Avatar name=\"Maya Chen\" />"
+    },
+    {
+      "name": "progress",
+      "title": "Progress",
+      "description": "Shows completion for a task, upload, or workflow.",
+      "category": "feedback",
+      "dependencies": ["react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/progress.tsx",
+          "target": "components/progress.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/feedback.css",
+          "target": "styles/feedback.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "label", "indicator"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-progress-height",
+        "--n-radius-full",
+        "--n-color-surface-muted",
+        "--n-color-action-primary"
+      ],
+      "accessibility": [
+        "Clamps aria-valuenow between 0 and 100.",
+        "Provide a label when the surrounding context does not name the progress.",
+        "Use determinate progress only when a reliable value exists."
+      ],
+      "usage": "import { Progress } from '@/components/nerio/components/progress';\n\n<Progress label=\"Completion\" value={68} />"
+    },
+    {
+      "name": "stat",
+      "title": "Stat",
+      "description": "Highlights a compact product metric.",
+      "category": "data-display",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": ["card"],
+      "files": [
+        {
+          "source": "../../ui/src/components/stat.tsx",
+          "target": "components/stat.tsx",
+          "role": "component"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "label", "value", "trend"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-font-size-2xl",
+        "--n-line-height-tight",
+        "--n-color-text-tertiary",
+        "--n-color-success"
+      ],
+      "accessibility": [
+        "Use clear labels so values remain understandable out of context.",
+        "Keep trend text textual; do not encode direction by color alone.",
+        "Use advanced KPI cards outside the core primitive layer."
+      ],
+      "usage": "import { Stat } from '@/components/nerio/components/stat';\n\n<Stat label=\"Active projects\" value=\"12\" trend=\"+3 this week\" />"
+    },
+    {
+      "name": "key-value",
+      "title": "KeyValue",
+      "description": "Displays compact metadata as a label and value pair.",
+      "category": "data-display",
+      "dependencies": ["react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/key-value.tsx",
+          "target": "components/key-value.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/display.css",
+          "target": "styles/display.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "label", "value"],
+      "variants": [],
+      "requiredTokens": ["--n-color-text-tertiary", "--n-font-size-sm"],
+      "accessibility": [
+        "Use inside a dl when presenting multiple metadata pairs.",
+        "Keep labels concise and stable.",
+        "Do not use for long prose values."
+      ],
+      "usage": "import { KeyValue } from '@/components/nerio/components/key-value';\n\n<KeyValue label=\"Owner\" value=\"Product team\" />"
+    },
+    {
+      "name": "table",
+      "title": "Table",
+      "description": "Presents structured records for scanning and comparison.",
+      "category": "data-display",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/table.tsx",
+          "target": "components/table.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/display.css",
+          "target": "styles/display.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "thead", "tbody", "row", "cell"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-color-border-subtle",
+        "--n-color-text-tertiary",
+        "--n-font-size-sm",
+        "--n-space-3"
+      ],
+      "accessibility": [
+        "Use semantic table sections, headers, rows, and cells.",
+        "Prefer TanStack Table through @nerio/adapters for complex data behavior.",
+        "Keep dense operational tables scannable with clear column labels."
+      ],
+      "usage": "import { Table } from '@/components/nerio/components/table';\n\n<Table><thead><tr><th>Name</th></tr></thead><tbody><tr><td>Roadmap</td></tr></tbody></Table>"
+    },
+    {
       "name": "select",
       "title": "Select",
       "description": "Chooses one option from a compact list.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "react"],
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -82,8 +506,18 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
           "source": "../../ui/src/styles/select.css",
           "target": "styles/select.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
           "role": "style"
         }
       ],
@@ -104,6 +538,295 @@
         "Options support disabled states and keyboard navigation."
       ],
       "usage": "import { Select } from '@/components/nerio/components/select';\n\n<Select label=\"Status\" options={[{ label: 'Active', value: 'active' }]} />"
+    },
+    {
+      "name": "input",
+      "title": "Input",
+      "description": "Collects short text values in forms and filters.",
+      "category": "forms",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/input.tsx",
+          "target": "components/input.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/forms.css",
+          "target": "styles/forms.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": ["default", "invalid", "disabled"],
+      "requiredTokens": [
+        "--n-input-height-md",
+        "--n-color-surface",
+        "--n-color-border-strong",
+        "--n-color-danger",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Use with Label or Field so the control has an accessible name.",
+        "Invalid state maps to aria-invalid.",
+        "Disabled state uses the native disabled attribute."
+      ],
+      "usage": "import { Input } from '@/components/nerio/components/input';\n\n<Input placeholder=\"Project name\" />"
+    },
+    {
+      "name": "textarea",
+      "title": "Textarea",
+      "description": "Collects longer notes, descriptions, and comments.",
+      "category": "forms",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/textarea.tsx",
+          "target": "components/textarea.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/forms.css",
+          "target": "styles/forms.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": ["default", "invalid", "disabled"],
+      "requiredTokens": [
+        "--n-input-height-md",
+        "--n-color-surface",
+        "--n-color-border-strong",
+        "--n-color-danger",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Use with Label or Field so the control has an accessible name.",
+        "Invalid state maps to aria-invalid.",
+        "Keep resize behavior available unless a product workflow requires a fixed height."
+      ],
+      "usage": "import { Textarea } from '@/components/nerio/components/textarea';\n\n<Textarea placeholder=\"Add a note\" />"
+    },
+    {
+      "name": "label",
+      "title": "Label",
+      "description": "Provides an accessible name for a form control.",
+      "category": "forms",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/label.tsx",
+          "target": "components/label.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/forms.css",
+          "target": "styles/forms.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": [],
+      "requiredTokens": ["--n-color-text-secondary"],
+      "accessibility": [
+        "Use htmlFor to associate the label with a control id.",
+        "Keep labels visible for reusable product forms.",
+        "Avoid relying on placeholder text as the only label."
+      ],
+      "usage": "import { Label } from '@/components/nerio/components/label';\n\n<Label htmlFor=\"name\">Project name</Label>"
+    },
+    {
+      "name": "form-message",
+      "title": "FormMessage",
+      "description": "Communicates help, validation, and error messages near a control.",
+      "category": "forms",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/form-message.tsx",
+          "target": "components/form-message.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/forms.css",
+          "target": "styles/forms.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root"],
+      "variants": ["neutral", "danger", "success"],
+      "requiredTokens": ["--n-color-text-tertiary", "--n-color-danger", "--n-color-success"],
+      "accessibility": [
+        "Associate messages with controls through aria-describedby.",
+        "Use danger tone for validation errors.",
+        "Do not replace field-level errors with toasts."
+      ],
+      "usage": "import { FormMessage } from '@/components/nerio/components/form-message';\n\n<FormMessage>Use at least 3 characters.</FormMessage>"
+    },
+    {
+      "name": "field",
+      "title": "Field",
+      "description": "Composes a label, control, description, and validation message.",
+      "category": "forms",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": ["label", "form-message"],
+      "files": [
+        {
+          "source": "../../ui/src/components/field.tsx",
+          "target": "components/field.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/forms.css",
+          "target": "styles/forms.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["root", "description"],
+      "variants": ["default", "invalid"],
+      "requiredTokens": ["--n-color-text-secondary", "--n-color-text-tertiary", "--n-color-danger"],
+      "accessibility": [
+        "Generates stable ids for label, description, and message relationships.",
+        "Clones a single React control child to wire id, aria-describedby, aria-invalid, and invalid.",
+        "Keep helper text and error text close to the field."
+      ],
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\"><Input /></Field>"
+    },
+    {
+      "name": "checkbox",
+      "title": "Checkbox",
+      "description": "Toggles an independent form option.",
+      "category": "forms",
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/checkbox.tsx",
+          "target": "components/checkbox.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/forms.css",
+          "target": "styles/forms.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["checkbox"],
+      "slots": ["root", "indicator"],
+      "variants": ["checked", "unchecked", "disabled"],
+      "requiredTokens": [
+        "--n-checkbox-size",
+        "--n-color-surface",
+        "--n-color-border-strong",
+        "--n-color-action-primary",
+        "--n-color-action-on-primary",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Checkbox primitive.",
+        "Provide an accessible label through a visible label or aria-label.",
+        "Disabled state prevents interaction and reduces emphasis."
+      ],
+      "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<Checkbox aria-label=\"Include archived\" />"
+    },
+    {
+      "name": "switch",
+      "title": "Switch",
+      "description": "Toggles an immediate binary setting.",
+      "category": "forms",
+      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/switch.tsx",
+          "target": "components/switch.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/forms.css",
+          "target": "styles/forms.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["switch"],
+      "slots": ["root", "thumb"],
+      "variants": ["checked", "unchecked", "disabled"],
+      "requiredTokens": [
+        "--n-switch-height",
+        "--n-switch-width",
+        "--n-switch-thumb-size",
+        "--n-switch-thumb-offset",
+        "--n-color-surface",
+        "--n-color-surface-muted",
+        "--n-color-border-strong",
+        "--n-color-action-primary",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Switch primitive.",
+        "Use for settings that apply immediately.",
+        "Provide a visible label or aria-label."
+      ],
+      "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<Switch aria-label=\"Compact density\" />"
     },
     {
       "name": "tabs",

@@ -30,7 +30,7 @@ export default function Page() {
         <h2>Quick start</h2>
         <CodeExample code={init} label="CLI quick start" />
         <p>
-          <code>init</code> creates configuration, <code>doctor</code> validates the manifest, and
+          <code>init</code> creates configuration, <code>doctor</code> validates the manifest, and{" "}
           <code>add</code> writes the selected component and direct source dependencies.
         </p>
       </section>

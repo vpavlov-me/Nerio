@@ -17,6 +17,36 @@ const expectedFiles = [
   "styles/spinner.css",
 ];
 const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
+const expectedFieldFiles = [
+  "components/field.tsx",
+  "components/label.tsx",
+  "components/form-message.tsx",
+  "lib/cn.ts",
+  "styles/forms.css",
+];
+const expectedBaseFormFiles = [
+  "components/checkbox.tsx",
+  "components/icon.tsx",
+  "components/switch.tsx",
+  "lib/cn.ts",
+  "styles/forms.css",
+  "styles/icon.css",
+];
+const expectedSelectFiles = [
+  "components/select.tsx",
+  "components/icon.tsx",
+  "styles/select.css",
+  "styles/icon.css",
+];
+const expectedIconButtonFiles = [...expectedFiles, "components/icon-button.tsx"];
+const expectedDisplayFiles = [
+  "components/card.tsx",
+  "components/stat.tsx",
+  "components/table.tsx",
+  "lib/cn.ts",
+  "styles/display.css",
+];
+const expectedFeedbackFiles = ["components/empty-state.tsx", "styles/feedback.css"];
 
 function run(cwd, ...args) {
   return new Promise((resolve, reject) => {
@@ -31,12 +61,16 @@ function run(cwd, ...args) {
   });
 }
 
-function assertInstall(target, files = expectedFiles) {
+function assertFiles(target, files) {
   for (const file of files) {
     if (!fs.existsSync(path.join(target, "components/nerio", file))) {
       throw new Error(`Missing installed file: ${file}`);
     }
   }
+}
+
+function assertInstall(target, files = expectedFiles) {
+  assertFiles(target, files);
 
   const source = fs.readFileSync(
     path.join(target, "components/nerio/components/button.tsx"),
@@ -86,8 +120,22 @@ async function verify() {
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
+    await run(localTarget, "add", "field");
+    await run(localTarget, "add", "checkbox");
+    await run(localTarget, "add", "switch");
+    await run(localTarget, "add", "select");
+    await run(localTarget, "add", "icon-button");
+    await run(localTarget, "add", "stat");
+    await run(localTarget, "add", "table");
+    await run(localTarget, "add", "empty-state");
     assertInstall(localTarget);
     assertInstall(localTarget, expectedDialogFiles);
+    assertFiles(localTarget, expectedFieldFiles);
+    assertFiles(localTarget, expectedBaseFormFiles);
+    assertFiles(localTarget, expectedSelectFiles);
+    assertFiles(localTarget, expectedIconButtonFiles);
+    assertFiles(localTarget, expectedDisplayFiles);
+    assertFiles(localTarget, expectedFeedbackFiles);
 
     await run(urlTarget, "init", "--registry", manifestUrl);
     await run(urlTarget, "add", "button");
@@ -98,7 +146,9 @@ async function verify() {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
 
-  console.log("CLI fixture passed for local-path, URL, and registry dependency installs.");
+  console.log(
+    "CLI fixture passed for local-path, URL, registry dependency, form, feedback, and display installs.",
+  );
 }
 
 verify().catch((error) => {

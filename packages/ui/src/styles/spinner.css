@@ -12,20 +12,20 @@
   animation: n-spin 800ms linear infinite;
   border: 2px solid currentColor;
   border-block-start-color: transparent;
-  border-radius: 999px;
-  block-size: 1rem;
+  border-radius: var(--n-radius-full);
+  block-size: var(--n-spinner-size-md);
   display: inline-block;
-  inline-size: 1rem;
+  inline-size: var(--n-spinner-size-md);
 }
 
 .n-spinner[data-size="sm"] {
-  block-size: 0.875rem;
-  inline-size: 0.875rem;
+  block-size: var(--n-spinner-size-sm);
+  inline-size: var(--n-spinner-size-sm);
 }
 
 .n-spinner[data-size="lg"] {
-  block-size: 1.25rem;
-  inline-size: 1.25rem;
+  block-size: var(--n-spinner-size-lg);
+  inline-size: var(--n-spinner-size-lg);
 }
 
 @keyframes n-spin {

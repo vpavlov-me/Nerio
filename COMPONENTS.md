@@ -150,6 +150,16 @@ Keep these files aligned when component scope changes.
 | Roles & Permissions | Planned | `@nerio/pro` | Permission UI                      |
 | Audit Log           | Planned | `@nerio/pro` | Security/admin log                 |
 
+### Documentation UI
+
+| Component              | Status  | Package      | Notes                                                      |
+| ---------------------- | ------- | ------------ | ---------------------------------------------------------- |
+| Documentation Shell    | Planned | `@nerio/pro` | Full docs layout with header, sidebar, content, and TOC    |
+| Documentation Header   | Planned | `@nerio/pro` | Product identity, version, search, theme, and repo actions |
+| Documentation Sidebar  | Planned | `@nerio/pro` | Grouped documentation navigation with active states        |
+| Page Table of Contents | Planned | `@nerio/pro` | Sticky in-page navigation generated from headings          |
+| Documentation Search   | Planned | `@nerio/pro` | Search command pattern for docs discovery                  |
+
 ### Finance and crypto
 
 | Component           | Status  | Package      | Notes                       |
