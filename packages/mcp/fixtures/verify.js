@@ -33,6 +33,21 @@ async function verify() {
       throw new Error("MCP get_component_usage did not include install and token metadata.");
     }
 
+    const iconButtonUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "icon-button" },
+    });
+    const iconButtonUsage = JSON.parse(iconButtonUsageResult.content[0].text);
+    if (
+      !iconButtonUsage.registryDependencies.includes("button") ||
+      !iconButtonUsage.requiredTokens.includes("--n-icon-button-size-sm") ||
+      !iconButtonUsage.requiredTokens.includes("--n-icon-button-size-lg")
+    ) {
+      throw new Error(
+        "MCP get_component_usage did not include IconButton dependency and size metadata.",
+      );
+    }
+
     const listResult = await client.callTool({ name: "list_components", arguments: {} });
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [

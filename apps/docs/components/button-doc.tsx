@@ -144,10 +144,14 @@ export function ButtonDoc() {
           focus, and spacing without editing component source.
         </p>
         <div className="token-chip-row">
+          <code>--n-button-height-sm</code>
           <code>--n-button-height-md</code>
+          <code>--n-button-height-lg</code>
           <code>--n-button-radius</code>
-          <code>--n-color-action-primary</code>
-          <code>--n-color-action-primary-hover</code>
+          <code>--n-button-background-primary</code>
+          <code>--n-button-background-secondary</code>
+          <code>--n-button-background-ghost-hover</code>
+          <code>--n-button-background-destructive</code>
           <code>--n-focus-ring</code>
         </div>
       </section>

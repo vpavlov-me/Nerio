@@ -144,6 +144,19 @@ async function verify() {
     assertFiles(localTarget, expectedBaseFormFiles);
     assertFiles(localTarget, expectedSelectFiles);
     assertFiles(localTarget, expectedIconButtonFiles);
+    const iconButtonSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/icon-button.tsx"),
+      "utf8",
+    );
+    if (
+      !iconButtonSource.includes("label: string") ||
+      !iconButtonSource.includes("leadingIcon={icon}") ||
+      !iconButtonSource.includes("n-visually-hidden")
+    ) {
+      throw new Error(
+        "Installed IconButton source did not preserve its label and icon slot contract.",
+      );
+    }
     assertFiles(localTarget, expectedDisplayFiles);
     assertFiles(localTarget, expectedFeedbackFiles);
 

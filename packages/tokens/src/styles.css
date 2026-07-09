@@ -227,7 +227,9 @@
   --n-button-foreground-ghost: var(--n-color-text-secondary);
   --n-button-background-destructive: var(--n-color-danger);
   --n-button-foreground-destructive: var(--n-color-text-on-danger);
+  --n-icon-button-size-sm: var(--n-button-height-sm);
   --n-icon-button-size-md: var(--n-button-height-md);
+  --n-icon-button-size-lg: var(--n-button-height-lg);
   --n-icon-button-radius: var(--n-button-radius);
   --n-badge-height: 1.5rem;
   --n-badge-radius: var(--n-radius-full);
@@ -525,7 +527,9 @@
   --n-switch-width: 2rem;
   --n-switch-thumb-size: 0.75rem;
   --n-switch-thumb-offset: 0.875rem;
+  --n-icon-button-size-sm: var(--n-button-height-sm);
   --n-icon-button-size-md: var(--n-button-height-md);
+  --n-icon-button-size-lg: var(--n-button-height-lg);
   --n-select-height-md: var(--n-input-height-md);
 }
 

@@ -18,8 +18,8 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 
 - Current work is in **Phase 2A: Core quality stabilization**.
 - Phase 2A cleanup tasks must harden existing Core foundations and components before expanding coverage.
-- Do not add new Core components while working on Phase 2A cleanup tasks.
-- Phase 2B component coverage expansion must wait until Phase 2A is sufficiently stable or the task explicitly asks for Phase 2B work.
+- Do not add new Core components while working on Phase 2A cleanup tasks unless the task explicitly asks for them.
+- Phase 2B component coverage expansion must wait until existing Core quality is stronger, or until the task explicitly asks for Phase 2B work.
 - Do not mark a component `stable-core` until it passes the full Core quality checklist.
 
 ## Product positioning

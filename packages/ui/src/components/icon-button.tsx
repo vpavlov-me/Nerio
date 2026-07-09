@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Button, type ButtonProps } from "./button";
-import { Icon, type IconComponent } from "./icon";
+import type { IconComponent } from "./icon";
 import { cn } from "../lib/cn";
 
 export interface IconButtonProps extends Omit<
@@ -18,8 +18,8 @@ export const IconButton = React.forwardRef<HTMLElement, IconButtonProps>(functio
   ref,
 ) {
   return (
-    <Button ref={ref} aria-label={label} className={cn("n-icon-button", className)} {...props}>
-      <Icon icon={icon} />
+    <Button ref={ref} leadingIcon={icon} className={cn("n-icon-button", className)} {...props}>
+      <span className="n-visually-hidden">{label}</span>
     </Button>
   );
 });
