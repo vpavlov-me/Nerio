@@ -21,7 +21,10 @@ export const snippets: Record<string, string> = {
   button: "import { Button } from '@nerio/ui';\n\n<Button>Save project</Button>",
   "icon-button":
     "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@nerio/ui';\n\n<IconButton icon={Search} label=\"Search\" />",
+  link: "import { Link } from '@nerio/ui';\n\n<Link href=\"/docs\">Read the docs</Link>",
   badge: "import { Badge } from '@nerio/ui';\n\n<Badge variant=\"success\">Published</Badge>",
+  alert:
+    "import { Circle } from '@nerio/adapters';\nimport { Alert } from '@nerio/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
   spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
   skeleton: "import { Skeleton } from '@nerio/ui';\n\n<Skeleton aria-label=\"Loading\" />",
   "empty-state":
@@ -37,6 +40,8 @@ export const snippets: Record<string, string> = {
   "form-message":
     "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
   checkbox: "import { Checkbox } from '@nerio/ui';\n\n<Checkbox aria-label=\"Include archived\" />",
+  "radio-group":
+    'import { RadioGroup } from \'@nerio/ui\';\n\n<RadioGroup label="Visibility" name="visibility" options={[{ label: "Public", value: "public" }, { label: "Private", value: "private" }]} />',
   switch: "import { Switch } from '@nerio/ui';\n\n<Switch aria-label=\"Enable notifications\" />",
   dialog:
     'import { Dialog } from \'@nerio/ui\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
@@ -74,8 +79,10 @@ const variantDescriptions: Record<string, string> = {
   secondary: "Supporting action with a visible control boundary.",
   ghost: "Low-emphasis action for dense or repeated surfaces.",
   destructive: "Risky action that needs explicit intent.",
+  muted: "Lower-emphasis link treatment for supporting destinations.",
   neutral: "Low-emphasis status or message.",
   success: "Positive completion or validation state.",
+  warning: "Warning state that needs attention without blocking the whole flow.",
   danger: "Error, destructive, or blocking state.",
   info: "Informational state that should stay calm.",
   sm: "Compact size for dense layouts and inline use.",
@@ -177,6 +184,36 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-button-foreground-ghost",
       "--n-button-background-destructive",
       "--n-button-foreground-destructive",
+      "--n-focus-ring",
+    ],
+  },
+  link: {
+    category: "Actions and feedback",
+    purpose:
+      "Use Link for native anchor navigation and inline text destinations without turning it into a button abstraction.",
+    anatomy: [{ title: "root", description: "Native anchor element with tokenized link color." }],
+    variants: [
+      { title: "Default", description: "Primary inline link treatment." },
+      { title: "Muted", description: "Supporting link treatment for secondary destinations." },
+    ],
+    states: [
+      { title: "Default and hover", description: "Uses semantic action color and hover color." },
+      { title: "Focus", description: "Uses the shared Nerio focus ring." },
+    ],
+    accessibility: [
+      "Use descriptive link text that names the destination.",
+      "Use Button for in-place actions that do not navigate.",
+    ],
+    guidance: {
+      do: ["Use for inline navigation, external references, and secondary text destinations."],
+      dont: ["Do not use Link as a styled submit button or command trigger."],
+    },
+    tokens: [
+      "--n-link-color",
+      "--n-link-color-hover",
+      "--n-link-color-muted",
+      "--n-link-underline-offset",
+      "--n-link-underline-thickness",
       "--n-focus-ring",
     ],
   },
@@ -284,6 +321,45 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-color-status-success",
       "--n-color-status-danger",
       "--n-color-status-info",
+    ],
+  },
+  alert: {
+    category: "Actions and feedback",
+    purpose:
+      "Use Alert for inline feedback that should stay in the page flow and remain visible until the content changes.",
+    anatomy: [
+      { title: "root", description: "Inline feedback region with tone and spacing tokens." },
+      { title: "icon", description: "Optional decorative icon rendered through the icon adapter." },
+      { title: "title", description: "Optional short summary of the message." },
+      { title: "description", description: "Body content that explains the state or recovery." },
+    ],
+    variants: [
+      { title: "Neutral", description: "General inline feedback." },
+      { title: "Info", description: "Informational message." },
+      { title: "Success", description: "Positive completion or confirmation." },
+      { title: "Warning", description: "Potential issue that needs attention." },
+      { title: "Danger", description: "Blocking or error state that needs recovery." },
+    ],
+    states: [{ title: "Visible", description: "Alerts are inline and persistent by default." }],
+    accessibility: [
+      "Danger alerts use alert semantics by default; other tones use status semantics.",
+      "Use clear text; tone and icon must not carry the only meaning.",
+    ],
+    guidance: {
+      do: ["Use for inline validation summaries, persistent notices, and contextual feedback."],
+      dont: ["Do not use Alert as a toast replacement or add dismiss behavior in this slice."],
+    },
+    tokens: [
+      "--n-alert-gap",
+      "--n-alert-padding",
+      "--n-alert-radius",
+      "--n-alert-border",
+      "--n-alert-background",
+      "--n-alert-icon-size",
+      "--n-color-status-info",
+      "--n-color-status-success",
+      "--n-color-status-warning",
+      "--n-color-status-danger",
     ],
   },
   spinner: {
@@ -566,6 +642,44 @@ export const componentReference: Record<string, ComponentReference> = {
       dont: ["Do not use Checkbox for immediate on/off settings; use Switch instead."],
     },
     tokens: ["--n-checkbox-size", "--n-checkbox-radius", ...sharedTokens],
+  },
+  "radio-group": {
+    category: "Forms",
+    purpose: "Use RadioGroup when one choice must be selected from a short, visible set.",
+    anatomy: [
+      { title: "root", description: "Field wrapper with label, description, group, and message." },
+      { title: "group", description: "Base UI radiogroup that manages one selected value." },
+      { title: "option", description: "Clickable option row with control and text." },
+      { title: "control", description: "Base UI radio control." },
+      { title: "indicator", description: "Selected-state dot." },
+      { title: "message", description: "Optional helper or validation message." },
+    ],
+    variants: [{ title: "Default", description: "Stacked radio options for small sets." }],
+    states: [
+      { title: "Checked", description: "One option is selected." },
+      { title: "Disabled", description: "The whole group or individual options can be disabled." },
+      { title: "Invalid", description: "Connects validation message and invalid state." },
+    ],
+    accessibility: [
+      "Uses Base UI Radio Group and Radio primitives.",
+      "Connects label, description, and message through accessible ids.",
+      "Supports controlled and uncontrolled value APIs.",
+    ],
+    guidance: {
+      do: ["Use for two to six visible choices where comparison matters."],
+      dont: ["Do not use RadioGroup for large searchable sets; use Select or a future picker."],
+    },
+    tokens: [
+      "--n-radio-size",
+      "--n-radio-dot-size",
+      "--n-radio-radius",
+      "--n-input-border",
+      "--n-input-border-hover",
+      "--n-input-border-danger",
+      "--n-color-action-primary",
+      "--n-field-gap",
+      "--n-focus-ring",
+    ],
   },
   switch: {
     category: "Forms",

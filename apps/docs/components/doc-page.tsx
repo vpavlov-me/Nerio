@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Search } from "@nerio/adapters";
+import { Circle, Search } from "@nerio/adapters";
 import { getRegistryItem } from "@nerio/registry";
 import {
+  Alert,
   Avatar,
   Badge,
   Button,
@@ -18,8 +19,10 @@ import {
   Input,
   KeyValue,
   Label,
+  Link,
   Popover,
   Progress,
+  RadioGroup,
   Select,
   Separator,
   Skeleton,
@@ -248,6 +251,12 @@ function Preview({ kind }: { kind: string }) {
           </>
         ) : null}
         {kind === "icon-button" ? <IconButton icon={Search} label="Search workspace" /> : null}
+        {kind === "link" ? (
+          <p>
+            Review the <Link href="/docs/getting-started">getting started guide</Link> before
+            installing components.
+          </p>
+        ) : null}
         {kind === "badge" ? (
           <>
             <Badge>Draft</Badge>
@@ -270,6 +279,11 @@ function Preview({ kind }: { kind: string }) {
             description="Create a collection to organize projects, notes, and shared context."
             action={<Button size="sm">Create collection</Button>}
           />
+        ) : null}
+        {kind === "alert" ? (
+          <Alert tone="info" title="Invite sent" icon={Circle}>
+            Collaborators will receive an email shortly.
+          </Alert>
         ) : null}
         {kind === "input" ? (
           <div className="form-preview-stack">
@@ -324,6 +338,18 @@ function Preview({ kind }: { kind: string }) {
             <Checkbox defaultChecked />
             <span>Include archived collections</span>
           </label>
+        ) : null}
+        {kind === "radio-group" ? (
+          <RadioGroup
+            label="Visibility"
+            name="visibility-preview"
+            defaultValue="team"
+            options={[
+              { label: "Private", value: "private", description: "Only invited members." },
+              { label: "Team", value: "team", description: "Visible to the workspace." },
+              { label: "Public", value: "public", disabled: true, description: "Not available." },
+            ]}
+          />
         ) : null}
         {kind === "switch" ? (
           <label className="inline-control">

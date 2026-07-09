@@ -103,6 +103,45 @@ async function verify() {
       throw new Error("MCP Progress usage is missing accessible progress metadata.");
     }
 
+    const linkUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "link" },
+    });
+    const linkUsage = JSON.parse(linkUsageResult.content[0].text);
+    if (
+      !linkUsage.requiredTokens.includes("--n-link-color") ||
+      linkUsage.baseUiPrimitives.length !== 0 ||
+      !linkUsage.accessibility.some((item) => item.includes("native anchor"))
+    ) {
+      throw new Error("MCP Link usage is not aligned with the native anchor contract.");
+    }
+
+    const alertUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "alert" },
+    });
+    const alertUsage = JSON.parse(alertUsageResult.content[0].text);
+    if (
+      !alertUsage.requiredTokens.includes("--n-alert-padding") ||
+      !alertUsage.variants.includes("warning") ||
+      !alertUsage.files.some((file) => file.target === "components/icon.tsx")
+    ) {
+      throw new Error("MCP Alert usage is missing tone, token, or icon adapter metadata.");
+    }
+
+    const radioUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "radio-group" },
+    });
+    const radioUsage = JSON.parse(radioUsageResult.content[0].text);
+    if (
+      !radioUsage.baseUiPrimitives.includes("radio-group") ||
+      !radioUsage.registryDependencies.includes("form-message") ||
+      !radioUsage.requiredTokens.includes("--n-radio-size")
+    ) {
+      throw new Error("MCP RadioGroup usage is missing Base UI, dependency, or token metadata.");
+    }
+
     const listResult = await client.callTool({ name: "list_components", arguments: {} });
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [
@@ -116,6 +155,9 @@ async function verify() {
       "checkbox",
       "switch",
       "icon-button",
+      "link",
+      "alert",
+      "radio-group",
       "badge",
       "skeleton",
       "empty-state",

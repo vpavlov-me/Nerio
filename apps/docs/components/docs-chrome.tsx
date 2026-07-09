@@ -67,7 +67,9 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/docs/components/button", label: "Button", icon: Circle },
       { href: "/docs/components/icon-button", label: "IconButton", icon: Circle },
+      { href: "/docs/components/link", label: "Link", icon: Circle },
       { href: "/docs/components/badge", label: "Badge", icon: Circle },
+      { href: "/docs/components/alert", label: "Alert", icon: Circle },
       { href: "/docs/components/spinner", label: "Spinner", icon: Circle },
       { href: "/docs/components/skeleton", label: "Skeleton", icon: Circle },
       { href: "/docs/components/empty-state", label: "EmptyState", icon: FileText },
@@ -83,6 +85,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/field", label: "Field", icon: Circle },
       { href: "/docs/components/form-message", label: "FormMessage", icon: Circle },
       { href: "/docs/components/checkbox", label: "Checkbox", icon: Circle },
+      { href: "/docs/components/radio-group", label: "RadioGroup", icon: Circle },
       { href: "/docs/components/switch", label: "Switch", icon: Circle },
       { href: "/docs/components/select", label: "Select", icon: Circle },
     ],

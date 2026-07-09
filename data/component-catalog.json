@@ -149,7 +149,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "actions",
-      "status": "planned",
+      "status": "implemented-initial",
       "description": "Styled link primitive for text and navigation actions."
     },
     {
@@ -213,7 +213,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "planned",
+      "status": "implemented-initial",
       "description": "Basic radio selection control."
     },
     {
@@ -341,7 +341,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "planned",
+      "status": "implemented-initial",
       "description": "Inline feedback message."
     },
     {
