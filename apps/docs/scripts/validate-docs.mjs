@@ -52,6 +52,14 @@ function extractNerioTokens(source) {
   return unique([...source.matchAll(/--n-[a-z0-9-]+/g)].map((match) => match[0]));
 }
 
+function extractDefinedNerioTokens(source) {
+  return unique([...source.matchAll(/--n-[a-z0-9-]+(?=\s*:)/g)].map((match) => match[0]));
+}
+
+function extractReferencedNerioTokens(source) {
+  return unique([...source.matchAll(/var\((--n-[a-z0-9-]+)/g)].map((match) => match[1]));
+}
+
 function registryRequiredTokens(items) {
   return unique(
     items.flatMap((item) =>
@@ -102,9 +110,11 @@ const missingReference = registrySlugs.filter((slug) => !referenceCoverage.inclu
 const referenceWithoutRegistry = referenceCoverage.filter((slug) => !registrySlugs.includes(slug));
 const missingSnippet = registrySlugs.filter((slug) => !snippetSlugs.includes(slug));
 const snippetWithoutRegistry = snippetSlugs.filter((slug) => !registrySlugs.includes(slug));
-const definedTokens = extractNerioTokens(tokenStyles);
+const definedTokens = extractDefinedNerioTokens(tokenStyles);
+const referencedTokens = extractReferencedNerioTokens(tokenStyles);
 const registryTokens = registryRequiredTokens(manifest.items);
 const referenceTokens = extractNerioTokens(componentReference);
+const missingTokenReferences = referencedTokens.filter((token) => !definedTokens.includes(token));
 const missingRegistryTokens = registryTokens.filter((token) => !definedTokens.includes(token));
 const missingReferenceTokens = referenceTokens.filter((token) => !definedTokens.includes(token));
 
@@ -116,6 +126,7 @@ reportMissing("Registry items missing docs reference coverage", missingReference
 reportMissing("Docs reference entries missing from registry", referenceWithoutRegistry);
 reportMissing("Registry items missing usage snippets", missingSnippet);
 reportMissing("Usage snippets missing from registry", snippetWithoutRegistry);
+reportMissing("Token CSS references missing from token CSS", missingTokenReferences);
 reportMissing("Registry requiredTokens missing from token CSS", missingRegistryTokens);
 reportMissing("Docs component reference tokens missing from token CSS", missingReferenceTokens);
 
@@ -128,6 +139,7 @@ const failures = [
   referenceWithoutRegistry,
   missingSnippet,
   snippetWithoutRegistry,
+  missingTokenReferences,
   missingRegistryTokens,
   missingReferenceTokens,
 ].flat();

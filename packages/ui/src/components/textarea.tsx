@@ -14,7 +14,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(fun
   return (
     <textarea
       ref={ref}
-      aria-invalid={ariaInvalid ?? invalid}
+      aria-invalid={ariaInvalid ?? (invalid ? true : undefined)}
       className={cn("n-textarea", className)}
       data-invalid={invalid ? "" : undefined}
       data-slot="root"

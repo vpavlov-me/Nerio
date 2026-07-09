@@ -33,7 +33,7 @@ export const snippets: Record<string, string> = {
   label:
     'import { Input, Label } from \'@nerio/ui\';\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" />',
   field:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" message="Use a clear internal name."><Input /></Field>',
+    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use a clear internal name."><Input /></Field>',
   "form-message":
     "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
   checkbox: "import { Checkbox } from '@nerio/ui';\n\n<Checkbox aria-label=\"Include archived\" />",
@@ -41,7 +41,7 @@ export const snippets: Record<string, string> = {
   dialog:
     'import { Dialog } from \'@nerio/ui\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
-    "import { Select } from '@nerio/ui';\n\n<Select label=\"Status\" placeholder=\"Choose status\" options={[{ label: 'Active', value: 'active' }]} />",
+    "import { Select } from '@nerio/ui';\n\n<Select label=\"Status\" name=\"status\" placeholder=\"Choose status\" options={[{ label: 'Active', value: 'active' }]} />",
   toast:
     "import { Button, ToastProvider, ToastViewport, useToastManager } from '@nerio/ui';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: \"Saved\" })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>",
   tabs: 'import { Tabs } from \'@nerio/ui\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }]} />',
@@ -376,6 +376,8 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Keep label, description, and message programmatically associated with the control.",
+      "Field sets invalid attributes only when the field is actually invalid.",
+      'Error messages use role="alert" when invalid so updates are announced.',
     ],
     guidance: {
       do: ["Use Field as the default wrapper for production form rows."],
@@ -471,6 +473,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Use a visible label and ensure options are short enough to scan.",
       "Use placeholder text only as a hint, not as the accessible name.",
+      "Use name, required, form, and autoComplete when the select participates in native form submission.",
     ],
     guidance: {
       do: ["Use for status, owner, view mode, and compact configuration choices."],

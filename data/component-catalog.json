@@ -30,8 +30,10 @@
     "data-density": "comfortable"
   },
   "statusValues": {
-    "implemented-initial": "Available in the current source with an initial API and styling pass.",
     "planned": "Approved for the tier, not implemented yet.",
+    "implemented-initial": "First implementation exists, and API or styling may still change.",
+    "quality-pass-needed": "Component exists but still needs an API, accessibility, token, docs, and registry review before it can support Pro work.",
+    "stable-core": "Component passed the Core quality checklist and can safely support future Pro components, templates, registry installs, and AI/MCP usage.",
     "future": "Expected later, not part of the first Core milestone."
   },
   "tiers": {
@@ -51,7 +53,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Color, spacing, radius, typography, motion, semantic tokens, and component tokens."
     },
     {
@@ -59,7 +61,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Brand/accent themes: purple, blue, green, orange, red, neutral, plus custom theme support."
     },
     {
@@ -67,7 +69,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Color modes: system, light, and dark."
     },
     {
@@ -75,7 +77,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Density modes: comfortable and compact."
     },
     {
@@ -83,7 +85,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Token-customizable font variables such as --n-font-sans and --n-font-mono. Not a v1 runtime axis."
     },
     {
@@ -91,7 +93,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Token-customizable radius variables such as --n-radius-sm, --n-radius-md, --n-radius-lg, and --n-radius-xl. Not a v1 runtime axis."
     },
     {
@@ -99,7 +101,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Token-customizable motion variables such as --n-duration-fast and --n-duration-normal. Not a v1 runtime axis."
     },
     {
@@ -115,7 +117,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "foundation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Icon component using the current icon adapter direction."
     },
     {
@@ -126,13 +128,12 @@
       "status": "planned",
       "description": "Dedicated icon adapter API with Lucide as the default implementation and support for custom React SVG components."
     },
-
     {
       "name": "Button",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "actions",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Primary action component with variants, sizes, loading state, and icon slots."
     },
     {
@@ -140,7 +141,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "actions",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Accessible icon-only action component."
     },
     {
@@ -151,13 +152,12 @@
       "status": "planned",
       "description": "Styled link primitive for text and navigation actions."
     },
-
     {
       "name": "Input",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Text input component."
     },
     {
@@ -165,7 +165,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Multiline text input component."
     },
     {
@@ -173,7 +173,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Accessible form label component."
     },
     {
@@ -181,7 +181,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Form field wrapper with label, description, help text, and error states."
     },
     {
@@ -189,7 +189,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Field message or error text."
     },
     {
@@ -205,7 +205,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Basic checkbox control."
     },
     {
@@ -221,7 +221,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Toggle control for binary settings."
     },
     {
@@ -229,16 +229,15 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "forms",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Base select component."
     },
-
     {
       "name": "Dialog",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "overlays",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Accessible modal primitive."
     },
     {
@@ -254,7 +253,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "overlays",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Floating content primitive."
     },
     {
@@ -262,7 +261,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "overlays",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Short contextual help component."
     },
     {
@@ -270,16 +269,15 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "overlays",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Basic dropdown menu component."
     },
-
     {
       "name": "Card",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Surface primitive for grouped content."
     },
     {
@@ -287,7 +285,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Status and metadata label."
     },
     {
@@ -295,7 +293,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "User or entity avatar component."
     },
     {
@@ -303,7 +301,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Basic table for simple data display."
     },
     {
@@ -319,7 +317,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Layout divider component."
     },
     {
@@ -327,7 +325,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Simple definition-list value display."
     },
     {
@@ -335,10 +333,9 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Basic metric display. Advanced KPI cards belong to Pro."
     },
-
     {
       "name": "Alert",
       "tier": "core",
@@ -352,7 +349,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Temporary notification component."
     },
     {
@@ -360,7 +357,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Progress indicator."
     },
     {
@@ -368,7 +365,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Loading placeholder component."
     },
     {
@@ -376,7 +373,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Basic empty state component."
     },
     {
@@ -384,16 +381,15 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Loading indicator."
     },
-
     {
       "name": "Tabs",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "navigation",
-      "status": "implemented-initial",
+      "status": "quality-pass-needed",
       "description": "Basic tabs component."
     },
     {
@@ -428,7 +424,6 @@
       "status": "planned",
       "description": "Low-level command menu structure."
     },
-
     {
       "name": "DataGrid",
       "tier": "pro",
@@ -469,7 +464,6 @@
       "status": "planned",
       "description": "Column visibility, ordering, and table configuration UI."
     },
-
     {
       "name": "KPI Card",
       "tier": "pro",
@@ -518,7 +512,6 @@
       "status": "planned",
       "description": "Advanced analytics section pattern."
     },
-
     {
       "name": "AppShell",
       "tier": "pro",
@@ -575,7 +568,6 @@
       "status": "planned",
       "description": "Security and admin event log pattern."
     },
-
     {
       "name": "Documentation Shell",
       "tier": "pro",
@@ -616,7 +608,6 @@
       "status": "planned",
       "description": "Search command pattern for documentation navigation and content discovery."
     },
-
     {
       "name": "Portfolio Card",
       "tier": "pro",
@@ -673,7 +664,6 @@
       "status": "planned",
       "description": "Risk status indicator."
     },
-
     {
       "name": "AI Chat Shell",
       "tier": "pro",
@@ -738,7 +728,6 @@
       "status": "planned",
       "description": "Code response block for AI and developer workflows."
     },
-
     {
       "name": "Universal Workspace Template",
       "tier": "pro",

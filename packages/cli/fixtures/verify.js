@@ -34,7 +34,10 @@ const expectedBaseFormFiles = [
 ];
 const expectedSelectFiles = [
   "components/select.tsx",
+  "components/form-message.tsx",
   "components/icon.tsx",
+  "lib/cn.ts",
+  "styles/forms.css",
   "styles/select.css",
   "styles/icon.css",
 ];

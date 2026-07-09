@@ -33,21 +33,34 @@ Scope:
 - Minimal public MCP component index
 - Demo app foundation
 
-## Phase 2 — Core component coverage
+## Phase 2A — Core quality stabilization
 
-Goal: cover the standard baseline for real product interfaces.
+Goal: make the existing Core foundations and components stable enough for future Pro work.
 
 Scope:
 
-- Actions: Button, IconButton, Link
-- Forms: Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select
-- Overlays: Dialog, Sheet, Popover, Tooltip, Dropdown Menu
-- Data display: Card, Badge, Avatar, Table, List, Separator
-- Feedback: Alert, Toast, Progress, Skeleton, Empty State, Spinner
-- Navigation and layout: Tabs, Breadcrumbs, Pagination, Sidebar Primitive, Command Primitive
-- Registry metadata for every released component
-- Docs pages with purpose, anatomy, variants, states, usage snippets, and accessibility notes
-- `data/component-catalog.json` status updates as components move from planned to implemented
+- Token foundation, semantic aliases, and component aliases
+- Token validation for missing CSS variable references
+- Button and IconButton quality pass
+- Forms quality pass: Field, FormMessage, Label, Input, Textarea, Checkbox, Switch, Select
+- Overlay quality pass: Dialog, Popover, Tooltip, Dropdown Menu, Toast
+- Data-display quality pass: Table, Card, Badge, Avatar, Progress, Skeleton, Empty State, Stat, KeyValue, Separator
+- Registry metadata, docs reference, CLI fixture, and MCP fixture alignment
+- Maturity status updates using `planned`, `implemented-initial`, `quality-pass-needed`, `stable-core`, and `future`
+
+## Phase 2B — Core coverage expansion
+
+Goal: add missing Core components after the foundation is stable.
+
+Scope:
+
+- Actions: Link
+- Forms: FormGroup, Radio Group
+- Overlays: Sheet
+- Data display: List
+- Feedback: Alert
+- Navigation and layout: Breadcrumbs, Pagination, Sidebar Primitive, Command Primitive
+- Registry metadata, docs pages, CLI fixtures, and MCP fixtures for newly released components
 
 ## Phase 3 — Pro alpha
 
