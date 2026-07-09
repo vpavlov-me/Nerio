@@ -14,7 +14,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
   return (
     <input
       ref={ref}
-      aria-invalid={ariaInvalid ?? invalid}
+      aria-invalid={ariaInvalid ?? (invalid ? true : undefined)}
       className={cn("n-input", className)}
       data-invalid={invalid ? "" : undefined}
       data-slot="root"

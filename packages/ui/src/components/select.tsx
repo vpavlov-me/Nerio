@@ -18,6 +18,10 @@ export interface SelectProps {
   options: SelectOption[];
   id?: string;
   name?: string;
+  form?: string;
+  required?: boolean;
+  readOnly?: boolean;
+  autoComplete?: string;
   disabled?: boolean;
   invalid?: boolean;
   description?: React.ReactNode;
@@ -28,6 +32,7 @@ export interface SelectProps {
   "aria-invalid"?: boolean | "true" | "false" | "grammar" | "spelling";
   value?: string;
   defaultValue?: string;
+  onValueChange?: (value: string) => void;
   onChange?: (value: string) => void;
 }
 
@@ -36,6 +41,10 @@ export function Select({
   options,
   id,
   name,
+  form,
+  required,
+  readOnly,
+  autoComplete,
   disabled,
   invalid = false,
   description,
@@ -46,6 +55,7 @@ export function Select({
   "aria-invalid": ariaInvalid,
   value,
   defaultValue,
+  onValueChange,
   onChange,
 }: SelectProps) {
   const generatedId = React.useId();
@@ -67,24 +77,31 @@ export function Select({
       <BaseSelect.Root<string>
         id={controlId}
         name={name}
+        form={form}
+        required={required}
+        readOnly={readOnly}
+        autoComplete={autoComplete}
         disabled={disabled}
         value={value}
         defaultValue={defaultValue}
         items={options}
         onValueChange={(nextValue) => {
           if (typeof nextValue === "string") {
+            onValueChange?.(nextValue);
             onChange?.(nextValue);
           }
         }}
       >
         <BaseSelect.Trigger
+          id={controlId}
           className="n-select-trigger"
           aria-describedby={describedBy}
           aria-invalid={ariaInvalid ?? (invalid ? true : undefined)}
+          aria-required={required ? true : undefined}
           data-invalid={invalid ? "" : undefined}
           data-slot="trigger"
         >
-          <BaseSelect.Value placeholder={placeholder} />
+          <BaseSelect.Value data-slot="value" placeholder={placeholder} />
           <BaseSelect.Icon data-slot="icon">
             <Icon icon={ChevronDown} />
           </BaseSelect.Icon>
@@ -118,7 +135,12 @@ export function Select({
         </p>
       ) : null}
       {message ? (
-        <FormMessage id={messageId} tone={invalid ? "danger" : "neutral"}>
+        <FormMessage
+          data-slot="message"
+          id={messageId}
+          role={invalid ? "alert" : undefined}
+          tone={invalid ? "danger" : "neutral"}
+        >
           {message}
         </FormMessage>
       ) : null}

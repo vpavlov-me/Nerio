@@ -11,6 +11,21 @@
 - [ ] Initial AI guidance: `llms.txt` and MCP component discovery
 - [ ] CI, release workflow, and DCO enforcement
 
+## Core quality stabilization
+
+- [ ] Token foundation and token validation
+- [ ] Button and IconButton quality pass
+- [ ] Forms quality pass, including Field invalid behavior and Select placeholder/form behavior
+- [ ] Overlay quality pass
+- [ ] Basic table and data-display quality pass
+- [ ] Registry, docs, CLI, and MCP validation alignment
+- [ ] Component maturity model adoption
+
+## Core coverage expansion
+
+- [ ] Link, FormGroup, Radio Group, Alert, List, Breadcrumbs, Pagination
+- [ ] Sidebar Primitive and Command Primitive
+
 ## Product building blocks
 
 - [ ] Form primitives and validation adapter

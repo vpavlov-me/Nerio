@@ -23,9 +23,13 @@ Keep these files aligned when component scope changes.
 
 ## Status values
 
-- `Implemented initial`: available in the current source with an initial API and styling pass.
-- `Planned`: approved for the tier, not implemented yet.
-- `Future`: expected later, not part of the first Core milestone.
+- `planned`: approved for the tier, not implemented yet.
+- `implemented-initial`: first implementation exists, and API or styling may still change.
+- `quality-pass-needed`: component exists but still needs an API, accessibility, token, docs, and registry review before it can support Pro work.
+- `stable-core`: component passed the Core quality checklist and can safely support future Pro components, templates, registry installs, and AI/MCP usage.
+- `future`: expected later, not part of the current milestone.
+
+Do not mark a component as `stable-core` until the Core quality checklist is satisfied across API, accessibility, tokens, docs, registry metadata, and validation.
 
 ---
 
@@ -35,83 +39,83 @@ Keep these files aligned when component scope changes.
 
 | Component / Area  | Status              | Package                         | Notes                                                                                                              |
 | ----------------- | ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Tokens            | Implemented initial | `@nerio/tokens`                 | Color, spacing, radius, typography, motion                                                                         |
-| Themes            | Implemented initial | `@nerio/tokens`                 | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables |
-| Modes             | Implemented initial | `@nerio/tokens`                 | Color modes: `system`, `light`, `dark`                                                                             |
-| Density           | Implemented initial | `@nerio/tokens`                 | Density modes: `comfortable`, `compact`                                                                            |
-| Typography Tokens | Implemented initial | `@nerio/tokens`                 | Token-customizable font variables. Not a v1 runtime axis.                                                          |
-| Radius Tokens     | Implemented initial | `@nerio/tokens`                 | Token-customizable radius variables. Not a v1 runtime axis.                                                        |
-| Motion Tokens     | Implemented initial | `@nerio/tokens`                 | Token-customizable duration/motion variables. Not a v1 runtime axis.                                               |
-| Contrast Tokens   | Planned             | `@nerio/tokens`                 | Token-customizable semantic contrast variables. Not a v1 runtime axis.                                             |
-| Typography        | Planned             | `@nerio/ui`                     | Text, heading, code primitives                                                                                     |
-| Icon Adapter      | Implemented initial | `@nerio/ui` / `@nerio/adapters` | Current `Icon` export in `@nerio/ui`; adapter package remains part of the architecture                             |
+| Tokens            | quality-pass-needed | `@nerio/tokens`                 | Color, spacing, radius, typography, motion                                                                         |
+| Themes            | quality-pass-needed | `@nerio/tokens`                 | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables |
+| Modes             | quality-pass-needed | `@nerio/tokens`                 | Color modes: `system`, `light`, `dark`                                                                             |
+| Density           | quality-pass-needed | `@nerio/tokens`                 | Density modes: `comfortable`, `compact`                                                                            |
+| Typography Tokens | quality-pass-needed | `@nerio/tokens`                 | Token-customizable font variables. Not a v1 runtime axis.                                                          |
+| Radius Tokens     | quality-pass-needed | `@nerio/tokens`                 | Token-customizable radius variables. Not a v1 runtime axis.                                                        |
+| Motion Tokens     | quality-pass-needed | `@nerio/tokens`                 | Token-customizable duration/motion variables. Not a v1 runtime axis.                                               |
+| Contrast Tokens   | planned             | `@nerio/tokens`                 | Token-customizable semantic contrast variables. Not a v1 runtime axis.                                             |
+| Typography        | planned             | `@nerio/ui`                     | Text, heading, code primitives                                                                                     |
+| Icon Adapter      | quality-pass-needed | `@nerio/ui` / `@nerio/adapters` | Current `Icon` export in `@nerio/ui`; adapter package remains part of the architecture                             |
 
 ### Actions
 
 | Component  | Status              | Package     | Notes                                |
 | ---------- | ------------------- | ----------- | ------------------------------------ |
-| Button     | Implemented initial | `@nerio/ui` | Variants, sizes, loading, icon slots |
-| IconButton | Implemented initial | `@nerio/ui` | Accessible icon-only action          |
-| Link       | Planned             | `@nerio/ui` | Styled link primitive                |
+| Button     | quality-pass-needed | `@nerio/ui` | Variants, sizes, loading, icon slots |
+| IconButton | quality-pass-needed | `@nerio/ui` | Accessible icon-only action          |
+| Link       | planned             | `@nerio/ui` | Styled link primitive                |
 
 ### Forms
 
 | Component   | Status              | Package     | Notes                                |
 | ----------- | ------------------- | ----------- | ------------------------------------ |
-| Input       | Implemented initial | `@nerio/ui` | Text input                           |
-| Textarea    | Implemented initial | `@nerio/ui` | Multiline input                      |
-| Label       | Implemented initial | `@nerio/ui` | Accessible form label                |
-| Field       | Implemented initial | `@nerio/ui` | Label, help text, error, description |
-| FormMessage | Implemented initial | `@nerio/ui` | Field message/error text             |
-| FormGroup   | Planned             | `@nerio/ui` | Form layout primitive                |
-| Checkbox    | Implemented initial | `@nerio/ui` | Basic checkbox                       |
-| Radio Group | Planned             | `@nerio/ui` | Basic radio selection                |
-| Switch      | Implemented initial | `@nerio/ui` | Toggle control                       |
-| Select      | Implemented initial | `@nerio/ui` | Base select                          |
+| Input       | quality-pass-needed | `@nerio/ui` | Text input                           |
+| Textarea    | quality-pass-needed | `@nerio/ui` | Multiline input                      |
+| Label       | quality-pass-needed | `@nerio/ui` | Accessible form label                |
+| Field       | quality-pass-needed | `@nerio/ui` | Label, help text, error, description |
+| FormMessage | quality-pass-needed | `@nerio/ui` | Field message/error text             |
+| FormGroup   | planned             | `@nerio/ui` | Form layout primitive                |
+| Checkbox    | quality-pass-needed | `@nerio/ui` | Basic checkbox                       |
+| Radio Group | planned             | `@nerio/ui` | Basic radio selection                |
+| Switch      | quality-pass-needed | `@nerio/ui` | Toggle control                       |
+| Select      | quality-pass-needed | `@nerio/ui` | Base select                          |
 
 ### Overlays
 
 | Component     | Status              | Package     | Notes                 |
 | ------------- | ------------------- | ----------- | --------------------- |
-| Dialog        | Implemented initial | `@nerio/ui` | Modal primitive       |
-| Sheet         | Planned             | `@nerio/ui` | Basic side panel      |
-| Popover       | Implemented initial | `@nerio/ui` | Floating content      |
-| Tooltip       | Implemented initial | `@nerio/ui` | Short contextual help |
-| Dropdown Menu | Implemented initial | `@nerio/ui` | Basic menu            |
+| Dialog        | quality-pass-needed | `@nerio/ui` | Modal primitive       |
+| Sheet         | planned             | `@nerio/ui` | Basic side panel      |
+| Popover       | quality-pass-needed | `@nerio/ui` | Floating content      |
+| Tooltip       | quality-pass-needed | `@nerio/ui` | Short contextual help |
+| Dropdown Menu | quality-pass-needed | `@nerio/ui` | Basic menu            |
 
 ### Data display
 
 | Component | Status              | Package     | Notes                                                   |
 | --------- | ------------------- | ----------- | ------------------------------------------------------- |
-| Card      | Implemented initial | `@nerio/ui` | Surface primitive                                       |
-| Badge     | Implemented initial | `@nerio/ui` | Status and metadata                                     |
-| Avatar    | Implemented initial | `@nerio/ui` | User/entity avatar                                      |
-| Table     | Implemented initial | `@nerio/ui` | Basic table only                                        |
-| List      | Planned             | `@nerio/ui` | Basic list primitive                                    |
-| Separator | Implemented initial | `@nerio/ui` | Layout divider                                          |
-| KeyValue  | Implemented initial | `@nerio/ui` | Simple definition-list value display                    |
-| Stat      | Implemented initial | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro. |
+| Card      | quality-pass-needed | `@nerio/ui` | Surface primitive                                       |
+| Badge     | quality-pass-needed | `@nerio/ui` | Status and metadata                                     |
+| Avatar    | quality-pass-needed | `@nerio/ui` | User/entity avatar                                      |
+| Table     | quality-pass-needed | `@nerio/ui` | Basic table only                                        |
+| List      | planned             | `@nerio/ui` | Basic list primitive                                    |
+| Separator | quality-pass-needed | `@nerio/ui` | Layout divider                                          |
+| KeyValue  | quality-pass-needed | `@nerio/ui` | Simple definition-list value display                    |
+| Stat      | quality-pass-needed | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro. |
 
 ### Feedback
 
 | Component   | Status              | Package     | Notes                  |
 | ----------- | ------------------- | ----------- | ---------------------- |
-| Alert       | Planned             | `@nerio/ui` | Inline feedback        |
-| Toast       | Implemented initial | `@nerio/ui` | Temporary notification |
-| Progress    | Implemented initial | `@nerio/ui` | Progress indicator     |
-| Skeleton    | Implemented initial | `@nerio/ui` | Loading placeholder    |
-| Empty State | Implemented initial | `@nerio/ui` | Basic empty state      |
-| Spinner     | Implemented initial | `@nerio/ui` | Loading indicator      |
+| Alert       | planned             | `@nerio/ui` | Inline feedback        |
+| Toast       | quality-pass-needed | `@nerio/ui` | Temporary notification |
+| Progress    | quality-pass-needed | `@nerio/ui` | Progress indicator     |
+| Skeleton    | quality-pass-needed | `@nerio/ui` | Loading placeholder    |
+| Empty State | quality-pass-needed | `@nerio/ui` | Basic empty state      |
+| Spinner     | quality-pass-needed | `@nerio/ui` | Loading indicator      |
 
 ### Navigation and layout
 
 | Component         | Status              | Package     | Notes                   |
 | ----------------- | ------------------- | ----------- | ----------------------- |
-| Tabs              | Implemented initial | `@nerio/ui` | Basic tabs              |
-| Breadcrumbs       | Planned             | `@nerio/ui` | Hierarchy navigation    |
-| Pagination        | Planned             | `@nerio/ui` | Basic pagination        |
-| Sidebar Primitive | Planned             | `@nerio/ui` | Layout primitive only   |
-| Command Primitive | Planned             | `@nerio/ui` | Basic command structure |
+| Tabs              | quality-pass-needed | `@nerio/ui` | Basic tabs              |
+| Breadcrumbs       | planned             | `@nerio/ui` | Hierarchy navigation    |
+| Pagination        | planned             | `@nerio/ui` | Basic pagination        |
+| Sidebar Primitive | planned             | `@nerio/ui` | Layout primitive only   |
+| Command Primitive | planned             | `@nerio/ui` | Basic command structure |
 
 ---
 
@@ -121,80 +125,80 @@ Keep these files aligned when component scope changes.
 
 | Component       | Status  | Package      | Notes                                              |
 | --------------- | ------- | ------------ | -------------------------------------------------- |
-| DataGrid        | Planned | `@nerio/pro` | Sorting, filtering, column visibility, saved views |
-| Advanced Table  | Planned | `@nerio/pro` | Bulk actions, density, row actions                 |
-| Filter Bar      | Planned | `@nerio/pro` | Complex filters                                    |
-| Saved Views     | Planned | `@nerio/pro` | Named table/filter states                          |
-| Column Settings | Planned | `@nerio/pro` | Visibility and ordering                            |
+| DataGrid        | planned | `@nerio/pro` | Sorting, filtering, column visibility, saved views |
+| Advanced Table  | planned | `@nerio/pro` | Bulk actions, density, row actions                 |
+| Filter Bar      | planned | `@nerio/pro` | Complex filters                                    |
+| Saved Views     | planned | `@nerio/pro` | Named table/filter states                          |
+| Column Settings | planned | `@nerio/pro` | Visibility and ordering                            |
 
 ### Dashboards
 
 | Component       | Status  | Package      | Notes                                                                     |
 | --------------- | ------- | ------------ | ------------------------------------------------------------------------- |
-| KPI Card        | Planned | `@nerio/pro` | Advanced metric with trend, comparison, state, actions, and chart context |
-| KPI Group       | Planned | `@nerio/pro` | Dashboard metric cluster                                                  |
-| Trend Chip      | Planned | `@nerio/pro` | Positive/negative/neutral movement                                        |
-| Chart Card      | Planned | `@nerio/pro` | Chart wrapper and metadata                                                |
-| Activity Feed   | Planned | `@nerio/pro` | Product activity timeline                                                 |
-| Analytics Panel | Planned | `@nerio/pro` | Advanced dashboard section                                                |
+| KPI Card        | planned | `@nerio/pro` | Advanced metric with trend, comparison, state, actions, and chart context |
+| KPI Group       | planned | `@nerio/pro` | Dashboard metric cluster                                                  |
+| Trend Chip      | planned | `@nerio/pro` | Positive/negative/neutral movement                                        |
+| Chart Card      | planned | `@nerio/pro` | Chart wrapper and metadata                                                |
+| Activity Feed   | planned | `@nerio/pro` | Product activity timeline                                                 |
+| Analytics Panel | planned | `@nerio/pro` | Advanced dashboard section                                                |
 
 ### SaaS and admin
 
 | Component           | Status  | Package      | Notes                              |
 | ------------------- | ------- | ------------ | ---------------------------------- |
-| AppShell            | Planned | `@nerio/pro` | Full application layout            |
-| AppSidebar          | Planned | `@nerio/pro` | Workspace switcher, nav, user menu |
-| Settings Layout     | Planned | `@nerio/pro` | Settings page structure            |
-| Billing Settings    | Planned | `@nerio/pro` | Plan, invoices, payment method     |
-| Team Members        | Planned | `@nerio/pro` | Members and invites                |
-| Roles & Permissions | Planned | `@nerio/pro` | Permission UI                      |
-| Audit Log           | Planned | `@nerio/pro` | Security/admin log                 |
+| AppShell            | planned | `@nerio/pro` | Full application layout            |
+| AppSidebar          | planned | `@nerio/pro` | Workspace switcher, nav, user menu |
+| Settings Layout     | planned | `@nerio/pro` | Settings page structure            |
+| Billing Settings    | planned | `@nerio/pro` | Plan, invoices, payment method     |
+| Team Members        | planned | `@nerio/pro` | Members and invites                |
+| Roles & Permissions | planned | `@nerio/pro` | Permission UI                      |
+| Audit Log           | planned | `@nerio/pro` | Security/admin log                 |
 
 ### Documentation UI
 
 | Component              | Status  | Package      | Notes                                                      |
 | ---------------------- | ------- | ------------ | ---------------------------------------------------------- |
-| Documentation Shell    | Planned | `@nerio/pro` | Full docs layout with header, sidebar, content, and TOC    |
-| Documentation Header   | Planned | `@nerio/pro` | Product identity, version, search, theme, and repo actions |
-| Documentation Sidebar  | Planned | `@nerio/pro` | Grouped documentation navigation with active states        |
-| Page Table of Contents | Planned | `@nerio/pro` | Sticky in-page navigation generated from headings          |
-| Documentation Search   | Planned | `@nerio/pro` | Search command pattern for docs discovery                  |
+| Documentation Shell    | planned | `@nerio/pro` | Full docs layout with header, sidebar, content, and TOC    |
+| Documentation Header   | planned | `@nerio/pro` | Product identity, version, search, theme, and repo actions |
+| Documentation Sidebar  | planned | `@nerio/pro` | Grouped documentation navigation with active states        |
+| Page Table of Contents | planned | `@nerio/pro` | Sticky in-page navigation generated from headings          |
+| Documentation Search   | planned | `@nerio/pro` | Search command pattern for docs discovery                  |
 
 ### Finance and crypto
 
 | Component           | Status  | Package      | Notes                       |
 | ------------------- | ------- | ------------ | --------------------------- |
-| Portfolio Card      | Planned | `@nerio/pro` | Portfolio summary           |
-| Asset Row           | Planned | `@nerio/pro` | Asset/token row             |
-| Transaction List    | Planned | `@nerio/pro` | Crypto/finance transactions |
-| Wallet Connector UI | Planned | `@nerio/pro` | Wallet connection pattern   |
-| Balance Visibility  | Planned | `@nerio/pro` | Hide/show sensitive values  |
-| PnL Components      | Planned | `@nerio/pro` | Profit/loss display         |
-| Risk Badge          | Planned | `@nerio/pro` | Risk status indicator       |
+| Portfolio Card      | planned | `@nerio/pro` | Portfolio summary           |
+| Asset Row           | planned | `@nerio/pro` | Asset/token row             |
+| Transaction List    | planned | `@nerio/pro` | Crypto/finance transactions |
+| Wallet Connector UI | planned | `@nerio/pro` | Wallet connection pattern   |
+| Balance Visibility  | planned | `@nerio/pro` | Hide/show sensitive values  |
+| PnL Components      | planned | `@nerio/pro` | Profit/loss display         |
+| Risk Badge          | planned | `@nerio/pro` | Risk status indicator       |
 
 ### AI interfaces
 
 | Component       | Status  | Package      | Notes                              |
 | --------------- | ------- | ------------ | ---------------------------------- |
-| AI Chat Shell   | Planned | `@nerio/pro` | Full chat interface                |
-| Prompt Input    | Planned | `@nerio/pro` | AI prompt composer                 |
-| Message         | Planned | `@nerio/pro` | Assistant/user message             |
-| Sources         | Planned | `@nerio/pro` | Citations/source display           |
-| Tool Call       | Planned | `@nerio/pro` | Tool execution UI                  |
-| Reasoning Block | Planned | `@nerio/pro` | Collapsible reasoning/status block |
-| Attachment      | Planned | `@nerio/pro` | File attachment UI                 |
-| Code Block      | Planned | `@nerio/pro` | AI/code response block             |
+| AI Chat Shell   | planned | `@nerio/pro` | Full chat interface                |
+| Prompt Input    | planned | `@nerio/pro` | AI prompt composer                 |
+| Message         | planned | `@nerio/pro` | Assistant/user message             |
+| Sources         | planned | `@nerio/pro` | Citations/source display           |
+| Tool Call       | planned | `@nerio/pro` | Tool execution UI                  |
+| Reasoning Block | planned | `@nerio/pro` | Collapsible reasoning/status block |
+| Attachment      | planned | `@nerio/pro` | File attachment UI                 |
+| Code Block      | planned | `@nerio/pro` | AI/code response block             |
 
 ### Templates
 
 | Template                   | Status  | Package      | Notes                            |
 | -------------------------- | ------- | ------------ | -------------------------------- |
-| Universal Workspace        | Planned | `@nerio/pro` | General SaaS/admin template      |
-| Banking Dashboard          | Planned | `@nerio/pro` | Fintech dashboard template       |
-| Crypto Portfolio Dashboard | Planned | `@nerio/pro` | Crypto/portfolio template        |
-| Admin Settings             | Planned | `@nerio/pro` | SaaS settings template           |
-| Billing Portal             | Planned | `@nerio/pro` | Subscription management template |
-| AI Assistant               | Planned | `@nerio/pro` | AI product template              |
+| Universal Workspace        | planned | `@nerio/pro` | General SaaS/admin template      |
+| Banking Dashboard          | planned | `@nerio/pro` | Fintech dashboard template       |
+| Crypto Portfolio Dashboard | planned | `@nerio/pro` | Crypto/portfolio template        |
+| Admin Settings             | planned | `@nerio/pro` | SaaS settings template           |
+| Billing Portal             | planned | `@nerio/pro` | Subscription management template |
+| AI Assistant               | planned | `@nerio/pro` | AI product template              |
 
 ---
 

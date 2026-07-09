@@ -43,7 +43,9 @@ export function Field({
       data-slot="root"
       {...props}
     >
-      <Label htmlFor={controlId}>{label}</Label>
+      <Label data-slot="label" htmlFor={controlId}>
+        {label}
+      </Label>
       {React.isValidElement<FieldControlProps>(children)
         ? React.cloneElement(children, {
             id: controlId,
@@ -51,7 +53,7 @@ export function Field({
               [children.props["aria-describedby"], describedBy].filter(Boolean).join(" ") ||
               undefined,
             "aria-invalid": children.props["aria-invalid"] ?? (invalid ? true : undefined),
-            invalid: children.props.invalid ?? invalid,
+            invalid: children.props.invalid ?? (invalid ? true : undefined),
           })
         : children}
       {description ? (
@@ -60,7 +62,12 @@ export function Field({
         </p>
       ) : null}
       {message ? (
-        <FormMessage id={messageId} tone={invalid ? "danger" : "neutral"}>
+        <FormMessage
+          data-slot="message"
+          id={messageId}
+          role={invalid ? "alert" : undefined}
+          tone={invalid ? "danger" : "neutral"}
+        >
           {message}
         </FormMessage>
       ) : null}
