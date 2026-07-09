@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Search } from "@nerio/adapters";
+import { getRegistryItem } from "@nerio/registry";
 import {
   Avatar,
   Badge,
@@ -33,52 +34,15 @@ import {
   Tooltip,
   useToastManager,
 } from "@nerio/ui";
-
-const snippets: Record<string, string> = {
-  button: "import { Button } from '@nerio/ui';\n\n<Button>Save project</Button>",
-  "icon-button":
-    "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@nerio/ui';\n\n<IconButton icon={Search} label=\"Search\" />",
-  badge: "import { Badge } from '@nerio/ui';\n\n<Badge variant=\"success\">Published</Badge>",
-  spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
-  skeleton: "import { Skeleton } from '@nerio/ui';\n\n<Skeleton aria-label=\"Loading\" />",
-  "empty-state":
-    'import { Button, EmptyState } from \'@nerio/ui\';\n\n<EmptyState title="No collections" description="Create one to start organizing work." action={<Button>Create collection</Button>} />',
-  input:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name"><Input placeholder="Q3 planning" /></Field>',
-  textarea:
-    'import { Field, Textarea } from \'@nerio/ui\';\n\n<Field label="Notes"><Textarea placeholder="Add context" /></Field>',
-  label:
-    'import { Input, Label } from \'@nerio/ui\';\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" />',
-  field:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" message="Use at least 3 characters."><Input /></Field>',
-  "form-message":
-    "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
-  checkbox: "import { Checkbox } from '@nerio/ui';\n\n<Checkbox aria-label=\"Include archived\" />",
-  switch: "import { Switch } from '@nerio/ui';\n\n<Switch aria-label=\"Enable notifications\" />",
-  dialog:
-    'import { Dialog } from \'@nerio/ui\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
-  select:
-    "import { Select } from '@nerio/ui';\n\n<Select label=\"Status\" options={[{ label: 'Active', value: 'active' }]} />",
-  toast:
-    "import { Button, ToastProvider, ToastViewport, useToastManager } from '@nerio/ui';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: \"Saved\" })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>",
-  tabs: 'import { Tabs } from \'@nerio/ui\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }]} />',
-  tooltip:
-    "import { Button, Tooltip } from '@nerio/ui';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
-  popover:
-    'import { Popover } from \'@nerio/ui\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
-  "dropdown-menu":
-    'import { DropdownMenu } from \'@nerio/ui\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
-  card: "import { Card } from '@nerio/ui';\n\n<Card>Project summary</Card>",
-  separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
-  avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
-  progress: "import { Progress } from '@nerio/ui';\n\n<Progress label=\"Completion\" value={68} />",
-  stat: 'import { Stat } from \'@nerio/ui\';\n\n<Stat label="Active projects" value="12" trend="+3 this week" />',
-  "key-value":
-    'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
-  table:
-    "import { Table } from '@nerio/ui';\n\n<Table><thead><tr><th>Name</th></tr></thead><tbody><tr><td>Roadmap</td></tr></tbody></Table>",
-};
-
+import { CodeExample } from "./code-example";
+import {
+  anatomyFromSlots,
+  componentReference,
+  sharedTokens,
+  snippets,
+  variantsFromRegistry,
+} from "./component-reference";
+import type { ReferenceSection } from "./component-reference";
 export function StandardDocPage({
   title,
   lede,
@@ -88,50 +52,129 @@ export function StandardDocPage({
   lede: string;
   kind?: string;
 }) {
+  const reference = kind ? componentReference[kind] : undefined;
+  const registryItem = kind ? getRegistryItem(kind) : undefined;
+  const usage = kind ? snippets[kind] : undefined;
+  const fallbackAnatomy = reference?.anatomy ?? [
+    {
+      title: "root",
+      description:
+        "Component root with data-slot attributes, semantic tokens, and visible focus states.",
+    },
+  ];
+  const fallbackVariants = reference?.variants ?? [
+    {
+      title: "Default",
+      description: "Default variant uses semantic tokens and adapts across themes.",
+    },
+  ];
+  const anatomy = anatomyFromSlots(registryItem?.slots ?? [], fallbackAnatomy);
+  const variants = variantsFromRegistry(registryItem?.variants ?? [], fallbackVariants);
+  const accessibility = registryItem?.accessibility ?? reference?.accessibility;
+  const tokens = registryItem?.requiredTokens ?? reference?.tokens ?? sharedTokens;
+
   return (
     <article className="doc-page">
       <header>
+        {reference ? <p className="doc-kicker">{reference.category}</p> : null}
         <h1>{title}</h1>
         <p className="doc-lede">{lede}</p>
       </header>
       {kind ? <Preview kind={kind} /> : null}
       <section className="doc-section">
-        <h2>Anatomy</h2>
+        <h2 id="usage">Usage</h2>
+        {usage ? <CodeExample code={usage} label={`${title} usage`} /> : null}
+      </section>
+      <section className="doc-section">
+        <h2 id="purpose">Purpose</h2>
         <p>
-          Components expose clear slots with `data-slot`, semantic tokens, visible focus states, and
-          small composable APIs.
+          {reference?.purpose ??
+            "Use this component as a token-driven Nerio building block inside product workflows."}
         </p>
       </section>
       <section className="doc-section">
-        <h2>Variants and states</h2>
-        <p>
-          Use variants to express intent. Disabled, loading, empty, focus, selected, hover, and
-          error states are part of the default contract.
-        </p>
+        <h2 id="anatomy">Anatomy</h2>
+        <ReferenceGrid items={anatomy} />
       </section>
       <section className="doc-section">
-        <h2>Accessibility</h2>
-        <p>
-          Prefer semantic HTML, accessible names, keyboard-reachable controls, and tokenized
-          contrast that remains stable across themes.
-        </p>
+        <h2 id="variants">Variants</h2>
+        <ReferenceGrid items={variants} />
       </section>
       <section className="doc-section">
-        <h2>Do / do not</h2>
-        <div className="grid">
-          <Card>
-            <Badge variant="success">Do</Badge>
-            <p>Compose small components around real product workflows.</p>
-          </Card>
-          <Card>
-            <Badge variant="danger">Do not</Badge>
-            <p>
-              Fork visual values into one-off colors, spacing, or typography inside product code.
-            </p>
-          </Card>
+        <h2 id="states">States</h2>
+        <ReferenceGrid
+          items={
+            reference?.states ?? [
+              {
+                title: "Default",
+                description:
+                  "Default, hover, focus, disabled, and error states follow Nerio tokens.",
+              },
+            ]
+          }
+        />
+      </section>
+      <section className="doc-section">
+        <h2 id="accessibility">Accessibility</h2>
+        <ul className="doc-list">
+          {(
+            accessibility ?? [
+              "Prefer semantic HTML, accessible names, keyboard-reachable controls, and tokenized contrast that remains stable across themes.",
+            ]
+          ).map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+      <section className="doc-section">
+        <h2 id="do-do-not">Do / do not</h2>
+        <div className="guidance-grid">
+          <div data-tone="positive">
+            <strong>Do</strong>
+            {(
+              reference?.guidance.do ?? ["Compose small components around real product workflows."]
+            ).map((item) => (
+              <p key={item}>{item}</p>
+            ))}
+          </div>
+          <div data-tone="negative">
+            <strong>Do not</strong>
+            {(
+              reference?.guidance.dont ?? [
+                "Fork visual values into one-off colors, spacing, or typography inside product code.",
+              ]
+            ).map((item) => (
+              <p key={item}>{item}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="doc-section">
+        <h2 id="tokens">Tokens</h2>
+        <p>
+          These are the primary customization points. Override semantic or component tokens instead
+          of changing component source.
+        </p>
+        <div className="token-chip-row">
+          {tokens.map((token) => (
+            <code key={token}>{token}</code>
+          ))}
         </div>
       </section>
     </article>
+  );
+}
+
+function ReferenceGrid({ items }: { items: ReferenceSection[] }) {
+  return (
+    <div className="reference-grid">
+      {items.map((item) => (
+        <div key={item.title}>
+          <code>{item.title}</code>
+          <p>{item.description}</p>
+        </div>
+      ))}
+    </div>
   );
 }
 

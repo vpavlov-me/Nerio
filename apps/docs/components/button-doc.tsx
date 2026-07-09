@@ -26,10 +26,10 @@ export function ButtonDoc() {
         </p>
       </header>
 
-      <section className="preview" aria-labelledby="button-preview-title">
+      <section className="preview" aria-labelledby="preview">
         <div className="preview-heading">
           <div>
-            <h2 id="button-preview-title">Preview</h2>
+            <h2 id="preview">Preview</h2>
             <p>Switch theme and density in the header to test the runtime token contract.</p>
           </div>
           <Badge>Base UI</Badge>
@@ -43,12 +43,20 @@ export function ButtonDoc() {
       </section>
 
       <section className="doc-section">
-        <h2>Usage</h2>
+        <h2 id="purpose">Purpose</h2>
+        <p>
+          Use Button for explicit actions that submit, save, create, continue, or trigger a product
+          workflow. Use a semantic link for navigation.
+        </p>
+      </section>
+
+      <section className="doc-section">
+        <h2 id="usage">Usage</h2>
         <CodeExample code={usage} label="Button usage" />
       </section>
 
       <section className="doc-section">
-        <h2>Anatomy</h2>
+        <h2 id="anatomy">Anatomy</h2>
         <div className="anatomy-list">
           <div>
             <code>root</code>
@@ -66,7 +74,7 @@ export function ButtonDoc() {
       </section>
 
       <section className="doc-section">
-        <h2>Variants</h2>
+        <h2 id="variants">Variants</h2>
         <div className="state-grid">
           <Card>
             <strong>Primary</strong>
@@ -92,7 +100,7 @@ export function ButtonDoc() {
       </section>
 
       <section className="doc-section">
-        <h2>States and sizes</h2>
+        <h2 id="states-and-sizes">States and sizes</h2>
         <div className="preview-row">
           <Button size="sm">Small</Button>
           <Button>Medium</Button>
@@ -105,7 +113,7 @@ export function ButtonDoc() {
       </section>
 
       <section className="doc-section">
-        <h2>Accessibility</h2>
+        <h2 id="accessibility">Accessibility</h2>
         <ul className="doc-list">
           <li>
             Renders a native button through Base UI unless a custom render element is supplied.
@@ -121,7 +129,7 @@ export function ButtonDoc() {
       </section>
 
       <section className="doc-section">
-        <h2>Source install</h2>
+        <h2 id="source-install">Source install</h2>
         <p>
           The registry installs Button with only Icon, Spinner, <code>cn</code>, and scoped styles.
           Existing files are preserved unless <code>--overwrite</code> is provided.
@@ -130,7 +138,22 @@ export function ButtonDoc() {
       </section>
 
       <section className="doc-section">
-        <h2>Do / do not</h2>
+        <h2 id="tokens">Tokens</h2>
+        <p>
+          Button reads semantic and component tokens so products can tune height, radius, color,
+          focus, and spacing without editing component source.
+        </p>
+        <div className="token-chip-row">
+          <code>--n-button-height-md</code>
+          <code>--n-button-radius</code>
+          <code>--n-color-action-primary</code>
+          <code>--n-color-action-primary-hover</code>
+          <code>--n-focus-ring</code>
+        </div>
+      </section>
+
+      <section className="doc-section">
+        <h2 id="do-do-not">Do / do not</h2>
         <div className="guidance-grid">
           <div data-tone="positive">
             <strong>Do</strong>

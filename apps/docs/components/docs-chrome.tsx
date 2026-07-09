@@ -125,6 +125,92 @@ const densityOptions = [
   { label: "Compact", value: "compact" },
 ];
 
+type TocItem = {
+  id: string;
+  label: string;
+};
+
+const componentToc: TocItem[] = [
+  { id: "usage", label: "Usage" },
+  { id: "purpose", label: "Purpose" },
+  { id: "anatomy", label: "Anatomy" },
+  { id: "variants", label: "Variants" },
+  { id: "states", label: "States" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "do-do-not", label: "Do / do not" },
+  { id: "tokens", label: "Tokens" },
+];
+
+const buttonToc: TocItem[] = [
+  { id: "preview", label: "Preview" },
+  { id: "purpose", label: "Purpose" },
+  { id: "usage", label: "Usage" },
+  { id: "anatomy", label: "Anatomy" },
+  { id: "variants", label: "Variants" },
+  { id: "states-and-sizes", label: "States and sizes" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "source-install", label: "Source install" },
+  { id: "tokens", label: "Tokens" },
+  { id: "do-do-not", label: "Do / do not" },
+];
+
+const tocByPath: Record<string, TocItem[]> = {
+  "/docs/getting-started": [
+    { id: "install", label: "Install" },
+    { id: "project-shape", label: "Project shape" },
+    { id: "principles", label: "Principles" },
+  ],
+  "/docs/foundations/tokens": [
+    { id: "three-layer-contract", label: "Three-layer contract" },
+    { id: "primitive-palette", label: "Primitive palette" },
+    { id: "semantic-tokens", label: "Semantic tokens" },
+    { id: "component-tokens", label: "Component tokens" },
+    { id: "live-component-readout", label: "Live component readout" },
+    { id: "usage", label: "Usage" },
+  ],
+  "/docs/foundations/typography": [
+    { id: "font-contract", label: "Font contract" },
+    { id: "type-scale", label: "Type scale" },
+    { id: "technical-content", label: "Technical content" },
+    { id: "usage", label: "Usage" },
+  ],
+  "/docs/foundations/themes": [
+    { id: "theme-contract", label: "Theme contract" },
+    { id: "runtime-switching", label: "Runtime switching" },
+    { id: "density", label: "Density" },
+    { id: "usage", label: "Usage" },
+  ],
+  "/docs/foundations/effects": [
+    { id: "radius-scale", label: "Radius scale" },
+    { id: "effect-styles", label: "Effect styles" },
+    { id: "focus", label: "Focus" },
+    { id: "usage", label: "Usage" },
+  ],
+  "/docs/foundations/icons": [
+    { id: "icon-adapter-preview", label: "Icon adapter preview" },
+    { id: "contract", label: "Contract" },
+    { id: "usage", label: "Usage" },
+    { id: "do-do-not", label: "Do / do not" },
+  ],
+  "/docs/registry": [
+    { id: "quick-start", label: "Quick start" },
+    { id: "project-configuration", label: "Project configuration" },
+    { id: "available-source-items", label: "Available source items" },
+    { id: "registry-contract", label: "Registry contract" },
+  ],
+  "/docs/ai": [
+    { id: "llms-txt", label: "llms.txt" },
+    { id: "mcp-server", label: "MCP server" },
+    { id: "agent-composition-rules", label: "Agent composition rules" },
+  ],
+};
+
+function getDefaultToc(pathname: string): TocItem[] {
+  if (pathname === "/docs/components/button") return buttonToc;
+  if (pathname.startsWith("/docs/components/")) return componentToc;
+  return tocByPath[pathname] ?? [];
+}
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -253,11 +339,12 @@ function PageActions() {
 
 export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const fallbackToc = getDefaultToc(pathname);
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState("system");
   const [density, setDensityValue] = React.useState("comfortable");
   const [search, setSearch] = React.useState("");
-  const [toc, setToc] = React.useState<Array<{ id: string; label: string }>>([]);
+  const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
 
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -272,7 +359,8 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
       if (!heading.id) heading.id = slugify(label);
       return { id: heading.id, label };
     });
-    setToc(nextToc.filter((item) => item.label.length > 0));
+    const filteredToc = nextToc.filter((item) => item.label.length > 0);
+    setToc(filteredToc.length > 0 ? filteredToc : getDefaultToc(pathname));
   }, [pathname, children]);
 
   const setTheme = (value: string) => {
@@ -303,6 +391,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     : navGroups;
 
   const modeIcon = mode === "dark" ? Sun : Moon;
+  const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
   return (
     <div className="docs-shell">
@@ -372,9 +461,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         <aside className="docs-toc" aria-label="On this page">
           <div className="docs-toc-card">
             <div className="docs-toc-title">On this page</div>
-            {toc.length > 0 ? (
+            {visibleToc.length > 0 ? (
               <nav>
-                {toc.map((item) => (
+                {visibleToc.map((item) => (
                   <a key={item.id} href={`#${item.id}`}>
                     {item.label}
                   </a>
