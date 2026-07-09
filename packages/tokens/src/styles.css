@@ -267,6 +267,16 @@
   --n-link-color-muted: var(--n-color-text-secondary);
   --n-link-underline-offset: 0.16em;
   --n-link-underline-thickness: 0.08em;
+  --n-breadcrumbs-gap: var(--n-space-2);
+  --n-breadcrumbs-separator-color: var(--n-color-text-tertiary);
+  --n-pagination-gap: var(--n-space-1);
+  --n-pagination-item-size: 2rem;
+  --n-pagination-radius: var(--n-radius-md);
+  --n-pagination-background: var(--n-color-surface-default);
+  --n-pagination-background-hover: var(--n-color-surface-subtle);
+  --n-pagination-background-current: var(--n-color-surface-selected);
+  --n-pagination-border: var(--n-color-border-subtle);
+  --n-pagination-border-current: var(--n-color-border-interactive);
   --n-alert-gap: var(--n-space-3);
   --n-alert-padding: var(--n-space-4);
   --n-alert-radius: var(--n-radius-lg);
@@ -332,6 +342,14 @@
   --n-table-cell-padding-y: var(--n-space-3);
   --n-table-cell-padding-x: var(--n-space-3);
   --n-table-cell-padding: var(--n-table-cell-padding-y) var(--n-table-cell-padding-x);
+  --n-list-gap: var(--n-space-2);
+  --n-list-item-padding: var(--n-space-3);
+  --n-list-item-gap: var(--n-space-3);
+  --n-list-item-radius: var(--n-radius-lg);
+  --n-list-item-background: transparent;
+  --n-list-item-background-hover: var(--n-color-surface-subtle);
+  --n-list-item-border: var(--n-color-border-subtle);
+  --n-list-item-border-hover: var(--n-color-border-default);
   --n-tabs-trigger-height: var(--n-button-height-md);
   --n-tabs-radius: var(--n-radius-sm);
   --n-popover-width-md: 20rem;
@@ -601,6 +619,8 @@
   --n-select-height-md: var(--n-input-height-md);
   --n-table-cell-padding-y: var(--n-space-2);
   --n-table-cell-padding-x: var(--n-space-3);
+  --n-pagination-item-size: 1.75rem;
+  --n-list-item-padding: var(--n-space-2);
 }
 
 html {

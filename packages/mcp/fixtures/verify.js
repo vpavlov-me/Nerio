@@ -143,6 +143,19 @@ async function verify() {
       throw new Error("MCP RadioGroup usage is missing Base UI, dependency, or token metadata.");
     }
 
+    const listUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "list" },
+    });
+    const listUsage = JSON.parse(listUsageResult.content[0].text);
+    if (
+      !listUsage.requiredTokens.includes("--n-list-item-padding") ||
+      !listUsage.accessibility.some((item) => item.includes("semantic ul")) ||
+      !listUsage.usage.includes("<List")
+    ) {
+      throw new Error("MCP List usage is missing semantic list, token, or usage metadata.");
+    }
+
     const tabsUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "tabs" },
@@ -155,6 +168,32 @@ async function verify() {
       !tabsUsage.accessibility.some((item) => item.includes("first enabled tab"))
     ) {
       throw new Error("MCP Tabs usage is missing Base UI, token, or accessibility metadata.");
+    }
+
+    const breadcrumbsUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "breadcrumbs" },
+    });
+    const breadcrumbsUsage = JSON.parse(breadcrumbsUsageResult.content[0].text);
+    if (
+      breadcrumbsUsage.baseUiPrimitives.length !== 0 ||
+      !breadcrumbsUsage.requiredTokens.includes("--n-breadcrumbs-gap") ||
+      !breadcrumbsUsage.accessibility.some((item) => item.includes("aria-current"))
+    ) {
+      throw new Error("MCP Breadcrumbs usage is missing native, token, or current-page metadata.");
+    }
+
+    const paginationUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "pagination" },
+    });
+    const paginationUsage = JSON.parse(paginationUsageResult.content[0].text);
+    if (
+      paginationUsage.baseUiPrimitives.length !== 0 ||
+      !paginationUsage.requiredTokens.includes("--n-pagination-item-size") ||
+      !paginationUsage.accessibility.some((item) => item.includes("aria-disabled"))
+    ) {
+      throw new Error("MCP Pagination usage is missing native, token, or disabled metadata.");
     }
 
     const dialogUsageResult = await client.callTool({
@@ -235,6 +274,9 @@ async function verify() {
       "stat",
       "key-value",
       "table",
+      "list",
+      "breadcrumbs",
+      "pagination",
     ]) {
       if (!components.some((component) => component.name === required)) {
         throw new Error(`MCP list_components did not include ${required}.`);

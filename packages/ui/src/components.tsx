@@ -12,6 +12,7 @@ export { Badge, type BadgeProps, type BadgeVariant } from "./components/badge";
 export { Skeleton, type SkeletonProps } from "./components/skeleton";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export { Alert, type AlertProps, type AlertTone } from "./components/alert";
+export { Breadcrumbs, type BreadcrumbsItem, type BreadcrumbsProps } from "./components/breadcrumbs";
 export { Input, type InputProps } from "./components/input";
 export { Textarea, type TextareaProps } from "./components/textarea";
 export { Label, type LabelProps } from "./components/label";
@@ -61,6 +62,8 @@ export { Avatar, type AvatarProps } from "./components/avatar";
 export { Progress, type ProgressProps } from "./components/progress";
 export { Stat, type StatProps } from "./components/stat";
 export { KeyValue, type KeyValueProps } from "./components/key-value";
+export { List, type ListItem, type ListProps } from "./components/list";
+export { Pagination, type PaginationPage, type PaginationProps } from "./components/pagination";
 export {
   Table,
   TableBody,
