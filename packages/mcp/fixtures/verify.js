@@ -48,6 +48,36 @@ async function verify() {
       );
     }
 
+    const fieldUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "field" },
+    });
+    const fieldUsage = JSON.parse(fieldUsageResult.content[0].text);
+    if (
+      !fieldUsage.registryDependencies.includes("label") ||
+      !fieldUsage.registryDependencies.includes("form-message") ||
+      !fieldUsage.accessibility.some((item) => item.includes("aria-describedby"))
+    ) {
+      throw new Error(
+        "MCP get_component_usage did not include Field dependency and aria metadata.",
+      );
+    }
+
+    const selectUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "select" },
+    });
+    const selectUsage = JSON.parse(selectUsageResult.content[0].text);
+    if (
+      !selectUsage.requiredTokens.includes("--n-select-height-md") ||
+      !selectUsage.requiredTokens.includes("--n-overlay-z-index") ||
+      !selectUsage.accessibility.some((item) => item.includes("placeholder"))
+    ) {
+      throw new Error(
+        "MCP get_component_usage did not include Select token and placeholder metadata.",
+      );
+    }
+
     const listResult = await client.callTool({ name: "list_components", arguments: {} });
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [

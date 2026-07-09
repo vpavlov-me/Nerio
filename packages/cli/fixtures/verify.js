@@ -141,8 +141,30 @@ async function verify() {
     assertInstall(localTarget);
     assertInstall(localTarget, expectedDialogFiles);
     assertFiles(localTarget, expectedFieldFiles);
+    const fieldSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/field.tsx"),
+      "utf8",
+    );
+    if (
+      !fieldSource.includes("React.forwardRef<HTMLDivElement") ||
+      !fieldSource.includes('children.props["aria-describedby"]') ||
+      !fieldSource.includes('role={invalid ? "alert" : undefined}')
+    ) {
+      throw new Error("Installed Field source did not preserve the ref and aria wiring contract.");
+    }
     assertFiles(localTarget, expectedBaseFormFiles);
     assertFiles(localTarget, expectedSelectFiles);
+    const selectSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/select.tsx"),
+      "utf8",
+    );
+    if (
+      !selectSource.includes("React.forwardRef<HTMLDivElement") ||
+      !selectSource.includes("placeholder={placeholder}") ||
+      !selectSource.includes("autoComplete={autoComplete}")
+    ) {
+      throw new Error("Installed Select source did not preserve placeholder and form metadata.");
+    }
     assertFiles(localTarget, expectedIconButtonFiles);
     const iconButtonSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/icon-button.tsx"),

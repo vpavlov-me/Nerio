@@ -9,8 +9,16 @@ export interface FormMessageProps extends React.HTMLAttributes<HTMLParagraphElem
   tone?: FormMessageTone;
 }
 
-export function FormMessage({ className, tone = "danger", ...props }: FormMessageProps) {
-  return (
-    <p className={cn("n-form-message", className)} data-slot="root" data-tone={tone} {...props} />
-  );
-}
+export const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessageProps>(
+  function FormMessage({ className, tone = "danger", ...props }, ref) {
+    return (
+      <p
+        ref={ref}
+        className={cn("n-form-message", className)}
+        data-slot="root"
+        data-tone={tone}
+        {...props}
+      />
+    );
+  },
+);

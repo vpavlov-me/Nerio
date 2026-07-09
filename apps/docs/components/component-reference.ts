@@ -27,13 +27,13 @@ export const snippets: Record<string, string> = {
   "empty-state":
     'import { Button, EmptyState } from \'@nerio/ui\';\n\n<EmptyState title="No collections" description="Create one to start organizing work." action={<Button>Create collection</Button>} />',
   input:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name"><Input placeholder="Q3 planning" /></Field>',
+    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required /></Field>',
   textarea:
-    'import { Field, Textarea } from \'@nerio/ui\';\n\n<Field label="Notes"><Textarea placeholder="Add context" /></Field>',
+    'import { Field, Textarea } from \'@nerio/ui\';\n\n<Field label="Notes" description="Add context for collaborators."><Textarea placeholder="Add launch context" /></Field>',
   label:
     'import { Input, Label } from \'@nerio/ui\';\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" />',
   field:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use a clear internal name."><Input /></Field>',
+    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use at least 3 characters." invalid><Input /></Field>',
   "form-message":
     "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
   checkbox: "import { Checkbox } from '@nerio/ui';\n\n<Checkbox aria-label=\"Include archived\" />",
@@ -41,7 +41,7 @@ export const snippets: Record<string, string> = {
   dialog:
     'import { Dialog } from \'@nerio/ui\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
-    "import { Select } from '@nerio/ui';\n\n<Select label=\"Status\" name=\"status\" placeholder=\"Choose status\" options={[{ label: 'Active', value: 'active' }]} />",
+    'import { Select } from \'@nerio/ui\';\n\n<Select label="Status" name="status" placeholder="Choose status" message="Choose the closest workflow state." options={[{ label: \'Active\', value: \'active\' }]} />',
   toast:
     "import { Button, ToastProvider, ToastViewport, useToastManager } from '@nerio/ui';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: \"Saved\" })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>",
   tabs: 'import { Tabs } from \'@nerio/ui\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }]} />',
@@ -379,10 +379,13 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       { title: "Default and focus", description: "Focus uses the shared Nerio focus ring." },
       { title: "Disabled", description: "Prevents editing while preserving layout." },
+      { title: "Required", description: "Use native required attributes and visible helper text." },
       { title: "Invalid", description: "Use semantic error color and nearby text." },
     ],
     accessibility: [
       "Pair every input with Label or Field label.",
+      "Use aria-describedby for helper text and validation messages.",
+      "Use aria-invalid only when the value is actually invalid.",
       "Use autocomplete and input type where appropriate.",
     ],
     guidance: {
@@ -411,9 +414,17 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       { title: "Focus", description: "Visible focus treatment remains consistent with Input." },
       { title: "Disabled", description: "Keeps content visible while preventing edits." },
+      {
+        title: "Required",
+        description: "Use native required attributes for mandatory long-form values.",
+      },
       { title: "Invalid", description: "Pair with Field and FormMessage." },
     ],
-    accessibility: ["Use a visible label and helpful description for long-form fields."],
+    accessibility: [
+      "Use a visible label and helpful description for long-form fields.",
+      "Use aria-describedby for helper text and validation messages.",
+      "Use aria-invalid only when the value is actually invalid.",
+    ],
     guidance: {
       do: ["Use for content that benefits from multiple lines."],
       dont: ["Do not use Textarea for single-line values like titles or search."],
@@ -438,6 +449,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     variants: [{ title: "Default", description: "Standard form label text." }],
     states: [
+      { title: "Default", description: "Associates visible text with a matching control id." },
       {
         title: "Required context",
         description: "Explain requirements in nearby text rather than symbol-only labels.",
@@ -445,6 +457,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Connect labels to controls with htmlFor and matching id when they are separate.",
+      "Label forwards native label attributes and refs.",
     ],
     guidance: {
       do: ["Use concrete labels such as Project name or Notification email."],
@@ -474,7 +487,9 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Keep label, description, and message programmatically associated with the control.",
       "Field sets invalid attributes only when the field is actually invalid.",
+      "Existing child ids and aria-describedby values are preserved and merged.",
       'Error messages use role="alert" when invalid so updates are announced.',
+      "Field supports one form control child; compose custom markup directly for multiple controls.",
     ],
     guidance: {
       do: ["Use Field as the default wrapper for production form rows."],
@@ -501,7 +516,11 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Error", description: "Clear recovery message for invalid input." },
     ],
     states: [{ title: "Visible", description: "Appears close to the relevant control." }],
-    accessibility: ["Use clear text; do not depend on color alone to convey validation status."],
+    accessibility: [
+      "Use clear text; do not depend on color alone to convey validation status.",
+      "Associate messages with controls through aria-describedby.",
+      'Use role="alert" only for active validation errors.',
+    ],
     guidance: {
       do: ["Tell users how to fix an error."],
       dont: ["Do not use vague messages like Invalid value."],
@@ -563,10 +582,15 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       { title: "Open", description: "Options appear above the app layer." },
       {
+        title: "Placeholder",
+        description: "Placeholder text does not auto-select the first option.",
+      },
+      {
         title: "Highlighted",
         description: "Keyboard or pointer focus indicates the next selection.",
       },
       { title: "Disabled", description: "Prevents choosing unavailable options." },
+      { title: "Required", description: "Supports native form required metadata." },
       {
         title: "Invalid",
         description: "Connects error text and aria-invalid when validation fails.",
@@ -575,6 +599,8 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Use a visible label and ensure options are short enough to scan.",
       "Use placeholder text only as a hint, not as the accessible name.",
+      "Description and message ids are connected through aria-describedby.",
+      'Error messages use role="alert" only when invalid is true.',
       "Use name, required, form, and autoComplete when the select participates in native form submission.",
     ],
     guidance: {

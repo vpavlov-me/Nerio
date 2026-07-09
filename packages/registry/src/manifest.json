@@ -576,9 +576,11 @@
         "The visible label is associated with the select control.",
         "Supports placeholder, description, helper or error message, disabled, and invalid states.",
         "Supports native form metadata including name, form, required, readOnly, and autoComplete.",
+        "Does not select the first option when only a placeholder is supplied.",
+        "Error messages are announced with role=\"alert\" only when invalid is true.",
         "Options support disabled states and keyboard navigation."
       ],
-      "usage": "import { Select } from '@/components/nerio/components/select';\n\n<Select label=\"Status\" name=\"status\" placeholder=\"Choose status\" options={[{ label: 'Active', value: 'active' }]} />"
+      "usage": "import { Select } from '@/components/nerio/components/select';\n\n<Select label=\"Status\" name=\"status\" placeholder=\"Choose status\" message=\"Choose the closest workflow state.\" options={[{ label: 'Active', value: 'active' }]} />"
     },
     {
       "name": "input",
@@ -623,10 +625,11 @@
       ],
       "accessibility": [
         "Use with Label or Field so the control has an accessible name.",
+        "Supports native input attributes including required, disabled, autocomplete, and aria-describedby.",
         "Invalid state maps to aria-invalid.",
         "Disabled state uses the native disabled attribute."
       ],
-      "usage": "import { Input } from '@/components/nerio/components/input';\n\n<Input placeholder=\"Project name\" />"
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Use a short recognizable name.\"><Input placeholder=\"Launch materials\" required /></Field>"
     },
     {
       "name": "textarea",
@@ -677,10 +680,11 @@
       ],
       "accessibility": [
         "Use with Label or Field so the control has an accessible name.",
+        "Supports native textarea attributes including required, disabled, aria-describedby, and rows.",
         "Invalid state maps to aria-invalid.",
         "Keep resize behavior available unless a product workflow requires a fixed height."
       ],
-      "usage": "import { Textarea } from '@/components/nerio/components/textarea';\n\n<Textarea placeholder=\"Add a note\" />"
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Textarea } from '@/components/nerio/components/textarea';\n\n<Field label=\"Notes\" description=\"Add useful context for collaborators.\"><Textarea placeholder=\"Add context\" /></Field>"
     },
     {
       "name": "label",
@@ -712,6 +716,7 @@
       "requiredTokens": ["--n-color-text-secondary"],
       "accessibility": [
         "Use htmlFor to associate the label with a control id.",
+        "Forwards refs and native label attributes.",
         "Keep labels visible for reusable product forms.",
         "Avoid relying on placeholder text as the only label."
       ],
@@ -752,6 +757,7 @@
       "accessibility": [
         "Associate messages with controls through aria-describedby.",
         "Use danger tone for validation errors.",
+        "Set role=\"alert\" only for active validation errors that should be announced.",
         "Do not replace field-level errors with toasts."
       ],
       "usage": "import { FormMessage } from '@/components/nerio/components/form-message';\n\n<FormMessage>Use at least 3 characters.</FormMessage>"
@@ -792,9 +798,12 @@
       "accessibility": [
         "Generates stable ids for label, description, and message relationships.",
         "Clones a single React control child to wire id and aria-describedby, and only sets invalid state for invalid fields.",
+        "Preserves a child control id when supplied and merges existing aria-describedby values.",
+        "Uses role=\"alert\" for message text only when invalid is true.",
+        "Supports one form control child; compose custom markup directly when a field needs multiple controls.",
         "Keep helper text and error text close to the field."
       ],
-      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Shown in workspace navigation.\" message=\"Use a clear internal name.\"><Input /></Field>"
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Shown in workspace navigation.\" message=\"Use at least 3 characters.\" invalid><Input /></Field>"
     },
     {
       "name": "checkbox",
