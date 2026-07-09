@@ -304,7 +304,13 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use Field for production forms so labels and messages stay connected."],
       dont: ["Do not use placeholder text as the only label."],
     },
-    tokens: ["--n-input-height-md", "--n-input-radius", ...sharedTokens],
+    tokens: [
+      "--n-input-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border-focus",
+      "--n-input-placeholder",
+    ],
   },
   textarea: {
     category: "Forms",
@@ -327,7 +333,13 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for content that benefits from multiple lines."],
       dont: ["Do not use Textarea for single-line values like titles or search."],
     },
-    tokens: ["--n-textarea-min-height", "--n-input-radius", ...sharedTokens],
+    tokens: [
+      "--n-textarea-min-height",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border-focus",
+      "--n-input-placeholder",
+    ],
   },
   label: {
     category: "Forms",
@@ -383,7 +395,12 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use Field as the default wrapper for production form rows."],
       dont: ["Do not scatter messages away from the control they describe."],
     },
-    tokens: ["--n-field-gap", "--n-color-status-danger", ...sharedTokens],
+    tokens: [
+      "--n-field-gap",
+      "--n-color-text-secondary",
+      "--n-color-text-tertiary",
+      "--n-color-status-danger",
+    ],
   },
   "form-message": {
     category: "Forms",
@@ -404,7 +421,11 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Tell users how to fix an error."],
       dont: ["Do not use vague messages like Invalid value."],
     },
-    tokens: ["--n-color-danger", "--n-color-success", "--n-font-size-sm"],
+    tokens: [
+      "--n-color-text-tertiary",
+      "--n-color-status-danger",
+      "--n-color-status-success",
+    ],
   },
   checkbox: {
     category: "Forms",
@@ -479,7 +500,14 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for status, owner, view mode, and compact configuration choices."],
       dont: ["Do not use Select for large searchable datasets."],
     },
-    tokens: ["--n-select-height-md", "--n-input-border", "--n-overlay-shadow", ...sharedTokens],
+    tokens: [
+      "--n-select-height-md",
+      "--n-input-border-focus",
+      "--n-input-placeholder",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+    ],
   },
   toast: {
     category: "Actions and feedback",
@@ -502,7 +530,14 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Confirm background events like saved, copied, or sent."],
       dont: ["Do not use Toast for destructive confirmations or blocking errors."],
     },
-    tokens: ["--n-toast-width", "--n-overlay-shadow", ...sharedTokens],
+    tokens: [
+      "--n-toast-width",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+      "--n-color-status-success",
+      "--n-color-status-danger",
+    ],
   },
   card: {
     category: "Layout and display",
@@ -672,7 +707,10 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-table-cell-padding-y",
       "--n-table-cell-padding-x",
       "--n-table-border",
-      ...sharedTokens,
+      "--n-table-header-background",
+      "--n-table-row-background-hover",
+      "--n-table-row-background-selected",
+      "--n-font-size-sm",
     ],
   },
   tabs: {
@@ -725,9 +763,13 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-dialog-width-md",
+      "--n-overlay-z-index",
       "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-backdrop",
+      "--n-overlay-foreground",
       "--n-overlay-shadow",
-      ...sharedTokens,
+      "--n-focus-ring",
     ],
   },
   popover: {
@@ -748,7 +790,13 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for filters, quick metadata, or lightweight editing controls."],
       dont: ["Do not use Popover for destructive confirmations."],
     },
-    tokens: ["--n-popover-width-md", "--n-overlay-shadow", ...sharedTokens],
+    tokens: [
+      "--n-popover-width-md",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-foreground",
+      "--n-overlay-shadow",
+    ],
   },
   tooltip: {
     category: "Navigation and overlays",
@@ -796,6 +844,13 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for Rename, Duplicate, Archive, and similar secondary commands."],
       dont: ["Do not hide the primary page action inside a menu."],
     },
-    tokens: ["--n-dropdown-min-width", "--n-overlay-shadow", ...sharedTokens],
+    tokens: [
+      "--n-dropdown-min-width",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+      "--n-color-text-secondary",
+      "--n-color-status-danger",
+    ],
   },
 };
