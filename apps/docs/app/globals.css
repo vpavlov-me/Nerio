@@ -410,6 +410,31 @@ pre {
   margin: 0 0 var(--n-space-3);
 }
 
+.component-hero-meta,
+.component-import-row {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-2);
+}
+
+.component-hero-meta .doc-kicker {
+  margin: 0 var(--n-space-2) 0 0;
+}
+
+.component-import-row {
+  margin-block-start: var(--n-space-4);
+}
+
+.component-import-row code {
+  background: var(--n-color-surface-muted);
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: var(--n-radius-sm);
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+  padding: var(--n-space-1) var(--n-space-2);
+}
+
 .doc-section {
   display: grid;
   gap: var(--n-space-4);
@@ -708,7 +733,7 @@ pre {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.state-grid > [data-slot="root"] {
+.state-grid > .n-card {
   align-content: start;
   display: grid;
   gap: var(--n-space-3);

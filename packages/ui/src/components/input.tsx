@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { motionClasses } from "../lib/motion";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   invalid?: boolean;
@@ -15,9 +16,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(function Inp
     <input
       ref={ref}
       aria-invalid={ariaInvalid ?? (invalid ? true : undefined)}
-      className={cn("n-input", className)}
+      className={cn("n-input", motionClasses.hover, motionClasses.focus, className)}
       data-invalid={invalid ? "" : undefined}
-      data-slot="root"
+      data-slot="input"
       {...props}
     />
   );

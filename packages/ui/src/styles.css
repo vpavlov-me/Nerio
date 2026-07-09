@@ -1,4 +1,5 @@
 @import "@nerio/tokens/styles.css";
+@import "./styles/motion.css";
 @import "./styles/icon.css";
 @import "./styles/spinner.css";
 @import "./styles/actions.css";

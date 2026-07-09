@@ -1,6 +1,7 @@
 "use client";
 export { Button } from "./components/button";
 export type { ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
+export { motionClasses, type MotionClassName } from "./lib/motion";
 export { Link, type LinkProps, type LinkVariant } from "./components/link";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps } from "./components/icon";
@@ -43,7 +44,18 @@ export {
   type ToastProps,
   type ToastTone,
 } from "./components/toast";
-export { Card, type CardProps } from "./components/card";
+export {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  type CardDescriptionProps,
+  type CardProps,
+  type CardSectionProps,
+  type CardTitleProps,
+} from "./components/card";
 export { Separator, type SeparatorProps } from "./components/separator";
 export { Avatar, type AvatarProps } from "./components/avatar";
 export { Progress, type ProgressProps } from "./components/progress";

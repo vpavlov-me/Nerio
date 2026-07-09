@@ -9,12 +9,33 @@ export type ComponentReference = {
   anatomy: ReferenceSection[];
   variants: ReferenceSection[];
   states: ReferenceSection[];
+  motion?: string[];
   accessibility: string[];
+  api?: ReferenceSection[];
+  designNotes?: string[];
+  related?: string[];
   guidance: {
     do: string[];
     dont: string[];
   };
   tokens: string[];
+};
+
+export type ComponentStatus = "stable" | "beta" | "experimental";
+export type ComponentLayer = "core" | "pro";
+
+export type ComponentMetadata = {
+  name: string;
+  description: string;
+  status: ComponentStatus;
+  layer: ComponentLayer;
+  category: string;
+  package?: string;
+  importPath?: string;
+  related?: string[];
+  anatomy?: string[];
+  motion?: string[];
+  accessibility?: string[];
 };
 
 export const snippets: Record<string, string> = {
@@ -56,7 +77,7 @@ export const snippets: Record<string, string> = {
     'import { Popover } from \'@nerio/ui\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
     'import { DropdownMenu } from \'@nerio/ui\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
-  card: "import { Card } from '@nerio/ui';\n\n<Card>Project summary</Card>",
+  card: "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nerio/ui';\n\n<Card>\n  <CardHeader>\n    <CardTitle>Launch workspace</CardTitle>\n    <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>",
   separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
   avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
   progress: "import { Progress } from '@nerio/ui';\n\n<Progress label=\"Completion\" value={68} />",
@@ -73,6 +94,59 @@ export const sharedTokens = [
   "--n-color-border-subtle",
   "--n-focus-ring",
 ];
+
+export const componentMetadata: Record<string, ComponentMetadata> = {
+  button: {
+    name: "Button",
+    description: "Triggers a user action with intent, size, loading, and icon contracts.",
+    status: "stable",
+    layer: "core",
+    category: "Actions",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["IconButton", "Link", "DropdownMenu"],
+    anatomy: ["button", "button-icon", "button-label"],
+    motion: ["hover", "press", "focus"],
+    accessibility: ["Base UI button primitive", "aria-busy while loading", "visible focus ring"],
+  },
+  input: {
+    name: "Input",
+    description: "Collects short text values with native form semantics.",
+    status: "stable",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["Field", "Label", "Textarea"],
+    anatomy: ["input"],
+    motion: ["hover", "focus"],
+    accessibility: [
+      "native input attributes",
+      "aria-invalid support",
+      "label through Field or Label",
+    ],
+  },
+  card: {
+    name: "Card",
+    description: "Groups related product content on a restrained border-first surface.",
+    status: "stable",
+    layer: "core",
+    category: "Layout and display",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["Separator", "Stat", "KeyValue"],
+    anatomy: [
+      "card",
+      "card-header",
+      "card-title",
+      "card-description",
+      "card-content",
+      "card-footer",
+    ],
+    motion: ["none by default"],
+    accessibility: ["semantic heading content supplied by consumers", "avoid nested cards"],
+  },
+};
 
 const variantDescriptions: Record<string, string> = {
   primary: "Strongest action or selection in the local context.",
@@ -128,16 +202,16 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use Button for explicit product actions that submit, save, create, continue, or trigger a workflow.",
     anatomy: [
       {
-        title: "root",
+        title: "button",
         description:
           "Base UI button primitive with variant, size, disabled, loading, and focus states.",
       },
       {
-        title: "icon",
+        title: "button-icon",
         description: "Optional leading or trailing icon rendered through Nerio's icon adapter.",
       },
       {
-        title: "label",
+        title: "button-label",
         description: "Visible action text that stays present while loading.",
       },
     ],
@@ -156,6 +230,11 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Loading", description: "Disables repeat activation and exposes aria-busy." },
       { title: "Disabled", description: "Prevents activation while preserving layout." },
     ],
+    motion: [
+      "Hover transitions background, border, color, and opacity through motion tokens.",
+      "Press uses a subtle tokenized scale transform and is removed for reduced motion.",
+      "Focus-visible animates the shared focus ring without moving layout.",
+    ],
     accessibility: [
       "Renders native button behavior through Base UI unless a custom render element is supplied.",
       "Use concise visible text or provide an accessible name.",
@@ -163,6 +242,27 @@ export const componentReference: Record<string, ComponentReference> = {
       "Icons are decorative by default; the button label carries the action meaning.",
       "Do not rely on color alone to communicate destructive or disabled meaning.",
     ],
+    api: [
+      {
+        title: "variant",
+        description: "primary, secondary, outline, ghost, subtle, danger, or destructive.",
+      },
+      {
+        title: "size",
+        description: "sm, md, or lg. Density adjusts the underlying height tokens.",
+      },
+      { title: "loading", description: "Disables activation, shows Spinner, and sets aria-busy." },
+      {
+        title: "leadingIcon / trailingIcon",
+        description: "Icons pass through the Nerio icon adapter.",
+      },
+    ],
+    designNotes: [
+      "Use one primary Button per local decision.",
+      "Use danger for destructive actions and pair it with explicit copy.",
+      "Use Link for navigation instead of making Button behave like a destination.",
+    ],
+    related: ["IconButton", "Link", "DropdownMenu"],
     guidance: {
       do: ["Use one primary action per local decision and keep labels action-oriented."],
       dont: ["Do not use Button for navigation when a semantic link describes the interaction."],
@@ -184,6 +284,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-button-foreground-ghost",
       "--n-button-background-destructive",
       "--n-button-foreground-destructive",
+      "--n-motion-hover-duration",
+      "--n-motion-press-duration",
       "--n-focus-ring",
     ],
   },
@@ -223,7 +325,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use IconButton for compact actions where surrounding context or an accessible label supplies the meaning.",
     anatomy: [
       {
-        title: "root",
+        title: "input",
         description: "Interactive button boundary with size, variant, disabled, and focus states.",
       },
       {
@@ -477,12 +579,31 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Required", description: "Use native required attributes and visible helper text." },
       { title: "Invalid", description: "Use semantic error color and nearby text." },
     ],
+    motion: [
+      "Hover transitions the border color through shared motion tokens.",
+      "Focus-visible animates the ring and border only.",
+      "Reduced motion keeps the state change but removes nonessential timing.",
+    ],
     accessibility: [
       "Pair every input with Label or Field label.",
       "Use aria-describedby for helper text and validation messages.",
       "Use aria-invalid only when the value is actually invalid.",
       "Use autocomplete and input type where appropriate.",
     ],
+    api: [
+      {
+        title: "invalid",
+        description:
+          "Sets visual invalid state and aria-invalid when aria-invalid is not supplied.",
+      },
+      { title: "className", description: "Extends the root input without replacing defaults." },
+      { title: "native props", description: "Supports standard React input attributes." },
+    ],
+    designNotes: [
+      "Use Input for short values; use Textarea for longer notes.",
+      "Prefer Field when the control needs label, description, or validation message.",
+    ],
+    related: ["Field", "Label", "Textarea"],
     guidance: {
       do: ["Use Field for production forms so labels and messages stay connected."],
       dont: ["Do not use placeholder text as the only label."],
@@ -493,6 +614,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-background",
       "--n-input-border-focus",
       "--n-input-placeholder",
+      "--n-motion-hover-duration",
+      "--n-motion-focus-duration",
     ],
   },
   textarea: {
@@ -788,11 +911,15 @@ export const componentReference: Record<string, ComponentReference> = {
     purpose:
       "Use Card to group a single related object or repeated item without turning page sections into nested panels.",
     anatomy: [
-      { title: "root", description: "Surface container with border, radius, and spacing tokens." },
+      { title: "card", description: "Surface container with border, radius, and spacing tokens." },
+      { title: "card-header", description: "Optional heading area for title and supporting copy." },
+      { title: "card-title", description: "Semantic title slot for concise surface headings." },
+      { title: "card-description", description: "Secondary explanatory text." },
       {
-        title: "content",
+        title: "card-content",
         description: "Product content such as object title, metadata, and actions.",
       },
+      { title: "card-footer", description: "Actions or metadata aligned after the content." },
     ],
     variants: [
       { title: "Default", description: "Quiet grouping for repeated items." },
@@ -808,12 +935,32 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "If clickable, use a semantic link or button inside the card.",
       },
     ],
+    motion: [
+      "Card has no default motion because grouped content should stay calm.",
+      "Interactive card compositions should opt into shared hover and focus motion utilities explicitly.",
+    ],
     accessibility: ["Keep heading order and actions explicit inside the card."],
+    api: [
+      { title: "Card", description: "section element wrapper with className extension." },
+      {
+        title: "CardHeader / CardContent / CardFooter",
+        description: "Optional layout slots for predictable anatomy.",
+      },
+      {
+        title: "CardTitle / CardDescription",
+        description: "Heading and secondary text slots for documentation and registry examples.",
+      },
+    ],
+    designNotes: [
+      "Use Card for truly related content, not as a default wrapper for every section.",
+      "Keep hierarchy in typography, spacing, and borders rather than shadows.",
+    ],
+    related: ["Separator", "Stat", "KeyValue"],
     guidance: {
       do: ["Use for repeated summaries, project cards, or compact object groups."],
       dont: ["Do not put cards inside cards or wrap entire page sections as decorative cards."],
     },
-    tokens: ["--n-card-padding", "--n-card-radius", "--n-shadow-sm"],
+    tokens: ["--n-card-padding", "--n-card-gap", "--n-card-radius", "--n-shadow-sm"],
   },
   separator: {
     category: "Layout and display",

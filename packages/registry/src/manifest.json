@@ -26,9 +26,19 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
         },
         {
           "source": "../../ui/src/styles/button.css",
@@ -47,8 +57,8 @@
         }
       ],
       "baseUiPrimitives": ["button"],
-      "slots": ["root", "icon", "label"],
-      "variants": ["primary", "secondary", "ghost", "destructive"],
+      "slots": ["button", "button-icon", "button-label"],
+      "variants": ["primary", "secondary", "outline", "ghost", "subtle", "danger", "destructive"],
       "requiredTokens": [
         "--n-button-height-sm",
         "--n-button-height-md",
@@ -66,6 +76,9 @@
         "--n-button-foreground-ghost",
         "--n-button-background-destructive",
         "--n-button-foreground-destructive",
+        "--n-motion-hover-duration",
+        "--n-motion-press-duration",
+        "--n-motion-focus-duration",
         "--n-focus-ring"
       ],
       "accessibility": [
@@ -171,6 +184,16 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
+        },
+        {
           "source": "../../ui/src/styles/feedback.css",
           "target": "styles/feedback.css",
           "role": "style"
@@ -261,9 +284,14 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root"],
+      "slots": ["skeleton"],
       "variants": [],
-      "requiredTokens": ["--n-skeleton-height", "--n-skeleton-duration", "--n-radius-md"],
+      "requiredTokens": [
+        "--n-skeleton-height",
+        "--n-skeleton-duration",
+        "--n-easing-standard",
+        "--n-radius-md"
+      ],
       "accessibility": [
         "Skeleton is hidden from assistive technology by default.",
         "Pair loading regions with an accessible status when the wait is meaningful.",
@@ -387,15 +415,22 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root"],
+      "slots": [
+        "card",
+        "card-header",
+        "card-title",
+        "card-description",
+        "card-content",
+        "card-footer"
+      ],
       "variants": [],
-      "requiredTokens": ["--n-card-padding", "--n-card-radius", "--n-shadow-sm"],
+      "requiredTokens": ["--n-card-padding", "--n-card-gap", "--n-card-radius", "--n-shadow-sm"],
       "accessibility": [
         "Use Card to group related content, not to decorate every section.",
         "Provide semantic headings inside cards when the content needs structure.",
         "Avoid nesting cards inside cards."
       ],
-      "usage": "import { Card } from '@/components/nerio/components/card';\n\n<Card>Project summary</Card>"
+      "usage": "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/nerio/components/card';\n\n<Card>\n  <CardHeader>\n    <CardTitle>Project summary</CardTitle>\n    <CardDescription>Current status, owner, and next action.</CardDescription>\n  </CardHeader>\n  <CardContent>Ready for review</CardContent>\n</Card>"
     },
     {
       "name": "separator",
@@ -741,13 +776,23 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
+        },
+        {
           "source": "../../ui/src/styles/forms.css",
           "target": "styles/forms.css",
           "role": "style"
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root"],
+      "slots": ["input"],
       "variants": ["default", "invalid", "disabled"],
       "requiredTokens": [
         "--n-input-height-md",
@@ -761,6 +806,8 @@
         "--n-input-foreground",
         "--n-input-disabled-background",
         "--n-input-disabled-foreground",
+        "--n-motion-hover-duration",
+        "--n-motion-focus-duration",
         "--n-focus-ring"
       ],
       "accessibility": [

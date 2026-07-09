@@ -125,8 +125,39 @@
   --n-radius-full: 999rem;
   --n-shadow-sm: none;
   --n-shadow-md: none;
-  --n-duration-fast: 120ms;
-  --n-duration-normal: 180ms;
+  --n-duration-instant: 80ms;
+  --n-duration-fast: 140ms;
+  --n-duration-normal: 220ms;
+  --n-duration-slow: 360ms;
+  --n-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --n-easing-enter: cubic-bezier(0, 0, 0.2, 1);
+  --n-easing-exit: cubic-bezier(0.4, 0, 1, 1);
+  --n-easing-expressive: cubic-bezier(0.16, 1, 0.3, 1);
+  --n-motion-hover-duration: var(--n-duration-fast);
+  --n-motion-hover-easing: var(--n-easing-standard);
+  --n-motion-press-duration: var(--n-duration-instant);
+  --n-motion-press-easing: var(--n-easing-standard);
+  --n-motion-focus-duration: var(--n-duration-fast);
+  --n-motion-focus-easing: var(--n-easing-standard);
+  --n-motion-reveal-duration: var(--n-duration-normal);
+  --n-motion-reveal-easing: var(--n-easing-enter);
+  --n-motion-collapse-duration: var(--n-duration-fast);
+  --n-motion-collapse-easing: var(--n-easing-exit);
+  --n-motion-overlay-enter-duration: var(--n-duration-normal);
+  --n-motion-overlay-enter-easing: var(--n-easing-enter);
+  --n-motion-overlay-exit-duration: var(--n-duration-fast);
+  --n-motion-overlay-exit-easing: var(--n-easing-exit);
+  --n-motion-page-enter-duration: var(--n-duration-slow);
+  --n-motion-page-enter-easing: var(--n-easing-expressive);
+  --n-motion-data-refresh-duration: var(--n-duration-normal);
+  --n-motion-data-refresh-easing: var(--n-easing-standard);
+  --n-motion-success-feedback-duration: var(--n-duration-normal);
+  --n-motion-success-feedback-easing: var(--n-easing-expressive);
+  --n-motion-error-feedback-duration: var(--n-duration-normal);
+  --n-motion-error-feedback-easing: var(--n-easing-standard);
+  --n-motion-translate-sm: 0.125rem;
+  --n-motion-translate-md: 0.375rem;
+  --n-motion-scale-subtle: 0.98;
 
   --n-font-size-xs: 0.75rem;
   --n-font-size-sm: 0.8125rem;
@@ -288,6 +319,7 @@
   --n-overlay-shadow: none;
   --n-toast-width: 24rem;
   --n-card-padding: var(--n-space-5);
+  --n-card-gap: var(--n-space-4);
   --n-card-radius: var(--n-radius-lg);
   --n-stat-gap: var(--n-space-2);
   --n-key-value-gap: var(--n-space-1);
@@ -303,6 +335,20 @@
   --n-popover-width-md: 20rem;
   --n-tooltip-radius: var(--n-radius-md);
   --n-dropdown-min-width: 14rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --n-duration-instant: 1ms;
+    --n-duration-fast: 1ms;
+    --n-duration-normal: 1ms;
+    --n-duration-slow: 1ms;
+    --n-motion-translate-sm: 0;
+    --n-motion-translate-md: 0;
+    --n-motion-scale-subtle: 1;
+    --n-spinner-duration: 1ms;
+    --n-skeleton-duration: 2.4s;
+  }
 }
 
 :root[data-theme="purple"] {
@@ -530,6 +576,7 @@
   --n-button-height-sm: 1.75rem;
   --n-button-height-md: 2.125rem;
   --n-button-height-lg: 2.5rem;
+  --n-card-gap: var(--n-space-3);
   --n-badge-height: 1.375rem;
   --n-avatar-size-md: 1.75rem;
   --n-progress-height: 0.375rem;
@@ -550,6 +597,8 @@
   --n-icon-button-size-md: var(--n-button-height-md);
   --n-icon-button-size-lg: var(--n-button-height-lg);
   --n-select-height-md: var(--n-input-height-md);
+  --n-table-cell-padding-y: var(--n-space-2);
+  --n-table-cell-padding-x: var(--n-space-3);
 }
 
 html {
