@@ -16,8 +16,16 @@ const effectTokens: TokenExample[] = [
   ["Subtle shadow", "--n-shadow-sm", "Default low-emphasis surface separation."],
   ["Raised shadow", "--n-shadow-md", "Overlays, dialogs, toasts, and floating controls."],
   ["Focus ring", "--n-focus-ring", "Visible keyboard focus for interactive controls."],
+  ["Instant duration", "--n-duration-instant", "Press and immediate state acknowledgement."],
   ["Fast duration", "--n-duration-fast", "Hover, color, opacity, and small state changes."],
   ["Normal duration", "--n-duration-normal", "Slightly larger transitions and overlay motion."],
+  ["Slow duration", "--n-duration-slow", "Page or large reveal motion used sparingly."],
+  ["Standard easing", "--n-easing-standard", "Default easing for state changes."],
+  [
+    "Expressive easing",
+    "--n-easing-expressive",
+    "Reserved for success feedback and larger reveals.",
+  ],
   [
     "Overlay layer",
     "--n-overlay-z-index",
@@ -27,6 +35,10 @@ const effectTokens: TokenExample[] = [
 
 const componentContracts: TokenContract[] = [
   ["Button radius", "--n-button-radius"],
+  ["Hover motion", "--n-motion-hover-duration"],
+  ["Press motion", "--n-motion-press-duration"],
+  ["Overlay enter", "--n-motion-overlay-enter-duration"],
+  ["Overlay exit", "--n-motion-overlay-exit-duration"],
   ["Dialog width", "--n-dialog-width-md"],
   ["Overlay layer", "--n-overlay-z-index"],
   ["Spinner radius", "--n-radius-full"],

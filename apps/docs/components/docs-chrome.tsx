@@ -58,6 +58,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
       { href: "/docs/foundations/typography", label: "Typography", icon: Type },
       { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
+      { href: "/docs/foundations/motion", label: "Motion", icon: Sparkles },
       { href: "/docs/foundations/effects", label: "Radius and effects", icon: Circle },
       { href: "/docs/foundations/icons", label: "Icons", icon: Circle },
     ],
@@ -142,27 +143,33 @@ type SearchEntry = {
 
 const componentToc: TocItem[] = [
   { id: "usage", label: "Usage" },
-  { id: "purpose", label: "Purpose" },
-  { id: "implementation-contract", label: "Implementation contract" },
-  { id: "anatomy", label: "Anatomy" },
   { id: "variants", label: "Variants" },
+  { id: "anatomy", label: "Anatomy" },
   { id: "states", label: "States" },
+  { id: "motion", label: "Motion" },
   { id: "accessibility", label: "Accessibility" },
+  { id: "api", label: "API" },
+  { id: "implementation-contract", label: "Implementation contract" },
+  { id: "design-notes", label: "Design notes" },
   { id: "do-do-not", label: "Do / do not" },
+  { id: "related-components", label: "Related components" },
   { id: "tokens", label: "Tokens" },
 ];
 
 const buttonToc: TocItem[] = [
   { id: "preview", label: "Preview" },
-  { id: "purpose", label: "Purpose" },
   { id: "usage", label: "Usage" },
-  { id: "anatomy", label: "Anatomy" },
   { id: "variants", label: "Variants" },
-  { id: "states-and-sizes", label: "States and sizes" },
+  { id: "anatomy", label: "Anatomy" },
+  { id: "states", label: "States" },
+  { id: "motion", label: "Motion" },
   { id: "accessibility", label: "Accessibility" },
-  { id: "source-install", label: "Source install" },
-  { id: "tokens", label: "Tokens" },
+  { id: "api", label: "API" },
+  { id: "implementation-contract", label: "Implementation contract" },
+  { id: "design-notes", label: "Design notes" },
   { id: "do-do-not", label: "Do / do not" },
+  { id: "related-components", label: "Related components" },
+  { id: "tokens", label: "Tokens" },
 ];
 
 const tocByPath: Record<string, TocItem[]> = {
@@ -189,6 +196,15 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "theme-contract", label: "Theme contract" },
     { id: "runtime-switching", label: "Runtime switching" },
     { id: "density", label: "Density" },
+    { id: "usage", label: "Usage" },
+  ],
+  "/docs/foundations/motion": [
+    { id: "motion-preview", label: "Preview" },
+    { id: "duration-tokens", label: "Duration tokens" },
+    { id: "easing-tokens", label: "Easing tokens" },
+    { id: "semantic-motion", label: "Semantic motion" },
+    { id: "component-utilities", label: "Component utilities" },
+    { id: "reduced-motion", label: "Reduced motion" },
     { id: "usage", label: "Usage" },
   ],
   "/docs/foundations/effects": [

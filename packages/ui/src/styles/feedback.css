@@ -105,7 +105,6 @@
 }
 
 .n-skeleton {
-  animation: n-pulse var(--n-skeleton-duration) ease-in-out infinite;
   background: var(--n-color-surface-muted);
   border-radius: var(--n-radius-md);
   min-block-size: var(--n-skeleton-height);

@@ -3,10 +3,12 @@
 import * as React from "react";
 import { Button as BaseButton } from "@base-ui/react/button";
 import { cn } from "../lib/cn";
+import { motionClasses } from "../lib/motion";
 import { Icon, type IconComponent } from "./icon";
 import { Spinner } from "./spinner";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "destructive";
+export type ButtonVariant =
+  "primary" | "secondary" | "outline" | "ghost" | "subtle" | "danger" | "destructive";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export type ButtonProps = Omit<
@@ -42,8 +44,14 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   return (
     <BaseButton
       ref={ref}
-      className={cn("n-button", className)}
-      data-slot="root"
+      className={cn(
+        "n-button",
+        motionClasses.hover,
+        motionClasses.press,
+        motionClasses.focus,
+        className,
+      )}
+      data-slot="button"
       data-variant={variant}
       data-size={size}
       data-loading={loading ? "true" : undefined}
@@ -54,13 +62,13 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       {loading ? (
         <Spinner size="sm" label={loadingLabel} />
       ) : leadingIcon ? (
-        <span data-slot="icon">
+        <span data-slot="button-icon">
           <Icon icon={leadingIcon} />
         </span>
       ) : null}
-      <span data-slot="label">{children}</span>
+      <span data-slot="button-label">{children}</span>
       {!loading && trailingIcon ? (
-        <span data-slot="icon">
+        <span data-slot="button-icon">
           <Icon icon={trailingIcon} />
         </span>
       ) : null}

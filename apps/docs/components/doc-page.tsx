@@ -9,6 +9,10 @@ import {
   Badge,
   Button,
   Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
   Checkbox,
   Dialog,
   DropdownMenu,
@@ -45,6 +49,7 @@ import {
 import { CodeBlock, CodeExample } from "./code-example";
 import {
   anatomyFromSlots,
+  componentMetadata,
   componentReference,
   sharedTokens,
   snippets,
@@ -61,6 +66,7 @@ export function StandardDocPage({
   kind?: string;
 }) {
   const reference = kind ? componentReference[kind] : undefined;
+  const metadata = kind ? componentMetadata[kind] : undefined;
   const registryItem = kind ? getRegistryItem(kind) : undefined;
   const usage = kind ? snippets[kind] : undefined;
   const fallbackAnatomy = reference?.anatomy ?? [
@@ -84,9 +90,21 @@ export function StandardDocPage({
   return (
     <article className="doc-page">
       <header>
-        {reference ? <p className="doc-kicker">{reference.category}</p> : null}
+        <div className="component-hero-meta">
+          {reference ? (
+            <p className="doc-kicker">{metadata?.category ?? reference.category}</p>
+          ) : null}
+          {metadata ? <Badge>{metadata.status}</Badge> : null}
+          {metadata ? <Badge variant="info">{metadata.layer}</Badge> : null}
+        </div>
         <h1>{title}</h1>
         <p className="doc-lede">{lede}</p>
+        {metadata?.package ? (
+          <div className="component-import-row">
+            <code>{metadata.package}</code>
+            {metadata.importPath ? <code>{metadata.importPath}</code> : null}
+          </div>
+        ) : null}
       </header>
       {kind ? <Preview kind={kind} /> : null}
       <section className="doc-section">
@@ -94,11 +112,65 @@ export function StandardDocPage({
         {usage ? <CodeExample code={usage} label={`${title} usage`} /> : null}
       </section>
       <section className="doc-section">
-        <h2 id="purpose">Purpose</h2>
-        <p>
-          {reference?.purpose ??
-            "Use this component as a token-driven Nerio building block inside product workflows."}
-        </p>
+        <h2 id="variants">Variants</h2>
+        <ReferenceGrid items={variants} />
+      </section>
+      <section className="doc-section">
+        <h2 id="anatomy">Anatomy</h2>
+        <ReferenceGrid items={anatomy} />
+      </section>
+      <section className="doc-section">
+        <h2 id="states">States</h2>
+        <ReferenceGrid
+          items={
+            reference?.states ?? [
+              {
+                title: "Default",
+                description:
+                  "Default, hover, focus, disabled, and error states follow Nerio tokens.",
+              },
+            ]
+          }
+        />
+      </section>
+      <section className="doc-section">
+        <h2 id="motion">Motion</h2>
+        <ul className="doc-list">
+          {(
+            reference?.motion ??
+            metadata?.motion ?? [
+              "State changes should use shared motion tokens and preserve reduced-motion behavior.",
+            ]
+          ).map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+      <section className="doc-section">
+        <h2 id="accessibility">Accessibility</h2>
+        <ul className="doc-list">
+          {(
+            accessibility ?? [
+              "Prefer semantic HTML, accessible names, keyboard-reachable controls, and tokenized contrast that remains stable across themes.",
+            ]
+          ).map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </section>
+      <section className="doc-section">
+        <h2 id="api">API</h2>
+        <ReferenceGrid
+          items={
+            reference?.api ?? [
+              {
+                title: "className",
+                description:
+                  "Extends the component root while preserving Nerio tokenized defaults.",
+              },
+            ]
+          }
+        />
       </section>
       {registryItem ? (
         <section className="doc-section">
@@ -140,33 +212,12 @@ export function StandardDocPage({
         </section>
       ) : null}
       <section className="doc-section">
-        <h2 id="anatomy">Anatomy</h2>
-        <ReferenceGrid items={anatomy} />
-      </section>
-      <section className="doc-section">
-        <h2 id="variants">Variants</h2>
-        <ReferenceGrid items={variants} />
-      </section>
-      <section className="doc-section">
-        <h2 id="states">States</h2>
-        <ReferenceGrid
-          items={
-            reference?.states ?? [
-              {
-                title: "Default",
-                description:
-                  "Default, hover, focus, disabled, and error states follow Nerio tokens.",
-              },
-            ]
-          }
-        />
-      </section>
-      <section className="doc-section">
-        <h2 id="accessibility">Accessibility</h2>
+        <h2 id="design-notes">Design notes</h2>
         <ul className="doc-list">
           {(
-            accessibility ?? [
-              "Prefer semantic HTML, accessible names, keyboard-reachable controls, and tokenized contrast that remains stable across themes.",
+            reference?.designNotes ?? [
+              reference?.purpose ??
+                "Use this component as a token-driven Nerio building block inside product workflows.",
             ]
           ).map((item) => (
             <li key={item}>{item}</li>
@@ -194,6 +245,14 @@ export function StandardDocPage({
               <p key={item}>{item}</p>
             ))}
           </div>
+        </div>
+      </section>
+      <section className="doc-section">
+        <h2 id="related-components">Related components</h2>
+        <div className="token-chip-row">
+          {(reference?.related ?? metadata?.related ?? ["Tokens"]).map((item) => (
+            <code key={item}>{item}</code>
+          ))}
         </div>
       </section>
       <section className="doc-section">
@@ -440,9 +499,14 @@ function Preview({ kind }: { kind: string }) {
         ) : null}
         {kind === "card" ? (
           <Card className="preview-card">
-            <Badge variant="info">Active</Badge>
-            <strong>Launch workspace</strong>
-            <p>Plan assets, owners, and milestones in one focused surface.</p>
+            <CardHeader>
+              <Badge variant="info">Active</Badge>
+              <CardTitle>Launch workspace</CardTitle>
+              <CardDescription>
+                Plan assets, owners, and milestones in one focused surface.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>12 active tasks across three owners.</CardContent>
           </Card>
         ) : null}
         {kind === "separator" ? (
