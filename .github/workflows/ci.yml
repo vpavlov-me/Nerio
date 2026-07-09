@@ -1,10 +1,13 @@
-name: quality
+name: ci
 
 on:
   pull_request:
   push:
     branches:
       - main
+
+permissions:
+  contents: read
 
 jobs:
   quality:
@@ -26,3 +29,4 @@ jobs:
       - run: pnpm test:cli
       - run: pnpm test:mcp
       - run: pnpm build
+      - run: pnpm pack:check

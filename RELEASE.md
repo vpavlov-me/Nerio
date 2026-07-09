@@ -14,9 +14,12 @@ pnpm validate:docs
 pnpm test:cli
 pnpm test:mcp
 pnpm build
+pnpm pack:check
 ```
 
-Confirm the docs app builds successfully before release.
+CI must pass before release. Confirm the docs app builds successfully before release.
+
+CI is a validation gate only. It does not publish packages, configure npm tokens, create release tags, or approve a release.
 
 ## Versioning
 
@@ -33,19 +36,16 @@ Keep the root workspace and apps private. Future public Core packages are expect
 
 ## Dry Run
 
-Before any real publish, run npm dry-runs from each intended public package and inspect the included files:
+Before any real publish decision, run the package dry-run check locally and inspect the included files:
 
 ```bash
-pnpm --filter @nerio/tokens exec npm pack --dry-run
-pnpm --filter @nerio/ui exec npm pack --dry-run
-pnpm --filter @nerio/adapters exec npm pack --dry-run
-pnpm --filter @nerio/registry exec npm pack --dry-run
-pnpm --filter @nerio/cli exec npm pack --dry-run
-pnpm --filter @nerio/mcp exec npm pack --dry-run
+pnpm pack:check
 ```
+
+`pack:check` runs `npm pack --dry-run` for the intended public Core packages only: `@nerio/tokens`, `@nerio/ui`, `@nerio/adapters`, `@nerio/registry`, `@nerio/cli`, and `@nerio/mcp`. It does not check the root workspace, apps, `@nerio/config`, Pro packages, or templates.
 
 ## Publishing
 
-Do not publish automatically from CI. npm publishing must remain manual until maintainers explicitly approve the release process.
+Do not publish automatically from CI. npm publishing must remain manual and maintainer-approved.
 
 Do not publish Pro packages, private packages, apps, templates, or unreleased workspace tooling.

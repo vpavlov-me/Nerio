@@ -12,7 +12,8 @@
     "format:check": "prettier . --check",
     "validate:docs": "pnpm --filter @nerio/docs validate:docs",
     "test:cli": "pnpm --filter @nerio/cli test:fixture",
-    "test:mcp": "pnpm --filter @nerio/mcp test:fixture"
+    "test:mcp": "pnpm --filter @nerio/mcp test:fixture",
+    "pack:check": "node scripts/pack-check.mjs"
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",
