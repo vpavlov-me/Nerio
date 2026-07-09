@@ -214,10 +214,10 @@ Suggested token names:
 
 ```ts
 export const motionDuration = {
-  instant: '80ms',
-  fast: '140ms',
-  normal: '220ms',
-  slow: '360ms',
+  instant: "80ms",
+  fast: "140ms",
+  normal: "220ms",
+  slow: "360ms",
 };
 ```
 
@@ -227,10 +227,10 @@ Suggested token names:
 
 ```ts
 export const motionEasing = {
-  standard: 'cubic-bezier(0.2, 0, 0, 1)',
-  enter: 'cubic-bezier(0, 0, 0.2, 1)',
-  exit: 'cubic-bezier(0.4, 0, 1, 1)',
-  expressive: 'cubic-bezier(0.16, 1, 0.3, 1)',
+  standard: "cubic-bezier(0.2, 0, 0, 1)",
+  enter: "cubic-bezier(0, 0, 0.2, 1)",
+  exit: "cubic-bezier(0.4, 0, 1, 1)",
+  expressive: "cubic-bezier(0.16, 1, 0.3, 1)",
 };
 ```
 
@@ -242,17 +242,17 @@ Recommended names:
 
 ```ts
 export const semanticMotion = {
-  hover: 'fast standard',
-  press: 'instant standard',
-  focus: 'fast standard',
-  reveal: 'normal enter',
-  collapse: 'fast exit',
-  overlayEnter: 'normal enter',
-  overlayExit: 'fast exit',
-  pageEnter: 'slow expressive',
-  dataRefresh: 'normal standard',
-  successFeedback: 'normal expressive',
-  errorFeedback: 'normal standard',
+  hover: "fast standard",
+  press: "instant standard",
+  focus: "fast standard",
+  reveal: "normal enter",
+  collapse: "fast exit",
+  overlayEnter: "normal enter",
+  overlayExit: "fast exit",
+  pageEnter: "slow expressive",
+  dataRefresh: "normal standard",
+  successFeedback: "normal expressive",
+  errorFeedback: "normal standard",
 };
 ```
 
@@ -408,14 +408,16 @@ Every component documentation page must follow one consistent structure.
    - controlled/uncontrolled behavior where relevant.
 
 10. Design notes
-   - when to use;
-   - when to avoid;
-   - visual guidance;
-   - composition guidance.
+
+- when to use;
+- when to avoid;
+- visual guidance;
+- composition guidance.
 
 11. Related components
-   - adjacent components;
-   - recommended compositions.
+
+- adjacent components;
+- recommended compositions.
 
 ### 8.2 Component page template
 
