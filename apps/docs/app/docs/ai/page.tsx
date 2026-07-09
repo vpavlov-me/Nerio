@@ -47,7 +47,10 @@ export default function Page() {
           </div>
           <div>
             <code>get_component_usage</code>
-            <span>Read usage, slots, variants, and accessibility guidance.</span>
+            <span>
+              Read usage, source files, tokens, primitives, slots, variants, and accessibility
+              guidance.
+            </span>
           </div>
         </div>
       </section>
@@ -57,6 +60,7 @@ export default function Page() {
         <ul className="doc-list">
           <li>Select the smallest component set that expresses the workflow.</li>
           <li>Preserve semantic tokens, slots, and accessible names.</li>
+          <li>Use requiredTokens before inventing new product CSS variables.</li>
           <li>Prefer source installation when a product needs to customize component behavior.</li>
           <li>Never introduce an overlapping primitive library into a Nerio composition.</li>
         </ul>

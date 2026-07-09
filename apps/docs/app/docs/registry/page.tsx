@@ -6,7 +6,8 @@ const init = `nerio init \\
   --registry https://raw.githubusercontent.com/vpavlov-me/Nerio/main/packages/registry/src/manifest.json
 
 nerio doctor
-nerio add button`;
+nerio add button
+nerio add input --dry-run`;
 
 const config = `{
   "schemaVersion": "0.1.0",
@@ -31,7 +32,8 @@ export default function Page() {
         <CodeExample code={init} label="CLI quick start" />
         <p>
           <code>init</code> creates configuration, <code>doctor</code> validates the manifest, and{" "}
-          <code>add</code> writes the selected component and direct source dependencies.
+          <code>add</code> writes the selected component and source dependencies. Use{" "}
+          <code>--dry-run</code> to review the install plan first.
         </p>
       </section>
 
@@ -54,7 +56,8 @@ export default function Page() {
             <div key={item.name}>
               <code>{item.name}</code>
               <span>
-                {item.category} · {item.files.length} files · {item.baseUiPrimitives.join(", ")}
+                {item.category} - {item.files.length} files -{" "}
+                {item.baseUiPrimitives.join(", ") || "no primitive"}
               </span>
             </div>
           ))}
@@ -71,6 +74,9 @@ export default function Page() {
           <li>Metadata declares dependencies, files, Base UI primitives, slots, and variants.</li>
           <li>Required tokens make styling dependencies explicit for products and AI agents.</li>
           <li>Registry dependencies are traversed before the requested component is installed.</li>
+          <li>
+            <code>--dry-run</code> prints every target file without writing to the project.
+          </li>
           <li>Target paths are constrained to the configured component directory.</li>
         </ul>
       </section>

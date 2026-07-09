@@ -130,9 +130,17 @@ type TocItem = {
   label: string;
 };
 
+type SearchEntry = {
+  href: string;
+  title: string;
+  group: string;
+  description: string;
+};
+
 const componentToc: TocItem[] = [
   { id: "usage", label: "Usage" },
   { id: "purpose", label: "Purpose" },
+  { id: "implementation-contract", label: "Implementation contract" },
   { id: "anatomy", label: "Anatomy" },
   { id: "variants", label: "Variants" },
   { id: "states", label: "States" },
@@ -210,6 +218,26 @@ function getDefaultToc(pathname: string): TocItem[] {
   if (pathname.startsWith("/docs/components/")) return componentToc;
   return tocByPath[pathname] ?? [];
 }
+
+const searchEntries: SearchEntry[] = navGroups.flatMap((group) =>
+  group.items.flatMap((item) => {
+    const pageSections = getDefaultToc(item.href);
+    return [
+      {
+        href: item.href,
+        title: item.label,
+        group: group.title,
+        description: `${item.label} documentation and examples.`,
+      },
+      ...pageSections.map((section) => ({
+        href: `${item.href}#${section.id}`,
+        title: section.label,
+        group: item.label,
+        description: `${section.label} section in ${item.label}.`,
+      })),
+    ];
+  }),
+);
 
 function slugify(value: string) {
   return value
@@ -344,7 +372,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [mode, setModeValue] = React.useState("system");
   const [density, setDensityValue] = React.useState("comfortable");
   const [search, setSearch] = React.useState("");
+  const [searchOpen, setSearchOpen] = React.useState(false);
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
+  const searchInputRef = React.useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -362,6 +392,20 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     const filteredToc = nextToc.filter((item) => item.label.length > 0);
     setToc(filteredToc.length > 0 ? filteredToc : getDefaultToc(pathname));
   }, [pathname, children]);
+
+  React.useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target?.matches("input, textarea, [contenteditable='true']")) return;
+      event.preventDefault();
+      searchInputRef.current?.focus();
+      setSearchOpen(true);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const setTheme = (value: string) => {
     setThemeValue(value);
@@ -390,6 +434,18 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         .filter((group) => group.items.length > 0)
     : navGroups;
 
+  const searchTerm = search.trim().toLowerCase();
+  const searchResults = searchTerm
+    ? searchEntries
+        .filter((entry) =>
+          [entry.title, entry.group, entry.description, entry.href]
+            .join(" ")
+            .toLowerCase()
+            .includes(searchTerm),
+        )
+        .slice(0, 8)
+    : [];
+
   const modeIcon = mode === "dark" ? Sun : Moon;
   const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
@@ -402,16 +458,48 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           <Badge>{version}</Badge>
         </Link>
 
-        <label className="docs-search">
-          <Icon icon={Search} />
-          <Input
-            aria-label="Search documentation"
-            placeholder="Search documentation"
-            value={search}
-            onChange={(event) => setSearch(event.currentTarget.value)}
-          />
-          <kbd>/</kbd>
-        </label>
+        <div className="docs-search-wrap">
+          <label className="docs-search">
+            <Icon icon={Search} />
+            <Input
+              ref={searchInputRef}
+              aria-label="Search documentation"
+              placeholder="Search documentation"
+              value={search}
+              onBlur={() => window.setTimeout(() => setSearchOpen(false), 120)}
+              onChange={(event) => {
+                setSearch(event.currentTarget.value);
+                setSearchOpen(true);
+              }}
+              onFocus={() => setSearchOpen(true)}
+            />
+            <kbd>/</kbd>
+          </label>
+          {searchOpen && searchTerm ? (
+            <div className="docs-search-results" role="listbox">
+              {searchResults.length ? (
+                searchResults.map((entry) => (
+                  <Link
+                    key={entry.href}
+                    href={entry.href}
+                    role="option"
+                    onClick={() => {
+                      setSearch("");
+                      setSearchOpen(false);
+                    }}
+                  >
+                    <span>{entry.title}</span>
+                    <small>
+                      {entry.group} - {entry.description}
+                    </small>
+                  </Link>
+                ))
+              ) : (
+                <div className="docs-search-empty">No matching documentation pages.</div>
+              )}
+            </div>
+          ) : null}
+        </div>
 
         <div className="docs-controls">
           <Select label="Theme" value={theme} onChange={setTheme} options={themeOptions} />

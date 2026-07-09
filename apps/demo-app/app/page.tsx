@@ -2,12 +2,23 @@
 
 import * as React from "react";
 import {
+  Bell,
+  Check,
+  LayoutDashboard,
+  ListTree,
+  Search,
+  Settings,
+  Sparkles,
+} from "@nerio/adapters";
+import {
   Avatar,
   Badge,
   Button,
   Card,
   EmptyState,
   Field,
+  Icon,
+  IconButton,
   Input,
   Progress,
   Select,
@@ -18,17 +29,44 @@ import {
 } from "@nerio/ui";
 
 const projects = [
-  { name: "Launch workspace", owner: "Mira Chen", status: "Active", progress: 78 },
-  { name: "Content library", owner: "Alex Morgan", status: "Review", progress: 52 },
-  { name: "Team rituals", owner: "Sam Taylor", status: "Draft", progress: 34 },
+  {
+    name: "Launch workspace",
+    owner: "Mira Chen",
+    status: "Active",
+    progress: 78,
+    updated: "12 min ago",
+  },
+  {
+    name: "Content library",
+    owner: "Alex Morgan",
+    status: "Review",
+    progress: 52,
+    updated: "38 min ago",
+  },
+  {
+    name: "Team rituals",
+    owner: "Sam Taylor",
+    status: "Draft",
+    progress: 34,
+    updated: "1 hr ago",
+  },
+  {
+    name: "Research archive",
+    owner: "Jordan Lee",
+    status: "Active",
+    progress: 91,
+    updated: "Yesterday",
+  },
 ];
 
 const activity = [
-  ["Mira updated the project brief", "12 minutes ago"],
-  ["Alex added three collection notes", "38 minutes ago"],
-  ["Sam resolved a settings task", "1 hour ago"],
-  ["Jordan shared an analytics snapshot", "Yesterday"],
+  ["Mira updated the project brief", "Launch workspace", "12 minutes ago"],
+  ["Alex added three collection notes", "Content library", "38 minutes ago"],
+  ["Sam resolved a settings task", "Team rituals", "1 hour ago"],
+  ["Jordan shared an analytics snapshot", "Research archive", "Yesterday"],
 ];
+
+const chart = [42, 64, 58, 72, 48, 88, 76, 92, 67, 81, 74, 89];
 
 const themeOptions = [
   { label: "Purple", value: "purple" },
@@ -39,15 +77,30 @@ const themeOptions = [
   { label: "Neutral", value: "neutral" },
 ];
 
+const statusOptions = [
+  { label: "All statuses", value: "all" },
+  { label: "Active", value: "Active" },
+  { label: "Review", value: "Review" },
+  { label: "Draft", value: "Draft" },
+];
+
+const navItems = [
+  ["Overview", LayoutDashboard],
+  ["Projects", ListTree],
+  ["Activity", Bell],
+  ["Settings", Settings],
+] as const;
+
 export default function DemoApp() {
   const [query, setQuery] = React.useState("");
+  const [status, setStatus] = React.useState("all");
+  const [workspaceState, setWorkspaceState] = React.useState<"ready" | "loading" | "error">(
+    "ready",
+  );
   const [showToast, setShowToast] = React.useState(false);
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState("system");
   const [density, setDensityValue] = React.useState("comfortable");
-  const filtered = projects.filter((project) =>
-    project.name.toLowerCase().includes(query.toLowerCase()),
-  );
 
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -55,34 +108,90 @@ export default function DemoApp() {
     document.documentElement.setAttribute("data-density", density);
   }, [theme, mode, density]);
 
-  const setTheme = (value: string) => {
-    setThemeValue(value);
-    document.documentElement.setAttribute("data-theme", value);
-  };
-  const setMode = (value: string) => {
-    setModeValue(value);
-    document.documentElement.setAttribute("data-mode", value);
-  };
-  const setDensity = (value: string) => {
-    setDensityValue(value);
-    document.documentElement.setAttribute("data-density", value);
-  };
+  const filteredProjects = React.useMemo(
+    () =>
+      projects.filter((project) => {
+        const matchesQuery = project.name.toLowerCase().includes(query.toLowerCase());
+        const matchesStatus = status === "all" || project.status === status;
+        return matchesQuery && matchesStatus;
+      }),
+    [query, status],
+  );
+
+  const setTheme = (value: string) => setThemeValue(value);
+  const setMode = (value: string) => setModeValue(value);
+  const setDensity = (value: string) => setDensityValue(value);
 
   return (
     <div className="workspace">
       <aside className="workspace-sidebar">
         <div className="workspace-brand">
           <span aria-hidden />
-          <span>Nerio Workspace</span>
+          <div>
+            <strong>Nerio Workspace</strong>
+            <small>Universal product workspace</small>
+          </div>
         </div>
+
         <nav className="workspace-nav" aria-label="Workspace">
-          {["Overview", "Projects", "Collections", "Activity", "Settings"].map((item, index) => (
+          {navItems.map(([item, icon], index) => (
             <button key={item} type="button" data-state={index === 0 ? "active" : "inactive"}>
-              {item}
+              <Icon icon={icon} />
+              <span>{item}</span>
             </button>
           ))}
         </nav>
-        <div className="workspace-controls">
+
+        <Card className="workspace-compact-preview">
+          <Badge>Compact density</Badge>
+          <p>Switch density to preview how the same UI tightens for operational screens.</p>
+          <Button size="sm" variant="secondary" onClick={() => setDensity("compact")}>
+            Use compact
+          </Button>
+        </Card>
+      </aside>
+
+      <main className="workspace-main">
+        <header className="workspace-topbar">
+          <div className="workspace-title">
+            <Badge variant="info">Overview</Badge>
+            <h1>Product operations without a vertical bias</h1>
+            <p>
+              Track projects, collections, collaborators, activity, loading states, and recovery
+              states in one adaptable product surface.
+            </p>
+          </div>
+          <div className="workspace-actions">
+            <IconButton icon={Search} label="Search workspace" variant="secondary" />
+            <Button
+              leadingIcon={Sparkles}
+              onClick={() => {
+                setWorkspaceState("ready");
+                setShowToast(true);
+              }}
+            >
+              Create project
+            </Button>
+          </div>
+        </header>
+
+        {showToast ? (
+          <Toast
+            title="Project draft created"
+            description="The new workspace item is ready to configure."
+            tone="success"
+          />
+        ) : null}
+
+        <section className="workspace-controls">
+          <Field label="Search projects">
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.currentTarget.value)}
+              placeholder="Search by project name"
+            />
+          </Field>
+          <Select label="Status" value={status} onChange={setStatus} options={statusOptions} />
           <Select label="Theme" value={theme} onChange={setTheme} options={themeOptions} />
           <Select
             label="Mode"
@@ -103,49 +212,36 @@ export default function DemoApp() {
               { label: "Compact", value: "compact" },
             ]}
           />
-        </div>
-      </aside>
-      <main className="workspace-main">
-        <header className="workspace-topbar">
-          <div className="workspace-title">
-            <h1>Overview</h1>
-            <p>
-              Track projects, collections, collaborators, and product activity in one calm
-              workspace.
-            </p>
-          </div>
-          <Button onClick={() => setShowToast(true)}>Create project</Button>
-        </header>
-        {showToast ? (
-          <Toast
-            title="Project draft created"
-            description="The new workspace item is ready to configure."
-            tone="success"
-          />
-        ) : null}
+        </section>
+
         <section className="workspace-grid">
-          <div className="span-3">
-            <Stat label="Active projects" value="12" trend="+3 this week" />
-          </div>
-          <div className="span-3">
-            <Stat label="Open tasks" value="48" trend="8 due today" />
-          </div>
-          <div className="span-3">
-            <Stat label="Collaborators" value="9" trend="4 teams" />
-          </div>
-          <div className="span-3">
-            <Stat label="Collections" value="27" trend="Updated daily" />
-          </div>
-          <Card className="span-8">
-            <h2>Activity analytics</h2>
+          <Stat label="Active projects" value="12" trend="+3 this week" className="span-3" />
+          <Stat label="Open tasks" value="48" trend="8 due today" className="span-3" />
+          <Stat label="Collaborators" value="9" trend="4 teams" className="span-3" />
+          <Stat label="Collections" value="27" trend="Updated daily" className="span-3" />
+
+          <Card className="span-8 workspace-panel">
+            <div className="panel-heading">
+              <div>
+                <h2>Activity analytics</h2>
+                <p>Generic activity across projects, collections, and collaboration.</p>
+              </div>
+              <Badge variant="success">Live mock</Badge>
+            </div>
             <div className="chart" aria-label="Activity chart">
-              {[42, 64, 58, 72, 48, 88, 76, 92, 67, 81].map((height) => (
-                <span key={height} style={{ height: `${height}%` }} />
+              {chart.map((height, index) => (
+                <span key={`${height}-${index}`} style={{ height: `${height}%` }} />
               ))}
             </div>
           </Card>
-          <Card className="span-4">
-            <h2>Team</h2>
+
+          <Card className="span-4 workspace-panel">
+            <div className="panel-heading">
+              <div>
+                <h2>Collaborators</h2>
+                <p>Shared ownership across teams.</p>
+              </div>
+            </div>
             <div className="team-list">
               {["Mira Chen", "Alex Morgan", "Sam Taylor", "Jordan Lee"].map((name) => (
                 <Avatar key={name} name={name} />
@@ -153,64 +249,124 @@ export default function DemoApp() {
             </div>
             <Progress label="Weekly collaboration health" value={82} />
           </Card>
-          <Card className="span-8">
-            <h2>Recent items</h2>
-            <Field label="Search projects">
-              <Input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search by project name"
-              />
-            </Field>
-            {filtered.length ? (
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Owner</th>
-                    <th>Status</th>
-                    <th>Progress</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((project) => (
-                    <tr key={project.name}>
-                      <td>{project.name}</td>
-                      <td>{project.owner}</td>
-                      <td>
-                        <Badge>{project.status}</Badge>
-                      </td>
-                      <td>{project.progress}%</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            ) : (
+
+          <Card className="span-8 workspace-panel">
+            <div className="panel-heading">
+              <div>
+                <h2>Recent items</h2>
+                <p>Filtered by search and status controls above.</p>
+              </div>
+              <div className="state-controls" aria-label="Demo state controls">
+                <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("loading")}>
+                  Loading
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("error")}>
+                  Error
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("ready")}>
+                  Ready
+                </Button>
+              </div>
+            </div>
+
+            {workspaceState === "loading" ? (
+              <div className="loading-stack" aria-label="Loading recent items">
+                <Skeleton />
+                <Skeleton />
+                <Skeleton />
+              </div>
+            ) : null}
+
+            {workspaceState === "error" ? (
               <EmptyState
-                title="No projects found"
-                description="Try a different search term or clear the current filter."
+                title="Activity source unavailable"
+                description="Reconnect the source or retry when the workspace service is available."
+                action={
+                  <Button size="sm" onClick={() => setWorkspaceState("ready")}>
+                    Retry
+                  </Button>
+                }
               />
-            )}
+            ) : null}
+
+            {workspaceState === "ready" && filteredProjects.length ? (
+              <div className="table-scroll">
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Owner</th>
+                      <th>Status</th>
+                      <th>Progress</th>
+                      <th>Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredProjects.map((project) => (
+                      <tr key={project.name}>
+                        <td>{project.name}</td>
+                        <td>{project.owner}</td>
+                        <td>
+                          <Badge
+                            variant={
+                              project.status === "Active"
+                                ? "success"
+                                : project.status === "Review"
+                                  ? "info"
+                                  : "neutral"
+                            }
+                          >
+                            {project.status}
+                          </Badge>
+                        </td>
+                        <td>{project.progress}%</td>
+                        <td>{project.updated}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            ) : null}
+
+            {workspaceState === "ready" && !filteredProjects.length ? (
+              <EmptyState
+                title="No matching projects"
+                description="Clear search or choose another status to bring items back."
+                action={
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setQuery("");
+                      setStatus("all");
+                    }}
+                  >
+                    Clear filters
+                  </Button>
+                }
+              />
+            ) : null}
           </Card>
-          <Card className="span-4">
-            <h2>Task feed</h2>
+
+          <Card className="span-4 workspace-panel">
+            <div className="panel-heading">
+              <div>
+                <h2>Task feed</h2>
+                <p>Recent workspace movement.</p>
+              </div>
+            </div>
             <div className="activity-feed">
-              {activity.map(([title, time]) => (
+              {activity.map(([title, scope, time]) => (
                 <div key={title} className="activity-item">
-                  <strong>{title}</strong>
-                  <span>{time}</span>
+                  <Icon icon={Check} />
+                  <div>
+                    <strong>{title}</strong>
+                    <span>
+                      {scope} - {time}
+                    </span>
+                  </div>
                 </div>
               ))}
-            </div>
-          </Card>
-          <Card className="span-12">
-            <h2>Loading and error states</h2>
-            <div className="grid">
-              <Skeleton style={{ minHeight: "4rem" }} />
-              <EmptyState
-                title="Sync paused"
-                description="Reconnect the source when you are ready to refresh activity."
-              />
             </div>
           </Card>
         </section>

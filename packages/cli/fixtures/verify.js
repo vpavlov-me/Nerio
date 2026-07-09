@@ -117,6 +117,13 @@ async function verify() {
   try {
     await run(localTarget, "init", "--registry", manifest);
     await run(localTarget, "doctor");
+    const dryRunOutput = await run(localTarget, "add", "input", "--dry-run");
+    if (
+      !dryRunOutput.includes("Would add Input") ||
+      !dryRunOutput.includes("components/input.tsx")
+    ) {
+      throw new Error("Dry run output did not describe the input install plan.");
+    }
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
@@ -147,7 +154,7 @@ async function verify() {
   }
 
   console.log(
-    "CLI fixture passed for local-path, URL, registry dependency, form, feedback, and display installs.",
+    "CLI fixture passed for dry-run, local-path, URL, registry dependency, form, feedback, and display installs.",
   );
 }
 
