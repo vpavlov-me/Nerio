@@ -487,7 +487,6 @@
         "--n-table-row-background-selected",
         "--n-table-cell-padding-y",
         "--n-table-cell-padding-x",
-        "--n-color-text-tertiary",
         "--n-font-size-sm"
       ],
       "accessibility": [
@@ -541,9 +540,16 @@
       "variants": [],
       "requiredTokens": [
         "--n-select-height-md",
+        "--n-input-radius",
         "--n-input-background",
         "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
         "--n-input-border-danger",
+        "--n-input-placeholder",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
         "--n-overlay-background",
         "--n-overlay-border",
         "--n-overlay-shadow",
@@ -587,9 +593,16 @@
       "variants": ["default", "invalid", "disabled"],
       "requiredTokens": [
         "--n-input-height-md",
+        "--n-input-radius",
         "--n-input-background",
         "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
         "--n-input-border-danger",
+        "--n-input-placeholder",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
         "--n-focus-ring"
       ],
       "accessibility": [
@@ -634,9 +647,16 @@
       "requiredTokens": [
         "--n-input-height-md",
         "--n-textarea-min-height",
+        "--n-input-radius",
         "--n-input-background",
         "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
         "--n-input-border-danger",
+        "--n-input-placeholder",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
         "--n-focus-ring"
       ],
       "accessibility": [
@@ -708,7 +728,11 @@
       "baseUiPrimitives": [],
       "slots": ["root"],
       "variants": ["neutral", "danger", "success"],
-      "requiredTokens": ["--n-color-text-tertiary", "--n-color-danger", "--n-color-success"],
+      "requiredTokens": [
+        "--n-color-text-tertiary",
+        "--n-color-status-danger",
+        "--n-color-status-success"
+      ],
       "accessibility": [
         "Associate messages with controls through aria-describedby.",
         "Use danger tone for validation errors.",
@@ -743,7 +767,12 @@
       "baseUiPrimitives": [],
       "slots": ["root", "label", "description", "message"],
       "variants": ["default", "invalid"],
-      "requiredTokens": ["--n-color-text-secondary", "--n-color-text-tertiary", "--n-color-danger"],
+      "requiredTokens": [
+        "--n-field-gap",
+        "--n-color-text-secondary",
+        "--n-color-text-tertiary",
+        "--n-color-status-danger"
+      ],
       "accessibility": [
         "Generates stable ids for label, description, and message relationships.",
         "Clones a single React control child to wire id and aria-describedby, and only sets invalid state for invalid fields.",
@@ -936,6 +965,7 @@
         "--n-overlay-background",
         "--n-overlay-border",
         "--n-overlay-backdrop",
+        "--n-overlay-foreground",
         "--n-overlay-shadow",
         "--n-focus-ring"
       ],
@@ -969,9 +999,12 @@
       "slots": ["content", "title", "description", "body"],
       "variants": [],
       "requiredTokens": [
+        "--n-popover-width-md",
         "--n-overlay-z-index",
-        "--n-color-surface-raised",
-        "--n-color-border-subtle",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-foreground",
+        "--n-overlay-shadow",
         "--n-focus-ring"
       ],
       "accessibility": [
@@ -1004,10 +1037,13 @@
       "slots": ["content", "item"],
       "variants": ["default", "destructive"],
       "requiredTokens": [
+        "--n-dropdown-min-width",
         "--n-overlay-z-index",
-        "--n-color-surface-raised",
-        "--n-color-border-subtle",
-        "--n-color-danger",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-shadow",
+        "--n-color-text-secondary",
+        "--n-color-status-danger",
         "--n-focus-ring"
       ],
       "accessibility": [
@@ -1080,11 +1116,13 @@
       "slots": ["viewport", "root", "content", "title", "description"],
       "variants": ["neutral", "success", "danger"],
       "requiredTokens": [
+        "--n-toast-width",
         "--n-overlay-z-index",
-        "--n-color-surface-raised",
-        "--n-color-border-subtle",
-        "--n-color-success",
-        "--n-color-danger",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-shadow",
+        "--n-color-status-success",
+        "--n-color-status-danger",
         "--n-focus-ring"
       ],
       "accessibility": [

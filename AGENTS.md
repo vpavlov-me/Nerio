@@ -14,6 +14,14 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 - The project may adopt ideas compatible with registry-based distribution, but it must have its own `nerio` CLI, own registry format, own documentation, and own component APIs. Do not depend on the shadcn CLI, registry, or package.
 - All public-facing docs, UI copy, code comments, and issue templates must be written in English.
 
+## Current roadmap focus
+
+- Current work is in **Phase 2A: Core quality stabilization**.
+- Phase 2A cleanup tasks must harden existing Core foundations and components before expanding coverage.
+- Do not add new Core components while working on Phase 2A cleanup tasks.
+- Phase 2B component coverage expansion must wait until Phase 2A is sufficiently stable or the task explicitly asks for Phase 2B work.
+- Do not mark a component `stable-core` until it passes the full Core quality checklist.
+
 ## Product positioning
 
 - Nerio Core remains universal and domain-agnostic.
@@ -48,10 +56,28 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 - Theme, mode, density, and token overrides must work through CSS variables without rebuilding component source.
 - Default to semantic names such as `--n-color-surface`, not visual names such as `--n-purple-600`, outside the primitive token layer.
 - Components must use semantic or component aliases only; do not consume raw palette tokens directly.
+- Component source styles must use semantic or component aliases only.
+- Registry `requiredTokens` must describe public customization points, preferably component aliases, not random internal semantic tokens.
+- Token chips in docs and registry metadata must reference real CSS variables from `packages/tokens/src/styles.css`.
+- `pnpm validate:docs` is expected to catch missing token references in token CSS, registry `requiredTokens`, and docs reference token chips.
 - Every component must have a predictable anatomy, accessible interaction model, keyboard behavior, visible focus treatment, disabled/loading states where relevant, and a small API surface.
 - Prefer composition and explicit slots over expansive boolean-prop APIs.
 - Use `data-slot`, `data-state`, and `data-variant` attributes deliberately so components remain inspectable and easy to customize.
 - Icons must be passed through the Nerio icon adapter. Lucide is the default implementation; components must not become tightly coupled to Lucide.
+
+## Core quality checklist
+
+Before moving any Core component toward `stable-core`, verify:
+
+- API stability: public props, slots, variants, and composition model are intentional.
+- Accessibility: semantics, labels, keyboard behavior, focus management, disabled/loading/invalid states, and announcements are covered where relevant.
+- Token usage: source styles consume semantic or component aliases only.
+- Theme, mode, and density behavior: `data-theme`, `data-mode`, and `data-density` work through CSS variables without rebuilding source.
+- Registry metadata: dependencies, Base UI primitives, slots, variants, required tokens, usage, accessibility guidance, and tier are accurate.
+- Docs coverage: purpose, anatomy, variants, states, usage snippets, accessibility notes, when-not-to-use guidance, and real token chips are present.
+- CLI install fixture: installed files and registry dependencies remain accurate.
+- MCP metadata alignment: MCP responses reflect the same registry contract exposed to the CLI and docs.
+- Validation commands: run and report `pnpm validate:docs`, plus relevant lint, typecheck, test, fixture, and build checks for the changed surface.
 
 ## Visual direction
 
