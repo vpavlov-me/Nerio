@@ -389,7 +389,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const fallbackToc = getDefaultToc(pathname);
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState("system");
-  const [density, setDensityValue] = React.useState("comfortable");
+  const [density, setDensityValue] = React.useState("compact");
   const [search, setSearch] = React.useState("");
   const [searchOpen, setSearchOpen] = React.useState(false);
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);

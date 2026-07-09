@@ -103,6 +103,16 @@
           "source": "../../ui/src/components/icon-button.tsx",
           "target": "components/icon-button.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
         }
       ],
       "baseUiPrimitives": ["button"],

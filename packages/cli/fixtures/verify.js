@@ -223,7 +223,8 @@ async function verify() {
     );
     if (
       !iconButtonSource.includes("label: string") ||
-      !iconButtonSource.includes("leadingIcon={icon}") ||
+      !iconButtonSource.includes("aria-label={label}") ||
+      !iconButtonSource.includes("<Icon icon={icon}") ||
       !iconButtonSource.includes("n-visually-hidden")
     ) {
       throw new Error(
