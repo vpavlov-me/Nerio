@@ -296,7 +296,7 @@
       "package": "@nerio/ui",
       "category": "data-display",
       "status": "polished",
-      "description": "User or entity avatar with image-error fallback coverage; broader cross-browser image verification remains."
+      "description": "User or entity avatar resets its image fallback when src changes and names non-decorative fallbacks; broader cross-browser image verification remains."
     },
     {
       "name": "Table",
@@ -304,7 +304,7 @@
       "package": "@nerio/ui",
       "category": "data-display",
       "status": "polished",
-      "description": "Basic table with explicit keyboard-scroll region coverage; responsive overflow verification remains."
+      "description": "Basic table with plain, labelled, and typed focusable scroll-region contracts; responsive overflow verification remains."
     },
     {
       "name": "List",
@@ -312,7 +312,7 @@
       "package": "@nerio/ui",
       "category": "data-display",
       "status": "polished",
-      "description": "Basic structured list with stable IDs and visible ordered markers; full link-renderer coverage remains."
+      "description": "Basic structured list with protected link destinations and anatomy plus safe consumer link props; router rendering coverage remains."
     },
     {
       "name": "Separator",
@@ -352,7 +352,7 @@
       "package": "@nerio/ui",
       "category": "feedback",
       "status": "polished",
-      "description": "Managed toast action and localized dismiss API are implemented; full managed-stack interaction coverage remains."
+      "description": "Static and managed toast anatomy are separate; action and localized dismiss APIs are covered while swipe and browser stacking remain manual."
     },
     {
       "name": "Progress",

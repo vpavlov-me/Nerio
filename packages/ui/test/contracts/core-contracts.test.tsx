@@ -1,40 +1,38 @@
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { axe } from "vitest-axe";
 import { describe, expect, it, vi } from "vitest";
 import {
-  Alert,
   Avatar,
-  Badge,
-  Breadcrumbs,
   Card,
   CardTitle,
   EmptyState,
   Field,
-  FormGroup,
   Input,
   List,
   Pagination,
   Progress,
-  Spinner,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-} from "../src/index";
+} from "../../src/index";
 import {
   Button,
+  Checkbox,
   Dialog,
   IconButton,
+  Popover,
+  RadioGroup,
   Select,
+  Switch,
   Tabs,
   Toast,
   ToastProvider,
   ToastViewport,
   useToastManager,
-} from "../src/client";
+} from "../../src/client";
 import { Bell } from "@nerio/adapters";
 
 describe("Core static contracts", () => {
@@ -88,12 +86,17 @@ describe("Core static contracts", () => {
     expect(screen.getByRole("heading", { name: "No results", level: 4 })).toBeInTheDocument();
   });
 
-  it("falls back predictably for missing or failed Avatar images", () => {
+  it("resets Avatar fallback state when src changes and exposes intentional fallback names", () => {
     const { rerender } = render(<Avatar name="  Maya   Chen " />);
     expect(screen.getByText("MC")).toBeInTheDocument();
     rerender(<Avatar name="Иван Петров" src="/missing.png" />);
     fireEvent.error(screen.getByRole("img", { name: "Иван Петров" }));
-    expect(screen.getByText("ИП")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Иван Петров" })).toHaveTextContent("ИП");
+    rerender(<Avatar name="Иван Петров" src="/replacement.png" />);
+    expect(screen.getByRole("img", { name: "Иван Петров" })).toHaveAttribute(
+      "src",
+      "/replacement.png",
+    );
     rerender(<Avatar name="" fallback="Team" decorative />);
     expect(screen.getByText("Team")).toHaveAttribute("aria-hidden", "true");
   });
@@ -122,6 +125,35 @@ describe("Core static contracts", () => {
     );
     expect(screen.getByRole("list").tagName).toBe("OL");
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
+  });
+
+  it("protects List destinations and anatomy while preserving safe link props", () => {
+    render(
+      <List
+        items={[
+          {
+            id: "docs",
+            title: "Documentation",
+            href: "/docs",
+            linkProps: {
+              className: "custom-link",
+              target: "_blank",
+              rel: "noreferrer",
+              "aria-label": "Open documentation",
+              "data-source": "navigation",
+              "data-slot": "consumer-slot",
+            },
+          },
+        ]}
+      />,
+    );
+    const link = screen.getByRole("link", { name: "Open documentation" });
+    expect(link).toHaveAttribute("href", "/docs");
+    expect(link).toHaveClass("n-list__link", "custom-link");
+    expect(link).toHaveAttribute("data-slot", "link");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noreferrer");
+    expect(link).toHaveAttribute("data-source", "navigation");
   });
 
   it("renders link, button, ellipsis, current and disabled Pagination controls", async () => {
@@ -175,6 +207,19 @@ describe("Core static contracts", () => {
       </TableContainer>,
     );
     expect(screen.getByText("A").closest("div")).not.toHaveAttribute("tabindex");
+    expect(screen.getByText("A").closest("div")).not.toHaveAttribute("role");
+    rerender(
+      <TableContainer label="Project table">
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell>A</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>,
+    );
+    expect(screen.getByRole("region", { name: "Project table" })).not.toHaveAttribute("tabindex");
     rerender(
       <TableContainer focusable label="Projects">
         <Table>
@@ -187,26 +232,6 @@ describe("Core static contracts", () => {
       </TableContainer>,
     );
     expect(screen.getByRole("region", { name: "Projects" })).toHaveAttribute("tabindex", "0");
-  });
-
-  it("uses semantic names and native associations @a11y", async () => {
-    const { container } = render(
-      <>
-        <Alert tone="warning" title="Review needed">
-          A required field is missing.
-        </Alert>
-        <Badge tone="success">Ready</Badge>
-        <Spinner label="Saving" />
-        <Breadcrumbs items={[{ label: "Docs", href: "/docs" }, { label: "Buttons" }]} />
-        <Field label="Email" description="We only use this for updates." message="Required" invalid>
-          <Input />
-        </Field>
-        <FormGroup title="Notifications" description="Choose channels.">
-          <input type="checkbox" aria-label="Email" />
-        </FormGroup>
-      </>,
-    );
-    expect((await axe(container)).violations).toEqual([]);
   });
 
   it("generates Field associations, preserves consumer IDs, and rejects multiple controls", () => {
@@ -341,6 +366,91 @@ describe("Core interactive action contracts", () => {
     expect(trigger).toHaveAttribute("aria-invalid", "true");
     expect(trigger).toHaveAttribute("aria-describedby", expect.stringContaining("-description"));
     expect(trigger).toHaveTextContent("Draft");
+  });
+
+  it("renders Select options and disabled option semantics after keyboard opening", async () => {
+    const user = userEvent.setup();
+    render(
+      <Select
+        label="Status"
+        defaultValue="draft"
+        options={[
+          { label: "Draft", value: "draft" },
+          { label: "Archived", value: "archived", disabled: true },
+          { label: "Published", value: "published" },
+        ]}
+      />,
+    );
+    const trigger = screen.getByRole("combobox", { name: "Status" });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("option", { name: "Archived", hidden: true })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
+  it("supports checkbox, radio group, and switch state contracts", async () => {
+    const user = userEvent.setup();
+    const onRadioChange = vi.fn();
+    render(
+      <>
+        <Checkbox aria-label="Subscribe" defaultChecked invalid />
+        <Checkbox aria-label="Disabled" disabled />
+        <RadioGroup
+          label="Visibility"
+          defaultValue="team"
+          onValueChange={onRadioChange}
+          description="Who can view this?"
+          invalid
+          options={[
+            { label: "Private", value: "private" },
+            { label: "Team", value: "team" },
+            { label: "Disabled", value: "disabled", disabled: true },
+          ]}
+        />
+        <Switch aria-label="Notifications" defaultChecked />
+        <Switch aria-label="Disabled notifications" disabled />
+      </>,
+    );
+    expect(screen.getByRole("checkbox", { name: "Subscribe" })).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    expect(screen.getByRole("checkbox", { name: "Disabled" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await user.click(screen.getByRole("radio", { name: "Private" }));
+    expect(onRadioChange).toHaveBeenCalledWith("private");
+    expect(screen.getByRole("radio", { name: "Disabled" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await user.click(screen.getByRole("switch", { name: "Notifications" }));
+    expect(screen.getByRole("switch", { name: "Notifications" })).toHaveAttribute(
+      "aria-checked",
+      "false",
+    );
+    expect(screen.getByRole("switch", { name: "Disabled notifications" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+  });
+
+  it("reports popover open-state changes", async () => {
+    const user = userEvent.setup();
+    const onPopoverChange = vi.fn();
+    render(
+      <>
+        <Popover trigger="Filters" title="Filters" onOpenChange={onPopoverChange}>
+          Filter content
+        </Popover>
+      </>,
+    );
+    await user.click(screen.getByRole("button", { name: "Filters" }));
+    expect(onPopoverChange).toHaveBeenCalledWith(true, expect.anything());
+    await user.keyboard("{Escape}");
   });
 
   it("uses the first enabled Tab, skips disabled tabs, and calls controlled state handlers", async () => {

@@ -26,6 +26,8 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
+      - run: pnpm test:ui
+      - run: pnpm test:a11y
       - run: pnpm validate:docs
       - run: pnpm test:cli
       - run: pnpm test:mcp

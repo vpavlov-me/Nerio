@@ -136,7 +136,7 @@
   outline: 0;
 }
 
-.n-toast [data-slot="content"] {
+.n-toast__static-content {
   display: grid;
   flex: 1;
   gap: var(--n-toast-copy-gap);

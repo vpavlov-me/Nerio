@@ -15,6 +15,9 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
   ref,
 ) {
   const [imageFailed, setImageFailed] = React.useState(false);
+  React.useEffect(() => {
+    setImageFailed(false);
+  }, [src]);
   const normalizedName = name.trim().replace(/\s+/g, " ");
   const initials =
     normalizedName
@@ -41,7 +44,12 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
           onError={() => setImageFailed(true)}
         />
       ) : (
-        <span data-slot="fallback" aria-hidden={decorative ? true : undefined}>
+        <span
+          data-slot="fallback"
+          {...(decorative
+            ? { "aria-hidden": true }
+            : { role: "img", "aria-label": (alt ?? normalizedName) || "Avatar" })}
+        >
           {fallback ?? initials}
         </span>
       )}

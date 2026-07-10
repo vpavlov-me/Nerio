@@ -347,7 +347,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Renders native button behavior through Base UI unless a custom render element is supplied.",
       "Use concise visible text or provide an accessible name.",
-      "Loading sets aria-busy and disables repeat activation.",
+      "Loading preserves the action name, sets aria-busy, and disables repeat activation; loadingLabel is deprecated.",
       "Icons are decorative by default; the button label carries the action meaning.",
       "Do not rely on color alone to communicate destructive or disabled meaning.",
     ],
@@ -360,7 +360,11 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "size",
         description: "sm, md, or lg. Density adjusts the underlying height tokens.",
       },
-      { title: "loading", description: "Disables activation, shows Spinner, and sets aria-busy." },
+      {
+        title: "loading",
+        description:
+          "Disables activation, shows a decorative Spinner, and preserves the accessible action name with aria-busy.",
+      },
       {
         title: "leadingIcon / trailingIcon",
         description: "Icons pass through the Nerio icon adapter.",
@@ -1256,7 +1260,16 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       { title: "provider", description: "Client boundary that manages toast state." },
       { title: "viewport", description: "Portal layer where toasts are announced and positioned." },
-      { title: "toast", description: "Message surface with title, description, and tone." },
+      {
+        title: "static content",
+        description:
+          "Standalone title and optional description without manager positioning or actions.",
+      },
+      {
+        title: "managed content",
+        description:
+          "Manager layout for status indicator, copy, optional action, and dismiss control.",
+      },
     ],
     variants: [
       { title: "Neutral", description: "General event acknowledgement." },
@@ -1272,6 +1285,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Use concise messages and avoid essential decisions inside a toast.",
       "Base UI handles the managed toast live region, pause behavior, and dismiss interaction.",
+      "Static Toast is a presentation primitive; use ToastProvider and ToastViewport for managed notifications.",
       "Keep persistent error text in the page or form; a danger toast can only supplement it.",
     ],
     api: [
@@ -1403,7 +1417,10 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Fallback initials preserve layout when no image is supplied.",
       },
     ],
-    accessibility: ["Use names in surrounding text when the avatar is decorative."],
+    accessibility: [
+      "Decorative images and fallbacks are hidden from assistive technology.",
+      "Non-decorative fallbacks expose the supplied alt text or normalized name, never initials alone.",
+    ],
     guidance: {
       do: ["Pair avatars with names in dense lists when possible."],
       dont: ["Do not rely on avatar color as the only identifier."],
@@ -1493,7 +1510,8 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       {
         title: "container",
-        description: "Optional named keyboard-scrollable region for wide tables.",
+        description:
+          "Plain wrapper by default; a label creates a named region and focusable requires that label.",
       },
       { title: "table", description: "Native table structure for tabular data." },
       { title: "header", description: "Column labels." },
@@ -1511,7 +1529,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Use real table markup for tabular data and concise column headers.",
-      "Wrap tables that can overflow in a labelled TableContainer so keyboard users can scroll the region.",
+      "TableContainer has three modes: plain wrapper, labelled region, or focusable labelled scroll region.",
     ],
     guidance: {
       do: ["Use for comparable records and operational lists."],
@@ -1553,6 +1571,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Choose unordered or ordered semantics based on content meaning.",
       "Use href only for real destinations; do not create fake interactive list rows.",
+      "linkProps may add class, events, target, rel, aria, and data attributes; item.href and the internal data-slot remain protected.",
       "Do not use List for selectable listbox, command menu, activity feed, or table behavior.",
     ],
     api: [
@@ -1563,6 +1582,11 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "ordered",
         description: "Renders an ol when sequence matters; otherwise renders a ul.",
+      },
+      {
+        title: "linkProps",
+        description:
+          "Extends link behavior but cannot replace the canonical item.href or internal link anatomy.",
       },
       {
         title: "className",

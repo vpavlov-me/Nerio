@@ -2,11 +2,20 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 export type TableProps = React.TableHTMLAttributes<HTMLTableElement>;
-export interface TableContainerProps extends React.HTMLAttributes<HTMLDivElement> {
-  label?: string;
-  /** Makes a wide table wrapper keyboard-scrollable. */
-  focusable?: boolean;
-}
+type TableContainerBaseProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "aria-label" | "role" | "tabIndex"
+>;
+
+export type TableContainerProps =
+  | (TableContainerBaseProps & {
+      focusable?: false;
+      label?: string;
+    })
+  | (TableContainerBaseProps & {
+      focusable: true;
+      label: string;
+    });
 export type TableHeaderProps = React.HTMLAttributes<HTMLTableSectionElement>;
 export type TableBodyProps = React.HTMLAttributes<HTMLTableSectionElement>;
 export type TableFooterProps = React.HTMLAttributes<HTMLTableSectionElement>;
@@ -23,11 +32,11 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(function Tab
 });
 
 export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerProps>(
-  function TableContainer({ className, focusable = false, label, ...props }, ref) {
+  function TableContainer({ className, focusable, label, ...props }, ref) {
     return (
       <div
         ref={ref}
-        aria-label={focusable || label ? label : undefined}
+        aria-label={label}
         className={cn("n-table-container", className)}
         data-slot="container"
         role={label ? "region" : undefined}

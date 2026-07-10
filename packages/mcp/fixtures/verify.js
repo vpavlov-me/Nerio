@@ -285,10 +285,12 @@ async function verify() {
     if (
       !toastUsage.dependencies.includes("@nerio/adapters") ||
       !toastUsage.files.some((file) => file.target === "components/icon.tsx") ||
-      !toastUsage.accessibility.some((item) => item.includes("dismiss control")) ||
+      !toastUsage.accessibility.some((item) => item.includes("Static Toast content is separate")) ||
       !toastUsage.usage.includes("ToastProvider")
     ) {
-      throw new Error("MCP Toast usage is missing provider, icon, or dismiss metadata.");
+      throw new Error(
+        "MCP Toast usage is missing provider, icon, or static/managed anatomy metadata.",
+      );
     }
 
     const listResult = await client.callTool({ name: "list_components", arguments: {} });

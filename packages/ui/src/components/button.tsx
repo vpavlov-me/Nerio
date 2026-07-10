@@ -21,6 +21,7 @@ export type ButtonProps = Omit<
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
+  /** @deprecated Loading preserves the action name and exposes aria-busy. */
   loadingLabel?: string;
   leadingIcon?: IconComponent;
   trailingIcon?: IconComponent;
@@ -32,7 +33,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     variant = "primary",
     size = "md",
     loading = false,
-    loadingLabel = "Loading",
+    loadingLabel: _loadingLabel,
     leadingIcon,
     trailingIcon,
     children,
@@ -60,7 +61,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       {...props}
     >
       {loading ? (
-        <Spinner aria-hidden size="sm" label={loadingLabel} />
+        <Spinner aria-hidden size="sm" />
       ) : leadingIcon ? (
         <span data-slot="button-icon">
           <Icon icon={leadingIcon} />
