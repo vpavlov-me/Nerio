@@ -39,8 +39,10 @@ export {
   CardHeader,
   CardTitle,
   type CardDescriptionProps,
+  type CardElement,
   type CardProps,
   type CardSectionProps,
+  type CardTitleElement,
   type CardTitleProps,
 } from "./components/card";
 export { Separator, type SeparatorProps } from "./components/separator";
@@ -49,7 +51,13 @@ export { Progress, type ProgressProps } from "./components/progress";
 export { Stat, type StatProps } from "./components/stat";
 export { KeyValue, type KeyValueProps } from "./components/key-value";
 export { List, type ListItem, type ListProps } from "./components/list";
-export { Pagination, type PaginationPage, type PaginationProps } from "./components/pagination";
+export {
+  Pagination,
+  type PaginationEllipsis,
+  type PaginationItem,
+  type PaginationPage,
+  type PaginationProps,
+} from "./components/pagination";
 export {
   Table,
   TableBody,

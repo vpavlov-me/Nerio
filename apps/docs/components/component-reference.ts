@@ -48,7 +48,7 @@ export const snippets: Record<string, string> = {
   breadcrumbs:
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
   pagination:
-    "import { Pagination } from '@nerio/ui';\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ label: '1', href: '/docs/page/1' }, { label: '2', href: '/docs/page/2', current: true }, { label: '3', href: '/docs/page/3' }]} />",
+    "import { Pagination } from '@nerio/ui';\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ key: '1', label: '1', href: '/docs/page/1' }, { key: '2', label: '2', href: '/docs/page/2', current: true }, { key: '3', label: '3', href: '/docs/page/3' }]} />",
   badge: "import { Badge } from '@nerio/ui';\n\n<Badge tone=\"success\" dot>Published</Badge>",
   alert:
     "import { Circle } from '@nerio/adapters';\nimport { Alert } from '@nerio/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
@@ -87,16 +87,17 @@ export const snippets: Record<string, string> = {
     'import { Popover } from \'@nerio/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
     'import { DropdownMenu } from \'@nerio/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
-  card: "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nerio/ui';\n\n<Card>\n  <CardHeader>\n    <CardTitle>Launch workspace</CardTitle>\n    <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>",
+  card: 'import { Card, CardContent, CardDescription, CardHeader, CardTitle } from \'@nerio/ui\';\n\n<Card as="article">\n  <CardHeader>\n    <CardTitle as="h2">Launch workspace</CardTitle>\n    <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
   separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
   avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
-  progress: "import { Progress } from '@nerio/ui';\n\n<Progress label=\"Completion\" value={68} />",
+  progress:
+    'import { Progress } from \'@nerio/ui\';\n\n<Progress label="Completion" value={68} valueText="68% complete" />',
   stat: 'import { Stat } from \'@nerio/ui\';\n\n<Stat label="Active projects" value="12" trend="+3 this week" />',
   "key-value":
     'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
   table:
     "import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@nerio/ui';\n\n<TableContainer label=\"Projects\"><Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>",
-  list: "import { List } from '@nerio/ui';\n\n<List items={[{ title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
+  list: "import { List } from '@nerio/ui';\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
 };
 
 export const sharedTokens = [
@@ -1279,7 +1280,11 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Wraps the client surface and configures limit/timeout.",
       },
       { title: "ToastViewport", description: "Portal target for managed toasts." },
-      { title: "useToastManager", description: "Adds neutral or semantic tone toast messages." },
+      {
+        title: "useToastManager",
+        description: "Adds semantic tone toast messages, including an optional action.",
+      },
+      { title: "dismissLabel", description: "Localizes the managed toast dismiss control." },
     ],
     guidance: {
       do: ["Confirm background events like saved, copied, or sent."],

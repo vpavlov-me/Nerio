@@ -60,7 +60,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       {...props}
     >
       {loading ? (
-        <Spinner size="sm" label={loadingLabel} />
+        <Spinner aria-hidden size="sm" label={loadingLabel} />
       ) : leadingIcon ? (
         <span data-slot="button-icon">
           <Icon icon={leadingIcon} />

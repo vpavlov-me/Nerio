@@ -213,14 +213,15 @@
   overflow: hidden;
 }
 
-.n-progress [role="progressbar"] span {
+.n-progress [data-slot="indicator"] {
   background: var(--n-progress-indicator-background);
   block-size: 100%;
   display: block;
   transition: inline-size var(--n-progress-duration) var(--n-progress-easing);
+  inline-size: var(--n-progress-value, 0%);
 }
 
-.n-progress [role="progressbar"][data-indeterminate] span {
+.n-progress [role="progressbar"][data-indeterminate] [data-slot="indicator"] {
   animation: n-progress-indeterminate var(--n-progress-indeterminate-duration)
     var(--n-progress-easing) infinite;
   inline-size: var(--n-progress-indeterminate-width);
@@ -237,7 +238,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .n-progress [role="progressbar"][data-indeterminate] span {
+  .n-progress [role="progressbar"][data-indeterminate] [data-slot="indicator"] {
     animation: none;
     inline-size: var(--n-progress-reduced-width);
   }

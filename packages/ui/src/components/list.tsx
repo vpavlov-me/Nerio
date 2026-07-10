@@ -2,10 +2,12 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 export type ListItem = {
+  id: React.Key;
   title: React.ReactNode;
   description?: React.ReactNode;
   meta?: React.ReactNode;
   href?: string;
+  linkProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
 };
@@ -36,47 +38,47 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
 
   return (
     <Root ref={setRef} className={cn("n-list", className)} data-slot="root" {...props}>
-      {items.map((item, index) => {
+      {items.map((item) => {
         const body = (
           <>
             {item.leading ? (
-              <span className="n-list__leading" data-slot="leading">
+              <div className="n-list__leading" data-slot="leading">
                 {item.leading}
-              </span>
+              </div>
             ) : null}
-            <span className="n-list__content" data-slot="content">
-              <span className="n-list__title" data-slot="title">
+            <div className="n-list__content" data-slot="content">
+              <div className="n-list__title" data-slot="title">
                 {item.title}
-              </span>
+              </div>
               {item.description ? (
-                <span className="n-list__description" data-slot="description">
+                <div className="n-list__description" data-slot="description">
                   {item.description}
-                </span>
+                </div>
               ) : null}
-            </span>
+            </div>
             {item.meta || item.trailing ? (
-              <span className="n-list__trailing" data-slot="trailing">
+              <div className="n-list__trailing" data-slot="trailing">
                 {item.meta ? (
-                  <span className="n-list__meta" data-slot="meta">
+                  <div className="n-list__meta" data-slot="meta">
                     {item.meta}
-                  </span>
+                  </div>
                 ) : null}
                 {item.trailing}
-              </span>
+              </div>
             ) : null}
           </>
         );
 
         return (
-          <li className="n-list__item" data-slot="item" key={`${index}`}>
+          <li className="n-list__item" data-slot="item" key={item.id}>
             {item.href ? (
-              <a className="n-list__link" data-slot="link" href={item.href}>
+              <a className="n-list__link" data-slot="link" href={item.href} {...item.linkProps}>
                 {body}
               </a>
             ) : (
-              <span className="n-list__body" data-slot="body">
+              <div className="n-list__body" data-slot="body">
                 {body}
-              </span>
+              </div>
             )}
           </li>
         );

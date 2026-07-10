@@ -30,8 +30,10 @@
     "data-density": "comfortable"
   },
   "statusValues": {
+    "draft": "Exploratory work exists but the public contract is not ready for use.",
     "planned": "Approved for the tier, not implemented yet.",
     "implemented-initial": "First implementation exists, and API or styling may still change.",
+    "polished": "Public API and presentation are implemented, but the complete stable-core verification evidence is not yet available.",
     "quality-pass-needed": "Component exists but still needs an API, accessibility, token, docs, and registry review before it can support Pro work.",
     "stable-core": "Component passed the Core quality checklist and can safely support future Pro components, templates, registry installs, and AI/MCP usage.",
     "future": "Expected later, not part of the first Core milestone."
@@ -277,8 +279,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "stable-core",
-      "description": "Surface primitive for grouped content."
+      "status": "polished",
+      "description": "Surface primitive for grouped content; semantic-root and heading-level contract has component coverage, with wider verification pending."
     },
     {
       "name": "Badge",
@@ -293,24 +295,24 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "stable-core",
-      "description": "User or entity avatar component."
+      "status": "polished",
+      "description": "User or entity avatar with image-error fallback coverage; broader cross-browser image verification remains."
     },
     {
       "name": "Table",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "stable-core",
-      "description": "Basic table for simple data display with an optional keyboard-scrollable responsive container."
+      "status": "polished",
+      "description": "Basic table with explicit keyboard-scroll region coverage; responsive overflow verification remains."
     },
     {
       "name": "List",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "stable-core",
-      "description": "Basic structured list primitive with optional descriptions, metadata, and native links."
+      "status": "polished",
+      "description": "Basic structured list with stable IDs and visible ordered markers; full link-renderer coverage remains."
     },
     {
       "name": "Separator",
@@ -349,16 +351,16 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "stable-core",
-      "description": "Temporary notification component with Base UI manager, viewport, tones, and dismiss control."
+      "status": "polished",
+      "description": "Managed toast action and localized dismiss API are implemented; full managed-stack interaction coverage remains."
     },
     {
       "name": "Progress",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "stable-core",
-      "description": "Progress indicator."
+      "status": "polished",
+      "description": "Progress has validated value normalization and ARIA ownership; expanded localization and motion coverage remains."
     },
     {
       "name": "Skeleton",
@@ -373,8 +375,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "stable-core",
-      "description": "Basic empty state component."
+      "status": "polished",
+      "description": "Basic empty state with configurable heading semantics; full action-composition coverage remains."
     },
     {
       "name": "Spinner",
@@ -405,8 +407,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "navigation",
-      "status": "stable-core",
-      "description": "Basic previous, next, and page navigation component without state ownership."
+      "status": "polished",
+      "description": "Link and button pagination modes are covered; custom router rendering verification remains."
     },
     {
       "name": "Sidebar Primitive",

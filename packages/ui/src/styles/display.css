@@ -173,6 +173,26 @@
   padding: 0;
 }
 
+.n-list:where(ol) {
+  counter-reset: n-list;
+}
+
+.n-list:where(ol) > .n-list__item {
+  align-items: start;
+  counter-increment: n-list;
+  display: grid;
+  gap: var(--n-list-item-gap);
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.n-list:where(ol) > .n-list__item::before {
+  color: var(--n-color-text-tertiary);
+  content: counter(n-list) ".";
+  font-size: var(--n-font-size-sm);
+  font-weight: var(--n-font-weight-medium);
+  padding-block: var(--n-list-item-padding);
+}
+
 .n-list__item {
   min-inline-size: 0;
 }

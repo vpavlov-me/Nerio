@@ -598,12 +598,14 @@ function Preview({ kind }: { kind: string }) {
             <List
               items={[
                 {
+                  id: "tokens",
                   title: "Tokens",
                   description: "CSS variable foundation for themes, modes, and density.",
                   href: "/docs/foundations/tokens",
                   meta: "Foundation",
                 },
                 {
+                  id: "components",
                   title: "Components",
                   description: "Composable Core primitives installed as source.",
                   href: "/docs/components/button",
@@ -626,9 +628,9 @@ function Preview({ kind }: { kind: string }) {
               previousHref="/docs/components/breadcrumbs"
               nextHref="/docs/components/list"
               pages={[
-                { label: "1", href: "/docs/components/breadcrumbs" },
-                { label: "2", href: "/docs/components/pagination", current: true },
-                { label: "3", href: "/docs/components/list" },
+                { key: "1", label: "1", href: "/docs/components/breadcrumbs" },
+                { key: "2", label: "2", href: "/docs/components/pagination", current: true },
+                { key: "3", label: "3", href: "/docs/components/list" },
               ]}
             />
           ) : null}

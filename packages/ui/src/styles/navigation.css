@@ -73,6 +73,20 @@
   text-decoration: none;
 }
 
+.n-pagination__control:where(button) {
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.n-pagination [data-slot="ellipsis"] {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  min-block-size: var(--n-pagination-item-size);
+  min-inline-size: var(--n-pagination-item-size);
+}
+
 .n-pagination__control:hover {
   background: var(--n-pagination-background-hover);
   color: var(--n-color-text-primary);
