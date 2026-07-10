@@ -33,7 +33,13 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(function
   const labelId = label ? `${generatedId}-label` : undefined;
 
   return (
-    <div ref={ref} className={cn("n-progress", className)} data-slot="root" style={style} {...props}>
+    <div
+      ref={ref}
+      className={cn("n-progress", className)}
+      data-slot="root"
+      style={style}
+      {...props}
+    >
       {label ? (
         <span id={labelId} data-slot="label">
           {label}

@@ -173,15 +173,23 @@ function PaginationControl({
   }
 
   if (!href) {
-    return <span className={className} data-slot={slot} aria-disabled="true" data-disabled="" {...props}>{children}</span>;
+    return (
+      <span className={className} data-slot={slot} aria-disabled="true" data-disabled="" {...props}>
+        {children}
+      </span>
+    );
   }
 
   if (render) {
-    return React.cloneElement(render, {
-      ...props,
-      className: cn(className, render.props.className),
-      href,
-    }, children);
+    return React.cloneElement(
+      render,
+      {
+        ...props,
+        className: cn(className, render.props.className),
+        href,
+      },
+      children,
+    );
   }
 
   return (

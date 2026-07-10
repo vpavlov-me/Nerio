@@ -16,7 +16,14 @@ export const Card = React.forwardRef<HTMLElement, CardProps>(function Card(
   { as: Component = "section", className, ...props },
   ref,
 ) {
-  return <Component ref={ref as React.Ref<never>} className={cn("n-card", className)} data-slot="card" {...props} />;
+  return (
+    <Component
+      ref={ref as React.Ref<never>}
+      className={cn("n-card", className)}
+      data-slot="card"
+      {...props}
+    />
+  );
 });
 
 export const CardHeader = React.forwardRef<HTMLDivElement, CardSectionProps>(function CardHeader(
@@ -33,7 +40,12 @@ export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(fu
   ref,
 ) {
   return (
-    <Component ref={ref as React.Ref<never>} className={cn("n-card__title", className)} data-slot="card-title" {...props} />
+    <Component
+      ref={ref as React.Ref<never>}
+      className={cn("n-card__title", className)}
+      data-slot="card-title"
+      {...props}
+    />
   );
 });
 

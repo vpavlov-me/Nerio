@@ -87,10 +87,11 @@ export const snippets: Record<string, string> = {
     'import { Popover } from \'@nerio/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
     'import { DropdownMenu } from \'@nerio/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
-  card: "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@nerio/ui';\n\n<Card as=\"article\">\n  <CardHeader>\n    <CardTitle as=\"h2\">Launch workspace</CardTitle>\n    <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>",
+  card: 'import { Card, CardContent, CardDescription, CardHeader, CardTitle } from \'@nerio/ui\';\n\n<Card as="article">\n  <CardHeader>\n    <CardTitle as="h2">Launch workspace</CardTitle>\n    <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
   separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
   avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
-  progress: "import { Progress } from '@nerio/ui';\n\n<Progress label=\"Completion\" value={68} valueText=\"68% complete\" />",
+  progress:
+    'import { Progress } from \'@nerio/ui\';\n\n<Progress label="Completion" value={68} valueText="68% complete" />',
   stat: 'import { Stat } from \'@nerio/ui\';\n\n<Stat label="Active projects" value="12" trend="+3 this week" />',
   "key-value":
     'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
@@ -1279,7 +1280,10 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Wraps the client surface and configures limit/timeout.",
       },
       { title: "ToastViewport", description: "Portal target for managed toasts." },
-      { title: "useToastManager", description: "Adds semantic tone toast messages, including an optional action." },
+      {
+        title: "useToastManager",
+        description: "Adds semantic tone toast messages, including an optional action.",
+      },
       { title: "dismissLabel", description: "Localizes the managed toast dismiss control." },
     ],
     guidance: {

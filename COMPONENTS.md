@@ -87,27 +87,27 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Data display
 
-| Component | Status      | Package     | Notes                                                                                  |
-| --------- | ----------- | ----------- | -------------------------------------------------------------------------------------- |
-| Card      | polished | `@nerio/ui` | Surface primitive with configurable root and heading semantics; broader verification remains |
-| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                    |
-| Avatar    | polished | `@nerio/ui` | User/entity avatar with image-error fallback; broader image verification remains |
-| Table     | polished | `@nerio/ui` | Basic table with explicit keyboard-scroll opt-in; responsive overflow verification remains |
-| List      | polished | `@nerio/ui` | Structured list with stable IDs and visible ordered markers; router rendering verification remains |
-| Separator | stable-core | `@nerio/ui` | Layout divider                                                                         |
-| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                   |
-| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                |
+| Component | Status      | Package     | Notes                                                                                              |
+| --------- | ----------- | ----------- | -------------------------------------------------------------------------------------------------- |
+| Card      | polished    | `@nerio/ui` | Surface primitive with configurable root and heading semantics; broader verification remains       |
+| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                |
+| Avatar    | polished    | `@nerio/ui` | User/entity avatar with image-error fallback; broader image verification remains                   |
+| Table     | polished    | `@nerio/ui` | Basic table with explicit keyboard-scroll opt-in; responsive overflow verification remains         |
+| List      | polished    | `@nerio/ui` | Structured list with stable IDs and visible ordered markers; router rendering verification remains |
+| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                     |
+| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                               |
+| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                            |
 
 ### Feedback
 
-| Component   | Status      | Package     | Notes                                                                             |
-| ----------- | ----------- | ----------- | --------------------------------------------------------------------------------- |
-| Alert       | stable-core | `@nerio/ui` | Inline feedback with persistent semantic context                                  |
-| Toast       | polished | `@nerio/ui` | Managed notification with action and localized dismiss API; full stack tests remain |
-| Progress    | polished | `@nerio/ui` | Progress with explicit ARIA ownership and value normalization; expanded motion tests remain |
-| Skeleton    | stable-core | `@nerio/ui` | Loading placeholder                                                               |
-| Empty State | polished | `@nerio/ui` | Basic empty state with configurable heading semantics; action-composition coverage remains |
-| Spinner     | stable-core | `@nerio/ui` | Loading indicator                                                                 |
+| Component   | Status      | Package     | Notes                                                                                       |
+| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------- |
+| Alert       | stable-core | `@nerio/ui` | Inline feedback with persistent semantic context                                            |
+| Toast       | polished    | `@nerio/ui` | Managed notification with action and localized dismiss API; full stack tests remain         |
+| Progress    | polished    | `@nerio/ui` | Progress with explicit ARIA ownership and value normalization; expanded motion tests remain |
+| Skeleton    | stable-core | `@nerio/ui` | Loading placeholder                                                                         |
+| Empty State | polished    | `@nerio/ui` | Basic empty state with configurable heading semantics; action-composition coverage remains  |
+| Spinner     | stable-core | `@nerio/ui` | Loading indicator                                                                           |
 
 ### Navigation and layout
 
@@ -115,7 +115,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | ----------------- | ----------- | ----------- | ----------------------------------------------------------------------------------------- |
 | Tabs              | stable-core | `@nerio/ui` | Basic tabs with first-enabled default selection, disabled tabs, controlled state, and ref |
 | Breadcrumbs       | stable-core | `@nerio/ui` | Hierarchy navigation with ordered list semantics and explicit current-page support        |
-| Pagination        | polished | `@nerio/ui` | Link and button pagination with consumer-owned state; router rendering coverage remains |
+| Pagination        | polished    | `@nerio/ui` | Link and button pagination with consumer-owned state; router rendering coverage remains   |
 | Sidebar Primitive | planned     | `@nerio/ui` | Layout primitive only                                                                     |
 | Command Primitive | planned     | `@nerio/ui` | Basic command structure                                                                   |
 

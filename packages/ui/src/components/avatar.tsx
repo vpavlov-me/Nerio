@@ -16,13 +16,14 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
 ) {
   const [imageFailed, setImageFailed] = React.useState(false);
   const normalizedName = name.trim().replace(/\s+/g, " ");
-  const initials = normalizedName
-    .split(" ")
-    .filter(Boolean)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "?";
+  const initials =
+    normalizedName
+      .split(" ")
+      .filter(Boolean)
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "?";
 
   return (
     <span
