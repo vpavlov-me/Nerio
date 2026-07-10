@@ -18,5 +18,7 @@ export const IconButton = React.forwardRef<HTMLElement, IconButtonProps>(functio
   { icon, label, variant = "secondary", ...props },
   ref,
 ) {
-  return <Button ref={ref} aria-label={label} icon={icon} variant={variant} {...props} />;
+  return (
+    <Button ref={ref} {...({ ...props, "aria-label": label, icon, variant } as ButtonProps)} />
+  );
 });

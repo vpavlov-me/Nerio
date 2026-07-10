@@ -44,15 +44,17 @@ export function ToastProvider({
 
 export function ToastViewport({
   className,
+  dismissText = "Dismiss",
   dismissLabel = "Dismiss notification",
 }: {
   className?: string;
+  dismissText?: string;
   dismissLabel?: string;
 }) {
   return (
     <BaseToast.Portal>
       <BaseToast.Viewport className={cn("n-toast-viewport", className)} data-slot="viewport">
-        <ToastList dismissLabel={dismissLabel} />
+        <ToastList dismissText={dismissText} dismissLabel={dismissLabel} />
       </BaseToast.Viewport>
     </BaseToast.Portal>
   );
@@ -76,7 +78,7 @@ export function Toast({ title, description, tone = "neutral", className, ...prop
   );
 }
 
-function ToastList({ dismissLabel }: { dismissLabel: string }) {
+function ToastList({ dismissText, dismissLabel }: { dismissText: string; dismissLabel: string }) {
   const { toasts } = BaseToast.useToastManager<ToastData>();
 
   return toasts.map((toast) => {
@@ -108,7 +110,7 @@ function ToastList({ dismissLabel }: { dismissLabel: string }) {
             </BaseToast.Action>
           ) : null}
           <BaseToast.Close className="n-toast__close" data-slot="close" aria-label={dismissLabel}>
-            Dismiss
+            {dismissText}
           </BaseToast.Close>
         </BaseToast.Content>
       </BaseToast.Root>

@@ -1,6 +1,6 @@
 "use client";
 export { Button } from "./components/button";
-export type { ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
+export type { ButtonKbd, ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
 export { motionClasses, type MotionClassName } from "./lib/motion";
 export { Link, type LinkProps, type LinkVariant } from "./components/link";
 export { Icon } from "./components/icon";

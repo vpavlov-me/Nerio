@@ -119,7 +119,11 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     related: ["Button", "Tooltip", "Tokens"],
     anatomy: ["kbd"],
     motion: ["none"],
-    accessibility: ["native kbd semantics", "supplemental shortcut notation"],
+    accessibility: [
+      "native kbd semantics",
+      "supplemental shortcut notation",
+      "use aria-keyshortcuts for functional shortcuts",
+    ],
   },
   typography: {
     name: "Typography",
@@ -399,7 +403,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "kbd",
         description:
-          "Pass a Kbd element to display a quiet shortcut hint after the visible action label.",
+          "Pass text, a number, or a Kbd element to display a quiet shortcut hint after the visible action label. Add aria-keyshortcuts separately for functional shortcuts.",
       },
       {
         title: "tooltip",
@@ -1317,7 +1321,11 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "useToastManager",
         description: "Adds semantic tone toast messages, including an optional action.",
       },
-      { title: "dismissLabel", description: "Localizes the managed toast dismiss control." },
+      { title: "dismissText", description: "Localizes the visible managed toast dismiss text." },
+      {
+        title: "dismissLabel",
+        description: "Localizes the managed toast dismiss accessible name.",
+      },
     ],
     guidance: {
       do: ["Confirm background events like saved, copied, or sent."],
@@ -1371,7 +1379,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Keep heading order and actions explicit inside the card.",
-      "Use href when the full Card has one clear destination; it renders a native anchor.",
+      "Use href when the full Card has one clear destination; it renders a native anchor. Do not nest interactive controls in a linked Card.",
     ],
     api: [
       { title: "as", description: "section, article, or div semantic wrapper." },
@@ -1795,7 +1803,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Hidden", description: "Dismisses when trigger loses hover or focus." },
     ],
     accessibility: [
-      "Tooltips must support keyboard focus and must not contain required instructions.",
+      "Tooltip triggers must be elements; prefer keyboard-focusable controls and do not put required instructions in tooltip content.",
       "Use disabled when a tooltip should be suppressed for a disabled or unavailable trigger.",
     ],
     api: [

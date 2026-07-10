@@ -28,12 +28,41 @@ import {
   Select,
   Switch,
   Tabs,
+  Tooltip,
   Toast,
   ToastProvider,
   ToastViewport,
   useToastManager,
 } from "../../src/client";
 import { Bell } from "@nerio/adapters";
+
+// Compile-time public API contracts. These must fail if Button or Card modes regress.
+// @ts-expect-error empty Button requires visible children or icon-only mode
+const invalidEmptyButton = <Button />;
+// @ts-expect-error icon-only Button requires an accessible name
+const invalidUnnamedIconButton = <Button icon={Bell} />;
+// @ts-expect-error icon-only Button cannot include visible children
+const invalidMixedIconButton = (
+  <Button icon={Bell} aria-label="Notifications">
+    Notifications
+  </Button>
+);
+// @ts-expect-error icon-only Button cannot receive directional icon props
+const invalidDirectionalIconButton = (
+  <Button icon={Bell} aria-label="Notifications" leadingIcon={Bell} />
+);
+// @ts-expect-error Button shortcuts only accept text, numbers, or Nerio Kbd elements
+const invalidButtonKbd = <Button kbd={<span>⌘K</span>}>Search</Button>;
+// @ts-expect-error linked Cards cannot also choose a surface root
+const invalidLinkedCard = <Card href="/docs" as="article" />;
+void [
+  invalidEmptyButton,
+  invalidUnnamedIconButton,
+  invalidMixedIconButton,
+  invalidDirectionalIconButton,
+  invalidButtonKbd,
+  invalidLinkedCard,
+];
 
 describe("Core static contracts", () => {
   it("renders Kbd with a native semantic element and a stable styling hook", () => {
@@ -371,6 +400,82 @@ describe("Core interactive action contracts", () => {
     const iconButton = screen.getByRole("button", { name: "Open notifications" });
     expect(iconButton).toHaveAttribute("data-icon-only", "true");
     expect(iconButton.querySelector("[data-slot=button-label]")).not.toBeInTheDocument();
+  });
+
+  it("normalizes deprecated Button variants and protects Button-owned state attributes", () => {
+    render(
+      <>
+        <Button variant="subtle" data-variant="consumer">
+          Subtle
+        </Button>
+        <Button variant="destructive">Destructive</Button>
+        <Button loading data-loading="consumer" aria-busy={false}>
+          Save
+        </Button>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Subtle" })).toHaveAttribute(
+      "data-variant",
+      "secondary",
+    );
+    expect(screen.getByRole("button", { name: "Destructive" })).toHaveAttribute(
+      "data-variant",
+      "danger",
+    );
+    expect(screen.getByRole("button", { name: "Save" })).toHaveAttribute("data-loading", "true");
+    expect(screen.getByRole("button", { name: "Save" })).toHaveAttribute("aria-busy", "true");
+  });
+
+  it("only treats Nerio Kbd elements as Button shortcuts", () => {
+    render(
+      <Button kbd={<Kbd>⌘S</Kbd>} aria-keyshortcuts="Meta+S">
+        Save
+      </Button>,
+    );
+    const button = screen.getByRole("button", { name: "Save" });
+    expect(button.querySelector("[data-slot=button-kbd]")?.tagName).toBe("KBD");
+    expect(button.querySelector("[data-slot=button-kbd]")).toHaveAttribute("aria-hidden", "true");
+    expect(button).toHaveAttribute("aria-keyshortcuts", "Meta+S");
+  });
+
+  it("protects Card anatomy while preserving native anchor attributes", () => {
+    render(
+      <Card
+        href="/download"
+        download
+        hrefLang="en"
+        referrerPolicy="no-referrer"
+        {...({ "data-slot": "consumer", "data-variant": "consumer" } as Record<string, string>)}
+      >
+        Download
+      </Card>,
+    );
+    const card = screen.getByRole("link", { name: "Download" });
+    expect(card).toHaveAttribute("download");
+    expect(card).toHaveAttribute("hreflang", "en");
+    expect(card).toHaveAttribute("referrerpolicy", "no-referrer");
+    expect(card).toHaveAttribute("data-slot", "card");
+    expect(card).toHaveAttribute("data-variant", "default");
+  });
+
+  it("requires an element Tooltip trigger and supports focus, controlled state, and disabled state", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    const { rerender } = render(
+      <Tooltip label="Copy link" onOpenChange={onOpenChange}>
+        <button>Copy</button>
+      </Tooltip>,
+    );
+    await user.tab();
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Copy link");
+    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
+    rerender(
+      <Tooltip label="Copy link" open={false} disabled>
+        <button>Copy</button>
+      </Tooltip>,
+    );
+    await user.hover(screen.getByRole("button", { name: "Copy" }));
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 
   it("shows an optional tooltip for an icon-only Button", async () => {

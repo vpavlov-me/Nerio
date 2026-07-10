@@ -10,7 +10,8 @@ export interface TooltipProps extends Pick<
   "defaultOpen" | "disabled" | "onOpenChange" | "open"
 > {
   label: React.ReactNode;
-  children: React.ReactNode;
+  /** A focusable element is recommended so keyboard users can discover the tooltip. */
+  children: React.ReactElement;
   className?: string;
   delay?: number;
 }
@@ -19,8 +20,6 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
   { label, children, className, open, defaultOpen, onOpenChange, disabled, delay },
   ref,
 ) {
-  const trigger = React.isValidElement(children) ? children : <span>{children}</span>;
-
   return (
     <BaseTooltip.Provider>
       <BaseTooltip.Root
@@ -29,7 +28,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
         onOpenChange={onOpenChange}
         disabled={disabled}
       >
-        <BaseTooltip.Trigger delay={delay} render={trigger} />
+        <BaseTooltip.Trigger delay={delay} render={children} />
         <BaseTooltip.Portal>
           <BaseTooltip.Positioner className="n-tooltip-positioner">
             <BaseTooltip.Popup

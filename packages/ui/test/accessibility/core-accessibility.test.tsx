@@ -82,7 +82,7 @@ describe("Core accessibility contracts", () => {
       );
     }
     const user = userEvent.setup();
-    const { container } = render(
+    render(
       <ToastProvider>
         <Dialog trigger="Open settings" title="Settings" description="Configure preferences.">
           Dialog body
@@ -91,8 +91,12 @@ describe("Core accessibility contracts", () => {
         <ToastViewport />
       </ToastProvider>,
     );
+    await user.click(screen.getByRole("button", { name: "Open settings" }));
+    await screen.findByRole("dialog", { name: "Settings" });
+    expect((await axe(document.body)).violations).toEqual([]);
+    await user.click(screen.getByRole("button", { name: "Close dialog" }));
     await user.click(screen.getByRole("button", { name: "Show toast" }));
     await screen.findByRole("button", { name: "Undo" });
-    expect((await axe(container)).violations).toEqual([]);
+    expect((await axe(document.body)).violations).toEqual([]);
   });
 });
