@@ -135,6 +135,10 @@ const themeOptions = [
   { label: "Neutral", value: "neutral" },
 ];
 
+function getThemeDotColor(theme: string) {
+  return theme === "neutral" ? "var(--n-color-text-secondary)" : `var(--n-${theme}-600)`;
+}
+
 type TocItem = {
   id: string;
   label: string;
@@ -824,7 +828,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                 <button className="docs-theme-trigger" type="button">
                   <span
                     className="theme-option-dot"
-                    style={{ backgroundColor: `var(--n-${theme}-600)` }}
+                    style={{ backgroundColor: getThemeDotColor(theme) }}
                     aria-hidden
                   />
                   <span>{themeOptions.find((option) => option.value === theme)?.label}</span>
@@ -836,7 +840,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                   <span className="theme-menu-item">
                     <span
                       className="theme-option-dot"
-                      style={{ backgroundColor: `var(--n-${option.value}-600)` }}
+                      style={{ backgroundColor: getThemeDotColor(option.value) }}
                       aria-hidden
                     />
                     <span>{option.label}</span>

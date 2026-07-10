@@ -48,7 +48,7 @@ const primitiveColors = [
   ["green-600", "--n-green-600"],
   ["orange-600", "--n-orange-600"],
   ["red-600", "--n-red-600"],
-];
+] as const;
 
 const primitiveScales = [
   ["Spacing", "--n-space-4", "16px on the comfortable scale"],
@@ -72,7 +72,7 @@ const semanticTokens = [
   ["Secondary text", "--n-color-text-secondary"],
   ["Subtle border", "--n-color-border-subtle"],
   ["Primary action", "--n-color-action-primary"],
-];
+] as const;
 
 const semanticAliases = [
   ["Control radius", "--n-radius-control", "--n-radius-md"],
@@ -150,15 +150,28 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="primitive-tokens">Primitive tokens</h2>
-        <div className="swatch-grid">
-          {primitiveColors.map(([label, token]) => (
-            <div key={token} className="swatch">
-              <span style={{ background: `var(${token})` }} />
-              <strong>{label}</strong>
-              <code>{token}</code>
-            </div>
-          ))}
-        </div>
+        <Table className="token-color-table">
+          <thead>
+            <tr>
+              <th>Color</th>
+              <th>Token</th>
+              <th>Preview</th>
+            </tr>
+          </thead>
+          <tbody>
+            {primitiveColors.map(([label, token]) => (
+              <tr key={token}>
+                <td>{label}</td>
+                <td>
+                  <code>{token}</code>
+                </td>
+                <td>
+                  <span className="token-color-swatch" style={{ background: `var(${token})` }} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
         <Table>
           <thead>
             <tr>
@@ -183,15 +196,28 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="semantic-tokens">Semantic tokens</h2>
-        <div className="token-table">
-          {semanticTokens.map(([label, token]) => (
-            <div key={token}>
-              <span className="semantic-swatch" style={{ background: `var(${token})` }} />
-              <strong>{label}</strong>
-              <code>{token}</code>
-            </div>
-          ))}
-        </div>
+        <Table className="token-color-table">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Token</th>
+              <th>Preview</th>
+            </tr>
+          </thead>
+          <tbody>
+            {semanticTokens.map(([label, token]) => (
+              <tr key={token}>
+                <td>{label}</td>
+                <td>
+                  <code>{token}</code>
+                </td>
+                <td>
+                  <span className="token-color-swatch" style={{ background: `var(${token})` }} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
         <Table>
           <thead>
             <tr>
