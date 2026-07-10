@@ -10,10 +10,12 @@ import {
   Breadcrumbs,
   Button,
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  CardVisual,
   Checkbox,
   Code,
   Dialog,
@@ -24,6 +26,7 @@ import {
   FormMessage,
   Heading,
   Input,
+  Icon,
   KeyValue,
   Kbd,
   Label,
@@ -574,16 +577,38 @@ function Preview({ kind }: { kind: string }) {
             />
           ) : null}
           {kind === "card" ? (
-            <Card className="preview-card">
-              <CardHeader>
-                <Badge variant="info">Active</Badge>
-                <CardTitle>Launch workspace</CardTitle>
-                <CardDescription>
-                  Plan assets, owners, and milestones in one focused surface.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>12 active tasks across three owners.</CardContent>
-            </Card>
+            <div className="preview-card-grid">
+              <Card className="preview-card">
+                <CardVisual>
+                  <Icon icon={Circle} />
+                </CardVisual>
+                <CardHeader>
+                  <div>
+                    <CardTitle>Launch workspace</CardTitle>
+                    <CardDescription>Assets, owners, and milestones.</CardDescription>
+                  </div>
+                  <CardAction>
+                    <Badge variant="info">Active</Badge>
+                  </CardAction>
+                </CardHeader>
+                <CardContent>12 active tasks across three owners.</CardContent>
+              </Card>
+              <Card className="preview-card">
+                <CardVisual placement="bleed" className="preview-card-visual">
+                  Product update
+                </CardVisual>
+                <CardHeader>
+                  <CardTitle>Weekly report</CardTitle>
+                  <CardDescription>Shared with the workspace.</CardDescription>
+                </CardHeader>
+              </Card>
+              <Card href="/docs/components/card" className="preview-card" variant="secondary">
+                <CardHeader>
+                  <CardTitle>Card guidance</CardTitle>
+                  <CardDescription>One clear destination.</CardDescription>
+                </CardHeader>
+              </Card>
+            </div>
           ) : null}
           {kind === "separator" ? (
             <div className="form-preview-stack">

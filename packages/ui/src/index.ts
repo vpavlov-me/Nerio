@@ -34,11 +34,14 @@ export {
 export { FormGroup, type FormGroupProps } from "./components/form-group";
 export {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
+  CardVisual,
+  type CardActionProps,
   type CardDescriptionProps,
   type CardElement,
   type CardProps,
@@ -46,6 +49,8 @@ export {
   type CardSectionProps,
   type CardTitleElement,
   type CardTitleProps,
+  type CardVisualPlacement,
+  type CardVisualProps,
 } from "./components/card";
 export { Separator, type SeparatorProps } from "./components/separator";
 export { Avatar, type AvatarProps } from "./components/avatar";

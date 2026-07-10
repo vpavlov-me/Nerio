@@ -5,7 +5,11 @@ import { describe, expect, it, vi } from "vitest";
 import {
   Avatar,
   Card,
+  CardAction,
+  CardContent,
+  CardHeader,
   CardTitle,
+  CardVisual,
   EmptyState,
   Field,
   Input,
@@ -23,6 +27,7 @@ import {
   Button,
   Checkbox,
   Dialog,
+  DropdownMenu,
   Popover,
   RadioGroup,
   Select,
@@ -131,6 +136,41 @@ describe("Core static contracts", () => {
     const card = screen.getByRole("link", { name: "Link documentation" });
     expect(card).toHaveAttribute("href", "/docs/components/link");
     expect(card).toHaveAttribute("data-variant", "secondary");
+  });
+
+  it("provides controlled visual and header-action Card anatomy", () => {
+    render(
+      <Card>
+        <CardVisual>Workspace icon</CardVisual>
+        <CardHeader>
+          <div>
+            <CardTitle>Workspace</CardTitle>
+          </div>
+          <CardAction>Active</CardAction>
+        </CardHeader>
+        <CardContent>Overview</CardContent>
+      </Card>,
+    );
+    expect(screen.getByText("Workspace icon")).toHaveAttribute("data-slot", "card-visual");
+    expect(screen.getByText("Workspace icon")).toHaveAttribute("data-placement", "inset");
+    expect(screen.getByText("Active")).toHaveAttribute("data-slot", "card-action");
+    expect(screen.getByText("Workspace")).toHaveAttribute("data-slot", "card-title");
+  });
+
+  it("supports a bleed CardVisual while protecting Card-owned anatomy", () => {
+    render(
+      <Card>
+        <CardVisual
+          placement="bleed"
+          {...({ "data-slot": "consumer", "data-placement": "consumer" } as Record<string, string>)}
+        >
+          Preview
+        </CardVisual>
+      </Card>,
+    );
+    const visual = screen.getByText("Preview");
+    expect(visual).toHaveAttribute("data-slot", "card-visual");
+    expect(visual).toHaveAttribute("data-placement", "bleed");
   });
 
   it("resets Avatar fallback state when src changes and exposes intentional fallback names", () => {
@@ -501,6 +541,36 @@ describe("Core interactive action contracts", () => {
     expect(trigger).toHaveFocus();
   });
 
+  it("keeps controlled Dialog state consumer-owned and exposes its associations", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    function ControlledDialog() {
+      const [open, setOpen] = React.useState(false);
+      return (
+        <Dialog
+          trigger="Open controlled dialog"
+          title="Controlled settings"
+          description="Managed by the consumer."
+          open={open}
+          onOpenChange={(nextOpen, details) => {
+            onOpenChange(nextOpen, details);
+            setOpen(nextOpen);
+          }}
+        >
+          Settings body
+        </Dialog>
+      );
+    }
+    render(<ControlledDialog />);
+    await user.click(screen.getByRole("button", { name: "Open controlled dialog" }));
+    const dialog = await screen.findByRole("dialog", { name: "Controlled settings" });
+    expect(dialog).toHaveAttribute("aria-describedby");
+    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
+  });
+
   it("supports controlled Select values, labels, descriptions, and invalid state", () => {
     render(
       <Select
@@ -541,6 +611,38 @@ describe("Core interactive action contracts", () => {
       "aria-disabled",
       "true",
     );
+  });
+
+  it("selects enabled options, skips disabled options, and keeps controlled Select values consumer-owned", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    function ControlledSelect() {
+      const [value, setValue] = React.useState("draft");
+      return (
+        <Select
+          label="Publication status"
+          value={value}
+          onValueChange={(nextValue) => {
+            onValueChange(nextValue);
+            setValue(nextValue);
+          }}
+          options={[
+            { label: "Draft", value: "draft" },
+            { label: "Archived", value: "archived", disabled: true },
+            { label: "Published", value: "published" },
+          ]}
+        />
+      );
+    }
+    render(<ControlledSelect />);
+    const trigger = screen.getByRole("combobox", { name: "Publication status" });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    await screen.findByRole("option", { name: "Published" });
+    await user.click(screen.getByRole("option", { name: "Published" }));
+    expect(onValueChange).toHaveBeenCalledWith("published");
+    expect(trigger).toHaveTextContent("Published");
+    expect(screen.queryByRole("option")).not.toBeInTheDocument();
   });
 
   it("supports checkbox, radio group, and switch state contracts", async () => {
@@ -626,5 +728,64 @@ describe("Core interactive action contracts", () => {
     await user.keyboard("{ArrowRight}");
     await user.keyboard("{Enter}");
     expect(onChange).toHaveBeenCalledWith("activity");
+  });
+
+  it("keeps controlled Tabs selection consumer-owned with stable tab and panel relationships", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    function ControlledTabs() {
+      const [value, setValue] = React.useState("overview");
+      return (
+        <Tabs
+          value={value}
+          onValueChange={(nextValue) => {
+            onValueChange(nextValue);
+            setValue(nextValue);
+          }}
+          tabs={[
+            { label: "Overview", value: "overview", content: "Overview panel" },
+            { label: "Activity", value: "activity", content: "Activity panel" },
+          ]}
+        />
+      );
+    }
+    render(<ControlledTabs />);
+    const overview = screen.getByRole("tab", { name: "Overview" });
+    const activity = screen.getByRole("tab", { name: "Activity" });
+    expect(overview).toHaveAttribute("aria-controls");
+    await user.click(activity);
+    expect(onValueChange).toHaveBeenCalledWith("activity");
+    const panel = screen.getByRole("tabpanel");
+    expect(activity).toHaveAttribute("aria-controls", panel.id);
+    expect(panel).toHaveTextContent("Activity panel");
+  });
+
+  it("opens DropdownMenu with the keyboard, skips disabled items, and restores trigger focus", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const onOpenChange = vi.fn();
+    render(
+      <DropdownMenu
+        trigger="Actions"
+        onOpenChange={onOpenChange}
+        items={[
+          { label: "Rename", onSelect },
+          { label: "Unavailable", disabled: true },
+          { label: "Archive", destructive: true, onSelect },
+        ]}
+      />,
+    );
+    const trigger = screen.getByRole("button", { name: "Actions" });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(await screen.findByRole("menu")).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: "Unavailable" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
+    expect(onSelect).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(trigger).toHaveFocus();
   });
 });

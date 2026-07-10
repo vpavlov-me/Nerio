@@ -191,6 +191,38 @@
       "usage": "import { Settings } from '@nerio/adapters';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
     },
     {
+      "name": "icon-button",
+      "title": "IconButton",
+      "description": "Deprecated compatibility wrapper for Button icon-only mode.",
+      "category": "actions",
+      "deprecated": true,
+      "replacement": "button",
+      "dependencies": ["react"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/icon-button.tsx",
+          "target": "components/icon-button.tsx",
+          "role": "component"
+        }
+      ],
+      "baseUiPrimitives": ["button"],
+      "slots": ["button"],
+      "variants": ["inherits Button variants"],
+      "requiredTokens": [
+        "--n-button-height-sm",
+        "--n-button-height-md",
+        "--n-button-height-lg",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Requires a label and forwards it as the accessible name for Button icon-only mode.",
+        "Deprecated compatibility wrapper: use Button with icon and aria-label in new code.",
+        "This registry item remains installable until the next major release."
+      ],
+      "usage": "import { Settings } from '@nerio/adapters';\nimport { Button } from '@/components/nerio/components/button';\n\n// Preferred replacement\n<Button icon={Settings} aria-label=\"Workspace settings\" />"
+    },
+    {
       "name": "link",
       "title": "Link",
       "description": "Styles native anchors for inline text and navigation.",
@@ -486,15 +518,19 @@
       "baseUiPrimitives": [],
       "slots": [
         "card",
+        "card-visual",
         "card-header",
         "card-title",
         "card-description",
+        "card-action",
         "card-content",
         "card-footer"
       ],
       "variants": ["default", "secondary"],
       "requiredTokens": [
         "--n-card-padding",
+        "--n-card-padding-inline",
+        "--n-card-padding-block",
         "--n-card-gap",
         "--n-card-radius",
         "--n-card-background-secondary",
@@ -507,10 +543,12 @@
       "accessibility": [
         "Use Card to group related content, not to decorate every section.",
         "Provide semantic headings inside cards when the content needs structure.",
+        "Use CardVisual for icons, avatars, logos, previews, and media; only bleed placement reaches the card edge.",
+        "Use CardAction only in a surface Card. Linked Cards cannot contain interactive descendants.",
         "Avoid nesting cards inside cards.",
         "Use href for a whole-card destination; it renders a native anchor with hover and focus feedback. Do not place interactive descendants inside a linked Card."
       ],
-      "usage": "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/nerio/components/card';\n\n<Card>\n  <CardHeader>\n    <CardTitle>Project summary</CardTitle>\n    <CardDescription>Current status, owner, and next action.</CardDescription>\n  </CardHeader>\n  <CardContent>Ready for review</CardContent>\n</Card>"
+      "usage": "import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, CardVisual } from '@/components/nerio/components/card';\n\n<Card>\n  <CardVisual>...</CardVisual>\n  <CardHeader>\n    <div>\n      <CardTitle>Project summary</CardTitle>\n      <CardDescription>Current status, owner, and next action.</CardDescription>\n    </div>\n    <CardAction>...</CardAction>\n  </CardHeader>\n  <CardContent>Ready for review</CardContent>\n</Card>"
     },
     {
       "name": "separator",

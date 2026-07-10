@@ -188,6 +188,7 @@ async function verify() {
     const listOutput = await run(localTarget, "list");
     if (
       !listOutput.includes("button\tButton\tactions") ||
+      !listOutput.includes("icon-button\tIconButton\tactions") ||
       !listOutput.includes("alert\tAlert\tfeedback") ||
       !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation")
     ) {
@@ -204,6 +205,10 @@ async function verify() {
     ) {
       throw new Error("Info output did not include the expected registry metadata.");
     }
+    const cardInfoOutput = await run(localTarget, "info", "card");
+    if (!cardInfoOutput.includes("--n-card-padding-inline")) {
+      throw new Error("Card registry metadata did not include the spacing contract.");
+    }
     const dryRunOutput = await run(localTarget, "add", "input", "--dry-run");
     if (
       !dryRunOutput.includes("Would add Input") ||
@@ -212,6 +217,7 @@ async function verify() {
       throw new Error("Dry run output did not describe the input install plan.");
     }
     await run(localTarget, "add", "button");
+    await run(localTarget, "add", "icon-button");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
     await run(localTarget, "add", "field");

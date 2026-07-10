@@ -45,6 +45,19 @@ async function verify() {
       throw new Error("MCP get_component_usage did not include Kbd token metadata.");
     }
 
+    const cardUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "card" },
+    });
+    const cardUsage = JSON.parse(cardUsageResult.content[0].text);
+    if (
+      !cardUsage.slots.includes("card-visual") ||
+      !cardUsage.slots.includes("card-action") ||
+      !cardUsage.requiredTokens.includes("--n-card-padding-inline")
+    ) {
+      throw new Error("MCP Card usage is missing the visual, action, or spacing contract.");
+    }
+
     const fieldUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "field" },
@@ -294,6 +307,7 @@ async function verify() {
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [
       "button",
+      "icon-button",
       "dialog",
       "select",
       "tabs",

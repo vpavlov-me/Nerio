@@ -29,6 +29,7 @@ Keep these files aligned when component scope changes.
 - `polished`: public API and presentation are implemented, but the complete stable-core verification evidence is not yet available.
 - `quality-pass-needed`: component exists but still needs an API, accessibility, token, docs, and registry review before it can support Pro work.
 - `stable-core`: component passed the Core quality checklist and can safely support future Pro components, templates, registry installs, and AI/MCP usage.
+- `deprecated-compatibility`: public wrapper retained only for migration; new work must use its documented replacement.
 - `future`: expected later, not part of the current milestone.
 
 Do not mark a component as `stable-core` until the Core quality checklist is satisfied across API, accessibility, tokens, docs, registry metadata, and validation.
@@ -55,10 +56,11 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Actions
 
-| Component | Status      | Package     | Notes                                                                          |
-| --------- | ----------- | ----------- | ------------------------------------------------------------------------------ |
-| Button    | stable-core | `@nerio/ui` | Variants, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip |
-| Link      | stable-core | `@nerio/ui` | Styled native-anchor primitive                                                 |
+| Component  | Status                   | Package            | Notes                                                                               |
+| ---------- | ------------------------ | ------------------ | ----------------------------------------------------------------------------------- |
+| Button     | stable-core              | `@nerio/ui`        | Variants, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip      |
+| IconButton | deprecated-compatibility | `@nerio/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release |
+| Link       | stable-core              | `@nerio/ui`        | Styled native-anchor primitive                                                      |
 
 ### Forms
 
@@ -87,16 +89,16 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Data display
 
-| Component | Status      | Package     | Notes                                                                                              |
-| --------- | ----------- | ----------- | -------------------------------------------------------------------------------------------------- |
-| Card      | polished    | `@nerio/ui` | Surface primitive with configurable root and heading semantics; broader verification remains       |
-| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                |
-| Avatar    | polished    | `@nerio/ui` | User/entity avatar with image-error fallback; broader image verification remains                   |
-| Table     | polished    | `@nerio/ui` | Basic table with explicit keyboard-scroll opt-in; responsive overflow verification remains         |
-| List      | polished    | `@nerio/ui` | Structured list with stable IDs and visible ordered markers; router rendering verification remains |
-| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                     |
-| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                               |
-| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                            |
+| Component | Status      | Package     | Notes                                                                                                                       |
+| --------- | ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Card      | polished    | `@nerio/ui` | Composable surface with visual placement, header action, semantic root, and heading contracts; browser verification remains |
+| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                                         |
+| Avatar    | polished    | `@nerio/ui` | User/entity avatar with image-error fallback; broader image verification remains                                            |
+| Table     | polished    | `@nerio/ui` | Basic table with explicit keyboard-scroll opt-in; responsive overflow verification remains                                  |
+| List      | polished    | `@nerio/ui` | Structured list with stable IDs and visible ordered markers; router rendering verification remains                          |
+| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                                              |
+| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                                                        |
+| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                                                     |
 
 ### Feedback
 

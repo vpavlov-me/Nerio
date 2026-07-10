@@ -147,6 +147,16 @@
       "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, and icon-only mode."
     },
     {
+      "name": "IconButton",
+      "tier": "core",
+      "package": "@nerio/ui/client",
+      "category": "actions",
+      "status": "deprecated-compatibility",
+      "deprecated": true,
+      "replacement": "Button",
+      "description": "Deprecated compatibility wrapper for Button icon-only mode; retained until the next major release."
+    },
+    {
       "name": "Link",
       "tier": "core",
       "package": "@nerio/ui",
@@ -280,7 +290,7 @@
       "package": "@nerio/ui",
       "category": "data-display",
       "status": "polished",
-      "description": "Surface primitive for grouped content; semantic-root and heading-level contract has component coverage, with wider verification pending."
+      "description": "Composable surface primitive with semantic roots, visual placements, header actions, and tokenized section spacing; broader browser verification remains pending."
     },
     {
       "name": "Badge",

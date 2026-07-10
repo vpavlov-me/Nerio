@@ -1027,6 +1027,25 @@ pre {
   margin: 0;
 }
 
+.preview-card-grid {
+  display: grid;
+  gap: var(--n-space-3);
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  inline-size: 100%;
+}
+
+.preview-card-grid .preview-card {
+  inline-size: auto;
+}
+
+.preview-card-visual {
+  background: var(--n-color-surface-muted);
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+  min-block-size: 4.5rem;
+  padding: var(--n-space-3) var(--n-card-padding-inline);
+}
+
 .composition-preview {
   background: var(--n-color-surface);
   border: var(--n-border-subtle);
