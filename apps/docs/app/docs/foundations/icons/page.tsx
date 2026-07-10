@@ -40,9 +40,9 @@ const iconSizes = [
 const componentSizes = [
   ["Inline icon", "--n-icon-inline-size", "1em"],
   ["Button icon", "--n-button-icon-size", "--n-icon-size-md"],
-  ["Small icon button", "--n-icon-button-icon-size-sm", "--n-icon-size-md"],
-  ["Medium icon button", "--n-icon-button-icon-size-md", "--n-icon-size-lg"],
-  ["Large icon button", "--n-icon-button-icon-size-lg", "--n-icon-size-xl"],
+  ["Small icon-only Button", "--n-icon-button-icon-size-sm", "--n-icon-size-md"],
+  ["Medium icon-only Button", "--n-icon-button-icon-size-md", "--n-icon-size-lg"],
+  ["Large icon-only Button", "--n-icon-button-icon-size-lg", "--n-icon-size-xl"],
 ] as const;
 
 function CustomLogoIcon({
@@ -69,10 +69,10 @@ function CustomLogoIcon({
 
 const usage = `import { Search } from '@nerio/adapters';
 import { Icon } from '@nerio/ui';
-import { IconButton } from '@nerio/ui/client';
+import { Button } from '@nerio/ui/client';
 
 <Icon icon={Search} />
-<IconButton icon={Search} label="Search workspace" />`;
+<Button icon={Search} aria-label="Search workspace" tooltip="Search workspace" />`;
 
 const custom = `function CustomLogoIcon({ strokeWidth = 2, ...props }) {
   return (

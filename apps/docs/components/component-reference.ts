@@ -41,9 +41,9 @@ export type ComponentMetadata = {
 export const snippets: Record<string, string> = {
   typography:
     'import { Code, Heading, Text } from \'@nerio/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>',
-  button: "import { Button } from '@nerio/ui/client';\n\n<Button>Save project</Button>",
-  "icon-button":
-    "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@nerio/ui/client';\n\n<IconButton icon={Search} label=\"Search\" />",
+  button:
+    "import { Save, Settings } from '@nerio/adapters';\nimport { Kbd } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<Button leadingIcon={Save} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />",
+  kbd: "import { Kbd } from '@nerio/ui';\n\n<Kbd>⌘S</Kbd>",
   link: "import { Link } from '@nerio/ui';\n\n<Link href=\"/docs\">Read the docs</Link>",
   breadcrumbs:
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
@@ -108,6 +108,19 @@ export const sharedTokens = [
 ];
 
 export const componentMetadata: Record<string, ComponentMetadata> = {
+  kbd: {
+    name: "Kbd",
+    description: "Native keyboard shortcut notation with quiet tokenized styling.",
+    status: "beta",
+    layer: "core",
+    category: "Foundation",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["Button", "Tooltip", "Tokens"],
+    anatomy: ["kbd"],
+    motion: ["none"],
+    accessibility: ["native kbd semantics", "supplemental shortcut notation"],
+  },
   typography: {
     name: "Typography",
     description: "Semantic heading, text, and inline code primitives.",
@@ -126,7 +139,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     category: "Actions",
     package: "@nerio/ui",
     importPath: "@nerio/ui/client",
-    related: ["IconButton", "Link", "DropdownMenu"],
+    related: ["Link", "DropdownMenu", "Tooltip"],
     anatomy: ["button", "button-icon", "button-label"],
     motion: ["hover", "press", "focus"],
     accessibility: ["Base UI button primitive", "aria-busy while loading", "visible focus ring"],
@@ -323,12 +336,20 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "button-label",
         description: "Visible action text that stays present while loading.",
       },
+      {
+        title: "button-kbd",
+        description: "Optional native kbd hint displayed after the visible action label.",
+      },
     ],
     variants: [
       { title: "Primary", description: "Strongest action in the local decision." },
       { title: "Secondary", description: "Supporting action with a visible boundary." },
+      {
+        title: "Outline",
+        description: "Supporting action with a clear boundary and no filled surface.",
+      },
       { title: "Ghost", description: "Low-emphasis action for dense or repeated surfaces." },
-      { title: "Destructive", description: "Risky action that needs explicit intent." },
+      { title: "Danger", description: "Risky action that needs explicit intent and clear copy." },
     ],
     states: [
       {
@@ -354,7 +375,7 @@ export const componentReference: Record<string, ComponentReference> = {
     api: [
       {
         title: "variant",
-        description: "primary, secondary, outline, ghost, subtle, danger, or destructive.",
+        description: "primary, secondary, outline, ghost, or danger.",
       },
       {
         title: "size",
@@ -367,7 +388,23 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "leadingIcon / trailingIcon",
-        description: "Icons pass through the Nerio icon adapter.",
+        description:
+          "Optional icons placed before or after the visible label through the Nerio icon adapter.",
+      },
+      {
+        title: "icon / aria-label",
+        description:
+          "Creates an icon-only Button. aria-label is required to name the action for assistive technology.",
+      },
+      {
+        title: "kbd",
+        description:
+          "Pass a Kbd element to display a quiet shortcut hint after the visible action label.",
+      },
+      {
+        title: "tooltip",
+        description:
+          "Optional supplemental tooltip, especially useful for icon-only actions. It never replaces aria-label.",
       },
     ],
     designNotes: [
@@ -375,7 +412,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use danger for destructive actions and pair it with explicit copy.",
       "Use Link for navigation instead of making Button behave like a destination.",
     ],
-    related: ["IconButton", "Link", "DropdownMenu"],
+    related: ["Link", "DropdownMenu", "Tooltip"],
     guidance: {
       do: ["Use one primary action per local decision and keep labels action-oriented."],
       dont: ["Do not use Button for navigation when a semantic link describes the interaction."],
@@ -393,13 +430,65 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-button-background-secondary-hover",
       "--n-button-border-secondary",
       "--n-button-foreground-secondary",
+      "--n-button-background-outline",
+      "--n-button-background-outline-hover",
+      "--n-button-border-outline",
+      "--n-button-foreground-outline",
+      "--n-button-kbd-background",
+      "--n-button-kbd-border-color",
+      "--n-button-kbd-foreground",
+      "--n-button-kbd-opacity",
       "--n-button-background-ghost-hover",
       "--n-button-foreground-ghost",
       "--n-button-background-destructive",
       "--n-button-foreground-destructive",
+      "--n-icon-button-size-sm",
+      "--n-icon-button-size-md",
+      "--n-icon-button-size-lg",
+      "--n-icon-button-radius",
       "--n-motion-hover-duration",
       "--n-motion-press-duration",
       "--n-focus-ring",
+    ],
+  },
+  kbd: {
+    category: "Foundation",
+    purpose: "Use Kbd to display a keyboard shortcut beside an action or command label.",
+    anatomy: [{ title: "kbd", description: "Native kbd element with quiet shortcut styling." }],
+    variants: [
+      { title: "Default", description: "Neutral shortcut notation that adapts through tokens." },
+    ],
+    states: [
+      { title: "Default", description: "Static supplementary notation with no interactive state." },
+    ],
+    motion: ["Kbd is static and does not animate."],
+    accessibility: [
+      "Uses native kbd semantics for standalone keyboard notation.",
+      "Hide Kbd from assistive technology when it is shown inside a control that already has an accessible name.",
+      "Do not make a shortcut the only way to discover or operate an action.",
+    ],
+    api: [{ title: "children", description: "Shortcut notation such as ⌘S, ⇧⌘P, or Esc." }],
+    designNotes: [
+      "Keep shortcut notation quiet so it supports, rather than competes with, the action label.",
+    ],
+    related: ["Button", "Tooltip", "Tokens"],
+    guidance: {
+      do: ["Use beside familiar commands when a keyboard shortcut is available."],
+      dont: [
+        "Do not use Kbd as an interactive control or a replacement for visible command labels.",
+      ],
+    },
+    tokens: [
+      "--n-kbd-background",
+      "--n-kbd-border-width",
+      "--n-kbd-border-color",
+      "--n-kbd-radius",
+      "--n-kbd-foreground",
+      "--n-kbd-font-family",
+      "--n-kbd-font-size",
+      "--n-kbd-font-weight",
+      "--n-kbd-padding-block",
+      "--n-kbd-padding-inline",
     ],
   },
   link: {
@@ -553,78 +642,6 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-focus-ring",
     ],
   },
-  "icon-button": {
-    category: "Actions",
-    purpose:
-      "Use IconButton for compact actions where surrounding context or an accessible label supplies the meaning.",
-    anatomy: [
-      {
-        title: "button",
-        description: "Interactive button boundary with size, variant, disabled, and focus states.",
-      },
-      {
-        title: "icon",
-        description:
-          "Icon rendered through Nerio's icon adapter so Lucide and custom SVGs share one contract.",
-      },
-      {
-        title: "label",
-        description: "Required accessible label rendered as visually hidden text.",
-      },
-    ],
-    variants: [
-      {
-        title: "Primary",
-        description: "Use sparingly for the strongest compact action in a toolbar.",
-      },
-      {
-        title: "Secondary",
-        description: "Use for common actions that need a visible control boundary.",
-      },
-      {
-        title: "Ghost",
-        description: "Use inside dense surfaces where the icon should stay visually quiet.",
-      },
-    ],
-    states: [
-      { title: "Default", description: "Renders a compact square target with tokenized sizing." },
-      {
-        title: "Small, medium, and large",
-        description: "Size follows explicit icon-button size aliases.",
-      },
-      {
-        title: "Hover and focus",
-        description: "Shows surface feedback and the shared focus ring.",
-      },
-      {
-        title: "Disabled",
-        description: "Removes activation while keeping the control discoverable.",
-      },
-      {
-        title: "Loading",
-        description:
-          "Replaces the icon with Spinner while preserving the square target and preventing repeat activation.",
-      },
-    ],
-    accessibility: [
-      "Always provide a label because the visible icon is decorative.",
-      "The icon is rendered through the Nerio icon adapter and remains decorative.",
-      "Loading and disabled states prevent repeat activation through the Button contract.",
-      "Use familiar icons and pair unfamiliar actions with Tooltip.",
-      "Keep destructive icon-only actions close to confirming context.",
-    ],
-    guidance: {
-      do: ["Use for toolbar actions, command rows, and compact page chrome."],
-      dont: ["Do not use an icon-only control when the action needs explanation to be safe."],
-    },
-    tokens: [
-      "--n-icon-button-size-sm",
-      "--n-icon-button-size-md",
-      "--n-icon-button-size-lg",
-      "--n-icon-button-radius",
-      "--n-focus-ring",
-    ],
-  },
   badge: {
     category: "Actions and feedback",
     purpose:
@@ -640,7 +657,7 @@ export const componentReference: Record<string, ComponentReference> = {
     variants: [
       { title: "Neutral", description: "Default metadata with low visual priority." },
       {
-        title: "Accent, info, success, warning, danger",
+        title: "Primary soft, info, success, warning, danger",
         description: "Restrained semantic tones for metadata or meaningful status.",
       },
     ],
@@ -661,6 +678,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-badge-height",
       "--n-badge-background",
       "--n-badge-foreground",
+      "--n-badge-background-primary-soft",
+      "--n-badge-foreground-primary-soft",
       "--n-badge-dot-size",
     ],
   },
@@ -1335,24 +1354,32 @@ export const componentReference: Record<string, ComponentReference> = {
     variants: [
       { title: "Default", description: "Quiet grouping for repeated items." },
       {
-        title: "Raised",
-        description: "Use only when elevation communicates layer or interaction.",
+        title: "Secondary",
+        description: "Muted borderless surface for supporting linked content.",
       },
     ],
     states: [
       { title: "Static", description: "Groups content without becoming clickable." },
       {
-        title: "Interactive",
-        description: "If clickable, use a semantic link or button inside the card.",
+        title: "Linked",
+        description: "href renders a native anchor with hover and visible focus feedback.",
       },
     ],
     motion: [
       "Card has no default motion because grouped content should stay calm.",
-      "Interactive card compositions should opt into shared hover and focus motion utilities explicitly.",
+      "Linked Cards use a restrained surface transition and the shared focus ring.",
     ],
-    accessibility: ["Keep heading order and actions explicit inside the card."],
+    accessibility: [
+      "Keep heading order and actions explicit inside the card.",
+      "Use href when the full Card has one clear destination; it renders a native anchor.",
+    ],
     api: [
-      { title: "Card", description: "section element wrapper with className extension." },
+      { title: "as", description: "section, article, or div semantic wrapper." },
+      { title: "href", description: "Turns the entire Card into a native anchor destination." },
+      {
+        title: "variant",
+        description: "default or secondary; secondary is a muted borderless surface.",
+      },
       {
         title: "CardHeader / CardContent / CardFooter",
         description: "Optional layout slots for predictable anatomy.",
@@ -1371,7 +1398,17 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for repeated summaries, project cards, or compact object groups."],
       dont: ["Do not put cards inside cards or wrap entire page sections as decorative cards."],
     },
-    tokens: ["--n-card-padding", "--n-card-gap", "--n-card-radius", "--n-shadow-sm"],
+    tokens: [
+      "--n-card-padding",
+      "--n-card-gap",
+      "--n-card-radius",
+      "--n-card-background-secondary",
+      "--n-card-background-secondary-hover",
+      "--n-card-border-secondary",
+      "--n-card-border-interactive",
+      "--n-card-shadow-secondary",
+      "--n-focus-ring",
+    ],
   },
   separator: {
     category: "Layout and display",

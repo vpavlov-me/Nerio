@@ -34,9 +34,14 @@
   white-space: nowrap;
 }
 
+.n-badge[data-tone="primary-soft"] {
+  --n-badge-background: var(--n-badge-background-primary-soft);
+  --n-badge-foreground: var(--n-badge-foreground-primary-soft);
+}
+
 .n-badge[data-tone="accent"] {
-  --n-badge-background: var(--n-badge-background-accent);
-  --n-badge-foreground: var(--n-badge-foreground-accent);
+  --n-badge-background: var(--n-badge-background-primary-soft);
+  --n-badge-foreground: var(--n-badge-foreground-primary-soft);
 }
 
 .n-badge[data-tone="info"] {

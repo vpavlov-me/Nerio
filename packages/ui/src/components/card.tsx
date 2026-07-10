@@ -2,8 +2,13 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 export type CardElement = "section" | "article" | "div";
+export type CardVariant = "default" | "secondary";
 export interface CardProps extends React.HTMLAttributes<HTMLElement> {
   as?: CardElement;
+  href?: string;
+  target?: string;
+  rel?: string;
+  variant?: CardVariant;
 }
 export type CardSectionProps = React.HTMLAttributes<HTMLDivElement>;
 export type CardTitleElement = "h2" | "h3" | "h4" | "h5" | "h6";
@@ -13,17 +18,29 @@ export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement>
 export type CardDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 
 export const Card = React.forwardRef<HTMLElement, CardProps>(function Card(
-  { as: Component = "section", className, ...props },
+  { as: Component = "section", className, href, target, rel, variant = "default", ...props },
   ref,
 ) {
-  return (
-    <Component
-      ref={ref as React.Ref<never>}
-      className={cn("n-card", className)}
-      data-slot="card"
-      {...props}
-    />
-  );
+  const cardProps = {
+    className: cn("n-card", className),
+    "data-slot": "card",
+    "data-variant": variant,
+    ...props,
+  };
+
+  if (href) {
+    return (
+      <a
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        href={href}
+        target={target}
+        rel={rel}
+        {...cardProps}
+      />
+    );
+  }
+
+  return <Component ref={ref as React.Ref<never>} {...cardProps} />;
 });
 
 export const CardHeader = React.forwardRef<HTMLDivElement, CardSectionProps>(function CardHeader(

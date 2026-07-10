@@ -8,6 +8,31 @@
   padding: var(--n-card-padding);
 }
 
+.n-card[data-variant="secondary"] {
+  background: var(--n-card-background-secondary);
+  border-color: var(--n-card-border-secondary);
+  box-shadow: var(--n-card-shadow-secondary);
+}
+
+.n-card[href] {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.n-card[href]:hover {
+  border-color: var(--n-card-border-interactive);
+}
+
+.n-card[href][data-variant="secondary"]:hover {
+  background: var(--n-card-background-secondary-hover);
+}
+
+.n-card[href]:focus-visible {
+  box-shadow: var(--n-focus-ring);
+  outline: 0;
+}
+
 .n-card > :where(h1, h2, h3, h4, h5, h6, p) {
   margin: 0;
 }

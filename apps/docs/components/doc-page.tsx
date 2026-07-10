@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Circle, Search } from "@nerio/adapters";
+import { Circle } from "@nerio/adapters";
 import { getRegistryItem } from "@nerio/registry";
 import {
   Alert,
@@ -23,9 +23,9 @@ import {
   FormGroup,
   FormMessage,
   Heading,
-  IconButton,
   Input,
   KeyValue,
+  Kbd,
   Label,
   Link,
   List,
@@ -69,10 +69,18 @@ export function StandardDocPage({
   title,
   lede,
   kind,
+  preview,
+  sectionPreviews,
+  sectionContent,
 }: {
   title: string;
   lede: string;
   kind?: string;
+  preview?: React.ReactNode;
+  sectionPreviews?: Partial<Record<string, React.ReactNode>>;
+  sectionContent?: Partial<
+    Record<"variants" | "api" | "guidance" | "related" | "tokens", React.ReactNode>
+  >;
 }) {
   const reference = kind ? componentReference[kind] : undefined;
   const metadata = kind ? componentMetadata[kind] : undefined;
@@ -115,21 +123,25 @@ export function StandardDocPage({
           </div>
         ) : null}
       </header>
-      {kind ? <Preview kind={kind} /> : null}
+      {preview ?? (kind ? <Preview kind={kind} /> : null)}
       <section className="doc-section">
         <h2 id="usage">Usage</h2>
+        {sectionPreviews?.usage}
         {usage ? <CodeExample code={usage} label={`${title} usage`} /> : null}
       </section>
       <section className="doc-section">
         <h2 id="variants">Variants</h2>
-        <ReferenceGrid items={variants} />
+        {sectionPreviews?.variants}
+        {sectionContent?.variants ?? <ReferenceGrid items={variants} />}
       </section>
       <section className="doc-section">
         <h2 id="anatomy">Anatomy</h2>
+        {sectionPreviews?.anatomy}
         <ReferenceGrid items={anatomy} />
       </section>
       <section className="doc-section">
         <h2 id="states">States</h2>
+        {sectionPreviews?.states}
         <ReferenceGrid
           items={
             reference?.states ?? [
@@ -144,6 +156,7 @@ export function StandardDocPage({
       </section>
       <section className="doc-section">
         <h2 id="motion">Motion</h2>
+        {sectionPreviews?.motion}
         <ul className="doc-list">
           {(
             reference?.motion ??
@@ -157,6 +170,7 @@ export function StandardDocPage({
       </section>
       <section className="doc-section">
         <h2 id="accessibility">Accessibility</h2>
+        {sectionPreviews?.accessibility}
         <ul className="doc-list">
           {(
             accessibility ?? [
@@ -169,17 +183,20 @@ export function StandardDocPage({
       </section>
       <section className="doc-section">
         <h2 id="api">API</h2>
-        <ReferenceGrid
-          items={
-            reference?.api ?? [
-              {
-                title: "className",
-                description:
-                  "Extends the component root while preserving Nerio tokenized defaults.",
-              },
-            ]
-          }
-        />
+        {sectionPreviews?.api}
+        {sectionContent?.api ?? (
+          <ReferenceGrid
+            items={
+              reference?.api ?? [
+                {
+                  title: "className",
+                  description:
+                    "Extends the component root while preserving Nerio tokenized defaults.",
+                },
+              ]
+            }
+          />
+        )}
       </section>
       {registryItem ? (
         <section className="doc-section">
@@ -235,46 +252,56 @@ export function StandardDocPage({
       </section>
       <section className="doc-section">
         <h2 id="do-do-not">Do / do not</h2>
-        <div className="guidance-grid">
-          <div data-tone="positive">
-            <strong>Do</strong>
-            {(
-              reference?.guidance.do ?? ["Compose small components around real product workflows."]
-            ).map((item) => (
-              <p key={item}>{item}</p>
-            ))}
+        {sectionContent?.guidance ?? (
+          <div className="guidance-grid">
+            <div data-tone="positive">
+              <strong>Do</strong>
+              {(
+                reference?.guidance.do ?? [
+                  "Compose small components around real product workflows.",
+                ]
+              ).map((item) => (
+                <p key={item}>{item}</p>
+              ))}
+            </div>
+            <div data-tone="negative">
+              <strong>Do not</strong>
+              {(
+                reference?.guidance.dont ?? [
+                  "Fork visual values into one-off colors, spacing, or typography inside product code.",
+                ]
+              ).map((item) => (
+                <p key={item}>{item}</p>
+              ))}
+            </div>
           </div>
-          <div data-tone="negative">
-            <strong>Do not</strong>
-            {(
-              reference?.guidance.dont ?? [
-                "Fork visual values into one-off colors, spacing, or typography inside product code.",
-              ]
-            ).map((item) => (
-              <p key={item}>{item}</p>
-            ))}
-          </div>
-        </div>
+        )}
       </section>
       <section className="doc-section">
         <h2 id="related-components">Related components</h2>
-        <div className="token-chip-row">
-          {(reference?.related ?? metadata?.related ?? ["Tokens"]).map((item) => (
-            <code key={item}>{item}</code>
-          ))}
-        </div>
+        {sectionContent?.related ?? (
+          <div className="token-chip-row">
+            {(reference?.related ?? metadata?.related ?? ["Tokens"]).map((item) => (
+              <code key={item}>{item}</code>
+            ))}
+          </div>
+        )}
       </section>
       <section className="doc-section">
         <h2 id="tokens">Tokens</h2>
-        <p>
-          These are the primary customization points. Override semantic or component tokens instead
-          of changing component source.
-        </p>
-        <div className="token-chip-row">
-          {tokens.map((token) => (
-            <code key={token}>{token}</code>
-          ))}
-        </div>
+        {sectionContent?.tokens ?? (
+          <>
+            <p>
+              These are the primary customization points. Override semantic or component tokens
+              instead of changing component source.
+            </p>
+            <div className="token-chip-row">
+              {tokens.map((token) => (
+                <code key={token}>{token}</code>
+              ))}
+            </div>
+          </>
+        )}
       </section>
     </article>
   );
@@ -297,7 +324,7 @@ function Preview({ kind }: { kind: string }) {
   const snippet = snippets[kind] ?? "";
 
   return (
-    <section className="component-example" aria-label={`${kind} preview`}>
+    <section id="preview" className="component-example" aria-label={`${kind} preview`}>
       <div className="component-example__preview">
         <div className="preview-row">
           {kind === "button" ? (
@@ -319,7 +346,7 @@ function Preview({ kind }: { kind: string }) {
               </Text>
             </div>
           ) : null}
-          {kind === "icon-button" ? <IconButton icon={Search} label="Search workspace" /> : null}
+          {kind === "kbd" ? <Kbd>⌘S</Kbd> : null}
           {kind === "link" ? (
             <p>
               Review the <Link href="/docs/getting-started">getting started guide</Link> before
@@ -329,9 +356,11 @@ function Preview({ kind }: { kind: string }) {
           {kind === "badge" ? (
             <>
               <Badge>Draft</Badge>
-              <Badge variant="success">Published</Badge>
-              <Badge variant="info">Shared</Badge>
-              <Badge variant="danger">Blocked</Badge>
+              <Badge tone="primary-soft">Core</Badge>
+              <Badge tone="info">Shared</Badge>
+              <Badge tone="success">Published</Badge>
+              <Badge tone="warning">Review</Badge>
+              <Badge tone="danger">Blocked</Badge>
             </>
           ) : null}
           {kind === "spinner" ? <Spinner label="Loading activity" /> : null}

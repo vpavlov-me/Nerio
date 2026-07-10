@@ -50,15 +50,15 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Motion Tokens     | quality-pass-needed | `@nerio/tokens`                 | Token-customizable duration/motion variables. Not a v1 runtime axis.                                               |
 | Contrast Tokens   | planned             | `@nerio/tokens`                 | Token-customizable semantic contrast variables. Not a v1 runtime axis.                                             |
 | Typography        | stable-core         | `@nerio/ui`                     | Semantic heading, text, and inline code primitives                                                                 |
+| Kbd               | polished            | `@nerio/ui`                     | Native keyboard shortcut notation with quiet tokenized styling                                                     |
 | Icon Adapter      | quality-pass-needed | `@nerio/ui` / `@nerio/adapters` | Current `Icon` export in `@nerio/ui`; adapter package remains part of the architecture                             |
 
 ### Actions
 
-| Component  | Status      | Package     | Notes                                |
-| ---------- | ----------- | ----------- | ------------------------------------ |
-| Button     | stable-core | `@nerio/ui` | Variants, sizes, loading, icon slots |
-| IconButton | stable-core | `@nerio/ui` | Accessible icon-only action          |
-| Link       | stable-core | `@nerio/ui` | Styled native-anchor primitive       |
+| Component | Status      | Package     | Notes                                                                          |
+| --------- | ----------- | ----------- | ------------------------------------------------------------------------------ |
+| Button    | stable-core | `@nerio/ui` | Variants, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip |
+| Link      | stable-core | `@nerio/ui` | Styled native-anchor primitive                                                 |
 
 ### Forms
 

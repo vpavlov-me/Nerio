@@ -1,6 +1,8 @@
 export type { LucideIcon } from "lucide-react";
 export {
+  ArrowLeft,
   ArrowRight,
+  ArrowUp,
   Bell,
   BookOpen,
   Box,

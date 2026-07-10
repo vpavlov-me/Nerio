@@ -3,7 +3,8 @@ import { cn } from "../lib/cn";
 import type { IconComponent } from "./icon";
 import { Icon } from "./icon";
 
-export type BadgeTone = "neutral" | "accent" | "info" | "success" | "warning" | "danger";
+export type BadgeTone =
+  "neutral" | "primary-soft" | "accent" | "info" | "success" | "warning" | "danger";
 
 /** @deprecated Use BadgeTone. `variant` remains as a compatibility alias for `tone`. */
 export type BadgeVariant = "neutral" | "success" | "danger" | "info";
