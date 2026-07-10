@@ -109,6 +109,22 @@
   width: 100%;
 }
 
+.n-table-container {
+  border: var(--n-border-subtle);
+  border-radius: var(--n-radius-md);
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+.n-table-container:focus-visible {
+  box-shadow: var(--n-focus-ring);
+  outline: 0;
+}
+
+.n-table-container .n-table {
+  min-inline-size: max-content;
+}
+
 .n-table th,
 .n-table td {
   border-block-end: var(--n-table-border-width) solid var(--n-table-border);

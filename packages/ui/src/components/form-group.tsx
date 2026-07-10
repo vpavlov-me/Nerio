@@ -10,7 +10,7 @@ export interface FormGroupProps extends Omit<
   description?: React.ReactNode;
   message?: React.ReactNode;
   invalid?: boolean;
-  layout?: "stack" | "inline";
+  layout?: "stack" | "inline" | "grid";
   children: React.ReactNode;
 }
 

@@ -3,6 +3,44 @@
   "name": "nerio",
   "items": [
     {
+      "name": "typography",
+      "title": "Typography",
+      "description": "Semantic heading, text, and inline code primitives.",
+      "category": "foundation",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/typography.tsx",
+          "target": "components/typography.tsx",
+          "role": "component"
+        },
+        { "source": "../../ui/src/lib/cn.ts", "target": "lib/cn.ts", "role": "utility" },
+        {
+          "source": "../../ui/src/styles/typography.css",
+          "target": "styles/typography.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["heading", "text", "code"],
+      "variants": ["heading sizes", "text tones"],
+      "requiredTokens": [
+        "--n-color-text-primary",
+        "--n-color-text-secondary",
+        "--n-color-text-tertiary",
+        "--n-font-sans",
+        "--n-font-mono",
+        "--n-line-height-tight"
+      ],
+      "accessibility": [
+        "Use Heading as the correct semantic level for the document outline, not merely for visual size.",
+        "Use Text for supporting copy without replacing native labels or accessible names.",
+        "Use Code only for short inline code; use pre and code for larger code blocks."
+      ],
+      "usage": "import { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>"
+    },
+    {
       "name": "button",
       "title": "Button",
       "description": "Triggers a user action.",
@@ -334,15 +372,15 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "mark", "title", "description", "action"],
+      "slots": ["root", "mark", "title", "description", "actions", "action", "secondary-action"],
       "variants": [],
       "requiredTokens": ["--n-empty-state-mark-size", "--n-empty-state-gap"],
       "accessibility": [
         "Use a clear title and description instead of decorative empty copy.",
-        "Provide one primary action only when there is an obvious recovery path.",
+        "Provide a primary action and an optional secondary action only when there is an obvious recovery path.",
         "Do not use toasts to explain an empty page state."
       ],
-      "usage": "import { EmptyState } from '@/components/nerio/components/empty-state';\n\n<EmptyState title=\"No collections\" description=\"Create one to start organizing work.\" />"
+      "usage": "import { EmptyState } from '@/components/nerio/components/empty-state';\n\n<EmptyState title=\"No collections\" description=\"Create one to start organizing work.\" action={<Button>Create collection</Button>} secondaryAction={<Button variant=\"ghost\">Learn more</Button>} />"
     },
     {
       "name": "alert",
@@ -632,7 +670,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "caption", "header", "body", "footer", "row", "head", "cell"],
+      "slots": ["container", "root", "caption", "header", "body", "footer", "row", "head", "cell"],
       "variants": [],
       "requiredTokens": [
         "--n-table-border",
@@ -645,9 +683,10 @@
       "accessibility": [
         "Use semantic table sections, headers, rows, and cells.",
         "Keep sorting, filtering, pagination, selection, and advanced table behavior out of this Core primitive.",
+        "Wrap wide tables in TableContainer and give its scroll region a concise label.",
         "Keep dense operational tables scannable with clear column labels."
       ],
-      "usage": "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/nerio/components/table';\n\n<Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table>"
+      "usage": "import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@/components/nerio/components/table';\n\n<TableContainer label=\"Projects\"><Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>"
     },
     {
       "name": "list",
@@ -1087,7 +1126,7 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["root", "title", "description", "content", "message"],
-      "variants": ["stack", "inline", "invalid"],
+      "variants": ["stack", "inline", "grid", "invalid"],
       "requiredTokens": [
         "--n-form-group-gap",
         "--n-form-group-inline-gap",

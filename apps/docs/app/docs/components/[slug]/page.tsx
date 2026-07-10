@@ -2,6 +2,10 @@ import { notFound } from "next/navigation";
 import { StandardDocPage } from "../../../../components/doc-page";
 
 const componentDocs: Record<string, { title: string; lede: string }> = {
+  typography: {
+    title: "Typography",
+    lede: "Semantic heading, text, and inline code primitives keep content hierarchy token-driven.",
+  },
   "icon-button": {
     title: "IconButton",
     lede: "Icon buttons expose compact actions with accessible labels and tokenized focus states.",

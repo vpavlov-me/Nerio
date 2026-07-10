@@ -47,7 +47,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Radius Tokens     | quality-pass-needed | `@nerio/tokens`                 | Token-customizable radius variables. Not a v1 runtime axis.                                                        |
 | Motion Tokens     | quality-pass-needed | `@nerio/tokens`                 | Token-customizable duration/motion variables. Not a v1 runtime axis.                                               |
 | Contrast Tokens   | planned             | `@nerio/tokens`                 | Token-customizable semantic contrast variables. Not a v1 runtime axis.                                             |
-| Typography        | planned             | `@nerio/ui`                     | Text, heading, code primitives                                                                                     |
+| Typography        | stable-core         | `@nerio/ui`                     | Semantic heading, text, and inline code primitives                                                                 |
 | Icon Adapter      | quality-pass-needed | `@nerio/ui` / `@nerio/adapters` | Current `Icon` export in `@nerio/ui`; adapter package remains part of the architecture                             |
 
 ### Actions
@@ -60,18 +60,18 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Forms
 
-| Component   | Status      | Package     | Notes                                                                                      |
-| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------ |
-| Input       | stable-core | `@nerio/ui` | Text input                                                                                 |
-| Textarea    | stable-core | `@nerio/ui` | Multiline input                                                                            |
-| Label       | stable-core | `@nerio/ui` | Accessible form label                                                                      |
-| Field       | stable-core | `@nerio/ui` | Label, help text, error, description                                                       |
-| FormMessage | stable-core | `@nerio/ui` | Field message/error text                                                                   |
-| FormGroup   | stable-core | `@nerio/ui` | Fieldset group with title, description, message, invalid state, and stack or inline layout |
-| Checkbox    | stable-core | `@nerio/ui` | Base UI checkbox for independent options                                                   |
-| Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with label, description, message, and disabled options             |
-| Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings                                               |
-| Select      | stable-core | `@nerio/ui` | Base select                                                                                |
+| Component   | Status      | Package     | Notes                                                                                                        |
+| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
+| Input       | stable-core | `@nerio/ui` | Text input                                                                                                   |
+| Textarea    | stable-core | `@nerio/ui` | Multiline input                                                                                              |
+| Label       | stable-core | `@nerio/ui` | Accessible form label                                                                                        |
+| Field       | stable-core | `@nerio/ui` | Label, help text, error, description                                                                         |
+| FormMessage | stable-core | `@nerio/ui` | Field message/error text                                                                                     |
+| FormGroup   | stable-core | `@nerio/ui` | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout |
+| Checkbox    | stable-core | `@nerio/ui` | Base UI checkbox for independent options                                                                     |
+| Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with label, description, message, and disabled options                               |
+| Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings                                                                 |
+| Select      | stable-core | `@nerio/ui` | Base select                                                                                                  |
 
 ### Overlays
 
@@ -90,7 +90,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Card      | stable-core         | `@nerio/ui` | Surface primitive                                                                      |
 | Badge     | stable-core         | `@nerio/ui` | Status and metadata                                                                    |
 | Avatar    | stable-core         | `@nerio/ui` | User/entity avatar                                                                     |
-| Table     | stable-core         | `@nerio/ui` | Basic table only                                                                       |
+| Table     | stable-core         | `@nerio/ui` | Basic table with an optional responsive keyboard-scrollable container                  |
 | List      | implemented-initial | `@nerio/ui` | Basic structured list primitive with optional descriptions, metadata, and native links |
 | Separator | stable-core         | `@nerio/ui` | Layout divider                                                                         |
 | KeyValue  | stable-core         | `@nerio/ui` | Simple definition-list value display                                                   |
@@ -104,7 +104,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Toast       | stable-core         | `@nerio/ui` | Temporary notification with Base UI manager, viewport, tones, and dismiss control |
 | Progress    | stable-core         | `@nerio/ui` | Progress indicator                                                                |
 | Skeleton    | stable-core         | `@nerio/ui` | Loading placeholder                                                               |
-| Empty State | stable-core         | `@nerio/ui` | Basic empty state                                                                 |
+| Empty State | stable-core         | `@nerio/ui` | Basic empty state with primary and optional secondary action                      |
 | Spinner     | stable-core         | `@nerio/ui` | Loading indicator                                                                 |
 
 ### Navigation and layout

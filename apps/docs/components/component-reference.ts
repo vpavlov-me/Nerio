@@ -39,6 +39,8 @@ export type ComponentMetadata = {
 };
 
 export const snippets: Record<string, string> = {
+  typography:
+    'import { Code, Heading, Text } from \'@nerio/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>',
   button: "import { Button } from '@nerio/ui/client';\n\n<Button>Save project</Button>",
   "icon-button":
     "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@nerio/ui/client';\n\n<IconButton icon={Search} label=\"Search\" />",
@@ -53,7 +55,7 @@ export const snippets: Record<string, string> = {
   spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
   skeleton: "import { Skeleton } from '@nerio/ui';\n\n<Skeleton aria-label=\"Loading\" />",
   "empty-state":
-    "import { EmptyState } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<EmptyState title=\"No collections\" description=\"Create one to start organizing work.\" action={<Button>Create collection</Button>} />",
+    'import { EmptyState } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<EmptyState title="No collections" description="Create one to start organizing work." action={<Button>Create collection</Button>} secondaryAction={<Button variant="ghost">Learn more</Button>} />',
   input:
     'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required /></Field>',
   textarea:
@@ -65,7 +67,7 @@ export const snippets: Record<string, string> = {
   "form-message":
     "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
   "form-group":
-    'import { Field, FormGroup } from \'@nerio/ui\';\nimport { Checkbox } from \'@nerio/ui/client\';\n\n<FormGroup title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
+    'import { Field, FormGroup } from \'@nerio/ui\';\nimport { Checkbox } from \'@nerio/ui/client\';\n\n<FormGroup layout="grid" title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
   checkbox:
     "import { Checkbox } from '@nerio/ui/client';\n\n<label><Checkbox name=\"includeArchived\" defaultChecked /> Include archived</label>",
   "radio-group":
@@ -93,7 +95,7 @@ export const snippets: Record<string, string> = {
   "key-value":
     'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
   table:
-    "import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@nerio/ui';\n\n<Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table>",
+    "import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@nerio/ui';\n\n<TableContainer label=\"Projects\"><Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>",
   list: "import { List } from '@nerio/ui';\n\n<List items={[{ title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
 };
 
@@ -105,6 +107,16 @@ export const sharedTokens = [
 ];
 
 export const componentMetadata: Record<string, ComponentMetadata> = {
+  typography: {
+    name: "Typography",
+    description: "Semantic heading, text, and inline code primitives.",
+    status: "beta",
+    layer: "core",
+    category: "Foundation",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["Tokens", "Heading", "Text"],
+  },
   button: {
     name: "Button",
     description: "Triggers a user action with intent, size, loading, and icon contracts.",
@@ -244,6 +256,54 @@ export function variantsFromRegistry(variants: string[], fallback: ReferenceSect
 }
 
 export const componentReference: Record<string, ComponentReference> = {
+  typography: {
+    category: "Foundation",
+    purpose:
+      "Use Typography primitives to preserve semantic document structure and token-driven hierarchy.",
+    anatomy: [
+      { title: "heading", description: "Semantic heading level with an independent visual size." },
+      { title: "text", description: "Supporting copy with default, secondary, or tertiary tone." },
+      { title: "code", description: "Short inline code token for commands, names, and values." },
+    ],
+    variants: [
+      {
+        title: "Heading size",
+        description: "xs through 2xl sizes use the type scale without changing semantics.",
+      },
+      { title: "Text tone", description: "Default, secondary, and tertiary semantic text roles." },
+    ],
+    states: [
+      { title: "Default", description: "Typography adapts through semantic text and font tokens." },
+    ],
+    accessibility: [
+      "Use heading levels in a logical document outline.",
+      "Do not use visual size to imply semantic importance.",
+      "Keep labels and accessible names explicit rather than relying on supporting Text content.",
+    ],
+    api: [
+      {
+        title: "Heading as / size",
+        description: "Controls semantic heading level and visual size independently.",
+      },
+      {
+        title: "Text tone",
+        description: "Controls the semantic color role for supporting copy.",
+      },
+      { title: "Code", description: "Renders a short inline code element." },
+    ],
+    guidance: {
+      do: ["Use semantic HTML through the as prop and tokenized text roles."],
+      dont: [
+        "Do not use Heading to style non-heading content or hard-code type values in product UI.",
+      ],
+    },
+    tokens: [
+      "--n-color-text-primary",
+      "--n-color-text-secondary",
+      "--n-font-sans",
+      "--n-font-mono",
+    ],
+  },
   button: {
     category: "Actions",
     purpose:
@@ -708,6 +768,10 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Explains why the space is empty or what can happen next.",
       },
       { title: "action", description: "Optional primary action when there is a clear next move." },
+      {
+        title: "secondary-action",
+        description: "Optional secondary action for a lower-priority recovery path.",
+      },
     ],
     variants: [
       { title: "Informational", description: "Use when there is nothing to fix." },
@@ -718,8 +782,8 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Filtered", description: "Pair with a reset action when filters hide all results." },
     ],
     accessibility: [
-      "Keep the title, description, and optional action clear in reading order.",
-      "Use the optional action only when there is an obvious recovery path.",
+      "Keep the title, description, and optional actions clear in reading order.",
+      "Use actions only when there is an obvious recovery path.",
     ],
     guidance: {
       do: ["Use product language like projects, collections, collaborators, or activity."],
@@ -1068,7 +1132,7 @@ export const componentReference: Record<string, ComponentReference> = {
   "form-group": {
     category: "Forms",
     purpose:
-      "Use FormGroup to group related fields or controls with a semantic title, optional description, optional message, and stack or inline layout.",
+      "Use FormGroup to group related fields or controls with a semantic title, optional description, optional message, and stack, inline, or responsive grid layout.",
     anatomy: [
       { title: "root", description: "Server-safe fieldset wrapper." },
       { title: "title", description: "Legend text that names the group." },
@@ -1085,6 +1149,10 @@ export const componentReference: Record<string, ComponentReference> = {
     variants: [
       { title: "Stack", description: "Default vertical layout for related fields." },
       { title: "Inline", description: "Compact wrapping layout for short controls." },
+      {
+        title: "Grid",
+        description: "Two-column layout that collapses to one column on narrow viewports.",
+      },
     ],
     states: [
       { title: "Default", description: "Groups related controls without owning validation logic." },
@@ -1103,7 +1171,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     api: [
       { title: "title / description / message", description: "Optional group text slots." },
-      { title: "layout", description: "stack or inline." },
+      { title: "layout", description: "stack, inline, or responsive grid." },
       {
         title: "invalid",
         description: "Sets data-invalid, aria-invalid, and alert semantics for message.",
@@ -1395,6 +1463,10 @@ export const componentReference: Record<string, ComponentReference> = {
     purpose:
       "Use Table to present structured records for scanning, comparison, and repeated operations.",
     anatomy: [
+      {
+        title: "container",
+        description: "Optional named keyboard-scrollable region for wide tables.",
+      },
       { title: "table", description: "Native table structure for tabular data." },
       { title: "header", description: "Column labels." },
       { title: "body", description: "Rows of related records." },
@@ -1409,7 +1481,10 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Empty", description: "Pair with EmptyState when no records exist." },
       { title: "Loading", description: "Use Skeleton rows when records are loading." },
     ],
-    accessibility: ["Use real table markup for tabular data and concise column headers."],
+    accessibility: [
+      "Use real table markup for tabular data and concise column headers.",
+      "Wrap tables that can overflow in a labelled TableContainer so keyboard users can scroll the region.",
+    ],
     guidance: {
       do: ["Use for comparable records and operational lists."],
       dont: [
