@@ -135,6 +135,7 @@ const themeOptions = [
 type TocItem = {
   id: string;
   label: string;
+  level?: 2 | 3 | 4;
 };
 
 type SearchEntry = {
@@ -505,11 +506,34 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   }, [theme, mode]);
 
   React.useEffect(() => {
-    const headings = Array.from(document.querySelectorAll<HTMLElement>(".docs-main h2"));
+    const headings = Array.from(
+      document.querySelectorAll<HTMLElement>(".docs-main h2, .docs-main h3, .docs-main h4"),
+    );
+    const usedIds = new Set<string>();
     const nextToc = headings.map((heading) => {
       const label = heading.textContent?.trim() ?? "";
-      if (!heading.id) heading.id = slugify(label);
-      return { id: heading.id, label };
+      const baseId = heading.id || slugify(label);
+      let id = baseId;
+      let duplicateIndex = 2;
+
+      while (usedIds.has(id)) {
+        id = `${baseId}-${duplicateIndex}`;
+        duplicateIndex += 1;
+      }
+
+      usedIds.add(id);
+      heading.id = id;
+
+      return {
+        id,
+        label,
+        level:
+          heading.tagName === "H4"
+            ? (4 as const)
+            : heading.tagName === "H3"
+              ? (3 as const)
+              : (2 as const),
+      };
     });
     const filteredToc = nextToc.filter((item) => item.label.length > 0);
     const nextTocItems = filteredToc.length > 0 ? filteredToc : getDefaultToc(pathname);
@@ -518,7 +542,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   }, [pathname, children]);
 
   React.useEffect(() => {
-    const headings = Array.from(document.querySelectorAll<HTMLElement>(".docs-main h2[id]"));
+    const headings = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        ".docs-main h2[id], .docs-main h3[id], .docs-main h4[id]",
+      ),
+    );
     if (headings.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -783,6 +811,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                     <a
                       key={item.id}
                       href={`#${item.id}`}
+                      data-level={item.level ?? 2}
                       className={activeTocId === item.id ? "is-active" : undefined}
                       aria-current={activeTocId === item.id ? "location" : undefined}
                     >
