@@ -40,6 +40,14 @@ This is an internal review record for the Core Component Quality Pass. The compo
 | Dropdown Menu | Reviewed | Reviewed           | Keyboard selection, disabled, destructive               | Reviewed with Base UI contract         | Reviewed | Reviewed          | Repository checks | stable-core  | Nested menu and command-pattern expansion remain out of scope.                 |
 | Tooltip       | Reviewed | Reviewed           | Hover, focus, controlled, disabled                      | Reviewed with Base UI contract         | Reviewed | Reviewed          | Repository checks | stable-core  | Do not put required guidance or actions in a tooltip.                          |
 
+## Priority 4 — navigation
+
+| Component   | API      | Visual and density | States                                                           | Accessibility                        | Tokens   | Docs and registry | Validation        | Final status | Known issues                                                                             |
+| ----------- | -------- | ------------------ | ---------------------------------------------------------------- | ------------------------------------ | -------- | ----------------- | ----------------- | ------------ | ---------------------------------------------------------------------------------------- |
+| Tabs        | Reviewed | Reviewed           | Selected, disabled, controlled/uncontrolled, underline/segmented | Reviewed with Base UI contract       | Reviewed | Reviewed          | Repository checks | stable-core  | Keep routing, overflow controls, and complex workspace navigation out of this primitive. |
+| Breadcrumbs | Reviewed | Reviewed           | Explicit current page prevents a second implicit current page    | Native navigation semantics reviewed | Reviewed | Reviewed          | Repository checks | stable-core  | Keep paths concise; collapse logic belongs to an application composition.                |
+| Pagination  | Reviewed | Reviewed           | Current, linked, disabled previous/next                          | Native navigation semantics reviewed | Reviewed | Reviewed          | Repository checks | stable-core  | State ownership and data fetching remain with the application.                           |
+
 ## Scope boundary
 
-This record covers Priorities 1 through 3. Priority 4 navigation and Priority 5 data display remain separate component-by-component reviews. No new public components or Pro compositions were added.
+This record covers Priorities 1 through 4. Priority 5 data display remains a separate component-by-component review. No new public components or Pro compositions were added.

@@ -16,6 +16,8 @@ export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(funct
   { "aria-label": ariaLabel = "Breadcrumb", className, items, ...props },
   ref,
 ) {
+  const hasExplicitCurrent = items.some((item) => item.current);
+
   return (
     <nav
       ref={ref}
@@ -26,7 +28,7 @@ export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(funct
     >
       <ol className="n-breadcrumbs__list" data-slot="list">
         {items.map((item, index) => {
-          const isCurrent = item.current ?? index === items.length - 1;
+          const isCurrent = hasExplicitCurrent ? item.current === true : index === items.length - 1;
           const content =
             item.href && !isCurrent ? (
               <a className="n-breadcrumbs__link" data-slot="link" href={item.href}>
