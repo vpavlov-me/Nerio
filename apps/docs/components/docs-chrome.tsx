@@ -831,7 +831,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
       <footer className="docs-footer">
         <p>
           © <span suppressHydrationWarning>{currentYear}</span> Nerio. Built with love by{" "}
-          <a href="https://vpavlov.com" target="_blank" rel="noreferrer">
+          <a
+            href="https://vpavlov.com?utm_source=nerio&utm_medium=referral&utm_campaign=docs_footer"
+            target="_blank"
+            rel="noreferrer"
+          >
             Vladimir Pavlov
           </a>
           . The source code is available on{" "}
