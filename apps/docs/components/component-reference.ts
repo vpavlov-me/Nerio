@@ -554,7 +554,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use IconButton for compact actions where surrounding context or an accessible label supplies the meaning.",
     anatomy: [
       {
-        title: "input",
+        title: "button",
         description: "Interactive button boundary with size, variant, disabled, and focus states.",
       },
       {
@@ -597,7 +597,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "Loading",
-        description: "Uses the Button loading contract to prevent repeat activation.",
+        description:
+          "Replaces the icon with Spinner while preserving the square target and preventing repeat activation.",
       },
     ],
     accessibility: [

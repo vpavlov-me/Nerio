@@ -52,11 +52,11 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Actions
 
-| Component  | Status              | Package     | Notes                                |
-| ---------- | ------------------- | ----------- | ------------------------------------ |
-| Button     | stable-core         | `@nerio/ui` | Variants, sizes, loading, icon slots |
-| IconButton | stable-core         | `@nerio/ui` | Accessible icon-only action          |
-| Link       | implemented-initial | `@nerio/ui` | Styled link primitive                |
+| Component  | Status      | Package     | Notes                                |
+| ---------- | ----------- | ----------- | ------------------------------------ |
+| Button     | stable-core | `@nerio/ui` | Variants, sizes, loading, icon slots |
+| IconButton | stable-core | `@nerio/ui` | Accessible icon-only action          |
+| Link       | stable-core | `@nerio/ui` | Styled native-anchor primitive       |
 
 ### Forms
 

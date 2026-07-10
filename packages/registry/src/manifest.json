@@ -154,7 +154,7 @@
         }
       ],
       "baseUiPrimitives": ["button"],
-      "slots": ["root", "icon", "label"],
+      "slots": ["button", "icon", "spinner", "label"],
       "variants": ["primary", "secondary", "ghost", "destructive"],
       "requiredTokens": [
         "--n-icon-button-size-sm",
@@ -165,7 +165,7 @@
       ],
       "accessibility": [
         "Requires a label prop so icon-only actions have an accessible name.",
-        "Uses the Button component contract for disabled, loading, size, and focus behavior.",
+        "Loading replaces the decorative icon with a labelled Spinner while preserving the button size.",
         "Disabled and loading states prevent repeat activation through the Button contract.",
         "Pass icons through the Nerio icon adapter API; icons are decorative unless the label carries the action name."
       ],

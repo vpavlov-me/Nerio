@@ -5,6 +5,7 @@ import { Button as BaseButton } from "@base-ui/react/button";
 import type { ButtonProps } from "./button";
 import type { IconComponent } from "./icon";
 import { Icon } from "./icon";
+import { Spinner } from "./spinner";
 import { cn } from "../lib/cn";
 import { motionClasses } from "../lib/motion";
 
@@ -24,7 +25,7 @@ export const IconButton = React.forwardRef<HTMLElement, IconButtonProps>(functio
     size = "md",
     variant = "secondary",
     loading = false,
-    loadingLabel: _loadingLabel,
+    loadingLabel = "Loading",
     disabled,
     render,
     nativeButton,
@@ -47,13 +48,14 @@ export const IconButton = React.forwardRef<HTMLElement, IconButtonProps>(functio
       data-slot="button"
       data-variant={variant}
       data-size={size}
+      data-loading={loading ? "true" : undefined}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       nativeButton={nativeButton ?? (render ? false : undefined)}
       render={render}
       {...props}
     >
-      <Icon icon={icon} />
+      {loading ? <Spinner size="sm" label={loadingLabel} /> : <Icon icon={icon} />}
       <span className="n-visually-hidden">{label}</span>
     </BaseButton>
   );
