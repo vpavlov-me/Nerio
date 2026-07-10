@@ -10,13 +10,13 @@ function ButtonPreview() {
   return (
     <section id="preview" className="button-showcase" aria-label="Button preview">
       <div className="button-showcase__preview">
-        <Button variant="outline">Button</Button>
-        <Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" variant="outline" />
+        <Button>Button</Button>
+        <Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" />
       </div>
       <CodeExample
         className="component-example__code"
         code={
-          'import { ArrowUp } from "@nerio/adapters";\nimport { Button } from "@nerio/ui/client";\n\n<Button variant="outline">Button</Button>\n<Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" variant="outline" />'
+          'import { ArrowUp } from "@nerio/adapters";\nimport { Button } from "@nerio/ui/client";\n\n<Button>Button</Button>\n<Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" />'
         }
         label="Button live preview code"
       />
