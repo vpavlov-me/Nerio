@@ -333,6 +333,9 @@
   --n-icon-button-size-md: var(--n-button-height-md);
   --n-icon-button-size-lg: var(--n-button-height-lg);
   --n-icon-button-radius: var(--n-button-radius);
+  --n-icon-button-icon-size-sm: var(--n-icon-size-md);
+  --n-icon-button-icon-size-md: var(--n-icon-size-lg);
+  --n-icon-button-icon-size-lg: var(--n-icon-size-xl);
   --n-link-color: var(--n-color-action-primary);
   --n-link-color-hover: var(--n-color-action-primary-hover);
   --n-link-color-muted: var(--n-color-text-secondary);

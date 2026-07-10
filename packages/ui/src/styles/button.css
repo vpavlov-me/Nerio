@@ -94,14 +94,24 @@
 }
 
 .n-icon-button .n-icon {
-  block-size: var(--n-button-icon-size);
-  inline-size: var(--n-button-icon-size);
+  block-size: var(--n-icon-button-icon-size-md);
+  inline-size: var(--n-icon-button-icon-size-md);
 }
 
 .n-icon-button[data-size="sm"] {
   inline-size: var(--n-icon-button-size-sm);
 }
 
+.n-icon-button[data-size="sm"] .n-icon {
+  block-size: var(--n-icon-button-icon-size-sm);
+  inline-size: var(--n-icon-button-icon-size-sm);
+}
+
 .n-icon-button[data-size="lg"] {
   inline-size: var(--n-icon-button-size-lg);
+}
+
+.n-icon-button[data-size="lg"] .n-icon {
+  block-size: var(--n-icon-button-icon-size-lg);
+  inline-size: var(--n-icon-button-icon-size-lg);
 }
