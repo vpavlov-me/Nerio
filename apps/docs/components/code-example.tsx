@@ -317,7 +317,7 @@ export function CodeExample({
         icon={copied ? Check : Copy}
         label={copied ? "Copied" : `Copy ${label.toLowerCase()}`}
         size="md"
-        variant="ghost"
+        variant="secondary"
         onClick={copy}
       />
       <CodeBlock code={code} label={label} />
