@@ -263,6 +263,27 @@ const searchEntries: SearchEntry[] = navGroups.flatMap((group) =>
   }),
 );
 
+const foundationGroups = navGroups.slice(0, 2);
+const componentGroups = navGroups.slice(2);
+const documentationItems: NavItem[] = [
+  { href: "/", label: "Overview", icon: BookOpen },
+  ...navGroups.flatMap((group) => group.items),
+];
+
+function getSidebarGroups(pathname: string): NavGroup[] {
+  return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
+}
+
+function getAdjacentDocs(pathname: string) {
+  const index = documentationItems.findIndex((item) => item.href === pathname);
+  if (index < 0) return { previous: undefined, next: undefined };
+
+  return {
+    previous: documentationItems[index - 1],
+    next: documentationItems[index + 1],
+  };
+}
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -430,6 +451,31 @@ function PageActions() {
   );
 }
 
+function DocsPageNavigation({ pathname }: { pathname: string }) {
+  const { previous, next } = getAdjacentDocs(pathname);
+
+  if (!previous && !next) return null;
+
+  return (
+    <nav className="docs-page-navigation" aria-label="Documentation pagination">
+      {previous ? (
+        <Link className="docs-page-navigation__previous" href={previous.href}>
+          <span>Previous</span>
+          <strong>{previous.label}</strong>
+        </Link>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <Link className="docs-page-navigation__next" href={next.href}>
+          <span>Next</span>
+          <strong>{next.label}</strong>
+        </Link>
+      ) : null}
+    </nav>
+  );
+}
+
 export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isTemplatesPage = pathname === "/templates";
@@ -481,8 +527,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("data-mode", value);
   };
 
+  const sidebarGroups = getSidebarGroups(pathname);
   const filteredGroups = search.trim()
-    ? navGroups
+    ? sidebarGroups
         .map((group) => ({
           ...group,
           items: group.items.filter((item) =>
@@ -490,7 +537,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           ),
         }))
         .filter((group) => group.items.length > 0)
-    : navGroups;
+    : sidebarGroups;
 
   const searchTerm = search.trim().toLowerCase();
   const searchResults = searchTerm
@@ -671,6 +718,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         <main className={isTemplatesPage ? "docs-main docs-main--template" : "docs-main"}>
           {isTemplatesPage ? null : <PageActions />}
           {children}
+          {isTemplatesPage ? null : <DocsPageNavigation pathname={pathname} />}
         </main>
 
         {isTemplatesPage ? null : (

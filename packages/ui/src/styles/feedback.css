@@ -7,6 +7,7 @@
   display: inline-flex;
   font-size: var(--n-badge-font-size);
   font-weight: var(--n-font-weight-medium);
+  justify-self: start;
   min-block-size: var(--n-badge-height);
   padding-inline: var(--n-badge-padding-inline);
 }

@@ -19,7 +19,7 @@
   cursor: pointer;
   font-size: var(--n-font-size-sm);
   font-weight: var(--n-font-weight-medium);
-  padding: 0 var(--n-space-2);
+  padding-inline: var(--n-tabs-padding-inline);
 }
 
 .n-tabs__tab[data-selected],
