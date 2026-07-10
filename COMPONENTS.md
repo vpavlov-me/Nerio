@@ -24,7 +24,9 @@ Keep these files aligned when component scope changes.
 ## Status values
 
 - `planned`: approved for the tier, not implemented yet.
+- `draft`: exploratory work exists but the public contract is not ready for use.
 - `implemented-initial`: first implementation exists, and API or styling may still change.
+- `polished`: public API and presentation are implemented, but the complete stable-core verification evidence is not yet available.
 - `quality-pass-needed`: component exists but still needs an API, accessibility, token, docs, and registry review before it can support Pro work.
 - `stable-core`: component passed the Core quality checklist and can safely support future Pro components, templates, registry installs, and AI/MCP usage.
 - `future`: expected later, not part of the current milestone.
@@ -87,11 +89,11 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 | Component | Status      | Package     | Notes                                                                                  |
 | --------- | ----------- | ----------- | -------------------------------------------------------------------------------------- |
-| Card      | stable-core | `@nerio/ui` | Surface primitive                                                                      |
+| Card      | polished | `@nerio/ui` | Surface primitive with configurable root and heading semantics; broader verification remains |
 | Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                    |
-| Avatar    | stable-core | `@nerio/ui` | User/entity avatar                                                                     |
-| Table     | stable-core | `@nerio/ui` | Basic table with an optional responsive keyboard-scrollable container                  |
-| List      | stable-core | `@nerio/ui` | Basic structured list primitive with optional descriptions, metadata, and native links |
+| Avatar    | polished | `@nerio/ui` | User/entity avatar with image-error fallback; broader image verification remains |
+| Table     | polished | `@nerio/ui` | Basic table with explicit keyboard-scroll opt-in; responsive overflow verification remains |
+| List      | polished | `@nerio/ui` | Structured list with stable IDs and visible ordered markers; router rendering verification remains |
 | Separator | stable-core | `@nerio/ui` | Layout divider                                                                         |
 | KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                   |
 | Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                |
@@ -101,10 +103,10 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Component   | Status      | Package     | Notes                                                                             |
 | ----------- | ----------- | ----------- | --------------------------------------------------------------------------------- |
 | Alert       | stable-core | `@nerio/ui` | Inline feedback with persistent semantic context                                  |
-| Toast       | stable-core | `@nerio/ui` | Temporary notification with Base UI manager, viewport, tones, and dismiss control |
-| Progress    | stable-core | `@nerio/ui` | Progress indicator                                                                |
+| Toast       | polished | `@nerio/ui` | Managed notification with action and localized dismiss API; full stack tests remain |
+| Progress    | polished | `@nerio/ui` | Progress with explicit ARIA ownership and value normalization; expanded motion tests remain |
 | Skeleton    | stable-core | `@nerio/ui` | Loading placeholder                                                               |
-| Empty State | stable-core | `@nerio/ui` | Basic empty state with primary and optional secondary action                      |
+| Empty State | polished | `@nerio/ui` | Basic empty state with configurable heading semantics; action-composition coverage remains |
 | Spinner     | stable-core | `@nerio/ui` | Loading indicator                                                                 |
 
 ### Navigation and layout
@@ -113,7 +115,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | ----------------- | ----------- | ----------- | ----------------------------------------------------------------------------------------- |
 | Tabs              | stable-core | `@nerio/ui` | Basic tabs with first-enabled default selection, disabled tabs, controlled state, and ref |
 | Breadcrumbs       | stable-core | `@nerio/ui` | Hierarchy navigation with ordered list semantics and explicit current-page support        |
-| Pagination        | stable-core | `@nerio/ui` | Basic previous, next, and page navigation without state ownership                         |
+| Pagination        | polished | `@nerio/ui` | Link and button pagination with consumer-owned state; router rendering coverage remains |
 | Sidebar Primitive | planned     | `@nerio/ui` | Layout primitive only                                                                     |
 | Command Primitive | planned     | `@nerio/ui` | Basic command structure                                                                   |
 

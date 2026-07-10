@@ -289,8 +289,8 @@ function TableToolbarPreview() {
       )}
       <Pagination
         pages={[
-          { label: "1", href: "#projects", current: true },
-          { label: "2", href: "#projects" },
+          { key: "1", label: "1", href: "#projects", current: true },
+          { key: "2", label: "2", href: "#projects" },
         ]}
         nextHref="#projects"
       />
@@ -339,11 +339,13 @@ function ProfilePreview() {
         <List
           items={[
             {
+              id: "updated-brief",
               title: "Updated the design brief",
               description: "Today at 10:42",
               meta: <Badge>Design</Badge>,
             },
             {
+              id: "joined-project",
               title: "Joined the research project",
               description: "Yesterday",
               meta: <Badge variant="info">Team</Badge>,
@@ -398,7 +400,7 @@ function FeedbackContent() {
           <span>Uploading assets</span>
           <Spinner aria-label="Uploading" />
         </div>
-        <Progress value={64} aria-label="Upload progress" />
+        <Progress value={64} ariaLabel="Upload progress" />
         <p>64% complete</p>
       </div>
       <div className="composition-skeleton-row">
@@ -515,9 +517,9 @@ function NavigationPreview() {
       </div>
       <Pagination
         pages={[
-          { label: "1", href: "#overview", current: true },
-          { label: "2", href: "#overview" },
-          { label: "3", href: "#overview" },
+          { key: "1", label: "1", href: "#overview", current: true },
+          { key: "2", label: "2", href: "#overview" },
+          { key: "3", label: "3", href: "#overview" },
         ]}
         nextHref="#overview"
       />

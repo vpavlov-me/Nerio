@@ -18,7 +18,10 @@
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:a11y": "vitest run -t @a11y"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -28,10 +31,16 @@
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.7",
     "eslint": "^9.39.2",
+    "jsdom": "^29.1.1",
     "react": "^19.2.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10",
+    "vitest-axe": "^0.1.0"
   },
   "peerDependencies": {
     "react": ">=19",

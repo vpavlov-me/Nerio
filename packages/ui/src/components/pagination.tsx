@@ -2,17 +2,36 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 export type PaginationPage = {
+  key: React.Key;
+  type?: "page";
   label: React.ReactNode;
   href?: string;
+  onSelect?: () => void;
+  /** Router link element. `onSelect` takes precedence when both are supplied. */
+  render?: React.ReactElement<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
   current?: boolean;
   disabled?: boolean;
+  ariaLabel?: string;
+  /** @deprecated Use ariaLabel. Removed in the next major version. */
   "aria-label"?: string;
 };
 
+export type PaginationEllipsis = {
+  key: React.Key;
+  type: "ellipsis";
+  ariaLabel?: string;
+};
+
+export type PaginationItem = PaginationPage | PaginationEllipsis;
+
 export interface PaginationProps extends React.HTMLAttributes<HTMLElement> {
-  pages: PaginationPage[];
+  pages: PaginationItem[];
   previousHref?: string;
   nextHref?: string;
+  previousOnSelect?: () => void;
+  nextOnSelect?: () => void;
+  previousRender?: React.ReactElement<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
+  nextRender?: React.ReactElement<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
   previousLabel?: React.ReactNode;
   nextLabel?: React.ReactNode;
   previousAriaLabel?: string;
@@ -26,10 +45,14 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(functio
     className,
     nextAriaLabel = "Go to next page",
     nextHref,
+    nextOnSelect,
+    nextRender,
     nextLabel = "Next",
     pages,
     previousAriaLabel = "Go to previous page",
     previousHref,
+    previousOnSelect,
+    previousRender,
     previousLabel = "Previous",
     ...props
   },
@@ -47,32 +70,46 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(functio
         <li data-slot="item">
           <PaginationControl
             aria-label={previousAriaLabel}
-            disabled={!previousHref}
+            disabled={!previousHref && !previousOnSelect}
             href={previousHref}
+            onSelect={previousOnSelect}
+            render={previousRender}
             slot="previous"
           >
             {previousLabel}
           </PaginationControl>
         </li>
-        {pages.map((page, index) => (
-          <li data-slot="item" key={`${index}`}>
-            <PaginationControl
-              aria-current={page.current ? "page" : undefined}
-              aria-label={page["aria-label"]}
-              current={page.current}
-              disabled={page.disabled}
-              href={page.href}
-              slot="page"
-            >
-              {page.label}
-            </PaginationControl>
-          </li>
-        ))}
+        {pages.map((page) =>
+          page.type === "ellipsis" ? (
+            <li data-slot="item" key={page.key}>
+              <span aria-label={page.ariaLabel ?? "More pages"} data-slot="ellipsis">
+                …
+              </span>
+            </li>
+          ) : (
+            <li data-slot="item" key={page.key}>
+              <PaginationControl
+                aria-current={page.current ? "page" : undefined}
+                aria-label={page.ariaLabel ?? page["aria-label"]}
+                current={page.current}
+                disabled={page.disabled}
+                href={page.href}
+                onSelect={page.onSelect}
+                render={page.render}
+                slot="page"
+              >
+                {page.label}
+              </PaginationControl>
+            </li>
+          ),
+        )}
         <li data-slot="item">
           <PaginationControl
             aria-label={nextAriaLabel}
-            disabled={!nextHref}
+            disabled={!nextHref && !nextOnSelect}
             href={nextHref}
+            onSelect={nextOnSelect}
+            render={nextRender}
             slot="next"
           >
             {nextLabel}
@@ -88,6 +125,8 @@ type PaginationControlProps = {
   current?: boolean;
   disabled?: boolean;
   href?: string;
+  onSelect?: () => void;
+  render?: React.ReactElement<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
   slot: "previous" | "page" | "next";
 } & Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, "aria-current" | "aria-label">;
 
@@ -96,12 +135,14 @@ function PaginationControl({
   current,
   disabled,
   href,
+  onSelect,
+  render,
   slot,
   ...props
 }: PaginationControlProps) {
   const className = "n-pagination__control";
 
-  if (!href || disabled) {
+  if (disabled) {
     return (
       <span
         className={className}
@@ -114,6 +155,33 @@ function PaginationControl({
         {children}
       </span>
     );
+  }
+
+  if (onSelect) {
+    return (
+      <button
+        className={className}
+        data-current={current ? "" : undefined}
+        data-slot={slot}
+        type="button"
+        onClick={onSelect}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
+
+  if (!href) {
+    return <span className={className} data-slot={slot} aria-disabled="true" data-disabled="" {...props}>{children}</span>;
+  }
+
+  if (render) {
+    return React.cloneElement(render, {
+      ...props,
+      className: cn(className, render.props.className),
+      href,
+    }, children);
   }
 
   return (

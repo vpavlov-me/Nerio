@@ -3,16 +3,17 @@ import { cn } from "../lib/cn";
 import type { IconComponent } from "./icon";
 import { Icon } from "./icon";
 
-export interface EmptyStateProps extends React.HTMLAttributes<HTMLDivElement> {
-  title: string;
-  description: string;
+export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
+  title: React.ReactNode;
+  description: React.ReactNode;
+  titleAs?: "h2" | "h3" | "h4" | "h5" | "h6";
   icon?: IconComponent;
   action?: React.ReactNode;
   secondaryAction?: React.ReactNode;
 }
 
 export const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(function EmptyState(
-  { action, className, description, icon, secondaryAction, title, ...props },
+  { action, className, description, icon, secondaryAction, title, titleAs: Title = "h3", ...props },
   ref,
 ) {
   return (
@@ -22,7 +23,7 @@ export const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(func
           <Icon icon={icon} />
         </div>
       ) : null}
-      <h3 data-slot="title">{title}</h3>
+      <Title data-slot="title">{title}</Title>
       <p data-slot="description">{description}</p>
       {action || secondaryAction ? (
         <div className="n-empty-state__actions" data-slot="actions">

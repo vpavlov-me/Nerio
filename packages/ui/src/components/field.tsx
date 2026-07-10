@@ -22,6 +22,10 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
   { label, description, message, children, invalid = false, className, ...props },
   ref,
 ) {
+  if (React.Children.count(children) !== 1) {
+    throw new Error("Field expects exactly one form control child.");
+  }
+
   const generatedId = React.useId();
   const childId = React.isValidElement<FieldControlProps>(children) ? children.props.id : undefined;
   const controlId = childId ?? generatedId;
