@@ -1670,7 +1670,16 @@
         }
       ],
       "baseUiPrimitives": ["toast"],
-      "slots": ["viewport", "root", "content", "status-indicator", "title", "description"],
+      "slots": [
+        "viewport",
+        "root",
+        "content",
+        "status-indicator",
+        "title",
+        "description",
+        "action",
+        "close"
+      ],
       "variants": ["neutral", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-toast-width",
@@ -1679,7 +1688,9 @@
         "--n-toast-border",
         "--n-toast-shadow",
         "--n-toast-status-color",
+        "--n-toast-status-background",
         "--n-toast-close-size",
+        "--n-toast-close-padding-inline",
         "--n-motion-reveal-duration",
         "--n-motion-reveal-easing",
         "--n-motion-focus-duration",
@@ -1689,10 +1700,10 @@
       "accessibility": [
         "Uses the Base UI Toast primitive and manager.",
         "Use low priority for routine confirmations and high priority only for urgent updates.",
-        "Managed toasts include an aria-labeled dismiss control rendered through the Nerio icon adapter.",
+        "Managed toasts include keyboard-accessible action and dismiss controls; ToastViewport localizes the dismiss label.",
         "Keep messages concise and avoid replacing persistent error UI with a toast."
       ],
-      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: 'Saved', data: { tone: 'success' } })}>Save</Button>;\n}\n\n<ToastProvider><SaveButton /><ToastViewport /></ToastProvider>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: 'Saved', data: { tone: 'success', action: { label: 'Undo', onClick: undo } } })}>Save</Button>;\n}\n\n<ToastProvider><SaveButton /><ToastViewport dismissLabel=\"Dismiss notification\" /></ToastProvider>"
     }
   ]
 }
