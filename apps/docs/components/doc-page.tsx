@@ -50,7 +50,7 @@ import {
   Tooltip,
   useToastManager,
 } from "@nerio/ui/client";
-import { CodeBlock, CodeExample } from "./code-example";
+import { CodeExample } from "./code-example";
 import {
   anatomyFromSlots,
   componentMetadata,
@@ -289,349 +289,339 @@ function ReferenceGrid({ items }: { items: ReferenceSection[] }) {
 }
 
 function Preview({ kind }: { kind: string }) {
-  const [copied, setCopied] = React.useState(false);
   const snippet = snippets[kind] ?? "";
 
-  const copySnippet = async () => {
-    try {
-      await navigator.clipboard?.writeText(snippet);
-    } catch {
-      // Clipboard can be blocked in automation or non-secure contexts.
-    }
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1200);
-  };
-
   return (
-    <section className="preview" aria-label={`${kind} preview`}>
-      <div className="preview-row">
-        {kind === "button" ? (
-          <>
-            <Button>Save project</Button>
-            <Button variant="secondary">Preview</Button>
-            <Button variant="ghost">Cancel</Button>
-            <Button loading>Saving</Button>
-          </>
-        ) : null}
-        {kind === "icon-button" ? <IconButton icon={Search} label="Search workspace" /> : null}
-        {kind === "link" ? (
-          <p>
-            Review the <Link href="/docs/getting-started">getting started guide</Link> before
-            installing components.
-          </p>
-        ) : null}
-        {kind === "badge" ? (
-          <>
-            <Badge>Draft</Badge>
-            <Badge variant="success">Published</Badge>
-            <Badge variant="info">Shared</Badge>
-            <Badge variant="danger">Blocked</Badge>
-          </>
-        ) : null}
-        {kind === "spinner" ? <Spinner label="Loading activity" /> : null}
-        {kind === "skeleton" ? (
-          <div className="form-preview-stack" aria-label="Loading project summary">
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-          </div>
-        ) : null}
-        {kind === "empty-state" ? (
-          <EmptyState
-            title="No collections"
-            description="Create a collection to organize projects, notes, and shared context."
-            action={<Button size="sm">Create collection</Button>}
-          />
-        ) : null}
-        {kind === "alert" ? (
-          <Alert tone="info" title="Invite sent" icon={Circle}>
-            Collaborators will receive an email shortly.
-          </Alert>
-        ) : null}
-        {kind === "input" ? (
-          <div className="form-preview-stack">
+    <section className="component-example" aria-label={`${kind} preview`}>
+      <div className="component-example__preview">
+        <div className="preview-row">
+          {kind === "button" ? (
+            <>
+              <Button>Save project</Button>
+              <Button variant="secondary">Preview</Button>
+              <Button variant="ghost">Cancel</Button>
+              <Button loading>Saving</Button>
+            </>
+          ) : null}
+          {kind === "icon-button" ? <IconButton icon={Search} label="Search workspace" /> : null}
+          {kind === "link" ? (
+            <p>
+              Review the <Link href="/docs/getting-started">getting started guide</Link> before
+              installing components.
+            </p>
+          ) : null}
+          {kind === "badge" ? (
+            <>
+              <Badge>Draft</Badge>
+              <Badge variant="success">Published</Badge>
+              <Badge variant="info">Shared</Badge>
+              <Badge variant="danger">Blocked</Badge>
+            </>
+          ) : null}
+          {kind === "spinner" ? <Spinner label="Loading activity" /> : null}
+          {kind === "skeleton" ? (
+            <div className="form-preview-stack" aria-label="Loading project summary">
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+            </div>
+          ) : null}
+          {kind === "empty-state" ? (
+            <EmptyState
+              title="No collections"
+              description="Create a collection to organize projects, notes, and shared context."
+              action={<Button size="sm">Create collection</Button>}
+            />
+          ) : null}
+          {kind === "alert" ? (
+            <Alert tone="info" title="Invite sent" icon={Circle}>
+              Collaborators will receive an email shortly.
+            </Alert>
+          ) : null}
+          {kind === "input" ? (
+            <div className="form-preview-stack">
+              <Field
+                label="Collection name"
+                description="Use a short name that your team will recognize."
+              >
+                <Input placeholder="Launch materials" required />
+              </Field>
+              <Field label="Disabled input" description="Shown when editing is unavailable.">
+                <Input placeholder="Archived collection" disabled />
+              </Field>
+            </div>
+          ) : null}
+          {kind === "textarea" ? (
             <Field
-              label="Collection name"
-              description="Use a short name that your team will recognize."
+              label="Notes"
+              description="Add context that helps collaborators understand this item."
             >
-              <Input placeholder="Launch materials" required />
+              <Textarea placeholder="Add launch context, decisions, or open questions." />
             </Field>
-            <Field label="Disabled input" description="Shown when editing is unavailable.">
-              <Input placeholder="Archived collection" disabled />
-            </Field>
-          </div>
-        ) : null}
-        {kind === "textarea" ? (
-          <Field
-            label="Notes"
-            description="Add context that helps collaborators understand this item."
-          >
-            <Textarea placeholder="Add launch context, decisions, or open questions." />
-          </Field>
-        ) : null}
-        {kind === "label" ? (
-          <div className="form-preview-stack">
-            <Label htmlFor="preview-project-name">Project name</Label>
-            <Input id="preview-project-name" placeholder="Roadmap refresh" />
-          </div>
-        ) : null}
-        {kind === "field" ? (
-          <div className="form-preview-stack">
-            <Field
-              label="Project name"
-              description="Names appear in navigation, tables, and activity."
-              message="Use a clear internal name."
+          ) : null}
+          {kind === "label" ? (
+            <div className="form-preview-stack">
+              <Label htmlFor="preview-project-name">Project name</Label>
+              <Input id="preview-project-name" placeholder="Roadmap refresh" />
+            </div>
+          ) : null}
+          {kind === "field" ? (
+            <div className="form-preview-stack">
+              <Field
+                label="Project name"
+                description="Names appear in navigation, tables, and activity."
+                message="Use a clear internal name."
+              >
+                <Input placeholder="Launch workspace" />
+              </Field>
+              <Field label="Short code" message="Use at least 3 characters." invalid>
+                <Input placeholder="Q3" />
+              </Field>
+            </div>
+          ) : null}
+          {kind === "form-message" ? (
+            <div className="form-preview-stack">
+              <FormMessage>Use at least 3 characters.</FormMessage>
+              <FormMessage tone="neutral">This will be visible to collaborators.</FormMessage>
+              <FormMessage tone="success">Looks good.</FormMessage>
+            </div>
+          ) : null}
+          {kind === "form-group" ? (
+            <FormGroup
+              title="Notifications"
+              description="Choose which updates should be sent by email."
             >
-              <Input placeholder="Launch workspace" />
-            </Field>
-            <Field label="Short code" message="Use at least 3 characters." invalid>
-              <Input placeholder="Q3" />
-            </Field>
-          </div>
-        ) : null}
-        {kind === "form-message" ? (
-          <div className="form-preview-stack">
-            <FormMessage>Use at least 3 characters.</FormMessage>
-            <FormMessage tone="neutral">This will be visible to collaborators.</FormMessage>
-            <FormMessage tone="success">Looks good.</FormMessage>
-          </div>
-        ) : null}
-        {kind === "form-group" ? (
-          <FormGroup
-            title="Notifications"
-            description="Choose which updates should be sent by email."
-          >
-            <Field label="Product updates">
-              <Checkbox aria-label="Product updates" />
-            </Field>
-            <Field label="Security alerts">
-              <Checkbox aria-label="Security alerts" defaultChecked />
-            </Field>
-          </FormGroup>
-        ) : null}
-        {kind === "checkbox" ? (
-          <label className="inline-control">
-            <Checkbox defaultChecked />
-            <span>Include archived collections</span>
-          </label>
-        ) : null}
-        {kind === "radio-group" ? (
-          <RadioGroup
-            label="Visibility"
-            name="visibility-preview"
-            defaultValue="team"
-            options={[
-              { label: "Private", value: "private", description: "Only invited members." },
-              { label: "Team", value: "team", description: "Visible to the workspace." },
-              { label: "Public", value: "public", disabled: true, description: "Not available." },
-            ]}
-          />
-        ) : null}
-        {kind === "switch" ? (
-          <label className="inline-control">
-            <Switch defaultChecked />
-            <span>Notify collaborators</span>
-          </label>
-        ) : null}
-        {kind === "dialog" ? (
-          <Dialog
-            trigger="Open dialog"
-            title="Share collection"
-            description="Choose how this collection should be shared."
-          >
-            <p>Choose collaborators and permissions before sharing this workspace collection.</p>
-            <Button>Send invite</Button>
-          </Dialog>
-        ) : null}
-        {kind === "select" ? (
-          <div className="form-preview-stack">
-            <Select
-              label="Status"
-              placeholder="Choose status"
-              message="Choose the closest workflow state."
+              <Field label="Product updates">
+                <Checkbox aria-label="Product updates" />
+              </Field>
+              <Field label="Security alerts">
+                <Checkbox aria-label="Security alerts" defaultChecked />
+              </Field>
+            </FormGroup>
+          ) : null}
+          {kind === "checkbox" ? (
+            <label className="inline-control">
+              <Checkbox defaultChecked />
+              <span>Include archived collections</span>
+            </label>
+          ) : null}
+          {kind === "radio-group" ? (
+            <RadioGroup
+              label="Visibility"
+              name="visibility-preview"
+              defaultValue="team"
               options={[
-                { label: "Active", value: "active" },
-                { label: "Draft", value: "draft" },
-                { label: "Archived", value: "archived" },
+                { label: "Private", value: "private", description: "Only invited members." },
+                { label: "Team", value: "team", description: "Visible to the workspace." },
+                { label: "Public", value: "public", disabled: true, description: "Not available." },
               ]}
             />
-            <Select
-              label="Disabled select"
-              placeholder="Unavailable"
-              disabled
-              options={[{ label: "Active", value: "active" }]}
+          ) : null}
+          {kind === "switch" ? (
+            <label className="inline-control">
+              <Switch defaultChecked />
+              <span>Notify collaborators</span>
+            </label>
+          ) : null}
+          {kind === "dialog" ? (
+            <Dialog
+              trigger="Open dialog"
+              title="Share collection"
+              description="Choose how this collection should be shared."
+            >
+              <p>Choose collaborators and permissions before sharing this workspace collection.</p>
+              <Button>Send invite</Button>
+            </Dialog>
+          ) : null}
+          {kind === "select" ? (
+            <div className="form-preview-stack">
+              <Select
+                label="Status"
+                placeholder="Choose status"
+                message="Choose the closest workflow state."
+                options={[
+                  { label: "Active", value: "active" },
+                  { label: "Draft", value: "draft" },
+                  { label: "Archived", value: "archived" },
+                ]}
+              />
+              <Select
+                label="Disabled select"
+                placeholder="Unavailable"
+                disabled
+                options={[{ label: "Active", value: "active" }]}
+              />
+            </div>
+          ) : null}
+          {kind === "toast" ? (
+            <ToastProvider>
+              <ToastDemoButton />
+              <ToastViewport />
+            </ToastProvider>
+          ) : null}
+          {kind === "tabs" ? (
+            <Tabs
+              tabs={[
+                {
+                  label: "Overview",
+                  value: "overview",
+                  content: "Recent activity, ownership, and status are grouped here.",
+                },
+                {
+                  label: "Files",
+                  value: "files",
+                  content: "Documents, assets, and supporting material stay in this panel.",
+                },
+                {
+                  label: "Settings",
+                  value: "settings",
+                  content: "Permissions and workflow preferences are edited here.",
+                },
+                {
+                  label: "Archive",
+                  value: "archive",
+                  content: "Archived content is unavailable in this preview.",
+                  disabled: true,
+                },
+              ]}
             />
-          </div>
-        ) : null}
-        {kind === "toast" ? (
-          <ToastProvider>
-            <ToastDemoButton />
-            <ToastViewport />
-          </ToastProvider>
-        ) : null}
-        {kind === "tabs" ? (
-          <Tabs
-            tabs={[
-              {
-                label: "Overview",
-                value: "overview",
-                content: "Recent activity, ownership, and status are grouped here.",
-              },
-              {
-                label: "Files",
-                value: "files",
-                content: "Documents, assets, and supporting material stay in this panel.",
-              },
-              {
-                label: "Settings",
-                value: "settings",
-                content: "Permissions and workflow preferences are edited here.",
-              },
-              {
-                label: "Archive",
-                value: "archive",
-                content: "Archived content is unavailable in this preview.",
-                disabled: true,
-              },
-            ]}
-          />
-        ) : null}
-        {kind === "tooltip" ? (
-          <Tooltip label="Copies the share link to your clipboard.">
-            <Button variant="secondary">Copy link</Button>
-          </Tooltip>
-        ) : null}
-        {kind === "popover" ? (
-          <Popover
-            trigger="Filters"
-            title="View filters"
-            description="Refine the workspace list without leaving the page."
-          >
-            <Button size="sm">Apply filters</Button>
-          </Popover>
-        ) : null}
-        {kind === "dropdown-menu" ? (
-          <DropdownMenu
-            trigger="Actions"
-            items={[
-              { label: "Rename" },
-              { label: "Duplicate", disabled: true },
-              { label: "Archive", destructive: true },
-            ]}
-          />
-        ) : null}
-        {kind === "card" ? (
-          <Card className="preview-card">
-            <CardHeader>
-              <Badge variant="info">Active</Badge>
-              <CardTitle>Launch workspace</CardTitle>
-              <CardDescription>
-                Plan assets, owners, and milestones in one focused surface.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>12 active tasks across three owners.</CardContent>
-          </Card>
-        ) : null}
-        {kind === "separator" ? (
-          <div className="form-preview-stack">
-            <span>Overview</span>
-            <Separator />
-            <span>Activity</span>
-          </div>
-        ) : null}
-        {kind === "avatar" ? (
-          <>
-            <Avatar name="Maya Chen" />
-            <Avatar name="Nerio Team" />
-            <Avatar name="Alex Rivera" />
-          </>
-        ) : null}
-        {kind === "progress" ? (
-          <div className="form-preview-stack">
-            <Progress label="Collection completion" value={68} />
-          </div>
-        ) : null}
-        {kind === "stat" ? (
-          <>
-            <Stat label="Active projects" value="12" trend="+3 this week" />
-            <Stat label="Open tasks" value="34" trend="8 due today" />
-          </>
-        ) : null}
-        {kind === "key-value" ? (
-          <dl className="preview-key-values">
-            <KeyValue label="Owner" value="Product team" />
-            <KeyValue label="Updated" value="Today" />
-            <KeyValue label="Status" value={<Badge variant="success">Ready</Badge>} />
-          </dl>
-        ) : null}
-        {kind === "table" ? (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Owner</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Roadmap refresh</TableCell>
-                <TableCell>Active</TableCell>
-                <TableCell>Maya</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Content audit</TableCell>
-                <TableCell>Draft</TableCell>
-                <TableCell>Alex</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        ) : null}
-        {kind === "list" ? (
-          <List
-            items={[
-              {
-                title: "Tokens",
-                description: "CSS variable foundation for themes, modes, and density.",
-                href: "/docs/foundations/tokens",
-                meta: "Foundation",
-              },
-              {
-                title: "Components",
-                description: "Composable Core primitives installed as source.",
-                href: "/docs/components/button",
-                meta: "Core",
-              },
-            ]}
-          />
-        ) : null}
-        {kind === "breadcrumbs" ? (
-          <Breadcrumbs
-            items={[
-              { label: "Docs", href: "/docs" },
-              { label: "Components", href: "/docs/components/button" },
-              { label: "Button" },
-            ]}
-          />
-        ) : null}
-        {kind === "pagination" ? (
-          <Pagination
-            previousHref="/docs/components/breadcrumbs"
-            nextHref="/docs/components/list"
-            pages={[
-              { label: "1", href: "/docs/components/breadcrumbs" },
-              { label: "2", href: "/docs/components/pagination", current: true },
-              { label: "3", href: "/docs/components/list" },
-            ]}
-          />
-        ) : null}
+          ) : null}
+          {kind === "tooltip" ? (
+            <Tooltip label="Copies the share link to your clipboard.">
+              <Button variant="secondary">Copy link</Button>
+            </Tooltip>
+          ) : null}
+          {kind === "popover" ? (
+            <Popover
+              trigger="Filters"
+              title="View filters"
+              description="Refine the workspace list without leaving the page."
+            >
+              <Button size="sm">Apply filters</Button>
+            </Popover>
+          ) : null}
+          {kind === "dropdown-menu" ? (
+            <DropdownMenu
+              trigger="Actions"
+              items={[
+                { label: "Rename" },
+                { label: "Duplicate", disabled: true },
+                { label: "Archive", destructive: true },
+              ]}
+            />
+          ) : null}
+          {kind === "card" ? (
+            <Card className="preview-card">
+              <CardHeader>
+                <Badge variant="info">Active</Badge>
+                <CardTitle>Launch workspace</CardTitle>
+                <CardDescription>
+                  Plan assets, owners, and milestones in one focused surface.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>12 active tasks across three owners.</CardContent>
+            </Card>
+          ) : null}
+          {kind === "separator" ? (
+            <div className="form-preview-stack">
+              <span>Overview</span>
+              <Separator />
+              <span>Activity</span>
+            </div>
+          ) : null}
+          {kind === "avatar" ? (
+            <>
+              <Avatar name="Maya Chen" />
+              <Avatar name="Nerio Team" />
+              <Avatar name="Alex Rivera" />
+            </>
+          ) : null}
+          {kind === "progress" ? (
+            <div className="form-preview-stack">
+              <Progress label="Collection completion" value={68} />
+            </div>
+          ) : null}
+          {kind === "stat" ? (
+            <>
+              <Stat label="Active projects" value="12" trend="+3 this week" />
+              <Stat label="Open tasks" value="34" trend="8 due today" />
+            </>
+          ) : null}
+          {kind === "key-value" ? (
+            <dl className="preview-key-values">
+              <KeyValue label="Owner" value="Product team" />
+              <KeyValue label="Updated" value="Today" />
+              <KeyValue label="Status" value={<Badge variant="success">Ready</Badge>} />
+            </dl>
+          ) : null}
+          {kind === "table" ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Owner</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Roadmap refresh</TableCell>
+                  <TableCell>Active</TableCell>
+                  <TableCell>Maya</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Content audit</TableCell>
+                  <TableCell>Draft</TableCell>
+                  <TableCell>Alex</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          ) : null}
+          {kind === "list" ? (
+            <List
+              items={[
+                {
+                  title: "Tokens",
+                  description: "CSS variable foundation for themes, modes, and density.",
+                  href: "/docs/foundations/tokens",
+                  meta: "Foundation",
+                },
+                {
+                  title: "Components",
+                  description: "Composable Core primitives installed as source.",
+                  href: "/docs/components/button",
+                  meta: "Core",
+                },
+              ]}
+            />
+          ) : null}
+          {kind === "breadcrumbs" ? (
+            <Breadcrumbs
+              items={[
+                { label: "Docs", href: "/docs" },
+                { label: "Components", href: "/docs/components/button" },
+                { label: "Button" },
+              ]}
+            />
+          ) : null}
+          {kind === "pagination" ? (
+            <Pagination
+              previousHref="/docs/components/breadcrumbs"
+              nextHref="/docs/components/list"
+              pages={[
+                { label: "1", href: "/docs/components/breadcrumbs" },
+                { label: "2", href: "/docs/components/pagination", current: true },
+                { label: "3", href: "/docs/components/list" },
+              ]}
+            />
+          ) : null}
+        </div>
       </div>
-      <div className="preview-row">
-        <Button variant="secondary" size="sm" onClick={copySnippet}>
-          {copied ? "Copied" : "Copy code"}
-        </Button>
-      </div>
-      <CodeBlock code={snippet} label={`${kind} preview code`} />
+      <CodeExample
+        className="component-example__code"
+        code={snippet}
+        label={`${kind} preview code`}
+      />
     </section>
   );
 }
