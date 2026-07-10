@@ -18,7 +18,7 @@
   --n-docs-control-size: var(--n-size-control-md);
   --n-docs-theme-dot-size: var(--n-space-2-5);
   --n-docs-theme-menu-min-width: 10rem;
-  --n-docs-content-max-width: 43.75rem;
+  --n-docs-content-max-width: 50rem;
   --n-docs-page-actions-z-index: 5;
   --n-docs-actions-menu-padding: var(--n-space-2);
   --n-docs-actions-menu-item-padding-block: var(--n-space-1-5);
