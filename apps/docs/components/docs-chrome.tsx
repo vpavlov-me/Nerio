@@ -17,7 +17,6 @@ import {
   Github,
   Layers,
   ListTree,
-  Monitor,
   Moon,
   Palette,
   PanelLeft,
@@ -28,11 +27,13 @@ import {
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, Dialog, DropdownMenu, Icon, Input, Tabs } from "@nerio/ui/client";
+import { Badge, Button, Dialog, DropdownMenu, Icon, Input } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/ui/client";
 
 const version = "v0.1.0 beta";
 const repoUrl = "https://github.com/vpavlov-me/Nerio";
+const modeStorageKey = "nerio-docs-mode";
+type ColorMode = "system" | "light" | "dark";
 
 type NavItem = {
   href: string;
@@ -171,19 +172,19 @@ const compositionToc: TocItem[] = [
 ];
 
 const compositionGroup: NavGroup = {
-  title: "Compositions",
+  title: "Blocks",
   items: [
-    { href: "/docs/compositions/login", label: "Login", icon: PanelLeft },
-    { href: "/docs/compositions/register", label: "Register", icon: PanelLeft },
-    { href: "/docs/compositions/forgot-password", label: "Forgot password", icon: PanelLeft },
-    { href: "/docs/compositions/settings-form", label: "Settings form", icon: Wrench },
-    { href: "/docs/compositions/table-toolbar", label: "Table toolbar", icon: ListTree },
-    { href: "/docs/compositions/user-profile", label: "User profile", icon: Circle },
-    { href: "/docs/compositions/empty-states", label: "Empty states", icon: FileText },
-    { href: "/docs/compositions/feedback", label: "Feedback", icon: Circle },
-    { href: "/docs/compositions/overlay-playground", label: "Overlay playground", icon: PanelLeft },
-    { href: "/docs/compositions/navigation-patterns", label: "Navigation patterns", icon: Layers },
-    { href: "/docs/compositions/dense-form", label: "Dense form", icon: Wrench },
+    { href: "/docs/blocks/login", label: "Login", icon: PanelLeft },
+    { href: "/docs/blocks/register", label: "Register", icon: PanelLeft },
+    { href: "/docs/blocks/forgot-password", label: "Forgot password", icon: PanelLeft },
+    { href: "/docs/blocks/settings-form", label: "Settings form", icon: Wrench },
+    { href: "/docs/blocks/table-toolbar", label: "Table toolbar", icon: ListTree },
+    { href: "/docs/blocks/user-profile", label: "User profile", icon: Circle },
+    { href: "/docs/blocks/empty-states", label: "Empty states", icon: FileText },
+    { href: "/docs/blocks/feedback", label: "Feedback", icon: Circle },
+    { href: "/docs/blocks/overlay-playground", label: "Overlay playground", icon: PanelLeft },
+    { href: "/docs/blocks/navigation-patterns", label: "Navigation patterns", icon: Layers },
+    { href: "/docs/blocks/dense-form", label: "Dense form", icon: Wrench },
   ],
 };
 
@@ -279,7 +280,9 @@ const tocByPath: Record<string, TocItem[]> = {
 function getDefaultToc(pathname: string): TocItem[] {
   if (pathname === "/docs/components/button") return buttonToc;
   if (pathname.startsWith("/docs/components/")) return componentToc;
-  if (pathname.startsWith("/docs/compositions/")) return compositionToc;
+  if (pathname.startsWith("/docs/blocks/") || pathname.startsWith("/docs/compositions/")) {
+    return compositionToc;
+  }
   return tocByPath[pathname] ?? [];
 }
 
@@ -312,7 +315,9 @@ const documentationItems: NavItem[] = [
 ];
 
 function getSidebarGroups(pathname: string): NavGroup[] {
-  if (pathname.startsWith("/docs/compositions")) return [compositionGroup];
+  if (pathname.startsWith("/docs/blocks") || pathname.startsWith("/docs/compositions")) {
+    return [compositionGroup];
+  }
   return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
 }
 
@@ -524,7 +529,8 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const isTemplatesPage = pathname === "/templates";
   const fallbackToc = getDefaultToc(pathname);
   const [theme, setThemeValue] = React.useState("purple");
-  const [mode, setModeValue] = React.useState("system");
+  const [mode, setModeValue] = React.useState<ColorMode>("system");
+  const [systemMode, setSystemMode] = React.useState<Exclude<ColorMode, "system">>("light");
   const [search, setSearch] = React.useState("");
   const [searchOpen, setSearchOpen] = React.useState(false);
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
@@ -535,6 +541,20 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.setAttribute("data-mode", mode);
   }, [theme, mode]);
+
+  React.useEffect(() => {
+    const storedMode = window.localStorage.getItem(modeStorageKey);
+    if (storedMode === "light" || storedMode === "dark") setModeValue(storedMode);
+  }, []);
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateSystemMode = () => setSystemMode(mediaQuery.matches ? "dark" : "light");
+
+    updateSystemMode();
+    mediaQuery.addEventListener("change", updateSystemMode);
+    return () => mediaQuery.removeEventListener("change", updateSystemMode);
+  }, []);
 
   React.useEffect(() => {
     const headings = Array.from(
@@ -617,9 +637,32 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("data-theme", value);
   };
 
-  const setMode = (value: string) => {
+  const setMode = (value: ColorMode) => {
     setModeValue(value);
     document.documentElement.setAttribute("data-mode", value);
+    window.localStorage.setItem(modeStorageKey, value);
+  };
+
+  const toggleMode = () => {
+    setMode((mode === "system" ? systemMode : mode) === "light" ? "dark" : "light");
+  };
+
+  const activeColorMode = mode === "system" ? systemMode : mode;
+  const modeIcon = activeColorMode === "light" ? Moon : Sun;
+  const modeLabel = activeColorMode === "light" ? "Use dark color mode" : "Use light color mode";
+
+  const scrollToTocItem = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    event.preventDefault();
+    const heading = document.getElementById(id);
+    if (!heading) return;
+
+    const headerHeight =
+      document.querySelector(".docs-header")?.getBoundingClientRect().height ?? 0;
+    const top = window.scrollY + heading.getBoundingClientRect().top - headerHeight - 16;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    window.history.pushState(null, "", `#${id}`);
+    window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? "auto" : "smooth" });
   };
 
   const sidebarGroups = getSidebarGroups(pathname);
@@ -675,10 +718,10 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               Components
             </Link>
             <Link
-              href="/docs/compositions/login"
-              className={pathname.startsWith("/docs/compositions") ? "is-active" : undefined}
+              href="/docs/blocks/login"
+              className={pathname.startsWith("/docs/blocks") ? "is-active" : undefined}
             >
-              Compositions
+              Blocks
             </Link>
             <Link href="/templates" className={pathname === "/templates" ? "is-active" : undefined}>
               Templates
@@ -741,6 +784,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="docs-controls">
+            <span className="docs-controls-divider" aria-hidden />
             <DropdownMenu
               className="docs-theme-menu"
               trigger={
@@ -769,40 +813,23 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                 onSelect: () => setTheme(option.value),
               }))}
             />
-            <Tabs
-              aria-label="Color mode"
-              className="docs-mode-tabs"
-              onChange={setMode}
-              tabs={[
-                {
-                  ariaLabel: "Use system color mode",
-                  content: null,
-                  label: <Icon icon={Monitor} />,
-                  value: "system",
-                },
-                {
-                  ariaLabel: "Use light mode",
-                  content: null,
-                  label: <Icon icon={Sun} />,
-                  value: "light",
-                },
-                {
-                  ariaLabel: "Use dark mode",
-                  content: null,
-                  label: <Icon icon={Moon} />,
-                  value: "dark",
-                },
-              ]}
-              value={mode}
-              variant="segmented"
-            />
+            <button
+              type="button"
+              className="docs-mode-toggle"
+              onClick={toggleMode}
+              aria-label={modeLabel}
+              title={modeLabel}
+            >
+              <Icon icon={modeIcon} />
+            </button>
+            <span className="docs-controls-divider" aria-hidden />
             <Button
               leadingIcon={Github}
               nativeButton={false}
               render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
               variant="secondary"
             >
-              Open Repo
+              GitHub
             </Button>
           </div>
         </div>
@@ -853,6 +880,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                       data-level={item.level ?? 2}
                       className={activeTocId === item.id ? "is-active" : undefined}
                       aria-current={activeTocId === item.id ? "location" : undefined}
+                      onClick={(event) => scrollToTocItem(event, item.id)}
                     >
                       {item.label}
                     </a>

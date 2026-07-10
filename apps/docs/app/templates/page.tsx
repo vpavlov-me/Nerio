@@ -1,5 +1,5 @@
 export default function TemplatesPage() {
-  const demoAppUrl = process.env.NEXT_PUBLIC_DEMO_APP_URL ?? "http://localhost:3001";
+  const demoAppUrl = process.env.NEXT_PUBLIC_DEMO_APP_URL ?? "http://localhost:3002";
 
   return (
     <article className="doc-page templates-page">

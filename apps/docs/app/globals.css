@@ -277,15 +277,39 @@ pre {
   inline-size: var(--n-docs-control-icon-size);
 }
 
-.docs-mode-tabs .n-tabs__tab {
+.docs-mode-toggle {
+  align-items: center;
+  background: var(--n-button-background-secondary);
+  border: var(--n-button-border-width) solid var(--n-button-border-secondary);
+  border-radius: var(--n-radius-md);
+  color: var(--n-button-foreground-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
   block-size: var(--n-docs-control-size);
   inline-size: var(--n-docs-control-size);
   min-inline-size: var(--n-docs-control-size);
 }
 
-.docs-mode-tabs .n-tabs__tab .n-icon {
+.docs-mode-toggle:hover {
+  background: var(--n-button-background-secondary-hover);
+}
+
+.docs-mode-toggle:focus-visible {
+  box-shadow: var(--n-focus-ring);
+  outline: 0;
+}
+
+.docs-mode-toggle .n-icon {
   block-size: var(--n-icon-size-sm);
   inline-size: var(--n-icon-size-sm);
+}
+
+.docs-controls-divider {
+  background: var(--n-color-border-subtle);
+  block-size: var(--n-space-5);
+  inline-size: var(--n-border-width-default);
+  margin-inline: var(--n-space-1);
 }
 
 .docs-controls .n-label {
@@ -374,6 +398,7 @@ pre {
 .docs-sidebar nav {
   display: grid;
   gap: var(--n-space-6);
+  justify-items: start;
 }
 
 .nav-group {
@@ -397,6 +422,8 @@ pre {
   font-size: var(--n-font-size-sm);
   gap: var(--n-space-2);
   grid-template-columns: auto minmax(0, 1fr);
+  inline-size: fit-content;
+  max-inline-size: 100%;
   padding: var(--n-space-2) var(--n-space-3);
 }
 
@@ -648,6 +675,12 @@ pre {
 
 .docs-toc a.is-active {
   color: var(--n-color-action-primary);
+}
+
+.docs-main h2,
+.docs-main h3,
+.docs-main h4 {
+  scroll-margin-block-start: calc(var(--n-docs-header-height) + var(--n-space-4));
 }
 
 .hero {
