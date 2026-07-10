@@ -1,15 +1,15 @@
 .n-button {
   align-items: center;
   block-size: var(--n-button-height-md);
-  border: 1px solid transparent;
+  border: var(--n-button-border-width) solid var(--n-button-border-transparent);
   border-radius: var(--n-button-radius);
   cursor: pointer;
   display: inline-flex;
-  font-size: var(--n-font-size-sm);
-  font-weight: var(--n-font-weight-medium);
-  gap: var(--n-space-2);
+  font-size: var(--n-button-font-size);
+  font-weight: var(--n-button-font-weight);
+  gap: var(--n-button-gap);
   justify-content: center;
-  padding: 0 var(--n-space-4);
+  padding-inline: var(--n-button-padding-inline-md);
   white-space: nowrap;
 }
 
@@ -21,7 +21,7 @@
 .n-button:disabled,
 .n-button[data-disabled] {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: var(--n-button-disabled-opacity);
 }
 
 .n-button[data-variant="primary"] {
@@ -51,7 +51,8 @@
 
 .n-button[data-variant="ghost"],
 .n-button[data-variant="subtle"] {
-  background: transparent;
+  background: var(--n-button-background-ghost);
+  border-color: var(--n-button-border-ghost);
   color: var(--n-button-foreground-ghost);
 }
 
@@ -73,12 +74,12 @@
 
 .n-button[data-size="sm"] {
   block-size: var(--n-button-height-sm);
-  padding-inline: var(--n-space-3);
+  padding-inline: var(--n-button-padding-inline-sm);
 }
 
 .n-button[data-size="lg"] {
   block-size: var(--n-button-height-lg);
-  padding-inline: var(--n-space-5);
+  padding-inline: var(--n-button-padding-inline-lg);
 }
 
 .n-button [data-slot="button-icon"] {
@@ -89,18 +90,28 @@
 .n-icon-button {
   border-radius: var(--n-icon-button-radius);
   inline-size: var(--n-icon-button-size-md);
-  padding: 0;
+  padding: var(--n-space-0);
 }
 
 .n-icon-button .n-icon {
-  block-size: 1rem;
-  inline-size: 1rem;
+  block-size: var(--n-icon-button-icon-size-md);
+  inline-size: var(--n-icon-button-icon-size-md);
 }
 
 .n-icon-button[data-size="sm"] {
   inline-size: var(--n-icon-button-size-sm);
 }
 
+.n-icon-button[data-size="sm"] .n-icon {
+  block-size: var(--n-icon-button-icon-size-sm);
+  inline-size: var(--n-icon-button-icon-size-sm);
+}
+
 .n-icon-button[data-size="lg"] {
   inline-size: var(--n-icon-button-size-lg);
+}
+
+.n-icon-button[data-size="lg"] .n-icon {
+  block-size: var(--n-icon-button-icon-size-lg);
+  inline-size: var(--n-icon-button-icon-size-lg);
 }

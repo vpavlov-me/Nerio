@@ -9,7 +9,10 @@ export interface TabItem {
   value: string;
   content: React.ReactNode;
   disabled?: boolean;
+  ariaLabel?: string;
 }
+
+export type TabsVariant = "underline" | "segmented";
 
 export interface TabsProps extends Omit<
   React.ComponentProps<typeof BaseTabs.Root>,
@@ -20,10 +23,20 @@ export interface TabsProps extends Omit<
   defaultValue?: string | null;
   onChange?: (value: string) => void;
   onValueChange?: (value: string) => void;
+  variant?: TabsVariant;
 }
 
 export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(function Tabs(
-  { tabs, value, defaultValue, onChange, onValueChange, className, ...props },
+  {
+    tabs,
+    value,
+    defaultValue,
+    onChange,
+    onValueChange,
+    variant = "underline",
+    className,
+    ...props
+  },
   ref,
 ) {
   const fallbackValue =
@@ -34,6 +47,7 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(function Tabs(
       ref={ref}
       className={cn("n-tabs", className)}
       data-slot="root"
+      data-variant={variant}
       value={value}
       defaultValue={fallbackValue}
       onValueChange={(nextValue) => {
@@ -50,6 +64,7 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(function Tabs(
             key={tab.value}
             className="n-tabs__tab"
             data-slot="tab"
+            aria-label={tab.ariaLabel}
             disabled={tab.disabled}
             value={tab.value}
           >

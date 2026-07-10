@@ -1,14 +1,15 @@
 .n-badge {
   align-items: center;
   background: var(--n-color-surface-muted);
-  border: 1px solid var(--n-color-border-subtle);
+  border: var(--n-border-width-0);
   border-radius: var(--n-badge-radius);
   color: var(--n-color-text-secondary);
   display: inline-flex;
-  font-size: var(--n-font-size-xs);
+  font-size: var(--n-badge-font-size);
   font-weight: var(--n-font-weight-medium);
+  justify-self: start;
   min-block-size: var(--n-badge-height);
-  padding: 0 var(--n-space-2);
+  padding-inline: var(--n-badge-padding-inline);
 }
 
 .n-badge[data-variant="success"] {
@@ -26,13 +27,14 @@
 .n-alert {
   align-items: start;
   background: var(--n-alert-background);
-  border: 1px solid var(--n-alert-border);
+  border: var(--n-alert-border-width) solid var(--n-alert-border);
   border-radius: var(--n-alert-radius);
   color: var(--n-color-text-secondary);
   display: grid;
   gap: var(--n-alert-gap);
   grid-template-columns: auto 1fr;
   padding: var(--n-alert-padding);
+  box-shadow: var(--n-alert-shadow);
 }
 
 .n-alert:not(:has(.n-alert__icon)) {
@@ -42,7 +44,7 @@
 .n-alert__icon {
   color: var(--n-color-status-neutral);
   font-size: var(--n-alert-icon-size);
-  line-height: 1.4;
+  line-height: var(--n-helper-line-height);
 }
 
 .n-alert__content {
@@ -112,13 +114,13 @@
 
 @keyframes n-pulse {
   50% {
-    opacity: 0.55;
+    opacity: var(--n-opacity-disabled);
   }
 }
 
 .n-empty-state {
   align-items: center;
-  border: 1px dashed var(--n-color-border-strong);
+  border: var(--n-border-width-default) dashed var(--n-color-border-strong);
   border-radius: var(--n-radius-lg);
   color: var(--n-color-text-secondary);
   display: grid;
@@ -136,7 +138,7 @@
 
 .n-empty-state p {
   margin: 0;
-  max-inline-size: 32rem;
+  max-inline-size: var(--n-size-empty-state-max);
 }
 
 .n-empty-state__mark {
@@ -144,7 +146,7 @@
   border-radius: var(--n-radius-md);
   block-size: var(--n-empty-state-mark-size);
   inline-size: var(--n-empty-state-mark-size);
-  opacity: 0.14;
+  opacity: var(--n-opacity-decorative);
 }
 
 .n-progress {

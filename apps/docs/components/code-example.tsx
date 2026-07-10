@@ -316,7 +316,7 @@ export function CodeExample({
         className="code-copy"
         icon={copied ? Check : Copy}
         label={copied ? "Copied" : `Copy ${label.toLowerCase()}`}
-        size="sm"
+        size="md"
         variant="ghost"
         onClick={copy}
       />

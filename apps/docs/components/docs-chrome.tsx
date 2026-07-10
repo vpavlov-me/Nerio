@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookOpen,
+  Box,
   Boxes,
   Check,
   ChevronDown,
@@ -28,10 +29,10 @@ import {
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, DropdownMenu, Icon, IconButton, Input } from "@nerio/ui/client";
+import { Badge, Button, Dialog, DropdownMenu, Icon, Input, Tabs } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/ui/client";
 
-const version = "v0.1.0";
+const version = "v0.1.0 beta";
 const repoUrl = "https://github.com/vpavlov-me/Nerio";
 
 type NavItem = {
@@ -62,8 +63,8 @@ const navGroups: NavGroup[] = [
       { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
       { href: "/docs/foundations/animations", label: "Animations", icon: Sparkles },
       { href: "/docs/foundations/radius", label: "Radius", icon: Circle },
-      { href: "/docs/foundations/effects", label: "Effects", icon: Circle },
-      { href: "/docs/foundations/icons", label: "Icons", icon: Circle },
+      { href: "/docs/foundations/effects", label: "Effects", icon: Wrench },
+      { href: "/docs/foundations/icons", label: "Icons", icon: Box },
     ],
   },
   {
@@ -263,6 +264,27 @@ const searchEntries: SearchEntry[] = navGroups.flatMap((group) =>
   }),
 );
 
+const foundationGroups = navGroups.slice(0, 2);
+const componentGroups = navGroups.slice(2);
+const documentationItems: NavItem[] = [
+  { href: "/", label: "Overview", icon: BookOpen },
+  ...navGroups.flatMap((group) => group.items),
+];
+
+function getSidebarGroups(pathname: string): NavGroup[] {
+  return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
+}
+
+function getAdjacentDocs(pathname: string) {
+  const index = documentationItems.findIndex((item) => item.href === pathname);
+  if (index < 0) return { previous: undefined, next: undefined };
+
+  return {
+    previous: documentationItems[index - 1],
+    next: documentationItems[index + 1],
+  };
+}
+
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -430,6 +452,31 @@ function PageActions() {
   );
 }
 
+function DocsPageNavigation({ pathname }: { pathname: string }) {
+  const { previous, next } = getAdjacentDocs(pathname);
+
+  if (!previous && !next) return null;
+
+  return (
+    <nav className="docs-page-navigation" aria-label="Documentation pagination">
+      {previous ? (
+        <Link className="docs-page-navigation__previous" href={previous.href}>
+          <span>Previous</span>
+          <strong>{previous.label}</strong>
+        </Link>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <Link className="docs-page-navigation__next" href={next.href}>
+          <span>Next</span>
+          <strong>{next.label}</strong>
+        </Link>
+      ) : null}
+    </nav>
+  );
+}
+
 export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isTemplatesPage = pathname === "/templates";
@@ -439,6 +486,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [search, setSearch] = React.useState("");
   const [searchOpen, setSearchOpen] = React.useState(false);
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
+  const [activeTocId, setActiveTocId] = React.useState("");
   const searchInputRef = React.useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
@@ -454,8 +502,28 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
       return { id: heading.id, label };
     });
     const filteredToc = nextToc.filter((item) => item.label.length > 0);
-    setToc(filteredToc.length > 0 ? filteredToc : getDefaultToc(pathname));
+    const nextTocItems = filteredToc.length > 0 ? filteredToc : getDefaultToc(pathname);
+    setToc(nextTocItems);
+    setActiveTocId(nextTocItems[0]?.id ?? "");
   }, [pathname, children]);
+
+  React.useEffect(() => {
+    const headings = Array.from(document.querySelectorAll<HTMLElement>(".docs-main h2[id]"));
+    if (headings.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((left, right) => left.boundingClientRect.top - right.boundingClientRect.top);
+        if (visible[0]?.target instanceof HTMLElement) setActiveTocId(visible[0].target.id);
+      },
+      { rootMargin: "-20% 0px -65%" },
+    );
+
+    headings.forEach((heading) => observer.observe(heading));
+    return () => observer.disconnect();
+  }, [pathname, toc]);
 
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -463,13 +531,17 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
       const target = event.target as HTMLElement | null;
       if (target?.matches("input, textarea, [contenteditable='true']")) return;
       event.preventDefault();
-      searchInputRef.current?.focus();
       setSearchOpen(true);
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  React.useEffect(() => {
+    if (!searchOpen) return;
+    window.requestAnimationFrame(() => searchInputRef.current?.focus());
+  }, [searchOpen]);
 
   const setTheme = (value: string) => {
     setThemeValue(value);
@@ -481,8 +553,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("data-mode", value);
   };
 
+  const sidebarGroups = getSidebarGroups(pathname);
   const filteredGroups = search.trim()
-    ? navGroups
+    ? sidebarGroups
         .map((group) => ({
           ...group,
           items: group.items.filter((item) =>
@@ -490,7 +563,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           ),
         }))
         .filter((group) => group.items.length > 0)
-    : navGroups;
+    : sidebarGroups;
 
   const searchTerm = search.trim().toLowerCase();
   const searchResults = searchTerm
@@ -516,46 +589,58 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           </Link>
 
           <div className="docs-search-wrap">
-            <label className="docs-search">
-              <Icon icon={Search} />
-              <Input
-                ref={searchInputRef}
-                aria-label="Search documentation"
-                placeholder="Search documentation"
-                value={search}
-                onBlur={() => window.setTimeout(() => setSearchOpen(false), 120)}
-                onChange={(event) => {
-                  setSearch(event.currentTarget.value);
-                  setSearchOpen(true);
-                }}
-                onFocus={() => setSearchOpen(true)}
-              />
-              <kbd>/</kbd>
-            </label>
-            {searchOpen && searchTerm ? (
+            <Dialog
+              bodyClassName="docs-search-dialog__body"
+              className="docs-search-dialog"
+              description="Search pages, foundations, and components."
+              onOpenChange={setSearchOpen}
+              open={searchOpen}
+              title="Search documentation"
+              trigger={
+                <button className="docs-search-trigger" type="button">
+                  <Icon icon={Search} />
+                  <span>Search documentation</span>
+                  <kbd>/</kbd>
+                </button>
+              }
+            >
               <div className="docs-search-results" role="listbox">
-                {searchResults.length ? (
-                  searchResults.map((entry) => (
-                    <Link
-                      key={entry.href}
-                      href={entry.href}
-                      role="option"
-                      onClick={() => {
-                        setSearch("");
-                        setSearchOpen(false);
-                      }}
-                    >
-                      <span>{entry.title}</span>
-                      <small>
-                        {entry.group} - {entry.description}
-                      </small>
-                    </Link>
-                  ))
+                <Input
+                  ref={searchInputRef}
+                  aria-label="Search documentation"
+                  placeholder="Search documentation"
+                  value={search}
+                  onChange={(event) => setSearch(event.currentTarget.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") setSearchOpen(false);
+                  }}
+                />
+                {searchTerm ? (
+                  searchResults.length ? (
+                    searchResults.map((entry) => (
+                      <Link
+                        key={entry.href}
+                        href={entry.href}
+                        role="option"
+                        onClick={() => {
+                          setSearch("");
+                          setSearchOpen(false);
+                        }}
+                      >
+                        <span>{entry.title}</span>
+                        <small>
+                          {entry.group} - {entry.description}
+                        </small>
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="docs-search-empty">No matching documentation pages.</div>
+                  )
                 ) : (
-                  <div className="docs-search-empty">No matching documentation pages.</div>
+                  <div className="docs-search-empty">Start typing to search documentation.</div>
                 )}
               </div>
-            ) : null}
+            </Dialog>
           </div>
 
           <div className="docs-controls">
@@ -587,29 +672,33 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                 onSelect: () => setTheme(option.value),
               }))}
             />
-            <div className="docs-mode-switcher" role="group" aria-label="Color mode">
-              <IconButton
-                className={mode === "system" ? "is-active" : undefined}
-                icon={Monitor}
-                label="Use system color mode"
-                variant="ghost"
-                onClick={() => setMode("system")}
-              />
-              <IconButton
-                className={mode === "light" ? "is-active" : undefined}
-                icon={Sun}
-                label="Use light mode"
-                variant="ghost"
-                onClick={() => setMode("light")}
-              />
-              <IconButton
-                className={mode === "dark" ? "is-active" : undefined}
-                icon={Moon}
-                label="Use dark mode"
-                variant="ghost"
-                onClick={() => setMode("dark")}
-              />
-            </div>
+            <Tabs
+              aria-label="Color mode"
+              className="docs-mode-tabs"
+              onChange={setMode}
+              tabs={[
+                {
+                  ariaLabel: "Use system color mode",
+                  content: null,
+                  label: <Icon icon={Monitor} />,
+                  value: "system",
+                },
+                {
+                  ariaLabel: "Use light mode",
+                  content: null,
+                  label: <Icon icon={Sun} />,
+                  value: "light",
+                },
+                {
+                  ariaLabel: "Use dark mode",
+                  content: null,
+                  label: <Icon icon={Moon} />,
+                  value: "dark",
+                },
+              ]}
+              value={mode}
+              variant="segmented"
+            />
             <Button
               leadingIcon={Github}
               nativeButton={false}
@@ -671,6 +760,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         <main className={isTemplatesPage ? "docs-main docs-main--template" : "docs-main"}>
           {isTemplatesPage ? null : <PageActions />}
           {children}
+          {isTemplatesPage ? null : <DocsPageNavigation pathname={pathname} />}
         </main>
 
         {isTemplatesPage ? null : (
@@ -680,7 +770,12 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               {visibleToc.length > 0 ? (
                 <nav>
                   {visibleToc.map((item) => (
-                    <a key={item.id} href={`#${item.id}`}>
+                    <a
+                      key={item.id}
+                      href={`#${item.id}`}
+                      className={activeTocId === item.id ? "is-active" : undefined}
+                      aria-current={activeTocId === item.id ? "location" : undefined}
+                    >
                       {item.label}
                     </a>
                   ))}
@@ -692,6 +787,20 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           </aside>
         )}
       </div>
+
+      <footer className="docs-footer">
+        <p>
+          Built with love by{" "}
+          <a href="https://vpavlov.com" target="_blank" rel="noreferrer">
+            Vladimir Pavlov
+          </a>
+          . The source code is available on{" "}
+          <a href={repoUrl} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          .
+        </p>
+      </footer>
     </div>
   );
 }
