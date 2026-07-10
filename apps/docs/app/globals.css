@@ -18,7 +18,7 @@
   --n-docs-control-size: var(--n-size-control-md);
   --n-docs-theme-dot-size: var(--n-space-2-5);
   --n-docs-theme-menu-min-width: 10rem;
-  --n-docs-content-max-width: 43.75rem;
+  --n-docs-content-max-width: 50rem;
   --n-docs-page-actions-z-index: 5;
   --n-docs-actions-menu-padding: var(--n-space-2);
   --n-docs-actions-menu-item-padding-block: var(--n-space-1-5);
@@ -627,10 +627,8 @@ pre {
 }
 
 .docs-toc nav {
-  border-inline-start: var(--n-border-subtle);
   display: grid;
   gap: var(--n-space-1);
-  padding-inline-start: var(--n-space-3);
 }
 
 .docs-toc a,
@@ -643,6 +641,16 @@ pre {
 .docs-toc a {
   border-radius: var(--n-radius-sm);
   padding: var(--n-space-1) var(--n-space-2);
+}
+
+.docs-toc a[data-level="3"] {
+  font-size: var(--n-font-size-xs);
+  padding-inline-start: var(--n-space-5);
+}
+
+.docs-toc a[data-level="4"] {
+  font-size: var(--n-font-size-xs);
+  padding-inline-start: var(--n-space-8);
 }
 
 .docs-toc a:hover {

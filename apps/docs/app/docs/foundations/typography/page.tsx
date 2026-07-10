@@ -2,14 +2,25 @@ import { Badge, Card, Separator, Table } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 
 const scale = [
-  ["xs", "--n-font-size-xs", "Metadata, badges, dense captions"],
-  ["sm", "--n-font-size-sm", "Labels, helper text, table cells"],
-  ["md", "--n-font-size-md", "Default UI body"],
-  ["lg", "--n-font-size-lg", "Lead copy and compact section intros"],
-  ["xl", "--n-font-size-xl", "Small headings"],
-  ["2xl", "--n-font-size-2xl", "Metric values and page sections"],
-  ["3xl", "--n-font-size-3xl", "Editorial headings"],
+  ["xs", "--n-font-size-xs", "12px", "Metadata, badges, dense captions"],
+  ["sm", "--n-font-size-sm", "13px", "Labels, helper text, table cells"],
+  ["md", "--n-font-size-md", "14px", "Default UI body and controls"],
+  ["lg", "--n-font-size-lg", "16px", "Lead copy and compact section intros"],
+  ["xl", "--n-font-size-xl", "18px", "Small headings"],
+  ["2xl", "--n-font-size-2xl", "20px", "Metric values and page sections"],
+  ["3xl", "--n-font-size-3xl", "24px", "Editorial headings"],
 ];
+
+const semanticRoles = [
+  ["Body size", "--n-body-font-size", "--n-font-size-md"],
+  ["Body line height", "--n-body-line-height", "--n-line-height-normal"],
+  ["Control size", "--n-control-font-size", "--n-font-size-md"],
+  ["Control weight", "--n-control-font-weight", "--n-font-weight-medium"],
+  ["Label size", "--n-label-font-size", "--n-font-size-sm"],
+  ["Label weight", "--n-label-font-weight", "--n-font-weight-medium"],
+  ["Helper size", "--n-helper-font-size", "--n-font-size-xs"],
+  ["Helper line height", "--n-helper-line-height", "--n-line-height-normal"],
+] as const;
 
 const fontOverride = `:root {
   --n-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -30,7 +41,7 @@ export default function Page() {
 
       <section className="doc-section">
         <div className="section-heading">
-          <h2>Font contract</h2>
+          <h2 id="font-contract">Font contract</h2>
           <Badge>Geist by default</Badge>
         </div>
         <div className="foundation-grid">
@@ -50,12 +61,13 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Scale</h2>
+        <h2 id="type-scale">Type scale</h2>
         <div className="type-scale">
-          {scale.map(([name, token, purpose]) => (
+          {scale.map(([name, token, value, purpose]) => (
             <div key={token}>
               <span style={{ fontSize: `var(${token})` }}>Nerio {name}</span>
               <code>{token}</code>
+              <strong>{value}</strong>
               <p>{purpose}</p>
             </div>
           ))}
@@ -63,12 +75,13 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Rhythm</h2>
+        <h2 id="rhythm">Rhythm</h2>
         <Table>
           <thead>
             <tr>
               <th>Token</th>
               <th>Purpose</th>
+              <th>Value</th>
             </tr>
           </thead>
           <tbody>
@@ -77,31 +90,61 @@ export default function Page() {
                 <code>--n-line-height-tight</code>
               </td>
               <td>Compact headings and stat values.</td>
+              <td>1.2</td>
             </tr>
             <tr>
               <td>
                 <code>--n-line-height-normal</code>
               </td>
               <td>Default UI body and component copy.</td>
+              <td>1.4</td>
             </tr>
             <tr>
               <td>
                 <code>--n-line-height-relaxed</code>
               </td>
               <td>Longer documentation or editorial passages.</td>
+              <td>1.55</td>
             </tr>
             <tr>
               <td>
                 <code>--n-font-weight-medium</code>
               </td>
               <td>Labels, table headers, tabs, and quiet emphasis.</td>
+              <td>500</td>
             </tr>
           </tbody>
         </Table>
       </section>
 
       <section className="doc-section">
-        <h2>Usage preview</h2>
+        <h2 id="semantic-roles">Semantic roles</h2>
+        <Table>
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Alias</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            {semanticRoles.map(([label, token, primitive]) => (
+              <tr key={token}>
+                <td>{label}</td>
+                <td>
+                  <code>{token}</code>
+                </td>
+                <td>
+                  <code>{primitive}</code>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </section>
+
+      <section className="doc-section">
+        <h2 id="usage-preview">Usage preview</h2>
         <Card className="typography-preview">
           <Badge>Workspace</Badge>
           <h3>Activity summary</h3>
@@ -115,7 +158,7 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Override safely</h2>
+        <h2 id="override-safely">Override safely</h2>
         <CodeExample code={fontOverride} label="Font token override" />
         <ul className="doc-list">
           <li>Components use semantic font tokens, not hard-coded Geist class names.</li>

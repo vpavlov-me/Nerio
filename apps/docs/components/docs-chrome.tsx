@@ -135,6 +135,7 @@ const themeOptions = [
 type TocItem = {
   id: string;
   label: string;
+  level?: 2 | 3 | 4;
 };
 
 type SearchEntry = {
@@ -182,8 +183,8 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "principles", label: "Principles" },
   ],
   "/docs/foundations/tokens": [
-    { id: "three-layer-contract", label: "Three-layer contract" },
-    { id: "primitive-palette", label: "Primitive palette" },
+    { id: "token-architecture", label: "Token architecture" },
+    { id: "primitive-tokens", label: "Primitive tokens" },
     { id: "semantic-tokens", label: "Semantic tokens" },
     { id: "component-tokens", label: "Component tokens" },
     { id: "live-component-readout", label: "Live component readout" },
@@ -192,14 +193,19 @@ const tocByPath: Record<string, TocItem[]> = {
   "/docs/foundations/typography": [
     { id: "font-contract", label: "Font contract" },
     { id: "type-scale", label: "Type scale" },
-    { id: "technical-content", label: "Technical content" },
-    { id: "usage", label: "Usage" },
+    { id: "rhythm", label: "Rhythm" },
+    { id: "semantic-roles", label: "Semantic roles" },
+    { id: "usage-preview", label: "Usage preview" },
+    { id: "override-safely", label: "Override safely" },
   ],
   "/docs/foundations/themes": [
-    { id: "theme-contract", label: "Theme contract" },
-    { id: "runtime-switching", label: "Runtime switching" },
+    { id: "runtime-axes", label: "Runtime axes" },
+    { id: "preset-themes", label: "Preset themes" },
+    { id: "mode-behavior", label: "Mode behavior" },
+    { id: "live-theme-behavior", label: "Live behavior" },
     { id: "density", label: "Density" },
-    { id: "usage", label: "Usage" },
+    { id: "custom-themes", label: "Custom themes" },
+    { id: "do-do-not", label: "Do / do not" },
   ],
   "/docs/foundations/animations": [
     { id: "motion-preview", label: "Preview" },
@@ -212,15 +218,20 @@ const tocByPath: Record<string, TocItem[]> = {
   ],
   "/docs/foundations/radius": [
     { id: "radius-scale", label: "Radius scale" },
+    { id: "role-aliases", label: "Role aliases" },
     { id: "usage", label: "Usage" },
   ],
   "/docs/foundations/effects": [
-    { id: "effect-styles", label: "Effect styles" },
+    { id: "elevation-scale", label: "Elevation scale" },
+    { id: "semantic-effects", label: "Semantic effects" },
     { id: "focus", label: "Focus" },
+    { id: "live-surface-preview", label: "Live preview" },
+    { id: "component-contracts", label: "Component contracts" },
     { id: "usage", label: "Usage" },
   ],
   "/docs/foundations/icons": [
     { id: "icon-adapter-preview", label: "Icon adapter preview" },
+    { id: "size-contract", label: "Size contract" },
     { id: "contract", label: "Contract" },
     { id: "usage", label: "Usage" },
     { id: "do-do-not", label: "Do / do not" },
@@ -479,6 +490,7 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
 
 export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const currentYear = new Date().getFullYear();
   const isTemplatesPage = pathname === "/templates";
   const fallbackToc = getDefaultToc(pathname);
   const [theme, setThemeValue] = React.useState("purple");
@@ -495,11 +507,34 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   }, [theme, mode]);
 
   React.useEffect(() => {
-    const headings = Array.from(document.querySelectorAll<HTMLElement>(".docs-main h2"));
+    const headings = Array.from(
+      document.querySelectorAll<HTMLElement>(".docs-main h2, .docs-main h3, .docs-main h4"),
+    );
+    const usedIds = new Set<string>();
     const nextToc = headings.map((heading) => {
       const label = heading.textContent?.trim() ?? "";
-      if (!heading.id) heading.id = slugify(label);
-      return { id: heading.id, label };
+      const baseId = heading.id || slugify(label);
+      let id = baseId;
+      let duplicateIndex = 2;
+
+      while (usedIds.has(id)) {
+        id = `${baseId}-${duplicateIndex}`;
+        duplicateIndex += 1;
+      }
+
+      usedIds.add(id);
+      heading.id = id;
+
+      return {
+        id,
+        label,
+        level:
+          heading.tagName === "H4"
+            ? (4 as const)
+            : heading.tagName === "H3"
+              ? (3 as const)
+              : (2 as const),
+      };
     });
     const filteredToc = nextToc.filter((item) => item.label.length > 0);
     const nextTocItems = filteredToc.length > 0 ? filteredToc : getDefaultToc(pathname);
@@ -508,7 +543,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   }, [pathname, children]);
 
   React.useEffect(() => {
-    const headings = Array.from(document.querySelectorAll<HTMLElement>(".docs-main h2[id]"));
+    const headings = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        ".docs-main h2[id], .docs-main h3[id], .docs-main h4[id]",
+      ),
+    );
     if (headings.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -773,6 +812,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                     <a
                       key={item.id}
                       href={`#${item.id}`}
+                      data-level={item.level ?? 2}
                       className={activeTocId === item.id ? "is-active" : undefined}
                       aria-current={activeTocId === item.id ? "location" : undefined}
                     >
@@ -790,7 +830,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
       <footer className="docs-footer">
         <p>
-          Built with love by{" "}
+          © <span suppressHydrationWarning>{currentYear}</span> Nerio. Built with love by{" "}
           <a href="https://vpavlov.com" target="_blank" rel="noreferrer">
             Vladimir Pavlov
           </a>

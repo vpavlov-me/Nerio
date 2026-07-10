@@ -122,10 +122,10 @@ Developers may customize those values by overriding CSS variables instead:
 :root {
   --n-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --n-font-mono: "JetBrains Mono", monospace;
-  --n-radius-sm: 0.25rem;
-  --n-radius-md: 0.5rem;
-  --n-radius-lg: 0.75rem;
-  --n-radius-xl: 1rem;
+  --n-radius-sm: 0.5rem;
+  --n-radius-md: 0.625rem;
+  --n-radius-lg: 0.875rem;
+  --n-radius-xl: 1.125rem;
   --n-duration-normal: 160ms;
 }
 ```
