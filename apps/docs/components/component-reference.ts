@@ -1466,13 +1466,13 @@ export const componentReference: Record<string, ComponentReference> = {
     category: "Layout and display",
     purpose: "Use KeyValue for compact metadata on records, settings, and object summaries.",
     anatomy: [
-      { title: "root", description: "Definition-list compatible pair." },
+      { title: "root", description: "Native definition-list pair." },
       { title: "label", description: "Metadata key." },
       { title: "value", description: "Metadata value, text, or small component." },
     ],
     variants: [{ title: "Default", description: "Compact label/value pair." }],
     states: [{ title: "Static", description: "Reads as metadata, not a control." }],
-    accessibility: ["Use definition list structure when presenting a group of related pairs."],
+    accessibility: ["Renders a native definition list for each label/value pair."],
     guidance: {
       do: ["Use for owner, updated date, status, and permissions."],
       dont: ["Do not use for long prose or multi-step content."],

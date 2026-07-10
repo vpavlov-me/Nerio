@@ -48,6 +48,16 @@ This is an internal review record for the Core Component Quality Pass. The compo
 | Breadcrumbs | Reviewed | Reviewed           | Explicit current page prevents a second implicit current page    | Native navigation semantics reviewed | Reviewed | Reviewed          | Repository checks | stable-core  | Keep paths concise; collapse logic belongs to an application composition.                |
 | Pagination  | Reviewed | Reviewed           | Current, linked, disabled previous/next                          | Native navigation semantics reviewed | Reviewed | Reviewed          | Repository checks | stable-core  | State ownership and data fetching remain with the application.                           |
 
+## Priority 5 — data display
+
+| Component | API      | Visual and density | States                                    | Accessibility                                       | Tokens   | Docs and registry | Validation        | Final status | Known issues                                                                    |
+| --------- | -------- | ------------------ | ----------------------------------------- | --------------------------------------------------- | -------- | ----------------- | ----------------- | ------------ | ------------------------------------------------------------------------------- |
+| Table     | Reviewed | Reviewed           | Responsive scroll region, hover, selected | Native table and labelled region semantics reviewed | Reviewed | Reviewed          | Repository checks | stable-core  | Sorting, filtering, selection behavior, and virtualisation remain outside Core. |
+| List      | Reviewed | Reviewed           | Static and linked rows, long content      | Native ordered/unordered list semantics reviewed    | Reviewed | Reviewed          | Repository checks | stable-core  | Selection, command behavior, and activity-feed patterns remain outside Core.    |
+| Separator | Reviewed | Reviewed           | Static structural rule                    | Native `hr` semantics reviewed                      | Reviewed | Reviewed          | Repository checks | stable-core  | Use spacing rather than rules for ordinary grouping.                            |
+| KeyValue  | Reviewed | Reviewed           | Static label/value pair                   | Root now renders native `dl` around `dt` and `dd`   | Reviewed | Reviewed          | Repository checks | stable-core  | Use a custom definition-list composition for grouped multi-value records.       |
+| Stat      | Reviewed | Reviewed           | Label, value, optional trend              | Textual trend remains understandable without color  | Reviewed | Reviewed          | Repository checks | stable-core  | Advanced KPI cards and trend visualisation remain Pro.                          |
+
 ## Scope boundary
 
-This record covers Priorities 1 through 4. Priority 5 data display remains a separate component-by-component review. No new public components or Pro compositions were added.
+This record covers all implemented Core component priorities. No new public components or Pro compositions were added.

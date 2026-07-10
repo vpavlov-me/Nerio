@@ -309,7 +309,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "implemented-initial",
+      "status": "stable-core",
       "description": "Basic structured list primitive with optional descriptions, metadata, and native links."
     },
     {
