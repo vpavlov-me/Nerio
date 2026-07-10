@@ -85,16 +85,16 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Data display
 
-| Component | Status              | Package     | Notes                                                                                  |
-| --------- | ------------------- | ----------- | -------------------------------------------------------------------------------------- |
-| Card      | stable-core         | `@nerio/ui` | Surface primitive                                                                      |
-| Badge     | stable-core         | `@nerio/ui` | Status and metadata                                                                    |
-| Avatar    | stable-core         | `@nerio/ui` | User/entity avatar                                                                     |
-| Table     | stable-core         | `@nerio/ui` | Basic table with an optional responsive keyboard-scrollable container                  |
-| List      | implemented-initial | `@nerio/ui` | Basic structured list primitive with optional descriptions, metadata, and native links |
-| Separator | stable-core         | `@nerio/ui` | Layout divider                                                                         |
-| KeyValue  | stable-core         | `@nerio/ui` | Simple definition-list value display                                                   |
-| Stat      | stable-core         | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                |
+| Component | Status      | Package     | Notes                                                                                  |
+| --------- | ----------- | ----------- | -------------------------------------------------------------------------------------- |
+| Card      | stable-core | `@nerio/ui` | Surface primitive                                                                      |
+| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                    |
+| Avatar    | stable-core | `@nerio/ui` | User/entity avatar                                                                     |
+| Table     | stable-core | `@nerio/ui` | Basic table with an optional responsive keyboard-scrollable container                  |
+| List      | stable-core | `@nerio/ui` | Basic structured list primitive with optional descriptions, metadata, and native links |
+| Separator | stable-core | `@nerio/ui` | Layout divider                                                                         |
+| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                   |
+| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                |
 
 ### Feedback
 

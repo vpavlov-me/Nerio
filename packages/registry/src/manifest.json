@@ -649,7 +649,7 @@
       "variants": [],
       "requiredTokens": ["--n-key-value-gap", "--n-font-size-sm"],
       "accessibility": [
-        "Use inside a dl when presenting multiple metadata pairs.",
+        "Renders a native dl with dt and dd children for one metadata pair.",
         "Keep labels concise and stable.",
         "Do not use for long prose values."
       ],
