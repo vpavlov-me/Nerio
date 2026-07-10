@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, ArrowUp, Check, Plus, Save, Settings, X } from "@nerio/adapters";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Kbd } from "@nerio/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon, Kbd } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -268,7 +268,7 @@ export default function Page() {
           <div className="button-guidance-cards">
             <Card>
               <CardHeader>
-                <Check aria-hidden />
+                <Icon icon={Check} />
                 <CardTitle>Do</CardTitle>
               </CardHeader>
               <CardContent>
@@ -277,7 +277,7 @@ export default function Page() {
             </Card>
             <Card>
               <CardHeader>
-                <X aria-hidden />
+                <Icon icon={X} />
                 <CardTitle>Do not</CardTitle>
               </CardHeader>
               <CardContent>
@@ -308,8 +308,10 @@ export default function Page() {
               <Card key={title} className="button-related-card" href={href} variant="secondary">
                 <CardHeader>
                   <CardTitle>{title}</CardTitle>
-                  <CardDescription>{description}</CardDescription>
                 </CardHeader>
+                <CardContent>
+                  <CardDescription>{description}</CardDescription>
+                </CardContent>
               </Card>
             ))}
           </div>

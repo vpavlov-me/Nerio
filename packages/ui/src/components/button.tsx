@@ -98,5 +98,11 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     </BaseButton>
   );
 
-  return tooltip ? <Tooltip label={tooltip}>{content}</Tooltip> : content;
+  return tooltip ? (
+    <Tooltip delay={iconOnly ? 0 : undefined} label={tooltip}>
+      {content}
+    </Tooltip>
+  ) : (
+    content
+  );
 });

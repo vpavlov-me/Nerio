@@ -651,6 +651,7 @@ pre {
   color: var(--n-color-text-primary);
   font-size: var(--n-font-size-sm);
   font-weight: var(--n-font-weight-semibold);
+  padding-block: var(--n-space-1);
 }
 
 .docs-toc nav {
@@ -936,6 +937,7 @@ pre {
 }
 
 .button-related-card {
+  align-content: start;
   block-size: 100%;
 }
 
