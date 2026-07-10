@@ -49,6 +49,7 @@ import {
   TableRow,
   Text,
   Textarea,
+  Toast,
   ToastProvider,
   ToastViewport,
   Tooltip,
@@ -470,6 +471,10 @@ function Preview({ kind }: { kind: string }) {
           ) : null}
           {kind === "toast" ? (
             <ToastProvider>
+              <Toast
+                title="Static toast presentation"
+                description="This standalone layout does not inherit manager positioning, actions, or dismissal behavior."
+              />
               <ToastDemoButton />
               <ToastViewport />
             </ToastProvider>

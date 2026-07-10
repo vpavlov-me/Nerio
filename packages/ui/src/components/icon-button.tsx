@@ -25,7 +25,7 @@ export const IconButton = React.forwardRef<HTMLElement, IconButtonProps>(functio
     size = "md",
     variant = "secondary",
     loading = false,
-    loadingLabel = "Loading",
+    loadingLabel: _loadingLabel,
     disabled,
     render,
     nativeButton,
@@ -55,7 +55,7 @@ export const IconButton = React.forwardRef<HTMLElement, IconButtonProps>(functio
       render={render}
       {...props}
     >
-      {loading ? <Spinner aria-hidden size="sm" label={loadingLabel} /> : <Icon icon={icon} />}
+      {loading ? <Spinner aria-hidden size="sm" /> : <Icon icon={icon} />}
       <span className="n-visually-hidden">{label}</span>
     </BaseButton>
   );

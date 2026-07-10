@@ -122,7 +122,7 @@
       "accessibility": [
         "Uses the Base UI Button primitive and renders a native button by default.",
         "Provide concise visible text or an accessible name.",
-        "Loading disables repeat activation and exposes aria-busy.",
+        "Loading preserves the action name, disables repeat activation, and exposes aria-busy; loadingLabel is deprecated.",
         "Disabled and loading states prevent repeat activation.",
         "Icons render through the Nerio icon adapter and remain decorative by default.",
         "Keep the visible focus treatment enabled."
@@ -165,7 +165,7 @@
       ],
       "accessibility": [
         "Requires a label prop so icon-only actions have an accessible name.",
-        "Loading replaces the decorative icon with a labelled Spinner while preserving the button size.",
+        "Loading replaces the decorative icon with a decorative Spinner while preserving the action label and button size.",
         "Disabled and loading states prevent repeat activation through the Button contract.",
         "Pass icons through the Nerio icon adapter API; icons are decorative unless the label carries the action name."
       ],
@@ -550,7 +550,7 @@
       ],
       "accessibility": [
         "Use the name prop to generate fallback initials.",
-        "Images receive the supplied name as alt text.",
+        "Non-decorative images and fallbacks receive the supplied alt text or normalized name; decorative fallbacks are hidden.",
         "Do not rely on Avatar alone for critical identification in dense lists."
       ],
       "usage": "import { Avatar } from '@/components/nerio/components/avatar';\n\n<Avatar name=\"Maya Chen\" />"
@@ -693,7 +693,7 @@
       "accessibility": [
         "Use semantic table sections, headers, rows, and cells.",
         "Keep sorting, filtering, pagination, selection, and advanced table behavior out of this Core primitive.",
-        "Wrap wide tables in TableContainer and give its scroll region a concise label.",
+        "TableContainer is plain by default; labelled regions are optional, while focusable scroll regions require a concise label.",
         "Keep dense operational tables scannable with clear column labels."
       ],
       "usage": "import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@/components/nerio/components/table';\n\n<TableContainer label=\"Projects\"><Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>"
@@ -751,6 +751,7 @@
         "Uses semantic ul by default and semantic ol when ordered is true.",
         "Items with href render native anchors instead of fake interactive containers.",
         "Optional description and metadata remain in the natural reading order.",
+        "linkProps can extend class, events, target, rel, aria, and data attributes; item.href and the internal data-slot remain protected.",
         "Do not use List for selectable listbox, command menu, or data table behavior."
       ],
       "usage": "import { List } from '@/components/nerio/components/list';\n\n<List items={[{ title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />"
@@ -1700,7 +1701,7 @@
       "accessibility": [
         "Uses the Base UI Toast primitive and manager.",
         "Use low priority for routine confirmations and high priority only for urgent updates.",
-        "Managed toasts include keyboard-accessible action and dismiss controls; ToastViewport localizes the dismiss label.",
+        "Static Toast content is separate from the managed status, copy, action, and dismiss layout; ToastViewport localizes the dismiss label.",
         "Keep messages concise and avoid replacing persistent error UI with a toast."
       ],
       "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: 'Saved', data: { tone: 'success', action: { label: 'Undo', onClick: undo } } })}>Save</Button>;\n}\n\n<ToastProvider><SaveButton /><ToastViewport dismissLabel=\"Dismiss notification\" /></ToastProvider>"

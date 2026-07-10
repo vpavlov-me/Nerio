@@ -68,7 +68,7 @@ export function Toast({ title, description, tone = "neutral", className, ...prop
       {...props}
     >
       <ToastIndicator tone={tone} />
-      <div data-slot="content">
+      <div className="n-toast__static-content" data-slot="content">
         <strong data-slot="title">{title}</strong>
         {description ? <span data-slot="description">{description}</span> : null}
       </div>

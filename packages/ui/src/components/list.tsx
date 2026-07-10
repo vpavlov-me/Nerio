@@ -7,9 +7,16 @@ export type ListItem = {
   description?: React.ReactNode;
   meta?: React.ReactNode;
   href?: string;
-  linkProps?: React.AnchorHTMLAttributes<HTMLAnchorElement>;
+  linkProps?: ListLinkProps;
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
+};
+
+export type ListLinkProps = Omit<
+  React.AnchorHTMLAttributes<HTMLAnchorElement>,
+  "children" | "className" | "href"
+> & {
+  className?: string;
 };
 
 export interface ListProps extends Omit<
@@ -39,6 +46,11 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
   return (
     <Root ref={setRef} className={cn("n-list", className)} data-slot="root" {...props}>
       {items.map((item) => {
+        const {
+          className: linkClassName,
+          href: _linkHref,
+          ...linkProps
+        } = (item.linkProps ?? {}) as React.AnchorHTMLAttributes<HTMLAnchorElement>;
         const body = (
           <>
             {item.leading ? (
@@ -72,7 +84,12 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
         return (
           <li className="n-list__item" data-slot="item" key={item.id}>
             {item.href ? (
-              <a className="n-list__link" data-slot="link" href={item.href} {...item.linkProps}>
+              <a
+                {...linkProps}
+                className={cn("n-list__link", linkClassName)}
+                data-slot="link"
+                href={item.href}
+              >
                 {body}
               </a>
             ) : (

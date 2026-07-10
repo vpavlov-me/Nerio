@@ -19,9 +19,9 @@
     "build": "tsc --noEmit",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run test/contracts",
     "test:watch": "vitest",
-    "test:a11y": "vitest run -t @a11y"
+    "test:a11y": "vitest run test/accessibility"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

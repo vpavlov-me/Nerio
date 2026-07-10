@@ -330,9 +330,11 @@ async function verify() {
     );
     if (
       !listSource.includes('const Root = ordered ? "ol" : "ul"') ||
-      !listSource.includes('<a className="n-list__link"')
+      !listSource.includes('className={cn("n-list__link", linkClassName)}') ||
+      !listSource.includes('data-slot="link"') ||
+      !listSource.includes("href={item.href}")
     ) {
-      throw new Error("Installed List source does not preserve semantic list and native links.");
+      throw new Error("Installed List source does not preserve protected native link anatomy.");
     }
 
     const breadcrumbsSource = fs.readFileSync(
