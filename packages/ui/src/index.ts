@@ -1,6 +1,17 @@
 export * from "./lib/cn";
 export { motionClasses, type MotionClassName } from "./lib/motion";
 export { Link, type LinkProps, type LinkVariant } from "./components/link";
+export {
+  Code,
+  Heading,
+  Text,
+  type CodeProps,
+  type HeadingLevel,
+  type HeadingProps,
+  type HeadingSize,
+  type TextProps,
+  type TextTone,
+} from "./components/typography";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps } from "./components/icon";
 export { Spinner } from "./components/spinner";
@@ -44,6 +55,7 @@ export {
   TableBody,
   TableCaption,
   TableCell,
+  TableContainer,
   TableFooter,
   TableHead,
   TableHeader,
@@ -51,6 +63,7 @@ export {
   type TableBodyProps,
   type TableCaptionProps,
   type TableCellProps,
+  type TableContainerProps,
   type TableFooterProps,
   type TableHeadProps,
   type TableHeaderProps,

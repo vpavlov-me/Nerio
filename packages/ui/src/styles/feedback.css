@@ -149,6 +149,14 @@
   opacity: var(--n-opacity-decorative);
 }
 
+.n-empty-state__actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-2);
+  justify-content: center;
+}
+
 .n-progress {
   display: grid;
   gap: var(--n-space-2);

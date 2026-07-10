@@ -104,6 +104,16 @@
   gap: var(--n-form-group-inline-gap);
 }
 
+.n-form-group[data-layout="grid"] .n-form-group__content {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 40rem) {
+  .n-form-group[data-layout="grid"] .n-form-group__content {
+    grid-template-columns: 1fr;
+  }
+}
+
 .n-form-group__title {
   color: var(--n-form-group-title-color);
   display: block;

@@ -109,8 +109,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "foundation",
-      "status": "planned",
-      "description": "Text, heading, and code primitives based on semantic font tokens."
+      "status": "stable-core",
+      "description": "Semantic heading, text, and inline code primitives based on semantic font tokens."
     },
     {
       "name": "Icon",
@@ -198,7 +198,7 @@
       "package": "@nerio/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Server-safe fieldset primitive for grouping related fields or controls with title, description, message, invalid state, and stack or inline layout."
+      "description": "Server-safe fieldset primitive for grouping related fields or controls with title, description, message, invalid state, and stack, inline, or responsive grid layout."
     },
     {
       "name": "Checkbox",
@@ -302,7 +302,7 @@
       "package": "@nerio/ui",
       "category": "data-display",
       "status": "stable-core",
-      "description": "Basic table for simple data display."
+      "description": "Basic table for simple data display with an optional keyboard-scrollable responsive container."
     },
     {
       "name": "List",

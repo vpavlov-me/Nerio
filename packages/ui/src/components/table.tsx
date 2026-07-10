@@ -2,6 +2,9 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 export type TableProps = React.TableHTMLAttributes<HTMLTableElement>;
+export interface TableContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+  label: string;
+}
 export type TableHeaderProps = React.HTMLAttributes<HTMLTableSectionElement>;
 export type TableBodyProps = React.HTMLAttributes<HTMLTableSectionElement>;
 export type TableFooterProps = React.HTMLAttributes<HTMLTableSectionElement>;
@@ -16,6 +19,22 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(function Tab
 ) {
   return <table ref={ref} className={cn("n-table", className)} data-slot="root" {...props} />;
 });
+
+export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerProps>(
+  function TableContainer({ className, label, ...props }, ref) {
+    return (
+      <div
+        ref={ref}
+        aria-label={label}
+        className={cn("n-table-container", className)}
+        data-slot="container"
+        role="region"
+        tabIndex={0}
+        {...props}
+      />
+    );
+  },
+);
 
 export const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
   function TableHeader({ className, ...props }, ref) {

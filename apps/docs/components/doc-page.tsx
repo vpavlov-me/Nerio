@@ -15,12 +15,14 @@ import {
   CardHeader,
   CardTitle,
   Checkbox,
+  Code,
   Dialog,
   DropdownMenu,
   EmptyState,
   Field,
   FormGroup,
   FormMessage,
+  Heading,
   IconButton,
   Input,
   KeyValue,
@@ -41,9 +43,11 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableHeader,
   TableRow,
+  Text,
   Textarea,
   ToastProvider,
   ToastViewport,
@@ -303,6 +307,17 @@ function Preview({ kind }: { kind: string }) {
               <Button loading>Saving</Button>
             </>
           ) : null}
+          {kind === "typography" ? (
+            <div className="preview-card">
+              <Heading as="h2" size="lg">
+                Workspace settings
+              </Heading>
+              <Text tone="secondary">Changes apply to every member.</Text>
+              <Text>
+                Install with <Code>nerio add typography</Code>.
+              </Text>
+            </div>
+          ) : null}
           {kind === "icon-button" ? <IconButton icon={Search} label="Search workspace" /> : null}
           {kind === "link" ? (
             <p>
@@ -555,27 +570,29 @@ function Preview({ kind }: { kind: string }) {
             </dl>
           ) : null}
           {kind === "table" ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Owner</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell>Roadmap refresh</TableCell>
-                  <TableCell>Active</TableCell>
-                  <TableCell>Maya</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Content audit</TableCell>
-                  <TableCell>Draft</TableCell>
-                  <TableCell>Alex</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+            <TableContainer label="Projects">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Owner</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Roadmap refresh</TableCell>
+                    <TableCell>Active</TableCell>
+                    <TableCell>Maya</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Content audit</TableCell>
+                    <TableCell>Draft</TableCell>
+                    <TableCell>Alex</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
           ) : null}
           {kind === "list" ? (
             <List

@@ -98,6 +98,7 @@ const navGroups: NavGroup[] = [
   {
     title: "Layout and display",
     items: [
+      { href: "/docs/components/typography", label: "Typography", icon: Type },
       { href: "/docs/components/card", label: "Card", icon: PanelLeft },
       { href: "/docs/components/separator", label: "Separator", icon: Circle },
       { href: "/docs/components/avatar", label: "Avatar", icon: Circle },
@@ -158,6 +159,33 @@ const componentToc: TocItem[] = [
   { id: "related-components", label: "Related components" },
   { id: "tokens", label: "Tokens" },
 ];
+
+const compositionToc: TocItem[] = [
+  { id: "overview", label: "Overview" },
+  { id: "live-preview", label: "Live preview" },
+  { id: "code", label: "Code" },
+  { id: "components-used", label: "Components used" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "responsive-behaviour", label: "Responsive behaviour" },
+  { id: "notes", label: "Notes" },
+];
+
+const compositionGroup: NavGroup = {
+  title: "Compositions",
+  items: [
+    { href: "/docs/compositions/login", label: "Login", icon: PanelLeft },
+    { href: "/docs/compositions/register", label: "Register", icon: PanelLeft },
+    { href: "/docs/compositions/forgot-password", label: "Forgot password", icon: PanelLeft },
+    { href: "/docs/compositions/settings-form", label: "Settings form", icon: Wrench },
+    { href: "/docs/compositions/table-toolbar", label: "Table toolbar", icon: ListTree },
+    { href: "/docs/compositions/user-profile", label: "User profile", icon: Circle },
+    { href: "/docs/compositions/empty-states", label: "Empty states", icon: FileText },
+    { href: "/docs/compositions/feedback", label: "Feedback", icon: Circle },
+    { href: "/docs/compositions/overlay-playground", label: "Overlay playground", icon: PanelLeft },
+    { href: "/docs/compositions/navigation-patterns", label: "Navigation patterns", icon: Layers },
+    { href: "/docs/compositions/dense-form", label: "Dense form", icon: Wrench },
+  ],
+};
 
 const buttonToc: TocItem[] = [
   { id: "preview", label: "Preview" },
@@ -251,10 +279,11 @@ const tocByPath: Record<string, TocItem[]> = {
 function getDefaultToc(pathname: string): TocItem[] {
   if (pathname === "/docs/components/button") return buttonToc;
   if (pathname.startsWith("/docs/components/")) return componentToc;
+  if (pathname.startsWith("/docs/compositions/")) return compositionToc;
   return tocByPath[pathname] ?? [];
 }
 
-const searchEntries: SearchEntry[] = navGroups.flatMap((group) =>
+const searchEntries: SearchEntry[] = [...navGroups, compositionGroup].flatMap((group) =>
   group.items.flatMap((item) => {
     const pageSections = getDefaultToc(item.href);
     return [
@@ -279,9 +308,11 @@ const componentGroups = navGroups.slice(2);
 const documentationItems: NavItem[] = [
   { href: "/", label: "Overview", icon: BookOpen },
   ...navGroups.flatMap((group) => group.items),
+  ...compositionGroup.items,
 ];
 
 function getSidebarGroups(pathname: string): NavGroup[] {
+  if (pathname.startsWith("/docs/compositions")) return [compositionGroup];
   return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
 }
 
@@ -628,16 +659,26 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
-              href="/docs/getting-started"
-              className={pathname === "/docs/getting-started" ? "is-active" : undefined}
+              href="/docs"
+              className={
+                pathname === "/docs" || pathname === "/docs/getting-started"
+                  ? "is-active"
+                  : undefined
+              }
             >
-              Get started
+              Docs
             </Link>
             <Link
               href="/docs/components/button"
               className={pathname.startsWith("/docs/components") ? "is-active" : undefined}
             >
               Components
+            </Link>
+            <Link
+              href="/docs/compositions/login"
+              className={pathname.startsWith("/docs/compositions") ? "is-active" : undefined}
+            >
+              Compositions
             </Link>
             <Link href="/templates" className={pathname === "/templates" ? "is-active" : undefined}>
               Templates
