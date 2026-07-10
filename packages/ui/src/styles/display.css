@@ -8,6 +8,10 @@
   padding: var(--n-card-padding);
 }
 
+.n-card > :where(h1, h2, h3, h4, h5, h6, p) {
+  margin: 0;
+}
+
 .n-card__header,
 .n-card__content,
 .n-card__footer {
