@@ -785,6 +785,20 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           </aside>
         )}
       </div>
+
+      <footer className="docs-footer">
+        <p>
+          Built with love by{" "}
+          <a href="https://vpavlov.com" target="_blank" rel="noreferrer">
+            Vladimir Pavlov
+          </a>
+          . The source code is available on{" "}
+          <a href={repoUrl} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+          .
+        </p>
+      </footer>
     </div>
   );
 }

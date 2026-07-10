@@ -330,6 +330,35 @@ pre {
   grid-template-columns: minmax(0, 1fr);
 }
 
+.docs-footer {
+  border-block-start: var(--n-border-subtle);
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-helper-font-size);
+  padding: var(--n-space-6) var(--n-space-4);
+  text-align: center;
+}
+
+.docs-footer p {
+  margin: var(--n-space-0);
+}
+
+.docs-footer a {
+  color: var(--n-link-color);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--n-link-underline-thickness);
+  text-underline-offset: var(--n-link-underline-offset);
+}
+
+.docs-footer a:hover {
+  color: var(--n-link-color-hover);
+}
+
+.docs-footer a:focus-visible {
+  border-radius: var(--n-radius-sm);
+  box-shadow: var(--n-focus-ring);
+  outline: var(--n-border-width-0);
+}
+
 .docs-sidebar {
   border-inline-end: var(--n-border-width-0);
   max-block-size: calc(100vh - var(--n-docs-header-height));
