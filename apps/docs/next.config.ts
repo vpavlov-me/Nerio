@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
     root: workspaceRoot,
   },
   transpilePackages: ["@nerio/ui", "@nerio/tokens", "@nerio/adapters", "@nerio/registry"],
+  async redirects() {
+    return [
+      {
+        source: "/docs/compositions/:slug*",
+        destination: "/docs/blocks/:slug*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

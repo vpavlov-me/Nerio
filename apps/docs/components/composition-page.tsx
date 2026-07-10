@@ -129,7 +129,7 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
           ) : null}
           <Button loading={submitted && !invalid}>{copy.action}</Button>
           {kind === "login" ? (
-            <Link href="/docs/compositions/forgot-password">Forgot your password?</Link>
+            <Link href="/docs/blocks/forgot-password">Forgot your password?</Link>
           ) : null}
           {kind === "register" ? (
             <Alert tone="info" title="Email verification">
@@ -482,7 +482,7 @@ function NavigationPreview() {
       <Breadcrumbs
         items={[
           { label: "Docs", href: "/docs" },
-          { label: "Compositions", href: "/docs/compositions/login" },
+          { label: "Blocks", href: "/docs/blocks/login" },
           { label: "Navigation patterns" },
         ]}
       />
