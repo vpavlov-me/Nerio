@@ -9,6 +9,11 @@
   --n-docs-search-max-width: 31.25rem;
   --n-docs-search-results-max-height: 26rem;
   --n-docs-search-results-viewport-offset: 7rem;
+  --n-docs-search-dialog-width: 40rem;
+  --n-docs-search-dialog-inline-size: min(
+    calc(100vw - (var(--n-space-4) * 2)),
+    var(--n-docs-search-dialog-width)
+  );
   --n-docs-control-icon-size: var(--n-icon-size-sm);
   --n-docs-control-size: var(--n-size-control-md);
   --n-docs-theme-dot-size: var(--n-space-2-5);
@@ -163,23 +168,22 @@ pre {
 }
 
 .docs-search-results {
-  background: var(--n-color-surface-raised);
-  border: var(--n-border-subtle);
-  border-radius: var(--n-radius-container);
-  box-shadow: var(--n-shadow-surface-floating);
   display: grid;
   gap: var(--n-space-1);
-  inset-block-start: calc(100% + var(--n-space-2));
-  inset-inline: 0;
   max-block-size: min(
     var(--n-docs-search-results-max-height),
     calc(100vh - var(--n-docs-search-results-viewport-offset))
   );
   min-inline-size: 0;
   overflow: auto;
-  padding: var(--n-space-2);
-  position: absolute;
-  z-index: var(--n-docs-overlay-z-index);
+}
+
+.docs-search-dialog {
+  inline-size: var(--n-docs-search-dialog-inline-size);
+}
+
+.docs-search-dialog__body {
+  gap: var(--n-space-3);
 }
 
 .docs-search-results .n-input {

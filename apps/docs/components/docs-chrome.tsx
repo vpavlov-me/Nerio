@@ -29,7 +29,7 @@ import {
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, DropdownMenu, Icon, Input, Tabs } from "@nerio/ui/client";
+import { Badge, Button, Dialog, DropdownMenu, Icon, Input, Tabs } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/ui/client";
 
 const version = "v0.1.0 beta";
@@ -589,25 +589,27 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           </Link>
 
           <div className="docs-search-wrap">
-            <button
-              className="docs-search-trigger"
-              type="button"
-              aria-controls="docs-search-dialog"
-              aria-expanded={searchOpen}
-              onClick={() => setSearchOpen(true)}
+            <Dialog
+              bodyClassName="docs-search-dialog__body"
+              className="docs-search-dialog"
+              description="Search pages, foundations, and components."
+              onOpenChange={setSearchOpen}
+              open={searchOpen}
+              title="Search documentation"
+              trigger={
+                <button className="docs-search-trigger" type="button">
+                  <Icon icon={Search} />
+                  <span>Search documentation</span>
+                  <kbd>/</kbd>
+                </button>
+              }
             >
-              <Icon icon={Search} />
-              <span>Search documentation</span>
-              <kbd>/</kbd>
-            </button>
-            {searchOpen ? (
-              <div className="docs-search-results" id="docs-search-dialog" role="dialog">
+              <div className="docs-search-results" role="listbox">
                 <Input
                   ref={searchInputRef}
                   aria-label="Search documentation"
                   placeholder="Search documentation"
                   value={search}
-                  onBlur={() => window.setTimeout(() => setSearchOpen(false), 120)}
                   onChange={(event) => setSearch(event.currentTarget.value)}
                   onKeyDown={(event) => {
                     if (event.key === "Escape") setSearchOpen(false);
@@ -638,7 +640,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                   <div className="docs-search-empty">Start typing to search documentation.</div>
                 )}
               </div>
-            ) : null}
+            </Dialog>
           </div>
 
           <div className="docs-controls">
