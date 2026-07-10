@@ -8,8 +8,8 @@
 
 .n-toast {
   background: var(--n-overlay-background);
-  border: 1px solid var(--n-overlay-border);
-  border-radius: var(--n-radius-lg);
+  border: var(--n-overlay-border-width) solid var(--n-overlay-border);
+  border-radius: var(--n-radius-container);
   box-shadow: var(--n-overlay-shadow);
   color: var(--n-color-text-secondary);
   display: grid;
@@ -43,7 +43,9 @@
   inline-size: 100%;
   position: absolute;
   transform: translateX(var(--toast-swipe-movement-x))
-    translateY(calc(var(--toast-swipe-movement-y) - (var(--toast-index) * 0.75rem)));
+    translateY(
+      calc(var(--toast-swipe-movement-y) - (var(--toast-index) * var(--n-toast-stack-offset)))
+    );
   transition:
     transform var(--n-motion-reveal-duration) var(--n-motion-reveal-easing),
     opacity var(--n-motion-focus-duration) var(--n-motion-focus-easing);
@@ -51,11 +53,11 @@
 }
 
 .n-toast--managed[data-ending-style] {
-  opacity: 0;
+  opacity: var(--n-opacity-hidden);
 }
 
 .n-toast--managed[data-starting-style] {
-  transform: translateY(1rem);
+  transform: translateY(var(--n-icon-size-md));
 }
 
 .n-toast__content {

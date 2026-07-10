@@ -62,28 +62,28 @@
 
 @keyframes n-overlay-enter {
   from {
-    opacity: 0;
+    opacity: var(--n-opacity-hidden);
     transform: translateY(var(--n-motion-translate-sm)) scale(0.98);
   }
 }
 
 @keyframes n-overlay-exit {
   to {
-    opacity: 0;
+    opacity: var(--n-opacity-hidden);
     transform: translateY(var(--n-motion-translate-sm)) scale(0.98);
   }
 }
 
 @keyframes n-toast-enter {
   from {
-    opacity: 0;
+    opacity: var(--n-opacity-hidden);
     transform: translateY(var(--n-motion-translate-md));
   }
 }
 
 @keyframes n-toast-exit {
   to {
-    opacity: 0;
+    opacity: var(--n-opacity-hidden);
     transform: translateY(var(--n-motion-translate-sm));
   }
 }
@@ -102,12 +102,12 @@
 
   .n-motion-skeleton {
     animation: none;
-    opacity: 0.82;
+    opacity: var(--n-opacity-skeleton);
   }
 }
 
 @keyframes n-fade-only {
   from {
-    opacity: 0;
+    opacity: var(--n-opacity-hidden);
   }
 }

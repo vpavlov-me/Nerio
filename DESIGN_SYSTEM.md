@@ -338,6 +338,18 @@ Use borders sparingly. Do not surround every content group with a card or border
 
 Do not use drop shadows or glows as a default hierarchy tool. Prefer spacing, surface contrast, restrained borders, and backdrops.
 
+### Compact soft-surface baseline
+
+The default visual language is a compact soft-surface interface: a white canvas, neutral gray
+control surfaces, white raised containers, restrained borders, and very light elevation only
+where it communicates layering. The default body and control type is 14px; the default control
+height is 32px. Radius increases by role: controls use 10px, containers 14px, and overlays 18px.
+
+Implement this language through the four token layers only: primitive values, semantic intent,
+component contracts, and component styles. Component CSS must consume semantic or component
+tokens rather than raw values or palette primitives. Preserve public aliases when replacing a
+public token, and keep theme selectors limited to semantic accent overrides.
+
 ## Density
 
 Comfortable is the default density.

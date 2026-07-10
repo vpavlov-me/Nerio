@@ -4,15 +4,15 @@
 }
 
 .n-tabs__list {
-  border-block-end: 1px solid var(--n-color-border-subtle);
+  border-block-end: var(--n-border-subtle);
   display: flex;
   gap: var(--n-space-2);
   position: relative;
 }
 
 .n-tabs__tab {
-  background: transparent;
-  border: 0;
+  background: var(--n-tabs-background);
+  border: var(--n-border-width-0);
   block-size: var(--n-tabs-trigger-height);
   border-radius: var(--n-tabs-radius) var(--n-tabs-radius) 0 0;
   color: var(--n-color-text-tertiary);
@@ -29,7 +29,7 @@
 
 .n-tabs__tab[data-disabled] {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: var(--n-opacity-disabled);
 }
 
 .n-tabs__tab:focus-visible {
@@ -39,8 +39,8 @@
 
 .n-tabs__indicator {
   background: var(--n-color-action-primary);
-  block-size: 2px;
-  inset-block-end: -1px;
+  block-size: var(--n-focus-ring-inner-width);
+  inset-block-end: calc(var(--n-border-width-default) * -1);
   position: absolute;
   transition:
     inset-inline-start var(--n-motion-hover-duration) var(--n-motion-hover-easing),

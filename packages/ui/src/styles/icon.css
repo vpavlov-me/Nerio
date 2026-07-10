@@ -1,5 +1,5 @@
 .n-icon {
-  block-size: 1em;
-  inline-size: 1em;
+  block-size: var(--n-icon-inline-size);
+  inline-size: var(--n-icon-inline-size);
   stroke-width: 1.8;
 }

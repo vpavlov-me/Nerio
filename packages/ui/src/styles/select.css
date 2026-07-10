@@ -1,7 +1,7 @@
 .n-select-trigger {
   align-items: center;
   background: var(--n-input-background);
-  border: 1px solid var(--n-input-border);
+  border: var(--n-input-border-width) solid var(--n-input-border);
   border-radius: var(--n-input-radius);
   color: var(--n-input-foreground);
   cursor: pointer;
@@ -9,7 +9,7 @@
   gap: var(--n-space-3);
   justify-content: space-between;
   min-block-size: var(--n-select-height-md);
-  padding: 0 var(--n-space-3);
+  padding-inline: var(--n-input-padding-inline);
   text-align: start;
   width: 100%;
 }
@@ -37,15 +37,15 @@
   background: var(--n-input-disabled-background);
   color: var(--n-input-disabled-foreground);
   cursor: not-allowed;
-  opacity: 0.75;
+  opacity: var(--n-input-disabled-opacity);
 }
 
 .n-select-popup {
   background: var(--n-overlay-background);
-  border: 1px solid var(--n-overlay-border);
+  border: var(--n-overlay-border-width) solid var(--n-overlay-border);
   border-radius: var(--n-radius-lg);
   box-shadow: var(--n-overlay-shadow);
-  min-inline-size: 12rem;
+  min-inline-size: var(--n-size-select-min);
   padding: var(--n-space-2);
   z-index: var(--n-overlay-z-index);
 }
@@ -74,5 +74,5 @@
 
 .n-select-item[data-disabled] {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: var(--n-opacity-disabled);
 }

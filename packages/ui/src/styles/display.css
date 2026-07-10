@@ -1,8 +1,8 @@
 .n-card {
-  background: var(--n-color-surface);
-  border: 1px solid var(--n-color-border-subtle);
+  background: var(--n-card-background);
+  border: var(--n-card-border-width) solid var(--n-card-border-color);
   border-radius: var(--n-card-radius);
-  box-shadow: var(--n-shadow-sm);
+  box-shadow: var(--n-card-shadow);
   display: grid;
   gap: var(--n-card-gap);
   padding: var(--n-card-padding);
@@ -42,14 +42,14 @@
 
 .n-separator {
   border: 0;
-  border-block-start: 1px solid var(--n-color-border-subtle);
+  border-block-start: var(--n-border-subtle);
   margin: 0;
 }
 
 .n-avatar {
   align-items: center;
   background: var(--n-color-surface-muted);
-  border: 1px solid var(--n-color-border-subtle);
+  border: var(--n-border-subtle);
   border-radius: var(--n-radius-full);
   block-size: var(--n-avatar-size-md);
   color: var(--n-color-text-secondary);
@@ -107,7 +107,7 @@
 
 .n-table th,
 .n-table td {
-  border-block-end: 1px solid var(--n-table-border);
+  border-block-end: var(--n-table-border-width) solid var(--n-table-border);
   padding: var(--n-table-cell-padding);
   text-align: start;
 }
@@ -149,7 +149,7 @@
 .n-list__link {
   align-items: start;
   background: var(--n-list-item-background);
-  border: 1px solid var(--n-list-item-border);
+  border: var(--n-list-item-border-width) solid var(--n-list-item-border);
   border-radius: var(--n-list-item-radius);
   color: inherit;
   display: grid;
@@ -206,7 +206,7 @@
 .n-list__trailing {
   color: var(--n-color-text-tertiary);
   display: inline-flex;
-  min-block-size: 1.25rem;
+  min-block-size: var(--n-switch-height);
 }
 
 .n-list__trailing {

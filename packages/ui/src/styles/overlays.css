@@ -5,12 +5,12 @@
 
 .n-tooltip-popup {
   background: var(--n-overlay-background);
-  border: 1px solid var(--n-overlay-border);
+  border: var(--n-overlay-border-width) solid var(--n-overlay-border);
   border-radius: var(--n-tooltip-radius);
   box-shadow: var(--n-overlay-shadow);
   color: var(--n-overlay-foreground);
   font-size: var(--n-font-size-xs);
-  max-inline-size: 18rem;
+  max-inline-size: var(--n-size-tooltip-max);
   padding: var(--n-space-2);
   white-space: normal;
   z-index: var(--n-overlay-z-index);
@@ -35,8 +35,8 @@
   animation: n-dialog-enter var(--n-motion-overlay-enter-duration)
     var(--n-motion-overlay-enter-easing);
   background: var(--n-overlay-background);
-  border: 1px solid var(--n-overlay-border);
-  border-radius: var(--n-radius-lg);
+  border: var(--n-overlay-border-width) solid var(--n-overlay-border);
+  border-radius: var(--n-radius-overlay);
   box-shadow: var(--n-overlay-shadow);
   inset-block-start: 50%;
   inset-inline-start: 50%;
@@ -90,15 +90,15 @@
 .n-dialog__close,
 .n-toast__close {
   align-items: center;
-  background: transparent;
-  border: 0;
+  background: var(--n-button-background-ghost);
+  border: var(--n-border-width-0);
   border-radius: var(--n-radius-sm);
   color: var(--n-color-text-tertiary);
   cursor: pointer;
   display: inline-flex;
   font-size: var(--n-font-size-sm);
-  inline-size: 1.75rem;
-  block-size: 1.75rem;
+  inline-size: var(--n-size-control-sm);
+  block-size: var(--n-size-control-sm);
   justify-content: center;
 }
 
@@ -117,8 +117,8 @@
 .n-popover__content,
 .n-dropdown {
   background: var(--n-overlay-background);
-  border: 1px solid var(--n-overlay-border);
-  border-radius: var(--n-radius-lg);
+  border: var(--n-overlay-border-width) solid var(--n-overlay-border);
+  border-radius: var(--n-radius-container);
   box-shadow: var(--n-overlay-shadow);
   min-inline-size: var(--n-dropdown-min-width);
   padding: var(--n-space-2);
@@ -160,8 +160,8 @@
 }
 
 .n-dropdown__item {
-  background: transparent;
-  border: 0;
+  background: var(--n-button-background-ghost);
+  border: var(--n-border-width-0);
   border-radius: var(--n-radius-md);
   color: var(--n-color-text-secondary);
   cursor: pointer;
@@ -182,7 +182,7 @@
 
 .n-dropdown__item[data-disabled] {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: var(--n-opacity-disabled);
 }
 
 .n-dropdown__item:focus-visible {
@@ -192,14 +192,14 @@
 
 @keyframes n-dialog-enter {
   from {
-    opacity: 0;
+    opacity: var(--n-opacity-hidden);
     transform: translate(-50%, calc(-50% + var(--n-motion-translate-sm))) scale(0.98);
   }
 }
 
 @keyframes n-dialog-exit {
   to {
-    opacity: 0;
+    opacity: var(--n-opacity-hidden);
     transform: translate(-50%, calc(-50% + var(--n-motion-translate-sm))) scale(0.98);
   }
 }
@@ -216,6 +216,6 @@
 
 @keyframes n-dialog-fade-only {
   from {
-    opacity: 0;
+    opacity: var(--n-opacity-hidden);
   }
 }

@@ -1,8 +1,8 @@
 .n-visually-hidden {
-  block-size: 1px;
+  block-size: var(--n-border-width-default);
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
-  inline-size: 1px;
+  inline-size: var(--n-border-width-default);
   overflow: hidden;
   position: absolute;
   white-space: nowrap;
@@ -11,7 +11,7 @@
 .n-spinner {
   animation: n-spin var(--n-spinner-duration) linear infinite;
   border: var(--n-spinner-border-width) solid currentColor;
-  border-block-start-color: transparent;
+  border-block-start-color: var(--n-button-border-transparent);
   border-radius: var(--n-radius-full);
   block-size: var(--n-spinner-size-md);
   display: inline-block;
@@ -30,12 +30,12 @@
 
 @keyframes n-spin {
   to {
-    transform: rotate(360deg);
+    transform: rotate(var(--n-transform-spin));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .n-spinner {
-    animation-duration: 1600ms;
+    animation-duration: var(--n-duration-slow);
   }
 }
