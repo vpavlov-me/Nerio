@@ -2,7 +2,8 @@ import * as React from "react";
 import { cn } from "../lib/cn";
 
 export interface ProgressProps extends React.HTMLAttributes<HTMLDivElement> {
-  value: number;
+  /** Completion from 0 through 100. Omit for indeterminate progress. */
+  value?: number;
   label?: string;
 }
 
@@ -10,7 +11,8 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(function
   { className, value, label, ...props },
   ref,
 ) {
-  const clampedValue = Math.max(0, Math.min(100, value));
+  const isIndeterminate = value === undefined;
+  const clampedValue = value === undefined ? undefined : Math.max(0, Math.min(100, value));
   const generatedId = React.useId();
   const labelId = label ? `${generatedId}-label` : undefined;
 
@@ -28,8 +30,13 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(function
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={clampedValue}
+        aria-valuetext={isIndeterminate ? "Loading" : undefined}
+        data-indeterminate={isIndeterminate ? "" : undefined}
       >
-        <span data-slot="indicator" style={{ width: `${clampedValue}%` }} />
+        <span
+          data-slot="indicator"
+          style={isIndeterminate ? undefined : { width: `${clampedValue}%` }}
+        />
       </div>
     </div>
   );

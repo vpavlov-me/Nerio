@@ -16,7 +16,7 @@ export { Icon } from "./components/icon";
 export type { IconComponent, IconProps } from "./components/icon";
 export { Spinner } from "./components/spinner";
 export type { SpinnerProps } from "./components/spinner";
-export { Badge, type BadgeProps, type BadgeVariant } from "./components/badge";
+export { Badge, type BadgeProps, type BadgeTone, type BadgeVariant } from "./components/badge";
 export { Skeleton, type SkeletonProps } from "./components/skeleton";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export { Alert, type AlertProps, type AlertTone } from "./components/alert";
