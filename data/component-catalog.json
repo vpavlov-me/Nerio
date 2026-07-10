@@ -341,7 +341,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "implemented-initial",
+      "status": "stable-core",
       "description": "Inline feedback message."
     },
     {

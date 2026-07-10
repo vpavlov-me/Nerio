@@ -248,22 +248,22 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root"],
-      "variants": ["neutral", "success", "danger", "info"],
+      "slots": ["root", "dot", "icon", "label"],
+      "variants": ["neutral", "accent", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-badge-height",
         "--n-badge-radius",
-        "--n-color-status-success",
-        "--n-color-status-danger",
-        "--n-color-status-info",
-        "--n-color-status-neutral"
+        "--n-badge-background",
+        "--n-badge-foreground",
+        "--n-badge-dot-size"
       ],
       "accessibility": [
         "Use concise text that does not rely on color alone.",
         "Avoid using Badge as a button or link.",
-        "Prefer semantic variant names over custom one-off colors."
+        "Use tone for semantic color; variant remains a deprecated compatibility alias.",
+        "Optional dots and icons are decorative, so text must carry the status meaning."
       ],
-      "usage": "import { Badge } from '@/components/nerio/components/badge';\n\n<Badge variant=\"success\">Published</Badge>"
+      "usage": "import { Badge } from '@/components/nerio/components/badge';\n\n<Badge tone=\"success\" dot>Published</Badge>"
     },
     {
       "name": "spinner",
@@ -541,8 +541,13 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["root", "image", "fallback"],
-      "variants": ["image", "fallback"],
-      "requiredTokens": ["--n-avatar-size-md", "--n-radius-full"],
+      "variants": ["sm", "md", "lg", "image", "fallback"],
+      "requiredTokens": [
+        "--n-avatar-size-sm",
+        "--n-avatar-size-md",
+        "--n-avatar-size-lg",
+        "--n-avatar-background"
+      ],
       "accessibility": [
         "Use the name prop to generate fallback initials.",
         "Images receive the supplied name as alt text.",
@@ -577,11 +582,16 @@
       "baseUiPrimitives": [],
       "slots": ["root", "label", "indicator"],
       "variants": [],
-      "requiredTokens": ["--n-progress-height", "--n-progress-radius", "--n-color-action-primary"],
+      "requiredTokens": [
+        "--n-progress-height",
+        "--n-progress-radius",
+        "--n-progress-track-background",
+        "--n-progress-indicator-background"
+      ],
       "accessibility": [
         "Clamps aria-valuenow between 0 and 100 and exposes an accessible progressbar name.",
         "Provide a label when the surrounding context does not name the progress.",
-        "Use determinate progress only when a reliable value exists."
+        "Omit value for indeterminate progress when a reliable value is not available."
       ],
       "usage": "import { Progress } from '@/components/nerio/components/progress';\n\n<Progress label=\"Completion\" value={68} />"
     },
@@ -1660,16 +1670,16 @@
         }
       ],
       "baseUiPrimitives": ["toast"],
-      "slots": ["viewport", "root", "content", "title", "description"],
-      "variants": ["neutral", "success", "danger"],
+      "slots": ["viewport", "root", "content", "status-indicator", "title", "description"],
+      "variants": ["neutral", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-toast-width",
         "--n-overlay-z-index",
-        "--n-overlay-background",
-        "--n-overlay-border",
-        "--n-overlay-shadow",
-        "--n-color-status-success",
-        "--n-color-status-danger",
+        "--n-toast-background",
+        "--n-toast-border",
+        "--n-toast-shadow",
+        "--n-toast-status-color",
+        "--n-toast-close-size",
         "--n-motion-reveal-duration",
         "--n-motion-reveal-easing",
         "--n-motion-focus-duration",

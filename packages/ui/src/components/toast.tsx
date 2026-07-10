@@ -6,7 +6,7 @@ import { X } from "@nerio/adapters";
 import { cn } from "../lib/cn";
 import { Icon } from "./icon";
 
-export type ToastTone = "neutral" | "success" | "danger";
+export type ToastTone = "neutral" | "info" | "success" | "warning" | "danger";
 
 export interface ToastData {
   tone?: ToastTone;
@@ -56,8 +56,11 @@ export function Toast({ title, description, tone = "neutral", className, ...prop
       role="status"
       {...props}
     >
-      <strong data-slot="title">{title}</strong>
-      {description ? <span data-slot="description">{description}</span> : null}
+      <span data-slot="status-indicator" aria-hidden />
+      <div data-slot="content">
+        <strong data-slot="title">{title}</strong>
+        {description ? <span data-slot="description">{description}</span> : null}
+      </div>
     </div>
   );
 }
@@ -75,6 +78,7 @@ function ToastList() {
       toast={toast}
     >
       <BaseToast.Content className="n-toast__content" data-slot="content">
+        <span data-slot="status-indicator" aria-hidden />
         <div className="n-toast__copy">
           <BaseToast.Title data-slot="title" />
           <BaseToast.Description data-slot="description" />

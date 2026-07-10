@@ -4,10 +4,11 @@ import { cn } from "../lib/cn";
 export interface AvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: string;
   src?: string;
+  size?: "sm" | "md" | "lg";
 }
 
 export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Avatar(
-  { className, name, src, ...props },
+  { className, name, size = "md", src, ...props },
   ref,
 ) {
   const initials = name
@@ -18,7 +19,13 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
     .toUpperCase();
 
   return (
-    <span ref={ref} className={cn("n-avatar", className)} data-slot="root" {...props}>
+    <span
+      ref={ref}
+      className={cn("n-avatar", className)}
+      data-slot="root"
+      data-size={size}
+      {...props}
+    >
       {src ? (
         <img src={src} alt={name} data-slot="image" />
       ) : (

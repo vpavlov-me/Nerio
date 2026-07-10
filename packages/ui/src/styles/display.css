@@ -16,7 +16,7 @@
 .n-card__content,
 .n-card__footer {
   display: grid;
-  gap: var(--n-space-2);
+  gap: var(--n-card-section-gap);
   min-inline-size: 0;
 }
 
@@ -52,17 +52,29 @@
 
 .n-avatar {
   align-items: center;
-  background: var(--n-color-surface-muted);
-  border: var(--n-border-subtle);
-  border-radius: var(--n-radius-full);
+  background: var(--n-avatar-background);
+  border: var(--n-avatar-border-width) solid var(--n-avatar-border);
+  border-radius: var(--n-avatar-radius);
   block-size: var(--n-avatar-size-md);
-  color: var(--n-color-text-secondary);
+  color: var(--n-avatar-foreground);
   display: inline-flex;
   font-size: var(--n-font-size-xs);
   font-weight: var(--n-font-weight-semibold);
   inline-size: var(--n-avatar-size-md);
   justify-content: center;
   overflow: hidden;
+}
+
+.n-avatar[data-size="sm"] {
+  block-size: var(--n-avatar-size-sm);
+  font-size: var(--n-avatar-font-size-sm);
+  inline-size: var(--n-avatar-size-sm);
+}
+
+.n-avatar[data-size="lg"] {
+  block-size: var(--n-avatar-size-lg);
+  font-size: var(--n-avatar-font-size-lg);
+  inline-size: var(--n-avatar-size-lg);
 }
 
 .n-avatar img {

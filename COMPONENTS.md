@@ -98,14 +98,14 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Feedback
 
-| Component   | Status              | Package     | Notes                                                                             |
-| ----------- | ------------------- | ----------- | --------------------------------------------------------------------------------- |
-| Alert       | implemented-initial | `@nerio/ui` | Inline feedback                                                                   |
-| Toast       | stable-core         | `@nerio/ui` | Temporary notification with Base UI manager, viewport, tones, and dismiss control |
-| Progress    | stable-core         | `@nerio/ui` | Progress indicator                                                                |
-| Skeleton    | stable-core         | `@nerio/ui` | Loading placeholder                                                               |
-| Empty State | stable-core         | `@nerio/ui` | Basic empty state with primary and optional secondary action                      |
-| Spinner     | stable-core         | `@nerio/ui` | Loading indicator                                                                 |
+| Component   | Status      | Package     | Notes                                                                             |
+| ----------- | ----------- | ----------- | --------------------------------------------------------------------------------- |
+| Alert       | stable-core | `@nerio/ui` | Inline feedback with persistent semantic context                                  |
+| Toast       | stable-core | `@nerio/ui` | Temporary notification with Base UI manager, viewport, tones, and dismiss control |
+| Progress    | stable-core | `@nerio/ui` | Progress indicator                                                                |
+| Skeleton    | stable-core | `@nerio/ui` | Loading placeholder                                                               |
+| Empty State | stable-core | `@nerio/ui` | Basic empty state with primary and optional secondary action                      |
+| Spinner     | stable-core | `@nerio/ui` | Loading indicator                                                                 |
 
 ### Navigation and layout
 

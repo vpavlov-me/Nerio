@@ -49,7 +49,7 @@ export const snippets: Record<string, string> = {
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
   pagination:
     "import { Pagination } from '@nerio/ui';\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ label: '1', href: '/docs/page/1' }, { label: '2', href: '/docs/page/2', current: true }, { label: '3', href: '/docs/page/3' }]} />",
-  badge: "import { Badge } from '@nerio/ui';\n\n<Badge variant=\"success\">Published</Badge>",
+  badge: "import { Badge } from '@nerio/ui';\n\n<Badge tone=\"success\" dot>Published</Badge>",
   alert:
     "import { Circle } from '@nerio/adapters';\nimport { Alert } from '@nerio/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
   spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
@@ -628,20 +628,24 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "root",
         description: "Inline status container with tone, size, and tokenized radius.",
       },
+      { title: "dot / icon", description: "Optional decorative leading status detail." },
       { title: "label", description: "Short text that names the status or metadata value." },
     ],
     variants: [
       { title: "Neutral", description: "Default metadata with low visual priority." },
       {
-        title: "Success, info, danger",
-        description: "Intent tones for positive, informational, or blocking states.",
+        title: "Accent, info, success, warning, danger",
+        description: "Restrained semantic tones for metadata or meaningful status.",
       },
     ],
     states: [
       { title: "Static", description: "Badges are labels, not controls." },
       { title: "Dense", description: "Compact density reduces padding without changing meaning." },
     ],
-    accessibility: ["Do not rely on color alone; the badge label must carry the status meaning."],
+    accessibility: [
+      "Do not rely on color, the optional dot, or icon alone; the label must carry the status meaning.",
+      "Badge is static metadata and must not be used as a button or link.",
+    ],
     guidance: {
       do: ["Use concise labels such as Draft, Ready, Shared, or Blocked."],
       dont: ["Do not use badges as buttons or navigation targets."],
@@ -649,9 +653,9 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: [
       "--n-badge-radius",
       "--n-badge-height",
-      "--n-color-status-success",
-      "--n-color-status-danger",
-      "--n-color-status-info",
+      "--n-badge-background",
+      "--n-badge-foreground",
+      "--n-badge-dot-size",
     ],
   },
   alert: {
@@ -1254,7 +1258,10 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     variants: [
       { title: "Neutral", description: "General event acknowledgement." },
-      { title: "Success or danger", description: "Outcome tone for saved changes or failed work." },
+      {
+        title: "Info, success, warning, or danger",
+        description: "A restrained semantic status detail.",
+      },
     ],
     states: [
       { title: "Visible", description: "Appears briefly in the viewport." },
@@ -1262,7 +1269,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Use concise messages and avoid essential decisions inside a toast.",
-      "Base UI handles the managed toast live region and dismiss behavior.",
+      "Base UI handles the managed toast live region, pause behavior, and dismiss interaction.",
       "Keep persistent error text in the page or form; a danger toast can only supplement it.",
     ],
     api: [
@@ -1271,7 +1278,7 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Wraps the client surface and configures limit/timeout.",
       },
       { title: "ToastViewport", description: "Portal target for managed toasts." },
-      { title: "useToastManager", description: "Adds neutral, success, or danger toast messages." },
+      { title: "useToastManager", description: "Adds neutral or semantic tone toast messages." },
     ],
     guidance: {
       do: ["Confirm background events like saved, copied, or sent."],
@@ -1279,11 +1286,11 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-toast-width",
-      "--n-overlay-background",
-      "--n-overlay-border",
-      "--n-overlay-shadow",
-      "--n-color-status-success",
-      "--n-color-status-danger",
+      "--n-toast-background",
+      "--n-toast-border",
+      "--n-toast-shadow",
+      "--n-toast-status-color",
+      "--n-toast-close-size",
       "--n-motion-reveal-duration",
       "--n-motion-focus-duration",
     ],
@@ -1385,7 +1392,7 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       {
         title: "Loaded or fallback",
-        description: "Fallback preserves layout when images are missing.",
+        description: "Fallback initials preserve layout when no image is supplied.",
       },
     ],
     accessibility: ["Use names in surrounding text when the avatar is decorative."],
@@ -1393,7 +1400,12 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Pair avatars with names in dense lists when possible."],
       dont: ["Do not rely on avatar color as the only identifier."],
     },
-    tokens: ["--n-avatar-size-md", "--n-radius-full"],
+    tokens: [
+      "--n-avatar-size-sm",
+      "--n-avatar-size-md",
+      "--n-avatar-size-lg",
+      "--n-avatar-background",
+    ],
   },
   progress: {
     category: "Layout and display",
@@ -1403,20 +1415,28 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "track", description: "Background track using muted surface tokens." },
       { title: "indicator", description: "Filled value using action or intent color." },
     ],
-    variants: [{ title: "Determinate", description: "Shows known completion from 0 to 100." }],
+    variants: [
+      { title: "Determinate", description: "Shows known completion from 0 to 100." },
+      { title: "Indeterminate", description: "Omits value when work cannot be measured yet." },
+    ],
     states: [
       { title: "In progress", description: "Value is between start and complete." },
       { title: "Complete", description: "Value reaches 100." },
     ],
     accessibility: [
       "Expose a label and numeric value for assistive technologies.",
-      "Use Spinner instead when work cannot be measured reliably.",
+      "When value is omitted, the component exposes indeterminate progress; use Spinner for a compact inline wait.",
     ],
     guidance: {
       do: ["Use when progress can be measured."],
       dont: ["Do not fake precision for unknown work; use Spinner instead."],
     },
-    tokens: ["--n-progress-height", "--n-progress-radius", "--n-color-action-primary"],
+    tokens: [
+      "--n-progress-height",
+      "--n-progress-radius",
+      "--n-progress-track-background",
+      "--n-progress-indicator-background",
+    ],
   },
   stat: {
     category: "Layout and display",
