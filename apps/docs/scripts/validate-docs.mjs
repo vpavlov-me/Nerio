@@ -122,6 +122,43 @@ function rawPrimitiveTokenUsages() {
     });
 }
 
+function themeTokenMatrixFailures(tokenSource) {
+  const themes = ["purple", "blue", "green", "orange", "red", "neutral"];
+  const requiredTokens = [
+    "--n-color-action-primary",
+    "--n-color-action-primary-hover",
+    "--n-color-action-primary-active",
+    "--n-color-action-on-primary",
+    "--n-color-border-focus",
+    "--n-color-focus-ring-soft",
+    "--n-color-surface-selected",
+    "--n-chart-primary",
+  ];
+  const failures = requiredTokens
+    .filter((token) => !tokenSource.includes(`${token}:`))
+    .map((token) => `packages/tokens/src/styles.css: missing semantic token ${token}`);
+
+  for (const theme of themes) {
+    if (!tokenSource.includes(`:root[data-theme="${theme}"]`)) {
+      failures.push(`packages/tokens/src/styles.css: missing ${theme} theme selector`);
+    }
+    if (!tokenSource.includes(`:root[data-theme="${theme}"][data-mode="dark"]`)) {
+      failures.push(`packages/tokens/src/styles.css: missing ${theme} dark-theme selector`);
+    }
+    if (!tokenSource.includes(`:root[data-theme="${theme}"][data-mode="system"]`)) {
+      failures.push(`packages/tokens/src/styles.css: missing ${theme} system-dark selector`);
+    }
+  }
+
+  for (const mode of ["light", "dark", "system"]) {
+    if (!tokenSource.includes(`:root[data-mode="${mode}"]`)) {
+      failures.push(`packages/tokens/src/styles.css: missing ${mode} mode selector`);
+    }
+  }
+
+  return failures;
+}
+
 function uiEntrypointFailures() {
   const indexSource = read("packages/ui/src/index.ts");
   const clientSource = read("packages/ui/src/client.ts");
@@ -306,6 +343,7 @@ const missingRegistryFiles = registryFileFailures(manifest.items);
 const duplicateTargets = duplicateRegistryTargets(manifest.items);
 const registryDependenciesMissing = missingRegistryDependencies(manifest.items);
 const rawPrimitiveTokens = rawPrimitiveTokenUsages();
+const themeTokenMatrixIssues = themeTokenMatrixFailures(tokenStyles);
 const uiEntrypointIssues = uiEntrypointFailures();
 const packageReadinessIssues = packageReadinessFailures();
 const catalogBySlug = new Map(
@@ -338,6 +376,7 @@ reportMissing("Registry dependencies missing from manifest", registryDependencie
 reportMissing("Implemented registry items missing from component catalog", registryWithoutCatalog);
 reportMissing("Implemented catalog components missing registry metadata", catalogWithoutRegistry);
 reportMissing("Raw primitive palette tokens used in component CSS", rawPrimitiveTokens);
+reportMissing("Theme token matrix issues", themeTokenMatrixIssues);
 reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 reportMissing("Package readiness issues", packageReadinessIssues);
 
@@ -359,6 +398,7 @@ const failures = [
   registryWithoutCatalog,
   catalogWithoutRegistry,
   rawPrimitiveTokens,
+  themeTokenMatrixIssues,
   uiEntrypointIssues,
   packageReadinessIssues,
 ].flat();

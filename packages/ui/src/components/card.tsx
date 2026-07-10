@@ -3,13 +3,25 @@ import { cn } from "../lib/cn";
 
 export type CardElement = "section" | "article" | "div";
 export type CardVariant = "default" | "secondary";
-export interface CardProps extends React.HTMLAttributes<HTMLElement> {
-  as?: CardElement;
-  href?: string;
-  target?: string;
-  rel?: string;
+type CardSharedProps = {
+  className?: string;
+  children?: React.ReactNode;
   variant?: CardVariant;
-}
+};
+type CardSurfaceProps = CardSharedProps &
+  Omit<React.HTMLAttributes<HTMLElement>, "className" | "data-slot" | "data-variant"> & {
+    as?: CardElement;
+    href?: never;
+  };
+type CardLinkProps = CardSharedProps &
+  Omit<
+    React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    "children" | "className" | "data-slot" | "data-variant" | "href"
+  > & {
+    href: string;
+    as?: never;
+  };
+export type CardProps = CardSurfaceProps | CardLinkProps;
 export type CardSectionProps = React.HTMLAttributes<HTMLDivElement>;
 export type CardTitleElement = "h2" | "h3" | "h4" | "h5" | "h6";
 export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
@@ -18,29 +30,34 @@ export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement>
 export type CardDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 
 export const Card = React.forwardRef<HTMLElement, CardProps>(function Card(
-  { as: Component = "section", className, href, target, rel, variant = "default", ...props },
+  { className, variant = "default", ...props },
   ref,
 ) {
-  const cardProps = {
-    className: cn("n-card", className),
-    "data-slot": "card",
-    "data-variant": variant,
-    ...props,
-  };
+  const isLink = "href" in props && typeof props.href === "string";
 
-  if (href) {
+  if (isLink) {
+    const { as: _as, ...linkProps } = props as CardLinkProps;
     return (
       <a
         ref={ref as React.Ref<HTMLAnchorElement>}
-        href={href}
-        target={target}
-        rel={rel}
-        {...cardProps}
+        {...linkProps}
+        className={cn("n-card", className)}
+        data-slot="card"
+        data-variant={variant}
       />
     );
   }
 
-  return <Component ref={ref as React.Ref<never>} {...cardProps} />;
+  const { as: Component = "section", ...surfaceProps } = props as CardSurfaceProps;
+  return (
+    <Component
+      ref={ref as React.Ref<never>}
+      {...surfaceProps}
+      className={cn("n-card", className)}
+      data-slot="card"
+      data-variant={variant}
+    />
+  );
 });
 
 export const CardHeader = React.forwardRef<HTMLDivElement, CardSectionProps>(function CardHeader(

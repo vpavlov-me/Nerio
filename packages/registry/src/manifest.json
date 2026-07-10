@@ -184,6 +184,8 @@
         "Disabled and loading states prevent repeat activation.",
         "Icons render through the Nerio icon adapter and remain decorative by default.",
         "For an icon-only Button, provide icon and an aria-label; tooltip can add supplementary help but does not replace the action name.",
+        "Shortcut display is supplemental; add aria-keyshortcuts yourself when a keyboard shortcut is functional.",
+        "Deprecated subtle and destructive variants normalize to secondary and danger; use the canonical variants in new code.",
         "Keep the visible focus treatment enabled."
       ],
       "usage": "import { Settings } from '@nerio/adapters';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
@@ -506,7 +508,7 @@
         "Use Card to group related content, not to decorate every section.",
         "Provide semantic headings inside cards when the content needs structure.",
         "Avoid nesting cards inside cards.",
-        "Use href for a whole-card destination; it renders a native anchor with hover and focus feedback."
+        "Use href for a whole-card destination; it renders a native anchor with hover and focus feedback. Do not place interactive descendants inside a linked Card."
       ],
       "usage": "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/nerio/components/card';\n\n<Card>\n  <CardHeader>\n    <CardTitle>Project summary</CardTitle>\n    <CardDescription>Current status, owner, and next action.</CardDescription>\n  </CardHeader>\n  <CardContent>Ready for review</CardContent>\n</Card>"
     },
@@ -1662,6 +1664,7 @@
         "Uses the Base UI Tooltip primitive.",
         "Do not put required information only inside a tooltip.",
         "Keep tooltip text short and specific.",
+        "Requires an element trigger. Use a keyboard-focusable control when keyboard users need to discover the tooltip.",
         "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed."
       ],
       "usage": "import { Tooltip } from '@/components/nerio/components/tooltip';\n\n<Tooltip label=\"Copies the share link\">...</Tooltip>"
@@ -1731,10 +1734,10 @@
       "accessibility": [
         "Uses the Base UI Toast primitive and manager.",
         "Use low priority for routine confirmations and high priority only for urgent updates.",
-        "Static Toast content is separate from the managed status, copy, action, and dismiss layout; ToastViewport localizes the dismiss label.",
+        "Static Toast content is separate from the managed status, copy, action, and dismiss layout; ToastViewport localizes visible dismiss text and its accessible label.",
         "Keep messages concise and avoid replacing persistent error UI with a toast."
       ],
-      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: 'Saved', data: { tone: 'success', action: { label: 'Undo', onClick: undo } } })}>Save</Button>;\n}\n\n<ToastProvider><SaveButton /><ToastViewport dismissLabel=\"Dismiss notification\" /></ToastProvider>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: 'Saved', data: { tone: 'success', action: { label: 'Undo', onClick: undo } } })}>Save</Button>;\n}\n\n<ToastProvider><SaveButton /><ToastViewport dismissText=\"Close\" dismissLabel=\"Dismiss notification\" /></ToastProvider>"
     }
   ]
 }
