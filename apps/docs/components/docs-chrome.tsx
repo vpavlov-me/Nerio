@@ -16,7 +16,6 @@ import {
   FileText,
   Github,
   Layers,
-  LayoutDashboard,
   ListTree,
   Monitor,
   Moon,
@@ -627,6 +626,24 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             <Badge>{version}</Badge>
           </Link>
 
+          <nav className="docs-primary-nav" aria-label="Primary navigation">
+            <Link
+              href="/docs/getting-started"
+              className={pathname === "/docs/getting-started" ? "is-active" : undefined}
+            >
+              Get started
+            </Link>
+            <Link
+              href="/docs/components/button"
+              className={pathname.startsWith("/docs/components") ? "is-active" : undefined}
+            >
+              Components
+            </Link>
+            <Link href="/templates" className={pathname === "/templates" ? "is-active" : undefined}>
+              Templates
+            </Link>
+          </nav>
+
           <div className="docs-search-wrap">
             <Dialog
               bodyClassName="docs-search-dialog__body"
@@ -742,32 +759,12 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               leadingIcon={Github}
               nativeButton={false}
               render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
+              variant="secondary"
             >
               Open Repo
             </Button>
           </div>
         </div>
-
-        <nav className="docs-primary-nav" aria-label="Primary navigation">
-          <Link
-            href="/docs/getting-started"
-            className={pathname === "/docs/getting-started" ? "is-active" : undefined}
-          >
-            <Icon icon={BookOpen} />
-            Get started
-          </Link>
-          <Link
-            href="/docs/components/button"
-            className={pathname.startsWith("/docs/components") ? "is-active" : undefined}
-          >
-            <Icon icon={Boxes} />
-            Components
-          </Link>
-          <Link href="/templates" className={pathname === "/templates" ? "is-active" : undefined}>
-            <Icon icon={LayoutDashboard} />
-            Templates
-          </Link>
-        </nav>
       </header>
 
       <div className={isTemplatesPage ? "docs-layout docs-layout--template" : "docs-layout"}>
