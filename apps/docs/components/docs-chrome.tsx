@@ -490,6 +490,7 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
 
 export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const currentYear = new Date().getFullYear();
   const isTemplatesPage = pathname === "/templates";
   const fallbackToc = getDefaultToc(pathname);
   const [theme, setThemeValue] = React.useState("purple");
@@ -829,7 +830,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
       <footer className="docs-footer">
         <p>
-          Built with love by{" "}
+          © <span suppressHydrationWarning>{currentYear}</span> Nerio. Built with love by{" "}
           <a href="https://vpavlov.com" target="_blank" rel="noreferrer">
             Vladimir Pavlov
           </a>
