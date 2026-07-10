@@ -521,7 +521,7 @@ pre {
 .docs-page-actions__navigation {
   display: flex;
   gap: var(--n-space-1);
-  margin-inline-end: var(--n-space-2);
+  margin-inline-start: var(--n-space-2);
 }
 
 .docs-copy-markdown {
@@ -651,6 +651,7 @@ pre {
   color: var(--n-color-text-primary);
   font-size: var(--n-font-size-sm);
   font-weight: var(--n-font-weight-semibold);
+  padding-block: var(--n-space-1);
 }
 
 .docs-toc nav {
@@ -936,19 +937,20 @@ pre {
 }
 
 .button-related-card {
+  align-content: start;
   block-size: 100%;
 }
 
 .documentation-table-wrap {
   border: var(--n-border-subtle);
   border-radius: var(--n-radius-md);
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 .documentation-table {
   border-collapse: collapse;
   inline-size: 100%;
-  min-inline-size: 44rem;
+  table-layout: fixed;
 }
 
 .documentation-table th,
@@ -957,6 +959,7 @@ pre {
   padding: var(--n-space-3) var(--n-space-4);
   text-align: start;
   vertical-align: top;
+  overflow-wrap: anywhere;
 }
 
 .documentation-table th {
@@ -973,6 +976,7 @@ pre {
 .documentation-table td code {
   color: var(--n-color-text-primary);
   font-size: var(--n-font-size-xs);
+  white-space: normal;
 }
 
 .preview-row {

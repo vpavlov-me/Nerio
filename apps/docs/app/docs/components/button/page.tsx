@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight, ArrowUp, Check, Plus, Save, Settings, X } from "@nerio/adapters";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Kbd } from "@nerio/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon, Kbd } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -29,7 +29,7 @@ function ButtonSectionPreview({ children }: { children: React.ReactNode }) {
 }
 
 const apiRows = [
-  ["variant", "primary | secondary | outline | ghost | subtle | danger", "Sets action emphasis."],
+  ["variant", "primary | secondary | outline | ghost | danger", "Sets action emphasis."],
   ["size", "sm | md | lg", "Uses density-aware height tokens."],
   [
     "leadingIcon / trailingIcon",
@@ -48,6 +48,30 @@ const variantRows = [
   ["outline", "Offer a bounded secondary action on a quiet surface."],
   ["ghost", "Keep repeated or low-emphasis actions visually calm."],
   ["danger", "Signal a destructive action that needs explicit intent."],
+] as const;
+
+const anatomyRows = [
+  ["button", "Base UI button primitive with variant, size, disabled, loading, and focus states."],
+  ["button-icon", "Optional leading or trailing icon rendered through the Nerio icon adapter."],
+  ["button-label", "Visible action text that remains available while loading."],
+  [
+    "button-kbd",
+    "Optional quiet keyboard shortcut hint placed between the label and trailing icon.",
+  ],
+] as const;
+
+const stateRows = [
+  ["Default, hover, and active", "Variant tokens control interaction feedback."],
+  ["Focus", "Focus-visible uses the shared Nerio focus ring."],
+  ["Loading", "Disables repeat activation and exposes aria-busy."],
+  ["Disabled", "Prevents activation while preserving layout."],
+] as const;
+
+const implementationRows = [
+  ["Registry item", "button installs 9 source files into the configured components directory."],
+  ["Base UI", "button"],
+  ["Registry dependencies", "tooltip, kbd"],
+  ["Package dependencies", "@base-ui/react, @nerio/adapters, clsx, react"],
 ] as const;
 
 const tokenRows = [
@@ -151,8 +175,8 @@ export default function Page() {
             <div className="button-anatomy-preview">
               <span>leading icon</span>
               <span>label</span>
-              <span>trailing icon</span>
               <span>kbd</span>
+              <span>trailing icon</span>
             </div>
             <Button leadingIcon={Plus} trailingIcon={ArrowRight} kbd={<Kbd>⌘N</Kbd>}>
               Create project
@@ -226,12 +250,25 @@ export default function Page() {
         variants: (
           <DocumentationTable headers={["Variant", "Use"]} rows={variantRows} codeColumns={1} />
         ),
+        anatomy: (
+          <DocumentationTable headers={["Slot", "Purpose"]} rows={anatomyRows} codeColumns={1} />
+        ),
+        states: (
+          <DocumentationTable headers={["State", "Behavior"]} rows={stateRows} codeColumns={1} />
+        ),
         api: <DocumentationTable headers={["Prop", "Values", "Purpose"]} rows={apiRows} />,
+        implementation: (
+          <DocumentationTable
+            headers={["Contract", "Value"]}
+            rows={implementationRows}
+            codeColumns={1}
+          />
+        ),
         guidance: (
           <div className="button-guidance-cards">
             <Card>
               <CardHeader>
-                <Check aria-hidden />
+                <Icon icon={Check} />
                 <CardTitle>Do</CardTitle>
               </CardHeader>
               <CardContent>
@@ -240,7 +277,7 @@ export default function Page() {
             </Card>
             <Card>
               <CardHeader>
-                <X aria-hidden />
+                <Icon icon={X} />
                 <CardTitle>Do not</CardTitle>
               </CardHeader>
               <CardContent>
@@ -271,8 +308,10 @@ export default function Page() {
               <Card key={title} className="button-related-card" href={href} variant="secondary">
                 <CardHeader>
                   <CardTitle>{title}</CardTitle>
-                  <CardDescription>{description}</CardDescription>
                 </CardHeader>
+                <CardContent>
+                  <CardDescription>{description}</CardDescription>
+                </CardContent>
               </Card>
             ))}
           </div>

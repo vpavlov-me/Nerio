@@ -12,10 +12,11 @@ export interface TooltipProps extends Pick<
   label: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  delay?: number;
 }
 
 export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function Tooltip(
-  { label, children, className, open, defaultOpen, onOpenChange, disabled },
+  { label, children, className, open, defaultOpen, onOpenChange, disabled, delay },
   ref,
 ) {
   const trigger = React.isValidElement(children) ? children : <span>{children}</span>;
@@ -28,7 +29,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
         onOpenChange={onOpenChange}
         disabled={disabled}
       >
-        <BaseTooltip.Trigger render={trigger} />
+        <BaseTooltip.Trigger delay={delay} render={trigger} />
         <BaseTooltip.Portal>
           <BaseTooltip.Positioner className="n-tooltip-positioner">
             <BaseTooltip.Popup
