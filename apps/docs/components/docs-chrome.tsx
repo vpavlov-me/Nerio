@@ -307,7 +307,10 @@ const searchEntries: SearchEntry[] = [...navGroups, compositionGroup].flatMap((g
 );
 
 const foundationGroups = navGroups.slice(0, 2);
-const componentGroups = navGroups.slice(2);
+const componentItems = navGroups
+  .slice(2)
+  .flatMap((group) => group.items)
+  .sort((left, right) => left.label.localeCompare(right.label));
 const documentationItems: NavItem[] = [
   { href: "/", label: "Overview", icon: BookOpen },
   ...navGroups.flatMap((group) => group.items),
@@ -318,7 +321,9 @@ function getSidebarGroups(pathname: string): NavGroup[] {
   if (pathname.startsWith("/docs/blocks") || pathname.startsWith("/docs/compositions")) {
     return [compositionGroup];
   }
-  return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
+  return pathname.startsWith("/docs/components")
+    ? [{ title: "Components", items: componentItems }]
+    : foundationGroups;
 }
 
 function getAdjacentDocs(pathname: string) {
@@ -666,6 +671,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   };
 
   const sidebarGroups = getSidebarGroups(pathname);
+  const isComponentsPage = pathname.startsWith("/docs/components");
   const filteredGroups = search.trim()
     ? sidebarGroups
         .map((group) => ({
@@ -838,25 +844,41 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
       <div className={isTemplatesPage ? "docs-layout docs-layout--template" : "docs-layout"}>
         {isTemplatesPage ? null : (
           <aside className="docs-sidebar">
-            <nav aria-label="Documentation">
-              {filteredGroups.map((group) => (
-                <div className="nav-group" key={group.title}>
-                  <h2>{group.title}</h2>
-                  {group.items.map(({ href, label, icon }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className={pathname === href ? "is-active" : undefined}
-                      aria-current={pathname === href ? "page" : undefined}
-                    >
-                      {group.title === "Overview" || group.title === "Foundations" ? (
-                        <Icon icon={icon} />
-                      ) : null}
-                      {label}
-                    </Link>
+            <nav
+              aria-label="Documentation"
+              className={isComponentsPage ? "docs-sidebar__component-list" : undefined}
+            >
+              {isComponentsPage
+                ? filteredGroups.flatMap((group) =>
+                    group.items.map(({ href, label }) => (
+                      <Link
+                        key={href}
+                        href={href}
+                        className={pathname === href ? "is-active" : undefined}
+                        aria-current={pathname === href ? "page" : undefined}
+                      >
+                        {label}
+                      </Link>
+                    )),
+                  )
+                : filteredGroups.map((group) => (
+                    <div className="nav-group" key={group.title}>
+                      <h2>{group.title}</h2>
+                      {group.items.map(({ href, label, icon }) => (
+                        <Link
+                          key={href}
+                          href={href}
+                          className={pathname === href ? "is-active" : undefined}
+                          aria-current={pathname === href ? "page" : undefined}
+                        >
+                          {group.title === "Overview" || group.title === "Foundations" ? (
+                            <Icon icon={icon} />
+                          ) : null}
+                          {label}
+                        </Link>
+                      ))}
+                    </div>
                   ))}
-                </div>
-              ))}
             </nav>
           </aside>
         )}

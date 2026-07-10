@@ -401,6 +401,10 @@ pre {
   justify-items: start;
 }
 
+.docs-sidebar nav.docs-sidebar__component-list {
+  gap: var(--n-space-1);
+}
+
 .nav-group {
   display: grid;
   gap: var(--n-space-1);

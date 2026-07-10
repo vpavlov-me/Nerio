@@ -45,7 +45,15 @@ const componentSizes = [
   ["Large icon button", "--n-icon-button-icon-size-lg", "--n-icon-size-xl"],
 ] as const;
 
-function CustomLogoIcon(props: { className?: string; "aria-hidden"?: boolean }) {
+function CustomLogoIcon({
+  strokeWidth = 2,
+  ...props
+}: {
+  className?: string;
+  "aria-hidden"?: boolean;
+  strokeWidth?: number;
+  absoluteStrokeWidth?: boolean;
+}) {
   return (
     <svg viewBox="0 0 24 24" fill="none" {...props}>
       <path
@@ -53,7 +61,7 @@ function CustomLogoIcon(props: { className?: string; "aria-hidden"?: boolean }) 
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="2"
+        strokeWidth={strokeWidth}
       />
     </svg>
   );
@@ -66,10 +74,10 @@ import { IconButton } from '@nerio/ui/client';
 <Icon icon={Search} />
 <IconButton icon={Search} label="Search workspace" />`;
 
-const custom = `function CustomLogoIcon(props) {
+const custom = `function CustomLogoIcon({ strokeWidth = 2, ...props }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" {...props}>
-      <path d="M5 17V7l7 10V7l7 10V7" stroke="currentColor" />
+      <path d="M5 17V7l7 10V7l7 10V7" stroke="currentColor" strokeWidth={strokeWidth} />
     </svg>
   );
 }
@@ -163,6 +171,12 @@ export default function Page() {
             <tr>
               <td>Let component aliases set icon size.</td>
               <td>Buttons and icon-only controls keep glyphs proportional to their hit area.</td>
+            </tr>
+            <tr>
+              <td>Use the adapter’s 2px absolute stroke default.</td>
+              <td>
+                Lucide glyphs stay legible at small sizes without becoming heavy at larger sizes.
+              </td>
             </tr>
           </tbody>
         </Table>
