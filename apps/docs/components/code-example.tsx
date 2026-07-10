@@ -233,27 +233,59 @@ function tokenizeCode(code: string) {
   return tokens;
 }
 
+function copyWithSelectionFallback(value: string) {
+  const textArea = document.createElement("textarea");
+  textArea.value = value;
+  textArea.style.position = "fixed";
+  textArea.style.opacity = "0";
+  document.body.appendChild(textArea);
+  textArea.select();
+  const didCopy = document.execCommand("copy");
+  textArea.remove();
+  return didCopy;
+}
+
 export function CodeBlock({ code, label }: { code: string; label?: string }) {
-  const tokens = React.useMemo(() => tokenizeCode(code), [code]);
+  const lines = React.useMemo(() => code.split("\n").map((line) => tokenizeCode(line)), [code]);
 
   return (
     <pre className="code-block" aria-label={label}>
       <code>
-        {tokens.map((token, index) =>
-          token.kind ? (
-            <span className={`code-token code-token-${token.kind}`} key={`${index}-${token.kind}`}>
-              {token.value}
+        {lines.map((line, lineIndex) => (
+          <span className="code-line" key={lineIndex}>
+            <span className="code-line-number" aria-hidden="true">
+              {lineIndex + 1}
             </span>
-          ) : (
-            token.value
-          ),
-        )}
+            <span className="code-line-content">
+              {line.map((token, tokenIndex) =>
+                token.kind ? (
+                  <span
+                    className={`code-token code-token-${token.kind}`}
+                    key={`${lineIndex}-${tokenIndex}-${token.kind}`}
+                  >
+                    {token.value}
+                  </span>
+                ) : (
+                  token.value
+                ),
+              )}
+            </span>
+          </span>
+        ))}
       </code>
     </pre>
   );
 }
 
-export function CodeExample({ code, label = "Code example" }: { code: string; label?: string }) {
+export function CodeExample({
+  code,
+  label = "Code example",
+  className,
+}: {
+  code: string;
+  label?: string;
+  className?: string;
+}) {
   const [copied, setCopied] = React.useState(false);
   const resetTimer = React.useRef<number | undefined>(undefined);
 
@@ -261,17 +293,25 @@ export function CodeExample({ code, label = "Code example" }: { code: string; la
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(code);
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(code);
+      } else if (!copyWithSelectionFallback(code)) {
+        throw new Error("Copy command failed");
+      }
       setCopied(true);
       window.clearTimeout(resetTimer.current);
       resetTimer.current = window.setTimeout(() => setCopied(false), 1200);
     } catch {
-      setCopied(false);
+      if (copyWithSelectionFallback(code)) {
+        setCopied(true);
+        window.clearTimeout(resetTimer.current);
+        resetTimer.current = window.setTimeout(() => setCopied(false), 1200);
+      }
     }
   };
 
   return (
-    <div className="code-example">
+    <div className={["code-example", className].filter(Boolean).join(" ")}>
       <IconButton
         className="code-copy"
         icon={copied ? Check : Copy}

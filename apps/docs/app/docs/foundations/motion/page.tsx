@@ -98,7 +98,7 @@ export default function Page() {
     <article className="doc-page">
       <header>
         <p className="doc-kicker">Foundation</p>
-        <h1>Motion</h1>
+        <h1>Animations</h1>
         <p className="doc-lede">
           Motion is a tokenized interaction contract for hover, press, focus, overlays, disclosure,
           tabs, toasts, loading, feedback, and reduced-motion behavior.

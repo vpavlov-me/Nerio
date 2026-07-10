@@ -17,6 +17,7 @@ export {
   LayoutDashboard,
   ListTree,
   Moon,
+  Monitor,
   Palette,
   PanelLeft,
   PackageOpen,

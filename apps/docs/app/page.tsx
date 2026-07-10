@@ -12,8 +12,14 @@ export default function HomePage() {
         and AI-readable metadata for modern digital products.
       </p>
       <div className="hero-actions">
-        <Button render={<Link href="/docs/getting-started" />}>Start building</Button>
-        <Button variant="secondary" render={<Link href="/docs/components/button" />}>
+        <Button nativeButton={false} render={<Link href="/docs/getting-started" />}>
+          Start building
+        </Button>
+        <Button
+          nativeButton={false}
+          variant="secondary"
+          render={<Link href="/docs/components/button" />}
+        >
           View components
         </Button>
       </div>

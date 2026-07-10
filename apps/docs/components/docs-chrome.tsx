@@ -15,7 +15,9 @@ import {
   FileText,
   Github,
   Layers,
+  LayoutDashboard,
   ListTree,
+  Monitor,
   Moon,
   Palette,
   PanelLeft,
@@ -26,7 +28,7 @@ import {
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, DropdownMenu, Icon, IconButton, Input, Select } from "@nerio/ui/client";
+import { Badge, Button, DropdownMenu, Icon, IconButton, Input } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/ui/client";
 
 const version = "v0.1.0";
@@ -58,8 +60,9 @@ const navGroups: NavGroup[] = [
       { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
       { href: "/docs/foundations/typography", label: "Typography", icon: Type },
       { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
-      { href: "/docs/foundations/motion", label: "Motion", icon: Sparkles },
-      { href: "/docs/foundations/effects", label: "Radius and effects", icon: Circle },
+      { href: "/docs/foundations/animations", label: "Animations", icon: Sparkles },
+      { href: "/docs/foundations/radius", label: "Radius", icon: Circle },
+      { href: "/docs/foundations/effects", label: "Effects", icon: Circle },
       { href: "/docs/foundations/icons", label: "Icons", icon: Circle },
     ],
   },
@@ -126,11 +129,6 @@ const themeOptions = [
   { label: "Orange", value: "orange" },
   { label: "Red", value: "red" },
   { label: "Neutral", value: "neutral" },
-];
-
-const densityOptions = [
-  { label: "Comfortable", value: "comfortable" },
-  { label: "Compact", value: "compact" },
 ];
 
 type TocItem = {
@@ -202,7 +200,7 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "density", label: "Density" },
     { id: "usage", label: "Usage" },
   ],
-  "/docs/foundations/motion": [
+  "/docs/foundations/animations": [
     { id: "motion-preview", label: "Preview" },
     { id: "duration-tokens", label: "Duration tokens" },
     { id: "easing-tokens", label: "Easing tokens" },
@@ -211,8 +209,11 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "reduced-motion", label: "Reduced motion" },
     { id: "usage", label: "Usage" },
   ],
-  "/docs/foundations/effects": [
+  "/docs/foundations/radius": [
     { id: "radius-scale", label: "Radius scale" },
+    { id: "usage", label: "Usage" },
+  ],
+  "/docs/foundations/effects": [
     { id: "effect-styles", label: "Effect styles" },
     { id: "focus", label: "Focus" },
     { id: "usage", label: "Usage" },
@@ -292,25 +293,47 @@ function pageToMarkdown() {
 
 function PageActions() {
   const [copied, setCopied] = React.useState(false);
-  const resetTimer = React.useRef<number | undefined>(undefined);
+  const [actionStatus, setActionStatus] = React.useState("");
+  const [actionsOpen, setActionsOpen] = React.useState(false);
+  const copyResetTimer = React.useRef<number | undefined>(undefined);
+  const statusResetTimer = React.useRef<number | undefined>(undefined);
 
-  React.useEffect(() => () => window.clearTimeout(resetTimer.current), []);
+  React.useEffect(
+    () => () => {
+      window.clearTimeout(copyResetTimer.current);
+      window.clearTimeout(statusResetTimer.current);
+    },
+    [],
+  );
+
+  const copyToClipboard = async (value: string, successMessage: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setActionStatus(successMessage);
+    } catch {
+      setActionStatus("Clipboard access is unavailable. Please copy the text manually.");
+    }
+    window.clearTimeout(statusResetTimer.current);
+    statusResetTimer.current = window.setTimeout(() => setActionStatus(""), 2400);
+  };
 
   const copyMarkdown = async () => {
-    await navigator.clipboard.writeText(pageToMarkdown());
+    await copyToClipboard(pageToMarkdown(), "Markdown copied.");
     setCopied(true);
-    window.clearTimeout(resetTimer.current);
-    resetTimer.current = window.setTimeout(() => setCopied(false), 1200);
+    window.clearTimeout(copyResetTimer.current);
+    copyResetTimer.current = window.setTimeout(() => setCopied(false), 1200);
   };
 
   const viewMarkdown = () => {
     const markdownUrl = `data:text/markdown;charset=utf-8,${encodeURIComponent(pageToMarkdown())}`;
     window.open(markdownUrl, "_blank", "noopener,noreferrer");
+    setActionStatus("Opening Markdown view.");
   };
 
   const copyInstallHint = async (target: "Cursor" | "VS Code") => {
-    await navigator.clipboard.writeText(
+    await copyToClipboard(
       `Install the Nerio MCP server in ${target}: pnpm --filter @nerio/mcp start`,
+      `${target} install command copied.`,
     );
   };
 
@@ -321,6 +344,11 @@ function PageActions() {
         ? `https://chatgpt.com/?q=${prompt}`
         : `https://claude.ai/new?q=${prompt}`;
     window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  const runAction = async (action: () => void | Promise<void>) => {
+    await action();
+    setActionsOpen(false);
   };
 
   const actionItem = (
@@ -350,50 +378,64 @@ function PageActions() {
       >
         {copied ? "Copied" : "Copy Markdown"}
       </Button>
-      <DropdownMenu
-        className="docs-actions-menu"
-        trigger={
-          <IconButton
-            className="docs-actions-toggle"
-            icon={ChevronDown}
-            label="Open page actions"
-            size="sm"
-            variant="secondary"
-          />
-        }
-        items={[
-          {
-            label: actionItem(FileText, "View as Markdown", "View page as Markdown format"),
-            onSelect: viewMarkdown,
-          },
-          {
-            label: actionItem(PackageOpen, "Add to Cursor", "Install MCP Server on Cursor"),
-            onSelect: () => void copyInstallHint("Cursor"),
-          },
-          {
-            label: actionItem(Code2, "Add to VS Code", "Install MCP Server on VS Code"),
-            onSelect: () => void copyInstallHint("VS Code"),
-          },
-          {
-            label: actionItem(Sparkles, "Open in ChatGPT", "Ask questions about this page", true),
-            onSelect: () => openAssistant("chatgpt"),
-          },
-          {
-            label: actionItem(Circle, "Open in Claude", "Ask questions about this page", true),
-            onSelect: () => openAssistant("claude"),
-          },
-        ]}
-      />
+      <button
+        className="docs-actions-toggle"
+        type="button"
+        aria-label="Open page actions"
+        aria-expanded={actionsOpen}
+        aria-controls="docs-page-actions-menu"
+        onClick={() => setActionsOpen((open) => !open)}
+      >
+        <Icon icon={ChevronDown} />
+      </button>
+      {actionsOpen ? (
+        <div className="docs-actions-menu" id="docs-page-actions-menu" role="menu">
+          <button role="menuitem" type="button" onClick={() => void runAction(viewMarkdown)}>
+            {actionItem(FileText, "View as Markdown", "View page as Markdown format")}
+          </button>
+          <button
+            role="menuitem"
+            type="button"
+            onClick={() => void runAction(() => copyInstallHint("Cursor"))}
+          >
+            {actionItem(PackageOpen, "Add to Cursor", "Install MCP Server on Cursor")}
+          </button>
+          <button
+            role="menuitem"
+            type="button"
+            onClick={() => void runAction(() => copyInstallHint("VS Code"))}
+          >
+            {actionItem(Code2, "Add to VS Code", "Install MCP Server on VS Code")}
+          </button>
+          <button
+            role="menuitem"
+            type="button"
+            onClick={() => void runAction(() => openAssistant("chatgpt"))}
+          >
+            {actionItem(Sparkles, "Open in ChatGPT", "Ask questions about this page", true)}
+          </button>
+          <button
+            role="menuitem"
+            type="button"
+            onClick={() => void runAction(() => openAssistant("claude"))}
+          >
+            {actionItem(Circle, "Open in Claude", "Ask questions about this page", true)}
+          </button>
+        </div>
+      ) : null}
+      <span className="n-visually-hidden" aria-live="polite">
+        {actionStatus}
+      </span>
     </div>
   );
 }
 
 export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isTemplatesPage = pathname === "/templates";
   const fallbackToc = getDefaultToc(pathname);
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState("system");
-  const [density, setDensityValue] = React.useState("compact");
   const [search, setSearch] = React.useState("");
   const [searchOpen, setSearchOpen] = React.useState(false);
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
@@ -402,8 +444,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.setAttribute("data-mode", mode);
-    document.documentElement.setAttribute("data-density", density);
-  }, [theme, mode, density]);
+  }, [theme, mode]);
 
   React.useEffect(() => {
     const headings = Array.from(document.querySelectorAll<HTMLElement>(".docs-main h2"));
@@ -435,15 +476,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     document.documentElement.setAttribute("data-theme", value);
   };
 
-  const setDensity = (value: string) => {
-    setDensityValue(value);
-    document.documentElement.setAttribute("data-density", value);
-  };
-
-  const toggleMode = () => {
-    const next = mode === "dark" ? "light" : "dark";
-    setModeValue(next);
-    document.documentElement.setAttribute("data-mode", next);
+  const setMode = (value: string) => {
+    setModeValue(value);
+    document.documentElement.setAttribute("data-mode", value);
   };
 
   const filteredGroups = search.trim()
@@ -469,122 +504,193 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         .slice(0, 8)
     : [];
 
-  const modeIcon = mode === "dark" ? Sun : Moon;
   const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
   return (
     <div className="docs-shell">
       <header className="docs-header">
-        <Link href="/" className="brand">
-          <span className="brand-mark" aria-hidden />
-          <span>Nerio</span>
-          <Badge>{version}</Badge>
-        </Link>
+        <div className="docs-header-top">
+          <Link href="/" className="brand">
+            <span>Nerio</span>
+            <Badge>{version}</Badge>
+          </Link>
 
-        <div className="docs-search-wrap">
-          <label className="docs-search">
-            <Icon icon={Search} />
-            <Input
-              ref={searchInputRef}
-              aria-label="Search documentation"
-              placeholder="Search documentation"
-              value={search}
-              onBlur={() => window.setTimeout(() => setSearchOpen(false), 120)}
-              onChange={(event) => {
-                setSearch(event.currentTarget.value);
-                setSearchOpen(true);
-              }}
-              onFocus={() => setSearchOpen(true)}
+          <div className="docs-search-wrap">
+            <label className="docs-search">
+              <Icon icon={Search} />
+              <Input
+                ref={searchInputRef}
+                aria-label="Search documentation"
+                placeholder="Search documentation"
+                value={search}
+                onBlur={() => window.setTimeout(() => setSearchOpen(false), 120)}
+                onChange={(event) => {
+                  setSearch(event.currentTarget.value);
+                  setSearchOpen(true);
+                }}
+                onFocus={() => setSearchOpen(true)}
+              />
+              <kbd>/</kbd>
+            </label>
+            {searchOpen && searchTerm ? (
+              <div className="docs-search-results" role="listbox">
+                {searchResults.length ? (
+                  searchResults.map((entry) => (
+                    <Link
+                      key={entry.href}
+                      href={entry.href}
+                      role="option"
+                      onClick={() => {
+                        setSearch("");
+                        setSearchOpen(false);
+                      }}
+                    >
+                      <span>{entry.title}</span>
+                      <small>
+                        {entry.group} - {entry.description}
+                      </small>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="docs-search-empty">No matching documentation pages.</div>
+                )}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="docs-controls">
+            <DropdownMenu
+              className="docs-theme-menu"
+              trigger={
+                <button className="docs-theme-trigger" type="button">
+                  <span
+                    className="theme-option-dot"
+                    style={{ backgroundColor: `var(--n-${theme}-600)` }}
+                    aria-hidden
+                  />
+                  <span>{themeOptions.find((option) => option.value === theme)?.label}</span>
+                  <Icon icon={ChevronDown} />
+                </button>
+              }
+              items={themeOptions.map((option) => ({
+                label: (
+                  <span className="theme-menu-item">
+                    <span
+                      className="theme-option-dot"
+                      style={{ backgroundColor: `var(--n-${option.value}-600)` }}
+                      aria-hidden
+                    />
+                    <span>{option.label}</span>
+                    {theme === option.value ? <Icon icon={Check} /> : null}
+                  </span>
+                ),
+                onSelect: () => setTheme(option.value),
+              }))}
             />
-            <kbd>/</kbd>
-          </label>
-          {searchOpen && searchTerm ? (
-            <div className="docs-search-results" role="listbox">
-              {searchResults.length ? (
-                searchResults.map((entry) => (
-                  <Link
-                    key={entry.href}
-                    href={entry.href}
-                    role="option"
-                    onClick={() => {
-                      setSearch("");
-                      setSearchOpen(false);
-                    }}
-                  >
-                    <span>{entry.title}</span>
-                    <small>
-                      {entry.group} - {entry.description}
-                    </small>
-                  </Link>
-                ))
-              ) : (
-                <div className="docs-search-empty">No matching documentation pages.</div>
-              )}
+            <div className="docs-mode-switcher" role="group" aria-label="Color mode">
+              <IconButton
+                className={mode === "system" ? "is-active" : undefined}
+                icon={Monitor}
+                label="Use system color mode"
+                variant="ghost"
+                onClick={() => setMode("system")}
+              />
+              <IconButton
+                className={mode === "light" ? "is-active" : undefined}
+                icon={Sun}
+                label="Use light mode"
+                variant="ghost"
+                onClick={() => setMode("light")}
+              />
+              <IconButton
+                className={mode === "dark" ? "is-active" : undefined}
+                icon={Moon}
+                label="Use dark mode"
+                variant="ghost"
+                onClick={() => setMode("dark")}
+              />
             </div>
-          ) : null}
+            <Button
+              leadingIcon={Github}
+              nativeButton={false}
+              render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
+            >
+              Open Repo
+            </Button>
+          </div>
         </div>
 
-        <div className="docs-controls">
-          <Select label="Theme" value={theme} onChange={setTheme} options={themeOptions} />
-          <Select label="Density" value={density} onChange={setDensity} options={densityOptions} />
-          <IconButton
-            icon={modeIcon}
-            label={mode === "dark" ? "Use light mode" : "Use dark mode"}
-            variant="secondary"
-            onClick={toggleMode}
-          />
-          <IconButton
-            icon={Github}
-            label="Open Nerio on GitHub"
-            variant="secondary"
-            render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
-          />
-        </div>
+        <nav className="docs-primary-nav" aria-label="Primary navigation">
+          <Link
+            href="/docs/getting-started"
+            className={pathname === "/docs/getting-started" ? "is-active" : undefined}
+          >
+            <Icon icon={BookOpen} />
+            Get started
+          </Link>
+          <Link
+            href="/docs/components/button"
+            className={pathname.startsWith("/docs/components") ? "is-active" : undefined}
+          >
+            <Icon icon={Boxes} />
+            Components
+          </Link>
+          <Link href="/templates" className={pathname === "/templates" ? "is-active" : undefined}>
+            <Icon icon={LayoutDashboard} />
+            Templates
+          </Link>
+        </nav>
       </header>
 
-      <div className="docs-layout">
-        <aside className="docs-sidebar">
-          <nav aria-label="Documentation">
-            {filteredGroups.map((group) => (
-              <div className="nav-group" key={group.title}>
-                <h2>{group.title}</h2>
-                {group.items.map(({ href, label, icon }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className={pathname === href ? "is-active" : undefined}
-                    aria-current={pathname === href ? "page" : undefined}
-                  >
-                    <Icon icon={icon} />
-                    {label}
-                  </Link>
-                ))}
-              </div>
-            ))}
-          </nav>
-        </aside>
+      <div className={isTemplatesPage ? "docs-layout docs-layout--template" : "docs-layout"}>
+        {isTemplatesPage ? null : (
+          <aside className="docs-sidebar">
+            <nav aria-label="Documentation">
+              {filteredGroups.map((group) => (
+                <div className="nav-group" key={group.title}>
+                  <h2>{group.title}</h2>
+                  {group.items.map(({ href, label, icon }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={pathname === href ? "is-active" : undefined}
+                      aria-current={pathname === href ? "page" : undefined}
+                    >
+                      {group.title === "Overview" || group.title === "Foundations" ? (
+                        <Icon icon={icon} />
+                      ) : null}
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              ))}
+            </nav>
+          </aside>
+        )}
 
-        <main className="docs-main">
-          <PageActions />
+        <main className={isTemplatesPage ? "docs-main docs-main--template" : "docs-main"}>
+          {isTemplatesPage ? null : <PageActions />}
           {children}
         </main>
 
-        <aside className="docs-toc" aria-label="On this page">
-          <div className="docs-toc-card">
-            <div className="docs-toc-title">On this page</div>
-            {visibleToc.length > 0 ? (
-              <nav>
-                {visibleToc.map((item) => (
-                  <a key={item.id} href={`#${item.id}`}>
-                    {item.label}
-                  </a>
-                ))}
-              </nav>
-            ) : (
-              <p>No sections yet.</p>
-            )}
-          </div>
-        </aside>
+        {isTemplatesPage ? null : (
+          <aside className="docs-toc" aria-label="On this page">
+            <div className="docs-toc-card">
+              <div className="docs-toc-title">On this page</div>
+              {visibleToc.length > 0 ? (
+                <nav>
+                  {visibleToc.map((item) => (
+                    <a key={item.id} href={`#${item.id}`}>
+                      {item.label}
+                    </a>
+                  ))}
+                </nav>
+              ) : (
+                <p>No sections yet.</p>
+              )}
+            </div>
+          </aside>
+        )}
       </div>
     </div>
   );
