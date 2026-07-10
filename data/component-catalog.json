@@ -397,7 +397,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "navigation",
-      "status": "implemented-initial",
+      "status": "stable-core",
       "description": "Hierarchy navigation component with ordered list semantics and current page support."
     },
     {
@@ -405,7 +405,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "navigation",
-      "status": "implemented-initial",
+      "status": "stable-core",
       "description": "Basic previous, next, and page navigation component without state ownership."
     },
     {
