@@ -48,6 +48,8 @@
   --n-docs-overlay-opacity: var(--n-opacity-muted);
   --n-docs-shell-z-index: 20;
   --n-docs-overlay-z-index: 40;
+  --n-docs-scrollbar-display: none;
+  --n-docs-scrollbar-width: none;
   --n-docs-code-keyword: var(--n-magenta-600);
   --n-docs-code-string: var(--n-green-700);
   --n-docs-code-function: var(--n-blue-700);
@@ -375,6 +377,7 @@ pre {
   border-inline-end: var(--n-border-width-0);
   max-block-size: calc(100vh - var(--n-docs-header-height));
   overflow: auto;
+  scrollbar-width: var(--n-docs-scrollbar-width);
   padding: var(--n-space-6) var(--n-space-4) var(--n-space-10);
   position: sticky;
   top: var(--n-docs-header-height);
@@ -601,9 +604,15 @@ pre {
 .docs-toc {
   max-block-size: calc(100vh - var(--n-docs-header-height));
   overflow: auto;
+  scrollbar-width: var(--n-docs-scrollbar-width);
   padding: var(--n-space-6) var(--n-space-4) var(--n-space-10);
   position: sticky;
   top: var(--n-docs-header-height);
+}
+
+.docs-sidebar::-webkit-scrollbar,
+.docs-toc::-webkit-scrollbar {
+  display: var(--n-docs-scrollbar-display);
 }
 
 .docs-toc-card {
