@@ -9,6 +9,7 @@ import {
   EmptyState,
   Field,
   Input,
+  Kbd,
   List,
   Pagination,
   Progress,
@@ -22,7 +23,6 @@ import {
   Button,
   Checkbox,
   Dialog,
-  IconButton,
   Popover,
   RadioGroup,
   Select,
@@ -36,6 +36,13 @@ import {
 import { Bell } from "@nerio/adapters";
 
 describe("Core static contracts", () => {
+  it("renders Kbd with a native semantic element and a stable styling hook", () => {
+    render(<Kbd>⌘S</Kbd>);
+    const shortcut = screen.getByText("⌘S");
+    expect(shortcut.tagName).toBe("KBD");
+    expect(shortcut).toHaveClass("n-kbd");
+  });
+
   it("keeps Progress ARIA on the progressbar and normalizes unsafe values", () => {
     const { rerender } = render(<Progress ariaLabel="Upload progress" value={150} />);
     const progressbar = screen.getByRole("progressbar", { name: "Upload progress" });
@@ -84,6 +91,17 @@ describe("Core static contracts", () => {
     expect(screen.getByRole("article")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Overview", level: 2 })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "No results", level: 4 })).toBeInTheDocument();
+  });
+
+  it("renders linked secondary Cards as native interactive anchors", () => {
+    render(
+      <Card href="/docs/components/link" variant="secondary">
+        Link documentation
+      </Card>,
+    );
+    const card = screen.getByRole("link", { name: "Link documentation" });
+    expect(card).toHaveAttribute("href", "/docs/components/link");
+    expect(card).toHaveAttribute("data-variant", "secondary");
   });
 
   it("resets Avatar fallback state when src changes and exposes intentional fallback names", () => {
@@ -326,11 +344,38 @@ describe("Core interactive action contracts", () => {
     expect(button.querySelector("[role=status]")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("keeps IconButton label available while loading", () => {
-    render(<IconButton icon={Bell} label="Open notifications" loading />);
+  it("keeps an icon-only Button label available while loading", () => {
+    render(<Button icon={Bell} aria-label="Open notifications" loading />);
     const button = screen.getByRole("button", { name: /open notifications/i });
     expect(button).toBeDisabled();
     expect(button.querySelector("[role=status]")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("supports directional icons, shortcut hints, and accessible icon-only actions", () => {
+    render(
+      <>
+        <Button leadingIcon={Bell} trailingIcon={Bell} kbd="⌘N">
+          Create notification
+        </Button>
+        <Button icon={Bell} aria-label="Open notifications" tooltip="Open notifications" />
+      </>,
+    );
+
+    const labeledButton = screen.getByRole("button", { name: "Create notification" });
+    expect(labeledButton.querySelectorAll("[data-slot=button-icon]")).toHaveLength(2);
+    expect(labeledButton.querySelector("[data-slot=button-kbd]")).toHaveTextContent("⌘N");
+
+    const iconButton = screen.getByRole("button", { name: "Open notifications" });
+    expect(iconButton).toHaveAttribute("data-icon-only", "true");
+    expect(iconButton.querySelector("[data-slot=button-label]")).not.toBeInTheDocument();
+  });
+
+  it("shows an optional tooltip for an icon-only Button", async () => {
+    const user = userEvent.setup();
+    render(<Button icon={Bell} aria-label="Open notifications" tooltip="Open notifications" />);
+
+    await user.hover(screen.getByRole("button", { name: "Open notifications" }));
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Open notifications");
   });
 
   it("supports uncontrolled Dialog open, Escape close, and focus restoration", async () => {

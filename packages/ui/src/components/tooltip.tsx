@@ -35,6 +35,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
               ref={ref}
               className={cn("n-tooltip-popup", motionClasses.overlayEnter, className)}
               data-slot="content"
+              role="tooltip"
             >
               {label}
             </BaseTooltip.Popup>

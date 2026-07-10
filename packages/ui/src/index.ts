@@ -12,6 +12,7 @@ export {
   type TextProps,
   type TextTone,
 } from "./components/typography";
+export { Kbd, type KbdProps } from "./components/kbd";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps } from "./components/icon";
 export { Spinner } from "./components/spinner";
@@ -41,6 +42,7 @@ export {
   type CardDescriptionProps,
   type CardElement,
   type CardProps,
+  type CardVariant,
   type CardSectionProps,
   type CardTitleElement,
   type CardTitleProps,

@@ -2,13 +2,13 @@ import { notFound } from "next/navigation";
 import { StandardDocPage } from "../../../../components/doc-page";
 
 const componentDocs: Record<string, { title: string; lede: string }> = {
+  kbd: {
+    title: "Kbd",
+    lede: "Kbd displays quiet, native keyboard shortcut notation beside actions and commands.",
+  },
   typography: {
     title: "Typography",
     lede: "Semantic heading, text, and inline code primitives keep content hierarchy token-driven.",
-  },
-  "icon-button": {
-    title: "IconButton",
-    lede: "Icon buttons expose compact actions with accessible labels and tokenized focus states.",
   },
   link: {
     title: "Link",

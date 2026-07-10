@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Check, Copy } from "@nerio/adapters";
-import { IconButton } from "@nerio/ui/client";
+import { Button } from "@nerio/ui/client";
 
 type CodeTokenKind =
   | "attribute"
@@ -312,10 +312,11 @@ export function CodeExample({
 
   return (
     <div className={["code-example", className].filter(Boolean).join(" ")}>
-      <IconButton
+      <Button
         className="code-copy"
         icon={copied ? Check : Copy}
-        label={copied ? "Copied" : `Copy ${label.toLowerCase()}`}
+        aria-label={copied ? "Copied" : `Copy ${label.toLowerCase()}`}
+        tooltip={copied ? "Copied" : `Copy ${label.toLowerCase()}`}
         size="md"
         variant="secondary"
         onClick={copy}

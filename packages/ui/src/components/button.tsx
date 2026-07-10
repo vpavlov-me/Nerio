@@ -5,17 +5,18 @@ import { Button as BaseButton } from "@base-ui/react/button";
 import { cn } from "../lib/cn";
 import { motionClasses } from "../lib/motion";
 import { Icon, type IconComponent } from "./icon";
+import { Kbd, type KbdProps } from "./kbd";
 import { Spinner } from "./spinner";
+import { Tooltip } from "./tooltip";
 
-export type ButtonVariant =
-  "primary" | "secondary" | "outline" | "ghost" | "subtle" | "danger" | "destructive";
+export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export type ButtonProps = Omit<
   React.ComponentProps<typeof BaseButton>,
   "children" | "className" | "disabled"
 > & {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
   disabled?: boolean;
   variant?: ButtonVariant;
@@ -25,6 +26,12 @@ export type ButtonProps = Omit<
   loadingLabel?: string;
   leadingIcon?: IconComponent;
   trailingIcon?: IconComponent;
+  /** Renders an accessible icon-only button. Supply aria-label for the action name. */
+  icon?: IconComponent;
+  /** Optional Kbd element displayed after the visible button label. */
+  kbd?: React.ReactNode;
+  /** Shows supplemental help on hover and keyboard focus. */
+  tooltip?: React.ReactNode;
 };
 
 export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button(
@@ -36,13 +43,24 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     loadingLabel: _loadingLabel,
     leadingIcon,
     trailingIcon,
+    icon,
+    kbd,
+    tooltip,
     children,
     disabled,
     ...props
   },
   ref,
 ) {
-  return (
+  const iconOnly = Boolean(icon);
+  const keyboardShortcut = React.isValidElement<KbdProps>(kbd) ? (
+    React.cloneElement(kbd, { "data-slot": "button-kbd", "aria-hidden": true })
+  ) : kbd ? (
+    <Kbd data-slot="button-kbd" aria-hidden="true">
+      {kbd}
+    </Kbd>
+  ) : null;
+  const content = (
     <BaseButton
       ref={ref}
       className={cn(
@@ -56,23 +74,29 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       data-variant={variant}
       data-size={size}
       data-loading={loading ? "true" : undefined}
+      data-icon-only={iconOnly ? "true" : undefined}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       {...props}
     >
       {loading ? (
         <Spinner aria-hidden size="sm" />
+      ) : icon ? (
+        <Icon icon={icon} />
       ) : leadingIcon ? (
         <span data-slot="button-icon">
           <Icon icon={leadingIcon} />
         </span>
       ) : null}
-      <span data-slot="button-label">{children}</span>
-      {!loading && trailingIcon ? (
+      {!iconOnly ? <span data-slot="button-label">{children}</span> : null}
+      {!iconOnly && !loading && trailingIcon ? (
         <span data-slot="button-icon">
           <Icon icon={trailingIcon} />
         </span>
       ) : null}
+      {!iconOnly ? keyboardShortcut : null}
     </BaseButton>
   );
+
+  return tooltip ? <Tooltip label={tooltip}>{content}</Tooltip> : content;
 });

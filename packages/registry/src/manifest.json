@@ -41,12 +41,58 @@
       "usage": "import { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>"
     },
     {
+      "name": "kbd",
+      "title": "Kbd",
+      "description": "Displays a keyboard shortcut with native kbd semantics.",
+      "category": "foundation",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/kbd.tsx",
+          "target": "components/kbd.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/kbd.css",
+          "target": "styles/kbd.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["kbd"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-kbd-background",
+        "--n-kbd-border-width",
+        "--n-kbd-border-color",
+        "--n-kbd-radius",
+        "--n-kbd-foreground",
+        "--n-kbd-font-family",
+        "--n-kbd-font-size",
+        "--n-kbd-font-weight",
+        "--n-kbd-padding-block",
+        "--n-kbd-padding-inline"
+      ],
+      "accessibility": [
+        "Renders the native kbd element so shortcut notation retains semantic meaning.",
+        "Use Kbd as supplemental shortcut notation, not as the only way to discover a command.",
+        "When Kbd is displayed inside a named control, hide it from assistive technology to avoid repeating the action name."
+      ],
+      "usage": "import { Kbd } from '@/components/nerio/components/kbd';\n\n<Kbd>⌘S</Kbd>"
+    },
+    {
       "name": "button",
       "title": "Button",
-      "description": "Triggers a user action.",
+      "description": "Triggers an explicit action with text, directional icons, shortcut hints, optional tooltip help, or an icon-only mode.",
       "category": "actions",
       "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
-      "registryDependencies": [],
+      "registryDependencies": ["tooltip", "kbd"],
       "files": [
         {
           "source": "../../ui/src/components/button.tsx",
@@ -95,8 +141,8 @@
         }
       ],
       "baseUiPrimitives": ["button"],
-      "slots": ["button", "button-icon", "button-label"],
-      "variants": ["primary", "secondary", "outline", "ghost", "subtle", "danger", "destructive"],
+      "slots": ["button", "button-icon", "button-label", "button-kbd"],
+      "variants": ["primary", "secondary", "outline", "ghost", "danger"],
       "requiredTokens": [
         "--n-button-height-sm",
         "--n-button-height-md",
@@ -110,10 +156,22 @@
         "--n-button-background-secondary-hover",
         "--n-button-border-secondary",
         "--n-button-foreground-secondary",
+        "--n-button-background-outline",
+        "--n-button-background-outline-hover",
+        "--n-button-border-outline",
+        "--n-button-foreground-outline",
+        "--n-button-kbd-background",
+        "--n-button-kbd-border-color",
+        "--n-button-kbd-foreground",
+        "--n-button-kbd-opacity",
         "--n-button-background-ghost-hover",
         "--n-button-foreground-ghost",
         "--n-button-background-destructive",
         "--n-button-foreground-destructive",
+        "--n-icon-button-size-sm",
+        "--n-icon-button-size-md",
+        "--n-icon-button-size-lg",
+        "--n-icon-button-radius",
         "--n-motion-hover-duration",
         "--n-motion-press-duration",
         "--n-motion-focus-duration",
@@ -125,51 +183,10 @@
         "Loading preserves the action name, disables repeat activation, and exposes aria-busy; loadingLabel is deprecated.",
         "Disabled and loading states prevent repeat activation.",
         "Icons render through the Nerio icon adapter and remain decorative by default.",
+        "For an icon-only Button, provide icon and an aria-label; tooltip can add supplementary help but does not replace the action name.",
         "Keep the visible focus treatment enabled."
       ],
-      "usage": "import { Button } from '@/components/nerio/components/button';\n\n<Button variant=\"primary\">Save changes</Button>"
-    },
-    {
-      "name": "icon-button",
-      "title": "IconButton",
-      "description": "Triggers an icon-only action with an accessible label.",
-      "category": "actions",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
-      "registryDependencies": ["button"],
-      "files": [
-        {
-          "source": "../../ui/src/components/icon-button.tsx",
-          "target": "components/icon-button.tsx",
-          "role": "component"
-        },
-        {
-          "source": "../../ui/src/components/icon.tsx",
-          "target": "components/icon.tsx",
-          "role": "component"
-        },
-        {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
-          "role": "style"
-        }
-      ],
-      "baseUiPrimitives": ["button"],
-      "slots": ["button", "icon", "spinner", "label"],
-      "variants": ["primary", "secondary", "ghost", "destructive"],
-      "requiredTokens": [
-        "--n-icon-button-size-sm",
-        "--n-icon-button-size-md",
-        "--n-icon-button-size-lg",
-        "--n-icon-button-radius",
-        "--n-focus-ring"
-      ],
-      "accessibility": [
-        "Requires a label prop so icon-only actions have an accessible name.",
-        "Loading replaces the decorative icon with a decorative Spinner while preserving the action label and button size.",
-        "Disabled and loading states prevent repeat activation through the Button contract.",
-        "Pass icons through the Nerio icon adapter API; icons are decorative unless the label carries the action name."
-      ],
-      "usage": "import { Search } from '@nerio/adapters';\nimport { IconButton } from '@/components/nerio/components/icon-button';\n\n<IconButton icon={Search} label=\"Search\" />"
+      "usage": "import { Settings } from '@nerio/adapters';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
     },
     {
       "name": "link",
@@ -249,12 +266,14 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["root", "dot", "icon", "label"],
-      "variants": ["neutral", "accent", "info", "success", "warning", "danger"],
+      "variants": ["neutral", "primary-soft", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-badge-height",
         "--n-badge-radius",
         "--n-badge-background",
         "--n-badge-foreground",
+        "--n-badge-background-primary-soft",
+        "--n-badge-foreground-primary-soft",
         "--n-badge-dot-size"
       ],
       "accessibility": [
@@ -471,12 +490,23 @@
         "card-content",
         "card-footer"
       ],
-      "variants": [],
-      "requiredTokens": ["--n-card-padding", "--n-card-gap", "--n-card-radius", "--n-shadow-sm"],
+      "variants": ["default", "secondary"],
+      "requiredTokens": [
+        "--n-card-padding",
+        "--n-card-gap",
+        "--n-card-radius",
+        "--n-card-background-secondary",
+        "--n-card-background-secondary-hover",
+        "--n-card-border-secondary",
+        "--n-card-border-interactive",
+        "--n-card-shadow-secondary",
+        "--n-focus-ring"
+      ],
       "accessibility": [
         "Use Card to group related content, not to decorate every section.",
         "Provide semantic headings inside cards when the content needs structure.",
-        "Avoid nesting cards inside cards."
+        "Avoid nesting cards inside cards.",
+        "Use href for a whole-card destination; it renders a native anchor with hover and focus feedback."
       ],
       "usage": "import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/nerio/components/card';\n\n<Card>\n  <CardHeader>\n    <CardTitle>Project summary</CardTitle>\n    <CardDescription>Current status, owner, and next action.</CardDescription>\n  </CardHeader>\n  <CardContent>Ready for review</CardContent>\n</Card>"
     },

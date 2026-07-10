@@ -1,62 +1,22 @@
 "use client";
 
 import * as React from "react";
-import { Button as BaseButton } from "@base-ui/react/button";
-import type { ButtonProps } from "./button";
+import { Button, type ButtonProps } from "./button";
 import type { IconComponent } from "./icon";
-import { Icon } from "./icon";
-import { Spinner } from "./spinner";
-import { cn } from "../lib/cn";
-import { motionClasses } from "../lib/motion";
 
+/** @deprecated Use Button with icon and aria-label instead. */
 export interface IconButtonProps extends Omit<
   ButtonProps,
-  "leadingIcon" | "trailingIcon" | "children"
+  "icon" | "leadingIcon" | "trailingIcon" | "children" | "aria-label"
 > {
   icon: IconComponent;
   label: string;
 }
 
+/** @deprecated Use <Button icon={icon} aria-label={label} /> instead. */
 export const IconButton = React.forwardRef<HTMLElement, IconButtonProps>(function IconButton(
-  {
-    icon,
-    label,
-    className,
-    size = "md",
-    variant = "secondary",
-    loading = false,
-    loadingLabel: _loadingLabel,
-    disabled,
-    render,
-    nativeButton,
-    ...props
-  },
+  { icon, label, variant = "secondary", ...props },
   ref,
 ) {
-  return (
-    <BaseButton
-      ref={ref}
-      aria-label={label}
-      className={cn(
-        "n-button",
-        "n-icon-button",
-        motionClasses.hover,
-        motionClasses.press,
-        motionClasses.focus,
-        className,
-      )}
-      data-slot="button"
-      data-variant={variant}
-      data-size={size}
-      data-loading={loading ? "true" : undefined}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
-      nativeButton={nativeButton ?? (render ? false : undefined)}
-      render={render}
-      {...props}
-    >
-      {loading ? <Spinner aria-hidden size="sm" /> : <Icon icon={icon} />}
-      <span className="n-visually-hidden">{label}</span>
-    </BaseButton>
-  );
+  return <Button ref={ref} aria-label={label} icon={icon} variant={variant} {...props} />;
 });

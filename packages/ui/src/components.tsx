@@ -5,6 +5,7 @@ export { motionClasses, type MotionClassName } from "./lib/motion";
 export { Link, type LinkProps, type LinkVariant } from "./components/link";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps } from "./components/icon";
+export { Kbd, type KbdProps } from "./components/kbd";
 export { IconButton, type IconButtonProps } from "./components/icon-button";
 export { Spinner } from "./components/spinner";
 export type { SpinnerProps } from "./components/spinner";

@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  ArrowLeft,
+  ArrowRight,
   BookOpen,
   Box,
   Boxes,
@@ -27,7 +29,7 @@ import {
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, Dialog, DropdownMenu, Icon, Input } from "@nerio/ui/client";
+import { Badge, Button, Dialog, DropdownMenu, Icon, Input, Kbd } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/ui/client";
 
 const version = "v0.1.0 beta";
@@ -65,13 +67,13 @@ const navGroups: NavGroup[] = [
       { href: "/docs/foundations/radius", label: "Radius", icon: Circle },
       { href: "/docs/foundations/effects", label: "Effects", icon: Wrench },
       { href: "/docs/foundations/icons", label: "Icons", icon: Box },
+      { href: "/docs/components/kbd", label: "Kbd", icon: Code2 },
     ],
   },
   {
     title: "Actions and feedback",
     items: [
       { href: "/docs/components/button", label: "Button", icon: Circle },
-      { href: "/docs/components/icon-button", label: "IconButton", icon: Circle },
       { href: "/docs/components/link", label: "Link", icon: Circle },
       { href: "/docs/components/badge", label: "Badge", icon: Circle },
       { href: "/docs/components/alert", label: "Alert", icon: Circle },
@@ -364,7 +366,7 @@ function pageToMarkdown() {
   return `${lines.join("\n\n")}\n\nSource: ${window.location.href}`;
 }
 
-function PageActions() {
+function PageActions({ pathname }: { pathname: string }) {
   const [copied, setCopied] = React.useState(false);
   const [actionStatus, setActionStatus] = React.useState("");
   const [actionsOpen, setActionsOpen] = React.useState(false);
@@ -439,9 +441,34 @@ function PageActions() {
       {external ? <Icon icon={ExternalLink} /> : null}
     </span>
   );
+  const { previous, next } = getAdjacentDocs(pathname);
 
   return (
     <div className="docs-page-actions" aria-label="Page actions">
+      <div className="docs-page-actions__navigation" aria-label="Page navigation">
+        {previous ? (
+          <Button
+            icon={ArrowLeft}
+            aria-label={`Previous: ${previous.label}`}
+            tooltip={`Previous: ${previous.label}`}
+            size="sm"
+            variant="outline"
+            nativeButton={false}
+            render={<Link href={previous.href} />}
+          />
+        ) : null}
+        {next ? (
+          <Button
+            icon={ArrowRight}
+            aria-label={`Next: ${next.label}`}
+            tooltip={`Next: ${next.label}`}
+            size="sm"
+            variant="outline"
+            nativeButton={false}
+            render={<Link href={next.href} />}
+          />
+        ) : null}
+      </div>
       <Button
         className="docs-copy-markdown"
         leadingIcon={copied ? Check : Copy}
@@ -703,7 +730,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         <div className="docs-header-top">
           <Link href="/" className="brand">
             <span>Nerio</span>
-            <Badge>{version}</Badge>
+            <Badge tone="primary-soft">{version}</Badge>
           </Link>
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
@@ -746,7 +773,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                 <button className="docs-search-trigger" type="button">
                   <Icon icon={Search} />
                   <span>Search documentation</span>
-                  <kbd>/</kbd>
+                  <Kbd aria-hidden>/</Kbd>
                 </button>
               }
             >
@@ -864,19 +891,22 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                 : filteredGroups.map((group) => (
                     <div className="nav-group" key={group.title}>
                       <h2>{group.title}</h2>
-                      {group.items.map(({ href, label, icon }) => (
-                        <Link
-                          key={href}
-                          href={href}
-                          className={pathname === href ? "is-active" : undefined}
-                          aria-current={pathname === href ? "page" : undefined}
-                        >
-                          {group.title === "Overview" || group.title === "Foundations" ? (
-                            <Icon icon={icon} />
-                          ) : null}
-                          {label}
-                        </Link>
-                      ))}
+                      {group.items.map(({ href, label, icon }) => {
+                        const hasIcon = group.title === "Overview" || group.title === "Foundations";
+
+                        return (
+                          <Link
+                            key={href}
+                            href={href}
+                            data-has-icon={hasIcon || undefined}
+                            className={pathname === href ? "is-active" : undefined}
+                            aria-current={pathname === href ? "page" : undefined}
+                          >
+                            {hasIcon ? <Icon icon={icon} /> : null}
+                            {label}
+                          </Link>
+                        );
+                      })}
                     </div>
                   ))}
             </nav>
@@ -884,7 +914,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         )}
 
         <main className={isTemplatesPage ? "docs-main docs-main--template" : "docs-main"}>
-          {isTemplatesPage ? null : <PageActions />}
+          {isTemplatesPage ? null : <PageActions pathname={pathname} />}
           {children}
           {isTemplatesPage ? null : <DocsPageNavigation pathname={pathname} />}
         </main>

@@ -115,6 +115,14 @@
       "description": "Semantic heading, text, and inline code primitives based on semantic font tokens."
     },
     {
+      "name": "Kbd",
+      "tier": "core",
+      "package": "@nerio/ui",
+      "category": "foundation",
+      "status": "polished",
+      "description": "Native keyboard shortcut notation with quiet tokenized styling for commands and Buttons."
+    },
+    {
       "name": "Icon",
       "tier": "core",
       "package": "@nerio/ui",
@@ -136,15 +144,7 @@
       "package": "@nerio/ui",
       "category": "actions",
       "status": "stable-core",
-      "description": "Primary action component with variants, sizes, loading state, and icon slots."
-    },
-    {
-      "name": "Icon Button",
-      "tier": "core",
-      "package": "@nerio/ui",
-      "category": "actions",
-      "status": "stable-core",
-      "description": "Accessible icon-only action component."
+      "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, and icon-only mode."
     },
     {
       "name": "Link",

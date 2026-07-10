@@ -10,10 +10,16 @@ const manifest = path.resolve(repoRoot, "packages/registry/src/manifest.json");
 const expectedFiles = [
   "components/button.tsx",
   "components/icon.tsx",
+  "components/kbd.tsx",
   "components/spinner.tsx",
+  "components/tooltip.tsx",
   "lib/cn.ts",
+  "lib/motion.ts",
   "styles/button.css",
   "styles/icon.css",
+  "styles/kbd.css",
+  "styles/motion.css",
+  "styles/overlays.css",
   "styles/spinner.css",
 ];
 const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
@@ -47,7 +53,6 @@ const expectedSelectFiles = [
   "styles/select.css",
   "styles/icon.css",
 ];
-const expectedIconButtonFiles = [...expectedFiles, "components/icon-button.tsx"];
 const expectedPhase2BFiles = [
   "components/alert.tsx",
   "components/form-message.tsx",
@@ -192,10 +197,10 @@ async function verify() {
     if (
       !infoOutput.includes("Button (button)") ||
       !infoOutput.includes("Dependencies:") ||
-      !infoOutput.includes("Registry dependencies: none") ||
+      !infoOutput.includes("Registry dependencies: tooltip, kbd") ||
       !infoOutput.includes("Required tokens:") ||
       !infoOutput.includes("Usage:") ||
-      !infoOutput.includes('<Button variant="primary">Save changes</Button>')
+      !infoOutput.includes('<Button icon={Settings} aria-label="Workspace settings"')
     ) {
       throw new Error("Info output did not include the expected registry metadata.");
     }
@@ -214,7 +219,6 @@ async function verify() {
     await run(localTarget, "add", "checkbox");
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "select");
-    await run(localTarget, "add", "icon-button");
     await run(localTarget, "add", "link");
     await run(localTarget, "add", "alert");
     await run(localTarget, "add", "radio-group");
@@ -294,21 +298,6 @@ async function verify() {
       !selectSource.includes("autoComplete={autoComplete}")
     ) {
       throw new Error("Installed Select source did not preserve placeholder and form metadata.");
-    }
-    assertFiles(localTarget, expectedIconButtonFiles);
-    const iconButtonSource = fs.readFileSync(
-      path.join(localTarget, "components/nerio/components/icon-button.tsx"),
-      "utf8",
-    );
-    if (
-      !iconButtonSource.includes("label: string") ||
-      !iconButtonSource.includes("aria-label={label}") ||
-      !iconButtonSource.includes("<Icon icon={icon}") ||
-      !iconButtonSource.includes("n-visually-hidden")
-    ) {
-      throw new Error(
-        "Installed IconButton source did not preserve its label and icon slot contract.",
-      );
     }
     assertFiles(localTarget, expectedPhase2BFiles);
     assertFiles(localTarget, expectedDisplayFiles);

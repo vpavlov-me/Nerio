@@ -14,7 +14,6 @@ import {
 import {
   Button,
   Dialog,
-  IconButton,
   Select,
   Tabs,
   Toast,
@@ -31,7 +30,7 @@ describe("Core accessibility contracts", () => {
         <Button loading loadingLabel="Saving">
           Save changes
         </Button>
-        <IconButton icon={Bell} label="Open notifications" loading loadingLabel="Opening" />
+        <Button icon={Bell} aria-label="Open notifications" loading loadingLabel="Opening" />
         <Field label="Email" message="Required" invalid>
           <Input />
         </Field>

@@ -33,19 +33,16 @@ async function verify() {
       throw new Error("MCP get_component_usage did not include install and token metadata.");
     }
 
-    const iconButtonUsageResult = await client.callTool({
+    const kbdUsageResult = await client.callTool({
       name: "get_component_usage",
-      arguments: { name: "icon-button" },
+      arguments: { name: "kbd" },
     });
-    const iconButtonUsage = JSON.parse(iconButtonUsageResult.content[0].text);
+    const kbdUsage = JSON.parse(kbdUsageResult.content[0].text);
     if (
-      !iconButtonUsage.registryDependencies.includes("button") ||
-      !iconButtonUsage.requiredTokens.includes("--n-icon-button-size-sm") ||
-      !iconButtonUsage.requiredTokens.includes("--n-icon-button-size-lg")
+      !kbdUsage.requiredTokens.includes("--n-kbd-background") ||
+      !kbdUsage.requiredTokens.includes("--n-kbd-foreground")
     ) {
-      throw new Error(
-        "MCP get_component_usage did not include IconButton dependency and size metadata.",
-      );
+      throw new Error("MCP get_component_usage did not include Kbd token metadata.");
     }
 
     const fieldUsageResult = await client.callTool({
@@ -306,7 +303,7 @@ async function verify() {
       "form-group",
       "checkbox",
       "switch",
-      "icon-button",
+      "kbd",
       "link",
       "alert",
       "radio-group",
