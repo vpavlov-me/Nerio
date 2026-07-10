@@ -115,30 +115,36 @@ pre {
   width: 100%;
 }
 
-.docs-search {
+.docs-search-trigger {
   align-items: center;
   background: var(--n-color-surface-control);
   border: var(--n-border-subtle);
   border-radius: var(--n-radius-container);
   box-shadow: var(--n-shadow-surface-control);
+  color: var(--n-color-text-tertiary);
+  cursor: pointer;
   display: grid;
+  font: inherit;
   gap: var(--n-space-2);
   grid-template-columns: auto minmax(0, 1fr) auto;
+  text-align: start;
   min-inline-size: 0;
   padding-inline: var(--n-space-3);
   inline-size: 100%;
 }
 
-.docs-search .n-icon {
+.docs-search-trigger .n-icon {
   color: var(--n-color-text-tertiary);
 }
 
-.docs-search .n-input {
-  background: var(--n-button-background-ghost);
-  border: 0;
-  box-shadow: none;
-  min-block-size: var(--n-size-control-md);
-  padding: 0;
+.docs-search-trigger:hover,
+.docs-search-trigger:focus-visible {
+  background: var(--n-color-surface-control-hover);
+}
+
+.docs-search-trigger:focus-visible {
+  box-shadow: var(--n-focus-ring);
+  outline: var(--n-border-width-0);
 }
 
 .docs-search kbd {
@@ -169,6 +175,10 @@ pre {
   padding: var(--n-space-2);
   position: absolute;
   z-index: var(--n-docs-overlay-z-index);
+}
+
+.docs-search-results .n-input {
+  background: var(--n-color-surface-control);
 }
 
 .docs-search-results a,
@@ -259,32 +269,15 @@ pre {
   inline-size: var(--n-docs-control-icon-size);
 }
 
-.docs-mode-switcher {
-  align-items: center;
-  background: var(--n-color-surface-muted);
-  border-radius: var(--n-radius-pill);
-  display: flex;
-  gap: var(--n-space-0);
-  padding: var(--n-space-0);
-}
-
-.docs-mode-switcher .n-icon-button {
-  border-radius: var(--n-radius-pill);
+.docs-mode-tabs .n-tabs__tab {
   block-size: var(--n-docs-control-size);
   inline-size: var(--n-docs-control-size);
-  min-block-size: var(--n-docs-control-size);
   min-inline-size: var(--n-docs-control-size);
-  padding: var(--n-space-0);
 }
 
-.docs-mode-switcher .n-icon-button .n-icon {
+.docs-mode-tabs .n-tabs__tab .n-icon {
   block-size: var(--n-icon-size-sm);
   inline-size: var(--n-icon-size-sm);
-}
-
-.docs-mode-switcher .n-icon-button.is-active {
-  background: var(--n-color-surface);
-  color: var(--n-color-text-primary);
 }
 
 .docs-controls .n-label {
@@ -473,6 +466,8 @@ pre {
   border-end-start-radius: var(--n-radius-none);
   border-inline-start: var(--n-border-width-0);
   border-start-start-radius: var(--n-radius-none);
+  border-end-end-radius: var(--n-radius-control);
+  border-start-end-radius: var(--n-radius-control);
   color: var(--n-button-foreground-secondary);
   cursor: pointer;
   display: inline-flex;
@@ -598,9 +593,14 @@ pre {
   padding: var(--n-space-1) var(--n-space-2);
 }
 
-.docs-toc a:hover {
+.docs-toc a:hover,
+.docs-toc a.is-active {
   background: var(--n-color-surface-muted);
-  color: var(--n-color-text-primary);
+  color: var(--n-color-action-primary);
+}
+
+.docs-toc a.is-active {
+  font-weight: var(--n-font-weight-medium);
 }
 
 .hero {
@@ -661,6 +661,11 @@ pre {
   display: grid;
   gap: var(--n-space-8);
   min-inline-size: 0;
+}
+
+.doc-page > header {
+  display: grid;
+  gap: var(--n-space-4);
 }
 
 .doc-page h1 {

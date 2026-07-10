@@ -459,6 +459,10 @@
   --n-tabs-radius: var(--n-radius-sm);
   --n-tabs-background: var(--n-button-background-ghost);
   --n-tabs-padding-inline: var(--n-space-2);
+  --n-tabs-segmented-padding: var(--n-space-0-5);
+  --n-tabs-segmented-background: var(--n-color-surface-control);
+  --n-tabs-segmented-item-background-selected: var(--n-color-surface-raised);
+  --n-tabs-segmented-item-shadow-selected: var(--n-shadow-xs);
   --n-popover-width-md: 20rem;
   --n-tooltip-radius: var(--n-radius-md);
   --n-dropdown-min-width: 14rem;

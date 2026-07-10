@@ -1,7 +1,7 @@
 .n-badge {
   align-items: center;
   background: var(--n-color-surface-muted);
-  border: var(--n-border-subtle);
+  border: var(--n-border-width-0);
   border-radius: var(--n-badge-radius);
   color: var(--n-color-text-secondary);
   display: inline-flex;

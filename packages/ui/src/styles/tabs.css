@@ -55,3 +55,30 @@
   box-shadow: var(--n-focus-ring);
   outline: 0;
 }
+
+.n-tabs[data-variant="segmented"] {
+  gap: var(--n-space-0);
+}
+
+.n-tabs[data-variant="segmented"] .n-tabs__list {
+  background: var(--n-tabs-segmented-background);
+  border-block-end: var(--n-border-width-0);
+  border-radius: var(--n-radius-pill);
+  gap: var(--n-space-0);
+  padding: var(--n-tabs-segmented-padding);
+}
+
+.n-tabs[data-variant="segmented"] .n-tabs__tab {
+  border-radius: var(--n-radius-pill);
+  padding-inline: var(--n-tabs-segmented-padding);
+}
+
+.n-tabs[data-variant="segmented"] .n-tabs__tab[data-selected],
+.n-tabs[data-variant="segmented"] .n-tabs__tab[data-state="active"] {
+  background: var(--n-tabs-segmented-item-background-selected);
+  box-shadow: var(--n-tabs-segmented-item-shadow-selected);
+}
+
+.n-tabs[data-variant="segmented"] .n-tabs__indicator {
+  display: none;
+}
