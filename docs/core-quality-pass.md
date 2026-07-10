@@ -20,6 +20,17 @@ This is an internal review record for the Core Component Quality Pass. The compo
 
 - `Badge.variant` is deprecated in favour of `Badge.tone`. Existing `neutral`, `info`, `success`, and `danger` values keep working. New code may also use `accent` and `warning` through `tone`.
 
+## Priority 2 — actions and forms
+
+| Component                                | API      | Visual and density | States                                              | Accessibility                                   | Tokens   | Docs and registry | Validation        | Final status | Known issues                                                                                                  |
+| ---------------------------------------- | -------- | ------------------ | --------------------------------------------------- | ----------------------------------------------- | -------- | ----------------- | ----------------- | ------------ | ------------------------------------------------------------------------------------------------------------- |
+| Button                                   | Reviewed | Reviewed           | Loading, disabled, icon slots                       | Reviewed with Base UI contract                  | Reviewed | Reviewed          | Repository checks | stable-core  | `outline`, `subtle`, and `destructive` compatibility variants remain documented aliases.                      |
+| IconButton                               | Reviewed | Reviewed           | Loading now replaces icon with Spinner, disabled    | Reviewed with Base UI contract                  | Reviewed | Reviewed          | Repository checks | stable-core  | Requires a label; use Tooltip for unfamiliar actions.                                                         |
+| Link                                     | Reviewed | Reviewed           | Hover and focus                                     | Native anchor reviewed                          | Reviewed | Reviewed          | Repository checks | stable-core  | Native anchors do not gain a disabled state. Use a non-interactive element when a destination is unavailable. |
+| Input / Textarea / Label                 | Reviewed | Reviewed           | Invalid, disabled, focus                            | Native form semantics reviewed                  | Reviewed | Reviewed          | Repository checks | stable-core  | Autosize belongs to an explicit future composition, not Textarea.                                             |
+| Field / Form Message / FormGroup         | Reviewed | Reviewed           | Description, message, invalid, responsive layout    | ID associations and fieldset semantics reviewed | Reviewed | Reviewed          | Repository checks | stable-core  | Field accepts one control child so it can safely attach IDs and descriptions.                                 |
+| Checkbox / Radio Group / Switch / Select | Reviewed | Reviewed           | Checked, disabled, invalid, controlled/uncontrolled | Reviewed with Base UI contract                  | Reviewed | Reviewed          | Repository checks | stable-core  | Keep complex async, searchable, or multi-select patterns out of this Core layer.                              |
+
 ## Scope boundary
 
-This record covers Priority 1 only. Priority 2 actions/forms, Priority 3 overlays, Priority 4 navigation, and Priority 5 data display remain separate component-by-component reviews. No new public components or Pro compositions were added.
+This record covers Priorities 1 and 2. Priority 3 overlays, Priority 4 navigation, and Priority 5 data display remain separate component-by-component reviews. No new public components or Pro compositions were added.

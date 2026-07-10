@@ -149,7 +149,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "actions",
-      "status": "implemented-initial",
+      "status": "stable-core",
       "description": "Styled link primitive for text and navigation actions."
     },
     {
