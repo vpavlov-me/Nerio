@@ -29,6 +29,22 @@ const icons: Array<[string, IconComponent]> = [
   ["ChevronDown", ChevronDown],
 ];
 
+const iconSizes = [
+  ["Extra small", "--n-icon-size-xs", "12px"],
+  ["Small", "--n-icon-size-sm", "14px"],
+  ["Medium", "--n-icon-size-md", "16px"],
+  ["Large", "--n-icon-size-lg", "18px"],
+  ["Extra large", "--n-icon-size-xl", "20px"],
+] as const;
+
+const componentSizes = [
+  ["Inline icon", "--n-icon-inline-size", "1em"],
+  ["Button icon", "--n-button-icon-size", "--n-icon-size-md"],
+  ["Small icon button", "--n-icon-button-icon-size-sm", "--n-icon-size-md"],
+  ["Medium icon button", "--n-icon-button-icon-size-md", "--n-icon-size-lg"],
+  ["Large icon button", "--n-icon-button-icon-size-lg", "--n-icon-size-xl"],
+] as const;
+
 function CustomLogoIcon(props: { className?: string; "aria-hidden"?: boolean }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" {...props}>
@@ -74,7 +90,7 @@ export default function Page() {
 
       <section className="doc-section">
         <div className="section-heading">
-          <h2>Icon adapter preview</h2>
+          <h2 id="icon-adapter-preview">Icon adapter preview</h2>
           <Badge>@nerio/adapters</Badge>
         </div>
         <div className="icon-grid">
@@ -92,7 +108,38 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Contract</h2>
+        <h2 id="size-contract">Size contract</h2>
+        <Table>
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Token</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            {iconSizes.map(([label, token, value]) => (
+              <tr key={token}>
+                <td>{label}</td>
+                <td>
+                  <code>{token}</code>
+                </td>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+        <div className="token-chip-row">
+          {componentSizes.map(([label, token, value]) => (
+            <code key={token} title={`${label}: ${value}`}>
+              {token}
+            </code>
+          ))}
+        </div>
+      </section>
+
+      <section className="doc-section">
+        <h2 id="contract">Contract</h2>
         <Table>
           <thead>
             <tr>
@@ -113,18 +160,22 @@ export default function Page() {
               <td>Use semantic color tokens around icons.</td>
               <td>Icons inherit text color and stay theme-aware.</td>
             </tr>
+            <tr>
+              <td>Let component aliases set icon size.</td>
+              <td>Buttons and icon-only controls keep glyphs proportional to their hit area.</td>
+            </tr>
           </tbody>
         </Table>
       </section>
 
       <section className="doc-section">
-        <h2>Usage</h2>
+        <h2 id="usage">Usage</h2>
         <CodeExample code={usage} label="Icon usage" />
         <CodeExample code={custom} label="Custom icon usage" />
       </section>
 
       <section className="doc-section">
-        <h2>Do / do not</h2>
+        <h2 id="do-do-not">Do / do not</h2>
         <div className="grid">
           <Card>
             <Badge variant="success">Do</Badge>

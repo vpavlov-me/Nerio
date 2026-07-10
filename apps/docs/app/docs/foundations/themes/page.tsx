@@ -15,10 +15,40 @@ const customTheme = `<html data-theme="purple" data-mode="system" data-density="
 
 :root[data-theme="acme"] {
   --n-color-surface-selected: #ecfdf5;
+  --n-color-border-focus: #0f766e;
   --n-color-action-primary: #0f766e;
   --n-color-action-primary-hover: #115e59;
+  --n-color-action-primary-active: #134e4a;
+  --n-color-action-on-primary: #ffffff;
+  --n-color-focus-ring: #0f766e;
+  --n-color-focus-ring-soft: rgb(15 118 110 / 0.24);
   --n-chart-primary: #0f766e;
-  --n-focus-ring: 0 0 0 2px rgb(15 118 110 / 0.24);
+}
+
+:root[data-theme="acme"][data-mode="dark"] {
+  --n-color-surface-selected: #052e2b;
+  --n-color-border-focus: #5eead4;
+  --n-color-action-primary: #5eead4;
+  --n-color-action-primary-hover: #2dd4bf;
+  --n-color-action-primary-active: #14b8a6;
+  --n-color-action-on-primary: #042f2e;
+  --n-color-focus-ring: #5eead4;
+  --n-color-focus-ring-soft: rgb(94 234 212 / 0.3);
+  --n-chart-primary: #5eead4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="acme"][data-mode="system"] {
+    --n-color-surface-selected: #052e2b;
+    --n-color-border-focus: #5eead4;
+    --n-color-action-primary: #5eead4;
+    --n-color-action-primary-hover: #2dd4bf;
+    --n-color-action-primary-active: #14b8a6;
+    --n-color-action-on-primary: #042f2e;
+    --n-color-focus-ring: #5eead4;
+    --n-color-focus-ring-soft: rgb(94 234 212 / 0.3);
+    --n-chart-primary: #5eead4;
+  }
 }`;
 
 export default function Page() {
@@ -34,7 +64,7 @@ export default function Page() {
       </header>
 
       <section className="doc-section">
-        <h2>Runtime axes</h2>
+        <h2 id="runtime-axes">Runtime axes</h2>
         <Table>
           <thead>
             <tr>
@@ -71,7 +101,7 @@ export default function Page() {
 
       <section className="doc-section">
         <div className="section-heading">
-          <h2>Preset themes</h2>
+          <h2 id="preset-themes">Preset themes</h2>
           <Badge>brand accents</Badge>
         </div>
         <div className="theme-grid">
@@ -86,7 +116,23 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Live theme behavior</h2>
+        <h2 id="mode-behavior">Mode behavior</h2>
+        <p>
+          Light mode uses a white canvas, gray control surfaces, and white raised surfaces. Dark
+          mode remaps the same roles to gray-950, gray-900, and gray-800. Purple and neutral also
+          use lighter primary actions in dark and system-dark modes to preserve contrast.
+        </p>
+        <div className="token-chip-row">
+          <code>--n-color-surface-canvas</code>
+          <code>--n-color-surface-control</code>
+          <code>--n-color-surface-raised</code>
+          <code>--n-color-action-primary</code>
+          <code>--n-color-action-on-primary</code>
+        </div>
+      </section>
+
+      <section className="doc-section">
+        <h2 id="live-theme-behavior">Live theme behavior</h2>
         <Card className="token-preview">
           <div>
             <Badge variant="info">Themed surface</Badge>
@@ -115,7 +161,7 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Density</h2>
+        <h2 id="density">Density</h2>
         <div className="density-grid">
           <Card className="density-card">
             <Badge>Comfortable</Badge>
@@ -131,17 +177,18 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Custom themes</h2>
+        <h2 id="custom-themes">Custom themes</h2>
         <CodeExample code={customTheme} label="Custom theme" />
         <ul className="doc-list">
           <li>Do not create combined names such as purple-light or neutral-dark.</li>
           <li>Do not use vertical-specific preset names such as fintech-blue.</li>
           <li>Keep brand color as an accent for primary action, selection, focus, and charts.</li>
+          <li>Provide dark-mode accent overrides when the light accent loses contrast.</li>
         </ul>
       </section>
 
       <section className="doc-section">
-        <h2>Do / do not</h2>
+        <h2 id="do-do-not">Do / do not</h2>
         <div className="grid">
           <Card>
             <Badge variant="success">Do</Badge>

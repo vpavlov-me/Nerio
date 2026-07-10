@@ -12,10 +12,10 @@ const tokenLayers = [
   {
     name: "Semantic",
     examples: [
-      "--n-color-surface",
+      "--n-color-surface-control",
       "--n-color-text-primary",
       "--n-color-action-primary",
-      "--n-font-sans",
+      "--n-radius-container",
     ],
     purpose: "Intent-based values remapped by theme, mode, density, and product overrides.",
   },
@@ -29,6 +29,12 @@ const tokenLayers = [
       "--n-overlay-z-index",
     ],
     purpose: "Scoped contracts for component customization without editing component source.",
+  },
+  {
+    name: "Runtime sets",
+    examples: ["data-theme", "data-mode", "data-density"],
+    purpose:
+      "Composable selectors that remap semantic and component tokens without rebuilding source.",
   },
 ];
 
@@ -44,41 +50,70 @@ const primitiveColors = [
   ["red-600", "--n-red-600"],
 ];
 
+const primitiveScales = [
+  ["Spacing", "--n-space-4", "16px on the comfortable scale"],
+  ["Control size", "--n-size-control-md", "32px default control height"],
+  ["Radius", "--n-radius-md", "10px primitive corner"],
+  ["Icon size", "--n-icon-size-md", "16px default icon size"],
+  ["Border width", "--n-border-width-default", "1px default border"],
+  ["Elevation", "--n-shadow-sm", "Restrained raised-surface shadow"],
+] as const;
+
 const semanticTokens = [
-  ["Canvas", "--n-color-canvas"],
-  ["Surface", "--n-color-surface"],
+  ["Canvas", "--n-color-surface-canvas"],
+  ["Default surface", "--n-color-surface-default"],
+  ["Control", "--n-color-surface-control"],
+  ["Control hover", "--n-color-surface-control-hover"],
+  ["Subtle", "--n-color-surface-subtle"],
+  ["Sunken", "--n-color-surface-sunken"],
   ["Raised", "--n-color-surface-raised"],
-  ["Muted", "--n-color-surface-muted"],
+  ["Overlay", "--n-color-surface-overlay"],
   ["Primary text", "--n-color-text-primary"],
   ["Secondary text", "--n-color-text-secondary"],
   ["Subtle border", "--n-color-border-subtle"],
-  ["Action", "--n-color-action-primary"],
-  ["Danger", "--n-color-danger"],
-  ["Success", "--n-color-success"],
+  ["Primary action", "--n-color-action-primary"],
 ];
+
+const semanticAliases = [
+  ["Control radius", "--n-radius-control", "--n-radius-md"],
+  ["Container radius", "--n-radius-container", "--n-radius-lg"],
+  ["Overlay radius", "--n-radius-overlay", "--n-radius-xl"],
+  ["Raised elevation", "--n-shadow-surface-raised", "--n-shadow-sm"],
+  ["Floating elevation", "--n-shadow-surface-floating", "--n-shadow-md"],
+  ["Body type", "--n-body-font-size", "--n-font-size-md"],
+] as const;
 
 const componentTokens = [
   ["Button height", "--n-button-height-md"],
   ["Button radius", "--n-button-radius"],
+  ["Button padding", "--n-button-padding-inline-md"],
+  ["Icon button glyph", "--n-icon-button-icon-size-md"],
   ["Input height", "--n-input-height-md"],
-  ["Form group gap", "--n-form-group-gap"],
+  ["Input background", "--n-input-background"],
   ["Badge height", "--n-badge-height"],
-  ["Avatar size", "--n-avatar-size-md"],
-  ["Progress height", "--n-progress-height"],
+  ["Card radius", "--n-card-radius"],
+  ["Card elevation", "--n-card-shadow"],
   ["Dialog width", "--n-dialog-width-md"],
   ["Overlay layer", "--n-overlay-z-index"],
 ];
 
-const usage = `/* Product CSS */
+const usage = `/* Product CSS: add a theme without changing component source. */
 :root[data-theme="acme"] {
+  --n-color-surface-selected: #ecfdf5;
+  --n-color-border-focus: #0f766e;
   --n-color-action-primary: #0f766e;
   --n-color-action-primary-hover: #115e59;
+  --n-color-action-primary-active: #134e4a;
+  --n-color-action-on-primary: #ffffff;
+  --n-color-focus-ring: #0f766e;
+  --n-color-focus-ring-soft: rgb(15 118 110 / 0.24);
   --n-chart-primary: #0f766e;
 }
 
 .project-search {
   min-block-size: var(--n-input-height-md);
-  border-color: var(--n-color-border-strong);
+  border-radius: var(--n-input-radius);
+  background: var(--n-input-background);
 }`;
 
 export default function Page() {
@@ -88,14 +123,14 @@ export default function Page() {
         <p className="doc-kicker">Foundation</p>
         <h1>Tokens</h1>
         <p className="doc-lede">
-          Nerio uses primitive, semantic, and component tokens so visual decisions remain portable
-          across themes, products, and source-installed components.
+          Nerio uses primitive, semantic, and component tokens plus composable runtime sets so
+          visual decisions remain portable across themes, products, and source-installed components.
         </p>
       </header>
 
       <section className="doc-section">
         <div className="section-heading">
-          <h2>Three-layer contract</h2>
+          <h2 id="token-architecture">Token architecture</h2>
           <Badge>CSS variables</Badge>
         </div>
         <div className="foundation-grid">
@@ -114,7 +149,7 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Primitive palette</h2>
+        <h2 id="primitive-tokens">Primitive tokens</h2>
         <div className="swatch-grid">
           {primitiveColors.map(([label, token]) => (
             <div key={token} className="swatch">
@@ -124,10 +159,30 @@ export default function Page() {
             </div>
           ))}
         </div>
+        <Table>
+          <thead>
+            <tr>
+              <th>Scale</th>
+              <th>Token</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            {primitiveScales.map(([label, token, value]) => (
+              <tr key={token}>
+                <td>{label}</td>
+                <td>
+                  <code>{token}</code>
+                </td>
+                <td>{value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </section>
 
       <section className="doc-section">
-        <h2>Semantic tokens</h2>
+        <h2 id="semantic-tokens">Semantic tokens</h2>
         <div className="token-table">
           {semanticTokens.map(([label, token]) => (
             <div key={token}>
@@ -137,10 +192,32 @@ export default function Page() {
             </div>
           ))}
         </div>
+        <Table>
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Alias</th>
+              <th>Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            {semanticAliases.map(([label, token, primitive]) => (
+              <tr key={token}>
+                <td>{label}</td>
+                <td>
+                  <code>{token}</code>
+                </td>
+                <td>
+                  <code>{primitive}</code>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </section>
 
       <section className="doc-section">
-        <h2>Component tokens</h2>
+        <h2 id="component-tokens">Component tokens</h2>
         <Table>
           <thead>
             <tr>
@@ -162,7 +239,7 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Live component readout</h2>
+        <h2 id="live-component-readout">Live component readout</h2>
         <Card className="token-preview">
           <div>
             <Badge variant="success">Semantic</Badge>
@@ -180,12 +257,13 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2>Usage</h2>
+        <h2 id="usage">Usage</h2>
         <CodeExample code={usage} label="Token usage" />
         <ul className="doc-list">
           <li>Use primitive tokens only when defining semantic or component tokens.</li>
           <li>Use semantic tokens for product layout, copy, borders, actions, and status.</li>
           <li>Use component tokens to adjust a component contract without forking source.</li>
+          <li>Use runtime sets to remap tokens; do not encode mode or density into theme names.</li>
         </ul>
       </section>
     </article>
