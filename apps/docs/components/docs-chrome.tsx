@@ -445,30 +445,6 @@ function PageActions({ pathname }: { pathname: string }) {
 
   return (
     <div className="docs-page-actions" aria-label="Page actions">
-      <div className="docs-page-actions__navigation" aria-label="Page navigation">
-        {previous ? (
-          <Button
-            icon={ArrowLeft}
-            aria-label={`Previous: ${previous.label}`}
-            tooltip={`Previous: ${previous.label}`}
-            size="sm"
-            variant="outline"
-            nativeButton={false}
-            render={<Link href={previous.href} />}
-          />
-        ) : null}
-        {next ? (
-          <Button
-            icon={ArrowRight}
-            aria-label={`Next: ${next.label}`}
-            tooltip={`Next: ${next.label}`}
-            size="sm"
-            variant="outline"
-            nativeButton={false}
-            render={<Link href={next.href} />}
-          />
-        ) : null}
-      </div>
       <Button
         className="docs-copy-markdown"
         leadingIcon={copied ? Check : Copy}
@@ -488,6 +464,30 @@ function PageActions({ pathname }: { pathname: string }) {
       >
         <Icon icon={ChevronDown} />
       </button>
+      <div className="docs-page-actions__navigation" aria-label="Page navigation">
+        {previous ? (
+          <Button
+            icon={ArrowLeft}
+            aria-label={`Previous: ${previous.label}`}
+            tooltip={`Previous: ${previous.label}`}
+            size="sm"
+            variant="secondary"
+            nativeButton={false}
+            render={<Link href={previous.href} />}
+          />
+        ) : null}
+        {next ? (
+          <Button
+            icon={ArrowRight}
+            aria-label={`Next: ${next.label}`}
+            tooltip={`Next: ${next.label}`}
+            size="sm"
+            variant="secondary"
+            nativeButton={false}
+            render={<Link href={next.href} />}
+          />
+        ) : null}
+      </div>
       {actionsOpen ? (
         <div className="docs-actions-menu" id="docs-page-actions-menu" role="menu">
           <button role="menuitem" type="button" onClick={() => void runAction(viewMarkdown)}>
@@ -846,6 +846,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                 onSelect: () => setTheme(option.value),
               }))}
             />
+            <span className="docs-controls-divider" aria-hidden />
             <button
               type="button"
               className="docs-mode-toggle"

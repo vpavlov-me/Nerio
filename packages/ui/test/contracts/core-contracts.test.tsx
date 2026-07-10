@@ -364,6 +364,9 @@ describe("Core interactive action contracts", () => {
     const labeledButton = screen.getByRole("button", { name: "Create notification" });
     expect(labeledButton.querySelectorAll("[data-slot=button-icon]")).toHaveLength(2);
     expect(labeledButton.querySelector("[data-slot=button-kbd]")).toHaveTextContent("⌘N");
+    expect(
+      Array.from(labeledButton.children).map((child) => child.getAttribute("data-slot")),
+    ).toEqual(["button-icon", "button-label", "button-kbd", "button-icon"]);
 
     const iconButton = screen.getByRole("button", { name: "Open notifications" });
     expect(iconButton).toHaveAttribute("data-icon-only", "true");

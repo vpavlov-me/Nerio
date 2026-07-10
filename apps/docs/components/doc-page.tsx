@@ -79,7 +79,17 @@ export function StandardDocPage({
   preview?: React.ReactNode;
   sectionPreviews?: Partial<Record<string, React.ReactNode>>;
   sectionContent?: Partial<
-    Record<"variants" | "api" | "guidance" | "related" | "tokens", React.ReactNode>
+    Record<
+      | "variants"
+      | "anatomy"
+      | "states"
+      | "api"
+      | "implementation"
+      | "guidance"
+      | "related"
+      | "tokens",
+      React.ReactNode
+    >
   >;
 }) {
   const reference = kind ? componentReference[kind] : undefined;
@@ -137,22 +147,24 @@ export function StandardDocPage({
       <section className="doc-section">
         <h2 id="anatomy">Anatomy</h2>
         {sectionPreviews?.anatomy}
-        <ReferenceGrid items={anatomy} />
+        {sectionContent?.anatomy ?? <ReferenceGrid items={anatomy} />}
       </section>
       <section className="doc-section">
         <h2 id="states">States</h2>
         {sectionPreviews?.states}
-        <ReferenceGrid
-          items={
-            reference?.states ?? [
-              {
-                title: "Default",
-                description:
-                  "Default, hover, focus, disabled, and error states follow Nerio tokens.",
-              },
-            ]
-          }
-        />
+        {sectionContent?.states ?? (
+          <ReferenceGrid
+            items={
+              reference?.states ?? [
+                {
+                  title: "Default",
+                  description:
+                    "Default, hover, focus, disabled, and error states follow Nerio tokens.",
+                },
+              ]
+            }
+          />
+        )}
       </section>
       <section className="doc-section">
         <h2 id="motion">Motion</h2>
@@ -201,40 +213,42 @@ export function StandardDocPage({
       {registryItem ? (
         <section className="doc-section">
           <h2 id="implementation-contract">Implementation contract</h2>
-          <div className="reference-grid">
-            <div>
-              <code>Registry item</code>
-              <p>
-                {registryItem.name} installs {registryItem.files.length} source file
-                {registryItem.files.length === 1 ? "" : "s"} into the configured components
-                directory.
-              </p>
+          {sectionContent?.implementation ?? (
+            <div className="reference-grid">
+              <div>
+                <code>Registry item</code>
+                <p>
+                  {registryItem.name} installs {registryItem.files.length} source file
+                  {registryItem.files.length === 1 ? "" : "s"} into the configured components
+                  directory.
+                </p>
+              </div>
+              <div>
+                <code>Base UI</code>
+                <p>
+                  {registryItem.baseUiPrimitives.length
+                    ? registryItem.baseUiPrimitives.join(", ")
+                    : "No interactive primitive required."}
+                </p>
+              </div>
+              <div>
+                <code>Registry dependencies</code>
+                <p>
+                  {registryItem.registryDependencies.length
+                    ? registryItem.registryDependencies.join(", ")
+                    : "None."}
+                </p>
+              </div>
+              <div>
+                <code>Package dependencies</code>
+                <p>
+                  {registryItem.dependencies.length
+                    ? registryItem.dependencies.join(", ")
+                    : "No external package dependency."}
+                </p>
+              </div>
             </div>
-            <div>
-              <code>Base UI</code>
-              <p>
-                {registryItem.baseUiPrimitives.length
-                  ? registryItem.baseUiPrimitives.join(", ")
-                  : "No interactive primitive required."}
-              </p>
-            </div>
-            <div>
-              <code>Registry dependencies</code>
-              <p>
-                {registryItem.registryDependencies.length
-                  ? registryItem.registryDependencies.join(", ")
-                  : "None."}
-              </p>
-            </div>
-            <div>
-              <code>Package dependencies</code>
-              <p>
-                {registryItem.dependencies.length
-                  ? registryItem.dependencies.join(", ")
-                  : "No external package dependency."}
-              </p>
-            </div>
-          </div>
+          )}
         </section>
       ) : null}
       <section className="doc-section">

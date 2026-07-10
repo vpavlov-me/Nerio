@@ -89,12 +89,12 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
         </span>
       ) : null}
       {!iconOnly ? <span data-slot="button-label">{children}</span> : null}
+      {!iconOnly ? keyboardShortcut : null}
       {!iconOnly && !loading && trailingIcon ? (
         <span data-slot="button-icon">
           <Icon icon={trailingIcon} />
         </span>
       ) : null}
-      {!iconOnly ? keyboardShortcut : null}
     </BaseButton>
   );
 
