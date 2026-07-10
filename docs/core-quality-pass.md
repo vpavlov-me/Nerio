@@ -31,6 +31,15 @@ This is an internal review record for the Core Component Quality Pass. The compo
 | Field / Form Message / FormGroup         | Reviewed | Reviewed           | Description, message, invalid, responsive layout    | ID associations and fieldset semantics reviewed | Reviewed | Reviewed          | Repository checks | stable-core  | Field accepts one control child so it can safely attach IDs and descriptions.                                 |
 | Checkbox / Radio Group / Switch / Select | Reviewed | Reviewed           | Checked, disabled, invalid, controlled/uncontrolled | Reviewed with Base UI contract                  | Reviewed | Reviewed          | Repository checks | stable-core  | Keep complex async, searchable, or multi-select patterns out of this Core layer.                              |
 
+## Priority 3 — overlays
+
+| Component     | API      | Visual and density | States                                                  | Accessibility                          | Tokens   | Docs and registry | Validation        | Final status | Known issues                                                                   |
+| ------------- | -------- | ------------------ | ------------------------------------------------------- | -------------------------------------- | -------- | ----------------- | ----------------- | ------------ | ------------------------------------------------------------------------------ |
+| Dialog        | Reviewed | Reviewed           | Controlled/uncontrolled, close, motion                  | Reviewed with Base UI focus management | Reviewed | Reviewed          | Repository checks | stable-core  | Keep long, task-heavy workflows in a dedicated page or future Pro composition. |
+| Popover       | Reviewed | Reviewed           | Controlled/uncontrolled, optional title and description | Reviewed with Base UI contract         | Reviewed | Reviewed          | Repository checks | stable-core  | Do not use for modal decisions or essential persistent content.                |
+| Dropdown Menu | Reviewed | Reviewed           | Keyboard selection, disabled, destructive               | Reviewed with Base UI contract         | Reviewed | Reviewed          | Repository checks | stable-core  | Nested menu and command-pattern expansion remain out of scope.                 |
+| Tooltip       | Reviewed | Reviewed           | Hover, focus, controlled, disabled                      | Reviewed with Base UI contract         | Reviewed | Reviewed          | Repository checks | stable-core  | Do not put required guidance or actions in a tooltip.                          |
+
 ## Scope boundary
 
-This record covers Priorities 1 and 2. Priority 3 overlays, Priority 4 navigation, and Priority 5 data display remain separate component-by-component reviews. No new public components or Pro compositions were added.
+This record covers Priorities 1 through 3. Priority 4 navigation and Priority 5 data display remain separate component-by-component reviews. No new public components or Pro compositions were added.
