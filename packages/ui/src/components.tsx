@@ -48,15 +48,20 @@ export {
 } from "./components/toast";
 export {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
+  CardVisual,
+  type CardActionProps,
   type CardDescriptionProps,
   type CardProps,
   type CardSectionProps,
   type CardTitleProps,
+  type CardVisualPlacement,
+  type CardVisualProps,
 } from "./components/card";
 export { Separator, type SeparatorProps } from "./components/separator";
 export { Avatar, type AvatarProps } from "./components/avatar";

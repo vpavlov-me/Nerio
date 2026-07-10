@@ -291,6 +291,9 @@ function packageReadinessFailures() {
 
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
+const documentedRegistrySlugs = registrySlugs.filter(
+  (slug) => !manifest.items.find((item) => item.name === slug)?.deprecated,
+);
 const componentCatalog = JSON.parse(read("data/component-catalog.json"));
 
 const docsChrome = read("apps/docs/components/docs-chrome.tsx");
@@ -324,14 +327,20 @@ const snippetSlugs = unique(
 const customReferenceSlugs = ["button"];
 const referenceCoverage = unique([...referenceSlugs, ...customReferenceSlugs]);
 
-const missingNav = registrySlugs.filter((slug) => !navSlugs.includes(slug));
-const navWithoutRegistry = navSlugs.filter((slug) => !registrySlugs.includes(slug));
-const missingRoute = registrySlugs.filter((slug) => !routeSlugs.includes(slug));
-const routeWithoutRegistry = routeSlugs.filter((slug) => !registrySlugs.includes(slug));
-const missingReference = registrySlugs.filter((slug) => !referenceCoverage.includes(slug));
-const referenceWithoutRegistry = referenceCoverage.filter((slug) => !registrySlugs.includes(slug));
-const missingSnippet = registrySlugs.filter((slug) => !snippetSlugs.includes(slug));
-const snippetWithoutRegistry = snippetSlugs.filter((slug) => !registrySlugs.includes(slug));
+const missingNav = documentedRegistrySlugs.filter((slug) => !navSlugs.includes(slug));
+const navWithoutRegistry = navSlugs.filter((slug) => !documentedRegistrySlugs.includes(slug));
+const missingRoute = documentedRegistrySlugs.filter((slug) => !routeSlugs.includes(slug));
+const routeWithoutRegistry = routeSlugs.filter((slug) => !documentedRegistrySlugs.includes(slug));
+const missingReference = documentedRegistrySlugs.filter(
+  (slug) => !referenceCoverage.includes(slug),
+);
+const referenceWithoutRegistry = referenceCoverage.filter(
+  (slug) => !documentedRegistrySlugs.includes(slug),
+);
+const missingSnippet = documentedRegistrySlugs.filter((slug) => !snippetSlugs.includes(slug));
+const snippetWithoutRegistry = snippetSlugs.filter(
+  (slug) => !documentedRegistrySlugs.includes(slug),
+);
 const definedTokens = extractDefinedNerioTokens(tokenStyles);
 const referencedTokens = extractReferencedNerioTokens(tokenStyles);
 const registryTokens = registryRequiredTokens(manifest.items);

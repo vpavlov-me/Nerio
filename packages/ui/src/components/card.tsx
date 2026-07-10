@@ -23,6 +23,11 @@ type CardLinkProps = CardSharedProps &
   };
 export type CardProps = CardSurfaceProps | CardLinkProps;
 export type CardSectionProps = React.HTMLAttributes<HTMLDivElement>;
+export type CardActionProps = CardSectionProps;
+export type CardVisualPlacement = "inset" | "bleed";
+export interface CardVisualProps extends React.HTMLAttributes<HTMLDivElement> {
+  placement?: CardVisualPlacement;
+}
 export type CardTitleElement = "h2" | "h3" | "h4" | "h5" | "h6";
 export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   as?: CardTitleElement;
@@ -65,7 +70,22 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardSectionProps>(fun
   ref,
 ) {
   return (
-    <div ref={ref} className={cn("n-card__header", className)} data-slot="card-header" {...props} />
+    <div ref={ref} {...props} className={cn("n-card__header", className)} data-slot="card-header" />
+  );
+});
+
+export const CardVisual = React.forwardRef<HTMLDivElement, CardVisualProps>(function CardVisual(
+  { className, placement = "inset", ...props },
+  ref,
+) {
+  return (
+    <div
+      ref={ref}
+      {...props}
+      className={cn("n-card__visual", className)}
+      data-slot="card-visual"
+      data-placement={placement}
+    />
   );
 });
 
@@ -76,9 +96,9 @@ export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(fu
   return (
     <Component
       ref={ref as React.Ref<never>}
+      {...props}
       className={cn("n-card__title", className)}
       data-slot="card-title"
-      {...props}
     />
   );
 });
@@ -88,9 +108,9 @@ export const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescri
     return (
       <p
         ref={ref}
+        {...props}
         className={cn("n-card__description", className)}
         data-slot="card-description"
-        {...props}
       />
     );
   },
@@ -103,9 +123,9 @@ export const CardContent = React.forwardRef<HTMLDivElement, CardSectionProps>(fu
   return (
     <div
       ref={ref}
+      {...props}
       className={cn("n-card__content", className)}
       data-slot="card-content"
-      {...props}
     />
   );
 });
@@ -115,6 +135,15 @@ export const CardFooter = React.forwardRef<HTMLDivElement, CardSectionProps>(fun
   ref,
 ) {
   return (
-    <div ref={ref} className={cn("n-card__footer", className)} data-slot="card-footer" {...props} />
+    <div ref={ref} {...props} className={cn("n-card__footer", className)} data-slot="card-footer" />
+  );
+});
+
+export const CardAction = React.forwardRef<HTMLDivElement, CardSectionProps>(function CardAction(
+  { className, ...props },
+  ref,
+) {
+  return (
+    <div ref={ref} {...props} className={cn("n-card__action", className)} data-slot="card-action" />
   );
 });

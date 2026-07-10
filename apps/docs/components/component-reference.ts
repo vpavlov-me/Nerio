@@ -87,7 +87,7 @@ export const snippets: Record<string, string> = {
     'import { Popover } from \'@nerio/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
     'import { DropdownMenu } from \'@nerio/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
-  card: 'import { Card, CardContent, CardDescription, CardHeader, CardTitle } from \'@nerio/ui\';\n\n<Card as="article">\n  <CardHeader>\n    <CardTitle as="h2">Launch workspace</CardTitle>\n    <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
+  card: 'import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, CardVisual } from \'@nerio/ui\';\n\n<Card as="article">\n  <CardVisual>...</CardVisual>\n  <CardHeader>\n    <div>\n      <CardTitle as="h2">Launch workspace</CardTitle>\n      <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n    </div>\n    <CardAction>...</CardAction>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
   separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
   avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
   progress:
@@ -1350,9 +1350,18 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use Card to group a single related object or repeated item without turning page sections into nested panels.",
     anatomy: [
       { title: "card", description: "Surface container with border, radius, and spacing tokens." },
+      {
+        title: "card-visual",
+        description:
+          "Optional generic visual slot for icons, avatars, logos, previews, or media; inset by default and edge-to-edge when placement is bleed.",
+      },
       { title: "card-header", description: "Optional heading area for title and supporting copy." },
       { title: "card-title", description: "Semantic title slot for concise surface headings." },
       { title: "card-description", description: "Secondary explanatory text." },
+      {
+        title: "card-action",
+        description: "Optional compact control or status aligned at the top end of the header.",
+      },
       {
         title: "card-content",
         description: "Product content such as object title, metadata, and actions.",
@@ -1369,6 +1378,14 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       { title: "Static", description: "Groups content without becoming clickable." },
       {
+        title: "Inset visual",
+        description: "Uses CardVisual for an icon, avatar, logo, or compact preview.",
+      },
+      {
+        title: "Bleed visual",
+        description: "Uses CardVisual placement=bleed for edge-to-edge visual content.",
+      },
+      {
         title: "Linked",
         description: "href renders a native anchor with hover and visible focus feedback.",
       },
@@ -1380,6 +1397,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Keep heading order and actions explicit inside the card.",
       "Use href when the full Card has one clear destination; it renders a native anchor. Do not nest interactive controls in a linked Card.",
+      "Use CardAction only in a surface Card, never inside a linked Card.",
     ],
     api: [
       { title: "as", description: "section, article, or div semantic wrapper." },
@@ -1387,6 +1405,15 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "variant",
         description: "default or secondary; secondary is a muted borderless surface.",
+      },
+      {
+        title: "CardVisual",
+        description:
+          "Generic visual slot with inset or bleed placement; child elements own image alt text and other media semantics.",
+      },
+      {
+        title: "CardAction",
+        description: "Optional header-end slot for compact non-primary status or controls.",
       },
       {
         title: "CardHeader / CardContent / CardFooter",
@@ -1408,6 +1435,8 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-card-padding",
+      "--n-card-padding-inline",
+      "--n-card-padding-block",
       "--n-card-gap",
       "--n-card-radius",
       "--n-card-background-secondary",

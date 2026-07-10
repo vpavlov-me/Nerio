@@ -30,9 +30,13 @@ Brand color is a restrained accent. Use it for primary actions, selection, activ
 
 Prefer composition, explicit slots, semantic HTML, visible focus states, and accessible labels. Use Nerio's icon adapter for Lucide or custom SVG React components.
 
+Card anatomy is `Card`, optional `CardVisual`, `CardHeader`, `CardTitle`, `CardDescription`, optional `CardAction`, `CardContent`, and `CardFooter`. `CardVisual` accepts generic visual content and only supports `inset` or `bleed` placement. `CardAction` is for surface Cards only; linked Cards must not contain interactive descendants.
+
 Package entrypoints: import static Core components and utilities from `@nerio/ui`, import interactive Base UI-backed components from `@nerio/ui/client`, and import styles from `@nerio/ui/styles.css`. Example: `import { Alert, Breadcrumbs, Card, Link, List, Pagination, Table } from "@nerio/ui"; import { Button, Select, Dialog, ToastProvider } from "@nerio/ui/client"; import "@nerio/ui/styles.css";`. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
 
 Registry usage: `nerio init` creates `nerio.json`, `nerio list` lists component names, titles, and categories, `nerio info <component>` shows registry metadata, `nerio doctor` validates configuration and registry metadata, and `nerio add <component>` installs the selected source item plus registry dependencies. Use `nerio add input --dry-run` to preview files before writing. Registries may be local filesystem paths or HTTP URLs. Existing changed files are not overwritten unless `--overwrite` is explicitly provided.
+
+`IconButton` remains installable as a deprecated compatibility alias until the next major release. New code must use `Button` icon-only mode: `<Button icon={Settings} aria-label="Workspace settings" />`.
 
 The read-only MCP server uses the official Model Context Protocol stdio transport. Its tools are `list_components`, `get_component`, and `get_component_usage`; all responses come from the same Nerio registry metadata used by the CLI. `get_component_usage` returns usage, dependencies, registry dependencies, install files, Base UI primitives, slots, variants, required tokens, and accessibility guidance.
 

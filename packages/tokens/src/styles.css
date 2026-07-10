@@ -522,6 +522,8 @@
   --n-card-padding-md: var(--n-space-4);
   --n-card-padding-lg: var(--n-space-5);
   --n-card-padding: var(--n-card-padding-md);
+  --n-card-padding-inline: var(--n-card-padding);
+  --n-card-padding-block: var(--n-card-padding);
   --n-card-gap: var(--n-space-3);
   --n-card-section-gap: var(--n-space-2);
   --n-card-radius: var(--n-radius-container);
