@@ -2,6 +2,16 @@ import { Check, Circle, CircleAlert, Info, X } from "@nerio/adapters";
 import { Badge, Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
+import { getComponentDoc } from "../../../../lib/component-docs";
+import { createPageMetadata } from "../../../../lib/seo";
+
+const badgeDoc = getComponentDoc("badge");
+
+export const metadata = createPageMetadata({
+  title: "Badge component",
+  description: badgeDoc!.description,
+  path: "/docs/components/badge",
+});
 
 function BadgePreview() {
   return (
@@ -186,8 +196,8 @@ function DocumentationTable({
 export default function Page() {
   return (
     <StandardDocPage
-      title="Badge"
-      lede="Badges label status, category, and lightweight metadata. Keep their text concise and let the label—not color or icon alone—carry the meaning."
+      title={badgeDoc!.title}
+      lede={badgeDoc!.description}
       kind="badge"
       preview={<BadgePreview />}
       sectionPreviews={{

@@ -1,3 +1,12 @@
+import { createPageMetadata } from "../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Workspace template",
+  description:
+    "Explore a live Nerio Core workspace template built with accessible components and semantic design tokens for product teams.",
+  path: "/templates",
+});
+
 export default function TemplatesPage() {
   const demoAppUrl = process.env.NEXT_PUBLIC_DEMO_APP_URL ?? "http://localhost:3002";
 
@@ -7,7 +16,13 @@ export default function TemplatesPage() {
         <p className="doc-kicker">Templates</p>
         <h1>Explore the Nerio workspace template.</h1>
         <p className="doc-lede">
-          A live embedded preview of the Demo App, built from Nerio Core components and tokens.
+          This live Nerio Core demonstration shows an adaptable product workspace built with Cards,
+          Fields, Buttons, navigation patterns, and semantic design tokens for SaaS and product
+          teams.
+        </p>
+        <p>
+          Use it to evaluate how editable source components work together in a complete interface,
+          then adapt the same Core building blocks to your own product.
         </p>
       </div>
       <iframe

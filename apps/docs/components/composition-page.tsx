@@ -46,10 +46,9 @@ import {
   useToastManager,
 } from "@nerio/ui/client";
 import { CodeExample } from "./code-example";
+import { compositionDocs } from "../lib/composition-docs";
 
 type Composition = {
-  title: string;
-  lede: string;
   purpose: string;
   components: string[];
   accessibility: string;
@@ -566,8 +565,6 @@ function DenseFormPreview() {
 
 const compositions: Record<string, Composition> = {
   login: {
-    title: "Login",
-    lede: "A compact authentication composition that tests form hierarchy without becoming a product screen.",
     purpose:
       "Combines the smallest authentication flow from Core building blocks, including validation, loading, and recovery navigation.",
     components: authComponents,
@@ -581,8 +578,6 @@ const compositions: Record<string, Composition> = {
     Preview: () => <AuthPreview kind="login" />,
   },
   register: {
-    title: "Register",
-    lede: "A registration composition that checks multi-field rhythm, inline help, and success feedback.",
     purpose:
       "Tests the relationship between a small account form, validation, and explanatory feedback.",
     components: authComponents,
@@ -596,8 +591,6 @@ const compositions: Record<string, Composition> = {
     Preview: () => <AuthPreview kind="register" />,
   },
   "forgot-password": {
-    title: "Forgot password",
-    lede: "A recovery composition for testing a focused, success-oriented single-field form.",
     purpose:
       "Validates how feedback changes a compact recovery action without changing page structure.",
     components: authComponents,
@@ -611,8 +604,6 @@ const compositions: Record<string, Composition> = {
     Preview: () => <AuthPreview kind="forgot" />,
   },
   "settings-form": {
-    title: "Settings form",
-    lede: "A large, sectioned form that exercises Core choices, help text, destructive confirmation, and a save bar.",
     purpose:
       "Stress-tests long-form hierarchy and the distinction between immediate settings and saved fields.",
     components: [
@@ -637,8 +628,6 @@ const compositions: Record<string, Composition> = {
     Preview: SettingsPreview,
   },
   "table-toolbar": {
-    title: "Table toolbar",
-    lede: "A basic table workflow with search, a small filter menu, selected-row actions, pagination, and an empty result.",
     purpose:
       "Tests table density and simple operational actions while deliberately stopping before advanced data-grid features.",
     components: ["Input", "DropdownMenu", "Button", "Table", "Badge", "EmptyState", "Pagination"],
@@ -652,8 +641,6 @@ const compositions: Record<string, Composition> = {
     Preview: TableToolbarPreview,
   },
   "user-profile": {
-    title: "User profile",
-    lede: "A composed profile view that pairs identity, lightweight metrics, metadata, activity, and a focused dialog action.",
     purpose:
       "Checks whether display primitives form a calm profile without implying a dashboard system.",
     components: ["Card", "Avatar", "Stat", "KeyValue", "List", "Badge", "Button", "Dialog"],
@@ -667,8 +654,6 @@ const compositions: Record<string, Composition> = {
     Preview: ProfilePreview,
   },
   "empty-states": {
-    title: "Empty states",
-    lede: "Six realistic absence states that test concise explanation, clear actions, and neutral visual hierarchy.",
     purpose:
       "Compares repeated EmptyState compositions across expected, filtered, offline, and permission-limited situations.",
     components: ["EmptyState", "Button"],
@@ -682,8 +667,6 @@ const compositions: Record<string, Composition> = {
     Preview: EmptyStatesPreview,
   },
   feedback: {
-    title: "Feedback",
-    lede: "A shared feedback surface for inline outcomes, progress, loading placeholders, a spinner, and a toast.",
     purpose: "Tests how persistent and temporary feedback coexist without competing for attention.",
     components: ["Alert", "Toast", "Progress", "Skeleton", "Spinner", "Button"],
     accessibility:
@@ -696,8 +679,6 @@ const compositions: Record<string, Composition> = {
     Preview: FeedbackPreview,
   },
   "overlay-playground": {
-    title: "Overlay playground",
-    lede: "A focused stress test for modal, contextual, and menu overlays—including a nested overlay and long content.",
     purpose:
       "Validates focus management, keyboard navigation, layering, scrolling, and return focus using existing Base UI-backed Core primitives.",
     components: ["Dialog", "Popover", "DropdownMenu", "Tooltip", "Button", "Checkbox"],
@@ -711,8 +692,6 @@ const compositions: Record<string, Composition> = {
     Preview: OverlayPreview,
   },
   "navigation-patterns": {
-    title: "Navigation patterns",
-    lede: "A small documentation-oriented composition of breadcrumbs, top links, tabs, a local sidebar, and pagination.",
     purpose:
       "Tests hierarchy between peer navigation patterns without creating a reusable documentation shell component.",
     components: ["Breadcrumbs", "Button", "Tabs", "Pagination"],
@@ -726,8 +705,6 @@ const compositions: Record<string, Composition> = {
     Preview: NavigationPreview,
   },
   "dense-form": {
-    title: "Dense form",
-    lede: "A 42-control stress test for compact spacing, labels, focus order, and responsive readability.",
     purpose: "Intentionally pushes Core field rhythm before a real enterprise workflow is built.",
     components: ["Field", "Input", "Button"],
     accessibility:
@@ -743,14 +720,15 @@ const compositions: Record<string, Composition> = {
 
 export function CompositionPage({ slug }: { slug: string }) {
   const composition = compositions[slug];
-  if (!composition) return null;
+  const doc = compositionDocs[slug];
+  if (!composition || !doc) return null;
   const { Preview } = composition;
   return (
     <article className="doc-page composition-page">
       <header>
         <p className="doc-kicker">Composition Gallery</p>
-        <h1>{composition.title}</h1>
-        <p className="doc-lede">{composition.lede}</p>
+        <h1>{doc.title}</h1>
+        <p className="doc-lede">{doc.description}</p>
       </header>
       <section className="doc-section">
         <h2 id="overview">Overview</h2>
@@ -764,7 +742,7 @@ export function CompositionPage({ slug }: { slug: string }) {
       </section>
       <section className="doc-section">
         <h2 id="code">Code</h2>
-        <CodeExample code={composition.code} label={`${composition.title} composition`} />
+        <CodeExample code={composition.code} label={`${doc.title} composition`} />
       </section>
       <section className="doc-section">
         <h2 id="components-used">Components Used</h2>

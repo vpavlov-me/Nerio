@@ -1,5 +1,3 @@
-"use client";
-
 import {
   ArrowRight,
   Bell,
@@ -15,6 +13,14 @@ import {
 import { Badge, Card, Icon, Table } from "@nerio/ui";
 import type { IconComponent } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
+import { createPageMetadata } from "../../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Icons",
+  description:
+    "Use the Nerio icon adapter to keep icons accessible, consistent, and independent from individual component APIs.",
+  path: "/docs/foundations/icons",
+});
 
 const icons: Array<[string, IconComponent]> = [
   ["Search", Search],

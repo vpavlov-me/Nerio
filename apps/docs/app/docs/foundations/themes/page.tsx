@@ -1,6 +1,14 @@
 import { Badge, Card, Field, FormGroup, Progress, Table } from "@nerio/ui";
 import { Button, Checkbox, Switch } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
+import { createPageMetadata } from "../../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Themes",
+  description:
+    "Configure Nerio brand themes, color modes, and density through CSS variables without changing component source.",
+  path: "/docs/foundations/themes",
+});
 
 const themes = [
   ["Purple", "purple", "--n-purple-600"],

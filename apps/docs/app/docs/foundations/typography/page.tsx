@@ -1,6 +1,14 @@
 import { Badge, Card, Input, Kbd, Table } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
+import { createPageMetadata } from "../../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Typography",
+  description:
+    "Understand Nerio typography tokens, semantic roles, and font overrides for readable, adaptable product interfaces.",
+  path: "/docs/foundations/typography",
+});
 
 const scale = [
   ["xs", "--n-font-size-xs", "12px", "Metadata, badges, dense captions"],

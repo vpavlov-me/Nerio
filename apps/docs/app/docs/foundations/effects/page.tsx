@@ -1,6 +1,14 @@
 import { Badge, Card, Separator, Table } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
+import { createPageMetadata } from "../../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Effects",
+  description:
+    "Use Nerio shadow, focus, and layering tokens to create calm, accessible visual hierarchy across product surfaces.",
+  path: "/docs/foundations/effects",
+});
 
 type TokenExample = readonly [label: string, token: string, description: string];
 type TokenContract = readonly [label: string, token: string];

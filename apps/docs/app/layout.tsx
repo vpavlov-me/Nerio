@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { DocsChrome } from "../components/docs-chrome";
+import { siteConfig } from "../lib/site-config";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -17,8 +18,53 @@ const geistMono = Geist_Mono({
 const yandexMetrikaId = "110539538";
 
 export const metadata: Metadata = {
-  title: "Nerio",
-  description: "A source-first design system for modern digital products.",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.defaultTitle,
+    template: siteConfig.titleTemplate,
+  },
+  description: siteConfig.defaultDescription,
+  applicationName: siteConfig.name,
+  authors: [siteConfig.author],
+  creator: siteConfig.author.name,
+  publisher: siteConfig.name,
+  category: "Developer tools",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: siteConfig.name,
+    locale: siteConfig.locale,
+    title: siteConfig.defaultTitle,
+    description: siteConfig.defaultDescription,
+    images: ["/opengraph-image"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.defaultTitle,
+    description: siteConfig.defaultDescription,
+    images: ["/twitter-image"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  verification: {
+    ...(process.env.GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.YANDEX_SITE_VERIFICATION
+      ? { yandex: process.env.YANDEX_SITE_VERIFICATION }
+      : {}),
+  },
+  icons: { icon: "/icon" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

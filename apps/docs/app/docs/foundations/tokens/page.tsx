@@ -1,6 +1,14 @@
 import { Badge, Card, Input, Progress, Separator, Table } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
+import { createPageMetadata } from "../../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Design tokens",
+  description:
+    "Learn how Nerio primitive, semantic, and component tokens support adaptable themes, modes, density, and product overrides.",
+  path: "/docs/foundations/tokens",
+});
 
 const tokenLayers = [
   {

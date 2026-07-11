@@ -10,6 +10,14 @@ import {
 } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
+import { createPageMetadata } from "../../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Motion",
+  description:
+    "Apply Nerio motion tokens and utilities for restrained, accessible interaction feedback with reduced-motion support.",
+  path: "/docs/foundations/motion",
+});
 
 type TokenRow = readonly [label: string, token: string, value: string, use: string];
 

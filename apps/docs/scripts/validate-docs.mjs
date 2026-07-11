@@ -305,14 +305,14 @@ const componentCatalog = JSON.parse(read("data/component-catalog.json"));
 
 const docsChrome = read("apps/docs/components/docs-chrome.tsx");
 const componentReference = read("apps/docs/components/component-reference.ts");
-const dynamicRoute = read("apps/docs/app/docs/components/[slug]/page.tsx");
+const componentDocs = read("apps/docs/lib/component-docs.ts");
 const tokenStyles = read("packages/tokens/src/styles.css");
 
 const navSlugs = unique(matchAll(docsChrome, /href: "\/docs\/components\/([^"]+)"/g));
 const dynamicRouteSlugs = unique(
   matchAll(
-    objectBody(dynamicRoute, "componentDocs"),
-    /^ {2}(?:"([^"]+)"|([a-z][a-z0-9-]*)):\s*\{/gm,
+    objectBody(componentDocs, "componentLedes"),
+    /^ {2}(?:"([^"]+)"|([a-z][a-z0-9-]*)):\s*"/gm,
   ),
 );
 const staticRouteSlugs = registrySlugs.filter((slug) =>

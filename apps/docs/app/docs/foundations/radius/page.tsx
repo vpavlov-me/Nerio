@@ -1,5 +1,13 @@
 import { Badge, Card } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
+import { createPageMetadata } from "../../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Radius",
+  description:
+    "Use Nerio radius tokens and role aliases to maintain a consistent shape language across controls, containers, and overlays.",
+  path: "/docs/foundations/radius",
+});
 
 const radiusTokens = [
   ["None", "--n-radius-none", "Square edges and opt-out cases.", "0"],
