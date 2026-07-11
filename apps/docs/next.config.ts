@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/docs/foundations/animations",
+        destination: "/docs/foundations/motion",
+        permanent: true,
+      },
+      {
         source: "/docs/compositions/:slug*",
         destination: "/docs/blocks/:slug*",
         permanent: true,

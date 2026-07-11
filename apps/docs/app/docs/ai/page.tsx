@@ -1,5 +1,13 @@
 import { Badge } from "@nerio/ui";
 import { CodeExample } from "../../../components/code-example";
+import { createPageMetadata } from "../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "AI tooling",
+  description:
+    "Use Nerio's llms.txt and read-only MCP server to give people and AI agents the same component registry contract.",
+  path: "/docs/ai",
+});
 
 const mcpConfig = `{
   "mcpServers": {

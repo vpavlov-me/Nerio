@@ -1,15 +1,48 @@
 import Link from "next/link";
 import { Badge, Card, EmptyState, Stat } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
+import { siteConfig } from "../lib/site-config";
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteConfig.name,
+    description: siteConfig.defaultDescription,
+    url: siteConfig.url,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: siteConfig.name,
+    description: siteConfig.defaultDescription,
+    url: siteConfig.repositoryUrl,
+    codeRepository: siteConfig.repositoryUrl,
+    author: {
+      "@type": "Person",
+      name: siteConfig.author.name,
+      url: siteConfig.author.url,
+    },
+    license: "https://opensource.org/license/mit",
+    programmingLanguage: ["TypeScript", "React"],
+    runtimePlatform: "Node.js",
+  },
+];
 
 export default function HomePage() {
   return (
     <div className="hero">
-      <Badge variant="info">Foundation preview</Badge>
-      <h1>Source-first UI for adaptable product teams.</h1>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
+      <Badge variant="info">Source-first UI</Badge>
+      <h1>Open-source React design system for adaptable product teams.</h1>
       <p>
-        Nerio combines semantic tokens, accessible React components, a local registry, CLI tooling,
-        and AI-readable metadata for modern digital products.
+        Nerio combines accessible React components, semantic design tokens, editable source code,
+        CLI tooling, and AI-readable documentation for modern SaaS and product interfaces.
       </p>
       <div className="hero-actions">
         <Button nativeButton={false} render={<Link href="/docs/getting-started" />}>

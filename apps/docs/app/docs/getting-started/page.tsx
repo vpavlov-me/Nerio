@@ -1,4 +1,12 @@
 import { CodeExample } from "../../../components/code-example";
+import { createPageMetadata } from "../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Getting started",
+  description:
+    "Install Nerio packages or editable source components, then use the registry CLI to build accessible product interfaces.",
+  path: "/docs/getting-started",
+});
 
 const packageImports = `import { Alert, Card, Field, FormGroup, Table } from "@nerio/ui";
 import { Button, Checkbox, Dialog, RadioGroup, Select, Switch, ToastProvider } from "@nerio/ui/client";

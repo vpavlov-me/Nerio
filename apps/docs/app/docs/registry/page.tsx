@@ -1,6 +1,14 @@
 import { registry } from "@nerio/registry";
 import { Badge } from "@nerio/ui";
 import { CodeExample } from "../../../components/code-example";
+import { createPageMetadata } from "../../../lib/seo";
+
+export const metadata = createPageMetadata({
+  title: "Registry and CLI",
+  description:
+    "Configure the Nerio registry and CLI to discover, validate, and install editable component source into an application.",
+  path: "/docs/registry",
+});
 
 const init = `nerio init \\
   --registry https://raw.githubusercontent.com/vpavlov-me/Nerio/main/packages/registry/src/manifest.json

@@ -31,9 +31,9 @@ import {
 import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/ui/client";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
+import { siteConfig } from "../lib/site-config";
 
-const version = "v0.1.0 beta";
-const repoUrl = "https://github.com/vpavlov-me/Nerio";
+const { version, repositoryUrl: repoUrl } = siteConfig;
 const modeStorageKey = "nerio-docs-mode";
 type ColorMode = "system" | "light" | "dark";
 
