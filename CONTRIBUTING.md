@@ -60,6 +60,10 @@ A pull request should:
 - Keep documentation in English.
 - Pass required CI checks.
 
+## Changelog and release notes
+
+Meaningful public changes require a release note and an update to [CHANGELOG.md](./CHANGELOG.md) under `Unreleased`. Internal-only changes can select `No user-facing change` in the pull request template. Deprecated or breaking changes must include concise migration guidance and describe the preferred consumer path. Maintainers may edit release-note wording during review, and multiple pull request entries may later be consolidated into one release entry.
+
 ## Review and ownership
 
 All changes require maintainer review. The presence of a pull request does not imply acceptance; maintainers may request a smaller scope, a different API, or a different composition strategy to preserve Nerio's long-term consistency.

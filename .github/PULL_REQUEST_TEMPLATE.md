@@ -10,6 +10,25 @@ Closes #
 
 Add screenshots, a recording, or a link to the relevant docs/demo route for visible changes.
 
+## Release note
+
+- [ ] No user-facing change
+- [ ] Added
+- [ ] Changed
+- [ ] Fixed
+- [ ] Deprecated
+- [ ] Removed
+- [ ] Breaking
+- [ ] Accessibility
+- [ ] Migration required
+
+Release note:
+
+<!--
+Write one concise sentence describing the impact on Nerio users.
+Use "No user-facing change" for internal-only work.
+-->
+
 ## Checklist
 
 - [ ] The scope is focused and the code follows `AGENTS.md`.

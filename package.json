@@ -11,6 +11,7 @@
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "validate:docs": "pnpm --filter @nerio/docs validate:docs",
+    "validate:release": "node scripts/validate-release-docs.mjs",
     "test:cli": "pnpm --filter @nerio/cli test:fixture",
     "test:mcp": "pnpm --filter @nerio/mcp test:fixture",
     "test:ui": "pnpm --filter @nerio/ui test",
