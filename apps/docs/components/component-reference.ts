@@ -49,7 +49,8 @@ export const snippets: Record<string, string> = {
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
   pagination:
     "import { Pagination } from '@nerio/ui';\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ key: '1', label: '1', href: '/docs/page/1' }, { key: '2', label: '2', href: '/docs/page/2', current: true }, { key: '3', label: '3', href: '/docs/page/3' }]} />",
-  badge: "import { Badge } from '@nerio/ui';\n\n<Badge tone=\"success\" dot>Published</Badge>",
+  badge:
+    "import { Check, CircleAlert } from '@nerio/adapters';\nimport { Badge } from '@nerio/ui';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>\n<Badge tone=\"warning\" trailingIcon={CircleAlert}>Review needed</Badge>",
   alert:
     "import { Circle } from '@nerio/adapters';\nimport { Alert } from '@nerio/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
   spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
@@ -655,14 +656,16 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "root",
         description: "Inline status container with tone, size, and tokenized radius.",
       },
-      { title: "dot / icon", description: "Optional decorative leading status detail." },
+      { title: "leading-icon", description: "Optional decorative icon before the visible label." },
       { title: "label", description: "Short text that names the status or metadata value." },
+      { title: "trailing-icon", description: "Optional decorative icon after the visible label." },
     ],
     variants: [
       { title: "Neutral", description: "Default metadata with low visual priority." },
       {
-        title: "Primary soft, info, success, warning, danger",
-        description: "Restrained semantic tones for metadata or meaningful status.",
+        title: "Soft / strong emphasis",
+        description:
+          "Soft is the default; strong is reserved for high-salience warning and danger states.",
       },
     ],
     states: [
@@ -670,7 +673,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Dense", description: "Compact density reduces padding without changing meaning." },
     ],
     accessibility: [
-      "Do not rely on color, the optional dot, or icon alone; the label must carry the status meaning.",
+      "Do not rely on color or an optional icon alone; the label must carry the status meaning.",
       "Badge is static metadata and must not be used as a button or link.",
     ],
     guidance: {
@@ -684,7 +687,25 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-badge-foreground",
       "--n-badge-background-primary-soft",
       "--n-badge-foreground-primary-soft",
-      "--n-badge-dot-size",
+      "--n-badge-background-accent",
+      "--n-badge-foreground-accent",
+      "--n-badge-background-info",
+      "--n-badge-foreground-info",
+      "--n-badge-background-success",
+      "--n-badge-foreground-success",
+      "--n-badge-background-warning",
+      "--n-badge-foreground-warning",
+      "--n-badge-background-danger",
+      "--n-badge-foreground-danger",
+      "--n-badge-background-strong",
+      "--n-badge-foreground-strong",
+      "--n-badge-background-strong-primary",
+      "--n-badge-background-strong-info",
+      "--n-badge-background-strong-success",
+      "--n-badge-background-strong-warning",
+      "--n-badge-background-strong-danger",
+      "--n-badge-icon-size",
+      "--n-spinner-size-sm",
     ],
   },
   alert: {

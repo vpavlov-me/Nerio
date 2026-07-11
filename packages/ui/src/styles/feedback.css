@@ -13,15 +13,8 @@
   padding-inline: var(--n-badge-padding-inline);
 }
 
-.n-badge [data-slot="dot"] {
-  background: currentColor;
-  border-radius: var(--n-badge-dot-radius);
-  block-size: var(--n-badge-dot-size);
-  flex: none;
-  inline-size: var(--n-badge-dot-size);
-}
-
-.n-badge [data-slot="icon"] {
+.n-badge [data-slot="leading-icon"],
+.n-badge [data-slot="trailing-icon"] {
   display: inline-flex;
   flex: none;
   font-size: var(--n-badge-icon-size);
@@ -40,8 +33,8 @@
 }
 
 .n-badge[data-tone="accent"] {
-  --n-badge-background: var(--n-badge-background-primary-soft);
-  --n-badge-foreground: var(--n-badge-foreground-primary-soft);
+  --n-badge-background: var(--n-badge-background-accent);
+  --n-badge-foreground: var(--n-badge-foreground-accent);
 }
 
 .n-badge[data-tone="info"] {
@@ -62,6 +55,32 @@
 .n-badge[data-tone="danger"] {
   --n-badge-background: var(--n-badge-background-danger);
   --n-badge-foreground: var(--n-badge-foreground-danger);
+}
+
+.n-badge[data-emphasis="strong"] {
+  --n-badge-background: var(--n-badge-background-strong);
+  --n-badge-foreground: var(--n-badge-foreground-strong);
+}
+
+.n-badge[data-emphasis="strong"][data-tone="primary-soft"],
+.n-badge[data-emphasis="strong"][data-tone="accent"] {
+  --n-badge-background: var(--n-badge-background-strong-primary);
+}
+
+.n-badge[data-emphasis="strong"][data-tone="info"] {
+  --n-badge-background: var(--n-badge-background-strong-info);
+}
+
+.n-badge[data-emphasis="strong"][data-tone="success"] {
+  --n-badge-background: var(--n-badge-background-strong-success);
+}
+
+.n-badge[data-emphasis="strong"][data-tone="warning"] {
+  --n-badge-background: var(--n-badge-background-strong-warning);
+}
+
+.n-badge[data-emphasis="strong"][data-tone="danger"] {
+  --n-badge-background: var(--n-badge-background-strong-danger);
 }
 
 .n-alert {

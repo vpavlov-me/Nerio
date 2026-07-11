@@ -350,7 +350,7 @@
   --n-kbd-radius: var(--n-radius-sm);
   --n-kbd-foreground: var(--n-color-text-secondary);
   --n-kbd-font-family: var(--n-font-mono);
-  --n-kbd-font-size: var(--n-font-size-xs);
+  --n-kbd-font-size: var(--n-font-size-sm);
   --n-kbd-font-weight: var(--n-font-weight-medium);
   --n-kbd-padding-block: var(--n-space-0-5);
   --n-kbd-padding-inline: var(--n-space-1);
@@ -399,8 +399,13 @@
   --n-badge-foreground-warning: var(--n-color-status-warning);
   --n-badge-background-danger: var(--n-color-status-danger-soft);
   --n-badge-foreground-danger: var(--n-color-status-danger);
-  --n-badge-dot-size: var(--n-space-1);
-  --n-badge-dot-radius: var(--n-radius-full);
+  --n-badge-background-strong: var(--n-color-status-neutral-strong);
+  --n-badge-foreground-strong: var(--n-color-text-inverse);
+  --n-badge-background-strong-primary: var(--n-color-action-primary);
+  --n-badge-background-strong-info: var(--n-color-status-info-strong);
+  --n-badge-background-strong-success: var(--n-color-status-success-strong);
+  --n-badge-background-strong-warning: var(--n-color-status-warning-strong);
+  --n-badge-background-strong-danger: var(--n-color-status-danger-strong);
   --n-badge-icon-size: var(--n-icon-size-sm);
   --n-avatar-size-sm: var(--n-icon-size-xl);
   --n-avatar-size-md: var(--n-size-control-md);

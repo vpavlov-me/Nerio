@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import {
   Avatar,
+  Badge,
   Card,
   CardAction,
   CardContent,
@@ -39,7 +40,7 @@ import {
   ToastViewport,
   useToastManager,
 } from "../../src/client";
-import { Bell } from "@nerio/adapters";
+import { ArrowRight, Bell, Check } from "@nerio/adapters";
 
 // Compile-time public API contracts. These must fail if Button or Card modes regress.
 // @ts-expect-error empty Button requires visible children or icon-only mode
@@ -70,6 +71,52 @@ void [
 ];
 
 describe("Core static contracts", () => {
+  it("renders decorative Badge icons on either side of its status label and supports loading", () => {
+    const { rerender } = render(
+      <Badge tone="success" leadingIcon={Check} trailingIcon={ArrowRight}>
+        Published
+      </Badge>,
+    );
+    const badge = screen.getByText("Published").closest(".n-badge");
+    expect(badge).toHaveAttribute("data-tone", "success");
+    expect(badge).toHaveAttribute("data-emphasis", "soft");
+    expect(badge?.querySelector('[data-slot="leading-icon"]')).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    expect(badge?.querySelector('[data-slot="trailing-icon"]')).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+
+    rerender(
+      <Badge loading leadingIcon={Bell}>
+        Publishing
+      </Badge>,
+    );
+    const loadingBadge = screen.getByText("Publishing").closest(".n-badge");
+    expect(loadingBadge).toHaveAttribute("aria-busy", "true");
+    expect(loadingBadge?.querySelector('[data-slot="leading-icon"]')).not.toBeNull();
+
+    rerender(
+      <Badge tone="danger" emphasis="strong">
+        Deployment blocked
+      </Badge>,
+    );
+    expect(screen.getByText("Deployment blocked").closest(".n-badge")).toHaveAttribute(
+      "data-emphasis",
+      "strong",
+    );
+
+    rerender(<Badge icon={Bell}>Notifications</Badge>);
+    expect(
+      screen
+        .getByText("Notifications")
+        .closest(".n-badge")
+        ?.querySelector('[data-slot="leading-icon"]'),
+    ).not.toBeNull();
+  });
+
   it("renders Kbd with a native semantic element and a stable styling hook", () => {
     render(<Kbd>⌘S</Kbd>);
     const shortcut = screen.getByText("⌘S");

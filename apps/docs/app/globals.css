@@ -132,7 +132,7 @@ pre {
 .docs-search-wrap {
   flex: 1 1 var(--n-docs-search-max-width);
   inline-size: min(100%, var(--n-docs-search-max-width));
-  margin-inline-start: auto;
+  margin-inline-start: 0;
   max-inline-size: var(--n-docs-search-max-width);
   min-inline-size: 0;
   position: relative;
@@ -232,6 +232,7 @@ pre {
 .docs-controls {
   align-items: center;
   display: flex;
+  flex: 1 1 auto;
   gap: var(--n-space-1);
   justify-content: end;
   min-inline-size: 0;
@@ -922,6 +923,17 @@ pre {
   font-family: var(--n-font-mono);
   font-size: var(--n-font-size-xs);
   padding: var(--n-space-1) var(--n-space-2);
+}
+
+.badge-anatomy-ascii {
+  color: var(--n-color-text-secondary);
+  font-family: var(--n-font-mono);
+  font-size: var(--n-font-size-sm);
+  line-height: var(--n-line-height-relaxed);
+  margin: 0;
+  max-inline-size: 100%;
+  overflow: auto;
+  padding: var(--n-space-4);
 }
 
 .button-preview-focus {
