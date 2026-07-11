@@ -2,7 +2,6 @@
 export { Button } from "./components/button";
 export type { ButtonKbd, ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
 export { motionClasses, type MotionClassName } from "./lib/motion";
-export { Link, type LinkProps, type LinkVariant } from "./components/link";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps } from "./components/icon";
 export { Kbd, type KbdProps } from "./components/kbd";

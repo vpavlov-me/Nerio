@@ -30,7 +30,6 @@ import {
   KeyValue,
   Kbd,
   Label,
-  Link,
   List,
   Pagination,
   Popover,
@@ -364,12 +363,6 @@ function Preview({ kind }: { kind: string }) {
             </div>
           ) : null}
           {kind === "kbd" ? <Kbd>⌘S</Kbd> : null}
-          {kind === "link" ? (
-            <p>
-              Review the <Link href="/docs/getting-started">getting started guide</Link> before
-              installing components.
-            </p>
-          ) : null}
           {kind === "badge" ? (
             <>
               <Badge>Draft</Badge>

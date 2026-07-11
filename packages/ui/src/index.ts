@@ -1,6 +1,5 @@
 export * from "./lib/cn";
 export { motionClasses, type MotionClassName } from "./lib/motion";
-export { Link, type LinkProps, type LinkVariant } from "./components/link";
 export {
   Code,
   Heading,

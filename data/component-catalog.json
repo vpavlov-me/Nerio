@@ -157,14 +157,6 @@
       "description": "Deprecated compatibility wrapper for Button icon-only mode; retained until the next major release."
     },
     {
-      "name": "Link",
-      "tier": "core",
-      "package": "@nerio/ui",
-      "category": "actions",
-      "status": "stable-core",
-      "description": "Styled link primitive for text and navigation actions."
-    },
-    {
       "name": "Input",
       "tier": "core",
       "package": "@nerio/ui",

@@ -1,6 +1,6 @@
 import { CodeExample } from "../../../components/code-example";
 
-const packageImports = `import { Alert, Card, Field, FormGroup, Link, Table } from "@nerio/ui";
+const packageImports = `import { Alert, Card, Field, FormGroup, Table } from "@nerio/ui";
 import { Button, Checkbox, Dialog, RadioGroup, Select, Switch, ToastProvider } from "@nerio/ui/client";
 import "@nerio/ui/styles.css";`;
 

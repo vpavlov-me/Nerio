@@ -10,7 +10,7 @@ const mcpConfig = `{
   }
 }`;
 
-const packageImports = `import { Alert, Card, Link, Table } from "@nerio/ui";
+const packageImports = `import { Alert, Card, Table } from "@nerio/ui";
 import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
 import "@nerio/ui/styles.css";`;
 

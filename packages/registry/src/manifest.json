@@ -142,7 +142,7 @@
       ],
       "baseUiPrimitives": ["button"],
       "slots": ["button", "button-icon", "button-label", "button-kbd"],
-      "variants": ["primary", "secondary", "outline", "ghost", "danger"],
+      "variants": ["primary", "secondary", "outline", "ghost", "link", "danger"],
       "requiredTokens": [
         "--n-button-height-sm",
         "--n-button-height-md",
@@ -166,6 +166,8 @@
         "--n-button-kbd-opacity",
         "--n-button-background-ghost-hover",
         "--n-button-foreground-ghost",
+        "--n-link-color",
+        "--n-link-color-hover",
         "--n-button-background-destructive",
         "--n-button-foreground-destructive",
         "--n-icon-button-size-sm",
@@ -179,6 +181,7 @@
       ],
       "accessibility": [
         "Uses the Base UI Button primitive and renders a native button by default.",
+        "For navigation, render Button as a native anchor with variant link; it has no control padding or underline.",
         "Provide concise visible text or an accessible name.",
         "Loading preserves the action name, disables repeat activation, and exposes aria-busy; loadingLabel is deprecated.",
         "Disabled and loading states prevent repeat activation.",
@@ -221,48 +224,6 @@
         "This registry item remains installable until the next major release."
       ],
       "usage": "import { Settings } from '@nerio/adapters';\nimport { Button } from '@/components/nerio/components/button';\n\n// Preferred replacement\n<Button icon={Settings} aria-label=\"Workspace settings\" />"
-    },
-    {
-      "name": "link",
-      "title": "Link",
-      "description": "Styles native anchors for inline text and navigation.",
-      "category": "actions",
-      "dependencies": ["clsx", "react"],
-      "registryDependencies": [],
-      "files": [
-        {
-          "source": "../../ui/src/components/link.tsx",
-          "target": "components/link.tsx",
-          "role": "component"
-        },
-        {
-          "source": "../../ui/src/lib/cn.ts",
-          "target": "lib/cn.ts",
-          "role": "utility"
-        },
-        {
-          "source": "../../ui/src/styles/actions.css",
-          "target": "styles/actions.css",
-          "role": "style"
-        }
-      ],
-      "baseUiPrimitives": [],
-      "slots": ["root"],
-      "variants": ["default", "muted"],
-      "requiredTokens": [
-        "--n-link-color",
-        "--n-link-color-hover",
-        "--n-link-color-muted",
-        "--n-link-underline-offset",
-        "--n-link-underline-thickness",
-        "--n-focus-ring"
-      ],
-      "accessibility": [
-        "Renders a native anchor and supports native anchor attributes.",
-        "Use link text that describes the destination or result.",
-        "Do not use Link as a button replacement for in-place actions."
-      ],
-      "usage": "import { Link } from '@/components/nerio/components/link';\n\n<Link href=\"/docs\">Read the docs</Link>"
     },
     {
       "name": "badge",

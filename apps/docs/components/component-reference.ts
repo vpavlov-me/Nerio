@@ -44,7 +44,6 @@ export const snippets: Record<string, string> = {
   button:
     "import { Save, Settings } from '@nerio/adapters';\nimport { Kbd } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<Button leadingIcon={Save} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />",
   kbd: "import { Kbd } from '@nerio/ui';\n\n<Kbd>⌘S</Kbd>",
-  link: "import { Link } from '@nerio/ui';\n\n<Link href=\"/docs\">Read the docs</Link>",
   breadcrumbs:
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
   pagination:
@@ -144,7 +143,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     category: "Actions",
     package: "@nerio/ui",
     importPath: "@nerio/ui/client",
-    related: ["Link", "DropdownMenu", "Tooltip"],
+    related: ["DropdownMenu", "Tooltip", "Tokens"],
     anatomy: ["button", "button-icon", "button-label"],
     motion: ["hover", "press", "focus"],
     accessibility: ["Base UI button primitive", "aria-busy while loading", "visible focus ring"],
@@ -194,7 +193,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     category: "Navigation",
     package: "@nerio/ui",
     importPath: "@nerio/ui",
-    related: ["Link", "Pagination", "Tabs"],
+    related: ["Pagination", "Tabs", "Tokens"],
     anatomy: ["root", "list", "item", "link", "current", "separator"],
     motion: ["hover", "focus"],
     accessibility: ["nav landmark", "ordered list semantics", "aria-current page"],
@@ -207,7 +206,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     category: "Navigation",
     package: "@nerio/ui",
     importPath: "@nerio/ui",
-    related: ["Breadcrumbs", "Link", "Table"],
+    related: ["Breadcrumbs", "Button", "Table"],
     anatomy: ["root", "list", "item", "previous", "page", "next"],
     motion: ["hover", "focus"],
     accessibility: ["nav landmark", "aria-current page", "non-focusable disabled controls"],
@@ -220,7 +219,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     category: "Layout and display",
     package: "@nerio/ui",
     importPath: "@nerio/ui",
-    related: ["Card", "Table", "Link"],
+    related: ["Card", "Table", "Button"],
     anatomy: ["root", "item", "body", "link", "title", "description", "meta"],
     motion: ["hover", "focus"],
     accessibility: ["semantic ul or ol", "native anchors", "natural reading order"],
@@ -232,7 +231,7 @@ const variantDescriptions: Record<string, string> = {
   secondary: "Supporting action with a visible control boundary.",
   ghost: "Low-emphasis action for dense or repeated surfaces.",
   destructive: "Risky action that needs explicit intent.",
-  muted: "Lower-emphasis link treatment for supporting destinations.",
+  link: "Text-level navigation without control padding or underlines.",
   neutral: "Low-emphasis status or message.",
   success: "Positive completion or validation state.",
   warning: "Warning state that needs attention without blocking the whole flow.",
@@ -415,12 +414,12 @@ export const componentReference: Record<string, ComponentReference> = {
     designNotes: [
       "Use one primary Button per local decision.",
       "Use danger for destructive actions and pair it with explicit copy.",
-      "Use Link for navigation instead of making Button behave like a destination.",
+      "Use the link variant with a native anchor render target for navigation.",
     ],
-    related: ["Link", "DropdownMenu", "Tooltip"],
+    related: ["DropdownMenu", "Tooltip", "Tokens"],
     guidance: {
       do: ["Use one primary action per local decision and keep labels action-oriented."],
-      dont: ["Do not use Button for navigation when a semantic link describes the interaction."],
+      dont: ["Do not use a button render target when the interaction navigates to a destination."],
     },
     tokens: [
       "--n-button-height-sm",
@@ -494,36 +493,6 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-kbd-font-weight",
       "--n-kbd-padding-block",
       "--n-kbd-padding-inline",
-    ],
-  },
-  link: {
-    category: "Actions and feedback",
-    purpose:
-      "Use Link for native anchor navigation and inline text destinations without turning it into a button abstraction.",
-    anatomy: [{ title: "root", description: "Native anchor element with tokenized link color." }],
-    variants: [
-      { title: "Default", description: "Primary inline link treatment." },
-      { title: "Muted", description: "Supporting link treatment for secondary destinations." },
-    ],
-    states: [
-      { title: "Default and hover", description: "Uses semantic action color and hover color." },
-      { title: "Focus", description: "Uses the shared Nerio focus ring." },
-    ],
-    accessibility: [
-      "Use descriptive link text that names the destination.",
-      "Use Button for in-place actions that do not navigate.",
-    ],
-    guidance: {
-      do: ["Use for inline navigation, external references, and secondary text destinations."],
-      dont: ["Do not use Link as a styled submit button or command trigger."],
-    },
-    tokens: [
-      "--n-link-color",
-      "--n-link-color-hover",
-      "--n-link-color-muted",
-      "--n-link-underline-offset",
-      "--n-link-underline-thickness",
-      "--n-focus-ring",
     ],
   },
   breadcrumbs: {

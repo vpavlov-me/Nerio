@@ -23,14 +23,14 @@ import {
   Palette,
   PanelLeft,
   PackageOpen,
-  Search,
   Sparkles,
   Sun,
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, Dialog, DropdownMenu, Icon, Input, Kbd } from "@nerio/ui/client";
+import { Badge, Button, DropdownMenu, Icon } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/ui/client";
+import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
 
 const version = "v0.1.0 beta";
 const repoUrl = "https://github.com/vpavlov-me/Nerio";
@@ -74,7 +74,6 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/docs/components/kbd", label: "Kbd", icon: Code2 },
       { href: "/docs/components/button", label: "Button", icon: Circle },
-      { href: "/docs/components/link", label: "Link", icon: Circle },
     ],
   },
   {
@@ -158,13 +157,6 @@ type TocItem = {
   id: string;
   label: string;
   level?: 2 | 3 | 4;
-};
-
-type SearchEntry = {
-  href: string;
-  title: string;
-  group: string;
-  description: string;
 };
 
 const componentToc: TocItem[] = [
@@ -324,7 +316,7 @@ function getDefaultToc(pathname: string): TocItem[] {
   return tocByPath[pathname] ?? [];
 }
 
-const searchEntries: SearchEntry[] = [...navGroups, compositionGroup].flatMap((group) =>
+const searchEntries: DocsCommandEntry[] = [...navGroups, compositionGroup].flatMap((group) =>
   group.items.flatMap((item) => {
     const pageSections = getDefaultToc(item.href);
     return [
@@ -594,11 +586,8 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState<ColorMode>("system");
   const [systemMode, setSystemMode] = React.useState<Exclude<ColorMode, "system">>("light");
-  const [search, setSearch] = React.useState("");
-  const [searchOpen, setSearchOpen] = React.useState(false);
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
-  const searchInputRef = React.useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -677,24 +666,6 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect();
   }, [pathname, toc]);
 
-  React.useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) return;
-      const target = event.target as HTMLElement | null;
-      if (target?.matches("input, textarea, [contenteditable='true']")) return;
-      event.preventDefault();
-      setSearchOpen(true);
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
-
-  React.useEffect(() => {
-    if (!searchOpen) return;
-    window.requestAnimationFrame(() => searchInputRef.current?.focus());
-  }, [searchOpen]);
-
   const setTheme = (value: string) => {
     setThemeValue(value);
     document.documentElement.setAttribute("data-theme", value);
@@ -730,28 +701,18 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
   const sidebarGroups = getSidebarGroups(pathname);
 
-  const searchTerm = search.trim().toLowerCase();
-  const searchResults = searchTerm
-    ? searchEntries
-        .filter((entry) =>
-          [entry.title, entry.group, entry.description, entry.href]
-            .join(" ")
-            .toLowerCase()
-            .includes(searchTerm),
-        )
-        .slice(0, 8)
-    : [];
-
   const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
   return (
     <div className="docs-shell">
       <header className="docs-header">
         <div className="docs-header-top">
-          <Link href="/" className="brand">
-            <span>Nerio</span>
+          <div className="docs-brand-lockup">
+            <Link href="/" className="brand">
+              Nerio
+            </Link>
             <Badge tone="primary-soft">{version}</Badge>
-          </Link>
+          </div>
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
@@ -782,73 +743,19 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="docs-controls">
-            <div className="docs-search-wrap">
-              <Dialog
-                bodyClassName="docs-search-dialog__body"
-                className="docs-search-dialog"
-                description="Search pages, foundations, and components."
-                onOpenChange={setSearchOpen}
-                open={searchOpen}
-                title="Search documentation"
-                trigger={
-                  <button className="docs-search-trigger" type="button">
-                    <Icon icon={Search} />
-                    <span>Search documentation</span>
-                    <Kbd aria-hidden>/</Kbd>
-                  </button>
-                }
-              >
-                <div className="docs-search-results" role="listbox">
-                  <Input
-                    ref={searchInputRef}
-                    aria-label="Search documentation"
-                    placeholder="Search documentation"
-                    value={search}
-                    onChange={(event) => setSearch(event.currentTarget.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Escape") setSearchOpen(false);
-                    }}
-                  />
-                  {searchTerm ? (
-                    searchResults.length ? (
-                      searchResults.map((entry) => (
-                        <Link
-                          key={entry.href}
-                          href={entry.href}
-                          role="option"
-                          onClick={() => {
-                            setSearch("");
-                            setSearchOpen(false);
-                          }}
-                        >
-                          <span>{entry.title}</span>
-                          <small>
-                            {entry.group} - {entry.description}
-                          </small>
-                        </Link>
-                      ))
-                    ) : (
-                      <div className="docs-search-empty">No matching documentation pages.</div>
-                    )
-                  ) : (
-                    <div className="docs-search-empty">Start typing to search documentation.</div>
-                  )}
-                </div>
-              </Dialog>
-            </div>
+            <DocsCommandPalette entries={searchEntries} />
             <span className="docs-controls-divider" aria-hidden />
             <DropdownMenu
               className="docs-theme-menu"
               trigger={
-                <button className="docs-theme-trigger" type="button">
+                <Button className="docs-theme-trigger" trailingIcon={ChevronDown} variant="ghost">
                   <span
                     className="theme-option-dot"
                     style={{ backgroundColor: getThemeDotColor(theme) }}
                     aria-hidden
                   />
-                  <span>{themeOptions.find((option) => option.value === theme)?.label}</span>
-                  <Icon icon={ChevronDown} />
-                </button>
+                  {themeOptions.find((option) => option.value === theme)?.label}
+                </Button>
               }
               items={themeOptions.map((option) => ({
                 label: (
@@ -866,15 +773,14 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               }))}
             />
             <span className="docs-controls-divider" aria-hidden />
-            <button
-              type="button"
-              className="docs-mode-toggle"
+            <Button
               onClick={toggleMode}
               aria-label={modeLabel}
-              title={modeLabel}
-            >
-              <Icon icon={modeIcon} />
-            </button>
+              className="docs-mode-toggle"
+              icon={modeIcon}
+              tooltip={modeLabel}
+              variant="ghost"
+            />
             <span className="docs-controls-divider" aria-hidden />
             <Button
               leadingIcon={Github}

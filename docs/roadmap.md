@@ -23,7 +23,7 @@
 
 ## Core coverage expansion
 
-- [ ] Link, FormGroup, Radio Group, Alert, List, Breadcrumbs, Pagination
+- [ ] FormGroup, Radio Group, Alert, List, Breadcrumbs, Pagination
 - [ ] Sidebar Primitive and Command Primitive
 
 ## Product building blocks

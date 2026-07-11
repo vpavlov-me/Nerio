@@ -176,12 +176,12 @@ describe("Core static contracts", () => {
 
   it("renders linked secondary Cards as native interactive anchors", () => {
     render(
-      <Card href="/docs/components/link" variant="secondary">
-        Link documentation
+      <Card href="/docs/components/button" variant="secondary">
+        Button documentation
       </Card>,
     );
-    const card = screen.getByRole("link", { name: "Link documentation" });
-    expect(card).toHaveAttribute("href", "/docs/components/link");
+    const card = screen.getByRole("link", { name: "Button documentation" });
+    expect(card).toHaveAttribute("href", "/docs/components/button");
     expect(card).toHaveAttribute("data-variant", "secondary");
   });
 
@@ -487,6 +487,28 @@ describe("Core interactive action contracts", () => {
     const iconButton = screen.getByRole("button", { name: "Open notifications" });
     expect(iconButton).toHaveAttribute("data-icon-only", "true");
     expect(iconButton.querySelector("[data-slot=button-label]")).not.toBeInTheDocument();
+  });
+
+  it("renders the link Button variant as a native anchor without a separate Link component", () => {
+    render(
+      <Button
+        leadingIcon={ArrowRight}
+        nativeButton={false}
+        render={<a href="/docs" />}
+        variant="link"
+      >
+        Read the docs
+      </Button>,
+    );
+
+    const link = screen.getByRole("link", { name: "Read the docs" });
+    expect(link).toHaveAttribute("href", "/docs");
+    expect(link).toHaveAttribute("data-variant", "link");
+    expect(link).toHaveClass("n-button");
+    expect(link.querySelector("[data-slot=button-icon] .n-icon")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
   });
 
   it("normalizes deprecated Button variants and protects Button-owned state attributes", () => {

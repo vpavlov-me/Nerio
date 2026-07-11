@@ -57,10 +57,8 @@ const expectedPhase2BFiles = [
   "components/alert.tsx",
   "components/form-message.tsx",
   "components/icon.tsx",
-  "components/link.tsx",
   "components/radio-group.tsx",
   "lib/cn.ts",
-  "styles/actions.css",
   "styles/feedback.css",
   "styles/forms.css",
   "styles/icon.css",
@@ -225,7 +223,6 @@ async function verify() {
     await run(localTarget, "add", "checkbox");
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "select");
-    await run(localTarget, "add", "link");
     await run(localTarget, "add", "alert");
     await run(localTarget, "add", "radio-group");
     await run(localTarget, "add", "avatar");
@@ -368,12 +365,15 @@ async function verify() {
       throw new Error("Installed Progress source does not preserve accessible progress metadata.");
     }
 
-    const linkSource = fs.readFileSync(
-      path.join(localTarget, "components/nerio/components/link.tsx"),
+    const buttonSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/button.tsx"),
       "utf8",
     );
-    if (!linkSource.includes("AnchorHTMLAttributes") || !linkSource.includes("forwardRef")) {
-      throw new Error("Installed Link source does not preserve native anchor/ref support.");
+    if (
+      !buttonSource.includes("isAnchorRender") ||
+      !buttonSource.includes('normalizedVariant === "link"')
+    ) {
+      throw new Error("Installed Button source does not preserve native link rendering.");
     }
 
     const radioSource = fs.readFileSync(

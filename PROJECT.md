@@ -124,7 +124,7 @@ Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or 
 
 ## Core component scope
 
-Nerio Core includes foundation and base reusable components: Button, IconButton, Link, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive.
+Nerio Core includes foundation and base reusable components: Button, IconButton, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive. Button's link variant covers text-level navigation when it renders a native anchor.
 
 Core should be strong enough to build real products without a paid license. It should not contain advanced product compositions that are better treated as Pro value.
 
