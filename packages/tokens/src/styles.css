@@ -390,6 +390,8 @@
   --n-alert-border: var(--n-color-border-subtle);
   --n-alert-background: var(--n-color-surface-raised);
   --n-alert-shadow: var(--n-shadow-surface-raised);
+  --n-alert-title-color: var(--n-color-text-primary);
+  --n-alert-icon-color: var(--n-color-status-neutral);
   --n-alert-icon-size: var(--n-icon-size-md);
   --n-badge-height: var(--n-space-6);
   --n-badge-height-sm: 1.125rem;
