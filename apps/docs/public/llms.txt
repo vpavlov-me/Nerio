@@ -16,7 +16,7 @@ Current roadmap focus is Phase 2A stabilization plus narrow task-approved Phase 
 
 Use primitive tokens only for raw values. Use semantic tokens such as `--n-color-surface-default`, `--n-color-text-primary`, `--n-color-action-primary`, `--n-color-border-default`, `--n-font-sans`, and `--n-font-mono` in product code. Components should prefer component tokens for local contracts such as `--n-button-background-primary`, `--n-input-border`, `--n-dialog-width-md`, `--n-overlay-background`, and `--n-table-cell-padding-x`.
 
-Geist Sans is the default UI font and Geist Mono is the default technical font. Components must consume font tokens, not hard-coded app font class names.
+System UI is the default Core font stack and the cross-platform system mono stack is the default technical font. Geist is the documentation brand only. Core provides System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk scoped token recipes; non-system families remain consumer-loaded, no font files are bundled, and components must consume font tokens rather than hard-coded families.
 
 Nerio separates theme, mode, and density. Theme is selected with `data-theme="purple"`, `data-theme="blue"`, `data-theme="green"`, `data-theme="orange"`, `data-theme="red"`, `data-theme="neutral"`, or a custom product theme. Mode is selected with `data-mode="system"`, `data-mode="light"`, or `data-mode="dark"`. Density is selected with `data-density="comfortable"` or `data-density="compact"`.
 
@@ -24,7 +24,7 @@ Default runtime attributes: `data-theme="purple" data-mode="system" data-density
 
 Do not create or use combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `blue-light`, `blue-dark`, `red-light`, or `red-dark`. Do not create vertical-specific Core preset names such as `fintech-blue`; use generic brand color names.
 
-Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable in v1, but they are not separate runtime axes. Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale` unless a later architecture decision explicitly promotes them. Customize those values through CSS variables such as `--n-font-sans`, `--n-font-mono`, `--n-radius-md`, `--n-radius-lg`, and `--n-duration-normal`.
+Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable in v1, but they are not separate runtime axes. Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale` unless a later architecture decision explicitly promotes them. Typography presets are CSS token recipes, not runtime attributes; customize typography with `--n-font-sans`, `--n-font-mono`, `--n-font-sans-system`, and scoped product overrides.
 
 Brand color is a restrained accent. Use it for primary actions, selection, active states, focus, links, small progress signals, the primary chart series, and brand moments. Do not use brand color for broad page backgrounds, routine icons, card backgrounds, standard borders, or secondary actions.
 

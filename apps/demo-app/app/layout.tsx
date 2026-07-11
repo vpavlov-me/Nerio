@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--n-font-geist",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--n-font-geist-mono",
-});
 
 const yandexMetrikaId = "110539538";
 
@@ -22,13 +11,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      data-theme="purple"
-      data-mode="system"
-      data-density="comfortable"
-      className={`${geistSans.variable} ${geistMono.variable}`}
-    >
+    <html lang="en" data-theme="purple" data-mode="system" data-density="comfortable">
       <body>
         {children}
         <Script id="yandex-metrika" strategy="afterInteractive">

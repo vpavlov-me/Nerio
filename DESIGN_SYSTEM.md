@@ -120,8 +120,8 @@ Developers may customize those values by overriding CSS variables instead:
 
 ```css
 :root {
-  --n-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --n-font-mono: "JetBrains Mono", monospace;
+  --n-font-sans: "IBM Plex Sans", var(--n-font-sans-system);
+  --n-font-mono: "IBM Plex Mono", var(--n-font-mono-system);
   --n-radius-sm: 0.5rem;
   --n-radius-md: 0.625rem;
   --n-radius-lg: 0.875rem;
@@ -139,6 +139,21 @@ Potential future runtime axes include:
 - `data-scale="default" | "large"`.
 
 These future axes should not be implemented until the project explicitly promotes them through an architecture decision.
+
+### Typography defaults and presets
+
+Nerio Core defaults to a cross-platform System UI sans stack and a system mono stack. This keeps the
+foundation brand-neutral and requires no font request. The Nerio documentation application may load
+Geist as an app-local brand decision; Core packages must not load, bundle, or require it.
+
+Official classes cover System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk as
+scoped CSS token recipes that remap `--n-font-sans` and `--n-font-mono`. They are not runtime axes and
+do not introduce `data-font`. Consumers load non-system families themselves before applying the
+corresponding recipe. Custom products may override the same font variables at root or within a product
+surface.
+
+Presets change font families only. Preserve the shared type scale, line-height tokens, and control
+heights unless a documented, shared contract proves a metric adjustment is necessary.
 
 ## Default purple theme
 

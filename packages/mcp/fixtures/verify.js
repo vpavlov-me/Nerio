@@ -45,6 +45,21 @@ async function verify() {
       throw new Error("MCP get_component_usage did not include Kbd token metadata.");
     }
 
+    const typographyUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "typography" },
+    });
+    const typographyUsage = JSON.parse(typographyUsageResult.content[0].text);
+    if (
+      !typographyUsage.requiredTokens.includes("--n-font-sans-system") ||
+      !typographyUsage.requiredTokens.includes("--n-font-sans-inter") ||
+      !typographyUsage.requiredTokens.includes("--n-font-sans-space-grotesk") ||
+      !typographyUsage.files.some((file) => file.target === "styles/tokens.css") ||
+      !typographyUsage.accessibility.some((item) => item.includes("consuming product"))
+    ) {
+      throw new Error("MCP Typography usage is missing the preset token or install contract.");
+    }
+
     const cardUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "card" },

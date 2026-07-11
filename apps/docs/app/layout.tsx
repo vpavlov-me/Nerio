@@ -6,12 +6,12 @@ import { DocsChrome } from "../components/docs-chrome";
 
 const geistSans = Geist({
   subsets: ["latin"],
-  variable: "--n-font-geist",
+  variable: "--n-font-sans-geist",
 });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--n-font-geist-mono",
+  variable: "--n-font-mono-geist",
 });
 
 const yandexMetrikaId = "110539538";
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       data-theme="purple"
       data-mode="system"
       data-density="comfortable"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`n-typography-geist ${geistSans.variable} ${geistMono.variable}`}
     >
       <body>
         <DocsChrome>{children}</DocsChrome>

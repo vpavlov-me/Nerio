@@ -1475,6 +1475,104 @@ pre {
   font-family: var(--n-font-mono);
 }
 
+.typography-preset-grid {
+  display: grid;
+  gap: var(--n-space-4);
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.typography-preset-preview {
+  display: grid;
+  gap: var(--n-space-3);
+  min-inline-size: 0;
+}
+
+.typography-preset-heading,
+.typography-preset-controls,
+.typography-preset-footer,
+.typography-preset-table [role="row"] {
+  align-items: center;
+  display: flex;
+  gap: var(--n-space-2);
+  justify-content: space-between;
+}
+
+.typography-preset-heading > div {
+  display: grid;
+  gap: var(--n-space-1);
+}
+
+.typography-preset-heading h3,
+.typography-preset-preview p {
+  margin: 0;
+}
+
+.typography-preset-heading strong {
+  font-size: var(--n-font-size-lg);
+  font-variant-numeric: tabular-nums;
+}
+
+.typography-preset-controls .n-input {
+  min-inline-size: 0;
+}
+
+.typography-preset-tabs {
+  border-block-end: var(--n-border-subtle);
+  display: flex;
+  gap: var(--n-space-3);
+}
+
+.typography-preset-tabs button {
+  background: transparent;
+  border: 0;
+  color: var(--n-color-text-secondary);
+  font: inherit;
+  padding: var(--n-space-1) 0;
+}
+
+.typography-preset-tabs button[aria-selected="true"] {
+  border-block-end: 2px solid var(--n-color-action-primary);
+  color: var(--n-color-text-primary);
+}
+
+.typography-preset-table [role="row"] {
+  border-block-end: var(--n-border-subtle);
+  font-size: var(--n-font-size-sm);
+  padding-block: var(--n-space-2);
+}
+
+.typography-preset-table [role="cell"]:first-child {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.typography-preset-table [role="cell"]:not(:first-child) {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.typography-preset-table [role="cell"]:last-child {
+  color: var(--n-color-status-success);
+}
+
+.typography-preset-footer,
+.typography-preset-compact {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-xs);
+}
+
+.typography-preset-footer code {
+  overflow-wrap: anywhere;
+}
+
+.typography-preset-compact {
+  background: var(--n-color-surface-subtle);
+  border-radius: var(--n-radius-sm);
+  padding: var(--n-space-2);
+}
+
 .type-scale {
   border-block-start: var(--n-border-subtle);
   display: grid;

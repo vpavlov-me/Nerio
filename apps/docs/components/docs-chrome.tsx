@@ -249,11 +249,12 @@ const tocByPath: Record<string, TocItem[]> = {
   ],
   "/docs/foundations/typography": [
     { id: "font-contract", label: "Font contract" },
+    { id: "presets", label: "Presets" },
+    { id: "preset-preview", label: "Preset comparison" },
+    { id: "font-loading", label: "Font loading" },
     { id: "type-scale", label: "Type scale" },
-    { id: "rhythm", label: "Rhythm" },
     { id: "semantic-roles", label: "Semantic roles" },
-    { id: "usage-preview", label: "Usage preview" },
-    { id: "override-safely", label: "Override safely" },
+    { id: "customization", label: "Customization" },
   ],
   "/docs/foundations/themes": [
     { id: "runtime-axes", label: "Runtime axes" },

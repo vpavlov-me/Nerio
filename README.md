@@ -85,6 +85,13 @@ Preset themes are generic brand colors. Product teams can add custom themes by d
 
 Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable in v1, but they are not separate runtime axes. Customize them through CSS variables such as `--n-font-sans`, `--n-radius-md`, and `--n-duration-normal` rather than attributes such as `data-font` or `data-radius`.
 
+Typography defaults to the platform System UI stack, so Core does not require a font download. The
+documentation application uses Geist as its local brand treatment. Core also provides scoped
+`.n-typography-system`, `.n-typography-geist`, `.n-typography-inter`, `.n-typography-ibm-plex`,
+`.n-typography-manrope`, `.n-typography-source-sans`, and `.n-typography-space-grotesk` token recipes;
+products load optional font families themselves. No font files are bundled, and typography presets are
+not a runtime axis.
+
 ## Initial Core scope
 
 The first release will establish the token foundation and Core component categories: actions, forms, overlays, navigation, feedback, data display, layout primitives, and common reusable building blocks.

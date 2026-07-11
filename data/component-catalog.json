@@ -88,7 +88,7 @@
       "package": "@nerio/tokens",
       "category": "foundation",
       "status": "quality-pass-needed",
-      "description": "Token-customizable font variables such as --n-font-sans and --n-font-mono. Not a v1 runtime axis."
+      "description": "System UI defaults plus System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk token recipes through --n-font-sans and --n-font-mono. Consumer-loaded fonts only; not a v1 runtime axis."
     },
     {
       "name": "Radius Tokens",
