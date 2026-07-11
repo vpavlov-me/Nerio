@@ -113,17 +113,17 @@ async function verify() {
       throw new Error("MCP Progress usage is missing accessible progress metadata.");
     }
 
-    const linkUsageResult = await client.callTool({
+    const buttonUsageResult = await client.callTool({
       name: "get_component_usage",
-      arguments: { name: "link" },
+      arguments: { name: "button" },
     });
-    const linkUsage = JSON.parse(linkUsageResult.content[0].text);
+    const buttonUsage = JSON.parse(buttonUsageResult.content[0].text);
     if (
-      !linkUsage.requiredTokens.includes("--n-link-color") ||
-      linkUsage.baseUiPrimitives.length !== 0 ||
-      !linkUsage.accessibility.some((item) => item.includes("native anchor"))
+      !buttonUsage.requiredTokens.includes("--n-link-color") ||
+      !buttonUsage.variants.includes("link") ||
+      !buttonUsage.accessibility.some((item) => item.includes("native anchor"))
     ) {
-      throw new Error("MCP Link usage is not aligned with the native anchor contract.");
+      throw new Error("MCP Button usage is not aligned with the native link contract.");
     }
 
     const alertUsageResult = await client.callTool({
@@ -318,7 +318,6 @@ async function verify() {
       "checkbox",
       "switch",
       "kbd",
-      "link",
       "alert",
       "radio-group",
       "badge",
