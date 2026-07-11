@@ -126,6 +126,8 @@ The root workspace and apps are private. The Core packages intended for a future
 
 Do not publish packages from this repository until maintainers explicitly approve the release process.
 
+No public release exists yet. See [CHANGELOG.md](./CHANGELOG.md) for notable unreleased changes.
+
 ## Contributing
 
 Nerio welcomes issues and pull requests. All contributions are reviewed by maintainers to preserve the system's API, visual consistency, accessibility standards, and long-term direction.

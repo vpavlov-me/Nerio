@@ -29,6 +29,7 @@ jobs:
       - run: pnpm test:ui
       - run: pnpm test:a11y
       - run: pnpm validate:docs
+      - run: pnpm validate:release
       - run: pnpm test:cli
       - run: pnpm test:mcp
       - run: pnpm build

@@ -213,7 +213,10 @@ function packageReadinessFailures() {
     "format:check",
     "lint",
     "typecheck",
+    "test:ui",
+    "test:a11y",
     "validate:docs",
+    "validate:release",
     "test:cli",
     "test:mcp",
     "build",
@@ -246,7 +249,10 @@ function packageReadinessFailures() {
       "pnpm format:check",
       "pnpm lint",
       "pnpm typecheck",
+      "pnpm test:ui",
+      "pnpm test:a11y",
       "pnpm validate:docs",
+      "pnpm validate:release",
       "pnpm test:cli",
       "pnpm test:mcp",
       "pnpm build",
@@ -257,8 +263,9 @@ function packageReadinessFailures() {
       "NPM_TOKEN",
       "contents: write",
       "id-token: write",
-      "release",
-      "tag",
+      "release-please",
+      "semantic-release",
+      "git tag",
     ];
 
     for (const command of requiredCommands) {
