@@ -1,0 +1,43 @@
+.n-button-group {
+  display: inline-flex;
+  isolation: isolate;
+}
+
+.n-button-group > .n-button {
+  border-radius: var(--n-radius-none);
+  position: relative;
+}
+
+.n-button-group > .n-button + .n-button {
+  margin-inline-start: calc(var(--n-button-border-width) * -1);
+}
+
+.n-button-group > .n-button + .n-button::before {
+  background: var(--n-button-group-divider);
+  content: "";
+  pointer-events: none;
+  position: absolute;
+}
+
+.n-button-group > .n-button + .n-button::before {
+  block-size: var(--n-space-4);
+  inline-size: var(--n-button-border-width);
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--n-button-border-width) * -1);
+  transform: translateY(-50%);
+}
+
+.n-button-group > .n-button:hover,
+.n-button-group > .n-button:focus-visible {
+  z-index: 1;
+}
+
+.n-button-group > .n-button:first-child {
+  border-end-start-radius: var(--n-button-radius);
+  border-start-start-radius: var(--n-button-radius);
+}
+
+.n-button-group > .n-button:last-child {
+  border-end-end-radius: var(--n-button-radius);
+  border-start-end-radius: var(--n-button-radius);
+}

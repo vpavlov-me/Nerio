@@ -9,6 +9,7 @@ import {
   Badge,
   Breadcrumbs,
   Button,
+  ButtonGroup,
   Card,
   CardAction,
   CardContent,
@@ -119,21 +120,8 @@ export function StandardDocPage({
   return (
     <article className="doc-page">
       <header>
-        <div className="component-hero-meta">
-          {reference ? (
-            <p className="doc-kicker">{metadata?.category ?? reference.category}</p>
-          ) : null}
-          {metadata ? <Badge>{metadata.status}</Badge> : null}
-          {metadata ? <Badge variant="info">{metadata.layer}</Badge> : null}
-        </div>
         <h1>{title}</h1>
         <p className="doc-lede">{lede}</p>
-        {metadata?.package ? (
-          <div className="component-import-row">
-            <code>{metadata.package}</code>
-            {metadata.importPath ? <code>{metadata.importPath}</code> : null}
-          </div>
-        ) : null}
       </header>
       {preview ?? (kind ? <Preview kind={kind} /> : null)}
       <section className="doc-section">
@@ -350,6 +338,12 @@ function Preview({ kind }: { kind: string }) {
               <Button variant="ghost">Cancel</Button>
               <Button loading>Saving</Button>
             </>
+          ) : null}
+          {kind === "button-group" ? (
+            <ButtonGroup aria-label="Document actions">
+              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary">Save</Button>
+            </ButtonGroup>
           ) : null}
           {kind === "typography" ? (
             <div className="preview-card">

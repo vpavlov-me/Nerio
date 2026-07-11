@@ -224,6 +224,7 @@ async function verify() {
     }
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "typography");
+    await run(localTarget, "add", "button-group");
     await run(localTarget, "add", "icon-button");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");

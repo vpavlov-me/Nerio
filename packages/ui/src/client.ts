@@ -1,8 +1,15 @@
 "use client";
 
 export * from "./index";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { Button } from "./components/button";
-export type { ButtonKbd, ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
+export type {
+  ButtonBadge,
+  ButtonKbd,
+  ButtonProps,
+  ButtonSize,
+  ButtonVariant,
+} from "./components/button";
 export { IconButton, type IconButtonProps } from "./components/icon-button";
 export { Checkbox, type CheckboxProps } from "./components/checkbox";
 export { RadioGroup, type RadioGroupOption, type RadioGroupProps } from "./components/radio-group";

@@ -105,10 +105,10 @@
     {
       "name": "button",
       "title": "Button",
-      "description": "Triggers an explicit action with text, directional icons, shortcut hints, optional tooltip help, or an icon-only mode.",
+      "description": "Triggers an explicit action with text, optional Badge content, directional icons, shortcut hints, tooltip help, or an icon-only mode.",
       "category": "actions",
       "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
-      "registryDependencies": ["tooltip", "kbd"],
+      "registryDependencies": ["tooltip", "kbd", "badge"],
       "files": [
         {
           "source": "../../ui/src/components/button.tsx",
@@ -157,7 +157,7 @@
         }
       ],
       "baseUiPrimitives": ["button"],
-      "slots": ["button", "button-icon", "button-label", "button-kbd"],
+      "slots": ["button", "button-icon", "button-label", "button-badge", "button-kbd"],
       "variants": ["primary", "secondary", "outline", "ghost", "link", "danger"],
       "requiredTokens": [
         "--n-button-height-sm",
@@ -180,6 +180,13 @@
         "--n-button-kbd-border-color",
         "--n-button-kbd-foreground",
         "--n-button-kbd-opacity",
+        "--n-badge-height",
+        "--n-badge-height-sm",
+        "--n-badge-radius",
+        "--n-badge-padding-inline",
+        "--n-badge-padding-inline-sm",
+        "--n-badge-gap-sm",
+        "--n-badge-icon-size-sm",
         "--n-button-background-ghost-hover",
         "--n-button-foreground-ghost",
         "--n-link-color",
@@ -204,6 +211,7 @@
         "Icons render through the Nerio icon adapter and remain decorative by default.",
         "For an icon-only Button, provide icon and an aria-label; tooltip can add supplementary help but does not replace the action name.",
         "Shortcut display is supplemental; add aria-keyshortcuts yourself when a keyboard shortcut is functional.",
+        "Badge content remains part of the Button accessible name; use a concise count or status that refines the action.",
         "Deprecated subtle and destructive variants normalize to secondary and danger; use the canonical variants in new code.",
         "Keep the visible focus treatment enabled."
       ],
@@ -240,6 +248,42 @@
         "This registry item remains installable until the next major release."
       ],
       "usage": "import { Settings } from '@nerio/adapters';\nimport { Button } from '@/components/nerio/components/button';\n\n// Preferred replacement\n<Button icon={Settings} aria-label=\"Workspace settings\" />"
+    },
+    {
+      "name": "button-group",
+      "title": "ButtonGroup",
+      "description": "Joins related Buttons into one attached horizontal control set.",
+      "category": "actions",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/button-group.tsx",
+          "target": "components/button-group.tsx",
+          "role": "component"
+        },
+        { "source": "../../ui/src/lib/cn.ts", "target": "lib/cn.ts", "role": "utility" },
+        {
+          "source": "../../ui/src/styles/button-group.css",
+          "target": "styles/button-group.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["button-group"],
+      "variants": [],
+      "requiredTokens": [
+        "--n-button-radius",
+        "--n-button-border-width",
+        "--n-button-group-divider",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Renders a group landmark by default; provide aria-label for its shared purpose.",
+        "Preserves the native semantics and keyboard behavior of every child Button.",
+        "Use the same Button variant for every child so the actions remain visually equal."
+      ],
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ButtonGroup } from '@/components/nerio/components/button-group';\n\n<ButtonGroup aria-label=\"Document actions\"><Button variant=\"secondary\">Cancel</Button><Button variant=\"secondary\">Save</Button></ButtonGroup>"
     },
     {
       "name": "badge",
@@ -283,6 +327,9 @@
       "baseUiPrimitives": [],
       "slots": ["root", "leading-icon", "label", "trailing-icon"],
       "variants": [
+        "sm",
+        "md",
+        "lg",
         "soft",
         "strong",
         "neutral",
@@ -295,6 +342,16 @@
       ],
       "requiredTokens": [
         "--n-badge-height",
+        "--n-badge-height-sm",
+        "--n-badge-height-lg",
+        "--n-badge-padding-inline-sm",
+        "--n-badge-padding-inline-lg",
+        "--n-badge-gap-sm",
+        "--n-badge-gap-lg",
+        "--n-badge-icon-size-sm",
+        "--n-badge-icon-size-lg",
+        "--n-badge-font-size-sm",
+        "--n-badge-font-size-lg",
         "--n-badge-radius",
         "--n-badge-background",
         "--n-badge-foreground",
@@ -326,6 +383,7 @@
         "Use tone for semantic color; variant remains a deprecated compatibility alias.",
         "Optional icons are decorative, so text must carry the status meaning.",
         "Use leadingIcon or trailingIcon for visual context; the label remains the accessible status name.",
+        "Use sm when the Badge is embedded inside a compact control such as Button.",
         "Use strong emphasis only when a warning, danger, or other status needs elevated attention."
       ],
       "usage": "import { Check } from '@nerio/adapters';\nimport { Badge } from '@/components/nerio/components/badge';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>"

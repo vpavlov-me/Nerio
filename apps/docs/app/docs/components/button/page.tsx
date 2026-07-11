@@ -1,7 +1,16 @@
 "use client";
 
 import { ArrowRight, ArrowUp, Check, Plus, Save, Settings, X } from "@nerio/adapters";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon, Kbd } from "@nerio/ui";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Icon,
+  Kbd,
+} from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -37,6 +46,7 @@ const apiRows = [
     "Places a decorative icon before or after the label.",
   ],
   ["icon + aria-label", "IconComponent + string", "Creates an accessible icon-only action."],
+  ["badge", "<Badge>", "Adds a concise count or status after the visible label at sm size."],
   ["kbd", "<Kbd>", "Displays a quiet shortcut hint after the label."],
   ["tooltip", "ReactNode", "Adds supplemental hover and focus help."],
   ["loading", "boolean", "Shows Spinner, disables activation, and sets aria-busy."],
@@ -55,6 +65,7 @@ const anatomyRows = [
   ["button", "Base UI button primitive with variant, size, disabled, loading, and focus states."],
   ["button-icon", "Optional leading or trailing icon rendered through the Nerio icon adapter."],
   ["button-label", "Visible action text that remains available while loading."],
+  ["button-badge", "Optional Badge count or status placed after the visible action label."],
   [
     "button-kbd",
     "Optional quiet keyboard shortcut hint placed between the label and trailing icon.",
@@ -69,9 +80,9 @@ const stateRows = [
 ] as const;
 
 const implementationRows = [
-  ["Registry item", "button installs 9 source files into the configured components directory."],
+  ["Registry item", "button installs Button with its Badge, Kbd, and Tooltip dependencies."],
   ["Base UI", "button"],
-  ["Registry dependencies", "tooltip, kbd"],
+  ["Registry dependencies", "badge, tooltip, kbd"],
   ["Package dependencies", "@base-ui/react, @nerio/adapters, clsx, react"],
 ] as const;
 
@@ -95,6 +106,11 @@ const tokenRows = [
     "Button Kbd",
     "--n-button-kbd-background / border-color / foreground / opacity",
     "Quiet shortcut treatment inside a Button.",
+  ],
+  [
+    "Button Badge",
+    "--n-badge-height-sm / radius / padding-inline-sm",
+    "Compact count or status treatment inside a Button.",
   ],
   [
     "Icon-only",
@@ -155,6 +171,16 @@ export default function Page() {
               <Button leadingIcon={Save} kbd={<Kbd>⌘S</Kbd>}>
                 Save changes
               </Button>
+              <Button
+                badge={
+                  <Badge size="sm" tone="info">
+                    24
+                  </Badge>
+                }
+                variant="secondary"
+              >
+                Fork
+              </Button>
               <Button variant="secondary" trailingIcon={ArrowRight}>
                 Review draft
               </Button>
@@ -180,10 +206,20 @@ export default function Page() {
             <div className="button-anatomy-preview">
               <span>leading icon</span>
               <span>label</span>
+              <span>badge</span>
               <span>kbd</span>
               <span>trailing icon</span>
             </div>
-            <Button leadingIcon={Plus} trailingIcon={ArrowRight} kbd={<Kbd>⌘N</Kbd>}>
+            <Button
+              badge={
+                <Badge size="sm" tone="primary-soft">
+                  New
+                </Badge>
+              }
+              leadingIcon={Plus}
+              trailingIcon={ArrowRight}
+              kbd={<Kbd>⌘N</Kbd>}
+            >
               Create project
             </Button>
             <p>
@@ -218,6 +254,16 @@ export default function Page() {
           <ButtonSectionPreview>
             <div className="preview-row">
               <Button
+                badge={
+                  <Badge size="sm" tone="info">
+                    24
+                  </Badge>
+                }
+                variant="secondary"
+              >
+                Fork
+              </Button>
+              <Button
                 icon={Settings}
                 aria-label="Workspace settings"
                 tooltip="Workspace settings"
@@ -233,6 +279,10 @@ export default function Page() {
               Hover or focus an icon-only button to see its Tooltip. The tooltip is supplementary:{" "}
               <code>aria-label</code> still supplies the action name.
             </p>
+            <p>
+              A Button Badge remains in the accessible name, so use a concise count or status that
+              refines the action.
+            </p>
           </ButtonSectionPreview>
         ),
         api: (
@@ -240,6 +290,9 @@ export default function Page() {
             <div className="preview-row">
               <Button leadingIcon={Save} kbd={<Kbd>⌘S</Kbd>}>
                 Save changes
+              </Button>
+              <Button badge={<Badge tone="info">24</Badge>} variant="secondary">
+                Fork
               </Button>
               <Button
                 icon={Settings}
@@ -295,9 +348,9 @@ export default function Page() {
           <div className="button-related-cards">
             {[
               [
-                "Tokens",
-                "Adjust shared colors and spacing without changing Button source.",
-                "/docs/foundations/tokens",
+                "Badge",
+                "Add a concise count or status inside a Button without creating another action.",
+                "/docs/components/badge",
               ],
               [
                 "Tooltip",

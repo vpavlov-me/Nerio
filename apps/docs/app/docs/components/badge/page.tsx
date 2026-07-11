@@ -9,6 +9,12 @@ function BadgePreview() {
       <div className="component-example__preview">
         <div className="preview-row">
           <Badge>Neutral</Badge>
+          <Badge size="sm" tone="info">
+            24
+          </Badge>
+          <Badge size="lg" tone="success">
+            Featured
+          </Badge>
           <Badge tone="success" leadingIcon={Check}>
             Published
           </Badge>
@@ -29,7 +35,7 @@ function BadgePreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Check, CircleAlert, Info } from "@nerio/adapters";\nimport { Badge } from "@nerio/ui";\n\n<Badge>Neutral</Badge>\n<Badge tone="success" leadingIcon={Check}>Published</Badge>\n<Badge tone="warning" leadingIcon={CircleAlert}>Review needed</Badge>\n<Badge tone="info" leadingIcon={Info} trailingIcon={Check}>Shared</Badge>\n<Badge tone="primary-soft" loading>Publishing</Badge>\n<Badge tone="danger" emphasis="strong" leadingIcon={CircleAlert}>Deployment blocked</Badge>'
+          'import { Check, CircleAlert, Info } from "@nerio/adapters";\nimport { Badge } from "@nerio/ui";\n\n<Badge>Neutral</Badge>\n<Badge size="sm" tone="info">24</Badge>\n<Badge size="lg" tone="success">Featured</Badge>\n<Badge tone="success" leadingIcon={Check}>Published</Badge>\n<Badge tone="warning" leadingIcon={CircleAlert}>Review needed</Badge>\n<Badge tone="info" leadingIcon={Info} trailingIcon={Check}>Shared</Badge>\n<Badge tone="primary-soft" loading>Publishing</Badge>\n<Badge tone="danger" emphasis="strong" leadingIcon={CircleAlert}>Deployment blocked</Badge>'
         }
         label="Badge live preview code"
       />
@@ -48,6 +54,11 @@ const apiRows = [
     "Sets semantic color treatment.",
   ],
   ["emphasis", "soft | strong", "Soft is default; strong increases visual urgency."],
+  [
+    "size",
+    "sm | md | lg",
+    "md is default; use sm inside compact controls and lg for elevated standalone metadata.",
+  ],
   ["leadingIcon", "IconComponent", "Places a decorative icon before the label."],
   ["trailingIcon", "IconComponent", "Places a decorative icon after the label."],
   ["loading", "boolean", "Shows a Spinner before the label and sets aria-busy."],
@@ -72,6 +83,15 @@ const variantRows = [
   ["danger", "A blocked or failed state.", "A high-salience failure or risk that needs action."],
 ] as const;
 
+const sizeRows = [
+  ["md", "Default size for standalone status and metadata labels."],
+  [
+    "sm",
+    "Compact size with reduced typography for an embedded Badge inside Button or another compact control.",
+  ],
+  ["lg", "Larger size for elevated standalone metadata that needs more visual presence."],
+] as const;
+
 const anatomyRows = [
   ["root", "Inline status container with tone and tokenized density."],
   ["leading-icon", "Optional decorative icon before the visible label."],
@@ -84,6 +104,10 @@ const stateRows = [
   ["Loading", "Spinner replaces the leading icon and exposes aria-busy."],
   ["Soft", "Default low-emphasis treatment for every tone."],
   ["Strong", "High-salience treatment for urgent warnings, blocking failures, or critical risk."],
+  [
+    "Size",
+    "md is the default standalone size; sm is for compact embedded metadata and lg adds emphasis.",
+  ],
   ["Comfortable / compact", "Density tokens adjust height and padding without changing the API."],
 ] as const;
 
@@ -97,8 +121,8 @@ const implementationRows = [
 const tokenRows = [
   [
     "Sizing",
-    "--n-badge-height / --n-badge-padding-inline / --n-badge-gap",
-    "Controls density-aware Badge dimensions.",
+    "--n-badge-height / --n-badge-height-sm / --n-badge-height-lg / --n-badge-font-size-sm / --n-badge-padding-inline-sm / --n-badge-padding-inline-lg / --n-badge-gap-sm / --n-badge-gap-lg",
+    "Controls default, compact, and elevated Badge dimensions.",
   ],
   ["Shape", "--n-badge-radius", "Controls the semantic pill radius."],
   ["Surface", "--n-badge-background / --n-badge-foreground", "Default Badge treatment."],
@@ -230,17 +254,36 @@ export default function Page() {
               <Badge tone="warning" trailingIcon={CircleAlert}>
                 Review needed
               </Badge>
+              <Badge size="sm" tone="info">
+                24
+              </Badge>
             </div>
           </BadgeSectionPreview>
         ),
       }}
       sectionContent={{
         variants: (
-          <DocumentationTable
-            headers={["Tone", "Soft (default)", "Strong"]}
-            rows={variantRows}
-            codeColumns={1}
-          />
+          <>
+            <DocumentationTable
+              headers={["Tone", "Soft (default)", "Strong"]}
+              rows={variantRows}
+              codeColumns={1}
+            />
+            <BadgeSectionPreview>
+              <div className="preview-row" aria-label="Badge size preview">
+                <Badge size="sm" tone="info">
+                  24
+                </Badge>
+                <Badge size="md" tone="info">
+                  24
+                </Badge>
+                <Badge size="lg" tone="info">
+                  24
+                </Badge>
+              </div>
+            </BadgeSectionPreview>
+            <DocumentationTable headers={["Size", "Use"]} rows={sizeRows} codeColumns={1} />
+          </>
         ),
         anatomy: (
           <DocumentationTable headers={["Slot", "Purpose"]} rows={anatomyRows} codeColumns={1} />

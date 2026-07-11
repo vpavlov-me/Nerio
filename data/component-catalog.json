@@ -157,6 +157,14 @@
       "description": "Deprecated compatibility wrapper for Button icon-only mode; retained until the next major release."
     },
     {
+      "name": "ButtonGroup",
+      "tier": "core",
+      "package": "@nerio/ui",
+      "category": "actions",
+      "status": "implemented-initial",
+      "description": "Attached layout group for related Button controls."
+    },
+    {
       "name": "Input",
       "tier": "core",
       "package": "@nerio/ui",

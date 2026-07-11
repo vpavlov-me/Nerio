@@ -28,7 +28,7 @@ import {
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, DropdownMenu, Icon } from "@nerio/ui/client";
+import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/ui/client";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
 
@@ -74,6 +74,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/docs/components/kbd", label: "Kbd", icon: Code2 },
       { href: "/docs/components/button", label: "Button", icon: Circle },
+      { href: "/docs/components/button-group", label: "ButtonGroup", icon: Circle },
     ],
   },
   {
@@ -394,6 +395,7 @@ function PageActions({ pathname }: { pathname: string }) {
   const [copied, setCopied] = React.useState(false);
   const [actionStatus, setActionStatus] = React.useState("");
   const [actionsOpen, setActionsOpen] = React.useState(false);
+  const pageActionsRef = React.useRef<HTMLDivElement | null>(null);
   const copyResetTimer = React.useRef<number | undefined>(undefined);
   const statusResetTimer = React.useRef<number | undefined>(undefined);
 
@@ -404,6 +406,24 @@ function PageActions({ pathname }: { pathname: string }) {
     },
     [],
   );
+
+  React.useEffect(() => {
+    if (!actionsOpen) return;
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (event.target instanceof Node && !pageActionsRef.current?.contains(event.target)) {
+        setActionsOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActionsOpen(false);
+    };
+    document.addEventListener("pointerdown", closeOnOutsidePointer);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePointer);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [actionsOpen]);
 
   const copyToClipboard = async (value: string, successMessage: string) => {
     try {
@@ -468,27 +488,27 @@ function PageActions({ pathname }: { pathname: string }) {
   const { previous, next } = getAdjacentDocs(pathname);
 
   return (
-    <div className="docs-page-actions" aria-label="Page actions">
-      <Button
-        className="docs-copy-markdown"
-        leadingIcon={copied ? Check : Copy}
-        size="sm"
-        variant="secondary"
-        onClick={copyMarkdown}
-      >
-        {copied ? "Copied" : "Copy Markdown"}
-      </Button>
-      <button
-        className="docs-actions-toggle"
-        type="button"
-        aria-label="Open page actions"
-        aria-expanded={actionsOpen}
-        aria-controls="docs-page-actions-menu"
-        onClick={() => setActionsOpen((open) => !open)}
-      >
-        <Icon icon={ChevronDown} />
-      </button>
-      <div className="docs-page-actions__navigation" aria-label="Page navigation">
+    <div ref={pageActionsRef} className="docs-page-actions" aria-label="Page actions">
+      <ButtonGroup aria-label="Documentation actions">
+        <Button
+          leadingIcon={copied ? Check : Copy}
+          size="sm"
+          variant="secondary"
+          onClick={copyMarkdown}
+        >
+          {copied ? "Copied" : "Copy Markdown"}
+        </Button>
+        <Button
+          aria-controls="docs-page-actions-menu"
+          aria-expanded={actionsOpen}
+          aria-label="Open page actions"
+          icon={ChevronDown}
+          size="sm"
+          variant="secondary"
+          onClick={() => setActionsOpen((open) => !open)}
+        />
+      </ButtonGroup>
+      <nav aria-label="Page navigation" className="docs-page-actions__navigation">
         {previous ? (
           <Button
             icon={ArrowLeft}
@@ -511,7 +531,7 @@ function PageActions({ pathname }: { pathname: string }) {
             render={<Link href={next.href} />}
           />
         ) : null}
-      </div>
+      </nav>
       {actionsOpen ? (
         <div className="docs-actions-menu" id="docs-page-actions-menu" role="menu">
           <button role="menuitem" type="button" onClick={() => void runAction(viewMarkdown)}>

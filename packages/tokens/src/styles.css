@@ -200,6 +200,7 @@
   --n-motion-translate-md: 0.375rem;
   --n-motion-scale-subtle: 0.98;
 
+  --n-font-size-2xs: 0.6875rem;
   --n-font-size-xs: 0.75rem;
   --n-font-size-sm: 0.8125rem;
   --n-font-size-md: 0.875rem;
@@ -323,6 +324,7 @@
   --n-button-padding-inline-lg: var(--n-space-4);
   --n-button-border-width: var(--n-border-width-default);
   --n-button-border-transparent: transparent;
+  --n-button-group-divider: var(--n-color-border-default);
   --n-button-disabled-opacity: var(--n-opacity-disabled);
   --n-button-icon-size: var(--n-icon-size-md);
   --n-button-background-primary: var(--n-color-action-primary);
@@ -390,9 +392,17 @@
   --n-alert-shadow: var(--n-shadow-surface-raised);
   --n-alert-icon-size: var(--n-icon-size-md);
   --n-badge-height: var(--n-space-6);
+  --n-badge-height-sm: 1.125rem;
+  --n-badge-height-lg: var(--n-size-control-sm);
   --n-badge-padding-inline: var(--n-space-2);
+  --n-badge-padding-inline-sm: var(--n-space-1-5);
+  --n-badge-padding-inline-lg: var(--n-space-2-5);
   --n-badge-gap: var(--n-space-1);
+  --n-badge-gap-sm: var(--n-space-0-5);
+  --n-badge-gap-lg: var(--n-space-1-5);
   --n-badge-font-size: var(--n-font-size-xs);
+  --n-badge-font-size-sm: var(--n-font-size-2xs);
+  --n-badge-font-size-lg: var(--n-font-size-sm);
   --n-badge-radius: var(--n-radius-full);
   --n-badge-border-width: var(--n-border-width-0);
   --n-badge-border: transparent;
@@ -418,6 +428,8 @@
   --n-badge-background-strong-warning: var(--n-color-status-warning-strong);
   --n-badge-background-strong-danger: var(--n-color-status-danger-strong);
   --n-badge-icon-size: var(--n-icon-size-sm);
+  --n-badge-icon-size-sm: var(--n-icon-size-xs);
+  --n-badge-icon-size-lg: var(--n-icon-size-md);
   --n-avatar-size-sm: var(--n-icon-size-xl);
   --n-avatar-size-md: var(--n-size-control-md);
   --n-avatar-size-lg: var(--n-size-control-lg);
@@ -996,6 +1008,8 @@
   --n-button-height-lg: var(--n-size-control-lg);
   --n-card-gap: var(--n-space-3);
   --n-badge-height: 1.375rem;
+  --n-badge-height-sm: 1rem;
+  --n-badge-height-lg: 1.5rem;
   --n-avatar-size-sm: 1.25rem;
   --n-avatar-size-md: 1.75rem;
   --n-avatar-size-lg: var(--n-size-control-md);

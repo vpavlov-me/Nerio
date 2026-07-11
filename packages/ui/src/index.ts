@@ -1,5 +1,6 @@
 export * from "./lib/cn";
 export { motionClasses, type MotionClassName } from "./lib/motion";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export {
   Code,
   Heading,
@@ -20,6 +21,7 @@ export {
   Badge,
   type BadgeEmphasis,
   type BadgeProps,
+  type BadgeSize,
   type BadgeTone,
   type BadgeVariant,
 } from "./components/badge";
