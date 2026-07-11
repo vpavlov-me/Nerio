@@ -1,10 +1,21 @@
 :root {
   color-scheme: light;
-  --n-font-geist:
-    "Geist", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --n-font-geist-mono: "Geist Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  --n-font-sans: var(--n-font-geist);
-  --n-font-mono: var(--n-font-geist-mono);
+  --n-font-sans-system:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --n-font-sans-geist: "Geist", var(--n-font-sans-system);
+  --n-font-sans-inter: "Inter", var(--n-font-sans-system);
+  --n-font-sans-ibm-plex: "IBM Plex Sans", var(--n-font-sans-system);
+  --n-font-sans-manrope: "Manrope", var(--n-font-sans-system);
+  --n-font-sans-source-sans: "Source Sans 3", var(--n-font-sans-system);
+  --n-font-sans-space-grotesk: "Space Grotesk", var(--n-font-sans-system);
+  --n-font-mono-system:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+    monospace;
+  --n-font-mono-geist: "Geist Mono", var(--n-font-mono-system);
+  --n-font-mono-ibm-plex: "IBM Plex Mono", var(--n-font-mono-system);
+  --n-font-sans: var(--n-font-sans-system);
+  --n-font-mono: var(--n-font-mono-system);
 
   --n-gray-0: #ffffff;
   --n-gray-50: #fafafa;
@@ -1012,6 +1023,41 @@
   --n-table-cell-padding-x: var(--n-space-3);
   --n-pagination-item-size: 1.75rem;
   --n-list-item-padding: var(--n-space-2);
+}
+
+.n-typography-system {
+  --n-font-sans: var(--n-font-sans-system);
+  --n-font-mono: var(--n-font-mono-system);
+}
+
+.n-typography-geist {
+  --n-font-sans: var(--n-font-sans-geist);
+  --n-font-mono: var(--n-font-mono-geist);
+}
+
+.n-typography-inter {
+  --n-font-sans: var(--n-font-sans-inter);
+  --n-font-mono: var(--n-font-mono-system);
+}
+
+.n-typography-ibm-plex {
+  --n-font-sans: var(--n-font-sans-ibm-plex);
+  --n-font-mono: var(--n-font-mono-ibm-plex);
+}
+
+.n-typography-manrope {
+  --n-font-sans: var(--n-font-sans-manrope);
+  --n-font-mono: var(--n-font-mono-system);
+}
+
+.n-typography-source-sans {
+  --n-font-sans: var(--n-font-sans-source-sans);
+  --n-font-mono: var(--n-font-mono-system);
+}
+
+.n-typography-space-grotesk {
+  --n-font-sans: var(--n-font-sans-space-grotesk);
+  --n-font-mono: var(--n-font-mono-system);
 }
 
 html {

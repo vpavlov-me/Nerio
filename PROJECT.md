@@ -120,6 +120,11 @@ Developers may override variables such as:
 - `--n-duration-normal`
 - semantic color and contrast variables
 
+Typography decision: Core defaults to System UI, the documentation application brands itself with
+Geist, and the official System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk
+presets are scoped CSS token recipes. Products load non-system fonts themselves. Nerio does not bundle
+fonts and does not provide a runtime font axis in v1.
+
 Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale` in v1. These may become future runtime axes only after an explicit architecture decision.
 
 ## Core component scope

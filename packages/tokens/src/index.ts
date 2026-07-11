@@ -1,6 +1,15 @@
 export const themes = ["purple", "blue", "green", "orange", "red", "neutral"] as const;
 export const modes = ["system", "light", "dark"] as const;
 export const densities = ["comfortable", "compact"] as const;
+export const typographyPresets = [
+  "system",
+  "geist",
+  "inter",
+  "ibm-plex",
+  "manrope",
+  "source-sans",
+  "space-grotesk",
+] as const;
 
 export const motionDuration = {
   instant: "80ms",
@@ -34,6 +43,7 @@ export type NerioPresetTheme = (typeof themes)[number];
 export type NerioTheme = NerioPresetTheme | (string & {});
 export type NerioMode = (typeof modes)[number];
 export type NerioDensity = (typeof densities)[number];
+export type NerioTypographyPreset = (typeof typographyPresets)[number];
 export type NerioMotionDuration = keyof typeof motionDuration;
 export type NerioMotionEasing = keyof typeof motionEasing;
 export type NerioSemanticMotion = keyof typeof semanticMotion;

@@ -207,6 +207,14 @@ async function verify() {
     if (!cardInfoOutput.includes("--n-card-padding-inline")) {
       throw new Error("Card registry metadata did not include the spacing contract.");
     }
+    const typographyInfoOutput = await run(localTarget, "info", "typography");
+    if (
+      !typographyInfoOutput.includes("--n-font-sans-system") ||
+      !typographyInfoOutput.includes("styles/tokens.css") ||
+      !typographyInfoOutput.includes("consumer-loaded Geist, Inter, IBM Plex")
+    ) {
+      throw new Error("Typography registry metadata did not include the preset token contract.");
+    }
     const dryRunOutput = await run(localTarget, "add", "input", "--dry-run");
     if (
       !dryRunOutput.includes("Would add Input") ||
@@ -215,6 +223,7 @@ async function verify() {
       throw new Error("Dry run output did not describe the input install plan.");
     }
     await run(localTarget, "add", "button");
+    await run(localTarget, "add", "typography");
     await run(localTarget, "add", "icon-button");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
@@ -243,6 +252,18 @@ async function verify() {
     await run(localTarget, "add", "tooltip");
     await run(localTarget, "add", "toast");
     assertInstall(localTarget);
+    assertFiles(localTarget, [
+      "components/typography.tsx",
+      "styles/typography.css",
+      "styles/tokens.css",
+    ]);
+    const installedTypographyTokens = fs.readFileSync(
+      path.join(localTarget, "components/nerio/styles/tokens.css"),
+      "utf8",
+    );
+    if (!installedTypographyTokens.includes(".n-typography-inter")) {
+      throw new Error("Installed Typography token stylesheet is missing the Inter recipe.");
+    }
     assertInstall(localTarget, expectedDialogFiles);
     assertFiles(localTarget, expectedFieldFiles);
     const fieldSource = fs.readFileSync(

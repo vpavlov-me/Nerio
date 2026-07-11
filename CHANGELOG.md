@@ -13,6 +13,7 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Added source registry, CLI installation, and MCP component-discovery contracts for Core components.
 - Added `Kbd` for displaying keyboard shortcuts in component interfaces.
 - Added component contract and accessibility test coverage for the Core release surface.
+- Added System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk typography preset recipes through CSS tokens.
 
 ### Changed
 
@@ -20,6 +21,7 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Consolidated icon-only actions into Button icon mode and keyboard shortcut composition.
 - Expanded Card into a composable anatomy with header, content, footer, action, and visual slots.
 - Improved theme, dark-mode, and density behavior across the Core component surface.
+- Changed Nerio Core's default sans-serif typography from Geist to the platform system font stack.
 
 ### Fixed
 
@@ -41,6 +43,7 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 
 - Replace new `IconButton` usage with Button icon mode and provide an accessible name.
 - Replace Button `subtle` and `destructive` variants with `secondary` and `danger`.
+- Products that relied on Geist implicitly should load it explicitly and apply the Geist typography preset or override `--n-font-sans`.
 
 ## Maintenance rules
 
