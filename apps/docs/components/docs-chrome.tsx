@@ -67,14 +67,19 @@ const navGroups: NavGroup[] = [
       { href: "/docs/foundations/radius", label: "Radius", icon: Circle },
       { href: "/docs/foundations/effects", label: "Effects", icon: Wrench },
       { href: "/docs/foundations/icons", label: "Icons", icon: Box },
-      { href: "/docs/components/kbd", label: "Kbd", icon: Code2 },
     ],
   },
   {
-    title: "Actions and feedback",
+    title: "Actions",
     items: [
+      { href: "/docs/components/kbd", label: "Kbd", icon: Code2 },
       { href: "/docs/components/button", label: "Button", icon: Circle },
       { href: "/docs/components/link", label: "Link", icon: Circle },
+    ],
+  },
+  {
+    title: "Feedback",
+    items: [
       { href: "/docs/components/badge", label: "Badge", icon: Circle },
       { href: "/docs/components/alert", label: "Alert", icon: Circle },
       { href: "/docs/components/spinner", label: "Spinner", icon: Circle },
@@ -99,11 +104,16 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Layout and display",
+    title: "Layout",
     items: [
       { href: "/docs/components/typography", label: "Typography", icon: Type },
       { href: "/docs/components/card", label: "Card", icon: PanelLeft },
       { href: "/docs/components/separator", label: "Separator", icon: Circle },
+    ],
+  },
+  {
+    title: "Data display",
+    items: [
       { href: "/docs/components/avatar", label: "Avatar", icon: Circle },
       { href: "/docs/components/progress", label: "Progress", icon: Circle },
       { href: "/docs/components/stat", label: "Stat", icon: Circle },
@@ -113,11 +123,16 @@ const navGroups: NavGroup[] = [
     ],
   },
   {
-    title: "Navigation and overlays",
+    title: "Navigation",
     items: [
       { href: "/docs/components/tabs", label: "Tabs", icon: Layers },
       { href: "/docs/components/breadcrumbs", label: "Breadcrumbs", icon: ListTree },
       { href: "/docs/components/pagination", label: "Pagination", icon: ListTree },
+    ],
+  },
+  {
+    title: "Overlays",
+    items: [
       { href: "/docs/components/dialog", label: "Dialog", icon: PanelLeft },
       { href: "/docs/components/popover", label: "Popover", icon: PanelLeft },
       { href: "/docs/components/tooltip", label: "Tooltip", icon: Circle },
@@ -210,6 +225,22 @@ const buttonToc: TocItem[] = [
   { id: "tokens", label: "Tokens" },
 ];
 
+const badgeToc: TocItem[] = [
+  { id: "preview", label: "Preview" },
+  { id: "usage", label: "Usage" },
+  { id: "variants", label: "Variants" },
+  { id: "anatomy", label: "Anatomy" },
+  { id: "states", label: "States" },
+  { id: "motion", label: "Motion" },
+  { id: "accessibility", label: "Accessibility" },
+  { id: "api", label: "API" },
+  { id: "implementation-contract", label: "Implementation contract" },
+  { id: "design-notes", label: "Design notes" },
+  { id: "do-do-not", label: "Do / do not" },
+  { id: "related-components", label: "Related components" },
+  { id: "tokens", label: "Tokens" },
+];
+
 const tocByPath: Record<string, TocItem[]> = {
   "/docs/getting-started": [
     { id: "install", label: "Install" },
@@ -285,6 +316,7 @@ const tocByPath: Record<string, TocItem[]> = {
 
 function getDefaultToc(pathname: string): TocItem[] {
   if (pathname === "/docs/components/button") return buttonToc;
+  if (pathname === "/docs/components/badge") return badgeToc;
   if (pathname.startsWith("/docs/components/")) return componentToc;
   if (pathname.startsWith("/docs/blocks/") || pathname.startsWith("/docs/compositions/")) {
     return compositionToc;
@@ -313,10 +345,7 @@ const searchEntries: SearchEntry[] = [...navGroups, compositionGroup].flatMap((g
 );
 
 const foundationGroups = navGroups.slice(0, 2);
-const componentItems = navGroups
-  .slice(2)
-  .flatMap((group) => group.items)
-  .sort((left, right) => left.label.localeCompare(right.label));
+const componentGroups = navGroups.slice(2);
 const documentationItems: NavItem[] = [
   { href: "/", label: "Overview", icon: BookOpen },
   ...navGroups.flatMap((group) => group.items),
@@ -327,9 +356,7 @@ function getSidebarGroups(pathname: string): NavGroup[] {
   if (pathname.startsWith("/docs/blocks") || pathname.startsWith("/docs/compositions")) {
     return [compositionGroup];
   }
-  return pathname.startsWith("/docs/components")
-    ? [{ title: "Components", items: componentItems }]
-    : foundationGroups;
+  return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
 }
 
 function getAdjacentDocs(pathname: string) {
@@ -473,7 +500,7 @@ function PageActions({ pathname }: { pathname: string }) {
           <Button
             icon={ArrowLeft}
             aria-label={`Previous: ${previous.label}`}
-            tooltip={`Previous: ${previous.label}`}
+            tooltip={previous.label}
             size="sm"
             variant="secondary"
             nativeButton={false}
@@ -484,7 +511,7 @@ function PageActions({ pathname }: { pathname: string }) {
           <Button
             icon={ArrowRight}
             aria-label={`Next: ${next.label}`}
-            tooltip={`Next: ${next.label}`}
+            tooltip={next.label}
             size="sm"
             variant="secondary"
             nativeButton={false}
@@ -702,17 +729,6 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   };
 
   const sidebarGroups = getSidebarGroups(pathname);
-  const isComponentsPage = pathname.startsWith("/docs/components");
-  const filteredGroups = search.trim()
-    ? sidebarGroups
-        .map((group) => ({
-          ...group,
-          items: group.items.filter((item) =>
-            item.label.toLowerCase().includes(search.trim().toLowerCase()),
-          ),
-        }))
-        .filter((group) => group.items.length > 0)
-    : sidebarGroups;
 
   const searchTerm = search.trim().toLowerCase();
   const searchResults = searchTerm
@@ -765,62 +781,61 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             </Link>
           </nav>
 
-          <div className="docs-search-wrap">
-            <Dialog
-              bodyClassName="docs-search-dialog__body"
-              className="docs-search-dialog"
-              description="Search pages, foundations, and components."
-              onOpenChange={setSearchOpen}
-              open={searchOpen}
-              title="Search documentation"
-              trigger={
-                <button className="docs-search-trigger" type="button">
-                  <Icon icon={Search} />
-                  <span>Search documentation</span>
-                  <Kbd aria-hidden>/</Kbd>
-                </button>
-              }
-            >
-              <div className="docs-search-results" role="listbox">
-                <Input
-                  ref={searchInputRef}
-                  aria-label="Search documentation"
-                  placeholder="Search documentation"
-                  value={search}
-                  onChange={(event) => setSearch(event.currentTarget.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Escape") setSearchOpen(false);
-                  }}
-                />
-                {searchTerm ? (
-                  searchResults.length ? (
-                    searchResults.map((entry) => (
-                      <Link
-                        key={entry.href}
-                        href={entry.href}
-                        role="option"
-                        onClick={() => {
-                          setSearch("");
-                          setSearchOpen(false);
-                        }}
-                      >
-                        <span>{entry.title}</span>
-                        <small>
-                          {entry.group} - {entry.description}
-                        </small>
-                      </Link>
-                    ))
-                  ) : (
-                    <div className="docs-search-empty">No matching documentation pages.</div>
-                  )
-                ) : (
-                  <div className="docs-search-empty">Start typing to search documentation.</div>
-                )}
-              </div>
-            </Dialog>
-          </div>
-
           <div className="docs-controls">
+            <div className="docs-search-wrap">
+              <Dialog
+                bodyClassName="docs-search-dialog__body"
+                className="docs-search-dialog"
+                description="Search pages, foundations, and components."
+                onOpenChange={setSearchOpen}
+                open={searchOpen}
+                title="Search documentation"
+                trigger={
+                  <button className="docs-search-trigger" type="button">
+                    <Icon icon={Search} />
+                    <span>Search documentation</span>
+                    <Kbd aria-hidden>/</Kbd>
+                  </button>
+                }
+              >
+                <div className="docs-search-results" role="listbox">
+                  <Input
+                    ref={searchInputRef}
+                    aria-label="Search documentation"
+                    placeholder="Search documentation"
+                    value={search}
+                    onChange={(event) => setSearch(event.currentTarget.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") setSearchOpen(false);
+                    }}
+                  />
+                  {searchTerm ? (
+                    searchResults.length ? (
+                      searchResults.map((entry) => (
+                        <Link
+                          key={entry.href}
+                          href={entry.href}
+                          role="option"
+                          onClick={() => {
+                            setSearch("");
+                            setSearchOpen(false);
+                          }}
+                        >
+                          <span>{entry.title}</span>
+                          <small>
+                            {entry.group} - {entry.description}
+                          </small>
+                        </Link>
+                      ))
+                    ) : (
+                      <div className="docs-search-empty">No matching documentation pages.</div>
+                    )
+                  ) : (
+                    <div className="docs-search-empty">Start typing to search documentation.</div>
+                  )}
+                </div>
+              </Dialog>
+            </div>
             <span className="docs-controls-divider" aria-hidden />
             <DropdownMenu
               className="docs-theme-menu"
@@ -876,44 +891,28 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
       <div className={isTemplatesPage ? "docs-layout docs-layout--template" : "docs-layout"}>
         {isTemplatesPage ? null : (
           <aside className="docs-sidebar">
-            <nav
-              aria-label="Documentation"
-              className={isComponentsPage ? "docs-sidebar__component-list" : undefined}
-            >
-              {isComponentsPage
-                ? filteredGroups.flatMap((group) =>
-                    group.items.map(({ href, label }) => (
+            <nav aria-label="Documentation">
+              {sidebarGroups.map((group) => (
+                <div className="nav-group" key={group.title}>
+                  <h2>{group.title}</h2>
+                  {group.items.map(({ href, label, icon }) => {
+                    const hasIcon = group.title === "Overview" || group.title === "Foundations";
+
+                    return (
                       <Link
                         key={href}
                         href={href}
+                        data-has-icon={hasIcon || undefined}
                         className={pathname === href ? "is-active" : undefined}
                         aria-current={pathname === href ? "page" : undefined}
                       >
+                        {hasIcon ? <Icon icon={icon} /> : null}
                         {label}
                       </Link>
-                    )),
-                  )
-                : filteredGroups.map((group) => (
-                    <div className="nav-group" key={group.title}>
-                      <h2>{group.title}</h2>
-                      {group.items.map(({ href, label, icon }) => {
-                        const hasIcon = group.title === "Overview" || group.title === "Foundations";
-
-                        return (
-                          <Link
-                            key={href}
-                            href={href}
-                            data-has-icon={hasIcon || undefined}
-                            className={pathname === href ? "is-active" : undefined}
-                            aria-current={pathname === href ? "page" : undefined}
-                          >
-                            {hasIcon ? <Icon icon={icon} /> : null}
-                            {label}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  ))}
+                    );
+                  })}
+                </div>
+              ))}
             </nav>
           </aside>
         )}

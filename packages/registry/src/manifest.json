@@ -283,24 +283,39 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/lib/motion.ts",
-          "target": "lib/motion.ts",
-          "role": "utility"
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
         },
         {
-          "source": "../../ui/src/styles/motion.css",
-          "target": "styles/motion.css",
-          "role": "style"
+          "source": "../../ui/src/components/spinner.tsx",
+          "target": "components/spinner.tsx",
+          "role": "component"
         },
         {
           "source": "../../ui/src/styles/feedback.css",
           "target": "styles/feedback.css",
           "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/spinner.css",
+          "target": "styles/spinner.css",
+          "role": "style"
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "dot", "icon", "label"],
-      "variants": ["neutral", "primary-soft", "info", "success", "warning", "danger"],
+      "slots": ["root", "leading-icon", "label", "trailing-icon"],
+      "variants": [
+        "soft",
+        "strong",
+        "neutral",
+        "primary-soft",
+        "accent",
+        "info",
+        "success",
+        "warning",
+        "danger"
+      ],
       "requiredTokens": [
         "--n-badge-height",
         "--n-badge-radius",
@@ -308,15 +323,35 @@
         "--n-badge-foreground",
         "--n-badge-background-primary-soft",
         "--n-badge-foreground-primary-soft",
-        "--n-badge-dot-size"
+        "--n-badge-background-accent",
+        "--n-badge-foreground-accent",
+        "--n-badge-background-info",
+        "--n-badge-foreground-info",
+        "--n-badge-background-success",
+        "--n-badge-foreground-success",
+        "--n-badge-background-warning",
+        "--n-badge-foreground-warning",
+        "--n-badge-background-danger",
+        "--n-badge-foreground-danger",
+        "--n-badge-icon-size",
+        "--n-badge-background-strong",
+        "--n-badge-foreground-strong",
+        "--n-badge-background-strong-primary",
+        "--n-badge-background-strong-info",
+        "--n-badge-background-strong-success",
+        "--n-badge-background-strong-warning",
+        "--n-badge-background-strong-danger",
+        "--n-spinner-size-sm"
       ],
       "accessibility": [
         "Use concise text that does not rely on color alone.",
         "Avoid using Badge as a button or link.",
         "Use tone for semantic color; variant remains a deprecated compatibility alias.",
-        "Optional dots and icons are decorative, so text must carry the status meaning."
+        "Optional icons are decorative, so text must carry the status meaning.",
+        "Use leadingIcon or trailingIcon for visual context; the label remains the accessible status name.",
+        "Use strong emphasis only when a warning, danger, or other status needs elevated attention."
       ],
-      "usage": "import { Badge } from '@/components/nerio/components/badge';\n\n<Badge tone=\"success\" dot>Published</Badge>"
+      "usage": "import { Check } from '@nerio/adapters';\nimport { Badge } from '@/components/nerio/components/badge';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>"
     },
     {
       "name": "spinner",
