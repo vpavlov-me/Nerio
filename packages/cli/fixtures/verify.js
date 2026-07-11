@@ -392,10 +392,10 @@ async function verify() {
       "utf8",
     );
     if (
-      !buttonSource.includes("isAnchorRender") ||
-      !buttonSource.includes('normalizedVariant === "link"')
+      !buttonSource.includes("isRenderElement") ||
+      !buttonSource.includes("React.cloneElement(renderedElement")
     ) {
-      throw new Error("Installed Button source does not preserve native link rendering.");
+      throw new Error("Installed Button source does not preserve custom link rendering.");
     }
 
     const radioSource = fs.readFileSync(
