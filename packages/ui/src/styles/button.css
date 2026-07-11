@@ -68,6 +68,18 @@
   color: var(--n-color-text-primary);
 }
 
+.n-button[data-variant="link"] {
+  background: transparent;
+  border-color: transparent;
+  block-size: auto;
+  color: var(--n-link-color);
+  padding-inline: var(--n-space-0);
+}
+
+.n-button[data-variant="link"]:hover:not(:disabled):not([data-disabled]) {
+  color: var(--n-link-color-hover);
+}
+
 .n-button[data-variant="danger"] {
   background: var(--n-button-background-destructive);
   color: var(--n-button-foreground-destructive);

@@ -14,6 +14,7 @@ export type ButtonVariant =
   | "secondary"
   | "outline"
   | "ghost"
+  | "link"
   | "danger"
   /** @deprecated Use secondary. */
   | "subtle"
@@ -22,6 +23,17 @@ export type ButtonVariant =
 export type ButtonSize = "sm" | "md" | "lg";
 
 type CanonicalButtonVariant = Exclude<ButtonVariant, "subtle" | "destructive">;
+type AnchorRenderProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  "data-icon-only"?: string;
+  "data-loading"?: string;
+  "data-size"?: ButtonSize;
+  "data-slot"?: string;
+  "data-variant"?: CanonicalButtonVariant;
+};
+
+function isAnchorRender(render: unknown): render is React.ReactElement<AnchorRenderProps> {
+  return React.isValidElement(render) && render.type === "a";
+}
 
 type ButtonBaseProps = Omit<
   React.ComponentProps<typeof BaseButton>,
@@ -82,12 +94,21 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     tooltip,
     children,
     disabled,
+    render,
+    nativeButton: _nativeButton,
     ...props
   },
   ref,
 ) {
   const iconOnly = Boolean(icon);
   const normalizedVariant = normalizeButtonVariant(variant);
+  const classNames = cn(
+    "n-button",
+    motionClasses.hover,
+    motionClasses.press,
+    motionClasses.focus,
+    className,
+  );
   const keyboardShortcut =
     React.isValidElement(kbd) && kbd.type === Kbd ? (
       React.cloneElement(kbd as React.ReactElement<KbdProps>, {
@@ -99,25 +120,8 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
         {kbd}
       </Kbd>
     ) : null;
-  const content = (
-    <BaseButton
-      ref={ref}
-      {...props}
-      className={cn(
-        "n-button",
-        motionClasses.hover,
-        motionClasses.press,
-        motionClasses.focus,
-        className,
-      )}
-      data-slot="button"
-      data-variant={normalizedVariant}
-      data-size={size}
-      data-loading={loading ? "true" : undefined}
-      data-icon-only={iconOnly ? "true" : undefined}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
-    >
+  const contents = (
+    <>
       {loading ? (
         <Spinner aria-hidden size="sm" />
       ) : icon ? (
@@ -134,6 +138,42 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
           <Icon icon={trailingIcon} />
         </span>
       ) : null}
+    </>
+  );
+  const anchor = normalizedVariant === "link" && isAnchorRender(render) ? render : null;
+  const content = anchor ? (
+    React.cloneElement(anchor, {
+      className: cn(anchor.props.className, classNames),
+      "aria-busy": loading || undefined,
+      "aria-disabled": disabled || loading || undefined,
+      "data-icon-only": iconOnly ? "true" : undefined,
+      "data-loading": loading ? "true" : undefined,
+      "data-size": size,
+      "data-slot": "button",
+      "data-variant": normalizedVariant,
+      onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
+        if (disabled || loading) {
+          event.preventDefault();
+          return;
+        }
+        anchor.props.onClick?.(event);
+      },
+      children: contents,
+    })
+  ) : (
+    <BaseButton
+      ref={ref}
+      {...props}
+      className={classNames}
+      data-slot="button"
+      data-variant={normalizedVariant}
+      data-size={size}
+      data-loading={loading ? "true" : undefined}
+      data-icon-only={iconOnly ? "true" : undefined}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+    >
+      {contents}
     </BaseButton>
   );
 

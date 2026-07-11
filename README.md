@@ -100,7 +100,7 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
 
 ```tsx
-import { Alert, Breadcrumbs, Card, Link, List, Pagination, Table } from "@nerio/ui";
+import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio/ui";
 import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
 import "@nerio/ui/styles.css";
 ```

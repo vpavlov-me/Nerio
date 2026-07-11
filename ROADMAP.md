@@ -66,7 +66,7 @@ Before continuing broad Phase 2B expansion, prepare Core for a future public pre
 
 Scope:
 
-- Actions: Link
+- Actions: Button link variant
 - Forms: FormGroup, Radio Group
 - Overlays: Sheet
 - Data display: List

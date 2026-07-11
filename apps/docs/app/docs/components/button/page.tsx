@@ -29,7 +29,7 @@ function ButtonSectionPreview({ children }: { children: React.ReactNode }) {
 }
 
 const apiRows = [
-  ["variant", "primary | secondary | outline | ghost | danger", "Sets action emphasis."],
+  ["variant", "primary | secondary | outline | ghost | link | danger", "Sets action emphasis."],
   ["size", "sm | md | lg", "Uses density-aware height tokens."],
   [
     "leadingIcon / trailingIcon",
@@ -47,6 +47,7 @@ const variantRows = [
   ["secondary", "Support the primary action without competing with it."],
   ["outline", "Offer a bounded secondary action on a quiet surface."],
   ["ghost", "Keep repeated or low-emphasis actions visually calm."],
+  ["link", "Use for navigation with an anchor render target; it has no padding or underline."],
   ["danger", "Signal a destructive action that needs explicit intent."],
 ] as const;
 
@@ -84,6 +85,7 @@ const tokenRows = [
     "Supporting action treatment.",
   ],
   ["Ghost", "--n-button-background-ghost / hover / foreground", "Low-emphasis action treatment."],
+  ["Link", "--n-link-color / hover", "Text-level navigation with color-only interaction."],
   [
     "Danger",
     "--n-button-background-destructive / foreground-destructive",
@@ -166,6 +168,9 @@ export default function Page() {
               <Button variant="secondary">Secondary</Button>
               <Button variant="outline">Outline</Button>
               <Button variant="ghost">Ghost</Button>
+              <Button nativeButton={false} render={<a href="#usage" />} variant="link">
+                Link
+              </Button>
               <Button variant="danger">Danger</Button>
             </div>
           </ButtonSectionPreview>
@@ -281,7 +286,7 @@ export default function Page() {
                 <CardTitle>Do not</CardTitle>
               </CardHeader>
               <CardContent>
-                Use Button for navigation when a semantic Link describes the destination.
+                Use the link variant with an anchor render target for a destination.
               </CardContent>
             </Card>
           </div>
@@ -290,9 +295,9 @@ export default function Page() {
           <div className="button-related-cards">
             {[
               [
-                "Link",
-                "Use a semantic destination instead of an in-place action.",
-                "/docs/components/link",
+                "Tokens",
+                "Adjust shared colors and spacing without changing Button source.",
+                "/docs/foundations/tokens",
               ],
               [
                 "Tooltip",

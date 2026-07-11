@@ -19,7 +19,6 @@ import {
   Heading,
   Input,
   KeyValue,
-  Link,
   List,
   Pagination,
   Popover,
@@ -60,7 +59,7 @@ type Composition = {
   Preview: React.ComponentType;
 };
 
-const authComponents = ["Card", "Field", "Input", "Button", "Link", "Alert"];
+const authComponents = ["Card", "Field", "Input", "Button", "Alert"];
 
 function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
   const [submitted, setSubmitted] = React.useState(false);
@@ -129,7 +128,13 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
           ) : null}
           <Button loading={submitted && !invalid}>{copy.action}</Button>
           {kind === "login" ? (
-            <Link href="/docs/blocks/forgot-password">Forgot your password?</Link>
+            <Button
+              nativeButton={false}
+              render={<a href="/docs/blocks/forgot-password" />}
+              variant="link"
+            >
+              Forgot your password?
+            </Button>
           ) : null}
           {kind === "register" ? (
             <Alert tone="info" title="Email verification">
@@ -489,9 +494,15 @@ function NavigationPreview() {
         ]}
       />
       <nav aria-label="Composition sections" className="composition-top-nav">
-        <Link href="#overview">Overview</Link>
-        <Link href="#live-preview">Preview</Link>
-        <Link href="#notes">Notes</Link>
+        <Button nativeButton={false} render={<a href="#overview" />} variant="link">
+          Overview
+        </Button>
+        <Button nativeButton={false} render={<a href="#live-preview" />} variant="link">
+          Preview
+        </Button>
+        <Button nativeButton={false} render={<a href="#notes" />} variant="link">
+          Notes
+        </Button>
       </nav>
       <Tabs
         tabs={[
@@ -509,9 +520,15 @@ function NavigationPreview() {
       />
       <div className="composition-sidebar-preview">
         <nav aria-label="Section navigation">
-          <Link href="#overview">Overview</Link>
-          <Link href="#components-used">Components used</Link>
-          <Link href="#accessibility">Accessibility</Link>
+          <Button nativeButton={false} render={<a href="#overview" />} variant="link">
+            Overview
+          </Button>
+          <Button nativeButton={false} render={<a href="#components-used" />} variant="link">
+            Components used
+          </Button>
+          <Button nativeButton={false} render={<a href="#accessibility" />} variant="link">
+            Accessibility
+          </Button>
         </nav>
         <p>Local sidebar composition, not a reusable sidebar product component.</p>
       </div>
@@ -698,7 +715,7 @@ const compositions: Record<string, Composition> = {
     lede: "A small documentation-oriented composition of breadcrumbs, top links, tabs, a local sidebar, and pagination.",
     purpose:
       "Tests hierarchy between peer navigation patterns without creating a reusable documentation shell component.",
-    components: ["Breadcrumbs", "Link", "Tabs", "Pagination"],
+    components: ["Breadcrumbs", "Button", "Tabs", "Pagination"],
     accessibility:
       "Every navigation region has an accessible label, breadcrumbs expose an ordered path, and tabs follow their Base UI keyboard contract.",
     responsive:
