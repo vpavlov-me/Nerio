@@ -13,6 +13,7 @@ import {
 } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
+import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
 
 function ButtonPreview() {
@@ -123,39 +124,6 @@ const tokenRows = [
     "Motion and focus feedback.",
   ],
 ] as const;
-
-function DocumentationTable({
-  headers,
-  rows,
-  codeColumns = 2,
-}: {
-  headers: readonly string[];
-  rows: readonly (readonly string[])[];
-  codeColumns?: number;
-}) {
-  return (
-    <div className="documentation-table-wrap">
-      <table className="documentation-table">
-        <thead>
-          <tr>
-            {headers.map((header) => (
-              <th key={header}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
-              {row.map((cell, index) => (
-                <td key={cell}>{index < codeColumns ? <code>{cell}</code> : cell}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 export default function Page() {
   return (
@@ -323,7 +291,7 @@ export default function Page() {
           />
         ),
         guidance: (
-          <div className="button-guidance-cards">
+          <div className="doc-guidance-cards">
             <Card>
               <CardHeader>
                 <Icon icon={Check} />
@@ -345,7 +313,7 @@ export default function Page() {
           </div>
         ),
         related: (
-          <div className="button-related-cards">
+          <div className="doc-related-cards">
             {[
               [
                 "Badge",
@@ -363,7 +331,7 @@ export default function Page() {
                 "/docs/components/dropdown-menu",
               ],
             ].map(([title, description, href]) => (
-              <Card key={title} className="button-related-card" href={href} variant="secondary">
+              <Card key={title} className="doc-related-card" href={href} variant="secondary">
                 <CardHeader>
                   <CardTitle>{title}</CardTitle>
                 </CardHeader>

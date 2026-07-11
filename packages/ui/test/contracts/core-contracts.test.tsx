@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import {
   Avatar,
+  Alert,
   Badge,
   ButtonGroup,
   Card,
@@ -436,6 +437,24 @@ describe("Core static contracts", () => {
     expect(screen.getByRole("heading", { name: "Empty", level: 3 })).toBeInTheDocument();
   });
 
+  it("renders Alert content and an optional trailing action slot", () => {
+    render(
+      <Alert action={<button type="button">Retry</button>} icon={Check} title="Upload failed">
+        Try again after checking the connection.
+      </Alert>,
+    );
+
+    expect(screen.getByText("Upload failed")).toHaveAttribute("data-slot", "title");
+    expect(screen.getByText("Try again after checking the connection.")).toHaveAttribute(
+      "data-slot",
+      "description",
+    );
+    expect(screen.getByRole("button", { name: "Retry" }).parentElement).toHaveAttribute(
+      "data-slot",
+      "action",
+    );
+  });
+
   it("renders static Toast tone, title, and description without a broad descendant selector", () => {
     render(<Toast tone="success" title="Saved" description="Your changes are live." />);
     expect(screen.getByRole("status")).toHaveAttribute("data-tone", "success");
@@ -545,6 +564,23 @@ describe("Core interactive action contracts", () => {
       "aria-hidden",
       "true",
     );
+  });
+
+  it("preserves non-link custom render targets for navigational Buttons", () => {
+    render(
+      <Button
+        aria-label="Next: Spinner"
+        icon={ArrowRight}
+        nativeButton={false}
+        render={<a href="/docs/components/spinner" />}
+        variant="secondary"
+      />,
+    );
+
+    const link = screen.getByRole("link", { name: "Next: Spinner" });
+    expect(link).toHaveAttribute("href", "/docs/components/spinner");
+    expect(link).toHaveAttribute("data-variant", "secondary");
+    expect(link).toHaveClass("n-button");
   });
 
   it("normalizes deprecated Button variants and protects Button-owned state attributes", () => {

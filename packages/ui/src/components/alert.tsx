@@ -9,10 +9,11 @@ export interface AlertProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   tone?: AlertTone;
   title?: React.ReactNode;
   icon?: IconComponent;
+  action?: React.ReactNode;
 }
 
 export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  { children, className, icon, role, title, tone = "neutral", ...props },
+  { action, children, className, icon, role, title, tone = "neutral", ...props },
   ref,
 ) {
   const IconComponent = icon;
@@ -43,6 +44,11 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert
           </div>
         ) : null}
       </div>
+      {action ? (
+        <div className="n-alert__action" data-slot="action">
+          {action}
+        </div>
+      ) : null}
     </div>
   );
 });

@@ -24,18 +24,25 @@ export type ButtonVariant =
 export type ButtonSize = "sm" | "md" | "lg";
 
 type CanonicalButtonVariant = Exclude<ButtonVariant, "subtle" | "destructive">;
-type AnchorRenderProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+
+type RenderElementProps = {
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-busy"?: boolean;
+  "aria-disabled"?: boolean;
+  className?: string;
+  children?: React.ReactNode;
   "data-icon-only"?: string;
   "data-loading"?: string;
   "data-size"?: ButtonSize;
   "data-slot"?: string;
   "data-variant"?: CanonicalButtonVariant;
+  onClick?: React.MouseEventHandler<HTMLElement>;
 };
 
-function isAnchorRender(render: unknown): render is React.ReactElement<AnchorRenderProps> {
-  return React.isValidElement(render) && render.type === "a";
+function isRenderElement(render: unknown): render is React.ReactElement<RenderElementProps> {
+  return React.isValidElement(render);
 }
-
 type ButtonBaseProps = Omit<
   React.ComponentProps<typeof BaseButton>,
   "aria-label" | "children" | "className" | "disabled"
@@ -101,7 +108,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     children,
     disabled,
     render,
-    nativeButton: _nativeButton,
+    nativeButton,
     ...props
   },
   ref,
@@ -161,10 +168,11 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       ) : null}
     </>
   );
-  const anchor = normalizedVariant === "link" && isAnchorRender(render) ? render : null;
-  const content = anchor ? (
-    React.cloneElement(anchor, {
-      className: cn(anchor.props.className, classNames),
+  const renderedElement = isRenderElement(render) ? render : null;
+  const content = renderedElement ? (
+    React.cloneElement(renderedElement, {
+      className: cn(renderedElement.props.className, classNames),
+      "aria-label": props["aria-label"] ?? renderedElement.props["aria-label"],
       "aria-busy": loading || undefined,
       "aria-disabled": disabled || loading || undefined,
       "data-icon-only": iconOnly ? "true" : undefined,
@@ -172,13 +180,13 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       "data-size": size,
       "data-slot": "button",
       "data-variant": normalizedVariant,
-      "aria-labelledby": labelledBy ?? anchor.props["aria-labelledby"],
-      onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
+      "aria-labelledby": labelledBy ?? renderedElement.props["aria-labelledby"],
+      onClick: (event: React.MouseEvent<HTMLElement>) => {
         if (disabled || loading) {
           event.preventDefault();
           return;
         }
-        anchor.props.onClick?.(event);
+        renderedElement.props.onClick?.(event);
       },
       children: contents,
     })
@@ -186,6 +194,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     <BaseButton
       ref={ref}
       {...props}
+      nativeButton={nativeButton}
       className={classNames}
       data-slot="button"
       data-variant={normalizedVariant}

@@ -873,6 +873,35 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                 <p>No sections yet.</p>
               )}
             </div>
+            <section className="docs-toc-feedback" aria-labelledby="docs-feedback-title">
+              <h2 id="docs-feedback-title">Was this helpful?</h2>
+              <div className="docs-toc-feedback__choices" role="group" aria-label="Page feedback">
+                <button
+                  type="button"
+                  aria-label="Helpful"
+                  data-feedback-value="helpful"
+                  data-metrika-goal="docs-feedback-helpful"
+                >
+                  <span aria-hidden="true">🙂</span>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Neither helpful nor unhelpful"
+                  data-feedback-value="neutral"
+                  data-metrika-goal="docs-feedback-neutral"
+                >
+                  <span aria-hidden="true">😐</span>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Not helpful"
+                  data-feedback-value="not-helpful"
+                  data-metrika-goal="docs-feedback-not-helpful"
+                >
+                  <span aria-hidden="true">☹️</span>
+                </button>
+              </div>
+            </section>
           </aside>
         )}
       </div>

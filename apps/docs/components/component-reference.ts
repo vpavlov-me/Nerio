@@ -749,8 +749,13 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       { title: "root", description: "Inline feedback region with tone and spacing tokens." },
       { title: "icon", description: "Optional decorative icon rendered through the icon adapter." },
+      { title: "content", description: "Container for the title and descriptive message." },
       { title: "title", description: "Optional short summary of the message." },
       { title: "description", description: "Body content that explains the state or recovery." },
+      {
+        title: "action",
+        description: "Optional trailing action for a focused recovery or update.",
+      },
     ],
     variants: [
       { title: "Neutral", description: "General inline feedback." },
@@ -774,6 +779,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-alert-radius",
       "--n-alert-border",
       "--n-alert-background",
+      "--n-alert-title-color",
+      "--n-alert-icon-color",
       "--n-alert-icon-size",
       "--n-color-status-info",
       "--n-color-status-success",

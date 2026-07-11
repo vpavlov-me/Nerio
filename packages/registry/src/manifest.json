@@ -540,7 +540,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "icon", "content", "title", "description"],
+      "slots": ["root", "icon", "content", "title", "description", "action"],
       "variants": ["neutral", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-alert-gap",
@@ -548,6 +548,8 @@
         "--n-alert-radius",
         "--n-alert-border",
         "--n-alert-background",
+        "--n-alert-title-color",
+        "--n-alert-icon-color",
         "--n-alert-icon-size",
         "--n-color-status-info",
         "--n-color-status-success",

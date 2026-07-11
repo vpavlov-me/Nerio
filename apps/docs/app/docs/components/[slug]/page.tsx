@@ -18,10 +18,6 @@ const componentDocs: Record<string, { title: string; lede: string }> = {
     title: "Badge",
     lede: "Badges label status, category, or lightweight metadata without becoming primary actions.",
   },
-  alert: {
-    title: "Alert",
-    lede: "Alerts communicate inline feedback with clear tone, text, and accessible semantics.",
-  },
   spinner: {
     title: "Spinner",
     lede: "Spinners communicate short loading moments while preserving layout stability.",
