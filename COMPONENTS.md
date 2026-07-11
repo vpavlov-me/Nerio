@@ -56,10 +56,11 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Actions
 
-| Component  | Status                   | Package            | Notes                                                                                          |
-| ---------- | ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------- |
-| Button     | stable-core              | `@nerio/ui`        | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip |
-| IconButton | deprecated-compatibility | `@nerio/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release            |
+| Component   | Status                   | Package            | Notes                                                                                          |
+| ----------- | ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------- |
+| Button      | stable-core              | `@nerio/ui`        | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip |
+| ButtonGroup | implemented-initial      | `@nerio/ui`        | Attached horizontal layout group for related Buttons                                           |
+| IconButton  | deprecated-compatibility | `@nerio/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release            |
 
 ### Forms
 

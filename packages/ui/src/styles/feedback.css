@@ -27,6 +27,22 @@
   white-space: nowrap;
 }
 
+.n-badge[data-size="sm"] {
+  --n-badge-font-size: var(--n-badge-font-size-sm);
+  --n-badge-gap: var(--n-badge-gap-sm);
+  --n-badge-height: var(--n-badge-height-sm);
+  --n-badge-icon-size: var(--n-badge-icon-size-sm);
+  --n-badge-padding-inline: var(--n-badge-padding-inline-sm);
+}
+
+.n-badge[data-size="lg"] {
+  --n-badge-font-size: var(--n-badge-font-size-lg);
+  --n-badge-gap: var(--n-badge-gap-lg);
+  --n-badge-height: var(--n-badge-height-lg);
+  --n-badge-icon-size: var(--n-badge-icon-size-lg);
+  --n-badge-padding-inline: var(--n-badge-padding-inline-lg);
+}
+
 .n-badge[data-tone="primary-soft"] {
   --n-badge-background: var(--n-badge-background-primary-soft);
   --n-badge-foreground: var(--n-badge-foreground-primary-soft);

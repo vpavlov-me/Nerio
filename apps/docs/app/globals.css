@@ -542,46 +542,10 @@ pre {
 }
 
 .docs-page-actions__navigation {
-  display: flex;
-  gap: var(--n-space-1);
-  margin-inline-start: var(--n-space-2);
-}
-
-.docs-copy-markdown {
-  border-end-end-radius: var(--n-radius-none);
-  border-start-end-radius: var(--n-radius-none);
-  padding-inline: var(--n-space-4);
-}
-
-.docs-actions-toggle {
   align-items: center;
-  background: var(--n-button-background-secondary);
-  border: var(--n-button-border-width) solid var(--n-button-border-secondary);
-  border-end-start-radius: var(--n-radius-none);
-  border-inline-start: var(--n-border-width-0);
-  border-start-start-radius: var(--n-radius-none);
-  border-end-end-radius: var(--n-radius-control);
-  border-start-end-radius: var(--n-radius-control);
-  color: var(--n-button-foreground-secondary);
-  cursor: pointer;
   display: inline-flex;
-  justify-content: center;
-  min-block-size: var(--n-button-height-sm);
-  padding-inline: var(--n-space-2);
-}
-
-.docs-actions-toggle:hover {
-  background: var(--n-button-background-secondary-hover);
-}
-
-.docs-actions-toggle:focus-visible {
-  box-shadow: var(--n-focus-ring);
-  outline: 0;
-}
-
-.docs-actions-toggle .n-icon {
-  block-size: var(--n-icon-size-sm);
-  inline-size: var(--n-icon-size-sm);
+  gap: var(--n-space-2);
+  margin-inline-start: var(--n-space-2);
 }
 
 .docs-actions-menu {
@@ -793,31 +757,6 @@ pre {
   font-size: var(--n-font-size-sm);
   font-weight: var(--n-font-weight-medium);
   margin: 0 0 var(--n-space-3);
-}
-
-.component-hero-meta,
-.component-import-row {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--n-space-2);
-}
-
-.component-hero-meta .doc-kicker {
-  margin: 0 var(--n-space-2) 0 0;
-}
-
-.component-import-row {
-  margin-block-start: var(--n-space-4);
-}
-
-.component-import-row code {
-  background: var(--n-color-surface-muted);
-  border: var(--n-border-subtle);
-  border-radius: var(--n-radius-sm);
-  color: var(--n-color-text-secondary);
-  font-size: var(--n-font-size-sm);
-  padding: var(--n-space-1) var(--n-space-2);
 }
 
 .doc-section {

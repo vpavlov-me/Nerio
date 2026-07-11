@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   Avatar,
   Badge,
+  ButtonGroup,
   Card,
   CardAction,
   CardContent,
@@ -59,6 +60,10 @@ const invalidDirectionalIconButton = (
 );
 // @ts-expect-error Button shortcuts only accept text, numbers, or Nerio Kbd elements
 const invalidButtonKbd = <Button kbd={<span>⌘K</span>}>Search</Button>;
+// @ts-expect-error icon-only Button cannot include a Badge
+const invalidIconButtonBadge = (
+  <Button icon={Bell} aria-label="Notifications" badge={<Badge>2</Badge>} />
+);
 // @ts-expect-error linked Cards cannot also choose a surface root
 const invalidLinkedCard = <Card href="/docs" as="article" />;
 void [
@@ -67,10 +72,22 @@ void [
   invalidMixedIconButton,
   invalidDirectionalIconButton,
   invalidButtonKbd,
+  invalidIconButtonBadge,
   invalidLinkedCard,
 ];
 
 describe("Core static contracts", () => {
+  it("groups related Buttons with a labelled group landmark", () => {
+    render(
+      <ButtonGroup aria-label="Document actions">
+        <button>Cancel</button>
+        <button>Save</button>
+      </ButtonGroup>,
+    );
+    const group = screen.getByRole("group", { name: "Document actions" });
+    expect(group).toHaveAttribute("data-slot", "button-group");
+  });
+
   it("renders decorative Badge icons on either side of its status label and supports loading", () => {
     const { rerender } = render(
       <Badge tone="success" leadingIcon={Check} trailingIcon={ArrowRight}>
@@ -80,6 +97,7 @@ describe("Core static contracts", () => {
     const badge = screen.getByText("Published").closest(".n-badge");
     expect(badge).toHaveAttribute("data-tone", "success");
     expect(badge).toHaveAttribute("data-emphasis", "soft");
+    expect(badge).toHaveAttribute("data-size", "md");
     expect(badge?.querySelector('[data-slot="leading-icon"]')).toHaveAttribute(
       "aria-hidden",
       "true",
@@ -108,13 +126,24 @@ describe("Core static contracts", () => {
       "strong",
     );
 
-    rerender(<Badge icon={Bell}>Notifications</Badge>);
+    rerender(
+      <Badge icon={Bell} size="sm">
+        Notifications
+      </Badge>,
+    );
     expect(
       screen
         .getByText("Notifications")
         .closest(".n-badge")
         ?.querySelector('[data-slot="leading-icon"]'),
     ).not.toBeNull();
+    expect(screen.getByText("Notifications").closest(".n-badge")).toHaveAttribute(
+      "data-size",
+      "sm",
+    );
+
+    rerender(<Badge size="lg">Featured</Badge>);
+    expect(screen.getByText("Featured").closest(".n-badge")).toHaveAttribute("data-size", "lg");
   });
 
   it("renders Kbd with a native semantic element and a stable styling hook", () => {
@@ -467,22 +496,29 @@ describe("Core interactive action contracts", () => {
     expect(button.querySelector("[role=status]")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("supports directional icons, shortcut hints, and accessible icon-only actions", () => {
+  it("supports directional icons, Badge counts, shortcut hints, and accessible icon-only actions", () => {
     render(
       <>
-        <Button leadingIcon={Bell} trailingIcon={Bell} kbd="⌘N">
+        <Button
+          leadingIcon={Bell}
+          trailingIcon={Bell}
+          badge={<Badge tone="info">24</Badge>}
+          kbd="⌘N"
+        >
           Create notification
         </Button>
         <Button icon={Bell} aria-label="Open notifications" tooltip="Open notifications" />
       </>,
     );
 
-    const labeledButton = screen.getByRole("button", { name: "Create notification" });
+    const labeledButton = screen.getByRole("button", { name: "Create notification 24" });
     expect(labeledButton.querySelectorAll("[data-slot=button-icon]")).toHaveLength(2);
+    expect(labeledButton.querySelector("[data-slot=button-badge]")).toHaveTextContent("24");
+    expect(labeledButton.querySelector(".n-badge")).toHaveAttribute("data-size", "sm");
     expect(labeledButton.querySelector("[data-slot=button-kbd]")).toHaveTextContent("⌘N");
     expect(
       Array.from(labeledButton.children).map((child) => child.getAttribute("data-slot")),
-    ).toEqual(["button-icon", "button-label", "button-kbd", "button-icon"]);
+    ).toEqual(["button-icon", "button-label", "button-badge", "button-kbd", "button-icon"]);
 
     const iconButton = screen.getByRole("button", { name: "Open notifications" });
     expect(iconButton).toHaveAttribute("data-icon-only", "true");

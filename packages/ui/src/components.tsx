@@ -1,6 +1,13 @@
 "use client";
 export { Button } from "./components/button";
-export type { ButtonKbd, ButtonProps, ButtonSize, ButtonVariant } from "./components/button";
+export type {
+  ButtonBadge,
+  ButtonKbd,
+  ButtonProps,
+  ButtonSize,
+  ButtonVariant,
+} from "./components/button";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { motionClasses, type MotionClassName } from "./lib/motion";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps } from "./components/icon";
@@ -12,6 +19,7 @@ export {
   Badge,
   type BadgeEmphasis,
   type BadgeProps,
+  type BadgeSize,
   type BadgeTone,
   type BadgeVariant,
 } from "./components/badge";

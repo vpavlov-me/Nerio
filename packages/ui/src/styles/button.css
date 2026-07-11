@@ -100,6 +100,11 @@
   display: inline-flex;
 }
 
+.n-button [data-slot="button-badge"] {
+  display: inline-flex;
+  flex: none;
+}
+
 .n-button[data-icon-only] {
   border-radius: var(--n-icon-button-radius);
   inline-size: var(--n-icon-button-size-md);

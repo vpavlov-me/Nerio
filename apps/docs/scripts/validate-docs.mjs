@@ -184,7 +184,7 @@ function uiEntrypointFailures() {
   }
 
   for (const exportName of clientOnlyExports) {
-    if (indexSource.includes(`./components/${exportName}`)) {
+    if (indexSource.includes(`from "./components/${exportName}"`)) {
       failures.push(`packages/ui/src/index.ts: exports client-only ${exportName}`);
     }
   }
@@ -331,7 +331,7 @@ const snippetSlugs = unique(
     /^ {2}(?:"([^"]+)"|([a-z][a-z0-9-]*)):\s*["']/gm,
   ),
 );
-const customReferenceSlugs = ["button"];
+const customReferenceSlugs = ["button", "button-group"];
 const referenceCoverage = unique([...referenceSlugs, ...customReferenceSlugs]);
 
 const missingNav = documentedRegistrySlugs.filter((slug) => !navSlugs.includes(slug));

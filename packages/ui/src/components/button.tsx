@@ -4,6 +4,7 @@ import * as React from "react";
 import { Button as BaseButton } from "@base-ui/react/button";
 import { cn } from "../lib/cn";
 import { motionClasses } from "../lib/motion";
+import { Badge, type BadgeProps } from "./badge";
 import { Icon, type IconComponent } from "./icon";
 import { Kbd, type KbdProps } from "./kbd";
 import { Spinner } from "./spinner";
@@ -51,6 +52,7 @@ type ButtonBaseProps = Omit<
 };
 
 export type ButtonKbd = string | number | React.ReactElement<KbdProps, typeof Kbd>;
+export type ButtonBadge = React.ReactElement<BadgeProps, typeof Badge>;
 
 type TextButtonProps = ButtonBaseProps & {
   children: React.ReactNode;
@@ -60,6 +62,8 @@ type TextButtonProps = ButtonBaseProps & {
   trailingIcon?: IconComponent;
   /** Optional native Kbd hint displayed after the visible button label. */
   kbd?: ButtonKbd;
+  /** Optional Badge displayed after the visible button label. */
+  badge?: ButtonBadge;
 };
 
 type IconOnlyButtonProps = ButtonBaseProps & {
@@ -70,6 +74,7 @@ type IconOnlyButtonProps = ButtonBaseProps & {
   leadingIcon?: never;
   trailingIcon?: never;
   kbd?: never;
+  badge?: never;
 };
 
 export type ButtonProps = TextButtonProps | IconOnlyButtonProps;
@@ -91,6 +96,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     trailingIcon,
     icon,
     kbd,
+    badge,
     tooltip,
     children,
     disabled,
@@ -101,7 +107,12 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   ref,
 ) {
   const iconOnly = Boolean(icon);
+  const buttonLabelId = React.useId();
+  const buttonBadgeId = React.useId();
   const normalizedVariant = normalizeButtonVariant(variant);
+  const hasCustomAccessibleName = "aria-label" in props || "aria-labelledby" in props;
+  const labelledBy =
+    badge && !hasCustomAccessibleName ? `${buttonLabelId} ${buttonBadgeId}` : undefined;
   const classNames = cn(
     "n-button",
     motionClasses.hover,
@@ -120,6 +131,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
         {kbd}
       </Kbd>
     ) : null;
+  const buttonBadge = badge ? React.cloneElement(badge, { size: "sm" }) : null;
   const contents = (
     <>
       {loading ? (
@@ -131,7 +143,16 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
           <Icon icon={leadingIcon} />
         </span>
       ) : null}
-      {!iconOnly ? <span data-slot="button-label">{children}</span> : null}
+      {!iconOnly ? (
+        <span data-slot="button-label" id={labelledBy ? buttonLabelId : undefined}>
+          {children}
+        </span>
+      ) : null}
+      {!iconOnly && badge ? (
+        <span data-slot="button-badge" id={labelledBy ? buttonBadgeId : undefined}>
+          {buttonBadge}
+        </span>
+      ) : null}
       {!iconOnly ? keyboardShortcut : null}
       {!iconOnly && !loading && trailingIcon ? (
         <span data-slot="button-icon">
@@ -151,6 +172,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       "data-size": size,
       "data-slot": "button",
       "data-variant": normalizedVariant,
+      "aria-labelledby": labelledBy ?? anchor.props["aria-labelledby"],
       onClick: (event: React.MouseEvent<HTMLAnchorElement>) => {
         if (disabled || loading) {
           event.preventDefault();
@@ -172,6 +194,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       data-icon-only={iconOnly ? "true" : undefined}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
+      aria-labelledby={labelledBy ?? props["aria-labelledby"]}
     >
       {contents}
     </BaseButton>

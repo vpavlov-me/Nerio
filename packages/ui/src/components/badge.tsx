@@ -7,6 +7,7 @@ import { Spinner } from "./spinner";
 export type BadgeTone =
   "neutral" | "primary-soft" | "accent" | "info" | "success" | "warning" | "danger";
 export type BadgeEmphasis = "soft" | "strong";
+export type BadgeSize = "sm" | "md" | "lg";
 
 /** @deprecated Use BadgeTone. `variant` remains as a compatibility alias for `tone`. */
 export type BadgeVariant = "neutral" | "success" | "danger" | "info";
@@ -16,6 +17,8 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: BadgeTone;
   /** Controls whether the semantic tone uses a quiet or high-salience treatment. */
   emphasis?: BadgeEmphasis;
+  /** Controls the compactness of the Badge. */
+  size?: BadgeSize;
   /** @deprecated Use `tone`. This compatibility alias will be removed in the next major release. */
   variant?: BadgeVariant;
   /** @deprecated Use `leadingIcon`. This compatibility alias will be removed in the next major release. */
@@ -36,6 +39,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
     icon,
     leadingIcon,
     loading = false,
+    size = "md",
     trailingIcon,
     tone,
     variant,
@@ -54,6 +58,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
       data-tone={resolvedTone}
       data-emphasis={emphasis}
       data-loading={loading || undefined}
+      data-size={size}
       aria-busy={loading || undefined}
       {...props}
     >

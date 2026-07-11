@@ -10,6 +10,10 @@ const componentDocs: Record<string, { title: string; lede: string }> = {
     title: "Typography",
     lede: "Semantic heading, text, and inline code primitives keep content hierarchy token-driven.",
   },
+  "button-group": {
+    title: "ButtonGroup",
+    lede: "ButtonGroup joins related actions into a compact, accessible control set.",
+  },
   badge: {
     title: "Badge",
     lede: "Badges label status, category, or lightweight metadata without becoming primary actions.",

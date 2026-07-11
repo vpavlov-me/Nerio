@@ -322,6 +322,7 @@ async function verify() {
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [
       "button",
+      "button-group",
       "icon-button",
       "dialog",
       "select",

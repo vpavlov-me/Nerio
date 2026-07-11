@@ -42,7 +42,9 @@ export const snippets: Record<string, string> = {
   typography:
     'import { Code, Heading, Text } from \'@nerio/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>',
   button:
-    "import { Save, Settings } from '@nerio/adapters';\nimport { Kbd } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<Button leadingIcon={Save} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />",
+    'import { Save, Settings } from \'@nerio/adapters\';\nimport { Badge, Kbd } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
+  "button-group":
+    'import { Button, ButtonGroup } from \'@nerio/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio/ui';\n\n<Kbd>⌘S</Kbd>",
   breadcrumbs:
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
@@ -143,10 +145,24 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     category: "Actions",
     package: "@nerio/ui",
     importPath: "@nerio/ui/client",
-    related: ["DropdownMenu", "Tooltip", "Tokens"],
-    anatomy: ["button", "button-icon", "button-label"],
+    related: ["Badge", "DropdownMenu", "Tooltip"],
+    anatomy: ["button", "button-icon", "button-label", "button-badge"],
     motion: ["hover", "press", "focus"],
     accessibility: ["Base UI button primitive", "aria-busy while loading", "visible focus ring"],
+  },
+  "button-group": {
+    name: "ButtonGroup",
+    description:
+      "Groups related Buttons with the same visual variant, including Buttons with Badge counts, into one compact attached horizontal control.",
+    status: "beta",
+    layer: "core",
+    category: "Actions",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui/client",
+    related: ["Button", "DropdownMenu", "Tokens"],
+    anatomy: ["button-group"],
+    motion: ["inherits Button motion"],
+    accessibility: ["group role", "aria-label", "child Button semantics"],
   },
   input: {
     name: "Input",
@@ -341,6 +357,10 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Visible action text that stays present while loading.",
       },
       {
+        title: "button-badge",
+        description: "Optional Badge count or status placed after the visible action label.",
+      },
+      {
         title: "button-kbd",
         description: "Optional native kbd hint displayed after the visible action label.",
       },
@@ -416,7 +436,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use danger for destructive actions and pair it with explicit copy.",
       "Use the link variant with a native anchor render target for navigation.",
     ],
-    related: ["DropdownMenu", "Tooltip", "Tokens"],
+    related: ["Badge", "DropdownMenu", "Tooltip"],
     guidance: {
       do: ["Use one primary action per local decision and keep labels action-oriented."],
       dont: ["Do not use a button render target when the interaction navigates to a destination."],
@@ -442,6 +462,11 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-button-kbd-border-color",
       "--n-button-kbd-foreground",
       "--n-button-kbd-opacity",
+      "--n-badge-height",
+      "--n-badge-height-sm",
+      "--n-badge-radius",
+      "--n-badge-padding-inline",
+      "--n-badge-padding-inline-sm",
       "--n-button-background-ghost-hover",
       "--n-button-foreground-ghost",
       "--n-button-background-destructive",
@@ -452,6 +477,32 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-icon-button-radius",
       "--n-motion-hover-duration",
       "--n-motion-press-duration",
+      "--n-focus-ring",
+    ],
+  },
+  "button-group": {
+    category: "Actions",
+    purpose:
+      "Use ButtonGroup when adjacent actions form one compact, related set with the same visual variant.",
+    anatomy: [{ title: "button-group", description: "Native group wrapper for adjacent Buttons." }],
+    variants: [],
+    states: [
+      { title: "Focus", description: "Each child Button keeps its own visible focus ring." },
+    ],
+    accessibility: [
+      "Labels the related action set through aria-label.",
+      "Keeps the native semantics and keyboard behavior of each child Button.",
+    ],
+    guidance: {
+      do: ["Use the same Button variant for every action in the group."],
+      dont: [
+        "Do not mix Button variants, group unrelated actions, or use it as a toolbar substitute.",
+      ],
+    },
+    tokens: [
+      "--n-button-radius",
+      "--n-button-border-width",
+      "--n-button-group-divider",
       "--n-focus-ring",
     ],
   },
@@ -630,6 +681,10 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "trailing-icon", description: "Optional decorative icon after the visible label." },
     ],
     variants: [
+      {
+        title: "Size sm / md / lg",
+        description: "Use sm inside compact controls, md by default, and lg for elevated metadata.",
+      },
       { title: "Neutral", description: "Default metadata with low visual priority." },
       {
         title: "Soft / strong emphasis",
@@ -652,6 +707,16 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: [
       "--n-badge-radius",
       "--n-badge-height",
+      "--n-badge-height-sm",
+      "--n-badge-height-lg",
+      "--n-badge-padding-inline-sm",
+      "--n-badge-padding-inline-lg",
+      "--n-badge-gap-sm",
+      "--n-badge-gap-lg",
+      "--n-badge-icon-size-sm",
+      "--n-badge-icon-size-lg",
+      "--n-badge-font-size-sm",
+      "--n-badge-font-size-lg",
       "--n-badge-background",
       "--n-badge-foreground",
       "--n-badge-background-primary-soft",
