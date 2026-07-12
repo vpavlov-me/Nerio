@@ -30,6 +30,15 @@ const expectedFieldFiles = [
   "lib/cn.ts",
   "styles/forms.css",
 ];
+const expectedInputGroupFiles = [
+  "components/input.tsx",
+  "components/input-group.tsx",
+  "lib/cn.ts",
+  "lib/motion.ts",
+  "styles/forms.css",
+  "styles/input-group.css",
+  "styles/motion.css",
+];
 const expectedFormGroupFiles = [
   "components/form-group.tsx",
   "components/form-message.tsx",
@@ -222,6 +231,13 @@ async function verify() {
     ) {
       throw new Error("Dry run output did not describe the input install plan.");
     }
+    const inputGroupDryRunOutput = await run(localTarget, "add", "input-group", "--dry-run");
+    if (
+      !inputGroupDryRunOutput.includes("Would add InputGroup") ||
+      !inputGroupDryRunOutput.includes("components/input-group.tsx")
+    ) {
+      throw new Error("Dry run output did not describe the InputGroup install plan.");
+    }
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "typography");
     await run(localTarget, "add", "button-group");
@@ -229,6 +245,7 @@ async function verify() {
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
     await run(localTarget, "add", "field");
+    await run(localTarget, "add", "input-group");
     await run(localTarget, "add", "form-group");
     await run(localTarget, "add", "checkbox");
     await run(localTarget, "add", "switch");
@@ -267,6 +284,18 @@ async function verify() {
     }
     assertInstall(localTarget, expectedDialogFiles);
     assertFiles(localTarget, expectedFieldFiles);
+    assertFiles(localTarget, expectedInputGroupFiles);
+    const inputGroupSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/input-group.tsx"),
+      "utf8",
+    );
+    if (
+      !inputGroupSource.includes("InputGroupAddon") ||
+      !inputGroupSource.includes('data-slot="input-group"') ||
+      !inputGroupSource.includes("child.type !== Input")
+    ) {
+      throw new Error("Installed InputGroup source did not preserve explicit composition anatomy.");
+    }
     const fieldSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/field.tsx"),
       "utf8",

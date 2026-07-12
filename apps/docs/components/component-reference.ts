@@ -59,7 +59,9 @@ export const snippets: Record<string, string> = {
   "empty-state":
     'import { EmptyState } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<EmptyState title="No collections" description="Create one to start organizing work." action={<Button>Create collection</Button>} secondaryAction={<Button variant="ghost">Learn more</Button>} />',
   input:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required /></Field>',
+    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required autoComplete="organization" /></Field>',
+  "input-group":
+    'import { Input, InputGroup, InputGroupAddon } from \'@nerio/ui\';\n\n<InputGroup><InputGroupAddon placement="start" aria-hidden="true">https://</InputGroupAddon><Input aria-label="Website" /><InputGroupAddon placement="end">.com</InputGroupAddon></InputGroup>',
   textarea:
     'import { Field, Textarea } from \'@nerio/ui\';\n\n<Field label="Notes" description="Add context for collaborators."><Textarea placeholder="Add launch context" /></Field>',
   label:
@@ -166,19 +168,37 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   },
   input: {
     name: "Input",
-    description: "Collects short text values with native form semantics.",
+    description: "A thin native single-line control for supported text-like values.",
     status: "stable",
     layer: "core",
     category: "Forms",
     package: "@nerio/ui",
     importPath: "@nerio/ui",
-    related: ["Field", "Label", "Textarea"],
+    related: ["InputGroup", "Field", "Label", "Textarea"],
     anatomy: ["input"],
     motion: ["hover", "focus"],
     accessibility: [
       "native input attributes",
       "aria-invalid support",
       "label through Field or Label",
+    ],
+  },
+  "input-group": {
+    name: "InputGroup",
+    description:
+      "A server-safe compositional surface for Input and explicit supporting inline content.",
+    status: "stable",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["Input", "Field", "Button"],
+    anatomy: ["input-group", "input", "input-group-addon"],
+    motion: ["hover", "focus-within"],
+    accessibility: [
+      "preserves native input semantics",
+      "explicit label through Field or Label",
+      "interactive addon content remains independently keyboard accessible",
     ],
   },
   card: {
@@ -944,6 +964,90 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-placeholder",
       "--n-motion-hover-duration",
       "--n-motion-focus-duration",
+    ],
+  },
+  "input-group": {
+    category: "Forms",
+    purpose:
+      "Use InputGroup to place clear supporting inline content around one native Input without changing its responsibility.",
+    anatomy: [
+      {
+        title: "input-group",
+        description: "Shared tokenized surface that responds to the nested Input state.",
+      },
+      {
+        title: "input",
+        description: "The direct native Input that retains form and accessibility semantics.",
+      },
+      {
+        title: "input-group-addon",
+        description:
+          "Explicit start or end content such as a decorative icon, prefix, suffix, or action.",
+      },
+    ],
+    variants: [
+      {
+        title: "Start addon",
+        description: "Uses logical start placement for an icon, marker, or prefix.",
+      },
+      {
+        title: "End addon",
+        description: "Uses logical end placement for a suffix, unit, status, or compact action.",
+      },
+    ],
+    states: [
+      {
+        title: "Hover and focus-within",
+        description:
+          "The shared surface responds while the nested input remains the focused control.",
+      },
+      {
+        title: "Invalid",
+        description: "A Field invalid state reaches the direct Input and the group surface.",
+      },
+      {
+        title: "Disabled and read-only",
+        description:
+          "The group mirrors native input availability without disabling independent addon actions.",
+      },
+    ],
+    motion: [
+      "Hover and focus-within use the shared tokenized Input motion contract.",
+      "Reduced motion preserves the state change without nonessential timing.",
+    ],
+    accessibility: [
+      "Use Field, Label, or an explicit aria-label to name the nested Input.",
+      "Hide decorative icons and text that are only visual context from assistive technology.",
+      "Keep interactive addon controls independently labelled and keyboard accessible.",
+    ],
+    api: [
+      {
+        title: "InputGroup",
+        description:
+          "A div wrapper that forwards Field id, description, and invalid wiring to a direct Input child.",
+      },
+      {
+        title: "InputGroupAddon placement",
+        description: "Required start or end placement for durable supporting anatomy.",
+      },
+    ],
+    designNotes: [
+      "InputGroup owns shared presentation, never value, parsing, validation, results, or asynchronous behavior.",
+    ],
+    related: ["Input", "Field", "Label", "Button"],
+    guidance: {
+      do: ["Use explicit addons for stable inline content and use Input size to align the group."],
+      dont: [
+        "Do not turn InputGroup into a search results, password visibility, date-picker, or formatting abstraction.",
+      ],
+    },
+    tokens: [
+      "--n-input-background",
+      "--n-input-background-hover",
+      "--n-input-border-focus",
+      "--n-input-addon-foreground",
+      "--n-input-addon-padding-inline",
+      "--n-focus-ring",
     ],
   },
   textarea: {

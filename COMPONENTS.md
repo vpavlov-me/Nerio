@@ -66,7 +66,8 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 | Component   | Status      | Package     | Notes                                                                                                        |
 | ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
-| Input       | stable-core | `@nerio/ui` | Text input                                                                                                   |
+| Input       | stable-core | `@nerio/ui` | Thin native single-line control for text-like values; labels and validation belong to Field                  |
+| InputGroup  | stable-core | `@nerio/ui` | Composable surface for an Input with explicit start/end addons                                               |
 | Textarea    | stable-core | `@nerio/ui` | Multiline input                                                                                              |
 | Label       | stable-core | `@nerio/ui` | Accessible form label                                                                                        |
 | Field       | stable-core | `@nerio/ui` | Label, help text, error, description                                                                         |
@@ -76,6 +77,18 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with label, description, message, and disabled options                               |
 | Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings                                                                 |
 | Select      | stable-core | `@nerio/ui` | Base select                                                                                                  |
+
+### Input-family roadmap
+
+| Component                                                                            | Tier            | Status | Boundary                                                                                                                              |
+| ------------------------------------------------------------------------------------ | --------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| SearchInput                                                                          | Core candidate  | future | Composes Input and InputGroup for a query, icon, and optional accessible clear action; it never owns results, fetching, or filtering. |
+| PasswordInput                                                                        | Core candidate  | future | Composes Input and InputGroup for an accessible visibility action; it never owns password policy.                                     |
+| Calendar                                                                             | Core candidate  | future | Universal accessible calendar grid and deliberately small date-selection primitive.                                                   |
+| DatePicker                                                                           | Core candidate  | future | Basic single-date control composed from Calendar and Popover; ranges, presets, and scheduling remain out of scope.                    |
+| Combobox / NumberField / OTPInput                                                    | Core candidates | future | Candidates only; no public API is committed.                                                                                          |
+| DateRangePicker / DateTimePicker / DatePickerWithPresets / NaturalLanguageDatePicker | Pro             | future | Product-ready date workflows.                                                                                                         |
+| GlobalSearch / EntitySearch / AdvancedSearch / CommandPalette / FilterBar            | Pro             | future | Result fetching, workflow behavior, and product-level search/filter composition.                                                      |
 
 ### Overlays
 

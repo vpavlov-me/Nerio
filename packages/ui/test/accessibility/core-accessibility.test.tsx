@@ -8,6 +8,8 @@ import {
   Field,
   FormGroup,
   Input,
+  InputGroup,
+  InputGroupAddon,
   Pagination,
   TableContainer,
 } from "../../src/index";
@@ -60,6 +62,28 @@ describe("Core accessibility contracts", () => {
         <Tabs tabs={[{ label: "Overview", value: "overview", content: "Overview content" }]} />
         <Select label="Status" options={[{ label: "Draft", value: "draft" }]} />
         <Toast title="Saved" description="Your changes are live." />
+      </>,
+    );
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps grouped inputs labelled and leaves addon actions independently accessible", async () => {
+    const { container } = render(
+      <>
+        <Field label="Workspace URL" description="Include the team subdomain.">
+          <InputGroup>
+            <InputGroupAddon placement="start" aria-hidden="true">
+              https://
+            </InputGroupAddon>
+            <Input />
+            <InputGroupAddon placement="end">
+              <Button aria-label="Validate workspace URL">Check</Button>
+            </InputGroupAddon>
+          </InputGroup>
+        </Field>
+        <Field label="Read-only code">
+          <Input readOnly defaultValue="NERIO" />
+        </Field>
       </>,
     );
     expect((await axe(container)).violations).toEqual([]);

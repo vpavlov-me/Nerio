@@ -494,6 +494,11 @@
   --n-input-disabled-background: var(--n-color-surface-subtle);
   --n-input-disabled-foreground: var(--n-color-text-disabled);
   --n-input-disabled-opacity: var(--n-opacity-disabled);
+  --n-input-readonly-background: var(--n-color-surface-subtle);
+  --n-input-readonly-border: var(--n-color-border-subtle);
+  --n-input-addon-foreground: var(--n-color-text-tertiary);
+  --n-input-addon-gap: var(--n-space-1-5);
+  --n-input-addon-padding-inline: var(--n-space-3);
   --n-select-height-md: var(--n-input-height-md);
   --n-textarea-min-height: var(--n-size-textarea-min);
   --n-textarea-padding-block: var(--n-space-2);
