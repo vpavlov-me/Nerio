@@ -1,6 +1,6 @@
 # Nerio agent instructions
 
-This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation, and `COMPONENTS.md` before adding or moving components.
+This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation, `COMPONENTS.md` before adding or moving components, `COMPONENT_ARCHITECTURE.md` before adding props, variants, component modes, or new component responsibilities, and `TIERING_AND_TEMPLATE_EVOLUTION.md` before assigning a component to Core or Pro, promoting template-local code, or expanding Core to satisfy a template.
 
 ## Product constraints
 
@@ -9,6 +9,7 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 - **Nerio Core** is the open-source foundation: tokens, themes, primitive and base UI components, public docs, public registry, CLI, and public MCP/component discovery.
 - **Nerio Pro** is the paid advanced layer: complex product components, templates, premium themes, Figma assets, advanced registry items, and Pro MCP/AI tooling.
 - Core = building blocks. Pro = product-ready solutions.
+- Templates may compose Core, Pro, and template-local components. A template does not need complete Core coverage.
 - Use **Base UI** as the sole primitive layer. Do not add Radix UI, shadcn/ui, Headless UI, Ariakit, or another overlapping primitive system.
 - Use Next.js, React, TypeScript, Tailwind CSS v4, pnpm workspaces, and Turborepo.
 - The project may adopt ideas compatible with registry-based distribution, but it must have its own `nerio` CLI, own registry format, own documentation, and own component APIs. Do not depend on the shadcn CLI, registry, or package.
@@ -35,6 +36,10 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 - Future Pro packages may live in a private repository or private workspace and may depend on Core.
 - Core must never import from Pro.
 - Pro may import from Core.
+- Templates may import Core and Pro and may contain local components that are not published as design-system components.
+- Core must not be expanded solely because one template needs a missing element.
+- When reuse or the correct tier is uncertain, prefer a template-local implementation or an explicit Pro candidate over a speculative Core abstraction.
+- Before promoting template-local code, apply the decision sequence and evidence requirements in `TIERING_AND_TEMPLATE_EVOLUTION.md`.
 - Before adding a component, check `COMPONENTS.md` and `data/component-catalog.json`.
 - If a component is an advanced composition, domain-specific pattern, or template-like workflow, it usually belongs in Pro.
 - Do not move advanced data grids, dashboard systems, billing flows, AI chat shells, or fintech/crypto-specific components into Core unless `COMPONENTS.md` is explicitly updated.
@@ -42,6 +47,9 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 ## Design-system rules
 
 - Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
+- One component represents one semantic responsibility. Group components by meaning, behavior, accessibility contract, and composition role rather than visual similarity.
+- Before adding a prop or variant, verify that the semantic purpose, interaction model, content model, and likely API evolution remain unchanged. If they differ, prefer a separate component.
+- Agents must call out requests that mix component responsibilities and recommend the appropriate boundary before implementation.
 - Theme, mode, and density are the only v1 runtime appearance axes:
   - `data-theme="purple" | "blue" | "green" | "orange" | "red" | "neutral"` controls brand/accent personality.
   - `data-mode="system" | "light" | "dark"` controls color mode.
@@ -113,7 +121,7 @@ Before moving any Core component toward `stable-core`, verify:
 ## Workflow
 
 1. Inspect the current workspace and relevant documentation.
-2. Check `COMPONENTS.md` and `data/component-catalog.json` before creating or moving components.
+2. Check `COMPONENTS.md`, `data/component-catalog.json`, and the tiering guidance before creating, moving, or promoting components.
 3. State a concise implementation plan in the pull request or task output.
 4. Implement the smallest complete vertical slice.
 5. Add or update docs, examples, types, registry metadata, and component catalog entries in the same change.
