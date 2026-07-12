@@ -604,6 +604,7 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
 export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+  const isHomePage = pathname === "/";
   const isTemplatesPage = pathname === "/templates";
   const fallbackToc = getDefaultToc(pathname);
   const [theme, setThemeValue] = React.useState("purple");
@@ -822,8 +823,12 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className={isTemplatesPage ? "docs-layout docs-layout--template" : "docs-layout"}>
-        {isTemplatesPage ? null : (
+      <div
+        className={
+          isHomePage || isTemplatesPage ? "docs-layout docs-layout--landing" : "docs-layout"
+        }
+      >
+        {isHomePage || isTemplatesPage ? null : (
           <aside className="docs-sidebar">
             <nav aria-label="Documentation">
               {sidebarGroups.map((group) => (
@@ -851,13 +856,15 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           </aside>
         )}
 
-        <main className={isTemplatesPage ? "docs-main docs-main--template" : "docs-main"}>
-          {isTemplatesPage ? null : <PageActions pathname={pathname} />}
+        <main
+          className={isHomePage || isTemplatesPage ? "docs-main docs-main--landing" : "docs-main"}
+        >
+          {isHomePage || isTemplatesPage ? null : <PageActions pathname={pathname} />}
           {children}
-          {isTemplatesPage ? null : <DocsPageNavigation pathname={pathname} />}
+          {isHomePage || isTemplatesPage ? null : <DocsPageNavigation pathname={pathname} />}
         </main>
 
-        {isTemplatesPage ? null : (
+        {isHomePage || isTemplatesPage ? null : (
           <aside className="docs-toc" aria-label="On this page">
             <div className="docs-toc-card">
               <div className="docs-toc-title">On this page</div>
