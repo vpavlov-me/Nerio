@@ -14,6 +14,11 @@ import {
   CardTitle,
   CardVisual,
   EmptyState,
+  EmptyStateActions,
+  EmptyStateDescription,
+  EmptyStateHeader,
+  EmptyStateMedia,
+  EmptyStateTitle,
   Field,
   Input,
   InputGroup,
@@ -212,7 +217,12 @@ describe("Core static contracts", () => {
         <Card as="article">
           <CardTitle as="h2">Overview</CardTitle>
         </Card>
-        <EmptyState title="No results" description="Try another search." titleAs="h4" />
+        <EmptyState>
+          <EmptyStateHeader>
+            <EmptyStateTitle as="h4">No results</EmptyStateTitle>
+            <EmptyStateDescription>Try another search.</EmptyStateDescription>
+          </EmptyStateHeader>
+        </EmptyState>
       </>,
     );
     expect(screen.getByRole("article")).toBeInTheDocument();
@@ -473,12 +483,66 @@ describe("Core static contracts", () => {
     render(
       <>
         <Card ref={cardRef}>Card</Card>
-        <EmptyState ref={emptyRef} title="Empty" description="Nothing here" />
+        <EmptyState ref={emptyRef}>
+          <EmptyStateHeader>
+            <EmptyStateTitle>Empty</EmptyStateTitle>
+            <EmptyStateDescription>Nothing here</EmptyStateDescription>
+          </EmptyStateHeader>
+        </EmptyState>
       </>,
     );
     expect(cardRef.current?.tagName).toBe("SECTION");
-    expect(emptyRef.current).toHaveAttribute("data-slot", "root");
+    expect(emptyRef.current).toHaveAttribute("data-slot", "empty-state");
     expect(screen.getByRole("heading", { name: "Empty", level: 3 })).toBeInTheDocument();
+  });
+
+  it("composes optional EmptyState slots and preserves their public attributes", () => {
+    const mediaRef = React.createRef<HTMLDivElement>();
+    render(
+      <EmptyState
+        align="start"
+        aria-label="No search results"
+        className="custom-empty-state"
+        data-testid="empty-state"
+        size="lg"
+      >
+        <EmptyStateMedia ref={mediaRef} variant="illustration">
+          <svg aria-hidden="true" />
+        </EmptyStateMedia>
+        <EmptyStateHeader className="custom-header">
+          <EmptyStateTitle as="h2">No results</EmptyStateTitle>
+          <EmptyStateDescription>Try a different query.</EmptyStateDescription>
+        </EmptyStateHeader>
+        <input aria-label="Search again" />
+        <EmptyStateActions orientation="vertical" className="custom-actions">
+          <button type="button">Clear filters</button>
+          <a href="#help">Get help</a>
+        </EmptyStateActions>
+      </EmptyState>,
+    );
+
+    const root = screen.getByTestId("empty-state");
+    expect(root).toHaveAttribute("data-slot", "empty-state");
+    expect(root).toHaveAttribute("data-size", "lg");
+    expect(root).toHaveAttribute("data-align", "start");
+    expect(root).toHaveAttribute("aria-label", "No search results");
+    expect(root).toHaveClass("custom-empty-state");
+    expect(root).not.toHaveAttribute("role");
+    expect(mediaRef.current).toHaveAttribute("data-slot", "empty-state-media");
+    expect(mediaRef.current).toHaveAttribute("data-variant", "illustration");
+    expect(screen.getByText("No results").closest("[data-slot]")).toHaveAttribute(
+      "data-slot",
+      "empty-state-title",
+    );
+    expect(screen.getByText("Try a different query.")).toHaveAttribute(
+      "data-slot",
+      "empty-state-description",
+    );
+    expect(screen.getByRole("button", { name: "Clear filters" }).parentElement).toHaveAttribute(
+      "data-orientation",
+      "vertical",
+    );
+    expect(screen.getByRole("link", { name: "Get help" })).toHaveAttribute("href", "#help");
   });
 
   it("renders Alert content and an optional trailing action slot", () => {

@@ -22,6 +22,11 @@ import {
   Dialog,
   DropdownMenu,
   EmptyState,
+  EmptyStateActions,
+  EmptyStateDescription,
+  EmptyStateHeader,
+  EmptyStateMedia,
+  EmptyStateTitle,
   Field,
   FormGroup,
   FormMessage,
@@ -380,11 +385,18 @@ function Preview({ kind }: { kind: string }) {
             </div>
           ) : null}
           {kind === "empty-state" ? (
-            <EmptyState
-              title="No collections"
-              description="Create a collection to organize projects, notes, and shared context."
-              action={<Button size="sm">Create collection</Button>}
-            />
+            <EmptyState>
+              <EmptyStateMedia aria-hidden="true">○</EmptyStateMedia>
+              <EmptyStateHeader>
+                <EmptyStateTitle>No collections</EmptyStateTitle>
+                <EmptyStateDescription>
+                  Create a collection to organize projects, notes, and shared context.
+                </EmptyStateDescription>
+              </EmptyStateHeader>
+              <EmptyStateActions>
+                <Button size="sm">Create collection</Button>
+              </EmptyStateActions>
+            </EmptyState>
           ) : null}
           {kind === "alert" ? (
             <Alert tone="info" title="Invite sent" icon={Circle}>

@@ -473,7 +473,7 @@
     {
       "name": "empty-state",
       "title": "EmptyState",
-      "description": "Explains missing content and offers a next action when useful.",
+      "description": "Composable feedback structure for missing content, recovery paths, and first-use moments.",
       "category": "feedback",
       "dependencies": ["clsx", "react"],
       "registryDependencies": [],
@@ -495,15 +495,27 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "mark", "title", "description", "actions", "action", "secondary-action"],
-      "variants": [],
+      "slots": [
+        "empty-state",
+        "empty-state-media",
+        "empty-state-header",
+        "empty-state-title",
+        "empty-state-description",
+        "empty-state-actions"
+      ],
+      "variants": [
+        "size: sm | md | lg",
+        "align: start | center",
+        "media: icon | illustration",
+        "actions orientation: horizontal | vertical"
+      ],
       "requiredTokens": ["--n-empty-state-mark-size", "--n-empty-state-gap"],
       "accessibility": [
-        "Use a clear title and description instead of decorative empty copy.",
-        "Provide a primary action and an optional secondary action only when there is an obvious recovery path.",
-        "Do not use toasts to explain an empty page state."
+        "EmptyState has no live region or alert role by default; add role=status for asynchronous results and role=alert for an error that needs immediate announcement.",
+        "Keep a clear title, description, and any actions in reading order; decorative media should be aria-hidden.",
+        "Provide no more than two actions unless the surrounding product flow provides a stronger pattern."
       ],
-      "usage": "import { EmptyState } from '@/components/nerio/components/empty-state';\n\n<EmptyState title=\"No collections\" description=\"Create one to start organizing work.\" action={<Button>Create collection</Button>} secondaryAction={<Button variant=\"ghost\">Learn more</Button>} />"
+      "usage": "import { EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateHeader, EmptyStateTitle } from '@/components/nerio/components/empty-state';\n\n<EmptyState>\n  <EmptyStateHeader>\n    <EmptyStateTitle>No collections</EmptyStateTitle>\n    <EmptyStateDescription>Create one to start organizing work.</EmptyStateDescription>\n  </EmptyStateHeader>\n  <EmptyStateActions><Button>Create collection</Button></EmptyStateActions>\n</EmptyState>"
     },
     {
       "name": "alert",

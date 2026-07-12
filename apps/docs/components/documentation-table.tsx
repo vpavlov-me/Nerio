@@ -23,7 +23,7 @@ export function DocumentationTable({
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={row[0]}>
+            <tr key={row.join("__")}>
               {row.map((cell, index) => (
                 <td key={cell}>{index < codeColumns ? <code>{cell}</code> : cell}</td>
               ))}

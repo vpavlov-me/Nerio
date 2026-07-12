@@ -16,6 +16,10 @@ import {
   Button,
   Card,
   EmptyState,
+  EmptyStateActions,
+  EmptyStateDescription,
+  EmptyStateHeader,
+  EmptyStateTitle,
   Field,
   Icon,
   IconButton,
@@ -278,15 +282,19 @@ export default function DemoApp() {
             ) : null}
 
             {workspaceState === "error" ? (
-              <EmptyState
-                title="Activity source unavailable"
-                description="Reconnect the source or retry when the workspace service is available."
-                action={
+              <EmptyState role="alert">
+                <EmptyStateHeader>
+                  <EmptyStateTitle>Activity source unavailable</EmptyStateTitle>
+                  <EmptyStateDescription>
+                    Reconnect the source or retry when the workspace service is available.
+                  </EmptyStateDescription>
+                </EmptyStateHeader>
+                <EmptyStateActions>
                   <Button size="sm" onClick={() => setWorkspaceState("ready")}>
                     Retry
                   </Button>
-                }
-              />
+                </EmptyStateActions>
+              </EmptyState>
             ) : null}
 
             {workspaceState === "ready" && filteredProjects.length ? (
@@ -329,10 +337,14 @@ export default function DemoApp() {
             ) : null}
 
             {workspaceState === "ready" && !filteredProjects.length ? (
-              <EmptyState
-                title="No matching projects"
-                description="Clear search or choose another status to bring items back."
-                action={
+              <EmptyState role="status" size="sm">
+                <EmptyStateHeader>
+                  <EmptyStateTitle>No matching projects</EmptyStateTitle>
+                  <EmptyStateDescription>
+                    Clear search or choose another status to bring items back.
+                  </EmptyStateDescription>
+                </EmptyStateHeader>
+                <EmptyStateActions>
                   <Button
                     size="sm"
                     variant="secondary"
@@ -343,8 +355,8 @@ export default function DemoApp() {
                   >
                     Clear filters
                   </Button>
-                }
-              />
+                </EmptyStateActions>
+              </EmptyState>
             ) : null}
           </Card>
 

@@ -394,7 +394,7 @@
       "package": "@nerio/ui",
       "category": "feedback",
       "status": "polished",
-      "description": "Basic empty state with configurable heading semantics; full action-composition coverage remains."
+      "description": "Composable empty-state slots support optional media, header, actions, size, and alignment; browser verification remains."
     },
     {
       "name": "Spinner",

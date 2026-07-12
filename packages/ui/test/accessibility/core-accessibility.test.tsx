@@ -5,6 +5,9 @@ import { describe, expect, it } from "vitest";
 import {
   Avatar,
   EmptyState,
+  EmptyStateDescription,
+  EmptyStateHeader,
+  EmptyStateTitle,
   Field,
   FormGroup,
   Input,
@@ -57,7 +60,12 @@ describe("Core accessibility contracts", () => {
     const { container } = render(
       <>
         <Avatar name="Maya Chen" />
-        <EmptyState title="No projects" description="Create one to get started." />
+        <EmptyState>
+          <EmptyStateHeader>
+            <EmptyStateTitle>No projects</EmptyStateTitle>
+            <EmptyStateDescription>Create one to get started.</EmptyStateDescription>
+          </EmptyStateHeader>
+        </EmptyState>
         <Pagination pages={[{ key: "one", label: "1", current: true }]} />
         <Tabs tabs={[{ label: "Overview", value: "overview", content: "Overview content" }]} />
         <Select label="Status" options={[{ label: "Draft", value: "draft" }]} />

@@ -57,7 +57,7 @@ export const snippets: Record<string, string> = {
   spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
   skeleton: "import { Skeleton } from '@nerio/ui';\n\n<Skeleton aria-label=\"Loading\" />",
   "empty-state":
-    'import { EmptyState } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<EmptyState title="No collections" description="Create one to start organizing work." action={<Button>Create collection</Button>} secondaryAction={<Button variant="ghost">Learn more</Button>} />',
+    "import { EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateHeader, EmptyStateTitle } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<EmptyState>\n  <EmptyStateHeader>\n    <EmptyStateTitle>No collections</EmptyStateTitle>\n    <EmptyStateDescription>Create one to start organizing work.</EmptyStateDescription>\n  </EmptyStateHeader>\n  <EmptyStateActions>\n    <Button>Create collection</Button>\n    <Button variant=\"ghost\">Learn more</Button>\n  </EmptyStateActions>\n</EmptyState>",
   input:
     'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required autoComplete="organization" /></Field>',
   "input-group":
@@ -693,7 +693,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use Badge to label status, category, or lightweight metadata without creating another action.",
     anatomy: [
       {
-        title: "root",
+        title: "empty-state",
         description: "Inline status container with tone, size, and tokenized radius.",
       },
       { title: "leading-icon", description: "Optional decorative icon before the visible label." },
@@ -877,32 +877,59 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "root",
         description: "Centered or inline message area that adapts to the parent surface.",
       },
-      { title: "title", description: "Names the empty condition in human language." },
+      { title: "empty-state-media", description: "Optional icon or illustration container." },
+      { title: "empty-state-header", description: "Optional title and description grouping." },
+      { title: "empty-state-title", description: "Names the empty condition in human language." },
       {
-        title: "description",
+        title: "empty-state-description",
         description: "Explains why the space is empty or what can happen next.",
       },
-      { title: "action", description: "Optional primary action when there is a clear next move." },
       {
-        title: "secondary-action",
-        description: "Optional secondary action for a lower-priority recovery path.",
+        title: "empty-state-actions",
+        description: "Optional action group with wrapping or vertical layout.",
       },
     ],
     variants: [
-      { title: "Informational", description: "Use when there is nothing to fix." },
-      { title: "Actionable", description: "Use when the next step is obvious and safe." },
+      {
+        title: "Size",
+        description:
+          "Use sm for compact surfaces, md for standard sections, and lg for page-level or onboarding states.",
+      },
+      {
+        title: "Alignment",
+        description: "Center is the default; start supports sidebars, dialogs, and narrow panels.",
+      },
+      {
+        title: "Media",
+        description:
+          "Icon provides a compact neutral mark; illustration accepts consumer-owned artwork without a background.",
+      },
     ],
     states: [
-      { title: "Empty", description: "Default state for no records or no matching filters." },
-      { title: "Filtered", description: "Pair with a reset action when filters hide all results." },
+      {
+        title: "Search results",
+        description:
+          "Use role=status or aria-live=polite when a changed query produces no results.",
+      },
+      {
+        title: "Recoverable error",
+        description:
+          "Use role=alert only when a failure needs immediate announcement, then provide retry if useful.",
+      },
     ],
     accessibility: [
-      "Keep the title, description, and optional actions clear in reading order.",
-      "Use actions only when there is an obvious recovery path.",
+      "EmptyState does not create a live region or alert role by default; consumers own announcements for dynamic content.",
+      "Keep the title, description, and optional actions clear in reading order, and hide decorative media from assistive technology.",
+      "Use actions only when there is an obvious recovery path; keyboard behavior remains native to the supplied controls.",
     ],
     guidance: {
-      do: ["Use product language like projects, collections, collaborators, or activity."],
-      dont: ["Do not blame users or use domain-specific assumptions."],
+      do: [
+        "Use a short title, helpful next step, and no more than two actions.",
+        "Explain the benefit of creating a first item and offer a clear recovery action for empty search results.",
+      ],
+      dont: [
+        "Do not blame users, show technical failures without context, or reuse the same generic copy for every product state.",
+      ],
     },
     tokens: ["--n-empty-state-mark-size", "--n-empty-state-gap"],
   },
