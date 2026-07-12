@@ -17,6 +17,10 @@ import {
   Field,
   Input,
   Kbd,
+  Label,
+  LabelContent,
+  LabelRequired,
+  LabelRow,
   List,
   Pagination,
   Progress,
@@ -31,6 +35,7 @@ import {
   Checkbox,
   Dialog,
   DropdownMenu,
+  LabelHint,
   Popover,
   RadioGroup,
   Select,
@@ -421,6 +426,34 @@ describe("Core static contracts", () => {
         </Field>,
       ),
     ).toThrow("exactly one");
+  });
+
+  it("composes label requirements and hint context without nesting a control inside the label", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <LabelRow>
+          <LabelContent>
+            <Label htmlFor="project-name">Project name</Label>
+            <LabelRequired />
+            <LabelHint label="Visible to workspace members" />
+          </LabelContent>
+        </LabelRow>
+        <Input id="project-name" required />
+      </>,
+    );
+
+    expect(screen.getByText("*")).toHaveAttribute("data-slot", "required");
+    expect(screen.getByText("*")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByRole("textbox", { name: "Project name" })).toBeRequired();
+    expect(
+      Array.from(document.querySelector("[data-slot=content]")!.children).map((child) =>
+        child.getAttribute("data-slot"),
+      ),
+    ).toEqual(["root", "required", "hint"]);
+
+    await user.hover(screen.getByLabelText("More information"));
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Visible to workspace members");
   });
 
   it("keeps default Card and EmptyState semantics and forwards refs", () => {

@@ -1137,14 +1137,24 @@
     {
       "name": "label",
       "title": "Label",
-      "description": "Provides an accessible name for a form control.",
+      "description": "Provides an accessible name for a form control with a composable required marker and supplementary hint.",
       "category": "forms",
-      "dependencies": ["clsx", "react"],
-      "registryDependencies": [],
+      "dependencies": ["@nerio/adapters", "clsx", "react"],
+      "registryDependencies": ["tooltip"],
       "files": [
         {
           "source": "../../ui/src/components/label.tsx",
           "target": "components/label.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/label-hint.tsx",
+          "target": "components/label-hint.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
           "role": "component"
         },
         {
@@ -1158,17 +1168,26 @@
           "role": "style"
         }
       ],
-      "baseUiPrimitives": [],
-      "slots": ["root"],
-      "variants": [],
-      "requiredTokens": ["--n-color-text-secondary"],
+      "baseUiPrimitives": ["Tooltip"],
+      "slots": ["root", "content", "required", "hint"],
+      "variants": ["default", "with-hint"],
+      "requiredTokens": [
+        "--n-label-font-size",
+        "--n-label-font-weight",
+        "--n-label-required-color",
+        "--n-label-icon-color",
+        "--n-label-hint-icon-size"
+      ],
       "accessibility": [
         "Use htmlFor to associate the label with a control id.",
         "Forwards refs and native label attributes.",
         "Keep labels visible for reusable product forms.",
-        "Avoid relying on placeholder text as the only label."
+        "Avoid relying on placeholder text as the only label.",
+        "Use LabelRow and LabelContent so the interactive hint is not nested inside the native label.",
+        "Pair LabelRequired with a native required control.",
+        "Tooltip guidance is supplementary and must not carry essential requirements."
       ],
-      "usage": "import { Label } from '@/components/nerio/components/label';\n\n<Label htmlFor=\"name\">Project name</Label>"
+      "usage": "import { Input, Label, LabelContent, LabelRequired, LabelRow } from '@/components/nerio/components/label';\nimport { LabelHint } from '@/components/nerio/components/label-hint';\n\n<LabelRow><LabelContent><Label htmlFor=\"name\">Project name</Label><LabelRequired /><LabelHint label=\"Used in navigation.\" /></LabelContent></LabelRow><Input id=\"name\" required />"
     },
     {
       "name": "form-message",

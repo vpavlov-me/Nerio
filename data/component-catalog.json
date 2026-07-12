@@ -186,7 +186,7 @@
       "package": "@nerio/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Accessible form label component."
+      "description": "Accessible form label with a composable required marker and supplementary hint."
     },
     {
       "name": "Field",

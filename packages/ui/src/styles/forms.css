@@ -16,6 +16,45 @@
   font-weight: var(--n-label-font-weight);
 }
 
+.n-label-row,
+.n-label__content {
+  align-items: center;
+  display: flex;
+}
+
+.n-label-row {
+  gap: var(--n-label-gap);
+}
+
+.n-label__content {
+  gap: var(--n-label-gap);
+  min-inline-size: 0;
+}
+
+.n-label__required {
+  color: var(--n-label-required-color);
+}
+
+.n-label__hint {
+  display: inline-flex;
+}
+
+.n-label__hint > span {
+  color: var(--n-label-icon-color);
+  display: inline-flex;
+}
+
+.n-label__hint .n-icon {
+  block-size: var(--n-label-hint-icon-size);
+  inline-size: var(--n-label-hint-icon-size);
+}
+
+.n-label__hint > span:hover,
+.n-label__hint > span:focus-visible {
+  color: var(--n-color-action-primary);
+  outline: 0;
+}
+
 .n-input,
 .n-textarea {
   background: var(--n-input-background);
