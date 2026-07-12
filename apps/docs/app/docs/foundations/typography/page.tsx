@@ -25,7 +25,7 @@ const semanticRoles = [
   ["Body line height", "--n-body-line-height", "--n-line-height-normal"],
   ["Control size", "--n-control-font-size", "--n-font-size-md"],
   ["Control weight", "--n-control-font-weight", "--n-font-weight-medium"],
-  ["Label size", "--n-label-font-size", "--n-font-size-sm"],
+  ["Label size", "--n-label-font-size", "--n-font-size-md"],
   ["Label weight", "--n-label-font-weight", "--n-font-weight-medium"],
   ["Helper size", "--n-helper-font-size", "--n-font-size-xs"],
   ["Helper line height", "--n-helper-line-height", "--n-line-height-normal"],
