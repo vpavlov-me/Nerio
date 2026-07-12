@@ -170,7 +170,15 @@
       "package": "@nerio/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Text input component."
+      "description": "Thin native single-line control for supported text-like values."
+    },
+    {
+      "name": "InputGroup",
+      "tier": "core",
+      "package": "@nerio/ui",
+      "category": "forms",
+      "status": "stable-core",
+      "description": "Composable Input surface with explicit start and end addons."
     },
     {
       "name": "Textarea",

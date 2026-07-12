@@ -68,8 +68,17 @@
   width: 100%;
 }
 
+.n-input[data-size="sm"] {
+  min-block-size: var(--n-input-height-sm);
+}
+
+.n-input[data-size="lg"] {
+  min-block-size: var(--n-input-height-lg);
+}
+
 .n-input:hover:not(:disabled),
 .n-textarea:hover:not(:disabled) {
+  background: var(--n-input-background-hover);
   border-color: var(--n-input-border-hover);
 }
 
@@ -80,6 +89,10 @@
 .n-switch:focus-visible {
   box-shadow: var(--n-focus-ring);
   outline: 0;
+}
+
+.n-input:focus-visible {
+  border-color: var(--n-input-border-focus);
 }
 
 .n-input[data-invalid],
@@ -97,6 +110,26 @@
   opacity: var(--n-input-disabled-opacity);
 }
 
+.n-input[data-readonly] {
+  background: var(--n-input-readonly-background);
+  border-color: var(--n-input-readonly-border);
+}
+
+.n-input[type="number"] {
+  appearance: textfield;
+}
+
+.n-input[type="number"]::-webkit-inner-spin-button,
+.n-input[type="number"]::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.n-input:-webkit-autofill {
+  -webkit-text-fill-color: var(--n-input-foreground);
+  box-shadow: 0 0 0 1000px var(--n-input-background) inset;
+}
+
 .n-textarea {
   min-block-size: var(--n-textarea-min-height);
   padding-block: var(--n-textarea-padding-block);
@@ -106,6 +139,18 @@
 .n-input::placeholder,
 .n-textarea::placeholder {
   color: var(--n-input-placeholder);
+}
+
+@media (forced-colors: active) {
+  .n-input,
+  .n-textarea {
+    border-color: CanvasText;
+  }
+
+  .n-input[data-invalid],
+  .n-textarea[data-invalid] {
+    border-color: Mark;
+  }
 }
 
 .n-form-message {

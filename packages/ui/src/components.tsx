@@ -27,7 +27,14 @@ export { Skeleton, type SkeletonProps } from "./components/skeleton";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export { Alert, type AlertProps, type AlertTone } from "./components/alert";
 export { Breadcrumbs, type BreadcrumbsItem, type BreadcrumbsProps } from "./components/breadcrumbs";
-export { Input, type InputProps } from "./components/input";
+export { Input, type InputProps, type InputSize, type InputType } from "./components/input";
+export {
+  InputGroup,
+  InputGroupAddon,
+  type InputGroupAddonPlacement,
+  type InputGroupAddonProps,
+  type InputGroupProps,
+} from "./components/input-group";
 export { Textarea, type TextareaProps } from "./components/textarea";
 export {
   Label,

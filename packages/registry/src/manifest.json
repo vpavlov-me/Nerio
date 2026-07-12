@@ -1021,7 +1021,7 @@
     {
       "name": "input",
       "title": "Input",
-      "description": "Collects short text values in forms and filters.",
+      "description": "Thin native single-line control for supported short text-like values.",
       "category": "forms",
       "dependencies": ["clsx", "react"],
       "registryDependencies": [],
@@ -1054,9 +1054,11 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["input"],
-      "variants": ["default", "invalid", "disabled"],
+      "variants": ["sm", "md", "lg", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-input-height-md",
+        "--n-input-height-sm",
+        "--n-input-height-lg",
         "--n-input-radius",
         "--n-input-background",
         "--n-input-border",
@@ -1067,6 +1069,8 @@
         "--n-input-foreground",
         "--n-input-disabled-background",
         "--n-input-disabled-foreground",
+        "--n-input-readonly-background",
+        "--n-input-readonly-border",
         "--n-motion-hover-duration",
         "--n-motion-focus-duration",
         "--n-focus-ring"
@@ -1074,10 +1078,55 @@
       "accessibility": [
         "Use with Label or Field so the control has an accessible name.",
         "Supports native input attributes including required, disabled, autocomplete, and aria-describedby.",
-        "Invalid state maps to aria-invalid.",
-        "Disabled state uses the native disabled attribute."
+        "Invalid state normalizes to aria-invalid=true only for true validation errors.",
+        "Disabled state uses the native disabled attribute; read-only stays focusable and selectable.",
+        "Supported types are text, email, password, search, tel, url, and number."
       ],
-      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Use a short recognizable name.\"><Input placeholder=\"Launch materials\" required /></Field>"
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Use a short recognizable name.\"><Input placeholder=\"Launch materials\" required autoComplete=\"organization\" /></Field>"
+    },
+    {
+      "name": "input-group",
+      "title": "InputGroup",
+      "description": "Composable Input surface with explicit start and end inline addons.",
+      "category": "forms",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": ["input"],
+      "files": [
+        {
+          "source": "../../ui/src/components/input-group.tsx",
+          "target": "components/input-group.tsx",
+          "role": "component"
+        },
+        { "source": "../../ui/src/lib/cn.ts", "target": "lib/cn.ts", "role": "utility" },
+        {
+          "source": "../../ui/src/styles/input-group.css",
+          "target": "styles/input-group.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["input-group", "input", "input-group-addon"],
+      "variants": ["start-addon", "end-addon"],
+      "requiredTokens": [
+        "--n-input-height-md",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-background-hover",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
+        "--n-input-border-danger",
+        "--n-input-addon-foreground",
+        "--n-input-addon-gap",
+        "--n-input-addon-padding-inline",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Preserves nested Input native semantics and forwards Field label, description, and invalid wiring to a direct Input child.",
+        "Use Field, Label, or aria-describedby to name and describe the control; text addons do not silently become its accessible name.",
+        "Decorative addon icons must be aria-hidden; interactive addon content remains independently keyboard accessible."
+      ],
+      "usage": "import { Input } from '@/components/nerio/components/input';\nimport { InputGroup, InputGroupAddon } from '@/components/nerio/components/input-group';\n\n<InputGroup><InputGroupAddon placement=\"start\" aria-hidden=\"true\">https://</InputGroupAddon><Input aria-label=\"Website\" /><InputGroupAddon placement=\"end\" aria-hidden=\"true\">.com</InputGroupAddon></InputGroup>"
     },
     {
       "name": "textarea",

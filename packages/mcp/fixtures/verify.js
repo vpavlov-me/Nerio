@@ -88,6 +88,22 @@ async function verify() {
       );
     }
 
+    const inputGroupUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "input-group" },
+    });
+    const inputGroupUsage = JSON.parse(inputGroupUsageResult.content[0].text);
+    if (
+      !inputGroupUsage.registryDependencies.includes("input") ||
+      !inputGroupUsage.slots.includes("input-group-addon") ||
+      !inputGroupUsage.requiredTokens.includes("--n-input-addon-foreground") ||
+      !inputGroupUsage.accessibility.some((item) => item.includes("keyboard accessible"))
+    ) {
+      throw new Error(
+        "MCP InputGroup usage is missing composition, token, or accessibility metadata.",
+      );
+    }
+
     const selectUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "select" },
@@ -329,6 +345,7 @@ async function verify() {
       "tabs",
       "toast",
       "input",
+      "input-group",
       "field",
       "form-group",
       "checkbox",

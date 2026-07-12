@@ -22,7 +22,9 @@ const componentLedes: Record<string, string> = {
     "Empty states explain missing content and offer a clear next action when one is available.",
   textarea: "Textareas collect longer notes, descriptions, and collaborative product content.",
   input:
-    "Inputs collect short text values with labels, descriptions, validation messages, and visible focus treatment.",
+    "Input is a thin native control for short text-like values; Field owns labels, descriptions, and validation messages.",
+  "input-group":
+    "InputGroup composes an Input with explicit inline addons without changing native form semantics.",
   label: "Labels provide accessible names and stable form hierarchy.",
   checkbox:
     "Checkboxes toggle independent options and support clear checked, unchecked, and disabled states.",

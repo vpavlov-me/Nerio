@@ -36,6 +36,7 @@ import { siteConfig } from "../lib/site-config";
 const { version, repositoryUrl: repoUrl } = siteConfig;
 const modeStorageKey = "nerio-docs-mode";
 type ColorMode = "system" | "light" | "dark";
+type FeedbackValue = "helpful" | "neutral" | "not-helpful";
 
 type NavItem = {
   href: string;
@@ -92,6 +93,7 @@ const navGroups: NavGroup[] = [
     title: "Forms",
     items: [
       { href: "/docs/components/input", label: "Input", icon: Circle },
+      { href: "/docs/components/input-group", label: "InputGroup", icon: Circle },
       { href: "/docs/components/textarea", label: "Textarea", icon: FileText },
       { href: "/docs/components/label", label: "Label", icon: Circle },
       { href: "/docs/components/field", label: "Field", icon: Circle },
@@ -609,6 +611,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [systemMode, setSystemMode] = React.useState<Exclude<ColorMode, "system">>("light");
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
+  const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
+
+  React.useEffect(() => {
+    setFeedback(null);
+  }, [pathname]);
 
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -875,32 +882,41 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             </div>
             <section className="docs-toc-feedback" aria-labelledby="docs-feedback-title">
               <h2 id="docs-feedback-title">Was this helpful?</h2>
-              <div className="docs-toc-feedback__choices" role="group" aria-label="Page feedback">
-                <button
-                  type="button"
-                  aria-label="Helpful"
-                  data-feedback-value="helpful"
-                  data-metrika-goal="docs-feedback-helpful"
-                >
-                  <span aria-hidden="true">🙂</span>
-                </button>
-                <button
-                  type="button"
-                  aria-label="Neither helpful nor unhelpful"
-                  data-feedback-value="neutral"
-                  data-metrika-goal="docs-feedback-neutral"
-                >
-                  <span aria-hidden="true">😐</span>
-                </button>
-                <button
-                  type="button"
-                  aria-label="Not helpful"
-                  data-feedback-value="not-helpful"
-                  data-metrika-goal="docs-feedback-not-helpful"
-                >
-                  <span aria-hidden="true">☹️</span>
-                </button>
-              </div>
+              {feedback ? (
+                <p className="docs-toc-feedback__thanks" role="status">
+                  Thanks for your feedback.
+                </p>
+              ) : (
+                <div className="docs-toc-feedback__choices" role="group" aria-label="Page feedback">
+                  <button
+                    type="button"
+                    aria-label="Helpful"
+                    data-feedback-value="helpful"
+                    data-metrika-goal="docs-feedback-helpful"
+                    onClick={() => setFeedback("helpful")}
+                  >
+                    <span aria-hidden="true">🙂</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Neither helpful nor unhelpful"
+                    data-feedback-value="neutral"
+                    data-metrika-goal="docs-feedback-neutral"
+                    onClick={() => setFeedback("neutral")}
+                  >
+                    <span aria-hidden="true">😐</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Not helpful"
+                    data-feedback-value="not-helpful"
+                    data-metrika-goal="docs-feedback-not-helpful"
+                    onClick={() => setFeedback("not-helpful")}
+                  >
+                    <span aria-hidden="true">☹️</span>
+                  </button>
+                </div>
+              )}
             </section>
           </aside>
         )}

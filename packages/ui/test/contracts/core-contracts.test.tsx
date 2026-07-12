@@ -16,6 +16,8 @@ import {
   EmptyState,
   Field,
   Input,
+  InputGroup,
+  InputGroupAddon,
   Kbd,
   Label,
   LabelContent,
@@ -72,6 +74,12 @@ const invalidIconButtonBadge = (
 );
 // @ts-expect-error linked Cards cannot also choose a surface root
 const invalidLinkedCard = <Card href="/docs" as="article" />;
+// @ts-expect-error Date inputs have a dedicated future component boundary.
+const invalidInputType = <Input type="date" />;
+// @ts-expect-error Native HTML size is exposed as htmlSize, not Input size.
+const invalidNativeInputSize = <Input size={24} />;
+// @ts-expect-error Input sizes are limited to the shared control scale.
+const invalidInputScale = <Input size="xl" />;
 void [
   invalidEmptyButton,
   invalidUnnamedIconButton,
@@ -80,6 +88,9 @@ void [
   invalidButtonKbd,
   invalidIconButtonBadge,
   invalidLinkedCard,
+  invalidInputType,
+  invalidNativeInputSize,
+  invalidInputScale,
 ];
 
 describe("Core static contracts", () => {
@@ -961,5 +972,76 @@ describe("Core interactive action contracts", () => {
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     expect(trigger).toHaveFocus();
+  });
+
+  it("keeps Input native behavior while normalizing protected state attributes", () => {
+    const onChange = vi.fn();
+    const onInput = vi.fn();
+    const ref = React.createRef<HTMLInputElement>();
+    render(
+      <>
+        <Input
+          ref={ref}
+          aria-invalid="grammar"
+          autoComplete="email"
+          data-size="consumer"
+          data-slot="consumer"
+          defaultValue="Maya"
+          enterKeyHint="next"
+          htmlSize={32}
+          inputMode="email"
+          onChange={onChange}
+          onInput={onInput}
+          required
+        />
+        <Input aria-invalid={false} invalid />
+      </>,
+    );
+    const input = screen.getByDisplayValue("Maya");
+    expect(input).toHaveAttribute("type", "text");
+    expect(input).toHaveAttribute("data-slot", "input");
+    expect(input).toHaveAttribute("data-size", "md");
+    expect(input).toHaveAttribute("aria-invalid", "grammar");
+    expect(input).toHaveAttribute("autocomplete", "email");
+    expect(input).toHaveAttribute("inputmode", "email");
+    expect(input).toHaveAttribute("enterkeyhint", "next");
+    expect(input).toHaveAttribute("size", "32");
+    expect(input).toBeRequired();
+    expect(ref.current).toBe(input);
+    fireEvent.change(input, { target: { value: "Maya Chen" } });
+    fireEvent.input(input, { target: { value: "Maya Chen" } });
+    expect(onChange).toHaveBeenCalled();
+    expect(onInput).toHaveBeenCalled();
+    expect(screen.getAllByRole("textbox")[1]).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getAllByRole("textbox")[1]).toHaveAttribute("data-invalid", "");
+  });
+
+  it("composes InputGroup without replacing the native input contract", () => {
+    const ref = React.createRef<HTMLDivElement>();
+    render(
+      <Field label="Website" description="Use your public domain." message="Required" invalid>
+        <InputGroup ref={ref} data-slot="consumer">
+          <InputGroupAddon placement="start">https://</InputGroupAddon>
+          <Input aria-describedby="custom-description" />
+          <InputGroupAddon placement="end">
+            <Button aria-label="Validate website">Check</Button>
+          </InputGroupAddon>
+        </InputGroup>
+      </Field>,
+    );
+    const group = ref.current!;
+    const input = screen.getByRole("textbox", { name: "Website" });
+    expect(group).toHaveAttribute("data-slot", "input-group");
+    expect(group).toHaveAttribute("data-invalid", "");
+    expect(
+      group.querySelector('[data-slot="input-group-addon"][data-placement="start"]'),
+    ).toBeTruthy();
+    expect(
+      group.querySelector('[data-slot="input-group-addon"][data-placement="end"]'),
+    ).toBeTruthy();
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input.getAttribute("aria-describedby")).toContain("custom-description");
+    expect(input.getAttribute("aria-describedby")).toContain("-description");
+    expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();
   });
 });
