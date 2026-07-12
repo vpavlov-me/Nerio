@@ -305,7 +305,7 @@
   --n-body-line-height: var(--n-line-height-normal);
   --n-control-font-size: var(--n-font-size-md);
   --n-control-font-weight: var(--n-font-weight-medium);
-  --n-label-font-size: var(--n-font-size-sm);
+  --n-label-font-size: var(--n-font-size-md);
   --n-label-font-weight: var(--n-font-weight-medium);
   --n-label-gap: var(--n-space-1);
   --n-label-hint-icon-size: var(--n-icon-size-xs);
