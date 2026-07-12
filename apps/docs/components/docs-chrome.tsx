@@ -739,7 +739,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             <Link href="/" className="brand">
               Nerio
             </Link>
-            <Badge tone="primary-soft">{version}</Badge>
+            <Badge tone="primary-soft">Core</Badge>
           </div>
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
@@ -924,7 +924,8 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
       <footer className="docs-footer">
         <p>
-          © <span suppressHydrationWarning>{currentYear}</span> Nerio. Built with love by{" "}
+          © <span suppressHydrationWarning>{currentYear}</span> Nerio Core · {version}. Built with
+          love by{" "}
           <a
             href="https://vpavlov.com?utm_source=nerio&utm_medium=referral&utm_campaign=docs_footer"
             target="_blank"
