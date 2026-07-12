@@ -21,6 +21,7 @@ export {
   Layers,
   LayoutDashboard,
   ListTree,
+  Minus,
   Moon,
   Monitor,
   Palette,

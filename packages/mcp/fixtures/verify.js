@@ -179,7 +179,9 @@ async function verify() {
     if (
       !radioUsage.baseUiPrimitives.includes("radio-group") ||
       !radioUsage.registryDependencies.includes("form-message") ||
-      !radioUsage.requiredTokens.includes("--n-radio-size")
+      !radioUsage.requiredTokens.includes("--n-radio-size") ||
+      !radioUsage.slots.includes("option-description") ||
+      !radioUsage.usage.includes("RadioGroupItem")
     ) {
       throw new Error("MCP RadioGroup usage is missing Base UI, dependency, or token metadata.");
     }
@@ -207,7 +209,8 @@ async function verify() {
       !checkboxUsage.baseUiPrimitives.includes("checkbox") ||
       !checkboxUsage.requiredTokens.includes("--n-checkbox-radius") ||
       !checkboxUsage.requiredTokens.includes("--n-input-border-danger") ||
-      !checkboxUsage.accessibility.some((item) => item.includes("aria-invalid"))
+      !checkboxUsage.accessibility.some((item) => item.includes("aria-invalid")) ||
+      !checkboxUsage.variants.includes("indeterminate")
     ) {
       throw new Error("MCP Checkbox usage is missing Base UI, invalid, or token metadata.");
     }
@@ -221,7 +224,8 @@ async function verify() {
       !switchUsage.baseUiPrimitives.includes("switch") ||
       switchUsage.dependencies.includes("@nerio/adapters") ||
       !switchUsage.requiredTokens.includes("--n-switch-thumb-offset") ||
-      !switchUsage.accessibility.some((item) => item.includes("immediate on/off settings"))
+      !switchUsage.accessibility.some((item) => item.includes("immediate on/off settings")) ||
+      !switchUsage.variants.includes("read-only")
     ) {
       throw new Error("MCP Switch usage is missing Base UI, dependency, or token metadata.");
     }

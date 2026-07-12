@@ -18,8 +18,12 @@ import {
 } from "../../src/index";
 import {
   Button,
+  Checkbox,
   Dialog,
+  RadioGroup,
+  RadioGroupItem,
   Select,
+  Switch,
   Tabs,
   Toast,
   ToastProvider,
@@ -92,6 +96,29 @@ describe("Core accessibility contracts", () => {
         <Field label="Read-only code">
           <Input readOnly defaultValue="NERIO" />
         </Field>
+      </>,
+    );
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps Checkbox, RadioGroup, and Switch controls named and associated", async () => {
+    const { container } = render(
+      <>
+        <label>
+          <Checkbox defaultChecked /> Receive product updates
+        </label>
+        <RadioGroup
+          label="Visibility"
+          description="Choose who can access this project."
+          message="Select one option."
+          invalid
+        >
+          <RadioGroupItem value="private">Private</RadioGroupItem>
+          <RadioGroupItem value="team">Team</RadioGroupItem>
+        </RadioGroup>
+        <label>
+          <Switch defaultChecked /> Notify collaborators
+        </label>
       </>,
     );
     expect((await axe(container)).violations).toEqual([]);

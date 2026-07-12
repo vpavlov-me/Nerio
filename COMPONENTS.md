@@ -73,9 +73,9 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Field       | stable-core | `@nerio/ui` | Label, help text, error, description                                                                         |
 | FormMessage | stable-core | `@nerio/ui` | Field message/error text                                                                                     |
 | FormGroup   | stable-core | `@nerio/ui` | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout |
-| Checkbox    | stable-core | `@nerio/ui` | Base UI checkbox for independent options                                                                     |
-| Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with label, description, message, and disabled options                               |
-| Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings                                                                 |
+| Checkbox    | stable-core | `@nerio/ui` | Base UI checkbox for independent, indeterminate, and form-backed options                                     |
+| Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states          |
+| Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings with invalid and read-only state support                        |
 | Select      | stable-core | `@nerio/ui` | Base select                                                                                                  |
 
 ### Input-family roadmap

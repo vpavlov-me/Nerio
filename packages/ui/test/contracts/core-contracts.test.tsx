@@ -45,6 +45,7 @@ import {
   LabelHint,
   Popover,
   RadioGroup,
+  RadioGroupItem,
   Select,
   Switch,
   Tabs,
@@ -85,6 +86,17 @@ const invalidInputType = <Input type="date" />;
 const invalidNativeInputSize = <Input size={24} />;
 // @ts-expect-error Input sizes are limited to the shared control scale.
 const invalidInputScale = <Input size="xl" />;
+// @ts-expect-error RadioGroup accepts either options or composition, not both.
+const invalidMixedRadioGroup = (
+  <RadioGroup label="Visibility" options={[{ label: "Team", value: "team" }]}>
+    <RadioGroupItem value="private">Private</RadioGroupItem>
+  </RadioGroup>
+);
+const validComposedRadioGroup = (
+  <RadioGroup label="Visibility">
+    <RadioGroupItem value="team">Team</RadioGroupItem>
+  </RadioGroup>
+);
 void [
   invalidEmptyButton,
   invalidUnnamedIconButton,
@@ -96,6 +108,8 @@ void [
   invalidInputType,
   invalidNativeInputSize,
   invalidInputScale,
+  invalidMixedRadioGroup,
+  validComposedRadioGroup,
 ];
 
 describe("Core static contracts", () => {
@@ -925,8 +939,8 @@ describe("Core interactive action contracts", () => {
       "aria-disabled",
       "true",
     );
-    await user.click(screen.getByRole("radio", { name: "Private" }));
-    expect(onRadioChange).toHaveBeenCalledWith("private");
+    await user.click(screen.getByRole("radio", { name: /Private/ }));
+    expect(onRadioChange).toHaveBeenCalledWith("private", expect.anything());
     expect(screen.getByRole("radio", { name: "Disabled" })).toHaveAttribute(
       "aria-disabled",
       "true",
@@ -939,6 +953,278 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("switch", { name: "Disabled notifications" })).toHaveAttribute(
       "aria-disabled",
       "true",
+    );
+  });
+
+  it("keeps Checkbox custom indicators and RadioGroup composition compatible", async () => {
+    const user = userEvent.setup();
+    const onCheckedChange = vi.fn();
+    const onChange = vi.fn();
+    render(
+      <>
+        <label>
+          <Checkbox defaultChecked onCheckedChange={onCheckedChange} /> Include archived
+        </label>
+        <Checkbox aria-label="Partial selection" indeterminate invalid data-slot="consumer" />
+        <Checkbox aria-label="Custom indicator" defaultChecked>
+          Custom
+        </Checkbox>
+        <RadioGroup label="Audience" defaultValue="team" onChange={onChange}>
+          <RadioGroupItem value="private" description="Only you can view it.">
+            Private
+          </RadioGroupItem>
+          <RadioGroupItem value="team">Team</RadioGroupItem>
+        </RadioGroup>
+      </>,
+    );
+    await user.click(screen.getByRole("checkbox", { name: "Include archived" }));
+    expect(onCheckedChange).toHaveBeenCalledWith(false, expect.anything());
+    expect(screen.getByRole("checkbox", { name: "Partial selection" })).toHaveAttribute(
+      "aria-checked",
+      "mixed",
+    );
+    expect(screen.getByRole("checkbox", { name: "Partial selection" })).toHaveAttribute(
+      "data-slot",
+      "root",
+    );
+    expect(screen.getByText("Custom")).toBeInTheDocument();
+    await user.click(screen.getByRole("radio", { name: /Private/ }));
+    expect(onChange).toHaveBeenCalledWith("private");
+    expect(screen.getByText("Only you can view it.")).toBeInTheDocument();
+  });
+
+  it("keeps Switch read-only, invalid, and protected anatomy contracts", async () => {
+    const user = userEvent.setup();
+    const onCheckedChange = vi.fn();
+    render(
+      <label>
+        <Switch
+          defaultChecked
+          invalid
+          readOnly
+          data-slot="consumer"
+          onCheckedChange={onCheckedChange}
+        />
+        Notifications
+      </label>,
+    );
+    const switchControl = screen.getByRole("switch", { name: "Notifications" });
+    expect(switchControl).toHaveAttribute("aria-invalid", "true");
+    expect(switchControl).toHaveAttribute("data-readonly", "");
+    expect(switchControl).toHaveAttribute("data-slot", "root");
+    await user.click(switchControl);
+    expect(onCheckedChange).not.toHaveBeenCalled();
+  });
+
+  it("preserves controlled state, keyboard behavior, and form values for Checkbox and Switch", async () => {
+    const user = userEvent.setup();
+    const onCheckboxChange = vi.fn();
+    const onSwitchChange = vi.fn();
+    function ControlledControls() {
+      const [checked, setChecked] = React.useState(false);
+      const [enabled, setEnabled] = React.useState(false);
+      return (
+        <form aria-label="Control values">
+          <label>
+            <Checkbox
+              checked={checked}
+              name="includeArchived"
+              value="yes"
+              onCheckedChange={(next, details) => {
+                onCheckboxChange(next, details);
+                setChecked(next);
+              }}
+            />
+            Include archived
+          </label>
+          <label>
+            <Switch
+              checked={enabled}
+              name="notifications"
+              value="enabled"
+              onCheckedChange={(next, details) => {
+                onSwitchChange(next, details);
+                setEnabled(next);
+              }}
+            />
+            Notifications
+          </label>
+        </form>
+      );
+    }
+    render(<ControlledControls />);
+    const checkbox = screen.getByRole("checkbox", { name: "Include archived" });
+    const switchControl = screen.getByRole("switch", { name: "Notifications" });
+    checkbox.focus();
+    await user.keyboard(" ");
+    expect(onCheckboxChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(checkbox).toHaveAttribute("aria-checked", "true");
+    switchControl.focus();
+    await user.keyboard(" ");
+    expect(onSwitchChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(switchControl).toHaveAttribute("aria-checked", "true");
+    const form = screen.getByRole("form", { name: "Control values" });
+    expect(new FormData(form)).toEqual(
+      expect.objectContaining({
+        get: expect.any(Function),
+      }),
+    );
+    expect(new FormData(form).get("includeArchived")).toBe("yes");
+    expect(new FormData(form).get("notifications")).toBe("enabled");
+  });
+
+  it("keeps RadioGroup keyboard navigation, IDs, disabled skipping, and form behavior", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <form>
+        <RadioGroup
+          label="Visibility"
+          defaultValue="team"
+          description="Choose who can access this project."
+          message="Select one option."
+          name="visibility"
+          onValueChange={onValueChange}
+          options={[
+            { label: "Private", value: "private" },
+            { label: "Team", value: "team" },
+            { label: "Unavailable", value: "unavailable", disabled: true },
+          ]}
+        />
+      </form>,
+    );
+    const group = screen.getByRole("radiogroup", { name: "Visibility" });
+    const team = screen.getByRole("radio", { name: "Team" });
+    await user.tab();
+    expect(team).toHaveFocus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("radio", { name: "Private" })).toHaveAttribute("aria-checked", "true");
+    expect(onValueChange).toHaveBeenCalledWith("private", expect.anything());
+    await user.keyboard("{ArrowUp}");
+    expect(team).toHaveAttribute("aria-checked", "true");
+    expect(group).toHaveAttribute("aria-describedby", expect.stringContaining("-description"));
+    expect(group).toHaveAttribute("aria-describedby", expect.stringContaining("-message"));
+    expect(new FormData(group.closest("form")! as HTMLFormElement).get("visibility")).toBe("team");
+  });
+
+  it("covers Checkbox default indicators, protected states, required input, and form submission", async () => {
+    const user = userEvent.setup();
+    const onDisabledChange = vi.fn();
+    const onReadOnlyChange = vi.fn();
+    let requiredInput: HTMLInputElement | null = null;
+    render(
+      <form aria-label="Checkbox values">
+        <label>
+          <Checkbox
+            defaultChecked
+            inputRef={(node) => {
+              requiredInput = node;
+            }}
+            name="selected"
+            required
+            value="selected"
+          />
+          Selected
+        </label>
+        <Checkbox aria-label="Indeterminate" indeterminate />
+        <Checkbox aria-label="Disabled checkbox" disabled onCheckedChange={onDisabledChange} />
+        <Checkbox aria-label="Read-only checkbox" readOnly onCheckedChange={onReadOnlyChange} />
+      </form>,
+    );
+    const selected = screen.getByRole("checkbox", { name: "Selected" });
+    expect(selected.querySelector(".n-checkbox__check")).toBeInTheDocument();
+    const indeterminate = screen.getByRole("checkbox", { name: "Indeterminate" });
+    expect(indeterminate.querySelector(".n-checkbox__minus")).toBeInTheDocument();
+    expect(indeterminate).toHaveAttribute("aria-checked", "mixed");
+    expect(requiredInput).toBeRequired();
+    await user.click(screen.getByRole("checkbox", { name: "Disabled checkbox" }));
+    await user.click(screen.getByRole("checkbox", { name: "Read-only checkbox" }));
+    expect(onDisabledChange).not.toHaveBeenCalled();
+    expect(onReadOnlyChange).not.toHaveBeenCalled();
+    expect(
+      new FormData(screen.getByRole("form", { name: "Checkbox values" })).get("selected"),
+    ).toBe("selected");
+  });
+
+  it("covers Switch child compatibility, disabled state, required input, and form submission", async () => {
+    const user = userEvent.setup();
+    const onDisabledChange = vi.fn();
+    let requiredInput: HTMLInputElement | null = null;
+    render(
+      <form aria-label="Switch values">
+        <label>
+          <Switch
+            defaultChecked
+            inputRef={(node) => {
+              requiredInput = node;
+            }}
+            name="enabled"
+            required
+            value="enabled"
+          >
+            Ignored child
+          </Switch>
+          Enable notifications
+        </label>
+        <Switch aria-label="Disabled switch" disabled onCheckedChange={onDisabledChange} />
+      </form>,
+    );
+    expect(screen.queryByText("Ignored child")).not.toBeInTheDocument();
+    expect(requiredInput).toBeRequired();
+    await user.click(screen.getByRole("switch", { name: "Disabled switch" }));
+    expect(onDisabledChange).not.toHaveBeenCalled();
+    expect(new FormData(screen.getByRole("form", { name: "Switch values" })).get("enabled")).toBe(
+      "enabled",
+    );
+  });
+
+  it("keeps RadioGroup options and composition equivalent, including read-only and disabled groups", async () => {
+    const user = userEvent.setup();
+    const onReadOnlyChange = vi.fn();
+    render(
+      <>
+        <RadioGroup
+          label="Options group"
+          options={[
+            { label: "Private", value: "private", description: "Only you." },
+            { label: "Team", value: "team" },
+          ]}
+        />
+        <RadioGroup label="Composed group">
+          <RadioGroupItem value="private" description="Only you.">
+            Private
+          </RadioGroupItem>
+          <RadioGroupItem value="team">Team</RadioGroupItem>
+        </RadioGroup>
+        <RadioGroup
+          label="Read-only group"
+          defaultValue="team"
+          onValueChange={onReadOnlyChange}
+          readOnly
+          options={[
+            { label: "Private", value: "private" },
+            { label: "Team", value: "team" },
+          ]}
+        />
+        <RadioGroup
+          label="Disabled group"
+          disabled
+          options={[{ label: "Private", value: "private" }]}
+        />
+      </>,
+    );
+    expect(screen.getAllByText("Only you.")).toHaveLength(2);
+    expect(document.querySelectorAll('[data-slot="option-content"]')).toHaveLength(7);
+    const readOnlyPrivate = screen.getAllByRole("radio", { name: "Private" })[2];
+    await user.click(readOnlyPrivate);
+    expect(onReadOnlyChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("radiogroup", { name: "Disabled group" })).toHaveAttribute(
+      "data-disabled",
+      "",
+    );
+    expect(screen.getAllByRole("radio", { name: "Private" })[0].closest("label")).toHaveAttribute(
+      "data-slot",
+      "option",
     );
   });
 

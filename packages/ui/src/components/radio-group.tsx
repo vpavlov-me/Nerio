@@ -3,8 +3,9 @@
 import * as React from "react";
 import { Radio } from "@base-ui/react/radio";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
-import { FormMessage } from "./form-message";
 import { cn } from "../lib/cn";
+import { resolveClassName } from "../lib/resolve-class-name";
+import { FormMessage } from "./form-message";
 
 export interface RadioGroupOption {
   label: React.ReactNode;
@@ -13,30 +14,105 @@ export interface RadioGroupOption {
   description?: React.ReactNode;
 }
 
-export interface RadioGroupProps extends Omit<
+type BaseRadioGroupProps = Omit<
   React.ComponentProps<typeof BaseRadioGroup<string>>,
   "children" | "onChange" | "onValueChange"
-> {
+>;
+
+type SharedRadioGroupProps = BaseRadioGroupProps & {
   label: React.ReactNode;
-  options: RadioGroupOption[];
   description?: React.ReactNode;
   invalid?: boolean;
   message?: React.ReactNode;
-  onValueChange?: (value: string) => void;
+  onValueChange?: (
+    value: string,
+    eventDetails: Parameters<
+      NonNullable<React.ComponentProps<typeof BaseRadioGroup<string>>["onValueChange"]>
+    >[1],
+  ) => void;
+  /** @deprecated Prefer onValueChange for Base UI event details. */
   onChange?: (value: string) => void;
+};
+
+type OptionsRadioGroupProps = {
+  options: RadioGroupOption[];
+  children?: never;
+};
+
+type ComposedRadioGroupProps = {
+  children: React.ReactNode;
+  options?: never;
+};
+
+export type RadioGroupProps = SharedRadioGroupProps &
+  (OptionsRadioGroupProps | ComposedRadioGroupProps);
+
+export interface RadioGroupItemProps extends Omit<
+  React.ComponentProps<typeof Radio.Root<string>>,
+  "children" | "className" | "value"
+> {
+  className?: React.ComponentProps<typeof Radio.Root<string>>["className"];
+  children: React.ReactNode;
+  description?: React.ReactNode;
+  value: string;
+}
+
+export const RadioGroupItem = React.forwardRef<HTMLElement, RadioGroupItemProps>(
+  function RadioGroupItem(
+    { children, className, description, disabled, readOnly, value, ...props },
+    ref,
+  ) {
+    return (
+      <label
+        className="n-radio-option"
+        data-disabled={disabled ? "" : undefined}
+        data-readonly={readOnly ? "" : undefined}
+        data-slot="option"
+      >
+        <Radio.Root
+          ref={ref}
+          className={(state) => cn("n-radio", resolveClassName(className, state))}
+          disabled={disabled}
+          readOnly={readOnly}
+          {...props}
+          data-disabled={disabled ? "" : undefined}
+          data-readonly={readOnly ? "" : undefined}
+          data-slot="control"
+          value={value}
+        >
+          <Radio.Indicator className="n-radio__indicator" data-slot="indicator" />
+        </Radio.Root>
+        <span className="n-radio-option__content" data-slot="option-content">
+          <span data-slot="option-label">{children}</span>
+          {description ? <span data-slot="option-description">{description}</span> : null}
+        </span>
+      </label>
+    );
+  },
+);
+
+function mergeIds(...ids: Array<string | undefined>) {
+  const merged = ids.flatMap((id) => id?.split(" ") ?? []).filter(Boolean);
+  return merged.length > 0 ? Array.from(new Set(merged)).join(" ") : undefined;
 }
 
 export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(function RadioGroup(
   {
+    "aria-describedby": ariaDescribedBy,
+    "aria-invalid": ariaInvalid,
+    "aria-labelledby": ariaLabelledBy,
     className,
     description,
+    disabled,
     invalid = false,
     label,
     message,
     onChange,
     onValueChange,
     options,
+    readOnly,
     required,
+    children,
     ...props
   },
   ref,
@@ -45,12 +121,30 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
   const labelId = `${generatedId}-label`;
   const descriptionId = description ? `${generatedId}-description` : undefined;
   const messageId = message ? `${generatedId}-message` : undefined;
-  const describedBy = [descriptionId, messageId].filter(Boolean).join(" ") || undefined;
+  const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
+  const renderedItems = options
+    ? options.map((option) => (
+        <RadioGroupItem
+          key={option.value}
+          disabled={option.disabled}
+          description={option.description}
+          value={option.value}
+        >
+          {option.label}
+        </RadioGroupItem>
+      ))
+    : children;
 
   return (
     <div
-      className={cn("n-field n-radio-field", className)}
-      data-invalid={invalid ? "" : undefined}
+      className={cn(
+        "n-field",
+        "n-radio-field",
+        typeof className === "string" ? className : undefined,
+      )}
+      data-disabled={disabled ? "" : undefined}
+      data-invalid={isInvalid ? "" : undefined}
+      data-readonly={readOnly ? "" : undefined}
       data-slot="root"
     >
       <span className="n-label" data-slot="label" id={labelId}>
@@ -63,50 +157,33 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
       ) : null}
       <BaseRadioGroup<string>
         ref={ref}
-        aria-describedby={describedBy}
-        aria-invalid={invalid ? true : undefined}
-        aria-labelledby={labelId}
-        data-invalid={invalid ? "" : undefined}
-        data-slot="group"
+        className={(state) =>
+          typeof className === "function" ? resolveClassName(className, state) : undefined
+        }
+        disabled={disabled}
+        readOnly={readOnly}
         required={required}
-        onValueChange={(nextValue) => {
-          onValueChange?.(nextValue);
-          onChange?.(nextValue);
-        }}
         {...props}
+        aria-describedby={mergeIds(ariaDescribedBy, descriptionId, messageId)}
+        aria-invalid={ariaInvalid ?? (invalid ? true : undefined)}
+        aria-labelledby={mergeIds(ariaLabelledBy, labelId)}
+        data-disabled={disabled ? "" : undefined}
+        data-invalid={isInvalid ? "" : undefined}
+        data-readonly={readOnly ? "" : undefined}
+        data-slot="group"
+        onValueChange={(value, eventDetails) => {
+          onValueChange?.(value, eventDetails);
+          onChange?.(value);
+        }}
       >
-        {options.map((option) => (
-          <label
-            key={option.value}
-            className="n-radio-option"
-            data-disabled={option.disabled ? "" : undefined}
-            data-slot="option"
-          >
-            <Radio.Root
-              className="n-radio"
-              data-invalid={invalid ? "" : undefined}
-              data-slot="control"
-              disabled={option.disabled}
-              required={required}
-              value={option.value}
-            >
-              <Radio.Indicator className="n-radio__indicator" data-slot="indicator" />
-            </Radio.Root>
-            <span className="n-radio-option__content" data-slot="option-content">
-              <span data-slot="option-label">{option.label}</span>
-              {option.description ? (
-                <span data-slot="option-description">{option.description}</span>
-              ) : null}
-            </span>
-          </label>
-        ))}
+        {renderedItems}
       </BaseRadioGroup>
       {message ? (
         <FormMessage
           data-slot="message"
           id={messageId}
-          role={invalid ? "alert" : undefined}
-          tone={invalid ? "danger" : "neutral"}
+          role={isInvalid ? "alert" : undefined}
+          tone={isInvalid ? "danger" : "neutral"}
         >
           {message}
         </FormMessage>

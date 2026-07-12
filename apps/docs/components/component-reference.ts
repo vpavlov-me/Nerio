@@ -73,11 +73,11 @@ export const snippets: Record<string, string> = {
   "form-group":
     'import { Field, FormGroup } from \'@nerio/ui\';\nimport { Checkbox } from \'@nerio/ui/client\';\n\n<FormGroup layout="grid" title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
   checkbox:
-    "import { Checkbox } from '@nerio/ui/client';\n\n<label><Checkbox name=\"includeArchived\" defaultChecked /> Include archived</label>",
+    'import { Checkbox } from \'@nerio/ui/client\';\n\n<label><Checkbox name="includeArchived" defaultChecked /> Include archived</label>\n\n// Use indeterminate for an aggregate or partial selection.\n<Checkbox aria-label="Partially selected" indeterminate />',
   "radio-group":
-    'import { RadioGroup } from \'@nerio/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team" options={[{ label: "Private", value: "private" }, { label: "Team", value: "team" }]} />',
+    'import { RadioGroup, RadioGroupItem } from \'@nerio/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team">\n  <RadioGroupItem value="private" description="Only you can access it.">Private</RadioGroupItem>\n  <RadioGroupItem value="team">Team</RadioGroupItem>\n</RadioGroup>\n\n// Options API remains available for concise data-driven groups.\n<RadioGroup label="Visibility" options={[{ label: "Private", value: "private" }]} />',
   switch:
-    "import { Switch } from '@nerio/ui/client';\n\n<label><Switch aria-label=\"Notify collaborators\" defaultChecked /> Notify collaborators</label>",
+    "import { Switch } from '@nerio/ui/client';\n\n<label><Switch name=\"notifyCollaborators\" defaultChecked /> Notify collaborators</label>",
   dialog:
     'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
@@ -1232,26 +1232,32 @@ export const componentReference: Record<string, ComponentReference> = {
   },
   checkbox: {
     category: "Forms",
-    purpose: "Use Checkbox for independent options that can be checked or unchecked.",
+    purpose:
+      "Use Checkbox for independent selection, consent, multi-select sets, and aggregate indeterminate state.",
     anatomy: [
-      { title: "root", description: "Base UI checkbox control with checked and disabled states." },
-      { title: "indicator", description: "Icon adapter based visual check indicator." },
-      { title: "label", description: "Visible text that explains the option." },
+      {
+        title: "root",
+        description:
+          "Base UI checkbox control with checked, indeterminate, disabled, and read-only state.",
+      },
+      { title: "indicator", description: "Icon adapter check or indeterminate indicator." },
     ],
     variants: [{ title: "Default", description: "Independent binary option." }],
     states: [
       { title: "Unchecked", description: "Option is available but not selected." },
       { title: "Checked", description: "Option is selected." },
+      { title: "Indeterminate", description: "Represents an aggregate or partial selection." },
       { title: "Invalid", description: "Explicit invalid state maps to aria-invalid." },
       { title: "Disabled", description: "Option is unavailable." },
+      { title: "Read-only", description: "Option remains visible but does not accept changes." },
     ],
     accessibility: [
       "Checkbox is interactive and imports from @nerio/ui/client.",
       "Use a visible label, aria-label, or aria-labelledby so the option has an accessible name.",
       "Base UI owns keyboard and checked-state behavior.",
       "Use invalid or aria-invalid to expose validation state; connect help or error text with aria-describedby.",
-      "Disabled state prevents interaction.",
-      "The indicator uses the Nerio icon adapter.",
+      "Space toggles the focused checkbox; read-only and disabled states do not change value.",
+      "The indicator uses the Nerio icon adapter and exposes aria-checked=mixed for indeterminate state.",
     ],
     api: [
       {
@@ -1259,7 +1265,7 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Controlled and uncontrolled checked-state APIs from the Base UI root.",
       },
       {
-        title: "name / value / form / required / disabled",
+        title: "name / value / form / required / disabled / readOnly",
         description: "Native form metadata is preserved through the Base UI root props.",
       },
       { title: "invalid", description: "Sets data-invalid and aria-invalid when true." },
@@ -1267,8 +1273,11 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     guidance: {
       do: ["Use for independent choices, agreement controls, and multi-select filters."],
-      dont: ["Do not use Checkbox for immediate on/off settings; use Switch instead."],
+      dont: [
+        "Do not use Checkbox for mutually exclusive options or immediate on/off settings; use RadioGroup or Switch instead.",
+      ],
     },
+    related: ["radio-group", "switch", "field"],
     tokens: [
       "--n-checkbox-size",
       "--n-checkbox-radius",
@@ -1287,19 +1296,30 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "option", description: "Clickable option row with control and text." },
       { title: "control", description: "Base UI radio control." },
       { title: "indicator", description: "Selected-state dot." },
+      { title: "option-content", description: "Visible option label and optional description." },
+      { title: "option-label", description: "Visible label content for one selectable option." },
+      {
+        title: "option-description",
+        description: "Optional supporting text for one selectable option.",
+      },
       { title: "message", description: "Optional helper or validation message." },
     ],
     variants: [{ title: "Default", description: "Stacked radio options for small sets." }],
     states: [
       { title: "Checked", description: "One option is selected." },
       { title: "Disabled", description: "The whole group or individual options can be disabled." },
+      {
+        title: "Read-only",
+        description: "The selected option remains visible without accepting changes.",
+      },
       { title: "Invalid", description: "Connects validation message and invalid state." },
     ],
     accessibility: [
       "RadioGroup is interactive and imports from @nerio/ui/client.",
       "Uses Base UI Radio Group and Radio primitives.",
       "Connects label, description, and message through accessible ids.",
-      "Supports controlled and uncontrolled value APIs.",
+      "Base UI owns roving focus, Arrow key selection, wrap-around, and disabled-item skipping.",
+      "Supports controlled and uncontrolled value APIs, including name, form, inputRef, required, disabled, and readOnly.",
       'Invalid messages use role="alert" only when invalid is true.',
     ],
     api: [
@@ -1309,7 +1329,18 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "options",
-        description: "Short visible set with label, value, description, and disabled.",
+        description:
+          "Supported concise API for data-driven sets with label, value, description, and disabled.",
+      },
+      {
+        title: "children / RadioGroupItem",
+        description:
+          "Preferred composition API for rich option content and explicit source control.",
+      },
+      {
+        title: "onValueChange",
+        description:
+          "Preferred callback receives value and Base UI event details; onChange remains compatible.",
       },
       {
         title: "label / description / message",
@@ -1318,9 +1349,12 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "invalid", description: "Sets invalid state on the group and message." },
     ],
     guidance: {
-      do: ["Use for two to six visible choices where comparison matters."],
+      do: [
+        "Use options for concise data-driven sets and RadioGroupItem composition for richer or conditional option content.",
+      ],
       dont: ["Do not use RadioGroup for large searchable sets; use Select or a future picker."],
     },
+    related: ["checkbox", "switch", "select", "field"],
     tokens: [
       "--n-radio-size",
       "--n-radio-dot-size",
@@ -1337,7 +1371,7 @@ export const componentReference: Record<string, ComponentReference> = {
     category: "Forms",
     purpose: "Use Switch for settings that turn something on or off immediately.",
     anatomy: [
-      { title: "root", description: "Interactive switch control with pressed state." },
+      { title: "root", description: "Interactive switch control with checked state." },
       { title: "thumb", description: "Movable indicator for on/off state." },
       { title: "label", description: "Text explaining the setting." },
     ],
@@ -1346,13 +1380,18 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Off", description: "Setting is disabled." },
       { title: "On", description: "Setting is enabled." },
       { title: "Disabled", description: "Setting cannot be changed." },
+      { title: "Read-only", description: "Setting remains visible without accepting changes." },
+      {
+        title: "Invalid",
+        description: "Validation state is exposed through aria-invalid and data-invalid.",
+      },
     ],
     accessibility: [
       "Switch is interactive and imports from @nerio/ui/client.",
       "Use for immediate binary settings; use Checkbox for independent options that are submitted as part of a form.",
       "Use a visible label, aria-label, or aria-labelledby so the setting has an accessible name.",
       "Base UI owns keyboard and checked-state behavior.",
-      "Disabled state prevents interaction.",
+      "Space toggles the focused switch; visible labels must stay stable between on and off states.",
       "Do not use Switch for long-running or destructive actions.",
     ],
     api: [
@@ -1361,17 +1400,19 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Controlled and uncontrolled checked-state APIs from the Base UI root.",
       },
       {
-        title: "name / value / form / required / disabled",
+        title: "name / value / form / required / disabled / readOnly",
         description: "Native form metadata is preserved through the Base UI root props.",
       },
+      { title: "invalid", description: "Sets data-invalid and aria-invalid when true." },
       { title: "className", description: "Extends the root switch." },
     ],
     guidance: {
       do: ["Use for preferences like notifications or compact mode."],
       dont: [
-        "Do not use Switch for selecting multiple unrelated options or for destructive actions.",
+        "Do not use Switch when a separate Save, Apply, Submit, or Confirm action is still required unless delayed behavior is clearly communicated.",
       ],
     },
+    related: ["checkbox", "radio-group", "field"],
     tokens: [
       "--n-switch-height",
       "--n-switch-width",
