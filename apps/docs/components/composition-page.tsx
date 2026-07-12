@@ -14,6 +14,10 @@ import {
   Dialog,
   DropdownMenu,
   EmptyState,
+  EmptyStateActions,
+  EmptyStateDescription,
+  EmptyStateHeader,
+  EmptyStateTitle,
   Field,
   FormGroup,
   Heading,
@@ -281,15 +285,19 @@ function TableToolbarPreview() {
           </Table>
         </TableContainer>
       ) : (
-        <EmptyState
-          title="No projects found"
-          description="Try another search term or clear the filter."
-          action={
+        <EmptyState role="status" size="sm">
+          <EmptyStateHeader>
+            <EmptyStateTitle>No projects found</EmptyStateTitle>
+            <EmptyStateDescription>
+              Try another search term or clear the filter.
+            </EmptyStateDescription>
+          </EmptyStateHeader>
+          <EmptyStateActions>
             <Button variant="secondary" onClick={() => setQuery("")}>
               Clear search
             </Button>
-          }
-        />
+          </EmptyStateActions>
+        </EmptyState>
       )}
       <Pagination
         pages={[
@@ -373,17 +381,18 @@ function EmptyStatesPreview() {
   return (
     <div className="composition-empty-grid">
       {states.map(([title, description]) => (
-        <EmptyState
-          key={title}
-          title={title}
-          description={description}
-          action={<Button size="sm">Primary action</Button>}
-          secondaryAction={
+        <EmptyState key={title} size="sm">
+          <EmptyStateHeader>
+            <EmptyStateTitle>{title}</EmptyStateTitle>
+            <EmptyStateDescription>{description}</EmptyStateDescription>
+          </EmptyStateHeader>
+          <EmptyStateActions>
+            <Button size="sm">Primary action</Button>
             <Button size="sm" variant="ghost">
               Learn more
             </Button>
-          }
-        />
+          </EmptyStateActions>
+        </EmptyState>
       ))}
     </div>
   );
@@ -663,7 +672,7 @@ const compositions: Record<string, Composition> = {
       "Cards remain usable in a single column and action pairs wrap without reducing tap targets.",
     notes:
       "Product-specific illustrations, recovery flows, and permission requests belong to the app or a future Pro template—not Core.",
-    code: '<EmptyState title="No projects" description="Start a project for your team." action={<Button>Create project</Button>} />',
+    code: "<EmptyState><EmptyStateHeader><EmptyStateTitle>No projects</EmptyStateTitle><EmptyStateDescription>Start a project for your team.</EmptyStateDescription></EmptyStateHeader><EmptyStateActions><Button>Create project</Button></EmptyStateActions></EmptyState>",
     Preview: EmptyStatesPreview,
   },
   feedback: {

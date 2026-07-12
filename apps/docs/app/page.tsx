@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { Badge, Card, EmptyState, Stat } from "@nerio/ui";
+import {
+  Badge,
+  Card,
+  EmptyState,
+  EmptyStateDescription,
+  EmptyStateHeader,
+  EmptyStateTitle,
+  Stat,
+} from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { siteConfig } from "../lib/site-config";
 
@@ -75,10 +83,14 @@ export default function HomePage() {
             Primitive, semantic, and component tokens keep themes and product branding resilient.
           </p>
         </Card>
-        <EmptyState
-          title="No locked-in vertical"
-          description="Nerio avoids domain-specific motifs so teams can brand it through tokens."
-        />
+        <EmptyState>
+          <EmptyStateHeader>
+            <EmptyStateTitle>No locked-in vertical</EmptyStateTitle>
+            <EmptyStateDescription>
+              Nerio avoids domain-specific motifs so teams can brand it through tokens.
+            </EmptyStateDescription>
+          </EmptyStateHeader>
+        </EmptyState>
       </div>
     </div>
   );

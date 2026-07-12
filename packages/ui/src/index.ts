@@ -26,7 +26,25 @@ export {
   type BadgeVariant,
 } from "./components/badge";
 export { Skeleton, type SkeletonProps } from "./components/skeleton";
-export { EmptyState, type EmptyStateProps } from "./components/empty-state";
+export {
+  EmptyState,
+  EmptyStateActions,
+  EmptyStateDescription,
+  EmptyStateHeader,
+  EmptyStateMedia,
+  EmptyStateTitle,
+  type EmptyStateActionsOrientation,
+  type EmptyStateActionsProps,
+  type EmptyStateAlign,
+  type EmptyStateDescriptionProps,
+  type EmptyStateHeaderProps,
+  type EmptyStateMediaProps,
+  type EmptyStateMediaVariant,
+  type EmptyStateProps,
+  type EmptyStateSize,
+  type EmptyStateTitleElement,
+  type EmptyStateTitleProps,
+} from "./components/empty-state";
 export { Alert, type AlertProps, type AlertTone } from "./components/alert";
 export { Breadcrumbs, type BreadcrumbsItem, type BreadcrumbsProps } from "./components/breadcrumbs";
 export { Input, type InputProps, type InputSize, type InputType } from "./components/input";
