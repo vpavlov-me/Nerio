@@ -1,6 +1,6 @@
 # Nerio agent instructions
 
-This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation, and `COMPONENTS.md` before adding or moving components.
+This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation, `COMPONENTS.md` before adding or moving components, and `COMPONENT_ARCHITECTURE.md` before adding props, variants, component modes, or new component responsibilities.
 
 ## Product constraints
 
@@ -41,6 +41,10 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 
 ## Design-system rules
 
+- Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
+- One component represents one semantic responsibility. Group components by meaning, behavior, accessibility contract, and composition role rather than visual similarity.
+- Before adding a prop or variant, verify that the semantic purpose, interaction model, content model, and likely API evolution remain unchanged. If they differ, prefer a separate component.
+- Agents must call out requests that mix component responsibilities and recommend the appropriate boundary before implementation.
 - Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
 - Theme, mode, and density are the only v1 runtime appearance axes:
   - `data-theme="purple" | "blue" | "green" | "orange" | "red" | "neutral"` controls brand/accent personality.
