@@ -984,7 +984,7 @@
     {
       "name": "radio-group",
       "title": "RadioGroup",
-      "description": "Chooses one option from a small visible set.",
+      "description": "Chooses one option from a small visible set through data-driven options or RadioGroupItem composition.",
       "category": "forms",
       "dependencies": ["@base-ui/react", "clsx", "react"],
       "registryDependencies": ["form-message"],
@@ -993,6 +993,16 @@
           "source": "../../ui/src/components/radio-group.tsx",
           "target": "components/radio-group.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
         }
       ],
       "baseUiPrimitives": ["radio-group", "radio"],
@@ -1025,10 +1035,11 @@
         "Uses Base UI Radio Group and Radio primitives for keyboard behavior.",
         "Associates the visible group label with aria-labelledby.",
         "Connects description and message text through aria-describedby.",
-        "Supports disabled options, required, invalid, controlled, and uncontrolled values.",
+        "Supports options and RadioGroupItem composition with one shared Base UI state model.",
+        "Supports disabled options, required, read-only, invalid, controlled, and uncontrolled values.",
         "Validation messages use role=\"alert\" only when invalid is true."
       ],
-      "usage": "import { RadioGroup } from '@/components/nerio/components/radio-group';\n\n<RadioGroup label=\"Visibility\" name=\"visibility\" defaultValue=\"team\" options={[{ label: 'Private', value: 'private' }, { label: 'Team', value: 'team' }]} />"
+      "usage": "import { RadioGroup, RadioGroupItem } from '@/components/nerio/components/radio-group';\n\n<RadioGroup label=\"Visibility\" name=\"visibility\" defaultValue=\"team\">\n  <RadioGroupItem value=\"private\">Private</RadioGroupItem>\n  <RadioGroupItem value=\"team\">Team</RadioGroupItem>\n</RadioGroup>\n\n// options remains supported for concise data-driven groups."
     },
     {
       "name": "input",
@@ -1404,6 +1415,11 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/styles/forms.css",
           "target": "styles/forms.css",
           "role": "style"
@@ -1416,7 +1432,7 @@
       ],
       "baseUiPrimitives": ["checkbox"],
       "slots": ["root", "indicator"],
-      "variants": ["checked", "unchecked", "invalid", "disabled"],
+      "variants": ["checked", "unchecked", "indeterminate", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-checkbox-size",
         "--n-checkbox-radius",
@@ -1433,7 +1449,7 @@
         "Supports checked, defaultChecked, onCheckedChange, disabled, required, name, value, form, id, and aria-describedby through the Base UI root props.",
         "Invalid state is explicit through invalid or aria-invalid and does not announce errors automatically.",
         "Disabled state prevents interaction and reduces emphasis.",
-        "The check indicator renders through the Nerio icon adapter."
+        "The Check and Minus indicators render through the Nerio icon adapter, including aria-checked=mixed for indeterminate state."
       ],
       "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<label><Checkbox name=\"includeArchived\" defaultChecked /> Include archived</label>"
     },
@@ -1456,6 +1472,11 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/styles/forms.css",
           "target": "styles/forms.css",
           "role": "style"
@@ -1463,7 +1484,7 @@
       ],
       "baseUiPrimitives": ["switch"],
       "slots": ["root", "thumb"],
-      "variants": ["checked", "unchecked", "disabled"],
+      "variants": ["checked", "unchecked", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-switch-height",
         "--n-switch-width",
@@ -1480,7 +1501,7 @@
         "Use Switch for immediate on/off settings, not multi-select form choices.",
         "Provide a visible label or accessible name with aria-label or aria-labelledby.",
         "Supports checked, defaultChecked, onCheckedChange, disabled, required, name, value, form, id, and aria-describedby through the Base UI root props.",
-        "Disabled state prevents interaction and reduces emphasis.",
+        "Invalid, disabled, and read-only states preserve a visible boundary and semantics.",
         "Do not use Switch for long-running or destructive actions."
       ],
       "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<label><Switch aria-label=\"Notify collaborators\" defaultChecked /> Notify collaborators</label>"

@@ -12,7 +12,13 @@ export type {
 } from "./components/button";
 export { IconButton, type IconButtonProps } from "./components/icon-button";
 export { Checkbox, type CheckboxProps } from "./components/checkbox";
-export { RadioGroup, type RadioGroupOption, type RadioGroupProps } from "./components/radio-group";
+export {
+  RadioGroup,
+  RadioGroupItem,
+  type RadioGroupItemProps,
+  type RadioGroupOption,
+  type RadioGroupProps,
+} from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
 export { Select, type SelectOption, type SelectProps } from "./components/select";
 export { Tabs, type TabItem, type TabsProps } from "./components/tabs";

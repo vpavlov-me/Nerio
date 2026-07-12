@@ -50,6 +50,7 @@ const expectedBaseFormFiles = [
   "components/icon.tsx",
   "components/switch.tsx",
   "lib/cn.ts",
+  "lib/resolve-class-name.ts",
   "styles/forms.css",
   "styles/icon.css",
 ];
@@ -68,6 +69,7 @@ const expectedPhase2BFiles = [
   "components/icon.tsx",
   "components/radio-group.tsx",
   "lib/cn.ts",
+  "lib/resolve-class-name.ts",
   "styles/feedback.css",
   "styles/forms.css",
   "styles/icon.css",
@@ -330,7 +332,8 @@ async function verify() {
       !checkboxSource.includes("@base-ui/react/checkbox") ||
       !checkboxSource.includes("invalid?: boolean") ||
       !checkboxSource.includes("aria-invalid") ||
-      !checkboxSource.includes("Icon icon={Check}")
+      !checkboxSource.includes("icon={Check}") ||
+      !checkboxSource.includes("icon={Minus}")
     ) {
       throw new Error("Installed Checkbox source is missing Base UI, invalid, or icon contract.");
     }
@@ -338,7 +341,11 @@ async function verify() {
       path.join(localTarget, "components/nerio/components/switch.tsx"),
       "utf8",
     );
-    if (!switchSource.includes("@base-ui/react/switch") || !switchSource.includes("forwardRef")) {
+    if (
+      !switchSource.includes("@base-ui/react/switch") ||
+      !switchSource.includes("forwardRef") ||
+      !switchSource.includes("data-readonly")
+    ) {
       throw new Error("Installed Switch source is missing Base UI or ref support.");
     }
     assertFiles(localTarget, expectedSelectFiles);
@@ -433,7 +440,8 @@ async function verify() {
     );
     if (
       !radioSource.includes("@base-ui/react/radio-group") ||
-      !radioSource.includes("aria-labelledby")
+      !radioSource.includes("aria-labelledby") ||
+      !radioSource.includes("RadioGroupItem")
     ) {
       throw new Error("Installed RadioGroup source does not preserve Base UI label wiring.");
     }

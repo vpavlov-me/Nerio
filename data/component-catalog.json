@@ -226,7 +226,7 @@
       "package": "@nerio/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Client-only Base UI checkbox for independent options with checked, disabled, invalid, and form metadata support."
+      "description": "Client-only Base UI checkbox for independent options with checked, indeterminate, invalid, disabled, read-only, and form metadata support."
     },
     {
       "name": "Radio Group",
@@ -234,7 +234,7 @@
       "package": "@nerio/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Client-only Base UI radio selection control with group label, description, message, disabled options, and controlled or uncontrolled values."
+      "description": "Client-only Base UI radio selection control with options or RadioGroupItem composition, group metadata, disabled options, and controlled or uncontrolled values."
     },
     {
       "name": "Switch",

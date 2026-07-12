@@ -1,4 +1,9 @@
 {
   "extends": "@nerio/config/tsconfig/react",
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "test/type-contracts/**/*.ts",
+    "test/type-contracts/**/*.tsx"
+  ]
 }

@@ -71,7 +71,13 @@ export {
   type FormMessageTone,
 } from "./components/form-message";
 export { Checkbox, type CheckboxProps } from "./components/checkbox";
-export { RadioGroup, type RadioGroupOption, type RadioGroupProps } from "./components/radio-group";
+export {
+  RadioGroup,
+  RadioGroupItem,
+  type RadioGroupItemProps,
+  type RadioGroupOption,
+  type RadioGroupProps,
+} from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
 export { Select, type SelectOption, type SelectProps } from "./components/select";
 export { Tabs, type TabItem, type TabsProps, type TabsVariant } from "./components/tabs";

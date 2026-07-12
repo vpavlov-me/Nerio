@@ -45,6 +45,7 @@ import {
   Popover,
   Progress,
   RadioGroup,
+  RadioGroupItem,
   Select,
   Separator,
   Skeleton,
@@ -471,28 +472,51 @@ function Preview({ kind }: { kind: string }) {
             </FormGroup>
           ) : null}
           {kind === "checkbox" ? (
-            <label className="inline-control">
-              <Checkbox defaultChecked />
-              <span>Include archived collections</span>
-            </label>
+            <div className="form-preview-stack">
+              <label className="inline-control">
+                <Checkbox defaultChecked />
+                <span>Include archived collections</span>
+              </label>
+              <label className="inline-control">
+                <Checkbox indeterminate />
+                <span>Some collections are archived</span>
+              </label>
+              <label className="inline-control">
+                <Checkbox disabled />
+                <span>Archived collections are unavailable</span>
+              </label>
+            </div>
           ) : null}
           {kind === "radio-group" ? (
             <RadioGroup
               label="Visibility"
+              description="Choose who can access this project."
+              message="Select the visibility that matches the project."
               name="visibility-preview"
               defaultValue="team"
-              options={[
-                { label: "Private", value: "private", description: "Only invited members." },
-                { label: "Team", value: "team", description: "Visible to the workspace." },
-                { label: "Public", value: "public", disabled: true, description: "Not available." },
-              ]}
-            />
+            >
+              <RadioGroupItem value="private" description="Only invited members.">
+                Private
+              </RadioGroupItem>
+              <RadioGroupItem value="team" description="Visible to the workspace.">
+                Team
+              </RadioGroupItem>
+              <RadioGroupItem value="public" disabled description="Not available.">
+                Public
+              </RadioGroupItem>
+            </RadioGroup>
           ) : null}
           {kind === "switch" ? (
-            <label className="inline-control">
-              <Switch defaultChecked />
-              <span>Notify collaborators</span>
-            </label>
+            <div className="form-preview-stack">
+              <label className="inline-control">
+                <Switch defaultChecked />
+                <span>Notify collaborators</span>
+              </label>
+              <label className="inline-control">
+                <Switch readOnly />
+                <span>Automatic updates are managed by your workspace</span>
+              </label>
+            </div>
           ) : null}
           {kind === "dialog" ? (
             <Dialog
