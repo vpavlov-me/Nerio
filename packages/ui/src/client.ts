@@ -17,6 +17,7 @@ export { Switch, type SwitchProps } from "./components/switch";
 export { Select, type SelectOption, type SelectProps } from "./components/select";
 export { Tabs, type TabItem, type TabsProps } from "./components/tabs";
 export { Tooltip, type TooltipProps } from "./components/tooltip";
+export { LabelHint, type LabelHintProps } from "./components/label-hint";
 export { Dialog, type DialogProps } from "./components/dialog";
 export { Popover, type PopoverProps } from "./components/popover";
 export {

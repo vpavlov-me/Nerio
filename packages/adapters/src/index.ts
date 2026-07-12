@@ -10,6 +10,7 @@ export {
   Check,
   ChevronDown,
   CircleAlert,
+  CircleQuestionMark,
   Code2,
   Circle,
   Copy,

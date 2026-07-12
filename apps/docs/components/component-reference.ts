@@ -63,7 +63,7 @@ export const snippets: Record<string, string> = {
   textarea:
     'import { Field, Textarea } from \'@nerio/ui\';\n\n<Field label="Notes" description="Add context for collaborators."><Textarea placeholder="Add launch context" /></Field>',
   label:
-    'import { Input, Label } from \'@nerio/ui\';\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" />',
+    'import { Input, Label, LabelContent, LabelRequired, LabelRow } from \'@nerio/ui\';\nimport { LabelHint } from \'@nerio/ui/client\';\n\n<LabelRow>\n  <LabelContent>\n    <Label htmlFor="project-name">Project name</Label>\n    <LabelRequired />\n    <LabelHint label="Choose a recognizable name for collaborators." />\n  </LabelContent>\n</LabelRow>\n<Input id="project-name" required />',
   field:
     'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use at least 3 characters." invalid><Input /></Field>',
   "form-message":
@@ -992,24 +992,50 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Text label associated with a control through htmlFor or composition.",
       },
       { title: "text", description: "Concise name for the expected value." },
+      {
+        title: "required",
+        description: "Red visual marker paired with the control's native required state.",
+      },
+      {
+        title: "hint",
+        description: "Optional tooltip trigger for non-essential contextual guidance.",
+      },
     ],
-    variants: [{ title: "Default", description: "Standard form label text." }],
+    variants: [
+      { title: "Default", description: "Standard form label text." },
+      {
+        title: "With hint",
+        description: "Composable required marker and supplementary question hint.",
+      },
+    ],
     states: [
       { title: "Default", description: "Associates visible text with a matching control id." },
       {
         title: "Required context",
-        description: "Explain requirements in nearby text rather than symbol-only labels.",
+        description:
+          "A red asterisk supplements, but does not replace, the control's native required attribute.",
       },
     ],
     accessibility: [
       "Connect labels to controls with htmlFor and matching id when they are separate.",
       "Label forwards native label attributes and refs.",
+      "Keep the interactive hint outside the native label element by using LabelRow and LabelContent.",
+      "Tooltip guidance is supplementary; do not put essential requirements only in a tooltip.",
     ],
     guidance: {
-      do: ["Use concrete labels such as Project name or Notification email."],
+      do: [
+        "Use concrete labels such as Project name or Notification email.",
+        "Use LabelHint for short, non-essential context.",
+      ],
       dont: ["Do not rely on placeholders or icons alone."],
     },
-    tokens: ["--n-font-size-sm", "--n-font-weight-medium", "--n-color-text-primary"],
+    tokens: [
+      "--n-label-font-size",
+      "--n-label-font-weight",
+      "--n-label-required-color",
+      "--n-label-icon-color",
+      "--n-label-hint-icon-size",
+    ],
   },
   field: {
     category: "Forms",

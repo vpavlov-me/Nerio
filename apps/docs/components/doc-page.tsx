@@ -31,6 +31,10 @@ import {
   KeyValue,
   Kbd,
   Label,
+  LabelContent,
+  LabelHint,
+  LabelRequired,
+  LabelRow,
   List,
   Pagination,
   Popover,
@@ -410,8 +414,14 @@ function Preview({ kind }: { kind: string }) {
           ) : null}
           {kind === "label" ? (
             <div className="form-preview-stack">
-              <Label htmlFor="preview-project-name">Project name</Label>
-              <Input id="preview-project-name" placeholder="Roadmap refresh" />
+              <LabelRow>
+                <LabelContent>
+                  <Label htmlFor="preview-project-name">Project name</Label>
+                  <LabelRequired />
+                  <LabelHint label="Choose a recognizable name for collaborators." />
+                </LabelContent>
+              </LabelRow>
+              <Input id="preview-project-name" placeholder="Roadmap refresh" readOnly required />
             </div>
           ) : null}
           {kind === "field" ? (

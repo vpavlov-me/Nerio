@@ -307,6 +307,10 @@
   --n-control-font-weight: var(--n-font-weight-medium);
   --n-label-font-size: var(--n-font-size-sm);
   --n-label-font-weight: var(--n-font-weight-medium);
+  --n-label-gap: var(--n-space-1);
+  --n-label-hint-icon-size: var(--n-icon-size-xs);
+  --n-label-required-color: var(--n-color-status-danger);
+  --n-label-icon-color: var(--n-color-text-tertiary);
   --n-helper-font-size: var(--n-font-size-xs);
   --n-helper-line-height: var(--n-line-height-normal);
   --n-control-gap-sm: var(--n-space-1-5);
