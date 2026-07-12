@@ -14,6 +14,7 @@
   border-block-start-color: var(--n-button-border-transparent);
   border-radius: var(--n-radius-full);
   block-size: var(--n-spinner-size-md);
+  color: var(--n-color-action-primary);
   display: inline-block;
   inline-size: var(--n-spinner-size-md);
 }
