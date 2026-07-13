@@ -14,6 +14,20 @@
   width: 100%;
 }
 
+.n-select-trigger [data-slot="value"] {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.n-select-trigger__icon {
+  align-items: center;
+  block-size: var(--n-icon-size-md);
+  display: inline-flex;
+  flex: none;
+  inline-size: var(--n-icon-size-md);
+  justify-content: center;
+}
+
 .n-select-trigger:hover:not(:disabled) {
   border-color: var(--n-input-border-hover);
 }
