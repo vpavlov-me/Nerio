@@ -11,6 +11,7 @@ type RenderElementProps = React.HTMLAttributes<HTMLElement> & {
   "data-size"?: ItemSize;
   "data-slot"?: string;
   "data-variant"?: ItemVariant;
+  ref?: React.Ref<HTMLElement>;
 };
 
 type ItemRootProps = Omit<React.HTMLAttributes<HTMLDivElement>, "className" | "data-slot"> & {
@@ -43,10 +44,11 @@ function renderRoot(
     return React.cloneElement(render, {
       ...props,
       className: cn(render.props.className, props.className),
+      ref,
     });
   }
 
-  return <div ref={ref as React.ForwardedRef<HTMLDivElement>} {...props} />;
+  return <div {...props} ref={ref as React.ForwardedRef<HTMLDivElement>} />;
 }
 
 export const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(

@@ -6,9 +6,15 @@ import {
   Avatar,
   Badge,
   ButtonGroup,
+  Card,
+  CardAction,
+  CardHeader,
+  CardTitle,
   EmptyState,
+  EmptyStateActions,
   EmptyStateDescription,
   EmptyStateHeader,
+  EmptyStateMedia,
   EmptyStateTitle,
   Field,
   FormGroup,
@@ -19,7 +25,10 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
+  ItemMedia,
   ItemTitle,
+  Kbd,
+  List,
   Pagination,
   Progress,
   SidebarContent,
@@ -75,8 +84,99 @@ import {
   useToastManager,
 } from "../../src/client";
 import { Bell } from "@nerio/adapters";
+import { RouterLinkFixture } from "../fixtures/router-link";
 
 describe("Core accessibility contracts", () => {
+  it("keeps the polished-component verification matrix accessible", async () => {
+    const { container } = render(
+      <>
+        <p>
+          Save changes <Kbd>⌘ S</Kbd>
+        </p>
+        <button type="button">
+          Save <Kbd aria-hidden>⌘ S</Kbd>
+        </button>
+        <Card as="article">
+          <CardHeader>
+            <CardTitle as="h2">Workspace</CardTitle>
+            <CardAction>
+              <button type="button">Open workspace menu</button>
+            </CardAction>
+          </CardHeader>
+        </Card>
+        <Avatar alt="Maya Chen profile" name="Maya Chen" src="/maya.png" />
+        <Avatar decorative name="Team" />
+        <List
+          items={[
+            {
+              id: "router",
+              title: "Router destination",
+              href: "/router",
+              render: <RouterLinkFixture />,
+            },
+            { id: "nested", title: "Static item", description: <span>Long supporting copy</span> },
+          ]}
+        />
+        <Item>
+          <ItemMedia aria-hidden variant="icon">
+            W
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>Workspace settings</ItemTitle>
+            <ItemDescription>Manage members and security.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <button type="button">Open settings</button>
+          </ItemActions>
+        </Item>
+        <EmptyState role="status">
+          <EmptyStateMedia aria-hidden variant="icon">
+            ?
+          </EmptyStateMedia>
+          <EmptyStateHeader>
+            <EmptyStateTitle>No results</EmptyStateTitle>
+            <EmptyStateDescription>Try another query.</EmptyStateDescription>
+          </EmptyStateHeader>
+          <EmptyStateActions>
+            <button type="button">Clear filters</button>
+          </EmptyStateActions>
+        </EmptyState>
+        <Tabs defaultValue="overview">
+          <TabsList aria-label="Workspace sections">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger disabled value="disabled">
+              Disabled
+            </TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
+            <TabsIndicator />
+          </TabsList>
+          <TabsPanels>
+            <TabsContent value="overview">Overview panel</TabsContent>
+            <TabsContent value="disabled">Disabled panel</TabsContent>
+            <TabsContent value="activity">Activity panel</TabsContent>
+          </TabsPanels>
+        </Tabs>
+        <Pagination
+          previousHref="/one"
+          nextHref="/three"
+          pages={[
+            { key: "one", label: "1", href: "/one" },
+            {
+              key: "two",
+              label: "2",
+              href: "/two",
+              current: true,
+              render: <RouterLinkFixture />,
+            },
+            { key: "three", label: "3", href: "/three" },
+          ]}
+        />
+      </>,
+    );
+
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
   it("keeps loading action names, field associations, and named scroll regions accessible", async () => {
     const { container } = render(
       <>

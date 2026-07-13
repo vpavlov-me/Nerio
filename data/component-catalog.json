@@ -151,8 +151,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "foundation",
-      "status": "polished",
-      "description": "Native keyboard shortcut notation with quiet tokenized styling for commands and Buttons."
+      "status": "stable-core",
+      "description": "Native keyboard shortcut notation with verified inline baseline, Button composition, compact-density, and forced-colors behavior."
     },
     {
       "name": "Icon",
@@ -329,8 +329,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "polished",
-      "description": "Composable surface primitive with semantic roots, visual placements, header actions, and tokenized section spacing; broader browser verification remains pending."
+      "status": "stable-core",
+      "description": "Composable surface primitive with verified semantic roots, visual placements, header actions, narrow layouts, focus, density, and browser overflow behavior."
     },
     {
       "name": "Badge",
@@ -345,8 +345,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "polished",
-      "description": "User or entity avatar resets its image fallback when src changes and names non-decorative fallbacks; broader cross-browser image verification remains."
+      "status": "stable-core",
+      "description": "User or entity avatar with verified image load/error and src-transition behavior, aspect-ratio cropping, accessible naming, decorative fallback, and density support."
     },
     {
       "name": "Table",
@@ -361,16 +361,16 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "polished",
-      "description": "Universal composition primitive for compact content rows, media, metadata, and actions without imposing list or interactive semantics."
+      "status": "stable-core",
+      "description": "Universal composition primitive with verified semantic-root refs, narrow wrapping, media, metadata, actions, density, and consumer-owned interaction semantics."
     },
     {
       "name": "List",
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "polished",
-      "description": "Basic structured list with protected link destinations and anatomy plus safe consumer link props; router rendering coverage remains."
+      "status": "stable-core",
+      "description": "Structured ordered or unordered list with stable IDs, protected native links, package-agnostic router rendering, nested content, and verified browser behavior."
     },
     {
       "name": "Separator",
@@ -433,8 +433,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "polished",
-      "description": "Composable empty-state slots support optional media, header, actions, size, and alignment; browser verification remains."
+      "status": "stable-core",
+      "description": "Composable empty-state slots with verified media, header, actions, sizes, alignments, mobile stacking, role guidance, and optional anatomy."
     },
     {
       "name": "Spinner",
@@ -449,8 +449,8 @@
       "tier": "core",
       "package": "@nerio/ui/client",
       "category": "navigation",
-      "status": "polished",
-      "description": "Base UI compound Tabs primitive with tokenized bordered, separate, and segmented variants; sizes, orientation, overflow, panel motion, and registry-aligned accessibility support."
+      "status": "stable-core",
+      "description": "Base UI compound Tabs primitive with verified controlled and uncontrolled state, disabled navigation, variants, sizes, orientation, overflow, RTL indicator, focus, hydration, and reduced motion."
     },
     {
       "name": "Breadcrumbs",
@@ -465,8 +465,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "navigation",
-      "status": "polished",
-      "description": "Link and button pagination modes are covered; custom router rendering verification remains."
+      "status": "stable-core",
+      "description": "Consumer-owned link and button pagination with verified boundaries, current state, ellipsis, package-agnostic router rendering, wrapping, density, RTL, and accessible labels."
     },
     {
       "name": "Sidebar Primitive",

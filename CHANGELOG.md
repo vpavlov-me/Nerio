@@ -21,12 +21,14 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Consolidated icon-only actions into Button icon mode and keyboard shortcut composition.
 - Expanded Card into a composable anatomy with header, content, footer, action, and visual slots.
 - Improved theme, dark-mode, and density behavior across the Core component surface.
+- Added router-render support to List items and preserved router-rendered Pagination slots and current-page state.
 - Changed Nerio Core's default sans-serif typography from Geist to the platform system font stack.
 
 ### Fixed
 
 - Corrected accessibility associations, loading-state announcements, overlay close behavior, and localized Toast dismiss controls.
 - Improved Avatar fallback updates, Table scroll-region behavior, and link navigation contracts.
+- Closed responsive, high-contrast, image-transition, semantic-root ref, and router-adapter gaps across the remaining polished Core components.
 
 ### Deprecated
 

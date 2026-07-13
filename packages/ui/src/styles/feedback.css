@@ -290,3 +290,17 @@
   align-items: stretch;
   flex-direction: column;
 }
+
+@media (max-width: 30rem) {
+  .n-empty-state__actions {
+    align-items: stretch;
+    flex-direction: column;
+    inline-size: 100%;
+  }
+}
+
+@media (forced-colors: active) {
+  .n-empty-state__media[data-variant="icon"] {
+    border: var(--n-border-width-default) solid CanvasText;
+  }
+}

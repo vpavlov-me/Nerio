@@ -273,3 +273,15 @@
     transform: none;
   }
 }
+
+@media (forced-colors: active) {
+  .n-tabs__trigger:focus-visible {
+    outline: var(--n-focus-ring-inner-width) solid Highlight;
+    outline-offset: calc(var(--n-focus-ring-inner-width) * -1);
+  }
+
+  .n-tabs__indicator {
+    background: Highlight;
+    border-color: Highlight;
+  }
+}

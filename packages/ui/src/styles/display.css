@@ -513,7 +513,34 @@
 }
 
 @media (max-width: 30rem) {
+  .n-card__header:has(> [data-slot="card-action"]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .n-item__actions {
     grid-column: 2 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n-item:where(a, button, [role="button"]) {
+    transition-duration: var(--n-duration-instant);
+  }
+}
+
+@media (forced-colors: active) {
+  .n-card,
+  .n-avatar,
+  .n-list__body,
+  .n-list__link,
+  .n-item[data-variant="outline"] {
+    border-color: CanvasText;
+  }
+
+  .n-card[href]:focus-visible,
+  .n-list__link:focus-visible,
+  .n-item:where(a, button, [role="button"]):focus-visible {
+    outline: var(--n-focus-ring-inner-width) solid Highlight;
+    outline-offset: var(--n-focus-ring-inner-width);
   }
 }

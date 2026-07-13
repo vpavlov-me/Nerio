@@ -45,11 +45,11 @@ export const snippets: Record<string, string> = {
     'import { Save, Settings } from \'@nerio/adapters\';\nimport { Badge, Kbd } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
   "button-group":
     'import { ButtonGroup } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
-  kbd: "import { Kbd } from '@nerio/ui';\n\n<Kbd>⌘S</Kbd>",
+  kbd: "import { Kbd } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<span>Save changes <Kbd>⌘ S</Kbd></span>\n<Button>Open command menu <Kbd aria-hidden>⌘ ⇧ P</Kbd></Button>",
   breadcrumbs:
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
   pagination:
-    "import { Pagination } from '@nerio/ui';\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ key: '1', label: '1', href: '/docs/page/1' }, { key: '2', label: '2', href: '/docs/page/2', current: true }, { key: '3', label: '3', href: '/docs/page/3' }]} />",
+    "import * as React from 'react';\nimport { Pagination } from '@nerio/ui';\n\nconst AppLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>(function AppLink(props, ref) {\n  return <a ref={ref} data-router-link=\"\" {...props} />;\n});\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ key: '1', label: '1', href: '/docs/page/1' }, { key: '2', label: '2', href: '/docs/page/2', current: true, render: <AppLink href=\"#\" /> }, { key: '3', label: '3', href: '/docs/page/3' }]} />",
   badge:
     "import { Check, CircleAlert } from '@nerio/adapters';\nimport { Badge } from '@nerio/ui';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>\n<Badge tone=\"warning\" trailingIcon={CircleAlert}>Review needed</Badge>",
   alert:
@@ -107,7 +107,7 @@ export const snippets: Record<string, string> = {
     'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
   table:
     'import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from \'@nerio/ui\';\n\n<h2 id="projects-title">Projects</h2>\n<TableContainer focusable aria-labelledby="projects-title">\n  <Table>\n    <TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader>\n    <TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody>\n  </Table>\n</TableContainer>',
-  list: "import { List } from '@nerio/ui';\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
+  list: "import * as React from 'react';\nimport { List } from '@nerio/ui';\n\nconst AppLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>(function AppLink(props, ref) {\n  return <a ref={ref} data-router-link=\"\" {...props} />;\n});\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens', render: <AppLink href=\"#\" /> }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
   item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
 };
 
@@ -776,7 +776,8 @@ export const componentReference: Record<string, ComponentReference> = {
     api: [
       {
         title: "pages",
-        description: "Array of page labels, hrefs, current flags, and optional disabled states.",
+        description:
+          "Array of page labels, hrefs, current flags, optional disabled states, and optional router render elements.",
       },
       {
         title: "previousHref / nextHref",
@@ -2304,6 +2305,11 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "linkProps",
         description:
           "Extends link behavior but cannot replace the canonical item.href or internal link anatomy.",
+      },
+      {
+        title: "render",
+        description:
+          "Optional router link element that receives the canonical href, class, accessible props, and link data-slot.",
       },
       {
         title: "className",

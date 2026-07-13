@@ -978,9 +978,10 @@
         "Items with href render native anchors instead of fake interactive containers.",
         "Optional description and metadata remain in the natural reading order.",
         "linkProps can extend class, events, target, rel, aria, and data attributes; item.href and the internal data-slot remain protected.",
+        "Use render for a custom router link element; List forwards the canonical href, merged class, accessible props, and link data-slot without depending on a router package.",
         "Do not use List for selectable listbox, command menu, or data table behavior."
       ],
-      "usage": "import { List } from '@/components/nerio/components/list';\n\n<List items={[{ title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />"
+      "usage": "import { List } from '@/components/nerio/components/list';\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />"
     },
     {
       "name": "select",
@@ -1770,6 +1771,7 @@
         "Renders a nav landmark with aria-label=\"Pagination\" by default.",
         "Marks the current page with aria-current=\"page\".",
         "Disabled controls render as non-focusable text with aria-disabled; onSelect takes precedence over href when both are supplied.",
+        "Page, previous, and next render elements support router adapters while preserving href, data-slot, current-page state, and accessible labels.",
         "Visible labels carry state; color is not the only indicator."
       ],
       "usage": "import { Pagination } from '@/components/nerio/components/pagination';\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ key: '1', label: '1', href: '/docs/page/1' }, { key: '2', label: '2', href: '/docs/page/2', current: true }, { key: '3', label: '3', href: '/docs/page/3' }]} />"
