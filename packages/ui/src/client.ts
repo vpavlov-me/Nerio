@@ -84,6 +84,29 @@ export {
   type SidebarSide,
   type SidebarToggleProps,
 } from "./components/sidebar";
+export {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandGroupLabel,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandLoading,
+  CommandSeparator,
+  type CommandActiveChangeEventDetails,
+  type CommandFilter,
+  type CommandGroupData,
+  type CommandInputProps,
+  type CommandItemData,
+  type CommandItemProps,
+  type CommandItems,
+  type CommandListProps,
+  type CommandLoadingProps,
+  type CommandProps,
+  type CommandQueryChangeEventDetails,
+  type CommandSelectEvent,
+} from "./components/command";
 export { Popover, type PopoverProps } from "./components/popover";
 export {
   DropdownMenu,

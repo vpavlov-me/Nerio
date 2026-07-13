@@ -62,6 +62,12 @@ import {
 import {
   Button,
   Checkbox,
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandLoading,
   Dialog,
   DropdownMenu,
   LabelHint,
@@ -2591,5 +2597,192 @@ describe("Core interactive action contracts", () => {
       "data-state",
       "collapsed",
     );
+  });
+
+  it("filters Command items, skips disabled values, and emits stable selections", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const onActiveValueChange = vi.fn();
+    const items = [
+      { value: "open", label: "Open project", disabled: true },
+      { value: "settings", label: "Workspace settings", keywords: ["preferences"] },
+      { value: "invite", label: "Invite teammate" },
+    ];
+
+    render(
+      <Command items={items} onActiveValueChange={onActiveValueChange}>
+        <CommandInput aria-label="Workspace commands" placeholder="Search commands" />
+        <CommandLoading loading={false} />
+        <CommandEmpty>No matching commands.</CommandEmpty>
+        <CommandList>
+          {(item) => (
+            <CommandItem
+              key={item.value}
+              value={item.value}
+              disabled={item.disabled}
+              description={`${item.label} description`}
+              onSelect={onSelect}
+            >
+              {item.label}
+            </CommandItem>
+          )}
+        </CommandList>
+      </Command>,
+    );
+
+    const input = screen.getByRole("combobox", { name: "Workspace commands" });
+    input.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(onActiveValueChange).toHaveBeenLastCalledWith("settings", expect.anything());
+    expect(input).toHaveFocus();
+    expect(input).toHaveAttribute("aria-activedescendant");
+
+    await user.keyboard("{Enter}");
+    expect(onSelect).toHaveBeenCalledWith("settings", expect.anything());
+    await user.clear(input);
+    await user.type(input, "preferences");
+    const settings = screen.getByRole("option", { name: /Workspace settings/ });
+    expect(settings).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: /Invite teammate/ })).not.toBeInTheDocument();
+    await user.click(settings);
+    expect(onSelect).toHaveBeenLastCalledWith("settings", expect.anything());
+
+    await user.clear(input);
+    await user.type(input, "missing");
+    expect(screen.getByText("No matching commands.")).toBeInTheDocument();
+  });
+
+  it("keeps Command groups semantic and supports consumer-filtered results", async () => {
+    const user = userEvent.setup();
+    const groups = [
+      {
+        value: "navigation",
+        label: "Navigation",
+        items: [
+          { value: "overview", label: "Open overview" },
+          { value: "activity", label: "Open activity" },
+        ],
+      },
+      {
+        value: "actions",
+        label: "Actions",
+        items: [{ value: "create", label: "Create project" }],
+      },
+    ];
+
+    render(
+      <Command items={groups} filter={false}>
+        <CommandInput aria-label="Consumer-filtered commands" />
+        <CommandList>
+          {(item) => (
+            <CommandItem key={item.value} value={item.value}>
+              {item.label}
+            </CommandItem>
+          )}
+        </CommandList>
+      </Command>,
+    );
+
+    expect(within(screen.getByRole("listbox")).getAllByRole("group")).toHaveLength(2);
+    expect(screen.getByRole("group", { name: "Navigation" })).toBeInTheDocument();
+    await user.type(screen.getByRole("combobox"), "does not filter");
+    expect(screen.getAllByRole("option")).toHaveLength(3);
+  });
+
+  it("rejects duplicate Command item values", () => {
+    const items = [
+      { value: "settings", label: "Workspace settings" },
+      { value: "settings", label: "Personal settings" },
+    ];
+
+    expect(() =>
+      render(
+        <Command items={items}>
+          <CommandInput aria-label="Duplicate commands" />
+          <CommandList>
+            {(item) => (
+              <CommandItem key={item.label} value={item.value}>
+                {item.label}
+              </CommandItem>
+            )}
+          </CommandList>
+        </Command>,
+      ),
+    ).toThrow("Command items require unique values.");
+  });
+
+  it("does not select a Command item while IME composition is active", () => {
+    const onSelect = vi.fn();
+    const items = [{ value: "search", label: "Search workspace" }];
+    render(
+      <Command items={items}>
+        <CommandInput aria-label="IME commands" />
+        <CommandList>
+          {(item) => (
+            <CommandItem key={item.value} value={item.value} onSelect={onSelect}>
+              {item.label}
+            </CommandItem>
+          )}
+        </CommandList>
+      </Command>,
+    );
+    const input = screen.getByRole("combobox", { name: "IME commands" });
+    input.focus();
+    fireEvent.keyDown(input, { key: "ArrowDown" });
+    fireEvent.compositionStart(input);
+    fireEvent.keyDown(input, { key: "Enter", keyCode: 229, which: 229 });
+    expect(onSelect).not.toHaveBeenCalled();
+    fireEvent.compositionEnd(input, { data: "検索" });
+  });
+
+  it("composes Command with Popover, Dialog, and Sheet dismissal and focus contracts", async () => {
+    const user = userEvent.setup();
+    const items = [{ value: "settings", label: "Workspace settings" }];
+    const content = (label: string) => (
+      <Command items={items}>
+        <CommandInput autoFocus aria-label={`${label} commands`} />
+        <CommandList>
+          {(item) => (
+            <CommandItem key={item.value} value={item.value}>
+              {item.label}
+            </CommandItem>
+          )}
+        </CommandList>
+      </Command>
+    );
+
+    render(
+      <>
+        <Popover trigger="Open popover commands" title="Popover commands">
+          {content("Popover")}
+        </Popover>
+        <Dialog trigger="Open dialog commands" title="Dialog commands">
+          {content("Dialog")}
+        </Dialog>
+        <Sheet>
+          <SheetTrigger render={<button type="button">Open sheet commands</button>} />
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Sheet commands</SheetTitle>
+            </SheetHeader>
+            <SheetBody>{content("Sheet")}</SheetBody>
+          </SheetContent>
+        </Sheet>
+      </>,
+    );
+
+    for (const [triggerName, inputName] of [
+      ["Open popover commands", "Popover commands"],
+      ["Open dialog commands", "Dialog commands"],
+      ["Open sheet commands", "Sheet commands"],
+    ] as const) {
+      const trigger = screen.getByRole("button", { name: triggerName });
+      await user.click(trigger);
+      const input = await screen.findByRole("combobox", { name: inputName });
+      expect(input).toHaveFocus();
+      await user.keyboard("{Escape}");
+      expect(screen.queryByRole("combobox", { name: inputName })).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    }
   });
 });

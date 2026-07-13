@@ -84,6 +84,8 @@ export const snippets: Record<string, string> = {
     'import { Button, Sheet, SheetBody, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md">\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter><Button>Save changes</Button></SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
     'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from \'@nerio/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Toggle workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
+  "command-primitive":
+    'import { Kbd } from \'@nerio/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
     "import { Select } from '@nerio/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   toast:
@@ -219,6 +221,37 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "localized toggle names",
       "inert collapsed content",
       "stable aria-controls relationship",
+    ],
+  },
+  "command-primitive": {
+    name: "Command Primitive",
+    description:
+      "An accessible query and action-result primitive that keeps product workflows consumer-owned.",
+    status: "stable",
+    layer: "core",
+    category: "Navigation and layout",
+    package: "@nerio/ui/client",
+    importPath: "@nerio/ui/client",
+    related: ["Popover", "Dialog", "Sheet", "Kbd", "Empty State", "Spinner"],
+    anatomy: [
+      "command",
+      "command-input-group",
+      "command-input",
+      "command-list",
+      "command-group",
+      "command-group-label",
+      "command-item",
+      "command-separator",
+      "command-empty",
+      "command-loading",
+    ],
+    motion: ["consumer overlay motion only", "reduced-motion compatible"],
+    accessibility: [
+      "Base UI autocomplete combobox and listbox semantics",
+      "stable active-descendant focus model",
+      "disabled-item keyboard skipping",
+      "IME-safe Enter selection",
+      "polite empty and loading announcements",
     ],
   },
   input: {
@@ -2634,6 +2667,135 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-sidebar-transition-easing",
       "--n-sidebar-background",
       "--n-sidebar-border",
+      "--n-focus-ring",
+    ],
+  },
+  "command-primitive": {
+    category: "Navigation and layout",
+    purpose:
+      "Use Command for an accessible local action picker whose query, results, and selection events remain composable and consumer-owned.",
+    anatomy: [
+      { title: "Command", description: "Inline Base UI autocomplete root and item data contract." },
+      {
+        title: "CommandInput",
+        description: "Required named combobox input that retains DOM focus.",
+      },
+      {
+        title: "CommandList",
+        description: "Listbox with filtered flat or grouped item rendering.",
+      },
+      {
+        title: "CommandGroup / CommandGroupLabel",
+        description: "Semantically labelled related actions.",
+      },
+      {
+        title: "CommandItem",
+        description:
+          "Stable action value with optional leading content, description, metadata, and Kbd.",
+      },
+      { title: "CommandSeparator", description: "Quiet boundary between related result regions." },
+      {
+        title: "CommandEmpty / CommandLoading",
+        description: "Polite Base UI status regions outside listbox children.",
+      },
+    ],
+    variants: [
+      {
+        title: "Local filtering",
+        description: "Locale-aware contains matching over labels, values, and keywords.",
+      },
+      {
+        title: "Consumer-filtered",
+        description: "filter={false} keeps remote or externally filtered results unchanged.",
+      },
+      {
+        title: "Grouped",
+        description: "Group records render labelled result groups without changing item values.",
+      },
+      {
+        title: "Overlay composition",
+        description: "Compose the same inline primitive inside Popover, Dialog, or Sheet.",
+      },
+    ],
+    states: [
+      {
+        title: "Active",
+        description: "Virtual focus stays on the input through aria-activedescendant.",
+      },
+      {
+        title: "Disabled",
+        description: "Unavailable items remain visible and are skipped during navigation.",
+      },
+      { title: "Empty", description: "A concise polite message replaces missing results." },
+      {
+        title: "Loading",
+        description: "A single polite status combines Spinner and localized text.",
+      },
+    ],
+    motion: [
+      "Command itself does not animate active-item movement or query updates.",
+      "Popover, Dialog, and Sheet retain their own reduced-motion-aware overlay behavior.",
+    ],
+    accessibility: [
+      "CommandInput requires a visible label, aria-label, or aria-labelledby.",
+      "Arrow keys move the active option while DOM focus remains in the input; Home and End retain native text-editing behavior.",
+      "Enter selects the active enabled item and emits its stable value with the Base UI event; Escape bubbles to enclosing overlays.",
+      "Base UI suppresses Enter selection during IME composition and skips disabled items.",
+      "CommandEmpty and CommandLoading use dedicated polite status parts rather than invalid arbitrary listbox children.",
+      "Provide localized visible labels and keep Kbd supplemental; global shortcut registration is outside Core Command.",
+    ],
+    api: [
+      {
+        title: "items",
+        description:
+          "Flat CommandItemData records or labelled CommandGroupData records with stable unique values.",
+      },
+      {
+        title: "query / defaultQuery / onQueryChange",
+        description: "Controlled or uncontrolled query state with Base UI event details.",
+      },
+      {
+        title: "filter",
+        description:
+          "Typed custom matcher, default locale-aware contains behavior, or false for consumer-filtered results.",
+      },
+      {
+        title: "onActiveValueChange",
+        description: "Reports highlighted stable values without exposing internal focus indices.",
+      },
+      {
+        title: "CommandItem.onSelect",
+        description:
+          "Emits the stable string value and Base UI event without routing or close policy.",
+      },
+    ],
+    designNotes: [
+      "Command is not GlobalSearch, EntitySearch, Documentation Search, or a complete Command Palette.",
+      "Fetching, ranking, routing, permissions, analytics, history, recent items, and global shortcuts stay outside Core.",
+      "Use consumer state to replace items and toggle CommandLoading for asynchronous results.",
+    ],
+    guidance: {
+      do: [
+        "Use for local action menus, compact action pickers, and a reusable result interaction primitive.",
+        "Compose icons, descriptions, metadata, and Nerio Kbd through CommandItem slots.",
+      ],
+      dont: [
+        "Do not add hidden fuzzy ranking, remote fetching, route navigation, or global shortcut registration to Command.",
+        "Do not present a complete product command palette as the Core primitive.",
+      ],
+    },
+    related: ["Popover", "Dialog", "Sheet", "Kbd", "Empty State", "Spinner"],
+    tokens: [
+      "--n-command-width",
+      "--n-command-list-max-height",
+      "--n-command-input-height",
+      "--n-command-item-height",
+      "--n-command-item-padding-block",
+      "--n-command-item-padding-inline",
+      "--n-command-group-spacing",
+      "--n-command-background",
+      "--n-command-border",
+      "--n-command-item-background-active",
       "--n-focus-ring",
     ],
   },

@@ -1933,6 +1933,108 @@
       "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label=\"Toggle workspace sidebar\" />\n  </Sidebar>\n  <SidebarInset><SidebarTrigger label=\"Toggle workspace sidebar\" />...</SidebarInset>\n</SidebarProvider>"
     },
     {
+      "name": "command-primitive",
+      "title": "Command Primitive",
+      "description": "Provides an accessible local or consumer-filtered action picker without owning product search workflows.",
+      "category": "navigation",
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "registryDependencies": ["spinner"],
+      "files": [
+        {
+          "source": "../../ui/src/components/command.tsx",
+          "target": "components/command.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/command.css",
+          "target": "styles/command.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["autocomplete"],
+      "slots": [
+        "command",
+        "command-input-group",
+        "command-input-icon",
+        "command-input",
+        "command-list",
+        "command-group",
+        "command-group-label",
+        "command-item",
+        "command-item-leading",
+        "command-item-content",
+        "command-item-label",
+        "command-item-description",
+        "command-item-metadata",
+        "command-item-shortcut",
+        "command-separator",
+        "command-empty",
+        "command-loading"
+      ],
+      "variants": [
+        "local filtering",
+        "consumer-filtered",
+        "flat items",
+        "grouped items",
+        "comfortable density",
+        "compact density",
+        "RTL"
+      ],
+      "states": ["active", "disabled", "empty", "loading", "read-only"],
+      "requiredTokens": [
+        "--n-command-width",
+        "--n-command-list-max-height",
+        "--n-command-input-height",
+        "--n-command-item-height",
+        "--n-command-item-padding-block",
+        "--n-command-item-padding-inline",
+        "--n-command-list-padding",
+        "--n-command-group-gap",
+        "--n-command-group-spacing",
+        "--n-command-item-gap",
+        "--n-command-state-min-height",
+        "--n-command-background",
+        "--n-command-foreground",
+        "--n-command-border-width",
+        "--n-command-border",
+        "--n-command-radius",
+        "--n-command-item-radius",
+        "--n-command-item-background-active",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Autocomplete combobox and listbox interaction model while keeping DOM focus on CommandInput through aria-activedescendant.",
+        "CommandInput requires a visible label, aria-label, or aria-labelledby; placeholder text is not an accessible name.",
+        "Arrow keys navigate enabled items, disabled items are skipped, Enter selects the active item, and Escape bubbles to enclosing Popover, Dialog, or Sheet dismissal behavior.",
+        "Home and End preserve native input editing because virtual focus remains on the query field.",
+        "Base UI suppresses Enter selection during IME composition and supports pointer highlighting and selection without moving DOM focus into items.",
+        "CommandEmpty and CommandLoading use dedicated polite Base UI status regions and are not arbitrary children of the listbox.",
+        "RTL, long localized labels, compact density, reduced motion, and forced colors are supported through semantics and tokens.",
+        "Fetching, ranking, routing, permissions, analytics, history, global shortcuts, and complete command-palette workflows remain consumer or Pro responsibilities."
+      ],
+      "usage": "import { Kbd } from '@/components/nerio/components/kbd';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/nerio/components/command';\n\nconst items = [\n  { value: 'settings', label: 'Workspace settings', keywords: ['preferences'] },\n  { value: 'archive', label: 'Archive project', disabled: true },\n];\n\n<Command items={items}>\n  <CommandInput aria-label=\"Workspace commands\" placeholder=\"Search commands\" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} disabled={item.disabled} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>"
+    },
+    {
       "name": "sheet",
       "title": "Sheet",
       "description": "Presents a focused modal panel from an explicit side.",
