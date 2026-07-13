@@ -1,5 +1,4 @@
-import { Badge, Card, Input, Kbd, Table } from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+import { Badge, Code, Table, TableContainer } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -55,100 +54,6 @@ const customOverride = `:root {
   --n-font-sans: "IBM Plex Sans", var(--n-font-sans-system);
 }`;
 
-type TypographyPreset = {
-  label: string;
-  className: string;
-  note: string;
-};
-
-const presets: TypographyPreset[] = [
-  {
-    label: "System",
-    className: "n-typography-system",
-    note: "No font loading is required. The operating system chooses the native UI family.",
-  },
-  {
-    label: "Geist",
-    className: "n-typography-geist",
-    note: "The docs load Geist locally; products must load it themselves before using this recipe.",
-  },
-  {
-    label: "Inter",
-    className: "n-typography-inter",
-    note: "Products load Inter themselves. Mono intentionally remains the system stack.",
-  },
-  {
-    label: "IBM Plex",
-    className: "n-typography-ibm-plex",
-    note: "A practical product-system pairing. Products load IBM Plex Sans and IBM Plex Mono.",
-  },
-  {
-    label: "Manrope",
-    className: "n-typography-manrope",
-    note: "A contemporary, open sans direction with the system mono stack retained.",
-  },
-  {
-    label: "Source Sans 3",
-    className: "n-typography-source-sans",
-    note: "A readable editorial and operational UI direction with system mono retained.",
-  },
-  {
-    label: "Space Grotesk",
-    className: "n-typography-space-grotesk",
-    note: "A more expressive product direction that preserves the system mono stack.",
-  },
-];
-
-function PresetPreview({ preset }: { preset: TypographyPreset }) {
-  return (
-    <Card className={`typography-preset-preview ${preset.className}`}>
-      <div className="typography-preset-heading">
-        <div>
-          <Badge>{preset.label}</Badge>
-          <h3>Revenue workspace</h3>
-        </div>
-        <strong>$48,320.00</strong>
-      </div>
-      <p>{preset.note}</p>
-      <div className="typography-preset-controls">
-        <Input
-          aria-label={`${preset.label} project search`}
-          placeholder="A long project label can wrap"
-        />
-        <Button size="sm">Create report</Button>
-      </div>
-      <div
-        aria-label={`${preset.label} report tabs`}
-        className="typography-preset-tabs"
-        role="tablist"
-      >
-        <button aria-selected="true" role="tab" type="button">
-          Overview
-        </button>
-        <button aria-selected="false" role="tab" type="button">
-          Activity
-        </button>
-      </div>
-      <div className="typography-preset-table" role="table">
-        <div role="row">
-          <span role="cell">Enterprise plan renewal</span>
-          <span role="cell">12,840</span>
-          <span role="cell">+18.4%</span>
-        </div>
-      </div>
-      <div className="typography-preset-footer">
-        <span>
-          Press <Kbd>⌘K</Kbd> to search
-        </span>
-        <code>--n-font-sans</code>
-      </div>
-      <div className="typography-preset-compact" data-density="compact">
-        Compact density · 32px controls · Accurate values
-      </div>
-    </Card>
-  );
-}
-
 export default function Page() {
   return (
     <article className="doc-page">
@@ -166,20 +71,33 @@ export default function Page() {
           <h2 id="font-contract">Font contract</h2>
           <Badge>System UI by default</Badge>
         </div>
-        <div className="foundation-grid">
-          <Card className="type-card">
-            <Badge variant="info">Sans</Badge>
-            <p className="type-specimen type-specimen-sans">
-              Build calm, precise product surfaces.
-            </p>
-            <code>--n-font-sans → --n-font-sans-system</code>
-          </Card>
-          <Card className="type-card">
-            <Badge variant="info">Mono</Badge>
-            <p className="type-specimen type-specimen-mono">--n-color-action-primary</p>
-            <code>--n-font-mono → --n-font-mono-system</code>
-          </Card>
-        </div>
+        <TableContainer label="Default font tokens">
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Default token</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Sans</td>
+                <td>
+                  <Code>--n-font-sans → --n-font-sans-system</Code>
+                </td>
+                <td>Product UI and body copy</td>
+              </tr>
+              <tr>
+                <td>Mono</td>
+                <td>
+                  <Code>--n-font-mono → --n-font-mono-system</Code>
+                </td>
+                <td>Code and numeric values</td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
         <p>
           Native consistency means a product uses each platform&apos;s familiar UI family; it does
           not mean pixels are identical across operating systems. Font family changes remain CSS
@@ -189,112 +107,102 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="presets">Typography presets</h2>
-        <Table>
-          <thead>
-            <tr>
-              <th>Preset</th>
-              <th>Sans token</th>
-              <th>Mono token</th>
-              <th>Font loading</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>System</td>
-              <td>
-                <code>--n-font-sans-system</code>
-              </td>
-              <td>
-                <code>--n-font-mono-system</code>
-              </td>
-              <td>None</td>
-            </tr>
-            <tr>
-              <td>Geist</td>
-              <td>
-                <code>--n-font-sans-geist</code>
-              </td>
-              <td>
-                <code>--n-font-mono-geist</code>
-              </td>
-              <td>Consumer-owned</td>
-            </tr>
-            <tr>
-              <td>Inter</td>
-              <td>
-                <code>--n-font-sans-inter</code>
-              </td>
-              <td>
-                <code>--n-font-mono-system</code>
-              </td>
-              <td>Consumer-owned</td>
-            </tr>
-            <tr>
-              <td>IBM Plex</td>
-              <td>
-                <code>--n-font-sans-ibm-plex</code>
-              </td>
-              <td>
-                <code>--n-font-mono-ibm-plex</code>
-              </td>
-              <td>Consumer-owned</td>
-            </tr>
-            <tr>
-              <td>Manrope</td>
-              <td>
-                <code>--n-font-sans-manrope</code>
-              </td>
-              <td>
-                <code>--n-font-mono-system</code>
-              </td>
-              <td>Consumer-owned</td>
-            </tr>
-            <tr>
-              <td>Source Sans 3</td>
-              <td>
-                <code>--n-font-sans-source-sans</code>
-              </td>
-              <td>
-                <code>--n-font-mono-system</code>
-              </td>
-              <td>Consumer-owned</td>
-            </tr>
-            <tr>
-              <td>Space Grotesk</td>
-              <td>
-                <code>--n-font-sans-space-grotesk</code>
-              </td>
-              <td>
-                <code>--n-font-mono-system</code>
-              </td>
-              <td>Consumer-owned</td>
-            </tr>
-            <tr>
-              <td>Custom</td>
-              <td colSpan={2}>
-                Override <code>--n-font-sans</code> at root or on a product surface.
-              </td>
-              <td>Consumer-owned</td>
-            </tr>
-          </tbody>
-        </Table>
+        <TableContainer label="Typography preset tokens">
+          <Table>
+            <thead>
+              <tr>
+                <th>Preset</th>
+                <th>Sans token</th>
+                <th>Mono token</th>
+                <th>Font loading</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>System</td>
+                <td>
+                  <Code>--n-font-sans-system</Code>
+                </td>
+                <td>
+                  <Code>--n-font-mono-system</Code>
+                </td>
+                <td>None</td>
+              </tr>
+              <tr>
+                <td>Geist</td>
+                <td>
+                  <Code>--n-font-sans-geist</Code>
+                </td>
+                <td>
+                  <Code>--n-font-mono-geist</Code>
+                </td>
+                <td>Consumer-owned</td>
+              </tr>
+              <tr>
+                <td>Inter</td>
+                <td>
+                  <Code>--n-font-sans-inter</Code>
+                </td>
+                <td>
+                  <Code>--n-font-mono-system</Code>
+                </td>
+                <td>Consumer-owned</td>
+              </tr>
+              <tr>
+                <td>IBM Plex</td>
+                <td>
+                  <Code>--n-font-sans-ibm-plex</Code>
+                </td>
+                <td>
+                  <Code>--n-font-mono-ibm-plex</Code>
+                </td>
+                <td>Consumer-owned</td>
+              </tr>
+              <tr>
+                <td>Manrope</td>
+                <td>
+                  <Code>--n-font-sans-manrope</Code>
+                </td>
+                <td>
+                  <Code>--n-font-mono-system</Code>
+                </td>
+                <td>Consumer-owned</td>
+              </tr>
+              <tr>
+                <td>Source Sans 3</td>
+                <td>
+                  <Code>--n-font-sans-source-sans</Code>
+                </td>
+                <td>
+                  <Code>--n-font-mono-system</Code>
+                </td>
+                <td>Consumer-owned</td>
+              </tr>
+              <tr>
+                <td>Space Grotesk</td>
+                <td>
+                  <Code>--n-font-sans-space-grotesk</Code>
+                </td>
+                <td>
+                  <Code>--n-font-mono-system</Code>
+                </td>
+                <td>Consumer-owned</td>
+              </tr>
+              <tr>
+                <td>Custom</td>
+                <td colSpan={2}>
+                  Override <Code>--n-font-sans</Code> at root or on a product surface.
+                </td>
+                <td>Consumer-owned</td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
         <p>
           The <code>n-typography-*</code> classes are scoped token recipes. They can style an app
           root, preview, or product area, but Nerio intentionally has no <code>data-font</code>{" "}
           axis.
         </p>
-      </section>
-
-      <section className="doc-section">
-        <h2 id="preset-preview">Preset comparison</h2>
-        <p>
-          Every preview uses the same realistic UI content. It does not switch the docs application.
-        </p>
-        <div className="typography-preset-grid">
-          {presets.map((preset) => (
-            <PresetPreview key={preset.label} preset={preset} />
-          ))}
-        </div>
       </section>
 
       <section className="doc-section">
@@ -318,42 +226,58 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="type-scale">Type scale</h2>
-        <div className="type-scale">
-          {scale.map(([name, token, value, purpose]) => (
-            <div key={token}>
-              <span style={{ fontSize: `var(${token})` }}>Nerio {name}</span>
-              <code>{token}</code>
-              <strong>{value}</strong>
-              <p>{purpose}</p>
-            </div>
-          ))}
-        </div>
+        <TableContainer label="Type scale tokens">
+          <Table>
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Token</th>
+                <th>Default</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              {scale.map(([name, token, value, purpose]) => (
+                <tr key={token}>
+                  <td>{name}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>{value}</td>
+                  <td>{purpose}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="semantic-roles">Semantic roles</h2>
-        <Table>
-          <thead>
-            <tr>
-              <th>Role</th>
-              <th>Alias</th>
-              <th>Default</th>
-            </tr>
-          </thead>
-          <tbody>
-            {semanticRoles.map(([label, token, primitive]) => (
-              <tr key={token}>
-                <td>{label}</td>
-                <td>
-                  <code>{token}</code>
-                </td>
-                <td>
-                  <code>{primitive}</code>
-                </td>
+        <TableContainer label="Semantic typography roles">
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Alias</th>
+                <th>Default</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {semanticRoles.map(([label, token, primitive]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>
+                    <Code>{primitive}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">

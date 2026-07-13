@@ -1,5 +1,4 @@
-import { Badge, Card, Code, Input, Progress, Separator, Table, TableContainer } from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+import { Badge, Code, Table, TableContainer } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -179,7 +178,6 @@ export default function Page() {
               <tr>
                 <th>Color</th>
                 <th>Token</th>
-                <th>Preview</th>
               </tr>
             </thead>
             <tbody>
@@ -188,9 +186,6 @@ export default function Page() {
                   <td>{label}</td>
                   <td>
                     <Code>{token}</Code>
-                  </td>
-                  <td>
-                    <span className="token-color-swatch" style={{ background: `var(${token})` }} />
                   </td>
                 </tr>
               ))}
@@ -229,7 +224,6 @@ export default function Page() {
               <tr>
                 <th>Role</th>
                 <th>Token</th>
-                <th>Preview</th>
               </tr>
             </thead>
             <tbody>
@@ -238,9 +232,6 @@ export default function Page() {
                   <td>{label}</td>
                   <td>
                     <Code>{token}</Code>
-                  </td>
-                  <td>
-                    <span className="token-color-swatch" style={{ background: `var(${token})` }} />
                   </td>
                 </tr>
               ))}
@@ -295,24 +286,6 @@ export default function Page() {
             </tbody>
           </Table>
         </TableContainer>
-      </section>
-
-      <section className="doc-section">
-        <h2 id="live-component-readout">Live component readout</h2>
-        <Card className="token-preview">
-          <div>
-            <Badge variant="success">Semantic</Badge>
-            <h3>Project intake</h3>
-            <p>
-              This surface uses Nerio semantic and component tokens for color, spacing, radius,
-              typography, and density.
-            </p>
-          </div>
-          <Separator />
-          <Input placeholder="Search projects" aria-label="Search projects" />
-          <Progress label="Completion" value={68} />
-          <Button size="sm">Save changes</Button>
-        </Card>
       </section>
 
       <section className="doc-section">

@@ -1,14 +1,4 @@
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Skeleton,
-  Table,
-} from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+import { Code, Table, TableContainer } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -113,24 +103,6 @@ export default function Page() {
         </p>
       </header>
 
-      <section className="preview" aria-labelledby="motion-preview">
-        <div className="preview-heading">
-          <div>
-            <h2 id="motion-preview">Preview</h2>
-            <p>
-              Shared utilities keep interaction timing consistent without adding animation
-              dependencies.
-            </p>
-          </div>
-          <Badge>Reduced-motion aware</Badge>
-        </div>
-        <div className="preview-row">
-          <Button>Hover and press</Button>
-          <Button variant="secondary">Focus target</Button>
-          <Skeleton style={{ inlineSize: "12rem" }} />
-        </div>
-      </section>
-
       <section className="doc-section">
         <h2 id="duration-tokens">Duration tokens</h2>
         <TokenTable rows={durationTokens} />
@@ -147,11 +119,24 @@ export default function Page() {
           Semantic motion variables describe intent and point to duration and easing tokens.
           Component source should use these aliases instead of repeating raw timing values.
         </p>
-        <div className="token-chip-row">
-          {semanticTokens.map((token) => (
-            <code key={token}>{token}</code>
-          ))}
-        </div>
+        <TableContainer label="Semantic motion aliases">
+          <Table>
+            <thead>
+              <tr>
+                <th>Token</th>
+              </tr>
+            </thead>
+            <tbody>
+              {semanticTokens.map((token) => (
+                <tr key={token}>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -161,33 +146,32 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="reduced-motion">Reduced motion</h2>
-        <div className="state-grid">
-          <Card>
-            <CardHeader>
-              <CardTitle>Default behavior</CardTitle>
-              <CardDescription>
-                Core components animate state changes with short durations and avoid layout-heavy
-                motion.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              Hover, focus, overlays, and skeleton loading resolve through CSS variables.
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Reduced motion</CardTitle>
-              <CardDescription>
-                Large movement collapses to opacity or immediate state changes when users prefer
-                less motion.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              Press scale, overlay translation, and repeated skeleton movement are removed or
-              minimized.
-            </CardContent>
-          </Card>
-        </div>
+        <TableContainer label="Motion accessibility behavior">
+          <Table>
+            <thead>
+              <tr>
+                <th>Preference</th>
+                <th>Behavior</th>
+                <th>Examples</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Default</td>
+                <td>Core components use short durations and avoid layout-heavy motion.</td>
+                <td>Hover, focus, overlays, and skeleton loading resolve through CSS variables.</td>
+              </tr>
+              <tr>
+                <td>Reduced motion</td>
+                <td>Large movement collapses to opacity or immediate state changes.</td>
+                <td>
+                  Press scale, overlay translation, and repeated skeleton movement are removed or
+                  minimized.
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -210,29 +194,31 @@ export default function Page() {
 
 function TokenTable({ rows }: { rows: TokenRow[] }) {
   return (
-    <Table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Token</th>
-          <th>Value</th>
-          <th>Use</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map(([label, token, value, use]) => (
-          <tr key={token}>
-            <td>{label}</td>
-            <td>
-              <code>{token}</code>
-            </td>
-            <td>
-              <code>{value}</code>
-            </td>
-            <td>{use}</td>
+    <TableContainer label="Motion token reference">
+      <Table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Token</th>
+            <th>Value</th>
+            <th>Use</th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {rows.map(([label, token, value, use]) => (
+            <tr key={token}>
+              <td>{label}</td>
+              <td>
+                <Code>{token}</Code>
+              </td>
+              <td>
+                <Code>{value}</Code>
+              </td>
+              <td>{use}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </TableContainer>
   );
 }
