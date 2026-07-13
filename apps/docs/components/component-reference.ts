@@ -73,11 +73,11 @@ export const snippets: Record<string, string> = {
   "form-group":
     'import { Field, FormGroup } from \'@nerio/ui\';\nimport { Checkbox } from \'@nerio/ui/client\';\n\n<FormGroup layout="grid" title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
   checkbox:
-    'import { Checkbox } from \'@nerio/ui/client\';\n\n<label><Checkbox name="includeArchived" defaultChecked /> Include archived</label>\n\n// Use indeterminate for an aggregate or partial selection.\n<Checkbox aria-label="Partially selected" indeterminate />',
+    'import { Checkbox } from \'@nerio/ui/client\';\n\n<Checkbox\n  defaultChecked\n  name="includeArchived"\n  label="Include archived collections"\n  description="Archived collections remain visible in search results."\n/>\n\n// Use indeterminate for an aggregate or partial selection.\n<Checkbox aria-label="Partially selected" indeterminate />',
   "radio-group":
     'import { RadioGroup, RadioGroupItem } from \'@nerio/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team">\n  <RadioGroupItem value="private" description="Only you can access it.">Private</RadioGroupItem>\n  <RadioGroupItem value="team">Team</RadioGroupItem>\n</RadioGroup>\n\n// Options API remains available for concise data-driven groups.\n<RadioGroup label="Visibility" options={[{ label: "Private", value: "private" }]} />',
   switch:
-    "import { Switch } from '@nerio/ui/client';\n\n<label><Switch name=\"notifyCollaborators\" defaultChecked /> Notify collaborators</label>",
+    'import { Switch } from "@nerio/ui/client";\n\n<Switch\n  defaultChecked\n  name="notifyCollaborators"\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>',
   dialog:
     'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
@@ -1236,11 +1236,20 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use Checkbox for independent selection, consent, multi-select sets, and aggregate indeterminate state.",
     anatomy: [
       {
+        title: "field",
+        description: "Optional wrapper that groups Checkbox with its label and description.",
+      },
+      {
         title: "root",
         description:
           "Base UI checkbox control with checked, indeterminate, disabled, and read-only state.",
       },
       { title: "indicator", description: "Icon adapter check or indeterminate indicator." },
+      { title: "label", description: "Optional visible name connected through aria-labelledby." },
+      {
+        title: "description",
+        description: "Optional supporting text connected through aria-describedby.",
+      },
     ],
     variants: [{ title: "Default", description: "Independent binary option." }],
     states: [
@@ -1263,6 +1272,12 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "checked / defaultChecked / onCheckedChange",
         description: "Controlled and uncontrolled checked-state APIs from the Base UI root.",
+      },
+      { title: "label", description: "Optional visible name for the checkbox field row." },
+      {
+        title: "description",
+        description:
+          "Optional supporting text displayed below label and announced as a description.",
       },
       {
         title: "name / value / form / required / disabled / readOnly",
@@ -1371,9 +1386,17 @@ export const componentReference: Record<string, ComponentReference> = {
     category: "Forms",
     purpose: "Use Switch for settings that turn something on or off immediately.",
     anatomy: [
+      {
+        title: "field",
+        description: "Optional wrapper that groups Switch with its label and description.",
+      },
       { title: "root", description: "Interactive switch control with checked state." },
       { title: "thumb", description: "Movable indicator for on/off state." },
-      { title: "label", description: "Text explaining the setting." },
+      { title: "label", description: "Optional visible name connected through aria-labelledby." },
+      {
+        title: "description",
+        description: "Optional supporting text connected through aria-describedby.",
+      },
     ],
     variants: [{ title: "Default", description: "Immediate binary setting." }],
     states: [
@@ -1399,6 +1422,12 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "checked / defaultChecked / onCheckedChange",
         description: "Controlled and uncontrolled checked-state APIs from the Base UI root.",
       },
+      { title: "label", description: "Optional visible name for the switch field row." },
+      {
+        title: "description",
+        description:
+          "Optional supporting text displayed below label and announced as a description.",
+      },
       {
         title: "name / value / form / required / disabled / readOnly",
         description: "Native form metadata is preserved through the Base UI root props.",
@@ -1418,7 +1447,9 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-switch-width",
       "--n-switch-thumb-size",
       "--n-switch-thumb-offset",
-      "--n-color-action-primary",
+      "--n-switch-background",
+      "--n-switch-background-checked",
+      "--n-switch-thumb-background-checked",
       "--n-focus-ring",
     ],
   },

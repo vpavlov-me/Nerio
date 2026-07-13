@@ -825,7 +825,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
       <div
         className={
-          isHomePage || isTemplatesPage ? "docs-layout docs-layout--landing" : "docs-layout"
+          isHomePage
+            ? "docs-layout docs-layout--landing"
+            : isTemplatesPage
+              ? "docs-layout docs-layout--template"
+              : "docs-layout"
         }
       >
         {isHomePage || isTemplatesPage ? null : (
@@ -857,7 +861,13 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         )}
 
         <main
-          className={isHomePage || isTemplatesPage ? "docs-main docs-main--landing" : "docs-main"}
+          className={
+            isHomePage
+              ? "docs-main docs-main--landing"
+              : isTemplatesPage
+                ? "docs-main docs-main--template"
+                : "docs-main"
+          }
         >
           {isHomePage || isTemplatesPage ? null : <PageActions pathname={pathname} />}
           {children}

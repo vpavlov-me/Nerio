@@ -207,6 +207,7 @@ async function verify() {
     const checkboxUsage = JSON.parse(checkboxUsageResult.content[0].text);
     if (
       !checkboxUsage.baseUiPrimitives.includes("checkbox") ||
+      !checkboxUsage.slots.includes("description") ||
       !checkboxUsage.requiredTokens.includes("--n-checkbox-radius") ||
       !checkboxUsage.requiredTokens.includes("--n-input-border-danger") ||
       !checkboxUsage.accessibility.some((item) => item.includes("aria-invalid")) ||
@@ -223,6 +224,7 @@ async function verify() {
     if (
       !switchUsage.baseUiPrimitives.includes("switch") ||
       switchUsage.dependencies.includes("@nerio/adapters") ||
+      !switchUsage.slots.includes("description") ||
       !switchUsage.requiredTokens.includes("--n-switch-thumb-offset") ||
       !switchUsage.accessibility.some((item) => item.includes("immediate on/off settings")) ||
       !switchUsage.variants.includes("read-only")

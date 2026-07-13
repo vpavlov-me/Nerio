@@ -1431,7 +1431,7 @@
         }
       ],
       "baseUiPrimitives": ["checkbox"],
-      "slots": ["root", "indicator"],
+      "slots": ["field", "root", "indicator", "label", "description"],
       "variants": ["checked", "unchecked", "indeterminate", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-checkbox-size",
@@ -1445,13 +1445,14 @@
       ],
       "accessibility": [
         "Uses the Base UI Checkbox primitive for keyboard and checked-state behavior.",
-        "Provide a visible label or accessible name with aria-label or aria-labelledby.",
+        "Provide a visible label or accessible name with aria-label or aria-labelledby; label automatically connects the visible name.",
+        "Description automatically connects supporting text with aria-describedby, while explicit aria-describedby values are preserved.",
         "Supports checked, defaultChecked, onCheckedChange, disabled, required, name, value, form, id, and aria-describedby through the Base UI root props.",
         "Invalid state is explicit through invalid or aria-invalid and does not announce errors automatically.",
         "Disabled state prevents interaction and reduces emphasis.",
         "The Check and Minus indicators render through the Nerio icon adapter, including aria-checked=mixed for indeterminate state."
       ],
-      "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<label><Checkbox name=\"includeArchived\" defaultChecked /> Include archived</label>"
+      "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<Checkbox name=\"includeArchived\" defaultChecked label=\"Include archived collections\" description=\"Archived collections remain visible in search results.\" />"
     },
     {
       "name": "switch",
@@ -1483,28 +1484,30 @@
         }
       ],
       "baseUiPrimitives": ["switch"],
-      "slots": ["root", "thumb"],
+      "slots": ["field", "root", "thumb", "label", "description"],
       "variants": ["checked", "unchecked", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-switch-height",
         "--n-switch-width",
         "--n-switch-thumb-size",
         "--n-switch-thumb-offset",
-        "--n-color-surface",
-        "--n-color-surface-muted",
-        "--n-color-border-strong",
-        "--n-color-action-primary",
+        "--n-switch-background",
+        "--n-switch-background-checked",
+        "--n-switch-thumb-background",
+        "--n-switch-thumb-background-checked",
+        "--n-switch-thumb-border",
         "--n-focus-ring"
       ],
       "accessibility": [
         "Uses the Base UI Switch primitive for keyboard and checked-state behavior.",
         "Use Switch for immediate on/off settings, not multi-select form choices.",
-        "Provide a visible label or accessible name with aria-label or aria-labelledby.",
+        "Provide a visible label or accessible name with aria-label or aria-labelledby; label automatically connects the visible name.",
+        "Description automatically connects supporting text with aria-describedby, while explicit aria-describedby values are preserved.",
         "Supports checked, defaultChecked, onCheckedChange, disabled, required, name, value, form, id, and aria-describedby through the Base UI root props.",
         "Invalid, disabled, and read-only states preserve a visible boundary and semantics.",
         "Do not use Switch for long-running or destructive actions."
       ],
-      "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<label><Switch aria-label=\"Notify collaborators\" defaultChecked /> Notify collaborators</label>"
+      "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<Switch defaultChecked label=\"Notify collaborators\" description=\"Collaborators receive updates as they happen.\" />"
     },
     {
       "name": "tabs",

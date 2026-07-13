@@ -993,6 +993,24 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByText("Only you can view it.")).toBeInTheDocument();
   });
 
+  it("connects Checkbox label and description props without changing primitive usage", () => {
+    render(
+      <Checkbox
+        defaultChecked
+        description="Archived collections remain visible in search results."
+        label="Include archived collections"
+      />,
+    );
+
+    const checkbox = screen.getByRole("checkbox", { name: "Include archived collections" });
+    const label = screen.getByText("Include archived collections");
+    const description = screen.getByText("Archived collections remain visible in search results.");
+
+    expect(checkbox).toHaveAttribute("aria-labelledby", label.id);
+    expect(checkbox).toHaveAttribute("aria-describedby", description.id);
+    expect(checkbox.closest("[data-slot='field']")).toBeInTheDocument();
+  });
+
   it("keeps Switch read-only, invalid, and protected anatomy contracts", async () => {
     const user = userEvent.setup();
     const onCheckedChange = vi.fn();
@@ -1014,6 +1032,24 @@ describe("Core interactive action contracts", () => {
     expect(switchControl).toHaveAttribute("data-slot", "root");
     await user.click(switchControl);
     expect(onCheckedChange).not.toHaveBeenCalled();
+  });
+
+  it("connects Switch label and description props without changing primitive usage", () => {
+    render(
+      <Switch
+        defaultChecked
+        description="Collaborators receive updates as they happen."
+        label="Notify collaborators"
+      />,
+    );
+
+    const switchControl = screen.getByRole("switch", { name: "Notify collaborators" });
+    const label = screen.getByText("Notify collaborators");
+    const description = screen.getByText("Collaborators receive updates as they happen.");
+
+    expect(switchControl).toHaveAttribute("aria-labelledby", label.id);
+    expect(switchControl).toHaveAttribute("aria-describedby", description.id);
+    expect(switchControl.closest("[data-slot='field']")).toBeInTheDocument();
   });
 
   it("preserves controlled state, keyboard behavior, and form values for Checkbox and Switch", async () => {

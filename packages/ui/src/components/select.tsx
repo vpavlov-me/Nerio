@@ -108,7 +108,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
           data-slot="trigger"
         >
           <BaseSelect.Value data-slot="value" placeholder={placeholder} />
-          <BaseSelect.Icon data-slot="icon">
+          <BaseSelect.Icon className="n-select-trigger__icon" data-slot="icon">
             <Icon icon={ChevronDown} />
           </BaseSelect.Icon>
         </BaseSelect.Trigger>
