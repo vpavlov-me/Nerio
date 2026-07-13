@@ -1588,7 +1588,7 @@ describe("Core interactive action contracts", () => {
         </TabsPanels>
       </Tabs>,
     );
-    const overview = screen.getByRole("tab", { name: "Overview12" });
+    const overview = screen.getByRole("tab", { name: "Overview 12" });
     expect(overview).toHaveAttribute("aria-selected", "true");
     expect(rootRef.current).toHaveAttribute("data-slot", "root");
     expect(rootRef.current).toHaveAttribute("data-size", "lg");
@@ -1604,6 +1604,9 @@ describe("Core interactive action contracts", () => {
     await user.keyboard("{ArrowRight}");
     await user.keyboard("{Enter}");
     expect(screen.getByRole("tab", { name: "Activity" })).toHaveAttribute("aria-selected", "true");
+    await user.keyboard("{ArrowLeft}");
+    await user.keyboard(" ");
+    expect(overview).toHaveAttribute("aria-selected", "true");
   });
 
   it("keeps controlled Tabs selection consumer-owned with Base UI event details and all visual modes", async () => {
@@ -1652,10 +1655,10 @@ describe("Core interactive action contracts", () => {
           <TabsIndicator />
         </TabsList>
         <TabsPanels>
-          <TabsContent value="one">One panel</TabsContent>
-          <TabsContent keepMounted value="two">
-            Two panel
+          <TabsContent keepMounted value="one">
+            One panel
           </TabsContent>
+          <TabsContent value="two">Two panel</TabsContent>
         </TabsPanels>
       </Tabs>,
     );
@@ -1665,6 +1668,162 @@ describe("Core interactive action contracts", () => {
       "data-variant",
       "bordered",
     );
+  });
+
+  it("defaults Tabs to bordered md and keeps every visual size and variant explicit", () => {
+    const variants = ["bordered", "separate", "segmented"] as const;
+    const sizes = ["sm", "md", "lg"] as const;
+    render(
+      <>
+        <Tabs data-testid="default-tabs" defaultValue="one">
+          <TabsList aria-label="Default tabs">
+            <TabsTrigger value="one">One</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        {variants.flatMap((variant) =>
+          sizes.map((size) => (
+            <Tabs
+              key={`${variant}-${size}`}
+              data-testid={`${variant}-${size}`}
+              defaultValue="one"
+              size={size}
+              variant={variant}
+            >
+              <TabsList aria-label={`${variant} ${size}`} scrollable={false}>
+                <TabsTrigger value="one">One</TabsTrigger>
+                <TabsIndicator />
+              </TabsList>
+            </Tabs>
+          )),
+        )}
+      </>,
+    );
+
+    expect(screen.getByTestId("default-tabs")).toHaveAttribute("data-size", "md");
+    expect(screen.getByTestId("default-tabs")).toHaveAttribute("data-variant", "bordered");
+    for (const variant of variants) {
+      for (const size of sizes) {
+        expect(screen.getByTestId(`${variant}-${size}`)).toHaveAttribute("data-variant", variant);
+        expect(screen.getByTestId(`${variant}-${size}`)).toHaveAttribute("data-size", size);
+      }
+    }
+  });
+
+  it("preserves consumer Badge visibility while separating its accessible name", () => {
+    render(
+      <>
+        <Tabs defaultValue="overview">
+          <TabsList aria-label="Badge label">
+            <TabsTrigger badge={<Badge>12</Badge>} value="overview">
+              Overview
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Tabs defaultValue="hidden">
+          <TabsList aria-label="Hidden badge label">
+            <TabsTrigger badge={<Badge aria-hidden>12</Badge>} value="hidden">
+              Hidden
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <Tabs defaultValue="empty">
+          <TabsList aria-label="Empty badge label">
+            <TabsTrigger badge={<Badge aria-hidden>12</Badge>} value="empty">
+              <span aria-hidden>Empty</span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </>,
+    );
+
+    expect(screen.getByRole("tab", { name: "Overview 12" })).toHaveTextContent("Overview12");
+    expect(screen.getByRole("tab", { name: "Hidden" })).toHaveTextContent("Hidden12");
+    expect(screen.getAllByRole("tab").at(-1)).not.toHaveAttribute("aria-label");
+  });
+
+  it("skips disabled Tabs without overriding Home or a disabled loop boundary", async () => {
+    const user = userEvent.setup();
+    render(
+      <Tabs defaultValue="two">
+        <TabsList aria-label="Keyboard boundaries" loopFocus={false}>
+          <TabsTrigger disabled value="one">
+            One
+          </TabsTrigger>
+          <TabsTrigger value="two">Two</TabsTrigger>
+          <TabsTrigger value="three">Three</TabsTrigger>
+        </TabsList>
+        <TabsPanels>
+          <TabsContent value="one">One panel</TabsContent>
+          <TabsContent value="two">Two panel</TabsContent>
+          <TabsContent value="three">Three panel</TabsContent>
+        </TabsPanels>
+      </Tabs>,
+    );
+
+    const two = screen.getByRole("tab", { name: "Two" });
+    const three = screen.getByRole("tab", { name: "Three" });
+    three.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(three).toHaveFocus();
+    await user.keyboard("{Home}");
+    expect(two).toHaveFocus();
+  });
+
+  it("keeps vertical variants compact, horizontal fill-only, and RTL indicator geometry in the CSS contract", () => {
+    const tabsStyles = readFileSync(resolve(process.cwd(), "src/styles/tabs.css"), "utf8");
+    expect(tabsStyles).toContain('.n-tabs[data-orientation="vertical"] {');
+    expect(tabsStyles).toContain("align-items: start;");
+    expect(tabsStyles).toContain("inline-size: fit-content;");
+    expect(tabsStyles).toMatch(
+      /\.n-tabs:not\(\[data-orientation="vertical"\]\)\s+\.n-tabs__list\[data-layout="fill"\]/,
+    );
+    expect(tabsStyles).toContain("inline-size: 100%;");
+    expect(tabsStyles).toContain("left: var(--active-tab-left);");
+    expect(tabsStyles).toContain("width: var(--active-tab-width);");
+    expect(tabsStyles).toContain("inset-inline-end: calc(var(--n-border-width-default) * -1);");
+    expect(tabsStyles).not.toContain("inset-inline-start: var(--active-tab-left);");
+  });
+
+  it("keeps Tabs hover feedback to text and icon color only", () => {
+    const tabsStyles = readFileSync(resolve(process.cwd(), "src/styles/tabs.css"), "utf8");
+    expect(tabsStyles).toContain("color: var(--n-tabs-foreground-hover);");
+    expect(tabsStyles).not.toContain("trigger-background-hover");
+  });
+
+  it("keeps scrollable focus treatment inset and Tabs motion reducible", () => {
+    const tabsStyles = readFileSync(resolve(process.cwd(), "src/styles/tabs.css"), "utf8");
+    expect(tabsStyles).toContain("overflow-x: auto;");
+    expect(tabsStyles).toContain("overflow-y: hidden;");
+    expect(tabsStyles).toContain("inset 0 0 0 var(--n-focus-ring-inner-width)");
+    expect(tabsStyles).toContain("inset 0 0 0 var(--n-focus-ring-outer-width)");
+    expect(tabsStyles).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)[\s\S]*transition-duration: 1ms;/,
+    );
+  });
+
+  it("keeps state class names and Indicator hydration geometry available to Base UI", () => {
+    render(
+      <Tabs defaultValue="one">
+        <TabsList aria-label="State classes">
+          <TabsTrigger className={() => "trigger-state"} value="one">
+            One
+          </TabsTrigger>
+          <TabsIndicator className={() => "indicator-state"} />
+        </TabsList>
+        <TabsPanels>
+          <TabsContent className={() => "content-state"} value="one">
+            One panel
+          </TabsContent>
+        </TabsPanels>
+      </Tabs>,
+    );
+
+    expect(screen.getByRole("tab", { name: "One" })).toHaveClass("trigger-state");
+    expect(screen.getByRole("tabpanel")).toHaveClass("content-state");
+    const indicator = document.querySelector('[data-slot="indicator"]');
+    expect(indicator).toHaveClass("indicator-state");
+    expect(indicator?.getAttribute("style")).toContain("--active-tab-left");
+    expect(indicator?.getAttribute("style")).toContain("--active-tab-width");
   });
 
   it("opens DropdownMenu with the keyboard, skips disabled items, and restores trigger focus", async () => {

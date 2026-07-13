@@ -127,13 +127,13 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Navigation and layout
 
-| Component         | Status      | Package     | Notes                                                                                     |
-| ----------------- | ----------- | ----------- | ----------------------------------------------------------------------------------------- |
-| Tabs              | stable-core | `@nerio/ui` | Basic tabs with first-enabled default selection, disabled tabs, controlled state, and ref |
-| Breadcrumbs       | stable-core | `@nerio/ui` | Hierarchy navigation with ordered list semantics and explicit current-page support        |
-| Pagination        | polished    | `@nerio/ui` | Link and button pagination with consumer-owned state; router rendering coverage remains   |
-| Sidebar Primitive | planned     | `@nerio/ui` | Layout primitive only                                                                     |
-| Command Primitive | planned     | `@nerio/ui` | Basic command structure                                                                   |
+| Component         | Status      | Package     | Notes                                                                                                             |
+| ----------------- | ----------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| Tabs              | polished    | `@nerio/ui` | Compound tabs with controlled state, disabled skipping, RTL indicator support, and browser verification remaining |
+| Breadcrumbs       | stable-core | `@nerio/ui` | Hierarchy navigation with ordered list semantics and explicit current-page support                                |
+| Pagination        | polished    | `@nerio/ui` | Link and button pagination with consumer-owned state; router rendering coverage remains                           |
+| Sidebar Primitive | planned     | `@nerio/ui` | Layout primitive only                                                                                             |
+| Command Primitive | planned     | `@nerio/ui` | Basic command structure                                                                                           |
 
 ---
 

@@ -99,6 +99,53 @@ function LayoutExample() {
   );
 }
 
+function ScrollableExample() {
+  return (
+    <div style={{ maxInlineSize: "18rem" }}>
+      <Tabs defaultValue="overview" variant="bordered">
+        <TabsList aria-label="Narrow project sections" scrollable>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="members">Members</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsIndicator />
+        </TabsList>
+      </Tabs>
+    </div>
+  );
+}
+
+function ControlledExample() {
+  const [value, setValue] = React.useState("overview");
+  const [direction, setDirection] = React.useState("none");
+  const [reason, setReason] = React.useState("none");
+
+  return (
+    <Tabs
+      onValueChange={(nextValue, eventDetails) => {
+        setValue(nextValue);
+        setDirection(eventDetails.activationDirection);
+        setReason(eventDetails.reason);
+      }}
+      value={value}
+    >
+      <TabsList aria-label="Controlled workspace sections">
+        <TabsTrigger value="overview">Overview</TabsTrigger>
+        <TabsTrigger value="activity">Activity</TabsTrigger>
+        <TabsIndicator />
+      </TabsList>
+      <TabsPanels>
+        <TabsContent value="overview">
+          Consumer value: {value}; direction: {direction}; reason: {reason}
+        </TabsContent>
+        <TabsContent value="activity">
+          Consumer value: {value}; direction: {direction}; reason: {reason}
+        </TabsContent>
+      </TabsPanels>
+    </Tabs>
+  );
+}
+
 const usage = `import { ArrowRight, LayoutDashboard } from "@nerio/adapters";
 import { Badge } from "@nerio/ui";
 import { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio/ui/client";
@@ -183,25 +230,56 @@ export default function Page() {
                 </TabsPanels>
               </Tabs>
             </TabsExample>
+            <TabsExample
+              code={'<TabsList scrollable aria-label="Narrow project sections">...</TabsList>'}
+              label="Scrollable Tabs preview"
+            >
+              <ScrollableExample />
+            </TabsExample>
+            <TabsExample
+              code={
+                "<Tabs value={value} onValueChange={(nextValue, details) => { setValue(nextValue); setDirection(details.activationDirection); setReason(details.reason); }}>...</Tabs>"
+              }
+              label="Controlled Tabs preview"
+            >
+              <ControlledExample />
+            </TabsExample>
           </>
         ),
         anatomy: (
-          <section className="component-example" aria-label="Tabs anatomy preview">
-            <div className="component-example__preview">
-              <pre
-                className="badge-anatomy-ascii"
-                aria-label="Tabs anatomy diagram"
-              >{`Tabs\n┌ TabsList ───────────────────────────┐\n│ trigger │ trigger │ indicator       │\n└─────────────────────────────────────┘\n┌ TabsPanels ─────────────────────────┐\n│ content                             │\n└─────────────────────────────────────┘`}</pre>
-            </div>
-          </section>
+          <TabsExample
+            code={
+              '<TabsTrigger leadingIcon={LayoutDashboard} badge={<Badge size="sm">12</Badge>} value="overview">Overview</TabsTrigger>'
+            }
+            label="Tabs trigger anatomy preview"
+          >
+            <Example showDisabled={false} variant="separate" />
+          </TabsExample>
         ),
         states: (
-          <TabsExample
-            code={'<TabsTrigger disabled value="settings">Settings</TabsTrigger>'}
-            label="Tabs states preview"
-          >
-            <Example variant="segmented" />
-          </TabsExample>
+          <>
+            <TabsExample
+              code={'<TabsList activateOnFocus aria-label="Immediate panels">...</TabsList>'}
+              label="Automatic activation preview"
+            >
+              <Tabs defaultValue="overview">
+                <TabsList activateOnFocus aria-label="Immediate panels">
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="activity">Activity</TabsTrigger>
+                  <TabsIndicator />
+                </TabsList>
+                <TabsPanels>
+                  <TabsContent value="overview">Focus selects this immediate panel.</TabsContent>
+                  <TabsContent value="activity">Activity is immediately available.</TabsContent>
+                </TabsPanels>
+              </Tabs>
+            </TabsExample>
+            <TabsExample code={'<div dir="rtl"><Tabs>...</Tabs></div>'} label="RTL Tabs preview">
+              <div dir="rtl">
+                <Example showDisabled={false} variant="segmented" />
+              </div>
+            </TabsExample>
+          </>
         ),
       }}
       sectionContent={{
@@ -234,10 +312,14 @@ export default function Page() {
             headers={["State", "Behavior"]}
             rows={[
               ["Default / active", "The indicator follows Base UI active-tab CSS variables."],
-              ["Focus-visible", "Focus ring is layered above the indicator."],
+              ["Focus-visible", "Inset focus treatment remains visible inside a scrollable list."],
               ["Disabled", "Disabled tabs are visually muted and skipped by keyboard navigation."],
               ["Scrollable", "Horizontal lists scroll without wrapping labels."],
               ["Reduced motion", "Indicator and panel transitions become immediate."],
+              [
+                "RTL",
+                "The horizontal indicator follows physical active-tab geometry in either direction.",
+              ],
             ]}
             codeColumns={1}
           />
@@ -251,7 +333,10 @@ export default function Page() {
                 "layout / scrollable",
                 "content or fill, with horizontal overflow enabled by default.",
               ],
-              ["activateOnFocus", "Opt in only when panels appear without noticeable latency."],
+              [
+                "TabsList activateOnFocus",
+                "Opt in only when panels appear without noticeable latency.",
+              ],
               [
                 "onValueChange",
                 "Receives Base UI value and complete event details including activation direction.",
