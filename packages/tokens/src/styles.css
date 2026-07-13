@@ -550,6 +550,18 @@
   --n-switch-thumb-background-checked: var(--n-color-action-on-primary);
   --n-switch-thumb-border: var(--n-color-border-subtle);
   --n-dialog-width-md: 34rem;
+  --n-sheet-width-sm: 20rem;
+  --n-sheet-width-md: 28rem;
+  --n-sheet-width-lg: 36rem;
+  --n-sheet-height-sm: 18rem;
+  --n-sheet-height-md: 28rem;
+  --n-sheet-height-lg: 36rem;
+  --n-sheet-padding: var(--n-space-5);
+  --n-sheet-gap: var(--n-space-4);
+  --n-sheet-radius: var(--n-radius-overlay);
+  --n-sheet-backdrop: var(--n-overlay-backdrop);
+  --n-sheet-transition-distance: var(--n-space-4);
+  --n-sheet-transition-duration: var(--n-motion-overlay-enter-duration);
   --n-overlay-z-index: 50;
   --n-overlay-background: var(--n-color-surface-overlay);
   --n-overlay-border-width: var(--n-border-width-default);

@@ -1841,6 +1841,81 @@
       "usage": "import { Dialog } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\" description=\"Choose collaborators and permissions.\">...</Dialog>"
     },
     {
+      "name": "sheet",
+      "title": "Sheet",
+      "description": "Presents a focused modal panel from an explicit side.",
+      "category": "overlays",
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/sheet.tsx",
+          "target": "components/sheet.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/overlays.css",
+          "target": "styles/overlays.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["dialog"],
+      "slots": [
+        "sheet-trigger",
+        "sheet-backdrop",
+        "sheet-content",
+        "sheet-header",
+        "sheet-title",
+        "sheet-description",
+        "sheet-body",
+        "sheet-footer",
+        "sheet-close"
+      ],
+      "variants": ["side: left | right | top | bottom", "size: sm | md | lg"],
+      "requiredTokens": [
+        "--n-sheet-width-sm",
+        "--n-sheet-width-md",
+        "--n-sheet-width-lg",
+        "--n-sheet-height-sm",
+        "--n-sheet-height-md",
+        "--n-sheet-height-lg",
+        "--n-sheet-padding",
+        "--n-sheet-gap",
+        "--n-sheet-radius",
+        "--n-sheet-transition-distance",
+        "--n-sheet-transition-duration",
+        "--n-overlay-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-backdrop",
+        "--n-overlay-foreground",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Dialog primitive for modal focus management, Escape and backdrop dismissal, focus restoration, and scroll locking.",
+        "Provide SheetTitle or an explicit accessible name on SheetContent.",
+        "Includes a localized aria-label=\"Close sheet\" close control by default; when showClose is false, consumers must provide another clear close path.",
+        "SheetBody scrolls internally for long content, safe-area insets are respected, and physical left and right sides remain explicit in RTL.",
+        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and forwarded refs on meaningful slots."
+      ],
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { Sheet, SheetBody, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/nerio/components/sheet';\n\n<Sheet>\n  <SheetTrigger render={<Button variant=\"secondary\">Open settings</Button>} />\n  <SheetContent side=\"right\" size=\"md\">\n    <SheetHeader><SheetTitle>Workspace settings</SheetTitle><SheetDescription>Configure shared defaults.</SheetDescription></SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter><Button>Save changes</Button></SheetFooter>\n  </SheetContent>\n</Sheet>"
+    },
+    {
       "name": "popover",
       "title": "Popover",
       "description": "Reveals contextual controls or details near a trigger.",

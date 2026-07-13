@@ -111,6 +111,235 @@
   outline: 0;
 }
 
+.n-sheet {
+  animation: n-sheet-enter var(--n-sheet-transition-duration) var(--n-motion-overlay-enter-easing);
+  background: var(--n-overlay-background);
+  border: var(--n-overlay-border-width) solid var(--n-overlay-border);
+  box-shadow: var(--n-overlay-shadow);
+  color: var(--n-overlay-foreground);
+  display: flex;
+  flex-direction: column;
+  gap: var(--n-sheet-gap);
+  max-block-size: 100dvb;
+  max-inline-size: 100dvi;
+  overflow: hidden;
+  padding: max(var(--n-sheet-padding), env(safe-area-inset-top))
+    max(var(--n-sheet-padding), env(safe-area-inset-right))
+    max(var(--n-sheet-padding), env(safe-area-inset-bottom))
+    max(var(--n-sheet-padding), env(safe-area-inset-left));
+  position: fixed;
+  z-index: calc(var(--n-overlay-z-index) + 1);
+}
+
+.n-sheet[data-side="left"],
+.n-sheet[data-side="right"] {
+  block-size: 100dvb;
+  inline-size: min(100dvi, var(--n-sheet-width-md));
+}
+
+.n-sheet[data-side="top"],
+.n-sheet[data-side="bottom"] {
+  block-size: min(100dvb, var(--n-sheet-height-md));
+  inline-size: 100dvi;
+}
+
+.n-sheet[data-side="left"] {
+  border-radius: 0 var(--n-sheet-radius) var(--n-sheet-radius) 0;
+  inset-block: 0;
+  left: 0;
+}
+.n-sheet[data-side="right"] {
+  border-radius: var(--n-sheet-radius) 0 0 var(--n-sheet-radius);
+  inset-block: 0;
+  right: 0;
+}
+.n-sheet[data-side="top"] {
+  border-radius: 0 0 var(--n-sheet-radius) var(--n-sheet-radius);
+  inset-block-start: 0;
+  left: 0;
+  right: 0;
+}
+.n-sheet[data-side="bottom"] {
+  border-radius: var(--n-sheet-radius) var(--n-sheet-radius) 0 0;
+  inset-block-end: 0;
+  left: 0;
+  right: 0;
+}
+.n-sheet[data-side="left"][data-size="sm"],
+.n-sheet[data-side="right"][data-size="sm"] {
+  inline-size: min(100dvi, var(--n-sheet-width-sm));
+}
+.n-sheet[data-side="left"][data-size="lg"],
+.n-sheet[data-side="right"][data-size="lg"] {
+  inline-size: min(100dvi, var(--n-sheet-width-lg));
+}
+.n-sheet[data-side="top"][data-size="sm"],
+.n-sheet[data-side="bottom"][data-size="sm"] {
+  block-size: min(100dvb, var(--n-sheet-height-sm));
+}
+.n-sheet[data-side="top"][data-size="lg"],
+.n-sheet[data-side="bottom"][data-size="lg"] {
+  block-size: min(100dvb, var(--n-sheet-height-lg));
+}
+
+.n-sheet[data-ending-style] {
+  animation-name: n-sheet-exit;
+}
+.n-sheet__header,
+.n-sheet__footer {
+  display: grid;
+  flex: none;
+  gap: var(--n-space-1);
+}
+.n-sheet__title {
+  color: var(--n-color-text-primary);
+  font-size: var(--n-font-size-xl);
+  line-height: var(--n-line-height-tight);
+  margin: 0;
+  padding-inline-end: var(--n-size-control-sm);
+}
+.n-sheet__description {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+  margin: 0;
+}
+.n-sheet__body {
+  display: grid;
+  flex: 1 1 auto;
+  gap: var(--n-sheet-gap);
+  min-block-size: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-inline-end: var(--n-space-1);
+}
+.n-sheet__footer {
+  border-block-start: var(--n-overlay-border-width) solid var(--n-overlay-border);
+  padding-block-start: var(--n-sheet-gap);
+}
+.n-sheet__close {
+  align-items: center;
+  background: var(--n-button-background-ghost);
+  border: var(--n-border-width-0);
+  border-radius: var(--n-radius-sm);
+  color: var(--n-color-text-tertiary);
+  cursor: pointer;
+  display: inline-flex;
+  flex: none;
+  block-size: var(--n-size-control-sm);
+  inline-size: var(--n-size-control-sm);
+  justify-content: center;
+  position: absolute;
+  inset-block-start: var(--n-sheet-padding);
+  inset-inline-end: var(--n-sheet-padding);
+}
+.n-sheet__close:hover {
+  background: var(--n-color-surface-muted);
+  color: var(--n-color-text-primary);
+}
+.n-sheet__close:focus-visible {
+  box-shadow: var(--n-focus-ring);
+  outline: 0;
+}
+
+@keyframes n-sheet-enter {
+  from {
+    opacity: var(--n-opacity-hidden);
+  }
+}
+@keyframes n-sheet-exit {
+  to {
+    opacity: var(--n-opacity-hidden);
+  }
+}
+.n-sheet[data-side="left"] {
+  animation-name: n-sheet-enter-left;
+}
+.n-sheet[data-side="right"] {
+  animation-name: n-sheet-enter-right;
+}
+.n-sheet[data-side="top"] {
+  animation-name: n-sheet-enter-top;
+}
+.n-sheet[data-side="bottom"] {
+  animation-name: n-sheet-enter-bottom;
+}
+.n-sheet[data-ending-style][data-side="left"] {
+  animation-name: n-sheet-exit-left;
+}
+.n-sheet[data-ending-style][data-side="right"] {
+  animation-name: n-sheet-exit-right;
+}
+.n-sheet[data-ending-style][data-side="top"] {
+  animation-name: n-sheet-exit-top;
+}
+.n-sheet[data-ending-style][data-side="bottom"] {
+  animation-name: n-sheet-exit-bottom;
+}
+@keyframes n-sheet-enter-left {
+  from {
+    opacity: var(--n-opacity-hidden);
+    transform: translateX(calc(-1 * var(--n-sheet-transition-distance)));
+  }
+}
+@keyframes n-sheet-enter-right {
+  from {
+    opacity: var(--n-opacity-hidden);
+    transform: translateX(var(--n-sheet-transition-distance));
+  }
+}
+@keyframes n-sheet-enter-top {
+  from {
+    opacity: var(--n-opacity-hidden);
+    transform: translateY(calc(-1 * var(--n-sheet-transition-distance)));
+  }
+}
+@keyframes n-sheet-enter-bottom {
+  from {
+    opacity: var(--n-opacity-hidden);
+    transform: translateY(var(--n-sheet-transition-distance));
+  }
+}
+@keyframes n-sheet-exit-left {
+  to {
+    opacity: var(--n-opacity-hidden);
+    transform: translateX(calc(-1 * var(--n-sheet-transition-distance)));
+  }
+}
+@keyframes n-sheet-exit-right {
+  to {
+    opacity: var(--n-opacity-hidden);
+    transform: translateX(var(--n-sheet-transition-distance));
+  }
+}
+@keyframes n-sheet-exit-top {
+  to {
+    opacity: var(--n-opacity-hidden);
+    transform: translateY(calc(-1 * var(--n-sheet-transition-distance)));
+  }
+}
+@keyframes n-sheet-exit-bottom {
+  to {
+    opacity: var(--n-opacity-hidden);
+    transform: translateY(var(--n-sheet-transition-distance));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .n-sheet,
+  .n-sheet[data-ending-style] {
+    animation-name: n-sheet-enter;
+  }
+}
+
+@media (forced-colors: active) {
+  .n-sheet {
+    border-color: CanvasText;
+  }
+  .n-sheet__close {
+    border: var(--n-border-width-default) solid ButtonText;
+  }
+}
+
 .n-popover__content,
 .n-dropdown {
   background: var(--n-overlay-background);

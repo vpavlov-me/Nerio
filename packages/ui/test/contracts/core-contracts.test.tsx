@@ -65,6 +65,15 @@ import {
   SelectGroupLabel,
   SelectItem,
   SelectSeparator,
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
   Switch,
   Tabs,
   TabsContent,
@@ -90,6 +99,34 @@ const CustomSvgIcon = React.forwardRef<SVGSVGElement, IconSvgProps>(function Cus
     </svg>
   );
 });
+
+function SheetExample({
+  open,
+  onOpenChange,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
+  return (
+    <Sheet
+      defaultOpen={open === undefined ? undefined : false}
+      onOpenChange={onOpenChange}
+      open={open}
+    >
+      <SheetTrigger render={<button type="button">Open settings</button>} />
+      <SheetContent side="left" size="lg">
+        <SheetHeader>
+          <SheetTitle>Workspace settings</SheetTitle>
+          <SheetDescription>Configure workspace defaults.</SheetDescription>
+        </SheetHeader>
+        <SheetBody>Settings content</SheetBody>
+        <SheetFooter>
+          <SheetClose>Cancel</SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+}
 
 // Compile-time public API contracts. These must fail if Button or Card modes regress.
 // @ts-expect-error empty Button requires visible children or icon-only mode
@@ -2121,5 +2158,31 @@ describe("Core interactive action contracts", () => {
     expect(input.getAttribute("aria-describedby")).toContain("custom-description");
     expect(input.getAttribute("aria-describedby")).toContain("-description");
     expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();
+  });
+
+  it("keeps Sheet slots, controlled state, and modal dismissal contracts aligned", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<SheetExample onOpenChange={onOpenChange} />);
+
+    await user.click(screen.getByRole("button", { name: "Open settings" }));
+    const sheet = await screen.findByRole("dialog", { name: "Workspace settings" });
+    expect(sheet).toHaveAttribute("data-slot", "sheet-content");
+    expect(sheet).toHaveAttribute("data-side", "left");
+    expect(sheet).toHaveAttribute("data-size", "lg");
+    expect(sheet.querySelector('[data-slot="sheet-header"]')).toBeInTheDocument();
+    expect(sheet.querySelector('[data-slot="sheet-body"]')).toHaveTextContent("Settings content");
+    expect(sheet.querySelector('[data-slot="sheet-footer"]')).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Close sheet" })).toBeInTheDocument();
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
+
+    function ControlledSheet() {
+      const [open, setOpen] = React.useState(true);
+      return <SheetExample open={open} onOpenChange={setOpen} />;
+    }
+    render(<ControlledSheet />);
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByRole("dialog", { name: "Workspace settings" })).not.toBeInTheDocument();
   });
 });
