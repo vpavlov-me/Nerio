@@ -320,3 +320,185 @@
   gap: var(--n-space-2);
   justify-content: end;
 }
+
+.n-item-group {
+  display: grid;
+  gap: var(--n-item-group-gap, 0);
+  inline-size: 100%;
+}
+
+.n-item {
+  align-items: center;
+  background: var(--n-item-background);
+  border: var(--n-item-border-width) solid transparent;
+  border-radius: var(--n-item-radius);
+  color: var(--n-item-foreground);
+  column-gap: var(--n-item-gap);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--n-item-padding);
+  row-gap: var(--n-item-row-gap);
+}
+
+.n-item[data-variant="outline"] {
+  border-color: var(--n-item-border);
+}
+
+.n-item[data-variant="soft"] {
+  background: var(--n-item-background-soft);
+}
+
+.n-item[data-size="sm"] {
+  --n-item-padding: var(--n-item-padding-sm);
+  --n-item-gap: var(--n-item-actions-gap);
+}
+
+.n-item[data-size="lg"] {
+  --n-item-padding: var(--n-item-padding-lg);
+  --n-item-gap: var(--n-item-gap-lg);
+}
+
+.n-item:where(a, button, [role="button"]):not([aria-disabled="true"]):not(:disabled) {
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background-color var(--n-motion-hover-duration) var(--n-motion-hover-easing),
+    border-color var(--n-motion-hover-duration) var(--n-motion-hover-easing);
+}
+
+.n-item:where(a, button, [role="button"]):hover:not([aria-disabled="true"]):not(:disabled) {
+  background: var(--n-item-background-hover);
+}
+
+.n-item:where(a, button, [role="button"]):active:not([aria-disabled="true"]):not(:disabled) {
+  background: var(--n-item-background-active);
+}
+
+.n-item:where(a, button, [role="button"]):focus-visible {
+  box-shadow: var(--n-focus-ring);
+  outline: 0;
+}
+
+.n-item[data-selected] {
+  background: var(--n-item-background-selected);
+}
+
+.n-item[data-selected][data-variant="outline"] {
+  border-color: var(--n-item-border-selected);
+}
+
+.n-item[aria-disabled="true"],
+.n-item:disabled {
+  cursor: not-allowed;
+  opacity: var(--n-item-disabled-opacity);
+}
+
+.n-item[data-loading] {
+  pointer-events: none;
+}
+
+.n-item__header,
+.n-item__footer {
+  grid-column: 1 / -1;
+  min-inline-size: 0;
+}
+
+.n-item__header {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-sm);
+}
+
+.n-item__footer {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+}
+
+.n-item__media {
+  flex: none;
+  grid-column: 1;
+  min-inline-size: 0;
+}
+
+.n-item__media[data-variant="icon"],
+.n-item__media[data-variant="image"] {
+  align-items: center;
+  block-size: var(--n-item-media-size-md);
+  border-radius: var(--n-item-media-radius);
+  display: inline-flex;
+  inline-size: var(--n-item-media-size-md);
+  justify-content: center;
+  overflow: hidden;
+}
+
+.n-item__media[data-variant="icon"] {
+  background: var(--n-item-media-background);
+}
+
+.n-item__media[data-variant="icon"] > :where(svg, .n-icon) {
+  block-size: var(--n-item-media-icon-size);
+  inline-size: var(--n-item-media-icon-size);
+}
+
+.n-item__media[data-variant="image"] > :where(img, picture, video) {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.n-item[data-size="sm"] .n-item__media[data-variant="icon"],
+.n-item[data-size="sm"] .n-item__media[data-variant="image"] {
+  block-size: var(--n-item-media-size-sm);
+  inline-size: var(--n-item-media-size-sm);
+}
+
+.n-item[data-size="lg"] .n-item__media[data-variant="icon"],
+.n-item[data-size="lg"] .n-item__media[data-variant="image"] {
+  block-size: var(--n-item-media-size-lg);
+  inline-size: var(--n-item-media-size-lg);
+}
+
+.n-item__content {
+  display: grid;
+  gap: var(--n-item-content-gap);
+  grid-column: 2;
+  min-inline-size: 0;
+}
+
+.n-item__title,
+.n-item__description {
+  margin: 0;
+}
+
+.n-item__title {
+  color: var(--n-color-text-primary);
+  font-weight: var(--n-font-weight-medium);
+  line-height: var(--n-line-height-tight);
+}
+
+.n-item__description {
+  color: var(--n-item-description);
+  font-size: var(--n-font-size-sm);
+  line-height: var(--n-line-height-normal);
+}
+
+.n-item__actions {
+  align-items: center;
+  display: inline-flex;
+  grid-column: 3;
+  flex-wrap: wrap;
+  gap: var(--n-item-actions-gap);
+  justify-content: end;
+}
+
+.n-item__separator {
+  margin-inline: var(--n-item-padding);
+  inline-size: calc(100% - (var(--n-item-padding) * 2));
+}
+
+@media (max-width: 30rem) {
+  .n-item__actions {
+    grid-column: 2 / -1;
+  }
+}

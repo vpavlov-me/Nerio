@@ -122,6 +122,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/key-value", label: "KeyValue", icon: ListTree },
       { href: "/docs/components/table", label: "Table", icon: ListTree },
       { href: "/docs/components/list", label: "List", icon: ListTree },
+      { href: "/docs/components/item", label: "Item", icon: ListTree },
     ],
   },
   {

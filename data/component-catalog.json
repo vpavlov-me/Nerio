@@ -325,6 +325,14 @@
       "description": "Basic table with plain, labelled, and typed focusable scroll-region contracts; responsive overflow verification remains."
     },
     {
+      "name": "Item",
+      "tier": "core",
+      "package": "@nerio/ui",
+      "category": "data-display",
+      "status": "polished",
+      "description": "Universal composition primitive for compact content rows, media, metadata, and actions without imposing list or interactive semantics."
+    },
+    {
       "name": "List",
       "tier": "core",
       "package": "@nerio/ui",
