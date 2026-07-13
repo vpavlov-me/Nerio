@@ -29,6 +29,7 @@ jobs:
       - run: pnpm test:ui
       - run: pnpm test:a11y
       - run: pnpm validate:tokens
+      - run: pnpm validate:runtime-axes
       - run: pnpm validate:catalog
       - run: pnpm validate:docs
       - run: pnpm validate:release

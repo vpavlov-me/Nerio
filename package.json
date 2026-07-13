@@ -14,6 +14,7 @@
     "test:catalog": "node --test scripts/validate-component-catalog.test.mjs",
     "validate:tokens": "node scripts/validate-tokens.mjs",
     "test:tokens": "node --test scripts/validate-tokens.test.mjs",
+    "validate:runtime-axes": "node scripts/validate-runtime-axes.mjs",
     "validate:docs": "pnpm --filter @nerio/docs validate:docs",
     "validate:typography": "node scripts/validate-typography.mjs",
     "validate:release": "node scripts/validate-release-docs.mjs",
