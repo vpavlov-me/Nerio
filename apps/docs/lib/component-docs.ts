@@ -34,6 +34,8 @@ const componentLedes: Record<string, string> = {
   switch:
     "Switches toggle immediate settings with clear on and off affordances, including read-only and invalid states.",
   dialog: "Dialogs focus a short decision or task above the current product surface.",
+  sheet:
+    "Sheets present a focused modal panel from an explicit side while leaving product workflows to the consumer.",
   select:
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
   toast: "Toasts acknowledge short-lived product events without interrupting the current workflow.",

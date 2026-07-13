@@ -111,6 +111,21 @@ export {
 } from "./components/tabs";
 export { Tooltip, type TooltipProps } from "./components/tooltip";
 export { Dialog, type DialogProps } from "./components/dialog";
+export {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  type SheetContentProps,
+  type SheetProps,
+  type SheetSide,
+  type SheetSize,
+} from "./components/sheet";
 export { Popover, type PopoverProps } from "./components/popover";
 export {
   DropdownMenu,

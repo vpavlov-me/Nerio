@@ -23,6 +23,15 @@ const expectedFiles = [
   "styles/spinner.css",
 ];
 const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
+const expectedSheetFiles = [
+  ...expectedFiles,
+  "components/button.tsx",
+  "components/icon.tsx",
+  "components/sheet.tsx",
+  "lib/cn.ts",
+  "styles/icon.css",
+  "styles/overlays.css",
+];
 const expectedFieldFiles = [
   "components/field.tsx",
   "components/label.tsx",
@@ -247,6 +256,7 @@ async function verify() {
     await run(localTarget, "add", "icon-button");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
+    await run(localTarget, "add", "sheet");
     await run(localTarget, "add", "field");
     await run(localTarget, "add", "input-group");
     await run(localTarget, "add", "form-group");
@@ -298,6 +308,18 @@ async function verify() {
       throw new Error("Installed Typography token stylesheet is missing the Inter recipe.");
     }
     assertInstall(localTarget, expectedDialogFiles);
+    assertFiles(localTarget, expectedSheetFiles);
+    const sheetSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/sheet.tsx"),
+      "utf8",
+    );
+    if (
+      !sheetSource.includes("BaseDialog.Root") ||
+      !sheetSource.includes('data-slot="sheet-content"') ||
+      !sheetSource.includes("showClose")
+    ) {
+      throw new Error("Installed Sheet source did not preserve its modal and slot contracts.");
+    }
     assertFiles(localTarget, expectedFieldFiles);
     assertFiles(localTarget, expectedInputGroupFiles);
     const inputGroupSource = fs.readFileSync(

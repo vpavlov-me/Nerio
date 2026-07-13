@@ -53,6 +53,21 @@ export {
 export { Tooltip, type TooltipProps } from "./components/tooltip";
 export { LabelHint, type LabelHintProps } from "./components/label-hint";
 export { Dialog, type DialogProps } from "./components/dialog";
+export {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  type SheetContentProps,
+  type SheetProps,
+  type SheetSide,
+  type SheetSize,
+} from "./components/sheet";
 export { Popover, type PopoverProps } from "./components/popover";
 export {
   DropdownMenu,

@@ -323,6 +323,21 @@ async function verify() {
       throw new Error("MCP Dialog usage is missing overlay, adapter, or close metadata.");
     }
 
+    const sheetUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "sheet" },
+    });
+    const sheetUsage = JSON.parse(sheetUsageResult.content[0].text);
+    if (
+      !sheetUsage.slots.includes("sheet-content") ||
+      !sheetUsage.variants.includes("side: left | right | top | bottom") ||
+      !sheetUsage.requiredTokens.includes("--n-sheet-width-md") ||
+      !sheetUsage.requiredTokens.includes("--n-sheet-transition-duration") ||
+      !sheetUsage.accessibility.some((item) => item.includes("SheetTitle"))
+    ) {
+      throw new Error("MCP Sheet usage is missing its slots, side, token, or naming contract.");
+    }
+
     const tooltipUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "tooltip" },
@@ -371,6 +386,7 @@ async function verify() {
       "button-group",
       "icon-button",
       "dialog",
+      "sheet",
       "select",
       "tabs",
       "toast",

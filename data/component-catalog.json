@@ -295,10 +295,10 @@
     {
       "name": "Sheet",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "overlays",
-      "status": "planned",
-      "description": "Basic side panel primitive."
+      "status": "polished",
+      "description": "Base UI modal side-panel primitive with compound slots, four explicit sides, Core size scale, internal scrolling, and tokenized overlay behavior."
     },
     {
       "name": "Popover",

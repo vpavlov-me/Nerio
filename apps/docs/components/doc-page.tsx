@@ -20,6 +20,14 @@ import {
   Checkbox,
   Code,
   Dialog,
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
   DropdownMenu,
   EmptyState,
   EmptyStateActions,
@@ -537,6 +545,70 @@ function Preview({ kind }: { kind: string }) {
               <p>Choose collaborators and permissions before sharing this workspace collection.</p>
               <Button>Send invite</Button>
             </Dialog>
+          ) : null}
+          {kind === "sheet" ? (
+            <>
+              <Sheet>
+                <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />
+                <SheetContent side="right" size="md">
+                  <SheetHeader>
+                    <SheetTitle>Workspace settings</SheetTitle>
+                    <SheetDescription>Configure shared workspace defaults.</SheetDescription>
+                  </SheetHeader>
+                  <SheetBody>
+                    <p>
+                      Choose how this workspace handles member notifications and shared preferences.
+                    </p>
+                  </SheetBody>
+                  <SheetFooter>
+                    <Button>Save changes</Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+              <Sheet>
+                <SheetTrigger
+                  render={<Button variant="secondary">Open mobile navigation</Button>}
+                />
+                <SheetContent side="left" size="sm">
+                  <SheetHeader>
+                    <SheetTitle>Workspace navigation</SheetTitle>
+                    <SheetDescription>Choose a destination in this product.</SheetDescription>
+                  </SheetHeader>
+                  <SheetBody>
+                    <Button variant="ghost">Projects</Button>
+                    <Button variant="ghost">Activity</Button>
+                  </SheetBody>
+                </SheetContent>
+              </Sheet>
+              <Sheet>
+                <SheetTrigger render={<Button variant="secondary">Open filters</Button>} />
+                <SheetContent side="top" size="sm">
+                  <SheetHeader>
+                    <SheetTitle>View filters</SheetTitle>
+                    <SheetDescription>
+                      Refine the current list in the consumer application.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <SheetBody>
+                    <p>Filter controls remain application-owned composition.</p>
+                  </SheetBody>
+                </SheetContent>
+              </Sheet>
+              <Sheet>
+                <SheetTrigger render={<Button variant="secondary">Open details</Button>} />
+                <SheetContent side="bottom" size="sm">
+                  <SheetHeader>
+                    <SheetTitle>Collection details</SheetTitle>
+                    <SheetDescription>
+                      Review contextual information without leaving the page.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <SheetBody>
+                    <p>Contextual detail content remains owned by the consuming product.</p>
+                  </SheetBody>
+                </SheetContent>
+              </Sheet>
+            </>
           ) : null}
           {kind === "select" ? (
             <div className="form-preview-stack">

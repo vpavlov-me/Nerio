@@ -80,6 +80,8 @@ export const snippets: Record<string, string> = {
     'import { Switch } from "@nerio/ui/client";\n\n<Switch\n  defaultChecked\n  name="notifyCollaborators"\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>',
   dialog:
     'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
+  sheet:
+    'import { Button, Sheet, SheetBody, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md">\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter><Button>Save changes</Button></SheetFooter>\n  </SheetContent>\n</Sheet>',
   select:
     "import { Select } from '@nerio/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   toast:
@@ -166,6 +168,28 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: ["button-group"],
     motion: ["inherits Button motion"],
     accessibility: ["group role", "aria-label", "child Button semantics"],
+  },
+  sheet: {
+    name: "Sheet",
+    description:
+      "A focused Base UI modal side-panel primitive with compound slots and Core size scale.",
+    status: "beta",
+    layer: "core",
+    category: "Navigation and overlays",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui/client",
+    related: ["Dialog", "Popover", "Button"],
+    anatomy: [
+      "sheet-trigger",
+      "sheet-content",
+      "sheet-header",
+      "sheet-title",
+      "sheet-body",
+      "sheet-footer",
+      "sheet-close",
+    ],
+    motion: ["directional overlay entry", "reduced-motion fade"],
+    accessibility: ["Base UI modal focus management", "accessible name", "keyboard close path"],
   },
   input: {
     name: "Input",
@@ -2401,6 +2425,109 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-shadow",
       "--n-motion-overlay-enter-duration",
       "--n-motion-overlay-exit-duration",
+      "--n-focus-ring",
+    ],
+  },
+  sheet: {
+    category: "Navigation and overlays",
+    purpose:
+      "Use Sheet for a focused modal panel that needs more room than a popover without becoming a product shell.",
+    anatomy: [
+      { title: "trigger", description: "Consumer-rendered control that opens the modal panel." },
+      { title: "backdrop", description: "Modal backdrop that separates the panel from its page." },
+      {
+        title: "content",
+        description: "Focusable side, top, or bottom panel with a size contract.",
+      },
+      { title: "header", description: "Optional title and description boundary." },
+      { title: "body", description: "Internally scrollable content region for long content." },
+      { title: "footer", description: "Optional persistent action boundary." },
+      {
+        title: "close",
+        description: "Accessible close control, or a consumer-supplied alternative.",
+      },
+    ],
+    variants: [
+      {
+        title: "Sides",
+        description: "Explicit left, right, top, and bottom placement; right is the default.",
+      },
+      {
+        title: "Sizes",
+        description: "sm, md, and lg scale the panel axis without changing its responsibility.",
+      },
+    ],
+    states: [
+      {
+        title: "Open",
+        description: "Focus is contained in the modal panel and the page scroll is locked.",
+      },
+      { title: "Closed", description: "The panel is removed and focus returns to its trigger." },
+      {
+        title: "Long content",
+        description: "The body scrolls while header and footer remain available.",
+      },
+    ],
+    motion: [
+      "Entry direction follows side and uses the shared overlay motion contract.",
+      "Reduced motion removes directional travel while preserving the visibility transition.",
+    ],
+    accessibility: [
+      "Provide an accessible name with SheetTitle or an explicit aria-label or aria-labelledby on SheetContent.",
+      "Base UI provides modal focus trapping, focus restoration, Escape dismissal, backdrop dismissal, and scroll locking.",
+      "Keep a keyboard-reachable SheetClose or another clear close path when showClose is false.",
+      "Physical left and right placement stay explicit for RTL content.",
+    ],
+    api: [
+      {
+        title: "Sheet",
+        description:
+          "Controlled or uncontrolled Base UI Dialog root: open, defaultOpen, and onOpenChange.",
+      },
+      {
+        title: "SheetContent",
+        description:
+          "Accepts side, size, showClose, closeLabel, className, refs, and native dialog popup props.",
+      },
+      {
+        title: "SheetTrigger",
+        description:
+          "Uses Base UI render composition so consumers supply their own trigger element.",
+      },
+      {
+        title: "SheetHeader / SheetTitle / SheetDescription",
+        description: "Named accessible context slots.",
+      },
+      {
+        title: "SheetBody / SheetFooter / SheetClose",
+        description: "Scrollable content, action, and dismissal boundaries.",
+      },
+    ],
+    guidance: {
+      do: [
+        "Use for a small settings surface, mobile navigation, or contextual details owned by the consumer.",
+        "Keep one clear task and give the panel a concise accessible name.",
+      ],
+      dont: [
+        "Do not use Sheet as a persistent sidebar, resizable panel, AppShell, or routing container.",
+        "Do not hide the only close path when showClose is false.",
+      ],
+    },
+    related: ["Dialog", "Popover", "Button"],
+    tokens: [
+      "--n-sheet-width-sm",
+      "--n-sheet-width-md",
+      "--n-sheet-width-lg",
+      "--n-sheet-height-sm",
+      "--n-sheet-height-md",
+      "--n-sheet-height-lg",
+      "--n-sheet-padding",
+      "--n-sheet-gap",
+      "--n-sheet-radius",
+      "--n-sheet-transition-distance",
+      "--n-sheet-transition-duration",
+      "--n-overlay-background",
+      "--n-overlay-backdrop",
       "--n-focus-ring",
     ],
   },

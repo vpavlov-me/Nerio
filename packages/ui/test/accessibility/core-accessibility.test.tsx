@@ -34,6 +34,14 @@ import {
   SelectGroup,
   SelectGroupLabel,
   SelectItem,
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
   Switch,
   Tabs,
   TabsContent,
@@ -270,6 +278,30 @@ describe("Core accessibility contracts", () => {
     await user.click(screen.getByRole("button", { name: "Close dialog" }));
     await user.click(screen.getByRole("button", { name: "Show toast" }));
     await screen.findByRole("button", { name: "Undo" });
+    expect((await axe(document.body)).violations).toEqual([]);
+  });
+
+  it("keeps an open Sheet named, reachable, and free of modal accessibility violations", async () => {
+    const user = userEvent.setup();
+    render(
+      <Sheet>
+        <SheetTrigger render={<Button variant="secondary">Open navigation</Button>} />
+        <SheetContent side="bottom" size="sm">
+          <SheetHeader>
+            <SheetTitle>Workspace navigation</SheetTitle>
+            <SheetDescription>Open a destination without leaving this context.</SheetDescription>
+          </SheetHeader>
+          <SheetBody>
+            <button type="button">Projects</button>
+          </SheetBody>
+          <SheetFooter>
+            <button type="button">Close navigation</button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>,
+    );
+    await user.click(screen.getByRole("button", { name: "Open navigation" }));
+    await screen.findByRole("dialog", { name: "Workspace navigation" });
     expect((await axe(document.body)).violations).toEqual([]);
   });
 });
