@@ -109,7 +109,6 @@ const allowedCategories = new Set(catalog.categoryValues ?? []);
 const allowedPackages = new Set(catalog.packageValues ?? []);
 const clientOnlyCatalogSlugs = new Set([
   "button",
-  "button-group",
   "icon-button",
   "checkbox",
   "radio-group",

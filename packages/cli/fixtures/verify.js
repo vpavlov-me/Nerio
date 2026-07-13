@@ -250,6 +250,16 @@ async function verify() {
     ) {
       throw new Error("Dry run output did not describe the InputGroup install plan.");
     }
+    const buttonGroupInfoOutput = await run(localTarget, "info", "button-group");
+    if (
+      !buttonGroupInfoOutput.includes("orientation: horizontal | vertical") ||
+      !buttonGroupInfoOutput.includes("independent Tab order") ||
+      !buttonGroupInfoOutput.includes("styles/button-group.css")
+    ) {
+      throw new Error(
+        "ButtonGroup registry metadata did not include the stable orientation contract.",
+      );
+    }
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "typography");
     await run(localTarget, "add", "button-group");

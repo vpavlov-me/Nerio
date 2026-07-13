@@ -1,5 +1,6 @@
 .n-button-group {
   display: inline-flex;
+  flex-direction: row;
   isolation: isolate;
 }
 
@@ -28,8 +29,12 @@
 }
 
 .n-button-group > .n-button:hover,
-.n-button-group > .n-button:focus-visible {
+.n-button-group > .n-button:active {
   z-index: 1;
+}
+
+.n-button-group > .n-button:focus-visible {
+  z-index: 2;
 }
 
 .n-button-group > .n-button:first-child {
@@ -40,4 +45,44 @@
 .n-button-group > .n-button:last-child {
   border-end-end-radius: var(--n-button-radius);
   border-start-end-radius: var(--n-button-radius);
+}
+
+.n-button-group[data-orientation="vertical"] {
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.n-button-group[data-orientation="vertical"] > .n-button + .n-button {
+  margin-block-start: calc(var(--n-button-border-width) * -1);
+  margin-inline-start: 0;
+}
+
+.n-button-group[data-orientation="vertical"] > .n-button + .n-button::before {
+  block-size: var(--n-button-border-width);
+  inline-size: var(--n-space-4);
+  inset-block-start: calc(var(--n-button-border-width) * -1);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+}
+
+.n-button-group:dir(rtl)[data-orientation="vertical"] > .n-button + .n-button::before {
+  transform: translateX(50%);
+}
+
+.n-button-group[data-orientation="vertical"] > .n-button:first-child {
+  border-end-end-radius: var(--n-radius-none);
+  border-end-start-radius: var(--n-radius-none);
+  border-start-end-radius: var(--n-button-radius);
+  border-start-start-radius: var(--n-button-radius);
+}
+
+.n-button-group[data-orientation="vertical"] > .n-button:last-child {
+  border-end-end-radius: var(--n-button-radius);
+  border-end-start-radius: var(--n-button-radius);
+  border-start-end-radius: var(--n-radius-none);
+  border-start-start-radius: var(--n-radius-none);
+}
+
+.n-button-group[data-orientation="vertical"] > .n-button:only-child {
+  border-radius: var(--n-button-radius);
 }

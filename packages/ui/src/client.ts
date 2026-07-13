@@ -1,7 +1,11 @@
 "use client";
 
 export * from "./index";
-export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
+export {
+  ButtonGroup,
+  type ButtonGroupOrientation,
+  type ButtonGroupProps,
+} from "./components/button-group";
 export { Button } from "./components/button";
 export type {
   ButtonBadge,

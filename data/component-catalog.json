@@ -191,10 +191,10 @@
     {
       "name": "ButtonGroup",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio/ui",
       "category": "actions",
-      "status": "implemented-initial",
-      "description": "Attached layout group for related Button controls."
+      "status": "stable-core",
+      "description": "Server-safe attached layout group for a small set of related Button controls."
     },
     {
       "name": "Input",

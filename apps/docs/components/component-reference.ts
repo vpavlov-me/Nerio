@@ -44,7 +44,7 @@ export const snippets: Record<string, string> = {
   button:
     'import { Save, Settings } from \'@nerio/adapters\';\nimport { Badge, Kbd } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
   "button-group":
-    'import { Button, ButtonGroup } from \'@nerio/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
+    'import { ButtonGroup } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio/ui';\n\n<Kbd>⌘S</Kbd>",
   breadcrumbs:
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
@@ -158,12 +158,12 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   "button-group": {
     name: "ButtonGroup",
     description:
-      "Groups related Buttons with the same visual variant, including Buttons with Badge counts, into one compact attached horizontal control.",
-    status: "beta",
+      "Groups related Buttons with the same visual variant into one compact attached horizontal or vertical control.",
+    status: "stable",
     layer: "core",
     category: "Actions",
     package: "@nerio/ui",
-    importPath: "@nerio/ui/client",
+    importPath: "@nerio/ui",
     related: ["Button", "DropdownMenu", "Tokens"],
     anatomy: ["button-group"],
     motion: ["inherits Button motion"],
@@ -558,16 +558,22 @@ export const componentReference: Record<string, ComponentReference> = {
     purpose:
       "Use ButtonGroup when adjacent actions form one compact, related set with the same visual variant.",
     anatomy: [{ title: "button-group", description: "Native group wrapper for adjacent Buttons." }],
-    variants: [],
+    variants: [
+      {
+        title: "Orientation",
+        description: "Horizontal is the default; vertical stacks the same direct Button children.",
+      },
+    ],
     states: [
       { title: "Focus", description: "Each child Button keeps its own visible focus ring." },
+      { title: "Disabled and loading", description: "Each child Button keeps its own state." },
     ],
     accessibility: [
-      "Labels the related action set through aria-label.",
-      "Keeps the native semantics and keyboard behavior of each child Button.",
+      "Names the related action set through aria-label or aria-labelledby.",
+      "Keeps the native semantics and independent Tab order of each child Button; it is not a toolbar.",
     ],
     guidance: {
-      do: ["Use the same Button variant for every action in the group."],
+      do: ["Use direct Button children with the same variant for every action in the group."],
       dont: [
         "Do not mix Button variants, group unrelated actions, or use it as a toolbar substitute.",
       ],

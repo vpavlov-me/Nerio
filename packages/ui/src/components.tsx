@@ -7,7 +7,11 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from "./components/button";
-export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
+export {
+  ButtonGroup,
+  type ButtonGroupOrientation,
+  type ButtonGroupProps,
+} from "./components/button-group";
 export { motionClasses, type MotionClassName } from "./lib/motion";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps, IconSvgProps } from "./components/icon";

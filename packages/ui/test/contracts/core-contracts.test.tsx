@@ -331,15 +331,97 @@ describe("Core static contracts", () => {
     expect(loadingItem).toHaveAttribute("data-loading");
   });
 
-  it("groups related Buttons with a labelled group landmark", () => {
+  it("groups related Buttons with named horizontal and vertical layouts", async () => {
+    const user = userEvent.setup();
     render(
-      <ButtonGroup aria-label="Document actions">
-        <button>Cancel</button>
-        <button>Save</button>
-      </ButtonGroup>,
+      <>
+        <span id="document-actions-label">Document actions</span>
+        <ButtonGroup aria-labelledby="document-actions-label">
+          <Button render={<a href="/preview" />} variant="secondary">
+            Preview
+          </Button>
+          <Button variant="secondary">Save</Button>
+        </ButtonGroup>
+        <div data-density="compact" dir="rtl">
+          <ButtonGroup aria-label="Publishing actions" orientation="vertical">
+            <Button loading variant="secondary">
+              Publish
+            </Button>
+            <Button disabled variant="secondary">
+              Archive
+            </Button>
+          </ButtonGroup>
+        </div>
+      </>,
     );
     const group = screen.getByRole("group", { name: "Document actions" });
     expect(group).toHaveAttribute("data-slot", "button-group");
+    expect(group).toHaveAttribute("data-orientation", "horizontal");
+    expect(screen.getByRole("link", { name: "Preview" })).toHaveAttribute("href", "/preview");
+    const verticalGroup = screen.getByRole("group", { name: "Publishing actions" });
+    expect(verticalGroup).toHaveAttribute("data-orientation", "vertical");
+    expect(verticalGroup.parentElement).toHaveAttribute("data-density", "compact");
+    expect(verticalGroup.parentElement).toHaveAttribute("dir", "rtl");
+    expect(screen.getByRole("button", { name: "Publish" })).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByRole("button", { name: "Archive" })).toBeDisabled();
+
+    await user.tab();
+    expect(screen.getByRole("link", { name: "Preview" })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Save" })).toHaveFocus();
+  });
+
+  it("preserves every Button variant and composed content contract", () => {
+    const variants = ["primary", "secondary", "outline", "ghost", "link", "danger"] as const;
+    render(
+      <>
+        {variants.map((variant) => (
+          <ButtonGroup key={variant} aria-label={`${variant} actions`}>
+            <Button variant={variant}>{variant} one</Button>
+            <Button variant={variant}>{variant} two</Button>
+          </ButtonGroup>
+        ))}
+        <ButtonGroup aria-label="Composed actions">
+          <Button badge={<Badge tone="info">3</Badge>} kbd={<Kbd>⌘K</Kbd>} variant="outline">
+            Inspect
+          </Button>
+          <Button icon={Bell} aria-label="More composed actions" variant="outline" />
+        </ButtonGroup>
+      </>,
+    );
+
+    for (const variant of variants) {
+      const group = screen.getByRole("group", { name: `${variant} actions` });
+      expect(group.querySelectorAll(`[data-variant="${variant}"]`)).toHaveLength(2);
+    }
+    const composedGroup = screen.getByRole("group", { name: "Composed actions" });
+    expect(composedGroup.querySelector('[data-slot="button-badge"]')).toHaveTextContent("3");
+    expect(composedGroup.querySelector('[data-slot="button-kbd"]')).toHaveTextContent("⌘K");
+    expect(screen.getByRole("button", { name: "More composed actions" })).toHaveAttribute(
+      "data-icon-only",
+      "true",
+    );
+  });
+
+  it("keeps ButtonGroup attachment, focus layering, RTL, and density contracts in CSS", () => {
+    const buttonGroupStyles = readFileSync(
+      resolve(process.cwd(), "src/styles/button-group.css"),
+      "utf8",
+    );
+    expect(buttonGroupStyles).toContain("margin-inline-start");
+    expect(buttonGroupStyles).toContain('data-orientation="vertical"');
+    expect(buttonGroupStyles).toContain("margin-block-start");
+    expect(buttonGroupStyles).toContain(':dir(rtl)[data-orientation="vertical"]');
+    expect(buttonGroupStyles).toContain("transform: translateX(50%);");
+    expect(buttonGroupStyles).toContain("border-end-start-radius: var(--n-button-radius);");
+    expect(buttonGroupStyles).toContain("border-start-end-radius: var(--n-radius-none);");
+    expect(buttonGroupStyles).toContain(".n-button-group > .n-button:focus-visible");
+    expect(buttonGroupStyles).toContain("z-index: 2;");
+    expect(buttonGroupStyles).toContain(
+      '.n-button-group[data-orientation="vertical"] > .n-button:only-child',
+    );
+    expect(buttonGroupStyles).toContain("border-radius: var(--n-button-radius);");
+    expect(buttonGroupStyles).not.toContain("overflow: hidden");
   });
 
   it("renders decorative Badge icons on either side of its status label and supports loading", () => {

@@ -1,20 +1,35 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, Check, ChevronDown, Copy, X } from "@nerio/adapters";
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
-import { Button, ButtonGroup } from "@nerio/ui/client";
+import {
+  Badge,
+  ButtonGroup,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Icon,
+} from "@nerio/ui";
+import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
 
 const apiRows = [
   ["children", "ReactNode", "Related Buttons that share one compact context and visual variant."],
+  [
+    "orientation",
+    '"horizontal" | "vertical"',
+    "Horizontal is the default; vertical stacks direct Button children.",
+  ],
   ["aria-label", "string", "Names the group for assistive technology."],
-  ["role", "string", "Defaults to group and may be changed only for an equivalent group semantic."],
+  ["aria-labelledby", "string", "Uses an existing visible label as the group name."],
+  ["role", "string", "Defaults to group; keep group semantics for related actions."],
   ["className", "string", "Extends the group root without changing child Button contracts."],
 ] as const;
 
 const anatomyRows = [
-  ["button-group", "Native group wrapper that owns one attached horizontal layout."],
+  ["button-group", "Native group wrapper that owns one attached horizontal or vertical layout."],
   ["button", "Child Buttons retain their individual semantics, labels, and states."],
   ["button-badge", "An optional count or status remains inside its child Button."],
   ["first / last button", "Keep the group radius only on the outside corners."],
@@ -28,6 +43,7 @@ const stateRows = [
     "The active child rises above neighbouring borders without losing its focus ring.",
   ],
   ["Disabled", "Each child Button remains independently disabled when needed."],
+  ["Loading", "Each child Button can announce its own loading state without changing the group."],
 ] as const;
 
 const implementationRows = [
@@ -52,7 +68,7 @@ const tokenRows = [
     "--n-button-group-divider",
     "Draws a short, neutral separator between adjacent Buttons.",
   ],
-  ["Focus", "--n-focus-ring", "Keeps each child Button visibly focusable."],
+  ["Focus", "--n-focus-ring", "Keeps each child Button visibly focusable above adjacent borders."],
 ] as const;
 
 function DocumentationTable({
@@ -113,7 +129,7 @@ function ButtonGroupPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { ChevronDown } from "@nerio/adapters";\nimport { Badge } from "@nerio/ui";\nimport { Button, ButtonGroup } from "@nerio/ui/client";\n\n<ButtonGroup aria-label="Repository actions">\n  <Button badge={<Badge size="sm" tone="info">24</Badge>} variant="secondary">\n    Fork\n  </Button>\n  <Button icon={ChevronDown} aria-label="More fork actions" variant="secondary" />\n</ButtonGroup>'
+          'import { ChevronDown } from "@nerio/adapters";\nimport { Badge, ButtonGroup } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<ButtonGroup aria-label="Repository actions">\n  <Button badge={<Badge size="sm" tone="info">24</Badge>} variant="secondary">\n    Fork\n  </Button>\n  <Button icon={ChevronDown} aria-label="More fork actions" variant="secondary" />\n</ButtonGroup>'
         }
         label="ButtonGroup live preview code"
       />
@@ -165,6 +181,26 @@ export default function Page() {
             </ButtonGroup>
           </Preview>
         ),
+        variants: (
+          <Preview>
+            <div className="preview-row">
+              <ButtonGroup aria-label="Horizontal document actions">
+                <Button variant="secondary">Cancel</Button>
+                <Button variant="secondary">Save</Button>
+              </ButtonGroup>
+              <ButtonGroup aria-label="Vertical document actions" orientation="vertical">
+                <Button variant="secondary">Cancel</Button>
+                <Button variant="secondary">Save</Button>
+              </ButtonGroup>
+              <div dir="rtl">
+                <ButtonGroup aria-label="RTL document actions">
+                  <Button variant="secondary">إلغاء</Button>
+                  <Button variant="secondary">حفظ</Button>
+                </ButtonGroup>
+              </div>
+            </div>
+          </Preview>
+        ),
         states: (
           <Preview>
             <div className="preview-row">
@@ -184,6 +220,14 @@ export default function Page() {
                 </Button>
                 <Button disabled variant="secondary">
                   Save
+                </Button>
+              </ButtonGroup>
+              <ButtonGroup aria-label="Publishing actions" orientation="vertical">
+                <Button loading variant="secondary">
+                  Publish
+                </Button>
+                <Button disabled variant="secondary">
+                  Archive
                 </Button>
               </ButtonGroup>
             </div>
@@ -223,7 +267,8 @@ export default function Page() {
             </div>
             <p>
               Give the group a concise <code>aria-label</code>; every Button keeps its own visible
-              name and keyboard behavior.
+              name and independent Tab stop. ButtonGroup does not add arrow-key navigation, so use a
+              keyboard-managed toolbar or selection control when that interaction is required.
             </p>
           </Preview>
         ),
@@ -265,7 +310,8 @@ export default function Page() {
                 <CardTitle>Do</CardTitle>
               </CardHeader>
               <CardContent>
-                Group adjacent actions that share one local context and the same Button variant.
+                Group direct Button children that share one local context and the same Button
+                variant.
               </CardContent>
             </Card>
             <Card>
@@ -274,8 +320,8 @@ export default function Page() {
                 <CardTitle>Do not</CardTitle>
               </CardHeader>
               <CardContent>
-                Mix Button variants, use ButtonGroup as a generic toolbar, or collect unrelated page
-                actions.
+                Mix Button variants, wrap children in layout elements, use ButtonGroup as a generic
+                toolbar, or collect unrelated page actions.
               </CardContent>
             </Card>
           </div>

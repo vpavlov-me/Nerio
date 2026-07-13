@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import {
   Avatar,
   Badge,
+  ButtonGroup,
   EmptyState,
   EmptyStateDescription,
   EmptyStateHeader,
@@ -82,6 +83,33 @@ describe("Core accessibility contracts", () => {
       </>,
     );
     expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps named ButtonGroup controls independently reachable without toolbar behavior", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <ButtonGroup aria-label="Document actions">
+          <Button render={<a href="/preview" />} variant="secondary">
+            Preview
+          </Button>
+          <Button icon={Bell} aria-label="More document actions" variant="secondary" />
+        </ButtonGroup>
+        <ButtonGroup aria-label="Publishing actions" orientation="vertical">
+          <Button loading variant="secondary">
+            Publish
+          </Button>
+          <Button disabled variant="secondary">
+            Archive
+          </Button>
+        </ButtonGroup>
+      </>,
+    );
+    expect((await axe(container)).violations).toEqual([]);
+    await user.tab();
+    expect(screen.getByRole("link", { name: "Preview" })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole("button", { name: "More document actions" })).toHaveFocus();
   });
 
   it("covers representative static Core accessibility surfaces", async () => {
