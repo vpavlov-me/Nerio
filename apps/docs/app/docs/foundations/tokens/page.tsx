@@ -90,6 +90,17 @@ const semanticAliases = [
   ["Body type", "--n-body-font-size", "--n-font-size-md"],
 ] as const;
 
+const contrastTokens = [
+  [
+    "Primary and secondary text",
+    "--n-contrast-text-primary / --n-contrast-text-secondary",
+    "4.5:1",
+  ],
+  ["Tertiary and status text", "--n-contrast-text-tertiary / --n-contrast-status", "3:1"],
+  ["Action and inverse text", "--n-contrast-action / --n-contrast-text-inverse", "4.5:1"],
+  ["Focus indication", "--n-contrast-focus-ring", "3:1"],
+] as const;
+
 const componentTokens = [
   ["Button height", "--n-button-height-md"],
   ["Button radius", "--n-button-radius"],
@@ -257,6 +268,38 @@ export default function Page() {
                   <td>
                     <Code>{primitive}</Code>
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
+      </section>
+
+      <section className="doc-section">
+        <h2 id="contrast">Contrast contract</h2>
+        <p>
+          Contrast targets document the minimum intended ratio for Core roles. Customize contrast by
+          overriding semantic color variables such as <Code>--n-color-text-primary</Code> and{" "}
+          <Code>--n-color-action-primary</Code>; contrast targets are documentation tokens, not a
+          runtime axis.
+        </p>
+        <TableContainer label="Contrast targets">
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Target</th>
+                <th>Minimum</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contrastTokens.map(([role, token, target]) => (
+                <tr key={role}>
+                  <td>{role}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>{target}</td>
                 </tr>
               ))}
             </tbody>
