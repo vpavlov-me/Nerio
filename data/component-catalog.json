@@ -417,7 +417,7 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "navigation",
-      "status": "stable-core",
+      "status": "polished",
       "description": "Base UI compound Tabs primitive with tokenized bordered, separate, and segmented variants; sizes, orientation, overflow, panel motion, and registry-aligned accessibility support."
     },
     {

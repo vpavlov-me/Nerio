@@ -2169,8 +2169,11 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "root",
         description: "Base UI Tabs root with visual variant, size, and orientation.",
       },
-      { title: "list", description: "Named tab controls with content or fill layout." },
-      { title: "trigger", description: "Visible label with optional decorative icons and Badge." },
+      { title: "list", description: "Named tab controls with content or horizontal fill layout." },
+      {
+        title: "trigger",
+        description: "Visible text label with optional decorative icons and Badge.",
+      },
       { title: "indicator", description: "Animated Base UI-positioned selected treatment." },
       { title: "panels", description: "Transition-safe grid wrapper for related panels." },
       { title: "content", description: "Base UI panel associated with its trigger by value." },
@@ -2188,12 +2191,10 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     states: [
       { title: "Selected", description: "Active tab and visible panel." },
-      { title: "Focus", description: "Keyboard focus on the current trigger." },
-      { title: "Disabled", description: "Unavailable tab remains visible but inactive." },
-      { title: "Focus", description: "A visible focus ring remains above the moving indicator." },
+      { title: "Focus", description: "Inset focus treatment stays visible in scrollable lists." },
       {
         title: "Disabled",
-        description: "Disabled triggers retain their label and are skipped by keyboard navigation.",
+        description: "Unavailable triggers are skipped by keyboard navigation.",
       },
       {
         title: "Manual activation",
@@ -2202,7 +2203,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Provide aria-label or aria-labelledby when the tablist purpose is not clear from nearby text.",
-      "Base UI owns tab, tablist, tabpanel relationships, keyboard navigation, disabled skipping, and activation direction.",
+      "Base UI owns tab, tablist, tabpanel relationships and activation direction; Nerio keeps arrow navigation on enabled triggers.",
       "Every trigger needs a visible text label. Icons are decorative; Badge text remains available to assistive technology.",
       "Provide an enabled defaultValue for predictable SSR when the first trigger is disabled.",
     ],
@@ -2210,7 +2211,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "Tabs / TabsList",
         description:
-          "Base UI root and list props plus bordered, separate, segmented; sm, md, lg; content/fill; and scrollable controls.",
+          "Base UI root and list props plus bordered, separate, segmented; sm, md, lg; content or horizontal fill; and scrollable controls.",
       },
       {
         title: "TabsTrigger",
@@ -2247,8 +2248,11 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-tabs-trigger-height-md",
+      "--n-tabs-list-gap",
+      "--n-tabs-trigger-content-gap-md",
       "--n-tabs-radius",
       "--n-tabs-list-background",
+      "--n-tabs-segmented-indicator-radius",
       "--n-tabs-foreground-active",
       "--n-tabs-indicator-background",
       "--n-tabs-accent-color",

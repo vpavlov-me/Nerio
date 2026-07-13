@@ -17,6 +17,32 @@ function withClassName<State>(className: BaseClassName<State>, baseClassName: st
     : cn(baseClassName, className);
 }
 
+type AccessibleNodeProps = {
+  children?: React.ReactNode;
+  "aria-hidden"?: boolean | "true";
+  "aria-label"?: string;
+};
+
+function getAccessibleText(node: React.ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node);
+  }
+
+  if (Array.isArray(node)) {
+    return node.map(getAccessibleText).filter(Boolean).join(" ");
+  }
+
+  if (React.isValidElement<AccessibleNodeProps>(node)) {
+    if (node.props["aria-hidden"] === true || node.props["aria-hidden"] === "true") {
+      return "";
+    }
+
+    return node.props["aria-label"] ?? getAccessibleText(node.props.children);
+  }
+
+  return "";
+}
+
 export type TabsProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Root> & {
   variant?: TabsVariant;
   size?: TabsSize;
@@ -44,8 +70,77 @@ export type TabsListProps = React.ComponentPropsWithoutRef<typeof BaseTabs.List>
   scrollable?: boolean;
 };
 
+function moveFocusPastDisabledTab(event: React.KeyboardEvent<HTMLDivElement>, loopFocus: boolean) {
+  const list = event.currentTarget;
+  const orientation = list.getAttribute("data-orientation");
+  const isVertical = orientation === "vertical";
+  const direction = list.closest("[dir]")?.getAttribute("dir") ?? document.dir;
+  const key = event.key;
+  const movesForward =
+    (isVertical && key === "ArrowDown") ||
+    (!isVertical && key === (direction === "rtl" ? "ArrowLeft" : "ArrowRight"));
+  const movesBackward =
+    (isVertical && key === "ArrowUp") ||
+    (!isVertical && key === (direction === "rtl" ? "ArrowRight" : "ArrowLeft"));
+
+  if (!movesForward && !movesBackward && key !== "Home" && key !== "End") {
+    return;
+  }
+
+  const tabs = Array.from(list.querySelectorAll<HTMLElement>('[role="tab"]'));
+  const currentIndex = tabs.indexOf(document.activeElement as HTMLElement);
+  if (currentIndex < 0) {
+    return;
+  }
+
+  const enabledTabs = tabs.filter(
+    (tab) => tab.getAttribute("aria-disabled") !== "true" && !tab.hasAttribute("data-disabled"),
+  );
+  if (enabledTabs.length === tabs.length) {
+    return;
+  }
+
+  const target =
+    key === "Home"
+      ? enabledTabs[0]
+      : key === "End"
+        ? enabledTabs.at(-1)
+        : (() => {
+            const step = movesForward ? 1 : -1;
+            for (let offset = 1; offset < tabs.length; offset += 1) {
+              const candidateIndex = currentIndex + step * offset;
+              if (!loopFocus && (candidateIndex < 0 || candidateIndex >= tabs.length)) {
+                return undefined;
+              }
+              const candidate = tabs[(candidateIndex + tabs.length) % tabs.length];
+              if (candidate && enabledTabs.includes(candidate)) {
+                return candidate;
+              }
+            }
+            return undefined;
+          })();
+
+  const immediateTarget =
+    key === "Home" || key === "End"
+      ? document.activeElement
+      : tabs[(currentIndex + (movesForward ? 1 : -1) + tabs.length) % tabs.length];
+
+  if (target && target !== immediateTarget) {
+    event.preventDefault();
+    event.stopPropagation();
+    target.focus();
+  }
+}
+
 export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(function TabsList(
-  { className, layout = "content", scrollable = true, ...props },
+  {
+    className,
+    layout = "content",
+    loopFocus = true,
+    onKeyDownCapture,
+    scrollable = true,
+    ...props
+  },
   ref,
 ) {
   return (
@@ -56,6 +151,13 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(function
       data-layout={layout}
       data-scrollable={scrollable || undefined}
       data-slot="list"
+      loopFocus={loopFocus}
+      onKeyDownCapture={(event) => {
+        onKeyDownCapture?.(event);
+        if (!event.defaultPrevented) {
+          moveFocusPastDisabledTab(event, loopFocus);
+        }
+      }}
     />
   );
 });
@@ -68,13 +170,29 @@ export type TabsTriggerProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Ta
 };
 
 export const TabsTrigger = React.forwardRef<HTMLElement, TabsTriggerProps>(function TabsTrigger(
-  { badge, children, className, leadingIcon, trailingIcon, ...props },
+  {
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    badge,
+    children,
+    className,
+    leadingIcon,
+    trailingIcon,
+    ...props
+  },
   ref,
 ) {
+  const accessibleName = badge
+    ? [getAccessibleText(children), getAccessibleText(badge)].filter(Boolean).join(" ").trim() ||
+      undefined
+    : undefined;
+
   return (
     <BaseTabs.Tab
       ref={ref}
       {...props}
+      aria-label={ariaLabel ?? (ariaLabelledBy ? undefined : accessibleName)}
+      aria-labelledby={ariaLabelledBy}
       className={withClassName(className, "n-tabs__trigger")}
       data-slot="trigger"
     >

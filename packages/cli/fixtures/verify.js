@@ -457,7 +457,7 @@ async function verify() {
       !tabsSource.includes("renderBeforeHydration = true") ||
       !tabsSource.includes("React.forwardRef<HTMLDivElement") ||
       tabsSource.includes("onClick={()") ||
-      tabsSource.includes("onKeyDown")
+      !tabsSource.includes("moveFocusPastDisabledTab")
     ) {
       throw new Error(
         "Installed Tabs source does not preserve the Base UI compound-component contract.",

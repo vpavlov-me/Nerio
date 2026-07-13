@@ -635,9 +635,10 @@
   --n-tabs-trigger-padding-inline-sm: var(--n-space-2);
   --n-tabs-trigger-padding-inline-md: var(--n-space-3);
   --n-tabs-trigger-padding-inline-lg: var(--n-space-4);
-  --n-tabs-trigger-gap-sm: var(--n-space-1);
-  --n-tabs-trigger-gap-md: var(--n-space-1-5);
-  --n-tabs-trigger-gap-lg: var(--n-space-2);
+  --n-tabs-list-gap: var(--n-space-1);
+  --n-tabs-trigger-content-gap-sm: var(--n-space-1);
+  --n-tabs-trigger-content-gap-md: var(--n-space-1-5);
+  --n-tabs-trigger-content-gap-lg: var(--n-space-2);
   --n-tabs-trigger-font-size-sm: var(--n-font-size-xs);
   --n-tabs-trigger-font-size-md: var(--n-font-size-sm);
   --n-tabs-trigger-font-size-lg: var(--n-font-size-md);
@@ -647,6 +648,7 @@
   --n-tabs-radius: var(--n-radius-sm);
   --n-tabs-list-radius: var(--n-radius-md);
   --n-tabs-list-padding: var(--n-space-0-5);
+  --n-tabs-segmented-indicator-radius: calc(var(--n-tabs-list-radius) - var(--n-tabs-list-padding));
   --n-tabs-foreground: var(--n-color-text-tertiary);
   --n-tabs-foreground-hover: var(--n-color-text-primary);
   --n-tabs-foreground-active: var(--n-color-text-primary);
