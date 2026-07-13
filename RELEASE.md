@@ -12,6 +12,7 @@ pnpm lint
 pnpm typecheck
 pnpm test:ui
 pnpm test:a11y
+pnpm validate:catalog
 pnpm validate:docs
 pnpm validate:release
 pnpm test:cli

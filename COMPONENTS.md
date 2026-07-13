@@ -14,12 +14,12 @@ Pro should save time on complex SaaS, fintech, crypto, data-rich dashboard, and 
 
 ## Source of truth
 
-- Human-readable tiering: `COMPONENTS.md`
-- Machine-readable tiering: `data/component-catalog.json`
+- Canonical machine-readable inventory: `data/component-catalog.json`
+- Human-readable projection: `COMPONENTS.md`
 - Product decisions: `DECISIONS.md`
 - Agent context: `AGENTS.md`
 
-Keep these files aligned when component scope changes.
+Update the catalog first, then update this matrix and every affected registry, docs, CLI, and MCP projection. Run `pnpm validate:catalog` to detect drift.
 
 ## Status values
 
@@ -40,43 +40,44 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Foundation
 
-| Component / Area  | Status              | Package                         | Notes                                                                                                              |
-| ----------------- | ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Tokens            | quality-pass-needed | `@nerio/tokens`                 | Color, spacing, radius, typography, motion                                                                         |
-| Themes            | quality-pass-needed | `@nerio/tokens`                 | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables |
-| Modes             | quality-pass-needed | `@nerio/tokens`                 | Color modes: `system`, `light`, `dark`                                                                             |
-| Density           | quality-pass-needed | `@nerio/tokens`                 | Density modes: `comfortable`, `compact`                                                                            |
-| Typography Tokens | quality-pass-needed | `@nerio/tokens`                 | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.            |
-| Radius Tokens     | quality-pass-needed | `@nerio/tokens`                 | Token-customizable radius variables. Not a v1 runtime axis.                                                        |
-| Motion Tokens     | quality-pass-needed | `@nerio/tokens`                 | Token-customizable duration/motion variables. Not a v1 runtime axis.                                               |
-| Contrast Tokens   | planned             | `@nerio/tokens`                 | Token-customizable semantic contrast variables. Not a v1 runtime axis.                                             |
-| Typography        | stable-core         | `@nerio/ui`                     | Semantic heading, text, and inline code primitives                                                                 |
-| Kbd               | polished            | `@nerio/ui`                     | Native keyboard shortcut notation with quiet tokenized styling                                                     |
-| Icon Adapter      | quality-pass-needed | `@nerio/ui` / `@nerio/adapters` | Current `Icon` export in `@nerio/ui`; adapter package remains part of the architecture                             |
+| Component / Area  | Status              | Package           | Notes                                                                                                              |
+| ----------------- | ------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Tokens            | quality-pass-needed | `@nerio/tokens`   | Color, spacing, radius, typography, motion                                                                         |
+| Themes            | quality-pass-needed | `@nerio/tokens`   | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables |
+| Modes             | quality-pass-needed | `@nerio/tokens`   | Color modes: `system`, `light`, `dark`                                                                             |
+| Density           | quality-pass-needed | `@nerio/tokens`   | Density modes: `comfortable`, `compact`                                                                            |
+| Typography Tokens | quality-pass-needed | `@nerio/tokens`   | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.            |
+| Radius Tokens     | quality-pass-needed | `@nerio/tokens`   | Token-customizable radius variables. Not a v1 runtime axis.                                                        |
+| Motion Tokens     | quality-pass-needed | `@nerio/tokens`   | Token-customizable duration/motion variables. Not a v1 runtime axis.                                               |
+| Contrast Tokens   | quality-pass-needed | `@nerio/tokens`   | Token-customizable semantic contrast variables. Not a v1 runtime axis.                                             |
+| Typography        | stable-core         | `@nerio/ui`       | Semantic heading, text, and inline code primitives                                                                 |
+| Kbd               | polished            | `@nerio/ui`       | Native keyboard shortcut notation with quiet tokenized styling                                                     |
+| Icon              | quality-pass-needed | `@nerio/ui`       | Renders an icon component through the Nerio icon contract; it is the consumer-facing visual primitive.             |
+| Icon Adapter      | quality-pass-needed | `@nerio/adapters` | Lucide exports and icon-source boundary; custom React SVG components remain supported by `Icon`.                   |
 
 ### Actions
 
 | Component   | Status                   | Package            | Notes                                                                                          |
 | ----------- | ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------- |
-| Button      | stable-core              | `@nerio/ui`        | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip |
-| ButtonGroup | implemented-initial      | `@nerio/ui`        | Attached horizontal layout group for related Buttons                                           |
+| Button      | stable-core              | `@nerio/ui/client` | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip |
+| ButtonGroup | implemented-initial      | `@nerio/ui/client` | Attached horizontal layout group for related Buttons                                           |
 | IconButton  | deprecated-compatibility | `@nerio/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release            |
 
 ### Forms
 
-| Component   | Status      | Package     | Notes                                                                                                                                |
-| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Input       | stable-core | `@nerio/ui` | Thin native single-line control for text-like values; labels and validation belong to Field                                          |
-| InputGroup  | stable-core | `@nerio/ui` | Composable surface for an Input with explicit start/end addons                                                                       |
-| Textarea    | stable-core | `@nerio/ui` | Multiline input                                                                                                                      |
-| Label       | stable-core | `@nerio/ui` | Accessible form label                                                                                                                |
-| Field       | stable-core | `@nerio/ui` | Label, help text, error, description                                                                                                 |
-| FormMessage | stable-core | `@nerio/ui` | Field message/error text                                                                                                             |
-| FormGroup   | stable-core | `@nerio/ui` | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout                         |
-| Checkbox    | stable-core | `@nerio/ui` | Base UI checkbox for independent, indeterminate, and form-backed options                                                             |
-| Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states                                  |
-| Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings with invalid and read-only state support                                                |
-| Select      | stable-core | `@nerio/ui` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior |
+| Component   | Status      | Package            | Notes                                                                                                                                |
+| ----------- | ----------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Input       | stable-core | `@nerio/ui`        | Thin native single-line control for text-like values; labels and validation belong to Field                                          |
+| InputGroup  | stable-core | `@nerio/ui`        | Composable surface for an Input with explicit start/end addons                                                                       |
+| Textarea    | stable-core | `@nerio/ui`        | Multiline input                                                                                                                      |
+| Label       | stable-core | `@nerio/ui`        | Accessible form label                                                                                                                |
+| Field       | stable-core | `@nerio/ui`        | Label, help text, error, description                                                                                                 |
+| FormMessage | stable-core | `@nerio/ui`        | Field message/error text                                                                                                             |
+| FormGroup   | stable-core | `@nerio/ui`        | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout                         |
+| Checkbox    | stable-core | `@nerio/ui/client` | Base UI checkbox for independent, indeterminate, and form-backed options                                                             |
+| Radio Group | stable-core | `@nerio/ui/client` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states                                  |
+| Switch      | stable-core | `@nerio/ui/client` | Base UI toggle for immediate binary settings with invalid and read-only state support                                                |
+| Select      | stable-core | `@nerio/ui/client` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior |
 
 ### Input-family roadmap
 
@@ -92,13 +93,13 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Overlays
 
-| Component     | Status      | Package     | Notes                                                                                             |
-| ------------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------- |
-| Dialog        | stable-core | `@nerio/ui` | Modal primitive with title, description, close, controlled state, ref, and Base UI focus behavior |
-| Sheet         | planned     | `@nerio/ui` | Basic side panel                                                                                  |
-| Popover       | stable-core | `@nerio/ui` | Floating content with optional context, controlled state, ref, and overlay tokens                 |
-| Tooltip       | stable-core | `@nerio/ui` | Short non-essential contextual help through Base UI                                               |
-| Dropdown Menu | stable-core | `@nerio/ui` | Basic menu with disabled and destructive items                                                    |
+| Component     | Status      | Package            | Notes                                                                                             |
+| ------------- | ----------- | ------------------ | ------------------------------------------------------------------------------------------------- |
+| Dialog        | stable-core | `@nerio/ui/client` | Modal primitive with title, description, close, controlled state, ref, and Base UI focus behavior |
+| Sheet         | planned     | `@nerio/ui`        | Basic side panel                                                                                  |
+| Popover       | stable-core | `@nerio/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                 |
+| Tooltip       | stable-core | `@nerio/ui/client` | Short non-essential contextual help through Base UI                                               |
+| Dropdown Menu | stable-core | `@nerio/ui/client` | Basic menu with disabled and destructive items                                                    |
 
 ### Data display
 
@@ -116,24 +117,24 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Feedback
 
-| Component   | Status      | Package     | Notes                                                                                             |
-| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------- |
-| Alert       | stable-core | `@nerio/ui` | Inline feedback with persistent semantic context                                                  |
-| Toast       | polished    | `@nerio/ui` | Managed notification with action and localized dismiss API; full stack tests remain               |
-| Progress    | stable-core | `@nerio/ui` | Task-completion progress with required accessible naming, normalized ranges, and tokenized motion |
-| Skeleton    | stable-core | `@nerio/ui` | Loading placeholder                                                                               |
-| Empty State | polished    | `@nerio/ui` | Composable media, header, actions, size, and alignment contracts; browser verification remains    |
-| Spinner     | stable-core | `@nerio/ui` | Loading indicator                                                                                 |
+| Component   | Status      | Package            | Notes                                                                                             |
+| ----------- | ----------- | ------------------ | ------------------------------------------------------------------------------------------------- |
+| Alert       | stable-core | `@nerio/ui`        | Inline feedback with persistent semantic context                                                  |
+| Toast       | polished    | `@nerio/ui/client` | Managed notification with action and localized dismiss API; full stack tests remain               |
+| Progress    | stable-core | `@nerio/ui`        | Task-completion progress with required accessible naming, normalized ranges, and tokenized motion |
+| Skeleton    | stable-core | `@nerio/ui`        | Loading placeholder                                                                               |
+| Empty State | polished    | `@nerio/ui`        | Composable media, header, actions, size, and alignment contracts; browser verification remains    |
+| Spinner     | stable-core | `@nerio/ui`        | Loading indicator                                                                                 |
 
 ### Navigation and layout
 
-| Component         | Status      | Package     | Notes                                                                                                             |
-| ----------------- | ----------- | ----------- | ----------------------------------------------------------------------------------------------------------------- |
-| Tabs              | polished    | `@nerio/ui` | Compound tabs with controlled state, disabled skipping, RTL indicator support, and browser verification remaining |
-| Breadcrumbs       | stable-core | `@nerio/ui` | Hierarchy navigation with ordered list semantics and explicit current-page support                                |
-| Pagination        | polished    | `@nerio/ui` | Link and button pagination with consumer-owned state; router rendering coverage remains                           |
-| Sidebar Primitive | planned     | `@nerio/ui` | Layout primitive only                                                                                             |
-| Command Primitive | planned     | `@nerio/ui` | Basic command structure                                                                                           |
+| Component         | Status      | Package            | Notes                                                                                                             |
+| ----------------- | ----------- | ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Tabs              | polished    | `@nerio/ui/client` | Compound tabs with controlled state, disabled skipping, RTL indicator support, and browser verification remaining |
+| Breadcrumbs       | stable-core | `@nerio/ui`        | Hierarchy navigation with ordered list semantics and explicit current-page support                                |
+| Pagination        | polished    | `@nerio/ui`        | Link and button pagination with consumer-owned state; router rendering coverage remains                           |
+| Sidebar Primitive | planned     | `@nerio/ui`        | Layout primitive only                                                                                             |
+| Command Primitive | planned     | `@nerio/ui`        | Basic command structure                                                                                           |
 
 ---
 
@@ -209,14 +210,14 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Templates
 
-| Template                   | Status  | Package      | Notes                            |
-| -------------------------- | ------- | ------------ | -------------------------------- |
-| Universal Workspace        | planned | `@nerio/pro` | General SaaS/admin template      |
-| Banking Dashboard          | planned | `@nerio/pro` | Fintech dashboard template       |
-| Crypto Portfolio Dashboard | planned | `@nerio/pro` | Crypto/portfolio template        |
-| Admin Settings             | planned | `@nerio/pro` | SaaS settings template           |
-| Billing Portal             | planned | `@nerio/pro` | Subscription management template |
-| AI Assistant               | planned | `@nerio/pro` | AI product template              |
+| Template                            | Status  | Package      | Notes                            |
+| ----------------------------------- | ------- | ------------ | -------------------------------- |
+| Universal Workspace Template        | planned | `@nerio/pro` | General SaaS/admin template      |
+| Banking Dashboard Template          | planned | `@nerio/pro` | Fintech dashboard template       |
+| Crypto Portfolio Dashboard Template | planned | `@nerio/pro` | Crypto/portfolio template        |
+| Admin Settings Template             | planned | `@nerio/pro` | SaaS settings template           |
+| Billing Portal Template             | planned | `@nerio/pro` | Subscription management template |
+| AI Assistant Template               | planned | `@nerio/pro` | AI product template              |
 
 ---
 

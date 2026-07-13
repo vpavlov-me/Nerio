@@ -19,6 +19,7 @@ const requiredReleaseCommands = [
   "pnpm typecheck",
   "pnpm test:ui",
   "pnpm test:a11y",
+  "pnpm validate:catalog",
   "pnpm validate:docs",
   "pnpm test:cli",
   "pnpm test:mcp",
