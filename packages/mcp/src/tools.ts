@@ -31,6 +31,7 @@ export function get_component_usage(name: string) {
     baseUiPrimitives: item.baseUiPrimitives,
     slots: item.slots,
     variants: item.variants,
+    states: item.states ?? [],
     requiredTokens: item.requiredTokens,
     accessibility: item.accessibility,
   };

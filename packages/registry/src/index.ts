@@ -15,6 +15,7 @@ export interface RegistryItem {
   baseUiPrimitives: string[];
   slots: string[];
   variants: string[];
+  states?: string[];
   requiredTokens: string[];
   accessibility: string[];
   usage: string;

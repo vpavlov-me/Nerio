@@ -120,6 +120,23 @@ const invalidUnnamedSpinner = <Spinner />;
 const invalidDecorativeSpinnerLabel = <Spinner decorative label="Loading" />;
 // @ts-expect-error Spinner does not accept custom children
 const invalidSpinnerChildren = <Spinner label="Loading">Loading</Spinner>;
+// @ts-expect-error Progress requires an accessible name
+const invalidUnnamedProgress = <Progress value={50} />;
+// @ts-expect-error Progress uses exactly one naming strategy
+const invalidConflictingProgressName = (
+  <Progress aria-label="Upload progress" label="Upload" value={50} />
+);
+// @ts-expect-error Progress owns its anatomy and does not accept children
+const invalidProgressChildren = <Progress aria-label="Upload progress">Upload</Progress>;
+// @ts-expect-error Progress owns the normalized ARIA range
+const invalidProgressRange = <Progress aria-label="Upload progress" aria-valuenow={50} />;
+// @ts-expect-error Progress owns its semantic role
+const invalidProgressRole = <Progress aria-label="Upload progress" role="meter" />;
+// @ts-expect-error Progress does not expose outcome variants
+const invalidProgressTone = <Progress aria-label="Upload progress" tone="success" />;
+const validVisibleProgress = <Progress label="Upload" value={50} />;
+const validAriaLabelProgress = <Progress aria-label="Upload progress" value={50} />;
+const validAriaLabelledByProgress = <Progress aria-labelledby="upload-label" value={50} />;
 const validComposedRadioGroup = (
   <RadioGroup label="Visibility">
     <RadioGroupItem value="team">Team</RadioGroupItem>
@@ -151,6 +168,15 @@ void [
   invalidUnnamedSpinner,
   invalidDecorativeSpinnerLabel,
   invalidSpinnerChildren,
+  invalidUnnamedProgress,
+  invalidConflictingProgressName,
+  invalidProgressChildren,
+  invalidProgressRange,
+  invalidProgressRole,
+  invalidProgressTone,
+  validVisibleProgress,
+  validAriaLabelProgress,
+  validAriaLabelledByProgress,
   validComposedRadioGroup,
   invalidMixedSelect,
   validComposedSelect,
@@ -349,41 +375,169 @@ describe("Core static contracts", () => {
     expect(shortcut).toHaveClass("n-kbd");
   });
 
-  it("keeps Progress ARIA on the progressbar and normalizes unsafe values", () => {
-    const { rerender } = render(<Progress ariaLabel="Upload progress" value={150} />);
-    const progressbar = screen.getByRole("progressbar", { name: "Upload progress" });
-    expect(progressbar).toHaveAttribute("aria-valuenow", "100");
-    expect(progressbar.querySelector("[data-slot=indicator]")).toHaveStyle(
-      "--n-progress-value: 100%",
+  it("keeps Progress semantics, root props, and protected anatomy intentional", () => {
+    const ref = React.createRef<HTMLDivElement>();
+    const onClick = vi.fn();
+    const unsafeProps = {
+      "aria-valuemax": 999,
+      "aria-valuemin": -999,
+      "aria-valuenow": 999,
+      "aria-valuetext": "Consumer value text",
+      "data-slot": "consumer",
+      "data-state": "consumer",
+      role: "meter",
+    } as React.ComponentPropsWithoutRef<"div">;
+    render(
+      <Progress
+        ref={ref}
+        aria-controls="upload-panel"
+        aria-describedby="upload-help"
+        className="custom-progress"
+        data-consumer="progress"
+        id="upload-progress"
+        label="Uploading files"
+        onClick={onClick}
+        style={{ color: "red", "--n-progress-ratio": 0.2 } as React.CSSProperties}
+        value={68}
+        {...unsafeProps}
+      />,
     );
 
-    rerender(<Progress value={Number.NaN} indeterminateLabel="Synchronizing" />);
-    expect(screen.getByRole("progressbar")).not.toHaveAttribute("aria-valuenow");
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuetext", "Synchronizing");
+    const progressbar = screen.getByRole("progressbar", { name: "Uploading files" });
+    expect(ref.current).toBe(progressbar);
+    expect(progressbar).toHaveClass("n-progress", "custom-progress");
+    expect(progressbar).toHaveAttribute("data-slot", "root");
+    expect(progressbar).toHaveAttribute("data-state", "progressing");
+    expect(progressbar).toHaveAttribute("id", "upload-progress");
+    expect(progressbar).toHaveAttribute("data-consumer", "progress");
+    expect(progressbar).toHaveAttribute("aria-describedby", "upload-help");
+    expect(progressbar).toHaveAttribute("aria-controls", "upload-panel");
+    expect(progressbar).toHaveAttribute("aria-valuemin", "0");
+    expect(progressbar).toHaveAttribute("aria-valuemax", "100");
+    expect(progressbar).toHaveAttribute("aria-valuenow", "68");
+    expect(progressbar).not.toHaveAttribute("aria-valuetext");
+    fireEvent.click(progressbar);
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(progressbar.style.getPropertyValue("--n-progress-ratio")).toBe("0.68");
+    expect(progressbar.querySelector('[data-slot="track"]')).toHaveAttribute("aria-hidden", "true");
+    expect(progressbar.querySelector('[data-slot="indicator"]')).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+  });
+
+  it("keeps Progress naming and optional header slots explicit", () => {
+    const { rerender } = render(<Progress label="Importing records" value={12} valueLabel="12%" />);
+    const internalLabel = screen.getByText("Importing records");
+    const progressbar = screen.getByRole("progressbar", { name: "Importing records" });
+    expect(internalLabel).toHaveAttribute("data-slot", "label");
+    expect(progressbar).toHaveAttribute("aria-labelledby", internalLabel.id);
+    expect(screen.getByText("12%")).toHaveAttribute("data-slot", "value");
+    expect(progressbar.querySelector('[data-slot="header"]')).toBeInTheDocument();
+
+    rerender(
+      <Progress aria-label="Synchronizing workspace" value={null} valueText="Synchronizing" />,
+    );
+    expect(screen.getByRole("progressbar", { name: "Synchronizing workspace" })).toHaveAttribute(
+      "aria-valuetext",
+      "Synchronizing",
+    );
+    expect(screen.getByRole("progressbar")).not.toHaveAttribute("aria-labelledby");
+    expect(screen.getByRole("progressbar").querySelector('[data-slot="header"]')).toBeNull();
+
+    rerender(
+      <>
+        <span id="external-progress-label">Exporting report</span>
+        <Progress aria-labelledby="external-progress-label" value={40} />
+      </>,
+    );
+    expect(screen.getByRole("progressbar", { name: "Exporting report" })).toHaveAttribute(
+      "aria-labelledby",
+      "external-progress-label",
+    );
+  });
+
+  it("does not generate a hidden English Progress name at runtime", () => {
+    const unsafeProps = { value: 50 } as unknown as React.ComponentProps<typeof Progress>;
+    render(<Progress {...unsafeProps} />);
+    const progressbar = screen.getByRole("progressbar");
+    expect(progressbar).not.toHaveAttribute("aria-label");
+    expect(progressbar).not.toHaveAttribute("aria-labelledby");
   });
 
   it.each([
-    [0, 0],
-    [50, 50],
-    [100, 100],
-    [-4, 0],
-    [104, 100],
-  ])("clamps Progress value %s to %s", (value, expected) => {
-    render(<Progress value={value} valueText={`${expected}% complete`} />);
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", String(expected));
-    expect(screen.getByRole("progressbar")).toHaveAttribute(
-      "aria-valuetext",
-      `${expected}% complete`,
-    );
+    [0, 0, "progressing"],
+    [50, 50, "progressing"],
+    [100, 100, "complete"],
+    [-4, 0, "progressing"],
+    [104, 100, "complete"],
+  ])("clamps Progress value %s to %s", (value, expected, state) => {
+    render(<Progress label="Upload progress" value={value} valueText={`${expected}% complete`} />);
+    const progressbar = screen.getByRole("progressbar");
+    expect(progressbar).toHaveAttribute("aria-valuenow", String(expected));
+    expect(progressbar).toHaveAttribute("aria-valuetext", `${expected}% complete`);
+    expect(progressbar).toHaveAttribute("data-state", state);
+    expect(progressbar.style.getPropertyValue("--n-progress-ratio")).toBe(String(expected / 100));
   });
 
-  it.each([Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
+  it("normalizes custom, fractional, and invalid Progress ranges without invalid ARIA or CSS", () => {
+    const { rerender } = render(
+      <Progress label="Importing records" max={500} min={0} value={120} valueLabel="120 of 500" />,
+    );
+    let progressbar = screen.getByRole("progressbar");
+    expect(progressbar).toHaveAttribute("aria-valuenow", "120");
+    expect(progressbar.style.getPropertyValue("--n-progress-ratio")).toBe("0.24");
+
+    rerender(<Progress label="Fractional progress" max={3.5} min={1.5} value={2.25} />);
+    progressbar = screen.getByRole("progressbar");
+    expect(progressbar).toHaveAttribute("aria-valuemin", "1.5");
+    expect(progressbar).toHaveAttribute("aria-valuemax", "3.5");
+    expect(progressbar).toHaveAttribute("aria-valuenow", "2.25");
+    expect(progressbar.style.getPropertyValue("--n-progress-ratio")).toBe("0.375");
+
+    rerender(<Progress label="Invalid range" max={10} min={10} value={20} />);
+    progressbar = screen.getByRole("progressbar");
+    expect(progressbar).toHaveAttribute("aria-valuemin", "0");
+    expect(progressbar).toHaveAttribute("aria-valuemax", "100");
+    expect(progressbar).toHaveAttribute("aria-valuenow", "20");
+    expect(progressbar).toHaveAttribute("data-state", "progressing");
+    expect(progressbar.style.getPropertyValue("--n-progress-ratio")).toBe("0.2");
+
+    rerender(
+      <Progress label="Non-finite range" max={Number.POSITIVE_INFINITY} min={0} value={50} />,
+    );
+    progressbar = screen.getByRole("progressbar");
+    expect(progressbar).toHaveAttribute("aria-valuemin", "0");
+    expect(progressbar).toHaveAttribute("aria-valuemax", "100");
+    expect(progressbar.style.getPropertyValue("--n-progress-ratio")).toBe("0.5");
+  });
+
+  it.each([null, undefined, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
     "treats non-finite Progress value %s as indeterminate",
     (value) => {
-      render(<Progress value={value} />);
-      expect(screen.getByRole("progressbar")).not.toHaveAttribute("aria-valuenow");
+      render(<Progress aria-label="Synchronizing" value={value} />);
+      const progressbar = screen.getByRole("progressbar");
+      expect(progressbar).not.toHaveAttribute("aria-valuenow");
+      expect(progressbar).not.toHaveAttribute("aria-valuetext");
+      expect(progressbar).toHaveAttribute("data-state", "indeterminate");
+      expect(progressbar.style.getPropertyValue("--n-progress-ratio")).toBe("0");
     },
   );
+
+  it("keeps Progress styles isolated, transform-based, directional, and motion-safe", () => {
+    const progressStyles = readFileSync(resolve(process.cwd(), "src/styles/progress.css"), "utf8");
+    const feedbackStyles = readFileSync(resolve(process.cwd(), "src/styles/feedback.css"), "utf8");
+    expect(progressStyles).toContain("transform: scaleX(var(--n-progress-ratio, 0));");
+    expect(progressStyles).not.toContain("transition: inline-size");
+    expect(progressStyles).toContain(".n-progress:dir(rtl)");
+    expect(progressStyles).toContain("animation-direction: reverse;");
+    expect(progressStyles).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(progressStyles).toContain("animation: none;");
+    expect(progressStyles).toContain("--n-progress-indeterminate-reduced-position");
+    expect(progressStyles).toContain("@media (forced-colors: active)");
+    expect(progressStyles).not.toMatch(/--n-(purple|blue|green|orange|red|gray)-/);
+    expect(feedbackStyles).not.toContain(".n-progress");
+  });
 
   it("allows deliberate Card and EmptyState heading semantics", () => {
     render(

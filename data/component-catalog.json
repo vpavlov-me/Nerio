@@ -385,8 +385,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "feedback",
-      "status": "polished",
-      "description": "Progress has validated value normalization and ARIA ownership; expanded localization and motion coverage remains."
+      "status": "stable-core",
+      "description": "Task-completion Progress has strict accessible naming, normalized range semantics, dedicated tokenized motion, registry install coverage, and contract and accessibility tests."
     },
     {
       "name": "Skeleton",

@@ -45,7 +45,7 @@ const componentLedes: Record<string, string> = {
   card: "Cards group related product information without creating nested or decorative panels.",
   separator: "Separators divide related sections while keeping the layout quiet and scannable.",
   avatar: "Avatars identify people, teams, or entities through initials or supplied imagery.",
-  progress: "Progress indicators show completion for tasks, uploads, and product workflows.",
+  progress: "Progress communicates the completion status of one task that takes time.",
   stat: "Stats summarize key product metrics with restrained hierarchy and optional trend context.",
   "key-value": "Key-value pairs present compact metadata for objects, settings, and records.",
   table:

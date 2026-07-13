@@ -693,7 +693,7 @@
     {
       "name": "progress",
       "title": "Progress",
-      "description": "Shows completion for a task, upload, or workflow.",
+      "description": "Communicates the completion status of one task that takes time.",
       "category": "feedback",
       "dependencies": ["clsx", "react"],
       "registryDependencies": [],
@@ -709,26 +709,42 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/feedback.css",
-          "target": "styles/feedback.css",
+          "source": "../../ui/src/styles/progress.css",
+          "target": "styles/progress.css",
           "role": "style"
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "label", "indicator"],
+      "slots": ["root", "header", "label", "value", "track", "indicator"],
       "variants": [],
+      "states": ["indeterminate", "progressing", "complete"],
       "requiredTokens": [
         "--n-progress-height",
         "--n-progress-radius",
+        "--n-progress-gap",
+        "--n-progress-header-gap",
+        "--n-progress-label-color",
+        "--n-progress-label-font-size",
+        "--n-progress-label-font-weight",
+        "--n-progress-value-color",
+        "--n-progress-value-font-size",
+        "--n-progress-value-font-weight",
         "--n-progress-track-background",
-        "--n-progress-indicator-background"
+        "--n-progress-indicator-background",
+        "--n-progress-duration",
+        "--n-progress-easing",
+        "--n-progress-indeterminate-duration",
+        "--n-progress-indeterminate-width",
+        "--n-progress-indeterminate-start",
+        "--n-progress-indeterminate-end",
+        "--n-progress-indeterminate-reduced-position"
       ],
       "accessibility": [
-        "Clamps aria-valuenow between 0 and 100 and exposes an accessible progressbar name.",
-        "Provide a label when the surrounding context does not name the progress.",
-        "Omit value for indeterminate progress when a reliable value is not available."
+        "Progress requires exactly one accessible name: a visible label, aria-label, or aria-labelledby.",
+        "Determinate progress exposes normalized aria-valuemin, aria-valuemax, and the clamped aria-valuenow; indeterminate progress omits aria-valuenow.",
+        "Use valueText for localized non-percentage completion text. Progress is read-only and does not need keyboard focus."
       ],
-      "usage": "import { Progress } from '@/components/nerio/components/progress';\n\n<Progress label=\"Completion\" value={68} />"
+      "usage": "import { Progress } from '@/components/nerio/components/progress';\n\n<Progress label=\"Uploading files\" value={68} />\n\n<Progress aria-label=\"Synchronizing workspace\" value={null} valueText=\"Synchronizing\" />"
     },
     {
       "name": "stat",
