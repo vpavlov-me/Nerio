@@ -411,7 +411,10 @@ describe("Core static contracts", () => {
     expect(buttonGroupStyles).toContain("margin-inline-start");
     expect(buttonGroupStyles).toContain('data-orientation="vertical"');
     expect(buttonGroupStyles).toContain("margin-block-start");
+    expect(buttonGroupStyles).toContain(':dir(rtl)[data-orientation="vertical"]');
+    expect(buttonGroupStyles).toContain("transform: translateX(50%);");
     expect(buttonGroupStyles).toContain("border-end-start-radius: var(--n-button-radius);");
+    expect(buttonGroupStyles).toContain("border-start-end-radius: var(--n-radius-none);");
     expect(buttonGroupStyles).toContain(".n-button-group > .n-button:focus-visible");
     expect(buttonGroupStyles).toContain("z-index: 2;");
     expect(buttonGroupStyles).not.toContain("overflow: hidden");
