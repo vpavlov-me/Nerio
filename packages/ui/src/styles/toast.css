@@ -75,7 +75,7 @@
 }
 
 .n-toast--managed {
-  --n-toast-expanded-offset: calc(
+  --toast-expanded-offset: calc(
     (var(--toast-offset-y) * -1) - (var(--toast-index) * var(--n-toast-stack-gap)) +
       var(--toast-swipe-movement-y)
   );
@@ -97,7 +97,7 @@
 }
 
 .n-toast--managed[data-expanded] {
-  transform: translateX(var(--toast-swipe-movement-x)) translateY(var(--n-toast-expanded-offset));
+  transform: translateX(var(--toast-swipe-movement-x)) translateY(var(--toast-expanded-offset));
 }
 
 .n-toast--managed[data-limited] {
@@ -115,12 +115,12 @@
 
 .n-toast--managed[data-ending-style][data-swipe-direction="right"] {
   transform: translateX(calc(var(--toast-swipe-movement-x) + var(--n-toast-swipe-dismiss-distance)))
-    translateY(var(--n-toast-expanded-offset));
+    translateY(var(--toast-expanded-offset));
 }
 
 .n-toast--managed[data-ending-style][data-swipe-direction="left"] {
   transform: translateX(calc(var(--toast-swipe-movement-x) - var(--n-toast-swipe-dismiss-distance)))
-    translateY(var(--n-toast-expanded-offset));
+    translateY(var(--toast-expanded-offset));
 }
 
 .n-toast--managed[data-ending-style][data-swipe-direction="down"] {
