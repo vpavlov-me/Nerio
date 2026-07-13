@@ -141,19 +141,32 @@ export default function Page() {
           <h2 id="token-architecture">Token architecture</h2>
           <Badge>CSS variables</Badge>
         </div>
-        <div className="foundation-grid">
-          {tokenLayers.map((layer) => (
-            <Card key={layer.name} className="foundation-card">
-              <Badge variant="info">{layer.name}</Badge>
-              <p>{layer.purpose}</p>
-              <div className="token-chip-row">
-                {layer.examples.map((token) => (
-                  <code key={token}>{token}</code>
-                ))}
-              </div>
-            </Card>
-          ))}
-        </div>
+        <Table className="token-architecture-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Purpose</th>
+              <th>Examples</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tokenLayers.map((layer) => (
+              <tr key={layer.name}>
+                <td>
+                  <Badge variant="info">{layer.name}</Badge>
+                </td>
+                <td>{layer.purpose}</td>
+                <td>
+                  <div className="token-chip-row">
+                    {layer.examples.map((token) => (
+                      <code key={token}>{token}</code>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </section>
 
       <section className="doc-section">
