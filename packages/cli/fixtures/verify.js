@@ -207,7 +207,7 @@ async function verify() {
     if (
       !infoOutput.includes("Button (button)") ||
       !infoOutput.includes("Dependencies:") ||
-      !infoOutput.includes("Registry dependencies: tooltip, kbd") ||
+      !infoOutput.includes("Registry dependencies: spinner, tooltip, kbd, badge") ||
       !infoOutput.includes("Required tokens:") ||
       !infoOutput.includes("Usage:") ||
       !infoOutput.includes('<Button icon={Settings} aria-label="Workspace settings"')

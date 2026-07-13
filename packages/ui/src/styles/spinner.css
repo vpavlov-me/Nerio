@@ -1,4 +1,4 @@
-.n-visually-hidden {
+.n-spinner__label {
   block-size: var(--n-border-width-default);
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
@@ -10,13 +10,15 @@
 
 .n-spinner {
   animation: n-spin var(--n-spinner-duration) linear infinite;
-  border: var(--n-spinner-border-width) solid currentColor;
-  border-block-start-color: var(--n-button-border-transparent);
-  border-radius: var(--n-radius-full);
   block-size: var(--n-spinner-size-md);
-  color: var(--n-color-action-primary);
+  border: var(--n-spinner-border-width) solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: var(--n-radius-full);
+  box-sizing: border-box;
   display: inline-block;
+  flex: none;
   inline-size: var(--n-spinner-size-md);
+  vertical-align: middle;
 }
 
 .n-spinner[data-size="sm"] {
@@ -37,6 +39,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .n-spinner {
-    animation-duration: var(--n-duration-slow);
+    animation: none;
   }
 }

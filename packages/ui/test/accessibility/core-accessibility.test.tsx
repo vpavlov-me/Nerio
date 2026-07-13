@@ -4,6 +4,7 @@ import { axe } from "vitest-axe";
 import { describe, expect, it } from "vitest";
 import {
   Avatar,
+  Badge,
   EmptyState,
   EmptyStateDescription,
   EmptyStateHeader,
@@ -14,6 +15,7 @@ import {
   InputGroup,
   InputGroupAddon,
   Pagination,
+  Spinner,
   TableContainer,
 } from "../../src/index";
 import {
@@ -79,6 +81,20 @@ describe("Core accessibility contracts", () => {
         <Toast title="Saved" description="Your changes are live." />
       </>,
     );
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps standalone and decorative Spinner modes accessible without duplicate status regions", async () => {
+    const { container } = render(
+      <>
+        <Spinner label="Loading activity" />
+        <Spinner decorative />
+        <Button loading>Save changes</Button>
+        <Badge loading>Publishing</Badge>
+      </>,
+    );
+    expect(screen.getByRole("status")).toHaveTextContent("Loading activity");
+    expect(screen.getAllByRole("status")).toHaveLength(1);
     expect((await axe(container)).violations).toEqual([]);
   });
 

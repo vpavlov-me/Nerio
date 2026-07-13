@@ -15,7 +15,8 @@ const componentLedes: Record<string, string> = {
     "Buttons trigger user actions with clear intent, accessible focus treatment, loading states, and icon support.",
   badge: "Badges label status, category, or lightweight metadata without becoming primary actions.",
   alert: "Alerts communicate inline feedback with clear tone, text, and accessible semantics.",
-  spinner: "Spinners communicate short loading moments while preserving layout stability.",
+  spinner:
+    "Spinners indicate short indeterminate loading activity without changing surrounding layout.",
   skeleton:
     "Skeletons reserve space for loading content and reduce layout shift in product surfaces.",
   "empty-state":

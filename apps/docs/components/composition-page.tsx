@@ -411,7 +411,7 @@ function FeedbackContent() {
       <div>
         <div className="composition-inline-status">
           <span>Uploading assets</span>
-          <Spinner aria-label="Uploading" />
+          <Spinner label="Uploading" />
         </div>
         <Progress value={64} ariaLabel="Upload progress" />
         <p>64% complete</p>
