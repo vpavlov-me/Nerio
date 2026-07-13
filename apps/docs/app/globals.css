@@ -2097,7 +2097,7 @@ pre {
 .type-card code,
 .typography-preview code {
   background: var(--n-color-surface-muted);
-  border: var(--n-border-subtle);
+  border: 0;
   border-radius: var(--n-radius-sm);
   color: var(--n-color-text-secondary);
   padding: var(--n-space-1) var(--n-space-2);
