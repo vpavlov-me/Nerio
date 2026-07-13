@@ -1849,6 +1849,90 @@
       "usage": "import { Dialog } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\" description=\"Choose collaborators and permissions.\">...</Dialog>"
     },
     {
+      "name": "sidebar-primitive",
+      "title": "Sidebar Primitive",
+      "description": "Provides a low-level collapsible sidebar layout without owning product navigation or persistence.",
+      "category": "navigation",
+      "dependencies": ["@nerio/adapters", "clsx", "react"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/sidebar.tsx",
+          "target": "components/sidebar.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/sidebar-layout.tsx",
+          "target": "components/sidebar-layout.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/sidebar.css",
+          "target": "styles/sidebar.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/styles/icon.css",
+          "target": "styles/icon.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": [
+        "sidebar-provider",
+        "sidebar",
+        "sidebar-inner",
+        "sidebar-header",
+        "sidebar-content",
+        "sidebar-footer",
+        "sidebar-rail",
+        "sidebar-inset",
+        "sidebar-trigger"
+      ],
+      "variants": [
+        "side: left | right",
+        "direction: ltr | rtl",
+        "controlled",
+        "uncontrolled",
+        "comfortable density",
+        "compact density"
+      ],
+      "states": ["expanded", "collapsed"],
+      "requiredTokens": [
+        "--n-sidebar-width",
+        "--n-sidebar-collapsed-width",
+        "--n-sidebar-inset-gap",
+        "--n-sidebar-region-padding",
+        "--n-sidebar-rail-hit-area",
+        "--n-sidebar-transition-duration",
+        "--n-sidebar-transition-easing",
+        "--n-sidebar-background",
+        "--n-sidebar-foreground",
+        "--n-sidebar-border",
+        "--n-sidebar-control-background-hover",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Sidebar renders complementary aside semantics by default; place a labelled navigation landmark inside SidebarContent when the content is navigation.",
+        "SidebarTrigger and SidebarRail require a localized label and expose aria-expanded plus a stable aria-controls relationship.",
+        "Collapsed Sidebar content is inert, hidden, and removed from pointer and keyboard interaction while SidebarRail remains reachable.",
+        "State changes keep focus on the external trigger or rail and do not add roving focus or Arrow-key behavior to consumer navigation.",
+        "Physical left and right placement, explicit text direction, reduced motion, forced colors, compact density, and safe-area padding are supported.",
+        "Persistence and mobile behavior remain consumer-owned; compose Sheet explicitly for mobile navigation so only one interactive tree is rendered."
+      ],
+      "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label=\"Toggle workspace sidebar\" />\n  </Sidebar>\n  <SidebarInset><SidebarTrigger label=\"Toggle workspace sidebar\" />...</SidebarInset>\n</SidebarProvider>"
+    },
+    {
       "name": "sheet",
       "title": "Sheet",
       "description": "Presents a focused modal panel from an explicit side.",

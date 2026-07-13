@@ -82,6 +82,8 @@ export const snippets: Record<string, string> = {
     'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   sheet:
     'import { Button, Sheet, SheetBody, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md">\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter><Button>Save changes</Button></SheetFooter>\n  </SheetContent>\n</Sheet>',
+  "sidebar-primitive":
+    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from \'@nerio/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Toggle workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
   select:
     "import { Select } from '@nerio/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   toast:
@@ -190,6 +192,34 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     ],
     motion: ["directional overlay entry", "reduced-motion fade"],
     accessibility: ["Base UI modal focus management", "accessible name", "keyboard close path"],
+  },
+  "sidebar-primitive": {
+    name: "Sidebar Primitive",
+    description:
+      "A low-level collapsible layout primitive that keeps navigation data and product behavior consumer-owned.",
+    status: "stable",
+    layer: "core",
+    category: "Navigation and layout",
+    package: "@nerio/ui/client",
+    importPath: "@nerio/ui/client",
+    related: ["Sheet", "Button", "Tooltip", "Separator"],
+    anatomy: [
+      "sidebar-provider",
+      "sidebar",
+      "sidebar-header",
+      "sidebar-content",
+      "sidebar-footer",
+      "sidebar-rail",
+      "sidebar-inset",
+      "sidebar-trigger",
+    ],
+    motion: ["tokenized width transition", "reduced-motion instant state change"],
+    accessibility: [
+      "complementary aside semantics",
+      "localized toggle names",
+      "inert collapsed content",
+      "stable aria-controls relationship",
+    ],
   },
   input: {
     name: "Input",
@@ -2500,6 +2530,110 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-shadow",
       "--n-motion-overlay-enter-duration",
       "--n-motion-overlay-exit-duration",
+      "--n-focus-ring",
+    ],
+  },
+  "sidebar-primitive": {
+    category: "Navigation and layout",
+    purpose:
+      "Use Sidebar Primitive for a persistent collapsible page region while keeping routes, navigation data, menus, permissions, and persistence in consumer code.",
+    anatomy: [
+      { title: "provider", description: "Owns controlled or uncontrolled expanded state." },
+      { title: "sidebar", description: "Complementary aside with physical side and state data." },
+      { title: "header", description: "Stable leading region for consumer content." },
+      { title: "content", description: "Scrollable region that can contain a labelled nav." },
+      { title: "footer", description: "Stable trailing region for consumer content." },
+      { title: "rail", description: "Named toggle that remains reachable when collapsed." },
+      { title: "inset", description: "Primary page content adjacent to the sidebar." },
+      { title: "trigger", description: "External named control for expansion and collapse." },
+    ],
+    variants: [
+      { title: "Left", description: "Physical left placement; this is the default." },
+      {
+        title: "Right",
+        description: "Physical right placement without changing content direction.",
+      },
+      {
+        title: "Direction",
+        description: "Explicit ltr or rtl content direction while side remains physical.",
+      },
+      {
+        title: "Density",
+        description: "Comfortable and compact spacing resolve through shared tokens.",
+      },
+    ],
+    states: [
+      { title: "Expanded", description: "All static regions and consumer content are available." },
+      {
+        title: "Collapsed",
+        description: "Inner content is inert, hidden, and removed from keyboard interaction.",
+      },
+      {
+        title: "Controlled",
+        description: "expanded and onExpandedChange let consumers own state and persistence.",
+      },
+    ],
+    motion: [
+      "Width and content visibility use the Sidebar transition tokens.",
+      "Reduced-motion preference removes the visible transition without changing state behavior.",
+    ],
+    accessibility: [
+      "Sidebar renders an aside landmark; add a labelled nav inside SidebarContent for navigation.",
+      "SidebarTrigger and SidebarRail require localized labels and expose aria-expanded and aria-controls.",
+      "Collapsed descendants are inert so invisible links and controls cannot receive focus.",
+      "Keep the trigger in SidebarInset or use SidebarRail so collapsing does not remove the focused control.",
+      "The primitive adds no roving focus or Arrow-key behavior to arbitrary consumer navigation.",
+      "Render one interactive tree per viewport; use an explicit Sheet composition for mobile.",
+    ],
+    api: [
+      {
+        title: "SidebarProvider",
+        description:
+          "defaultExpanded, expanded, onExpandedChange, side, direction, and optional sidebarId.",
+      },
+      {
+        title: "Sidebar",
+        description: "Client root that reflects provider state through data-state and data-side.",
+      },
+      {
+        title: "SidebarHeader / SidebarContent / SidebarFooter / SidebarInset",
+        description: "Server-safe layout regions with native props, refs, and stable slots.",
+      },
+      {
+        title: "SidebarTrigger / SidebarRail",
+        description: "Named toggle controls with stable focus and ARIA relationships.",
+      },
+      {
+        title: "useSidebar",
+        description: "Exposes expanded, setExpanded, toggle, side, direction, and sidebarId.",
+      },
+    ],
+    designNotes: [
+      "Persistence is consumer-owned. Read storage before choosing controlled state and write from onExpandedChange.",
+      "For mobile, render the shared navigation data inside Sheet instead of turning Sidebar into an AppShell.",
+      "AppSidebar, workspace switching, nested navigation, route matching, account menus, badges, and permissions remain Pro or consumer responsibilities.",
+    ],
+    guidance: {
+      do: [
+        "Use for a neutral persistent layout region that composes consumer-owned content.",
+        "Use controlled state when a product needs localStorage or cookie persistence.",
+      ],
+      dont: [
+        "Do not add route matching, navigation schemas, persistence, authorization, or account behavior to Core Sidebar.",
+        "Do not render desktop Sidebar and mobile Sheet as two simultaneously focusable trees.",
+      ],
+    },
+    related: ["Sheet", "Button", "Tooltip", "Separator"],
+    tokens: [
+      "--n-sidebar-width",
+      "--n-sidebar-collapsed-width",
+      "--n-sidebar-inset-gap",
+      "--n-sidebar-region-padding",
+      "--n-sidebar-rail-hit-area",
+      "--n-sidebar-transition-duration",
+      "--n-sidebar-transition-easing",
+      "--n-sidebar-background",
+      "--n-sidebar-border",
       "--n-focus-ring",
     ],
   },

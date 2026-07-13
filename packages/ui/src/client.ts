@@ -72,6 +72,18 @@ export {
   type SheetSide,
   type SheetSize,
 } from "./components/sheet";
+export {
+  Sidebar,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+  type SidebarDirection,
+  type SidebarProps,
+  type SidebarProviderProps,
+  type SidebarSide,
+  type SidebarToggleProps,
+} from "./components/sidebar";
 export { Popover, type PopoverProps } from "./components/popover";
 export {
   DropdownMenu,

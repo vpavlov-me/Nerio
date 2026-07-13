@@ -133,7 +133,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Tabs              | polished    | `@nerio/ui/client` | Compound tabs with controlled state, disabled skipping, RTL indicator support, and browser verification remaining |
 | Breadcrumbs       | stable-core | `@nerio/ui`        | Hierarchy navigation with ordered list semantics and explicit current-page support                                |
 | Pagination        | polished    | `@nerio/ui`        | Link and button pagination with consumer-owned state; router rendering coverage remains                           |
-| Sidebar Primitive | planned     | `@nerio/ui`        | Layout primitive only                                                                                             |
+| Sidebar Primitive | stable-core | `@nerio/ui/client` | Stateful layout primitive with server-safe regions, accessible collapse, physical sides, and consumer-owned data  |
 | Command Primitive | planned     | `@nerio/ui`        | Basic command structure                                                                                           |
 
 ---

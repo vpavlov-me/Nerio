@@ -562,6 +562,21 @@
   --n-sheet-backdrop: var(--n-overlay-backdrop);
   --n-sheet-transition-distance: var(--n-space-4);
   --n-sheet-transition-duration: var(--n-motion-overlay-enter-duration);
+  --n-sidebar-width: 17rem;
+  --n-sidebar-collapsed-width: 3.5rem;
+  --n-sidebar-inset-gap: var(--n-space-6);
+  --n-sidebar-region-padding: var(--n-space-5);
+  --n-sidebar-rail-hit-area: var(--n-size-control-md);
+  --n-sidebar-transition-duration: var(--n-duration-normal);
+  --n-sidebar-transition-easing: var(--n-easing-standard);
+  --n-sidebar-background: var(--n-color-surface);
+  --n-sidebar-foreground: var(--n-color-text-secondary);
+  --n-sidebar-border-width: var(--n-border-width-default);
+  --n-sidebar-border: var(--n-color-border-subtle);
+  --n-sidebar-control-background: transparent;
+  --n-sidebar-control-background-hover: var(--n-color-surface-muted);
+  --n-sidebar-control-foreground: var(--n-color-text-secondary);
+  --n-sidebar-control-radius: var(--n-radius-control);
   --n-overlay-z-index: 50;
   --n-overlay-background: var(--n-color-surface-overlay);
   --n-overlay-border-width: var(--n-border-width-default);
@@ -1168,6 +1183,9 @@
   --n-table-row-min-height: var(--n-size-control-lg);
   --n-pagination-item-size: 1.75rem;
   --n-list-item-padding: var(--n-space-2);
+  --n-sidebar-region-padding: var(--n-space-4);
+  --n-sidebar-inset-gap: var(--n-space-4);
+  --n-sidebar-rail-hit-area: var(--n-size-control-md);
 }
 
 .n-typography-system {

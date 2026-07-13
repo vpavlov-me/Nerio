@@ -6,6 +6,7 @@ import {
   Check,
   LayoutDashboard,
   ListTree,
+  PanelLeft,
   Search,
   Settings,
   Sparkles,
@@ -26,6 +27,21 @@ import {
   Input,
   Progress,
   Select,
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
   Skeleton,
   Stat,
   Table,
@@ -103,6 +119,33 @@ const navItems = [
   ["Settings", Settings],
 ] as const;
 
+function subscribeToMobileViewport(callback: () => void) {
+  const media = window.matchMedia("(max-width: 1080px)");
+  media.addEventListener("change", callback);
+  return () => media.removeEventListener("change", callback);
+}
+
+function useMobileViewport() {
+  return React.useSyncExternalStore(
+    subscribeToMobileViewport,
+    () => window.matchMedia("(max-width: 1080px)").matches,
+    () => false,
+  );
+}
+
+function WorkspaceNavigation() {
+  return (
+    <nav className="workspace-nav" aria-label="Workspace">
+      {navItems.map(([item, icon], index) => (
+        <button key={item} type="button" data-state={index === 0 ? "active" : "inactive"}>
+          <Icon icon={icon} />
+          <span>{item}</span>
+        </button>
+      ))}
+    </nav>
+  );
+}
+
 export default function DemoApp() {
   return (
     <ToastProvider>
@@ -121,6 +164,7 @@ function DemoWorkspace() {
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState("system");
   const [density, setDensityValue] = React.useState("comfortable");
+  const isMobile = useMobileViewport();
   const toasts = useToastManager();
 
   React.useEffect(() => {
@@ -144,37 +188,63 @@ function DemoWorkspace() {
   const setDensity = (value: string) => setDensityValue(value);
 
   return (
-    <div className="workspace">
-      <aside className="workspace-sidebar">
-        <div className="workspace-brand">
-          <span aria-hidden />
-          <div>
-            <strong>Nerio Workspace</strong>
-            <small>Universal product workspace</small>
-          </div>
-        </div>
+    <SidebarProvider className="workspace" sidebarId="workspace-sidebar">
+      {!isMobile ? (
+        <Sidebar aria-label="Workspace sidebar">
+          <SidebarHeader>
+            <div className="workspace-brand">
+              <span aria-hidden />
+              <div>
+                <strong>Nerio Workspace</strong>
+                <small>Universal product workspace</small>
+              </div>
+            </div>
+          </SidebarHeader>
+          <SidebarContent>
+            <WorkspaceNavigation />
+          </SidebarContent>
+          <SidebarFooter>
+            <Card className="workspace-compact-preview">
+              <Badge>Compact density</Badge>
+              <p>Switch density to preview how the same UI tightens for operational screens.</p>
+              <Button size="sm" variant="secondary" onClick={() => setDensity("compact")}>
+                Use compact
+              </Button>
+            </Card>
+          </SidebarFooter>
+          <SidebarRail label="Toggle workspace sidebar" />
+        </Sidebar>
+      ) : null}
 
-        <nav className="workspace-nav" aria-label="Workspace">
-          {navItems.map(([item, icon], index) => (
-            <button key={item} type="button" data-state={index === 0 ? "active" : "inactive"}>
-              <Icon icon={icon} />
-              <span>{item}</span>
-            </button>
-          ))}
-        </nav>
-
-        <Card className="workspace-compact-preview">
-          <Badge>Compact density</Badge>
-          <p>Switch density to preview how the same UI tightens for operational screens.</p>
-          <Button size="sm" variant="secondary" onClick={() => setDensity("compact")}>
-            Use compact
-          </Button>
-        </Card>
-      </aside>
-
-      <main className="workspace-main">
+      <SidebarInset className="workspace-main">
         <header className="workspace-topbar">
           <div className="workspace-title">
+            <div className="workspace-navigation-trigger">
+              {isMobile ? (
+                <Sheet>
+                  <SheetTrigger
+                    render={
+                      <Button
+                        icon={PanelLeft}
+                        aria-label="Open workspace navigation"
+                        variant="secondary"
+                      />
+                    }
+                  />
+                  <SheetContent side="left" size="sm">
+                    <SheetHeader>
+                      <SheetTitle>Workspace navigation</SheetTitle>
+                      <SheetDescription>Choose a workspace destination.</SheetDescription>
+                    </SheetHeader>
+                    <SheetBody>
+                      <WorkspaceNavigation />
+                    </SheetBody>
+                  </SheetContent>
+                </Sheet>
+              ) : (
+                <SidebarTrigger label="Toggle workspace sidebar" />
+              )}
+            </div>
             <Badge variant="info">Overview</Badge>
             <h1>Product operations without a vertical bias</h1>
             <p>
@@ -395,7 +465,7 @@ function DemoWorkspace() {
             </div>
           </Card>
         </section>
-      </main>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
