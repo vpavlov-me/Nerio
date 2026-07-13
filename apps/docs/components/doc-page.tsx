@@ -840,27 +840,50 @@ function ToastDemoButton() {
   return (
     <>
       <Button
-        onClick={() =>
-          toast.add({
-            title: "Collection saved",
-            description: "The update is visible to your team.",
-            data: { tone: "success" },
-          })
-        }
+        onClick={() => {
+          ["Draft saved", "Link copied", "Invite sent"].forEach((title, index) => {
+            toast.add({
+              id: `toast-stack-${index}`,
+              title,
+              description: "This managed stack keeps newest feedback first.",
+              data: { tone: index === 0 ? "success" : "neutral" },
+            });
+          });
+        }}
       >
-        Success toast
+        Stack notifications
       </Button>
       <Button
         variant="secondary"
         onClick={() =>
           toast.add({
+            id: "toast-persistent",
+            title: "Export is ready",
+            description:
+              "The export includes every selected workspace, translated field label, and collaborator note, so it stays available until dismissed.",
+            timeout: 0,
+            data: {
+              tone: "success",
+              action: { label: "Open", onClick: () => undefined },
+            },
+          })
+        }
+      >
+        Persistent action
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() =>
+          toast.add({
+            id: "toast-urgent",
             title: "Sync failed",
             description: "Keep the inline error visible until the issue is resolved.",
+            priority: "high",
             data: { tone: "danger" },
           })
         }
       >
-        Danger toast
+        Urgent failure
       </Button>
     </>
   );

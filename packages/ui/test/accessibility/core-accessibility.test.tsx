@@ -354,6 +354,54 @@ describe("Core accessibility contracts", () => {
     expect((await axe(document.body)).violations).toEqual([]);
   });
 
+  it("announces urgent managed copy once without action or decorative icon content", async () => {
+    function ToastTrigger() {
+      const manager = useToastManager();
+      return (
+        <button
+          onClick={() =>
+            manager.add({
+              title: "Connection lost",
+              description: "Changes are saved locally.",
+              priority: "high",
+              data: {
+                tone: "danger",
+                action: { label: "Retry now", onClick: () => undefined },
+              },
+            })
+          }
+        >
+          Show urgent toast
+        </button>
+      );
+    }
+    const user = userEvent.setup();
+    const { container } = render(
+      <ToastProvider>
+        <ToastTrigger />
+        <ToastViewport label="Product notifications" />
+      </ToastProvider>,
+    );
+    const trigger = screen.getByRole("button", { name: "Show urgent toast" });
+    await user.click(trigger);
+
+    expect(trigger).toHaveFocus();
+    expect(screen.getByRole("region", { name: "Product notifications" })).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
+    const announcement = screen.getByRole("alert");
+    expect(announcement).toHaveTextContent("Connection lostChanges are saved locally.");
+    expect(announcement).not.toHaveTextContent("Retry now");
+    expect(container.querySelectorAll('[data-slot="status-indicator"]')).toHaveLength(0);
+    expect(document.querySelectorAll('[data-slot="status-indicator"]')).toHaveLength(1);
+    expect(document.querySelector('[data-slot="status-indicator"]')).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    expect((await axe(document.body)).violations).toEqual([]);
+  });
+
   it("keeps an open Sheet named, reachable, and free of modal accessibility violations", async () => {
     const user = userEvent.setup();
     render(

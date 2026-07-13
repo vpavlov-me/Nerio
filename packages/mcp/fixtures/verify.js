@@ -377,10 +377,12 @@ async function verify() {
       !toastUsage.dependencies.includes("@nerio/adapters") ||
       !toastUsage.files.some((file) => file.target === "components/icon.tsx") ||
       !toastUsage.accessibility.some((item) => item.includes("Static Toast content is separate")) ||
+      !toastUsage.accessibility.some((item) => item.includes("Timers pause")) ||
+      !toastUsage.requiredTokens.includes("--n-toast-viewport-inset") ||
       !toastUsage.usage.includes("ToastProvider")
     ) {
       throw new Error(
-        "MCP Toast usage is missing provider, icon, or static/managed anatomy metadata.",
+        "MCP Toast usage is missing provider, lifecycle, viewport, icon, or static/managed anatomy metadata.",
       );
     }
 
