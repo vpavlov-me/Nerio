@@ -20,6 +20,7 @@ const requiredReleaseCommands = [
   "pnpm test:ui",
   "pnpm test:a11y",
   "pnpm validate:tokens",
+  "pnpm validate:runtime-axes",
   "pnpm validate:catalog",
   "pnpm validate:docs",
   "pnpm test:cli",

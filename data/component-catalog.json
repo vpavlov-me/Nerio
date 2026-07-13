@@ -87,7 +87,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Brand/accent themes: purple, blue, green, orange, red, neutral, plus custom theme support."
     },
     {
@@ -95,7 +95,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Color modes: system, light, and dark."
     },
     {
@@ -103,7 +103,7 @@
       "tier": "core",
       "package": "@nerio/tokens",
       "category": "foundation",
-      "status": "quality-pass-needed",
+      "status": "stable-core",
       "description": "Density modes: comfortable and compact."
     },
     {

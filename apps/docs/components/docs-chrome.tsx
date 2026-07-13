@@ -153,6 +153,11 @@ const themeOptions = [
   { label: "Neutral", value: "neutral" },
 ];
 
+const densityOptions = [
+  { label: "Comfortable", value: "comfortable" },
+  { label: "Compact", value: "compact" },
+] as const;
+
 function getThemeDotColor(theme: string) {
   return theme === "neutral" ? "var(--n-color-text-secondary)" : `var(--n-${theme}-600)`;
 }
@@ -605,6 +610,8 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const fallbackToc = getDefaultToc(pathname);
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState<ColorMode>("system");
+  const [density, setDensityValue] =
+    React.useState<(typeof densityOptions)[number]["value"]>("comfortable");
   const [systemMode, setSystemMode] = React.useState<Exclude<ColorMode, "system">>("light");
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
@@ -617,7 +624,8 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.setAttribute("data-mode", mode);
-  }, [theme, mode]);
+    document.documentElement.setAttribute("data-density", density);
+  }, [theme, mode, density]);
 
   React.useEffect(() => {
     const storedMode = window.localStorage.getItem(modeStorageKey);
@@ -700,6 +708,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     setModeValue(value);
     document.documentElement.setAttribute("data-mode", value);
     window.localStorage.setItem(modeStorageKey, value);
+  };
+
+  const setDensity = (value: (typeof densityOptions)[number]["value"]) => {
+    setDensityValue(value);
+    document.documentElement.setAttribute("data-density", value);
   };
 
   const toggleMode = () => {
@@ -795,6 +808,14 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                   </span>
                 ),
                 onSelect: () => setTheme(option.value),
+              }))}
+            />
+            <span className="docs-controls-divider" aria-hidden />
+            <DropdownMenu
+              trigger={<Button variant="ghost">Density: {density}</Button>}
+              items={densityOptions.map((option) => ({
+                label: option.label,
+                onSelect: () => setDensity(option.value),
               }))}
             />
             <span className="docs-controls-divider" aria-hidden />

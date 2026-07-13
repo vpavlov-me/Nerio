@@ -2,6 +2,14 @@
 
 This is an internal review record for the Core Component Quality Pass. The component catalog remains the machine-readable source of truth for release status.
 
+## Runtime-axis verification — #80
+
+| Foundation | API and runtime contract                                                                                                                          | Accessibility and fallback coverage                                          | Validation                                                                               | Final status |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------ |
+| Themes     | Six presets keep independent light, dark, and system-dark semantic contracts; custom products override the same CSS variables.                    | Focus, disabled, selection, destructive, and overlay tokens remain semantic. | Runtime-axis matrix, token/docs/catalog validation, and browser checks in docs and demo. | stable-core  |
+| Modes      | `system`, `light`, and `dark` remain a single color-mode axis; system follows the OS preference.                                                  | Reduced-motion and forced-colors rules remain in component styles.           | Runtime-axis matrix, token/docs/catalog validation, and browser checks in docs and demo. | stable-core  |
+| Density    | `comfortable` and `compact` change spacing and representative action, form, display, navigation, and feedback tokens without separate components. | The compact mode preserves the same interaction and focus contracts.         | Runtime-axis matrix, token/docs/catalog validation, and browser checks in docs and demo. | stable-core  |
+
 ## Priority 1 — feedback and display foundations
 
 | Component   | API      | Visual and density | States                                                                  | Accessibility                    | Tokens   | Docs and registry | Validation                                                    | Final status | Known issues                                                                                |
