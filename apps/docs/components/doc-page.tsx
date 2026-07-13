@@ -53,6 +53,11 @@ import {
   Stat,
   Switch,
   Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsPanels,
+  TabsTrigger,
   Table,
   TableBody,
   TableCell,
@@ -565,31 +570,31 @@ function Preview({ kind }: { kind: string }) {
             </ToastProvider>
           ) : null}
           {kind === "tabs" ? (
-            <Tabs
-              tabs={[
-                {
-                  label: "Overview",
-                  value: "overview",
-                  content: "Recent activity, ownership, and status are grouped here.",
-                },
-                {
-                  label: "Files",
-                  value: "files",
-                  content: "Documents, assets, and supporting material stay in this panel.",
-                },
-                {
-                  label: "Settings",
-                  value: "settings",
-                  content: "Permissions and workflow preferences are edited here.",
-                },
-                {
-                  label: "Archive",
-                  value: "archive",
-                  content: "Archived content is unavailable in this preview.",
-                  disabled: true,
-                },
-              ]}
-            />
+            <Tabs defaultValue="overview">
+              <TabsList aria-label="Workspace sections">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="files">Files</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
+                <TabsTrigger disabled value="archive">
+                  Archive
+                </TabsTrigger>
+                <TabsIndicator />
+              </TabsList>
+              <TabsPanels>
+                <TabsContent value="overview">
+                  Recent activity, ownership, and status are grouped here.
+                </TabsContent>
+                <TabsContent value="files">
+                  Documents, assets, and supporting material stay in this panel.
+                </TabsContent>
+                <TabsContent value="settings">
+                  Permissions and workflow preferences are edited here.
+                </TabsContent>
+                <TabsContent value="archive">
+                  Archived content is unavailable in this preview.
+                </TabsContent>
+              </TabsPanels>
+            </Tabs>
           ) : null}
           {kind === "tooltip" ? (
             <Tooltip label="Copies the share link to your clipboard.">

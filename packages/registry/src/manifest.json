@@ -1575,7 +1575,7 @@
       "description": "Switches between related panels in the same context.",
       "category": "navigation",
       "dependencies": ["@base-ui/react", "clsx", "react"],
-      "registryDependencies": [],
+      "registryDependencies": ["badge"],
       "files": [
         {
           "source": "../../ui/src/components/tabs.tsx",
@@ -1588,33 +1588,56 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
           "source": "../../ui/src/styles/tabs.css",
           "target": "styles/tabs.css",
           "role": "style"
         }
       ],
       "baseUiPrimitives": ["tabs"],
-      "slots": ["root", "list", "tab", "indicator", "panel"],
-      "variants": ["horizontal"],
+      "slots": [
+        "root",
+        "list",
+        "trigger",
+        "leading-icon",
+        "label",
+        "badge",
+        "trailing-icon",
+        "indicator",
+        "panels",
+        "content"
+      ],
+      "variants": ["bordered", "separate", "segmented", "sm", "md", "lg", "horizontal", "vertical"],
       "requiredTokens": [
-        "--n-tabs-trigger-height",
+        "--n-tabs-gap",
+        "--n-tabs-trigger-height-sm",
+        "--n-tabs-trigger-height-md",
+        "--n-tabs-trigger-height-lg",
+        "--n-tabs-trigger-padding-inline-md",
+        "--n-tabs-trigger-gap-md",
+        "--n-tabs-trigger-font-size-md",
+        "--n-tabs-icon-size-md",
         "--n-tabs-radius",
-        "--n-color-border-subtle",
-        "--n-color-text-primary",
-        "--n-color-text-tertiary",
-        "--n-color-action-primary",
-        "--n-motion-hover-duration",
-        "--n-motion-hover-easing",
+        "--n-tabs-list-background",
+        "--n-tabs-indicator-background",
+        "--n-tabs-accent-color",
+        "--n-tabs-indicator-duration",
+        "--n-tabs-content-duration",
         "--n-focus-ring"
       ],
       "accessibility": [
         "Uses the Base UI Tabs primitive.",
-        "Delegates keyboard navigation, selected state, and disabled tabs to Base UI.",
-        "Each tab is paired with a panel by value.",
-        "When defaultValue is omitted, the first enabled tab is selected; empty tab arrays render without runtime errors.",
-        "Supports controlled value, uncontrolled defaultValue, disabled tabs, and forwarded refs."
+        "Delegates tab, tablist, tabpanel relationships, selected state, keyboard navigation, and disabled-tab skipping to Base UI.",
+        "Provide aria-label or aria-labelledby when the tablist purpose is not clear from adjacent labelled content.",
+        "Every trigger requires a visible text label; decorative icons are hidden from assistive technology and Badge text remains available.",
+        "Manual activation is the default. Use activateOnFocus only when panels are available without noticeable latency.",
+        "Provide an enabled defaultValue for predictable SSR when the first trigger is disabled."
       ],
-      "usage": "import { Tabs } from '@/components/nerio/components/tabs';\n\n<Tabs tabs={[{ label: 'Overview', value: 'overview', content: '...' }, { label: 'Archive', value: 'archive', content: '...', disabled: true }]} />"
+      "usage": "import { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from '@/components/nerio/components/tabs';\n\n<Tabs defaultValue=\"overview\"><TabsList aria-label=\"Workspace sections\"><TabsTrigger value=\"overview\">Overview</TabsTrigger><TabsTrigger value=\"activity\">Activity</TabsTrigger><TabsIndicator /></TabsList><TabsPanels><TabsContent value=\"overview\">...</TabsContent><TabsContent value=\"activity\">...</TabsContent></TabsPanels></Tabs>"
     },
     {
       "name": "breadcrumbs",

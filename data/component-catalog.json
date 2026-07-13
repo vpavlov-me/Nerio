@@ -418,7 +418,7 @@
       "package": "@nerio/ui",
       "category": "navigation",
       "status": "stable-core",
-      "description": "Basic tabs component with first-enabled default selection, disabled tabs, controlled state, and ref support."
+      "description": "Base UI compound Tabs primitive with tokenized bordered, separate, and segmented variants; sizes, orientation, overflow, panel motion, and registry-aligned accessibility support."
     },
     {
       "name": "Breadcrumbs",

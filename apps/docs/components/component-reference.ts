@@ -84,7 +84,7 @@ export const snippets: Record<string, string> = {
     "import { Select } from '@nerio/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: "Saved", data: { tone: "success" } })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>',
-  tabs: 'import { Tabs } from \'@nerio/ui/client\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }, { label: "Archive", value: "archive", content: "...", disabled: true }]} />',
+  tabs: 'import { Badge } from "@nerio/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
   tooltip:
     "import { Button, Tooltip } from '@nerio/ui/client';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
   popover:
@@ -2165,48 +2165,95 @@ export const componentReference: Record<string, ComponentReference> = {
     category: "Navigation and overlays",
     purpose: "Use Tabs to switch between related panels within the same context.",
     anatomy: [
-      { title: "list", description: "Tab controls grouped together." },
-      { title: "trigger", description: "Selectable tab label." },
-      { title: "panel", description: "Content associated with the selected tab." },
+      {
+        title: "root",
+        description: "Base UI Tabs root with visual variant, size, and orientation.",
+      },
+      { title: "list", description: "Named tab controls with content or fill layout." },
+      { title: "trigger", description: "Visible label with optional decorative icons and Badge." },
+      { title: "indicator", description: "Animated Base UI-positioned selected treatment." },
+      { title: "panels", description: "Transition-safe grid wrapper for related panels." },
+      { title: "content", description: "Base UI panel associated with its trigger by value." },
     ],
-    variants: [{ title: "Default", description: "Horizontal tab list for related panels." }],
+    variants: [
+      { title: "Bordered", description: "Default edge indicator for quiet related panels." },
+      {
+        title: "Separate",
+        description: "Independent compact triggers with a moving selected surface.",
+      },
+      {
+        title: "Segmented",
+        description: "Shared muted control surface for closely related panels.",
+      },
+    ],
     states: [
       { title: "Selected", description: "Active tab and visible panel." },
       { title: "Focus", description: "Keyboard focus on the current trigger." },
       { title: "Disabled", description: "Unavailable tab remains visible but inactive." },
+      { title: "Focus", description: "A visible focus ring remains above the moving indicator." },
       {
-        title: "Empty",
-        description: "An empty tabs array renders an empty root without panels or runtime errors.",
+        title: "Disabled",
+        description: "Disabled triggers retain their label and are skipped by keyboard navigation.",
+      },
+      {
+        title: "Manual activation",
+        description: "Arrow keys move focus; Enter or Space selects by default.",
       },
     ],
     accessibility: [
-      "Use tabs only for related views; rely on Base UI for keyboard navigation between triggers.",
-      "When no defaultValue is supplied, Nerio selects the first enabled tab instead of a disabled tab.",
+      "Provide aria-label or aria-labelledby when the tablist purpose is not clear from nearby text.",
+      "Base UI owns tab, tablist, tabpanel relationships, keyboard navigation, disabled skipping, and activation direction.",
+      "Every trigger needs a visible text label. Icons are decorative; Badge text remains available to assistive technology.",
+      "Provide an enabled defaultValue for predictable SSR when the first trigger is disabled.",
     ],
     api: [
       {
-        title: "tabs",
-        description: "Array of label, value, content, and optional disabled state.",
+        title: "Tabs / TabsList",
+        description:
+          "Base UI root and list props plus bordered, separate, segmented; sm, md, lg; content/fill; and scrollable controls.",
       },
-      { title: "value / onValueChange", description: "Controlled selection by tab value." },
+      {
+        title: "TabsTrigger",
+        description:
+          "Requires value and visible children; accepts leadingIcon, trailingIcon, badge, disabled, render, and nativeButton.",
+      },
+      {
+        title: "TabsContent",
+        description:
+          "Accepts Base UI value, keepMounted, render, state-based className, and style.",
+      },
+      {
+        title: "value / onValueChange",
+        description:
+          "Controlled selection preserves Base UI event details including activationDirection and reason.",
+      },
       {
         title: "defaultValue",
         description:
-          "Uncontrolled initial selection; omitted value falls back to the first enabled tab.",
+          "Uncontrolled selection. Prefer an explicit enabled value for predictable server rendering.",
       },
     ],
     guidance: {
-      do: ["Use for Overview, Activity, Settings, and similar local panels."],
-      dont: ["Do not use Tabs for global navigation or unrelated destinations."],
+      do: [
+        "Use for a small set of peer panels in one context.",
+        "Keep labels concise and panels effectively immediate.",
+        "Use Badge only for a short count or status and keep selected tabs visible in scrollable lists.",
+      ],
+      dont: [
+        "Do not use Tabs for unrelated page destinations or a form selection value.",
+        "Do not use icon-only or multiline triggers, deeply nested tabs, or a Badge as the only distinction.",
+        "Do not enable automatic activation when switching panels has noticeable latency.",
+      ],
     },
     tokens: [
-      "--n-tabs-trigger-height",
+      "--n-tabs-trigger-height-md",
       "--n-tabs-radius",
-      "--n-color-border-subtle",
-      "--n-color-text-primary",
-      "--n-color-text-tertiary",
-      "--n-color-action-primary",
-      "--n-motion-hover-duration",
+      "--n-tabs-list-background",
+      "--n-tabs-foreground-active",
+      "--n-tabs-indicator-background",
+      "--n-tabs-accent-color",
+      "--n-tabs-indicator-duration",
+      "--n-tabs-content-duration",
       "--n-focus-ring",
     ],
   },

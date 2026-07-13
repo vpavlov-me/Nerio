@@ -266,9 +266,10 @@ async function verify() {
     const tabsUsage = JSON.parse(tabsUsageResult.content[0].text);
     if (
       !tabsUsage.baseUiPrimitives.includes("tabs") ||
-      !tabsUsage.requiredTokens.includes("--n-tabs-trigger-height") ||
-      !tabsUsage.requiredTokens.includes("--n-motion-hover-duration") ||
-      !tabsUsage.accessibility.some((item) => item.includes("first enabled tab"))
+      !tabsUsage.requiredTokens.includes("--n-tabs-trigger-height-md") ||
+      !tabsUsage.requiredTokens.includes("--n-tabs-indicator-duration") ||
+      !tabsUsage.accessibility.some((item) => item.includes("defaultValue")) ||
+      !tabsUsage.usage.includes("TabsTrigger")
     ) {
       throw new Error("MCP Tabs usage is missing Base UI, token, or accessibility metadata.");
     }

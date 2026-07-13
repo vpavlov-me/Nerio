@@ -92,7 +92,23 @@ export {
   type SelectProps,
   type SelectSize,
 } from "./components/select";
-export { Tabs, type TabItem, type TabsProps, type TabsVariant } from "./components/tabs";
+export {
+  Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsPanels,
+  TabsTrigger,
+  type TabsContentProps,
+  type TabsIndicatorProps,
+  type TabsListLayout,
+  type TabsListProps,
+  type TabsPanelsProps,
+  type TabsProps,
+  type TabsSize,
+  type TabsTriggerProps,
+  type TabsVariant,
+} from "./components/tabs";
 export { Tooltip, type TooltipProps } from "./components/tooltip";
 export { Dialog, type DialogProps } from "./components/dialog";
 export { Popover, type PopoverProps } from "./components/popover";

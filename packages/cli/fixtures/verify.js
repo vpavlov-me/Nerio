@@ -452,12 +452,16 @@ async function verify() {
     );
     if (
       !tabsSource.includes("@base-ui/react/tabs") ||
-      !tabsSource.includes("tabs.find((tab) => !tab.disabled)") ||
+      !tabsSource.includes("TabsTrigger") ||
+      !tabsSource.includes("TabsIndicator") ||
+      !tabsSource.includes("renderBeforeHydration = true") ||
       !tabsSource.includes("React.forwardRef<HTMLDivElement") ||
       tabsSource.includes("onClick={()") ||
       tabsSource.includes("onKeyDown")
     ) {
-      throw new Error("Installed Tabs source does not preserve Base UI-owned selection.");
+      throw new Error(
+        "Installed Tabs source does not preserve the Base UI compound-component contract.",
+      );
     }
 
     const dropdownSource = fs.readFileSync(
