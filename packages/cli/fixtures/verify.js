@@ -208,6 +208,7 @@ async function verify() {
       !infoOutput.includes("Button (button)") ||
       !infoOutput.includes("Dependencies:") ||
       !infoOutput.includes("Registry dependencies: spinner, tooltip, kbd, badge") ||
+      !infoOutput.includes("@nerio/adapters") ||
       !infoOutput.includes("Required tokens:") ||
       !infoOutput.includes("Usage:") ||
       !infoOutput.includes('<Button icon={Settings} aria-label="Workspace settings"')
@@ -272,6 +273,18 @@ async function verify() {
     await run(localTarget, "add", "tooltip");
     await run(localTarget, "add", "toast");
     assertInstall(localTarget);
+    const installedIconSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/icon.tsx"),
+      "utf8",
+    );
+    if (
+      !installedIconSource.includes('from "@nerio/adapters"') ||
+      installedIconSource.includes("@/")
+    ) {
+      throw new Error(
+        "Installed Icon source is missing its documented adapter dependency or uses an unresolved workspace alias.",
+      );
+    }
     assertFiles(localTarget, [
       "components/typography.tsx",
       "styles/typography.css",

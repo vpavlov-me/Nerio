@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { Tabs as BaseTabs } from "@base-ui/react/tabs";
-import { Icon, type IconComponent } from "./icon";
+import type { IconComponent } from "@nerio/adapters";
+import { Icon } from "./icon";
 import { cn } from "../lib/cn";
 
 export type TabsVariant = "segmented" | "separate" | "bordered";

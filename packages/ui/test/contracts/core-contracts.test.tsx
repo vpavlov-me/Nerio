@@ -25,6 +25,7 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Icon,
   Item,
   ItemActions,
   ItemContent,
@@ -77,13 +78,26 @@ import {
   ToastViewport,
   useToastManager,
 } from "../../src/client";
-import { ArrowRight, Bell, Check } from "@nerio/adapters";
+import { ArrowRight, Bell, Check, type IconSvgProps } from "@nerio/adapters";
+
+const CustomSvgIcon = React.forwardRef<SVGSVGElement, IconSvgProps>(function CustomSvgIcon(
+  { absoluteStrokeWidth: _absoluteStrokeWidth, size, strokeWidth, ...props },
+  ref,
+) {
+  return (
+    <svg ref={ref} data-size={size} data-stroke-width={strokeWidth} viewBox="0 0 24 24" {...props}>
+      <path d="M4 12h16" />
+    </svg>
+  );
+});
 
 // Compile-time public API contracts. These must fail if Button or Card modes regress.
 // @ts-expect-error empty Button requires visible children or icon-only mode
 const invalidEmptyButton = <Button />;
 // @ts-expect-error icon-only Button requires an accessible name
 const invalidUnnamedIconButton = <Button icon={Bell} />;
+// @ts-expect-error meaningful standalone Icon requires a label.
+const invalidUnnamedMeaningfulIcon = <Icon decorative={false} icon={Bell} />;
 // @ts-expect-error icon-only Button cannot include visible children
 const invalidMixedIconButton = (
   <Button icon={Bell} aria-label="Notifications">
@@ -156,6 +170,7 @@ const validComposedSelect = (
 void [
   invalidEmptyButton,
   invalidUnnamedIconButton,
+  invalidUnnamedMeaningfulIcon,
   invalidMixedIconButton,
   invalidDirectionalIconButton,
   invalidButtonKbd,
@@ -183,6 +198,34 @@ void [
 ];
 
 describe("Core static contracts", () => {
+  it("normalizes Lucide and custom SVG icons through one server-safe contract", () => {
+    const { container } = render(
+      <>
+        <Icon className="lucide-icon" icon={Bell} size={18} strokeWidth={1.5} />
+        <Icon
+          className="custom-icon"
+          decorative={false}
+          icon={CustomSvgIcon}
+          label="Workspace activity"
+          size={20}
+          strokeWidth={1.25}
+        />
+      </>,
+    );
+
+    const [lucideIcon, customIcon] = Array.from(container.querySelectorAll("svg"));
+    expect(lucideIcon).toHaveClass("n-icon", "lucide-icon");
+    expect(lucideIcon).toHaveAttribute("aria-hidden", "true");
+    expect(lucideIcon).toHaveAttribute("focusable", "false");
+    expect(lucideIcon).toHaveAttribute("width", "18");
+    expect(customIcon).toHaveClass("n-icon", "custom-icon");
+    expect(customIcon).toHaveAttribute("role", "img");
+    expect(customIcon).toHaveAttribute("aria-label", "Workspace activity");
+    expect(customIcon).not.toHaveAttribute("aria-hidden");
+    expect(customIcon).toHaveAttribute("data-size", "20");
+    expect(customIcon).toHaveAttribute("data-stroke-width", "1.25");
+  });
+
   it("keeps Item composition static by default and exposes stable slots", () => {
     const itemRef = React.createRef<HTMLDivElement>();
     render(

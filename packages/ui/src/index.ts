@@ -14,7 +14,7 @@ export {
 } from "./components/typography";
 export { Kbd, type KbdProps } from "./components/kbd";
 export { Icon } from "./components/icon";
-export type { IconComponent, IconProps } from "./components/icon";
+export type { IconComponent, IconProps, IconSvgProps } from "./components/icon";
 export { Spinner } from "./components/spinner";
 export type { SpinnerProps, SpinnerSize } from "./components/spinner";
 export {

@@ -280,7 +280,7 @@
       "title": "Badge",
       "description": "Labels status, category, or lightweight metadata.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["@nerio/adapters", "clsx", "react"],
       "registryDependencies": ["spinner"],
       "files": [
         {
@@ -503,7 +503,7 @@
       "title": "Alert",
       "description": "Communicates inline feedback with a clear tone.",
       "category": "feedback",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["@nerio/adapters", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -1590,7 +1590,7 @@
       "title": "Tabs",
       "description": "Switches between related panels in the same context.",
       "category": "navigation",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
