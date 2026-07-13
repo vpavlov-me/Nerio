@@ -64,19 +64,19 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Forms
 
-| Component   | Status      | Package     | Notes                                                                                                        |
-| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
-| Input       | stable-core | `@nerio/ui` | Thin native single-line control for text-like values; labels and validation belong to Field                  |
-| InputGroup  | stable-core | `@nerio/ui` | Composable surface for an Input with explicit start/end addons                                               |
-| Textarea    | stable-core | `@nerio/ui` | Multiline input                                                                                              |
-| Label       | stable-core | `@nerio/ui` | Accessible form label                                                                                        |
-| Field       | stable-core | `@nerio/ui` | Label, help text, error, description                                                                         |
-| FormMessage | stable-core | `@nerio/ui` | Field message/error text                                                                                     |
-| FormGroup   | stable-core | `@nerio/ui` | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout |
-| Checkbox    | stable-core | `@nerio/ui` | Base UI checkbox for independent, indeterminate, and form-backed options                                     |
-| Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states          |
-| Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings with invalid and read-only state support                        |
-| Select      | stable-core | `@nerio/ui` | Base select                                                                                                  |
+| Component   | Status      | Package     | Notes                                                                                                                                |
+| ----------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Input       | stable-core | `@nerio/ui` | Thin native single-line control for text-like values; labels and validation belong to Field                                          |
+| InputGroup  | stable-core | `@nerio/ui` | Composable surface for an Input with explicit start/end addons                                                                       |
+| Textarea    | stable-core | `@nerio/ui` | Multiline input                                                                                                                      |
+| Label       | stable-core | `@nerio/ui` | Accessible form label                                                                                                                |
+| Field       | stable-core | `@nerio/ui` | Label, help text, error, description                                                                                                 |
+| FormMessage | stable-core | `@nerio/ui` | Field message/error text                                                                                                             |
+| FormGroup   | stable-core | `@nerio/ui` | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout                         |
+| Checkbox    | stable-core | `@nerio/ui` | Base UI checkbox for independent, indeterminate, and form-backed options                                                             |
+| Radio Group | stable-core | `@nerio/ui` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states                                  |
+| Switch      | stable-core | `@nerio/ui` | Base UI toggle for immediate binary settings with invalid and read-only state support                                                |
+| Select      | stable-core | `@nerio/ui` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior |
 
 ### Input-family roadmap
 

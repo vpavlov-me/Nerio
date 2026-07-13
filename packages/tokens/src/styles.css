@@ -500,7 +500,10 @@
   --n-input-addon-foreground: var(--n-color-text-tertiary);
   --n-input-addon-gap: var(--n-space-1-5);
   --n-input-addon-padding-inline: var(--n-space-3);
+  --n-select-height-sm: var(--n-input-height-sm);
   --n-select-height-md: var(--n-input-height-md);
+  --n-select-height-lg: var(--n-input-height-lg);
+  --n-select-padding-inline: var(--n-input-padding-inline);
   --n-textarea-min-height: var(--n-size-textarea-min);
   --n-textarea-padding-block: var(--n-space-2);
   --n-textarea-padding-inline: var(--n-space-3);
@@ -1052,7 +1055,9 @@
   --n-icon-button-size-sm: var(--n-button-height-sm);
   --n-icon-button-size-md: var(--n-button-height-md);
   --n-icon-button-size-lg: var(--n-button-height-lg);
+  --n-select-height-sm: var(--n-input-height-sm);
   --n-select-height-md: var(--n-input-height-md);
+  --n-select-height-lg: var(--n-input-height-lg);
   --n-table-cell-padding-y: var(--n-space-2);
   --n-table-cell-padding-x: var(--n-space-3);
   --n-pagination-item-size: 1.75rem;
