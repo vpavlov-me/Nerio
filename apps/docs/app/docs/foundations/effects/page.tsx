@@ -86,7 +86,7 @@ export default function Page() {
           ring. Theme and mode selectors remap the ring colors while controls share the same focus
           geometry.
         </p>
-        <TableContainer label="Focus ring tokens">
+        <TableContainer aria-label="Focus ring tokens">
           <Table>
             <thead>
               <tr>
@@ -115,7 +115,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="component-contracts">Component contracts</h2>
-        <TableContainer label="Component effect contracts">
+        <TableContainer aria-label="Component effect contracts">
           <Table>
             <thead>
               <tr>
@@ -155,7 +155,7 @@ export default function Page() {
 
 function EffectTable({ label, rows }: { label: string; rows: TokenExample[] }) {
   return (
-    <TableContainer label={label}>
+    <TableContainer aria-label={label}>
       <Table>
         <thead>
           <tr>

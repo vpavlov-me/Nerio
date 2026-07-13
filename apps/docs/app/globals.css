@@ -1614,6 +1614,67 @@ pre {
   box-shadow: var(--n-focus-ring);
 }
 
+.table-doc-preview {
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.table-doc-narrow {
+  inline-size: min(100%, 36rem);
+  min-inline-size: 0;
+}
+
+.table-doc-title {
+  font-size: var(--n-font-size-sm);
+  margin: 0 0 var(--n-space-2);
+}
+
+.table-doc-min-column {
+  min-inline-size: 12rem;
+}
+
+.table-doc-wrapped {
+  inline-size: 18rem;
+  max-inline-size: 18rem;
+  white-space: normal;
+}
+
+.table-doc-nowrap {
+  display: block;
+  margin-block-start: var(--n-space-1);
+  white-space: nowrap;
+}
+
+.table-doc-sticky .n-table-container {
+  max-block-size: 10rem;
+  overflow: auto;
+}
+
+.table-doc-sticky {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.table-doc-sticky .n-table [data-slot="head"] {
+  inset-block-start: 0;
+  position: sticky;
+  z-index: 1;
+}
+
+.table-doc-sticky .n-table :is([data-slot="head"], [data-slot="cell"]):first-child {
+  inset-inline-start: 0;
+  position: sticky;
+}
+
+.table-doc-sticky .n-table [data-slot="head"]:first-child {
+  z-index: 2;
+}
+
+.table-doc-sticky .n-table [data-slot="cell"]:first-child {
+  background: var(--n-color-surface);
+}
+
 .doc-guidance-cards,
 .doc-related-cards {
   display: grid;

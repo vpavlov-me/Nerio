@@ -614,12 +614,21 @@
   --n-key-value-gap: var(--n-space-1);
   --n-table-border: var(--n-color-border-subtle);
   --n-table-border-width: var(--n-border-width-default);
+  --n-table-container-border: var(--n-border-subtle);
+  --n-table-container-radius: var(--n-radius-md);
+  --n-table-container-focus-ring:
+    inset 0 0 0 var(--n-focus-ring-inner-width) var(--n-color-focus-offset),
+    inset 0 0 0 var(--n-focus-ring-outer-width) var(--n-color-focus-ring-soft);
   --n-table-header-background: var(--n-color-surface-subtle);
+  --n-table-header-foreground: var(--n-color-text-tertiary);
   --n-table-row-background-hover: var(--n-color-surface-subtle);
   --n-table-row-background-selected: var(--n-color-surface-selected);
+  --n-table-row-min-height: calc(var(--n-size-control-md) + var(--n-space-3));
   --n-table-cell-padding-y: var(--n-space-3);
   --n-table-cell-padding-x: var(--n-space-3);
   --n-table-cell-padding: var(--n-table-cell-padding-y) var(--n-table-cell-padding-x);
+  --n-table-cell-foreground-disabled: var(--n-color-text-disabled);
+  --n-table-cell-foreground-danger: var(--n-color-status-danger);
   --n-list-gap: var(--n-space-2);
   --n-list-item-padding: var(--n-space-3);
   --n-list-item-gap: var(--n-space-3);
@@ -1153,6 +1162,7 @@
   --n-select-height-lg: var(--n-input-height-lg);
   --n-table-cell-padding-y: var(--n-space-2);
   --n-table-cell-padding-x: var(--n-space-3);
+  --n-table-row-min-height: var(--n-size-control-lg);
   --n-pagination-item-size: 1.75rem;
   --n-list-item-padding: var(--n-space-2);
 }

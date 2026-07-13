@@ -232,11 +232,6 @@ body {
   gap: var(--n-space-3);
 }
 
-.table-scroll {
-  max-inline-size: 100%;
-  overflow: auto;
-}
-
 .loading-stack {
   display: grid;
   gap: var(--n-space-3);

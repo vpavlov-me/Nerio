@@ -53,7 +53,7 @@ export default function RadiusPage() {
           <h2 id="radius-scale">Radius scale</h2>
           <Badge>Primitive tokens</Badge>
         </div>
-        <TableContainer label="Radius primitive scale">
+        <TableContainer aria-label="Radius primitive scale">
           <Table>
             <thead>
               <tr>
@@ -85,7 +85,7 @@ export default function RadiusPage() {
           Components consume role-based aliases so the primitive scale can change without editing
           component source.
         </p>
-        <TableContainer label="Radius role aliases">
+        <TableContainer aria-label="Radius role aliases">
           <Table>
             <thead>
               <tr>

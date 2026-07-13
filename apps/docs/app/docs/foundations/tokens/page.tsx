@@ -283,7 +283,7 @@ export default function Page() {
           <Code>--n-color-action-primary</Code>; contrast targets are documentation tokens, not a
           runtime axis.
         </p>
-        <TableContainer label="Contrast targets">
+        <TableContainer aria-label="Contrast targets">
           <Table>
             <thead>
               <tr>

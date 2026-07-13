@@ -419,6 +419,25 @@ async function verify() {
     if (!tableSource.includes('scope = "col"')) {
       throw new Error("Installed Table source does not preserve column header scope.");
     }
+    if (
+      !tableSource.includes('"aria-labelledby": string') ||
+      !tableSource.includes("data-focusable") ||
+      !tableSource.includes("TableContainerAccessibleName")
+    ) {
+      throw new Error("Installed Table source does not preserve its named scroll-region contract.");
+    }
+
+    const tableStyles = fs.readFileSync(
+      path.join(localTarget, "components/nerio/styles/display.css"),
+      "utf8",
+    );
+    if (
+      !tableStyles.includes(".n-table-container > .n-table") ||
+      !tableStyles.includes('[data-align="numeric"]') ||
+      !tableStyles.includes("--n-table-container-focus-ring")
+    ) {
+      throw new Error("Installed Table styles do not preserve responsive and state hooks.");
+    }
 
     const listSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/list.tsx"),

@@ -23,7 +23,14 @@ import {
   Pagination,
   Progress,
   Spinner,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
   TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "../../src/index";
 import {
   Button,
@@ -71,18 +78,56 @@ describe("Core accessibility contracts", () => {
         <FormGroup title="Notifications">
           <input type="checkbox" aria-label="Email" />
         </FormGroup>
-        <TableContainer focusable label="Projects">
-          <table>
-            <tbody>
-              <tr>
-                <td>Roadmap</td>
-              </tr>
-            </tbody>
-          </table>
+        <TableContainer focusable aria-label="Projects">
+          <Table>
+            <TableCaption>Current workspace projects</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Owner</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableHead scope="row">Roadmap</TableHead>
+                <TableCell>Maya</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </TableContainer>
       </>,
     );
     expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps focusable table overflow regions named and keyboard reachable", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <h2 id="delivery-title">Delivery</h2>
+        <TableContainer focusable aria-labelledby="delivery-title">
+          <Table>
+            <TableCaption>Delivery status by project</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Project</TableHead>
+                <TableHead aria-sort="none">Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableHead scope="row">Roadmap</TableHead>
+                <TableCell>Ready</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </>,
+    );
+
+    expect((await axe(container)).violations).toEqual([]);
+    await user.tab();
+    expect(screen.getByRole("region", { name: "Delivery" })).toHaveFocus();
   });
 
   it("keeps named ButtonGroup controls independently reachable without toolbar behavior", async () => {

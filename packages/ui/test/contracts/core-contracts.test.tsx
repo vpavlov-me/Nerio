@@ -47,8 +47,12 @@ import {
   Spinner,
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableContainer,
+  TableFooter,
+  TableHead,
+  TableHeader,
   TableRow,
 } from "../../src/index";
 import {
@@ -874,7 +878,7 @@ describe("Core static contracts", () => {
     expect(screen.getByText("Next")).toHaveAttribute("aria-label", "Newer");
   });
 
-  it("only creates a keyboard scroll stop for an explicit TableContainer", () => {
+  it("only creates a named keyboard scroll region for an explicitly focusable TableContainer", () => {
     const { rerender } = render(
       <TableContainer>
         <Table>
@@ -886,10 +890,12 @@ describe("Core static contracts", () => {
         </Table>
       </TableContainer>,
     );
-    expect(screen.getByText("A").closest("div")).not.toHaveAttribute("tabindex");
-    expect(screen.getByText("A").closest("div")).not.toHaveAttribute("role");
+    const plainContainer = screen.getByText("A").closest("div");
+    expect(plainContainer).not.toHaveAttribute("tabindex");
+    expect(plainContainer).not.toHaveAttribute("role");
+    expect(plainContainer).not.toHaveAttribute("data-focusable");
     rerender(
-      <TableContainer label="Project table">
+      <TableContainer aria-label="Project table">
         <Table>
           <TableBody>
             <TableRow>
@@ -901,17 +907,78 @@ describe("Core static contracts", () => {
     );
     expect(screen.getByRole("region", { name: "Project table" })).not.toHaveAttribute("tabindex");
     rerender(
-      <TableContainer focusable label="Projects">
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell>A</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>,
+      <>
+        <h2 id="project-table-title">Projects</h2>
+        <TableContainer focusable aria-labelledby="project-table-title" data-viewport="narrow">
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableCell>A</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </>,
     );
-    expect(screen.getByRole("region", { name: "Projects" })).toHaveAttribute("tabindex", "0");
+    const focusableContainer = screen.getByRole("region", { name: "Projects" });
+    expect(focusableContainer).toHaveAttribute("tabindex", "0");
+    expect(focusableContainer).toHaveAttribute("data-focusable", "");
+    expect(focusableContainer).toHaveAttribute("data-viewport", "narrow");
+  });
+
+  it("preserves native Table anatomy and passthrough attributes", () => {
+    render(
+      <Table data-table="projects" dir="rtl">
+        <TableCaption>Project delivery by owner</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead colSpan={2} scope="colgroup">
+              Identity
+            </TableHead>
+            <TableHead aria-sort="ascending">Updated</TableHead>
+          </TableRow>
+          <TableRow>
+            <TableHead id="project-name">Name</TableHead>
+            <TableHead id="project-owner">Owner</TableHead>
+            <TableHead id="project-updated">Date</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow aria-current="true" data-selected="">
+            <TableHead id="roadmap" rowSpan={1} scope="row">
+              Roadmap
+            </TableHead>
+            <TableCell headers="roadmap project-owner">Maya</TableCell>
+            <TableCell data-align="numeric" headers="roadmap project-updated">
+              12
+            </TableCell>
+          </TableRow>
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={2}>Total</TableCell>
+            <TableCell data-tone="danger">12</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>,
+    );
+
+    const table = screen.getByRole("table", { name: "Project delivery by owner" });
+    expect(table).toHaveAttribute("data-table", "projects");
+    expect(table).toHaveAttribute("dir", "rtl");
+    expect(screen.getByRole("columnheader", { name: "Identity" })).toHaveAttribute(
+      "scope",
+      "colgroup",
+    );
+    expect(screen.getByRole("columnheader", { name: "Identity" })).toHaveAttribute("colspan", "2");
+    expect(screen.getByRole("columnheader", { name: "Updated" })).toHaveAttribute(
+      "aria-sort",
+      "ascending",
+    );
+    expect(screen.getByRole("columnheader", { name: "Name" })).toHaveAttribute("scope", "col");
+    expect(screen.getByRole("rowheader", { name: "Roadmap" })).toHaveAttribute("rowspan", "1");
+    expect(screen.getByText("Maya")).toHaveAttribute("headers", "roadmap project-owner");
+    expect(screen.getByText("Total").closest("tfoot")).not.toBeNull();
   });
 
   it("generates Field associations, preserves consumer IDs, and rejects multiple controls", () => {

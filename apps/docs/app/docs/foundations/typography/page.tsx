@@ -71,7 +71,7 @@ export default function Page() {
           <h2 id="font-contract">Font contract</h2>
           <Badge>System UI by default</Badge>
         </div>
-        <TableContainer label="Default font tokens">
+        <TableContainer aria-label="Default font tokens">
           <Table>
             <thead>
               <tr>
@@ -107,7 +107,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="presets">Typography presets</h2>
-        <TableContainer label="Typography preset tokens">
+        <TableContainer aria-label="Typography preset tokens">
           <Table>
             <thead>
               <tr>
@@ -226,7 +226,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="type-scale">Type scale</h2>
-        <TableContainer label="Type scale tokens">
+        <TableContainer aria-label="Type scale tokens">
           <Table>
             <thead>
               <tr>
@@ -254,7 +254,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="semantic-roles">Semantic roles</h2>
-        <TableContainer label="Semantic typography roles">
+        <TableContainer aria-label="Semantic typography roles">
           <Table>
             <thead>
               <tr>
