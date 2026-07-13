@@ -29,7 +29,10 @@
 }
 
 .n-button-group > .n-button:hover,
-.n-button-group > .n-button:active,
+.n-button-group > .n-button:active {
+  z-index: 1;
+}
+
 .n-button-group > .n-button:focus-visible {
   z-index: 2;
 }
@@ -78,4 +81,8 @@
   border-end-start-radius: var(--n-button-radius);
   border-start-end-radius: var(--n-radius-none);
   border-start-start-radius: var(--n-radius-none);
+}
+
+.n-button-group[data-orientation="vertical"] > .n-button:only-child {
+  border-radius: var(--n-button-radius);
 }

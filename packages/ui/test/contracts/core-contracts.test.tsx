@@ -417,6 +417,10 @@ describe("Core static contracts", () => {
     expect(buttonGroupStyles).toContain("border-start-end-radius: var(--n-radius-none);");
     expect(buttonGroupStyles).toContain(".n-button-group > .n-button:focus-visible");
     expect(buttonGroupStyles).toContain("z-index: 2;");
+    expect(buttonGroupStyles).toContain(
+      '.n-button-group[data-orientation="vertical"] > .n-button:only-child',
+    );
+    expect(buttonGroupStyles).toContain("border-radius: var(--n-button-radius);");
     expect(buttonGroupStyles).not.toContain("overflow: hidden");
   });
 
