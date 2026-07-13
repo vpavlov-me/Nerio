@@ -102,7 +102,7 @@ export const snippets: Record<string, string> = {
   "key-value":
     'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
   table:
-    "import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@nerio/ui';\n\n<TableContainer label=\"Projects\"><Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>",
+    'import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from \'@nerio/ui\';\n\n<h2 id="projects-title">Projects</h2>\n<TableContainer focusable aria-labelledby="projects-title">\n  <Table>\n    <TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader>\n    <TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody>\n  </Table>\n</TableContainer>',
   list: "import { List } from '@nerio/ui';\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
   item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
 };
@@ -2096,40 +2096,67 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "container",
         description:
-          "Plain wrapper by default; a label creates a named region and focusable requires that label.",
+          "Plain overflow wrapper by default; focusable requires aria-label or aria-labelledby.",
       },
       { title: "table", description: "Native table structure for tabular data." },
-      { title: "header", description: "Column labels." },
-      { title: "body", description: "Rows of related records." },
+      { title: "caption", description: "Optional native table name or description." },
+      { title: "header", description: "Column and grouped headers." },
+      { title: "body", description: "Rows of related records, including empty or loading rows." },
+      { title: "footer", description: "Optional summary rows." },
       { title: "row", description: "A native table row." },
-      { title: "head", description: "A native table header cell." },
-      { title: "cell", description: "Individual data values and compact actions." },
+      {
+        title: "head",
+        description: "A native th with col scope by default and overrideable scope.",
+      },
+      { title: "cell", description: "A native td for values and independently labelled actions." },
     ],
     variants: [
       { title: "Default", description: "Readable data table with subtle row separation." },
     ],
     states: [
-      { title: "Empty", description: "Pair with EmptyState when no records exist." },
-      { title: "Loading", description: "Use Skeleton rows when records are loading." },
+      { title: "Empty", description: "Use one correctly spanned cell inside TableBody." },
+      {
+        title: "Loading",
+        description: "Compose aria-hidden Skeleton rows under an aria-busy region.",
+      },
+      {
+        title: "Selected or current",
+        description: "Consumer-owned data-selected and aria-current hooks.",
+      },
+      {
+        title: "Focus within",
+        description: "Interactive cells highlight the row without making it clickable.",
+      },
     ],
     accessibility: [
-      "Use real table markup for tabular data and concise column headers.",
-      "TableContainer has three modes: plain wrapper, labelled region, or focusable labelled scroll region.",
+      "Preserve native captions, row groups, headers, scope, headers, colSpan, rowSpan, and aria-sort relationships.",
+      "TableContainer is plain by default; focusable is an explicit opt-in that requires aria-label or aria-labelledby.",
+      "Keep row links and actions as independently labelled keyboard targets; never make the whole row clickable by default.",
+      "Sorting remains consumer-owned and the active column header communicates state through aria-sort.",
     ],
     guidance: {
-      do: ["Use for comparable records and operational lists."],
+      do: [
+        "Use for comparable records, semantic headers, numeric values, and compact row actions.",
+      ],
       dont: [
         "Do not use Table for layout grids or card collections.",
-        "Do not add sorting, filtering, pagination, selection, or DataGrid behavior to this Core primitive; those belong to Pro or adapters.",
+        "Do not nest TableContainer or add sorting, filtering, selection, pagination state, virtualization, or DataGrid behavior to this Core primitive.",
       ],
     },
     tokens: [
       "--n-table-cell-padding-y",
       "--n-table-cell-padding-x",
       "--n-table-border",
+      "--n-table-container-border",
+      "--n-table-container-radius",
+      "--n-table-container-focus-ring",
       "--n-table-header-background",
+      "--n-table-header-foreground",
       "--n-table-row-background-hover",
       "--n-table-row-background-selected",
+      "--n-table-row-min-height",
+      "--n-table-cell-foreground-disabled",
+      "--n-table-cell-foreground-danger",
     ],
   },
   list: {

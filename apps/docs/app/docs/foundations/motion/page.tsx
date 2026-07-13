@@ -119,7 +119,7 @@ export default function Page() {
           Semantic motion variables describe intent and point to duration and easing tokens.
           Component source should use these aliases instead of repeating raw timing values.
         </p>
-        <TableContainer label="Semantic motion aliases">
+        <TableContainer aria-label="Semantic motion aliases">
           <Table>
             <thead>
               <tr>
@@ -146,7 +146,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="reduced-motion">Reduced motion</h2>
-        <TableContainer label="Motion accessibility behavior">
+        <TableContainer aria-label="Motion accessibility behavior">
           <Table>
             <thead>
               <tr>
@@ -194,7 +194,7 @@ export default function Page() {
 
 function TokenTable({ rows }: { rows: TokenRow[] }) {
   return (
-    <TableContainer label="Motion token reference">
+    <TableContainer aria-label="Motion token reference">
       <Table>
         <thead>
           <tr>

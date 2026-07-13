@@ -267,7 +267,7 @@ function TableToolbarPreview() {
         </Button>
       </div>
       {rows.length ? (
-        <TableContainer label="Projects">
+        <TableContainer aria-label="Projects">
           <Table>
             <TableHeader>
               <TableRow>

@@ -61,7 +61,7 @@ export default function Page() {
           <h2 id="icon-adapter-contract">Icon adapter contract</h2>
           <Badge>@nerio/adapters</Badge>
         </div>
-        <TableContainer label="Adapter sources">
+        <TableContainer aria-label="Adapter sources">
           <Table>
             <thead>
               <tr>
@@ -90,7 +90,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="size-contract">Size contract</h2>
-        <TableContainer label="Icon size tokens">
+        <TableContainer aria-label="Icon size tokens">
           <Table>
             <thead>
               <tr>
@@ -112,7 +112,7 @@ export default function Page() {
             </tbody>
           </Table>
         </TableContainer>
-        <TableContainer label="Component icon size aliases">
+        <TableContainer aria-label="Component icon size aliases">
           <Table>
             <thead>
               <tr>
@@ -140,7 +140,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="contract">Contract</h2>
-        <TableContainer label="Icon implementation rules">
+        <TableContainer aria-label="Icon implementation rules">
           <Table>
             <thead>
               <tr>
@@ -211,7 +211,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="do-do-not">Do / do not</h2>
-        <TableContainer label="Icon guidance">
+        <TableContainer aria-label="Icon guidance">
           <Table>
             <thead>
               <tr>

@@ -140,8 +140,13 @@ async function verify() {
     const tableUsage = JSON.parse(tableUsageResult.content[0].text);
     if (
       !tableUsage.requiredTokens.includes("--n-table-border") ||
+      !tableUsage.requiredTokens.includes("--n-table-container-focus-ring") ||
+      !tableUsage.requiredTokens.includes("--n-table-row-min-height") ||
       tableUsage.requiredTokens.includes("--n-font-size-sm") ||
-      !tableUsage.usage.includes("TableHeader")
+      !tableUsage.usage.includes("TableCaption") ||
+      !tableUsage.usage.includes("aria-labelledby") ||
+      !tableUsage.slots.includes("footer") ||
+      !tableUsage.accessibility.some((item) => item.includes("never nest scroll containers"))
     ) {
       throw new Error("MCP Table usage is not aligned with the Core table registry contract.");
     }

@@ -835,19 +835,27 @@
       "variants": [],
       "requiredTokens": [
         "--n-table-border",
+        "--n-table-container-border",
+        "--n-table-container-radius",
+        "--n-table-container-focus-ring",
         "--n-table-header-background",
+        "--n-table-header-foreground",
         "--n-table-row-background-hover",
         "--n-table-row-background-selected",
+        "--n-table-row-min-height",
         "--n-table-cell-padding-y",
-        "--n-table-cell-padding-x"
+        "--n-table-cell-padding-x",
+        "--n-table-cell-foreground-disabled",
+        "--n-table-cell-foreground-danger"
       ],
       "accessibility": [
-        "Use semantic table sections, headers, rows, and cells.",
+        "Preserve native captions, row groups, scope, headers, colSpan, rowSpan, and aria-sort relationships.",
         "Keep sorting, filtering, pagination, selection, and advanced table behavior out of this Core primitive.",
-        "TableContainer is plain by default; labelled regions are optional, while focusable scroll regions require a concise label.",
-        "Keep dense operational tables scannable with clear column labels."
+        "TableContainer is plain by default; focusable is an explicit opt-in that requires aria-label or aria-labelledby.",
+        "Directly wrap one Table in TableContainer and never nest scroll containers.",
+        "Keep row links and actions independently labelled instead of making the whole row clickable."
       ],
-      "usage": "import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@/components/nerio/components/table';\n\n<TableContainer label=\"Projects\"><Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>"
+      "usage": "import { Table, TableBody, TableCaption, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@/components/nerio/components/table';\n\n<h2 id=\"projects-title\">Projects</h2>\n<TableContainer focusable aria-labelledby=\"projects-title\"><Table><TableCaption>Current projects</TableCaption><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>"
     },
     {
       "name": "item",

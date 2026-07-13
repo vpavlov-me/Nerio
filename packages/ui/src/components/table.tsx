@@ -4,18 +4,29 @@ import { cn } from "../lib/cn";
 export type TableProps = React.TableHTMLAttributes<HTMLTableElement>;
 type TableContainerBaseProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "aria-label" | "role" | "tabIndex"
+  "aria-label" | "aria-labelledby" | "role" | "tabIndex"
 >;
+
+type TableContainerAccessibleName =
+  | {
+      "aria-label": string;
+      "aria-labelledby"?: string;
+    }
+  | {
+      "aria-label"?: never;
+      "aria-labelledby": string;
+    };
 
 export type TableContainerProps =
   | (TableContainerBaseProps & {
       focusable?: false;
-      label?: string;
+      "aria-label"?: string;
+      "aria-labelledby"?: string;
     })
-  | (TableContainerBaseProps & {
-      focusable: true;
-      label: string;
-    });
+  | (TableContainerBaseProps &
+      TableContainerAccessibleName & {
+        focusable: true;
+      });
 export type TableHeaderProps = React.HTMLAttributes<HTMLTableSectionElement>;
 export type TableBodyProps = React.HTMLAttributes<HTMLTableSectionElement>;
 export type TableFooterProps = React.HTMLAttributes<HTMLTableSectionElement>;
@@ -32,14 +43,21 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(function Tab
 });
 
 export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerProps>(
-  function TableContainer({ className, focusable, label, ...props }, ref) {
+  function TableContainer(
+    { "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, className, focusable, ...props },
+    ref,
+  ) {
+    const hasAccessibleName = Boolean(ariaLabel || ariaLabelledBy);
+
     return (
       <div
         ref={ref}
-        aria-label={label}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         className={cn("n-table-container", className)}
+        data-focusable={focusable ? "" : undefined}
         data-slot="container"
-        role={label ? "region" : undefined}
+        role={hasAccessibleName ? "region" : undefined}
         tabIndex={focusable ? 0 : undefined}
         {...props}
       />

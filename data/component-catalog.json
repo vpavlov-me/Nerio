@@ -353,8 +353,8 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "data-display",
-      "status": "polished",
-      "description": "Basic table with plain, labelled, and typed focusable scroll-region contracts; responsive overflow verification remains."
+      "status": "stable-core",
+      "description": "Native semantic table anatomy with explicit named keyboard-scroll opt-in, responsive and RTL overflow, density, sticky-style compatibility, and consumer-owned data behavior."
     },
     {
       "name": "Item",

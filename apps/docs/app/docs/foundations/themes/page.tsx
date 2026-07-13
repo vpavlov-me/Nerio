@@ -72,7 +72,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="runtime-axes">Runtime axes</h2>
-        <TableContainer label="Runtime appearance axes">
+        <TableContainer aria-label="Runtime appearance axes">
           <Table>
             <thead>
               <tr>
@@ -113,7 +113,7 @@ export default function Page() {
           <h2 id="preset-themes">Preset themes</h2>
           <Badge>brand accents</Badge>
         </div>
-        <TableContainer label="Preset theme contracts">
+        <TableContainer aria-label="Preset theme contracts">
           <Table>
             <thead>
               <tr>
@@ -146,7 +146,7 @@ export default function Page() {
           mode remaps the same roles to gray-950, gray-900, and gray-800. Purple and neutral also
           use lighter primary actions in dark and system-dark modes to preserve contrast.
         </p>
-        <TableContainer label="Mode-mapped semantic tokens">
+        <TableContainer aria-label="Mode-mapped semantic tokens">
           <Table>
             <thead>
               <tr>
@@ -176,7 +176,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="density">Density</h2>
-        <TableContainer label="Density contracts">
+        <TableContainer aria-label="Density contracts">
           <Table>
             <thead>
               <tr>
@@ -215,7 +215,7 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="do-do-not">Do / do not</h2>
-        <TableContainer label="Theme guidance">
+        <TableContainer aria-label="Theme guidance">
           <Table>
             <thead>
               <tr>

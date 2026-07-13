@@ -759,7 +759,7 @@ function Preview({ kind }: { kind: string }) {
             </dl>
           ) : null}
           {kind === "table" ? (
-            <TableContainer label="Projects">
+            <TableContainer aria-label="Projects">
               <Table>
                 <TableHeader>
                   <TableRow>

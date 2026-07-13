@@ -29,6 +29,12 @@ import {
   Skeleton,
   Stat,
   Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
   Toast,
 } from "@nerio/ui/client";
 
@@ -298,23 +304,23 @@ export default function DemoApp() {
             ) : null}
 
             {workspaceState === "ready" && filteredProjects.length ? (
-              <div className="table-scroll">
+              <TableContainer focusable aria-label="Workspace projects">
                 <Table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Owner</th>
-                      <th>Status</th>
-                      <th>Progress</th>
-                      <th>Updated</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Owner</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead data-align="numeric">Progress</TableHead>
+                      <TableHead>Updated</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {filteredProjects.map((project) => (
-                      <tr key={project.name}>
-                        <td>{project.name}</td>
-                        <td>{project.owner}</td>
-                        <td>
+                      <TableRow key={project.name}>
+                        <TableHead scope="row">{project.name}</TableHead>
+                        <TableCell>{project.owner}</TableCell>
+                        <TableCell>
                           <Badge
                             variant={
                               project.status === "Active"
@@ -326,14 +332,14 @@ export default function DemoApp() {
                           >
                             {project.status}
                           </Badge>
-                        </td>
-                        <td>{project.progress}%</td>
-                        <td>{project.updated}</td>
-                      </tr>
+                        </TableCell>
+                        <TableCell data-align="numeric">{project.progress}%</TableCell>
+                        <TableCell>{project.updated}</TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
+                  </TableBody>
                 </Table>
-              </div>
+              </TableContainer>
             ) : null}
 
             {workspaceState === "ready" && !filteredProjects.length ? (
