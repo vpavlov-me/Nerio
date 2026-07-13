@@ -343,6 +343,25 @@ async function verify() {
       throw new Error("MCP Sheet usage is missing its slots, side, token, or naming contract.");
     }
 
+    const sidebarUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "sidebar-primitive" },
+    });
+    const sidebarUsage = JSON.parse(sidebarUsageResult.content[0].text);
+    if (
+      sidebarUsage.baseUiPrimitives.length !== 0 ||
+      !sidebarUsage.slots.includes("sidebar-rail") ||
+      !sidebarUsage.states.includes("collapsed") ||
+      !sidebarUsage.variants.includes("side: left | right") ||
+      !sidebarUsage.requiredTokens.includes("--n-sidebar-collapsed-width") ||
+      !sidebarUsage.accessibility.some((item) => item.includes("inert")) ||
+      !sidebarUsage.usage.includes("SidebarProvider")
+    ) {
+      throw new Error(
+        "MCP Sidebar usage is missing state, slot, token, or accessibility metadata.",
+      );
+    }
+
     const tooltipUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "tooltip" },

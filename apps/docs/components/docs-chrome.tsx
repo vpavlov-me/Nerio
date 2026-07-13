@@ -131,6 +131,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/tabs", label: "Tabs", icon: Layers },
       { href: "/docs/components/breadcrumbs", label: "Breadcrumbs", icon: ListTree },
       { href: "/docs/components/pagination", label: "Pagination", icon: ListTree },
+      { href: "/docs/components/sidebar-primitive", label: "Sidebar", icon: PanelLeft },
     ],
   },
   {

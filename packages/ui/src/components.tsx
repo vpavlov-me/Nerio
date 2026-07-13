@@ -171,6 +171,26 @@ export {
   type CardVisualProps,
 } from "./components/card";
 export { Separator, type SeparatorProps } from "./components/separator";
+export {
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+  type SidebarInsetProps,
+  type SidebarRegionProps,
+} from "./components/sidebar-layout";
+export {
+  Sidebar,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+  type SidebarDirection,
+  type SidebarProps,
+  type SidebarProviderProps,
+  type SidebarSide,
+  type SidebarToggleProps,
+} from "./components/sidebar";
 export { Avatar, type AvatarProps } from "./components/avatar";
 export { Progress, type ProgressProps } from "./components/progress";
 export { Stat, type StatProps } from "./components/stat";

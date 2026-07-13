@@ -44,6 +44,10 @@ import {
   List,
   Pagination,
   Progress,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
   Spinner,
   Table,
   TableBody,
@@ -78,6 +82,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  Sidebar,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
   Switch,
   Tabs,
   TabsContent,
@@ -2522,5 +2530,66 @@ describe("Core interactive action contracts", () => {
     render(<ControlledSheet />);
     await user.click(screen.getByRole("button", { name: "Cancel" }));
     expect(screen.queryByRole("dialog", { name: "Workspace settings" })).not.toBeInTheDocument();
+  });
+
+  it("coordinates uncontrolled Sidebar state, stable slots, and focus-safe collapse", async () => {
+    const user = userEvent.setup();
+    render(
+      <SidebarProvider defaultExpanded={false} side="right" sidebarId="workspace-sidebar">
+        <Sidebar aria-label="Workspace tools">
+          <SidebarHeader>Workspace</SidebarHeader>
+          <SidebarContent>
+            <nav aria-label="Workspace">
+              <a href="/projects">Projects</a>
+            </nav>
+          </SidebarContent>
+          <SidebarFooter>Account</SidebarFooter>
+          <SidebarRail label="Toggle workspace sidebar" />
+        </Sidebar>
+        <SidebarInset>
+          <SidebarTrigger label="Toggle workspace sidebar" />
+          Workspace content
+        </SidebarInset>
+      </SidebarProvider>,
+    );
+
+    const sidebar = screen.getByRole("complementary", { name: "Workspace tools" });
+    const trigger = screen.getAllByRole("button", { name: "Toggle workspace sidebar" })[1]!;
+    expect(sidebar).toHaveAttribute("id", "workspace-sidebar");
+    expect(sidebar).toHaveAttribute("data-state", "collapsed");
+    expect(sidebar).toHaveAttribute("data-side", "right");
+    expect(sidebar.querySelector('[data-slot="sidebar-inner"]')).toHaveAttribute("inert");
+    expect(trigger).toHaveAttribute("aria-controls", "workspace-sidebar");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    trigger.focus();
+    await user.click(trigger);
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(sidebar).toHaveAttribute("data-state", "expanded");
+    expect(sidebar.querySelector('[data-slot="sidebar-inner"]')).not.toHaveAttribute("inert");
+    expect(sidebar.querySelector('[data-slot="sidebar-header"]')).toHaveTextContent("Workspace");
+    expect(sidebar.querySelector('[data-slot="sidebar-content"]')).toBeInTheDocument();
+    expect(sidebar.querySelector('[data-slot="sidebar-footer"]')).toHaveTextContent("Account");
+  });
+
+  it("keeps controlled Sidebar state consumer-owned", async () => {
+    const user = userEvent.setup();
+    const onExpandedChange = vi.fn();
+    render(
+      <SidebarProvider expanded={false} onExpandedChange={onExpandedChange}>
+        <Sidebar aria-label="Filters" />
+        <SidebarInset>
+          <SidebarTrigger label="Toggle filters" />
+        </SidebarInset>
+      </SidebarProvider>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Toggle filters" }));
+    expect(onExpandedChange).toHaveBeenCalledWith(true);
+    expect(screen.getByRole("complementary", { name: "Filters" })).toHaveAttribute(
+      "data-state",
+      "collapsed",
+    );
   });
 });

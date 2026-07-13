@@ -22,6 +22,8 @@ import {
   ItemTitle,
   Pagination,
   Progress,
+  SidebarContent,
+  SidebarInset,
   Spinner,
   Table,
   TableBody,
@@ -50,6 +52,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  Sidebar,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
   Switch,
   Tabs,
   TabsContent,
@@ -424,5 +430,37 @@ describe("Core accessibility contracts", () => {
     await user.click(screen.getByRole("button", { name: "Open navigation" }));
     await screen.findByRole("dialog", { name: "Workspace navigation" });
     expect((await axe(document.body)).violations).toEqual([]);
+  });
+
+  it("keeps expanded and collapsed Sidebar trees named and keyboard safe", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <SidebarProvider>
+        <Sidebar aria-label="Workspace sidebar">
+          <SidebarContent>
+            <nav aria-label="Workspace navigation">
+              <a href="/projects">Projects</a>
+            </nav>
+          </SidebarContent>
+          <SidebarRail label="Collapse workspace sidebar" />
+        </Sidebar>
+        <SidebarInset>
+          <SidebarTrigger label="Toggle workspace sidebar" />
+          <button type="button">Create project</button>
+        </SidebarInset>
+      </SidebarProvider>,
+    );
+
+    expect((await axe(container)).violations).toEqual([]);
+    const trigger = screen.getByRole("button", { name: "Toggle workspace sidebar" });
+    await user.click(trigger);
+    expect(trigger).toHaveFocus();
+    expect(screen.getByRole("complementary", { name: "Workspace sidebar" })).toHaveAttribute(
+      "data-state",
+      "collapsed",
+    );
+    expect((await axe(container)).violations).toEqual([]);
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Create project" })).toHaveFocus();
   });
 });

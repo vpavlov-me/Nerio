@@ -32,6 +32,14 @@ const expectedSheetFiles = [
   "styles/icon.css",
   "styles/overlays.css",
 ];
+const expectedSidebarFiles = [
+  "components/icon.tsx",
+  "components/sidebar-layout.tsx",
+  "components/sidebar.tsx",
+  "lib/cn.ts",
+  "styles/icon.css",
+  "styles/sidebar.css",
+];
 const expectedFieldFiles = [
   "components/field.tsx",
   "components/label.tsx",
@@ -267,6 +275,7 @@ async function verify() {
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
     await run(localTarget, "add", "sheet");
+    await run(localTarget, "add", "sidebar-primitive");
     await run(localTarget, "add", "field");
     await run(localTarget, "add", "input-group");
     await run(localTarget, "add", "form-group");
@@ -329,6 +338,21 @@ async function verify() {
       !sheetSource.includes("showClose")
     ) {
       throw new Error("Installed Sheet source did not preserve its modal and slot contracts.");
+    }
+    assertFiles(localTarget, expectedSidebarFiles);
+    const sidebarSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/sidebar.tsx"),
+      "utf8",
+    );
+    if (
+      !sidebarSource.includes("defaultExpanded") ||
+      !sidebarSource.includes('data-state={expanded ? "expanded" : "collapsed"}') ||
+      !sidebarSource.includes("aria-controls={sidebarId}") ||
+      !sidebarSource.includes("inert={!expanded || undefined}")
+    ) {
+      throw new Error(
+        "Installed Sidebar source did not preserve state, focus safety, or ARIA contracts.",
+      );
     }
     assertFiles(localTarget, expectedFieldFiles);
     assertFiles(localTarget, expectedInputGroupFiles);

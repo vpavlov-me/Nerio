@@ -471,10 +471,10 @@
     {
       "name": "Sidebar Primitive",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "navigation",
-      "status": "planned",
-      "description": "Low-level sidebar layout primitive."
+      "status": "stable-core",
+      "description": "Composable layout primitive with controlled or uncontrolled collapse state, physical left and right placement, inert collapsed content, accessible toggles, tokenized widths, and server-safe static regions."
     },
     {
       "name": "Command Primitive",

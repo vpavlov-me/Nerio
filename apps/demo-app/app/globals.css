@@ -13,22 +13,7 @@ body {
 
 .workspace {
   background: var(--n-color-canvas);
-  display: grid;
-  grid-template-columns: 17rem minmax(0, 1fr);
   min-block-size: 100vh;
-}
-
-.workspace-sidebar {
-  background: var(--n-color-surface);
-  border-inline-end: 1px solid var(--n-color-border-subtle);
-  display: grid;
-  gap: var(--n-space-6);
-  grid-template-rows: auto 1fr auto;
-  max-block-size: 100vh;
-  overflow: auto;
-  padding: var(--n-space-5);
-  position: sticky;
-  top: 0;
 }
 
 .workspace-brand {
@@ -114,6 +99,10 @@ body {
   gap: var(--n-space-5);
   min-inline-size: 0;
   padding: var(--n-space-6);
+}
+
+.workspace-navigation-trigger {
+  display: flex;
 }
 
 .workspace-topbar {
@@ -280,32 +269,6 @@ body {
 }
 
 @media (max-width: 1080px) {
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .workspace-sidebar {
-    border-block-end: 1px solid var(--n-color-border-subtle);
-    border-inline-end: 0;
-    max-block-size: none;
-    position: static;
-  }
-
-  .workspace-nav {
-    display: flex;
-    overflow: auto;
-    padding-block-end: var(--n-space-1);
-  }
-
-  .workspace-nav button {
-    grid-template-columns: auto auto;
-    white-space: nowrap;
-  }
-
-  .workspace-compact-preview {
-    display: none;
-  }
-
   .span-3,
   .span-4,
   .span-8 {
@@ -314,8 +277,7 @@ body {
 }
 
 @media (max-width: 720px) {
-  .workspace-main,
-  .workspace-sidebar {
+  .workspace-main {
     padding: var(--n-space-4);
   }
 
