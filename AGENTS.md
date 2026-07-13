@@ -117,6 +117,7 @@ Before moving any Core component toward `stable-core`, verify:
 - Public Pro documentation may include descriptions, previews, API shape, and installation CTA, but must not expose private Pro source code.
 - Registry items must carry structured metadata for dependencies, Base UI primitives, slots, variants, required tokens, installation instructions, and product tier.
 - Keep `llms.txt`, component manifests, `data/component-catalog.json`, and MCP responses aligned with the actual component API.
+- Treat `data/component-catalog.json` as the canonical machine-readable component inventory. When a component changes, update the catalog first, then its `COMPONENTS.md` matrix row and all affected registry, docs, CLI, MCP, and fixture projections. Run `pnpm validate:catalog` before requesting review.
 
 ## Workflow
 

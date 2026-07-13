@@ -36,8 +36,32 @@
     "polished": "Public API and presentation are implemented, but the complete stable-core verification evidence is not yet available.",
     "quality-pass-needed": "Component exists but still needs an API, accessibility, token, docs, and registry review before it can support Pro work.",
     "stable-core": "Component passed the Core quality checklist and can safely support future Pro components, templates, registry installs, and AI/MCP usage.",
-    "future": "Expected later, not part of the first Core milestone."
+    "future": "Expected later, not part of the first Core milestone.",
+    "deprecated-compatibility": "Public compatibility wrapper retained only for migration; new work must use its documented replacement."
   },
+  "categoryValues": [
+    "foundation",
+    "actions",
+    "forms",
+    "overlays",
+    "data-display",
+    "feedback",
+    "navigation",
+    "data-heavy-ui",
+    "dashboards",
+    "saas-admin",
+    "documentation-ui",
+    "finance-crypto",
+    "ai-interfaces",
+    "templates"
+  ],
+  "packageValues": [
+    "@nerio/tokens",
+    "@nerio/ui",
+    "@nerio/ui/client",
+    "@nerio/adapters",
+    "@nerio/pro"
+  ],
   "tiers": {
     "core": {
       "name": "Nerio Core",
@@ -107,6 +131,14 @@
       "description": "Token-customizable motion variables such as --n-duration-fast and --n-duration-normal. Not a v1 runtime axis."
     },
     {
+      "name": "Contrast Tokens",
+      "tier": "core",
+      "package": "@nerio/tokens",
+      "category": "foundation",
+      "status": "quality-pass-needed",
+      "description": "Token-customizable semantic contrast variables. Not a v1 runtime axis."
+    },
+    {
       "name": "Typography",
       "tier": "core",
       "package": "@nerio/ui",
@@ -135,13 +167,13 @@
       "tier": "core",
       "package": "@nerio/adapters",
       "category": "foundation",
-      "status": "planned",
-      "description": "Dedicated icon adapter API with Lucide as the default implementation and support for custom React SVG components."
+      "status": "quality-pass-needed",
+      "description": "Lucide exports and the public icon-source boundary used by the Icon component; custom React SVG components remain supported by Icon."
     },
     {
       "name": "Button",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "actions",
       "status": "stable-core",
       "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, and icon-only mode."
@@ -159,7 +191,7 @@
     {
       "name": "ButtonGroup",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "actions",
       "status": "implemented-initial",
       "description": "Attached layout group for related Button controls."
@@ -223,7 +255,7 @@
     {
       "name": "Checkbox",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only Base UI checkbox for independent options with checked, indeterminate, invalid, disabled, read-only, form metadata, and optional label and description support."
@@ -231,7 +263,7 @@
     {
       "name": "Radio Group",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only Base UI radio selection control with options or RadioGroupItem composition, group metadata, disabled options, and controlled or uncontrolled values."
@@ -239,7 +271,7 @@
     {
       "name": "Switch",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only Base UI toggle control for immediate binary settings with checked, disabled, read-only, form metadata, and optional label and description support."
@@ -247,7 +279,7 @@
     {
       "name": "Select",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only single-select control with data-driven options, curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior."
@@ -255,7 +287,7 @@
     {
       "name": "Dialog",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Accessible modal primitive with title, description, close affordance, controlled state, and Base UI focus behavior."
@@ -271,7 +303,7 @@
     {
       "name": "Popover",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Floating content primitive with optional context, controlled state, and overlay token contract."
@@ -279,7 +311,7 @@
     {
       "name": "Tooltip",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Short non-essential contextual help component backed by Base UI Tooltip."
@@ -287,7 +319,7 @@
     {
       "name": "Dropdown Menu",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Basic dropdown menu component with disabled and destructive item contracts."
@@ -375,7 +407,7 @@
     {
       "name": "Toast",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "feedback",
       "status": "polished",
       "description": "Static and managed toast anatomy are separate; action and localized dismiss APIs are covered while swipe and browser stacking remain manual."
@@ -415,7 +447,7 @@
     {
       "name": "Tabs",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "navigation",
       "status": "polished",
       "description": "Base UI compound Tabs primitive with tokenized bordered, separate, and segmented variants; sizes, orientation, overflow, panel motion, and registry-aligned accessibility support."
