@@ -2167,6 +2167,22 @@ pre {
   inline-size: 30%;
 }
 
+.token-architecture-table td {
+  vertical-align: top;
+}
+
+.token-architecture-table td:first-child {
+  inline-size: 20%;
+}
+
+.token-architecture-table td:nth-child(2) {
+  inline-size: 34%;
+}
+
+.token-architecture-table .token-chip-row {
+  gap: var(--n-space-1);
+}
+
 .token-preview {
   max-inline-size: 32rem;
 }
