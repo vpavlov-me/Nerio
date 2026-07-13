@@ -535,9 +535,10 @@ function Preview({ kind }: { kind: string }) {
                 placeholder="Choose status"
                 message="Choose the closest workflow state."
                 options={[
-                  { label: "Active", value: "active" },
                   { label: "Draft", value: "draft" },
-                  { label: "Archived", value: "archived" },
+                  { label: "In review", value: "review" },
+                  { label: "Published", value: "published" },
+                  { label: "Archived", value: "archived", disabled: true },
                 ]}
               />
               <Select

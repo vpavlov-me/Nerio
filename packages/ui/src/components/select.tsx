@@ -3,61 +3,182 @@
 import * as React from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { Check, ChevronDown } from "@nerio/adapters";
-import { Icon } from "./icon";
-import { FormMessage } from "./form-message";
 import { cn } from "../lib/cn";
+import { resolveClassName } from "../lib/resolve-class-name";
+import { FormMessage } from "./form-message";
+import { Icon } from "./icon";
 
 export interface SelectOption {
-  label: string;
   value: string;
+  label: React.ReactNode;
+  textValue?: string;
+  description?: React.ReactNode;
   disabled?: boolean;
 }
 
-export interface SelectProps extends Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  "defaultValue" | "onChange"
-> {
-  label: string;
+export type SelectSize = "sm" | "md" | "lg";
+
+export type SelectChangeEventDetails = Parameters<
+  NonNullable<React.ComponentProps<typeof BaseSelect.Root<string>>["onValueChange"]>
+>[1];
+
+export type SelectOpenChangeEventDetails = Parameters<
+  NonNullable<React.ComponentProps<typeof BaseSelect.Root<string>>["onOpenChange"]>
+>[1];
+
+type BaseSelectRootProps = Omit<
+  React.ComponentProps<typeof BaseSelect.Root<string>>,
+  "children" | "defaultValue" | "items" | "onOpenChange" | "onValueChange" | "value"
+>;
+
+type SharedSelectProps = BaseSelectRootProps &
+  Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> & {
+    label: React.ReactNode;
+    description?: React.ReactNode;
+    emptyMessage?: React.ReactNode;
+    invalid?: boolean;
+    message?: React.ReactNode;
+    placeholder?: React.ReactNode;
+    size?: SelectSize;
+    triggerRef?: React.Ref<HTMLButtonElement>;
+    value?: string;
+    defaultValue?: string;
+    onValueChange?: (value: string, eventDetails: SelectChangeEventDetails) => void;
+    /** @deprecated Prefer onValueChange for Base UI event details. */
+    onChange?: (value: string) => void;
+    open?: boolean;
+    defaultOpen?: boolean;
+    onOpenChange?: (open: boolean, eventDetails: SelectOpenChangeEventDetails) => void;
+    "data-slot"?: string;
+  };
+
+type OptionsSelectProps = {
   options: SelectOption[];
-  name?: string;
-  form?: string;
-  required?: boolean;
-  readOnly?: boolean;
-  autoComplete?: string;
-  disabled?: boolean;
-  invalid?: boolean;
+  children?: never;
+};
+
+type ComposedSelectProps = {
+  children: React.ReactNode;
+  options?: never;
+};
+
+export type SelectProps = SharedSelectProps & (OptionsSelectProps | ComposedSelectProps);
+
+export interface SelectItemProps extends Omit<
+  React.ComponentProps<typeof BaseSelect.Item>,
+  "children" | "className" | "label" | "value"
+> {
+  children: React.ReactNode;
+  className?: React.ComponentProps<typeof BaseSelect.Item>["className"];
   description?: React.ReactNode;
-  message?: React.ReactNode;
-  placeholder?: React.ReactNode;
-  "aria-invalid"?: boolean | "true" | "false" | "grammar" | "spelling";
-  value?: string;
-  defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  onChange?: (value: string) => void;
+  textValue?: string;
+  value: string;
+}
+
+export const SelectItem = React.forwardRef<HTMLElement, SelectItemProps>(function SelectItem(
+  { children, className, description, disabled, textValue, value, ...props },
+  ref,
+) {
+  return (
+    <BaseSelect.Item
+      ref={ref}
+      className={(state) => cn("n-select-item", resolveClassName(className, state))}
+      disabled={disabled}
+      label={textValue}
+      value={value}
+      {...props}
+      data-disabled={disabled ? "" : undefined}
+      data-slot="item"
+    >
+      <BaseSelect.ItemText className="n-select-item__content" data-slot="item-content">
+        <span className="n-select-item__label" data-slot="item-label">
+          {children}
+        </span>
+        {description ? (
+          <span className="n-select-item__description" data-slot="item-description">
+            {description}
+          </span>
+        ) : null}
+      </BaseSelect.ItemText>
+      <BaseSelect.ItemIndicator className="n-select-item__indicator" data-slot="indicator">
+        <Icon icon={Check} />
+      </BaseSelect.ItemIndicator>
+    </BaseSelect.Item>
+  );
+});
+
+export const SelectGroup = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof BaseSelect.Group> & { "data-slot"?: string }
+>(function SelectGroup({ "data-slot": _dataSlot, ...props }, ref) {
+  return <BaseSelect.Group ref={ref} {...props} className="n-select-group" data-slot="group" />;
+});
+
+export const SelectGroupLabel = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof BaseSelect.GroupLabel> & { "data-slot"?: string }
+>(function SelectGroupLabel({ "data-slot": _dataSlot, ...props }, ref) {
+  return (
+    <BaseSelect.GroupLabel
+      ref={ref}
+      {...props}
+      className="n-select-group-label"
+      data-slot="group-label"
+    />
+  );
+});
+
+export const SelectSeparator = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof BaseSelect.Separator> & { "data-slot"?: string }
+>(function SelectSeparator({ "data-slot": _dataSlot, ...props }, ref) {
+  return (
+    <BaseSelect.Separator
+      ref={ref}
+      {...props}
+      className="n-select-separator"
+      data-slot="separator"
+    />
+  );
+});
+
+function mergeIds(...ids: Array<string | undefined>) {
+  const merged = ids.flatMap((id) => id?.split(" ") ?? []).filter(Boolean);
+  return merged.length > 0 ? Array.from(new Set(merged)).join(" ") : undefined;
 }
 
 export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Select(
   {
-    label,
-    options,
-    id,
-    name,
-    form,
-    required,
-    readOnly,
-    autoComplete,
-    disabled,
-    invalid = false,
-    description,
-    message,
-    placeholder = "Select",
-    className,
     "aria-describedby": ariaDescribedBy,
     "aria-invalid": ariaInvalid,
-    value,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    autoComplete,
+    children,
+    className,
+    defaultOpen,
     defaultValue,
-    onValueChange,
+    description,
+    disabled,
+    emptyMessage = "No options available.",
+    invalid = false,
+    form,
+    id,
+    label,
+    message,
+    name,
     onChange,
+    onOpenChange,
+    onValueChange,
+    open,
+    options,
+    placeholder = "Select",
+    readOnly,
+    required,
+    size = "md",
+    triggerRef,
+    value,
+    "data-slot": _dataSlot,
     ...props
   },
   ref,
@@ -66,71 +187,103 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
   const controlId = id ?? generatedId;
   const descriptionId = description ? `${controlId}-description` : undefined;
   const messageId = message ? `${controlId}-message` : undefined;
-  const describedBy =
-    [ariaDescribedBy, descriptionId, messageId].filter(Boolean).join(" ") || undefined;
+  const describedBy = mergeIds(ariaDescribedBy, descriptionId, messageId);
+  const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
+  const renderedItems = options
+    ? options.map((option) => (
+        <SelectItem
+          key={option.value}
+          description={option.description}
+          disabled={option.disabled}
+          textValue={option.textValue}
+          value={option.value}
+        >
+          {option.label}
+        </SelectItem>
+      ))
+    : children;
 
   return (
     <div
       ref={ref}
-      className={cn("n-field n-select-field", className)}
-      data-invalid={invalid ? "" : undefined}
-      data-slot="root"
+      className={cn("n-field", "n-select-field", className)}
       {...props}
+      data-disabled={disabled ? "" : undefined}
+      data-invalid={isInvalid ? "" : undefined}
+      data-readonly={readOnly ? "" : undefined}
+      data-size={size}
+      data-slot="root"
     >
-      <label className="n-label" data-slot="label" htmlFor={controlId}>
-        {label}
-      </label>
       <BaseSelect.Root<string>
-        id={controlId}
-        name={name}
-        form={form}
-        required={required}
-        readOnly={readOnly}
         autoComplete={autoComplete}
-        disabled={disabled}
-        value={value}
+        defaultOpen={defaultOpen}
         defaultValue={defaultValue}
+        disabled={disabled}
+        form={form}
+        id={controlId}
         items={options}
-        onValueChange={(nextValue) => {
+        name={name}
+        onOpenChange={onOpenChange}
+        onValueChange={(nextValue, eventDetails) => {
           if (typeof nextValue === "string") {
-            onValueChange?.(nextValue);
+            onValueChange?.(nextValue, eventDetails);
             onChange?.(nextValue);
           }
         }}
+        open={open}
+        readOnly={readOnly}
+        required={required}
+        value={value}
       >
+        <BaseSelect.Label className="n-label" data-slot="label">
+          {label}
+        </BaseSelect.Label>
         <BaseSelect.Trigger
-          id={controlId}
+          ref={triggerRef}
           className="n-select-trigger"
           aria-describedby={describedBy}
-          aria-invalid={ariaInvalid ?? (invalid ? true : undefined)}
-          aria-required={required ? true : undefined}
-          data-invalid={invalid ? "" : undefined}
+          aria-invalid={isInvalid ? true : ariaInvalid}
+          {...(ariaLabel ? { "aria-label": ariaLabel } : undefined)}
+          {...(ariaLabelledBy ? { "aria-labelledby": ariaLabelledBy } : undefined)}
+          data-disabled={disabled ? "" : undefined}
+          data-invalid={isInvalid ? "" : undefined}
+          data-readonly={readOnly ? "" : undefined}
+          data-size={size}
           data-slot="trigger"
         >
-          <BaseSelect.Value data-slot="value" placeholder={placeholder} />
+          <BaseSelect.Value
+            className="n-select-trigger__value"
+            data-slot="value"
+            placeholder={placeholder}
+          />
           <BaseSelect.Icon className="n-select-trigger__icon" data-slot="icon">
             <Icon icon={ChevronDown} />
           </BaseSelect.Icon>
         </BaseSelect.Trigger>
         <BaseSelect.Portal>
-          <BaseSelect.Positioner className="n-popover-positioner">
+          <BaseSelect.Positioner
+            align="start"
+            alignItemWithTrigger={false}
+            className="n-select-positioner"
+            side="bottom"
+            sideOffset={4}
+          >
             <BaseSelect.Popup className="n-select-popup" data-slot="content">
-              <BaseSelect.List>
-                {options.map((option) => (
-                  <BaseSelect.Item
-                    key={option.value}
-                    className="n-select-item"
-                    data-slot="item"
-                    disabled={option.disabled}
-                    value={option.value}
-                  >
-                    <BaseSelect.ItemText>{option.label}</BaseSelect.ItemText>
-                    <BaseSelect.ItemIndicator data-slot="indicator">
-                      <Icon icon={Check} />
-                    </BaseSelect.ItemIndicator>
-                  </BaseSelect.Item>
-                ))}
+              <BaseSelect.ScrollUpArrow className="n-select-scroll-arrow" data-slot="scroll-up">
+                <Icon icon={ChevronDown} />
+              </BaseSelect.ScrollUpArrow>
+              <BaseSelect.List className="n-select-list" data-slot="list">
+                {options?.length === 0 ? (
+                  <div className="n-select-empty" data-slot="empty">
+                    {emptyMessage}
+                  </div>
+                ) : (
+                  renderedItems
+                )}
               </BaseSelect.List>
+              <BaseSelect.ScrollDownArrow className="n-select-scroll-arrow" data-slot="scroll-down">
+                <Icon icon={ChevronDown} />
+              </BaseSelect.ScrollDownArrow>
             </BaseSelect.Popup>
           </BaseSelect.Positioner>
         </BaseSelect.Portal>
@@ -144,8 +297,8 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
         <FormMessage
           data-slot="message"
           id={messageId}
-          role={invalid ? "alert" : undefined}
-          tone={invalid ? "danger" : "neutral"}
+          role={isInvalid ? "alert" : undefined}
+          tone={isInvalid ? "danger" : "neutral"}
         >
           {message}
         </FormMessage>

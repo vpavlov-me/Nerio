@@ -79,7 +79,19 @@ export {
   type RadioGroupProps,
 } from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
-export { Select, type SelectOption, type SelectProps } from "./components/select";
+export {
+  Select,
+  SelectGroup,
+  SelectGroupLabel,
+  SelectItem,
+  SelectSeparator,
+  type SelectChangeEventDetails,
+  type SelectItemProps,
+  type SelectOpenChangeEventDetails,
+  type SelectOption,
+  type SelectProps,
+  type SelectSize,
+} from "./components/select";
 export { Tabs, type TabItem, type TabsProps, type TabsVariant } from "./components/tabs";
 export { Tooltip, type TooltipProps } from "./components/tooltip";
 export { Dialog, type DialogProps } from "./components/dialog";

@@ -47,6 +47,10 @@ import {
   RadioGroup,
   RadioGroupItem,
   Select,
+  SelectGroup,
+  SelectGroupLabel,
+  SelectItem,
+  SelectSeparator,
   Switch,
   Tabs,
   Tooltip,
@@ -97,6 +101,17 @@ const validComposedRadioGroup = (
     <RadioGroupItem value="team">Team</RadioGroupItem>
   </RadioGroup>
 );
+// @ts-expect-error Select accepts either options or curated item composition, not both.
+const invalidMixedSelect = (
+  <Select label="Status" options={[{ label: "Draft", value: "draft" }]}>
+    <SelectItem value="published">Published</SelectItem>
+  </Select>
+);
+const validComposedSelect = (
+  <Select label="Status">
+    <SelectItem value="draft">Draft</SelectItem>
+  </Select>
+);
 void [
   invalidEmptyButton,
   invalidUnnamedIconButton,
@@ -110,6 +125,8 @@ void [
   invalidInputScale,
   invalidMixedRadioGroup,
   validComposedRadioGroup,
+  invalidMixedSelect,
+  validComposedSelect,
 ];
 
 describe("Core static contracts", () => {
@@ -906,6 +923,118 @@ describe("Core interactive action contracts", () => {
     expect(onValueChange).toHaveBeenCalledWith("published");
     expect(trigger).toHaveTextContent("Published");
     expect(screen.queryByRole("option")).not.toBeInTheDocument();
+  });
+
+  it("supports Select composition, ReactNode option labels, descriptions, and protected anatomy", async () => {
+    const user = userEvent.setup();
+    render(
+      <Select
+        aria-describedby="selection-help selection-help"
+        data-slot="consumer-slot"
+        label={
+          <span>
+            Project <strong>visibility</strong>
+          </span>
+        }
+      >
+        <SelectGroup>
+          <SelectGroupLabel>Private</SelectGroupLabel>
+          <SelectItem
+            description="Only workspace members can view it."
+            textValue="Team"
+            value="team"
+          >
+            <span>Team</span>
+          </SelectItem>
+        </SelectGroup>
+        <SelectSeparator />
+        <SelectItem disabled value="public">
+          Public
+        </SelectItem>
+      </Select>,
+    );
+    const trigger = screen.getByRole("combobox", { name: "Project visibility" });
+    expect(trigger.closest("[data-slot='root']")).toHaveAttribute("data-slot", "root");
+    expect(trigger).toHaveAttribute("aria-describedby", "selection-help");
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByText("Private")).toHaveAttribute("data-slot", "group-label");
+    expect(screen.getByText("Only workspace members can view it.")).toHaveAttribute(
+      "data-slot",
+      "item-description",
+    );
+    expect(document.querySelector("[data-slot='separator']")).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Public" })).toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("keeps Select form, event, sizing, trigger ref, and controlled-open contracts", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const onValueChange = vi.fn();
+    const onOpenChange = vi.fn();
+    const triggerRef = React.createRef<HTMLButtonElement>();
+    function ControlledOpenSelect() {
+      const [open, setOpen] = React.useState(false);
+      return (
+        <form>
+          <Select
+            defaultValue="draft"
+            label="Status"
+            name="status"
+            onChange={onChange}
+            onOpenChange={(nextOpen, eventDetails) => {
+              onOpenChange(nextOpen, eventDetails);
+              setOpen(nextOpen);
+            }}
+            onValueChange={onValueChange}
+            open={open}
+            required
+            size="lg"
+            triggerRef={triggerRef}
+            options={[
+              { label: "Draft", value: "draft" },
+              { label: "Published", value: "published" },
+            ]}
+          />
+        </form>
+      );
+    }
+    const { container } = render(<ControlledOpenSelect />);
+    const trigger = screen.getByRole("combobox", { name: "Status" });
+    expect(trigger).toHaveAttribute("data-size", "lg");
+    expect(trigger.closest("[data-slot='root']")).toHaveAttribute("data-size", "lg");
+    expect(triggerRef.current).toBe(trigger);
+    expect(new FormData(container.querySelector("form")!).get("status")).toBe("draft");
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
+    await user.click(screen.getByRole("option", { name: "Published" }));
+    expect(onValueChange).toHaveBeenCalledTimes(1);
+    expect(onValueChange).toHaveBeenCalledWith("published", expect.anything());
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith("published");
+    await user.click(trigger);
+    await user.keyboard("{Escape}");
+    expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
+    expect(trigger).toHaveFocus();
+  });
+
+  it("renders Select size hooks, an empty state, and constrained popup styling", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <Select label="Small" size="sm" options={[]} />
+        <Select label="Medium" size="md" options={[{ label: "Draft", value: "draft" }]} />
+        <Select label="Large" size="lg" options={[{ label: "Published", value: "published" }]} />
+      </>,
+    );
+    expect(screen.getByRole("combobox", { name: "Small" })).toHaveAttribute("data-size", "sm");
+    expect(screen.getByRole("combobox", { name: "Medium" })).toHaveAttribute("data-size", "md");
+    expect(screen.getByRole("combobox", { name: "Large" })).toHaveAttribute("data-size", "lg");
+    await user.click(screen.getByRole("combobox", { name: "Small" }));
+    expect(screen.getByText("No options available.")).toHaveAttribute("data-slot", "empty");
+    expect(document.querySelector(".n-select-positioner")).toBeInTheDocument();
+    expect(document.querySelector(".n-select-list")).toBeInTheDocument();
   });
 
   it("supports checkbox, radio group, and switch state contracts", async () => {

@@ -23,6 +23,9 @@ import {
   RadioGroup,
   RadioGroupItem,
   Select,
+  SelectGroup,
+  SelectGroupLabel,
+  SelectItem,
   Switch,
   Tabs,
   Toast,
@@ -122,6 +125,40 @@ describe("Core accessibility contracts", () => {
       </>,
     );
     expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps closed, open, invalid, grouped, and alternative-name Select states accessible", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <Select
+          description="Choose the closest workflow state."
+          invalid
+          label="Publication status"
+          message="A status is required."
+          options={[
+            { label: "Draft", value: "draft" },
+            { label: "Published", value: "published", disabled: true },
+          ]}
+        />
+        <Select aria-label="Project visibility" label="Visibility">
+          <SelectGroup>
+            <SelectGroupLabel>Workspace</SelectGroupLabel>
+            <SelectItem value="team">Team</SelectItem>
+          </SelectGroup>
+        </Select>
+      </>,
+    );
+    expect((await axe(container)).violations).toEqual([]);
+    await user.click(screen.getByRole("combobox", { name: "Publication status" }));
+    await screen.findByRole("listbox");
+    expect(
+      (
+        await axe(document.body, {
+          rules: { region: { enabled: false } },
+        })
+      ).violations,
+    ).toEqual([]);
   });
 
   it("covers an open dialog and a managed toast action", async () => {

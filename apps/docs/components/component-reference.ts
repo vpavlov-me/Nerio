@@ -81,7 +81,7 @@ export const snippets: Record<string, string> = {
   dialog:
     'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   select:
-    'import { Select } from \'@nerio/ui/client\';\n\n<Select label="Status" name="status" placeholder="Choose status" message="Choose the closest workflow state." options={[{ label: \'Active\', value: \'active\' }]} />',
+    "import { Select } from '@nerio/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: "Saved", data: { tone: "success" } })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>',
   tabs: 'import { Tabs } from \'@nerio/ui/client\';\n\n<Tabs tabs={[{ label: "Overview", value: "overview", content: "..." }, { label: "Archive", value: "archive", content: "...", disabled: true }]} />',
@@ -1521,12 +1521,25 @@ export const componentReference: Record<string, ComponentReference> = {
     category: "Forms",
     purpose: "Use Select when a user chooses one option from a compact, known set.",
     anatomy: [
+      { title: "label", description: "Base UI label that names the combobox." },
       { title: "trigger", description: "Button-like control that opens the option list." },
       { title: "value", description: "Current selection or placeholder text." },
-      { title: "content", description: "Layered list rendered through Base UI portal behavior." },
-      { title: "item", description: "Selectable option with highlighted and selected states." },
+      {
+        title: "content",
+        description: "Layered list with collision-aware positioning and scrolling.",
+      },
+      {
+        title: "item",
+        description: "Selectable option with optional description, highlight, and selected state.",
+      },
     ],
-    variants: [{ title: "Default", description: "Single-select option list." }],
+    variants: [
+      { title: "Options", description: "Concise data-driven API for a compact known list." },
+      {
+        title: "Composed",
+        description: "Curated items, groups, labels, and separators for structured choices.",
+      },
+    ],
     states: [
       { title: "Open", description: "Options appear above the app layer." },
       {
@@ -1537,7 +1550,15 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "Highlighted",
         description: "Keyboard or pointer focus indicates the next selection.",
       },
+      {
+        title: "Selected",
+        description: "Selected items retain a quiet selected surface and check indicator.",
+      },
       { title: "Disabled", description: "Prevents choosing unavailable options." },
+      {
+        title: "Read-only",
+        description: "Keeps the current value visible without allowing changes.",
+      },
       { title: "Required", description: "Supports native form required metadata." },
       {
         title: "Invalid",
@@ -1550,13 +1571,20 @@ export const componentReference: Record<string, ComponentReference> = {
       "Description and message ids are connected through aria-describedby.",
       'Error messages use role="alert" only when invalid is true.',
       "Use name, required, form, and autoComplete when the select participates in native form submission.",
+      "Base UI manages combobox roles, focus restoration, Arrow key navigation, Home, End, Escape, and typeahead.",
     ],
     guidance: {
       do: ["Use for status, owner, view mode, and compact configuration choices."],
-      dont: ["Do not use Select for large searchable datasets."],
+      dont: [
+        "Do not use Select for large, searchable, async, or remotely loaded datasets; use a future Combobox.",
+        "Do not use Select for multiple selection, tags, or creatable values.",
+      ],
     },
     tokens: [
+      "--n-select-height-sm",
       "--n-select-height-md",
+      "--n-select-height-lg",
+      "--n-select-padding-inline",
       "--n-input-radius",
       "--n-input-background",
       "--n-input-border",
