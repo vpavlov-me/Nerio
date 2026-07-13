@@ -25,6 +25,16 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
   Kbd,
   Label,
   LabelContent,
@@ -142,6 +152,74 @@ void [
 ];
 
 describe("Core static contracts", () => {
+  it("keeps Item composition static by default and exposes stable slots", () => {
+    const itemRef = React.createRef<HTMLDivElement>();
+    render(
+      <Item ref={itemRef} className="custom-item" data-selected variant="outline" size="lg">
+        <ItemHeader>Workspace</ItemHeader>
+        <ItemMedia variant="icon">W</ItemMedia>
+        <ItemContent>
+          <ItemTitle>Workspace settings</ItemTitle>
+          <ItemDescription>Manage members, billing, and security.</ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <button type="button">Open</button>
+        </ItemActions>
+        <ItemFooter>Updated today</ItemFooter>
+      </Item>,
+    );
+
+    const item = screen.getByText("Workspace settings").closest(".n-item");
+    expect(item).toBe(itemRef.current);
+    expect(item).toHaveClass("custom-item");
+    expect(item).toHaveAttribute("data-slot", "item");
+    expect(item).toHaveAttribute("data-variant", "outline");
+    expect(item).toHaveAttribute("data-size", "lg");
+    expect(item).toHaveAttribute("data-selected");
+    expect(item?.tagName).toBe("DIV");
+    expect(item).not.toHaveAttribute("tabindex");
+    expect(item?.querySelector('[data-slot="item-header"]')).toHaveTextContent("Workspace");
+    expect(item?.querySelector('[data-slot="item-media"]')).toHaveAttribute("data-variant", "icon");
+    expect(item?.querySelector('[data-slot="item-content"]')).toBeInTheDocument();
+    expect(item?.querySelector('[data-slot="item-description"]')).toHaveTextContent(
+      "Manage members, billing, and security.",
+    );
+    expect(item?.querySelector('[data-slot="item-actions"]')).toBeInTheDocument();
+    expect(item?.querySelector('[data-slot="item-footer"]')).toHaveTextContent("Updated today");
+  });
+
+  it("renders semantic Item roots, grouped separators, and preserves disabled semantics", () => {
+    render(
+      <ItemGroup aria-label="Workspace destinations">
+        <Item render={<a href="/settings" />} size="sm">
+          <ItemContent>
+            <ItemTitle>Settings</ItemTitle>
+          </ItemContent>
+        </Item>
+        <ItemSeparator />
+        <Item aria-disabled="true" data-loading variant="soft">
+          <ItemContent>
+            <ItemTitle>Synchronizing</ItemTitle>
+          </ItemContent>
+        </Item>
+      </ItemGroup>,
+    );
+
+    const group = screen.getByLabelText("Workspace destinations");
+    expect(group).toHaveAttribute("data-slot", "item-group");
+    const link = screen.getByRole("link", { name: "Settings" });
+    expect(link).toHaveAttribute("href", "/settings");
+    expect(link).toHaveClass("n-item");
+    expect(link).toHaveAttribute("data-size", "sm");
+    expect(group.querySelector('[data-slot="item-separator"]')).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    const loadingItem = screen.getByText("Synchronizing").closest(".n-item");
+    expect(loadingItem).toHaveAttribute("aria-disabled", "true");
+    expect(loadingItem).toHaveAttribute("data-loading");
+  });
+
   it("groups related Buttons with a labelled group landmark", () => {
     render(
       <ButtonGroup aria-label="Document actions">

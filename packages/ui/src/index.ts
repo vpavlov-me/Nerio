@@ -100,6 +100,30 @@ export { Stat, type StatProps } from "./components/stat";
 export { KeyValue, type KeyValueProps } from "./components/key-value";
 export { List, type ListItem, type ListProps } from "./components/list";
 export {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+  type ItemActionsProps,
+  type ItemContentProps,
+  type ItemDescriptionProps,
+  type ItemFooterProps,
+  type ItemGroupProps,
+  type ItemHeaderProps,
+  type ItemMediaProps,
+  type ItemMediaVariant,
+  type ItemProps,
+  type ItemSize,
+  type ItemTitleProps,
+  type ItemVariant,
+} from "./components/item";
+export {
   Pagination,
   type PaginationEllipsis,
   type PaginationItem,

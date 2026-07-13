@@ -834,6 +834,73 @@
       "usage": "import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@/components/nerio/components/table';\n\n<TableContainer label=\"Projects\"><Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>"
     },
     {
+      "name": "item",
+      "title": "Item",
+      "description": "Composes compact content, media, metadata, and independent actions without imposing list semantics.",
+      "category": "data-display",
+      "dependencies": ["clsx", "react"],
+      "registryDependencies": ["separator"],
+      "files": [
+        {
+          "source": "../../ui/src/components/item.tsx",
+          "target": "components/item.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/display.css",
+          "target": "styles/display.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": [
+        "item",
+        "item-group",
+        "item-separator",
+        "item-media",
+        "item-content",
+        "item-title",
+        "item-description",
+        "item-actions",
+        "item-header",
+        "item-footer"
+      ],
+      "variants": [
+        "plain",
+        "outline",
+        "soft",
+        "sm",
+        "md",
+        "lg",
+        "default-media",
+        "icon-media",
+        "image-media"
+      ],
+      "requiredTokens": [
+        "--n-item-gap",
+        "--n-item-padding",
+        "--n-item-radius",
+        "--n-item-background-hover",
+        "--n-item-background-selected",
+        "--n-item-border",
+        "--n-item-media-size-md",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Item has no implicit role; choose div, li, a, or button according to context.",
+        "Use render with a native anchor or button only when the full item has one clear interaction.",
+        "Do not nest independent actions inside a fully clickable Item.",
+        "Static Items are not focusable; interactive rendered roots keep native keyboard and focus behavior.",
+        "ItemSeparator is decorative by default."
+      ],
+      "usage": "import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/nerio/components/item';\n\n<Item render={<a href=\"/settings\" />}><ItemMedia variant=\"icon\">...</ItemMedia><ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent><ItemActions>...</ItemActions></Item>"
+    },
+    {
       "name": "list",
       "title": "List",
       "description": "Presents simple structured lists with optional descriptions, metadata, and native links.",

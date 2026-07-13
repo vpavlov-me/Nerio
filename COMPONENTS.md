@@ -102,16 +102,17 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Data display
 
-| Component | Status      | Package     | Notes                                                                                                                       |
-| --------- | ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Card      | polished    | `@nerio/ui` | Composable surface with visual placement, header action, semantic root, and heading contracts; browser verification remains |
-| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                                         |
-| Avatar    | polished    | `@nerio/ui` | User/entity avatar with image-error fallback; broader image verification remains                                            |
-| Table     | polished    | `@nerio/ui` | Basic table with explicit keyboard-scroll opt-in; responsive overflow verification remains                                  |
-| List      | polished    | `@nerio/ui` | Structured list with stable IDs and visible ordered markers; router rendering verification remains                          |
-| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                                              |
-| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                                                        |
-| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                                                     |
+| Component | Status      | Package     | Notes                                                                                                                        |
+| --------- | ----------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| Card      | polished    | `@nerio/ui` | Composable surface with visual placement, header action, semantic root, and heading contracts; browser verification remains  |
+| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                                          |
+| Avatar    | polished    | `@nerio/ui` | User/entity avatar with image-error fallback; broader image verification remains                                             |
+| Table     | polished    | `@nerio/ui` | Basic table with explicit keyboard-scroll opt-in; responsive overflow verification remains                                   |
+| List      | polished    | `@nerio/ui` | Structured list with stable IDs and visible ordered markers; router rendering verification remains                           |
+| Item      | polished    | `@nerio/ui` | Generic composition primitive for compact content, media, and actions; it leaves list and interactive semantics to consumers |
+| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                                               |
+| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                                                         |
+| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                                                      |
 
 ### Feedback
 

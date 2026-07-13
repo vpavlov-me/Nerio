@@ -51,6 +51,7 @@ const componentLedes: Record<string, string> = {
   table:
     "Tables present structured records for scanning, comparison, and repeated operational use.",
   list: "Lists present simple structured items with descriptions, metadata, and native links.",
+  item: "Items compose compact content, media, and actions while leaving semantics and interactions to the consumer.",
   tabs: "Tabs switch between related panels without leaving the current product context.",
   breadcrumbs:
     "Breadcrumbs show hierarchy navigation with ordered list semantics and current page support.",

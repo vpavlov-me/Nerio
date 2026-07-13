@@ -1449,6 +1449,23 @@ pre {
   overflow: hidden;
 }
 
+.item-loading-media {
+  block-size: var(--n-item-media-size-md);
+  inline-size: var(--n-item-media-size-md);
+}
+
+.component-example__preview.item-doc-preview {
+  gap: var(--n-space-2);
+}
+
+.item-loading-title {
+  inline-size: min(100%, 10rem);
+}
+
+.item-loading-description {
+  inline-size: min(100%, 16rem);
+}
+
 .component-example__preview {
   align-items: center;
   display: grid;

@@ -14,6 +14,11 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemTitle,
   Pagination,
   Spinner,
   TableContainer,
@@ -96,6 +101,35 @@ describe("Core accessibility contracts", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Loading activity");
     expect(screen.getAllByRole("status")).toHaveLength(1);
     expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps Item semantics consumer-owned for static content and native links", async () => {
+    const { container } = render(
+      <>
+        <Item>
+          <ItemContent>
+            <ItemTitle>Workspace settings</ItemTitle>
+            <ItemDescription>Manage members and security.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <button type="button">Open</button>
+          </ItemActions>
+        </Item>
+        <Item render={<a href="/settings" />}>
+          <ItemContent>
+            <ItemTitle>Open workspace settings</ItemTitle>
+          </ItemContent>
+        </Item>
+      </>,
+    );
+    expect((await axe(container)).violations).toEqual([]);
+    expect(screen.getByText("Workspace settings").closest(".n-item")).not.toHaveAttribute(
+      "tabindex",
+    );
+    expect(screen.getByRole("link", { name: "Open workspace settings" })).toHaveAttribute(
+      "href",
+      "/settings",
+    );
   });
 
   it("keeps grouped inputs labelled and leaves addon actions independently accessible", async () => {

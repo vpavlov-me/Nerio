@@ -102,6 +102,7 @@ export const snippets: Record<string, string> = {
   table:
     "import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from '@nerio/ui';\n\n<TableContainer label=\"Projects\"><Table><TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader><TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody></Table></TableContainer>",
   list: "import { List } from '@nerio/ui';\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens' }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
+  item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
 };
 
 export const sharedTokens = [
@@ -259,6 +260,34 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: ["root", "item", "body", "link", "title", "description", "meta"],
     motion: ["hover", "focus"],
     accessibility: ["semantic ul or ol", "native anchors", "natural reading order"],
+  },
+  item: {
+    name: "Item",
+    description:
+      "Composes compact content, media, and actions without imposing list semantics or interaction.",
+    status: "beta",
+    layer: "core",
+    category: "Layout and display",
+    package: "@nerio/ui",
+    importPath: "@nerio/ui",
+    related: ["List", "Card", "Separator"],
+    anatomy: [
+      "item",
+      "item-group",
+      "item-media",
+      "item-content",
+      "item-title",
+      "item-description",
+      "item-actions",
+      "item-header",
+      "item-footer",
+    ],
+    motion: ["hover and press only on native interactive rendered roots"],
+    accessibility: [
+      "no implicit role",
+      "native rendered link or button",
+      "static root remains unfocusable",
+    ],
   },
 };
 
@@ -2039,6 +2068,96 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-list-item-background-hover",
       "--n-list-item-border",
       "--n-list-item-border-hover",
+      "--n-focus-ring",
+    ],
+  },
+  item: {
+    category: "Layout and display",
+    purpose:
+      "Use Item to compose a compact content unit with optional media, metadata, and actions without forcing list semantics or interaction.",
+    anatomy: [
+      { title: "item", description: "Generic root with no implicit role." },
+      { title: "item-group", description: "Optional full-width grouping container." },
+      { title: "item-media", description: "Optional leading custom, icon, or image media." },
+      { title: "item-content", description: "Flexible main region with safe minimum inline size." },
+      { title: "item-title / item-description", description: "Primary and supporting content." },
+      { title: "item-actions", description: "Independent trailing controls or compact metadata." },
+      {
+        title: "item-header / item-footer",
+        description: "Optional full-width composition regions.",
+      },
+    ],
+    variants: [
+      {
+        title: "plain",
+        description: "Transparent embedded item; hover appears only for native interactive roots.",
+      },
+      { title: "outline", description: "Subtle bordered standalone item." },
+      { title: "soft", description: "Quiet secondary surface for supporting content." },
+      {
+        title: "sm / md / lg",
+        description: "Coordinated spacing and media dimensions for dense through rich content.",
+      },
+    ],
+    states: [
+      {
+        title: "Selected",
+        description: "Consumer-supplied data-selected uses the semantic selected surface.",
+      },
+      {
+        title: "Disabled",
+        description:
+          "aria-disabled reduces emphasis; consumers prevent activation for native links.",
+      },
+      {
+        title: "Loading",
+        description:
+          "data-loading suppresses pointer interaction while composed Skeleton or Spinner preserves layout.",
+      },
+    ],
+    accessibility: [
+      "Choose div, li, a, or button according to content meaning; Item never adds a role or keyboard handler.",
+      "Use render with a native link or button only when the full item has one clear interaction.",
+      "For independent trailing controls, keep the outer Item static and make only the appropriate content a link.",
+      "ItemSeparator is decorative by default; meaningful media needs an accessible name or alternative text.",
+    ],
+    api: [
+      {
+        title: "variant / size",
+        description: "plain, outline, soft and sm, md, lg; defaults are plain and md.",
+      },
+      {
+        title: "render",
+        description: "Renders the root as a supplied native semantic element such as an anchor.",
+      },
+      {
+        title: "ItemMedia variant",
+        description:
+          "default, icon, or image; compose Avatar rather than adding an avatar variant.",
+      },
+      {
+        title: "className and native props",
+        description:
+          "Every subcomponent forwards native props, className, refs, and data-slot hooks.",
+      },
+    ],
+    guidance: {
+      do: [
+        "Use for settings, people, notifications, integrations, files, and compact result rows.",
+      ],
+      dont: [
+        "Do not use for Field-controlled form options, selectable listboxes, data tables, or a product-specific activity feed.",
+        "Do not nest actions inside a fully clickable Item.",
+      ],
+    },
+    tokens: [
+      "--n-item-gap",
+      "--n-item-padding",
+      "--n-item-radius",
+      "--n-item-background-hover",
+      "--n-item-background-selected",
+      "--n-item-border",
+      "--n-item-media-size-md",
       "--n-focus-ring",
     ],
   },
