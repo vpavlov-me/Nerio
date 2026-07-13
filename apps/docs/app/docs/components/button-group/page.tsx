@@ -194,8 +194,8 @@ export default function Page() {
               </ButtonGroup>
               <div dir="rtl">
                 <ButtonGroup aria-label="RTL document actions">
-                  <Button variant="secondary">إلغاء</Button>
-                  <Button variant="secondary">حفظ</Button>
+                  <Button variant="secondary">Cancel</Button>
+                  <Button variant="secondary">Save</Button>
                 </ButtonGroup>
               </div>
             </div>
