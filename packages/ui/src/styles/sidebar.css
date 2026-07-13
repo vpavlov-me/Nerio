@@ -1,13 +1,8 @@
 .n-sidebar-provider {
-  --n-sidebar-current-width: var(--n-sidebar-width);
   direction: ltr;
   display: flex;
   inline-size: 100%;
   min-block-size: 100%;
-}
-
-.n-sidebar-provider[data-state="collapsed"] {
-  --n-sidebar-current-width: var(--n-sidebar-collapsed-width);
 }
 
 .n-sidebar-provider[data-side="right"] {
@@ -23,8 +18,8 @@
   block-size: 100dvb;
   border-right: var(--n-sidebar-border-width) solid var(--n-sidebar-border);
   color: var(--n-sidebar-foreground);
-  flex: 0 0 var(--n-sidebar-current-width);
-  inline-size: var(--n-sidebar-current-width);
+  flex: 0 0 var(--n-sidebar-width);
+  inline-size: var(--n-sidebar-width);
   max-inline-size: 100dvi;
   min-block-size: 20rem;
   padding-block: env(safe-area-inset-top) env(safe-area-inset-bottom);
@@ -33,6 +28,11 @@
   transition:
     inline-size var(--n-sidebar-transition-duration) var(--n-sidebar-transition-easing),
     flex-basis var(--n-sidebar-transition-duration) var(--n-sidebar-transition-easing);
+}
+
+.n-sidebar-provider[data-state="collapsed"] > .n-sidebar {
+  flex-basis: var(--n-sidebar-collapsed-width);
+  inline-size: var(--n-sidebar-collapsed-width);
 }
 
 .n-sidebar[data-side="right"] {
