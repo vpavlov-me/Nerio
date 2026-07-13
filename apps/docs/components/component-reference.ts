@@ -95,7 +95,7 @@ export const snippets: Record<string, string> = {
   separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
   avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
   progress:
-    'import { Progress } from \'@nerio/ui\';\n\n<Progress label="Completion" value={68} valueText="68% complete" />',
+    'import { Progress } from \'@nerio/ui\';\n\n<Progress label="Uploading files" value={68} />\n\n<Progress aria-label="Synchronizing workspace" value={null} valueText="Synchronizing" />',
   stat: 'import { Stat } from \'@nerio/ui\';\n\n<Stat label="Active projects" value="12" trend="+3 this week" />',
   "key-value":
     'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
@@ -1894,34 +1894,129 @@ export const componentReference: Record<string, ComponentReference> = {
   },
   progress: {
     category: "Layout and display",
-    purpose: "Use Progress to show measurable completion for uploads, tasks, setup, or workflows.",
+    purpose: "Use Progress to communicate the completion status of one task that takes time.",
     anatomy: [
-      { title: "root", description: "Progress region with optional label and value." },
+      {
+        title: "root",
+        description: "The semantic progressbar with the name and normalized range ARIA.",
+      },
+      {
+        title: "header",
+        description: "Optional row rendered when a visible label or value label exists.",
+      },
+      {
+        title: "label",
+        description: "Optional visible task name that owns the internal aria-labelledby reference.",
+      },
+      {
+        title: "value",
+        description: "Optional visible completion text supplied through valueLabel.",
+      },
       { title: "track", description: "Background track using muted surface tokens." },
-      { title: "indicator", description: "Filled value using action or intent color." },
+      {
+        title: "indicator",
+        description: "Transform-scaled determinate fill or restrained indeterminate segment.",
+      },
     ],
     variants: [
-      { title: "Determinate", description: "Shows known completion from 0 to 100." },
-      { title: "Indeterminate", description: "Omits value when work cannot be measured yet." },
+      { title: "None", description: "Progress has no visual variants, sizes, or outcome tones." },
     ],
     states: [
-      { title: "In progress", description: "Value is between start and complete." },
-      { title: "Complete", description: "Value reaches 100." },
+      {
+        title: "Indeterminate",
+        description: "A reliable value is unavailable, so aria-valuenow is omitted.",
+      },
+      { title: "Progressing", description: "A finite value is below the normalized maximum." },
+      {
+        title: "Complete",
+        description: "The clamped value reaches the normalized maximum without changing color.",
+      },
+    ],
+    motion: [
+      "Determinate updates scale the indicator with transform instead of animating layout size.",
+      "Indeterminate motion uses tokenized duration, easing, and segment width; RTL reverses its direction.",
+      "Reduced motion disables transitions and animation while retaining a static partial segment.",
     ],
     accessibility: [
-      "Expose a label and numeric value for assistive technologies.",
-      "When value is omitted, the component exposes indeterminate progress; use Spinner for a compact inline wait.",
+      "Every Progress requires exactly one accessible name through label, aria-label, or aria-labelledby.",
+      "Determinate Progress exposes normalized range values; indeterminate Progress omits aria-valuenow.",
+      "Use valueText for text such as 3 of 5 steps when a percentage is not sufficient.",
+      "Progress is read-only and not keyboard-focusable. Do not implement it as a slider.",
+      "Set aria-busy on the loading region until work completes, and avoid a separate assertive live region for frequent updates.",
     ],
     guidance: {
-      do: ["Use when progress can be measured."],
-      dont: ["Do not fake precision for unknown work; use Spinner instead."],
+      do: [
+        "Show determinate progress when a reliable value exists.",
+        "Use indeterminate progress only while a reliable value is unavailable.",
+        "Keep the label specific to one task and expose meaningful non-percentage text through valueText.",
+        "Use Progress for work that takes long enough for completion feedback to be useful.",
+      ],
+      dont: [
+        "Invent values to make an operation appear active.",
+        "Use Progress as a score, capacity, battery level, health value, or other static measurement; use future Meter instead.",
+        "Encode success or failure only with indicator color.",
+        "Use Progress for a tiny inline wait where Spinner is more appropriate, or as a Skeleton replacement for unknown page structure.",
+        "Display a completed Progress as the only confirmation that an operation succeeded.",
+      ],
     },
     tokens: [
       "--n-progress-height",
       "--n-progress-radius",
+      "--n-progress-gap",
+      "--n-progress-header-gap",
+      "--n-progress-label-color",
+      "--n-progress-label-font-size",
+      "--n-progress-label-font-weight",
+      "--n-progress-value-color",
+      "--n-progress-value-font-size",
+      "--n-progress-value-font-weight",
       "--n-progress-track-background",
       "--n-progress-indicator-background",
+      "--n-progress-duration",
+      "--n-progress-easing",
+      "--n-progress-indeterminate-duration",
+      "--n-progress-indeterminate-width",
+      "--n-progress-indeterminate-start",
+      "--n-progress-indeterminate-end",
+      "--n-progress-indeterminate-reduced-position",
     ],
+    api: [
+      {
+        title: "value",
+        description: "number | null; a finite number is clamped within the normalized range.",
+      },
+      {
+        title: "min / max",
+        description: "number; default to 0 and 100. Invalid ranges normalize back to 0–100.",
+      },
+      {
+        title: "label",
+        description:
+          "ReactNode; visible task name and one of the required accessible naming paths.",
+      },
+      {
+        title: "valueLabel",
+        description: "ReactNode; optional visible completion text in the header.",
+      },
+      {
+        title: "valueText",
+        description: "string; optional localized aria-valuetext without an English default.",
+      },
+      {
+        title: "aria-label / aria-labelledby",
+        description: "Use exactly one when a visible label is not supplied.",
+      },
+      {
+        title: "root DOM props",
+        description:
+          "id, className, style, aria-describedby, aria-controls, event handlers, and consumer data attributes are forwarded to the progressbar root.",
+      },
+    ],
+    designNotes: [
+      "Progress communicates task completion only. Final success, failure, cancellation, and blocked outcomes belong to Alert, Badge, or Toast.",
+      "Progress is not Meter: static scores, capacity, battery levels, and health values have a separate semantic responsibility.",
+    ],
+    related: ["Spinner", "Skeleton", "Alert", "Toast", "Meter (future)"],
   },
   stat: {
     category: "Layout and display",

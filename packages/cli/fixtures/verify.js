@@ -93,13 +93,13 @@ const expectedNavigationFiles = [
 ];
 const expectedFeedbackFiles = [
   "components/empty-state.tsx",
-  "components/progress.tsx",
   "components/skeleton.tsx",
   "components/spinner.tsx",
   "lib/cn.ts",
   "styles/feedback.css",
   "styles/spinner.css",
 ];
+const expectedProgressFiles = ["components/progress.tsx", "lib/cn.ts", "styles/progress.css"];
 const expectedOverlayAndTabsFiles = [
   "components/dialog.tsx",
   "components/dropdown-menu.tsx",
@@ -364,6 +364,7 @@ async function verify() {
     assertFiles(localTarget, expectedDisplayFiles);
     assertFiles(localTarget, expectedNavigationFiles);
     assertFiles(localTarget, expectedFeedbackFiles);
+    assertFiles(localTarget, expectedProgressFiles);
     assertFiles(localTarget, expectedOverlayAndTabsFiles);
 
     const tableSource = fs.readFileSync(
@@ -419,8 +420,25 @@ async function verify() {
       path.join(localTarget, "components/nerio/components/progress.tsx"),
       "utf8",
     );
-    if (!progressSource.includes("aria-labelledby") || !progressSource.includes("aria-valuenow")) {
+    if (
+      !progressSource.includes("aria-labelledby") ||
+      !progressSource.includes("aria-valuenow") ||
+      !progressSource.includes("data-state={normalized.state}")
+    ) {
       throw new Error("Installed Progress source does not preserve accessible progress metadata.");
+    }
+    const progressItem = JSON.parse(fs.readFileSync(manifest, "utf8")).items.find(
+      (item) => item.name === "progress",
+    );
+    if (
+      !progressItem ||
+      progressItem.files.some((file) => file.target === "styles/feedback.css") ||
+      !progressItem.files.some((file) => file.target === "styles/progress.css") ||
+      !progressItem.states?.includes("indeterminate")
+    ) {
+      throw new Error(
+        "Progress registry install must use its dedicated stylesheet and state contract.",
+      );
     }
 
     const buttonSource = fs.readFileSync(

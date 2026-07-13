@@ -418,7 +418,7 @@ function FeedbackContent() {
           <span>Uploading assets</span>
           <Spinner label="Uploading" />
         </div>
-        <Progress value={64} ariaLabel="Upload progress" />
+        <Progress value={64} aria-label="Upload progress" />
         <p>64% complete</p>
       </div>
       <div className="composition-skeleton-row">
@@ -690,7 +690,7 @@ const compositions: Record<string, Composition> = {
       "Feedback stacks vertically and preserves reading order; transient toast placement remains independent from the content column.",
     notes:
       "Core owns feedback primitives. Cross-product notification centres and workflow orchestration remain out of scope.",
-    code: '<Alert tone="success" title="Changes saved" />\n<Progress value={64} />\n<ToastViewport />',
+    code: '<Alert tone="success" title="Changes saved" />\n<Progress label="Upload progress" value={64} />\n<ToastViewport />',
     Preview: FeedbackPreview,
   },
   "overlay-playground": {

@@ -20,6 +20,7 @@ import {
   ItemDescription,
   ItemTitle,
   Pagination,
+  Progress,
   Spinner,
   TableContainer,
 } from "../../src/index";
@@ -113,6 +114,19 @@ describe("Core accessibility contracts", () => {
     );
     expect(screen.getByRole("status")).toHaveTextContent("Loading activity");
     expect(screen.getAllByRole("status")).toHaveLength(1);
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps named determinate, indeterminate, custom-range, and externally labelled Progress accessible", async () => {
+    const { container } = render(
+      <>
+        <Progress label="Uploading files" value={68} />
+        <Progress aria-label="Synchronizing workspace" value={null} valueText="Synchronizing" />
+        <Progress label="Importing records" max={5} value={3} valueText="3 of 5 records imported" />
+        <span id="export-progress-label">Exporting report</span>
+        <Progress aria-labelledby="export-progress-label" value={40} />
+      </>,
+    );
     expect((await axe(container)).violations).toEqual([]);
   });
 

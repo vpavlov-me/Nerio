@@ -95,7 +95,7 @@ export {
 } from "./components/card";
 export { Separator, type SeparatorProps } from "./components/separator";
 export { Avatar, type AvatarProps } from "./components/avatar";
-export { Progress, type ProgressProps } from "./components/progress";
+export { Progress, type ProgressProps, type ProgressState } from "./components/progress";
 export { Stat, type StatProps } from "./components/stat";
 export { KeyValue, type KeyValueProps } from "./components/key-value";
 export { List, type ListItem, type ListProps } from "./components/list";

@@ -153,9 +153,17 @@ async function verify() {
     const progressUsage = JSON.parse(progressUsageResult.content[0].text);
     if (
       !progressUsage.requiredTokens.includes("--n-progress-radius") ||
-      !progressUsage.accessibility.some((item) => item.includes("accessible progressbar name"))
+      !progressUsage.requiredTokens.includes("--n-progress-indeterminate-reduced-position") ||
+      !progressUsage.slots.includes("track") ||
+      !progressUsage.states.includes("indeterminate") ||
+      !progressUsage.accessibility.some((item) =>
+        item.includes("requires exactly one accessible name"),
+      ) ||
+      progressUsage.files.some((file) => file.target === "styles/feedback.css")
     ) {
-      throw new Error("MCP Progress usage is missing accessible progress metadata.");
+      throw new Error(
+        "MCP Progress usage is missing its dedicated style, state, token, or naming contract.",
+      );
     }
 
     const buttonUsageResult = await client.callTool({

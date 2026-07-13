@@ -40,6 +40,7 @@ function get_component_usage(name) {
     baseUiPrimitives: item.baseUiPrimitives,
     slots: item.slots,
     variants: item.variants,
+    states: item.states ?? [],
     requiredTokens: item.requiredTokens,
     accessibility: item.accessibility,
   };
