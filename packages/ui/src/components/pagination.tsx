@@ -8,7 +8,7 @@ export type PaginationPage = {
   href?: string;
   onSelect?: () => void;
   /** Router link element. `onSelect` takes precedence when both are supplied. */
-  render?: React.ReactElement<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
+  render?: React.ReactElement<PaginationRenderProps>;
   current?: boolean;
   disabled?: boolean;
   ariaLabel?: string;
@@ -24,14 +24,19 @@ export type PaginationEllipsis = {
 
 export type PaginationItem = PaginationPage | PaginationEllipsis;
 
+type PaginationRenderProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  "data-current"?: string;
+  "data-slot"?: string;
+};
+
 export interface PaginationProps extends React.HTMLAttributes<HTMLElement> {
   pages: PaginationItem[];
   previousHref?: string;
   nextHref?: string;
   previousOnSelect?: () => void;
   nextOnSelect?: () => void;
-  previousRender?: React.ReactElement<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
-  nextRender?: React.ReactElement<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
+  previousRender?: React.ReactElement<PaginationRenderProps>;
+  nextRender?: React.ReactElement<PaginationRenderProps>;
   previousLabel?: React.ReactNode;
   nextLabel?: React.ReactNode;
   previousAriaLabel?: string;
@@ -126,7 +131,7 @@ type PaginationControlProps = {
   disabled?: boolean;
   href?: string;
   onSelect?: () => void;
-  render?: React.ReactElement<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
+  render?: React.ReactElement<PaginationRenderProps>;
   slot: "previous" | "page" | "next";
 } & Pick<React.AnchorHTMLAttributes<HTMLAnchorElement>, "aria-current" | "aria-label">;
 
@@ -186,6 +191,8 @@ function PaginationControl({
       {
         ...props,
         className: cn(className, render.props.className),
+        "data-current": current ? "" : undefined,
+        "data-slot": slot,
         href,
       },
       children,

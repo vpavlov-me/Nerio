@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Circle } from "@nerio/adapters";
 import { getRegistryItem } from "@nerio/registry";
 import {
@@ -379,7 +380,16 @@ function Preview({ kind }: { kind: string }) {
               </Text>
             </div>
           ) : null}
-          {kind === "kbd" ? <Kbd>⌘S</Kbd> : null}
+          {kind === "kbd" ? (
+            <div className="form-preview-stack">
+              <span>
+                Save changes <Kbd>⌘ S</Kbd>
+              </span>
+              <Button>
+                Open command menu <Kbd aria-hidden>⌘ ⇧ P</Kbd>
+              </Button>
+            </div>
+          ) : null}
           {kind === "badge" ? (
             <>
               <Badge>Draft</Badge>
@@ -735,9 +745,9 @@ function Preview({ kind }: { kind: string }) {
           ) : null}
           {kind === "avatar" ? (
             <>
-              <Avatar name="Maya Chen" />
+              <AvatarImagePreview />
               <Avatar name="Nerio Team" />
-              <Avatar name="Alex Rivera" />
+              <Avatar name="Alex Rivera" src="/missing-avatar.png" />
             </>
           ) : null}
           {kind === "progress" ? (
@@ -784,24 +794,35 @@ function Preview({ kind }: { kind: string }) {
             </TableContainer>
           ) : null}
           {kind === "list" ? (
-            <List
-              items={[
-                {
-                  id: "tokens",
-                  title: "Tokens",
-                  description: "CSS variable foundation for themes, modes, and density.",
-                  href: "/docs/foundations/tokens",
-                  meta: "Foundation",
-                },
-                {
-                  id: "components",
-                  title: "Components",
-                  description: "Composable Core primitives installed as source.",
-                  href: "/docs/components/button",
-                  meta: "Core",
-                },
-              ]}
-            />
+            <div className="form-preview-stack">
+              <List
+                items={[
+                  {
+                    id: "tokens",
+                    title: "Tokens",
+                    description: "CSS variable foundation for themes, modes, and density.",
+                    href: "/docs/foundations/tokens",
+                    render: <Link href="#" />,
+                    meta: "Foundation",
+                  },
+                  {
+                    id: "components",
+                    title: "Components",
+                    description: "Composable Core primitives installed as source.",
+                    href: "/docs/components/button",
+                    meta: "Core",
+                  },
+                ]}
+              />
+              <List
+                aria-label="Setup order"
+                ordered
+                items={[
+                  { id: "install", title: "Install tokens" },
+                  { id: "import", title: "Import component styles" },
+                ]}
+              />
+            </div>
           ) : null}
           {kind === "breadcrumbs" ? (
             <Breadcrumbs
@@ -813,15 +834,34 @@ function Preview({ kind }: { kind: string }) {
             />
           ) : null}
           {kind === "pagination" ? (
-            <Pagination
-              previousHref="/docs/components/breadcrumbs"
-              nextHref="/docs/components/list"
-              pages={[
-                { key: "1", label: "1", href: "/docs/components/breadcrumbs" },
-                { key: "2", label: "2", href: "/docs/components/pagination", current: true },
-                { key: "3", label: "3", href: "/docs/components/list" },
-              ]}
-            />
+            <div className="form-preview-stack">
+              <Pagination
+                previousHref="/docs/components/breadcrumbs"
+                nextHref="/docs/components/list"
+                pages={[
+                  { key: "1", label: "1", href: "/docs/components/breadcrumbs" },
+                  {
+                    key: "2",
+                    label: "2",
+                    href: "/docs/components/pagination",
+                    current: true,
+                    render: <Link href="#" />,
+                  },
+                  { key: "3", label: "3", href: "/docs/components/list" },
+                ]}
+              />
+              <div dir="rtl">
+                <Pagination
+                  aria-label="RTL pagination"
+                  pages={[
+                    { key: "1", label: "1", href: "/docs/page/1", current: true },
+                    { key: "2", label: "2", href: "/docs/page/2" },
+                    { key: "ellipsis", type: "ellipsis" },
+                    { key: "12", label: "12", href: "/docs/page/12" },
+                  ]}
+                />
+              </div>
+            </div>
           ) : null}
         </div>
       </div>
@@ -831,6 +871,22 @@ function Preview({ kind }: { kind: string }) {
         label={`${kind} preview code`}
       />
     </section>
+  );
+}
+
+const avatarImageSrc =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48' viewBox='0 0 96 48'%3E%3Crect width='96' height='48' fill='%236d5bd0'/%3E%3Ccircle cx='48' cy='24' r='14' fill='white'/%3E%3C/svg%3E";
+
+function AvatarImagePreview() {
+  const [src, setSrc] = React.useState("/missing-avatar.png");
+
+  return (
+    <div className="form-preview-stack">
+      <Avatar name="Maya Chen" src={src} />
+      <Button size="sm" variant="secondary" onClick={() => setSrc(avatarImageSrc)}>
+        Load replacement avatar
+      </Button>
+    </div>
   );
 }
 

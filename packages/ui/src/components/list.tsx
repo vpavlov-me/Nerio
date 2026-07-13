@@ -8,6 +8,8 @@ export type ListItem = {
   meta?: React.ReactNode;
   href?: string;
   linkProps?: ListLinkProps;
+  /** Router link element. The canonical item href is forwarded to it. */
+  render?: React.ReactElement<ListRenderProps>;
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
 };
@@ -17,6 +19,10 @@ export type ListLinkProps = Omit<
   "children" | "className" | "href"
 > & {
   className?: string;
+};
+
+type ListRenderProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  "data-slot"?: string;
 };
 
 export interface ListProps extends Omit<
@@ -84,14 +90,27 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
         return (
           <li className="n-list__item" data-slot="item" key={item.id}>
             {item.href ? (
-              <a
-                {...linkProps}
-                className={cn("n-list__link", linkClassName)}
-                data-slot="link"
-                href={item.href}
-              >
-                {body}
-              </a>
+              item.render ? (
+                React.cloneElement(
+                  item.render,
+                  {
+                    ...linkProps,
+                    className: cn("n-list__link", item.render.props.className, linkClassName),
+                    "data-slot": "link",
+                    href: item.href,
+                  },
+                  body,
+                )
+              ) : (
+                <a
+                  {...linkProps}
+                  className={cn("n-list__link", linkClassName)}
+                  data-slot="link"
+                  href={item.href}
+                >
+                  {body}
+                </a>
+              )
             ) : (
               <div className="n-list__body" data-slot="body">
                 {body}

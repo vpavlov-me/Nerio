@@ -268,6 +268,7 @@ async function verify() {
     if (
       !listUsage.requiredTokens.includes("--n-list-item-padding") ||
       !listUsage.accessibility.some((item) => item.includes("semantic ul")) ||
+      !listUsage.accessibility.some((item) => item.includes("custom router link")) ||
       !listUsage.usage.includes("<List")
     ) {
       throw new Error("MCP List usage is missing semantic list, token, or usage metadata.");
@@ -309,7 +310,8 @@ async function verify() {
     if (
       paginationUsage.baseUiPrimitives.length !== 0 ||
       !paginationUsage.requiredTokens.includes("--n-pagination-item-size") ||
-      !paginationUsage.accessibility.some((item) => item.includes("aria-disabled"))
+      !paginationUsage.accessibility.some((item) => item.includes("aria-disabled")) ||
+      !paginationUsage.accessibility.some((item) => item.includes("router adapters"))
     ) {
       throw new Error("MCP Pagination usage is missing native, token, or disabled metadata.");
     }

@@ -107,6 +107,7 @@ import {
   useToastManager,
 } from "../../src/client";
 import { ArrowRight, Bell, Check, type IconSvgProps } from "@nerio/adapters";
+import { RouterLinkFixture } from "../fixtures/router-link";
 
 const CustomSvgIcon = React.forwardRef<SVGSVGElement, IconSvgProps>(function CustomSvgIcon(
   { absoluteStrokeWidth: _absoluteStrokeWidth, size, strokeWidth, ...props },
@@ -319,9 +320,10 @@ describe("Core static contracts", () => {
   });
 
   it("renders semantic Item roots, grouped separators, and preserves disabled semantics", () => {
+    const linkRef = React.createRef<HTMLAnchorElement>();
     render(
       <ItemGroup aria-label="Workspace destinations">
-        <Item render={<a href="/settings" />} size="sm">
+        <Item ref={linkRef} render={<a href="/settings" />} size="sm">
           <ItemContent>
             <ItemTitle>Settings</ItemTitle>
           </ItemContent>
@@ -338,6 +340,7 @@ describe("Core static contracts", () => {
     const group = screen.getByLabelText("Workspace destinations");
     expect(group).toHaveAttribute("data-slot", "item-group");
     const link = screen.getByRole("link", { name: "Settings" });
+    expect(linkRef.current).toBe(link);
     expect(link).toHaveAttribute("href", "/settings");
     expect(link).toHaveClass("n-item");
     expect(link).toHaveAttribute("data-size", "sm");
@@ -554,6 +557,12 @@ describe("Core static contracts", () => {
     const shortcut = screen.getByText("⌘S");
     expect(shortcut.tagName).toBe("KBD");
     expect(shortcut).toHaveClass("n-kbd");
+    expect(shortcut).toHaveAttribute("data-slot", "kbd");
+
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/kbd.css"), "utf8");
+    expect(styles).toContain("display: inline-block;");
+    expect(styles).toContain("vertical-align: baseline;");
+    expect(styles).toContain("@media (forced-colors: active)");
   });
 
   it("keeps Progress semantics, root props, and protected anatomy intentional", () => {
@@ -785,6 +794,16 @@ describe("Core static contracts", () => {
     expect(visual).toHaveAttribute("data-placement", "bleed");
   });
 
+  it("keeps Card narrow layouts and high-contrast focus visible", () => {
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/display.css"), "utf8");
+    expect(styles).toMatch(
+      /@media \(max-width: 30rem\)[\s\S]*\.n-card__header:has\(> \[data-slot="card-action"\]\)[\s\S]*grid-template-columns: minmax\(0, 1fr\);/,
+    );
+    expect(styles).toMatch(
+      /@media \(forced-colors: active\)[\s\S]*\.n-card\[href\]:focus-visible[\s\S]*solid Highlight;/,
+    );
+  });
+
   it("resets Avatar fallback state when src changes and exposes intentional fallback names", () => {
     const { rerender } = render(<Avatar name="  Maya   Chen " />);
     expect(screen.getByText("MC")).toBeInTheDocument();
@@ -796,6 +815,8 @@ describe("Core static contracts", () => {
       "src",
       "/replacement.png",
     );
+    rerender(<Avatar name="Иван Петров" src="/missing.png" />);
+    expect(screen.getByRole("img", { name: "Иван Петров" })).toHaveAttribute("src", "/missing.png");
     rerender(<Avatar name="" fallback="Team" decorative />);
     expect(screen.getByText("Team")).toHaveAttribute("aria-hidden", "true");
   });
@@ -855,6 +876,29 @@ describe("Core static contracts", () => {
     expect(link).toHaveAttribute("data-source", "navigation");
   });
 
+  it("adapts List destinations to a router element without losing native link contracts", () => {
+    render(
+      <List
+        items={[
+          {
+            id: "router-docs",
+            title: "Router documentation",
+            href: "/docs/router",
+            render: <RouterLinkFixture className="router-link" data-adapter="fixture" />,
+            linkProps: { "aria-label": "Open router documentation", target: "_blank" },
+          },
+        ]}
+      />,
+    );
+    const link = screen.getByRole("link", { name: "Open router documentation" });
+    expect(link).toHaveAttribute("href", "/docs/router");
+    expect(link).toHaveAttribute("data-router-path", "/docs/router");
+    expect(link).toHaveAttribute("data-adapter", "fixture");
+    expect(link).toHaveAttribute("data-slot", "link");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveClass("n-list__link", "router-link");
+  });
+
   it("renders link, button, ellipsis, current and disabled Pagination controls", async () => {
     const user = userEvent.setup();
     const select = vi.fn();
@@ -884,11 +928,21 @@ describe("Core static contracts", () => {
         previousAriaLabel="Older"
         nextAriaLabel="Newer"
         pages={[
-          { key: "router", label: "Router", href: "/router", render: <a data-router-link="" /> },
+          {
+            key: "router",
+            label: "Router",
+            href: "/router",
+            current: true,
+            render: <RouterLinkFixture data-router-link="" />,
+          },
         ]}
       />,
     );
     expect(screen.getByText("Router")).toHaveAttribute("data-router-link", "");
+    expect(screen.getByText("Router")).toHaveAttribute("data-router-path", "/router");
+    expect(screen.getByText("Router")).toHaveAttribute("data-slot", "page");
+    expect(screen.getByText("Router")).toHaveAttribute("data-current", "");
+    expect(screen.getByText("Router")).toHaveAttribute("aria-current", "page");
     expect(screen.getByText("Previous")).toHaveAttribute("aria-label", "Older");
     expect(screen.getByText("Next")).toHaveAttribute("aria-label", "Newer");
   });
@@ -1115,6 +1169,16 @@ describe("Core static contracts", () => {
       "vertical",
     );
     expect(screen.getByRole("link", { name: "Get help" })).toHaveAttribute("href", "#help");
+  });
+
+  it("stacks EmptyState actions at mobile widths without changing the composition API", () => {
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/feedback.css"), "utf8");
+    expect(styles).toMatch(
+      /@media \(max-width: 30rem\)[\s\S]*\.n-empty-state__actions[\s\S]*flex-direction: column;[\s\S]*inline-size: 100%;/,
+    );
+    expect(styles).toMatch(
+      /@media \(forced-colors: active\)[\s\S]*\.n-empty-state__media\[data-variant="icon"\]/,
+    );
   });
 
   it("renders Alert content and an optional trailing action slot", () => {
@@ -2384,6 +2448,9 @@ describe("Core interactive action contracts", () => {
     expect(tabsStyles).toContain("inset 0 0 0 var(--n-focus-ring-outer-width)");
     expect(tabsStyles).toMatch(
       /@media \(prefers-reduced-motion: reduce\)[\s\S]*transition-duration: 1ms;/,
+    );
+    expect(tabsStyles).toMatch(
+      /@media \(forced-colors: active\)[\s\S]*\.n-tabs__trigger:focus-visible[\s\S]*solid Highlight;/,
     );
   });
 

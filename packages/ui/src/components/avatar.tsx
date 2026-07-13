@@ -14,10 +14,6 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
   { alt, className, decorative = false, fallback, name, size = "md", src, ...props },
   ref,
 ) {
-  const [imageFailed, setImageFailed] = React.useState(false);
-  React.useEffect(() => {
-    setImageFailed(false);
-  }, [src]);
   const normalizedName = name.trim().replace(/\s+/g, " ");
   const initials =
     normalizedName
@@ -36,23 +32,53 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
       data-size={size}
       {...props}
     >
-      {src && !imageFailed ? (
-        <img
-          src={src}
-          alt={decorative ? "" : (alt ?? normalizedName)}
-          data-slot="image"
-          onError={() => setImageFailed(true)}
-        />
-      ) : (
-        <span
-          data-slot="fallback"
-          {...(decorative
-            ? { "aria-hidden": true }
-            : { role: "img", "aria-label": (alt ?? normalizedName) || "Avatar" })}
-        >
-          {fallback ?? initials}
-        </span>
-      )}
+      <AvatarContent
+        key={src ?? "fallback"}
+        alt={alt}
+        decorative={decorative}
+        fallback={fallback}
+        initials={initials}
+        normalizedName={normalizedName}
+        src={src}
+      />
     </span>
   );
 });
+
+type AvatarContentProps = Pick<AvatarProps, "alt" | "decorative" | "fallback" | "src"> & {
+  initials: string;
+  normalizedName: string;
+};
+
+function AvatarContent({
+  alt,
+  decorative,
+  fallback,
+  initials,
+  normalizedName,
+  src,
+}: AvatarContentProps) {
+  const [imageFailed, setImageFailed] = React.useState(false);
+
+  if (src && !imageFailed) {
+    return (
+      <img
+        src={src}
+        alt={decorative ? "" : (alt ?? normalizedName)}
+        data-slot="image"
+        onError={() => setImageFailed(true)}
+      />
+    );
+  }
+
+  return (
+    <span
+      data-slot="fallback"
+      {...(decorative
+        ? { "aria-hidden": true }
+        : { role: "img", "aria-label": (alt ?? normalizedName) || "Avatar" })}
+    >
+      {fallback ?? initials}
+    </span>
+  );
+}

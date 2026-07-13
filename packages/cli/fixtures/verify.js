@@ -497,7 +497,9 @@ async function verify() {
       !listSource.includes('const Root = ordered ? "ol" : "ul"') ||
       !listSource.includes('className={cn("n-list__link", linkClassName)}') ||
       !listSource.includes('data-slot="link"') ||
-      !listSource.includes("href={item.href}")
+      !listSource.includes("href={item.href}") ||
+      !listSource.includes("React.cloneElement") ||
+      !listSource.includes('"data-slot": "link"')
     ) {
       throw new Error("Installed List source does not preserve protected native link anatomy.");
     }
@@ -523,7 +525,9 @@ async function verify() {
     if (
       !paginationSource.includes('"aria-label": ariaLabel = "Pagination"') ||
       !paginationSource.includes('aria-current={page.current ? "page" : undefined}') ||
-      !paginationSource.includes('aria-disabled="true"')
+      !paginationSource.includes('aria-disabled="true"') ||
+      !paginationSource.includes('"data-current": current ? "" : undefined') ||
+      !paginationSource.includes('"data-slot": slot')
     ) {
       throw new Error(
         "Installed Pagination source does not preserve landmark, current page, or disabled semantics.",

@@ -104,3 +104,18 @@
   cursor: not-allowed;
   opacity: var(--n-opacity-muted);
 }
+
+@media (forced-colors: active) {
+  .n-pagination__control {
+    border-color: CanvasText;
+  }
+
+  .n-pagination__control[data-current] {
+    outline: var(--n-focus-ring-inner-width) solid Highlight;
+  }
+
+  .n-pagination__control:focus-visible {
+    outline: var(--n-focus-ring-inner-width) solid Highlight;
+    outline-offset: var(--n-focus-ring-inner-width);
+  }
+}
