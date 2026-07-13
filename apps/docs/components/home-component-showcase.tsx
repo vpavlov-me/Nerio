@@ -13,7 +13,17 @@ import {
   Separator,
   Spinner,
 } from "@nerio/ui/client";
-import { Button, Checkbox, Switch, Tabs } from "@nerio/ui/client";
+import {
+  Button,
+  Checkbox,
+  Switch,
+  Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsPanels,
+  TabsTrigger,
+} from "@nerio/ui/client";
 import { Check, Circle, CircleAlert, Plus, Save, Settings, X } from "@nerio/adapters";
 
 const avatars = ["Ava Cole", "Noah Lee", "Maya Chen", "Owen Hart", "Iris Park"];
@@ -71,25 +81,32 @@ export function HomeComponentShowcase() {
           </section>
 
           <section className="home-gallery__ranges" aria-label="View controls">
-            <Tabs
-              className="home-gallery__range-tabs"
-              variant="segmented"
-              tabs={[
-                { value: "1d", label: "1D", content: null },
-                { value: "7d", label: "7D", content: null },
-                { value: "1m", label: "1M", content: null },
-                { value: "1y", label: "1Y", content: null },
-                { value: "all", label: "All", content: null },
-              ]}
-            />
-            <Tabs
-              className="home-gallery__channel-tabs"
-              variant="segmented"
-              tabs={[
-                { value: "chats", label: "Chats", content: null },
-                { value: "emails", label: "Emails", content: null },
-              ]}
-            />
+            <Tabs className="home-gallery__range-tabs" defaultValue="1d" variant="segmented">
+              <TabsList aria-label="Chart range" layout="fill">
+                {["1D", "7D", "1M", "1Y", "All"].map((label) => (
+                  <TabsTrigger key={label} value={label.toLowerCase()}>
+                    {label}
+                  </TabsTrigger>
+                ))}
+                <TabsIndicator />
+              </TabsList>
+              <TabsPanels>
+                {["1D", "7D", "1M", "1Y", "All"].map((label) => (
+                  <TabsContent key={label} value={label.toLowerCase()} />
+                ))}
+              </TabsPanels>
+            </Tabs>
+            <Tabs className="home-gallery__channel-tabs" defaultValue="chats" variant="segmented">
+              <TabsList aria-label="Message channel" layout="fill">
+                <TabsTrigger value="chats">Chats</TabsTrigger>
+                <TabsTrigger value="emails">Emails</TabsTrigger>
+                <TabsIndicator />
+              </TabsList>
+              <TabsPanels>
+                <TabsContent value="chats" />
+                <TabsContent value="emails" />
+              </TabsPanels>
+            </Tabs>
           </section>
 
           <section className="home-gallery__menu" aria-label="Action menu">

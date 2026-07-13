@@ -35,6 +35,11 @@ import {
   Stat,
   Switch,
   Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsPanels,
+  TabsTrigger,
   Table,
   TableBody,
   TableCell,
@@ -512,20 +517,21 @@ function NavigationPreview() {
           Notes
         </Button>
       </nav>
-      <Tabs
-        tabs={[
-          {
-            label: "Overview",
-            value: "overview",
-            content: <p>Use tabs for peer sections, not application navigation.</p>,
-          },
-          {
-            label: "Activity",
-            value: "activity",
-            content: <p>Activity is a small, related view.</p>,
-          },
-        ]}
-      />
+      <Tabs defaultValue="overview">
+        <TabsList aria-label="Local composition sections">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsIndicator />
+        </TabsList>
+        <TabsPanels>
+          <TabsContent value="overview">
+            <p>Use tabs for peer sections, not application navigation.</p>
+          </TabsContent>
+          <TabsContent value="activity">
+            <p>Activity is a small, related view.</p>
+          </TabsContent>
+        </TabsPanels>
+      </Tabs>
       <div className="composition-sidebar-preview">
         <nav aria-label="Section navigation">
           <Button nativeButton={false} render={<a href="#overview" />} variant="link">
@@ -710,7 +716,7 @@ const compositions: Record<string, Composition> = {
       "Top links scroll or wrap as needed, local navigation remains a short list, and pagination preserves labelled controls.",
     notes:
       "This is local docs scaffolding. A production documentation shell, TOC system, and global search pattern are Pro-level products.",
-    code: "<Breadcrumbs items={items} />\n<Tabs tabs={tabs} />\n<Pagination pages={pages} />",
+    code: '<Breadcrumbs items={items} />\n<Tabs defaultValue="overview"><TabsList aria-label="Local sections"><TabsTrigger value="overview">Overview</TabsTrigger><TabsIndicator /></TabsList><TabsPanels><TabsContent value="overview">...</TabsContent></TabsPanels></Tabs>\n<Pagination pages={pages} />',
     Preview: NavigationPreview,
   },
   "dense-form": {

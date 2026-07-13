@@ -66,6 +66,11 @@ import {
   SelectSeparator,
   Switch,
   Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsPanels,
+  TabsTrigger,
   Tooltip,
   Toast,
   ToastProvider,
@@ -1548,29 +1553,60 @@ describe("Core interactive action contracts", () => {
     await user.keyboard("{Escape}");
   });
 
-  it("uses the first enabled Tab, skips disabled tabs, and calls controlled state handlers", async () => {
+  it("composes Tabs anatomy, protects slots, and delegates keyboard behavior to Base UI", async () => {
     const user = userEvent.setup();
-    const onChange = vi.fn();
+    const rootRef = React.createRef<HTMLDivElement>();
+    const listRef = React.createRef<HTMLDivElement>();
+    const triggerRef = React.createRef<HTMLElement>();
+    const panelsRef = React.createRef<HTMLDivElement>();
+    const contentRef = React.createRef<HTMLDivElement>();
     render(
-      <Tabs
-        onChange={onChange}
-        variant="segmented"
-        tabs={[
-          { label: "Disabled", value: "disabled", content: "No", disabled: true },
-          { label: "Overview", value: "overview", content: "Overview panel" },
-          { label: "Activity", value: "activity", content: "Activity panel" },
-        ]}
-      />,
+      <Tabs ref={rootRef} data-slot="consumer" size="lg" variant="segmented">
+        <TabsList ref={listRef} aria-label="Workspace sections" data-slot="consumer" layout="fill">
+          <TabsTrigger disabled value="disabled">
+            Disabled
+          </TabsTrigger>
+          <TabsTrigger
+            ref={triggerRef}
+            badge={<Badge size="sm">12</Badge>}
+            leadingIcon={Bell}
+            value="overview"
+          >
+            Overview
+          </TabsTrigger>
+          <TabsTrigger trailingIcon={ArrowRight} value="activity">
+            Activity
+          </TabsTrigger>
+          <TabsIndicator data-slot="consumer" />
+        </TabsList>
+        <TabsPanels ref={panelsRef} data-slot="consumer">
+          <TabsContent value="disabled">Disabled panel</TabsContent>
+          <TabsContent ref={contentRef} data-slot="consumer" value="overview">
+            Overview panel
+          </TabsContent>
+          <TabsContent value="activity">Activity panel</TabsContent>
+        </TabsPanels>
+      </Tabs>,
     );
-    const overview = screen.getByRole("tab", { name: "Overview" });
+    const overview = screen.getByRole("tab", { name: "Overview12" });
     expect(overview).toHaveAttribute("aria-selected", "true");
+    expect(rootRef.current).toHaveAttribute("data-slot", "root");
+    expect(rootRef.current).toHaveAttribute("data-size", "lg");
+    expect(listRef.current).toHaveAttribute("data-slot", "list");
+    expect(listRef.current).toHaveAttribute("data-layout", "fill");
+    expect(listRef.current).toHaveAttribute("data-scrollable");
+    expect(triggerRef.current).toHaveAttribute("data-slot", "trigger");
+    expect(contentRef.current).toHaveAttribute("data-slot", "content");
+    expect(panelsRef.current).toHaveAttribute("data-slot", "panels");
+    expect(overview.querySelector('[data-slot="leading-icon"]')).toHaveAttribute("aria-hidden");
+    expect(overview.querySelector('[data-slot="badge"]')).toHaveTextContent("12");
     overview.focus();
     await user.keyboard("{ArrowRight}");
     await user.keyboard("{Enter}");
-    expect(onChange).toHaveBeenCalledWith("activity");
+    expect(screen.getByRole("tab", { name: "Activity" })).toHaveAttribute("aria-selected", "true");
   });
 
-  it("keeps controlled Tabs selection consumer-owned with stable tab and panel relationships", async () => {
+  it("keeps controlled Tabs selection consumer-owned with Base UI event details and all visual modes", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
     function ControlledTabs() {
@@ -1578,15 +1614,22 @@ describe("Core interactive action contracts", () => {
       return (
         <Tabs
           value={value}
-          onValueChange={(nextValue) => {
-            onValueChange(nextValue);
+          onValueChange={(nextValue, eventDetails) => {
+            onValueChange(nextValue, eventDetails);
             setValue(nextValue);
           }}
-          tabs={[
-            { label: "Overview", value: "overview", content: "Overview panel" },
-            { label: "Activity", value: "activity", content: "Activity panel" },
-          ]}
-        />
+          variant="separate"
+        >
+          <TabsList aria-label="Controlled tabs" scrollable={false}>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
+            <TabsIndicator />
+          </TabsList>
+          <TabsPanels>
+            <TabsContent value="overview">Overview panel</TabsContent>
+            <TabsContent value="activity">Activity panel</TabsContent>
+          </TabsPanels>
+        </Tabs>
       );
     }
     render(<ControlledTabs />);
@@ -1594,10 +1637,34 @@ describe("Core interactive action contracts", () => {
     const activity = screen.getByRole("tab", { name: "Activity" });
     expect(overview).toHaveAttribute("aria-controls");
     await user.click(activity);
-    expect(onValueChange).toHaveBeenCalledWith("activity");
+    expect(onValueChange).toHaveBeenCalledWith("activity", expect.anything());
     const panel = screen.getByRole("tabpanel");
     expect(activity).toHaveAttribute("aria-controls", panel.id);
     expect(panel).toHaveTextContent("Activity panel");
+  });
+
+  it("exposes bordered vertical and compact list contracts without replacing Base UI state", () => {
+    render(
+      <Tabs defaultValue="one" orientation="vertical" size="sm" variant="bordered">
+        <TabsList aria-label="Vertical sections" layout="content" scrollable={false}>
+          <TabsTrigger value="one">One</TabsTrigger>
+          <TabsTrigger value="two">Two</TabsTrigger>
+          <TabsIndicator />
+        </TabsList>
+        <TabsPanels>
+          <TabsContent value="one">One panel</TabsContent>
+          <TabsContent keepMounted value="two">
+            Two panel
+          </TabsContent>
+        </TabsPanels>
+      </Tabs>,
+    );
+    expect(screen.getByRole("tablist")).toHaveAttribute("data-layout", "content");
+    expect(screen.getByRole("tablist")).not.toHaveAttribute("data-scrollable");
+    expect(screen.getByRole("tab", { name: "One" }).closest('[data-slot="root"]')).toHaveAttribute(
+      "data-variant",
+      "bordered",
+    );
   });
 
   it("opens DropdownMenu with the keyboard, skips disabled items, and restores trigger focus", async () => {

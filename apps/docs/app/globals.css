@@ -1017,7 +1017,7 @@ pre {
 }
 
 .home-setting-row small,
-.home-component-card .n-tabs__panel {
+.home-component-card .n-tabs__content {
   color: var(--n-color-text-tertiary);
   font-size: var(--n-font-size-sm);
 }
@@ -1027,7 +1027,7 @@ pre {
   gap: var(--n-space-4);
 }
 
-.home-component-card .n-tabs__panel p {
+.home-component-card .n-tabs__content p {
   margin: 0;
 }
 
@@ -1191,13 +1191,13 @@ pre {
   width: 100%;
 }
 
-.home-gallery__channel-tabs .n-tabs__tab,
-.home-gallery__range-tabs .n-tabs__tab {
+.home-gallery__channel-tabs .n-tabs__trigger,
+.home-gallery__range-tabs .n-tabs__trigger {
   flex: 1 1 0;
 }
 
-.home-gallery__channel-tabs .n-tabs__panel,
-.home-gallery__range-tabs .n-tabs__panel {
+.home-gallery__channel-tabs .n-tabs__panels,
+.home-gallery__range-tabs .n-tabs__panels {
   display: none;
 }
 

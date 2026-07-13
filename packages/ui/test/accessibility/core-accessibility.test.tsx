@@ -35,6 +35,11 @@ import {
   SelectItem,
   Switch,
   Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsPanels,
+  TabsTrigger,
   Toast,
   ToastProvider,
   ToastViewport,
@@ -81,7 +86,15 @@ describe("Core accessibility contracts", () => {
           </EmptyStateHeader>
         </EmptyState>
         <Pagination pages={[{ key: "one", label: "1", current: true }]} />
-        <Tabs tabs={[{ label: "Overview", value: "overview", content: "Overview content" }]} />
+        <Tabs defaultValue="overview">
+          <TabsList aria-label="Workspace sections">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsIndicator />
+          </TabsList>
+          <TabsPanels>
+            <TabsContent value="overview">Overview content</TabsContent>
+          </TabsPanels>
+        </Tabs>
         <Select label="Status" options={[{ label: "Draft", value: "draft" }]} />
         <Toast title="Saved" description="Your changes are live." />
       </>,
