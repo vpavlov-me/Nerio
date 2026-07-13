@@ -205,12 +205,14 @@
   --n-font-size-xs: 0.75rem;
   --n-font-size-sm: 0.8125rem;
   --n-font-size-md: 0.875rem;
+  --n-font-size-base: var(--n-font-size-md);
   --n-font-size-lg: 1rem;
   --n-font-size-xl: 1.125rem;
   --n-font-size-2xl: 1.25rem;
   --n-font-size-3xl: 1.5rem;
   --n-line-height-tight: 1.2;
   --n-line-height-normal: 1.4;
+  --n-line-height-sm: var(--n-line-height-normal);
   --n-line-height-relaxed: 1.55;
   --n-font-weight-regular: 400;
   --n-font-weight-medium: 500;
@@ -235,6 +237,15 @@
   --n-color-text-tertiary: var(--n-gray-500);
   --n-color-text-disabled: var(--n-gray-400);
   --n-color-text-inverse: var(--n-gray-0);
+  /* Contrast targets document the minimum intended pair contrast. Override the
+     semantic colors above for product contrast needs; these are not runtime axes. */
+  --n-contrast-text-primary: 4.5;
+  --n-contrast-text-secondary: 4.5;
+  --n-contrast-text-tertiary: 3;
+  --n-contrast-text-inverse: 4.5;
+  --n-contrast-action: 4.5;
+  --n-contrast-status: 3;
+  --n-contrast-focus-ring: 3;
   --n-color-border-subtle: var(--n-gray-200);
   --n-color-border-default: var(--n-gray-300);
   --n-color-border-strong: var(--n-gray-300);
@@ -466,6 +477,7 @@
   --n-progress-indeterminate-start: -100%;
   --n-progress-indeterminate-end: 250%;
   --n-progress-indeterminate-reduced-position: 0%;
+  --n-progress-ratio: 0;
   --n-skeleton-height: var(--n-icon-size-md);
   --n-empty-state-mark-size: var(--n-size-control-md);
   --n-empty-state-gap: var(--n-space-3);
@@ -612,6 +624,7 @@
   --n-item-padding-lg: var(--n-space-4);
   --n-item-padding: var(--n-item-padding-md);
   --n-item-row-gap: var(--n-space-2);
+  --n-item-group-gap: var(--n-space-2);
   --n-item-content-gap: var(--n-space-1);
   --n-item-actions-gap: var(--n-space-2);
   --n-item-radius: var(--n-radius-md);
@@ -637,19 +650,24 @@
   --n-tabs-trigger-height-sm: var(--n-size-control-sm);
   --n-tabs-trigger-height-md: var(--n-size-control-md);
   --n-tabs-trigger-height-lg: var(--n-size-control-lg);
+  --n-tabs-trigger-height: var(--n-tabs-trigger-height-md);
   --n-tabs-trigger-padding-inline-sm: var(--n-space-2);
   --n-tabs-trigger-padding-inline-md: var(--n-space-3);
   --n-tabs-trigger-padding-inline-lg: var(--n-space-4);
+  --n-tabs-trigger-padding-inline: var(--n-tabs-trigger-padding-inline-md);
   --n-tabs-list-gap: var(--n-space-1);
   --n-tabs-trigger-content-gap-sm: var(--n-space-1);
   --n-tabs-trigger-content-gap-md: var(--n-space-1-5);
   --n-tabs-trigger-content-gap-lg: var(--n-space-2);
+  --n-tabs-trigger-content-gap: var(--n-tabs-trigger-content-gap-md);
   --n-tabs-trigger-font-size-sm: var(--n-font-size-xs);
   --n-tabs-trigger-font-size-md: var(--n-font-size-sm);
   --n-tabs-trigger-font-size-lg: var(--n-font-size-md);
+  --n-tabs-trigger-font-size: var(--n-tabs-trigger-font-size-md);
   --n-tabs-icon-size-sm: var(--n-icon-size-xs);
   --n-tabs-icon-size-md: var(--n-icon-size-sm);
   --n-tabs-icon-size-lg: var(--n-icon-size-md);
+  --n-tabs-icon-size: var(--n-tabs-icon-size-md);
   --n-tabs-radius: var(--n-radius-sm);
   --n-tabs-list-radius: var(--n-radius-md);
   --n-tabs-list-padding: var(--n-space-0-5);
@@ -669,6 +687,8 @@
   --n-tabs-content-duration: var(--n-duration-fast);
   --n-tabs-content-easing: var(--n-easing-standard);
   --n-tabs-content-translate: var(--n-motion-translate-sm);
+  --n-overlay-duration: var(--n-motion-overlay-enter-duration);
+  --n-overlay-easing: var(--n-motion-overlay-enter-easing);
   --n-popover-width-md: 20rem;
   --n-tooltip-radius: var(--n-radius-md);
   --n-dropdown-min-width: 14rem;

@@ -42,14 +42,14 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 | Component / Area  | Status              | Package           | Notes                                                                                                              |
 | ----------------- | ------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Tokens            | quality-pass-needed | `@nerio/tokens`   | Color, spacing, radius, typography, motion                                                                         |
+| Tokens            | stable-core         | `@nerio/tokens`   | Color, spacing, radius, typography, motion                                                                         |
 | Themes            | quality-pass-needed | `@nerio/tokens`   | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables |
 | Modes             | quality-pass-needed | `@nerio/tokens`   | Color modes: `system`, `light`, `dark`                                                                             |
 | Density           | quality-pass-needed | `@nerio/tokens`   | Density modes: `comfortable`, `compact`                                                                            |
-| Typography Tokens | quality-pass-needed | `@nerio/tokens`   | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.            |
-| Radius Tokens     | quality-pass-needed | `@nerio/tokens`   | Token-customizable radius variables. Not a v1 runtime axis.                                                        |
-| Motion Tokens     | quality-pass-needed | `@nerio/tokens`   | Token-customizable duration/motion variables. Not a v1 runtime axis.                                               |
-| Contrast Tokens   | quality-pass-needed | `@nerio/tokens`   | Token-customizable semantic contrast variables. Not a v1 runtime axis.                                             |
+| Typography Tokens | stable-core         | `@nerio/tokens`   | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.            |
+| Radius Tokens     | stable-core         | `@nerio/tokens`   | Token-customizable radius variables. Not a v1 runtime axis.                                                        |
+| Motion Tokens     | stable-core         | `@nerio/tokens`   | Token-customizable duration/motion variables. Not a v1 runtime axis.                                               |
+| Contrast Tokens   | stable-core         | `@nerio/tokens`   | Token-customizable semantic contrast targets and semantic color overrides. Not a v1 runtime axis.                  |
 | Typography        | stable-core         | `@nerio/ui`       | Semantic heading, text, and inline code primitives                                                                 |
 | Kbd               | polished            | `@nerio/ui`       | Native keyboard shortcut notation with quiet tokenized styling                                                     |
 | Icon              | quality-pass-needed | `@nerio/ui`       | Renders an icon component through the Nerio icon contract; it is the consumer-facing visual primitive.             |
