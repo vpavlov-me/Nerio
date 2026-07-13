@@ -362,6 +362,26 @@ async function verify() {
       );
     }
 
+    const commandUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "command-primitive" },
+    });
+    const commandUsage = JSON.parse(commandUsageResult.content[0].text);
+    if (
+      !commandUsage.baseUiPrimitives.includes("autocomplete") ||
+      !commandUsage.registryDependencies.includes("spinner") ||
+      !commandUsage.slots.includes("command-loading") ||
+      !commandUsage.states.includes("active") ||
+      !commandUsage.variants.includes("consumer-filtered") ||
+      !commandUsage.requiredTokens.includes("--n-command-list-max-height") ||
+      !commandUsage.accessibility.some((item) => item.includes("IME composition")) ||
+      !commandUsage.usage.includes("onSelect")
+    ) {
+      throw new Error(
+        "MCP Command usage is missing Base UI, filtering, selection, token, or accessibility metadata.",
+      );
+    }
+
     const tooltipUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "tooltip" },

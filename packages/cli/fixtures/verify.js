@@ -40,6 +40,16 @@ const expectedSidebarFiles = [
   "styles/icon.css",
   "styles/sidebar.css",
 ];
+const expectedCommandFiles = [
+  "components/command.tsx",
+  "components/icon.tsx",
+  "components/spinner.tsx",
+  "lib/cn.ts",
+  "lib/resolve-class-name.ts",
+  "styles/command.css",
+  "styles/icon.css",
+  "styles/spinner.css",
+];
 const expectedFieldFiles = [
   "components/field.tsx",
   "components/label.tsx",
@@ -276,6 +286,7 @@ async function verify() {
     await run(localTarget, "add", "dialog");
     await run(localTarget, "add", "sheet");
     await run(localTarget, "add", "sidebar-primitive");
+    await run(localTarget, "add", "command-primitive");
     await run(localTarget, "add", "field");
     await run(localTarget, "add", "input-group");
     await run(localTarget, "add", "form-group");
@@ -352,6 +363,21 @@ async function verify() {
     ) {
       throw new Error(
         "Installed Sidebar source did not preserve state, focus safety, or ARIA contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedCommandFiles);
+    const commandSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/command.tsx"),
+      "utf8",
+    );
+    if (
+      !commandSource.includes("BaseAutocomplete.Root") ||
+      !commandSource.includes("onActiveValueChange") ||
+      !commandSource.includes('data-slot="command-loading"') ||
+      !commandSource.includes("filterProp === false")
+    ) {
+      throw new Error(
+        "Installed Command source did not preserve filtering, active-value, or status contracts.",
       );
     }
     assertFiles(localTarget, expectedFieldFiles);

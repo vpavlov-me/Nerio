@@ -577,6 +577,24 @@
   --n-sidebar-control-background-hover: var(--n-color-surface-muted);
   --n-sidebar-control-foreground: var(--n-color-text-secondary);
   --n-sidebar-control-radius: var(--n-radius-control);
+  --n-command-width: 36rem;
+  --n-command-list-max-height: 20rem;
+  --n-command-input-height: var(--n-size-control-lg);
+  --n-command-item-height: var(--n-size-control-lg);
+  --n-command-item-padding-block: var(--n-space-2);
+  --n-command-item-padding-inline: var(--n-space-3);
+  --n-command-list-padding: var(--n-space-1);
+  --n-command-group-gap: var(--n-space-1);
+  --n-command-group-spacing: var(--n-space-2);
+  --n-command-item-gap: var(--n-space-3);
+  --n-command-state-min-height: 6rem;
+  --n-command-background: var(--n-overlay-background);
+  --n-command-foreground: var(--n-overlay-foreground);
+  --n-command-border-width: var(--n-overlay-border-width);
+  --n-command-border: var(--n-overlay-border);
+  --n-command-radius: var(--n-radius-overlay);
+  --n-command-item-radius: var(--n-radius-md);
+  --n-command-item-background-active: var(--n-color-surface-muted);
   --n-overlay-z-index: 50;
   --n-overlay-background: var(--n-color-surface-overlay);
   --n-overlay-border-width: var(--n-border-width-default);
@@ -1186,6 +1204,11 @@
   --n-sidebar-region-padding: var(--n-space-4);
   --n-sidebar-inset-gap: var(--n-space-4);
   --n-sidebar-rail-hit-area: var(--n-size-control-md);
+  --n-command-input-height: var(--n-size-control-md);
+  --n-command-item-height: var(--n-size-control-md);
+  --n-command-item-padding-block: var(--n-space-1-5);
+  --n-command-item-padding-inline: var(--n-space-2);
+  --n-command-group-spacing: var(--n-space-1);
 }
 
 .n-typography-system {

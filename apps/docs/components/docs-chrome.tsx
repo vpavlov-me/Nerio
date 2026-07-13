@@ -23,6 +23,7 @@ import {
   Palette,
   PanelLeft,
   PackageOpen,
+  Search,
   Sparkles,
   Sun,
   Type,
@@ -132,6 +133,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/breadcrumbs", label: "Breadcrumbs", icon: ListTree },
       { href: "/docs/components/pagination", label: "Pagination", icon: ListTree },
       { href: "/docs/components/sidebar-primitive", label: "Sidebar", icon: PanelLeft },
+      { href: "/docs/components/command-primitive", label: "Command", icon: Search },
     ],
   },
   {

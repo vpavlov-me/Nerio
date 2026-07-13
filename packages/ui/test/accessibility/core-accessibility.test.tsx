@@ -37,6 +37,12 @@ import {
 import {
   Button,
   Checkbox,
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandLoading,
   Dialog,
   RadioGroup,
   RadioGroupItem,
@@ -462,5 +468,37 @@ describe("Core accessibility contracts", () => {
     expect((await axe(container)).violations).toEqual([]);
     await user.tab();
     expect(screen.getByRole("button", { name: "Create project" })).toHaveFocus();
+  });
+
+  it("keeps Command input, groups, empty, and loading announcements accessible", async () => {
+    const items = [
+      {
+        value: "navigation",
+        label: "Navigation",
+        items: [
+          { value: "overview", label: "Open overview" },
+          { value: "settings", label: "Open settings", disabled: true },
+        ],
+      },
+    ];
+    const { container } = render(
+      <Command items={items}>
+        <label htmlFor="accessible-command">Workspace command</label>
+        <CommandInput id="accessible-command" />
+        <CommandLoading loading={false} />
+        <CommandEmpty>No commands found.</CommandEmpty>
+        <CommandList>
+          {(item) => (
+            <CommandItem key={item.value} value={item.value} disabled={item.disabled}>
+              {item.label}
+            </CommandItem>
+          )}
+        </CommandList>
+      </Command>,
+    );
+
+    expect(screen.getByRole("combobox", { name: "Workspace command" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Navigation" })).toBeInTheDocument();
+    expect((await axe(container)).violations).toEqual([]);
   });
 });

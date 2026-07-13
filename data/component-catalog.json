@@ -479,10 +479,10 @@
     {
       "name": "Command Primitive",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio/ui/client",
       "category": "navigation",
-      "status": "planned",
-      "description": "Low-level command menu structure."
+      "status": "stable-core",
+      "description": "Accessible Base UI autocomplete primitive for local or consumer-filtered action results with controlled query state, groups, disabled-item navigation, stable values, and deliberate empty and loading announcements."
     },
     {
       "name": "DataGrid",

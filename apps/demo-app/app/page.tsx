@@ -16,6 +16,11 @@ import {
   Badge,
   Button,
   Card,
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
   EmptyState,
   EmptyStateActions,
   EmptyStateDescription,
@@ -26,6 +31,7 @@ import {
   IconButton,
   Input,
   Progress,
+  Popover,
   Select,
   Sheet,
   SheetBody,
@@ -110,6 +116,13 @@ const statusOptions = [
   { label: "Active", value: "Active" },
   { label: "Review", value: "Review" },
   { label: "Draft", value: "Draft" },
+];
+
+const workspaceCommands = [
+  { value: "show-all", label: "Show all projects", keywords: ["reset", "filter"] },
+  { value: "show-active", label: "Show active projects", keywords: ["status", "filter"] },
+  { value: "compact", label: "Use compact density", keywords: ["display", "density"] },
+  { value: "admin", label: "Open admin tools", disabled: true },
 ];
 
 const navItems = [
@@ -253,7 +266,35 @@ function DemoWorkspace() {
             </p>
           </div>
           <div className="workspace-actions">
-            <IconButton icon={Search} label="Search workspace" variant="secondary" />
+            <Popover
+              trigger={<IconButton icon={Search} label="Search workspace" variant="secondary" />}
+              title="Workspace commands"
+              description="Filter this app-local workspace view."
+            >
+              <Command items={workspaceCommands}>
+                <CommandInput aria-label="Workspace commands" placeholder="Search commands" />
+                <CommandEmpty>No matching commands.</CommandEmpty>
+                <CommandList>
+                  {(item) => (
+                    <CommandItem
+                      key={item.value}
+                      value={item.value}
+                      disabled={item.disabled}
+                      onSelect={(value) => {
+                        if (value === "show-all") {
+                          setQuery("");
+                          setStatus("all");
+                        }
+                        if (value === "show-active") setStatus("Active");
+                        if (value === "compact") setDensity("compact");
+                      }}
+                    >
+                      {item.label}
+                    </CommandItem>
+                  )}
+                </CommandList>
+              </Command>
+            </Popover>
             <Button
               leadingIcon={Sparkles}
               onClick={() => {
