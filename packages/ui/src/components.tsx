@@ -10,7 +10,7 @@ export type {
 export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { motionClasses, type MotionClassName } from "./lib/motion";
 export { Icon } from "./components/icon";
-export type { IconComponent, IconProps } from "./components/icon";
+export type { IconComponent, IconProps, IconSvgProps } from "./components/icon";
 export { Kbd, type KbdProps } from "./components/kbd";
 export { IconButton, type IconButtonProps } from "./components/icon-button";
 export { Spinner } from "./components/spinner";

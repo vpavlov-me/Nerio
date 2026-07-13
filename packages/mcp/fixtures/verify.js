@@ -174,6 +174,7 @@ async function verify() {
     if (
       !buttonUsage.requiredTokens.includes("--n-link-color") ||
       !buttonUsage.variants.includes("link") ||
+      !buttonUsage.dependencies.includes("@nerio/adapters") ||
       !buttonUsage.accessibility.some((item) => item.includes("native anchor"))
     ) {
       throw new Error("MCP Button usage is not aligned with the native link contract.");

@@ -2,10 +2,11 @@
 
 import * as React from "react";
 import { Button as BaseButton } from "@base-ui/react/button";
+import type { IconComponent } from "@nerio/adapters";
 import { cn } from "../lib/cn";
 import { motionClasses } from "../lib/motion";
 import { Badge, type BadgeProps } from "./badge";
-import { Icon, type IconComponent } from "./icon";
+import { Icon } from "./icon";
 import { Kbd, type KbdProps } from "./kbd";
 import { Spinner } from "./spinner";
 import { Tooltip } from "./tooltip";

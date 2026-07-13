@@ -29,7 +29,7 @@ import {
   Wrench,
 } from "@nerio/adapters";
 import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio/ui/client";
-import type { IconComponent } from "@nerio/ui/client";
+import type { IconComponent } from "@nerio/adapters";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
 import { siteConfig } from "../lib/site-config";
 

@@ -1,6 +1,6 @@
 import * as React from "react";
+import type { IconComponent } from "@nerio/adapters";
 import { cn } from "../lib/cn";
-import type { IconComponent } from "./icon";
 import { Icon } from "./icon";
 import { Spinner } from "./spinner";
 

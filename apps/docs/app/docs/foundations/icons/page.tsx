@@ -32,7 +32,9 @@ import { Button } from '@nerio/ui/client';
 <Icon icon={Search} />
 <Button icon={Search} aria-label="Search workspace" tooltip="Search workspace" />`;
 
-const custom = `function CustomLogoIcon({ strokeWidth = 2, ...props }) {
+const custom = `import type { IconSvgProps } from '@nerio/adapters';
+
+function CustomLogoIcon({ strokeWidth = 2, ...props }: IconSvgProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" {...props}>
       <path d="M5 17V7l7 10V7l7 10V7" stroke="currentColor" strokeWidth={strokeWidth} />
@@ -40,7 +42,7 @@ const custom = `function CustomLogoIcon({ strokeWidth = 2, ...props }) {
   );
 }
 
-<Icon icon={CustomLogoIcon} />`;
+<Icon decorative={false} icon={CustomLogoIcon} label="Nerio logo" />`;
 
 export default function Page() {
   return (
@@ -77,7 +79,8 @@ export default function Page() {
               <tr>
                 <td>Custom SVG</td>
                 <td>
-                  React SVG components use the same <Code>Icon</Code> adapter contract.
+                  React SVG components implement <Code>IconSvgProps</Code> and use the same{" "}
+                  <Code>Icon</Code> contract.
                 </td>
               </tr>
             </tbody>
@@ -151,6 +154,20 @@ export default function Page() {
                 <td>Components stay independent from Lucide implementation details.</td>
               </tr>
               <tr>
+                <td>Use the default decorative mode inside named controls and labelled content.</td>
+                <td>
+                  The renderer sets <Code>aria-hidden</Code> and prevents the SVG from receiving
+                  keyboard focus, so the surrounding text remains the accessible name.
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Set <Code>decorative={"{false}"}</Code> and provide <Code>label</Code> for a
+                  standalone meaningful icon.
+                </td>
+                <td>The renderer exposes an image role and the supplied accessible name.</td>
+              </tr>
+              <tr>
                 <td>Icon-only controls require an accessible label.</td>
                 <td>The visible icon is decorative; the label names the action.</td>
               </tr>
@@ -165,7 +182,9 @@ export default function Page() {
               <tr>
                 <td>Use the adapter’s 2px absolute stroke default.</td>
                 <td>
-                  Lucide glyphs stay legible at small sizes without becoming heavy at larger sizes.
+                  The renderer forwards <Code>strokeWidth</Code>, <Code>size</Code>, class names,
+                  and SVG props to Lucide or a custom component; stroke-specific props remain
+                  optional for custom artwork.
                 </td>
               </tr>
             </tbody>
@@ -177,6 +196,17 @@ export default function Page() {
         <h2 id="usage">Usage</h2>
         <CodeExample code={usage} label="Icon usage" />
         <CodeExample code={custom} label="Custom icon usage" />
+      </section>
+
+      <section className="doc-section">
+        <h2 id="migration">Migration</h2>
+        <p>
+          Import <Code>IconComponent</Code> and <Code>IconSvgProps</Code> from{" "}
+          <Code>@nerio/adapters</Code> for icon props and custom SVG implementations. The same type
+          names remain re-exported from <Code>@nerio/ui</Code> as compatible aliases, but new
+          component APIs should use the adapter boundary. Existing <Code>LucideIcon</Code> imports
+          remain compatible while Lucide is the default source.
+        </p>
       </section>
 
       <section className="doc-section">

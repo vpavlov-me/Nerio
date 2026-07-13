@@ -1,3 +1,20 @@
+import type * as React from "react";
+
+/**
+ * Public contract accepted by Nerio icon consumers.
+ *
+ * It intentionally describes an SVG component rather than a Lucide component so
+ * consumers can pass their own forwarded-ref SVG components without adapting them.
+ */
+export type IconSvgProps = React.SVGProps<SVGSVGElement> & {
+  size?: string | number;
+  strokeWidth?: string | number;
+  absoluteStrokeWidth?: boolean;
+};
+
+export type IconComponent = React.ElementType<IconSvgProps>;
+
+/** @deprecated Use IconComponent. Kept as a compatible Lucide-specific alias. */
 export type { LucideIcon } from "lucide-react";
 export {
   ArrowLeft,

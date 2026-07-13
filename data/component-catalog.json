@@ -159,16 +159,16 @@
       "tier": "core",
       "package": "@nerio/ui",
       "category": "foundation",
-      "status": "quality-pass-needed",
-      "description": "Icon component using the current icon adapter direction."
+      "status": "stable-core",
+      "description": "Server-safe icon renderer that normalizes Lucide and custom SVG components with explicit decorative and meaningful semantics."
     },
     {
       "name": "Icon Adapter",
       "tier": "core",
       "package": "@nerio/adapters",
       "category": "foundation",
-      "status": "quality-pass-needed",
-      "description": "Lucide exports and the public icon-source boundary used by the Icon component; custom React SVG components remain supported by Icon."
+      "status": "stable-core",
+      "description": "Public SVG icon contract and default tree-shakeable Lucide source boundary used by Icon and icon-consuming components."
     },
     {
       "name": "Button",
