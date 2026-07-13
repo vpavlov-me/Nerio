@@ -33,6 +33,20 @@ async function verify() {
       throw new Error("MCP get_component_usage did not include install and token metadata.");
     }
 
+    const spinnerUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "spinner" },
+    });
+    const spinnerUsage = JSON.parse(spinnerUsageResult.content[0].text);
+    if (
+      !spinnerUsage.slots.includes("root") ||
+      !spinnerUsage.slots.includes("label") ||
+      !spinnerUsage.requiredTokens.includes("--n-spinner-duration") ||
+      !spinnerUsage.accessibility.some((item) => item.includes("localized label"))
+    ) {
+      throw new Error("MCP Spinner usage is missing its status, anatomy, or token contract.");
+    }
+
     const kbdUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "kbd" },

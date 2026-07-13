@@ -810,30 +810,68 @@ export const componentReference: Record<string, ComponentReference> = {
   },
   spinner: {
     category: "Actions and feedback",
-    purpose: "Use Spinner for short loading moments when progress cannot be measured.",
+    purpose:
+      "Spinner indicates short indeterminate loading activity without changing surrounding layout.",
     anatomy: [
-      { title: "root", description: "Inline loading indicator with an accessible label." },
       {
-        title: "track",
-        description: "Tokenized circular motion that inherits current text color.",
+        title: "root",
+        description:
+          "Inline loading indicator that is a status or decorative mark, depending on its mode.",
+      },
+      {
+        title: "label",
+        description:
+          "Visually hidden localized status label, rendered only for standalone Spinner.",
       },
     ],
     variants: [
       {
         title: "Size",
         description:
-          "Use small inline spinners inside controls and medium spinners in empty surfaces.",
+          "Use sm in compact controls, md for standalone status, and lg for noticeable local loading states.",
       },
     ],
     states: [
       {
-        title: "Loading",
-        description: "Communicates temporary work without shifting surrounding layout.",
+        title: "Standalone",
+        description:
+          "Requires label and renders a status with a visually hidden localized label. className can set the inherited foreground color.",
+      },
+      {
+        title: "Decorative",
+        description:
+          "Set decorative when a parent such as Button or Badge already owns aria-busy and the loading announcement.",
+      },
+      {
+        title: "Reduced motion",
+        description:
+          "Stops rotating and remains visible as a static loading mark when reduced motion is requested.",
       },
     ],
-    accessibility: ["Provide a label when the spinner is the only loading announcement."],
+    accessibility: [
+      "Provide a localized label when Spinner is the loading announcement.",
+      "Use decorative when a parent component already exposes loading state through aria-busy or another status region.",
+      "Use one loading announcement per region.",
+    ],
+    api: [
+      { title: "size", description: "sm, md, or lg. Defaults to md." },
+      { title: "label", description: "Required localized text for standalone Spinner." },
+      {
+        title: "decorative",
+        description: "Removes status semantics when a parent already announces loading.",
+      },
+      {
+        title: "className",
+        description:
+          "Adds styles such as a semantic foreground color inherited through currentColor.",
+      },
+    ],
+    related: ["Button", "Badge", "Skeleton", "Progress"],
     guidance: {
-      do: ["Use for quick work such as saving, filtering, or refreshing."],
+      do: [
+        "Use for quick work such as saving, filtering, or refreshing.",
+        "Use currentColor through semantic text color or className to match the surrounding foreground.",
+      ],
       dont: ["Do not use Spinner for long tasks where determinate Progress is available."],
     },
     tokens: [

@@ -108,7 +108,7 @@
       "description": "Triggers an explicit action with text, optional Badge content, directional icons, shortcut hints, tooltip help, or an icon-only mode.",
       "category": "actions",
       "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
-      "registryDependencies": ["tooltip", "kbd", "badge"],
+      "registryDependencies": ["spinner", "tooltip", "kbd", "badge"],
       "files": [
         {
           "source": "../../ui/src/components/button.tsx",
@@ -118,11 +118,6 @@
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
-        },
-        {
-          "source": "../../ui/src/components/spinner.tsx",
-          "target": "components/spinner.tsx",
           "role": "component"
         },
         {
@@ -148,11 +143,6 @@
         {
           "source": "../../ui/src/styles/icon.css",
           "target": "styles/icon.css",
-          "role": "style"
-        },
-        {
-          "source": "../../ui/src/styles/spinner.css",
-          "target": "styles/spinner.css",
           "role": "style"
         }
       ],
@@ -291,7 +281,7 @@
       "description": "Labels status, category, or lightweight metadata.",
       "category": "data-display",
       "dependencies": ["clsx", "react"],
-      "registryDependencies": [],
+      "registryDependencies": ["spinner"],
       "files": [
         {
           "source": "../../ui/src/components/badge.tsx",
@@ -309,18 +299,8 @@
           "role": "component"
         },
         {
-          "source": "../../ui/src/components/spinner.tsx",
-          "target": "components/spinner.tsx",
-          "role": "component"
-        },
-        {
           "source": "../../ui/src/styles/feedback.css",
           "target": "styles/feedback.css",
-          "role": "style"
-        },
-        {
-          "source": "../../ui/src/styles/spinner.css",
-          "target": "styles/spinner.css",
           "role": "style"
         }
       ],
@@ -391,7 +371,7 @@
     {
       "name": "spinner",
       "title": "Spinner",
-      "description": "Indicates a short loading moment.",
+      "description": "Indicates short indeterminate loading activity without changing surrounding layout.",
       "category": "feedback",
       "dependencies": ["clsx", "react"],
       "registryDependencies": [],
@@ -424,9 +404,10 @@
         "--n-radius-full"
       ],
       "accessibility": [
-        "Expose a label when loading status is not otherwise announced.",
+        "Provide a localized label when Spinner is the loading announcement; use decorative when a parent already exposes loading state.",
         "Use for short waits and prefer Skeleton when layout should be reserved.",
-        "Do not use several independent spinners in the same region."
+        "Use one loading announcement per region; decorative Spinner does not create a nested status.",
+        "Spinner stops rotating when reduced motion is requested and remains visible as a static loading mark."
       ],
       "usage": "import { Spinner } from '@/components/nerio/components/spinner';\n\n<Spinner label=\"Loading activity\" />"
     },

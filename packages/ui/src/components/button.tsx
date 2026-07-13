@@ -142,7 +142,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   const contents = (
     <>
       {loading ? (
-        <Spinner aria-hidden size="sm" />
+        <Spinner decorative size="sm" />
       ) : icon ? (
         <Icon icon={icon} />
       ) : leadingIcon ? (

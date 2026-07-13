@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import * as React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -31,6 +33,7 @@ import {
   List,
   Pagination,
   Progress,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -92,6 +95,12 @@ const invalidMixedRadioGroup = (
     <RadioGroupItem value="private">Private</RadioGroupItem>
   </RadioGroup>
 );
+// @ts-expect-error standalone Spinner requires a localized label
+const invalidUnnamedSpinner = <Spinner />;
+// @ts-expect-error decorative Spinner must not expose a separate label
+const invalidDecorativeSpinnerLabel = <Spinner decorative label="Loading" />;
+// @ts-expect-error Spinner does not accept custom children
+const invalidSpinnerChildren = <Spinner label="Loading">Loading</Spinner>;
 const validComposedRadioGroup = (
   <RadioGroup label="Visibility">
     <RadioGroupItem value="team">Team</RadioGroupItem>
@@ -109,6 +118,9 @@ void [
   invalidNativeInputSize,
   invalidInputScale,
   invalidMixedRadioGroup,
+  invalidUnnamedSpinner,
+  invalidDecorativeSpinnerLabel,
+  invalidSpinnerChildren,
   validComposedRadioGroup,
 ];
 
@@ -150,7 +162,11 @@ describe("Core static contracts", () => {
     );
     const loadingBadge = screen.getByText("Publishing").closest(".n-badge");
     expect(loadingBadge).toHaveAttribute("aria-busy", "true");
-    expect(loadingBadge?.querySelector('[data-slot="leading-icon"]')).not.toBeNull();
+    expect(loadingBadge?.querySelector('[data-slot="leading-icon"] .n-spinner')).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
+    expect(loadingBadge?.querySelector("[role=status]")).not.toBeInTheDocument();
 
     rerender(
       <Badge tone="danger" emphasis="strong">
@@ -180,6 +196,50 @@ describe("Core static contracts", () => {
 
     rerender(<Badge size="lg">Featured</Badge>);
     expect(screen.getByText("Featured").closest(".n-badge")).toHaveAttribute("data-size", "lg");
+  });
+
+  it("keeps Spinner semantics, anatomy, and forwarded DOM props intentional", () => {
+    const ref = React.createRef<HTMLSpanElement>();
+    const unsafeProps = {
+      "aria-hidden": "false",
+      "data-size": "lg",
+      "data-slot": "consumer",
+      role: "alert",
+    } as React.ComponentPropsWithoutRef<"span">;
+    render(
+      <>
+        <Spinner label="Loading activity" />
+        <Spinner decorative data-testid="small-spinner" size="sm" />
+        <Spinner decorative data-testid="decorative-spinner" size="lg" />
+        <Spinner ref={ref} className="custom-spinner" label="Saving changes" {...unsafeProps} />
+      </>,
+    );
+
+    const standalone = screen.getAllByRole("status")[0];
+    expect(standalone).toHaveAttribute("data-slot", "root");
+    expect(standalone).toHaveAttribute("data-size", "md");
+    expect(standalone.querySelector('[data-slot="label"]')).toHaveTextContent("Loading activity");
+
+    const decorative = screen.getByTestId("decorative-spinner");
+    expect(screen.getByTestId("small-spinner")).toHaveAttribute("data-size", "sm");
+    expect(decorative).toHaveAttribute("aria-hidden", "true");
+    expect(decorative).not.toHaveAttribute("role");
+    expect(decorative.querySelector('[data-slot="label"]')).not.toBeInTheDocument();
+    expect(decorative).toHaveAttribute("data-size", "lg");
+
+    expect(ref.current).toHaveClass("n-spinner", "custom-spinner");
+    expect(ref.current).toHaveAttribute("data-slot", "root");
+    expect(ref.current).toHaveAttribute("data-size", "md");
+    expect(ref.current).toHaveAttribute("role", "status");
+    expect(ref.current).not.toHaveAttribute("aria-hidden");
+  });
+
+  it("keeps Spinner animation independent from Button tokens and stops it for reduced motion", () => {
+    const spinnerStyles = readFileSync(resolve(process.cwd(), "src/styles/spinner.css"), "utf8");
+    expect(spinnerStyles).not.toContain("--n-button-");
+    expect(spinnerStyles).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.n-spinner\s*\{\s*animation: none;/,
+    );
   });
 
   it("renders Kbd with a native semantic element and a stable styling hook", () => {
@@ -627,14 +687,16 @@ describe("Core interactive action contracts", () => {
     const button = screen.getByRole("button", { name: /save changes/i });
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute("aria-busy", "true");
-    expect(button.querySelector("[role=status]")).toHaveAttribute("aria-hidden", "true");
+    expect(button.querySelector(".n-spinner")).toHaveAttribute("aria-hidden", "true");
+    expect(button.querySelector("[role=status]")).not.toBeInTheDocument();
   });
 
   it("keeps an icon-only Button label available while loading", () => {
     render(<Button icon={Bell} aria-label="Open notifications" loading />);
     const button = screen.getByRole("button", { name: /open notifications/i });
     expect(button).toBeDisabled();
-    expect(button.querySelector("[role=status]")).toHaveAttribute("aria-hidden", "true");
+    expect(button.querySelector(".n-spinner")).toHaveAttribute("aria-hidden", "true");
+    expect(button.querySelector("[role=status]")).not.toBeInTheDocument();
   });
 
   it("supports directional icons, Badge counts, shortcut hints, and accessible icon-only actions", () => {

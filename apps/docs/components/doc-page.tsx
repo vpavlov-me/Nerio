@@ -377,7 +377,12 @@ function Preview({ kind }: { kind: string }) {
               <Badge tone="danger">Blocked</Badge>
             </>
           ) : null}
-          {kind === "spinner" ? <Spinner label="Loading activity" /> : null}
+          {kind === "spinner" ? (
+            <>
+              <Spinner label="Loading activity" />
+              <Button loading>Saving</Button>
+            </>
+          ) : null}
           {kind === "skeleton" ? (
             <div className="form-preview-stack" aria-label="Loading project summary">
               <Skeleton />

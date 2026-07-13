@@ -63,7 +63,9 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
       {...props}
     >
       {loading ? (
-        <Spinner data-slot="leading-icon" size="sm" aria-hidden />
+        <span data-slot="leading-icon" aria-hidden>
+          <Spinner decorative size="sm" />
+        </span>
       ) : resolvedLeadingIcon ? (
         <span data-slot="leading-icon" aria-hidden>
           <Icon icon={resolvedLeadingIcon} />

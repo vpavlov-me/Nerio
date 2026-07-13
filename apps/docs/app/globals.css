@@ -1621,6 +1621,10 @@ pre {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.spinner-related-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .doc-related-card {
   align-content: start;
   block-size: 100%;
