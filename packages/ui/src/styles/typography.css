@@ -44,7 +44,6 @@
 
 .n-code {
   background: var(--n-color-surface-muted);
-  border: var(--n-border-subtle);
   border-radius: var(--n-radius-sm);
   color: var(--n-color-text-primary);
   font-family: var(--n-font-mono);
