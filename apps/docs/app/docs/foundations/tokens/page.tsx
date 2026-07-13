@@ -1,4 +1,4 @@
-import { Badge, Card, Input, Progress, Separator, Table } from "@nerio/ui";
+import { Badge, Card, Code, Input, Progress, Separator, Table, TableContainer } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
@@ -141,148 +141,160 @@ export default function Page() {
           <h2 id="token-architecture">Token architecture</h2>
           <Badge>CSS variables</Badge>
         </div>
-        <Table className="token-architecture-table">
-          <thead>
-            <tr>
-              <th>Layer</th>
-              <th>Purpose</th>
-              <th>Examples</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tokenLayers.map((layer) => (
-              <tr key={layer.name}>
-                <td>
-                  <Badge variant="info">{layer.name}</Badge>
-                </td>
-                <td>{layer.purpose}</td>
-                <td>
-                  <div className="token-chip-row">
-                    {layer.examples.map((token) => (
-                      <code key={token}>{token}</code>
-                    ))}
-                  </div>
-                </td>
+        <TableContainer className="token-architecture-table">
+          <Table>
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Purpose</th>
+                <th>Examples</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {tokenLayers.map((layer) => (
+                <tr key={layer.name}>
+                  <td>
+                    <Badge variant="info">{layer.name}</Badge>
+                  </td>
+                  <td>{layer.purpose}</td>
+                  <td>
+                    <div className="token-chip-row">
+                      {layer.examples.map((token) => (
+                        <Code key={token}>{token}</Code>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="primitive-tokens">Primitive tokens</h2>
-        <Table className="token-color-table">
-          <thead>
-            <tr>
-              <th>Color</th>
-              <th>Token</th>
-              <th>Preview</th>
-            </tr>
-          </thead>
-          <tbody>
-            {primitiveColors.map(([label, token]) => (
-              <tr key={token}>
-                <td>{label}</td>
-                <td>
-                  <code>{token}</code>
-                </td>
-                <td>
-                  <span className="token-color-swatch" style={{ background: `var(${token})` }} />
-                </td>
+        <TableContainer className="token-color-table">
+          <Table>
+            <thead>
+              <tr>
+                <th>Color</th>
+                <th>Token</th>
+                <th>Preview</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-        <Table>
-          <thead>
-            <tr>
-              <th>Scale</th>
-              <th>Token</th>
-              <th>Default</th>
-            </tr>
-          </thead>
-          <tbody>
-            {primitiveScales.map(([label, token, value]) => (
-              <tr key={token}>
-                <td>{label}</td>
-                <td>
-                  <code>{token}</code>
-                </td>
-                <td>{value}</td>
+            </thead>
+            <tbody>
+              {primitiveColors.map(([label, token]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>
+                    <span className="token-color-swatch" style={{ background: `var(${token})` }} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Scale</th>
+                <th>Token</th>
+                <th>Default</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {primitiveScales.map(([label, token, value]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="semantic-tokens">Semantic tokens</h2>
-        <Table className="token-color-table">
-          <thead>
-            <tr>
-              <th>Role</th>
-              <th>Token</th>
-              <th>Preview</th>
-            </tr>
-          </thead>
-          <tbody>
-            {semanticTokens.map(([label, token]) => (
-              <tr key={token}>
-                <td>{label}</td>
-                <td>
-                  <code>{token}</code>
-                </td>
-                <td>
-                  <span className="token-color-swatch" style={{ background: `var(${token})` }} />
-                </td>
+        <TableContainer className="token-color-table">
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Token</th>
+                <th>Preview</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-        <Table>
-          <thead>
-            <tr>
-              <th>Role</th>
-              <th>Alias</th>
-              <th>Default</th>
-            </tr>
-          </thead>
-          <tbody>
-            {semanticAliases.map(([label, token, primitive]) => (
-              <tr key={token}>
-                <td>{label}</td>
-                <td>
-                  <code>{token}</code>
-                </td>
-                <td>
-                  <code>{primitive}</code>
-                </td>
+            </thead>
+            <tbody>
+              {semanticTokens.map(([label, token]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>
+                    <span className="token-color-swatch" style={{ background: `var(${token})` }} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Alias</th>
+                <th>Default</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {semanticAliases.map(([label, token, primitive]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>
+                    <Code>{primitive}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="component-tokens">Component tokens</h2>
-        <Table>
-          <thead>
-            <tr>
-              <th>Token</th>
-              <th>Use</th>
-            </tr>
-          </thead>
-          <tbody>
-            {componentTokens.map(([label, token]) => (
-              <tr key={token}>
-                <td>{label}</td>
-                <td>
-                  <code>{token}</code>
-                </td>
+        <TableContainer>
+          <Table>
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Use</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {componentTokens.map(([label, token]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
