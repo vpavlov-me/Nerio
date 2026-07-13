@@ -13,7 +13,7 @@
   display: grid;
   grid-template-columns: var(--n-icon-size-md) minmax(0, 1fr);
   min-block-size: var(--n-command-input-height);
-  padding-inline: var(--n-command-padding-inline);
+  padding-inline: var(--n-command-item-padding-inline);
 }
 
 .n-command__input-icon {
