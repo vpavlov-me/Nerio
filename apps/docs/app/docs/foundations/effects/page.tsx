@@ -1,5 +1,4 @@
-import { Badge, Card, Separator, Table } from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+import { Badge, Code, Table, TableContainer } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -72,102 +71,70 @@ export default function Page() {
           <h2 id="elevation-scale">Elevation scale</h2>
           <Badge variant="info">Tokenized</Badge>
         </div>
-        <div className="effect-grid">
-          {effectTokens.map(([label, token, description]) => (
-            <Card key={token} className="effect-card">
-              <span
-                className="effect-sample"
-                style={token.includes("shadow") ? { boxShadow: `var(${token})` } : undefined}
-              />
-              <div>
-                <strong>{label}</strong>
-                <code>{token}</code>
-              </div>
-              <p>{description}</p>
-            </Card>
-          ))}
-        </div>
+        <EffectTable label="Elevation primitive tokens" rows={effectTokens} />
       </section>
 
       <section className="doc-section">
         <h2 id="semantic-effects">Semantic effects</h2>
-        <div className="effect-grid">
-          {semanticEffects.map(([label, token, description]) => (
-            <Card key={token} className="effect-card">
-              <span
-                className="effect-sample"
-                style={
-                  token.includes("shadow") || token === "--n-focus-ring"
-                    ? { boxShadow: `var(${token})` }
-                    : undefined
-                }
-              />
-              <div>
-                <strong>{label}</strong>
-                <code>{token}</code>
-              </div>
-              <p>{description}</p>
-            </Card>
-          ))}
-        </div>
+        <EffectTable label="Semantic effect tokens" rows={semanticEffects} />
       </section>
 
       <section className="doc-section">
         <h2 id="focus">Focus</h2>
         <p>
-          <code>--n-focus-ring</code> combines a 2px surface-colored offset with a 4px soft outer
+          <Code>--n-focus-ring</Code> combines a 2px surface-colored offset with a 4px soft outer
           ring. Theme and mode selectors remap the ring colors while controls share the same focus
           geometry.
         </p>
-        <div className="token-chip-row">
-          <code>--n-color-focus-offset</code>
-          <code>--n-color-focus-ring-soft</code>
-          <code>--n-focus-ring-inner-width</code>
-          <code>--n-focus-ring-outer-width</code>
-        </div>
-      </section>
-
-      <section className="doc-section">
-        <h2 id="live-surface-preview">Live surface preview</h2>
-        <Card className="effect-preview" tabIndex={0}>
-          <div>
-            <Badge variant="success">Focusable</Badge>
-            <h3>Collection review</h3>
-            <p>
-              This surface uses radius, border, focus, and effect tokens while keeping depth calm by
-              default.
-            </p>
-          </div>
-          <Separator />
-          <div className="preview-row">
-            <Button size="sm">Approve</Button>
-            <Button size="sm" variant="secondary">
-              Save draft
-            </Button>
-          </div>
-        </Card>
+        <TableContainer label="Focus ring tokens">
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Token</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["Offset", "--n-color-focus-offset"],
+                ["Soft ring", "--n-color-focus-ring-soft"],
+                ["Inner width", "--n-focus-ring-inner-width"],
+                ["Outer width", "--n-focus-ring-outer-width"],
+              ].map(([label, token]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="component-contracts">Component contracts</h2>
-        <Table>
-          <thead>
-            <tr>
-              <th>Contract</th>
-              <th>Token</th>
-            </tr>
-          </thead>
-          <tbody>
-            {componentContracts.map(([label, token]) => (
-              <tr key={token}>
-                <td>{label}</td>
-                <td>
-                  <code>{token}</code>
-                </td>
+        <TableContainer label="Component effect contracts">
+          <Table>
+            <thead>
+              <tr>
+                <th>Contract</th>
+                <th>Token</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {componentContracts.map(([label, token]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -183,5 +150,32 @@ export default function Page() {
         </ul>
       </section>
     </article>
+  );
+}
+
+function EffectTable({ label, rows }: { label: string; rows: TokenExample[] }) {
+  return (
+    <TableContainer label={label}>
+      <Table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Token</th>
+            <th>Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(([name, token, use]) => (
+            <tr key={token}>
+              <td>{name}</td>
+              <td>
+                <Code>{token}</Code>
+              </td>
+              <td>{use}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </TableContainer>
   );
 }

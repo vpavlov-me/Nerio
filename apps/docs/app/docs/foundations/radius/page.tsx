@@ -1,4 +1,4 @@
-import { Badge, Card } from "@nerio/ui";
+import { Badge, Code, Table, TableContainer } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -53,19 +53,30 @@ export default function RadiusPage() {
           <h2 id="radius-scale">Radius scale</h2>
           <Badge>Primitive tokens</Badge>
         </div>
-        <div className="radius-grid">
-          {radiusTokens.map(([label, token, description, value]) => (
-            <Card key={token} className="radius-card">
-              <span className="radius-sample" style={{ borderRadius: `var(${token})` }} />
-              <div>
-                <strong>{label}</strong>
-                <code>{token}</code>
-                {value ? <span>{value}</span> : null}
-              </div>
-              <p>{description}</p>
-            </Card>
-          ))}
-        </div>
+        <TableContainer label="Radius primitive scale">
+          <Table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Token</th>
+                <th>Default</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              {radiusTokens.map(([label, token, description, value]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>{value}</td>
+                  <td>{description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -74,18 +85,30 @@ export default function RadiusPage() {
           Components consume role-based aliases so the primitive scale can change without editing
           component source.
         </p>
-        <div className="token-table">
-          {radiusRoles.map(([label, token, primitive]) => (
-            <div key={token}>
-              <span className="radius-sample" style={{ borderRadius: `var(${token})` }} />
-              <strong>{label}</strong>
-              <code>{token}</code>
-              <span>
-                Default: <code>{primitive}</code>
-              </span>
-            </div>
-          ))}
-        </div>
+        <TableContainer label="Radius role aliases">
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Alias</th>
+                <th>Default primitive</th>
+              </tr>
+            </thead>
+            <tbody>
+              {radiusRoles.map(([label, token, primitive]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>
+                    <Code>{primitive}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">

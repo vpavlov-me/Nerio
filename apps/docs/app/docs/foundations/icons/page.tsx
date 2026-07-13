@@ -1,17 +1,4 @@
-import {
-  ArrowRight,
-  Bell,
-  Check,
-  ChevronDown,
-  Copy,
-  Plus,
-  Save,
-  Search,
-  Settings,
-  X,
-} from "@nerio/adapters";
-import { Badge, Card, Icon, Table } from "@nerio/ui";
-import type { IconComponent } from "@nerio/ui";
+import { Badge, Code, Table, TableContainer } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -21,19 +8,6 @@ export const metadata = createPageMetadata({
     "Use the Nerio icon adapter to keep icons accessible, consistent, and independent from individual component APIs.",
   path: "/docs/foundations/icons",
 });
-
-const icons: Array<[string, IconComponent]> = [
-  ["Search", Search],
-  ["Settings", Settings],
-  ["Bell", Bell],
-  ["Copy", Copy],
-  ["Check", Check],
-  ["Save", Save],
-  ["Plus", Plus],
-  ["ArrowRight", ArrowRight],
-  ["Close", X],
-  ["ChevronDown", ChevronDown],
-];
 
 const iconSizes = [
   ["Extra small", "--n-icon-size-xs", "12px"],
@@ -50,28 +24,6 @@ const componentSizes = [
   ["Medium icon-only Button", "--n-icon-button-icon-size-md", "--n-icon-size-lg"],
   ["Large icon-only Button", "--n-icon-button-icon-size-lg", "--n-icon-size-xl"],
 ] as const;
-
-function CustomLogoIcon({
-  strokeWidth = 2,
-  ...props
-}: {
-  className?: string;
-  "aria-hidden"?: boolean;
-  strokeWidth?: number;
-  absoluteStrokeWidth?: boolean;
-}) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" {...props}>
-      <path
-        d="M5 17V7l7 10V7l7 10V7"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={strokeWidth}
-      />
-    </svg>
-  );
-}
 
 const usage = `import { Search } from '@nerio/adapters';
 import { Icon } from '@nerio/ui';
@@ -104,88 +56,121 @@ export default function Page() {
 
       <section className="doc-section">
         <div className="section-heading">
-          <h2 id="icon-adapter-preview">Icon adapter preview</h2>
+          <h2 id="icon-adapter-contract">Icon adapter contract</h2>
           <Badge>@nerio/adapters</Badge>
         </div>
-        <div className="icon-grid">
-          {icons.map(([label, icon]) => (
-            <Card key={label as string} className="icon-card">
-              <Icon icon={icon} />
-              <span>{label}</span>
-            </Card>
-          ))}
-          <Card className="icon-card">
-            <Icon icon={CustomLogoIcon} />
-            <span>Custom SVG</span>
-          </Card>
-        </div>
+        <TableContainer label="Adapter sources">
+          <Table>
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Contract</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Lucide</td>
+                <td>
+                  Default icon source via <Code>@nerio/adapters</Code>.
+                </td>
+              </tr>
+              <tr>
+                <td>Custom SVG</td>
+                <td>
+                  React SVG components use the same <Code>Icon</Code> adapter contract.
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="size-contract">Size contract</h2>
-        <Table>
-          <thead>
-            <tr>
-              <th>Size</th>
-              <th>Token</th>
-              <th>Default</th>
-            </tr>
-          </thead>
-          <tbody>
-            {iconSizes.map(([label, token, value]) => (
-              <tr key={token}>
-                <td>{label}</td>
-                <td>
-                  <code>{token}</code>
-                </td>
-                <td>{value}</td>
+        <TableContainer label="Icon size tokens">
+          <Table>
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Token</th>
+                <th>Default</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
-        <div className="token-chip-row">
-          {componentSizes.map(([label, token, value]) => (
-            <code key={token} title={`${label}: ${value}`}>
-              {token}
-            </code>
-          ))}
-        </div>
+            </thead>
+            <tbody>
+              {iconSizes.map(([label, token, value]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
+        <TableContainer label="Component icon size aliases">
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Token</th>
+                <th>Default</th>
+              </tr>
+            </thead>
+            <tbody>
+              {componentSizes.map(([label, token, value]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>
+                    <Code>{value}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="contract">Contract</h2>
-        <Table>
-          <thead>
-            <tr>
-              <th>Rule</th>
-              <th>Reason</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Pass React icon components through the icon prop.</td>
-              <td>Components stay independent from Lucide implementation details.</td>
-            </tr>
-            <tr>
-              <td>Icon-only controls require an accessible label.</td>
-              <td>The visible icon is decorative; the label names the action.</td>
-            </tr>
-            <tr>
-              <td>Use semantic color tokens around icons.</td>
-              <td>Icons inherit text color and stay theme-aware.</td>
-            </tr>
-            <tr>
-              <td>Let component aliases set icon size.</td>
-              <td>Buttons and icon-only controls keep glyphs proportional to their hit area.</td>
-            </tr>
-            <tr>
-              <td>Use the adapter’s 2px absolute stroke default.</td>
-              <td>
-                Lucide glyphs stay legible at small sizes without becoming heavy at larger sizes.
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+        <TableContainer label="Icon implementation rules">
+          <Table>
+            <thead>
+              <tr>
+                <th>Rule</th>
+                <th>Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Pass React icon components through the icon prop.</td>
+                <td>Components stay independent from Lucide implementation details.</td>
+              </tr>
+              <tr>
+                <td>Icon-only controls require an accessible label.</td>
+                <td>The visible icon is decorative; the label names the action.</td>
+              </tr>
+              <tr>
+                <td>Use semantic color tokens around icons.</td>
+                <td>Icons inherit text color and stay theme-aware.</td>
+              </tr>
+              <tr>
+                <td>Let component aliases set icon size.</td>
+                <td>Buttons and icon-only controls keep glyphs proportional to their hit area.</td>
+              </tr>
+              <tr>
+                <td>Use the adapter’s 2px absolute stroke default.</td>
+                <td>
+                  Lucide glyphs stay legible at small sizes without becoming heavy at larger sizes.
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -196,16 +181,30 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="do-do-not">Do / do not</h2>
-        <div className="grid">
-          <Card>
-            <Badge variant="success">Do</Badge>
-            <p>Use icons to clarify compact actions and metadata when text would be repetitive.</p>
-          </Card>
-          <Card>
-            <Badge variant="danger">Do not</Badge>
-            <p>Use brand color for routine icons or rely on an icon without an accessible name.</p>
-          </Card>
-        </div>
+        <TableContainer label="Icon guidance">
+          <Table>
+            <thead>
+              <tr>
+                <th>Guidance</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Do</td>
+                <td>
+                  Use icons to clarify compact actions and metadata when text would be repetitive.
+                </td>
+              </tr>
+              <tr>
+                <td>Do not</td>
+                <td>
+                  Use brand color for routine icons or rely on an icon without an accessible name.
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
     </article>
   );

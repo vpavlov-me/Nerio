@@ -1,5 +1,4 @@
-import { Badge, Card, Field, FormGroup, Progress, Table } from "@nerio/ui";
-import { Button, Checkbox, Switch } from "@nerio/ui/client";
+import { Badge, Code, Table, TableContainer } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -73,38 +72,40 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="runtime-axes">Runtime axes</h2>
-        <Table>
-          <thead>
-            <tr>
-              <th>Axis</th>
-              <th>Attribute</th>
-              <th>Values</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Theme</td>
-              <td>
-                <code>data-theme</code>
-              </td>
-              <td>purple, blue, green, orange, red, neutral, or custom</td>
-            </tr>
-            <tr>
-              <td>Mode</td>
-              <td>
-                <code>data-mode</code>
-              </td>
-              <td>system, light, dark</td>
-            </tr>
-            <tr>
-              <td>Density</td>
-              <td>
-                <code>data-density</code>
-              </td>
-              <td>comfortable, compact</td>
-            </tr>
-          </tbody>
-        </Table>
+        <TableContainer label="Runtime appearance axes">
+          <Table>
+            <thead>
+              <tr>
+                <th>Axis</th>
+                <th>Attribute</th>
+                <th>Values</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Theme</td>
+                <td>
+                  <Code>data-theme</Code>
+                </td>
+                <td>purple, blue, green, orange, red, neutral, or custom</td>
+              </tr>
+              <tr>
+                <td>Mode</td>
+                <td>
+                  <Code>data-mode</Code>
+                </td>
+                <td>system, light, dark</td>
+              </tr>
+              <tr>
+                <td>Density</td>
+                <td>
+                  <Code>data-density</Code>
+                </td>
+                <td>comfortable, compact</td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -112,15 +113,30 @@ export default function Page() {
           <h2 id="preset-themes">Preset themes</h2>
           <Badge>brand accents</Badge>
         </div>
-        <div className="theme-grid">
-          {themes.map(([label, value, token]) => (
-            <Card key={value} className="theme-card">
-              <span className="theme-swatch" style={{ background: `var(${token})` }} />
-              <strong>{label}</strong>
-              <code>data-theme="{value}"</code>
-            </Card>
-          ))}
-        </div>
+        <TableContainer label="Preset theme contracts">
+          <Table>
+            <thead>
+              <tr>
+                <th>Theme</th>
+                <th>Attribute value</th>
+                <th>Primary accent token</th>
+              </tr>
+            </thead>
+            <tbody>
+              {themes.map(([label, value, token]) => (
+                <tr key={value}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>data-theme="{value}"</Code>
+                  </td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -130,58 +146,60 @@ export default function Page() {
           mode remaps the same roles to gray-950, gray-900, and gray-800. Purple and neutral also
           use lighter primary actions in dark and system-dark modes to preserve contrast.
         </p>
-        <div className="token-chip-row">
-          <code>--n-color-surface-canvas</code>
-          <code>--n-color-surface-control</code>
-          <code>--n-color-surface-raised</code>
-          <code>--n-color-action-primary</code>
-          <code>--n-color-action-on-primary</code>
-        </div>
-      </section>
-
-      <section className="doc-section">
-        <h2 id="live-theme-behavior">Live theme behavior</h2>
-        <Card className="token-preview">
-          <div>
-            <Badge variant="info">Themed surface</Badge>
-            <h3>Collection health</h3>
-            <p>
-              Use the header controls to switch theme, mode, and density. The component source stays
-              the same while semantic and component tokens remap.
-            </p>
-          </div>
-          <Progress label="Shared context" value={72} />
-          <FormGroup title="Notification theme check" layout="inline">
-            <Field label="Product updates">
-              <Checkbox aria-label="Product updates" defaultChecked />
-            </Field>
-            <label className="inline-control">
-              <Switch aria-label="Notify collaborators" defaultChecked />
-              <span>Notify collaborators</span>
-            </label>
-          </FormGroup>
-          <div className="preview-row">
-            <Button>Primary action</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="ghost">Quiet</Button>
-          </div>
-        </Card>
+        <TableContainer label="Mode-mapped semantic tokens">
+          <Table>
+            <thead>
+              <tr>
+                <th>Role</th>
+                <th>Token</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["Canvas", "--n-color-surface-canvas"],
+                ["Control", "--n-color-surface-control"],
+                ["Raised surface", "--n-color-surface-raised"],
+                ["Primary action", "--n-color-action-primary"],
+                ["Action foreground", "--n-color-action-on-primary"],
+              ].map(([label, token]) => (
+                <tr key={token}>
+                  <td>{label}</td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="density">Density</h2>
-        <div className="density-grid">
-          <Card className="density-card">
-            <Badge>Comfortable</Badge>
-            <p>Default spacing for mixed product and documentation surfaces.</p>
-            <Button size="sm">Review item</Button>
-          </Card>
-          <Card className="density-card" data-density-preview="compact">
-            <Badge>Compact</Badge>
-            <p>Reduced control heights and spacing for dense operational interfaces.</p>
-            <Button size="sm">Review item</Button>
-          </Card>
-        </div>
+        <TableContainer label="Density contracts">
+          <Table>
+            <thead>
+              <tr>
+                <th>Value</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Code>comfortable</Code>
+                </td>
+                <td>Default spacing for mixed product and documentation surfaces.</td>
+              </tr>
+              <tr>
+                <td>
+                  <Code>compact</Code>
+                </td>
+                <td>Reduced control heights and spacing for dense operational interfaces.</td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -197,16 +215,26 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="do-do-not">Do / do not</h2>
-        <div className="grid">
-          <Card>
-            <Badge variant="success">Do</Badge>
-            <p>Use generic brand theme names and let mode handle light or dark rendering.</p>
-          </Card>
-          <Card>
-            <Badge variant="danger">Do not</Badge>
-            <p>Fork component source to hard-code a product color into a button or field.</p>
-          </Card>
-        </div>
+        <TableContainer label="Theme guidance">
+          <Table>
+            <thead>
+              <tr>
+                <th>Guidance</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Do</td>
+                <td>Use generic brand theme names and let mode handle light or dark rendering.</td>
+              </tr>
+              <tr>
+                <td>Do not</td>
+                <td>Fork component source to hard-code a product color into a button or field.</td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
       </section>
     </article>
   );
