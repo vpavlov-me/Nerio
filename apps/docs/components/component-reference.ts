@@ -85,7 +85,7 @@ export const snippets: Record<string, string> = {
   select:
     "import { Select } from '@nerio/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   toast:
-    'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: "Saved", data: { tone: "success" } })}>Show toast</Button>;\n}\n\n<ToastProvider><Example /><ToastViewport /></ToastProvider>',
+    'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
   tooltip:
     "import { Button, Tooltip } from '@nerio/ui/client';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
@@ -1718,24 +1718,56 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     states: [
-      { title: "Visible", description: "Appears briefly in the viewport." },
-      { title: "Dismissed", description: "Can be removed by timeout or close action." },
+      { title: "Timed", description: "Auto-dismisses after the provider or toast timeout." },
+      { title: "Persistent", description: "Uses timeout 0 and always keeps a dismiss path." },
+      {
+        title: "Paused",
+        description: "Preserves remaining time during pointer, keyboard focus, or window blur.",
+      },
+      {
+        title: "Swiping",
+        description: "Dismisses past the threshold and returns to position when cancelled.",
+      },
+      { title: "Limited", description: "Keeps overflow mounted but inert and visually hidden." },
     ],
     accessibility: [
       "Use concise messages and avoid essential decisions inside a toast.",
-      "Base UI handles the managed toast live region, pause behavior, and dismiss interaction.",
+      "Managed low-priority messages use Base UI's polite announcement; reserve high priority for urgent failures.",
+      "Base UI announces the manager title and description once, without decorative icons or action copy.",
+      "Toasts never move focus when they appear. Press F6 to enter the Notifications region, then use Tab for actions and dismissal.",
+      "Timers pause while the viewport is hovered, keyboard focus is within it, or the window is inactive.",
+      "Swipe is optional input; every managed toast retains a keyboard-reachable dismiss control.",
       "Static Toast is a presentation primitive; use ToastProvider and ToastViewport for managed notifications.",
       "Keep persistent error text in the page or form; a danger toast can only supplement it.",
     ],
     api: [
       {
         title: "ToastProvider",
-        description: "Wraps the client surface and configures limit/timeout.",
+        description:
+          "Wraps one managed stack and configures limit, default timeout, and an optional independent manager.",
       },
-      { title: "ToastViewport", description: "Portal target for managed toasts." },
+      {
+        title: "ToastViewport",
+        description:
+          "Safe-area portal target with localized landmark/dismiss labels and RTL-aware swipe direction.",
+      },
       {
         title: "useToastManager",
-        description: "Adds semantic tone toast messages, including an optional action.",
+        description:
+          "Adds, updates, replaces, and removes messages; duplicate IDs update in place and refresh their timer.",
+      },
+      {
+        title: "createToastManager",
+        description:
+          "Creates an isolated manager when an application intentionally needs another provider.",
+      },
+      {
+        title: "timeout",
+        description: "Milliseconds before dismissal; 0 creates a persistent toast.",
+      },
+      {
+        title: "priority",
+        description: "low is polite; high is reserved for urgent announcements.",
       },
       { title: "dismissText", description: "Localizes the visible managed toast dismiss text." },
       {
@@ -1744,11 +1776,21 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     guidance: {
-      do: ["Confirm background events like saved, copied, or sent."],
-      dont: ["Do not use Toast for destructive confirmations or blocking errors."],
+      do: [
+        "Confirm short-lived background events like saved, copied, or sent.",
+        "Use one provider and viewport per managed stack; create a separate manager only for an intentionally isolated stack.",
+      ],
+      dont: [
+        "Do not use Toast for destructive confirmations or blocking errors.",
+        "Do not turn Toast into a notification inbox, activity feed, job manager, or persistent history.",
+      ],
     },
     tokens: [
       "--n-toast-width",
+      "--n-toast-viewport-inset",
+      "--n-toast-stack-gap",
+      "--n-toast-stack-offset",
+      "--n-toast-swipe-dismiss-distance",
       "--n-toast-background",
       "--n-toast-border",
       "--n-toast-shadow",

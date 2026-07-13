@@ -140,11 +140,18 @@ export {
   Toast,
   ToastProvider,
   ToastViewport,
+  createToastManager,
   toastManager,
   useToastManager,
+  type ToastAction,
   type ToastData,
+  type ToastManager,
+  type ToastPriority,
   type ToastProps,
+  type ToastProviderProps,
+  type ToastSwipeDirection,
   type ToastTone,
+  type ToastViewportProps,
 } from "./components/toast";
 export {
   Card,

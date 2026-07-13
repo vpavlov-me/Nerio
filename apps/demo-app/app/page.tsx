@@ -35,7 +35,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Toast,
+  ToastProvider,
+  ToastViewport,
+  useToastManager,
 } from "@nerio/ui/client";
 
 const projects = [
@@ -102,15 +104,24 @@ const navItems = [
 ] as const;
 
 export default function DemoApp() {
+  return (
+    <ToastProvider>
+      <DemoWorkspace />
+      <ToastViewport />
+    </ToastProvider>
+  );
+}
+
+function DemoWorkspace() {
   const [query, setQuery] = React.useState("");
   const [status, setStatus] = React.useState("all");
   const [workspaceState, setWorkspaceState] = React.useState<"ready" | "loading" | "error">(
     "ready",
   );
-  const [showToast, setShowToast] = React.useState(false);
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState("system");
   const [density, setDensityValue] = React.useState("comfortable");
+  const toasts = useToastManager();
 
   React.useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -177,21 +188,17 @@ export default function DemoApp() {
               leadingIcon={Sparkles}
               onClick={() => {
                 setWorkspaceState("ready");
-                setShowToast(true);
+                toasts.add({
+                  title: "Project draft created",
+                  description: "The new workspace item is ready to configure.",
+                  data: { tone: "success" },
+                });
               }}
             >
               Create project
             </Button>
           </div>
         </header>
-
-        {showToast ? (
-          <Toast
-            title="Project draft created"
-            description="The new workspace item is ready to configure."
-            tone="success"
-          />
-        ) : null}
 
         <section className="workspace-controls">
           <Field label="Search projects">

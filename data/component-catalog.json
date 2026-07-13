@@ -409,8 +409,8 @@
       "tier": "core",
       "package": "@nerio/ui/client",
       "category": "feedback",
-      "status": "polished",
-      "description": "Static and managed toast anatomy are separate; action and localized dismiss APIs are covered while swipe and browser stacking remain manual."
+      "status": "stable-core",
+      "description": "Static and managed anatomy stay separate; deterministic stacks, persistent and accurately paused timers, RTL-aware swipe dismissal, independent managers, accessible priority and action states, safe-area viewport behavior, and full install evidence are covered."
     },
     {
       "name": "Progress",

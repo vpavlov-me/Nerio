@@ -570,7 +570,10 @@
   --n-overlay-foreground: var(--n-color-text-secondary);
   --n-overlay-shadow: var(--n-shadow-surface-floating);
   --n-toast-width: 34rem;
+  --n-toast-viewport-inset: var(--n-space-4);
+  --n-toast-stack-gap: var(--n-space-3);
   --n-toast-stack-offset: var(--n-size-toast-stack-offset);
+  --n-toast-swipe-dismiss-distance: 150%;
   --n-toast-background: var(--n-overlay-background);
   --n-toast-border-width: var(--n-overlay-border-width);
   --n-toast-border: var(--n-overlay-border);

@@ -2136,6 +2136,10 @@
       "variants": ["neutral", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-toast-width",
+        "--n-toast-viewport-inset",
+        "--n-toast-stack-gap",
+        "--n-toast-stack-offset",
+        "--n-toast-swipe-dismiss-distance",
         "--n-overlay-z-index",
         "--n-toast-background",
         "--n-toast-border",
@@ -2152,11 +2156,16 @@
       ],
       "accessibility": [
         "Uses the Base UI Toast primitive and manager.",
-        "Use low priority for routine confirmations and high priority only for urgent updates.",
-        "Static Toast content is separate from the managed status, copy, action, and dismiss layout; ToastViewport localizes visible dismiss text and its accessible label.",
+        "Use low priority for routine polite confirmations and high priority only for urgent updates.",
+        "Base UI announces managed title and description once; decorative status icons and action copy are excluded from the announcement.",
+        "Static Toast content is separate from the managed status, copy, action, and dismiss layout; ToastViewport localizes its landmark, visible dismiss text, and accessible dismiss label.",
+        "Managed toasts never steal focus. F6 enters the viewport, where actions and dismissal remain keyboard reachable.",
+        "Timers pause on pointer hover, keyboard focus, and window blur, then resume from the remaining duration. Set timeout to 0 only for an intentionally persistent toast.",
+        "Swipe supports pointer and touch input, logical RTL direction, cancellation, and reduced motion without replacing the dismiss control.",
+        "Use one provider per managed stack. Pass a manager from createToastManager only when an independent second provider is intentional.",
         "Keep messages concise and avoid replacing persistent error UI with a toast."
       ],
-      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ title: 'Saved', data: { tone: 'success', action: { label: 'Undo', onClick: undo } } })}>Save</Button>;\n}\n\n<ToastProvider><SaveButton /><ToastViewport dismissText=\"Close\" dismissLabel=\"Dismiss notification\" /></ToastProvider>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ id: 'save-result', title: 'Saved', timeout: 5000, priority: 'low', data: { tone: 'success', action: { label: 'Undo', onClick: undo } } })}>Save</Button>;\n}\n\n<ToastProvider limit={3}><SaveButton /><ToastViewport label=\"Notifications\" dismissText=\"Close\" dismissLabel=\"Dismiss notification\" /></ToastProvider>"
     }
   ]
 }

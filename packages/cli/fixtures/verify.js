@@ -565,9 +565,13 @@ async function verify() {
     if (
       !toastSource.includes("createToastManager") ||
       !toastSource.includes("Dismiss notification") ||
-      !toastSource.includes("data?.tone")
+      !toastSource.includes("data?.tone") ||
+      !toastSource.includes("inline-end") ||
+      !toastSource.includes("dismissOnClick")
     ) {
-      throw new Error("Installed Toast source is missing manager, tone, or dismiss contract.");
+      throw new Error(
+        "Installed Toast source is missing manager, tone, RTL swipe, or action dismissal contract.",
+      );
     }
 
     const alertSource = fs.readFileSync(

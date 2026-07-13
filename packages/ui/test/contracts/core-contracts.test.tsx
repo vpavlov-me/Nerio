@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import * as React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -89,6 +89,7 @@ import {
   Toast,
   ToastProvider,
   ToastViewport,
+  createToastManager,
   useToastManager,
 } from "../../src/client";
 import { ArrowRight, Bell, Check, type IconSvgProps } from "@nerio/adapters";
@@ -1121,8 +1122,14 @@ describe("Core static contracts", () => {
   });
 
   it("renders static Toast tone, title, and description without a broad descendant selector", () => {
-    render(<Toast tone="success" title="Saved" description="Your changes are live." />);
+    render(
+      <>
+        <Toast tone="success" title="Saved" description="Your changes are live." />
+        <Toast priority="high" tone="danger" title="Connection lost" />
+      </>,
+    );
     expect(screen.getByRole("status")).toHaveAttribute("data-tone", "success");
+    expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "danger");
     expect(screen.getByText("Saved")).toHaveAttribute("data-slot", "title");
   });
 
@@ -1151,12 +1158,194 @@ describe("Core static contracts", () => {
       </ToastProvider>,
     );
     await user.click(screen.getByRole("button", { name: "Show" }));
+    expect(screen.getByLabelText("Close notification")).toHaveAttribute("data-slot", "close");
     await user.click(await screen.findByRole("button", { name: "Undo" }));
     expect(action).toHaveBeenCalledOnce();
-    expect(screen.getByRole("button", { name: "Close notification" })).toHaveAttribute(
-      "data-slot",
-      "close",
+    expect(screen.queryByText("Saved")).not.toBeInTheDocument();
+  });
+
+  it("keeps independent providers isolated and resolves logical swipe directions for RTL", () => {
+    const firstManager = createToastManager();
+    const secondManager = createToastManager();
+    render(
+      <>
+        <ToastProvider manager={firstManager}>
+          <ToastViewport label="Primary notifications" />
+        </ToastProvider>
+        <ToastProvider manager={secondManager}>
+          <ToastViewport direction="rtl" label="Secondary notifications" />
+        </ToastProvider>
+      </>,
     );
+
+    act(() => {
+      firstManager.add({ id: "first", title: "Primary toast" });
+      secondManager.add({ id: "second", title: "Secondary toast" });
+    });
+
+    const primary = screen.getByRole("region", { name: "Primary notifications" });
+    const secondary = screen.getByRole("region", { name: "Secondary notifications" });
+    expect(within(primary).getByText("Primary toast")).toBeInTheDocument();
+    expect(within(primary).queryByText("Secondary toast")).not.toBeInTheDocument();
+    expect(within(secondary).getByText("Secondary toast")).toBeInTheDocument();
+    expect(secondary).toHaveAttribute("dir", "rtl");
+  });
+
+  it("upserts duplicate IDs, preserves ordering, and marks stack overflow deterministically", () => {
+    const manager = createToastManager();
+    render(
+      <React.StrictMode>
+        <ToastProvider limit={2} manager={manager}>
+          <ToastViewport />
+        </ToastProvider>
+      </React.StrictMode>,
+    );
+
+    act(() => {
+      manager.add({ id: "first", title: "First" });
+      manager.add({ id: "second", title: "Second" });
+      manager.add({ id: "first", title: "First updated" });
+      manager.add({ id: "third", title: "Third" });
+    });
+
+    const roots = Array.from(document.querySelectorAll<HTMLElement>(".n-toast--managed"));
+    expect(roots).toHaveLength(3);
+    expect(roots.map((root) => root.textContent)).toEqual([
+      expect.stringContaining("Third"),
+      expect.stringContaining("Second"),
+      expect.stringContaining("First updated"),
+    ]);
+    expect(roots.filter((root) => root.hasAttribute("data-limited"))).toHaveLength(1);
+    expect(screen.queryByText("First", { exact: true })).not.toBeInTheDocument();
+  });
+
+  it("pauses and accurately resumes auto-dismiss while the pointer is over the viewport", async () => {
+    vi.useFakeTimers();
+    try {
+      const manager = createToastManager();
+      render(
+        <ToastProvider manager={manager} timeout={1000}>
+          <ToastViewport />
+        </ToastProvider>,
+      );
+      act(() => manager.add({ title: "Timed toast" }));
+      const viewport = screen.getByRole("region", { name: "Notifications" });
+
+      await act(() => vi.advanceTimersByTimeAsync(400));
+      fireEvent.mouseEnter(viewport);
+      await act(() => vi.advanceTimersByTimeAsync(2000));
+      expect(screen.getByText("Timed toast").closest(".n-toast")).not.toHaveAttribute(
+        "data-ending-style",
+      );
+
+      fireEvent.mouseLeave(viewport);
+      await act(() => vi.advanceTimersByTimeAsync(599));
+      expect(screen.getByText("Timed toast").closest(".n-toast")).not.toHaveAttribute(
+        "data-ending-style",
+      );
+      await act(() => vi.advanceTimersByTimeAsync(1));
+      expect(screen.queryByText("Timed toast")).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("supports persistent toasts and refreshes replacement timers without stale callbacks", async () => {
+    vi.useFakeTimers();
+    try {
+      const manager = createToastManager();
+      render(
+        <ToastProvider manager={manager} timeout={1000}>
+          <ToastViewport />
+        </ToastProvider>,
+      );
+      act(() => {
+        manager.add({ id: "persistent", title: "Persistent", timeout: 0 });
+        manager.add({ id: "replaceable", title: "Initial", timeout: 1000 });
+      });
+      await act(() => vi.advanceTimersByTimeAsync(500));
+      act(() => manager.add({ id: "replaceable", title: "Replacement", timeout: 2000 }));
+      await act(() => vi.advanceTimersByTimeAsync(1500));
+      expect(screen.getByText("Replacement").closest(".n-toast")).not.toHaveAttribute(
+        "data-ending-style",
+      );
+      await act(() => vi.advanceTimersByTimeAsync(500));
+      expect(screen.queryByText("Replacement")).not.toBeInTheDocument();
+      await act(() => vi.advanceTimersByTimeAsync(10000));
+      expect(screen.getByText("Persistent").closest(".n-toast")).not.toHaveAttribute(
+        "data-ending-style",
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("pauses timers while keyboard focus is within the viewport", async () => {
+    vi.useFakeTimers();
+    try {
+      const manager = createToastManager();
+      render(
+        <ToastProvider manager={manager} timeout={1000}>
+          <button type="button">Outside</button>
+          <ToastViewport />
+        </ToastProvider>,
+      );
+      act(() =>
+        manager.add({
+          id: "focus-timer",
+          title: "Keyboard pause",
+          data: { action: { label: "Review", onClick: () => undefined } },
+        }),
+      );
+      await act(() => vi.advanceTimersByTimeAsync(300));
+      act(() => fireEvent.keyDown(document, { key: "Tab" }));
+      const action = screen.getByRole("button", { name: "Review" });
+      act(() => {
+        action.focus();
+        fireEvent.focus(action);
+      });
+      await act(() => vi.advanceTimersByTimeAsync(2000));
+      expect(screen.getByText("Keyboard pause")).toBeInTheDocument();
+
+      const outside = screen.getByRole("button", { name: "Outside" });
+      act(() => {
+        fireEvent.blur(action, { relatedTarget: outside });
+        outside.focus();
+      });
+      await act(() => vi.advanceTimersByTimeAsync(700));
+      expect(screen.queryByText("Keyboard pause")).not.toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("keeps loading actions disabled and does not steal focus when a toast appears", () => {
+    const manager = createToastManager();
+    render(
+      <ToastProvider manager={manager}>
+        <button type="button">Keep focus</button>
+        <ToastViewport />
+      </ToastProvider>,
+    );
+    const trigger = screen.getByRole("button", { name: "Keep focus" });
+    trigger.focus();
+    act(() =>
+      manager.add({
+        title: "Saving",
+        data: {
+          action: {
+            label: "Retry",
+            loading: true,
+            loadingLabel: "Retrying",
+            onClick: () => undefined,
+          },
+        },
+      }),
+    );
+
+    expect(trigger).toHaveFocus();
+    expect(screen.getByRole("button", { name: "Retrying" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Retrying" })).toHaveAttribute("aria-busy", "true");
   });
 });
 

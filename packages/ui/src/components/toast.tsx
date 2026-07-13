@@ -7,66 +7,109 @@ import { cn } from "../lib/cn";
 import { Icon } from "./icon";
 
 export type ToastTone = "neutral" | "info" | "success" | "warning" | "danger";
+export type ToastPriority = "low" | "high";
+export type ToastSwipeDirection = "up" | "down" | "left" | "right" | "inline-start" | "inline-end";
+
+export interface ToastAction {
+  label: string;
+  onClick: () => void;
+  altText?: string;
+  disabled?: boolean;
+  loading?: boolean;
+  loadingLabel?: string;
+  dismissOnClick?: boolean;
+}
 
 export interface ToastData {
   tone?: ToastTone;
-  action?: {
-    label: string;
-    onClick: () => void;
-    altText?: string;
-  };
+  action?: ToastAction;
 }
 
 export interface ToastProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   title: React.ReactNode;
   description?: React.ReactNode;
   tone?: ToastTone;
+  priority?: ToastPriority;
 }
 
-export const toastManager = BaseToast.createToastManager<ToastData>();
+export const createToastManager = () => BaseToast.createToastManager<ToastData>();
+export type ToastManager = ReturnType<typeof createToastManager>;
+export const toastManager = createToastManager();
 export const useToastManager = BaseToast.useToastManager<ToastData>;
+
+export interface ToastProviderProps {
+  children: React.ReactNode;
+  limit?: number;
+  manager?: ToastManager;
+  timeout?: number;
+}
 
 export function ToastProvider({
   children,
   limit = 3,
+  manager = toastManager,
   timeout = 5000,
-}: {
-  children: React.ReactNode;
-  limit?: number;
-  timeout?: number;
-}) {
+}: ToastProviderProps) {
   return (
-    <BaseToast.Provider limit={limit} timeout={timeout} toastManager={toastManager}>
+    <BaseToast.Provider limit={limit} timeout={timeout} toastManager={manager}>
       {children}
     </BaseToast.Provider>
   );
 }
 
-export function ToastViewport({
-  className,
-  dismissText = "Dismiss",
-  dismissLabel = "Dismiss notification",
-}: {
+export interface ToastViewportProps {
   className?: string;
+  direction?: "ltr" | "rtl";
   dismissText?: string;
   dismissLabel?: string;
-}) {
+  label?: string;
+  swipeDirection?: ToastSwipeDirection | ToastSwipeDirection[];
+}
+
+export function ToastViewport({
+  className,
+  direction,
+  dismissText = "Dismiss",
+  dismissLabel = "Dismiss notification",
+  label = "Notifications",
+  swipeDirection = ["inline-end", "down"],
+}: ToastViewportProps) {
+  const resolvedDirection = useDocumentDirection(direction);
+  const resolvedSwipeDirection = resolveSwipeDirection(swipeDirection, resolvedDirection);
+
   return (
     <BaseToast.Portal>
-      <BaseToast.Viewport className={cn("n-toast-viewport", className)} data-slot="viewport">
-        <ToastList dismissText={dismissText} dismissLabel={dismissLabel} />
+      <BaseToast.Viewport
+        aria-label={label}
+        className={cn("n-toast-viewport", className)}
+        data-slot="viewport"
+        dir={resolvedDirection}
+      >
+        <ToastList
+          dismissText={dismissText}
+          dismissLabel={dismissLabel}
+          swipeDirection={resolvedSwipeDirection}
+        />
       </BaseToast.Viewport>
     </BaseToast.Portal>
   );
 }
 
-export function Toast({ title, description, tone = "neutral", className, ...props }: ToastProps) {
+export function Toast({
+  title,
+  description,
+  tone = "neutral",
+  priority = "low",
+  className,
+  role,
+  ...props
+}: ToastProps) {
   return (
     <div
       className={cn("n-toast", className)}
       data-slot="root"
       data-tone={tone}
-      role="status"
+      role={role ?? (priority === "high" ? "alert" : "status")}
       {...props}
     >
       <ToastIndicator tone={tone} />
@@ -78,11 +121,21 @@ export function Toast({ title, description, tone = "neutral", className, ...prop
   );
 }
 
-function ToastList({ dismissText, dismissLabel }: { dismissText: string; dismissLabel: string }) {
-  const { toasts } = BaseToast.useToastManager<ToastData>();
+function ToastList({
+  dismissText,
+  dismissLabel,
+  swipeDirection,
+}: {
+  dismissText: string;
+  dismissLabel: string;
+  swipeDirection: BaseSwipeDirection | BaseSwipeDirection[];
+}) {
+  const manager = BaseToast.useToastManager<ToastData>();
 
-  return toasts.map((toast) => {
+  return manager.toasts.map((toast) => {
     const tone = getToastTone(toast.data?.tone ?? toast.type);
+    const action = toast.data?.action;
+    const actionLoading = action?.loading ?? false;
 
     return (
       <BaseToast.Root
@@ -90,7 +143,7 @@ function ToastList({ dismissText, dismissLabel }: { dismissText: string; dismiss
         className="n-toast n-toast--managed"
         data-slot="root"
         data-tone={tone}
-        swipeDirection={["right", "down"]}
+        swipeDirection={swipeDirection}
         toast={toast}
       >
         <BaseToast.Content className="n-toast__content" data-slot="content">
@@ -99,14 +152,21 @@ function ToastList({ dismissText, dismissLabel }: { dismissText: string; dismiss
             <BaseToast.Title data-slot="title" />
             <BaseToast.Description data-slot="description" />
           </div>
-          {toast.data?.action ? (
+          {action ? (
             <BaseToast.Action
               className="n-toast__action"
               data-slot="action"
-              aria-label={toast.data.action.altText}
-              onClick={toast.data.action.onClick}
+              aria-busy={actionLoading || undefined}
+              aria-label={action.altText}
+              disabled={action.disabled || actionLoading}
+              onClick={() => {
+                action.onClick();
+                if (action.dismissOnClick !== false) {
+                  manager.close(toast.id);
+                }
+              }}
             >
-              {toast.data.action.label}
+              {actionLoading ? (action.loadingLabel ?? action.label) : action.label}
             </BaseToast.Action>
           ) : null}
           <BaseToast.Close className="n-toast__close" data-slot="close" aria-label={dismissLabel}>
@@ -116,6 +176,48 @@ function ToastList({ dismissText, dismissLabel }: { dismissText: string; dismiss
       </BaseToast.Root>
     );
   });
+}
+
+type BaseSwipeDirection = "up" | "down" | "left" | "right";
+
+function resolveSwipeDirection(
+  direction: ToastSwipeDirection | ToastSwipeDirection[],
+  documentDirection: "ltr" | "rtl",
+): BaseSwipeDirection | BaseSwipeDirection[] {
+  const directions = Array.isArray(direction) ? direction : [direction];
+  const resolved = directions.map((item): BaseSwipeDirection => {
+    if (item === "inline-end") {
+      return documentDirection === "rtl" ? "left" : "right";
+    }
+    if (item === "inline-start") {
+      return documentDirection === "rtl" ? "right" : "left";
+    }
+    return item;
+  });
+
+  return Array.isArray(direction) ? resolved : resolved[0]!;
+}
+
+function useDocumentDirection(direction?: "ltr" | "rtl") {
+  const [documentDirection, setDocumentDirection] = React.useState<"ltr" | "rtl">(
+    direction ?? "ltr",
+  );
+
+  React.useEffect(() => {
+    if (direction) {
+      setDocumentDirection(direction);
+      return undefined;
+    }
+
+    const root = document.documentElement;
+    const updateDirection = () => setDocumentDirection(root.dir === "rtl" ? "rtl" : "ltr");
+    updateDirection();
+    const observer = new MutationObserver(updateDirection);
+    observer.observe(root, { attributeFilter: ["dir"] });
+    return () => observer.disconnect();
+  }, [direction]);
+
+  return direction ?? documentDirection;
 }
 
 function getToastTone(value: unknown): ToastTone {
