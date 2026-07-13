@@ -248,8 +248,10 @@ async function info(name) {
   console.log(`Category: ${item.category}`);
   console.log(`Dependencies: ${formatList(item.dependencies)}`);
   console.log(`Registry dependencies: ${formatList(item.registryDependencies)}`);
-  console.log(`Files: ${item.files.length}`);
+  console.log(`Files: ${item.files.length} (${item.files.map((file) => file.target).join(", ")})`);
+  console.log(`Variants: ${formatList(item.variants)}`);
   console.log(`Required tokens: ${formatList(item.requiredTokens)}`);
+  console.log(`Accessibility: ${formatList(item.accessibility)}`);
   console.log("");
   console.log("Usage:");
   console.log(item.usage);

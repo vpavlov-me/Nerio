@@ -242,7 +242,7 @@
     {
       "name": "button-group",
       "title": "ButtonGroup",
-      "description": "Joins related Buttons into one attached horizontal control set.",
+      "description": "Joins a small set of related Buttons into one attached horizontal or vertical control set.",
       "category": "actions",
       "dependencies": ["clsx", "react"],
       "registryDependencies": ["button"],
@@ -261,7 +261,7 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["button-group"],
-      "variants": [],
+      "variants": ["orientation: horizontal | vertical"],
       "requiredTokens": [
         "--n-button-radius",
         "--n-button-border-width",
@@ -269,11 +269,11 @@
         "--n-focus-ring"
       ],
       "accessibility": [
-        "Renders a group landmark by default; provide aria-label for its shared purpose.",
-        "Preserves the native semantics and keyboard behavior of every child Button.",
-        "Use the same Button variant for every child so the actions remain visually equal."
+        "Renders a group landmark by default; provide aria-label or aria-labelledby for its shared purpose.",
+        "Preserves the native semantics and independent Tab order of every child Button; it does not add roving focus or arrow-key navigation.",
+        "Use direct Nerio Button children with the same Button variant so the actions remain visually equal."
       ],
-      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ButtonGroup } from '@/components/nerio/components/button-group';\n\n<ButtonGroup aria-label=\"Document actions\"><Button variant=\"secondary\">Cancel</Button><Button variant=\"secondary\">Save</Button></ButtonGroup>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ButtonGroup } from '@/components/nerio/components/button-group';\n\n<ButtonGroup aria-label=\"Document actions\" orientation=\"vertical\"><Button variant=\"secondary\">Cancel</Button><Button variant=\"secondary\">Save</Button></ButtonGroup>"
     },
     {
       "name": "badge",

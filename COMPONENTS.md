@@ -60,7 +60,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Component   | Status                   | Package            | Notes                                                                                          |
 | ----------- | ------------------------ | ------------------ | ---------------------------------------------------------------------------------------------- |
 | Button      | stable-core              | `@nerio/ui/client` | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip |
-| ButtonGroup | implemented-initial      | `@nerio/ui/client` | Attached horizontal layout group for related Buttons                                           |
+| ButtonGroup | stable-core              | `@nerio/ui`        | Server-safe attached group for related Buttons; supports horizontal and vertical layouts       |
 | IconButton  | deprecated-compatibility | `@nerio/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release            |
 
 ### Forms

@@ -379,6 +379,21 @@ async function verify() {
       );
     }
 
+    const buttonGroupUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "button-group" },
+    });
+    const buttonGroupUsage = JSON.parse(buttonGroupUsageResult.content[0].text);
+    if (
+      !buttonGroupUsage.variants.includes("orientation: horizontal | vertical") ||
+      !buttonGroupUsage.accessibility.some((item) => item.includes("independent Tab order")) ||
+      !buttonGroupUsage.files.some((file) => file.target === "styles/button-group.css")
+    ) {
+      throw new Error(
+        "MCP ButtonGroup usage is missing stable orientation or accessibility metadata.",
+      );
+    }
+
     const listResult = await client.callTool({ name: "list_components", arguments: {} });
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [
