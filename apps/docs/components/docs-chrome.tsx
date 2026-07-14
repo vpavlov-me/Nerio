@@ -19,16 +19,19 @@ import {
   Github,
   Layers,
   ListTree,
+  Moon,
+  Monitor,
   Palette,
   PanelLeft,
   PackageOpen,
   Rows3,
   Search,
   Sparkles,
+  Sun,
   Type,
   Wrench,
 } from "@nerio/adapters/icons";
-import { Badge, Button, ButtonGroup, DropdownMenu, Icon, Select } from "@nerio/ui/client";
+import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/adapters/icons";
 import { densities, modes, themes } from "@nerio/tokens";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
@@ -155,7 +158,15 @@ const navGroups: NavGroup[] = [
 
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
 const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
-const modeOptions = modes.map((value) => ({ label: runtimeLabel(value), value }));
+const modeIcons: Record<ColorMode, IconComponent> = {
+  system: Monitor,
+  light: Sun,
+  dark: Moon,
+};
+const densityIcons: Record<(typeof densities)[number], IconComponent> = {
+  comfortable: Rows3,
+  compact: ListTree,
+};
 const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), value }));
 
 function isColorMode(value: string): value is ColorMode {
@@ -785,25 +796,50 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             <span className="docs-controls-divider" aria-hidden />
             <DropdownMenu
               trigger={
-                <Button leadingIcon={Rows3} variant="ghost">
+                <Button
+                  leadingIcon={densityIcons[density]}
+                  trailingIcon={ChevronDown}
+                  variant="ghost"
+                >
                   {densityOptions.find((option) => option.value === density)?.label}
                 </Button>
               }
               items={densityOptions.map((option) => ({
-                label: option.label,
+                label: (
+                  <span className="runtime-menu-item">
+                    <Icon icon={densityIcons[option.value]} />
+                    <span>{option.label}</span>
+                    {density === option.value ? <Icon icon={Check} /> : null}
+                  </span>
+                ),
                 onSelect: () => setDensity(option.value),
               }))}
             />
             <span className="docs-controls-divider" aria-hidden />
-            <Select
-              aria-label="Color mode"
-              className="docs-mode-selector"
-              label="Color mode"
-              onValueChange={(value) => {
-                if (isColorMode(value)) setMode(value);
-              }}
-              options={modeOptions}
-              value={mode}
+            <DropdownMenu
+              className="docs-mode-menu"
+              trigger={
+                <Button
+                  aria-label="Color mode"
+                  leadingIcon={modeIcons[mode]}
+                  trailingIcon={ChevronDown}
+                  variant="ghost"
+                >
+                  {runtimeLabel(mode)}
+                </Button>
+              }
+              items={modes.map((option) => ({
+                label: (
+                  <span className="runtime-menu-item">
+                    <Icon icon={modeIcons[option]} />
+                    <span>{runtimeLabel(option)}</span>
+                    {mode === option ? <Icon icon={Check} /> : null}
+                  </span>
+                ),
+                onSelect: () => {
+                  if (isColorMode(option)) setMode(option);
+                },
+              }))}
             />
             <span className="docs-controls-divider" aria-hidden />
             <Button

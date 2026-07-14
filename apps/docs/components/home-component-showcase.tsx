@@ -113,7 +113,7 @@ export function HomeComponentShowcase() {
                   { label: "", value: "unselected" },
                 ]}
               />
-              <Spinner label="Loading preview" size="sm" />
+              <Spinner className="home-gallery__spinner" label="Loading preview" size="sm" />
             </div>
             <Progress
               label="Release readiness"

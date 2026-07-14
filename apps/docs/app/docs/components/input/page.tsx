@@ -1,11 +1,45 @@
+import { Check, X } from "@nerio/adapters/icons";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  FormMessage,
+  Icon,
+  Input,
+  Label,
+  LabelContent,
+  LabelRow,
+} from "@nerio/ui";
+import { LabelHint } from "@nerio/ui/client";
+import { CodeExample } from "../../../../components/code-example";
+import { DocumentationTable } from "../../../../components/documentation-table";
+import { PhoneInputPreview } from "../../../../components/phone-input-preview";
 import { StandardDocPage } from "../../../../components/doc-page";
 import { getComponentDoc } from "../../../../lib/component-docs";
 import { createPageMetadata } from "../../../../lib/seo";
-import { FormMessage, Input, Label, LabelContent, LabelRow } from "@nerio/ui";
-import { LabelHint } from "@nerio/ui/client";
-import { PhoneInputPreview } from "../../../../components/phone-input-preview";
 
 const inputDoc = getComponentDoc("input");
+
+const variantRows = [
+  ["sm / md / lg", "Shared density-aware control sizes; md is the default."],
+  ["Native types", "Text, email, password, search, tel, url, and number semantics."],
+] as const;
+
+const stateRows = [
+  ["Default", "Accepts editable text-like values through native input behavior."],
+  ["Invalid", "Exposes aria-invalid and the danger border token without owning validation."],
+  ["Read-only", "Keeps the value focusable and selectable without accepting edits."],
+  ["Disabled", "Removes the control from interaction and applies disabled tokens."],
+] as const;
+
+const apiRows = [
+  ["size", "sm | md | lg", "Selects the density-aware control height."],
+  ["htmlSize", "number", "Forwards the native input size attribute."],
+  ["type", "Supported native type", "Preserves native keyboard and form semantics."],
+  ["invalid", "boolean", "Exposes the invalid state for Field and FormMessage composition."],
+  ["className", "string", "Extends the root without replacing component tokens."],
+] as const;
 
 export const metadata = createPageMetadata({
   title: "Input component",
@@ -21,240 +55,148 @@ export default function Page() {
       lede={inputDoc!.description}
       kind="input"
       preview={
-        <section
-          key="input-preview"
-          className="component-preview form-component-preview form-component-preview--input"
-          aria-label="Input preview"
-        >
-          <div className="form-preview-stack form-component-preview__stack">
-            <div className="n-field">
-              <LabelRow>
-                <LabelContent>
-                  <Label htmlFor="input-preview-project-name">Project name</Label>
-                </LabelContent>
-                <LabelHint
-                  key="project-name-hint"
-                  label="Choose a short name collaborators will recognize."
+        <section id="preview" className="component-example" aria-label="Input preview">
+          <div className="component-example__preview form-component-preview form-component-preview--input">
+            <div className="form-preview-stack form-component-preview__stack">
+              <div className="n-field">
+                <LabelRow>
+                  <LabelContent>
+                    <Label htmlFor="input-preview-project-name">Project name</Label>
+                  </LabelContent>
+                  <LabelHint
+                    key="project-name-hint"
+                    label="Choose a short name collaborators will recognize."
+                  />
+                </LabelRow>
+                <Input
+                  id="input-preview-project-name"
+                  placeholder="Launch materials"
+                  required
+                  autoComplete="organization"
                 />
-              </LabelRow>
-              <Input
-                id="input-preview-project-name"
-                placeholder="Launch materials"
-                required
-                autoComplete="organization"
-              />
-              <p className="n-field__description">
-                A label and description remain outside the native Input.
-              </p>
-            </div>
-            <div className="n-field" data-invalid="">
-              <LabelRow>
-                <LabelContent>
-                  <Label htmlFor="input-preview-workspace-slug">Workspace slug</Label>
-                </LabelContent>
-                <LabelHint
-                  key="workspace-slug-hint"
-                  label="Use lowercase letters, numbers, and hyphens."
-                />
-              </LabelRow>
-              <Input
-                id="input-preview-workspace-slug"
-                aria-describedby="input-preview-workspace-slug-message"
-                defaultValue="Nerio Workspace"
-                invalid
-              />
-              <FormMessage id="input-preview-workspace-slug-message" role="alert" tone="danger">
-                Use lowercase letters, numbers, and hyphens.
-              </FormMessage>
+                <p className="n-field__description">
+                  A label and description remain outside the native Input.
+                </p>
+              </div>
             </div>
           </div>
+          <CodeExample
+            className="component-example__code"
+            code={
+              'import { Input, Label } from "@nerio/ui";\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" placeholder="Launch materials" autoComplete="organization" required />'
+            }
+            label="Input live preview code"
+          />
         </section>
       }
       sectionPreviews={{
         variants: (
-          <section
-            key="input-size-preview"
-            className="component-preview form-component-preview form-component-preview--input"
-            aria-label="Input size preview"
-          >
-            <div className="form-component-preview__section">
-              <p className="form-component-preview__label">Sizes</p>
-              <div className="docs-input-grid">
-                <Input aria-label="Small input" size="sm" placeholder="Small" />
-                <Input aria-label="Medium input" defaultValue="Medium" />
-                <Input aria-label="Large input" size="lg" placeholder="Large" />
-              </div>
+          <div className="doc-section-preview" aria-label="Input size preview">
+            <div className="docs-input-grid">
+              <Input aria-label="Small input" size="sm" placeholder="Small" />
+              <Input aria-label="Medium input" defaultValue="Medium" />
+              <Input aria-label="Large input" size="lg" placeholder="Large" />
             </div>
-          </section>
+          </div>
         ),
         states: (
-          <section
-            key="input-state-preview"
-            className="component-preview form-component-preview form-component-preview--input"
-            aria-label="Input state preview"
-          >
-            <div className="form-component-preview__section">
-              <p className="form-component-preview__label">Availability states</p>
+          <div className="doc-section-preview" aria-label="Input state preview">
+            <div className="form-preview-stack">
+              <div className="n-field" data-invalid="">
+                <LabelRow>
+                  <LabelContent>
+                    <Label htmlFor="input-preview-workspace-slug">Workspace slug</Label>
+                  </LabelContent>
+                </LabelRow>
+                <Input
+                  id="input-preview-workspace-slug"
+                  aria-describedby="input-preview-workspace-slug-message"
+                  defaultValue="Nerio Workspace"
+                  invalid
+                />
+                <FormMessage id="input-preview-workspace-slug-message" role="alert" tone="danger">
+                  Use lowercase letters, numbers, and hyphens.
+                </FormMessage>
+              </div>
               <div className="docs-input-grid">
                 <Input aria-label="Read-only project key" readOnly defaultValue="NERIO-2026" />
                 <Input aria-label="Unavailable input" disabled placeholder="Unavailable" />
               </div>
             </div>
-          </section>
+          </div>
         ),
         api: (
-          <section
-            key="input-type-preview"
-            className="component-preview form-component-preview form-component-preview--input"
-            aria-label="Input type preview"
-          >
-            <div className="form-component-preview__section">
-              <p className="form-component-preview__label">Native input types</p>
-              <div className="docs-input-grid">
-                <Input
-                  aria-label="Email address"
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  placeholder="name@company.com"
-                />
-                <PhoneInputPreview key="phone-input-preview" />
-                <Input aria-label="Seats" type="number" min={1} step={1} defaultValue={12} />
-              </div>
+          <div className="doc-section-preview" aria-label="Input type preview">
+            <div className="docs-input-grid">
+              <Input
+                aria-label="Email address"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                placeholder="name@company.com"
+              />
+              <PhoneInputPreview key="phone-input-preview" />
+              <Input aria-label="Seats" type="number" min={1} step={1} defaultValue={12} />
             </div>
-          </section>
+          </div>
         ),
       }}
       sectionContent={{
         variants: (
-          <p>
-            Use <code>sm</code>, <code>md</code>, or <code>lg</code>; supported types are text,
-            email, password, search, tel, url, and number.
-          </p>
+          <DocumentationTable headers={["Variant", "Purpose"]} rows={variantRows} codeColumns={1} />
         ),
         states: (
-          <p>
-            Placeholder text is not a label. Disabled inputs are unavailable; read-only inputs
-            remain focusable and selectable. Input exposes state but never owns validation logic.
-          </p>
+          <DocumentationTable headers={["State", "Behavior"]} rows={stateRows} codeColumns={1} />
         ),
-        api: (
-          <p>
-            <code>InputProps</code> is native input attributes minus <code>size</code> and{" "}
-            <code>type</code>, plus <code>size</code>, <code>htmlSize</code>, <code>type</code>, and{" "}
-            <code>invalid</code>. This phone preview filters to digits, spaces, <code>+</code>,{" "}
-            <code>-</code>, and parentheses; production phone parsing and validation remain
-            consumer-owned. Number Input deliberately keeps native numeric semantics while hiding
-            browser spin buttons; a future NumberField will own explicit stepper controls.
-          </p>
+        api: <DocumentationTable headers={["Prop", "Values", "Purpose"]} rows={apiRows} />,
+        guidance: (
+          <div className="doc-guidance-cards">
+            <Card>
+              <CardHeader>
+                <Icon icon={Check} />
+                <CardTitle>Do</CardTitle>
+              </CardHeader>
+              <CardContent>
+                Use autocomplete and inputMode intentionally, and compose labels and messages
+                outside the native Input.
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <Icon icon={X} />
+                <CardTitle>Do not</CardTitle>
+              </CardHeader>
+              <CardContent>
+                Add prefix, suffix, search results, or validation behavior directly to Input; use
+                InputGroup or a dedicated control.
+              </CardContent>
+            </Card>
+          </div>
         ),
         implementation: (
-          <div className="documentation-table-wrap">
-            <table className="documentation-table">
-              <thead>
-                <tr>
-                  <th>Contract</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Registry item</td>
-                  <td>
-                    <code>input</code> installs 5 source files.
-                  </td>
-                </tr>
-                <tr>
-                  <td>Base UI</td>
-                  <td>No interactive primitive required.</td>
-                </tr>
-                <tr>
-                  <td>Registry dependencies</td>
-                  <td>None.</td>
-                </tr>
-                <tr>
-                  <td>Package dependencies</td>
-                  <td>
-                    <code>clsx</code>, <code>react</code>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <DocumentationTable
+            headers={["Contract", "Value"]}
+            rows={[
+              ["Registry item", "input installs 5 source files."],
+              ["Base UI", "No interactive primitive required."],
+              ["Registry dependencies", "None."],
+              ["Package dependencies", "clsx, react"],
+            ]}
+            codeColumns={1}
+          />
         ),
         tokens: (
-          <div className="documentation-table-wrap">
-            <table className="documentation-table">
-              <thead>
-                <tr>
-                  <th>Token</th>
-                  <th>Purpose</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <code>--n-input-height-sm</code>, <code>--n-input-height-md</code>,{" "}
-                    <code>--n-input-height-lg</code>
-                  </td>
-                  <td>Shared control heights.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>--n-input-radius</code>
-                  </td>
-                  <td>Control corner radius.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>--n-input-background</code>, <code>--n-input-foreground</code>
-                  </td>
-                  <td>Default surface and text.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>--n-input-border</code>, <code>--n-input-border-hover</code>,{" "}
-                    <code>--n-input-border-focus</code>
-                  </td>
-                  <td>Default and interactive border states.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>--n-input-border-danger</code>, <code>--n-input-placeholder</code>
-                  </td>
-                  <td>Invalid and placeholder treatment.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>--n-input-disabled-background</code>,{" "}
-                    <code>--n-input-disabled-foreground</code>
-                  </td>
-                  <td>Disabled state.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>--n-input-readonly-background</code>,{" "}
-                    <code>--n-input-readonly-border</code>
-                  </td>
-                  <td>Read-only state.</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code>--n-motion-hover-duration</code>, <code>--n-motion-focus-duration</code>,{" "}
-                    <code>--n-focus-ring</code>
-                  </td>
-                  <td>Motion and focus treatment.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        ),
-        guidance: (
-          <p>
-            Use autocomplete and inputMode intentionally. Compose visual prefix, suffix, icon,
-            action, or status content with InputGroup; use separate future controls for advanced
-            search and date workflows.
-          </p>
+          <DocumentationTable
+            headers={["Group", "Tokens", "Controls"]}
+            rows={[
+              ["Sizing", "--n-input-height-sm / md / lg", "Shared control heights."],
+              ["Shape", "--n-input-radius", "Control corner radius."],
+              ["Surface", "--n-input-background / foreground", "Default surface and text."],
+              ["Border", "--n-input-border / hover / focus", "Interactive border states."],
+              ["Invalid", "--n-input-border-danger", "Invalid border treatment."],
+              ["Focus", "--n-motion-focus-duration / --n-focus-ring", "Focus feedback."],
+            ]}
+          />
         ),
       }}
     />

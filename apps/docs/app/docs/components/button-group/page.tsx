@@ -303,7 +303,7 @@ export default function Page() {
           />
         ),
         guidance: (
-          <div className="button-guidance-cards">
+          <div className="doc-guidance-cards">
             <Card>
               <CardHeader>
                 <Icon icon={Check} />
@@ -327,7 +327,7 @@ export default function Page() {
           </div>
         ),
         related: (
-          <div className="button-related-cards">
+          <div className="doc-related-cards">
             {[
               [
                 "Button",
