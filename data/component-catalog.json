@@ -410,7 +410,7 @@
       "package": "@nerio/ui/client",
       "category": "feedback",
       "status": "stable-core",
-      "description": "Static and managed anatomy stay separate; deterministic stacks, persistent and accurately paused timers, RTL-aware swipe dismissal, independent managers, accessible priority and action states, safe-area viewport behavior, and full install evidence are covered."
+      "description": "Static and managed anatomy stay separate; a unified stack, enter, swipe, and dismissal coordinate system prevents transform jumps; inherited RTL is correct on the first interactive render and stays synchronized; timers, managers, actions, safe areas, accessibility, and clean installs are covered."
     },
     {
       "name": "Progress",

@@ -163,7 +163,7 @@ export default function DemoApp() {
   return (
     <ToastProvider>
       <DemoWorkspace />
-      <ToastViewport />
+      <ToastViewport swipeDirection={["inline-end", "down"]} />
     </ToastProvider>
   );
 }
@@ -177,6 +177,7 @@ function DemoWorkspace() {
   const [theme, setThemeValue] = React.useState("purple");
   const [mode, setModeValue] = React.useState("system");
   const [density, setDensityValue] = React.useState("comfortable");
+  const [direction, setDirection] = React.useState("ltr");
   const isMobile = useMobileViewport();
   const toasts = useToastManager();
 
@@ -184,7 +185,8 @@ function DemoWorkspace() {
     document.documentElement.setAttribute("data-theme", theme);
     document.documentElement.setAttribute("data-mode", mode);
     document.documentElement.setAttribute("data-density", density);
-  }, [theme, mode, density]);
+    document.documentElement.setAttribute("dir", direction);
+  }, [theme, mode, density, direction]);
 
   const filteredProjects = React.useMemo(
     () =>
@@ -321,6 +323,15 @@ function DemoWorkspace() {
           </Field>
           <Select label="Status" value={status} onChange={setStatus} options={statusOptions} />
           <Select label="Theme" value={theme} onChange={setTheme} options={themeOptions} />
+          <Select
+            label="Direction"
+            value={direction}
+            onChange={setDirection}
+            options={[
+              { label: "Left to right", value: "ltr" },
+              { label: "Right to left", value: "rtl" },
+            ]}
+          />
           <Select
             label="Mode"
             value={mode}

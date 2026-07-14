@@ -440,7 +440,9 @@ async function verify() {
       !toastUsage.files.some((file) => file.target === "components/icon.tsx") ||
       !toastUsage.accessibility.some((item) => item.includes("Static Toast content is separate")) ||
       !toastUsage.accessibility.some((item) => item.includes("Timers pause")) ||
+      !toastUsage.accessibility.some((item) => item.includes("first interactive render")) ||
       !toastUsage.requiredTokens.includes("--n-toast-viewport-inset") ||
+      !toastUsage.requiredTokens.includes("--n-toast-enter-offset") ||
       !toastUsage.usage.includes("ToastProvider")
     ) {
       throw new Error(

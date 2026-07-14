@@ -82,8 +82,11 @@ export function ToastViewport({
       <BaseToast.Viewport
         aria-label={label}
         className={cn("n-toast-viewport", className)}
+        data-direction={resolvedDirection}
         data-slot="viewport"
-        dir={resolvedDirection}
+        data-swipe-direction={formatSwipeDirections(resolvedSwipeDirection)}
+        dir={direction}
+        suppressHydrationWarning
       >
         <ToastList
           dismissText={dismissText}
@@ -180,6 +183,10 @@ function ToastList({
 
 type BaseSwipeDirection = "up" | "down" | "left" | "right";
 
+function formatSwipeDirections(direction: BaseSwipeDirection | BaseSwipeDirection[]) {
+  return Array.isArray(direction) ? direction.join(" ") : direction;
+}
+
 function resolveSwipeDirection(
   direction: ToastSwipeDirection | ToastSwipeDirection[],
   documentDirection: "ltr" | "rtl",
@@ -200,17 +207,16 @@ function resolveSwipeDirection(
 
 function useDocumentDirection(direction?: "ltr" | "rtl") {
   const [documentDirection, setDocumentDirection] = React.useState<"ltr" | "rtl">(
-    direction ?? "ltr",
+    readDocumentDirection,
   );
 
   React.useEffect(() => {
     if (direction) {
-      setDocumentDirection(direction);
       return undefined;
     }
 
     const root = document.documentElement;
-    const updateDirection = () => setDocumentDirection(root.dir === "rtl" ? "rtl" : "ltr");
+    const updateDirection = () => setDocumentDirection(readDocumentDirection());
     updateDirection();
     const observer = new MutationObserver(updateDirection);
     observer.observe(root, { attributeFilter: ["dir"] });
@@ -218,6 +224,13 @@ function useDocumentDirection(direction?: "ltr" | "rtl") {
   }, [direction]);
 
   return direction ?? documentDirection;
+}
+
+function readDocumentDirection(): "ltr" | "rtl" {
+  if (typeof document === "undefined") {
+    return "ltr";
+  }
+  return document.documentElement.dir === "rtl" ? "rtl" : "ltr";
 }
 
 function getToastTone(value: unknown): ToastTone {

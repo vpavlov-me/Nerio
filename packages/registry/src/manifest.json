@@ -2354,6 +2354,7 @@
         "--n-toast-viewport-inset",
         "--n-toast-stack-gap",
         "--n-toast-stack-offset",
+        "--n-toast-enter-offset",
         "--n-toast-swipe-dismiss-distance",
         "--n-overlay-z-index",
         "--n-toast-background",
@@ -2376,7 +2377,8 @@
         "Static Toast content is separate from the managed status, copy, action, and dismiss layout; ToastViewport localizes its landmark, visible dismiss text, and accessible dismiss label.",
         "Managed toasts never steal focus. F6 enters the viewport, where actions and dismissal remain keyboard reachable.",
         "Timers pause on pointer hover, keyboard focus, and window blur, then resume from the remaining duration. Set timeout to 0 only for an intentionally persistent toast.",
-        "Swipe supports pointer and touch input, logical RTL direction, cancellation, and reduced motion without replacing the dismiss control.",
+        "Inherited document direction is resolved for the first interactive render and remains synchronized with root dir changes; explicit direction wins immediately.",
+        "Swipe supports pointer and touch input, logical RTL direction, four physical dismissal directions, cancellation, and reduced motion without replacing the dismiss control.",
         "Use one provider per managed stack. Pass a manager from createToastManager only when an independent second provider is intentional.",
         "Keep messages concise and avoid replacing persistent error UI with a toast."
       ],

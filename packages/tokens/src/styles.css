@@ -606,6 +606,7 @@
   --n-toast-viewport-inset: var(--n-space-4);
   --n-toast-stack-gap: var(--n-space-3);
   --n-toast-stack-offset: var(--n-size-toast-stack-offset);
+  --n-toast-enter-offset: var(--n-icon-size-md);
   --n-toast-swipe-dismiss-distance: 150%;
   --n-toast-background: var(--n-overlay-background);
   --n-toast-border-width: var(--n-overlay-border-width);
