@@ -43,12 +43,19 @@ function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
-function pinnedPeerVersion(range, peer) {
-  const version = range.replace(/^[~^]/, "");
-  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
-    throw new Error(`Cannot derive a deterministic fixture version for ${peer} from ${range}.`);
+function lockedAdapterPeerVersions() {
+  const [adapter] = JSON.parse(
+    run(pnpm, ["list", "--filter", "@nerio/adapters", "--depth", "0", "--json"]),
+  );
+  const versions = {};
+  for (const peer of Object.values(optionalAdapters)) {
+    const version = adapter?.devDependencies?.[peer]?.version;
+    if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version ?? "")) {
+      throw new Error(`Cannot read an exact locked fixture version for ${peer}.`);
+    }
+    versions[peer] = version;
   }
-  return version;
+  return versions;
 }
 
 function pack(name, destination) {
@@ -112,7 +119,7 @@ function assertPackedAdapterContract(tarball) {
 
 const docsPackage = readJson(join(root, "apps/docs/package.json"));
 const uiPackage = readJson(join(root, "packages/ui/package.json"));
-const adaptersPackage = readJson(join(root, "packages/adapters/package.json"));
+const lockedPeerVersions = lockedAdapterPeerVersions();
 const tempRoot = mkdtempSync(join(tmpdir(), "nerio-adapter-consumers-"));
 const tarballDirectory = join(tempRoot, "packages");
 
@@ -205,8 +212,9 @@ try {
       [
         "add",
         "--save-exact",
+        "--offline",
         "--ignore-workspace-root-check",
-        `${peer}@${pinnedPeerVersion(adaptersPackage.peerDependencies[peer], peer)}`,
+        `${peer}@${lockedPeerVersions[peer]}`,
       ],
       { cwd: optionalConsumer },
     );
