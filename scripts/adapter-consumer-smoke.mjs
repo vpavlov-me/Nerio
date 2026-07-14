@@ -212,7 +212,7 @@ try {
       [
         "add",
         "--save-exact",
-        "--offline",
+        "--prefer-offline",
         "--ignore-workspace-root-check",
         `${peer}@${lockedPeerVersions[peer]}`,
       ],

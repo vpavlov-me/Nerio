@@ -47,7 +47,8 @@ Release-blocking defects reflected in the final post-remediation gate:
   homepage, issues, Node, dependency, peer dependency, export, bin, and side-effect metadata where
   applicable.
 - Icon/UI-only consumers no longer install optional table, chart, form, or schema dependencies, and
-  each optional adapter subpath fails or succeeds only with its matching pinned peer fixture.
+  each optional adapter subpath fails or succeeds only with its matching pinned peer fixture. Exact
+  peer fixtures also install reproducibly from a cold CI package store.
 
 ## Browser matrix
 
