@@ -825,7 +825,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               className="docs-mode-menu"
               trigger={
                 <Button
-                  aria-label="Color mode"
+                  aria-label={`Color mode: ${runtimeLabel(mode)}`}
                   leadingIcon={modeIcons[mode]}
                   trailingIcon={ChevronDown}
                   variant="ghost"

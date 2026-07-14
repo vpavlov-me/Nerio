@@ -255,7 +255,7 @@ function validate() {
     failures.push("Docs controls must derive explicit System, Light, and Dark options from modes.");
   }
   if (
-    !/<DropdownMenu[\s\S]*?aria-label="Color mode"[\s\S]*?items=\{modeOptions\.map[\s\S]*?mode === option\.value/.test(
+    !/<DropdownMenu[\s\S]*?aria-label=\{`Color mode: \$\{runtimeLabel\(mode\)\}`\}[\s\S]*?items=\{modeOptions\.map[\s\S]*?mode === option\.value/.test(
       docsControls,
     )
   ) {

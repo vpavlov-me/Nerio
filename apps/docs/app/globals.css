@@ -1317,6 +1317,10 @@ pre {
   line-height: var(--n-line-height-normal);
 }
 
+.home-gallery__menu .n-button[data-variant="danger"] .home-gallery__menu-label :is(strong, small) {
+  color: inherit;
+}
+
 .home-gallery__menu .n-separator {
   margin-block: var(--n-space-1);
 }

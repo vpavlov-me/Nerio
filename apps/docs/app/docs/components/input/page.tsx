@@ -189,12 +189,18 @@ export default function Page() {
           <DocumentationTable
             headers={["Group", "Tokens", "Controls"]}
             rows={[
-              ["Sizing", "--n-input-height-sm / md / lg", "Shared control heights."],
+              ["Sizing", "--n-input-height-sm", "Small control height."],
+              ["Sizing", "--n-input-height-md", "Default control height."],
+              ["Sizing", "--n-input-height-lg", "Large control height."],
               ["Shape", "--n-input-radius", "Control corner radius."],
-              ["Surface", "--n-input-background / foreground", "Default surface and text."],
-              ["Border", "--n-input-border / hover / focus", "Interactive border states."],
+              ["Surface", "--n-input-background", "Default control surface."],
+              ["Surface", "--n-input-foreground", "Default input text."],
+              ["Border", "--n-input-border", "Default border."],
+              ["Border", "--n-input-border-hover", "Hover border."],
+              ["Border", "--n-input-border-focus", "Focused border."],
               ["Invalid", "--n-input-border-danger", "Invalid border treatment."],
-              ["Focus", "--n-motion-focus-duration / --n-focus-ring", "Focus feedback."],
+              ["Focus", "--n-motion-focus-duration", "Focus transition duration."],
+              ["Focus", "--n-focus-ring", "Visible focus treatment."],
             ]}
           />
         ),

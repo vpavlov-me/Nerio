@@ -180,7 +180,7 @@ export function HomeComponentShowcase() {
               </span>
             </Button>
             <Separator />
-            <Button kbd="⌘⌫" leadingIcon={X} variant="ghost">
+            <Button kbd="⌘⌫" leadingIcon={X} variant="danger">
               <span className="home-gallery__menu-label">
                 <strong>Archive project</strong>
                 <small>Move this project out of view.</small>
