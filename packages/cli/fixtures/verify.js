@@ -480,7 +480,10 @@ async function verify() {
     if (
       !tableSource.includes('"aria-labelledby": string') ||
       !tableSource.includes("data-focusable") ||
-      !tableSource.includes("TableContainerAccessibleName")
+      !tableSource.includes("TableContainerAccessibleName") ||
+      !tableSource.includes("focusable === true") ||
+      !tableSource.includes("ariaLabel.trim()") ||
+      !tableSource.includes("isFocusableRegion")
     ) {
       throw new Error("Installed Table source does not preserve its named scroll-region contract.");
     }
@@ -492,7 +495,10 @@ async function verify() {
     if (
       !tableStyles.includes(".n-table-container > .n-table") ||
       !tableStyles.includes('[data-align="numeric"]') ||
-      !tableStyles.includes("--n-table-container-focus-ring")
+      !tableStyles.includes("--n-table-container-focus-ring") ||
+      !tableStyles.includes(".n-table tbody > tr:hover") ||
+      !tableStyles.includes('[aria-current]:not([aria-current="false"])') ||
+      !tableStyles.includes(".n-table-container[data-focusable]:focus-visible")
     ) {
       throw new Error("Installed Table styles do not preserve responsive and state hooks.");
     }

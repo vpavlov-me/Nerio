@@ -146,7 +146,9 @@ async function verify() {
       !tableUsage.usage.includes("TableCaption") ||
       !tableUsage.usage.includes("aria-labelledby") ||
       !tableUsage.slots.includes("footer") ||
-      !tableUsage.accessibility.some((item) => item.includes("never nest scroll containers"))
+      !tableUsage.accessibility.some((item) => item.includes("never nest scroll containers")) ||
+      !tableUsage.accessibility.some((item) => item.includes("non-empty runtime string")) ||
+      !tableUsage.accessibility.some((item) => item.includes('aria-current="false"'))
     ) {
       throw new Error("MCP Table usage is not aligned with the Core table registry contract.");
     }

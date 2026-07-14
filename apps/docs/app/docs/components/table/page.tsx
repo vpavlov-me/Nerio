@@ -123,7 +123,7 @@ function ResponsiveTable({
           </TableHeader>
           <TableBody>
             {projects.map((project, index) => (
-              <TableRow key={project.id} aria-current={index === 0 ? "true" : undefined}>
+              <TableRow key={project.id} aria-current={index === 0 ? "true" : "false"}>
                 <TableHead className="table-doc-min-column" scope="row">
                   <span>{project.name}</span>
                   <code className="table-doc-nowrap">{project.id}</code>
@@ -221,7 +221,11 @@ function PatternTable() {
           <TableRow>
             <TableCell colSpan={2}>Total</TableCell>
             <TableCell data-align="numeric">$45,840</TableCell>
-            <TableCell />
+            <TableCell>
+              <Button size="sm" variant="ghost">
+                Export total
+              </Button>
+            </TableCell>
           </TableRow>
         </TableFooter>
       </Table>
@@ -367,7 +371,7 @@ export default function Page() {
               ["Named", "aria-label or aria-labelledby exposes an optional non-focusable region."],
               [
                 "Focusable",
-                "focusable opts into one named keyboard-scroll region with a visible inset focus ring.",
+                "focusable={true} opts into one keyboard-scroll region only when aria-label or aria-labelledby is a non-empty runtime string.",
               ],
             ]}
             codeColumns={1}
@@ -408,11 +412,11 @@ export default function Page() {
               ],
               [
                 "Selected / current",
-                "Use data-selected for consumer state or aria-current only when the row is genuinely current.",
+                'Use data-selected for consumer state or aria-current only on tbody rows that are genuinely current; aria-current="false" stays neutral.',
               ],
               [
                 "Focus within",
-                "Interactive cell controls highlight their row but keep their own keyboard target and label.",
+                "Interactive tbody cell controls highlight their row but keep their own keyboard target and label; header and footer rows stay stable.",
               ],
               [
                 "Disabled-looking",
@@ -438,7 +442,7 @@ export default function Page() {
               [
                 "TableContainer",
                 "focusable, aria-label, aria-labelledby",
-                "Optional horizontal overflow and named keyboard region.",
+                "Optional horizontal overflow and runtime-safe named keyboard region; owned region props cannot be overridden.",
               ],
               [
                 "TableHead",
