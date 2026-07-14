@@ -799,7 +799,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               aria-label="Color mode"
               className="docs-mode-selector"
               label="Color mode"
-              onChange={(value) => {
+              onValueChange={(value) => {
                 if (isColorMode(value)) setMode(value);
               }}
               options={modeOptions}
