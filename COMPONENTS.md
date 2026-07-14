@@ -134,7 +134,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Breadcrumbs       | stable-core | `@nerio/ui`        | Hierarchy navigation with ordered list semantics and explicit current-page support                                                                   |
 | Pagination        | stable-core | `@nerio/ui`        | Link, button, and static pagination with current-state parity, boundaries, ellipsis, router rendering, density, wrapping, and RTL                    |
 | Sidebar Primitive | stable-core | `@nerio/ui/client` | Stateful layout primitive with a bounded rail, stable native refs, server-safe regions, accessible collapse, physical sides, and consumer-owned data |
-| Command Primitive | stable-core | `@nerio/ui/client` | Accessible local or consumer-filtered action picker with stable values, groups, disabled navigation, and deliberate empty/loading announcements      |
+| Command Primitive | stable-core | `@nerio/ui/client` | Label-only selected queries, separate keyword matching, sound groups, explicit row layout, semantic leading content, and accessible states           |
 
 ---
 

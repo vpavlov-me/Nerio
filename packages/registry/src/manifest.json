@@ -1966,7 +1966,7 @@
     {
       "name": "command-primitive",
       "title": "Command Primitive",
-      "description": "Provides an accessible local or consumer-filtered action picker without owning product search workflows.",
+      "description": "Provides an accessible local or consumer-filtered action picker with separate label, stable-value, and keyword responsibilities.",
       "category": "navigation",
       "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
       "registryDependencies": ["spinner"],
@@ -2059,11 +2059,13 @@
         "Arrow keys navigate enabled items, disabled items are skipped, Enter selects the active item, and Escape bubbles to enclosing Popover, Dialog, or Sheet dismissal behavior.",
         "Home and End preserve native input editing because virtual focus remains on the query field.",
         "Base UI suppresses Enter selection during IME composition and supports pointer highlighting and selection without moving DOM focus into items.",
+        "Selection writes only the visible item label into controlled or uncontrolled query and form values; keywords and stable values are matching-only text.",
+        "CommandItem leading content owns its accessibility semantics; decorative Nerio Icons remain hidden through their own default contract.",
         "CommandEmpty and CommandLoading use dedicated polite Base UI status regions and are not arbitrary children of the listbox.",
         "RTL, long localized labels, compact density, reduced motion, and forced colors are supported through semantics and tokens.",
         "Fetching, ranking, routing, permissions, analytics, history, global shortcuts, and complete command-palette workflows remain consumer or Pro responsibilities."
       ],
-      "usage": "import { Kbd } from '@/components/nerio/components/kbd';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/nerio/components/command';\n\nconst items = [\n  { value: 'settings', label: 'Workspace settings', keywords: ['preferences'] },\n  { value: 'archive', label: 'Archive project', disabled: true },\n];\n\n<Command items={items}>\n  <CommandInput aria-label=\"Workspace commands\" placeholder=\"Search commands\" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} disabled={item.disabled} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>"
+      "usage": "import { Kbd } from '@/components/nerio/components/kbd';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/nerio/components/command';\n\nconst items = [\n  { value: 'settings', label: 'Workspace settings', keywords: ['preferences'] },\n  { value: 'archive', label: 'Archive project', disabled: true },\n];\n\n<Command items={items}>\n  <CommandInput aria-label=\"Workspace commands\" placeholder=\"Search commands\" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} disabled={item.disabled} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>\n\n// Selecting by the keyword \"preferences\" writes \"Workspace settings\" to the query; onSelect receives \"settings\"."
     },
     {
       "name": "sheet",

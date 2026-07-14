@@ -37,8 +37,11 @@ export type CommandSelectEvent = Parameters<
 >[0];
 
 type CommandContextValue = {
+  disabled: boolean;
   grouped: boolean;
   itemsByValue: ReadonlyMap<string, CommandItemData>;
+  readOnly: boolean;
+  selectItem: (item: CommandItemData, event: CommandSelectEvent) => void;
 };
 
 const CommandContext = React.createContext<CommandContextValue | null>(null);
@@ -53,12 +56,24 @@ function isGroupedItems(items: CommandItems): items is readonly CommandGroupData
   return items.length > 0 && "items" in items[0]!;
 }
 
+function isCommandGroupData(item: CommandItemData | CommandGroupData): item is CommandGroupData {
+  return "items" in item;
+}
+
+function isCommandItemData(item: CommandItemData | CommandGroupData): item is CommandItemData {
+  return !isCommandGroupData(item);
+}
+
 function flattenItems(items: CommandItems) {
   return isGroupedItems(items) ? items.flatMap((group) => group.items) : items;
 }
 
 function itemToSearchText(item: CommandItemData) {
   return [item.label, item.value, ...(item.keywords ?? [])].join(" ");
+}
+
+function itemToInputValue(item: CommandItemData) {
+  return item.label;
 }
 
 type BaseCommandRootProps = {
@@ -113,12 +128,18 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
   ref,
 ) {
   const filterApi = BaseAutocomplete.useFilter({ locale });
+  const [uncontrolledQuery, setUncontrolledQuery] = React.useState(defaultQuery ?? "");
+  const controlled = query !== undefined;
+  const currentQuery = controlled ? query : uncontrolledQuery;
   const grouped = isGroupedItems(items);
   const flatItems = React.useMemo(() => flattenItems(items), [items]);
   const itemsByValue = React.useMemo(() => {
-    const itemMap = new Map(flatItems.map((item) => [item.value, item]));
-    if (itemMap.size !== flatItems.length) {
-      throw new Error("Command items require unique values.");
+    const itemMap = new Map<string, CommandItemData>();
+    for (const item of flatItems) {
+      if (itemMap.has(item.value)) {
+        throw new Error(`Command items require unique values; duplicate "${item.value}".`);
+      }
+      itemMap.set(item.value, item);
     }
     return itemMap;
   }, [flatItems]);
@@ -127,17 +148,59 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
     if (filterProp) return filterProp;
     return (item, nextQuery) => filterApi.contains(itemToSearchText(item), nextQuery);
   }, [filterApi, filterProp]);
-  const context = React.useMemo(() => ({ grouped, itemsByValue }), [grouped, itemsByValue]);
+  const handleQueryChange = React.useCallback(
+    (nextQuery: string, details: CommandQueryChangeEventDetails) => {
+      onQueryChange?.(nextQuery, details);
+      if (!details.isCanceled && !controlled) setUncontrolledQuery(nextQuery);
+    },
+    [controlled, onQueryChange],
+  );
+  const selectItem = React.useCallback(
+    (item: CommandItemData, event: CommandSelectEvent) => {
+      // Inline Autocomplete has no popup to perform its normal input fill, so Command commits
+      // the public label-only query contract before exposing the stable value through onSelect.
+      let canceled = false;
+      let propagationAllowed = false;
+      const details = {
+        reason: "item-press",
+        event: event.nativeEvent,
+        trigger: event.currentTarget,
+        cancel() {
+          canceled = true;
+        },
+        allowPropagation() {
+          propagationAllowed = true;
+        },
+        get isCanceled() {
+          return canceled;
+        },
+        get isPropagationAllowed() {
+          return propagationAllowed;
+        },
+      } satisfies CommandQueryChangeEventDetails;
+      handleQueryChange(itemToInputValue(item), details);
+    },
+    [handleQueryChange],
+  );
+  const context = React.useMemo(
+    () => ({
+      disabled: Boolean(disabled),
+      grouped,
+      itemsByValue,
+      readOnly: Boolean(readOnly),
+      selectItem,
+    }),
+    [disabled, grouped, itemsByValue, readOnly, selectItem],
+  );
 
   const rootProps = {
     autoHighlight: "always" as const,
-    defaultValue: defaultQuery,
     disabled,
     filter,
     form,
     id,
     inline: true,
-    itemToStringValue: itemToSearchText,
+    itemToStringValue: itemToInputValue,
     limit,
     locale,
     loopFocus,
@@ -147,27 +210,37 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
       item: CommandItemData | undefined,
       details: CommandActiveChangeEventDetails,
     ) => onActiveValueChange?.(item?.value, details),
-    onValueChange: onQueryChange,
+    onValueChange: handleQueryChange,
     open: true,
     readOnly,
     required,
-    value: query,
+    value: currentQuery,
   };
+
+  const content = (
+    <div
+      ref={ref}
+      className={cn("n-command", className)}
+      {...props}
+      data-disabled={disabled ? "" : undefined}
+      data-readonly={readOnly ? "" : undefined}
+      data-slot="command"
+    >
+      {children}
+    </div>
+  );
 
   return (
     <CommandContext.Provider value={context}>
-      <BaseAutocomplete.Root {...rootProps} items={items as readonly CommandItemData[]}>
-        <div
-          ref={ref}
-          className={cn("n-command", className)}
-          {...props}
-          data-disabled={disabled ? "" : undefined}
-          data-readonly={readOnly ? "" : undefined}
-          data-slot="command"
-        >
-          {children}
-        </div>
-      </BaseAutocomplete.Root>
+      {grouped ? (
+        <BaseAutocomplete.Root {...rootProps} items={items}>
+          {content}
+        </BaseAutocomplete.Root>
+      ) : (
+        <BaseAutocomplete.Root {...rootProps} items={items}>
+          {content}
+        </BaseAutocomplete.Root>
+      )}
     </CommandContext.Provider>
   );
 });
@@ -224,7 +297,10 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(fu
     };
 
     if (grouped) {
-      const content = (filteredItems as CommandGroupData[]).map((group) => (
+      if (!filteredItems.every(isCommandGroupData)) {
+        throw new Error("Command grouped collections must contain group records.");
+      }
+      const content = filteredItems.map((group) => (
         <CommandGroup key={group.value} items={group.items}>
           <CommandGroupLabel>{renderGroupLabel?.(group) ?? group.label}</CommandGroupLabel>
           <BaseAutocomplete.Collection children={renderItem} />
@@ -241,6 +317,10 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(fu
           {content}
         </BaseAutocomplete.List>
       );
+    }
+
+    if (!filteredItems.every(isCommandItemData)) {
+      throw new Error("Command flat collections must contain item records.");
     }
 
     return (
@@ -296,7 +376,7 @@ export const CommandGroupLabel = React.forwardRef<
 
 export interface CommandItemProps extends Omit<
   React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Item>,
-  "children" | "className" | "onClick" | "onSelect" | "value"
+  "children" | "className" | "onClick" | "onClickCapture" | "onSelect" | "value"
 > {
   value: string;
   children: React.ReactNode;
@@ -323,24 +403,31 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
   },
   ref,
 ) {
-  const { itemsByValue } = useCommandContext();
+  const { disabled: rootDisabled, itemsByValue, readOnly, selectItem } = useCommandContext();
   const item = itemsByValue.get(value);
   if (!item) throw new Error(`CommandItem value "${value}" is missing from Command items.`);
   const isDisabled = disabled ?? item.disabled;
+  const hasLeading = leading !== undefined && leading !== null && leading !== false;
 
   return (
     <BaseAutocomplete.Item
       ref={ref}
       className={(state) => cn("n-command__item", resolveClassName(className, state))}
       disabled={isDisabled}
-      onClick={(event) => onSelect?.(value, event)}
+      onClickCapture={(event) => {
+        if (!rootDisabled && !isDisabled && !readOnly) {
+          selectItem(item, event);
+          onSelect?.(value, event);
+        }
+      }}
       value={item}
       {...props}
       data-disabled={isDisabled ? "" : undefined}
+      data-leading={hasLeading ? "true" : "false"}
       data-slot="command-item"
     >
-      {leading ? (
-        <span aria-hidden className="n-command__item-leading" data-slot="command-item-leading">
+      {hasLeading ? (
+        <span className="n-command__item-leading" data-slot="command-item-leading">
           {leading}
         </span>
       ) : null}

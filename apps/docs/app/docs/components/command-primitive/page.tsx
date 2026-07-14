@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, FileText, LayoutDashboard, Settings, X } from "@nerio/adapters";
+import { Check, FileText, LayoutDashboard, X } from "@nerio/adapters";
 import { Card, CardContent, CardHeader, CardTitle, Icon, Kbd } from "@nerio/ui";
 import {
   Button,
@@ -43,7 +43,11 @@ const groupedItems: readonly CommandGroupData[] = [
     label: "Navigation",
     items: [
       { value: "overview", label: "Open overview", keywords: ["dashboard"] },
-      { value: "documents", label: "Browse documents", keywords: ["files"] },
+      {
+        value: "documents",
+        label: "Browse documents shared across every regional workspace",
+        keywords: ["files"],
+      },
     ],
   },
   {
@@ -57,13 +61,10 @@ const groupedItems: readonly CommandGroupData[] = [
   },
 ];
 
-const itemIcons = {
+const itemIcons: Partial<Record<string, React.ReactNode>> = {
   overview: <Icon icon={LayoutDashboard} />,
   documents: <Icon icon={FileText} />,
-  settings: <Icon icon={Settings} />,
-  invite: <Icon icon={Check} />,
-  archive: <Icon icon={FileText} />,
-} as const;
+};
 
 const itemShortcuts: Partial<Record<string, React.ReactNode>> = {
   overview: <Kbd aria-hidden>G O</Kbd>,
@@ -83,7 +84,14 @@ function ResultItem({
       value={item.value}
       disabled={item.disabled}
       description={item.disabled ? "Unavailable for archived workspaces" : "Consumer-owned action"}
-      leading={itemIcons[item.value as keyof typeof itemIcons]}
+      leading={
+        item.value === "archive" ? (
+          <span aria-label="Restricted action">●</span>
+        ) : (
+          itemIcons[item.value]
+        )
+      }
+      metadata={item.value === "documents" ? "Shared" : undefined}
       shortcut={itemShortcuts[item.value]}
       onSelect={(value) => onSelect?.(value)}
     >
@@ -285,7 +293,10 @@ export default function Page() {
           <DocumentationTable
             headers={["Mode", "Contract"]}
             rows={[
-              ["Local", "Locale-aware contains matching over label, value, and keywords."],
+              [
+                "Local",
+                "Locale-aware matching uses label, value, and keywords; selection writes only the visible label.",
+              ],
               [
                 "Consumer-filtered",
                 "filter={false}; consumers replace items during loading or remote work.",
@@ -308,6 +319,10 @@ export default function Page() {
               ["command-list", "Filtered listbox and grouped result renderer."],
               ["command-group / command-group-label", "Accessible labelled result group."],
               ["command-item", "Stable action value with optional content slots."],
+              [
+                "command-item-leading",
+                "General React content that owns its semantics; decorative Nerio Icons hide themselves.",
+              ],
               [
                 "command-empty / command-loading",
                 "Dedicated polite status regions outside listbox children.",
@@ -342,11 +357,11 @@ export default function Page() {
               ],
               [
                 "query / defaultQuery / onQueryChange",
-                "Controlled or uncontrolled query with Base UI details.",
+                "Controlled or uncontrolled visible query; selection writes the item label only.",
               ],
               [
                 "filter",
-                "Typed custom matcher, default contains behavior, or false for external results.",
+                "Typed matcher over leaf items; default search includes label, value, and keywords, or false preserves external results.",
               ],
               [
                 "onActiveValueChange",
@@ -354,7 +369,7 @@ export default function Page() {
               ],
               [
                 "CommandItem.onSelect",
-                "Emits value and Base UI event; routing and close policy remain consumer-owned.",
+                "Emits the stable value and event while the visible query remains label-only.",
               ],
             ]}
             codeColumns={1}

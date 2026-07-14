@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio/ui";
+import { Icon, Kbd, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio/ui";
 import {
   Bell,
   Check,
@@ -278,6 +278,14 @@ function DemoWorkspace() {
                       key={item.value}
                       value={item.value}
                       disabled={item.disabled}
+                      description={
+                        item.value === "show-active"
+                          ? "Limit this workspace view to active projects across every team"
+                          : undefined
+                      }
+                      leading={item.value === "show-active" ? <Icon icon={Check} /> : undefined}
+                      metadata={item.value === "compact" ? "Display" : undefined}
+                      shortcut={item.value === "show-all" ? <Kbd aria-hidden>G A</Kbd> : undefined}
                       onSelect={(value) => {
                         if (value === "show-all") {
                           setQuery("");

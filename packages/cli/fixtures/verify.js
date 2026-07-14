@@ -393,11 +393,21 @@ async function verify() {
       path.join(localTarget, "components/nerio/components/command.tsx"),
       "utf8",
     );
+    const commandStyles = fs.readFileSync(
+      path.join(localTarget, "components/nerio/styles/command.css"),
+      "utf8",
+    );
     if (
       !commandSource.includes("BaseAutocomplete.Root") ||
+      !commandSource.includes("itemToInputValue") ||
+      commandSource.includes("items as readonly CommandItemData[]") ||
       !commandSource.includes("onActiveValueChange") ||
+      !commandSource.includes('data-leading={hasLeading ? "true" : "false"}') ||
+      commandSource.includes('<span aria-hidden className="n-command__item-leading"') ||
       !commandSource.includes('data-slot="command-loading"') ||
-      !commandSource.includes("filterProp === false")
+      !commandSource.includes("filterProp === false") ||
+      !commandStyles.includes('data-leading="false"') ||
+      !commandStyles.includes("var(--n-focus-ring)")
     ) {
       throw new Error(
         "Installed Command source did not preserve filtering, active-value, or status contracts.",

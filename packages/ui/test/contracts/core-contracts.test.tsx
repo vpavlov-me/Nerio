@@ -3153,6 +3153,8 @@ describe("Core interactive action contracts", () => {
     );
 
     const input = screen.getByRole("combobox", { name: "Workspace commands" });
+    await user.click(screen.getByRole("option", { name: /Open project/ }));
+    expect(onSelect).not.toHaveBeenCalled();
     input.focus();
     await user.keyboard("{ArrowDown}");
     expect(onActiveValueChange).toHaveBeenLastCalledWith("settings", expect.anything());
@@ -3161,6 +3163,7 @@ describe("Core interactive action contracts", () => {
 
     await user.keyboard("{Enter}");
     expect(onSelect).toHaveBeenCalledWith("settings", expect.anything());
+    expect(input).toHaveValue("Workspace settings");
     await user.clear(input);
     await user.type(input, "preferences");
     const settings = screen.getByRole("option", { name: /Workspace settings/ });
@@ -3168,10 +3171,89 @@ describe("Core interactive action contracts", () => {
     expect(screen.queryByRole("option", { name: /Invite teammate/ })).not.toBeInTheDocument();
     await user.click(settings);
     expect(onSelect).toHaveBeenLastCalledWith("settings", expect.anything());
+    expect(input).toHaveValue("Workspace settings");
 
     await user.clear(input);
     await user.type(input, "missing");
     expect(screen.getByText("No matching commands.")).toBeInTheDocument();
+  });
+
+  it("keeps controlled Command queries label-only after keyword selection", async () => {
+    const user = userEvent.setup();
+    const onQueryChange = vi.fn();
+    const items = [
+      {
+        value: "workspace-settings",
+        label: "Workspace settings",
+        keywords: ["preferences", "configuration"],
+      },
+    ];
+
+    function ControlledCommand() {
+      const [query, setQuery] = React.useState("");
+      return (
+        <Command
+          items={items}
+          query={query}
+          onQueryChange={(nextQuery, details) => {
+            onQueryChange(nextQuery, details);
+            setQuery(nextQuery);
+          }}
+        >
+          <CommandInput aria-label="Controlled commands" />
+          <CommandList>
+            {(item) => <CommandItem value={item.value}>{item.label}</CommandItem>}
+          </CommandList>
+        </Command>
+      );
+    }
+
+    render(<ControlledCommand />);
+    const input = screen.getByRole("combobox", { name: "Controlled commands" });
+    await user.type(input, "preferences");
+    await user.click(screen.getByRole("option", { name: "Workspace settings" }));
+
+    expect(input).toHaveValue("Workspace settings");
+    expect(onQueryChange).toHaveBeenLastCalledWith("Workspace settings", expect.anything());
+    expect(onQueryChange).not.toHaveBeenCalledWith(
+      expect.stringContaining("workspace-settings"),
+      expect.anything(),
+    );
+    expect(onQueryChange).not.toHaveBeenCalledWith(
+      expect.stringContaining("configuration"),
+      expect.anything(),
+    );
+  });
+
+  it("submits the visible Command label while onSelect emits the stable value", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const items = [
+      { value: "workspace-settings", label: "Workspace settings", keywords: ["preferences"] },
+    ];
+
+    render(
+      <form aria-label="Command form">
+        <Command items={items} name="command">
+          <CommandInput aria-label="Form commands" />
+          <CommandList>
+            {(item) => (
+              <CommandItem value={item.value} onSelect={onSelect}>
+                {item.label}
+              </CommandItem>
+            )}
+          </CommandList>
+        </Command>
+      </form>,
+    );
+
+    const input = screen.getByRole("combobox", { name: "Form commands" });
+    await user.type(input, "preferences");
+    await user.click(screen.getByRole("option", { name: "Workspace settings" }));
+
+    expect(input).toHaveValue("Workspace settings");
+    expect(onSelect).toHaveBeenCalledWith("workspace-settings", expect.anything());
+    expect(new FormData(screen.getByRole("form")).get("command")).toBe("Workspace settings");
   });
 
   it("keeps Command groups semantic and supports consumer-filtered results", async () => {
@@ -3230,7 +3312,56 @@ describe("Core interactive action contracts", () => {
           </CommandList>
         </Command>,
       ),
-    ).toThrow("Command items require unique values.");
+    ).toThrow('Command items require unique values; duplicate "settings".');
+  });
+
+  it("keeps Command item layout explicit and preserves leading-content semantics", () => {
+    const items = [
+      { value: "plain", label: "A very long localized command label without leading content" },
+      { value: "meaningful", label: "Command with meaningful leading content" },
+    ];
+
+    render(
+      <Command items={items}>
+        <CommandInput aria-label="Layout commands" />
+        <CommandList>
+          {(item) => (
+            <CommandItem
+              value={item.value}
+              description="A long localized description that must wrap independently"
+              leading={
+                item.value === "meaningful" ? (
+                  <span aria-label="Document status">●</span>
+                ) : undefined
+              }
+              metadata="Metadata"
+              shortcut="⌘ K"
+            >
+              {item.label}
+            </CommandItem>
+          )}
+        </CommandList>
+      </Command>,
+    );
+
+    const [plainItem, meaningfulItem] = screen.getAllByRole("option");
+    expect(plainItem).toHaveAttribute("data-leading", "false");
+    expect(meaningfulItem).toHaveAttribute("data-leading", "true");
+    expect(screen.getByLabelText("Document status").parentElement).not.toHaveAttribute(
+      "aria-hidden",
+    );
+
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/command.css"), "utf8");
+    expect(styles).toMatch(
+      /\.n-command__item\[data-leading="false"\][^{]*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) auto auto;/s,
+    );
+    expect(styles).toMatch(
+      /\.n-command__item\[data-leading="true"\][^{]*\{[^}]*grid-template-columns:\s*auto minmax\(0, 1fr\) auto auto;/s,
+    );
+    expect(styles).toContain("var(--n-focus-ring)");
+    expect(styles).toMatch(
+      /@media \(forced-colors: active\)[\s\S]*\.n-command__input:focus-visible[\s\S]*solid Highlight;/,
+    );
   });
 
   it("does not select a Command item while IME composition is active", () => {
