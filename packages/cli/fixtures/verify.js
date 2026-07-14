@@ -352,7 +352,9 @@ async function verify() {
     if (
       !sheetSource.includes("BaseDialog.Root") ||
       !sheetSource.includes('data-slot="sheet-content"') ||
-      !sheetSource.includes("showClose")
+      !sheetSource.includes("showClose") ||
+      !sheetSource.includes('className="n-sheet__close-icon"') ||
+      sheetSource.includes('cn("n-sheet__close"')
     ) {
       throw new Error("Installed Sheet source did not preserve its modal and slot contracts.");
     }

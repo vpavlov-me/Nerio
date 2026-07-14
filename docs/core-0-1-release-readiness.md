@@ -9,8 +9,8 @@ Release.
 
 ## Scope and status
 
-- The catalog contains 49 `stable-core` Core entries, one intentionally `polished` entry (Sheet),
-  and one `deprecated-compatibility` entry (IconButton).
+- The catalog contains 50 `stable-core` Core entries and one `deprecated-compatibility` entry
+  (IconButton).
 - All 44 planned Pro entries remain outside the Core 0.1 release scope.
 - `data/component-catalog.json`, `COMPONENTS.md`, the registry, package entrypoints, docs navigation,
   CLI/MCP discovery, README, project brief, and `llms.txt` describe the same Core boundary.
@@ -57,6 +57,11 @@ and contribution links, canonical metadata, component rendering, sitemap scope, 
 `noindex` behavior, the removal of Blocks/Templates from Core navigation, and no console or hydration
 errors.
 
+The Sheet browser gate additionally verifies all four physical sides, the sm/md/lg sizes, neutral
+footer and default icon close paths, safe-area viewport metadata and offsets, long internal scrolling,
+mobile dynamic viewport resizing, compact density, RTL, reduced motion, forced colors, side-specific
+enter/exit timing, and focus restoration without console or framework errors.
+
 ## Complete command gate
 
 Run from a clean checkout:
@@ -84,7 +89,6 @@ pnpm pack:check
 
 - No public npm release exists. Package manifests deliberately remain private pending explicit
   approval.
-- Sheet remains `polished`, not `stable-core`; its status accurately reflects the current evidence.
 - IconButton and documented Button aliases remain only for alpha migration compatibility.
 - Package distribution is source-first TypeScript; Next.js consumers configure
   `transpilePackages`.

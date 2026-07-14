@@ -48,6 +48,7 @@ type ButtonBaseProps = Omit<
   React.ComponentProps<typeof BaseButton>,
   "aria-label" | "children" | "className" | "disabled"
 > & {
+  "data-slot"?: string;
   className?: string;
   disabled?: boolean;
   variant?: ButtonVariant;
@@ -110,6 +111,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     disabled,
     render,
     nativeButton,
+    "data-slot": dataSlot = "button",
     ...props
   },
   ref,
@@ -179,7 +181,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       "data-icon-only": iconOnly ? "true" : undefined,
       "data-loading": loading ? "true" : undefined,
       "data-size": size,
-      "data-slot": "button",
+      "data-slot": dataSlot,
       "data-variant": normalizedVariant,
       "aria-labelledby": labelledBy ?? renderedElement.props["aria-labelledby"],
       onClick: (event: React.MouseEvent<HTMLElement>) => {
@@ -197,7 +199,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       {...props}
       nativeButton={nativeButton}
       className={classNames}
-      data-slot="button"
+      data-slot={dataSlot}
       data-variant={normalizedVariant}
       data-size={size}
       data-loading={loading ? "true" : undefined}

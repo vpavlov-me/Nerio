@@ -351,9 +351,14 @@ async function verify() {
     const sheetUsage = JSON.parse(sheetUsageResult.content[0].text);
     if (
       !sheetUsage.slots.includes("sheet-content") ||
+      !sheetUsage.slots.includes("sheet-close") ||
       !sheetUsage.variants.includes("side: left | right | top | bottom") ||
       !sheetUsage.requiredTokens.includes("--n-sheet-width-md") ||
-      !sheetUsage.requiredTokens.includes("--n-sheet-transition-duration") ||
+      !sheetUsage.requiredTokens.includes("--n-sheet-backdrop") ||
+      !sheetUsage.requiredTokens.includes("--n-overlay-shadow") ||
+      !sheetUsage.requiredTokens.includes("--n-motion-overlay-enter-easing") ||
+      !sheetUsage.requiredTokens.includes("--n-motion-overlay-exit-duration") ||
+      !sheetUsage.requiredTokens.includes("--n-motion-overlay-exit-easing") ||
       !sheetUsage.accessibility.some((item) => item.includes("SheetTitle"))
     ) {
       throw new Error("MCP Sheet usage is missing its slots, side, token, or naming contract.");

@@ -297,8 +297,8 @@
       "tier": "core",
       "package": "@nerio/ui/client",
       "category": "overlays",
-      "status": "polished",
-      "description": "Base UI modal side-panel primitive with compound slots, four explicit sides, Core size scale, internal scrolling, and tokenized overlay behavior."
+      "status": "stable-core",
+      "description": "Base UI modal side-panel primitive with neutral close composition, safe-area-aware layout, four explicit sides, Core size scale, internal scrolling, and shared overlay motion contracts."
     },
     {
       "name": "Popover",

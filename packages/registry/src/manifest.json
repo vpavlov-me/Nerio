@@ -2113,12 +2113,17 @@
         "--n-sheet-padding",
         "--n-sheet-gap",
         "--n-sheet-radius",
+        "--n-sheet-backdrop",
         "--n-sheet-transition-distance",
-        "--n-sheet-transition-duration",
+        "--n-motion-overlay-enter-duration",
+        "--n-motion-overlay-enter-easing",
+        "--n-motion-overlay-exit-duration",
+        "--n-motion-overlay-exit-easing",
         "--n-overlay-z-index",
         "--n-overlay-background",
+        "--n-overlay-border-width",
         "--n-overlay-border",
-        "--n-overlay-backdrop",
+        "--n-overlay-shadow",
         "--n-overlay-foreground",
         "--n-focus-ring"
       ],
@@ -2126,10 +2131,10 @@
         "Uses the Base UI Dialog primitive for modal focus management, Escape and backdrop dismissal, focus restoration, and scroll locking.",
         "Provide SheetTitle or an explicit accessible name on SheetContent.",
         "Includes a localized aria-label=\"Close sheet\" close control by default; when showClose is false, consumers must provide another clear close path.",
-        "SheetBody scrolls internally for long content, safe-area insets are respected, and physical left and right sides remain explicit in RTL.",
+        "SheetBody scrolls internally for long content; with viewport-fit=cover, safe-area insets protect panel padding and the default close; physical left and right sides remain explicit in RTL.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and forwarded refs on meaningful slots."
       ],
-      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { Sheet, SheetBody, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/nerio/components/sheet';\n\n<Sheet>\n  <SheetTrigger render={<Button variant=\"secondary\">Open settings</Button>} />\n  <SheetContent side=\"right\" size=\"md\">\n    <SheetHeader><SheetTitle>Workspace settings</SheetTitle><SheetDescription>Configure shared defaults.</SheetDescription></SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter><Button>Save changes</Button></SheetFooter>\n  </SheetContent>\n</Sheet>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/nerio/components/sheet';\n\n<Sheet>\n  <SheetTrigger render={<Button variant=\"secondary\">Open settings</Button>} />\n  <SheetContent side=\"right\" size=\"md\" showClose={false}>\n    <SheetHeader><SheetTitle>Workspace settings</SheetTitle><SheetDescription>Configure shared defaults.</SheetDescription></SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter><SheetClose render={<Button variant=\"secondary\">Cancel</Button>} /><Button>Save changes</Button></SheetFooter>\n  </SheetContent>\n</Sheet>"
     },
     {
       "name": "popover",

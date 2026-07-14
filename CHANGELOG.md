@@ -16,8 +16,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 #### Components
 
 - Completed the approved Core 0.1 component scope across actions, forms, overlays, navigation,
-  feedback, data display, and layout primitives. Most components are `stable-core`; Sheet remains
-  intentionally `polished`, and IconButton remains a deprecated compatibility wrapper.
+  feedback, data display, and layout primitives. All non-deprecated Core components are
+  `stable-core`; IconButton remains a deprecated compatibility wrapper.
 
 #### Source registry and CLI
 
@@ -47,8 +47,6 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
   a separate explicit approval.
 - Package distribution is source-first TypeScript. Next.js package consumers must configure the
   documented `transpilePackages` list.
-- Sheet is included at `polished`, not `stable-core`; advanced workflows and product shells remain
-  outside Core.
 - IconButton and the documented Button compatibility aliases remain available only for migration.
 
 ### Added
@@ -79,6 +77,9 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Protected Icon accessibility semantics from consumer SVG props, kept custom SVG forwarding free
   of Lucide-only DOM warnings, composed Item and ItemGroup render refs, and restored static
   Pagination current-state styling.
+- Made SheetClose neutral for body and footer composition, isolated the default icon close style,
+  aligned safe-area offsets and viewport metadata, wired the Sheet backdrop token, and corrected
+  side-specific enter, exit, and reduced-motion contracts.
 
 ### Deprecated
 

@@ -81,7 +81,7 @@ export const snippets: Record<string, string> = {
   dialog:
     'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   sheet:
-    'import { Button, Sheet, SheetBody, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md">\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter><Button>Save changes</Button></SheetFooter>\n  </SheetContent>\n</Sheet>',
+    'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
     'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from \'@nerio/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Toggle workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
   "command-primitive":
@@ -2855,13 +2855,14 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     motion: [
-      "Entry direction follows side and uses the shared overlay motion contract.",
-      "Reduced motion removes directional travel while preserving the visibility transition.",
+      "Entry and exit direction follow side and use the shared overlay timing and easing contracts.",
+      "Reduced motion disables both enter and exit animation without changing the final state.",
     ],
     accessibility: [
       "Provide an accessible name with SheetTitle or an explicit aria-label or aria-labelledby on SheetContent.",
       "Base UI provides modal focus trapping, focus restoration, Escape dismissal, backdrop dismissal, and scroll locking.",
       "Keep a keyboard-reachable SheetClose or another clear close path when showClose is false.",
+      "Use viewport-fit=cover in the product viewport metadata so mobile Safari exposes safe-area insets to Sheet padding and the default close.",
       "Physical left and right placement stay explicit for RTL content.",
     ],
     api: [
@@ -2886,7 +2887,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "SheetBody / SheetFooter / SheetClose",
-        description: "Scrollable content, action, and dismissal boundaries.",
+        description:
+          "Scrollable content, action, and dismissal boundaries. SheetClose is neutral in normal flow and supports Button render composition.",
       },
     ],
     guidance: {
@@ -2910,10 +2912,18 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-sheet-padding",
       "--n-sheet-gap",
       "--n-sheet-radius",
+      "--n-sheet-backdrop",
       "--n-sheet-transition-distance",
-      "--n-sheet-transition-duration",
+      "--n-motion-overlay-enter-duration",
+      "--n-motion-overlay-enter-easing",
+      "--n-motion-overlay-exit-duration",
+      "--n-motion-overlay-exit-easing",
+      "--n-overlay-z-index",
       "--n-overlay-background",
-      "--n-overlay-backdrop",
+      "--n-overlay-border-width",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+      "--n-overlay-foreground",
       "--n-focus-ring",
     ],
   },

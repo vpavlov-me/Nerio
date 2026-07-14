@@ -69,7 +69,7 @@ export const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
           {...props}
         >
           {showClose ? (
-            <SheetClose aria-label={closeLabel} className="n-sheet__close">
+            <SheetClose aria-label={closeLabel} className="n-sheet__close-icon">
               <Icon icon={X} />
             </SheetClose>
           ) : null}
@@ -146,12 +146,5 @@ export const SheetClose = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<typeof BaseDialog.Close>
 >(function SheetClose({ className, ...props }, ref) {
-  return (
-    <BaseDialog.Close
-      ref={ref}
-      className={cn("n-sheet__close", className)}
-      data-slot="sheet-close"
-      {...props}
-    />
-  );
+  return <BaseDialog.Close ref={ref} {...props} className={className} data-slot="sheet-close" />;
 });
