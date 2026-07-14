@@ -205,7 +205,7 @@
         "Deprecated subtle and destructive variants normalize to secondary and danger; use the canonical variants in new code.",
         "Keep the visible focus treatment enabled."
       ],
-      "usage": "import { Settings } from '@nerio/adapters';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
+      "usage": "import { Settings } from '@nerio/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
     },
     {
       "name": "icon-button",
@@ -237,7 +237,7 @@
         "Deprecated compatibility wrapper: use Button with icon and aria-label in new code.",
         "This registry item remains installable until the next major release."
       ],
-      "usage": "import { Settings } from '@nerio/adapters';\nimport { Button } from '@/components/nerio/components/button';\n\n// Preferred replacement\n<Button icon={Settings} aria-label=\"Workspace settings\" />"
+      "usage": "import { Settings } from '@nerio/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n// Preferred replacement\n<Button icon={Settings} aria-label=\"Workspace settings\" />"
     },
     {
       "name": "button-group",
@@ -367,7 +367,7 @@
         "Use sm when the Badge is embedded inside a compact control such as Button.",
         "Use strong emphasis only when a warning, danger, or other status needs elevated attention."
       ],
-      "usage": "import { Check } from '@nerio/adapters';\nimport { Badge } from '@/components/nerio/components/badge';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>"
+      "usage": "import { Check } from '@nerio/adapters/icons';\nimport { Badge } from '@/components/nerio/components/badge';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>"
     },
     {
       "name": "spinner",
@@ -560,7 +560,7 @@
         "Tone is supported by text; do not rely on color alone.",
         "Optional icons must pass through the Nerio icon adapter."
       ],
-      "usage": "import { Circle } from '@nerio/adapters';\nimport { Alert } from '@/components/nerio/components/alert';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>"
+      "usage": "import { Circle } from '@nerio/adapters/icons';\nimport { Alert } from '@/components/nerio/components/alert';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>"
     },
     {
       "name": "card",

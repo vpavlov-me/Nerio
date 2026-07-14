@@ -68,6 +68,9 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Changed Nerio Core's default sans-serif typography from Geist to the platform system font stack.
 - Isolated Lucide's fixed-stroke option behind `lucideAbsoluteStrokeWidth`; the previous
   `absoluteStrokeWidth` Icon prop remains a deprecated alpha compatibility alias.
+- Split `@nerio/adapters` into explicit `icons`, `table`, `charts`, `forms`, and `schema` subpaths;
+  non-icon integrations are now optional peers and the monolithic root entrypoint is no longer
+  supported.
 
 ### Fixed
 
@@ -111,6 +114,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Products that relied on Geist implicitly should load it explicitly and apply the Geist typography preset or override `--n-font-sans`.
 - Replace explicit Icon `absoluteStrokeWidth` usage with `lucideAbsoluteStrokeWidth`; custom SVG
   components should implement only the generic `IconSvgProps` contract.
+- Replace icon imports from `@nerio/adapters` with `@nerio/adapters/icons`. Import optional
+  integrations from their dedicated subpath and install only its matching peer dependency.
 
 ## Maintenance rules
 

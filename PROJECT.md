@@ -38,10 +38,10 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, data-ri
 - Tailwind CSS v4 with CSS-first configuration
 - Base UI primitives
 - pnpm workspaces and Turborepo
-- Lucide through an icon adapter
-- TanStack Table through a data-table adapter
-- Recharts through a chart adapter
-- React Hook Form and Zod through a form adapter
+- Lucide through the required icons adapter subpath
+- TanStack Table through an optional table adapter subpath
+- Recharts through an optional charts adapter subpath
+- React Hook Form and Zod through separate optional form and schema adapter subpaths
 
 ## Workspace target
 
@@ -53,7 +53,7 @@ apps/
 packages/
   tokens/        Token source, generated CSS variables, themes, modes, density contracts
   ui/            Core components, utilities, styles, and public registry source items
-  adapters/      Icons, forms, tables, charts
+  adapters/      Responsibility-scoped icons, table, charts, forms, and schema subpaths
   cli/           `nerio init`, `nerio add`, `nerio doctor`
   mcp/           Public component discovery and composition tools for AI agents
   config/        Shared TypeScript, lint, and formatting configuration

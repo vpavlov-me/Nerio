@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
-import { Check, ChevronDown } from "@nerio/adapters";
+import { Check, ChevronDown } from "@nerio/adapters/icons";
 import { cn } from "../lib/cn";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { FormMessage } from "./form-message";

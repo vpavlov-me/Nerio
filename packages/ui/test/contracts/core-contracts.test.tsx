@@ -106,7 +106,7 @@ import {
   createToastManager,
   useToastManager,
 } from "../../src/client";
-import { ArrowRight, Bell, Check, type IconSvgProps } from "@nerio/adapters";
+import { ArrowRight, Bell, Check, type IconSvgProps } from "@nerio/adapters/icons";
 import { RouterLinkFixture } from "../fixtures/router-link";
 
 const CustomSvgIcon = React.forwardRef<SVGSVGElement, IconSvgProps>(function CustomSvgIcon(

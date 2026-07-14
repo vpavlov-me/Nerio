@@ -1,4 +1,4 @@
-import { Check, Circle, CircleAlert, Info, X } from "@nerio/adapters";
+import { Check, Circle, CircleAlert, Info, X } from "@nerio/adapters/icons";
 import { Badge, Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -45,7 +45,7 @@ function BadgePreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Check, CircleAlert, Info } from "@nerio/adapters";\nimport { Badge } from "@nerio/ui";\n\n<Badge>Neutral</Badge>\n<Badge size="sm" tone="info">24</Badge>\n<Badge size="lg" tone="success">Featured</Badge>\n<Badge tone="success" leadingIcon={Check}>Published</Badge>\n<Badge tone="warning" leadingIcon={CircleAlert}>Review needed</Badge>\n<Badge tone="info" leadingIcon={Info} trailingIcon={Check}>Shared</Badge>\n<Badge tone="primary-soft" loading>Publishing</Badge>\n<Badge tone="danger" emphasis="strong" leadingIcon={CircleAlert}>Deployment blocked</Badge>'
+          'import { Check, CircleAlert, Info } from "@nerio/adapters/icons";\nimport { Badge } from "@nerio/ui";\n\n<Badge>Neutral</Badge>\n<Badge size="sm" tone="info">24</Badge>\n<Badge size="lg" tone="success">Featured</Badge>\n<Badge tone="success" leadingIcon={Check}>Published</Badge>\n<Badge tone="warning" leadingIcon={CircleAlert}>Review needed</Badge>\n<Badge tone="info" leadingIcon={Info} trailingIcon={Check}>Shared</Badge>\n<Badge tone="primary-soft" loading>Publishing</Badge>\n<Badge tone="danger" emphasis="strong" leadingIcon={CircleAlert}>Deployment blocked</Badge>'
         }
         label="Badge live preview code"
       />

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Circle, CircleAlert, Info, TriangleAlert, X } from "@nerio/adapters";
+import { Check, Circle, CircleAlert, Info, TriangleAlert, X } from "@nerio/adapters/icons";
 import { Alert, Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
@@ -121,7 +121,7 @@ function AlertPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Check, CircleAlert, Info, X } from "@nerio/adapters";\nimport { Alert } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<Alert\n  tone="info"\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>\n\n<Alert\n  tone="danger"\n  icon={CircleAlert}\n  title="Unable to connect to server"\n  action={<Button size="sm" variant="danger">Retry</Button>}\n>\n  We&apos;re experiencing connection issues.\n</Alert>\n\n<Alert\n  tone="success"\n  icon={Check}\n  title="Profile updated successfully"\n  action={<Button icon={X} aria-label="Dismiss profile update" size="sm" variant="ghost" />}\n/>'
+          'import { Check, CircleAlert, Info, X } from "@nerio/adapters/icons";\nimport { Alert } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<Alert\n  tone="info"\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>\n\n<Alert\n  tone="danger"\n  icon={CircleAlert}\n  title="Unable to connect to server"\n  action={<Button size="sm" variant="danger">Retry</Button>}\n>\n  We&apos;re experiencing connection issues.\n</Alert>\n\n<Alert\n  tone="success"\n  icon={Check}\n  title="Profile updated successfully"\n  action={<Button icon={X} aria-label="Dismiss profile update" size="sm" variant="ghost" />}\n/>'
         }
         label="Alert live preview code"
       />

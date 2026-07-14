@@ -1,7 +1,7 @@
 {
   "name": "@nerio/adapters",
   "version": "0.1.0-alpha.0",
-  "description": "Nerio Core adapters for icons, forms, tables, and charts.",
+  "description": "Responsibility-scoped Nerio Core adapters for icons, tables, charts, forms, and schemas.",
   "private": true,
   "license": "MIT",
   "repository": {
@@ -19,8 +19,28 @@
   "files": [
     "src"
   ],
+  "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts"
+    "./icons": {
+      "types": "./src/icons.ts",
+      "default": "./src/icons.ts"
+    },
+    "./table": {
+      "types": "./src/table.ts",
+      "default": "./src/table.ts"
+    },
+    "./charts": {
+      "types": "./src/charts.ts",
+      "default": "./src/charts.ts"
+    },
+    "./forms": {
+      "types": "./src/forms.ts",
+      "default": "./src/forms.ts"
+    },
+    "./schema": {
+      "types": "./src/schema.ts",
+      "default": "./src/schema.ts"
+    }
   },
   "scripts": {
     "build": "tsc --noEmit",
@@ -28,20 +48,39 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@tanstack/react-table": "^8.21.3",
-    "lucide-react": "^0.561.0",
-    "react-hook-form": "^7.68.0",
-    "recharts": "^3.6.0",
-    "zod": "^4.2.1"
+    "lucide-react": "^0.561.0"
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",
+    "@tanstack/react-table": "^8.21.3",
     "@types/react": "^19.2.7",
     "eslint": "^9.39.2",
     "react": "^19.2.3",
-    "typescript": "^5.9.3"
+    "react-dom": "^19.2.3",
+    "react-hook-form": "^7.68.0",
+    "recharts": "^3.6.0",
+    "typescript": "^5.9.3",
+    "zod": "^4.2.1"
   },
   "peerDependencies": {
-    "react": ">=19"
+    "@tanstack/react-table": "^8.21.3",
+    "react-hook-form": "^7.68.0",
+    "react": ">=19",
+    "recharts": "^3.6.0",
+    "zod": "^4.2.1"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/react-table": {
+      "optional": true
+    },
+    "react-hook-form": {
+      "optional": true
+    },
+    "recharts": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    }
   }
 }

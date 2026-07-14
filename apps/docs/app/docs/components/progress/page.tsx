@@ -1,4 +1,4 @@
-import { Check, X } from "@nerio/adapters";
+import { Check, X } from "@nerio/adapters/icons";
 import {
   Card,
   CardContent,

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUp, Check, Plus, Save, Settings, X } from "@nerio/adapters";
+import { ArrowRight, ArrowUp, Check, Plus, Save, Settings, X } from "@nerio/adapters/icons";
 import {
   Badge,
   Card,
@@ -26,7 +26,7 @@ function ButtonPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { ArrowUp } from "@nerio/adapters";\nimport { Button } from "@nerio/ui/client";\n\n<Button>Button</Button>\n<Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" />'
+          'import { ArrowUp } from "@nerio/adapters/icons";\nimport { Button } from "@nerio/ui/client";\n\n<Button>Button</Button>\n<Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" />'
         }
         label="Button live preview code"
       />

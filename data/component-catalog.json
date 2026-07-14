@@ -60,6 +60,7 @@
     "@nerio/ui",
     "@nerio/ui/client",
     "@nerio/adapters",
+    "@nerio/adapters/icons",
     "@nerio/pro"
   ],
   "entrypointValues": ["@nerio/ui", "@nerio/ui/client"],
@@ -210,10 +211,10 @@
     {
       "name": "Icon Adapter",
       "tier": "core",
-      "package": "@nerio/adapters",
+      "package": "@nerio/adapters/icons",
       "category": "foundation",
       "status": "stable-core",
-      "description": "Public generic SVG icon contract with Lucide-only stroke behavior isolated from custom component props."
+      "description": "Public generic SVG icon contract and named Lucide exports isolated from optional table, chart, form, and schema adapter peers."
     },
     {
       "name": "Button",

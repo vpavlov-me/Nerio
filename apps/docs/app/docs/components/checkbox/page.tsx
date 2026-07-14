@@ -1,4 +1,4 @@
-import { Check, X } from "@nerio/adapters";
+import { Check, X } from "@nerio/adapters/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
 import { Checkbox } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";

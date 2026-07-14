@@ -42,7 +42,7 @@ export const snippets: Record<string, string> = {
   typography:
     'import { Code, Heading, Text } from \'@nerio/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>',
   button:
-    'import { Save, Settings } from \'@nerio/adapters\';\nimport { Badge, Kbd } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
+    'import { Save, Settings } from \'@nerio/adapters/icons\';\nimport { Badge, Kbd } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
   "button-group":
     'import { ButtonGroup } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
@@ -51,9 +51,9 @@ export const snippets: Record<string, string> = {
   pagination:
     "import * as React from 'react';\nimport { Pagination } from '@nerio/ui';\n\nconst AppLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>(function AppLink(props, ref) {\n  return <a ref={ref} data-router-link=\"\" {...props} />;\n});\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ key: '1', label: '1', href: '/docs/page/1' }, { key: '2', label: '2', href: '/docs/page/2', current: true, render: <AppLink href=\"#\" /> }, { key: '3', label: '3', href: '/docs/page/3' }]} />",
   badge:
-    "import { Check, CircleAlert } from '@nerio/adapters';\nimport { Badge } from '@nerio/ui';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>\n<Badge tone=\"warning\" trailingIcon={CircleAlert}>Review needed</Badge>",
+    "import { Check, CircleAlert } from '@nerio/adapters/icons';\nimport { Badge } from '@nerio/ui';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>\n<Badge tone=\"warning\" trailingIcon={CircleAlert}>Review needed</Badge>",
   alert:
-    "import { Circle } from '@nerio/adapters';\nimport { Alert } from '@nerio/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
+    "import { Circle } from '@nerio/adapters/icons';\nimport { Alert } from '@nerio/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
   spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
   skeleton: "import { Skeleton } from '@nerio/ui';\n\n<Skeleton aria-label=\"Loading\" />",
   "empty-state":
