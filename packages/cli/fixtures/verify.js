@@ -301,6 +301,7 @@ async function verify() {
     await run(localTarget, "add", "separator");
     await run(localTarget, "add", "stat");
     await run(localTarget, "add", "table");
+    await run(localTarget, "add", "item");
     await run(localTarget, "add", "list");
     await run(localTarget, "add", "progress");
     await run(localTarget, "add", "skeleton");
@@ -320,10 +321,14 @@ async function verify() {
     );
     if (
       !installedIconSource.includes('from "@nerio/adapters"') ||
-      installedIconSource.includes("@/")
+      installedIconSource.includes("@/") ||
+      !installedIconSource.includes("lucideAbsoluteStrokeWidth") ||
+      !installedIconSource.includes("focusable={false}") ||
+      installedIconSource.indexOf("{...svgProps}") >
+        installedIconSource.indexOf("aria-hidden={decorative ? true : undefined}")
     ) {
       throw new Error(
-        "Installed Icon source is missing its documented adapter dependency or uses an unresolved workspace alias.",
+        "Installed Icon source is missing its adapter, Lucide isolation, or protected accessibility contract.",
       );
     }
     assertFiles(localTarget, [
@@ -494,6 +499,25 @@ async function verify() {
       path.join(localTarget, "components/nerio/components/list.tsx"),
       "utf8",
     );
+    const itemSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/item.tsx"),
+      "utf8",
+    );
+    const composeRefsSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/lib/compose-refs.ts"),
+      "utf8",
+    );
+    if (
+      !itemSource.includes('from "../lib/compose-refs"') ||
+      !itemSource.includes("composeRefs(renderRef, ref)") ||
+      !listSource.includes('from "../lib/compose-refs"') ||
+      !composeRefsSource.includes('typeof ref === "function"') ||
+      !composeRefsSource.includes("ref.current = node")
+    ) {
+      throw new Error(
+        "Installed Item/List source does not preserve callback and object ref composition.",
+      );
+    }
     if (
       !listSource.includes('const Root = ordered ? "ol" : "ul"') ||
       !listSource.includes('className={cn("n-list__link", linkClassName)}') ||
@@ -528,6 +552,7 @@ async function verify() {
       !paginationSource.includes('aria-current={page.current ? "page" : undefined}') ||
       !paginationSource.includes('aria-disabled="true"') ||
       !paginationSource.includes('"data-current": current ? "" : undefined') ||
+      (paginationSource.match(/data-current=\{current \? "" : undefined\}/g) ?? []).length < 4 ||
       !paginationSource.includes('"data-slot": slot')
     ) {
       throw new Error(

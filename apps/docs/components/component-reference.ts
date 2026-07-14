@@ -333,7 +333,11 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     related: ["Breadcrumbs", "Button", "Table"],
     anatomy: ["root", "list", "item", "previous", "page", "next"],
     motion: ["hover", "focus"],
-    accessibility: ["nav landmark", "aria-current page", "non-focusable disabled controls"],
+    accessibility: [
+      "nav landmark",
+      "aria-current and data-current parity",
+      "non-focusable disabled controls",
+    ],
   },
   list: {
     name: "List",
@@ -759,7 +763,8 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       {
         title: "Current",
-        description: 'Current page uses aria-current="page" and stronger visual treatment.',
+        description:
+          'Current links, buttons, router elements, and static pages use aria-current="page" plus the same stronger visual treatment.',
       },
       {
         title: "Disabled",
@@ -769,7 +774,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Provide stable page labels and clear previous/next labels.",
-      'Current page uses aria-current="page".',
+      'Current page uses aria-current="page" and keeps data-current even without navigation behavior.',
       "Disabled controls render as aria-disabled text instead of inactive anchors.",
       "Do not rely on color alone for current or disabled states.",
     ],
@@ -2394,7 +2399,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "render",
-        description: "Renders the root as a supplied native semantic element such as an anchor.",
+        description:
+          "Renders the root as a supplied native semantic element such as an anchor and composes its existing ref with the forwarded Item ref.",
       },
       {
         title: "ItemMedia variant",
