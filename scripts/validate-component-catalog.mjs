@@ -2,14 +2,9 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const args = process.argv.slice(2);
-
-function option(name, fallback) {
-  const index = args.indexOf(name);
-  return index === -1 ? fallback : resolve(args[index + 1]);
-}
 
 function readJson(file) {
   try {
@@ -20,6 +15,7 @@ function readJson(file) {
 }
 
 function slugify(value) {
+  if (typeof value !== "string") return "";
   return value
     .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
     .toLowerCase()
@@ -30,7 +26,7 @@ function slugify(value) {
 function duplicates(values) {
   const seen = new Set();
   const duplicateValues = new Set();
-  for (const value of values) {
+  for (const value of values.filter(Boolean)) {
     if (seen.has(value)) duplicateValues.add(value);
     seen.add(value);
   }
@@ -61,8 +57,7 @@ function parseMatrix(source) {
       .slice(1, -1)
       .map((cell) => cell.trim().replace(/`/g, ""));
     if (cells.length < 3 || /^-+$/.test(cells[0])) continue;
-
-    if (cells[0] === "Component" || cells[0] === "Component / Area" || cells[0] === "Template") {
+    if (["Component", "Component / Area", "Template"].includes(cells[0])) {
       isComponentTable = cells[1] === "Status" && cells[2] === "Package";
       continue;
     }
@@ -74,178 +69,301 @@ function parseMatrix(source) {
   return rows;
 }
 
-function extractSlugs(source, pattern) {
-  return [...source.matchAll(pattern)].map((match) => match[1]);
+function tokenize(source) {
+  const tokens = [];
+  let index = 0;
+  while (index < source.length) {
+    const character = source[index];
+    if (/\s/.test(character)) {
+      index += 1;
+      continue;
+    }
+    if (source.startsWith("//", index)) {
+      index = source.indexOf("\n", index + 2);
+      if (index === -1) break;
+      continue;
+    }
+    if (source.startsWith("/*", index)) {
+      const end = source.indexOf("*/", index + 2);
+      index = end === -1 ? source.length : end + 2;
+      continue;
+    }
+    if ("\"'`".includes(character)) {
+      const quote = character;
+      let value = "";
+      index += 1;
+      while (index < source.length && source[index] !== quote) {
+        if (source[index] === "\\") {
+          value += source[index + 1] ?? "";
+          index += 2;
+        } else {
+          value += source[index];
+          index += 1;
+        }
+      }
+      index += 1;
+      tokens.push({ type: "string", value });
+      continue;
+    }
+    const identifier = source.slice(index).match(/^[A-Za-z_$][A-Za-z0-9_$-]*/)?.[0];
+    if (identifier) {
+      tokens.push({ type: "identifier", value: identifier });
+      index += identifier.length;
+      continue;
+    }
+    tokens.push({ type: "punctuation", value: character });
+    index += 1;
+  }
+  return tokens;
 }
 
-const catalogPath = option("--catalog", resolve(root, "data/component-catalog.json"));
-const manifestPath = option("--manifest", resolve(root, "packages/registry/src/manifest.json"));
-const componentsPath = option("--components", resolve(root, "COMPONENTS.md"));
-const docsChromePath = option(
-  "--docs-chrome",
-  resolve(root, "apps/docs/components/docs-chrome.tsx"),
-);
-const componentDocsPath = option(
-  "--component-docs",
-  resolve(root, "apps/docs/lib/component-docs.ts"),
-);
-
-for (const file of [catalogPath, manifestPath, componentsPath, docsChromePath, componentDocsPath]) {
-  if (!existsSync(file)) throw new Error(`Required catalog projection is missing: ${file}`);
+function propertyStringValues(source, property) {
+  const tokens = tokenize(source);
+  const values = [];
+  for (let index = 0; index < tokens.length - 2; index += 1) {
+    if (
+      tokens[index].value === property &&
+      tokens[index + 1].value === ":" &&
+      tokens[index + 2].type === "string"
+    ) {
+      values.push(tokens[index + 2].value);
+    }
+  }
+  return values;
 }
 
-const catalog = readJson(catalogPath);
-const manifest = readJson(manifestPath);
-const matrixRows = parseMatrix(readFileSync(componentsPath, "utf8"));
-const docsChrome = readFileSync(docsChromePath, "utf8");
-const componentDocs = readFileSync(componentDocsPath, "utf8");
-const failures = [];
-const components = Array.isArray(catalog.components) ? catalog.components : [];
-const catalogNames = components.map((component) => component.name);
-const catalogSlugs = components.map((component) => slugify(component.name));
-const allowedTiers = new Set(Object.keys(catalog.tiers ?? {}));
-const allowedStatuses = new Set(Object.keys(catalog.statusValues ?? {}));
-const allowedCategories = new Set(catalog.categoryValues ?? []);
-const allowedPackages = new Set(catalog.packageValues ?? []);
-const clientOnlyCatalogSlugs = new Set([
-  "button",
-  "icon-button",
-  "checkbox",
-  "radio-group",
-  "switch",
-  "select",
-  "tabs",
-  "tooltip",
-  "dialog",
-  "popover",
-  "dropdown-menu",
-  "toast",
-]);
+function objectKeys(source, declaration) {
+  const tokens = tokenize(source);
+  const declarationIndex = tokens.findIndex(
+    (token, index) =>
+      token.value === declaration && tokens[index + 1]?.value === ":" && tokens[index + 2],
+  );
+  const start = tokens.findIndex(
+    (token, index) =>
+      index > declarationIndex && token.value === "=" && tokens[index + 1]?.value === "{",
+  );
+  if (declarationIndex === -1 || start === -1) return [];
 
-if (!components.length) failures.push("Catalog must define a non-empty components array.");
-if (!allowedCategories.size) failures.push("Catalog must define categoryValues.");
-if (!allowedPackages.size) failures.push("Catalog must define packageValues.");
+  const keys = [];
+  let depth = 0;
+  for (let index = start + 1; index < tokens.length; index += 1) {
+    const token = tokens[index];
+    if (token.value === "{") depth += 1;
+    if (token.value === "}") {
+      if (depth === 1) break;
+      depth -= 1;
+    }
+    if (
+      depth === 1 &&
+      ["identifier", "string"].includes(token.type) &&
+      tokens[index + 1]?.value === ":"
+    ) {
+      keys.push(token.value);
+    }
+  }
+  return keys;
+}
 
-for (const name of duplicates(catalogNames))
-  failures.push(`Duplicate catalog component name: ${name}`);
-for (const slug of duplicates(catalogSlugs))
-  failures.push(`Duplicate catalog component slug: ${slug}`);
+function reportSetDrift(label, actualValues, expectedValues, failures) {
+  const actual = new Set(actualValues);
+  const expected = new Set(expectedValues);
+  for (const value of [...actual].filter((item) => !expected.has(item)).sort()) {
+    failures.push(`${label} references unknown catalog component: ${value}`);
+  }
+  for (const value of [...expected].filter((item) => !actual.has(item)).sort()) {
+    failures.push(`${label} is missing catalog component: ${value}`);
+  }
+}
 
-for (const component of components) {
-  const label = `Catalog component ${component.name || "<missing name>"}`;
-  if (!component.name || !slugify(component.name)) failures.push(`${label} has an invalid name.`);
-  if (!allowedTiers.has(component.tier))
-    failures.push(`${label} has invalid tier: ${component.tier}`);
-  if (!allowedCategories.has(component.category)) {
-    failures.push(`${label} has invalid category: ${component.category}`);
+function validate() {
+  const paths = parsePathOptions(process.argv.slice(2), {
+    "--catalog": resolve(root, "data/component-catalog.json"),
+    "--manifest": resolve(root, "packages/registry/src/manifest.json"),
+    "--components": resolve(root, "COMPONENTS.md"),
+    "--docs-chrome": resolve(root, "apps/docs/components/docs-chrome.tsx"),
+    "--component-docs": resolve(root, "apps/docs/lib/component-docs.ts"),
+    "--cli-runtime": resolve(root, "packages/cli/src/index.js"),
+    "--mcp-runtime": resolve(root, "packages/mcp/src/tool-runtime.js"),
+  });
+
+  for (const file of Object.values(paths)) {
+    if (!existsSync(file)) throw new Error(`Required catalog projection is missing: ${file}`);
   }
-  if (!allowedPackages.has(component.package)) {
-    failures.push(`${label} has invalid package: ${component.package}`);
+
+  const catalog = readJson(paths["--catalog"]);
+  const manifest = readJson(paths["--manifest"]);
+  const matrixRows = parseMatrix(readFileSync(paths["--components"], "utf8"));
+  const docsChrome = readFileSync(paths["--docs-chrome"], "utf8");
+  const componentDocs = readFileSync(paths["--component-docs"], "utf8");
+  const cliRuntime = readFileSync(paths["--cli-runtime"], "utf8");
+  const mcpRuntime = readFileSync(paths["--mcp-runtime"], "utf8");
+  const failures = [];
+  const components = Array.isArray(catalog.components) ? catalog.components : [];
+  const allowedTiers = new Set(Object.keys(catalog.tiers ?? {}));
+  const allowedStatuses = new Set(Object.keys(catalog.statusValues ?? {}));
+  const allowedCategories = new Set(catalog.categoryValues ?? []);
+  const allowedPackages = new Set(catalog.packageValues ?? []);
+  const allowedEntrypoints = new Set(catalog.entrypointValues ?? []);
+  const allowedRuntimes = new Set(catalog.runtimeValues ?? []);
+  const identities = Array.isArray(catalog.registryIdentities) ? catalog.registryIdentities : [];
+
+  if (!components.length) failures.push("Catalog must define a non-empty components array.");
+  for (const [label, values] of [
+    ["categoryValues", allowedCategories],
+    ["packageValues", allowedPackages],
+    ["entrypointValues", allowedEntrypoints],
+    ["runtimeValues", allowedRuntimes],
+  ]) {
+    if (!values.size) failures.push(`Catalog must define ${label}.`);
   }
-  if (!allowedStatuses.has(component.status)) {
-    failures.push(`${label} has invalid status: ${component.status}`);
+
+  const validComponents = components
+    .map((component) => ({ component, slug: slugify(component.name) }))
+    .filter(({ slug }) => slug);
+  const catalogNames = components
+    .map((component) => (typeof component.name === "string" ? component.name : ""))
+    .filter(Boolean);
+  const catalogSlugs = validComponents.map(({ slug }) => slug);
+  const catalogBySlug = new Map(validComponents.map(({ component, slug }) => [slug, component]));
+
+  for (const name of duplicates(catalogNames))
+    failures.push(`Duplicate catalog component name: ${name}`);
+  for (const slug of duplicates(catalogSlugs))
+    failures.push(`Duplicate catalog component slug: ${slug}`);
+
+  for (const component of components) {
+    const name =
+      typeof component.name === "string" && component.name ? component.name : "<missing name>";
+    const label = `Catalog component ${name}`;
+    if (!slugify(component.name)) failures.push(`${label} has an invalid name.`);
+    if (!allowedTiers.has(component.tier))
+      failures.push(`${label} has invalid tier: ${component.tier}`);
+    if (!allowedCategories.has(component.category))
+      failures.push(`${label} has invalid category: ${component.category}`);
+    if (!allowedPackages.has(component.package))
+      failures.push(`${label} has invalid package: ${component.package}`);
+    if (!allowedStatuses.has(component.status))
+      failures.push(`${label} has invalid status: ${component.status}`);
+    if (component.deprecated) {
+      const replacement = slugify(component.replacement);
+      if (!replacement || !catalogBySlug.has(replacement)) {
+        failures.push(
+          `${label} is deprecated but has no valid replacement: ${component.replacement ?? "<missing>"}`,
+        );
+      }
+    }
   }
-  if (
-    clientOnlyCatalogSlugs.has(slugify(component.name)) &&
-    component.package !== "@nerio/ui/client"
-  ) {
-    failures.push(`${label} must use the @nerio/ui/client entrypoint.`);
-  }
-  if (component.deprecated) {
-    const replacement = slugify(component.replacement ?? "");
-    if (!replacement || !catalogSlugs.includes(replacement)) {
+
+  const identityNames = identities.map((identity) => identity.name);
+  for (const name of duplicates(identityNames))
+    failures.push(`Duplicate catalog registry identity: ${name}`);
+  const identityByName = new Map();
+  for (const identity of identities) {
+    const label = `Catalog registry identity ${identity.name ?? "<missing>"}`;
+    if (!identity.name || !catalogBySlug.has(identity.name))
+      failures.push(`${label} has no component entry.`);
+    if (!allowedEntrypoints.has(identity.entrypoint))
+      failures.push(`${label} has invalid entrypoint: ${identity.entrypoint}`);
+    if (!allowedRuntimes.has(identity.runtime))
+      failures.push(`${label} has invalid runtime: ${identity.runtime}`);
+    const component = catalogBySlug.get(identity.name);
+    if (component && identity.entrypoint !== component.package) {
       failures.push(
-        `${label} is deprecated but has no valid replacement: ${component.replacement ?? "<missing>"}`,
+        `Catalog component ${component.name} entrypoint differs from package: ${identity.entrypoint} !== ${component.package}`,
+      );
+    }
+    const expectedRuntime = identity.entrypoint === "@nerio/ui/client" ? "client" : "server";
+    if (identity.runtime !== expectedRuntime) {
+      failures.push(
+        `Catalog component ${component?.name ?? identity.name} runtime differs from entrypoint: ${identity.runtime} !== ${expectedRuntime}`,
+      );
+    }
+    if (identity.name) identityByName.set(identity.name, identity);
+  }
+
+  const registryItems = Array.isArray(manifest.items) ? manifest.items : [];
+  const registryNames = registryItems.map((item) => item.name);
+  for (const name of duplicates(registryNames))
+    failures.push(`Duplicate registry component name: ${name}`);
+  for (const item of registryItems) {
+    const component = catalogBySlug.get(item.name);
+    if (!component) {
+      failures.push(`Registry component has no catalog entry: ${item.name}`);
+      continue;
+    }
+    if (!identityByName.has(item.name))
+      failures.push(`Registry component has no canonical registry identity: ${item.name}`);
+    if (slugify(item.title) !== item.name)
+      failures.push(`Registry component ${item.name} title does not match its catalog identity.`);
+    if (item.category !== component.category)
+      failures.push(
+        `Registry component ${item.name} category differs from catalog: ${item.category} !== ${component.category}`,
+      );
+    if (Boolean(item.deprecated) !== Boolean(component.deprecated))
+      failures.push(`Registry component ${item.name} deprecated flag differs from catalog.`);
+    if (item.deprecated && item.replacement !== slugify(component.replacement))
+      failures.push(`Registry component ${item.name} replacement differs from catalog.`);
+  }
+  const registrySet = new Set(registryNames);
+  for (const identity of identities) {
+    if (!registrySet.has(identity.name)) {
+      const component = catalogBySlug.get(identity.name);
+      failures.push(
+        `Installable catalog component has no registry item: ${component?.name ?? identity.name} (${identity.name})`,
       );
     }
   }
+
+  const matrixBySlug = new Map(
+    matrixRows.map((row) => [slugify(row.name), row]).filter(([slug]) => slug),
+  );
+  for (const { component, slug } of validComponents) {
+    const row = matrixBySlug.get(slug);
+    if (!row) {
+      failures.push(`COMPONENTS.md is missing catalog component: ${component.name}`);
+      continue;
+    }
+    for (const field of ["tier", "status", "package"]) {
+      if (row[field] !== component[field])
+        failures.push(
+          `COMPONENTS.md ${field} differs for ${component.name}: ${row[field]} !== ${component[field]}`,
+        );
+    }
+  }
+  for (const row of matrixRows) {
+    if (!catalogBySlug.has(slugify(row.name)))
+      failures.push(`COMPONENTS.md references unknown catalog component: ${row.name}`);
+  }
+
+  const expectedDocs = identities
+    .map((identity) => identity.name)
+    .filter((slug) => !catalogBySlug.get(slug)?.deprecated);
+  const navSlugs = propertyStringValues(docsChrome, "href")
+    .filter((href) => href.startsWith("/docs/components/"))
+    .map((href) => href.slice("/docs/components/".length));
+  const docsIndexSlugs = objectKeys(componentDocs, "componentLedes");
+  reportSetDrift("Docs navigation", navSlugs, expectedDocs, failures);
+  reportSetDrift("Docs component index", docsIndexSlugs, expectedDocs, failures);
+
+  if (!cliRuntime.includes("manifest.items"))
+    failures.push("CLI discovery must enumerate registry manifest identities.");
+  if (!mcpRuntime.includes("manifest.items.map"))
+    failures.push("MCP discovery must enumerate registry manifest identities.");
+
+  if (failures.length) {
+    console.error("Component catalog validation failed:");
+    for (const failure of failures) console.error(`- ${failure}`);
+    process.exitCode = 1;
+    return;
+  }
+  console.log(
+    `Component catalog verified across ${components.length} catalog entries, ${identities.length} installable identities, ${matrixRows.length} matrix rows, and ${registryItems.length} registry items.`,
+  );
 }
 
-const catalogBySlug = new Map(components.map((component) => [slugify(component.name), component]));
-const registryItems = Array.isArray(manifest.items) ? manifest.items : [];
-const registryNames = registryItems.map((item) => item.name);
-for (const name of duplicates(registryNames))
-  failures.push(`Duplicate registry component name: ${name}`);
-
-for (const item of registryItems) {
-  const component = catalogBySlug.get(item.name);
-  if (!component) {
-    failures.push(`Registry component has no catalog entry: ${item.name}`);
-    continue;
-  }
-  if (slugify(item.title ?? "") !== item.name) {
-    failures.push(`Registry component ${item.name} title does not match its catalog identity.`);
-  }
-  if (item.category !== component.category) {
-    failures.push(
-      `Registry component ${item.name} category differs from catalog: ${item.category} !== ${component.category}`,
-    );
-  }
-  if (Boolean(item.deprecated) !== Boolean(component.deprecated)) {
-    failures.push(`Registry component ${item.name} deprecated flag differs from catalog.`);
-  }
-  if (item.deprecated && item.replacement !== slugify(component.replacement ?? "")) {
-    failures.push(`Registry component ${item.name} replacement differs from catalog.`);
-  }
+try {
+  validate();
+} catch (error) {
+  console.error(error.message);
+  process.exitCode = 1;
 }
-
-const registrySlugs = new Set(registryNames);
-for (const component of components) {
-  const slug = slugify(component.name);
-  const isInstallableCore =
-    component.tier === "core" &&
-    component.category !== "foundation" &&
-    !["planned", "future"].includes(component.status);
-  if (isInstallableCore && !registrySlugs.has(slug)) {
-    failures.push(
-      `Implemented installable Core component has no registry item: ${component.name} (${slug})`,
-    );
-  }
-}
-
-const matrixBySlug = new Map(matrixRows.map((row) => [slugify(row.name), row]));
-for (const component of components) {
-  const row = matrixBySlug.get(slugify(component.name));
-  if (!row) {
-    failures.push(`COMPONENTS.md is missing catalog component: ${component.name}`);
-    continue;
-  }
-  if (row.tier !== component.tier) {
-    failures.push(
-      `COMPONENTS.md tier differs for ${component.name}: ${row.tier} !== ${component.tier}`,
-    );
-  }
-  if (row.status !== component.status) {
-    failures.push(
-      `COMPONENTS.md status differs for ${component.name}: ${row.status} !== ${component.status}`,
-    );
-  }
-  if (row.package !== component.package) {
-    failures.push(
-      `COMPONENTS.md package differs for ${component.name}: ${row.package} !== ${component.package}`,
-    );
-  }
-}
-for (const row of matrixRows) {
-  if (!catalogBySlug.has(slugify(row.name))) {
-    failures.push(`COMPONENTS.md references unknown catalog component: ${row.name}`);
-  }
-}
-
-const navSlugs = extractSlugs(docsChrome, /href: "\/docs\/components\/([^"]+)"/g);
-const docsIndexSlugs = extractSlugs(componentDocs, /^  "?([a-z][a-z0-9-]*)"?:\s*"/gm);
-for (const slug of [...new Set([...navSlugs, ...docsIndexSlugs])].sort()) {
-  if (!catalogBySlug.has(slug)) {
-    failures.push(`Docs component index references unknown catalog component: ${slug}`);
-  }
-}
-
-if (failures.length) {
-  console.error("Component catalog validation failed:");
-  for (const failure of failures) console.error(`- ${failure}`);
-  process.exit(1);
-}
-
-console.log(
-  `Component catalog verified across ${components.length} catalog entries, ${matrixRows.length} matrix rows, and ${registryItems.length} registry items.`,
-);

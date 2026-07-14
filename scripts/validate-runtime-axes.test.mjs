@@ -1,0 +1,114 @@
+import assert from "node:assert/strict";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { resolve } from "node:path";
+import test from "node:test";
+import { fileURLToPath } from "node:url";
+
+const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const validator = resolve(root, "scripts/validate-runtime-axes.mjs");
+const tokenSource = resolve(root, "packages/tokens/src/styles.css");
+const catalogSource = resolve(root, "data/component-catalog.json");
+const docsSource = resolve(root, "apps/docs/components/docs-chrome.tsx");
+
+function run(...args) {
+  return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
+}
+
+function fixture(name, contents) {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-runtime-"));
+  const target = resolve(directory, name);
+  writeFileSync(target, contents);
+  return { directory, target };
+}
+
+function withFixture(option, name, contents, assertion, expectedStatus = 1) {
+  const value = fixture(name, contents);
+  try {
+    const result = run(option, value.target);
+    assert.equal(result.status, expectedStatus, result.stderr);
+    assertion(result.stderr);
+  } finally {
+    rmSync(value.directory, { recursive: true, force: true });
+  }
+}
+
+test("runtime-axis validator accepts exact repository selectors", () => {
+  const result = run();
+  assert.equal(result.status, 0, result.stderr);
+});
+
+test("runtime-axis validator rejects selector substrings that are not exact selectors", () => {
+  withFixture(
+    "--token-file",
+    "styles.css",
+    readFileSync(tokenSource, "utf8").replace(
+      ':root[data-theme="purple"] {',
+      '.preview :root[data-theme="purple"] {',
+    ),
+    (stderr) => assert.match(stderr, /Light theme purple selector is missing or misplaced/),
+  );
+});
+
+test("runtime-axis validator requires system-dark selectors inside the dark media query", () => {
+  withFixture(
+    "--token-file",
+    "styles.css",
+    readFileSync(tokenSource, "utf8").replace(
+      '@media (prefers-color-scheme: dark) {\n  :root[data-mode="system"]',
+      '@media (min-width: 1px) {\n  :root[data-mode="system"]',
+    ),
+    (stderr) => assert.match(stderr, /System-dark mode selector is missing or misplaced/),
+  );
+});
+
+test("runtime-axis validator requires complete accent declarations in dark scopes", () => {
+  const source = readFileSync(tokenSource, "utf8");
+  const mutated = source.replace(
+    /(:root\[data-theme="red"\]\[data-mode="dark"\]\s*\{[\s\S]*?)^\s*--n-chart-categorical-1:.*\n/m,
+    "$1",
+  );
+  withFixture("--token-file", "styles.css", mutated, (stderr) => {
+    assert.match(stderr, /Dark theme red is missing --n-chart-categorical-1/);
+  });
+});
+
+test("runtime-axis validator rejects prohibited axes structurally", () => {
+  withFixture(
+    "--token-file",
+    "styles.css",
+    `${readFileSync(tokenSource, "utf8")}\n:root[data-font="geist"] { --n-font-sans: sans-serif; }\n`,
+    (stderr) => assert.match(stderr, /Prohibited runtime axis selector: data-font/),
+  );
+});
+
+test("runtime-axis validator accepts a semantic custom-theme override fixture", () => {
+  withFixture(
+    "--token-file",
+    "styles.css",
+    `${readFileSync(tokenSource, "utf8")}\n:root[data-theme="custom-product"] { --n-color-action-primary: #123456; --n-button-background-primary: var(--n-color-action-primary); }\n`,
+    () => {},
+    0,
+  );
+});
+
+test("runtime-axis validator reads theme values from the canonical catalog", () => {
+  const catalog = JSON.parse(readFileSync(catalogSource, "utf8"));
+  catalog.runtimeAxes.theme.push("cyan");
+  withFixture("--catalog", "catalog.json", `${JSON.stringify(catalog, null, 2)}\n`, (stderr) => {
+    assert.match(stderr, /Light theme cyan selector is missing or misplaced/);
+  });
+});
+
+test("runtime-axis validator checks runtime controls through canonical imports", () => {
+  withFixture(
+    "--docs-controls",
+    "docs-chrome.tsx",
+    readFileSync(docsSource, "utf8").replace(
+      'import { densities, modes, themes } from "@nerio/tokens";',
+      'import { densities, themes } from "@nerio/tokens";',
+    ),
+    (stderr) => assert.match(stderr, /Docs runtime controls must import canonical modes/),
+  );
+});

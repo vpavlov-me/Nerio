@@ -59,6 +59,8 @@ const componentLedes: Record<string, string> = {
     "Breadcrumbs show hierarchy navigation with ordered list semantics and current page support.",
   pagination:
     "Pagination provides basic previous, next, and page links without owning data or page state.",
+  "sidebar-primitive":
+    "Sidebar provides a low-level collapsible layout primitive while navigation data and product behavior remain consumer-owned.",
   tooltip: "Tooltips clarify controls or compact metadata without carrying essential meaning.",
   popover: "Popovers reveal contextual controls or supporting details near a trigger.",
   "dropdown-menu": "Dropdown menus group secondary commands behind a compact trigger.",

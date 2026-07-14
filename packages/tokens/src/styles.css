@@ -875,6 +875,7 @@
   --n-chart-grid: var(--n-gray-200);
   --n-chart-axis: var(--n-gray-400);
   --n-chart-tooltip: var(--n-color-surface-overlay);
+  --n-overlay-backdrop: rgb(2 6 23 / 0.52);
 }
 
 :root[data-mode="dark"] {

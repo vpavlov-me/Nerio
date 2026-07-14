@@ -16,6 +16,8 @@ pnpm typecheck
 pnpm build
 pnpm test:ui
 pnpm test:a11y
+pnpm test:catalog
+pnpm test:tokens
 pnpm test:cli
 pnpm test:mcp
 pnpm validate:tokens

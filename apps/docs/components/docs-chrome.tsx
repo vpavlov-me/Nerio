@@ -32,12 +32,13 @@ import {
 } from "@nerio/adapters";
 import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/adapters";
+import { densities, modes, themes } from "@nerio/tokens";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
 import { siteConfig } from "../lib/site-config";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
 const modeStorageKey = "nerio-docs-mode";
-type ColorMode = "system" | "light" | "dark";
+type ColorMode = (typeof modes)[number];
 type FeedbackValue = "helpful" | "neutral" | "not-helpful";
 
 type NavItem = {
@@ -149,19 +150,9 @@ const navGroups: NavGroup[] = [
   },
 ];
 
-const themeOptions = [
-  { label: "Purple", value: "purple" },
-  { label: "Blue", value: "blue" },
-  { label: "Green", value: "green" },
-  { label: "Orange", value: "orange" },
-  { label: "Red", value: "red" },
-  { label: "Neutral", value: "neutral" },
-];
-
-const densityOptions = [
-  { label: "Comfortable", value: "comfortable" },
-  { label: "Compact", value: "compact" },
-] as const;
+const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
+const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
+const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), value }));
 
 function getThemeDotColor(theme: string) {
   return theme === "neutral" ? "var(--n-color-text-secondary)" : `var(--n-${theme}-600)`;

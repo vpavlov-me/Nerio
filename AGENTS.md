@@ -68,6 +68,7 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 - Registry `requiredTokens` must describe public customization points, preferably component aliases, not random internal semantic tokens.
 - Token chips in docs and registry metadata must reference real CSS variables from `packages/tokens/src/styles.css`.
 - `pnpm validate:docs` is expected to catch missing token references in token CSS, registry `requiredTokens`, and docs reference token chips.
+- Catalog, token, or runtime-axis changes must run both the focused invalid-fixture tests (`pnpm test:catalog` and `pnpm test:tokens`) and the corresponding validators; do not rely on valid-state checks alone.
 - Every component must have a predictable anatomy, accessible interaction model, keyboard behavior, visible focus treatment, disabled/loading states where relevant, and a small API surface.
 - Prefer composition and explicit slots over expansive boolean-prop APIs.
 - Use `data-slot`, `data-state`, and `data-variant` attributes deliberately so components remain inspectable and easy to customize.
