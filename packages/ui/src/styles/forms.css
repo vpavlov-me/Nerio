@@ -436,7 +436,7 @@
 
 .n-switch:hover:not([data-disabled]):not([data-readonly]) {
   background: var(--n-switch-background-hover);
-  border-color: var(--n-input-border-hover);
+  border-color: var(--n-switch-border-hover);
 }
 
 .n-switch[data-checked]:hover:not([data-disabled]):not([data-readonly]) {

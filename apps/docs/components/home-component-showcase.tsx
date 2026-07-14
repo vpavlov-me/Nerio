@@ -24,9 +24,49 @@ import {
   TabsPanels,
   TabsTrigger,
 } from "@nerio/ui/client";
-import { Check, Circle, CircleAlert, Plus, Save, Settings, X } from "@nerio/adapters";
+import {
+  CircleAlert,
+  Mail,
+  MessageCircle,
+  Plus,
+  Save,
+  Settings,
+  UserPlus,
+  X,
+} from "@nerio/adapters";
+import type { IconComponent } from "@nerio/adapters";
 
 const avatars = ["Ava Cole", "Noah Lee", "Maya Chen", "Owen Hart", "Iris Park"];
+
+const GoogleIcon: IconComponent = ({ absoluteStrokeWidth, size = 24, strokeWidth, ...props }) => {
+  void absoluteStrokeWidth;
+  void strokeWidth;
+
+  return (
+    <svg {...props} height={size} viewBox="0 0 24 24" width={size}>
+      <path
+        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.16 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48Z"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+  );
+};
+
+const AppleIcon: IconComponent = ({ absoluteStrokeWidth, size = 24, strokeWidth, ...props }) => {
+  void absoluteStrokeWidth;
+  void strokeWidth;
+
+  return (
+    <svg {...props} height={size} viewBox="0 0 24 24" width={size}>
+      <path
+        d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.32.03-1.75-.79-3.27-.79-1.53 0-2.01.77-3.26.82-1.31.05-2.3-1.32-3.14-2.53-1.71-2.47-3.02-6.96-1.26-10.01.87-1.52 2.47-2.48 4.19-2.51 1.31-.03 2.55.89 3.27.89.71 0 2.05-1.1 3.46-.94.59.03 2.24.24 3.3 1.79-.08.05-1.97 1.15-1.95 3.54.03 2.86 2.51 3.81 2.54 3.82-.03.07-.4 1.36-1.31 2.78M14.86 5.41c.69-.79 1.14-1.88 1.02-2.96-1 .04-2.21.67-2.91 1.46-.63.7-1.18 1.81-1.03 2.85 1.11.09 2.24-.56 2.92-1.35Z"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+  );
+};
 
 function AvatarStack() {
   return (
@@ -77,7 +117,13 @@ export function HomeComponentShowcase() {
               />
               <Spinner label="Loading preview" size="sm" />
             </div>
-            <Progress label="Release readiness" value={68} valueText="68 percent" />
+            <Progress
+              label="Release readiness"
+              max={4}
+              value={3}
+              valueLabel="3/4"
+              valueText="3 of 4 release checks complete"
+            />
           </section>
 
           <section className="home-gallery__ranges" aria-label="View controls">
@@ -98,8 +144,20 @@ export function HomeComponentShowcase() {
             </Tabs>
             <Tabs className="home-gallery__channel-tabs" defaultValue="chats" variant="segmented">
               <TabsList aria-label="Message channel" layout="fill">
-                <TabsTrigger value="chats">Chats</TabsTrigger>
-                <TabsTrigger value="emails">Emails</TabsTrigger>
+                <TabsTrigger leadingIcon={MessageCircle} value="chats">
+                  Chats
+                </TabsTrigger>
+                <TabsTrigger
+                  badge={
+                    <Badge emphasis="strong" size="sm" tone="danger">
+                      12
+                    </Badge>
+                  }
+                  leadingIcon={Mail}
+                  value="emails"
+                >
+                  Emails
+                </TabsTrigger>
                 <TabsIndicator />
               </TabsList>
               <TabsPanels>
@@ -111,15 +169,24 @@ export function HomeComponentShowcase() {
 
           <section className="home-gallery__menu" aria-label="Action menu">
             <p>Actions</p>
-            <Button leadingIcon={Plus} variant="ghost">
-              New component
+            <Button kbd="⌘N" leadingIcon={Plus} variant="ghost">
+              <span className="home-gallery__menu-label">
+                <strong>New component</strong>
+                <small>Add a reusable building block.</small>
+              </span>
             </Button>
-            <Button leadingIcon={Settings} variant="ghost">
-              Edit theme
+            <Button kbd="⌘," leadingIcon={Settings} variant="ghost">
+              <span className="home-gallery__menu-label">
+                <strong>Edit theme</strong>
+                <small>Adjust color and appearance.</small>
+              </span>
             </Button>
             <Separator />
-            <Button leadingIcon={X} variant="ghost">
-              Archive project
+            <Button kbd="⌘⌫" leadingIcon={X} variant="ghost">
+              <span className="home-gallery__menu-label">
+                <strong>Archive project</strong>
+                <small>Move this project out of view.</small>
+              </span>
             </Button>
           </section>
         </div>
@@ -134,25 +201,24 @@ export function HomeComponentShowcase() {
               <h3 id="verification-title">Verify workspace</h3>
               <p>Enter the six-digit access code.</p>
             </div>
-            <div className="home-otp-inputs" aria-label="Verification code">
-              {["4", "3", "2", "0", "", ""].map((value, index) => (
-                <Input
-                  aria-label={`Code digit ${index + 1}`}
-                  defaultValue={value}
-                  key={`${value}-${index}`}
-                  maxLength={1}
-                  inputMode="numeric"
-                />
-              ))}
+            <div className="home-gallery__verification-code">
+              <div className="home-otp-inputs" aria-label="Verification code">
+                {["4", "3", "2", "0", "", ""].map((value, index) => (
+                  <Input
+                    aria-label={`Code digit ${index + 1}`}
+                    defaultValue={value}
+                    key={`${value}-${index}`}
+                    maxLength={1}
+                    inputMode="numeric"
+                  />
+                ))}
+              </div>
+              <Button size="sm" variant="link">
+                Resend
+              </Button>
             </div>
             <div className="home-gallery__button-row">
               <Button size="sm">Continue</Button>
-              <Button size="sm" variant="secondary">
-                Resend
-              </Button>
-              <Button size="sm" variant="ghost">
-                Cancel
-              </Button>
             </div>
           </section>
 
@@ -179,24 +245,27 @@ export function HomeComponentShowcase() {
 
           <section className="home-gallery__profile" aria-labelledby="profile-title">
             <Avatar name="Nerio Core" size="lg" />
-            <div>
-              <h3 id="profile-title">
-                Nerio Core <Badge tone="primary-soft">Open source</Badge>
-              </h3>
-              <p>@nerio-ui</p>
+            <div className="home-gallery__profile-content">
+              <div className="home-gallery__profile-heading">
+                <h3 id="profile-title">
+                  Nerio Core <Badge tone="primary-soft">Open source</Badge>
+                </h3>
+                <p>@nerio-ui</p>
+              </div>
               <strong>Accessible building blocks for adaptable product teams.</strong>
-              <div>
-                <b>37</b> Components <b>587</b> Tokens
+              <div className="home-gallery__profile-stats">
+                <span>
+                  <b>37</b> Components
+                </span>
+                <span>
+                  <b>587</b> Tokens
+                </span>
               </div>
             </div>
           </section>
 
           <Alert
-            action={
-              <Button size="sm" variant="secondary">
-                Upgrade
-              </Button>
-            }
+            action={<Button size="sm">Upgrade</Button>}
             className="home-gallery__credits"
             icon={CircleAlert}
             title="You have 2 credits left"
@@ -217,10 +286,12 @@ export function HomeComponentShowcase() {
         <div className="home-gallery__column">
           <section className="home-gallery__project" aria-labelledby="project-title">
             <span className="home-gallery__icon-mark" aria-hidden>
-              <Icon icon={Circle} />
+              <Icon icon={UserPlus} />
             </span>
-            <h3 id="project-title">Create an account</h3>
-            <p>Start a workspace for your product team.</p>
+            <div className="home-gallery__project-copy">
+              <h3 id="project-title">Create an account</h3>
+              <p>Start a workspace for your product team.</p>
+            </div>
             <Button>Get started</Button>
             <div className="home-gallery__or" aria-hidden="true">
               <Separator />
@@ -228,10 +299,10 @@ export function HomeComponentShowcase() {
               <Separator />
             </div>
             <div className="home-gallery__project-actions">
-              <Button size="sm" variant="secondary">
+              <Button leadingIcon={GoogleIcon} size="sm" variant="secondary">
                 Continue with Google
               </Button>
-              <Button size="sm" variant="secondary">
+              <Button leadingIcon={AppleIcon} size="sm" variant="secondary">
                 Continue with Apple
               </Button>
             </div>
@@ -240,13 +311,17 @@ export function HomeComponentShowcase() {
           <section className="home-gallery__members" aria-label="Team members">
             <div>
               <Avatar name="AC" size="lg" />
-              <strong>Design systems</strong>
-              <span>128 members</span>
+              <div className="home-gallery__member-copy">
+                <strong>Design systems</strong>
+                <span>128 members</span>
+              </div>
             </div>
             <div>
               <Avatar name="NL" size="lg" />
-              <strong>Product builders</strong>
-              <span>362 members</span>
+              <div className="home-gallery__member-copy">
+                <strong>Product builders</strong>
+                <span>362 members</span>
+              </div>
             </div>
           </section>
 
@@ -254,11 +329,13 @@ export function HomeComponentShowcase() {
             <span className="home-gallery__icon-mark" aria-hidden>
               <Icon icon={Save} />
             </span>
-            <h3 id="confirm-title">Unsaved changes</h3>
-            <p>Save your token changes before leaving this page.</p>
+            <div className="home-gallery__confirm-copy">
+              <h3 id="confirm-title">Unsaved changes</h3>
+              <p>Save your token changes before leaving this page.</p>
+            </div>
             <div className="home-gallery__confirm-actions">
               <Button variant="secondary">Discard</Button>
-              <Button leadingIcon={Check}>Save changes</Button>
+              <Button>Save changes</Button>
             </div>
           </section>
         </div>
