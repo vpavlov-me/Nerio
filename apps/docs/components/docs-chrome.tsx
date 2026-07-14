@@ -24,6 +24,7 @@ import {
   Palette,
   PanelLeft,
   PackageOpen,
+  Rows2,
   Rows3,
   Search,
   Sparkles,
@@ -169,8 +170,8 @@ const modeOptions = modes.map((value) => ({
   value,
 }));
 const densityIcons: Record<(typeof densities)[number], IconComponent> = {
-  comfortable: Rows3,
-  compact: ListTree,
+  comfortable: Rows2,
+  compact: Rows3,
 };
 const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), value }));
 

@@ -157,7 +157,7 @@ test("runtime-axis validator requires an accessible docs mode dropdown", () => {
     "--docs-controls",
     "docs-chrome.tsx",
     readFileSync(docsSource, "utf8").replace(
-      'aria-label={`Color mode: ${runtimeLabel(mode)}`}',
+      "aria-label={`Color mode: ${runtimeLabel(mode)}`}",
       'aria-label="Color mode"',
     ),
     (stderr) =>

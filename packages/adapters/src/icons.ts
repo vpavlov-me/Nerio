@@ -52,6 +52,7 @@ export {
   PackageOpen,
   Plus,
   Rocket,
+  Rows2,
   Rows3,
   Save,
   Search,
