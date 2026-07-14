@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import * as React from "react";
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import {
   Avatar,
   Alert,
@@ -2970,17 +2970,17 @@ describe("Core interactive action contracts", () => {
             </nav>
           </SidebarContent>
           <SidebarFooter>Account</SidebarFooter>
-          <SidebarRail label="Toggle workspace sidebar" />
+          <SidebarRail label="Collapse workspace sidebar" />
         </Sidebar>
         <SidebarInset>
-          <SidebarTrigger label="Toggle workspace sidebar" />
+          <SidebarTrigger label="Expand workspace sidebar" />
           Workspace content
         </SidebarInset>
       </SidebarProvider>,
     );
 
     const sidebar = screen.getByRole("complementary", { name: "Workspace tools" });
-    const trigger = screen.getAllByRole("button", { name: "Toggle workspace sidebar" })[1]!;
+    const trigger = screen.getByRole("button", { name: "Expand workspace sidebar" });
     expect(sidebar).toHaveAttribute("id", "workspace-sidebar");
     expect(sidebar).toHaveAttribute("data-state", "collapsed");
     expect(sidebar).toHaveAttribute("data-side", "right");
@@ -2997,6 +2997,108 @@ describe("Core interactive action contracts", () => {
     expect(sidebar.querySelector('[data-slot="sidebar-header"]')).toHaveTextContent("Workspace");
     expect(sidebar.querySelector('[data-slot="sidebar-content"]')).toBeInTheDocument();
     expect(sidebar.querySelector('[data-slot="sidebar-footer"]')).toHaveTextContent("Account");
+  });
+
+  it("keeps Sidebar rail geometry inside the declared hit area on both physical sides", () => {
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/sidebar.css"), "utf8");
+
+    expect(styles).toMatch(
+      /\.n-sidebar-rail\s*\{[^}]*block-size:\s*var\(--n-sidebar-rail-hit-area\);[^}]*inline-size:\s*var\(--n-sidebar-rail-hit-area\);[^}]*inset-block-start:\s*50%;[^}]*transform:\s*translateY\(-50%\);/s,
+    );
+    expect(styles).not.toMatch(/\.n-sidebar-rail\s*\{[^}]*inset-block:\s*0;/s);
+    expect(styles).toMatch(
+      /\.n-sidebar-rail\s*\{[^}]*right:\s*calc\(-0\.5 \* var\(--n-sidebar-rail-hit-area\)\);/s,
+    );
+    expect(styles).toMatch(
+      /\.n-sidebar\[data-side="right"\] \.n-sidebar-rail\s*\{[^}]*left:\s*calc\(-0\.5 \* var\(--n-sidebar-rail-hit-area\)\);[^}]*right:\s*auto;/s,
+    );
+  });
+
+  it("exposes an exact SidebarContent div ref and does not churn SidebarInset refs", () => {
+    expectTypeOf(SidebarContent).toMatchTypeOf<
+      React.ForwardRefExoticComponent<
+        React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>
+      >
+    >();
+
+    const contentRef = React.createRef<HTMLDivElement>();
+    const insetRef = vi.fn<(node: HTMLElement | null) => void>();
+    const { rerender } = render(
+      <>
+        <SidebarContent ref={contentRef}>Navigation</SidebarContent>
+        <SidebarInset ref={insetRef} data-version="one" />
+      </>,
+    );
+
+    expect(contentRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(insetRef).toHaveBeenCalledTimes(1);
+    const inset = insetRef.mock.calls[0]?.[0];
+    expect(inset).toBeInstanceOf(HTMLElement);
+
+    rerender(
+      <>
+        <SidebarContent ref={contentRef}>Navigation</SidebarContent>
+        <SidebarInset ref={insetRef} data-version="two" />
+      </>,
+    );
+
+    expect(insetRef).toHaveBeenCalledTimes(1);
+    expect(insetRef.mock.calls[0]?.[0]).toBe(inset);
+  });
+
+  it("keeps Sidebar package entrypoints and source installation dependencies split", () => {
+    const serverEntrypoint = readFileSync(resolve(process.cwd(), "src/index.ts"), "utf8");
+    const clientEntrypoint = readFileSync(resolve(process.cwd(), "src/client.ts"), "utf8");
+    const docsExample = readFileSync(
+      resolve(process.cwd(), "../../apps/docs/components/sidebar-example.tsx"),
+      "utf8",
+    );
+    const registry = JSON.parse(
+      readFileSync(resolve(process.cwd(), "../registry/src/manifest.json"), "utf8"),
+    ) as {
+      items: Array<{ name: string; files: Array<{ target: string }> }>;
+    };
+    const sidebarItem = registry.items.find((item) => item.name === "sidebar-primitive");
+
+    expect(serverEntrypoint).toContain("SidebarContent");
+    expect(serverEntrypoint).toContain("SidebarInset");
+    expect(serverEntrypoint).not.toContain('from "./components/sidebar"');
+    expect(clientEntrypoint).toContain("SidebarProvider");
+    expect(docsExample).toMatch(
+      /import\s*\{[\s\S]*SidebarContent[\s\S]*SidebarInset[\s\S]*\}\s*from "@nerio\/ui";/,
+    );
+    expect(docsExample).toMatch(
+      /import\s*\{[\s\S]*SidebarProvider[\s\S]*SidebarRail[\s\S]*\}\s*from "@nerio\/ui\/client";/,
+    );
+    expect(sidebarItem?.files.map((file) => file.target)).toContain("lib/compose-refs.ts");
+  });
+
+  it("composes one mobile navigation tree inside Sheet without a desktop Sidebar", async () => {
+    const user = userEvent.setup();
+    render(
+      <Sheet>
+        <SheetTrigger render={<Button variant="secondary">Open mobile navigation</Button>} />
+        <SheetContent side="left" size="sm">
+          <SheetHeader>
+            <SheetTitle>Mobile navigation</SheetTitle>
+          </SheetHeader>
+          <SheetBody>
+            <SidebarContent>
+              <nav aria-label="Mobile workspace navigation">
+                <a href="/projects">Projects</a>
+              </nav>
+            </SidebarContent>
+          </SheetBody>
+        </SheetContent>
+      </Sheet>,
+    );
+
+    expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Open mobile navigation" }));
+    expect(await screen.findByRole("dialog", { name: "Mobile navigation" })).toBeInTheDocument();
+    expect(screen.getAllByRole("navigation", { name: "Mobile workspace navigation" })).toHaveLength(
+      1,
+    );
   });
 
   it("keeps controlled Sidebar state consumer-owned", async () => {

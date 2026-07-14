@@ -83,7 +83,7 @@ export const snippets: Record<string, string> = {
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
-    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from \'@nerio/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Toggle workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
+    'import { Icon, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger, useSidebar } from \'@nerio/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Collapse workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Expand workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
   "command-primitive":
     'import { Kbd } from \'@nerio/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
@@ -2609,9 +2609,15 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "provider", description: "Owns controlled or uncontrolled expanded state." },
       { title: "sidebar", description: "Complementary aside with physical side and state data." },
       { title: "header", description: "Stable leading region for consumer content." },
-      { title: "content", description: "Scrollable region that can contain a labelled nav." },
+      {
+        title: "content",
+        description: "Scrollable div region with an exact HTMLDivElement ref contract.",
+      },
       { title: "footer", description: "Stable trailing region for consumer content." },
-      { title: "rail", description: "Named toggle that remains reachable when collapsed." },
+      {
+        title: "rail",
+        description: "Named, vertically centered toggle bounded to the declared hit-area token.",
+      },
       { title: "inset", description: "Primary page content adjacent to the sidebar." },
       { title: "trigger", description: "External named control for expansion and collapse." },
     ],
@@ -2648,6 +2654,8 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Sidebar renders an aside landmark; add a labelled nav inside SidebarContent for navigation.",
       "SidebarTrigger and SidebarRail require localized labels and expose aria-expanded and aria-controls.",
+      "Give the trigger and rail distinct labels when both render so each control is unambiguous.",
+      "The rail occupies only its declared hit area and does not create a full-height invisible click target.",
       "Collapsed descendants are inert so invisible links and controls cannot receive focus.",
       "Keep the trigger in SidebarInset or use SidebarRail so collapsing does not remove the focused control.",
       "The primitive adds no roving focus or Arrow-key behavior to arbitrary consumer navigation.",
@@ -2665,7 +2673,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "SidebarHeader / SidebarContent / SidebarFooter / SidebarInset",
-        description: "Server-safe layout regions with native props, refs, and stable slots.",
+        description:
+          "Server-safe layout regions with native props, stable refs, and an exact div contract for SidebarContent.",
       },
       {
         title: "SidebarTrigger / SidebarRail",

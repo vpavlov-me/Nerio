@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { Icon, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio/ui";
 import {
   Bell,
   Check,
@@ -27,7 +28,6 @@ import {
   EmptyStateHeader,
   EmptyStateTitle,
   Field,
-  Icon,
   IconButton,
   Input,
   Progress,
@@ -41,10 +41,6 @@ import {
   SheetTitle,
   SheetTrigger,
   Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
@@ -227,7 +223,7 @@ function DemoWorkspace() {
               </Button>
             </Card>
           </SidebarFooter>
-          <SidebarRail label="Toggle workspace sidebar" />
+          <SidebarRail label="Collapse workspace sidebar" />
         </Sidebar>
       ) : null}
 
@@ -257,7 +253,7 @@ function DemoWorkspace() {
                   </SheetContent>
                 </Sheet>
               ) : (
-                <SidebarTrigger label="Toggle workspace sidebar" />
+                <SidebarTrigger label="Expand workspace sidebar" />
               )}
             </div>
             <Badge variant="info">Overview</Badge>

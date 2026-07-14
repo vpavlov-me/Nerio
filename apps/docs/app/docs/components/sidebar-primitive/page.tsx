@@ -11,6 +11,9 @@ export const metadata: Metadata = {
 
 const persistenceExample = `"use client";
 
+import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, Icon } from "@nerio/ui";
+import { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger, useSidebar } from "@nerio/ui/client";
+
 function PersistentSidebar({ children }) {
   const [expanded, setExpanded] = React.useState(true);
 
@@ -31,7 +34,10 @@ function PersistentSidebar({ children }) {
   );
 }`;
 
-const mobileExample = `const navigation = [
+const mobileExample = `import { SidebarContent, SidebarInset } from "@nerio/ui";
+import { Button, Sheet, SheetBody, SheetContent, SheetHeader, SheetTitle, SheetTrigger, Sidebar, SidebarProvider } from "@nerio/ui/client";
+
+const navigation = [
   { label: "Overview", href: "/" },
   { label: "Projects", href: "/projects" },
 ];

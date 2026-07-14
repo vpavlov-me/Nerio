@@ -85,6 +85,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Eliminated Toast enter and swipe-dismiss transform jumps across collapsed and expanded stacks,
   preserved both axes for four-way dismissal, and resolved inherited RTL before the first
   interactive render while keeping root direction changes synchronized.
+- Bounded SidebarRail to its centered hit area, corrected SidebarContent's div ref contract,
+  stabilized SidebarInset refs, and clarified the server/client entrypoint split in examples.
 
 ### Deprecated
 

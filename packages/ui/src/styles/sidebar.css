@@ -87,6 +87,7 @@
   background: var(--n-sidebar-control-background);
   border: 0;
   border-radius: var(--n-sidebar-control-radius);
+  box-sizing: border-box;
   color: var(--n-sidebar-control-foreground);
   cursor: pointer;
   display: inline-flex;
@@ -109,10 +110,12 @@
 }
 
 .n-sidebar-rail {
-  inset-block: 0;
+  block-size: var(--n-sidebar-rail-hit-area);
+  inline-size: var(--n-sidebar-rail-hit-area);
+  inset-block-start: 50%;
   right: calc(-0.5 * var(--n-sidebar-rail-hit-area));
-  margin-block: auto;
   position: absolute;
+  transform: translateY(-50%);
   z-index: 1;
 }
 

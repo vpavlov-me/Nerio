@@ -104,6 +104,7 @@ export {
   SidebarFooter,
   SidebarHeader,
   SidebarInset,
+  type SidebarContentProps,
   type SidebarInsetProps,
   type SidebarRegionProps,
 } from "./components/sidebar-layout";

@@ -1875,7 +1875,7 @@
     {
       "name": "sidebar-primitive",
       "title": "Sidebar Primitive",
-      "description": "Provides a low-level collapsible sidebar layout without owning product navigation or persistence.",
+      "description": "Provides a low-level collapsible sidebar layout with bounded rail geometry and stable native refs without owning product navigation or persistence.",
       "category": "navigation",
       "dependencies": ["@nerio/adapters", "clsx", "react"],
       "registryDependencies": [],
@@ -1898,6 +1898,11 @@
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
           "role": "utility"
         },
         {
@@ -1949,6 +1954,8 @@
       "accessibility": [
         "Sidebar renders complementary aside semantics by default; place a labelled navigation landmark inside SidebarContent when the content is navigation.",
         "SidebarTrigger and SidebarRail require a localized label and expose aria-expanded plus a stable aria-controls relationship.",
+        "SidebarRail is vertically centered and occupies only --n-sidebar-rail-hit-area so adjacent Sidebar and SidebarInset content remains pointer reachable.",
+        "SidebarContent forwards an HTMLDivElement ref, while SidebarInset preserves stable HTMLElement refs for its explicit div or main root.",
         "Collapsed Sidebar content is inert, hidden, and removed from pointer and keyboard interaction while SidebarRail remains reachable.",
         "State changes keep focus on the external trigger or rail and do not add roving focus or Arrow-key behavior to consumer navigation.",
         "Physical left and right placement, explicit text direction, reduced motion, forced colors, compact density, and safe-area padding are supported.",

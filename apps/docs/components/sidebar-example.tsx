@@ -2,17 +2,8 @@
 
 import * as React from "react";
 import { LayoutDashboard, ListTree, Settings } from "@nerio/adapters";
-import {
-  Icon,
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
-  SidebarProvider,
-  SidebarRail,
-  SidebarTrigger,
-} from "@nerio/ui/client";
+import { Icon, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio/ui";
+import { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from "@nerio/ui/client";
 
 const items = [
   ["Overview", LayoutDashboard],
@@ -53,10 +44,10 @@ export function SidebarExample() {
               </nav>
             </SidebarContent>
             <SidebarFooter>Core layout only</SidebarFooter>
-            <SidebarRail label="Toggle preview sidebar" />
+            <SidebarRail label="Collapse preview sidebar" />
           </Sidebar>
           <SidebarInset as="div">
-            <SidebarTrigger label="Toggle preview sidebar" />
+            <SidebarTrigger label="Expand preview sidebar" />
             <div>
               <strong>Product content</strong>
               <p>Routes and navigation behavior stay in the consuming application.</p>
