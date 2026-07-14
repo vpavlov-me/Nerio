@@ -25,6 +25,7 @@ const packageDirectories = Object.fromEntries(
   packageNames.map((name) => [name, `packages/${name.slice("@nerio/".length)}`]),
 );
 const expectedVersion = "0.1.0-alpha.0";
+const expectPublicPackages = process.env.NERIO_RELEASE_EXPECT_PUBLIC === "1";
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 
 function run(command, args, options = {}) {
@@ -44,9 +45,15 @@ function validatePackedPackage(name, tarball) {
   const packageJson = JSON.parse(run("tar", ["-xOf", tarball, "package/package.json"]));
   const entries = run("tar", ["-tzf", tarball]).trim().split("\n");
   const directory = packageDirectories[name];
+  const expectedPrivate = !expectPublicPackages;
 
-  if (packageJson.version !== expectedVersion || packageJson.private !== true) {
-    throw new Error(`${name} must stay private at coordinated version ${expectedVersion}.`);
+  if (packageJson.version !== expectedVersion) {
+    throw new Error(`${name} must use coordinated version ${expectedVersion}.`);
+  }
+  if (packageJson.private !== expectedPrivate) {
+    throw new Error(
+      `${name} must set private: ${expectedPrivate} for this release validation mode.`,
+    );
   }
   if (
     packageJson.license !== "MIT" ||
@@ -164,7 +171,7 @@ try {
   });
 
   console.log(
-    `Release smoke passed for ${packageNames.length} packed packages, packed CLI/MCP runtime, source installs, and a clean Next.js consumer build.`,
+    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, packed CLI/MCP runtime, source installs, and a clean Next.js consumer build.`,
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
