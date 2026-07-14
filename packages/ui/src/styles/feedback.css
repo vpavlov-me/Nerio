@@ -161,7 +161,7 @@
 
 .n-alert__description :where(ul, ol) {
   margin-block: var(--n-space-2) 0;
-  padding-inline-start: var(--n-space-4);
+  padding-inline-start: var(--n-alert-list-padding-inline);
 }
 
 .n-alert:not(:has(.n-alert__description)) {
@@ -220,7 +220,7 @@
 }
 
 .n-empty-state[data-size="lg"] {
-  --n-empty-state-gap: var(--n-space-4);
+  --n-empty-state-gap: var(--n-empty-state-gap-lg);
   --n-empty-state-mark-size: var(--n-size-control-lg);
   --n-empty-state-mark-icon-size: var(--n-icon-size-lg);
 }

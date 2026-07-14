@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
+import { createAppearanceInitializationScript } from "../lib/appearance";
 
 const yandexMetrikaId = "110539538";
 
@@ -17,7 +18,19 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="purple" data-mode="system" data-density="comfortable">
+    <html
+      suppressHydrationWarning
+      lang="en"
+      data-theme="purple"
+      data-mode="system"
+      data-density="comfortable"
+    >
+      <head>
+        <script
+          id="nerio-appearance"
+          dangerouslySetInnerHTML={{ __html: createAppearanceInitializationScript() }}
+        />
+      </head>
       <body>
         {children}
         <Script id="yandex-metrika" strategy="afterInteractive">

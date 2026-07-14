@@ -71,6 +71,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 
 ### Fixed
 
+- Kept primitive token scales immutable across runtime selectors, moved compact density to semantic
+  and component remaps, and restored an explicit persisted System/Light/Dark appearance selector.
 - Corrected accessibility associations, loading-state announcements, overlay close behavior, and localized Toast dismiss controls.
 - Improved Avatar fallback updates, Table scroll-region behavior, and link navigation contracts.
 - Closed responsive, high-contrast, image-transition, semantic-root ref, and router-adapter gaps across the remaining polished Core components.

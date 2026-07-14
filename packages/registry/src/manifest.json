@@ -266,6 +266,7 @@
         "--n-button-radius",
         "--n-button-border-width",
         "--n-button-group-divider",
+        "--n-button-group-divider-length",
         "--n-focus-ring"
       ],
       "accessibility": [
@@ -490,7 +491,11 @@
         "media: icon | illustration",
         "actions orientation: horizontal | vertical"
       ],
-      "requiredTokens": ["--n-empty-state-mark-size", "--n-empty-state-gap"],
+      "requiredTokens": [
+        "--n-empty-state-mark-size",
+        "--n-empty-state-gap",
+        "--n-empty-state-gap-lg"
+      ],
       "accessibility": [
         "EmptyState has no live region or alert role by default; add role=status for asynchronous results and role=alert for an error that needs immediate announcement.",
         "Keep a clear title, description, and any actions in reading order; decorative media should be aria-hidden.",
@@ -538,6 +543,7 @@
       "requiredTokens": [
         "--n-alert-gap",
         "--n-alert-padding",
+        "--n-alert-list-padding-inline",
         "--n-alert-radius",
         "--n-alert-border",
         "--n-alert-background",
@@ -1056,6 +1062,11 @@
         "--n-select-height-md",
         "--n-select-height-lg",
         "--n-select-padding-inline",
+        "--n-select-trigger-gap",
+        "--n-select-item-gap",
+        "--n-select-item-padding-inline",
+        "--n-select-group-label-padding-inline",
+        "--n-select-empty-padding",
         "--n-input-radius",
         "--n-input-background",
         "--n-input-border",
@@ -1594,6 +1605,7 @@
         "--n-switch-width",
         "--n-switch-thumb-size",
         "--n-switch-thumb-offset",
+        "--n-switch-field-gap",
         "--n-switch-background",
         "--n-switch-background-hover",
         "--n-switch-background-checked",
@@ -1780,6 +1792,7 @@
       "requiredTokens": [
         "--n-pagination-gap",
         "--n-pagination-item-size",
+        "--n-pagination-control-padding-inline",
         "--n-pagination-radius",
         "--n-pagination-background",
         "--n-pagination-background-hover",
@@ -1851,6 +1864,11 @@
       "variants": [],
       "requiredTokens": [
         "--n-dialog-width-md",
+        "--n-dialog-viewport-inset",
+        "--n-dialog-padding",
+        "--n-dialog-header-gap",
+        "--n-dialog-header-margin",
+        "--n-dialog-body-gap",
         "--n-overlay-z-index",
         "--n-overlay-background",
         "--n-overlay-border",
@@ -2044,6 +2062,7 @@
         "--n-command-group-spacing",
         "--n-command-item-gap",
         "--n-command-state-min-height",
+        "--n-command-state-padding",
         "--n-command-background",
         "--n-command-foreground",
         "--n-command-border-width",
@@ -2234,6 +2253,7 @@
       "variants": ["default", "destructive"],
       "requiredTokens": [
         "--n-dropdown-min-width",
+        "--n-dropdown-item-padding-inline",
         "--n-overlay-z-index",
         "--n-overlay-background",
         "--n-overlay-border",

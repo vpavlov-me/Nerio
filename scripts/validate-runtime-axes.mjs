@@ -39,14 +39,40 @@ const modeTokens = [
   "--n-overlay-backdrop",
 ];
 const compactTokens = [
-  "--n-space-3",
-  "--n-button-height-md",
-  "--n-input-height-md",
-  "--n-form-group-gap",
-  "--n-card-gap",
-  "--n-pagination-item-size",
-  "--n-progress-height",
+  "--n-density-space-md",
+  "--n-density-space-lg",
+  "--n-density-space-xl",
+  "--n-button-padding-inline-md",
+  "--n-input-padding-inline",
+  "--n-alert-padding",
+  "--n-card-padding-md",
+  "--n-table-cell-padding-y",
+  "--n-tabs-trigger-padding-inline-md",
+  "--n-dialog-padding",
+  "--n-sidebar-region-padding",
+  "--n-command-state-padding",
 ];
+const primitiveTokenPatterns = [
+  /^--n-(?:gray|purple|blue|green|orange|red|amber|cyan|magenta)-\d+$/,
+  /^--n-space-/,
+  /^--n-radius-(?:none|xs|sm|md|lg|xl|full)$/,
+  /^--n-border-width-/,
+  /^--n-shadow-(?:none|xs|sm|md)$/,
+  /^--n-size-(?:control|textarea|tooltip|select|empty-state|toast-stack)-/,
+  /^--n-icon-size-/,
+  /^--n-opacity-/,
+  /^--n-transform-/,
+  /^--n-duration-/,
+  /^--n-easing-/,
+  /^--n-font-size-/,
+  /^--n-line-height-/,
+  /^--n-font-weight-/,
+  /^--n-font-(?:sans|mono)-(?:system|geist|inter|ibm-plex|manrope|source-sans|space-grotesk)$/,
+];
+
+function isPrimitiveToken(token) {
+  return primitiveTokenPatterns.some((pattern) => pattern.test(token));
+}
 
 function findExactRule(rules, selector, media = null) {
   const expected = normalizeSelector(selector);
@@ -122,13 +148,21 @@ function validate() {
     "--catalog": join(root, "data/component-catalog.json"),
     "--token-contract": join(root, "packages/tokens/src/index.ts"),
     "--docs-controls": join(root, "apps/docs/components/docs-chrome.tsx"),
+    "--docs-layout": join(root, "apps/docs/app/layout.tsx"),
+    "--docs-appearance": join(root, "apps/docs/lib/appearance.ts"),
     "--demo-controls": join(root, "apps/demo-app/app/page.tsx"),
+    "--demo-layout": join(root, "apps/demo-app/app/layout.tsx"),
+    "--demo-appearance": join(root, "apps/demo-app/lib/appearance.ts"),
   });
   const tokenCss = readFileSync(paths["--token-file"], "utf8");
   const catalog = JSON.parse(readFileSync(paths["--catalog"], "utf8"));
   const tokenContract = readFileSync(paths["--token-contract"], "utf8");
   const docsControls = readFileSync(paths["--docs-controls"], "utf8");
+  const docsLayout = readFileSync(paths["--docs-layout"], "utf8");
+  const docsAppearance = readFileSync(paths["--docs-appearance"], "utf8");
   const demoControls = readFileSync(paths["--demo-controls"], "utf8");
+  const demoLayout = readFileSync(paths["--demo-layout"], "utf8");
+  const demoAppearance = readFileSync(paths["--demo-appearance"], "utf8");
   const rules = collectRules(parseCss(tokenCss));
   const failures = [];
   const themes = catalog.runtimeAxes?.theme ?? [];
@@ -190,6 +224,13 @@ function validate() {
 
   for (const rule of rules) {
     for (const selector of rule.selectors) {
+      if (/\[data-(?:theme|mode|density)(?:=|\])/.test(selector)) {
+        for (const token of rule.declarations.keys()) {
+          if (isPrimitiveToken(token)) {
+            failures.push(`Runtime selector ${selector} redefines primitive token ${token}.`);
+          }
+        }
+      }
       for (const axis of catalog.runtimeAxisPolicy?.notAllowedInV1 ?? []) {
         if (new RegExp(`\\[${axis}(?:[=\\]])`).test(selector))
           failures.push(`Prohibited runtime axis selector: ${axis} in ${selector}`);
@@ -207,6 +248,45 @@ function validate() {
         failures.push(
           `${surface} runtime controls must import canonical ${name} from @nerio/tokens.`,
         );
+    }
+  }
+
+  if (!docsControls.includes("const modeOptions = modes.map")) {
+    failures.push("Docs controls must derive explicit System, Light, and Dark options from modes.");
+  }
+  if (
+    !/<Select[\s\S]*?aria-label="Color mode"[\s\S]*?options=\{modeOptions\}[\s\S]*?value=\{mode\}/.test(
+      docsControls,
+    )
+  ) {
+    failures.push(
+      "Docs controls must expose the current color mode through an accessible selector.",
+    );
+  }
+  if (docsControls.includes("toggleMode")) {
+    failures.push("Docs controls must not collapse System, Light, and Dark into a binary toggle.");
+  }
+
+  for (const [surface, controls, layout, appearance] of [
+    ["Docs", docsControls, docsLayout, docsAppearance],
+    ["Demo", demoControls, demoLayout, demoAppearance],
+  ]) {
+    for (const axis of ["theme", "mode", "density"]) {
+      if (!controls.includes(`persistAppearanceAxis(document.documentElement, "${axis}"`)) {
+        failures.push(`${surface} controls must persist the ${axis} axis independently.`);
+      }
+      if (!appearance.includes(`${axis}: "nerio-`)) {
+        failures.push(`${surface} appearance runtime is missing a ${axis} storage key.`);
+      }
+    }
+    if (!controls.includes("readAppearanceFromRoot(document.documentElement)")) {
+      failures.push(`${surface} controls must restore pre-hydrated appearance state.`);
+    }
+    if (
+      !layout.includes("suppressHydrationWarning") ||
+      !layout.includes("createAppearanceInitializationScript()")
+    ) {
+      failures.push(`${surface} layout must apply persisted appearance before hydration.`);
     }
   }
 

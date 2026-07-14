@@ -8,7 +8,7 @@
   display: inline-flex;
   font-size: var(--n-input-font-size);
   font-weight: var(--n-input-font-weight);
-  gap: var(--n-space-3);
+  gap: var(--n-select-trigger-gap);
   justify-content: space-between;
   min-block-size: var(--n-select-height-md);
   padding-inline: var(--n-select-padding-inline);
@@ -132,10 +132,10 @@
   color: var(--n-color-text-secondary);
   cursor: pointer;
   display: grid;
-  gap: var(--n-space-3);
+  gap: var(--n-select-item-gap);
   grid-template-columns: minmax(0, 1fr) var(--n-icon-size-md);
   min-block-size: var(--n-size-control-sm);
-  padding: var(--n-space-2) var(--n-space-3);
+  padding: var(--n-space-2) var(--n-select-item-padding-inline);
 }
 
 .n-select-item__content {
@@ -188,7 +188,7 @@
   color: var(--n-color-text-tertiary);
   font-size: var(--n-font-size-xs);
   font-weight: var(--n-font-weight-medium);
-  padding: var(--n-space-2) var(--n-space-3) var(--n-space-1);
+  padding: var(--n-space-2) var(--n-select-group-label-padding-inline) var(--n-space-1);
 }
 
 .n-select-separator {
@@ -200,7 +200,7 @@
 .n-select-empty {
   color: var(--n-color-text-tertiary);
   font-size: var(--n-font-size-sm);
-  padding: var(--n-space-3);
+  padding: var(--n-select-empty-padding);
   text-align: center;
 }
 

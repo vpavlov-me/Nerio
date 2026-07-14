@@ -58,6 +58,12 @@ import {
   ToastViewport,
   useToastManager,
 } from "@nerio/ui/client";
+import {
+  defaultAppearance,
+  persistAppearanceAxis,
+  readAppearanceFromRoot,
+  type Appearance,
+} from "../lib/appearance";
 
 const projects = [
   {
@@ -167,19 +173,25 @@ function DemoWorkspace() {
   const [workspaceState, setWorkspaceState] = React.useState<"ready" | "loading" | "error">(
     "ready",
   );
-  const [theme, setThemeValue] = React.useState("purple");
-  const [mode, setModeValue] = React.useState("system");
-  const [density, setDensityValue] = React.useState("comfortable");
+  const [theme, setThemeValue] = React.useState<Appearance["theme"]>(defaultAppearance.theme);
+  const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
+  const [density, setDensityValue] = React.useState<Appearance["density"]>(
+    defaultAppearance.density,
+  );
   const [direction, setDirection] = React.useState("ltr");
   const isMobile = useMobileViewport();
   const toasts = useToastManager();
 
+  React.useLayoutEffect(() => {
+    const restored = readAppearanceFromRoot(document.documentElement);
+    setThemeValue(restored.theme);
+    setModeValue(restored.mode);
+    setDensityValue(restored.density);
+  }, []);
+
   React.useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    document.documentElement.setAttribute("data-mode", mode);
-    document.documentElement.setAttribute("data-density", density);
     document.documentElement.setAttribute("dir", direction);
-  }, [theme, mode, density, direction]);
+  }, [direction]);
 
   const filteredProjects = React.useMemo(
     () =>
@@ -191,9 +203,24 @@ function DemoWorkspace() {
     [query, status],
   );
 
-  const setTheme = (value: string) => setThemeValue(value);
-  const setMode = (value: string) => setModeValue(value);
-  const setDensity = (value: string) => setDensityValue(value);
+  const setTheme = (value: string) => {
+    const nextTheme = themes.find((candidate) => candidate === value);
+    if (!nextTheme) return;
+    setThemeValue(nextTheme);
+    persistAppearanceAxis(document.documentElement, "theme", nextTheme);
+  };
+  const setMode = (value: string) => {
+    const nextMode = modes.find((candidate) => candidate === value);
+    if (!nextMode) return;
+    setModeValue(nextMode);
+    persistAppearanceAxis(document.documentElement, "mode", nextMode);
+  };
+  const setDensity = (value: string) => {
+    const nextDensity = densities.find((candidate) => candidate === value);
+    if (!nextDensity) return;
+    setDensityValue(nextDensity);
+    persistAppearanceAxis(document.documentElement, "density", nextDensity);
+  };
 
   return (
     <SidebarProvider className="workspace" sidebarId="workspace-sidebar">

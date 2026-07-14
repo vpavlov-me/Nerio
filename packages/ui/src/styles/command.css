@@ -143,7 +143,7 @@
   gap: var(--n-space-2);
   justify-content: center;
   min-block-size: var(--n-command-state-min-height);
-  padding: var(--n-space-5);
+  padding: var(--n-command-state-padding);
   text-align: center;
 }
 

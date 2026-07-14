@@ -83,6 +83,29 @@ test("runtime-axis validator rejects prohibited axes structurally", () => {
   );
 });
 
+test("runtime-axis validator rejects primitive token overrides in runtime selectors", () => {
+  const source = readFileSync(tokenSource, "utf8").replace(
+    ':root[data-density="compact"] {',
+    ':root[data-density="compact"] {\n  --n-radius-md: 0.5rem;',
+  );
+  withFixture("--token-file", "styles.css", source, (stderr) => {
+    assert.match(
+      stderr,
+      /Runtime selector :root\[data-density="compact"\] redefines primitive token --n-radius-md/,
+    );
+  });
+});
+
+test("runtime-axis validator requires density aliases and representative component remaps", () => {
+  const source = readFileSync(tokenSource, "utf8").replace(
+    /(:root\[data-density="compact"\]\s*\{[\s\S]*?)^\s*--n-table-cell-padding-y:.*\n/m,
+    "$1",
+  );
+  withFixture("--token-file", "styles.css", source, (stderr) => {
+    assert.match(stderr, /Compact density is missing --n-table-cell-padding-y/);
+  });
+});
+
 test("runtime-axis validator accepts a semantic custom-theme override fixture", () => {
   withFixture(
     "--token-file",
@@ -110,5 +133,33 @@ test("runtime-axis validator checks runtime controls through canonical imports",
       'import { densities, themes } from "@nerio/tokens";',
     ),
     (stderr) => assert.match(stderr, /Docs runtime controls must import canonical modes/),
+  );
+});
+
+test("runtime-axis validator requires an explicit three-value docs mode selector", () => {
+  withFixture(
+    "--docs-controls",
+    "docs-chrome.tsx",
+    readFileSync(docsSource, "utf8").replace(
+      "const modeOptions = modes.map",
+      "const hiddenModeOptions = modes.map",
+    ),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Docs controls must derive explicit System, Light, and Dark options from modes/,
+      ),
+  );
+});
+
+test("runtime-axis validator requires independent appearance persistence", () => {
+  withFixture(
+    "--docs-controls",
+    "docs-chrome.tsx",
+    readFileSync(docsSource, "utf8").replace(
+      'persistAppearanceAxis(document.documentElement, "density", value);',
+      'document.documentElement.setAttribute("data-density", value);',
+    ),
+    (stderr) => assert.match(stderr, /Docs controls must persist the density axis independently/),
   );
 });

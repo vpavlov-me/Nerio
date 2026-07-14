@@ -146,6 +146,11 @@ export default function Page() {
           mode remaps the same roles to gray-950, gray-900, and gray-800. Purple and neutral also
           use lighter primary actions in dark and system-dark modes to preserve contrast.
         </p>
+        <p>
+          The appearance control exposes System, Light, and Dark explicitly. System follows live OS
+          preference changes, and theme, mode, and density selections are restored independently
+          before hydration.
+        </p>
         <TableContainer aria-label="Mode-mapped semantic tokens">
           <Table>
             <thead>
@@ -195,7 +200,10 @@ export default function Page() {
                 <td>
                   <Code>compact</Code>
                 </td>
-                <td>Reduced control heights and spacing for dense operational interfaces.</td>
+                <td>
+                  Remaps semantic density aliases and component tokens for dense operational
+                  interfaces without changing primitive spacing values.
+                </td>
               </tr>
             </tbody>
           </Table>

@@ -481,7 +481,7 @@
 .n-switch-field {
   align-items: start;
   display: inline-grid;
-  gap: var(--n-space-3);
+  gap: var(--n-switch-field-gap);
   grid-template-columns: auto minmax(0, 1fr);
 }
 
