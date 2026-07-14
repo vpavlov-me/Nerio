@@ -45,7 +45,7 @@ export const snippets: Record<string, string> = {
     'import { Save, Settings } from \'@nerio/adapters\';\nimport { Badge, Kbd } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
   "button-group":
     'import { ButtonGroup } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
-  kbd: "import { Kbd } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<span>Save changes <Kbd>⌘ S</Kbd></span>\n<Button>Open command menu <Kbd aria-hidden>⌘ ⇧ P</Kbd></Button>",
+  kbd: "import { Kbd } from '@nerio/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
   breadcrumbs:
     "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
   pagination:
@@ -1609,7 +1609,10 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-switch-thumb-size",
       "--n-switch-thumb-offset",
       "--n-switch-background",
+      "--n-switch-background-hover",
       "--n-switch-background-checked",
+      "--n-switch-border",
+      "--n-switch-border-hover",
       "--n-switch-thumb-background-checked",
       "--n-focus-ring",
     ],

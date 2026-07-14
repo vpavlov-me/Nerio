@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Badge, Icon } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
-import { Check, Sparkles } from "@nerio/adapters";
+import { Check, Rocket } from "@nerio/adapters";
 import { HomeComponentShowcase } from "../components/home-component-showcase";
 import { siteConfig } from "../lib/site-config";
 
@@ -41,7 +41,7 @@ export default function HomePage() {
         }}
       />
       <section className="home-hero" aria-labelledby="home-title">
-        <Badge leadingIcon={Sparkles} tone="primary-soft">
+        <Badge leadingIcon={Rocket} tone="primary-soft">
           Source-first UI
         </Badge>
         <h1 id="home-title">Open-source React design system for adaptable product teams.</h1>

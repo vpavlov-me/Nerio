@@ -381,14 +381,13 @@ function Preview({ kind }: { kind: string }) {
             </div>
           ) : null}
           {kind === "kbd" ? (
-            <div className="form-preview-stack">
-              <span>
-                Save changes <Kbd>⌘ S</Kbd>
-              </span>
-              <Button>
-                Open command menu <Kbd aria-hidden>⌘ ⇧ P</Kbd>
-              </Button>
-            </div>
+            <>
+              <Kbd>Esc</Kbd>
+              <Kbd>⌘K</Kbd>
+              <Kbd>⇧⌘P</Kbd>
+              <Kbd>⌥←</Kbd>
+              <Kbd>⌘↵</Kbd>
+            </>
           ) : null}
           {kind === "badge" ? (
             <>

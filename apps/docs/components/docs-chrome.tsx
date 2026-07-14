@@ -23,6 +23,7 @@ import {
   Palette,
   PanelLeft,
   PackageOpen,
+  Rows3,
   Search,
   Sparkles,
   Sun,
@@ -806,7 +807,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             />
             <span className="docs-controls-divider" aria-hidden />
             <DropdownMenu
-              trigger={<Button variant="ghost">Density: {density}</Button>}
+              trigger={
+                <Button leadingIcon={Rows3} variant="ghost">
+                  {densityOptions.find((option) => option.value === density)?.label}
+                </Button>
+              }
               items={densityOptions.map((option) => ({
                 label: option.label,
                 onSelect: () => setDensity(option.value),
