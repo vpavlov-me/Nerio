@@ -173,15 +173,26 @@ test("covers Toast stacking and logical swipe in LTR and RTL", async ({ page }) 
   await expect(viewport).toHaveAttribute("data-direction", "ltr");
   await expect(viewport).toHaveAttribute("data-swipe-direction", "right down");
 
+  const ltrBox = await toasts.first().boundingBox();
+  expect(ltrBox).not.toBeNull();
+  await page.mouse.move(ltrBox.x + ltrBox.width / 2, ltrBox.y + ltrBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(ltrBox.x + ltrBox.width * 1.5, ltrBox.y + ltrBox.height / 2, { steps: 6 });
+  await page.mouse.up();
+  await expect(toasts).toHaveCount(2);
+
+  await create.click();
+  await expect(toasts).toHaveCount(3);
+
   await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
   await expect(viewport).toHaveAttribute("data-direction", "rtl");
   await expect(viewport).toHaveAttribute("data-swipe-direction", "left down");
 
-  const box = await toasts.first().boundingBox();
-  expect(box).not.toBeNull();
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  const rtlBox = await toasts.first().boundingBox();
+  expect(rtlBox).not.toBeNull();
+  await page.mouse.move(rtlBox.x + rtlBox.width / 2, rtlBox.y + rtlBox.height / 2);
   await page.mouse.down();
-  await page.mouse.move(box.x - box.width, box.y + box.height / 2, { steps: 6 });
+  await page.mouse.move(rtlBox.x - rtlBox.width, rtlBox.y + rtlBox.height / 2, { steps: 6 });
   await page.mouse.up();
   await expect(toasts).toHaveCount(2);
 
