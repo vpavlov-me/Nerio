@@ -180,7 +180,9 @@ test("keeps the demo shell inside emulated safe areas without overflow", async (
   expect(shell.inlineEnd).toBe("4px");
   expect(shell.overflow).toBeLessThanOrEqual(1);
 
-  await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
+  await page.getByRole("combobox", { name: "Direction" }).click();
+  await page.getByRole("option", { name: "Right to left" }).click();
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   const rtlInsets = await page.locator('[data-slot="sidebar-provider"]').evaluate(() => {
     const rootStyle = getComputedStyle(document.documentElement);
     return {
