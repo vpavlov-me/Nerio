@@ -47,9 +47,12 @@ function validatePackedPackage(name, tarball) {
   const directory = packageDirectories[name];
   const expectedPrivate = !expectPublicPackages;
 
-  if (packageJson.version !== expectedVersion || packageJson.private !== expectedPrivate) {
+  if (packageJson.version !== expectedVersion) {
+    throw new Error(`${name} must use coordinated version ${expectedVersion}.`);
+  }
+  if (packageJson.private !== expectedPrivate) {
     throw new Error(
-      `${name} must set private: ${expectedPrivate} at coordinated version ${expectedVersion}.`,
+      `${name} must set private: ${expectedPrivate} for this release validation mode.`,
     );
   }
   if (
