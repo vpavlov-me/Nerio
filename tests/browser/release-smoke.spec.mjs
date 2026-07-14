@@ -114,7 +114,8 @@ test("covers focus, Sheet restoration, Table scrolling, and Sidebar collapse", a
 
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/");
-  const rail = page.getByRole("button", { name: "Collapse workspace sidebar" });
+  const rail = page.locator('[data-slot="sidebar-rail"]');
+  await expect(rail).toHaveAccessibleName("Toggle workspace sidebar");
   await rail.click();
   await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
     "data-state",
@@ -146,6 +147,51 @@ test("covers focus, Sheet restoration, Table scrolling, and Sidebar collapse", a
   await page.keyboard.press("ArrowRight");
   await expect.poll(() => table.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
 
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps the demo shell inside emulated safe areas without overflow", async ({
+  page,
+  browserName,
+}) => {
+  test.skip(browserName !== "chromium", "Safe-area emulation uses Chromium CDP.");
+  const problems = monitorPage(page);
+  const session = await page.context().newCDPSession(page);
+  await session.send("Emulation.setSafeAreaInsetsOverride", {
+    insets: { top: 47, right: 4, bottom: 34, left: 12 },
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+
+  const shell = await page.locator('[data-slot="sidebar-provider"]').evaluate(() => {
+    const rootStyle = getComputedStyle(document.documentElement);
+    return {
+      bottom: rootStyle.getPropertyValue("--n-demo-safe-area-block-end").trim(),
+      inlineEnd: rootStyle.getPropertyValue("--n-demo-safe-area-inline-end").trim(),
+      inlineStart: rootStyle.getPropertyValue("--n-demo-safe-area-inline-start").trim(),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      top: rootStyle.getPropertyValue("--n-demo-safe-area-block-start").trim(),
+    };
+  });
+
+  expect(shell.top).toBe("47px");
+  expect(shell.bottom).toBe("34px");
+  expect(shell.inlineStart).toBe("12px");
+  expect(shell.inlineEnd).toBe("4px");
+  expect(shell.overflow).toBeLessThanOrEqual(1);
+
+  await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
+  const rtlInsets = await page.locator('[data-slot="sidebar-provider"]').evaluate(() => {
+    const rootStyle = getComputedStyle(document.documentElement);
+    return {
+      inlineEnd: rootStyle.getPropertyValue("--n-demo-safe-area-inline-end").trim(),
+      inlineStart: rootStyle.getPropertyValue("--n-demo-safe-area-inline-start").trim(),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+  expect(rtlInsets.inlineStart).toBe("4px");
+  expect(rtlInsets.inlineEnd).toBe("12px");
+  expect(rtlInsets.overflow).toBeLessThanOrEqual(1);
   await expectHealthyPage(page, problems);
 });
 

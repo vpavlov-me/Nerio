@@ -44,10 +44,10 @@ export function SidebarExample() {
               </nav>
             </SidebarContent>
             <SidebarFooter>Core layout only</SidebarFooter>
-            <SidebarRail label="Collapse preview sidebar" />
+            <SidebarRail label="Toggle preview sidebar" />
           </Sidebar>
           <SidebarInset as="div">
-            <SidebarTrigger label="Expand preview sidebar" />
+            <SidebarTrigger label="Toggle preview sidebar" />
             <div>
               <strong>Product content</strong>
               <p>Routes and navigation behavior stay in the consuming application.</p>

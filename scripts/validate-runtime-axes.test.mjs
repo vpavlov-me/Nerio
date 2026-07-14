@@ -11,6 +11,8 @@ const validator = resolve(root, "scripts/validate-runtime-axes.mjs");
 const tokenSource = resolve(root, "packages/tokens/src/styles.css");
 const catalogSource = resolve(root, "data/component-catalog.json");
 const docsSource = resolve(root, "apps/docs/components/docs-chrome.tsx");
+const docsAppearanceSource = resolve(root, "apps/docs/lib/appearance.ts");
+const demoAppearanceSource = resolve(root, "apps/demo-app/lib/appearance.ts");
 
 function run(...args) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
@@ -83,6 +85,30 @@ test("runtime-axis validator rejects prohibited axes structurally", () => {
   );
 });
 
+for (const operator of ["=", "~=", "|=", "^=", "$=", "*=", null]) {
+  test(`runtime-axis validator rejects prohibited axes with ${operator ?? "presence"} selectors`, () => {
+    const selector = operator ? `[data-font${operator}"geist"]` : "[data-font]";
+    withFixture(
+      "--token-file",
+      "styles.css",
+      `${readFileSync(tokenSource, "utf8")}\n:root${selector} { --n-font-sans: sans-serif; }\n`,
+      (stderr) => assert.match(stderr, /Prohibited runtime axis selector: data-font/),
+    );
+  });
+}
+
+for (const operator of ["=", "~=", "|=", "^=", "$=", "*=", null]) {
+  test(`runtime-axis validator rejects whitespace-padded prohibited axes with ${operator ?? "presence"} selectors`, () => {
+    const selector = operator ? `[data-font ${operator} "geist"]` : "[data-font ]";
+    withFixture(
+      "--token-file",
+      "styles.css",
+      `${readFileSync(tokenSource, "utf8")}\n:root${selector} { --n-font-sans: sans-serif; }\n`,
+      (stderr) => assert.match(stderr, /Prohibited runtime axis selector: data-font/),
+    );
+  });
+}
+
 test("runtime-axis validator rejects primitive token overrides in runtime selectors", () => {
   const source = readFileSync(tokenSource, "utf8").replace(
     ':root[data-density="compact"] {',
@@ -94,6 +120,15 @@ test("runtime-axis validator rejects primitive token overrides in runtime select
       /Runtime selector :root\[data-density="compact"\] redefines primitive token --n-radius-md/,
     );
   });
+});
+
+test("runtime-axis validator recognizes whitespace-padded runtime selectors", () => {
+  withFixture(
+    "--token-file",
+    "styles.css",
+    `${readFileSync(tokenSource, "utf8")}\n:root[data-theme = "custom"] { --n-radius-md: 0.5rem; }\n`,
+    (stderr) => assert.match(stderr, /redefines primitive token --n-radius-md/),
+  );
 });
 
 test("runtime-axis validator requires density aliases and representative component remaps", () => {
@@ -131,6 +166,18 @@ test("runtime-axis validator checks runtime controls through canonical imports",
     readFileSync(docsSource, "utf8").replace(
       'import { densities, modes, themes } from "@nerio/tokens";',
       'import { densities, themes } from "@nerio/tokens";',
+    ),
+    (stderr) => assert.match(stderr, /Docs runtime controls must import canonical modes/),
+  );
+});
+
+test("runtime-axis validator ignores commented canonical imports", () => {
+  withFixture(
+    "--docs-controls",
+    "docs-chrome.tsx",
+    readFileSync(docsSource, "utf8").replace(
+      'import { densities, modes, themes } from "@nerio/tokens";',
+      '// import { densities, modes, themes } from "@nerio/tokens";\nimport { densities, themes } from "@nerio/tokens";',
     ),
     (stderr) => assert.match(stderr, /Docs runtime controls must import canonical modes/),
   );
@@ -177,5 +224,41 @@ test("runtime-axis validator requires independent appearance persistence", () =>
       'document.documentElement.setAttribute("data-density", value);',
     ),
     (stderr) => assert.match(stderr, /Docs controls must persist the density axis independently/),
+  );
+});
+
+for (const [surface, option, source] of [
+  ["Docs", "--docs-appearance", docsAppearanceSource],
+  ["Demo", "--demo-appearance", demoAppearanceSource],
+]) {
+  test(`runtime-axis validator requires ${surface} appearance helpers to write root attributes`, () => {
+    withFixture(
+      option,
+      "appearance.ts",
+      readFileSync(source, "utf8").replace(
+        "root.setAttribute(`data-${axis}`, value);",
+        "// Root attribute write removed.",
+      ),
+      (stderr) =>
+        assert.match(
+          stderr,
+          new RegExp(
+            `${surface} appearance runtime must write data-theme, data-mode, and data-density`,
+          ),
+        ),
+    );
+  });
+}
+
+test("runtime-axis validator tolerates formatting around initialization root writes", () => {
+  withFixture(
+    "--docs-appearance",
+    "appearance.ts",
+    readFileSync(docsAppearanceSource, "utf8").replace(
+      "root.setAttribute(\n        contract.attribute,",
+      "root.setAttribute( contract.attribute,",
+    ),
+    () => {},
+    0,
   );
 });

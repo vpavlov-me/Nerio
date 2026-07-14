@@ -52,8 +52,8 @@ Release-blocking defects reflected in the final post-remediation gate:
 
 ## Browser matrix
 
-`pnpm test:browser` runs the focused Chromium release smoke across 72 appearance/viewport
-combinations plus interaction scenarios covering:
+`pnpm test:browser` runs the focused Chromium release smoke across the demo and public docs,
+including 72 demo appearance/viewport combinations plus interaction scenarios covering:
 
 - Purple, Blue, Green, Orange, Red, and Neutral themes.
 - System, Light, and Dark modes.
@@ -65,6 +65,8 @@ combinations plus interaction scenarios covering:
 - Toast stacking and logical swipe dismissal in LTR and RTL.
 - Loading, empty, error, success, reduced-motion, and forced-color states.
 - No framework overlays, console errors, hydration errors, or failed resources.
+- Public docs home, Getting started, representative component routes, Sidebar examples, appearance
+  controls, and safe-area shell behavior.
 
 ## Complete command gate
 
@@ -82,6 +84,7 @@ pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
 pnpm test:browser
+pnpm test:docs-examples
 pnpm validate:tokens
 pnpm validate:runtime-axes
 pnpm validate:typography

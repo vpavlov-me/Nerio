@@ -215,6 +215,7 @@ function packageReadinessFailures() {
     "typecheck",
     "test:ui",
     "test:a11y",
+    "test:docs-examples",
     "validate:docs",
     "validate:release",
     "test:cli",
