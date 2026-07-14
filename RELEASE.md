@@ -74,7 +74,10 @@ browser verification, changelog review, and tarball inspection.
 2. Convert `Unreleased` in [CHANGELOG.md](./CHANGELOG.md) to
    `## 0.1.0-alpha.0 — YYYY-MM-DD`, then add a new empty `Unreleased` section above it.
 3. Change only the six intended package manifests from `private: true` to `private: false` in a
-   dedicated release PR; rerun the complete gate and obtain a second approval.
+   dedicated release PR. Rerun the complete gate, replacing the ordinary release validation command
+   with `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, then obtain a second approval. The
+   override requires every intended package to be public; it does not weaken the coordinated
+   version, metadata, contents, runtime, source-install, or consumer-build checks.
 4. Publish one package at a time in the documented dependency order with the `alpha` dist-tag, for
    example `pnpm --filter @nerio/tokens publish --access public --tag alpha --no-git-checks`.
 5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
