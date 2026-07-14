@@ -61,6 +61,11 @@
   --n-docs-code-number: var(--n-orange-700);
 }
 
+:root[dir="rtl"] {
+  --n-docs-safe-area-inline-start: env(safe-area-inset-right);
+  --n-docs-safe-area-inline-end: env(safe-area-inset-left);
+}
+
 :root[data-mode="dark"] {
   --n-docs-code-keyword: var(--n-magenta-300);
   --n-docs-code-string: var(--n-green-300);

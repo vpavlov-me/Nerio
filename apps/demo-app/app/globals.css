@@ -8,6 +8,11 @@
   --n-demo-safe-area-inline-end: env(safe-area-inset-right);
 }
 
+:root[dir="rtl"] {
+  --n-demo-safe-area-inline-start: env(safe-area-inset-right);
+  --n-demo-safe-area-inline-end: env(safe-area-inset-left);
+}
+
 html,
 body {
   min-block-size: 100%;

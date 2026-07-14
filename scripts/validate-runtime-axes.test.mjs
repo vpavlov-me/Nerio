@@ -97,6 +97,18 @@ for (const operator of ["=", "~=", "|=", "^=", "$=", "*=", null]) {
   });
 }
 
+for (const operator of ["=", "~=", "|=", "^=", "$=", "*=", null]) {
+  test(`runtime-axis validator rejects whitespace-padded prohibited axes with ${operator ?? "presence"} selectors`, () => {
+    const selector = operator ? `[data-font ${operator} "geist"]` : "[data-font ]";
+    withFixture(
+      "--token-file",
+      "styles.css",
+      `${readFileSync(tokenSource, "utf8")}\n:root${selector} { --n-font-sans: sans-serif; }\n`,
+      (stderr) => assert.match(stderr, /Prohibited runtime axis selector: data-font/),
+    );
+  });
+}
+
 test("runtime-axis validator rejects primitive token overrides in runtime selectors", () => {
   const source = readFileSync(tokenSource, "utf8").replace(
     ':root[data-density="compact"] {',
@@ -108,6 +120,15 @@ test("runtime-axis validator rejects primitive token overrides in runtime select
       /Runtime selector :root\[data-density="compact"\] redefines primitive token --n-radius-md/,
     );
   });
+});
+
+test("runtime-axis validator recognizes whitespace-padded runtime selectors", () => {
+  withFixture(
+    "--token-file",
+    "styles.css",
+    `${readFileSync(tokenSource, "utf8")}\n:root[data-theme = "custom"] { --n-radius-md: 0.5rem; }\n`,
+    (stderr) => assert.match(stderr, /redefines primitive token --n-radius-md/),
+  );
 });
 
 test("runtime-axis validator requires density aliases and representative component remaps", () => {
@@ -228,3 +249,16 @@ for (const [surface, option, source] of [
     );
   });
 }
+
+test("runtime-axis validator tolerates formatting around initialization root writes", () => {
+  withFixture(
+    "--docs-appearance",
+    "appearance.ts",
+    readFileSync(docsAppearanceSource, "utf8").replace(
+      "root.setAttribute(\n        contract.attribute,",
+      "root.setAttribute( contract.attribute,",
+    ),
+    () => {},
+    0,
+  );
+});

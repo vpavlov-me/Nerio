@@ -158,7 +158,7 @@ test("keeps the demo shell inside emulated safe areas without overflow", async (
   const problems = monitorPage(page);
   const session = await page.context().newCDPSession(page);
   await session.send("Emulation.setSafeAreaInsetsOverride", {
-    insets: { top: 47, right: 8, bottom: 34, left: 8 },
+    insets: { top: 47, right: 4, bottom: 34, left: 12 },
   });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
@@ -176,9 +176,22 @@ test("keeps the demo shell inside emulated safe areas without overflow", async (
 
   expect(shell.top).toBe("47px");
   expect(shell.bottom).toBe("34px");
-  expect(shell.inlineStart).toBe("8px");
-  expect(shell.inlineEnd).toBe("8px");
+  expect(shell.inlineStart).toBe("12px");
+  expect(shell.inlineEnd).toBe("4px");
   expect(shell.overflow).toBeLessThanOrEqual(1);
+
+  await page.evaluate(() => document.documentElement.setAttribute("dir", "rtl"));
+  const rtlInsets = await page.locator('[data-slot="sidebar-provider"]').evaluate(() => {
+    const rootStyle = getComputedStyle(document.documentElement);
+    return {
+      inlineEnd: rootStyle.getPropertyValue("--n-demo-safe-area-inline-end").trim(),
+      inlineStart: rootStyle.getPropertyValue("--n-demo-safe-area-inline-start").trim(),
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+  expect(rtlInsets.inlineStart).toBe("4px");
+  expect(rtlInsets.inlineEnd).toBe("12px");
+  expect(rtlInsets.overflow).toBeLessThanOrEqual(1);
   await expectHealthyPage(page, problems);
 });
 

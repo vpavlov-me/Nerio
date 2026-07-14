@@ -110,7 +110,7 @@ function tokenize(source) {
 }
 
 function attributeSelectorPattern(attribute) {
-  return new RegExp(`\\[${attribute}(?:[~|^$*]?=|\\])`);
+  return new RegExp(`\\[${attribute}\\s*(?:[~|^$*]?=|\\])`);
 }
 
 function exportedArray(source, name) {
@@ -230,7 +230,7 @@ function validate() {
 
   for (const rule of rules) {
     for (const selector of rule.selectors) {
-      if (/\[data-(?:theme|mode|density)(?:[~|^$*]?=|\])/.test(selector)) {
+      if (/\[data-(?:theme|mode|density)\s*(?:[~|^$*]?=|\])/.test(selector)) {
         for (const token of rule.declarations.keys()) {
           if (isPrimitiveToken(token)) {
             failures.push(`Runtime selector ${selector} redefines primitive token ${token}.`);
@@ -293,7 +293,7 @@ function validate() {
         `${surface} appearance runtime must write data-theme, data-mode, and data-density to the root.`,
       );
     }
-    if (!appearance.includes("root.setAttribute(\n        contract.attribute,")) {
+    if (!/root\.setAttribute\(\s*contract\.attribute\s*,/.test(appearance)) {
       failures.push(
         `${surface} initialization must write all persisted root appearance attributes.`,
       );
