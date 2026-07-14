@@ -83,8 +83,8 @@ const componentTitles: Record<string, string> = {
 
 function getComponentTitle(slug: string) {
   return (
-    componentMetadata[slug]?.name ??
     componentTitles[slug] ??
+    componentMetadata[slug]?.name ??
     slug.charAt(0).toUpperCase() + slug.slice(1)
   );
 }

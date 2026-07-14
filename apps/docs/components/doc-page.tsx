@@ -393,13 +393,13 @@ function GuidanceCard({
 const relatedRouteAliases: Record<string, string> = {
   "Command Primitive": "command-primitive",
   "Empty State": "empty-state",
-  Heading: "typography",
   "Sidebar Primitive": "sidebar-primitive",
-  Text: "typography",
 };
 
 const relatedFoundationRoutes: Record<string, string> = {
+  Heading: "/docs/foundations/typography",
   "Icon Adapter": "/docs/foundations/icons",
+  Text: "/docs/foundations/typography",
   Themes: "/docs/foundations/themes",
   Tokens: "/docs/foundations/tokens",
 };

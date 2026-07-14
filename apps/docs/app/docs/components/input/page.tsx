@@ -187,21 +187,22 @@ export default function Page() {
         ),
         tokens: (
           <DocumentationTable
-            headers={["Group", "Tokens", "Controls"]}
+            headers={["Token", "Group", "Controls"]}
             rows={[
-              ["Sizing", "--n-input-height-sm", "Small control height."],
-              ["Sizing", "--n-input-height-md", "Default control height."],
-              ["Sizing", "--n-input-height-lg", "Large control height."],
-              ["Shape", "--n-input-radius", "Control corner radius."],
-              ["Surface", "--n-input-background", "Default control surface."],
-              ["Surface", "--n-input-foreground", "Default input text."],
-              ["Border", "--n-input-border", "Default border."],
-              ["Border", "--n-input-border-hover", "Hover border."],
-              ["Border", "--n-input-border-focus", "Focused border."],
-              ["Invalid", "--n-input-border-danger", "Invalid border treatment."],
-              ["Focus", "--n-motion-focus-duration", "Focus transition duration."],
-              ["Focus", "--n-focus-ring", "Visible focus treatment."],
+              ["--n-input-height-sm", "Sizing", "Small control height."],
+              ["--n-input-height-md", "Sizing", "Default control height."],
+              ["--n-input-height-lg", "Sizing", "Large control height."],
+              ["--n-input-radius", "Shape", "Control corner radius."],
+              ["--n-input-background", "Surface", "Default control surface."],
+              ["--n-input-foreground", "Surface", "Default input text."],
+              ["--n-input-border", "Border", "Default border."],
+              ["--n-input-border-hover", "Border", "Hover border."],
+              ["--n-input-border-focus", "Border", "Focused border."],
+              ["--n-input-border-danger", "Invalid", "Invalid border treatment."],
+              ["--n-motion-focus-duration", "Focus", "Focus transition duration."],
+              ["--n-focus-ring", "Focus", "Visible focus treatment."],
             ]}
+            codeColumns={1}
           />
         ),
       }}
