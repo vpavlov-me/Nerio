@@ -48,7 +48,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "lucide-react": "^0.561.0"
+    "lucide-react": "^1.24.0"
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",
