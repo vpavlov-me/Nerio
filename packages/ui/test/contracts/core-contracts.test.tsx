@@ -263,40 +263,43 @@ void [
 describe("Core static contracts", () => {
   it("normalizes Lucide and custom SVG icons through one server-safe contract", () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    const { container } = render(
-      <>
-        <Icon
-          className="lucide-icon"
-          icon={Bell}
-          lucideAbsoluteStrokeWidth
-          size={18}
-          strokeWidth={1.5}
-        />
-        <Icon
-          className="custom-icon"
-          decorative={false}
-          icon={CustomSvgIcon}
-          label="Workspace activity"
-          size={20}
-          strokeWidth={1.25}
-        />
-      </>,
-    );
+    try {
+      const { container } = render(
+        <>
+          <Icon
+            className="lucide-icon"
+            icon={Bell}
+            lucideAbsoluteStrokeWidth
+            size={18}
+            strokeWidth={1.5}
+          />
+          <Icon
+            className="custom-icon"
+            decorative={false}
+            icon={CustomSvgIcon}
+            label="Workspace activity"
+            size={20}
+            strokeWidth={1.25}
+          />
+        </>,
+      );
 
-    const [lucideIcon, customIcon] = Array.from(container.querySelectorAll("svg"));
-    expect(lucideIcon).toHaveClass("n-icon", "lucide-icon");
-    expect(lucideIcon).toHaveAttribute("aria-hidden", "true");
-    expect(lucideIcon).toHaveAttribute("focusable", "false");
-    expect(lucideIcon).toHaveAttribute("width", "18");
-    expect(customIcon).toHaveClass("n-icon", "custom-icon");
-    expect(customIcon).toHaveAttribute("role", "img");
-    expect(customIcon).toHaveAttribute("aria-label", "Workspace activity");
-    expect(customIcon).not.toHaveAttribute("aria-hidden");
-    expect(customIcon).toHaveAttribute("focusable", "false");
-    expect(customIcon).toHaveAttribute("data-size", "20");
-    expect(customIcon).toHaveAttribute("data-stroke-width", "1.25");
-    expect(consoleError).not.toHaveBeenCalled();
-    consoleError.mockRestore();
+      const [lucideIcon, customIcon] = Array.from(container.querySelectorAll("svg"));
+      expect(lucideIcon).toHaveClass("n-icon", "lucide-icon");
+      expect(lucideIcon).toHaveAttribute("aria-hidden", "true");
+      expect(lucideIcon).toHaveAttribute("focusable", "false");
+      expect(lucideIcon).toHaveAttribute("width", "18");
+      expect(customIcon).toHaveClass("n-icon", "custom-icon");
+      expect(customIcon).toHaveAttribute("role", "img");
+      expect(customIcon).toHaveAttribute("aria-label", "Workspace activity");
+      expect(customIcon).not.toHaveAttribute("aria-hidden");
+      expect(customIcon).toHaveAttribute("focusable", "false");
+      expect(customIcon).toHaveAttribute("data-size", "20");
+      expect(customIcon).toHaveAttribute("data-stroke-width", "1.25");
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
   });
 
   it("keeps Icon and composeRefs available through the server-safe entrypoint", () => {
@@ -3053,6 +3056,14 @@ describe("Core interactive action contracts", () => {
       resolve(process.cwd(), "../../apps/docs/components/sidebar-example.tsx"),
       "utf8",
     );
+    const docsReference = readFileSync(
+      resolve(process.cwd(), "../../apps/docs/components/component-reference.ts"),
+      "utf8",
+    );
+    const sidebarPage = readFileSync(
+      resolve(process.cwd(), "../../apps/docs/app/docs/components/sidebar-primitive/page.tsx"),
+      "utf8",
+    );
     const registry = JSON.parse(
       readFileSync(resolve(process.cwd(), "../registry/src/manifest.json"), "utf8"),
     ) as {
@@ -3067,6 +3078,11 @@ describe("Core interactive action contracts", () => {
     expect(docsExample).toMatch(
       /import\s*\{[\s\S]*SidebarContent[\s\S]*SidebarInset[\s\S]*\}\s*from "@nerio\/ui";/,
     );
+    expect(docsExample).not.toMatch(/label="(?:Collapse|Expand) preview sidebar"/);
+    expect(docsReference).not.toMatch(/SidebarRail, SidebarTrigger, useSidebar/);
+    expect(docsReference).not.toMatch(/label="(?:Collapse|Expand) workspace sidebar"/);
+    expect(sidebarPage).toContain('import * as React from "react";');
+    expect(sidebarPage).not.toMatch(/SidebarInset, Icon|SidebarTrigger, useSidebar/);
     expect(docsExample).toMatch(
       /import\s*\{[\s\S]*SidebarProvider[\s\S]*SidebarRail[\s\S]*\}\s*from "@nerio\/ui\/client";/,
     );

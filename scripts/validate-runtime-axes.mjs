@@ -102,9 +102,15 @@ function requireRule(rules, selector, media, tokens, label, failures) {
 function tokenize(source) {
   return [
     ...source.matchAll(
-      /"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)'|[A-Za-z_$][A-Za-z0-9_$-]*|[{}[\],=]/g,
+      /"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)'|(\/\/[^\r\n]*|\/\*[\s\S]*?\*\/)|[A-Za-z_$][A-Za-z0-9_$-]*|[{}[\],=]/g,
     ),
-  ].map((match) => match[1] ?? match[2] ?? match[0]);
+  ]
+    .filter((match) => match[3] === undefined)
+    .map((match) => match[1] ?? match[2] ?? match[0]);
+}
+
+function attributeSelectorPattern(attribute) {
+  return new RegExp(`\\[${attribute}(?:[~|^$*]?=|\\])`);
 }
 
 function exportedArray(source, name) {
@@ -224,7 +230,7 @@ function validate() {
 
   for (const rule of rules) {
     for (const selector of rule.selectors) {
-      if (/\[data-(?:theme|mode|density)(?:=|\])/.test(selector)) {
+      if (/\[data-(?:theme|mode|density)(?:[~|^$*]?=|\])/.test(selector)) {
         for (const token of rule.declarations.keys()) {
           if (isPrimitiveToken(token)) {
             failures.push(`Runtime selector ${selector} redefines primitive token ${token}.`);
@@ -232,7 +238,7 @@ function validate() {
         }
       }
       for (const axis of catalog.runtimeAxisPolicy?.notAllowedInV1 ?? []) {
-        if (new RegExp(`\\[${axis}(?:[=\\]])`).test(selector))
+        if (attributeSelectorPattern(axis).test(selector))
           failures.push(`Prohibited runtime axis selector: ${axis} in ${selector}`);
       }
     }
@@ -278,6 +284,19 @@ function validate() {
       if (!appearance.includes(`${axis}: "nerio-`)) {
         failures.push(`${surface} appearance runtime is missing a ${axis} storage key.`);
       }
+      if (!appearance.includes(`attribute: "data-${axis}"`)) {
+        failures.push(`${surface} appearance runtime is missing the data-${axis} root contract.`);
+      }
+    }
+    if (!appearance.includes("root.setAttribute(`data-${axis}`, value);")) {
+      failures.push(
+        `${surface} appearance runtime must write data-theme, data-mode, and data-density to the root.`,
+      );
+    }
+    if (!appearance.includes("root.setAttribute(\n        contract.attribute,")) {
+      failures.push(
+        `${surface} initialization must write all persisted root appearance attributes.`,
+      );
     }
     if (!controls.includes("readAppearanceFromRoot(document.documentElement)")) {
       failures.push(`${surface} controls must restore pre-hydrated appearance state.`);

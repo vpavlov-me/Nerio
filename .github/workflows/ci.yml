@@ -39,6 +39,7 @@ jobs:
       - run: pnpm test:cli
       - run: pnpm test:mcp
       - run: pnpm test:adapters
+      - run: pnpm test:docs-examples
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:browser
       - run: pnpm build

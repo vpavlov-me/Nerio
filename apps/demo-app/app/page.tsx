@@ -259,7 +259,7 @@ function DemoWorkspace() {
               </Button>
             </Card>
           </SidebarFooter>
-          <SidebarRail label="Collapse workspace sidebar" />
+          <SidebarRail label="Toggle workspace sidebar" />
         </Sidebar>
       ) : null}
 
@@ -289,7 +289,7 @@ function DemoWorkspace() {
                   </SheetContent>
                 </Sheet>
               ) : (
-                <SidebarTrigger label="Expand workspace sidebar" />
+                <SidebarTrigger label="Toggle workspace sidebar" />
               )}
             </div>
             <Badge variant="info">Overview</Badge>

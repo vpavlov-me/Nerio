@@ -7,20 +7,31 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? "github" : "line",
   timeout: 60_000,
-  use: {
-    baseURL: "http://localhost:3002",
-    trace: "retain-on-failure",
-  },
-  webServer: {
-    command: "pnpm --filter @nerio/demo-app dev",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-    url: "http://localhost:3002",
-  },
+  use: { trace: "retain-on-failure" },
+  webServer: [
+    {
+      command: "pnpm --filter @nerio/demo-app dev",
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+      url: "http://localhost:3002",
+    },
+    {
+      command: "pnpm --filter @nerio/docs dev",
+      reuseExistingServer: !process.env.CI,
+      timeout: 120_000,
+      url: "http://localhost:3000",
+    },
+  ],
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "demo-chromium",
+      testMatch: "release-smoke.spec.mjs",
+      use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3002" },
+    },
+    {
+      name: "docs-chromium",
+      testMatch: "docs-smoke.spec.mjs",
+      use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3000" },
     },
   ],
 });

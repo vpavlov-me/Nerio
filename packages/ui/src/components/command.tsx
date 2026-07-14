@@ -216,6 +216,13 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
     required,
     value: currentQuery,
   };
+  type UnifiedCommandRootProps = typeof rootProps & {
+    children: React.ReactNode;
+    items: CommandItems;
+  };
+  // Base UI supports flat and grouped collections at runtime, while its overloads cannot accept
+  // the already-validated union after it crosses the public Command boundary.
+  const UnifiedCommandRoot = BaseAutocomplete.Root as React.ComponentType<UnifiedCommandRootProps>;
 
   const content = (
     <div
@@ -232,15 +239,9 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
 
   return (
     <CommandContext.Provider value={context}>
-      {grouped ? (
-        <BaseAutocomplete.Root {...rootProps} items={items}>
-          {content}
-        </BaseAutocomplete.Root>
-      ) : (
-        <BaseAutocomplete.Root {...rootProps} items={items}>
-          {content}
-        </BaseAutocomplete.Root>
-      )}
+      <UnifiedCommandRoot {...rootProps} items={items}>
+        {content}
+      </UnifiedCommandRoot>
     </CommandContext.Provider>
   );
 });

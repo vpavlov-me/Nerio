@@ -22,6 +22,7 @@
     "test:mcp": "pnpm --filter @nerio/mcp test:fixture",
     "test:adapters": "node scripts/adapter-consumer-smoke.mjs",
     "test:browser": "playwright test",
+    "test:docs-examples": "tsc -p apps/docs/fixtures/docs-examples/tsconfig.json",
     "test:ui": "pnpm --filter @nerio/ui test",
     "test:a11y": "pnpm --filter @nerio/ui test:a11y",
     "pack:check": "node scripts/pack-check.mjs"

@@ -2,7 +2,14 @@
 @import "@nerio/ui/styles.css";
 
 :root {
+  --n-docs-safe-area-block-start: env(safe-area-inset-top);
+  --n-docs-safe-area-block-end: env(safe-area-inset-bottom);
+  --n-docs-safe-area-inline-start: env(safe-area-inset-left);
+  --n-docs-safe-area-inline-end: env(safe-area-inset-right);
   --n-docs-header-height: 4.25rem;
+  --n-docs-shell-header-offset: calc(
+    var(--n-docs-header-height) + var(--n-docs-safe-area-block-start)
+  );
   --n-docs-header-row-height: 3.25rem;
   --n-docs-sidebar-width: 15rem;
   --n-docs-toc-width: 14rem;
@@ -94,7 +101,9 @@ pre {
 .docs-shell {
   display: grid;
   min-inline-size: 0;
-  min-block-size: 100vh;
+  min-block-size: 100dvh;
+  padding-block-end: var(--n-docs-safe-area-block-end);
+  padding-inline: var(--n-docs-safe-area-inline-start) var(--n-docs-safe-area-inline-end);
   position: relative;
   width: 100%;
 }
@@ -104,7 +113,8 @@ pre {
   background: var(--n-color-surface-canvas);
   border-block-end: 0;
   inset-block-start: 0;
-  padding: var(--n-space-2) var(--n-space-6);
+  padding: calc(var(--n-space-2) + var(--n-docs-safe-area-block-start)) var(--n-space-6)
+    var(--n-space-2);
   position: sticky;
   z-index: var(--n-docs-shell-z-index);
 }
@@ -421,12 +431,14 @@ pre {
 
 .docs-sidebar {
   border-inline-end: var(--n-border-width-0);
-  max-block-size: calc(100vh - var(--n-docs-header-height));
+  max-block-size: calc(
+    100dvh - var(--n-docs-shell-header-offset) - var(--n-docs-safe-area-block-end)
+  );
   overflow: auto;
   scrollbar-width: var(--n-docs-scrollbar-width);
   padding: var(--n-space-6) var(--n-space-4) var(--n-space-10);
   position: sticky;
-  top: var(--n-docs-header-height);
+  top: var(--n-docs-shell-header-offset);
 }
 
 .docs-sidebar nav {
@@ -632,12 +644,14 @@ pre {
 }
 
 .docs-toc {
-  max-block-size: calc(100vh - var(--n-docs-header-height));
+  max-block-size: calc(
+    100dvh - var(--n-docs-shell-header-offset) - var(--n-docs-safe-area-block-end)
+  );
   overflow: auto;
   scrollbar-width: var(--n-docs-scrollbar-width);
   padding: var(--n-space-6) var(--n-space-4) var(--n-space-10);
   position: sticky;
-  top: var(--n-docs-header-height);
+  top: var(--n-docs-shell-header-offset);
 }
 
 .docs-sidebar::-webkit-scrollbar,
@@ -751,7 +765,7 @@ pre {
 .docs-main h2,
 .docs-main h3,
 .docs-main h4 {
-  scroll-margin-block-start: calc(var(--n-docs-header-height) + var(--n-space-4));
+  scroll-margin-block-start: calc(var(--n-docs-shell-header-offset) + var(--n-space-4));
 }
 
 .hero {
@@ -2710,7 +2724,8 @@ pre {
     grid-template-columns: 1fr;
     max-inline-size: 100vw;
     min-inline-size: 0;
-    padding: var(--n-space-4);
+    padding: calc(var(--n-space-4) + var(--n-docs-safe-area-block-start)) var(--n-space-4)
+      var(--n-space-4);
     position: static;
   }
 

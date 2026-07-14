@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 
 const persistenceExample = `"use client";
 
-import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset, Icon } from "@nerio/ui";
-import { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger, useSidebar } from "@nerio/ui/client";
+import * as React from "react";
+import { SidebarProvider } from "@nerio/ui/client";
 
-function PersistentSidebar({ children }) {
+function PersistentSidebar({ children }: React.PropsWithChildren) {
   const [expanded, setExpanded] = React.useState(true);
 
   React.useEffect(() => {

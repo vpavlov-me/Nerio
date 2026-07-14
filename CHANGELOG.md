@@ -99,6 +99,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
   leading-slot semantics, no-leading row layout, and shared focus-ring styling.
 - Re-ran the post-remediation release gate with strict packed-manifest contracts, isolated adapter
   dependency checks, expanded source-install coverage, and a production consumer build.
+- Added safe-area-aware docs and demo shells, corrected copy-paste Sidebar labels and imports,
+  hardened runtime-axis validation, and extended release smoke to the public documentation app.
 
 ### Deprecated
 

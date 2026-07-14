@@ -22,6 +22,7 @@ pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
 pnpm test:browser
+pnpm test:docs-examples
 pnpm validate:tokens
 pnpm validate:runtime-axes
 pnpm validate:typography
@@ -32,8 +33,10 @@ pnpm pack:check
 ```
 
 Install the pinned Chromium runtime once before the browser gate with
-`pnpm exec playwright install --with-deps chromium`. `pnpm test:browser` starts the demo app locally
-and runs the focused release matrix; it is not a screenshot or full visual-regression suite.
+`pnpm exec playwright install --with-deps chromium`. `pnpm test:browser` starts the demo and public
+docs applications locally and runs focused release smoke; it is not a screenshot or full
+visual-regression suite. `pnpm test:docs-examples` typechecks published Sidebar examples in an
+isolated fixture.
 
 `validate:release` packs all intended packages, checks packed manifests, exports, dependencies, side
 effects, bins, file boundaries, and secret/Pro exclusions, installs the tarballs into an isolated
