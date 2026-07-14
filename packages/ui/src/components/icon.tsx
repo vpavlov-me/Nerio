@@ -1,15 +1,19 @@
 import * as React from "react";
-import type { IconComponent, IconSvgProps } from "@nerio/adapters";
+import type { IconComponent, IconSvgProps, LucideIconProps } from "@nerio/adapters";
 import { cn } from "../lib/cn";
 
-export type { IconComponent, IconSvgProps } from "@nerio/adapters";
+export type { IconComponent, IconSvgProps, LucideIconProps } from "@nerio/adapters";
 
 type IconBaseProps = Omit<
   IconSvgProps,
-  "aria-hidden" | "aria-label" | "children" | "className" | "role"
+  "aria-hidden" | "aria-label" | "children" | "className" | "focusable" | "role" | "tabIndex"
 > & {
   icon: IconComponent;
   className?: string;
+  /** Enables Lucide's fixed-stroke behavior without adding it to generic SVG props. */
+  lucideAbsoluteStrokeWidth?: boolean;
+  /** @deprecated Use lucideAbsoluteStrokeWidth. Removed in the next major version. */
+  absoluteStrokeWidth?: boolean;
 };
 
 type DecorativeIconProps = {
@@ -26,25 +30,53 @@ type MeaningfulIconProps = {
 
 export type IconProps = IconBaseProps & (DecorativeIconProps | MeaningfulIconProps);
 
-export function Icon({
-  absoluteStrokeWidth = true,
-  decorative = true,
-  icon: IconGraphic,
-  className,
-  label,
-  strokeWidth = 2,
-  ...props
-}: IconProps) {
+type ProtectedRuntimeIconProps = {
+  "aria-hidden"?: React.AriaAttributes["aria-hidden"];
+  "aria-label"?: string;
+  focusable?: React.SVGProps<SVGSVGElement>["focusable"];
+  role?: React.AriaRole;
+  tabIndex?: number;
+};
+
+export function Icon(inputProps: IconProps) {
+  const {
+    absoluteStrokeWidth,
+    decorative = true,
+    icon: IconGraphic,
+    className,
+    label,
+    lucideAbsoluteStrokeWidth,
+    strokeWidth = 2,
+    "aria-hidden": _ariaHidden,
+    "aria-label": _ariaLabel,
+    focusable: _focusable,
+    role: _role,
+    tabIndex: _tabIndex,
+    ...props
+  } = inputProps as IconProps & ProtectedRuntimeIconProps;
+
+  if (!decorative && (typeof label !== "string" || !label.trim())) {
+    throw new Error("Meaningful Icon requires a non-empty label.");
+  }
+
+  const resolvedAbsoluteStrokeWidth = lucideAbsoluteStrokeWidth ?? absoluteStrokeWidth;
+  const svgProps: LucideIconProps = {
+    ...props,
+    strokeWidth,
+  };
+
+  if (resolvedAbsoluteStrokeWidth !== undefined) {
+    svgProps.absoluteStrokeWidth = resolvedAbsoluteStrokeWidth;
+  }
+
   return (
     <IconGraphic
+      {...svgProps}
       className={cn("n-icon", className)}
       aria-hidden={decorative ? true : undefined}
       aria-label={decorative ? undefined : label}
-      absoluteStrokeWidth={absoluteStrokeWidth}
-      focusable={decorative ? false : undefined}
+      focusable={false}
       role={decorative ? undefined : "img"}
-      strokeWidth={strokeWidth}
-      {...props}
     />
   );
 }

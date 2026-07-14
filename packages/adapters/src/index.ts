@@ -9,10 +9,14 @@ import type * as React from "react";
 export type IconSvgProps = React.SVGProps<SVGSVGElement> & {
   size?: string | number;
   strokeWidth?: string | number;
-  absoluteStrokeWidth?: boolean;
 };
 
 export type IconComponent = React.ElementType<IconSvgProps>;
+
+/** Lucide-only extension kept outside the generic SVG component contract. */
+export type LucideIconProps = IconSvgProps & {
+  absoluteStrokeWidth?: boolean;
+};
 
 /** @deprecated Use IconComponent. Kept as a compatible Lucide-specific alias. */
 export type { LucideIcon } from "lucide-react";

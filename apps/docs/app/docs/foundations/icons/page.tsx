@@ -30,6 +30,7 @@ import { Icon } from '@nerio/ui';
 import { Button } from '@nerio/ui/client';
 
 <Icon icon={Search} />
+<Icon icon={Search} lucideAbsoluteStrokeWidth />
 <Button icon={Search} aria-label="Search workspace" tooltip="Search workspace" />`;
 
 const custom = `import type { IconSvgProps } from '@nerio/adapters';
@@ -180,11 +181,11 @@ export default function Page() {
                 <td>Buttons and icon-only controls keep glyphs proportional to their hit area.</td>
               </tr>
               <tr>
-                <td>Use the adapter’s 2px absolute stroke default.</td>
+                <td>Opt into Lucide fixed strokes explicitly.</td>
                 <td>
-                  The renderer forwards <Code>strokeWidth</Code>, <Code>size</Code>, class names,
-                  and SVG props to Lucide or a custom component; stroke-specific props remain
-                  optional for custom artwork.
+                  Use <Code>lucideAbsoluteStrokeWidth</Code> only with Lucide icons. Generic{" "}
+                  <Code>IconSvgProps</Code> never includes the Lucide-only property, so ordinary
+                  custom SVG prop spreads stay warning-free.
                 </td>
               </tr>
             </tbody>
@@ -205,7 +206,11 @@ export default function Page() {
           <Code>@nerio/adapters</Code> for icon props and custom SVG implementations. The same type
           names remain re-exported from <Code>@nerio/ui</Code> as compatible aliases, but new
           component APIs should use the adapter boundary. Existing <Code>LucideIcon</Code> imports
-          remain compatible while Lucide is the default source.
+          remain compatible while Lucide is the default source. During the Core 0.1 alpha, replace
+          an explicit <Code>absoluteStrokeWidth</Code> Icon prop with{" "}
+          <Code>lucideAbsoluteStrokeWidth</Code>; the old name remains as a deprecated alias until
+          the next major version. Custom SVG components should accept and spread only{" "}
+          <Code>IconSvgProps</Code>.
         </p>
       </section>
 

@@ -182,7 +182,7 @@ export default function ItemPage() {
               [
                 "Item",
                 "variant | size | render",
-                "Root composition; render a native interactive element when needed.",
+                "Root composition; render a native interactive element when needed. Existing render refs compose with the forwarded ref.",
               ],
               [
                 "ItemMedia",

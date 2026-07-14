@@ -68,12 +68,17 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Improved theme, dark-mode, and density behavior across the Core component surface.
 - Added router-render support to List items and preserved router-rendered Pagination slots and current-page state.
 - Changed Nerio Core's default sans-serif typography from Geist to the platform system font stack.
+- Isolated Lucide's fixed-stroke option behind `lucideAbsoluteStrokeWidth`; the previous
+  `absoluteStrokeWidth` Icon prop remains a deprecated alpha compatibility alias.
 
 ### Fixed
 
 - Corrected accessibility associations, loading-state announcements, overlay close behavior, and localized Toast dismiss controls.
 - Improved Avatar fallback updates, Table scroll-region behavior, and link navigation contracts.
 - Closed responsive, high-contrast, image-transition, semantic-root ref, and router-adapter gaps across the remaining polished Core components.
+- Protected Icon accessibility semantics from consumer SVG props, kept custom SVG forwarding free
+  of Lucide-only DOM warnings, composed Item and ItemGroup render refs, and restored static
+  Pagination current-state styling.
 
 ### Deprecated
 
@@ -91,6 +96,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Replace new `IconButton` usage with Button icon mode and provide an accessible name.
 - Replace Button `subtle` and `destructive` variants with `secondary` and `danger`.
 - Products that relied on Geist implicitly should load it explicitly and apply the Geist typography preset or override `--n-font-sans`.
+- Replace explicit Icon `absoluteStrokeWidth` usage with `lucideAbsoluteStrokeWidth`; custom SVG
+  components should implement only the generic `IconSvgProps` contract.
 
 ## Maintenance rules
 

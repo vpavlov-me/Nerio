@@ -38,8 +38,7 @@ import type { IconComponent } from "@nerio/adapters";
 
 const avatars = ["Ava Cole", "Noah Lee", "Maya Chen", "Owen Hart", "Iris Park"];
 
-const GoogleIcon: IconComponent = ({ absoluteStrokeWidth, size = 24, strokeWidth, ...props }) => {
-  void absoluteStrokeWidth;
+const GoogleIcon: IconComponent = ({ size = 24, strokeWidth, ...props }) => {
   void strokeWidth;
 
   return (
@@ -53,8 +52,7 @@ const GoogleIcon: IconComponent = ({ absoluteStrokeWidth, size = 24, strokeWidth
   );
 };
 
-const AppleIcon: IconComponent = ({ absoluteStrokeWidth, size = 24, strokeWidth, ...props }) => {
-  void absoluteStrokeWidth;
+const AppleIcon: IconComponent = ({ size = 24, strokeWidth, ...props }) => {
   void strokeWidth;
 
   return (

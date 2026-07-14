@@ -179,7 +179,14 @@ function PaginationControl({
 
   if (!href) {
     return (
-      <span className={className} data-slot={slot} aria-disabled="true" data-disabled="" {...props}>
+      <span
+        className={className}
+        data-current={current ? "" : undefined}
+        data-slot={slot}
+        aria-disabled="true"
+        data-disabled=""
+        {...props}
+      >
         {children}
       </span>
     );

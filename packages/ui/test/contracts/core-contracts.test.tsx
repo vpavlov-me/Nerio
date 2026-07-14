@@ -110,7 +110,7 @@ import { ArrowRight, Bell, Check, type IconSvgProps } from "@nerio/adapters";
 import { RouterLinkFixture } from "../fixtures/router-link";
 
 const CustomSvgIcon = React.forwardRef<SVGSVGElement, IconSvgProps>(function CustomSvgIcon(
-  { absoluteStrokeWidth: _absoluteStrokeWidth, size, strokeWidth, ...props },
+  { size, strokeWidth, ...props },
   ref,
 ) {
   return (
@@ -155,6 +155,10 @@ const invalidEmptyButton = <Button />;
 const invalidUnnamedIconButton = <Button icon={Bell} />;
 // @ts-expect-error meaningful standalone Icon requires a label.
 const invalidUnnamedMeaningfulIcon = <Icon decorative={false} icon={Bell} />;
+// @ts-expect-error Icon owns its non-focusable SVG contract.
+const invalidFocusableIcon = <Icon focusable icon={Bell} />;
+// @ts-expect-error Icon never exposes the SVG in the tab order.
+const invalidTabIndexedIcon = <Icon icon={Bell} tabIndex={0} />;
 // @ts-expect-error icon-only Button cannot include visible children
 const invalidMixedIconButton = (
   <Button icon={Bell} aria-label="Notifications">
@@ -228,6 +232,8 @@ void [
   invalidEmptyButton,
   invalidUnnamedIconButton,
   invalidUnnamedMeaningfulIcon,
+  invalidFocusableIcon,
+  invalidTabIndexedIcon,
   invalidMixedIconButton,
   invalidDirectionalIconButton,
   invalidButtonKbd,
@@ -256,9 +262,16 @@ void [
 
 describe("Core static contracts", () => {
   it("normalizes Lucide and custom SVG icons through one server-safe contract", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const { container } = render(
       <>
-        <Icon className="lucide-icon" icon={Bell} size={18} strokeWidth={1.5} />
+        <Icon
+          className="lucide-icon"
+          icon={Bell}
+          lucideAbsoluteStrokeWidth
+          size={18}
+          strokeWidth={1.5}
+        />
         <Icon
           className="custom-icon"
           decorative={false}
@@ -279,8 +292,61 @@ describe("Core static contracts", () => {
     expect(customIcon).toHaveAttribute("role", "img");
     expect(customIcon).toHaveAttribute("aria-label", "Workspace activity");
     expect(customIcon).not.toHaveAttribute("aria-hidden");
+    expect(customIcon).toHaveAttribute("focusable", "false");
     expect(customIcon).toHaveAttribute("data-size", "20");
     expect(customIcon).toHaveAttribute("data-stroke-width", "1.25");
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
+  it("keeps Icon and composeRefs available through the server-safe entrypoint", () => {
+    const iconSource = readFileSync(resolve(process.cwd(), "src/components/icon.tsx"), "utf8");
+    const composeRefsSource = readFileSync(
+      resolve(process.cwd(), "src/lib/compose-refs.ts"),
+      "utf8",
+    );
+    const indexSource = readFileSync(resolve(process.cwd(), "src/index.ts"), "utf8");
+
+    expect(iconSource).not.toMatch(/^["']use client["'];/);
+    expect(composeRefsSource).not.toMatch(/^["']use client["'];/);
+    expect(indexSource).toContain('export { Icon } from "./components/icon"');
+    expect(indexSource).toContain('export { composeRefs } from "./lib/compose-refs"');
+    expect(indexSource).toContain("LucideIconProps");
+  });
+
+  it("keeps Icon-owned accessibility semantics ahead of unsafe runtime props", () => {
+    const unsafeProps = {
+      "aria-hidden": false,
+      "aria-label": "Consumer override",
+      focusable: true,
+      role: "presentation",
+      tabIndex: 0,
+    } as Record<string, unknown>;
+    const UnsafeIcon = Icon as React.ComponentType<Record<string, unknown>>;
+    const { container } = render(
+      <>
+        <UnsafeIcon {...unsafeProps} icon={Bell} />
+        <UnsafeIcon {...unsafeProps} decorative={false} icon={Bell} label="Workspace activity" />
+      </>,
+    );
+
+    const [decorativeIcon, meaningfulIcon] = Array.from(container.querySelectorAll("svg"));
+    expect(decorativeIcon).toHaveAttribute("aria-hidden", "true");
+    expect(decorativeIcon).not.toHaveAttribute("aria-label");
+    expect(decorativeIcon).not.toHaveAttribute("role");
+    expect(decorativeIcon).toHaveAttribute("focusable", "false");
+    expect(decorativeIcon).not.toHaveAttribute("tabindex");
+    expect(meaningfulIcon).not.toHaveAttribute("aria-hidden");
+    expect(meaningfulIcon).toHaveAttribute("aria-label", "Workspace activity");
+    expect(meaningfulIcon).toHaveAttribute("role", "img");
+    expect(meaningfulIcon).toHaveAttribute("focusable", "false");
+    expect(meaningfulIcon).not.toHaveAttribute("tabindex");
+  });
+
+  it("rejects empty accessible labels for meaningful Icons", () => {
+    expect(() => render(<Icon decorative={false} icon={Bell} label="  " />)).toThrow(
+      /non-empty label/,
+    );
   });
 
   it("keeps Item composition static by default and exposes stable slots", () => {
@@ -351,6 +417,47 @@ describe("Core static contracts", () => {
     const loadingItem = screen.getByText("Synchronizing").closest(".n-item");
     expect(loadingItem).toHaveAttribute("aria-disabled", "true");
     expect(loadingItem).toHaveAttribute("data-loading");
+  });
+
+  it("composes render-element and forwarded Item refs without dropping either ref shape", () => {
+    const renderObjectRef = React.createRef<HTMLAnchorElement>();
+    const forwardedCallbackRef = vi.fn<(node: HTMLElement | null) => void>();
+    const renderCallbackRef = vi.fn<(node: HTMLElement | null) => void>();
+    const forwardedObjectRef = React.createRef<HTMLElement>();
+    const renderOnlyRef = React.createRef<HTMLAnchorElement>();
+    const forwardedOnlyRef = React.createRef<HTMLElement>();
+    const groupRenderRef = React.createRef<HTMLElement>();
+    const groupForwardedRef = vi.fn<(node: HTMLElement | null) => void>();
+
+    render(
+      <>
+        <Item
+          ref={forwardedCallbackRef}
+          render={<a ref={renderObjectRef} href="/both-object-callback" />}
+        >
+          Both refs
+        </Item>
+        <Item ref={forwardedObjectRef} render={<a ref={renderCallbackRef} href="/both-callback" />}>
+          Callback render ref
+        </Item>
+        <Item render={<a ref={renderOnlyRef} href="/render-only" />}>Render ref only</Item>
+        <Item ref={forwardedOnlyRef}>Forwarded ref only</Item>
+        <ItemGroup ref={groupForwardedRef} render={<section ref={groupRenderRef} />}>
+          Group refs
+        </ItemGroup>
+      </>,
+    );
+
+    const bothLink = screen.getByRole("link", { name: "Both refs" });
+    const callbackLink = screen.getByRole("link", { name: "Callback render ref" });
+    expect(renderObjectRef.current).toBe(bothLink);
+    expect(forwardedCallbackRef).toHaveBeenLastCalledWith(bothLink);
+    expect(renderCallbackRef).toHaveBeenLastCalledWith(callbackLink);
+    expect(forwardedObjectRef.current).toBe(callbackLink);
+    expect(renderOnlyRef.current).toBe(screen.getByRole("link", { name: "Render ref only" }));
+    expect(forwardedOnlyRef.current).toBe(screen.getByText("Forwarded ref only"));
+    expect(groupRenderRef.current).toBe(screen.getByText("Group refs"));
+    expect(groupForwardedRef).toHaveBeenLastCalledWith(screen.getByText("Group refs"));
   });
 
   it("groups related Buttons with named horizontal and vertical layouts", async () => {
@@ -945,6 +1052,16 @@ describe("Core static contracts", () => {
     expect(screen.getByText("Router")).toHaveAttribute("aria-current", "page");
     expect(screen.getByText("Previous")).toHaveAttribute("aria-label", "Older");
     expect(screen.getByText("Next")).toHaveAttribute("aria-label", "Newer");
+  });
+
+  it("preserves current-page styling for static Pagination pages", () => {
+    render(<Pagination pages={[{ key: "current", label: "4", current: true }]} />);
+
+    const currentPage = screen.getByText("4");
+    expect(currentPage).toHaveAttribute("aria-current", "page");
+    expect(currentPage).toHaveAttribute("aria-disabled", "true");
+    expect(currentPage).toHaveAttribute("data-current", "");
+    expect(currentPage).toHaveAttribute("data-disabled", "");
   });
 
   it("only creates a named keyboard scroll region for an explicitly focusable TableContainer", () => {

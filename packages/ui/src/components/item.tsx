@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { composeRefs } from "../lib/compose-refs";
 import { Separator, type SeparatorProps } from "./separator";
 
 export type ItemVariant = "plain" | "outline" | "soft";
@@ -38,7 +39,7 @@ export type ItemDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 function renderRoot(
   render: React.ReactElement<RenderElementProps> | undefined,
   props: RenderElementProps,
-  ref: React.ForwardedRef<HTMLElement>,
+  ref: React.Ref<HTMLElement> | undefined,
 ) {
   if (render) {
     return React.cloneElement(render, {
@@ -55,6 +56,12 @@ export const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
   { className, render, size = "md", variant = "plain", ...props },
   ref,
 ) {
+  const renderRef = render?.props.ref;
+  const composedRef = React.useMemo(
+    () => (renderRef && ref ? composeRefs(renderRef, ref) : (renderRef ?? ref ?? undefined)),
+    [ref, renderRef],
+  );
+
   return renderRoot(
     render,
     {
@@ -64,7 +71,7 @@ export const Item = React.forwardRef<HTMLElement, ItemProps>(function Item(
       "data-slot": "item",
       "data-variant": variant,
     },
-    ref,
+    composedRef,
   );
 });
 
@@ -72,10 +79,16 @@ export const ItemGroup = React.forwardRef<HTMLElement, ItemGroupProps>(function 
   { className, render, ...props },
   ref,
 ) {
+  const renderRef = render?.props.ref;
+  const composedRef = React.useMemo(
+    () => (renderRef && ref ? composeRefs(renderRef, ref) : (renderRef ?? ref ?? undefined)),
+    [ref, renderRef],
+  );
+
   return renderRoot(
     render,
     { ...props, className: cn("n-item-group", className), "data-slot": "item-group" },
-    ref,
+    composedRef,
   );
 });
 

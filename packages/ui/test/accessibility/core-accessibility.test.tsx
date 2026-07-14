@@ -21,6 +21,7 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Icon,
   Item,
   ItemActions,
   ItemContent,
@@ -273,6 +274,8 @@ describe("Core accessibility contracts", () => {
     const { container } = render(
       <>
         <Avatar name="Maya Chen" />
+        <Icon icon={Bell} />
+        <Icon decorative={false} icon={Bell} label="Notifications available" />
         <EmptyState>
           <EmptyStateHeader>
             <EmptyStateTitle>No projects</EmptyStateTitle>

@@ -160,7 +160,7 @@
       "package": "@nerio/ui",
       "category": "foundation",
       "status": "stable-core",
-      "description": "Server-safe icon renderer that normalizes Lucide and custom SVG components with explicit decorative and meaningful semantics."
+      "description": "Server-safe icon renderer with protected non-focusable decorative and meaningful semantics, warning-free custom SVG forwarding, and isolated Lucide stroke behavior."
     },
     {
       "name": "Icon Adapter",
@@ -168,7 +168,7 @@
       "package": "@nerio/adapters",
       "category": "foundation",
       "status": "stable-core",
-      "description": "Public SVG icon contract and default tree-shakeable Lucide source boundary used by Icon and icon-consuming components."
+      "description": "Public generic SVG icon contract with Lucide-only stroke behavior isolated from custom component props."
     },
     {
       "name": "Button",
@@ -362,7 +362,7 @@
       "package": "@nerio/ui",
       "category": "data-display",
       "status": "stable-core",
-      "description": "Universal composition primitive with verified semantic-root refs, narrow wrapping, media, metadata, actions, density, and consumer-owned interaction semantics."
+      "description": "Universal composition primitive with composed render-element and forwarded refs, semantic roots, narrow wrapping, media, metadata, actions, density, and consumer-owned interaction semantics."
     },
     {
       "name": "List",
@@ -466,7 +466,7 @@
       "package": "@nerio/ui",
       "category": "navigation",
       "status": "stable-core",
-      "description": "Consumer-owned link and button pagination with verified boundaries, current state, ellipsis, package-agnostic router rendering, wrapping, density, RTL, and accessible labels."
+      "description": "Consumer-owned link, button, and static pagination with verified current-state parity, boundaries, ellipsis, package-agnostic router rendering, wrapping, density, RTL, and accessible labels."
     },
     {
       "name": "Sidebar Primitive",

@@ -876,6 +876,11 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/styles/display.css",
           "target": "styles/display.css",
           "role": "style"
@@ -918,6 +923,7 @@
       "accessibility": [
         "Item has no implicit role; choose div, li, a, or button according to context.",
         "Use render with a native anchor or button only when the full item has one clear interaction.",
+        "A ref already attached to the render element is composed with the forwarded Item or ItemGroup ref; callback and object refs are both supported.",
         "Do not nest independent actions inside a fully clickable Item.",
         "Static Items are not focusable; interactive rendered roots keep native keyboard and focus behavior.",
         "ItemSeparator is decorative by default."
@@ -940,6 +946,11 @@
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
           "role": "utility"
         },
         {
@@ -1778,6 +1789,7 @@
       "accessibility": [
         "Renders a nav landmark with aria-label=\"Pagination\" by default.",
         "Marks the current page with aria-current=\"page\".",
+        "Current pages keep the same data-current visual hook whether they render as links, buttons, router elements, disabled text, or static text.",
         "Disabled controls render as non-focusable text with aria-disabled; onSelect takes precedence over href when both are supplied.",
         "Page, previous, and next render elements support router adapters while preserving href, data-slot, current-page state, and accessible labels.",
         "Visible labels carry state; color is not the only indicator."

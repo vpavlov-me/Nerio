@@ -40,20 +40,20 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Foundation
 
-| Component / Area  | Status      | Package           | Notes                                                                                                                         |
-| ----------------- | ----------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Tokens            | stable-core | `@nerio/tokens`   | Color, spacing, radius, typography, motion                                                                                    |
-| Themes            | stable-core | `@nerio/tokens`   | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables            |
-| Modes             | stable-core | `@nerio/tokens`   | Color modes: `system`, `light`, `dark`                                                                                        |
-| Density           | stable-core | `@nerio/tokens`   | Density modes: `comfortable`, `compact`                                                                                       |
-| Typography Tokens | stable-core | `@nerio/tokens`   | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.                       |
-| Radius Tokens     | stable-core | `@nerio/tokens`   | Token-customizable radius variables. Not a v1 runtime axis.                                                                   |
-| Motion Tokens     | stable-core | `@nerio/tokens`   | Token-customizable duration/motion variables. Not a v1 runtime axis.                                                          |
-| Contrast Tokens   | stable-core | `@nerio/tokens`   | Token-customizable semantic contrast targets and semantic color overrides. Not a v1 runtime axis.                             |
-| Typography        | stable-core | `@nerio/ui`       | Semantic heading, text, and inline code primitives                                                                            |
-| Kbd               | stable-core | `@nerio/ui`       | Native shortcut notation with verified inline, Button, density, and forced-colors behavior                                    |
-| Icon              | stable-core | `@nerio/ui`       | Server-safe renderer for the adapter SVG contract; decorative is the default and standalone meaningful icons require a label. |
-| Icon Adapter      | stable-core | `@nerio/adapters` | Tree-shakeable Lucide source and public SVG contract; custom React SVG components use the same type boundary.                 |
+| Component / Area  | Status      | Package           | Notes                                                                                                                            |
+| ----------------- | ----------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Tokens            | stable-core | `@nerio/tokens`   | Color, spacing, radius, typography, motion                                                                                       |
+| Themes            | stable-core | `@nerio/tokens`   | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables               |
+| Modes             | stable-core | `@nerio/tokens`   | Color modes: `system`, `light`, `dark`                                                                                           |
+| Density           | stable-core | `@nerio/tokens`   | Density modes: `comfortable`, `compact`                                                                                          |
+| Typography Tokens | stable-core | `@nerio/tokens`   | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.                          |
+| Radius Tokens     | stable-core | `@nerio/tokens`   | Token-customizable radius variables. Not a v1 runtime axis.                                                                      |
+| Motion Tokens     | stable-core | `@nerio/tokens`   | Token-customizable duration/motion variables. Not a v1 runtime axis.                                                             |
+| Contrast Tokens   | stable-core | `@nerio/tokens`   | Token-customizable semantic contrast targets and semantic color overrides. Not a v1 runtime axis.                                |
+| Typography        | stable-core | `@nerio/ui`       | Semantic heading, text, and inline code primitives                                                                               |
+| Kbd               | stable-core | `@nerio/ui`       | Native shortcut notation with verified inline, Button, density, and forced-colors behavior                                       |
+| Icon              | stable-core | `@nerio/ui`       | Server-safe renderer with protected non-focusable semantics, warning-free custom SVG forwarding, and explicit meaningful labels. |
+| Icon Adapter      | stable-core | `@nerio/adapters` | Tree-shakeable Lucide source and generic SVG contract with Lucide-only stroke behavior kept separate.                            |
 
 ### Actions
 
@@ -103,17 +103,17 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Data display
 
-| Component | Status      | Package     | Notes                                                                                                                          |
-| --------- | ----------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Card      | stable-core | `@nerio/ui` | Composable surface with verified visual placement, header action, semantic root, narrow layout, focus, and heading contracts   |
-| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                                            |
-| Avatar    | stable-core | `@nerio/ui` | User/entity avatar with verified image transitions, aspect-ratio cropping, accessible naming, and fallback behavior            |
-| Table     | stable-core | `@nerio/ui` | Native table anatomy with explicit named keyboard-scroll opt-in, responsive and RTL overflow, and consumer-owned data behavior |
-| List      | stable-core | `@nerio/ui` | Structured list with stable IDs, visible ordered markers, native links, and package-agnostic router rendering                  |
-| Item      | stable-core | `@nerio/ui` | Generic composition primitive with verified semantic refs, responsive content/media/actions, and consumer-owned interaction    |
-| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                                                 |
-| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                                                           |
-| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                                                        |
+| Component | Status      | Package     | Notes                                                                                                                               |
+| --------- | ----------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Card      | stable-core | `@nerio/ui` | Composable surface with verified visual placement, header action, semantic root, narrow layout, focus, and heading contracts        |
+| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                                                 |
+| Avatar    | stable-core | `@nerio/ui` | User/entity avatar with verified image transitions, aspect-ratio cropping, accessible naming, and fallback behavior                 |
+| Table     | stable-core | `@nerio/ui` | Native table anatomy with explicit named keyboard-scroll opt-in, responsive and RTL overflow, and consumer-owned data behavior      |
+| List      | stable-core | `@nerio/ui` | Structured list with stable IDs, visible ordered markers, native links, and package-agnostic router rendering                       |
+| Item      | stable-core | `@nerio/ui` | Generic composition primitive with composed render/forwarded refs, responsive content/media/actions, and consumer-owned interaction |
+| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                                                      |
+| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                                                                |
+| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                                                             |
 
 ### Feedback
 
@@ -132,7 +132,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | ----------------- | ----------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | Tabs              | stable-core | `@nerio/ui/client` | Compound tabs with verified controlled state, disabled skipping, variants, overflow, RTL indicator, focus, hydration, and motion                |
 | Breadcrumbs       | stable-core | `@nerio/ui`        | Hierarchy navigation with ordered list semantics and explicit current-page support                                                              |
-| Pagination        | stable-core | `@nerio/ui`        | Link and button pagination with consumer-owned state, boundaries, ellipsis, router rendering, density, wrapping, and RTL                        |
+| Pagination        | stable-core | `@nerio/ui`        | Link, button, and static pagination with current-state parity, boundaries, ellipsis, router rendering, density, wrapping, and RTL               |
 | Sidebar Primitive | stable-core | `@nerio/ui/client` | Stateful layout primitive with server-safe regions, accessible collapse, physical sides, and consumer-owned data                                |
 | Command Primitive | stable-core | `@nerio/ui/client` | Accessible local or consumer-filtered action picker with stable values, groups, disabled navigation, and deliberate empty/loading announcements |
 

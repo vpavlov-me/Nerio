@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { composeRefs } from "../lib/compose-refs";
 
 export type ListItem = {
   id: React.Key;
@@ -38,19 +39,10 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
   ref,
 ) {
   const Root = ordered ? "ol" : "ul";
-  const setRef = (node: HTMLUListElement | HTMLOListElement | null) => {
-    if (typeof ref === "function") {
-      ref(node);
-      return;
-    }
-
-    if (ref) {
-      ref.current = node;
-    }
-  };
+  const composedRef = React.useMemo(() => composeRefs(ref), [ref]);
 
   return (
-    <Root ref={setRef} className={cn("n-list", className)} data-slot="root" {...props}>
+    <Root ref={composedRef} className={cn("n-list", className)} data-slot="root" {...props}>
       {items.map((item) => {
         const {
           className: linkClassName,

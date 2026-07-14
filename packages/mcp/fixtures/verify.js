@@ -260,6 +260,19 @@ async function verify() {
       throw new Error("MCP Switch usage is missing Base UI, dependency, or token metadata.");
     }
 
+    const itemUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "item" },
+    });
+    const itemUsage = JSON.parse(itemUsageResult.content[0].text);
+    if (
+      !itemUsage.requiredTokens.includes("--n-item-gap") ||
+      !itemUsage.accessibility.some((item) => item.includes("callback and object refs")) ||
+      !itemUsage.usage.includes('render={<a href="/settings" />}')
+    ) {
+      throw new Error("MCP Item usage is missing composed-ref, token, or usage metadata.");
+    }
+
     const listUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "list" },
@@ -311,6 +324,7 @@ async function verify() {
       paginationUsage.baseUiPrimitives.length !== 0 ||
       !paginationUsage.requiredTokens.includes("--n-pagination-item-size") ||
       !paginationUsage.accessibility.some((item) => item.includes("aria-disabled")) ||
+      !paginationUsage.accessibility.some((item) => item.includes("static text")) ||
       !paginationUsage.accessibility.some((item) => item.includes("router adapters"))
     ) {
       throw new Error("MCP Pagination usage is missing native, token, or disabled metadata.");
