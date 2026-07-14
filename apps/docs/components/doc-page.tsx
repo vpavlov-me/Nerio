@@ -649,7 +649,7 @@ function Preview({ kind }: { kind: string }) {
                 description="This standalone layout does not inherit manager positioning, actions, or dismissal behavior."
               />
               <ToastDemoButton />
-              <ToastViewport />
+              <ToastViewport swipeDirection={["left", "right", "up", "down"]} />
             </ToastProvider>
           ) : null}
           {kind === "tabs" ? (

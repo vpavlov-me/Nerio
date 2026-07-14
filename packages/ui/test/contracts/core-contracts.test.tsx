@@ -1474,6 +1474,101 @@ describe("Core static contracts", () => {
     expect(secondary).toHaveAttribute("dir", "rtl");
   });
 
+  it("resolves inherited and explicit Toast directions on the initial client render", () => {
+    const originalDirection = document.documentElement.dir;
+    document.documentElement.dir = "rtl";
+
+    try {
+      render(
+        <ToastProvider>
+          <ToastViewport
+            label="Inherited notifications"
+            swipeDirection={["inline-start", "inline-end"]}
+          />
+          <ToastViewport
+            direction="ltr"
+            label="Explicit LTR notifications"
+            swipeDirection={["inline-start", "inline-end"]}
+          />
+          <ToastViewport
+            direction="rtl"
+            label="Explicit RTL notifications"
+            swipeDirection={["inline-start", "inline-end"]}
+          />
+        </ToastProvider>,
+      );
+
+      const inherited = screen.getByRole("region", { name: "Inherited notifications" });
+      const explicitLtr = screen.getByRole("region", { name: "Explicit LTR notifications" });
+      const explicitRtl = screen.getByRole("region", { name: "Explicit RTL notifications" });
+      expect(inherited).toHaveAttribute("data-direction", "rtl");
+      expect(inherited).toHaveAttribute("data-swipe-direction", "right left");
+      expect(explicitLtr).toHaveAttribute("data-direction", "ltr");
+      expect(explicitLtr).toHaveAttribute("data-swipe-direction", "left right");
+      expect(explicitRtl).toHaveAttribute("data-direction", "rtl");
+      expect(explicitRtl).toHaveAttribute("data-swipe-direction", "right left");
+    } finally {
+      document.documentElement.dir = originalDirection;
+    }
+  });
+
+  it("keeps inherited Toast direction synchronized with the document root", async () => {
+    const originalDirection = document.documentElement.dir;
+    document.documentElement.dir = "ltr";
+
+    try {
+      render(
+        <ToastProvider>
+          <ToastViewport label="Inherited notifications" />
+        </ToastProvider>,
+      );
+      const viewport = screen.getByRole("region", { name: "Inherited notifications" });
+      expect(viewport).toHaveAttribute("data-direction", "ltr");
+      expect(viewport).toHaveAttribute("data-swipe-direction", "right down");
+
+      await act(async () => {
+        document.documentElement.dir = "rtl";
+        await Promise.resolve();
+      });
+      expect(viewport).toHaveAttribute("data-direction", "rtl");
+      expect(viewport).toHaveAttribute("data-swipe-direction", "left down");
+    } finally {
+      document.documentElement.dir = originalDirection;
+    }
+  });
+
+  it("uses one managed Toast coordinate system for stack, enter, and four-way dismissal", () => {
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/toast.css"), "utf8");
+
+    expect(styles).toMatch(/--toast-managed-base-y:/);
+    expect(styles).toMatch(/--toast-managed-enter-y:/);
+    expect(styles).toMatch(/--toast-managed-dismiss-x:/);
+    expect(styles).toMatch(/--toast-managed-dismiss-y:/);
+    expect(styles).toMatch(
+      /transform:\s*translate3d\(\s*var\(--toast-managed-x\),\s*var\(--toast-managed-y\),\s*0\s*\)/,
+    );
+    expect(styles).toMatch(
+      /\[data-starting-style\][\s\S]*--toast-managed-enter-y:\s*var\(--n-toast-enter-offset\)/,
+    );
+
+    for (const [direction, axis, sign] of [
+      ["right", "x", ""],
+      ["left", "x", String.raw`-1 \*`],
+      ["down", "y", ""],
+      ["up", "y", String.raw`-1 \*`],
+    ] as const) {
+      expect(styles).toMatch(
+        new RegExp(
+          `\\[data-ending-style\\]\\[data-swipe-direction="${direction}"\\][\\s\\S]*--toast-managed-dismiss-${axis}:\\s*calc\\(${sign}`,
+        ),
+      );
+    }
+
+    expect(styles).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)[\s\S]*--toast-managed-enter-y:\s*0px;[\s\S]*--toast-managed-dismiss-x:\s*0px;[\s\S]*--toast-managed-dismiss-y:\s*0px;/,
+    );
+  });
+
   it("upserts duplicate IDs, preserves ordering, and marks stack overflow deterministically", () => {
     const manager = createToastManager();
     render(

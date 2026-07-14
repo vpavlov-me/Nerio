@@ -1800,6 +1800,10 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "Swiping",
         description: "Dismisses past the threshold and returns to position when cancelled.",
       },
+      {
+        title: "Expanded stack",
+        description: "Preserves every toast's stack basis through enter, swipe, and dismissal.",
+      },
       { title: "Limited", description: "Keeps overflow mounted but inert and visually hidden." },
     ],
     accessibility: [
@@ -1808,6 +1812,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "Base UI announces the manager title and description once, without decorative icons or action copy.",
       "Toasts never move focus when they appear. Press F6 to enter the Notifications region, then use Tab for actions and dismissal.",
       "Timers pause while the viewport is hovered, keyboard focus is within it, or the window is inactive.",
+      "Inherited document direction is correct on the first interactive render and stays synchronized when the root dir attribute changes.",
+      "Use inline-start or inline-end when swipe dismissal should follow the current LTR or RTL reading direction.",
       "Swipe is optional input; every managed toast retains a keyboard-reachable dismiss control.",
       "Static Toast is a presentation primitive; use ToastProvider and ToastViewport for managed notifications.",
       "Keep persistent error text in the page or form; a danger toast can only supplement it.",
@@ -1846,6 +1852,15 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "dismissLabel",
         description: "Localizes the managed toast dismiss accessible name.",
       },
+      {
+        title: "direction",
+        description: "Overrides inherited document direction immediately with ltr or rtl.",
+      },
+      {
+        title: "swipeDirection",
+        description:
+          "Accepts physical directions or logical inline-start and inline-end directions resolved from the viewport direction.",
+      },
     ],
     guidance: {
       do: [
@@ -1862,6 +1877,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toast-viewport-inset",
       "--n-toast-stack-gap",
       "--n-toast-stack-offset",
+      "--n-toast-enter-offset",
       "--n-toast-swipe-dismiss-distance",
       "--n-toast-background",
       "--n-toast-border",

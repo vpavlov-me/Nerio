@@ -655,10 +655,27 @@ async function verify() {
       !toastSource.includes("Dismiss notification") ||
       !toastSource.includes("data?.tone") ||
       !toastSource.includes("inline-end") ||
+      !toastSource.includes("readDocumentDirection") ||
+      !toastSource.includes("data-direction") ||
       !toastSource.includes("dismissOnClick")
     ) {
       throw new Error(
-        "Installed Toast source is missing manager, tone, RTL swipe, or action dismissal contract.",
+        "Installed Toast source is missing manager, first-render direction, RTL swipe, or action dismissal contract.",
+      );
+    }
+
+    const toastStyles = fs.readFileSync(
+      path.join(localTarget, "components/nerio/styles/toast.css"),
+      "utf8",
+    );
+    if (
+      !toastStyles.includes("--toast-managed-base-y") ||
+      !toastStyles.includes("--toast-managed-dismiss-x") ||
+      !toastStyles.includes("--toast-managed-dismiss-y") ||
+      !toastStyles.includes("translate3d(var(--toast-managed-x), var(--toast-managed-y), 0)")
+    ) {
+      throw new Error(
+        "Installed Toast styles are missing the unified transform coordinate system.",
       );
     }
 

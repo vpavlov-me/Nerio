@@ -75,9 +75,14 @@
 }
 
 .n-toast--managed {
-  --toast-expanded-offset: calc(
-    (var(--toast-offset-y) * -1) - (var(--toast-index) * var(--n-toast-stack-gap)) +
-      var(--toast-swipe-movement-y)
+  --toast-managed-base-y: calc(var(--toast-index) * var(--n-toast-stack-offset) * -1);
+  --toast-managed-dismiss-x: 0px;
+  --toast-managed-dismiss-y: 0px;
+  --toast-managed-enter-y: 0px;
+  --toast-managed-x: calc(var(--toast-swipe-movement-x) + var(--toast-managed-dismiss-x));
+  --toast-managed-y: calc(
+    var(--toast-managed-base-y) + var(--toast-swipe-movement-y) + var(--toast-managed-enter-y) +
+      var(--toast-managed-dismiss-y)
   );
   inset-block-end: 0;
   inset-inline-end: 0;
@@ -85,10 +90,7 @@
   pointer-events: auto;
   position: absolute;
   touch-action: none;
-  transform: translateX(var(--toast-swipe-movement-x))
-    translateY(
-      calc(var(--toast-swipe-movement-y) - (var(--toast-index) * var(--n-toast-stack-offset)))
-    );
+  transform: translate3d(var(--toast-managed-x), var(--toast-managed-y), 0);
   transition:
     transform var(--n-motion-reveal-duration) var(--n-motion-reveal-easing),
     opacity var(--n-motion-focus-duration) var(--n-motion-focus-easing);
@@ -97,7 +99,9 @@
 }
 
 .n-toast--managed[data-expanded] {
-  transform: translateX(var(--toast-swipe-movement-x)) translateY(var(--toast-expanded-offset));
+  --toast-managed-base-y: calc(
+    (var(--toast-offset-y) * -1) - (var(--toast-index) * var(--n-toast-stack-gap))
+  );
 }
 
 .n-toast--managed[data-limited] {
@@ -106,7 +110,7 @@
 }
 
 .n-toast--managed[data-starting-style] {
-  transform: translateY(var(--n-icon-size-md));
+  --toast-managed-enter-y: var(--n-toast-enter-offset);
 }
 
 .n-toast--managed[data-ending-style] {
@@ -114,25 +118,19 @@
 }
 
 .n-toast--managed[data-ending-style][data-swipe-direction="right"] {
-  transform: translateX(calc(var(--toast-swipe-movement-x) + var(--n-toast-swipe-dismiss-distance)))
-    translateY(var(--toast-expanded-offset));
+  --toast-managed-dismiss-x: calc(var(--n-toast-swipe-dismiss-distance));
 }
 
 .n-toast--managed[data-ending-style][data-swipe-direction="left"] {
-  transform: translateX(calc(var(--toast-swipe-movement-x) - var(--n-toast-swipe-dismiss-distance)))
-    translateY(var(--toast-expanded-offset));
+  --toast-managed-dismiss-x: calc(-1 * var(--n-toast-swipe-dismiss-distance));
 }
 
 .n-toast--managed[data-ending-style][data-swipe-direction="down"] {
-  transform: translateY(
-    calc(var(--toast-swipe-movement-y) + var(--n-toast-swipe-dismiss-distance))
-  );
+  --toast-managed-dismiss-y: calc(var(--n-toast-swipe-dismiss-distance));
 }
 
 .n-toast--managed[data-ending-style][data-swipe-direction="up"] {
-  transform: translateY(
-    calc(var(--toast-swipe-movement-y) - var(--n-toast-swipe-dismiss-distance))
-  );
+  --toast-managed-dismiss-y: calc(-1 * var(--n-toast-swipe-dismiss-distance));
 }
 
 .n-toast--managed::after {
@@ -231,6 +229,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .n-toast--managed[data-starting-style] {
+    --toast-managed-enter-y: 0px;
+  }
+
+  .n-toast--managed[data-ending-style][data-swipe-direction] {
+    --toast-managed-dismiss-x: 0px;
+    --toast-managed-dismiss-y: 0px;
+  }
+
   .n-toast--managed {
     transition-duration: var(--n-duration-instant);
   }

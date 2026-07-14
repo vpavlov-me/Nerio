@@ -82,6 +82,9 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
   side-specific enter, exit, and reduced-motion contracts.
 - Prevented malformed TableContainer names and consumer prop spreads from creating unnamed focus
   stops, and limited Table row-state styling to truthful current or selected tbody rows.
+- Eliminated Toast enter and swipe-dismiss transform jumps across collapsed and expanded stacks,
+  preserved both axes for four-way dismissal, and resolved inherited RTL before the first
+  interactive render while keeping root direction changes synchronized.
 
 ### Deprecated
 
