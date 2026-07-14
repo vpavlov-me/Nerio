@@ -44,8 +44,8 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | ----------------- | ----------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | Tokens            | stable-core | `@nerio/tokens`   | Color, spacing, radius, typography, motion                                                                                       |
 | Themes            | stable-core | `@nerio/tokens`   | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables               |
-| Modes             | stable-core | `@nerio/tokens`   | Color modes: `system`, `light`, `dark`                                                                                           |
-| Density           | stable-core | `@nerio/tokens`   | Density modes: `comfortable`, `compact`                                                                                          |
+| Modes             | stable-core | `@nerio/tokens`   | Explicit persisted `system`, `light`, and `dark` modes; System follows live OS preference changes.                               |
+| Density           | stable-core | `@nerio/tokens`   | `comfortable` and `compact` remap semantic/component contracts while primitive scales remain immutable.                          |
 | Typography Tokens | stable-core | `@nerio/tokens`   | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.                          |
 | Radius Tokens     | stable-core | `@nerio/tokens`   | Token-customizable radius variables. Not a v1 runtime axis.                                                                      |
 | Motion Tokens     | stable-core | `@nerio/tokens`   | Token-customizable duration/motion variables. Not a v1 runtime axis.                                                             |

@@ -69,7 +69,7 @@
   justify-content: center;
   min-block-size: var(--n-pagination-item-size);
   min-inline-size: var(--n-pagination-item-size);
-  padding-inline: var(--n-space-3);
+  padding-inline: var(--n-pagination-control-padding-inline);
   text-decoration: none;
 }
 

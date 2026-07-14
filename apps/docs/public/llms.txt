@@ -20,6 +20,8 @@ System UI is the default Core font stack and the cross-platform system mono stac
 
 Nerio separates theme, mode, and density. Theme is selected with `data-theme="purple"`, `data-theme="blue"`, `data-theme="green"`, `data-theme="orange"`, `data-theme="red"`, `data-theme="neutral"`, or a custom product theme. Mode is selected with `data-mode="system"`, `data-mode="light"`, or `data-mode="dark"`. Density is selected with `data-density="comfortable"` or `data-density="compact"`.
 
+Primitive tokens are immutable raw values across theme, mode, and density selectors. Runtime selectors remap semantic and component contracts instead. The docs appearance controls expose System, Light, and Dark explicitly, follow OS preference changes while System is selected, and restore theme, mode, and density independently before hydration.
+
 Default runtime attributes: `data-theme="purple" data-mode="system" data-density="comfortable"`.
 
 Do not create or use combined theme names such as `purple-light`, `purple-dark`, `neutral-light`, `neutral-dark`, `blue-light`, `blue-dark`, `red-light`, or `red-dark`. Do not create vertical-specific Core preset names such as `fintech-blue`; use generic brand color names.

@@ -19,25 +19,28 @@ import {
   Github,
   Layers,
   ListTree,
-  Moon,
   Palette,
   PanelLeft,
   PackageOpen,
   Rows3,
   Search,
   Sparkles,
-  Sun,
   Type,
   Wrench,
 } from "@nerio/adapters";
-import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio/ui/client";
+import { Badge, Button, ButtonGroup, DropdownMenu, Icon, Select } from "@nerio/ui/client";
 import type { IconComponent } from "@nerio/adapters";
 import { densities, modes, themes } from "@nerio/tokens";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
+import {
+  defaultAppearance,
+  persistAppearanceAxis,
+  readAppearanceFromRoot,
+  type Appearance,
+} from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
-const modeStorageKey = "nerio-docs-mode";
 type ColorMode = (typeof modes)[number];
 type FeedbackValue = "helpful" | "neutral" | "not-helpful";
 
@@ -152,7 +155,12 @@ const navGroups: NavGroup[] = [
 
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
 const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
+const modeOptions = modes.map((value) => ({ label: runtimeLabel(value), value }));
 const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), value }));
+
+function isColorMode(value: string): value is ColorMode {
+  return modes.some((mode) => mode === value);
+}
 
 function getThemeDotColor(theme: string) {
   return theme === "neutral" ? "var(--n-color-text-secondary)" : `var(--n-${theme}-600)`;
@@ -603,11 +611,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const isHomePage = pathname === "/";
   const isTemplatesPage = pathname === "/templates";
   const fallbackToc = getDefaultToc(pathname);
-  const [theme, setThemeValue] = React.useState("purple");
-  const [mode, setModeValue] = React.useState<ColorMode>("system");
-  const [density, setDensityValue] =
-    React.useState<(typeof densityOptions)[number]["value"]>("comfortable");
-  const [systemMode, setSystemMode] = React.useState<Exclude<ColorMode, "system">>("light");
+  const [theme, setThemeValue] = React.useState<Appearance["theme"]>(defaultAppearance.theme);
+  const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
+  const [density, setDensityValue] = React.useState<Appearance["density"]>(
+    defaultAppearance.density,
+  );
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
@@ -616,24 +624,11 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     setFeedback(null);
   }, [pathname]);
 
-  React.useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    document.documentElement.setAttribute("data-mode", mode);
-    document.documentElement.setAttribute("data-density", density);
-  }, [theme, mode, density]);
-
-  React.useEffect(() => {
-    const storedMode = window.localStorage.getItem(modeStorageKey);
-    if (storedMode === "light" || storedMode === "dark") setModeValue(storedMode);
-  }, []);
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const updateSystemMode = () => setSystemMode(mediaQuery.matches ? "dark" : "light");
-
-    updateSystemMode();
-    mediaQuery.addEventListener("change", updateSystemMode);
-    return () => mediaQuery.removeEventListener("change", updateSystemMode);
+  React.useLayoutEffect(() => {
+    const restored = readAppearanceFromRoot(document.documentElement);
+    setThemeValue(restored.theme);
+    setModeValue(restored.mode);
+    setDensityValue(restored.density);
   }, []);
 
   React.useEffect(() => {
@@ -694,29 +689,20 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect();
   }, [pathname, toc]);
 
-  const setTheme = (value: string) => {
+  const setTheme = (value: Appearance["theme"]) => {
     setThemeValue(value);
-    document.documentElement.setAttribute("data-theme", value);
+    persistAppearanceAxis(document.documentElement, "theme", value);
   };
 
-  const setMode = (value: ColorMode) => {
+  const setMode = (value: Appearance["mode"]) => {
     setModeValue(value);
-    document.documentElement.setAttribute("data-mode", value);
-    window.localStorage.setItem(modeStorageKey, value);
+    persistAppearanceAxis(document.documentElement, "mode", value);
   };
 
-  const setDensity = (value: (typeof densityOptions)[number]["value"]) => {
+  const setDensity = (value: Appearance["density"]) => {
     setDensityValue(value);
-    document.documentElement.setAttribute("data-density", value);
+    persistAppearanceAxis(document.documentElement, "density", value);
   };
-
-  const toggleMode = () => {
-    setMode((mode === "system" ? systemMode : mode) === "light" ? "dark" : "light");
-  };
-
-  const activeColorMode = mode === "system" ? systemMode : mode;
-  const modeIcon = activeColorMode === "light" ? Moon : Sun;
-  const modeLabel = activeColorMode === "light" ? "Use dark color mode" : "Use light color mode";
 
   const scrollToTocItem = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     event.preventDefault();
@@ -809,13 +795,15 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               }))}
             />
             <span className="docs-controls-divider" aria-hidden />
-            <Button
-              onClick={toggleMode}
-              aria-label={modeLabel}
-              className="docs-mode-toggle"
-              icon={modeIcon}
-              tooltip={modeLabel}
-              variant="ghost"
+            <Select
+              aria-label="Color mode"
+              className="docs-mode-selector"
+              label="Color mode"
+              onChange={(value) => {
+                if (isColorMode(value)) setMode(value);
+              }}
+              options={modeOptions}
+              value={mode}
             />
             <span className="docs-controls-divider" aria-hidden />
             <Button

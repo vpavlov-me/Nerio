@@ -82,6 +82,9 @@ const semanticTokens = [
 ] as const;
 
 const semanticAliases = [
+  ["Density spacing", "--n-density-space-md", "--n-space-3"],
+  ["Density spacing", "--n-density-space-lg", "--n-space-4"],
+  ["Density spacing", "--n-density-space-xl", "--n-space-5"],
   ["Control radius", "--n-radius-control", "--n-radius-md"],
   ["Container radius", "--n-radius-container", "--n-radius-lg"],
   ["Overlay radius", "--n-radius-overlay", "--n-radius-xl"],
@@ -183,6 +186,10 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="primitive-tokens">Primitive tokens</h2>
+        <p>
+          Primitive tokens are immutable raw values. Theme, mode, and density selectors never
+          redefine them; runtime changes remap semantic and component aliases instead.
+        </p>
         <TableContainer className="token-color-table">
           <Table>
             <thead>
@@ -336,6 +343,7 @@ export default function Page() {
         <CodeExample code={usage} label="Token usage" />
         <ul className="doc-list">
           <li>Use primitive tokens only when defining semantic or component tokens.</li>
+          <li>Keep primitive values unchanged across theme, mode, and density selectors.</li>
           <li>Use semantic tokens for product layout, copy, borders, actions, and status.</li>
           <li>Use component tokens to adjust a component contract without forking source.</li>
           <li>Use runtime sets to remap tokens; do not encode mode or density into theme names.</li>

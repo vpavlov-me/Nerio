@@ -325,8 +325,8 @@ pre {
   inline-size: var(--n-docs-control-icon-size);
 }
 
-.docs-mode-toggle {
-  color: var(--n-color-text-secondary);
+.docs-mode-selector {
+  inline-size: 7.5rem;
 }
 
 .docs-controls-divider {

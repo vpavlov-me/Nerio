@@ -21,7 +21,7 @@
 }
 
 .n-button-group > .n-button + .n-button::before {
-  block-size: var(--n-space-4);
+  block-size: var(--n-button-group-divider-length);
   inline-size: var(--n-button-border-width);
   inset-block-start: 50%;
   inset-inline-start: calc(var(--n-button-border-width) * -1);
@@ -59,7 +59,7 @@
 
 .n-button-group[data-orientation="vertical"] > .n-button + .n-button::before {
   block-size: var(--n-button-border-width);
-  inline-size: var(--n-space-4);
+  inline-size: var(--n-button-group-divider-length);
   inset-block-start: calc(var(--n-button-border-width) * -1);
   inset-inline-start: 50%;
   transform: translateX(-50%);

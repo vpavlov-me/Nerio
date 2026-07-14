@@ -370,3 +370,9 @@ public token, and keep theme selectors limited to semantic accent overrides.
 Comfortable is the default density.
 
 Compact is an opt-in density for dense operational views. Compact must be implemented through tokens and CSS variables, not separate compact components.
+
+Primitive tokens are immutable raw values. Theme, mode, and density selectors must not redefine
+primitive spacing, radius, typography, icon-size, control-size, color, or motion scales. Compact
+density remaps reusable semantic density aliases and component contracts instead. Product code that
+uses a primitive such as `--n-space-4` therefore receives the same raw value in comfortable and
+compact contexts, while a component contract such as `--n-table-cell-padding-y` may become tighter.

@@ -44,8 +44,8 @@
   box-shadow: var(--n-overlay-shadow);
   inset-block-start: 50%;
   inset-inline-start: 50%;
-  inline-size: min(calc(100vw - (var(--n-space-4) * 2)), var(--n-dialog-width-md));
-  padding: var(--n-space-5);
+  inline-size: min(calc(100vw - (var(--n-dialog-viewport-inset) * 2)), var(--n-dialog-width-md));
+  padding: var(--n-dialog-padding);
   position: fixed;
   transform: translate(-50%, -50%);
   z-index: calc(var(--n-overlay-z-index) + 1);
@@ -58,9 +58,9 @@
 .n-dialog__header {
   align-items: start;
   display: flex;
-  gap: var(--n-space-4);
+  gap: var(--n-dialog-header-gap);
   justify-content: space-between;
-  margin-block-end: var(--n-space-4);
+  margin-block-end: var(--n-dialog-header-margin);
 }
 
 .n-dialog__heading {
@@ -84,7 +84,7 @@
 .n-dialog__body {
   color: var(--n-overlay-foreground);
   display: grid;
-  gap: var(--n-space-4);
+  gap: var(--n-dialog-body-gap);
 }
 
 .n-dialog__body p {
@@ -410,7 +410,7 @@
   color: var(--n-color-text-secondary);
   cursor: pointer;
   font-size: var(--n-font-size-sm);
-  padding: var(--n-space-2) var(--n-space-3);
+  padding: var(--n-space-2) var(--n-dropdown-item-padding-inline);
   text-align: start;
 }
 

@@ -141,7 +141,7 @@
       "package": "@nerio/tokens",
       "category": "foundation",
       "status": "stable-core",
-      "description": "Color modes: system, light, and dark."
+      "description": "Explicit system, light, and dark modes with independent persistence; system follows live OS preference changes."
     },
     {
       "name": "Density",
@@ -149,7 +149,7 @@
       "package": "@nerio/tokens",
       "category": "foundation",
       "status": "stable-core",
-      "description": "Density modes: comfortable and compact."
+      "description": "Comfortable and compact density remap semantic and component contracts while primitive scales remain immutable."
     },
     {
       "name": "Typography Tokens",

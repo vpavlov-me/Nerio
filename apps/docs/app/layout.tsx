@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { DocsChrome } from "../components/docs-chrome";
+import { createAppearanceInitializationScript } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
 
 const geistSans = Geist({
@@ -76,12 +77,19 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
+      suppressHydrationWarning
       lang="en"
       data-theme="purple"
       data-mode="system"
       data-density="comfortable"
       className={`n-typography-geist ${geistSans.variable} ${geistMono.variable}`}
     >
+      <head>
+        <script
+          id="nerio-appearance"
+          dangerouslySetInnerHTML={{ __html: createAppearanceInitializationScript() }}
+        />
+      </head>
       <body>
         <DocsChrome>{children}</DocsChrome>
         <Script id="yandex-metrika" strategy="afterInteractive">

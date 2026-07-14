@@ -69,6 +69,8 @@ Future Pro code may live in a private repository or private workspace. Pro may d
 ### 1. Primitive tokens
 
 Raw values with no semantic meaning. Examples: `--n-purple-500`, `--n-space-4`, `--n-radius-md`.
+Primitive values are immutable across theme, mode, and density selectors so application-local raw
+scale usage remains stable.
 
 ### 2. Semantic tokens
 
@@ -102,6 +104,8 @@ Do not create combined theme names such as `purple-light`, `purple-dark`, `neutr
 Do not create vertical-specific Core preset names such as `fintech-blue`. Core presets should use generic brand color names.
 
 Theme, mode, and density changes must work through CSS variables without rebuilding component source.
+Runtime selectors remap semantic and component contracts; they must never redefine primitive color,
+spacing, radius, typography, icon, or control-size scales.
 
 ## UI package entrypoints
 
