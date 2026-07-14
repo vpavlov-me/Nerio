@@ -1,47 +1,44 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { collectRules, normalizeSelector, parseCss } from "./css-structure.mjs";
+import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const read = (path) => readFileSync(join(root, path), "utf8");
-const tokenCss = read("packages/tokens/src/styles.css");
-const docsChrome = read("apps/docs/components/docs-chrome.tsx");
-const demoApp = read("apps/demo-app/app/page.tsx");
-const uiStyles = [
-  read("packages/ui/src/styles/forms.css"),
-  read("packages/ui/src/styles/progress.css"),
-  read("packages/ui/src/styles/overlays.css"),
-  read("packages/ui/src/styles/motion.css"),
-].join("\n");
-
-const themes = ["purple", "blue", "green", "orange", "red", "neutral"];
-const failures = [];
-const requireText = (source, text, label) => {
-  if (!source.includes(text)) failures.push(`${label}: ${text}`);
-};
-
-for (const theme of themes) {
-  requireText(tokenCss, `:root[data-theme="${theme}"]`, "Missing light theme selector");
-  requireText(
-    tokenCss,
-    `:root[data-theme="${theme}"][data-mode="dark"]`,
-    "Missing dark theme selector",
-  );
-  requireText(
-    tokenCss,
-    `:root[data-theme="${theme}"][data-mode="system"]`,
-    "Missing system-dark theme selector",
-  );
-}
-
-for (const mode of ["light", "dark", "system"]) {
-  requireText(tokenCss, `data-mode="${mode}"`, "Missing mode contract");
-}
-requireText(tokenCss, "@media (prefers-color-scheme: dark)", "Missing OS color-scheme contract");
-requireText(tokenCss, ':root[data-density="compact"]', "Missing compact density selector");
-const compactDensity =
-  tokenCss.match(/:root\[data-density="compact"\]\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
-for (const token of [
+const darkMedia = "(prefers-color-scheme: dark)";
+const accentTokens = [
+  "--n-color-surface-selected",
+  "--n-color-border-focus",
+  "--n-color-action-primary",
+  "--n-color-action-primary-hover",
+  "--n-color-action-primary-active",
+  "--n-color-action-on-primary",
+  "--n-color-focus-ring",
+  "--n-chart-primary",
+  "--n-chart-categorical-1",
+  "--n-color-focus-ring-soft",
+];
+const modeTokens = [
+  "--n-color-surface-canvas",
+  "--n-color-surface-default",
+  "--n-color-surface-control",
+  "--n-color-surface-subtle",
+  "--n-color-surface-sunken",
+  "--n-color-surface-raised",
+  "--n-color-surface-overlay",
+  "--n-color-text-primary",
+  "--n-color-text-secondary",
+  "--n-color-text-tertiary",
+  "--n-color-text-disabled",
+  "--n-color-text-inverse",
+  "--n-color-border-subtle",
+  "--n-color-border-default",
+  "--n-color-border-strong",
+  "--n-color-border-interactive",
+  "--n-overlay-backdrop",
+];
+const compactTokens = [
   "--n-space-3",
   "--n-button-height-md",
   "--n-input-height-md",
@@ -49,36 +46,199 @@ for (const token of [
   "--n-card-gap",
   "--n-pagination-item-size",
   "--n-progress-height",
-]) {
-  requireText(compactDensity, token, "Missing compact density token");
+];
+
+function findExactRule(rules, selector, media = null) {
+  const expected = normalizeSelector(selector);
+  return rules.find((rule) => {
+    const exactSelector = rule.selectors.length === 1 && rule.selectors[0] === expected;
+    const mediaRules = rule.atRules.filter((atRule) => atRule.name === "media");
+    return (
+      exactSelector &&
+      (media === null
+        ? mediaRules.length === 0
+        : mediaRules.length === 1 && mediaRules[0].prelude === media)
+    );
+  });
 }
 
-for (const source of [docsChrome, demoApp]) {
-  for (const axis of ["data-theme", "data-mode", "data-density"]) {
-    requireText(source, `setAttribute("${axis}"`, "Runtime surface does not set axis");
+function requireRule(rules, selector, media, tokens, label, failures) {
+  const rule = findExactRule(rules, selector, media);
+  if (!rule) {
+    failures.push(`${label} selector is missing or misplaced: ${selector}`);
+    return;
+  }
+  for (const token of tokens) {
+    if (!rule.declarations.has(token)) failures.push(`${label} is missing ${token}.`);
   }
 }
 
-for (const axis of ["data-radius", "data-font", "data-motion", "data-contrast", "data-scale"]) {
-  if (tokenCss.includes(`[${axis}`)) failures.push(`Prohibited runtime axis selector: ${axis}`);
+function tokenize(source) {
+  return [
+    ...source.matchAll(
+      /"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)'|[A-Za-z_$][A-Za-z0-9_$-]*|[{}[\],=]/g,
+    ),
+  ].map((match) => match[1] ?? match[2] ?? match[0]);
 }
 
-for (const contract of [
-  "--n-color-focus-ring",
-  "--n-color-text-disabled",
-  "--n-color-surface-selected",
-  "--n-color-danger",
-  "--n-overlay-backdrop",
-]) {
-  requireText(tokenCss, contract, "Missing accessibility token");
-}
-requireText(uiStyles, "@media (forced-colors: active)", "Missing forced-colors contract");
-requireText(uiStyles, "@media (prefers-reduced-motion: reduce)", "Missing reduced-motion contract");
-
-if (failures.length) {
-  console.error("Runtime-axis validation failed:");
-  for (const failure of failures) console.error(`- ${failure}`);
-  process.exit(1);
+function exportedArray(source, name) {
+  const tokens = tokenize(source);
+  const start = tokens.findIndex(
+    (token, index) => token === name && tokens[index + 1] === "=" && tokens[index + 2] === "[",
+  );
+  if (start === -1) return [];
+  const values = [];
+  for (let index = start + 3; index < tokens.length && tokens[index] !== "]"; index += 1) {
+    if (![",", "as", "const"].includes(tokens[index])) values.push(tokens[index]);
+  }
+  return values;
 }
 
-console.log(`Runtime-axis matrix verified for ${themes.length} themes, 3 modes, and 2 densities.`);
+function namedImports(source, moduleName) {
+  const tokens = tokenize(source);
+  const names = new Set();
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (tokens[index] !== "import" || tokens[index + 1] !== "{") continue;
+    const imported = [];
+    index += 2;
+    while (index < tokens.length && tokens[index] !== "}") {
+      if (tokens[index] !== ",") imported.push(tokens[index]);
+      index += 1;
+    }
+    if (tokens[index + 1] === "from" && tokens[index + 2] === moduleName) {
+      for (const name of imported) names.add(name);
+    }
+  }
+  return names;
+}
+
+function sameValues(left, right) {
+  return left.length === right.length && left.every((value, index) => value === right[index]);
+}
+
+function validate() {
+  const paths = parsePathOptions(process.argv.slice(2), {
+    "--token-file": join(root, "packages/tokens/src/styles.css"),
+    "--catalog": join(root, "data/component-catalog.json"),
+    "--token-contract": join(root, "packages/tokens/src/index.ts"),
+    "--docs-controls": join(root, "apps/docs/components/docs-chrome.tsx"),
+    "--demo-controls": join(root, "apps/demo-app/app/page.tsx"),
+  });
+  const tokenCss = readFileSync(paths["--token-file"], "utf8");
+  const catalog = JSON.parse(readFileSync(paths["--catalog"], "utf8"));
+  const tokenContract = readFileSync(paths["--token-contract"], "utf8");
+  const docsControls = readFileSync(paths["--docs-controls"], "utf8");
+  const demoControls = readFileSync(paths["--demo-controls"], "utf8");
+  const rules = collectRules(parseCss(tokenCss));
+  const failures = [];
+  const themes = catalog.runtimeAxes?.theme ?? [];
+  const modes = catalog.runtimeAxes?.mode ?? [];
+  const densities = catalog.runtimeAxes?.density ?? [];
+
+  for (const [axis, expected] of Object.entries({ themes, modes, densities })) {
+    const actual = exportedArray(tokenContract, axis);
+    if (!sameValues(actual, expected))
+      failures.push(
+        `@nerio/tokens ${axis} export differs from the canonical catalog: ${actual.join(", ")} !== ${expected.join(", ")}`,
+      );
+  }
+
+  for (const theme of themes) {
+    requireRule(
+      rules,
+      `:root[data-theme="${theme}"]`,
+      null,
+      accentTokens,
+      `Light theme ${theme}`,
+      failures,
+    );
+    requireRule(
+      rules,
+      `:root[data-theme="${theme}"][data-mode="dark"]`,
+      null,
+      accentTokens,
+      `Dark theme ${theme}`,
+      failures,
+    );
+    requireRule(
+      rules,
+      `:root[data-theme="${theme}"][data-mode="system"]`,
+      darkMedia,
+      accentTokens,
+      `System-dark theme ${theme}`,
+      failures,
+    );
+  }
+  requireRule(rules, ':root[data-mode="light"]', null, modeTokens, "Light mode", failures);
+  requireRule(rules, ':root[data-mode="dark"]', null, modeTokens, "Dark mode", failures);
+  requireRule(
+    rules,
+    ':root[data-mode="system"]',
+    darkMedia,
+    modeTokens,
+    "System-dark mode",
+    failures,
+  );
+  requireRule(
+    rules,
+    ':root[data-density="compact"]',
+    null,
+    compactTokens,
+    "Compact density",
+    failures,
+  );
+
+  for (const rule of rules) {
+    for (const selector of rule.selectors) {
+      for (const axis of catalog.runtimeAxisPolicy?.notAllowedInV1 ?? []) {
+        if (new RegExp(`\\[${axis}(?:[=\\]])`).test(selector))
+          failures.push(`Prohibited runtime axis selector: ${axis} in ${selector}`);
+      }
+    }
+  }
+
+  for (const [surface, source] of [
+    ["Docs", docsControls],
+    ["Demo", demoControls],
+  ]) {
+    const imports = namedImports(source, "@nerio/tokens");
+    for (const name of ["themes", "modes", "densities"]) {
+      if (!imports.has(name))
+        failures.push(
+          `${surface} runtime controls must import canonical ${name} from @nerio/tokens.`,
+        );
+    }
+  }
+
+  const uiStyleRules = readdirSync(join(root, "packages/ui/src/styles"))
+    .filter((file) => file.endsWith(".css"))
+    .flatMap((file) =>
+      collectRules(parseCss(readFileSync(join(root, "packages/ui/src/styles", file), "utf8"))),
+    );
+  for (const media of ["(forced-colors: active)", "(prefers-reduced-motion: reduce)"]) {
+    if (
+      !uiStyleRules.some((rule) =>
+        rule.atRules.some((atRule) => atRule.name === "media" && atRule.prelude === media),
+      )
+    ) {
+      failures.push(`UI styles are missing the ${media} media contract.`);
+    }
+  }
+
+  if (failures.length) {
+    console.error("Runtime-axis validation failed:");
+    for (const failure of failures) console.error(`- ${failure}`);
+    process.exitCode = 1;
+    return;
+  }
+  console.log(
+    `Runtime-axis matrix verified structurally for ${themes.length} themes, ${modes.length} modes, and ${densities.length} densities.`,
+  );
+}
+
+try {
+  validate();
+} catch (error) {
+  console.error(error.message);
+  process.exitCode = 1;
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { densities, modes, themes } from "@nerio/tokens";
 import { Icon, Kbd, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio/ui";
 import {
   Bell,
@@ -98,14 +99,10 @@ const activity = [
 
 const chart = [42, 64, 58, 72, 48, 88, 76, 92, 67, 81, 74, 89];
 
-const themeOptions = [
-  { label: "Purple", value: "purple" },
-  { label: "Blue", value: "blue" },
-  { label: "Green", value: "green" },
-  { label: "Orange", value: "orange" },
-  { label: "Red", value: "red" },
-  { label: "Neutral", value: "neutral" },
-];
+const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
+const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
+const modeOptions = modes.map((value) => ({ label: runtimeLabel(value), value }));
+const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), value }));
 
 const statusOptions = [
   { label: "All statuses", value: "all" },
@@ -336,25 +333,8 @@ function DemoWorkspace() {
               { label: "Right to left", value: "rtl" },
             ]}
           />
-          <Select
-            label="Mode"
-            value={mode}
-            onChange={setMode}
-            options={[
-              { label: "System", value: "system" },
-              { label: "Light", value: "light" },
-              { label: "Dark", value: "dark" },
-            ]}
-          />
-          <Select
-            label="Density"
-            value={density}
-            onChange={setDensity}
-            options={[
-              { label: "Comfortable", value: "comfortable" },
-              { label: "Compact", value: "compact" },
-            ]}
-          />
+          <Select label="Mode" value={mode} onChange={setMode} options={modeOptions} />
+          <Select label="Density" value={density} onChange={setDensity} options={densityOptions} />
         </section>
 
         <section className="workspace-grid">

@@ -28,6 +28,8 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test:ui
       - run: pnpm test:a11y
+      - run: pnpm test:catalog
+      - run: pnpm test:tokens
       - run: pnpm validate:tokens
       - run: pnpm validate:runtime-axes
       - run: pnpm validate:typography
