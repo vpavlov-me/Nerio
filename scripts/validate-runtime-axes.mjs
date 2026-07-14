@@ -255,12 +255,12 @@ function validate() {
     failures.push("Docs controls must derive explicit System, Light, and Dark options from modes.");
   }
   if (
-    !/<Select[\s\S]*?aria-label="Color mode"[\s\S]*?options=\{modeOptions\}[\s\S]*?value=\{mode\}/.test(
+    !/<DropdownMenu[\s\S]*?aria-label=\{`Color mode: \$\{runtimeLabel\(mode\)\}`\}[\s\S]*?items=\{modeOptions\.map[\s\S]*?mode === option\.value/.test(
       docsControls,
     )
   ) {
     failures.push(
-      "Docs controls must expose the current color mode through an accessible selector.",
+      "Docs controls must expose the current color mode through an accessible dropdown menu.",
     );
   }
   if (docsControls.includes("toggleMode")) {

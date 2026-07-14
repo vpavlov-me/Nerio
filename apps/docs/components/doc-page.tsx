@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Circle } from "@nerio/adapters/icons";
+import { Check, Circle, X } from "@nerio/adapters/icons";
 import { getRegistryItem } from "@nerio/registry";
 import {
   Alert,
@@ -84,6 +84,7 @@ import {
   useToastManager,
 } from "@nerio/ui/client";
 import { CodeExample } from "./code-example";
+import { DocumentationTable } from "./documentation-table";
 import {
   anatomyFromSlots,
   componentMetadata,
@@ -157,18 +158,19 @@ export function StandardDocPage({
       <section className="doc-section">
         <h2 id="variants">Variants</h2>
         {sectionPreviews?.variants}
-        {sectionContent?.variants ?? <ReferenceGrid items={variants} />}
+        {sectionContent?.variants ?? <ReferenceTable firstColumn="Variant" items={variants} />}
       </section>
       <section className="doc-section">
         <h2 id="anatomy">Anatomy</h2>
         {sectionPreviews?.anatomy}
-        {sectionContent?.anatomy ?? <ReferenceGrid items={anatomy} />}
+        {sectionContent?.anatomy ?? <ReferenceTable firstColumn="Slot" items={anatomy} />}
       </section>
       <section className="doc-section">
         <h2 id="states">States</h2>
         {sectionPreviews?.states}
         {sectionContent?.states ?? (
-          <ReferenceGrid
+          <ReferenceTable
+            firstColumn="State"
             items={
               reference?.states ?? [
                 {
@@ -212,7 +214,8 @@ export function StandardDocPage({
         <h2 id="api">API</h2>
         {sectionPreviews?.api}
         {sectionContent?.api ?? (
-          <ReferenceGrid
+          <ReferenceTable
+            firstColumn="Prop"
             items={
               reference?.api ?? [
                 {
@@ -229,40 +232,34 @@ export function StandardDocPage({
         <section className="doc-section">
           <h2 id="implementation-contract">Implementation contract</h2>
           {sectionContent?.implementation ?? (
-            <div className="reference-grid">
-              <div>
-                <code>Registry item</code>
-                <p>
-                  {registryItem.name} installs {registryItem.files.length} source file
-                  {registryItem.files.length === 1 ? "" : "s"} into the configured components
-                  directory.
-                </p>
-              </div>
-              <div>
-                <code>Base UI</code>
-                <p>
-                  {registryItem.baseUiPrimitives.length
+            <DocumentationTable
+              headers={["Contract", "Value"]}
+              rows={[
+                [
+                  "Registry item",
+                  `${registryItem.name} installs ${registryItem.files.length} source file${registryItem.files.length === 1 ? "" : "s"} into the configured components directory.`,
+                ],
+                [
+                  "Base UI",
+                  registryItem.baseUiPrimitives.length
                     ? registryItem.baseUiPrimitives.join(", ")
-                    : "No interactive primitive required."}
-                </p>
-              </div>
-              <div>
-                <code>Registry dependencies</code>
-                <p>
-                  {registryItem.registryDependencies.length
+                    : "No interactive primitive required.",
+                ],
+                [
+                  "Registry dependencies",
+                  registryItem.registryDependencies.length
                     ? registryItem.registryDependencies.join(", ")
-                    : "None."}
-                </p>
-              </div>
-              <div>
-                <code>Package dependencies</code>
-                <p>
-                  {registryItem.dependencies.length
+                    : "None.",
+                ],
+                [
+                  "Package dependencies",
+                  registryItem.dependencies.length
                     ? registryItem.dependencies.join(", ")
-                    : "No external package dependency."}
-                </p>
-              </div>
-            </div>
+                    : "No external package dependency.",
+                ],
+              ]}
+              codeColumns={1}
+            />
           )}
         </section>
       ) : null}
@@ -282,37 +279,51 @@ export function StandardDocPage({
       <section className="doc-section">
         <h2 id="do-do-not">Do / do not</h2>
         {sectionContent?.guidance ?? (
-          <div className="guidance-grid">
-            <div data-tone="positive">
-              <strong>Do</strong>
-              {(
+          <div className="doc-guidance-cards">
+            <GuidanceCard
+              icon={Check}
+              title="Do"
+              items={
                 reference?.guidance.do ?? [
                   "Compose small components around real product workflows.",
                 ]
-              ).map((item) => (
-                <p key={item}>{item}</p>
-              ))}
-            </div>
-            <div data-tone="negative">
-              <strong>Do not</strong>
-              {(
+              }
+            />
+            <GuidanceCard
+              icon={X}
+              title="Do not"
+              items={
                 reference?.guidance.dont ?? [
                   "Fork visual values into one-off colors, spacing, or typography inside product code.",
                 ]
-              ).map((item) => (
-                <p key={item}>{item}</p>
-              ))}
-            </div>
+              }
+            />
           </div>
         )}
       </section>
       <section className="doc-section">
         <h2 id="related-components">Related components</h2>
         {sectionContent?.related ?? (
-          <div className="token-chip-row">
-            {(reference?.related ?? metadata?.related ?? ["Tokens"]).map((item) => (
-              <code key={item}>{item}</code>
-            ))}
+          <div className="doc-related-cards">
+            {(reference?.related ?? metadata?.related ?? ["Tokens"]).map((item) => {
+              const related = getRelatedComponent(item);
+
+              return (
+                <Card
+                  key={item}
+                  className="doc-related-card"
+                  href={related.href}
+                  variant="secondary"
+                >
+                  <CardHeader>
+                    <CardTitle>{item}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription>{related.description}</CardDescription>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
       </section>
@@ -324,11 +335,14 @@ export function StandardDocPage({
               These are the primary customization points. Override semantic or component tokens
               instead of changing component source.
             </p>
-            <div className="token-chip-row">
-              {tokens.map((token) => (
-                <code key={token}>{token}</code>
-              ))}
-            </div>
+            <DocumentationTable
+              headers={["Token", "Purpose"]}
+              rows={tokens.map((token) => [
+                token,
+                "Public customization point for this component contract.",
+              ])}
+              codeColumns={1}
+            />
           </>
         )}
       </section>
@@ -336,17 +350,87 @@ export function StandardDocPage({
   );
 }
 
-function ReferenceGrid({ items }: { items: ReferenceSection[] }) {
+function ReferenceTable({
+  firstColumn,
+  items,
+}: {
+  firstColumn: string;
+  items: ReferenceSection[];
+}) {
   return (
-    <div className="reference-grid">
-      {items.map((item) => (
-        <div key={item.title}>
-          <code>{item.title}</code>
-          <p>{item.description}</p>
-        </div>
-      ))}
-    </div>
+    <DocumentationTable
+      headers={[firstColumn, "Purpose"]}
+      rows={items.map((item) => [item.title, item.description])}
+      codeColumns={1}
+    />
   );
+}
+
+function GuidanceCard({
+  icon,
+  title,
+  items,
+}: {
+  icon: React.ComponentProps<typeof Icon>["icon"];
+  title: string;
+  items: string[];
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <Icon icon={icon} />
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {items.map((item) => (
+          <p key={item}>{item}</p>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+const relatedRouteAliases: Record<string, string> = {
+  "Command Primitive": "command-primitive",
+  "Empty State": "empty-state",
+  "Sidebar Primitive": "sidebar-primitive",
+};
+
+const relatedFoundationRoutes: Record<string, string> = {
+  Heading: "/docs/foundations/typography",
+  "Icon Adapter": "/docs/foundations/icons",
+  Text: "/docs/foundations/typography",
+  Themes: "/docs/foundations/themes",
+  Tokens: "/docs/foundations/tokens",
+};
+
+function getRelatedComponent(name: string) {
+  const foundationHref = relatedFoundationRoutes[name];
+  const alias = relatedRouteAliases[name];
+
+  if (foundationHref) {
+    return {
+      href: foundationHref,
+      description: `Customize ${name.toLowerCase()} through the shared Nerio foundation.`,
+    };
+  }
+
+  const slug =
+    alias ??
+    name
+      .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+      .replace(/\s+/g, "-")
+      .toLowerCase();
+  const relatedReference = componentReference[slug];
+  const relatedMetadata = componentMetadata[slug];
+
+  return {
+    href: `/docs/components/${slug}`,
+    description:
+      relatedReference?.purpose ??
+      relatedMetadata?.description ??
+      `Use ${name} alongside this component when the product context calls for it.`,
+  };
 }
 
 function Preview({ kind }: { kind: string }) {

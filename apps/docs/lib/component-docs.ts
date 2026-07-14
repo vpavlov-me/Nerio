@@ -68,11 +68,32 @@ const componentLedes: Record<string, string> = {
     "Command provides an accessible action-result primitive with label-only selection queries and separate keyword matching while product workflows remain consumer-owned.",
 };
 
+const componentTitles: Record<string, string> = {
+  "button-group": "ButtonGroup",
+  "command-primitive": "Command",
+  "dropdown-menu": "DropdownMenu",
+  "empty-state": "EmptyState",
+  "form-group": "FormGroup",
+  "form-message": "FormMessage",
+  "input-group": "InputGroup",
+  "key-value": "KeyValue",
+  "radio-group": "RadioGroup",
+  "sidebar-primitive": "Sidebar",
+};
+
+function getComponentTitle(slug: string) {
+  return (
+    componentTitles[slug] ??
+    componentMetadata[slug]?.name ??
+    slug.charAt(0).toUpperCase() + slug.slice(1)
+  );
+}
+
 export const componentDocs: Record<string, ComponentDoc> = Object.fromEntries(
   Object.entries(componentLedes).map(([slug, description]) => [
     slug,
     {
-      title: componentMetadata[slug]?.name ?? slug,
+      title: getComponentTitle(slug),
       description,
       indexable: true,
     },

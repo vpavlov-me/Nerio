@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Circle, CircleAlert, Info, TriangleAlert, X } from "@nerio/adapters/icons";
+import { Check, Info, X } from "@nerio/adapters/icons";
 import { Alert, Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
 import { CodeExample } from "../../../../components/code-example";
@@ -74,10 +74,6 @@ function AlertPreview() {
   return (
     <section id="preview" className="component-example" aria-label="Alert preview">
       <div className="component-example__preview alert-showcase__preview">
-        <Alert icon={Circle} title="New features available">
-          Check out the latest updates including dark mode support and improved accessibility
-          features.
-        </Alert>
         <Alert
           action={<Button size="sm">Refresh</Button>}
           tone="info"
@@ -87,41 +83,11 @@ function AlertPreview() {
           A new version of the application is available. Refresh to get the latest features and
           fixes.
         </Alert>
-        <Alert
-          action={
-            <Button size="sm" variant="danger">
-              Retry
-            </Button>
-          }
-          tone="danger"
-          icon={CircleAlert}
-          title="Unable to connect to server"
-        >
-          <p>We&apos;re experiencing connection issues. Please try the following:</p>
-          <ul>
-            <li>Check your internet connection</li>
-            <li>Refresh the page</li>
-            <li>Clear your browser cache</li>
-          </ul>
-        </Alert>
-        <Alert
-          action={<Button aria-label="Dismiss profile update" icon={X} size="sm" variant="ghost" />}
-          tone="success"
-          icon={Check}
-          title="Profile updated successfully"
-        />
-        <Alert tone="info" icon={Info} title="Processing your request">
-          Please wait while we sync your data. This may take a few moments.
-        </Alert>
-        <Alert tone="warning" icon={TriangleAlert} title="Scheduled maintenance">
-          Our services will be unavailable on Sunday, March 15th from 2:00 AM to 6:00 AM UTC for
-          scheduled maintenance.
-        </Alert>
       </div>
       <CodeExample
         className="component-example__code"
         code={
-          'import { Check, CircleAlert, Info, X } from "@nerio/adapters/icons";\nimport { Alert } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<Alert\n  tone="info"\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>\n\n<Alert\n  tone="danger"\n  icon={CircleAlert}\n  title="Unable to connect to server"\n  action={<Button size="sm" variant="danger">Retry</Button>}\n>\n  We&apos;re experiencing connection issues.\n</Alert>\n\n<Alert\n  tone="success"\n  icon={Check}\n  title="Profile updated successfully"\n  action={<Button icon={X} aria-label="Dismiss profile update" size="sm" variant="ghost" />}\n/>'
+          'import { Info } from "@nerio/adapters/icons";\nimport { Alert } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<Alert\n  tone="info"\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>'
         }
         label="Alert live preview code"
       />

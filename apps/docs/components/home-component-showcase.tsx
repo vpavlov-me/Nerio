@@ -16,6 +16,7 @@ import {
 import {
   Button,
   Checkbox,
+  Kbd,
   Switch,
   Tabs,
   TabsContent,
@@ -72,7 +73,7 @@ function AvatarStack() {
       {avatars.map((name) => (
         <Avatar key={name} name={name} size="lg" />
       ))}
-      <span className="home-avatar-stack__more">+5</span>
+      <Avatar fallback="+5" name="5 more collaborators" size="lg" />
     </div>
   );
 }
@@ -113,7 +114,7 @@ export function HomeComponentShowcase() {
                   { label: "", value: "unselected" },
                 ]}
               />
-              <Spinner label="Loading preview" size="sm" />
+              <Spinner className="home-gallery__spinner" label="Loading preview" size="sm" />
             </div>
             <Progress
               label="Release readiness"
@@ -147,7 +148,7 @@ export function HomeComponentShowcase() {
                 </TabsTrigger>
                 <TabsTrigger
                   badge={
-                    <Badge emphasis="strong" size="sm" tone="danger">
+                    <Badge emphasis="soft" size="sm" tone="warning">
                       12
                     </Badge>
                   }
@@ -167,23 +168,20 @@ export function HomeComponentShowcase() {
 
           <section className="home-gallery__menu" aria-label="Action menu">
             <p>Actions</p>
-            <Button kbd="⌘N" leadingIcon={Plus} variant="ghost">
+            <Button kbd={<Kbd>⌘N</Kbd>} leadingIcon={Plus} variant="ghost">
               <span className="home-gallery__menu-label">
                 <strong>New component</strong>
-                <small>Add a reusable building block.</small>
               </span>
             </Button>
-            <Button kbd="⌘," leadingIcon={Settings} variant="ghost">
+            <Button kbd={<Kbd>⌘,</Kbd>} leadingIcon={Settings} variant="ghost">
               <span className="home-gallery__menu-label">
                 <strong>Edit theme</strong>
-                <small>Adjust color and appearance.</small>
               </span>
             </Button>
             <Separator />
-            <Button kbd="⌘⌫" leadingIcon={X} variant="ghost">
+            <Button kbd={<Kbd>⌘⌫</Kbd>} leadingIcon={X} variant="ghost">
               <span className="home-gallery__menu-label">
                 <strong>Archive project</strong>
-                <small>Move this project out of view.</small>
               </span>
             </Button>
           </section>
@@ -196,27 +194,33 @@ export function HomeComponentShowcase() {
 
           <section className="home-gallery__verification" aria-labelledby="verification-title">
             <div>
-              <h3 id="verification-title">Verify workspace</h3>
-              <p>Enter the six-digit access code.</p>
+              <h3 id="verification-title">Verify account</h3>
+              <p>We&apos;ve sent a code to a****@gmail.com.</p>
             </div>
             <div className="home-gallery__verification-code">
               <div className="home-otp-inputs" aria-label="Verification code">
-                {["4", "3", "2", "0", "", ""].map((value, index) => (
-                  <Input
-                    aria-label={`Code digit ${index + 1}`}
-                    defaultValue={value}
-                    key={`${value}-${index}`}
-                    maxLength={1}
-                    inputMode="numeric"
-                  />
-                ))}
+                {["4", "3", "2", "separator", "0", "", ""].map((value, index) =>
+                  value === "separator" ? (
+                    <span key={value} className="home-otp-inputs__separator" aria-hidden>
+                      –
+                    </span>
+                  ) : (
+                    <Input
+                      aria-label={`Code digit ${index < 3 ? index + 1 : index}`}
+                      defaultValue={value}
+                      key={`${value}-${index}`}
+                      maxLength={1}
+                      inputMode="numeric"
+                    />
+                  ),
+                )}
               </div>
-              <Button size="sm" variant="link">
-                Resend
-              </Button>
-            </div>
-            <div className="home-gallery__button-row">
-              <Button size="sm">Continue</Button>
+              <p className="home-gallery__verification-resend">
+                Didn&apos;t receive a code?{" "}
+                <Button size="sm" variant="link">
+                  Resend
+                </Button>
+              </p>
             </div>
           </section>
 
@@ -283,6 +287,13 @@ export function HomeComponentShowcase() {
 
         <div className="home-gallery__column">
           <section className="home-gallery__project" aria-labelledby="project-title">
+            <Button
+              aria-label="Close account form"
+              className="home-gallery__modal-close"
+              icon={X}
+              size="sm"
+              variant="secondary"
+            />
             <span className="home-gallery__icon-mark" aria-hidden>
               <Icon icon={UserPlus} />
             </span>
@@ -324,6 +335,13 @@ export function HomeComponentShowcase() {
           </section>
 
           <section className="home-gallery__confirm" aria-labelledby="confirm-title">
+            <Button
+              aria-label="Close unsaved changes dialog"
+              className="home-gallery__modal-close"
+              icon={X}
+              size="sm"
+              variant="secondary"
+            />
             <span className="home-gallery__icon-mark" aria-hidden>
               <Icon icon={Save} />
             </span>
@@ -333,7 +351,7 @@ export function HomeComponentShowcase() {
             </div>
             <div className="home-gallery__confirm-actions">
               <Button variant="secondary">Discard</Button>
-              <Button>Save changes</Button>
+              <Button kbd={<Kbd>↵</Kbd>}>Save changes</Button>
             </div>
           </section>
         </div>
