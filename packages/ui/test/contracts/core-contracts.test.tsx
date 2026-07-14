@@ -1112,6 +1112,94 @@ describe("Core static contracts", () => {
     expect(focusableContainer).toHaveAttribute("data-viewport", "narrow");
   });
 
+  it("rejects empty, whitespace-only, and malformed runtime TableContainer focus names", () => {
+    const UnsafeTableContainer = TableContainer as React.ComponentType<
+      React.HTMLAttributes<HTMLDivElement> & { focusable?: unknown }
+    >;
+    const { rerender } = render(
+      <UnsafeTableContainer focusable aria-label="" role="application" tabIndex={4}>
+        Empty label
+      </UnsafeTableContainer>,
+    );
+
+    let container = screen.getByText("Empty label");
+    expect(container).not.toHaveAttribute("role");
+    expect(container).not.toHaveAttribute("tabindex");
+    expect(container).not.toHaveAttribute("data-focusable");
+    expect(container).not.toHaveAttribute("aria-label");
+
+    rerender(
+      <UnsafeTableContainer
+        focusable
+        aria-label="   "
+        aria-labelledby={" \t "}
+        data-focusable="consumer"
+      >
+        Whitespace label
+      </UnsafeTableContainer>,
+    );
+    container = screen.getByText("Whitespace label");
+    expect(container).not.toHaveAttribute("role");
+    expect(container).not.toHaveAttribute("tabindex");
+    expect(container).not.toHaveAttribute("data-focusable");
+    expect(container).not.toHaveAttribute("aria-label");
+    expect(container).not.toHaveAttribute("aria-labelledby");
+
+    rerender(
+      <UnsafeTableContainer focusable={"yes"} aria-label={42 as unknown as string}>
+        Malformed name
+      </UnsafeTableContainer>,
+    );
+    container = screen.getByText("Malformed name");
+    expect(container).not.toHaveAttribute("role");
+    expect(container).not.toHaveAttribute("tabindex");
+    expect(container).not.toHaveAttribute("data-focusable");
+  });
+
+  it("keeps valid aria-labelledby focus regions owned and does not intercept scroll keys", () => {
+    const { container } = render(
+      <>
+        <h2 id="owned-table-title">Owned table</h2>
+        <TableContainer
+          focusable
+          aria-labelledby="owned-table-title"
+          {...({ role: "application", tabIndex: 8, "data-focusable": "consumer" } as object)}
+        >
+          <Table />
+        </TableContainer>
+      </>,
+    );
+    const region = screen.getByRole("region", { name: "Owned table" });
+    expect(region).toHaveAttribute("tabindex", "0");
+    expect(region).toHaveAttribute("data-focusable", "");
+    expect(fireEvent.keyDown(region, { key: "ArrowRight" })).toBe(true);
+    expect(container.querySelectorAll('[role="region"]')).toHaveLength(1);
+  });
+
+  it("scopes Table row states to tbody and preserves responsive, RTL, density, and forced colors", () => {
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/display.css"), "utf8");
+    const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
+
+    expect(styles).toContain("max-inline-size: 100%;");
+    expect(styles).toContain("overflow-x: auto;");
+    expect(styles).toContain("min-inline-size: max-content;");
+    expect(styles).toContain("text-align: start;");
+    expect(styles).toContain("text-align: end;");
+    expect(styles).toMatch(/\.n-table tbody > tr:hover > :is\(th, td\)/);
+    expect(styles).toMatch(/\.n-table tbody > tr:focus-within > :is\(th, td\)/);
+    expect(styles).toMatch(
+      /\.n-table tbody > tr:is\(\[data-selected\], \[aria-current\]:not\(\[aria-current="false"\]\)\) > :is\(th, td\)/,
+    );
+    expect(styles).not.toMatch(/\.n-table tr:hover/);
+    expect(styles).not.toMatch(/\.n-table tr:focus-within/);
+    expect(styles).toMatch(
+      /@media \(forced-colors: active\)[\s\S]*\.n-table-container\[data-focusable\]:focus-visible[\s\S]*solid Highlight;/,
+    );
+    expect(tokens).toMatch(
+      /:root\[data-density="compact"\][\s\S]*--n-table-cell-padding-y:[^;]+;[\s\S]*--n-table-row-min-height:[^;]+;/,
+    );
+  });
+
   it("preserves native Table anatomy and passthrough attributes", () => {
     render(
       <Table data-table="projects" dir="rtl">

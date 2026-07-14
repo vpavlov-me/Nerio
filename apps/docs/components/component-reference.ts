@@ -2235,16 +2235,20 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "Selected or current",
-        description: "Consumer-owned data-selected and aria-current hooks.",
+        description:
+          'Consumer-owned tbody data-selected and truthful aria-current hooks; aria-current="false" remains neutral.',
       },
       {
         title: "Focus within",
-        description: "Interactive cells highlight the row without making it clickable.",
+        description:
+          "Interactive tbody cells highlight their row without changing header or footer backgrounds.",
       },
     ],
     accessibility: [
       "Preserve native captions, row groups, headers, scope, headers, colSpan, rowSpan, and aria-sort relationships.",
-      "TableContainer is plain by default; focusable is an explicit opt-in that requires aria-label or aria-labelledby.",
+      "TableContainer is plain by default; focusable={true} only creates a tab stop when aria-label or aria-labelledby is a non-empty runtime string.",
+      "TableContainer owns its region role, tab stop, focusable marker, and normalized accessible-name attributes after consumer props are spread.",
+      "Hover, focus-within, selected, and current row styles apply only to tbody rows; header and footer rows remain stable.",
       "Keep row links and actions as independently labelled keyboard targets; never make the whole row clickable by default.",
       "Sorting remains consumer-owned and the active column header communicates state through aria-sort.",
     ],

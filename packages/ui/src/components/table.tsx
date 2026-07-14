@@ -47,19 +47,24 @@ export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerPro
     { "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, className, focusable, ...props },
     ref,
   ) {
-    const hasAccessibleName = Boolean(ariaLabel || ariaLabelledBy);
+    const normalizedAriaLabel =
+      typeof ariaLabel === "string" && ariaLabel.trim() ? ariaLabel : undefined;
+    const normalizedAriaLabelledBy =
+      typeof ariaLabelledBy === "string" && ariaLabelledBy.trim() ? ariaLabelledBy : undefined;
+    const hasAccessibleName = Boolean(normalizedAriaLabel || normalizedAriaLabelledBy);
+    const isFocusableRegion = focusable === true && hasAccessibleName;
 
     return (
       <div
         ref={ref}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
+        {...props}
+        aria-label={normalizedAriaLabel}
+        aria-labelledby={normalizedAriaLabelledBy}
         className={cn("n-table-container", className)}
-        data-focusable={focusable ? "" : undefined}
+        data-focusable={isFocusableRegion ? "" : undefined}
         data-slot="container"
         role={hasAccessibleName ? "region" : undefined}
-        tabIndex={focusable ? 0 : undefined}
-        {...props}
+        tabIndex={isFocusableRegion ? 0 : undefined}
       />
     );
   },

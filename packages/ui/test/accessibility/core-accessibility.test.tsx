@@ -244,6 +244,26 @@ describe("Core accessibility contracts", () => {
     expect(screen.getByRole("region", { name: "Delivery" })).toHaveFocus();
   });
 
+  it("keeps malformed runtime TableContainer focus opt-ins out of the tab order", async () => {
+    const UnsafeTableContainer = TableContainer as React.ComponentType<
+      React.HTMLAttributes<HTMLDivElement> & { focusable?: unknown }
+    >;
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <UnsafeTableContainer focusable aria-label="   ">
+          Unnamed table overflow
+        </UnsafeTableContainer>
+        <button type="button">After table</button>
+      </>,
+    );
+
+    expect((await axe(container)).violations).toEqual([]);
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+    await user.tab();
+    expect(screen.getByRole("button", { name: "After table" })).toHaveFocus();
+  });
+
   it("keeps named ButtonGroup controls independently reachable without toolbar behavior", async () => {
     const user = userEvent.setup();
     const { container } = render(

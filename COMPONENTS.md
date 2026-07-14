@@ -103,17 +103,17 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Data display
 
-| Component | Status      | Package     | Notes                                                                                                                               |
-| --------- | ----------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Card      | stable-core | `@nerio/ui` | Composable surface with verified visual placement, header action, semantic root, narrow layout, focus, and heading contracts        |
-| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                                                 |
-| Avatar    | stable-core | `@nerio/ui` | User/entity avatar with verified image transitions, aspect-ratio cropping, accessible naming, and fallback behavior                 |
-| Table     | stable-core | `@nerio/ui` | Native table anatomy with explicit named keyboard-scroll opt-in, responsive and RTL overflow, and consumer-owned data behavior      |
-| List      | stable-core | `@nerio/ui` | Structured list with stable IDs, visible ordered markers, native links, and package-agnostic router rendering                       |
-| Item      | stable-core | `@nerio/ui` | Generic composition primitive with composed render/forwarded refs, responsive content/media/actions, and consumer-owned interaction |
-| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                                                      |
-| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                                                                |
-| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                                                             |
+| Component | Status      | Package     | Notes                                                                                                                                                     |
+| --------- | ----------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Card      | stable-core | `@nerio/ui` | Composable surface with verified visual placement, header action, semantic root, narrow layout, focus, and heading contracts                              |
+| Badge     | stable-core | `@nerio/ui` | Status and metadata                                                                                                                                       |
+| Avatar    | stable-core | `@nerio/ui` | User/entity avatar with verified image transitions, aspect-ratio cropping, accessible naming, and fallback behavior                                       |
+| Table     | stable-core | `@nerio/ui` | Native table anatomy with runtime-safe named keyboard-scroll opt-in, tbody-only row states, responsive and RTL overflow, and consumer-owned data behavior |
+| List      | stable-core | `@nerio/ui` | Structured list with stable IDs, visible ordered markers, native links, and package-agnostic router rendering                                             |
+| Item      | stable-core | `@nerio/ui` | Generic composition primitive with composed render/forwarded refs, responsive content/media/actions, and consumer-owned interaction                       |
+| Separator | stable-core | `@nerio/ui` | Layout divider                                                                                                                                            |
+| KeyValue  | stable-core | `@nerio/ui` | Simple definition-list value display                                                                                                                      |
+| Stat      | stable-core | `@nerio/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                                                                                   |
 
 ### Feedback
 

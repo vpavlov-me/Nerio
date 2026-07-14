@@ -354,7 +354,7 @@
       "package": "@nerio/ui",
       "category": "data-display",
       "status": "stable-core",
-      "description": "Native semantic table anatomy with explicit named keyboard-scroll opt-in, responsive and RTL overflow, density, sticky-style compatibility, and consumer-owned data behavior."
+      "description": "Native semantic table anatomy with runtime-safe named keyboard-scroll opt-in, tbody-only row states, responsive and RTL overflow, density, sticky-style compatibility, and consumer-owned data behavior."
     },
     {
       "name": "Item",

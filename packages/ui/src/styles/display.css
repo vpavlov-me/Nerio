@@ -205,12 +205,12 @@
   font-weight: var(--n-font-weight-medium);
 }
 
-.n-table tr:hover > :is(th, td),
-.n-table tr:focus-within > :is(th, td) {
+.n-table tbody > tr:hover > :is(th, td),
+.n-table tbody > tr:focus-within > :is(th, td) {
   background: var(--n-table-row-background-hover);
 }
 
-.n-table tr:is([data-selected], [aria-current]) > :is(th, td) {
+.n-table tbody > tr:is([data-selected], [aria-current]:not([aria-current="false"])) > :is(th, td) {
   background: var(--n-table-row-background-selected);
 }
 
@@ -531,6 +531,7 @@
 @media (forced-colors: active) {
   .n-card,
   .n-avatar,
+  .n-table-container,
   .n-list__body,
   .n-list__link,
   .n-item[data-variant="outline"] {
@@ -538,6 +539,7 @@
   }
 
   .n-card[href]:focus-visible,
+  .n-table-container[data-focusable]:focus-visible,
   .n-list__link:focus-visible,
   .n-item:where(a, button, [role="button"]):focus-visible {
     outline: var(--n-focus-ring-inner-width) solid Highlight;

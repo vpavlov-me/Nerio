@@ -80,6 +80,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Made SheetClose neutral for body and footer composition, isolated the default icon close style,
   aligned safe-area offsets and viewport metadata, wired the Sheet backdrop token, and corrected
   side-specific enter, exit, and reduced-motion contracts.
+- Prevented malformed TableContainer names and consumer prop spreads from creating unnamed focus
+  stops, and limited Table row-state styling to truthful current or selected tbody rows.
 
 ### Deprecated
 
