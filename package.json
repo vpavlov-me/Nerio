@@ -28,9 +28,9 @@
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",
-    "@playwright/test": "1.55.1",
-    "prettier": "^3.7.4",
-    "turbo": "^2.10.3",
-    "typescript": "^5.9.3"
+    "@playwright/test": "1.61.1",
+    "prettier": "^3.9.5",
+    "turbo": "^2.10.5",
+    "typescript": "^7.0.2"
   }
 }
