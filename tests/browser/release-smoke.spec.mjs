@@ -8,6 +8,10 @@ const viewports = [
   { name: "mobile", width: 390, height: 844 },
 ];
 
+test.beforeEach(async ({ page }) => {
+  await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
+});
+
 function monitorPage(page) {
   const problems = [];
   page.on("console", (message) => {
@@ -15,9 +19,7 @@ function monitorPage(page) {
   });
   page.on("pageerror", (error) => problems.push(`page: ${error.message}`));
   page.on("requestfailed", (request) => {
-    if (!request.url().startsWith("https://mc.yandex.ru/")) {
-      problems.push(`request: ${request.url()} (${request.failure()?.errorText ?? "failed"})`);
-    }
+    problems.push(`request: ${request.url()} (${request.failure()?.errorText ?? "failed"})`);
   });
   return problems;
 }
