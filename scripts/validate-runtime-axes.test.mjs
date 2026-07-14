@@ -152,6 +152,19 @@ test("runtime-axis validator requires an explicit three-value docs mode selector
   );
 });
 
+test("runtime-axis validator requires an accessible docs mode dropdown", () => {
+  withFixture(
+    "--docs-controls",
+    "docs-chrome.tsx",
+    readFileSync(docsSource, "utf8").replace('aria-label="Color mode"', 'aria-label="Appearance"'),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Docs controls must expose the current color mode through an accessible dropdown menu/,
+      ),
+  );
+});
+
 test("runtime-axis validator requires independent appearance persistence", () => {
   withFixture(
     "--docs-controls",

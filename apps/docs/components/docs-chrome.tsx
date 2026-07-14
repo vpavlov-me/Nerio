@@ -163,6 +163,11 @@ const modeIcons: Record<ColorMode, IconComponent> = {
   light: Sun,
   dark: Moon,
 };
+const modeOptions = modes.map((value) => ({
+  icon: modeIcons[value],
+  label: runtimeLabel(value),
+  value,
+}));
 const densityIcons: Record<(typeof densities)[number], IconComponent> = {
   comfortable: Rows3,
   compact: ListTree,
@@ -828,16 +833,16 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
                   {runtimeLabel(mode)}
                 </Button>
               }
-              items={modes.map((option) => ({
+              items={modeOptions.map((option) => ({
                 label: (
                   <span className="runtime-menu-item">
-                    <Icon icon={modeIcons[option]} />
-                    <span>{runtimeLabel(option)}</span>
-                    {mode === option ? <Icon icon={Check} /> : null}
+                    <Icon icon={option.icon} />
+                    <span>{option.label}</span>
+                    {mode === option.value ? <Icon icon={Check} /> : null}
                   </span>
                 ),
                 onSelect: () => {
-                  if (isColorMode(option)) setMode(option);
+                  if (isColorMode(option.value)) setMode(option.value);
                 },
               }))}
             />
