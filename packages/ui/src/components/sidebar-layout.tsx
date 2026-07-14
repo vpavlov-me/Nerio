@@ -1,7 +1,9 @@
 import * as React from "react";
 import { cn } from "../lib/cn";
+import { composeRefs } from "../lib/compose-refs";
 
 export type SidebarRegionProps = React.HTMLAttributes<HTMLElement>;
+export type SidebarContentProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const SidebarHeader = React.forwardRef<HTMLElement, SidebarRegionProps>(
   function SidebarHeader({ className, ...props }, ref) {
@@ -16,11 +18,11 @@ export const SidebarHeader = React.forwardRef<HTMLElement, SidebarRegionProps>(
   },
 );
 
-export const SidebarContent = React.forwardRef<HTMLElement, SidebarRegionProps>(
+export const SidebarContent = React.forwardRef<HTMLDivElement, SidebarContentProps>(
   function SidebarContent({ className, ...props }, ref) {
     return (
       <div
-        ref={ref as React.ForwardedRef<HTMLDivElement>}
+        ref={ref}
         className={cn("n-sidebar__content", className)}
         data-slot="sidebar-content"
         {...props}
@@ -50,13 +52,10 @@ export const SidebarInset = React.forwardRef<HTMLElement, SidebarInsetProps>(fun
   { as: Component = "main", className, ...props },
   ref,
 ) {
-  const setRef = (node: HTMLElement | null) => {
-    if (typeof ref === "function") ref(node);
-    else if (ref) ref.current = node;
-  };
+  const composedRef = React.useMemo(() => composeRefs(ref), [ref]);
   return (
     <Component
-      ref={setRef}
+      ref={composedRef}
       className={cn("n-sidebar-inset", className)}
       data-slot="sidebar-inset"
       {...props}

@@ -378,6 +378,8 @@ async function verify() {
       !sidebarUsage.variants.includes("side: left | right") ||
       !sidebarUsage.requiredTokens.includes("--n-sidebar-collapsed-width") ||
       !sidebarUsage.accessibility.some((item) => item.includes("inert")) ||
+      !sidebarUsage.accessibility.some((item) => item.includes("hit-area")) ||
+      !sidebarUsage.accessibility.some((item) => item.includes("HTMLDivElement ref")) ||
       !sidebarUsage.usage.includes("SidebarProvider")
     ) {
       throw new Error(

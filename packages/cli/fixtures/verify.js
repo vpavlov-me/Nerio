@@ -37,6 +37,7 @@ const expectedSidebarFiles = [
   "components/sidebar-layout.tsx",
   "components/sidebar.tsx",
   "lib/cn.ts",
+  "lib/compose-refs.ts",
   "styles/icon.css",
   "styles/sidebar.css",
 ];
@@ -363,14 +364,28 @@ async function verify() {
       path.join(localTarget, "components/nerio/components/sidebar.tsx"),
       "utf8",
     );
+    const sidebarLayoutSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/sidebar-layout.tsx"),
+      "utf8",
+    );
+    const sidebarStyles = fs.readFileSync(
+      path.join(localTarget, "components/nerio/styles/sidebar.css"),
+      "utf8",
+    );
     if (
       !sidebarSource.includes("defaultExpanded") ||
       !sidebarSource.includes('data-state={expanded ? "expanded" : "collapsed"}') ||
       !sidebarSource.includes("aria-controls={sidebarId}") ||
-      !sidebarSource.includes("inert={!expanded || undefined}")
+      !sidebarSource.includes("inert={!expanded || undefined}") ||
+      !sidebarLayoutSource.includes('from "../lib/compose-refs"') ||
+      !sidebarLayoutSource.includes("React.forwardRef<HTMLDivElement, SidebarContentProps>") ||
+      !sidebarLayoutSource.includes("React.useMemo(() => composeRefs(ref), [ref])") ||
+      !sidebarStyles.includes("block-size: var(--n-sidebar-rail-hit-area)") ||
+      !sidebarStyles.includes("inset-block-start: 50%") ||
+      sidebarStyles.includes("inset-block: 0")
     ) {
       throw new Error(
-        "Installed Sidebar source did not preserve state, focus safety, or ARIA contracts.",
+        "Installed Sidebar source did not preserve geometry, ref, state, focus safety, or ARIA contracts.",
       );
     }
     assertFiles(localTarget, expectedCommandFiles);
