@@ -43,6 +43,14 @@ function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
+function pinnedPeerVersion(range, peer) {
+  const version = range.replace(/^[~^]/, "");
+  if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(version)) {
+    throw new Error(`Cannot derive a deterministic fixture version for ${peer} from ${range}.`);
+  }
+  return version;
+}
+
 function pack(name, destination) {
   run(pnpm, ["--filter", name, "pack", "--pack-destination", destination]);
   const prefix = `nerio-${name.slice("@nerio/".length)}-`;
@@ -198,7 +206,7 @@ try {
         "add",
         "--save-exact",
         "--ignore-workspace-root-check",
-        `${peer}@${adaptersPackage.peerDependencies[peer]}`,
+        `${peer}@${pinnedPeerVersion(adaptersPackage.peerDependencies[peer], peer)}`,
       ],
       { cwd: optionalConsumer },
     );
