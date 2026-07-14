@@ -32,6 +32,7 @@ async function expectHealthyPage(
 ) {
   await expect(page.locator("nextjs-portal [data-nextjs-dialog-overlay]")).toHaveCount(0);
   await page.waitForTimeout(stabilityWindowMs);
+  await expect(page.locator("nextjs-portal [data-nextjs-dialog-overlay]")).toHaveCount(0);
   expect(problems).toEqual([]);
 }
 
@@ -43,9 +44,8 @@ test("health check observes failures during the stability window", async ({ page
     </script>
   `);
 
-  await expect(expectHealthyPage(page, problems, { stabilityWindowMs: 50 })).rejects.toThrow(
-    /late release smoke failure/,
-  );
+  await expect(expectHealthyPage(page, problems, { stabilityWindowMs: 50 })).rejects.toThrow();
+  expect(problems).toContain("console: late release smoke failure");
 });
 
 test("covers the release appearance and responsive matrix without overflow", async ({ page }) => {
