@@ -399,7 +399,10 @@ async function verify() {
       !commandUsage.states.includes("active") ||
       !commandUsage.variants.includes("consumer-filtered") ||
       !commandUsage.requiredTokens.includes("--n-command-list-max-height") ||
+      !commandUsage.requiredTokens.includes("--n-focus-ring") ||
       !commandUsage.accessibility.some((item) => item.includes("IME composition")) ||
+      !commandUsage.accessibility.some((item) => item.includes("visible item label")) ||
+      !commandUsage.accessibility.some((item) => item.includes("leading content")) ||
       !commandUsage.usage.includes("onSelect")
     ) {
       throw new Error(

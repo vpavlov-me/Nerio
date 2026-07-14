@@ -63,7 +63,7 @@ const componentLedes: Record<string, string> = {
   popover: "Popovers reveal contextual controls or supporting details near a trigger.",
   "dropdown-menu": "Dropdown menus group secondary commands behind a compact trigger.",
   "command-primitive":
-    "Command provides an accessible query and action-result primitive while fetching, ranking, routing, shortcuts, and palette workflows remain consumer-owned.",
+    "Command provides an accessible action-result primitive with label-only selection queries and separate keyword matching while product workflows remain consumer-owned.",
 };
 
 export const componentDocs: Record<string, ComponentDoc> = Object.fromEntries(

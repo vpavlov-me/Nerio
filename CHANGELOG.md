@@ -87,6 +87,9 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
   interactive render while keeping root direction changes synchronized.
 - Bounded SidebarRail to its centered hit area, corrected SidebarContent's div ref contract,
   stabilized SidebarInset refs, and clarified the server/client entrypoint split in examples.
+- Corrected Command selection so visible queries and form values use labels only while stable values
+  and keywords remain available for selection events and filtering; also fixed grouped data typing,
+  leading-slot semantics, no-leading row layout, and shared focus-ring styling.
 
 ### Deprecated
 

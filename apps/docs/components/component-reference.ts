@@ -2735,7 +2735,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "CommandItem",
         description:
-          "Stable action value with optional leading content, description, metadata, and Kbd.",
+          "Stable action value with optional semantic leading content, description, metadata, and Kbd.",
       },
       { title: "CommandSeparator", description: "Quiet boundary between related result regions." },
       {
@@ -2746,7 +2746,8 @@ export const componentReference: Record<string, ComponentReference> = {
     variants: [
       {
         title: "Local filtering",
-        description: "Locale-aware contains matching over labels, values, and keywords.",
+        description:
+          "Locale-aware matching uses labels, values, and keywords while selection writes only the visible label.",
       },
       {
         title: "Consumer-filtered",
@@ -2785,6 +2786,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Arrow keys move the active option while DOM focus remains in the input; Home and End retain native text-editing behavior.",
       "Enter selects the active enabled item and emits its stable value with the Base UI event; Escape bubbles to enclosing overlays.",
       "Base UI suppresses Enter selection during IME composition and skips disabled items.",
+      "CommandItem leading content owns its accessibility semantics; decorative Nerio Icons remain hidden through the Icon contract.",
       "CommandEmpty and CommandLoading use dedicated polite status parts rather than invalid arbitrary listbox children.",
       "Provide localized visible labels and keep Kbd supplemental; global shortcut registration is outside Core Command.",
     ],
@@ -2796,7 +2798,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "query / defaultQuery / onQueryChange",
-        description: "Controlled or uncontrolled query state with Base UI event details.",
+        description:
+          "Controlled or uncontrolled visible query state; selection writes only the item label.",
       },
       {
         title: "filter",
@@ -2810,13 +2813,14 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "CommandItem.onSelect",
         description:
-          "Emits the stable string value and Base UI event without routing or close policy.",
+          "Emits the stable string value and event while visible query text remains label-only.",
       },
     ],
     designNotes: [
       "Command is not GlobalSearch, EntitySearch, Documentation Search, or a complete Command Palette.",
       "Fetching, ranking, routing, permissions, analytics, history, recent items, and global shortcuts stay outside Core.",
       "Use consumer state to replace items and toggle CommandLoading for asynchronous results.",
+      "Leading content is general React content and owns its semantics; use decorative Nerio Icons when no accessible meaning is needed.",
     ],
     guidance: {
       do: [
