@@ -23,6 +23,7 @@ import {
   Dialog,
   Sheet,
   SheetBody,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -559,7 +560,7 @@ function Preview({ kind }: { kind: string }) {
             <>
               <Sheet>
                 <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />
-                <SheetContent side="right" size="md">
+                <SheetContent side="right" size="md" showClose={false}>
                   <SheetHeader>
                     <SheetTitle>Workspace settings</SheetTitle>
                     <SheetDescription>Configure shared workspace defaults.</SheetDescription>
@@ -570,6 +571,7 @@ function Preview({ kind }: { kind: string }) {
                     </p>
                   </SheetBody>
                   <SheetFooter>
+                    <SheetClose render={<Button variant="secondary">Cancel</Button>} />
                     <Button>Save changes</Button>
                   </SheetFooter>
                 </SheetContent>
@@ -591,7 +593,7 @@ function Preview({ kind }: { kind: string }) {
               </Sheet>
               <Sheet>
                 <SheetTrigger render={<Button variant="secondary">Open filters</Button>} />
-                <SheetContent side="top" size="sm">
+                <SheetContent side="top" size="lg">
                   <SheetHeader>
                     <SheetTitle>View filters</SheetTitle>
                     <SheetDescription>

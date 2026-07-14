@@ -562,7 +562,6 @@
   --n-sheet-radius: var(--n-radius-overlay);
   --n-sheet-backdrop: var(--n-overlay-backdrop);
   --n-sheet-transition-distance: var(--n-space-4);
-  --n-sheet-transition-duration: var(--n-motion-overlay-enter-duration);
   --n-sidebar-width: 17rem;
   --n-sidebar-collapsed-width: 3.5rem;
   --n-sidebar-inset-gap: var(--n-space-6);

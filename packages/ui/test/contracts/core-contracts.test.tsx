@@ -2709,7 +2709,8 @@ describe("Core interactive action contracts", () => {
     expect(sheet.querySelector('[data-slot="sheet-header"]')).toBeInTheDocument();
     expect(sheet.querySelector('[data-slot="sheet-body"]')).toHaveTextContent("Settings content");
     expect(sheet.querySelector('[data-slot="sheet-footer"]')).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Close sheet" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Close sheet" })).toHaveClass("n-sheet__close-icon");
+    expect(screen.getByRole("button", { name: "Cancel" })).not.toHaveClass("n-sheet__close-icon");
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
 
@@ -2720,6 +2721,58 @@ describe("Core interactive action contracts", () => {
     render(<ControlledSheet />);
     await user.click(screen.getByRole("button", { name: "Cancel" }));
     expect(screen.queryByRole("dialog", { name: "Workspace settings" })).not.toBeInTheDocument();
+  });
+
+  it("keeps SheetClose neutral in normal flow and preserves Button composition and refs", async () => {
+    const user = userEvent.setup();
+    const closeRef = React.createRef<HTMLButtonElement>();
+
+    render(
+      <Sheet>
+        <SheetTrigger render={<button type="button">Open composed sheet</button>} />
+        <SheetContent showClose={false}>
+          <SheetHeader>
+            <SheetTitle>Composed sheet</SheetTitle>
+          </SheetHeader>
+          <SheetBody>Content</SheetBody>
+          <SheetFooter>
+            <SheetClose
+              ref={closeRef}
+              className="custom-sheet-close"
+              render={<Button variant="secondary">Cancel changes</Button>}
+            />
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Open composed sheet" }));
+    const close = await screen.findByRole("button", { name: "Cancel changes" });
+    expect(close).toHaveAttribute("data-slot", "sheet-close");
+    expect(close).toHaveClass("custom-sheet-close");
+    expect(close).not.toHaveClass("n-sheet__close-icon");
+    expect(closeRef.current).toBe(close);
+
+    await user.click(close);
+    expect(screen.queryByRole("dialog", { name: "Composed sheet" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Open composed sheet" })).toHaveFocus();
+  });
+
+  it("uses Sheet-specific backdrop, safe-area close, exit motion, and reduced-motion contracts", () => {
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/overlays.css"), "utf8");
+
+    expect(styles).toMatch(
+      /\[data-slot="sheet-backdrop"\]\s*\{[^}]*background:\s*var\(--n-sheet-backdrop\);/s,
+    );
+    expect(styles).toMatch(
+      /\.n-sheet__close-icon\s*\{[^}]*inset-block-start:\s*max\(var\(--n-sheet-padding\),\s*env\(safe-area-inset-top\)\);[^}]*inset-inline-end:\s*max\(var\(--n-sheet-padding\),\s*env\(safe-area-inset-right\)\);/s,
+    );
+    expect(styles).toMatch(
+      /\.n-sheet\[data-ending-style\]\s*\{\s*animation:\s*n-sheet-exit\s+var\(--n-motion-overlay-exit-duration\)\s+var\(--n-motion-overlay-exit-easing\);\s*\}/,
+    );
+    expect(styles).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{[^}]*\.n-sheet\[data-side\],[^{]*\.n-sheet\[data-ending-style\]\[data-side\][^{]*\{\s*animation:\s*none;/s,
+    );
   });
 
   it("coordinates uncontrolled Sidebar state, stable slots, and focus-safe collapse", async () => {

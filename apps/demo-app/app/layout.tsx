@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
 
@@ -7,6 +7,12 @@ const yandexMetrikaId = "110539538";
 export const metadata: Metadata = {
   title: "Nerio Workspace",
   description: "Universal product workspace built with Nerio.",
+};
+
+export const viewport: Viewport = {
+  initialScale: 1,
+  viewportFit: "cover",
+  width: "device-width",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

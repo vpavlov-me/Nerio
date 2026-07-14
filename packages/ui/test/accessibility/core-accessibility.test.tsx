@@ -62,6 +62,7 @@ import {
   SelectItem,
   Sheet,
   SheetBody,
+  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -522,7 +523,7 @@ describe("Core accessibility contracts", () => {
     render(
       <Sheet>
         <SheetTrigger render={<Button variant="secondary">Open navigation</Button>} />
-        <SheetContent side="bottom" size="sm">
+        <SheetContent side="bottom" size="sm" showClose={false}>
           <SheetHeader>
             <SheetTitle>Workspace navigation</SheetTitle>
             <SheetDescription>Open a destination without leaving this context.</SheetDescription>
@@ -531,7 +532,7 @@ describe("Core accessibility contracts", () => {
             <button type="button">Projects</button>
           </SheetBody>
           <SheetFooter>
-            <button type="button">Close navigation</button>
+            <SheetClose render={<Button variant="secondary">Close navigation</Button>} />
           </SheetFooter>
         </SheetContent>
       </Sheet>,

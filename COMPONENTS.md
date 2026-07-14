@@ -93,13 +93,13 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Overlays
 
-| Component     | Status      | Package            | Notes                                                                                                |
-| ------------- | ----------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
-| Dialog        | stable-core | `@nerio/ui/client` | Modal primitive with title, description, close, controlled state, ref, and Base UI focus behavior    |
-| Sheet         | polished    | `@nerio/ui/client` | Base UI modal side-panel primitive with compound slots, sides, sizes, and tokenized overlay behavior |
-| Popover       | stable-core | `@nerio/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                    |
-| Tooltip       | stable-core | `@nerio/ui/client` | Short non-essential contextual help through Base UI                                                  |
-| Dropdown Menu | stable-core | `@nerio/ui/client` | Basic menu with disabled and destructive items                                                       |
+| Component     | Status      | Package            | Notes                                                                                                                     |
+| ------------- | ----------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| Dialog        | stable-core | `@nerio/ui/client` | Modal primitive with title, description, close, controlled state, ref, and Base UI focus behavior                         |
+| Sheet         | stable-core | `@nerio/ui/client` | Modal side-panel primitive with neutral close composition, safe-area layout, four sides, sizes, and shared overlay motion |
+| Popover       | stable-core | `@nerio/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                         |
+| Tooltip       | stable-core | `@nerio/ui/client` | Short non-essential contextual help through Base UI                                                                       |
+| Dropdown Menu | stable-core | `@nerio/ui/client` | Basic menu with disabled and destructive items                                                                            |
 
 ### Data display
 
