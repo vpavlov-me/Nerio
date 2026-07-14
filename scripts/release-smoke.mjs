@@ -25,6 +25,49 @@ const packageNames = [
 const packageDirectories = Object.fromEntries(
   packageNames.map((name) => [name, `packages/${name.slice("@nerio/".length)}`]),
 );
+const packageContracts = {
+  "@nerio/tokens": {
+    homepage: "https://nerio.vpavlov.com/docs/foundations/tokens",
+    exports: [".", "./styles.css"],
+    dependencies: [],
+    peers: [],
+    sideEffects: ["./src/styles.css"],
+  },
+  "@nerio/ui": {
+    homepage: "https://nerio.vpavlov.com/docs/components/button",
+    exports: [".", "./client", "./styles.css"],
+    dependencies: ["@base-ui/react", "@nerio/adapters", "@nerio/tokens", "clsx"],
+    peers: ["react", "react-dom"],
+    sideEffects: ["./src/styles.css"],
+  },
+  "@nerio/adapters": {
+    homepage: "https://nerio.vpavlov.com/docs/foundations/icons",
+    exports: ["./icons", "./table", "./charts", "./forms", "./schema"],
+    dependencies: ["lucide-react"],
+    peers: ["@tanstack/react-table", "react", "react-hook-form", "recharts", "zod"],
+    sideEffects: false,
+  },
+  "@nerio/registry": {
+    homepage: "https://nerio.vpavlov.com/docs/registry",
+    exports: [".", "./manifest.json"],
+    dependencies: [],
+    peers: [],
+  },
+  "@nerio/cli": {
+    homepage: "https://nerio.vpavlov.com/docs/registry",
+    exports: [],
+    dependencies: ["@nerio/registry"],
+    peers: [],
+    bin: ["nerio"],
+  },
+  "@nerio/mcp": {
+    homepage: "https://nerio.vpavlov.com/docs/ai",
+    exports: ["."],
+    dependencies: ["@modelcontextprotocol/sdk", "@nerio/registry", "zod"],
+    peers: [],
+    bin: ["nerio-mcp"],
+  },
+};
 const expectedVersion = "0.1.0-alpha.0";
 const expectPublicPackages = process.env.NERIO_RELEASE_EXPECT_PUBLIC === "1";
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
@@ -42,10 +85,23 @@ function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
+function sortedKeys(value) {
+  return Object.keys(value ?? {}).sort();
+}
+
+function assertKeys(name, field, actual, expected) {
+  if (JSON.stringify(sortedKeys(actual)) !== JSON.stringify([...expected].sort())) {
+    throw new Error(
+      `${name} ${field} must be ${expected.join(", ") || "empty"}; received ${sortedKeys(actual).join(", ") || "empty"}.`,
+    );
+  }
+}
+
 function validatePackedPackage(name, tarball) {
   const packageJson = JSON.parse(run("tar", ["-xOf", tarball, "package/package.json"]));
   const entries = run("tar", ["-tzf", tarball]).trim().split("\n");
   const directory = packageDirectories[name];
+  const contract = packageContracts[name];
   const expectedPrivate = !expectPublicPackages;
 
   if (packageJson.version !== expectedVersion) {
@@ -57,12 +113,15 @@ function validatePackedPackage(name, tarball) {
     );
   }
   if (
+    !packageJson.description ||
     packageJson.license !== "MIT" ||
     packageJson.repository?.url !== "git+https://github.com/vpavlov-me/Nerio.git" ||
     packageJson.repository?.directory !== directory ||
+    packageJson.homepage !== contract.homepage ||
+    packageJson.bugs?.url !== "https://github.com/vpavlov-me/Nerio/issues" ||
     packageJson.engines?.node !== ">=20.9.0"
   ) {
-    throw new Error(`${name} is missing release repository, license, or Node metadata.`);
+    throw new Error(`${name} is missing coordinated release metadata.`);
   }
   if (JSON.stringify(packageJson).includes("workspace:")) {
     throw new Error(`${name} still contains a workspace protocol in its packed manifest.`);
@@ -77,6 +136,35 @@ function validatePackedPackage(name, tarball) {
     )
   ) {
     throw new Error(`${name} includes files outside its public src and package manifest surface.`);
+  }
+
+  if (JSON.stringify(packageJson.files) !== JSON.stringify(["src"])) {
+    throw new Error(`${name} must pack only its src directory.`);
+  }
+  assertKeys(name, "exports", packageJson.exports, contract.exports);
+  assertKeys(name, "dependencies", packageJson.dependencies, contract.dependencies);
+  assertKeys(name, "peer dependencies", packageJson.peerDependencies, contract.peers);
+  assertKeys(name, "bins", packageJson.bin, contract.bin ?? []);
+  if (
+    Object.hasOwn(contract, "sideEffects") &&
+    JSON.stringify(packageJson.sideEffects) !== JSON.stringify(contract.sideEffects)
+  ) {
+    throw new Error(`${name} has an unexpected sideEffects contract.`);
+  }
+
+  const forbiddenEntry = entries.find((entry) =>
+    /(?:^|\/)(?:apps|fixtures|templates|pro|\.env)(?:\/|$)|premium-theme/i.test(entry),
+  );
+  if (forbiddenEntry) {
+    throw new Error(`${name} includes forbidden internal or Pro content: ${forbiddenEntry}.`);
+  }
+  for (const entry of entries.filter(
+    (item) => item.startsWith("package/src/") && !item.endsWith("/"),
+  )) {
+    const content = run("tar", ["-xOf", tarball, entry]);
+    if (/BEGIN [A-Z ]*PRIVATE KEY|(?:NPM|GITHUB|VERCEL)_TOKEN\s*=/i.test(content)) {
+      throw new Error(`${name} includes secret-like content in ${entry}.`);
+    }
   }
 
   if (name === "@nerio/adapters") {
@@ -179,6 +267,7 @@ try {
   run(process.execPath, [cli, "init", "--registry", manifest], { cwd: consumerDirectory });
   run(process.execPath, [cli, "doctor"], { cwd: consumerDirectory });
   for (const component of [
+    "typography",
     "button",
     "select",
     "sheet",
@@ -187,6 +276,8 @@ try {
     "command-primitive",
     "pagination",
     "table",
+    "item",
+    "list",
   ]) {
     run(process.execPath, [cli, "add", component], { cwd: consumerDirectory });
   }
@@ -200,7 +291,20 @@ try {
   const mcpCheck = [
     "const tools = require('@nerio/mcp');",
     "const items = tools.list_components();",
-    "if (!items.some((item) => item.name === 'button')) process.exit(1);",
+    `const expected = ${JSON.stringify([
+      "typography",
+      "button",
+      "select",
+      "sheet",
+      "toast",
+      "table",
+      "pagination",
+      "sidebar-primitive",
+      "command-primitive",
+      "item",
+      "list",
+    ])};`,
+    "if (!expected.every((name) => items.some((item) => item.name === name))) process.exit(1);",
   ].join(" ");
   run(process.execPath, ["-e", mcpCheck], { cwd: consumerDirectory });
   run(pnpm, ["build"], {
@@ -209,7 +313,7 @@ try {
   });
 
   console.log(
-    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, packed CLI/MCP runtime, source installs, and a clean Next.js consumer build.`,
+    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, packed CLI/MCP discovery, representative source installs, and a clean Next.js consumer build.`,
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });

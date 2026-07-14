@@ -4,7 +4,7 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: The Core 0.1 release gate passes. `0.1.0-alpha.0` is ready for a separate manual
+> Status: The strict post-remediation Core 0.1 release gate passes. `0.1.0-alpha.0` is ready for a separate manual
 > maintainer approval; no package, tag, or GitHub Release has been published.
 
 ## Product model

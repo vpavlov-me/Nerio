@@ -45,6 +45,7 @@ const requiredReleaseCommands = [
   "pnpm test:cli",
   "pnpm test:mcp",
   "pnpm test:adapters",
+  "pnpm test:browser",
   "pnpm build",
   "pnpm pack:check",
 ];

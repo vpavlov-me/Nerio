@@ -13,10 +13,10 @@ Core = building blocks. Pro = product-ready solutions.
 
 ## Current release status
 
-The Core 0.1 release gate passes for the intended `0.1.0-alpha.0` source and package surface. The
-repository is ready for a separate manual maintainer approval, but no package, tag, or GitHub Release
-has been published. All intended package manifests remain private until the approval sequence in
-`RELEASE.md` is explicitly authorized.
+The strict post-remediation Core 0.1 release gate passes for the intended `0.1.0-alpha.0` source and
+package surface. The repository is ready for a separate manual maintainer approval, but no package,
+tag, or GitHub Release has been published. All intended package manifests remain private until the
+approval sequence in `RELEASE.md` is explicitly authorized.
 
 ## Primary users
 

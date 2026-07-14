@@ -57,6 +57,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Added `Kbd` for displaying keyboard shortcuts in component interfaces.
 - Added component contract and accessibility test coverage for the Core release surface.
 - Added System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk typography preset recipes through CSS tokens.
+- Added a reproducible Chromium release smoke for the theme, mode, density, responsive,
+  interaction, direction, motion, forced-color, and application-state matrix.
 
 ### Changed
 
@@ -95,6 +97,8 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Corrected Command selection so visible queries and form values use labels only while stable values
   and keywords remain available for selection events and filtering; also fixed grouped data typing,
   leading-slot semantics, no-leading row layout, and shared focus-ring styling.
+- Re-ran the post-remediation release gate with strict packed-manifest contracts, isolated adapter
+  dependency checks, expanded source-install coverage, and a production consumer build.
 
 ### Deprecated
 

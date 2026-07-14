@@ -118,10 +118,22 @@ const statusOptions = [
 ];
 
 const workspaceCommands = [
-  { value: "show-all", label: "Show all projects", keywords: ["reset", "filter"] },
-  { value: "show-active", label: "Show active projects", keywords: ["status", "filter"] },
-  { value: "compact", label: "Use compact density", keywords: ["display", "density"] },
-  { value: "admin", label: "Open admin tools", disabled: true },
+  {
+    value: "project-filters",
+    label: "Project filters",
+    items: [
+      { value: "show-all", label: "Show all projects", keywords: ["reset", "filter"] },
+      { value: "show-active", label: "Show active projects", keywords: ["status", "filter"] },
+    ],
+  },
+  {
+    value: "display",
+    label: "Display",
+    items: [
+      { value: "compact", label: "Use compact density", keywords: ["display", "density"] },
+      { value: "admin", label: "Open admin tools", disabled: true },
+    ],
+  },
 ];
 
 const navItems = [
@@ -296,7 +308,7 @@ function DemoWorkspace() {
               <Command items={workspaceCommands}>
                 <CommandInput aria-label="Workspace commands" placeholder="Search commands" />
                 <CommandEmpty>No matching commands.</CommandEmpty>
-                <CommandList>
+                <CommandList renderGroupLabel={(group) => group.label}>
                   {(item) => (
                     <CommandItem
                       key={item.value}
