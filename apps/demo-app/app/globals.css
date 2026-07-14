@@ -279,6 +279,10 @@ body {
 }
 
 @media (max-width: 1080px) {
+  .workspace > .n-sidebar {
+    display: none;
+  }
+
   .span-3,
   .span-4,
   .span-8 {
