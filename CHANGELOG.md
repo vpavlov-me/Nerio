@@ -6,6 +6,51 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 
 ## Unreleased
 
+### Core 0.1 alpha summary
+
+#### Foundations
+
+- Established semantic tokens, six preset themes, custom-theme overrides, system/light/dark modes,
+  comfortable/compact density, typography recipes, radius, motion, and contrast contracts.
+
+#### Components
+
+- Completed the approved Core 0.1 component scope across actions, forms, overlays, navigation,
+  feedback, data display, and layout primitives. Most components are `stable-core`; Sheet remains
+  intentionally `polished`, and IconButton remains a deprecated compatibility wrapper.
+
+#### Source registry and CLI
+
+- Added aligned registry metadata and editable source installation through `nerio init`, `list`,
+  `info`, `add`, and `doctor`, including clean dependency-chain builds outside the monorepo.
+
+#### MCP and AI
+
+- Added read-only MCP discovery over the same registry contract and an AI-readable `llms.txt` index.
+  The packed MCP runtime now resolves its installed registry package instead of a workspace path.
+
+#### Documentation and demo
+
+- Added public installation, package/source usage, entrypoint, customization, component, CLI, MCP,
+  accessibility, SEO, and contribution guidance. The universal demo app exercises Core primitives;
+  app-local composition previews are not presented as released Blocks or Templates.
+
+#### Accessibility
+
+- Verified accessible names, semantic structure, keyboard interaction, focus management and
+  restoration, loading and invalid states, reduced motion, forced colors, RTL, and responsive
+  behavior across the release surface where applicable.
+
+#### Known limitations
+
+- No package, tag, or GitHub Release exists yet; all intended package manifests remain private until
+  a separate explicit approval.
+- Package distribution is source-first TypeScript. Next.js package consumers must configure the
+  documented `transpilePackages` list.
+- Sheet is included at `polished`, not `stable-core`; advanced workflows and product shells remain
+  outside Core.
+- IconButton and the documented Button compatibility aliases remain available only for migration.
+
 ### Added
 
 - Added a semantic token system with preset themes, light and dark modes, comfortable and compact density, and CSS-variable customization.

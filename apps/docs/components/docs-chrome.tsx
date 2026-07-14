@@ -198,7 +198,7 @@ const compositionToc: TocItem[] = [
 ];
 
 const compositionGroup: NavGroup = {
-  title: "Blocks",
+  title: "Composition previews",
   items: [
     { href: "/docs/blocks/login", label: "Login", icon: PanelLeft },
     { href: "/docs/blocks/register", label: "Register", icon: PanelLeft },
@@ -325,7 +325,7 @@ function getDefaultToc(pathname: string): TocItem[] {
   return tocByPath[pathname] ?? [];
 }
 
-const searchEntries: DocsCommandEntry[] = [...navGroups, compositionGroup].flatMap((group) =>
+const searchEntries: DocsCommandEntry[] = navGroups.flatMap((group) =>
   group.items.flatMap((item) => {
     const pageSections = getDefaultToc(item.href);
     return [
@@ -350,7 +350,6 @@ const componentGroups = navGroups.slice(2);
 const documentationItems: NavItem[] = [
   { href: "/", label: "Overview", icon: BookOpen },
   ...navGroups.flatMap((group) => group.items),
-  ...compositionGroup.items,
 ];
 
 function getSidebarGroups(pathname: string): NavGroup[] {
@@ -772,15 +771,6 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               className={pathname.startsWith("/docs/components") ? "is-active" : undefined}
             >
               Components
-            </Link>
-            <Link
-              href="/docs/blocks/login"
-              className={pathname.startsWith("/docs/blocks") ? "is-active" : undefined}
-            >
-              Blocks
-            </Link>
-            <Link href="/templates" className={pathname === "/templates" ? "is-active" : undefined}>
-              Templates
             </Link>
           </nav>
 

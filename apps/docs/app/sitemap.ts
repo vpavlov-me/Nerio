@@ -1,11 +1,10 @@
 import type { MetadataRoute } from "next";
 import { componentDocSlugs } from "../lib/component-docs";
-import { compositionDocSlugs } from "../lib/composition-docs";
 import { absoluteUrl } from "../lib/seo";
 
 const staticRoutes = [
   "/",
-  "/templates",
+  "/docs",
   "/docs/getting-started",
   "/docs/registry",
   "/docs/ai",
@@ -22,6 +21,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticRoutes.map((path) => ({ url: absoluteUrl(path) })),
     ...componentDocSlugs.map((slug) => ({ url: absoluteUrl(`/docs/components/${slug}`) })),
-    ...compositionDocSlugs.map((slug) => ({ url: absoluteUrl(`/docs/blocks/${slug}`) })),
   ];
 }

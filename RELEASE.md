@@ -1,67 +1,104 @@
 # Release Process
 
-Nerio Core is not published yet. The first public pre-release is expected to be a manual maintainer decision, likely `0.1.0-alpha.0`.
+Nerio Core is not published yet. The exact intended first public version is `0.1.0-alpha.0`. Every
+release action is manual and requires an explicit maintainer approval after the gate and tarball
+inspection pass.
 
 ## Required checks
 
-Run the full quality gate before preparing a release:
+Run the complete gate from a clean checkout with Node 22 and the pinned pnpm version:
 
 ```bash
+pnpm install --frozen-lockfile
 pnpm format:check
 pnpm lint
 pnpm typecheck
+pnpm build
 pnpm test:ui
 pnpm test:a11y
+pnpm test:cli
+pnpm test:mcp
 pnpm validate:tokens
 pnpm validate:runtime-axes
+pnpm validate:typography
 pnpm validate:catalog
 pnpm validate:docs
 pnpm validate:release
-pnpm test:cli
-pnpm test:mcp
-pnpm build
 pnpm pack:check
 ```
 
-All checks must pass locally or in CI. CI is a validation gate only: it does not publish packages, configure npm tokens, create tags, create GitHub Releases, or approve a release. npm publishing remains manual and maintainer-approved.
+`validate:release` packs all intended packages, checks the packed manifests and file boundaries,
+installs the tarballs into an isolated Next.js consumer, exercises the packed CLI and MCP runtime,
+installs representative source components with dependency chains, and builds without workspace
+aliases. CI validates only; it never publishes, changes package privacy, creates tags, or creates a
+GitHub Release.
 
-## Versioning
+## Versioning and package order
 
-Keep the root workspace and apps private. The intended public Core packages must use coordinated versions:
+Keep the root workspace, apps, and `@nerio/config` private. The intended public packages use the
+coordinated `0.1.0-alpha.0` version and are published in dependency order:
 
-- `@nerio/tokens`
-- `@nerio/ui`
-- `@nerio/adapters`
-- `@nerio/registry`
-- `@nerio/cli`
-- `@nerio/mcp`
+1. `@nerio/tokens`
+2. `@nerio/adapters`
+3. `@nerio/registry`
+4. `@nerio/ui`
+5. `@nerio/cli`
+6. `@nerio/mcp`
 
-`@nerio/config` is internal workspace tooling and remains private.
+All six package manifests must remain `private: true` until the approval point below. Package
+consumers receive TypeScript source; supported Next.js consumers configure `transpilePackages` as
+documented in Getting started.
 
-## Dry run
+## Credentials and dry run
 
-Before any publish decision, run the package dry-run check locally and inspect the included files:
+The approving maintainer needs npm publish access to the `@nerio` scope, an authenticated npm CLI,
+and the account's required 2FA or automation-token policy. Confirm the target identity without
+printing credentials:
 
 ```bash
-pnpm pack:check
+npm whoami
+npm access list packages @nerio
 ```
 
-`pack:check` runs `npm pack --dry-run` for the intended public Core packages only. It does not check the root workspace, apps, `@nerio/config`, Pro packages, or templates.
+Run `pnpm pack:check`, then create local tarballs with `pnpm --filter <package> pack` when a manual
+archive inspection is needed. For every package, inspect `package.json`, `LICENSE`, exported source,
+styles, bins, dependency versions, and the absence of apps, fixtures, secrets, private assets, Pro
+code, and workspace protocols.
 
-## First public pre-release
+## Manual approval and publish sequence
 
-The following are documented future steps for preparing `0.1.0-alpha.0`; do not perform them until an explicit maintainer approval.
+Do not perform any step in this section without an explicit maintainer approval recorded after CI,
+browser verification, changelog review, and tarball inspection.
 
-1. Confirm the intended public package list and that every package is ready to become public.
-2. Confirm coordinated package versions.
-3. Run the full quality gate and `pnpm pack:check`.
-4. Review packed files for every intended package.
-5. Review [CHANGELOG.md](./CHANGELOG.md), including deprecated and migration-sensitive APIs.
-6. Convert `Unreleased` into `## 0.1.0-alpha.0 — YYYY-MM-DD` and add a new empty `Unreleased` section above it.
-7. Create the Git tag only after maintainer approval.
-8. Create a GitHub Release from the changelog entry.
-9. Publish packages manually only after approval.
-10. Verify registry, CLI, and MCP compatibility after publishing.
+1. Record the release-readiness decision and any accepted non-blocking limitations.
+2. Convert `Unreleased` in [CHANGELOG.md](./CHANGELOG.md) to
+   `## 0.1.0-alpha.0 — YYYY-MM-DD`, then add a new empty `Unreleased` section above it.
+3. Change only the six intended package manifests from `private: true` to `private: false` in a
+   dedicated release PR; rerun the complete gate and obtain a second approval.
+4. Publish one package at a time in the documented dependency order with the `alpha` dist-tag, for
+   example `pnpm --filter @nerio/tokens publish --access public --tag alpha --no-git-checks`.
+5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
+   provenance, ownership, or install mismatch.
+6. Create a signed Git tag and GitHub Release only after all six packages and consumer checks pass.
+
+## Post-release verification
+
+- Confirm `npm view <package>@0.1.0-alpha.0 version dist-tags files` for every package.
+- Install the six published packages into a new supported Next.js project and rerun the package and
+  source-install smoke paths.
+- Run `nerio init`, `list`, `info`, `add`, and `doctor` from the published CLI.
+- Start the published MCP server and verify all discovery tools against current registry metadata.
+- Verify public docs links, `llms.txt`, canonical metadata, sitemap, robots behavior, and the live
+  demo with no console or hydration errors.
+
+## Rollback guidance
+
+If a package is wrong before later packages are published, stop the sequence and leave the release
+incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.1` and moving the
+`alpha` dist-tag only after verification. If the registry permits and policy requires it, deprecate
+the faulty version with a concise install warning. Restore the previous dist-tag when one exists,
+document affected packages and consumers, and avoid npm unpublish except for a security incident or
+an explicit maintainer/legal decision.
 
 ## Public changelog page
 

@@ -4,7 +4,8 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: Foundation in progress. The first public release is under active development.
+> Status: The Core 0.1 release gate passes. `0.1.0-alpha.0` is ready for a separate manual
+> maintainer approval; no package, tag, or GitHub Release has been published.
 
 ## Product model
 
@@ -106,6 +107,9 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 
 Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
 
+The Core packages ship TypeScript source. Next.js consumers must list the Nerio packages they use
+in `transpilePackages`; the complete configuration is documented in Getting started.
+
 ```tsx
 import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio/ui";
 import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
@@ -131,7 +135,9 @@ nerio doctor
 
 The root workspace and apps are private. The Core packages intended for a future public pre-release are `@nerio/tokens`, `@nerio/ui`, `@nerio/adapters`, `@nerio/registry`, `@nerio/cli`, and `@nerio/mcp`. `@nerio/config` remains private internal tooling.
 
-Do not publish packages from this repository until maintainers explicitly approve the release process.
+The release gate, packed-package audit, clean consumer build, and browser matrix pass for the
+intended `0.1.0-alpha.0` surface. Do not publish packages from this repository until maintainers
+explicitly approve the manual sequence in [RELEASE.md](./RELEASE.md).
 
 No public release exists yet. See [CHANGELOG.md](./CHANGELOG.md) for notable unreleased changes.
 

@@ -86,6 +86,7 @@ const expectedSelectFiles = [
   "components/form-message.tsx",
   "components/icon.tsx",
   "lib/cn.ts",
+  "lib/resolve-class-name.ts",
   "styles/forms.css",
   "styles/select.css",
   "styles/icon.css",

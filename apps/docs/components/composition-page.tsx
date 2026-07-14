@@ -502,7 +502,7 @@ function NavigationPreview() {
       <Breadcrumbs
         items={[
           { label: "Docs", href: "/docs" },
-          { label: "Blocks", href: "/docs/blocks/login" },
+          { label: "Composition previews", href: "/docs/blocks/login" },
           { label: "Navigation patterns" },
         ]}
       />
