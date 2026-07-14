@@ -45,10 +45,12 @@ function validatePackedPackage(name, tarball) {
   const packageJson = JSON.parse(run("tar", ["-xOf", tarball, "package/package.json"]));
   const entries = run("tar", ["-tzf", tarball]).trim().split("\n");
   const directory = packageDirectories[name];
+  const expectedPrivate = !expectPublicPackages;
 
-  if (packageJson.version !== expectedVersion || packageJson.private !== !expectPublicPackages) {
-    const privacy = expectPublicPackages ? "public" : "private";
-    throw new Error(`${name} must be ${privacy} at coordinated version ${expectedVersion}.`);
+  if (packageJson.version !== expectedVersion || packageJson.private !== expectedPrivate) {
+    throw new Error(
+      `${name} must set private: ${expectedPrivate} at coordinated version ${expectedVersion}.`,
+    );
   }
   if (
     packageJson.license !== "MIT" ||
