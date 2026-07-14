@@ -27,8 +27,8 @@
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",
-    "prettier": "^3.7.4",
-    "turbo": "^2.10.3",
-    "typescript": "^5.9.3"
+    "prettier": "^3.9.5",
+    "turbo": "^2.10.5",
+    "typescript": "^7.0.2"
   }
 }
