@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 const themes = ["purple", "blue", "green", "orange", "red", "neutral"];
 const modes = ["system", "light", "dark"];
 const densities = ["comfortable", "compact"];
+const healthStabilityWindowMs = 250;
 const viewports = [
   { name: "desktop", width: 1440, height: 1000 },
   { name: "mobile", width: 390, height: 844 },
@@ -24,10 +25,28 @@ function monitorPage(page) {
   return problems;
 }
 
-async function expectHealthyPage(page, problems) {
+async function expectHealthyPage(
+  page,
+  problems,
+  { stabilityWindowMs = healthStabilityWindowMs } = {},
+) {
+  await expect(page.locator("nextjs-portal [data-nextjs-dialog-overlay]")).toHaveCount(0);
+  await page.waitForTimeout(stabilityWindowMs);
   await expect(page.locator("nextjs-portal [data-nextjs-dialog-overlay]")).toHaveCount(0);
   expect(problems).toEqual([]);
 }
+
+test("health check observes failures during the stability window", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.setContent(`
+    <script>
+      window.setTimeout(() => console.error("late release smoke failure"), 25);
+    </script>
+  `);
+
+  await expect(expectHealthyPage(page, problems, { stabilityWindowMs: 50 })).rejects.toThrow();
+  expect(problems).toContain("console: late release smoke failure");
+});
 
 test("covers the release appearance and responsive matrix without overflow", async ({ page }) => {
   const problems = monitorPage(page);
