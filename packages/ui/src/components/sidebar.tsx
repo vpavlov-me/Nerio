@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { PanelLeft } from "@nerio/adapters";
+import { PanelLeft } from "@nerio/adapters/icons";
 import { cn } from "../lib/cn";
 import { Icon } from "./icon";
 

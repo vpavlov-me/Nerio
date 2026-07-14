@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import {
   cpSync,
+  existsSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -77,6 +78,24 @@ function validatePackedPackage(name, tarball) {
   ) {
     throw new Error(`${name} includes files outside its public src and package manifest surface.`);
   }
+
+  if (name === "@nerio/adapters") {
+    const expectedSubpaths = ["./icons", "./table", "./charts", "./forms", "./schema"];
+    const optionalPeers = ["@tanstack/react-table", "recharts", "react-hook-form", "zod"];
+    if (packageJson.exports?.["."]) {
+      throw new Error("@nerio/adapters must not restore the coupled root entrypoint.");
+    }
+    for (const subpath of expectedSubpaths) {
+      if (!packageJson.exports?.[subpath]) {
+        throw new Error(`@nerio/adapters is missing the ${subpath} export.`);
+      }
+    }
+    for (const peer of optionalPeers) {
+      if (!packageJson.peerDependenciesMeta?.[peer]?.optional || packageJson.dependencies?.[peer]) {
+        throw new Error(`${peer} must remain an optional @nerio/adapters peer.`);
+      }
+    }
+  }
 }
 
 const tempRoot = mkdtempSync(join(tmpdir(), "nerio-release-smoke-"));
@@ -135,6 +154,8 @@ try {
     join(consumerDirectory, "pnpm-workspace.yaml"),
     [
       'packages: ["."]',
+      "settings:",
+      "  autoInstallPeers: false",
       "overrides:",
       ...Object.entries(tarballs).map(
         ([name, tarball]) => `  ${JSON.stringify(name)}: ${JSON.stringify(`file:${tarball}`)}`,
@@ -145,11 +166,28 @@ try {
 
   run(pnpm, ["install", "--prefer-offline", "--ignore-scripts"], { cwd: consumerDirectory });
 
+  for (const dependency of ["@tanstack/react-table", "recharts", "react-hook-form", "zod"]) {
+    if (existsSync(join(consumerDirectory, "node_modules", ...dependency.split("/")))) {
+      throw new Error(
+        `Clean UI consumer unexpectedly installed optional adapter peer ${dependency}.`,
+      );
+    }
+  }
+
   const cli = join(consumerDirectory, "node_modules/@nerio/cli/src/index.js");
   const manifest = join(consumerDirectory, "node_modules/@nerio/registry/src/manifest.json");
   run(process.execPath, [cli, "init", "--registry", manifest], { cwd: consumerDirectory });
   run(process.execPath, [cli, "doctor"], { cwd: consumerDirectory });
-  for (const component of ["button", "select", "sheet", "toast", "pagination", "table"]) {
+  for (const component of [
+    "button",
+    "select",
+    "sheet",
+    "toast",
+    "sidebar-primitive",
+    "command-primitive",
+    "pagination",
+    "table",
+  ]) {
     run(process.execPath, [cli, "add", component], { cwd: consumerDirectory });
   }
 

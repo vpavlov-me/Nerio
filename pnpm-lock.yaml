@@ -112,25 +112,16 @@ importers:
 
   packages/adapters:
     dependencies:
-      '@tanstack/react-table':
-        specifier: ^8.21.3
-        version: 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       lucide-react:
         specifier: ^0.561.0
         version: 0.561.0(react@19.2.7)
-      react-hook-form:
-        specifier: ^7.68.0
-        version: 7.81.0(react@19.2.7)
-      recharts:
-        specifier: ^3.6.0
-        version: 3.9.2(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react-is@16.13.1)(react@19.2.7)(redux@5.0.1)
-      zod:
-        specifier: ^4.2.1
-        version: 4.4.3
     devDependencies:
       '@nerio/config':
         specifier: workspace:*
         version: link:../config
+      '@tanstack/react-table':
+        specifier: ^8.21.3
+        version: 8.21.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/react':
         specifier: ^19.2.7
         version: 19.2.17
@@ -140,9 +131,21 @@ importers:
       react:
         specifier: ^19.2.3
         version: 19.2.7
+      react-dom:
+        specifier: ^19.2.3
+        version: 19.2.7(react@19.2.7)
+      react-hook-form:
+        specifier: ^7.68.0
+        version: 7.81.0(react@19.2.7)
+      recharts:
+        specifier: ^3.6.0
+        version: 3.9.2(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react-is@16.13.1)(react@19.2.7)(redux@5.0.1)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
+      zod:
+        specifier: ^4.2.1
+        version: 4.4.3
 
   packages/cli:
     dependencies:

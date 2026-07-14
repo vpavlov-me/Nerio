@@ -44,6 +44,7 @@ const requiredReleaseCommands = [
   "NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release",
   "pnpm test:cli",
   "pnpm test:mcp",
+  "pnpm test:adapters",
   "pnpm build",
   "pnpm pack:check",
 ];

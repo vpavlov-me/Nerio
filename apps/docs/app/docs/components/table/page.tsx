@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, Settings, X } from "@nerio/adapters";
+import { Check, Settings, X } from "@nerio/adapters/icons";
 import {
   Card,
   CardContent,

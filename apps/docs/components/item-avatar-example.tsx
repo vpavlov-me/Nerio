@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "@nerio/adapters";
+import { ChevronDown } from "@nerio/adapters/icons";
 import {
   Avatar,
   Badge,

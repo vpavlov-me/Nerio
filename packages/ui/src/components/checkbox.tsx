@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Checkbox as BaseCheckbox } from "@base-ui/react/checkbox";
-import { Check, Minus } from "@nerio/adapters";
+import { Check, Minus } from "@nerio/adapters/icons";
 import { cn } from "../lib/cn";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { Icon } from "./icon";

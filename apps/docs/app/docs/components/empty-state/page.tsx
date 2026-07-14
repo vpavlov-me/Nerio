@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Search, X } from "@nerio/adapters";
+import { Check, Search, X } from "@nerio/adapters/icons";
 import {
   Card,
   CardContent,
@@ -20,7 +20,7 @@ import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
 
-const usageCode = `import { Search } from "@nerio/adapters";
+const usageCode = `import { Search } from "@nerio/adapters/icons";
 import {
   EmptyState,
   EmptyStateActions,

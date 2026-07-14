@@ -38,5 +38,6 @@ jobs:
       - run: pnpm validate:release
       - run: pnpm test:cli
       - run: pnpm test:mcp
+      - run: pnpm test:adapters
       - run: pnpm build
       - run: pnpm pack:check

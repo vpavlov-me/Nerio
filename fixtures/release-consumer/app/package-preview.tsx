@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings } from "@nerio/adapters";
+import { Settings } from "@nerio/adapters/icons";
 import {
   Button,
   Select,

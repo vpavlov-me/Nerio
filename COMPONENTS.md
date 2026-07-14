@@ -40,20 +40,20 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Foundation
 
-| Component / Area  | Status      | Package           | Notes                                                                                                                            |
-| ----------------- | ----------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Tokens            | stable-core | `@nerio/tokens`   | Color, spacing, radius, typography, motion                                                                                       |
-| Themes            | stable-core | `@nerio/tokens`   | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables               |
-| Modes             | stable-core | `@nerio/tokens`   | Explicit persisted `system`, `light`, and `dark` modes; System follows live OS preference changes.                               |
-| Density           | stable-core | `@nerio/tokens`   | `comfortable` and `compact` remap semantic/component contracts while primitive scales remain immutable.                          |
-| Typography Tokens | stable-core | `@nerio/tokens`   | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.                          |
-| Radius Tokens     | stable-core | `@nerio/tokens`   | Token-customizable radius variables. Not a v1 runtime axis.                                                                      |
-| Motion Tokens     | stable-core | `@nerio/tokens`   | Token-customizable duration/motion variables. Not a v1 runtime axis.                                                             |
-| Contrast Tokens   | stable-core | `@nerio/tokens`   | Token-customizable semantic contrast targets and semantic color overrides. Not a v1 runtime axis.                                |
-| Typography        | stable-core | `@nerio/ui`       | Semantic heading, text, and inline code primitives                                                                               |
-| Kbd               | stable-core | `@nerio/ui`       | Native shortcut notation with verified inline, Button, density, and forced-colors behavior                                       |
-| Icon              | stable-core | `@nerio/ui`       | Server-safe renderer with protected non-focusable semantics, warning-free custom SVG forwarding, and explicit meaningful labels. |
-| Icon Adapter      | stable-core | `@nerio/adapters` | Tree-shakeable Lucide source and generic SVG contract with Lucide-only stroke behavior kept separate.                            |
+| Component / Area  | Status      | Package                 | Notes                                                                                                                                  |
+| ----------------- | ----------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Tokens            | stable-core | `@nerio/tokens`         | Color, spacing, radius, typography, motion                                                                                             |
+| Themes            | stable-core | `@nerio/tokens`         | Brand themes: `purple`, `blue`, `green`, `orange`, `red`, `neutral`; custom themes supported through CSS variables                     |
+| Modes             | stable-core | `@nerio/tokens`         | Explicit persisted `system`, `light`, and `dark` modes; System follows live OS preference changes.                                     |
+| Density           | stable-core | `@nerio/tokens`         | `comfortable` and `compact` remap semantic/component contracts while primitive scales remain immutable.                                |
+| Typography Tokens | stable-core | `@nerio/tokens`         | System UI default plus seven official token recipes. Consumer-loaded fonts only; not a v1 runtime axis.                                |
+| Radius Tokens     | stable-core | `@nerio/tokens`         | Token-customizable radius variables. Not a v1 runtime axis.                                                                            |
+| Motion Tokens     | stable-core | `@nerio/tokens`         | Token-customizable duration/motion variables. Not a v1 runtime axis.                                                                   |
+| Contrast Tokens   | stable-core | `@nerio/tokens`         | Token-customizable semantic contrast targets and semantic color overrides. Not a v1 runtime axis.                                      |
+| Typography        | stable-core | `@nerio/ui`             | Semantic heading, text, and inline code primitives                                                                                     |
+| Kbd               | stable-core | `@nerio/ui`             | Native shortcut notation with verified inline, Button, density, and forced-colors behavior                                             |
+| Icon              | stable-core | `@nerio/ui`             | Server-safe renderer with protected non-focusable semantics, warning-free custom SVG forwarding, and explicit meaningful labels.       |
+| Icon Adapter      | stable-core | `@nerio/adapters/icons` | Tree-shakeable Lucide source and generic SVG contract; optional table, chart, form, and schema integrations stay on isolated subpaths. |
 
 ### Actions
 

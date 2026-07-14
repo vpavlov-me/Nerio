@@ -8,7 +8,7 @@ import {
   Settings,
   Sparkles,
   X,
-} from "@nerio/adapters";
+} from "@nerio/adapters/icons";
 import {
   Card,
   CardContent,
@@ -85,7 +85,7 @@ function ItemPreview() {
         className="component-example__code"
         label="Item live preview code"
         code={
-          'import { FileText } from "@nerio/adapters";\nimport { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<Item variant="outline">\n  <ItemMedia variant="icon"><FileText /></ItemMedia>\n  <ItemContent>\n    <ItemTitle>Research brief</ItemTitle>\n    <ItemDescription>Updated today · 12 collaborators have access.</ItemDescription>\n  </ItemContent>\n  <ItemActions><Button size="sm" variant="secondary">Open</Button></ItemActions>\n</Item>'
+          'import { FileText } from "@nerio/adapters/icons";\nimport { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<Item variant="outline">\n  <ItemMedia variant="icon"><FileText /></ItemMedia>\n  <ItemContent>\n    <ItemTitle>Research brief</ItemTitle>\n    <ItemDescription>Updated today · 12 collaborators have access.</ItemDescription>\n  </ItemContent>\n  <ItemActions><Button size="sm" variant="secondary">Open</Button></ItemActions>\n</Item>'
         }
       />
     </section>

@@ -27,9 +27,9 @@ import {
   Sparkles,
   Type,
   Wrench,
-} from "@nerio/adapters";
+} from "@nerio/adapters/icons";
 import { Badge, Button, ButtonGroup, DropdownMenu, Icon, Select } from "@nerio/ui/client";
-import type { IconComponent } from "@nerio/adapters";
+import type { IconComponent } from "@nerio/adapters/icons";
 import { densities, modes, themes } from "@nerio/tokens";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
 import {

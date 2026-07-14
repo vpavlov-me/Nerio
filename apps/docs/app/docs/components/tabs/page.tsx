@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ArrowRight, Check, LayoutDashboard, Settings, X } from "@nerio/adapters";
+import { ArrowRight, Check, LayoutDashboard, Settings, X } from "@nerio/adapters/icons";
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
 import {
   Tabs,
@@ -146,7 +146,7 @@ function ControlledExample() {
   );
 }
 
-const usage = `import { ArrowRight, LayoutDashboard } from "@nerio/adapters";
+const usage = `import { ArrowRight, LayoutDashboard } from "@nerio/adapters/icons";
 import { Badge } from "@nerio/ui";
 import { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio/ui/client";
 

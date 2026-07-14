@@ -33,8 +33,8 @@ import {
   Settings,
   UserPlus,
   X,
-} from "@nerio/adapters";
-import type { IconComponent } from "@nerio/adapters";
+} from "@nerio/adapters/icons";
+import type { IconComponent } from "@nerio/adapters/icons";
 
 const avatars = ["Ava Cole", "Noah Lee", "Maya Chen", "Owen Hart", "Iris Park"];
 

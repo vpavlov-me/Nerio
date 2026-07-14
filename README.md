@@ -42,8 +42,8 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboa
 - Base UI primitives
 - pnpm workspaces and Turborepo
 - Lucide as the default icon source through an icon adapter
-- TanStack Table and Recharts through dedicated adapters
-- React Hook Form and Zod for form integrations
+- Lucide, TanStack Table, Recharts, React Hook Form, and Zod through responsibility-scoped adapter
+  subpaths
 
 ## Planned workspace
 
@@ -55,7 +55,7 @@ apps/
 packages/
   tokens/        Design tokens, themes, modes, and CSS variable contracts
   ui/            Core component source and public registry items
-  adapters/      Icons, forms, tables, and charts
+  adapters/      Isolated icon, table, chart, form, and schema integration subpaths
   cli/           `nerio` project and component commands
   mcp/           Public AI discovery and composition tools
   config/        Shared TypeScript, linting, and build configuration
@@ -105,6 +105,11 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 
 `@nerio/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, Switch, and IconButton are exported from `@nerio/ui/client`. Styles remain available through `@nerio/ui/styles.css`.
 
+`@nerio/adapters` has no aggregating root entrypoint. Import icons and their public SVG types from
+`@nerio/adapters/icons`. Optional integrations use `@nerio/adapters/table`,
+`@nerio/adapters/charts`, `@nerio/adapters/forms`, or `@nerio/adapters/schema`; install the matching
+TanStack Table, Recharts, React Hook Form, or Zod peer only when that subpath is used.
+
 Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
 
 The Core packages ship TypeScript source. Next.js consumers must list the Nerio packages they use
@@ -112,6 +117,7 @@ in `transpilePackages`; the complete configuration is documented in Getting star
 
 ```tsx
 import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio/ui";
+import { Settings } from "@nerio/adapters/icons";
 import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
 import "@nerio/ui/styles.css";
 ```

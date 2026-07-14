@@ -20,6 +20,7 @@
     "validate:release": "pnpm test:catalog && pnpm test:tokens && node scripts/validate-release-docs.mjs && node scripts/release-smoke.mjs",
     "test:cli": "pnpm --filter @nerio/cli test:fixture",
     "test:mcp": "pnpm --filter @nerio/mcp test:fixture",
+    "test:adapters": "node scripts/adapter-consumer-smoke.mjs",
     "test:ui": "pnpm --filter @nerio/ui test",
     "test:a11y": "pnpm --filter @nerio/ui test:a11y",
     "pack:check": "node scripts/pack-check.mjs"

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Badge, Icon } from "@nerio/ui";
 import { Button } from "@nerio/ui/client";
-import { Check, Rocket } from "@nerio/adapters";
+import { Check, Rocket } from "@nerio/adapters/icons";
 import { HomeComponentShowcase } from "../components/home-component-showcase";
 import { siteConfig } from "../lib/site-config";
 

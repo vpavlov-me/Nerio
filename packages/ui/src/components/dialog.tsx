@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
-import { X } from "@nerio/adapters";
+import { X } from "@nerio/adapters/icons";
 import { Button } from "./button";
 import { Icon } from "./icon";
 import { cn } from "../lib/cn";

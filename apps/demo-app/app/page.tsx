@@ -12,7 +12,7 @@ import {
   Search,
   Settings,
   Sparkles,
-} from "@nerio/adapters";
+} from "@nerio/adapters/icons";
 import {
   Avatar,
   Badge,

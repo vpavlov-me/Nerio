@@ -321,7 +321,7 @@ async function verify() {
       "utf8",
     );
     if (
-      !installedIconSource.includes('from "@nerio/adapters"') ||
+      !installedIconSource.includes('from "@nerio/adapters/icons"') ||
       installedIconSource.includes("@/") ||
       !installedIconSource.includes("lucideAbsoluteStrokeWidth") ||
       !installedIconSource.includes("focusable={false}") ||

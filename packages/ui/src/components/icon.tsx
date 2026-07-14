@@ -1,8 +1,8 @@
 import * as React from "react";
-import type { IconComponent, IconSvgProps, LucideIconProps } from "@nerio/adapters";
+import type { IconComponent, IconSvgProps, LucideIconProps } from "@nerio/adapters/icons";
 import { cn } from "../lib/cn";
 
-export type { IconComponent, IconSvgProps, LucideIconProps } from "@nerio/adapters";
+export type { IconComponent, IconSvgProps, LucideIconProps } from "@nerio/adapters/icons";
 
 type IconBaseProps = Omit<
   IconSvgProps,

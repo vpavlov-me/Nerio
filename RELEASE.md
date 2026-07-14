@@ -20,6 +20,7 @@ pnpm test:catalog
 pnpm test:tokens
 pnpm test:cli
 pnpm test:mcp
+pnpm test:adapters
 pnpm validate:tokens
 pnpm validate:runtime-axes
 pnpm validate:typography
@@ -32,8 +33,10 @@ pnpm pack:check
 `validate:release` packs all intended packages, checks the packed manifests and file boundaries,
 installs the tarballs into an isolated Next.js consumer, exercises the packed CLI and MCP runtime,
 installs representative source components with dependency chains, and builds without workspace
-aliases. CI validates only; it never publishes, changes package privacy, creates tags, or creates a
-GitHub Release.
+aliases. `test:adapters` separately proves the packed `icons`, `table`, `charts`, `forms`, and
+`schema` exports, verifies that an icons/UI-only consumer does not install optional integration
+peers, and checks each optional subpath both without and with its required peer. CI validates only;
+it never publishes, changes package privacy, creates tags, or creates a GitHub Release.
 
 ## Versioning and package order
 
@@ -66,6 +69,11 @@ Run `pnpm pack:check`, then create local tarballs with `pnpm --filter <package> 
 archive inspection is needed. For every package, inspect `package.json`, `LICENSE`, exported source,
 styles, bins, dependency versions, and the absence of apps, fixtures, secrets, private assets, Pro
 code, and workspace protocols.
+
+For `@nerio/adapters`, also confirm that the packed manifest exposes only the documented subpaths,
+keeps Lucide as the icon implementation dependency, and marks TanStack Table, Recharts, React Hook
+Form, and Zod as optional peers. The unsupported package root must not statically aggregate adapter
+implementations.
 
 ## Manual approval and publish sequence
 

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CircleQuestionMark } from "@nerio/adapters";
+import { CircleQuestionMark } from "@nerio/adapters/icons";
 import { Icon } from "./icon";
 import { Tooltip } from "./tooltip";
 

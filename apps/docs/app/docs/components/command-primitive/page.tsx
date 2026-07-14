@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, FileText, LayoutDashboard, X } from "@nerio/adapters";
+import { Check, FileText, LayoutDashboard, X } from "@nerio/adapters/icons";
 import { Card, CardContent, CardHeader, CardTitle, Icon, Kbd } from "@nerio/ui";
 import {
   Button,

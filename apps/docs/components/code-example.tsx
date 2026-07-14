@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, Copy } from "@nerio/adapters";
+import { Check, Copy } from "@nerio/adapters/icons";
 import { Button } from "@nerio/ui/client";
 
 type CodeTokenKind =

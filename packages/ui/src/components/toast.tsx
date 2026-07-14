@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Toast as BaseToast } from "@base-ui/react/toast";
-import { Bell, Check, CircleAlert, Info, TriangleAlert } from "@nerio/adapters";
+import { Bell, Check, CircleAlert, Info, TriangleAlert } from "@nerio/adapters/icons";
 import { cn } from "../lib/cn";
 import { Icon } from "./icon";
 

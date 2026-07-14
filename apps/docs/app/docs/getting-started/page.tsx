@@ -8,7 +8,8 @@ export const metadata = createPageMetadata({
   path: "/docs/getting-started",
 });
 
-const packageImports = `import { Alert, Card, Field, FormGroup, Table } from "@nerio/ui";
+const packageImports = `import { Settings } from "@nerio/adapters/icons";
+import { Alert, Card, Field, FormGroup, Table } from "@nerio/ui";
 import { Button, Checkbox, Dialog, RadioGroup, Select, Switch, ToastProvider } from "@nerio/ui/client";
 import "@nerio/ui/styles.css";`;
 
@@ -55,6 +56,11 @@ export default function Page() {
           utilities, including Field and FormGroup. <code>@nerio/ui/client</code> contains
           interactive Base UI-backed components such as Checkbox, RadioGroup, Switch, Select, and
           Dialog. <code>@nerio/ui/styles.css</code> imports tokens and component styles.
+        </p>
+        <p>
+          Import icons and icon types from <code>@nerio/adapters/icons</code>. The adapter package
+          has no aggregating root entrypoint: table, chart, form, and schema integrations use their
+          dedicated subpaths and require only their matching optional peer.
         </p>
         <p>
           Core packages ship TypeScript source. Add the Nerio packages used by your application to

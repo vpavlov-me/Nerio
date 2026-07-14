@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Circle } from "@nerio/adapters";
+import { Circle } from "@nerio/adapters/icons";
 import { getRegistryItem } from "@nerio/registry";
 import {
   Alert,

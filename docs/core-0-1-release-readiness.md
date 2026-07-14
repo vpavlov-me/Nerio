@@ -28,6 +28,11 @@ Next.js project, exercises server-safe and client entrypoints, imports styles an
 packed CLI and MCP runtime, installs representative action/form/overlay/feedback/navigation/data
 components with dependency chains, and completes a production build without monorepo aliases.
 
+`pnpm test:adapters` additionally verifies the packed responsibility-scoped adapter exports. The
+icons/UI-only fixture typechecks and builds without TanStack Table, Recharts, React Hook Form, or
+Zod, while table, charts, forms, and schema fixtures fail predictably without their matching optional
+peer and pass once it is installed.
+
 Release-blocking defects fixed by the gate:
 
 - The packed MCP server now resolves `@nerio/registry/manifest.json` instead of a monorepo-relative
@@ -76,6 +81,7 @@ pnpm test:ui
 pnpm test:a11y
 pnpm test:cli
 pnpm test:mcp
+pnpm test:adapters
 pnpm validate:tokens
 pnpm validate:runtime-axes
 pnpm validate:typography
