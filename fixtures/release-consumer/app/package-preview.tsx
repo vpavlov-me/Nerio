@@ -11,6 +11,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  Toast,
   ToastProvider,
   ToastViewport,
 } from "@nerio/ui/client";
@@ -36,6 +37,7 @@ export function PackagePreview() {
             <SheetBody>Package client entrypoint is available.</SheetBody>
           </SheetContent>
         </Sheet>
+        <Toast title="Package toast" description="Client feedback API compiled from a tarball." />
       </section>
       <ToastViewport />
     </ToastProvider>

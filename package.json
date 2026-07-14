@@ -21,12 +21,14 @@
     "test:cli": "pnpm --filter @nerio/cli test:fixture",
     "test:mcp": "pnpm --filter @nerio/mcp test:fixture",
     "test:adapters": "node scripts/adapter-consumer-smoke.mjs",
+    "test:browser": "playwright test",
     "test:ui": "pnpm --filter @nerio/ui test",
     "test:a11y": "pnpm --filter @nerio/ui test:a11y",
     "pack:check": "node scripts/pack-check.mjs"
   },
   "devDependencies": {
     "@nerio/config": "workspace:*",
+    "@playwright/test": "1.55.1",
     "prettier": "^3.7.4",
     "turbo": "^2.10.3",
     "typescript": "^5.9.3"

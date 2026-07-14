@@ -21,6 +21,7 @@ pnpm test:tokens
 pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
+pnpm test:browser
 pnpm validate:tokens
 pnpm validate:runtime-axes
 pnpm validate:typography
@@ -30,10 +31,15 @@ pnpm validate:release
 pnpm pack:check
 ```
 
-`validate:release` packs all intended packages, checks the packed manifests and file boundaries,
-installs the tarballs into an isolated Next.js consumer, exercises the packed CLI and MCP runtime,
-installs representative source components with dependency chains, and builds without workspace
-aliases. `test:adapters` separately proves the packed `icons`, `table`, `charts`, `forms`, and
+Install the pinned Chromium runtime once before the browser gate with
+`pnpm exec playwright install --with-deps chromium`. `pnpm test:browser` starts the demo app locally
+and runs the focused release matrix; it is not a screenshot or full visual-regression suite.
+
+`validate:release` packs all intended packages, checks packed manifests, exports, dependencies, side
+effects, bins, file boundaries, and secret/Pro exclusions, installs the tarballs into an isolated
+Next.js consumer, exercises packed CLI and MCP discovery, source-installs representative components
+and a Foundation item with complete dependency chains, and builds without workspace aliases.
+`test:adapters` separately proves the packed `icons`, `table`, `charts`, `forms`, and
 `schema` exports, verifies that an icons/UI-only consumer does not install optional integration
 peers, and checks each optional subpath both without and with its required peer. CI validates only;
 it never publishes, changes package privacy, creates tags, or creates a GitHub Release.

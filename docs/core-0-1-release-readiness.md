@@ -2,10 +2,10 @@
 
 ## Decision
 
-**Ready for a separately approved manual `0.1.0-alpha.0` release.** The repository gate, packed
-package smoke test, clean consumer build, docs surface, and browser matrix pass. This decision does
-not authorize publishing packages, changing package privacy, creating a tag, or creating a GitHub
-Release.
+**Ready for a separately approved manual `0.1.0-alpha.0` release.** The strict post-remediation
+repository gate, packed package smoke, isolated consumer builds, docs surface, and reproducible
+browser matrix pass. This decision does not authorize publishing packages, changing package privacy,
+creating a tag, or creating a GitHub Release.
 
 ## Scope and status
 
@@ -22,18 +22,21 @@ The coordinated intended public packages are `@nerio/tokens`, `@nerio/adapters`,
 `@nerio/registry`, `@nerio/ui`, `@nerio/cli`, and `@nerio/mcp`, all at `0.1.0-alpha.0` and still
 `private: true`.
 
-`pnpm validate:release` verifies every packed manifest, repository/license/Node metadata, file
-boundary, and absence of workspace protocols. It then installs all six tarballs into an isolated
-Next.js project, exercises server-safe and client entrypoints, imports styles and tokens, runs the
-packed CLI and MCP runtime, installs representative action/form/overlay/feedback/navigation/data
-components with dependency chains, and completes a production build without monorepo aliases.
+`pnpm validate:release` verifies every packed manifest's coordinated version, privacy mode,
+repository/license/homepage/issues/Node metadata, exports, bins, files, side effects, runtime
+dependencies, optional peers, file boundary, secret/Pro exclusions, and absence of workspace
+protocols. It then installs all six tarballs into an isolated Next.js project, exercises server-safe,
+client, styles, token, and adapter subpaths, runs packed CLI and MCP discovery, source-installs
+Typography, Button, Select, Sheet, Toast, Table, Pagination, Sidebar Primitive, Command Primitive,
+Item, and List with complete dependency chains, and completes a production build without monorepo
+aliases.
 
 `pnpm test:adapters` additionally verifies the packed responsibility-scoped adapter exports. The
 icons/UI-only fixture typechecks and builds without TanStack Table, Recharts, React Hook Form, or
 Zod, while table, charts, forms, and schema fixtures fail predictably without their matching optional
 peer and pass once it is installed.
 
-Release-blocking defects fixed by the gate:
+Release-blocking defects reflected in the final post-remediation gate:
 
 - The packed MCP server now resolves `@nerio/registry/manifest.json` instead of a monorepo-relative
   path.
@@ -43,29 +46,25 @@ Release-blocking defects fixed by the gate:
 - Every public package now carries the coordinated version and explicit repository, license,
   homepage, issues, Node, dependency, peer dependency, export, bin, and side-effect metadata where
   applicable.
+- Icon/UI-only consumers no longer install optional table, chart, form, or schema dependencies, and
+  each optional adapter subpath fails or succeeds only with its matching pinned peer fixture. Exact
+  peer fixtures also install reproducibly from a cold CI package store.
 
 ## Browser matrix
 
-The demo browser gate passed 24 checks across:
+`pnpm test:browser` runs the focused Chromium release smoke across 72 appearance/viewport
+combinations plus interaction scenarios covering:
 
 - Purple, Blue, Green, Orange, Red, and Neutral themes.
 - System, Light, and Dark modes.
 - Comfortable and Compact density token behavior.
 - Desktop and 390-pixel mobile viewports with no horizontal overflow.
-- Keyboard-visible focus, mobile Sheet open/dismiss behavior, and focus restoration.
-- Loading, empty, error, and success states.
-- RTL layout, reduced motion, and forced colors.
+- Keyboard-visible focus, mobile Sheet close and focus restoration, Table keyboard scrolling, and
+  Sidebar rail/collapse behavior.
+- Command grouped results, IME-safe selection, leading and no-leading rows, and value selection.
+- Toast stacking and logical swipe dismissal in LTR and RTL.
+- Loading, empty, error, success, reduced-motion, and forced-color states.
 - No framework overlays, console errors, hydration errors, or failed resources.
-
-The docs browser gate passed 14 checks covering Getting started, package/source guidance, release
-and contribution links, canonical metadata, component rendering, sitemap scope, legacy composition
-`noindex` behavior, the removal of Blocks/Templates from Core navigation, and no console or hydration
-errors.
-
-The Sheet browser gate additionally verifies all four physical sides, the sm/md/lg sizes, neutral
-footer and default icon close paths, safe-area viewport metadata and offsets, long internal scrolling,
-mobile dynamic viewport resizing, compact density, RTL, reduced motion, forced colors, side-specific
-enter/exit timing, and focus restoration without console or framework errors.
 
 ## Complete command gate
 
@@ -82,6 +81,7 @@ pnpm test:a11y
 pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
+pnpm test:browser
 pnpm validate:tokens
 pnpm validate:runtime-axes
 pnpm validate:typography
