@@ -1002,6 +1002,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/styles/select.css",
           "target": "styles/select.css",
           "role": "style"

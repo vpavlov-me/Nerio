@@ -1,9 +1,4 @@
-const fs = require("node:fs");
-const path = require("node:path");
-
-const manifest = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "../../registry/src/manifest.json"), "utf8"),
-);
+const manifest = require("@nerio/registry/manifest.json");
 
 function findComponent(name) {
   const item = manifest.items.find((entry) => entry.name === name);

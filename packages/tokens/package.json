@@ -1,9 +1,21 @@
 {
   "name": "@nerio/tokens",
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.0",
   "description": "Nerio Core design tokens, themes, modes, density, and CSS variable contracts.",
   "private": true,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vpavlov-me/Nerio.git",
+    "directory": "packages/tokens"
+  },
+  "homepage": "https://nerio.vpavlov.com/docs/foundations/tokens",
+  "bugs": {
+    "url": "https://github.com/vpavlov-me/Nerio/issues"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "files": [
     "src"
   ],

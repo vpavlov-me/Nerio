@@ -1,9 +1,21 @@
 {
   "name": "@nerio/ui",
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.0",
   "description": "Nerio Core React components, utilities, and styles.",
   "private": true,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vpavlov-me/Nerio.git",
+    "directory": "packages/ui"
+  },
+  "homepage": "https://nerio.vpavlov.com/docs/components/button",
+  "bugs": {
+    "url": "https://github.com/vpavlov-me/Nerio/issues"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "files": [
     "src"
   ],

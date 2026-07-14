@@ -3,6 +3,14 @@ import { readFile } from "node:fs/promises";
 const requiredChangelogHeadings = [
   "# Changelog",
   "## Unreleased",
+  "### Core 0.1 alpha summary",
+  "#### Foundations",
+  "#### Components",
+  "#### Source registry and CLI",
+  "#### MCP and AI",
+  "#### Documentation and demo",
+  "#### Accessibility",
+  "#### Known limitations",
   "### Added",
   "### Changed",
   "### Fixed",
@@ -14,6 +22,7 @@ const requiredChangelogHeadings = [
 ];
 
 const requiredReleaseCommands = [
+  "pnpm install --frozen-lockfile",
   "pnpm format:check",
   "pnpm lint",
   "pnpm typecheck",
@@ -21,8 +30,10 @@ const requiredReleaseCommands = [
   "pnpm test:a11y",
   "pnpm validate:tokens",
   "pnpm validate:runtime-axes",
+  "pnpm validate:typography",
   "pnpm validate:catalog",
   "pnpm validate:docs",
+  "pnpm validate:release",
   "pnpm test:cli",
   "pnpm test:mcp",
   "pnpm build",

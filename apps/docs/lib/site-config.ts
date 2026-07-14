@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Nerio",
   url: "https://nerio.vpavlov.com",
   repositoryUrl: "https://github.com/vpavlov-me/Nerio",
-  version: "v0.1.0 beta",
+  version: "v0.1.0-alpha.0",
   defaultTitle: "Nerio — Open-source React design system",
   titleTemplate: "%s · Nerio",
   defaultDescription:

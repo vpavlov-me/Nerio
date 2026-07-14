@@ -17,7 +17,7 @@
     "validate:runtime-axes": "node scripts/validate-runtime-axes.mjs",
     "validate:docs": "pnpm --filter @nerio/docs validate:docs",
     "validate:typography": "node scripts/validate-typography.mjs",
-    "validate:release": "node scripts/validate-release-docs.mjs",
+    "validate:release": "node scripts/validate-release-docs.mjs && node scripts/release-smoke.mjs",
     "test:cli": "pnpm --filter @nerio/cli test:fixture",
     "test:mcp": "pnpm --filter @nerio/mcp test:fixture",
     "test:ui": "pnpm --filter @nerio/ui test",

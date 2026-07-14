@@ -1,9 +1,21 @@
 {
   "name": "@nerio/registry",
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.0",
   "description": "Nerio Core source registry manifest and metadata helpers.",
   "private": true,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vpavlov-me/Nerio.git",
+    "directory": "packages/registry"
+  },
+  "homepage": "https://nerio.vpavlov.com/docs/registry",
+  "bugs": {
+    "url": "https://github.com/vpavlov-me/Nerio/issues"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "files": [
     "src"
   ],
