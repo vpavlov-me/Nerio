@@ -2,3 +2,5 @@ node_modules
 .next
 dist
 pnpm-lock.yaml
+playwright-report
+test-results

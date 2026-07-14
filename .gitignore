@@ -10,6 +10,8 @@ build/
 coverage/
 storybook-static/
 .turbo/
+playwright-report/
+test-results/
 
 # Environment files
 .env

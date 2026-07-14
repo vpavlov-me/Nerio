@@ -37,6 +37,11 @@ test("covers the release appearance and responsive matrix without overflow", asy
     await expect(
       page.getByRole("heading", { name: "Product operations without a vertical bias" }),
     ).toBeVisible();
+    if (viewport.name === "mobile") {
+      await expect(page.getByRole("button", { name: "Open workspace navigation" })).toBeVisible();
+    } else {
+      await expect(page.getByRole("complementary", { name: "Workspace sidebar" })).toBeVisible();
+    }
 
     for (const theme of themes) {
       for (const mode of modes) {
