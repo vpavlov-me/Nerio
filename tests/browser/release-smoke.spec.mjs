@@ -76,14 +76,17 @@ test("covers the release appearance and responsive matrix without overflow", asy
             `${viewport.name}/${theme}/${mode}/${density} overflow`,
           ).toBeLessThanOrEqual(1);
           if (mode === "light" && density === "comfortable") {
-            themeColors.set(theme, snapshot.accent);
+            themeColors.set(`${viewport.name}:${theme}`, snapshot.accent);
           }
         }
       }
     }
   }
 
-  expect(new Set(themeColors.values()).size).toBe(themes.length);
+  for (const viewport of viewports) {
+    const viewportThemeColors = themes.map((theme) => themeColors.get(`${viewport.name}:${theme}`));
+    expect(new Set(viewportThemeColors).size, `${viewport.name} theme accents`).toBe(themes.length);
+  }
   await expectHealthyPage(page, problems);
 });
 
