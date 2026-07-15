@@ -1,6 +1,15 @@
 # Nerio agent instructions
 
-This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation, `COMPONENTS.md` before adding or moving components, `COMPONENT_ARCHITECTURE.md` before adding props, variants, component modes, or new component responsibilities, and `TIERING_AND_TEMPLATE_EVOLUTION.md` before assigning a component to Core or Pro, promoting template-local code, or expanding Core to satisfy a template.
+This repository is the source of truth for Nerio. Read the following documents before changing the areas they govern:
+
+- `PROJECT.md` before making architectural decisions.
+- `DECISIONS.md` before changing accepted product or architecture decisions.
+- `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation.
+- `DESIGN_PRINCIPLES.md` before proposing or reviewing component APIs, composition, customization, accessibility, motion, or documentation conventions.
+- `AGENT_DESIGN_SYSTEM_RULES.md` before changing Core components, tokens, utilities, catalog and registry metadata, examples, tests, docs, CLI, or MCP projections.
+- `COMPONENTS.md` before adding or moving components.
+- `COMPONENT_ARCHITECTURE.md` before adding props, variants, component modes, or new component responsibilities.
+- `TIERING_AND_TEMPLATE_EVOLUTION.md` before assigning a component to Core or Pro, promoting template-local code, or expanding Core to satisfy a template.
 
 ## Product constraints
 
@@ -46,6 +55,8 @@ This repository is the source of truth for Nerio. Read `PROJECT.md` before makin
 
 ## Design-system rules
 
+- Treat `DESIGN_PRINCIPLES.md` as the system-wide decision framework and `AGENT_DESIGN_SYSTEM_RULES.md` as the normative implementation contract for coding agents.
+- Existing canonical APIs remain authoritative until an explicit migration task approves a change. Do not silently reshape Nerio APIs to match another design system.
 - Design with primitive, semantic, and component tokens. Do not hard-code product colors, typography, radii, shadows, or spacing in component implementations when a token is appropriate.
 - One component represents one semantic responsibility. Group components by meaning, behavior, accessibility contract, and composition role rather than visual similarity.
 - Before adding a prop or variant, verify that the semantic purpose, interaction model, content model, and likely API evolution remain unchanged. If they differ, prefer a separate component.
