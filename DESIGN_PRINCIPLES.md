@@ -10,6 +10,18 @@ These principles guide new work and the review of existing work. They do not sil
 
 Existing canonical APIs remain authoritative until an explicit migration task is approved. For example, the current Button variant set and the current Badge `tone` and `emphasis` axes must not be renamed or reorganized merely because another taxonomy appears conceptually cleaner. Any breaking change requires evidence, migration guidance, and synchronized updates across source, exports, registry metadata, docs, CLI, MCP, fixtures, and tests.
 
+## Source-of-truth precedence and conflicts
+
+These principles are a general decision framework. They fill gaps and guide future proposals; they do not supersede accepted decisions or the repository's scope-specific sources of truth.
+
+- `DECISIONS.md` records accepted product and architecture decisions.
+- `DESIGN_SYSTEM.md` governs approved visual and token contracts.
+- `COMPONENT_ARCHITECTURE.md` governs component responsibility and API boundaries.
+- `TIERING_AND_TEMPLATE_EVOLUTION.md`, `COMPONENTS.md`, and `data/component-catalog.json` govern ownership, tiering, and inventory within their declared scopes.
+- The nearest `AGENTS.md` and `AGENT_DESIGN_SYSTEM_RULES.md` govern agent operating procedure.
+
+Apply the most specific current source within its declared scope. Principles may support a proposed change, but they must not silently override an accepted public API or recorded decision. When two authoritative sources disagree or their scope is ambiguous, stop the affected implementation, identify the conflicting documents and clauses, and require an explicit decision that updates the relevant sources before proceeding.
+
 ## 1. Semantic intent before visual treatment
 
 Public APIs describe the role, meaning, state, or interaction of a component. Visual implementation details are not the primary contract.
