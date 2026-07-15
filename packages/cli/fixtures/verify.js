@@ -700,7 +700,10 @@ async function verify() {
       !toastStyles.includes("--toast-managed-dismiss-x") ||
       !toastStyles.includes("--toast-managed-dismiss-y") ||
       !toastStyles.includes("--toast-managed-scale") ||
+      !toastStyles.includes("max(") ||
       !toastStyles.includes("inset-inline-start: 50%") ||
+      !toastStyles.includes(".n-toast-viewport:dir(rtl)") ||
+      !toastStyles.includes("translateX(50%)") ||
       !toastStyles.includes("var(--n-toast-stack-offset) * -1") ||
       !toastStyles.includes("scale(var(--toast-managed-scale))") ||
       !toastStyles.includes("font-size: var(--n-font-size-md)") ||

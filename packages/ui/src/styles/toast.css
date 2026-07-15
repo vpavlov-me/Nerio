@@ -13,6 +13,10 @@
   z-index: var(--n-overlay-z-index);
 }
 
+.n-toast-viewport:dir(rtl) {
+  transform: translateX(50%);
+}
+
 .n-toast {
   align-items: center;
   background: var(--n-toast-background);
@@ -73,7 +77,7 @@
 }
 
 .n-toast--managed {
-  --toast-managed-scale: calc(max(0, 1 - (var(--toast-index) * var(--n-toast-stack-scale-step))));
+  --toast-managed-scale: max(0, calc(1 - (var(--toast-index) * var(--n-toast-stack-scale-step))));
   --toast-managed-height: var(--toast-frontmost-height, var(--toast-height));
   --toast-managed-base-y: calc(var(--toast-index) * var(--n-toast-stack-offset) * -1);
   --toast-managed-dismiss-x: 0px;
