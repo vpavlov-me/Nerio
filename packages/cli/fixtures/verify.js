@@ -682,7 +682,9 @@ async function verify() {
       !toastSource.includes("inline-end") ||
       !toastSource.includes("readDocumentDirection") ||
       !toastSource.includes("data-direction") ||
-      !toastSource.includes("dismissOnClick")
+      !toastSource.includes("dismissOnClick") ||
+      !toastSource.includes('import { Button } from "./button"') ||
+      !toastSource.includes("icon={X}")
     ) {
       throw new Error(
         "Installed Toast source is missing manager, first-render direction, RTL swipe, or action dismissal contract.",
@@ -697,10 +699,18 @@ async function verify() {
       !toastStyles.includes("--toast-managed-base-y") ||
       !toastStyles.includes("--toast-managed-dismiss-x") ||
       !toastStyles.includes("--toast-managed-dismiss-y") ||
+      !toastStyles.includes("--toast-managed-scale") ||
+      !toastStyles.includes("inset-inline-start: 50%") ||
+      !toastStyles.includes("var(--n-toast-stack-offset) * -1") ||
+      !toastStyles.includes("scale(var(--toast-managed-scale))") ||
+      !toastStyles.includes("font-size: var(--n-font-size-md)") ||
+      !toastStyles.includes("margin: 0") ||
+      !toastStyles.includes("align-content: center") ||
+      toastStyles.includes("background: var(--n-toast-status-background)") ||
       !toastStyles.includes("translate3d(var(--toast-managed-x), var(--toast-managed-y), 0)")
     ) {
       throw new Error(
-        "Installed Toast styles are missing the unified transform coordinate system.",
+        "Installed Toast styles are missing the bottom-centered scaled stack or unified transform coordinate system.",
       );
     }
 

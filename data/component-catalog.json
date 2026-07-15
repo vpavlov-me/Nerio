@@ -456,7 +456,7 @@
       "package": "@nerio/ui/client",
       "category": "feedback",
       "status": "stable-core",
-      "description": "Static and managed anatomy stay separate; a unified stack, enter, swipe, and dismissal coordinate system prevents transform jumps; inherited RTL is correct on the first interactive render and stays synchronized; timers, managers, actions, safe areas, accessibility, and clean installs are covered."
+      "description": "Static and managed anatomy stay separate; managed actions and icon-only dismissal use Button, status icons have no backing surface, and copy margins are reset inside the floating surface; the managed viewport is bottom-centered and the collapsed stack scales and steps upward behind the frontmost toast; a unified enter, expand, swipe, and dismissal coordinate system prevents transform jumps; inherited RTL, timers, managers, safe areas, accessibility, and clean installs are covered."
     },
     {
       "name": "Progress",

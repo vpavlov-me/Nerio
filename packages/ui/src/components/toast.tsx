@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import { Toast as BaseToast } from "@base-ui/react/toast";
-import { Bell, Check, CircleAlert, Info, TriangleAlert } from "@nerio/adapters/icons";
+import { Bell, Check, CircleAlert, Info, TriangleAlert, X } from "@nerio/adapters/icons";
 import { cn } from "../lib/cn";
+import { Button } from "./button";
 import { Icon } from "./icon";
 
 export type ToastTone = "neutral" | "info" | "success" | "warning" | "danger";
@@ -156,25 +157,40 @@ function ToastList({
             <BaseToast.Description data-slot="description" />
           </div>
           {action ? (
-            <BaseToast.Action
+            <Button
+              render={
+                <BaseToast.Action
+                  aria-label={action.altText}
+                  disabled={action.disabled || actionLoading}
+                  onClick={() => {
+                    action.onClick();
+                    if (action.dismissOnClick !== false) {
+                      manager.close(toast.id);
+                    }
+                  }}
+                />
+              }
               className="n-toast__action"
               data-slot="action"
               aria-busy={actionLoading || undefined}
-              aria-label={action.altText}
               disabled={action.disabled || actionLoading}
-              onClick={() => {
-                action.onClick();
-                if (action.dismissOnClick !== false) {
-                  manager.close(toast.id);
-                }
-              }}
+              loading={actionLoading}
+              size="sm"
+              variant="secondary"
             >
               {actionLoading ? (action.loadingLabel ?? action.label) : action.label}
-            </BaseToast.Action>
+            </Button>
           ) : null}
-          <BaseToast.Close className="n-toast__close" data-slot="close" aria-label={dismissLabel}>
-            {dismissText}
-          </BaseToast.Close>
+          <Button
+            render={<BaseToast.Close />}
+            aria-label={dismissLabel}
+            className="n-toast__close"
+            data-slot="close"
+            icon={X}
+            size="sm"
+            tooltip={dismissText}
+            variant="ghost"
+          />
         </BaseToast.Content>
       </BaseToast.Root>
     );

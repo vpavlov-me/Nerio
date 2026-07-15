@@ -2338,7 +2338,7 @@
       "description": "Acknowledges short-lived product events without interrupting work.",
       "category": "feedback",
       "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
-      "registryDependencies": [],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/toast.tsx",
@@ -2383,6 +2383,7 @@
         "--n-toast-viewport-inset",
         "--n-toast-stack-gap",
         "--n-toast-stack-offset",
+        "--n-toast-stack-scale-step",
         "--n-toast-enter-offset",
         "--n-toast-swipe-dismiss-distance",
         "--n-overlay-z-index",
@@ -2390,9 +2391,6 @@
         "--n-toast-border",
         "--n-toast-shadow",
         "--n-toast-status-color",
-        "--n-toast-status-background",
-        "--n-toast-close-size",
-        "--n-toast-close-padding-inline",
         "--n-motion-reveal-duration",
         "--n-motion-reveal-easing",
         "--n-motion-focus-duration",
@@ -2403,7 +2401,8 @@
         "Uses the Base UI Toast primitive and manager.",
         "Use low priority for routine polite confirmations and high priority only for urgent updates.",
         "Base UI announces managed title and description once; decorative status icons and action copy are excluded from the announcement.",
-        "Static Toast content is separate from the managed status, copy, action, and dismiss layout; ToastViewport localizes its landmark, visible dismiss text, and accessible dismiss label.",
+        "Static Toast remains presentation-only and separate from managed status and stack behavior; managed actions and icon-only dismissal use Button.",
+        "The managed viewport is bottom-centered; collapsed toasts scale and step upward behind the frontmost card, then expand upward without changing reading order.",
         "Managed toasts never steal focus. F6 enters the viewport, where actions and dismissal remain keyboard reachable.",
         "Timers pause on pointer hover, keyboard focus, and window blur, then resume from the remaining duration. Set timeout to 0 only for an intentionally persistent toast.",
         "Inherited document direction is resolved for the first interactive render and remains synchronized with root dir changes; explicit direction wins immediately.",
@@ -2411,7 +2410,7 @@
         "Use one provider per managed stack. Pass a manager from createToastManager only when an independent second provider is intentional.",
         "Keep messages concise and avoid replacing persistent error UI with a toast."
       ],
-      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ id: 'save-result', title: 'Saved', timeout: 5000, priority: 'low', data: { tone: 'success', action: { label: 'Undo', onClick: undo } } })}>Save</Button>;\n}\n\n<ToastProvider limit={3}><SaveButton /><ToastViewport label=\"Notifications\" dismissText=\"Close\" dismissLabel=\"Dismiss notification\" /></ToastProvider>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ToastProvider, ToastViewport, useToastManager } from '@/components/nerio/components/toast';\n\nfunction SaveButton() {\n  const toasts = useToastManager();\n  return <Button onClick={() => toasts.add({ id: 'save-result', title: 'Saved', timeout: 5000, priority: 'low', data: { tone: 'success', action: { label: 'Undo', onClick: undo } } })}>Save</Button>;\n}\n\n<ToastProvider limit={3}><SaveButton /><ToastViewport label=\"Notifications\" dismissText=\"Dismiss\" dismissLabel=\"Dismiss notification\" /></ToastProvider>"
     }
   ]
 }

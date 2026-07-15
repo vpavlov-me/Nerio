@@ -730,7 +730,7 @@ function Preview({ kind }: { kind: string }) {
             <ToastProvider>
               <Toast
                 title="Static toast presentation"
-                description="This standalone layout does not inherit manager positioning, actions, or dismissal behavior."
+                description="Standalone feedback without managed positioning."
               />
               <ToastDemoButton />
               <ToastViewport swipeDirection={["left", "right", "up", "down"]} />

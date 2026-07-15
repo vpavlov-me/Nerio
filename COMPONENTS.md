@@ -117,14 +117,14 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Feedback
 
-| Component   | Status      | Package            | Notes                                                                                                                      |
-| ----------- | ----------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| Alert       | stable-core | `@nerio/ui`        | Inline feedback with persistent semantic context                                                                           |
-| Toast       | stable-core | `@nerio/ui/client` | Unified stack/enter/swipe/dismiss transforms, first-render inherited RTL, lifecycle, priority, actions, and clean installs |
-| Progress    | stable-core | `@nerio/ui`        | Task-completion progress with required accessible naming, normalized ranges, and tokenized motion                          |
-| Skeleton    | stable-core | `@nerio/ui`        | Loading placeholder                                                                                                        |
-| Empty State | stable-core | `@nerio/ui`        | Composable media, header, actions, size, alignment, role guidance, and responsive stacking                                 |
-| Spinner     | stable-core | `@nerio/ui`        | Loading indicator                                                                                                          |
+| Component   | Status      | Package            | Notes                                                                                                                                                                                                                                               |
+| ----------- | ----------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Alert       | stable-core | `@nerio/ui`        | Inline feedback with persistent semantic context                                                                                                                                                                                                    |
+| Toast       | stable-core | `@nerio/ui/client` | Bottom-centered stack with smaller cards stepping upward, standard Button actions and icon dismissal, reset copy margins, floating elevation, unified enter/expand/swipe/dismiss transforms, inherited RTL, lifecycle, priority, and clean installs |
+| Progress    | stable-core | `@nerio/ui`        | Task-completion progress with required accessible naming, normalized ranges, and tokenized motion                                                                                                                                                   |
+| Skeleton    | stable-core | `@nerio/ui`        | Loading placeholder                                                                                                                                                                                                                                 |
+| Empty State | stable-core | `@nerio/ui`        | Composable media, header, actions, size, alignment, role guidance, and responsive stacking                                                                                                                                                          |
+| Spinner     | stable-core | `@nerio/ui`        | Loading indicator                                                                                                                                                                                                                                   |
 
 ### Navigation and layout
 
