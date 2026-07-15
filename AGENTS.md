@@ -1,6 +1,6 @@
 # Nerio agent instructions
 
-This repository is the source of truth for Nerio. Read the following documents before changing their governed areas:
+This repository is the source of truth for Nerio. Read the following documents before changing the areas they govern:
 
 - `PROJECT.md` before making architectural decisions.
 - `DECISIONS.md` before changing accepted product or architecture decisions.
