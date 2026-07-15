@@ -9,13 +9,14 @@ The keywords **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** def
 Read this document together with:
 
 - `PROJECT.md` for product scope and positioning;
+- `DECISIONS.md` for accepted product and architecture decisions;
 - `DESIGN_SYSTEM.md` for visual and token decisions;
 - `DESIGN_PRINCIPLES.md` for system-wide principles;
 - `COMPONENT_ARCHITECTURE.md` for responsibility and API boundaries;
 - `TIERING_AND_TEMPLATE_EVOLUTION.md` for Core, Pro, template, and consumer ownership;
 - `COMPONENTS.md` and `data/component-catalog.json` for the canonical inventory.
 
-When these sources conflict, do not choose a convenient interpretation. Stop the conflicting implementation, report the conflict, and require an explicit architecture decision.
+These sources have scoped authority: accepted decisions constrain the general principles, and each scope-specific source governs its declared domain. `DESIGN_PRINCIPLES.md` fills gaps and guides future proposals; it does not silently override an accepted contract. When authoritative sources conflict, do not choose a convenient interpretation. Stop the conflicting implementation, report the exact documents and clauses, and require an explicit architecture decision that updates the relevant sources.
 
 ## Compatibility lock
 
