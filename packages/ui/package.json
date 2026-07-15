@@ -2,7 +2,7 @@
   "name": "@nerio/ui",
   "version": "0.1.0-alpha.0",
   "description": "Nerio Core React components, utilities, and styles.",
-  "private": true,
+  "private": false,
   "license": "MIT",
   "repository": {
     "type": "git",

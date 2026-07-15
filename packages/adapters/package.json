@@ -2,7 +2,7 @@
   "name": "@nerio/adapters",
   "version": "0.1.0-alpha.0",
   "description": "Responsibility-scoped Nerio Core adapters for icons, tables, charts, forms, and schemas.",
-  "private": true,
+  "private": false,
   "license": "MIT",
   "repository": {
     "type": "git",
