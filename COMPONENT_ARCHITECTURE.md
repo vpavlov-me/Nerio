@@ -37,6 +37,11 @@ A visual size difference by itself is usually a variant. A change in purpose is 
 
 ## API rules
 
+Every proposed prop, variant, size, state, slot, event, or imperative handle must pass the canonical
+public API admission rule in `docs/core-ui-best-practices.md`. Review semantic necessity and
+responsibility rather than enforcing an arbitrary numeric prop limit. Consider existing composition,
+tokens, consumer `className` or source ownership, and meaningful slots before adding public API.
+
 - Prefer small, explicit APIs over broad boolean-prop matrices.
 - Prefer composition and named slots over mode props that replace the component's identity.
 - Do not add props for behavior that belongs to another semantic component.

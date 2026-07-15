@@ -13,8 +13,11 @@ Thank you for contributing to Nerio. The project is open source, but its compone
 1. Fork the repository and create a branch from `main`.
 2. Use a descriptive branch name, for example `feat/command-menu` or `fix/dialog-focus-return`.
 3. Follow the rules in `AGENTS.md` and the architecture in `PROJECT.md`.
-4. Add or update documentation, usage examples, types, registry metadata, and accessibility notes together with the implementation.
-5. Run the required checks before opening a pull request.
+4. Review component and API work against the canonical
+   [Core UI best practices](./docs/core-ui-best-practices.md), including responsibility ownership,
+   API admission, styling layer, state, accessibility, responsive, motion, and evidence requirements.
+5. Add or update documentation, usage examples, types, registry metadata, and accessibility notes together with the implementation.
+6. Run the required checks before opening a pull request.
 
 Once the workspace is bootstrapped, the standard commands will be:
 
@@ -59,6 +62,16 @@ A pull request should:
 - Avoid hard-coded visual values when a token can express the intent.
 - Keep documentation in English.
 - Pass required CI checks.
+
+For every proposed prop, variant, size, state, slot, event, or imperative handle, explain why
+existing composition, tokens, consumer `className` or source ownership, and existing slots are
+insufficient. Do not use arbitrary prop-count limits; demonstrate a stable semantic or behavioral
+need, multiple independent use cases, preserved accessibility and entrypoints, and justified
+maintenance cost.
+
+Use the reusable component/family review checklist in
+[`docs/core-ui-best-practices.md`](./docs/core-ui-best-practices.md#reusable-component-or-family-review-checklist)
+for implementation and review evidence.
 
 ## Changelog and release notes
 

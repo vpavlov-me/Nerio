@@ -26,6 +26,16 @@ body:
       label: Alternatives considered
       description: Include existing Nerio components, native HTML, or application-level composition where relevant.
   - type: textarea
+    id: ownership
+    attributes:
+      label: Responsibility and API admission
+      description: If this changes UI or public API, classify it as existing Core, composition, future Core candidate, Pro, or consumer-owned. Explain why composition, tokens, className/source ownership, and existing slots are insufficient.
+  - type: textarea
+    id: styling-layer
+    attributes:
+      label: Styling decision layer
+      description: If visual implementation is involved, identify the system rule, family rule, or justified component exception. Do not propose new visual values without maintainer approval.
+  - type: textarea
     id: accessibility
     attributes:
       label: Accessibility and interaction notes
@@ -43,4 +53,6 @@ body:
         - label: I searched existing issues and documentation.
           required: true
         - label: I understand that this proposal may need discussion before implementation begins.
+          required: true
+        - label: I reviewed the ownership and public API admission rules in docs/core-ui-best-practices.md when applicable.
           required: true
