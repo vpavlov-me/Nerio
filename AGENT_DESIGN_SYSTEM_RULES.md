@@ -30,7 +30,7 @@ Breaking changes require explicit scope, evidence, migration guidance, synchroni
 
 Before editing, an agent MUST:
 
-1. Read the nearest `AGENTS.md` and all relevant source-of-truth documents.
+1. Read the root `AGENTS.md` and all relevant source-of-truth documents.
 2. Inspect at least one analogous Nerio component and the underlying Base UI primitive.
 3. Identify applicable tokens, utilities, tests, docs patterns, catalog fields, registry metadata, and source-install fixtures.
 4. Determine whether the task changes a public contract, visual decision, package boundary, or product tier.
