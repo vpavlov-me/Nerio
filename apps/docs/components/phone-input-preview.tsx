@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Input } from "@nerio/ui";
+import { Input } from "@nerio-ui/ui";
 
 const phoneCharacters = /[^0-9+()\s-]/g;
 

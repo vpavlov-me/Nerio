@@ -1,4 +1,4 @@
-import { Badge, Code, Table, TableContainer } from "@nerio/ui";
+import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -30,7 +30,7 @@ const semanticRoles = [
   ["Helper line height", "--n-helper-line-height", "--n-line-height-normal"],
 ] as const;
 
-const systemInstall = `@import "@nerio/tokens/styles.css";`;
+const systemInstall = `@import "@nerio-ui/tokens/styles.css";`;
 
 const geistInstall = `@font-face {
   font-family: "Geist";

@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Check, FileText, LayoutDashboard, X } from "@nerio/adapters/icons";
-import { Card, CardContent, CardHeader, CardTitle, Icon, Kbd } from "@nerio/ui";
+import { Check, FileText, LayoutDashboard, X } from "@nerio-ui/adapters/icons";
+import { Card, CardContent, CardHeader, CardTitle, Icon, Kbd } from "@nerio-ui/ui";
 import {
   Button,
   Command,
@@ -22,7 +22,7 @@ import {
   SheetTrigger,
   type CommandGroupData,
   type CommandItemData,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -176,8 +176,8 @@ function Example({
   );
 }
 
-const usage = `import { Kbd } from "@nerio/ui";
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@nerio/ui/client";
+const usage = `import { Kbd } from "@nerio-ui/ui";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@nerio-ui/ui/client";
 
 const items = [
   { value: "settings", label: "Workspace settings", keywords: ["preferences"] },

@@ -164,8 +164,8 @@ test("runtime-axis validator checks runtime controls through canonical imports",
     "--docs-controls",
     "docs-chrome.tsx",
     readFileSync(docsSource, "utf8").replace(
-      'import { densities, modes, themes } from "@nerio/tokens";',
-      'import { densities, themes } from "@nerio/tokens";',
+      'import { densities, modes, themes } from "@nerio-ui/tokens";',
+      'import { densities, themes } from "@nerio-ui/tokens";',
     ),
     (stderr) => assert.match(stderr, /Docs runtime controls must import canonical modes/),
   );
@@ -176,8 +176,8 @@ test("runtime-axis validator ignores commented canonical imports", () => {
     "--docs-controls",
     "docs-chrome.tsx",
     readFileSync(docsSource, "utf8").replace(
-      'import { densities, modes, themes } from "@nerio/tokens";',
-      '// import { densities, modes, themes } from "@nerio/tokens";\nimport { densities, themes } from "@nerio/tokens";',
+      'import { densities, modes, themes } from "@nerio-ui/tokens";',
+      '// import { densities, modes, themes } from "@nerio-ui/tokens";\nimport { densities, themes } from "@nerio-ui/tokens";',
     ),
     (stderr) => assert.match(stderr, /Docs runtime controls must import canonical modes/),
   );

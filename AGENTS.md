@@ -114,7 +114,7 @@ Before moving any Core component toward `stable-core`, verify:
 ## Engineering rules
 
 - Keep server and client boundaries deliberate in Next.js. Add `use client` only where an interaction actually requires it.
-- Treat `@nerio/ui` as the server-safe default entrypoint for static components and utilities. Put interactive Base UI-backed components in `@nerio/ui/client`, and keep `@nerio/ui/styles.css` unchanged.
+- Treat `@nerio-ui/ui` as the server-safe default entrypoint for static components and utilities. Put interactive Base UI-backed components in `@nerio-ui/ui/client`, and keep `@nerio-ui/ui/styles.css` unchanged.
 - Use TypeScript strict mode. Avoid `any`, unsafe assertions, and silent error handling.
 - Do not introduce dependencies without a clear documented reason.
 - Use workspace package boundaries. Avoid imports that bypass package public exports.

@@ -34,7 +34,7 @@ Pro packages may depend on Core packages.
 - `packages/adapters` contains icon, form, table, and chart adapters.
 - `packages/cli` contains public CLI commands such as `nerio init`, `nerio add`, and `nerio doctor`.
 - `packages/mcp` contains public AI component discovery and composition tools.
-- Future Pro packages may use `@nerio/pro`, `@nerio/pro-themes`, `@nerio/pro-registry`, and `@nerio/pro-mcp` naming.
+- Future Pro packages may use `@nerio-ui/pro`, `@nerio-ui/pro-themes`, `@nerio-ui/pro-registry`, and `@nerio-ui/pro-mcp` naming.
 - Any component implementation must match the tier defined in `COMPONENTS.md` and `data/component-catalog.json`.
 
 ## Consequences

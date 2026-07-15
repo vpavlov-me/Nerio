@@ -1,5 +1,5 @@
-import { registry } from "@nerio/registry";
-import { Badge } from "@nerio/ui";
+import { registry } from "@nerio-ui/registry";
+import { Badge } from "@nerio-ui/ui";
 import { CodeExample } from "../../../components/code-example";
 import { createPageMetadata } from "../../../lib/seo";
 

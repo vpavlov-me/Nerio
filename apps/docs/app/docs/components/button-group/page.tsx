@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, ChevronDown, Copy, X } from "@nerio/adapters/icons";
+import { ArrowLeft, ArrowRight, Check, ChevronDown, Copy, X } from "@nerio-ui/adapters/icons";
 import {
   Badge,
   ButtonGroup,
@@ -10,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
   Icon,
-} from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
 
@@ -129,7 +129,7 @@ function ButtonGroupPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { ChevronDown } from "@nerio/adapters/icons";\nimport { Badge, ButtonGroup } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<ButtonGroup aria-label="Repository actions">\n  <Button badge={<Badge size="sm" tone="info">24</Badge>} variant="secondary">\n    Fork\n  </Button>\n  <Button icon={ChevronDown} aria-label="More fork actions" variant="secondary" />\n</ButtonGroup>'
+          'import { ChevronDown } from "@nerio-ui/adapters/icons";\nimport { Badge, ButtonGroup } from "@nerio-ui/ui";\nimport { Button } from "@nerio-ui/ui/client";\n\n<ButtonGroup aria-label="Repository actions">\n  <Button badge={<Badge size="sm" tone="info">24</Badge>} variant="secondary">\n    Fork\n  </Button>\n  <Button icon={ChevronDown} aria-label="More fork actions" variant="secondary" />\n</ButtonGroup>'
         }
         label="ButtonGroup live preview code"
       />

@@ -1,5 +1,5 @@
 {
-  "name": "@nerio/registry",
+  "name": "@nerio-ui/registry",
   "version": "0.1.0-alpha.0",
   "description": "Nerio Core source registry manifest and metadata helpers.",
   "private": false,
@@ -29,7 +29,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@nerio/config": "workspace:*",
+    "@nerio-ui/config": "workspace:*",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   }

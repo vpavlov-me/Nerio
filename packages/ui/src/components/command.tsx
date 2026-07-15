@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Autocomplete as BaseAutocomplete } from "@base-ui/react/autocomplete";
-import { Search } from "@nerio/adapters/icons";
+import { Search } from "@nerio-ui/adapters/icons";
 import { cn } from "../lib/cn";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { Icon } from "./icon";

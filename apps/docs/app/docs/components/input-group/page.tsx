@@ -1,4 +1,4 @@
-import { Check, X } from "@nerio/adapters/icons";
+import { Check, X } from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -9,7 +9,7 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
-} from "@nerio/ui";
+} from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -70,7 +70,7 @@ export default function Page() {
           <CodeExample
             className="component-example__code"
             code={
-              'import { Field, Input, InputGroup, InputGroupAddon } from "@nerio/ui";\n\n<Field label="Website">\n  <InputGroup>\n    <InputGroupAddon placement="start" aria-hidden="true">https://</InputGroupAddon>\n    <Input autoComplete="url" />\n    <InputGroupAddon placement="end" aria-hidden="true">.com</InputGroupAddon>\n  </InputGroup>\n</Field>'
+              'import { Field, Input, InputGroup, InputGroupAddon } from "@nerio-ui/ui";\n\n<Field label="Website">\n  <InputGroup>\n    <InputGroupAddon placement="start" aria-hidden="true">https://</InputGroupAddon>\n    <Input autoComplete="url" />\n    <InputGroupAddon placement="end" aria-hidden="true">.com</InputGroupAddon>\n  </InputGroup>\n</Field>'
             }
             label="InputGroup live preview code"
           />

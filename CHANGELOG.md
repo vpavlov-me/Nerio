@@ -63,6 +63,7 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Adopted `@nerio-ui` as the public npm namespace for all six Nerio Core packages.
 - Refined Core component APIs, token mappings, and documentation examples as the pre-release contract evolves.
 - Consolidated icon-only actions into Button icon mode and keyboard shortcut composition.
 - Expanded Card into a composable anatomy with header, content, footer, action, and visual slots.
@@ -71,7 +72,7 @@ Items under `Unreleased` may change before the next public release.
 - Changed Nerio Core's default sans-serif typography from Geist to the platform system font stack.
 - Isolated Lucide's fixed-stroke option behind `lucideAbsoluteStrokeWidth`; the previous
   `absoluteStrokeWidth` Icon prop remains a deprecated alpha compatibility alias.
-- Split `@nerio/adapters` into explicit `icons`, `table`, `charts`, `forms`, and `schema` subpaths;
+- Split `@nerio-ui/adapters` into explicit `icons`, `table`, `charts`, `forms`, and `schema` subpaths;
   non-icon integrations are now optional peers and the monolithic root entrypoint is no longer
   supported.
 
@@ -121,7 +122,7 @@ Items under `Unreleased` may change before the next public release.
 - Products that relied on Geist implicitly should load it explicitly and apply the Geist typography preset or override `--n-font-sans`.
 - Replace explicit Icon `absoluteStrokeWidth` usage with `lucideAbsoluteStrokeWidth`; custom SVG
   components should implement only the generic `IconSvgProps` contract.
-- Replace icon imports from `@nerio/adapters` with `@nerio/adapters/icons`. Import optional
+- Replace icon imports from `@nerio-ui/adapters` with `@nerio-ui/adapters/icons`. Import optional
   integrations from their dedicated subpath and install only its matching peer dependency.
 
 ## Maintenance rules

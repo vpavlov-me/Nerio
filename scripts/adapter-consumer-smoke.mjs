@@ -45,7 +45,7 @@ function readJson(path) {
 
 function lockedAdapterPeerVersions() {
   const [adapter] = JSON.parse(
-    run(pnpm, ["list", "--filter", "@nerio/adapters", "--depth", "0", "--json"]),
+    run(pnpm, ["list", "--filter", "@nerio-ui/adapters", "--depth", "0", "--json"]),
   );
   const versions = {};
   for (const peer of Object.values(optionalAdapters)) {
@@ -60,7 +60,7 @@ function lockedAdapterPeerVersions() {
 
 function pack(name, destination) {
   run(pnpm, ["--filter", name, "pack", "--pack-destination", destination]);
-  const prefix = `nerio-${name.slice("@nerio/".length)}-`;
+  const prefix = `${name.slice(1).replaceAll("/", "-")}-`;
   const filename = readdirSync(destination).find(
     (entry) => entry.startsWith(prefix) && entry.endsWith(".tgz"),
   );
@@ -91,11 +91,11 @@ function assertPackedAdapterContract(tarball) {
   const expectedExports = ["./icons", "./table", "./charts", "./forms", "./schema"];
 
   if (manifest.exports?.["."]) {
-    throw new Error("@nerio/adapters must not expose a coupled root entrypoint.");
+    throw new Error("@nerio-ui/adapters must not expose a coupled root entrypoint.");
   }
   for (const subpath of expectedExports) {
     if (!manifest.exports?.[subpath]) {
-      throw new Error(`Packed @nerio/adapters is missing ${subpath}.`);
+      throw new Error(`Packed @nerio-ui/adapters is missing ${subpath}.`);
     }
   }
   for (const peer of Object.values(optionalAdapters)) {
@@ -109,11 +109,11 @@ function assertPackedAdapterContract(tarball) {
   const expectedSources = ["icons.ts", "table.ts", "charts.ts", "forms.ts", "schema.ts"];
   for (const source of expectedSources) {
     if (!entries.includes(`package/src/${source}`)) {
-      throw new Error(`Packed @nerio/adapters is missing src/${source}.`);
+      throw new Error(`Packed @nerio-ui/adapters is missing src/${source}.`);
     }
   }
   if (entries.includes("package/src/index.ts")) {
-    throw new Error("Packed @nerio/adapters includes the unsupported monolithic root source.");
+    throw new Error("Packed @nerio-ui/adapters includes the unsupported monolithic root source.");
   }
 }
 
@@ -126,11 +126,11 @@ const tarballDirectory = join(tempRoot, "packages");
 try {
   mkdirSync(tarballDirectory, { recursive: true });
   const tarballs = {
-    "@nerio/adapters": pack("@nerio/adapters", tarballDirectory),
-    "@nerio/tokens": pack("@nerio/tokens", tarballDirectory),
-    "@nerio/ui": pack("@nerio/ui", tarballDirectory),
+    "@nerio-ui/adapters": pack("@nerio-ui/adapters", tarballDirectory),
+    "@nerio-ui/tokens": pack("@nerio-ui/tokens", tarballDirectory),
+    "@nerio-ui/ui": pack("@nerio-ui/ui", tarballDirectory),
   };
-  assertPackedAdapterContract(tarballs["@nerio/adapters"]);
+  assertPackedAdapterContract(tarballs["@nerio-ui/adapters"]);
 
   const iconsConsumer = join(tempRoot, "icons-ui");
   cpSync(join(root, "fixtures/adapter-consumers/icons-ui"), iconsConsumer, { recursive: true });
@@ -181,7 +181,7 @@ try {
     version: "0.0.0",
     private: true,
     dependencies: {
-      "@nerio/adapters": `file:${tarballs["@nerio/adapters"]}`,
+      "@nerio-ui/adapters": `file:${tarballs["@nerio-ui/adapters"]}`,
       react: docsPackage.dependencies.react,
       "react-dom": docsPackage.dependencies["react-dom"],
     },

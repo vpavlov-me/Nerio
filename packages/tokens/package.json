@@ -1,5 +1,5 @@
 {
-  "name": "@nerio/tokens",
+  "name": "@nerio-ui/tokens",
   "version": "0.1.0-alpha.0",
   "description": "Nerio Core design tokens, themes, modes, density, and CSS variable contracts.",
   "private": false,
@@ -32,7 +32,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@nerio/config": "workspace:*",
+    "@nerio-ui/config": "workspace:*",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   }

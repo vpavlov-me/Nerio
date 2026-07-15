@@ -1,4 +1,4 @@
-import { Check, X } from "@nerio/adapters/icons";
+import { Check, X } from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -7,7 +7,7 @@ import {
   CardTitle,
   Icon,
   Progress,
-} from "@nerio/ui";
+} from "@nerio-ui/ui";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
 import { getComponentDoc } from "../../../../lib/component-docs";

@@ -39,8 +39,8 @@ for (const contract of [...requiredTokens, ...requiredRecipes]) {
   }
 }
 
-if (!uiStyles.includes('@import "@nerio/tokens/styles.css";')) {
-  throw new Error("@nerio/ui/styles.css must include the standard token stylesheet.");
+if (!uiStyles.includes('@import "@nerio-ui/tokens/styles.css";')) {
+  throw new Error("@nerio-ui/ui/styles.css must include the standard token stylesheet.");
 }
 
 const uiCssFiles = fs

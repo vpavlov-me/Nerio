@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, X } from "@nerio/adapters/icons";
+import { Check, X } from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -13,8 +13,8 @@ import {
   LabelContent,
   LabelRequired,
   LabelRow,
-} from "@nerio/ui";
-import { LabelHint } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { LabelHint } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -25,8 +25,8 @@ const usageCode = `import {
   LabelContent,
   LabelRequired,
   LabelRow,
-} from "@nerio/ui";
-import { LabelHint } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { LabelHint } from "@nerio-ui/ui/client";
 
 <LabelRow>
   <LabelContent>
@@ -74,7 +74,7 @@ const implementationRows = [
   ["Registry item", "label installs Label, composition helpers, and LabelHint source files."],
   ["Base UI", "Tooltip for LabelHint only."],
   ["Registry dependencies", "tooltip"],
-  ["Package dependencies", "@nerio/adapters, clsx, react"],
+  ["Package dependencies", "@nerio-ui/adapters, clsx, react"],
 ] as const;
 
 const tokenRows = [

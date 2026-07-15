@@ -14,9 +14,9 @@ Core = building blocks. Pro = product-ready solutions.
 ## Current release status
 
 The strict post-remediation Core 0.1 release gate passes for the intended `0.1.0-alpha.0` source and
-package surface. The repository is ready for a separate manual maintainer approval, but no package,
-tag, or GitHub Release has been published. All intended package manifests remain private until the
-approval sequence in `RELEASE.md` is explicitly authorized.
+package surface, and the public-manifest release PR is merged. The six intended packages use the
+`@nerio-ui` npm namespace but have not been published yet. No release tag or GitHub Release exists;
+the remaining publication sequence is documented in `RELEASE.md`.
 
 ## Primary users
 
@@ -109,11 +109,11 @@ spacing, radius, typography, icon, or control-size scales.
 
 ## UI package entrypoints
 
-`@nerio/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
+`@nerio-ui/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
 
-Interactive Base UI-backed components are exported from `@nerio/ui/client`, which is the client-only entrypoint for Button, IconButton, Checkbox, RadioGroup, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
+Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, IconButton, Checkbox, RadioGroup, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
 
-`@nerio/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
+`@nerio-ui/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
 
 ## V1 token-customizable appearance values
 

@@ -1,5 +1,5 @@
 {
-  "name": "@nerio/ui",
+  "name": "@nerio-ui/ui",
   "version": "0.1.0-alpha.0",
   "description": "Nerio Core React components, utilities, and styles.",
   "private": false,
@@ -37,12 +37,12 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
-    "@nerio/adapters": "workspace:*",
-    "@nerio/tokens": "workspace:*",
+    "@nerio-ui/adapters": "workspace:*",
+    "@nerio-ui/tokens": "workspace:*",
     "clsx": "^2.1.1"
   },
   "devDependencies": {
-    "@nerio/config": "workspace:*",
+    "@nerio-ui/config": "workspace:*",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",

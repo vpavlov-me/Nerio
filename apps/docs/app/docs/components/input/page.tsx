@@ -1,4 +1,4 @@
-import { Check, X } from "@nerio/adapters/icons";
+import { Check, X } from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -10,8 +10,8 @@ import {
   Label,
   LabelContent,
   LabelRow,
-} from "@nerio/ui";
-import { LabelHint } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { LabelHint } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { PhoneInputPreview } from "../../../../components/phone-input-preview";
@@ -83,7 +83,7 @@ export default function Page() {
           <CodeExample
             className="component-example__code"
             code={
-              'import { Input, Label } from "@nerio/ui";\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" placeholder="Launch materials" autoComplete="organization" required />'
+              'import { Input, Label } from "@nerio-ui/ui";\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" placeholder="Launch materials" autoComplete="organization" required />'
             }
             label="Input live preview code"
           />

@@ -1,8 +1,16 @@
 "use client";
 
 import * as React from "react";
-import { ArrowRight, Check, LayoutDashboard, Settings, X } from "@nerio/adapters/icons";
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
+import { ArrowRight, Check, LayoutDashboard, Settings, X } from "@nerio-ui/adapters/icons";
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Icon,
+} from "@nerio-ui/ui";
 import {
   Tabs,
   TabsContent,
@@ -10,7 +18,7 @@ import {
   TabsList,
   TabsPanels,
   TabsTrigger,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -146,9 +154,9 @@ function ControlledExample() {
   );
 }
 
-const usage = `import { ArrowRight, LayoutDashboard } from "@nerio/adapters/icons";
-import { Badge } from "@nerio/ui";
-import { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio/ui/client";
+const usage = `import { ArrowRight, LayoutDashboard } from "@nerio-ui/adapters/icons";
+import { Badge } from "@nerio-ui/ui";
+import { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";
 
 <Tabs defaultValue="overview" variant="segmented" size="md">
   <TabsList aria-label="Workspace sections">

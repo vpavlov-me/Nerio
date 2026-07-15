@@ -106,7 +106,7 @@ import {
   createToastManager,
   useToastManager,
 } from "../../src/client";
-import { ArrowRight, Bell, Check, type IconSvgProps } from "@nerio/adapters/icons";
+import { ArrowRight, Bell, Check, type IconSvgProps } from "@nerio-ui/adapters/icons";
 import { RouterLinkFixture } from "../fixtures/router-link";
 
 const CustomSvgIcon = React.forwardRef<SVGSVGElement, IconSvgProps>(function CustomSvgIcon(
@@ -3107,7 +3107,7 @@ describe("Core interactive action contracts", () => {
     expect(serverEntrypoint).not.toContain('from "./components/sidebar"');
     expect(clientEntrypoint).toContain("SidebarProvider");
     expect(docsExample).toMatch(
-      /import\s*\{[\s\S]*SidebarContent[\s\S]*SidebarInset[\s\S]*\}\s*from "@nerio\/ui";/,
+      /import\s*\{[\s\S]*SidebarContent[\s\S]*SidebarInset[\s\S]*\}\s*from "@nerio-ui\/ui";/,
     );
     expect(docsExample).not.toMatch(/label="(?:Collapse|Expand) preview sidebar"/);
     expect(docsReference).not.toMatch(/SidebarRail, SidebarTrigger, useSidebar/);
@@ -3115,7 +3115,7 @@ describe("Core interactive action contracts", () => {
     expect(sidebarPage).toContain('import * as React from "react";');
     expect(sidebarPage).not.toMatch(/SidebarInset, Icon|SidebarTrigger, useSidebar/);
     expect(docsExample).toMatch(
-      /import\s*\{[\s\S]*SidebarProvider[\s\S]*SidebarRail[\s\S]*\}\s*from "@nerio\/ui\/client";/,
+      /import\s*\{[\s\S]*SidebarProvider[\s\S]*SidebarRail[\s\S]*\}\s*from "@nerio-ui\/ui\/client";/,
     );
     expect(sidebarItem?.files.map((file) => file.target)).toContain("lib/compose-refs.ts");
   });

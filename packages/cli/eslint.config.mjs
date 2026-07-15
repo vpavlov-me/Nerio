@@ -1,4 +1,4 @@
-import base from "@nerio/config/eslint";
+import base from "@nerio-ui/config/eslint";
 
 export default [
   ...base,

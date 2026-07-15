@@ -94,7 +94,7 @@ test("catalog validator reports invalid tier, category, package, status, runtime
         {
           tier: "community",
           category: "controls",
-          package: "@nerio/unknown",
+          package: "@nerio-ui/unknown",
           status: "released",
         },
       );
@@ -102,7 +102,7 @@ test("catalog validator reports invalid tier, category, package, status, runtime
         value.registryIdentities.find((identity) => identity.name === "button"),
         {
           runtime: "edge",
-          entrypoint: "@nerio/ui/server",
+          entrypoint: "@nerio-ui/ui/server",
         },
       );
       return value;
@@ -138,8 +138,8 @@ test("catalog validator reports matrix tier, status, and package drift", () => {
       source
         .replace("| Button", "| Button")
         .replace(
-          /\| Button\s+\| stable-core\s+\| `@nerio\/ui\/client`/,
-          "| Button | polished | `@nerio/ui`",
+          /\| Button\s+\| stable-core\s+\| `@nerio-ui\/ui\/client`/,
+          "| Button | polished | `@nerio-ui/ui`",
         ),
     "--components",
     (stderr) => {
@@ -181,7 +181,7 @@ test("catalog validator reports entrypoint and runtime drift from canonical cata
       const button = value.components.find((component) => component.name === "Button");
       const identity = value.registryIdentities.find((item) => item.name === "button");
       identity.runtime = "client";
-      identity.entrypoint = "@nerio/ui";
+      identity.entrypoint = "@nerio-ui/ui";
       return value;
     },
     "--catalog",

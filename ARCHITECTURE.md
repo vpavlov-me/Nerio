@@ -39,19 +39,19 @@ packages/config
 Future Pro target:
 
 ```text
-@nerio/pro
-  -> Depends on @nerio/ui
+@nerio-ui/pro
+  -> Depends on @nerio-ui/ui
   -> Advanced components and product-ready patterns
 
-@nerio/pro-themes
-  -> Depends on @nerio/tokens
+@nerio-ui/pro-themes
+  -> Depends on @nerio-ui/tokens
   -> Premium brand themes
 
-@nerio/pro-registry
+@nerio-ui/pro-registry
   -> Depends on Core registry contracts
   -> Private registry items and templates
 
-@nerio/pro-mcp
+@nerio-ui/pro-mcp
   -> Depends on public MCP contracts
   -> Licensed AI tooling and Pro documentation access
 ```
@@ -63,15 +63,15 @@ Core packages must never depend on Pro packages.
 Allowed:
 
 ```ts
-import { Card } from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
-import { DataGrid } from "@nerio/pro";
+import { Card } from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
+import { DataGrid } from "@nerio-ui/pro";
 ```
 
 Not allowed in Core:
 
 ```ts
-import { DataGrid } from "@nerio/pro";
+import { DataGrid } from "@nerio-ui/pro";
 ```
 
 ## Appearance runtime rule

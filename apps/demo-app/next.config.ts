@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: workspaceRoot,
   },
-  transpilePackages: ["@nerio/ui", "@nerio/tokens", "@nerio/adapters"],
+  transpilePackages: ["@nerio-ui/ui", "@nerio-ui/tokens", "@nerio-ui/adapters"],
 };
 
 export default nextConfig;

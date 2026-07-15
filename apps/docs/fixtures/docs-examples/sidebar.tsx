@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio/ui";
+import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
 import {
   Button,
   Sheet,
@@ -14,7 +14,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 
 const navigation = [
   { label: "Overview", href: "/" },

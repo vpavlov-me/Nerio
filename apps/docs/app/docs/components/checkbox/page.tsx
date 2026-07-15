@@ -1,6 +1,6 @@
-import { Check, X } from "@nerio/adapters/icons";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
-import { Checkbox } from "@nerio/ui/client";
+import { Check, X } from "@nerio-ui/adapters/icons";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
+import { Checkbox } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -51,7 +51,7 @@ const implementationRows = [
   ["Registry item", "checkbox installs 6 source files into the configured components directory."],
   ["Base UI", "checkbox"],
   ["Registry dependencies", "None."],
-  ["Package dependencies", "@base-ui/react, @nerio/adapters, clsx, react"],
+  ["Package dependencies", "@base-ui/react, @nerio-ui/adapters, clsx, react"],
 ] as const;
 
 const tokenRows = [
@@ -87,7 +87,7 @@ function CheckboxPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Checkbox } from "@nerio/ui/client";\n\n<Checkbox\n  defaultChecked\n  label="Include archived collections"\n  description="Archived collections remain visible in search results."\n/>'
+          'import { Checkbox } from "@nerio-ui/ui/client";\n\n<Checkbox\n  defaultChecked\n  label="Include archived collections"\n  description="Archived collections remain visible in search results."\n/>'
         }
         label="Checkbox live preview code"
       />

@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Check, Circle, X } from "@nerio/adapters/icons";
-import { getRegistryItem } from "@nerio/registry";
+import { Check, Circle, X } from "@nerio-ui/adapters/icons";
+import { getRegistryItem } from "@nerio-ui/registry";
 import {
   Alert,
   Avatar,
@@ -82,7 +82,7 @@ import {
   ToastViewport,
   Tooltip,
   useToastManager,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 import { CodeExample } from "./code-example";
 import { DocumentationTable } from "./documentation-table";
 import {

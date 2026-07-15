@@ -1,4 +1,4 @@
-import { Code, Table, TableContainer } from "@nerio/ui";
+import { Code, Table, TableContainer } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -84,8 +84,8 @@ const utilityRows: TokenRow[] = [
   ],
 ];
 
-const usage = `import { motionClasses } from "@nerio/ui";
-import { cn } from "@nerio/ui";
+const usage = `import { motionClasses } from "@nerio-ui/ui";
+import { cn } from "@nerio-ui/ui";
 
 <button className={cn("n-button", motionClasses.hover, motionClasses.press, motionClasses.focus)}>
   Save changes

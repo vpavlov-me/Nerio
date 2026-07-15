@@ -181,7 +181,7 @@ async function verify() {
     if (
       !buttonUsage.requiredTokens.includes("--n-link-color") ||
       !buttonUsage.variants.includes("link") ||
-      !buttonUsage.dependencies.includes("@nerio/adapters") ||
+      !buttonUsage.dependencies.includes("@nerio-ui/adapters") ||
       !buttonUsage.accessibility.some((item) => item.includes("native anchor"))
     ) {
       throw new Error("MCP Button usage is not aligned with the native link contract.");
@@ -253,7 +253,7 @@ async function verify() {
     const switchUsage = JSON.parse(switchUsageResult.content[0].text);
     if (
       !switchUsage.baseUiPrimitives.includes("switch") ||
-      switchUsage.dependencies.includes("@nerio/adapters") ||
+      switchUsage.dependencies.includes("@nerio-ui/adapters") ||
       !switchUsage.slots.includes("description") ||
       !switchUsage.requiredTokens.includes("--n-switch-thumb-offset") ||
       !switchUsage.accessibility.some((item) => item.includes("immediate on/off settings")) ||
@@ -340,7 +340,7 @@ async function verify() {
     if (
       !dialogUsage.requiredTokens.includes("--n-dialog-width-md") ||
       !dialogUsage.requiredTokens.includes("--n-motion-overlay-enter-duration") ||
-      !dialogUsage.dependencies.includes("@nerio/adapters") ||
+      !dialogUsage.dependencies.includes("@nerio-ui/adapters") ||
       !dialogUsage.accessibility.some((item) => item.includes("Close dialog"))
     ) {
       throw new Error("MCP Dialog usage is missing overlay, adapter, or close metadata.");
@@ -441,7 +441,7 @@ async function verify() {
     });
     const toastUsage = JSON.parse(toastUsageResult.content[0].text);
     if (
-      !toastUsage.dependencies.includes("@nerio/adapters") ||
+      !toastUsage.dependencies.includes("@nerio-ui/adapters") ||
       !toastUsage.registryDependencies.includes("button") ||
       !toastUsage.files.some((file) => file.target === "components/icon.tsx") ||
       !toastUsage.accessibility.some((item) => item.includes("icon-only dismissal use Button")) ||

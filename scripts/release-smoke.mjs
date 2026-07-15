@@ -15,55 +15,55 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const packageNames = [
-  "@nerio/tokens",
-  "@nerio/ui",
-  "@nerio/adapters",
-  "@nerio/registry",
-  "@nerio/cli",
-  "@nerio/mcp",
+  "@nerio-ui/tokens",
+  "@nerio-ui/ui",
+  "@nerio-ui/adapters",
+  "@nerio-ui/registry",
+  "@nerio-ui/cli",
+  "@nerio-ui/mcp",
 ];
 const packageDirectories = Object.fromEntries(
-  packageNames.map((name) => [name, `packages/${name.slice("@nerio/".length)}`]),
+  packageNames.map((name) => [name, `packages/${name.slice("@nerio-ui/".length)}`]),
 );
 const packageContracts = {
-  "@nerio/tokens": {
+  "@nerio-ui/tokens": {
     homepage: "https://nerio.vpavlov.com/docs/foundations/tokens",
     exports: [".", "./styles.css"],
     dependencies: [],
     peers: [],
     sideEffects: ["./src/styles.css"],
   },
-  "@nerio/ui": {
+  "@nerio-ui/ui": {
     homepage: "https://nerio.vpavlov.com/docs/components/button",
     exports: [".", "./client", "./styles.css"],
-    dependencies: ["@base-ui/react", "@nerio/adapters", "@nerio/tokens", "clsx"],
+    dependencies: ["@base-ui/react", "@nerio-ui/adapters", "@nerio-ui/tokens", "clsx"],
     peers: ["react", "react-dom"],
     sideEffects: ["./src/styles.css"],
   },
-  "@nerio/adapters": {
+  "@nerio-ui/adapters": {
     homepage: "https://nerio.vpavlov.com/docs/foundations/icons",
     exports: ["./icons", "./table", "./charts", "./forms", "./schema"],
     dependencies: ["lucide-react"],
     peers: ["@tanstack/react-table", "react", "react-hook-form", "recharts", "zod"],
     sideEffects: false,
   },
-  "@nerio/registry": {
+  "@nerio-ui/registry": {
     homepage: "https://nerio.vpavlov.com/docs/registry",
     exports: [".", "./manifest.json"],
     dependencies: [],
     peers: [],
   },
-  "@nerio/cli": {
+  "@nerio-ui/cli": {
     homepage: "https://nerio.vpavlov.com/docs/registry",
     exports: [],
-    dependencies: ["@nerio/registry"],
+    dependencies: ["@nerio-ui/registry"],
     peers: [],
     bin: ["nerio"],
   },
-  "@nerio/mcp": {
+  "@nerio-ui/mcp": {
     homepage: "https://nerio.vpavlov.com/docs/ai",
     exports: ["."],
-    dependencies: ["@modelcontextprotocol/sdk", "@nerio/registry", "zod"],
+    dependencies: ["@modelcontextprotocol/sdk", "@nerio-ui/registry", "zod"],
     peers: [],
     bin: ["nerio-mcp"],
   },
@@ -167,20 +167,20 @@ function validatePackedPackage(name, tarball) {
     }
   }
 
-  if (name === "@nerio/adapters") {
+  if (name === "@nerio-ui/adapters") {
     const expectedSubpaths = ["./icons", "./table", "./charts", "./forms", "./schema"];
     const optionalPeers = ["@tanstack/react-table", "recharts", "react-hook-form", "zod"];
     if (packageJson.exports?.["."]) {
-      throw new Error("@nerio/adapters must not restore the coupled root entrypoint.");
+      throw new Error("@nerio-ui/adapters must not restore the coupled root entrypoint.");
     }
     for (const subpath of expectedSubpaths) {
       if (!packageJson.exports?.[subpath]) {
-        throw new Error(`@nerio/adapters is missing the ${subpath} export.`);
+        throw new Error(`@nerio-ui/adapters is missing the ${subpath} export.`);
       }
     }
     for (const peer of optionalPeers) {
       if (!packageJson.peerDependenciesMeta?.[peer]?.optional || packageJson.dependencies?.[peer]) {
-        throw new Error(`${peer} must remain an optional @nerio/adapters peer.`);
+        throw new Error(`${peer} must remain an optional @nerio-ui/adapters peer.`);
       }
     }
   }
@@ -196,7 +196,7 @@ try {
 
   for (const name of packageNames) {
     run(pnpm, ["--filter", name, "pack", "--pack-destination", tarballDirectory]);
-    const prefix = `nerio-${name.slice("@nerio/".length).replaceAll("/", "-")}-`;
+    const prefix = `${name.slice(1).replaceAll("/", "-")}-`;
     const filename = readdirSync(tarballDirectory).find(
       (entry) => entry.startsWith(prefix) && entry.endsWith(".tgz"),
     );
@@ -262,8 +262,8 @@ try {
     }
   }
 
-  const cli = join(consumerDirectory, "node_modules/@nerio/cli/src/index.js");
-  const manifest = join(consumerDirectory, "node_modules/@nerio/registry/src/manifest.json");
+  const cli = join(consumerDirectory, "node_modules/@nerio-ui/cli/src/index.js");
+  const manifest = join(consumerDirectory, "node_modules/@nerio-ui/registry/src/manifest.json");
   run(process.execPath, [cli, "init", "--registry", manifest], { cwd: consumerDirectory });
   run(process.execPath, [cli, "doctor"], { cwd: consumerDirectory });
   for (const component of [
@@ -289,7 +289,7 @@ try {
   );
 
   const mcpCheck = [
-    "const tools = require('@nerio/mcp');",
+    "const tools = require('@nerio-ui/mcp');",
     "const items = tools.list_components();",
     `const expected = ${JSON.stringify([
       "typography",

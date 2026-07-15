@@ -1,5 +1,5 @@
-import { Check, X } from "@nerio/adapters/icons";
-import { Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio/ui";
+import { Check, X } from "@nerio-ui/adapters/icons";
+import { Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
 import { getComponentDoc } from "../../../../lib/component-docs";
@@ -61,7 +61,7 @@ const implementationRows = [
   ],
   ["Base UI", "select"],
   ["Registry dependencies", "form-message"],
-  ["Package dependencies", "@base-ui/react, @nerio/adapters, clsx, react"],
+  ["Package dependencies", "@base-ui/react, @nerio-ui/adapters, clsx, react"],
 ] as const;
 
 export const metadata = createPageMetadata({
