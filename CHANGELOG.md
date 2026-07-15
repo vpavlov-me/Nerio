@@ -2,9 +2,11 @@
 
 All notable user-facing changes to Nerio Core will be documented in this file.
 
-Nerio has not been publicly released yet. Items under `Unreleased` may change before the first public pre-release.
+Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
+
+## 0.1.0-alpha.0 — 2026-07-15
 
 ### Core 0.1 alpha summary
 
@@ -43,8 +45,7 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 
 #### Known limitations
 
-- No package, tag, or GitHub Release exists yet; all intended package manifests remain private until
-  a separate explicit approval.
+- This is the first public alpha and is not production-stable or 1.0-compatible.
 - Package distribution is source-first TypeScript. Next.js package consumers must configure the
   documented `transpilePackages` list.
 - IconButton and the documented Button compatibility aliases remain available only for migration.

@@ -2,7 +2,7 @@
   "name": "@nerio/registry",
   "version": "0.1.0-alpha.0",
   "description": "Nerio Core source registry manifest and metadata helpers.",
-  "private": true,
+  "private": false,
   "license": "MIT",
   "repository": {
     "type": "git",
