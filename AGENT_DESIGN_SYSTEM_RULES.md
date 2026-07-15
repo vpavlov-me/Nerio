@@ -80,7 +80,7 @@ After editing, run and report all relevant formatting, linting, type-checking, t
 - Keep visible `focus-visible` treatment.
 - Preserve label, description, error, required, invalid, read-only, disabled, and loading relationships where relevant.
 - Communicate status, selection, and validation through more than color alone.
-- Respect reduced motion and consider forced colors, zoom/reflow, RTL, localization, touch, and narrow containers when relevant.
+- Respect reduced motion and consider `forced-colors`, zoom/reflow, RTL, localization, touch, and narrow containers when relevant.
 - Test meaningful keyboard, focus, naming, and state behavior.
 
 ### MUST NOT
