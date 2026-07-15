@@ -6,6 +6,11 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+### Documentation and governance
+
+- Added a canonical Core UI implementation standard, reusable review checklist, cross-category
+  audit, and aligned agent, contributor, proposal, pull-request, architecture, and AI guidance.
+
 ## 0.1.0-alpha.0 — 2026-07-15
 
 ### Core 0.1 alpha summary

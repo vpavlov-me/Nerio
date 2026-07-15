@@ -2,6 +2,28 @@
 
 This is an internal review record for the Core Component Quality Pass. The component catalog remains the machine-readable source of truth for release status.
 
+## Reusable component and family review
+
+Use the detailed checklist in
+[`docs/core-ui-best-practices.md`](./core-ui-best-practices.md#reusable-component-or-family-review-checklist)
+for every Core component or family review. Record applicable evidence for:
+
+- responsibility ownership and product-scope boundary;
+- public API necessity and rejected composition/token/consumer alternatives;
+- single-component versus compound anatomy;
+- system, family, or justified component-exception styling placement;
+- native/Base UI semantics, typed refs, render composition, and truthful state hooks;
+- applicable default, hover, active, focus-visible, selected/current/checked, disabled, loading,
+  invalid, read-only, empty, and indeterminate states;
+- accessible naming, keyboard behavior, focus, announcements, forced colors, reduced motion, zoom,
+  and reflow;
+- narrow containers, overflow, RTL, localization, safe areas, and dynamic viewports;
+- source installation, package entrypoints, docs examples, registry, CLI, and MCP alignment;
+- maintainer-approved visual-language compliance.
+
+Mark non-applicable items explicitly. The checklist does not justify inventing a state, variant,
+slot, token, or test that the component does not need.
+
 ## Runtime-axis verification — #80, corrected by #113
 
 | Foundation | API and runtime contract                                                                                                                                                                    | Accessibility and fallback coverage                                                 | Validation                                                                                                                   | Final status |

@@ -8,6 +8,10 @@ These principles apply to Nerio Core components, tokens, documentation, registry
 
 These principles guide new work and the review of existing work. They do not silently redefine the current public API.
 
+`docs/core-ui-best-practices.md` is the canonical normative implementation and review standard that
+applies these principles to ownership, API admission, styling layers, anatomy, states,
+accessibility, responsive behavior, motion, testing, and examples.
+
 Existing canonical APIs remain authoritative until an explicit migration task is approved. For example, the current Button variant set and the current Badge `tone` and `emphasis` axes must not be renamed or reorganized merely because another taxonomy appears conceptually cleaner. Any breaking change requires evidence, migration guidance, and synchronized updates across source, exports, registry metadata, docs, CLI, MCP, fixtures, and tests.
 
 ## Source-of-truth precedence and conflicts

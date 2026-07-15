@@ -10,6 +10,16 @@ Nerio Pro is the paid advanced layer: complex product components, templates, pre
 
 Core = building blocks. Pro = product-ready solutions.
 
+The canonical Core UI implementation and review standard is `docs/core-ui-best-practices.md`. Apply
+its four-owner model: the maintainer owns visual-language values and character, Core owns reusable
+technical primitive contracts, consumers own application policy and composition, and Pro owns
+reusable product-ready workflows. Before adding a prop, variant, size, state, slot, event, or
+imperative handle, prefer existing composition, semantic/component tokens, consumer `className` or
+source ownership, and meaningful slots in that order. Admit public API only for a stable,
+domain-agnostic semantic or behavioral need with multiple independent use cases, preserved
+accessibility and entrypoint boundaries, and justified maintenance cost. Classify styling decisions
+as system rules, family rules, or reasoned component exceptions.
+
 Use `COMPONENTS.md` and `data/component-catalog.json` as the source of truth for Core/Pro component tiering.
 
 Core 0.1 is ready for a separately approved manual alpha release. The intended version is `0.1.0-alpha.0`, but no package, tag, or GitHub Release exists while the package manifests remain private. The approved Core scope is implemented with evidence-based statuses: all non-deprecated Core components are stable Core, and IconButton remains a deprecated compatibility wrapper. Pro components remain outside Core. Command Primitive owns the accessible query field, local or consumer-filtered leaf results, sound flat or grouped collections, active option, disabled navigation, selection events, and empty/loading presentation. Keyword and stable-value text affect matching only; selection writes the visible label to the controlled or uncontrolled query and form value while `onSelect` emits the stable value. CommandItem leading content owns its accessibility semantics, while decorative Nerio Icons hide themselves. Command does not own fetching, ranking, routing, global shortcuts, recent/history storage, analytics, permissions, or a complete command palette. Sidebar Primitive owns layout, physical side, controlled or uncontrolled collapse state, regions, and accessible toggles; it does not own routes, navigation data, menus, permissions, persistence, or AppShell behavior. Compose Sheet explicitly for mobile and render one interactive navigation tree per viewport. Sheet is a stable Base UI modal side-panel primitive with explicit left/right/top/bottom sides, sm/md/lg sizes, neutral SheetClose composition, a safe-area-aware default close, shared enter/exit motion contracts, compound slots, and no app navigation or settings behavior. RadioGroup supports concise data-driven `options` and compositional `RadioGroupItem` children; use composition for richer option content. A Core component should not move to `stable-core` until its API, accessibility, tokens, registry metadata, docs, CLI fixture, MCP metadata, and validation checks are aligned.

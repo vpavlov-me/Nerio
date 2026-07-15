@@ -16,6 +16,11 @@ Core must not be expanded prematurely only because one template needs a missing 
 
 ## Layer responsibilities
 
+The four-owner model in `docs/core-ui-best-practices.md` applies to tiering decisions: the maintainer
+owns visual language, Core owns reusable technical primitive contracts, consumers own application
+policy and composition, and Pro owns reusable product-ready workflows. A capability must not move
+between those owners merely because one implementation would become shorter.
+
 ### Nerio Core
 
 A component belongs in Core when it is:
