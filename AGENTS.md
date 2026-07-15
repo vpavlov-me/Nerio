@@ -1,6 +1,6 @@
 # Nerio agent instructions
 
-This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation, `COMPONENTS.md` before adding or moving components, `COMPONENT_ARCHITECTURE.md` before adding props, variants, component modes, or new component responsibilities, and `TIERING_AND_TEMPLATE_EVOLUTION.md` before assigning a component to Core or Pro, promoting template-local code, or expanding Core to satisfy a template.
+This repository is the source of truth for Nerio. Read `PROJECT.md` before making architectural decisions, `DESIGN_SYSTEM.md` before changing tokens, themes, modes, density, shared component styles, demos, or visual documentation, `docs/design-principles.md` before defining or revising component API semantics, composition, customization, or documentation direction, `docs/core-ui-best-practices.md` before any agent-authored change to Core components, tokens, styles, registry metadata, examples, tests, or documentation, `COMPONENTS.md` before adding or moving components, `COMPONENT_ARCHITECTURE.md` before adding props, variants, component modes, or new component responsibilities, and `TIERING_AND_TEMPLATE_EVOLUTION.md` before assigning a component to Core or Pro, promoting template-local code, or expanding Core to satisfy a template.
 
 ## Product constraints
 
