@@ -1779,7 +1779,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "managed content",
         description:
-          "Manager layout for status indicator, copy, optional action, and dismiss control.",
+          "Manager layout for status indicator, compact copy, optional standard Button action, and icon-only dismiss control.",
       },
     ],
     variants: [
@@ -1802,7 +1802,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "Expanded stack",
-        description: "Preserves every toast's stack basis through enter, swipe, and dismissal.",
+        description:
+          "Expands upward from a bottom-centered stack whose collapsed cards scale and step upward behind the frontmost toast.",
       },
       { title: "Limited", description: "Keeps overflow mounted but inert and visually hidden." },
     ],
@@ -1847,10 +1848,10 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "priority",
         description: "low is polite; high is reserved for urgent announcements.",
       },
-      { title: "dismissText", description: "Localizes the visible managed toast dismiss text." },
+      { title: "dismissText", description: "Localizes the managed dismiss Button tooltip." },
       {
         title: "dismissLabel",
-        description: "Localizes the managed toast dismiss accessible name.",
+        description: "Localizes the managed dismiss Button accessible name.",
       },
       {
         title: "direction",
@@ -1877,15 +1878,13 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toast-viewport-inset",
       "--n-toast-stack-gap",
       "--n-toast-stack-offset",
+      "--n-toast-stack-scale-step",
       "--n-toast-enter-offset",
       "--n-toast-swipe-dismiss-distance",
       "--n-toast-background",
       "--n-toast-border",
       "--n-toast-shadow",
       "--n-toast-status-color",
-      "--n-toast-status-background",
-      "--n-toast-close-size",
-      "--n-toast-close-padding-inline",
       "--n-motion-reveal-duration",
       "--n-motion-focus-duration",
     ],

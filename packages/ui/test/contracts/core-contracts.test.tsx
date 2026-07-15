@@ -1407,7 +1407,7 @@ describe("Core static contracts", () => {
     );
   });
 
-  it("renders static Toast tone, title, and description without a broad descendant selector", () => {
+  it("renders static Toast tone, title, and description without a dismiss control", () => {
     render(
       <>
         <Toast tone="success" title="Saved" description="Your changes are live." />
@@ -1417,6 +1417,7 @@ describe("Core static contracts", () => {
     expect(screen.getByRole("status")).toHaveAttribute("data-tone", "success");
     expect(screen.getByRole("alert")).toHaveAttribute("data-tone", "danger");
     expect(screen.getByText("Saved")).toHaveAttribute("data-slot", "title");
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
   it("renders managed Toast actions and localized dismiss controls", async () => {
@@ -1444,8 +1445,13 @@ describe("Core static contracts", () => {
       </ToastProvider>,
     );
     await user.click(screen.getByRole("button", { name: "Show" }));
-    expect(screen.getByLabelText("Close notification")).toHaveAttribute("data-slot", "close");
-    await user.click(await screen.findByRole("button", { name: "Undo" }));
+    const close = screen.getByLabelText("Close notification");
+    expect(close).toHaveAttribute("data-slot", "close");
+    expect(close).toHaveClass("n-button", "n-toast__close");
+    expect(close.querySelector("svg")).not.toBeNull();
+    const undo = await screen.findByRole("button", { name: "Undo" });
+    expect(undo).toHaveClass("n-button", "n-toast__action");
+    await user.click(undo);
     expect(action).toHaveBeenCalledOnce();
     expect(screen.queryByText("Saved")).not.toBeInTheDocument();
   });
@@ -1542,14 +1548,39 @@ describe("Core static contracts", () => {
 
   it("uses one managed Toast coordinate system for stack, enter, and four-way dismissal", () => {
     const styles = readFileSync(resolve(process.cwd(), "src/styles/toast.css"), "utf8");
+    const indicatorStyles = styles.match(
+      /\.n-toast \[data-slot="status-indicator"\] \{([\s\S]*?)\}/,
+    )?.[1];
 
+    expect(indicatorStyles).toBeDefined();
+    expect(indicatorStyles).not.toMatch(/\bbackground\s*:/);
+    expect(styles).toMatch(
+      /\.n-toast \[data-slot="description"\][\s\S]*font-size:\s*var\(--n-font-size-md\)/,
+    );
     expect(styles).toMatch(/--toast-managed-base-y:/);
     expect(styles).toMatch(/--toast-managed-enter-y:/);
     expect(styles).toMatch(/--toast-managed-dismiss-x:/);
     expect(styles).toMatch(/--toast-managed-dismiss-y:/);
     expect(styles).toMatch(
-      /transform:\s*translate3d\(\s*var\(--toast-managed-x\),\s*var\(--toast-managed-y\),\s*0\s*\)/,
+      /--toast-viewport-inline-inset:\s*max\([\s\S]*safe-area-inset-left[\s\S]*safe-area-inset-right/,
     );
+    expect(styles).toMatch(/inline-size:\s*min\([\s\S]*var\(--toast-viewport-inline-inset\) \* 2/);
+    expect(styles).toMatch(/inset-inline-start:\s*50%/);
+    expect(styles).toMatch(
+      /inset-block-end:\s*max\(var\(--n-toast-viewport-inset\), env\(safe-area-inset-bottom\)\)/,
+    );
+    expect(styles).toMatch(/transform:\s*translateX\(-50%\)/);
+    expect(styles).toMatch(/\.n-toast-viewport:dir\(rtl\)[\s\S]*transform:\s*translateX\(50%\)/);
+    expect(styles).toMatch(/--toast-managed-scale:\s*max\(\s*0,\s*calc\(/);
+    expect(styles).toMatch(
+      /--toast-managed-base-y:\s*calc\(var\(--toast-index\) \* var\(--n-toast-stack-offset\) \* -1\)/,
+    );
+    expect(styles).toMatch(/\[data-slot="title"\][\s\S]*margin:\s*0/);
+    expect(styles).toMatch(/\[data-slot="description"\][\s\S]*margin:\s*0/);
+    expect(styles).toMatch(
+      /transform:\s*translate3d\(\s*var\(--toast-managed-x\),\s*var\(--toast-managed-y\),\s*0\s*\)\s*scale\(var\(--toast-managed-scale\)\)/,
+    );
+    expect(styles).toMatch(/transform-origin:\s*top center/);
     expect(styles).toMatch(
       /\[data-starting-style\][\s\S]*--toast-managed-enter-y:\s*var\(--n-toast-enter-offset\)/,
     );
