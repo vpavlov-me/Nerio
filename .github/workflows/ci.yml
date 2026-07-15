@@ -36,6 +36,8 @@ jobs:
       - run: pnpm validate:catalog
       - run: pnpm validate:docs
       - run: pnpm validate:release
+        env:
+          NERIO_RELEASE_EXPECT_PUBLIC: "1"
       - run: pnpm test:cli
       - run: pnpm test:mcp
       - run: pnpm test:adapters
