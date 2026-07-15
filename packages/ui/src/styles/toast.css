@@ -1,6 +1,12 @@
 .n-toast-viewport {
+  --toast-viewport-inline-inset: max(
+    var(--n-toast-viewport-inset),
+    env(safe-area-inset-left),
+    env(safe-area-inset-right)
+  );
+
   block-size: 0;
-  inline-size: min(calc(100dvw - (var(--n-toast-viewport-inset) * 2)), var(--n-toast-width));
+  inline-size: min(calc(100dvw - (var(--toast-viewport-inline-inset) * 2)), var(--n-toast-width));
   inset-block-end: max(var(--n-toast-viewport-inset), env(safe-area-inset-bottom));
   inset-inline-start: 50%;
   max-block-size: calc(

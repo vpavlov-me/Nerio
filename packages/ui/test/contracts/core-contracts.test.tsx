@@ -1561,6 +1561,10 @@ describe("Core static contracts", () => {
     expect(styles).toMatch(/--toast-managed-enter-y:/);
     expect(styles).toMatch(/--toast-managed-dismiss-x:/);
     expect(styles).toMatch(/--toast-managed-dismiss-y:/);
+    expect(styles).toMatch(
+      /--toast-viewport-inline-inset:\s*max\([\s\S]*safe-area-inset-left[\s\S]*safe-area-inset-right/,
+    );
+    expect(styles).toMatch(/inline-size:\s*min\([\s\S]*var\(--toast-viewport-inline-inset\) \* 2/);
     expect(styles).toMatch(/inset-inline-start:\s*50%/);
     expect(styles).toMatch(
       /inset-block-end:\s*max\(var\(--n-toast-viewport-inset\), env\(safe-area-inset-bottom\)\)/,

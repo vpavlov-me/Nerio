@@ -701,6 +701,9 @@ async function verify() {
       !toastStyles.includes("--toast-managed-dismiss-y") ||
       !toastStyles.includes("--toast-managed-scale") ||
       !toastStyles.includes("max(") ||
+      !toastStyles.includes("--toast-viewport-inline-inset") ||
+      !toastStyles.includes("safe-area-inset-left") ||
+      !toastStyles.includes("safe-area-inset-right") ||
       !toastStyles.includes("inset-inline-start: 50%") ||
       !toastStyles.includes(".n-toast-viewport:dir(rtl)") ||
       !toastStyles.includes("translateX(50%)") ||
