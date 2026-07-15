@@ -8,7 +8,7 @@ importers:
 
   .:
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:packages/config
       '@playwright/test':
@@ -26,13 +26,13 @@ importers:
 
   apps/demo-app:
     dependencies:
-      '@nerio/adapters':
+      '@nerio-ui/adapters':
         specifier: workspace:*
         version: link:../../packages/adapters
-      '@nerio/tokens':
+      '@nerio-ui/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
-      '@nerio/ui':
+      '@nerio-ui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:
@@ -48,7 +48,7 @@ importers:
         specifier: ^4.3.2
         version: 4.3.2
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -69,16 +69,16 @@ importers:
 
   apps/docs:
     dependencies:
-      '@nerio/adapters':
+      '@nerio-ui/adapters':
         specifier: workspace:*
         version: link:../../packages/adapters
-      '@nerio/registry':
+      '@nerio-ui/registry':
         specifier: workspace:*
         version: link:../../packages/registry
-      '@nerio/tokens':
+      '@nerio-ui/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
-      '@nerio/ui':
+      '@nerio-ui/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:
@@ -94,7 +94,7 @@ importers:
         specifier: ^4.3.2
         version: 4.3.2
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:../../packages/config
       '@types/node':
@@ -119,7 +119,7 @@ importers:
         specifier: ^0.561.0
         version: 0.561.0(react@19.2.7)
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:../config
       '@tanstack/react-table':
@@ -152,11 +152,11 @@ importers:
 
   packages/cli:
     dependencies:
-      '@nerio/registry':
+      '@nerio-ui/registry':
         specifier: workspace:*
         version: link:../registry
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -189,14 +189,14 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.29.0
         version: 1.29.0(zod@4.4.3)
-      '@nerio/registry':
+      '@nerio-ui/registry':
         specifier: workspace:*
         version: link:../registry
       zod:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:../config
       '@types/node':
@@ -211,7 +211,7 @@ importers:
 
   packages/registry:
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:../config
       eslint:
@@ -223,7 +223,7 @@ importers:
 
   packages/tokens:
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:../config
       eslint:
@@ -238,10 +238,10 @@ importers:
       '@base-ui/react':
         specifier: ^1.6.0
         version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@nerio/adapters':
+      '@nerio-ui/adapters':
         specifier: workspace:*
         version: link:../adapters
-      '@nerio/tokens':
+      '@nerio-ui/tokens':
         specifier: workspace:*
         version: link:../tokens
       clsx:
@@ -251,7 +251,7 @@ importers:
         specifier: '>=19'
         version: 19.2.7(react@19.2.7)
     devDependencies:
-      '@nerio/config':
+      '@nerio-ui/config':
         specifier: workspace:*
         version: link:../config
       '@testing-library/jest-dom':

@@ -8,13 +8,13 @@ export const metadata = createPageMetadata({
   path: "/docs/getting-started",
 });
 
-const packageImports = `import { Settings } from "@nerio/adapters/icons";
-import { Alert, Card, Field, FormGroup, Table } from "@nerio/ui";
-import { Button, Checkbox, Dialog, RadioGroup, Select, Switch, ToastProvider } from "@nerio/ui/client";
-import "@nerio/ui/styles.css";`;
+const packageImports = `import { Settings } from "@nerio-ui/adapters/icons";
+import { Alert, Card, Field, FormGroup, Table } from "@nerio-ui/ui";
+import { Button, Checkbox, Dialog, RadioGroup, Select, Switch, ToastProvider } from "@nerio-ui/ui/client";
+import "@nerio-ui/ui/styles.css";`;
 
-const packageInstall = `pnpm add @nerio/tokens @nerio/adapters @nerio/ui
-pnpm add -D @nerio/registry @nerio/cli @nerio/mcp`;
+const packageInstall = `pnpm add @nerio-ui/tokens @nerio-ui/adapters @nerio-ui/ui
+pnpm add -D @nerio-ui/registry @nerio-ui/cli @nerio-ui/mcp`;
 
 const sourceInstall = `nerio init
 nerio list
@@ -26,7 +26,7 @@ nerio doctor`;
 const nextConfig = `import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@nerio/adapters", "@nerio/registry", "@nerio/tokens", "@nerio/ui"],
+  transpilePackages: ["@nerio-ui/adapters", "@nerio-ui/registry", "@nerio-ui/tokens", "@nerio-ui/ui"],
 };
 
 export default nextConfig;`;
@@ -52,15 +52,15 @@ export default function Page() {
         <CodeExample code={packageInstall} label="Package installation" />
         <CodeExample code={packageImports} label="Package imports" />
         <p>
-          <code>@nerio/ui</code> is the server-safe entrypoint for static Core components and
-          utilities, including Field and FormGroup. <code>@nerio/ui/client</code> contains
+          <code>@nerio-ui/ui</code> is the server-safe entrypoint for static Core components and
+          utilities, including Field and FormGroup. <code>@nerio-ui/ui/client</code> contains
           interactive Base UI-backed components such as Checkbox, RadioGroup, Switch, Select, and
-          Dialog. <code>@nerio/ui/styles.css</code> imports tokens and component styles.
+          Dialog. <code>@nerio-ui/ui/styles.css</code> imports tokens and component styles.
         </p>
         <p>
-          Import icons and icon types from <code>@nerio/adapters/icons</code>. The adapter package
-          has no aggregating root entrypoint: table, chart, form, and schema integrations use their
-          dedicated subpaths and require only their matching optional peer.
+          Import icons and icon types from <code>@nerio-ui/adapters/icons</code>. The adapter
+          package has no aggregating root entrypoint: table, chart, form, and schema integrations
+          use their dedicated subpaths and require only their matching optional peer.
         </p>
         <p>
           Core packages ship TypeScript source. Add the Nerio packages used by your application to

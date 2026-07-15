@@ -1,7 +1,7 @@
 "use client";
 
-import { Settings } from "@nerio/adapters/icons";
-import { Button, Select } from "@nerio/ui/client";
+import { Settings } from "@nerio-ui/adapters/icons";
+import { Button, Select } from "@nerio-ui/ui/client";
 
 export function ClientPreview() {
   return (

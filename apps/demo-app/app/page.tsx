@@ -1,8 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { densities, modes, themes } from "@nerio/tokens";
-import { Icon, Kbd, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio/ui";
+import { densities, modes, themes } from "@nerio-ui/tokens";
+import {
+  Icon,
+  Kbd,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+} from "@nerio-ui/ui";
 import {
   Bell,
   Check,
@@ -12,7 +19,7 @@ import {
   Search,
   Settings,
   Sparkles,
-} from "@nerio/adapters/icons";
+} from "@nerio-ui/adapters/icons";
 import {
   Avatar,
   Badge,
@@ -57,7 +64,7 @@ import {
   ToastProvider,
   ToastViewport,
   useToastManager,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 import {
   defaultAppearance,
   persistAppearanceAxis,

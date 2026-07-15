@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 const persistenceExample = `"use client";
 
 import * as React from "react";
-import { SidebarProvider } from "@nerio/ui/client";
+import { SidebarProvider } from "@nerio-ui/ui/client";
 
 function PersistentSidebar({ children }: React.PropsWithChildren) {
   const [expanded, setExpanded] = React.useState(true);
@@ -34,8 +34,8 @@ function PersistentSidebar({ children }: React.PropsWithChildren) {
   );
 }`;
 
-const mobileExample = `import { SidebarContent, SidebarInset } from "@nerio/ui";
-import { Button, Sheet, SheetBody, SheetContent, SheetHeader, SheetTitle, SheetTrigger, Sidebar, SidebarProvider } from "@nerio/ui/client";
+const mobileExample = `import { SidebarContent, SidebarInset } from "@nerio-ui/ui";
+import { Button, Sheet, SheetBody, SheetContent, SheetHeader, SheetTitle, SheetTrigger, Sidebar, SidebarProvider } from "@nerio-ui/ui/client";
 
 const navigation = [
   { label: "Overview", href: "/" },

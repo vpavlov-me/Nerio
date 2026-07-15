@@ -49,29 +49,29 @@ it never publishes, changes package privacy, creates tags, or creates a GitHub R
 
 ## Versioning and package order
 
-Keep the root workspace, apps, and `@nerio/config` private. The intended public packages use the
+Keep the root workspace, apps, and `@nerio-ui/config` private. The intended public packages use the
 coordinated `0.1.0-alpha.0` version and are published in dependency order:
 
-1. `@nerio/tokens`
-2. `@nerio/adapters`
-3. `@nerio/registry`
-4. `@nerio/ui`
-5. `@nerio/cli`
-6. `@nerio/mcp`
+1. `@nerio-ui/tokens`
+2. `@nerio-ui/adapters`
+3. `@nerio-ui/registry`
+4. `@nerio-ui/ui`
+5. `@nerio-ui/cli`
+6. `@nerio-ui/mcp`
 
-All six package manifests must remain `private: true` until the approval point below. Package
-consumers receive TypeScript source; supported Next.js consumers configure `transpilePackages` as
-documented in Getting started.
+The six public package manifests use `private: false` only after the dedicated release PR and
+explicit maintainer approval. Package consumers receive TypeScript source; supported Next.js
+consumers configure `transpilePackages` as documented in Getting started.
 
 ## Credentials and dry run
 
-The approving maintainer needs npm publish access to the `@nerio` scope, an authenticated npm CLI,
+The approving maintainer needs npm publish access to the `@nerio-ui` scope, an authenticated npm CLI,
 and the account's required 2FA or automation-token policy. Confirm the target identity without
 printing credentials:
 
 ```bash
 npm whoami
-npm access list packages @nerio
+npm access list packages @nerio-ui
 ```
 
 Run `pnpm pack:check`, then create local tarballs with `pnpm --filter <package> pack` when a manual
@@ -79,7 +79,7 @@ archive inspection is needed. For every package, inspect `package.json`, `LICENS
 styles, bins, dependency versions, and the absence of apps, fixtures, secrets, private assets, Pro
 code, and workspace protocols.
 
-For `@nerio/adapters`, also confirm that the packed manifest exposes only the documented subpaths,
+For `@nerio-ui/adapters`, also confirm that the packed manifest exposes only the documented subpaths,
 keeps Lucide as the icon implementation dependency, and marks TanStack Table, Recharts, React Hook
 Form, and Zod as optional peers. The unsupported package root must not statically aggregate adapter
 implementations.
@@ -98,7 +98,7 @@ browser verification, changelog review, and tarball inspection.
    override requires every intended package to be public; it does not weaken the coordinated
    version, metadata, contents, runtime, source-install, or consumer-build checks.
 4. Publish one package at a time in the documented dependency order with the `alpha` dist-tag, for
-   example `pnpm --filter @nerio/tokens publish --access public --tag alpha --no-git-checks`.
+   example `pnpm --filter @nerio-ui/tokens publish --access public --tag alpha --no-git-checks`.
 5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
    provenance, ownership, or install mismatch.
 6. Create a signed Git tag and GitHub Release only after all six packages and consumer checks pass.

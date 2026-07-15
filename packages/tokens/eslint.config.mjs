@@ -1,1 +1,1 @@
-export { default } from "@nerio/config/eslint";
+export { default } from "@nerio-ui/config/eslint";

@@ -85,7 +85,7 @@ import {
   ToastViewport,
   useToastManager,
 } from "../../src/client";
-import { Bell } from "@nerio/adapters/icons";
+import { Bell } from "@nerio-ui/adapters/icons";
 import { RouterLinkFixture } from "../fixtures/router-link";
 
 describe("Core accessibility contracts", () => {

@@ -53,7 +53,7 @@ import {
   ToastViewport,
   Tooltip,
   useToastManager,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 import { CodeExample } from "./code-example";
 import { compositionDocs } from "../lib/composition-docs";
 

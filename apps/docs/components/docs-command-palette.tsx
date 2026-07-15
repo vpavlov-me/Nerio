@@ -3,8 +3,8 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Search } from "@nerio/adapters/icons";
-import { Button, Dialog, Icon, Input, Kbd } from "@nerio/ui/client";
+import { ArrowRight, Search } from "@nerio-ui/adapters/icons";
+import { Button, Dialog, Icon, Input, Kbd } from "@nerio-ui/ui/client";
 
 export type DocsCommandEntry = {
   href: string;

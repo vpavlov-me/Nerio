@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, Settings, X } from "@nerio/adapters/icons";
+import { Check, Settings, X } from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -19,8 +19,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -51,7 +51,7 @@ const projects = [
 const responsiveCode = `import {
   Table, TableBody, TableCaption, TableCell, TableContainer,
   TableHead, TableHeader, TableRow
-} from "@nerio/ui";
+} from "@nerio-ui/ui";
 
 <h2 id="projects-title">Projects</h2>
 <TableContainer focusable aria-labelledby="projects-title">

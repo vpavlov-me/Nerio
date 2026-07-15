@@ -1,5 +1,5 @@
-import { Check, X } from "@nerio/adapters/icons";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon, Kbd } from "@nerio/ui";
+import { Check, X } from "@nerio-ui/adapters/icons";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon, Kbd } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -14,7 +14,7 @@ export const metadata = createPageMetadata({
   path: "/docs/components/kbd",
 });
 
-const previewCode = `import { Kbd } from '@nerio/ui';
+const previewCode = `import { Kbd } from '@nerio-ui/ui';
 
 <Kbd>Esc</Kbd>
 <Kbd>⌘K</Kbd>

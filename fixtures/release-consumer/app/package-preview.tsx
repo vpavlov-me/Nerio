@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings } from "@nerio/adapters/icons";
+import { Settings } from "@nerio-ui/adapters/icons";
 import {
   Button,
   Select,
@@ -14,7 +14,7 @@ import {
   Toast,
   ToastProvider,
   ToastViewport,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 
 export function PackagePreview() {
   return (

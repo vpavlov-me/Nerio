@@ -1,5 +1,5 @@
-import { densities, modes, themes } from "@nerio/tokens";
-import type { NerioDensity, NerioMode, NerioPresetTheme } from "@nerio/tokens";
+import { densities, modes, themes } from "@nerio-ui/tokens";
+import type { NerioDensity, NerioMode, NerioPresetTheme } from "@nerio-ui/tokens";
 
 export const appearanceStorageKeys = {
   theme: "nerio-demo-theme",

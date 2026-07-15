@@ -12,7 +12,7 @@ import {
   Select,
   Separator,
   Spinner,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 import {
   Button,
   Checkbox,
@@ -24,7 +24,7 @@ import {
   TabsList,
   TabsPanels,
   TabsTrigger,
-} from "@nerio/ui/client";
+} from "@nerio-ui/ui/client";
 import {
   CircleAlert,
   Mail,
@@ -34,8 +34,8 @@ import {
   Settings,
   UserPlus,
   X,
-} from "@nerio/adapters/icons";
-import type { IconComponent } from "@nerio/adapters/icons";
+} from "@nerio-ui/adapters/icons";
+import type { IconComponent } from "@nerio-ui/adapters/icons";
 
 const avatars = ["Ava Cole", "Noah Lee", "Maya Chen", "Owen Hart", "Iris Park"];
 

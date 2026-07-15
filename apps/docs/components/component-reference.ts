@@ -40,75 +40,75 @@ export type ComponentMetadata = {
 
 export const snippets: Record<string, string> = {
   typography:
-    'import { Code, Heading, Text } from \'@nerio/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>',
+    'import { Code, Heading, Text } from \'@nerio-ui/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>',
   button:
-    'import { Save, Settings } from \'@nerio/adapters/icons\';\nimport { Badge, Kbd } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
+    'import { Save, Settings } from \'@nerio-ui/adapters/icons\';\nimport { Badge, Kbd } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
   "button-group":
-    'import { ButtonGroup } from \'@nerio/ui\';\nimport { Button } from \'@nerio/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
-  kbd: "import { Kbd } from '@nerio/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
+    'import { ButtonGroup } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
+  kbd: "import { Kbd } from '@nerio-ui/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
   breadcrumbs:
-    "import { Breadcrumbs } from '@nerio/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
+    "import { Breadcrumbs } from '@nerio-ui/ui';\n\n<Breadcrumbs items={[{ label: 'Docs', href: '/docs' }, { label: 'Components', href: '/docs/components' }, { label: 'Button' }]} />",
   pagination:
-    "import * as React from 'react';\nimport { Pagination } from '@nerio/ui';\n\nconst AppLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>(function AppLink(props, ref) {\n  return <a ref={ref} data-router-link=\"\" {...props} />;\n});\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ key: '1', label: '1', href: '/docs/page/1' }, { key: '2', label: '2', href: '/docs/page/2', current: true, render: <AppLink href=\"#\" /> }, { key: '3', label: '3', href: '/docs/page/3' }]} />",
+    "import * as React from 'react';\nimport { Pagination } from '@nerio-ui/ui';\n\nconst AppLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>(function AppLink(props, ref) {\n  return <a ref={ref} data-router-link=\"\" {...props} />;\n});\n\n<Pagination previousHref=\"/docs/page/1\" nextHref=\"/docs/page/3\" pages={[{ key: '1', label: '1', href: '/docs/page/1' }, { key: '2', label: '2', href: '/docs/page/2', current: true, render: <AppLink href=\"#\" /> }, { key: '3', label: '3', href: '/docs/page/3' }]} />",
   badge:
-    "import { Check, CircleAlert } from '@nerio/adapters/icons';\nimport { Badge } from '@nerio/ui';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>\n<Badge tone=\"warning\" trailingIcon={CircleAlert}>Review needed</Badge>",
+    "import { Check, CircleAlert } from '@nerio-ui/adapters/icons';\nimport { Badge } from '@nerio-ui/ui';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>\n<Badge tone=\"warning\" trailingIcon={CircleAlert}>Review needed</Badge>",
   alert:
-    "import { Circle } from '@nerio/adapters/icons';\nimport { Alert } from '@nerio/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
-  spinner: "import { Spinner } from '@nerio/ui';\n\n<Spinner label=\"Loading activity\" />",
-  skeleton: "import { Skeleton } from '@nerio/ui';\n\n<Skeleton aria-label=\"Loading\" />",
+    "import { Circle } from '@nerio-ui/adapters/icons';\nimport { Alert } from '@nerio-ui/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
+  spinner: "import { Spinner } from '@nerio-ui/ui';\n\n<Spinner label=\"Loading activity\" />",
+  skeleton: "import { Skeleton } from '@nerio-ui/ui';\n\n<Skeleton aria-label=\"Loading\" />",
   "empty-state":
-    "import { EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateHeader, EmptyStateTitle } from '@nerio/ui';\nimport { Button } from '@nerio/ui/client';\n\n<EmptyState>\n  <EmptyStateHeader>\n    <EmptyStateTitle>No collections</EmptyStateTitle>\n    <EmptyStateDescription>Create one to start organizing work.</EmptyStateDescription>\n  </EmptyStateHeader>\n  <EmptyStateActions>\n    <Button>Create collection</Button>\n    <Button variant=\"ghost\">Learn more</Button>\n  </EmptyStateActions>\n</EmptyState>",
+    "import { EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateHeader, EmptyStateTitle } from '@nerio-ui/ui';\nimport { Button } from '@nerio-ui/ui/client';\n\n<EmptyState>\n  <EmptyStateHeader>\n    <EmptyStateTitle>No collections</EmptyStateTitle>\n    <EmptyStateDescription>Create one to start organizing work.</EmptyStateDescription>\n  </EmptyStateHeader>\n  <EmptyStateActions>\n    <Button>Create collection</Button>\n    <Button variant=\"ghost\">Learn more</Button>\n  </EmptyStateActions>\n</EmptyState>",
   input:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required autoComplete="organization" /></Field>',
+    'import { Field, Input } from \'@nerio-ui/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required autoComplete="organization" /></Field>',
   "input-group":
-    'import { Input, InputGroup, InputGroupAddon } from \'@nerio/ui\';\n\n<InputGroup><InputGroupAddon placement="start" aria-hidden="true">https://</InputGroupAddon><Input aria-label="Website" /><InputGroupAddon placement="end">.com</InputGroupAddon></InputGroup>',
+    'import { Input, InputGroup, InputGroupAddon } from \'@nerio-ui/ui\';\n\n<InputGroup><InputGroupAddon placement="start" aria-hidden="true">https://</InputGroupAddon><Input aria-label="Website" /><InputGroupAddon placement="end">.com</InputGroupAddon></InputGroup>',
   textarea:
-    'import { Field, Textarea } from \'@nerio/ui\';\n\n<Field label="Notes" description="Add context for collaborators."><Textarea placeholder="Add launch context" /></Field>',
+    'import { Field, Textarea } from \'@nerio-ui/ui\';\n\n<Field label="Notes" description="Add context for collaborators."><Textarea placeholder="Add launch context" /></Field>',
   label:
-    'import { Input, Label, LabelContent, LabelRequired, LabelRow } from \'@nerio/ui\';\nimport { LabelHint } from \'@nerio/ui/client\';\n\n<LabelRow>\n  <LabelContent>\n    <Label htmlFor="project-name">Project name</Label>\n    <LabelRequired />\n    <LabelHint label="Choose a recognizable name for collaborators." />\n  </LabelContent>\n</LabelRow>\n<Input id="project-name" required />',
+    'import { Input, Label, LabelContent, LabelRequired, LabelRow } from \'@nerio-ui/ui\';\nimport { LabelHint } from \'@nerio-ui/ui/client\';\n\n<LabelRow>\n  <LabelContent>\n    <Label htmlFor="project-name">Project name</Label>\n    <LabelRequired />\n    <LabelHint label="Choose a recognizable name for collaborators." />\n  </LabelContent>\n</LabelRow>\n<Input id="project-name" required />',
   field:
-    'import { Field, Input } from \'@nerio/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use at least 3 characters." invalid><Input /></Field>',
+    'import { Field, Input } from \'@nerio-ui/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use at least 3 characters." invalid><Input /></Field>',
   "form-message":
-    "import { FormMessage } from '@nerio/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
+    "import { FormMessage } from '@nerio-ui/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
   "form-group":
-    'import { Field, FormGroup } from \'@nerio/ui\';\nimport { Checkbox } from \'@nerio/ui/client\';\n\n<FormGroup layout="grid" title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
+    'import { Field, FormGroup } from \'@nerio-ui/ui\';\nimport { Checkbox } from \'@nerio-ui/ui/client\';\n\n<FormGroup layout="grid" title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
   checkbox:
-    'import { Checkbox } from \'@nerio/ui/client\';\n\n<Checkbox\n  defaultChecked\n  name="includeArchived"\n  label="Include archived collections"\n  description="Archived collections remain visible in search results."\n/>\n\n// Use indeterminate for an aggregate or partial selection.\n<Checkbox aria-label="Partially selected" indeterminate />',
+    'import { Checkbox } from \'@nerio-ui/ui/client\';\n\n<Checkbox\n  defaultChecked\n  name="includeArchived"\n  label="Include archived collections"\n  description="Archived collections remain visible in search results."\n/>\n\n// Use indeterminate for an aggregate or partial selection.\n<Checkbox aria-label="Partially selected" indeterminate />',
   "radio-group":
-    'import { RadioGroup, RadioGroupItem } from \'@nerio/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team">\n  <RadioGroupItem value="private" description="Only you can access it.">Private</RadioGroupItem>\n  <RadioGroupItem value="team">Team</RadioGroupItem>\n</RadioGroup>\n\n// Options API remains available for concise data-driven groups.\n<RadioGroup label="Visibility" options={[{ label: "Private", value: "private" }]} />',
+    'import { RadioGroup, RadioGroupItem } from \'@nerio-ui/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team">\n  <RadioGroupItem value="private" description="Only you can access it.">Private</RadioGroupItem>\n  <RadioGroupItem value="team">Team</RadioGroupItem>\n</RadioGroup>\n\n// Options API remains available for concise data-driven groups.\n<RadioGroup label="Visibility" options={[{ label: "Private", value: "private" }]} />',
   switch:
-    'import { Switch } from "@nerio/ui/client";\n\n<Switch\n  defaultChecked\n  name="notifyCollaborators"\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>',
+    'import { Switch } from "@nerio-ui/ui/client";\n\n<Switch\n  defaultChecked\n  name="notifyCollaborators"\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>',
   dialog:
-    'import { Dialog } from \'@nerio/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
+    'import { Dialog } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
   sheet:
-    'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
+    'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
-    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from \'@nerio/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Toggle workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
+    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio-ui/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from \'@nerio-ui/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Toggle workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
   "command-primitive":
-    'import { Kbd } from \'@nerio/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
+    'import { Kbd } from \'@nerio-ui/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio-ui/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
-    "import { Select } from '@nerio/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
+    "import { Select } from '@nerio-ui/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   toast:
-    'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
-  tabs: 'import { Badge } from "@nerio/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
+    'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
+  tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
   tooltip:
-    "import { Button, Tooltip } from '@nerio/ui/client';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
+    "import { Button, Tooltip } from '@nerio-ui/ui/client';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
   popover:
-    'import { Popover } from \'@nerio/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
+    'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { DropdownMenu } from \'@nerio/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
-  card: 'import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, CardVisual } from \'@nerio/ui\';\n\n<Card as="article">\n  <CardVisual>...</CardVisual>\n  <CardHeader>\n    <div>\n      <CardTitle as="h2">Launch workspace</CardTitle>\n      <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n    </div>\n    <CardAction>...</CardAction>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
-  separator: "import { Separator } from '@nerio/ui';\n\n<Separator />",
-  avatar: "import { Avatar } from '@nerio/ui';\n\n<Avatar name=\"Maya Chen\" />",
+    'import { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
+  card: 'import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\n\n<Card as="article">\n  <CardVisual>...</CardVisual>\n  <CardHeader>\n    <div>\n      <CardTitle as="h2">Launch workspace</CardTitle>\n      <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n    </div>\n    <CardAction>...</CardAction>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
+  separator: "import { Separator } from '@nerio-ui/ui';\n\n<Separator />",
+  avatar: "import { Avatar } from '@nerio-ui/ui';\n\n<Avatar name=\"Maya Chen\" />",
   progress:
-    'import { Progress } from \'@nerio/ui\';\n\n<Progress label="Uploading files" value={68} />\n\n<Progress aria-label="Synchronizing workspace" value={null} valueText="Synchronizing" />',
-  stat: 'import { Stat } from \'@nerio/ui\';\n\n<Stat label="Active projects" value="12" trend="+3 this week" />',
+    'import { Progress } from \'@nerio-ui/ui\';\n\n<Progress label="Uploading files" value={68} />\n\n<Progress aria-label="Synchronizing workspace" value={null} valueText="Synchronizing" />',
+  stat: 'import { Stat } from \'@nerio-ui/ui\';\n\n<Stat label="Active projects" value="12" trend="+3 this week" />',
   "key-value":
-    'import { KeyValue } from \'@nerio/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
+    'import { KeyValue } from \'@nerio-ui/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
   table:
-    'import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from \'@nerio/ui\';\n\n<h2 id="projects-title">Projects</h2>\n<TableContainer focusable aria-labelledby="projects-title">\n  <Table>\n    <TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader>\n    <TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody>\n  </Table>\n</TableContainer>',
-  list: "import * as React from 'react';\nimport { List } from '@nerio/ui';\n\nconst AppLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>(function AppLink(props, ref) {\n  return <a ref={ref} data-router-link=\"\" {...props} />;\n});\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens', render: <AppLink href=\"#\" /> }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
-  item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
+    'import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from \'@nerio-ui/ui\';\n\n<h2 id="projects-title">Projects</h2>\n<TableContainer focusable aria-labelledby="projects-title">\n  <Table>\n    <TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader>\n    <TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody>\n  </Table>\n</TableContainer>',
+  list: "import * as React from 'react';\nimport { List } from '@nerio-ui/ui';\n\nconst AppLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>(function AppLink(props, ref) {\n  return <a ref={ref} data-router-link=\"\" {...props} />;\n});\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens', render: <AppLink href=\"#\" /> }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
+  item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio-ui/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
 };
 
 export const sharedTokens = [
@@ -125,8 +125,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "beta",
     layer: "core",
     category: "Foundation",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["Button", "Tooltip", "Tokens"],
     anatomy: ["kbd"],
     motion: ["none"],
@@ -142,8 +142,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "beta",
     layer: "core",
     category: "Foundation",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["Tokens", "Heading", "Text"],
   },
   button: {
@@ -152,8 +152,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "stable",
     layer: "core",
     category: "Actions",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui/client",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
     related: ["Badge", "DropdownMenu", "Tooltip"],
     anatomy: ["button", "button-icon", "button-label", "button-badge"],
     motion: ["hover", "press", "focus"],
@@ -166,8 +166,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "stable",
     layer: "core",
     category: "Actions",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["Button", "DropdownMenu", "Tokens"],
     anatomy: ["button-group"],
     motion: ["inherits Button motion"],
@@ -180,8 +180,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "beta",
     layer: "core",
     category: "Navigation and overlays",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui/client",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
     related: ["Dialog", "Popover", "Button"],
     anatomy: [
       "sheet-trigger",
@@ -202,8 +202,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "stable",
     layer: "core",
     category: "Navigation and layout",
-    package: "@nerio/ui/client",
-    importPath: "@nerio/ui/client",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
     related: ["Sheet", "Button", "Tooltip", "Separator"],
     anatomy: [
       "sidebar-provider",
@@ -230,8 +230,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "stable",
     layer: "core",
     category: "Navigation and layout",
-    package: "@nerio/ui/client",
-    importPath: "@nerio/ui/client",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
     related: ["Popover", "Dialog", "Sheet", "Kbd", "Empty State", "Spinner"],
     anatomy: [
       "command",
@@ -260,8 +260,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "stable",
     layer: "core",
     category: "Forms",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["InputGroup", "Field", "Label", "Textarea"],
     anatomy: ["input"],
     motion: ["hover", "focus"],
@@ -278,8 +278,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "stable",
     layer: "core",
     category: "Forms",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["Input", "Field", "Button"],
     anatomy: ["input-group", "input", "input-group-addon"],
     motion: ["hover", "focus-within"],
@@ -295,8 +295,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "stable",
     layer: "core",
     category: "Layout and display",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["Separator", "Stat", "KeyValue"],
     anatomy: [
       "card",
@@ -315,8 +315,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "beta",
     layer: "core",
     category: "Navigation",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["Pagination", "Tabs", "Tokens"],
     anatomy: ["root", "list", "item", "link", "current", "separator"],
     motion: ["hover", "focus"],
@@ -328,8 +328,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "beta",
     layer: "core",
     category: "Navigation",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["Breadcrumbs", "Button", "Table"],
     anatomy: ["root", "list", "item", "previous", "page", "next"],
     motion: ["hover", "focus"],
@@ -345,8 +345,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "beta",
     layer: "core",
     category: "Layout and display",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["Card", "Table", "Button"],
     anatomy: ["root", "item", "body", "link", "title", "description", "meta"],
     motion: ["hover", "focus"],
@@ -359,8 +359,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     status: "beta",
     layer: "core",
     category: "Layout and display",
-    package: "@nerio/ui",
-    importPath: "@nerio/ui",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
     related: ["List", "Card", "Separator"],
     anatomy: [
       "item",
@@ -1427,7 +1427,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Read-only", description: "Option remains visible but does not accept changes." },
     ],
     accessibility: [
-      "Checkbox is interactive and imports from @nerio/ui/client.",
+      "Checkbox is interactive and imports from @nerio-ui/ui/client.",
       "Use a visible label, aria-label, or aria-labelledby so the option has an accessible name.",
       "Base UI owns keyboard and checked-state behavior.",
       "Use invalid or aria-invalid to expose validation state; connect help or error text with aria-describedby.",
@@ -1496,7 +1496,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Invalid", description: "Connects validation message and invalid state." },
     ],
     accessibility: [
-      "RadioGroup is interactive and imports from @nerio/ui/client.",
+      "RadioGroup is interactive and imports from @nerio-ui/ui/client.",
       "Uses Base UI Radio Group and Radio primitives.",
       "Connects label, description, and message through accessible ids.",
       "Base UI owns roving focus, Arrow key selection, wrap-around, and disabled-item skipping.",
@@ -1576,7 +1576,7 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     accessibility: [
-      "Switch is interactive and imports from @nerio/ui/client.",
+      "Switch is interactive and imports from @nerio-ui/ui/client.",
       "Use for immediate binary settings; use Checkbox for independent options that are submitted as part of a form.",
       "Use a visible label, aria-label, or aria-labelledby so the setting has an accessible name.",
       "Base UI owns keyboard and checked-state behavior.",
@@ -1656,7 +1656,7 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     accessibility: [
-      "FormGroup is server-safe and imports from @nerio/ui.",
+      "FormGroup is server-safe and imports from @nerio-ui/ui.",
       "Renders fieldset and legend when a title is supplied.",
       "Associates description and message text through aria-describedby.",
       "Invalid state is explicit and does not add schema or validation-library behavior.",

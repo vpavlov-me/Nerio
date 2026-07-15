@@ -1,4 +1,4 @@
-const manifest = require("@nerio/registry/manifest.json");
+const manifest = require("@nerio-ui/registry/manifest.json");
 
 function findComponent(name) {
   const item = manifest.items.find((entry) => entry.name === name);

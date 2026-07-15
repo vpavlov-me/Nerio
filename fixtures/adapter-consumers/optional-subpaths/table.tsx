@@ -1,5 +1,5 @@
-import { flexRender, getCoreRowModel, useReactTable } from "@nerio/adapters/table";
-import type { ColumnDef } from "@nerio/adapters/table";
+import { flexRender, getCoreRowModel, useReactTable } from "@nerio-ui/adapters/table";
+import type { ColumnDef } from "@nerio-ui/adapters/table";
 
 type Row = { name: string };
 export type TableColumn = ColumnDef<Row>;

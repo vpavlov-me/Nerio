@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Search, X } from "@nerio/adapters/icons";
+import { Check, Search, X } from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -14,13 +14,13 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Icon,
-} from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
 
-const usageCode = `import { Search } from "@nerio/adapters/icons";
+const usageCode = `import { Search } from "@nerio-ui/adapters/icons";
 import {
   EmptyState,
   EmptyStateActions,
@@ -29,8 +29,8 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Icon,
-} from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
 
 <EmptyState size="lg">
   <EmptyStateMedia aria-hidden="true">

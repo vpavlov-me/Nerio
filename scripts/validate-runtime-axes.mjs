@@ -179,7 +179,7 @@ function validate() {
     const actual = exportedArray(tokenContract, axis);
     if (!sameValues(actual, expected))
       failures.push(
-        `@nerio/tokens ${axis} export differs from the canonical catalog: ${actual.join(", ")} !== ${expected.join(", ")}`,
+        `@nerio-ui/tokens ${axis} export differs from the canonical catalog: ${actual.join(", ")} !== ${expected.join(", ")}`,
       );
   }
 
@@ -248,11 +248,11 @@ function validate() {
     ["Docs", docsControls],
     ["Demo", demoControls],
   ]) {
-    const imports = namedImports(source, "@nerio/tokens");
+    const imports = namedImports(source, "@nerio-ui/tokens");
     for (const name of ["themes", "modes", "densities"]) {
       if (!imports.has(name))
         failures.push(
-          `${surface} runtime controls must import canonical ${name} from @nerio/tokens.`,
+          `${surface} runtime controls must import canonical ${name} from @nerio-ui/tokens.`,
         );
     }
   }

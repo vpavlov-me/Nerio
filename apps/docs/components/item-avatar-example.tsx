@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "@nerio/adapters/icons";
+import { ChevronDown } from "@nerio-ui/adapters/icons";
 import {
   Avatar,
   Badge,
@@ -10,8 +10,8 @@ import {
   ItemDescription,
   ItemMedia,
   ItemTitle,
-} from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
 
 export function ItemAvatarExample() {
   return (

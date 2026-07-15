@@ -1,4 +1,4 @@
-import { Badge } from "@nerio/ui";
+import { Badge } from "@nerio-ui/ui";
 import { CodeExample } from "../../../components/code-example";
 import { createPageMetadata } from "../../../lib/seo";
 
@@ -18,9 +18,9 @@ const mcpConfig = `{
   }
 }`;
 
-const packageImports = `import { Alert, Card, Table } from "@nerio/ui";
-import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
-import "@nerio/ui/styles.css";`;
+const packageImports = `import { Alert, Card, Table } from "@nerio-ui/ui";
+import { Button, Dialog, Select, ToastProvider } from "@nerio-ui/ui/client";
+import "@nerio-ui/ui/styles.css";`;
 
 export default function Page() {
   return (
@@ -71,8 +71,9 @@ export default function Page() {
         <h2>Import model</h2>
         <CodeExample code={packageImports} label="Package imports" />
         <p>
-          Agents should keep static components on the server-safe <code>@nerio/ui</code> entrypoint
-          and use <code>@nerio/ui/client</code> only for interactive Base UI-backed components.
+          Agents should keep static components on the server-safe <code>@nerio-ui/ui</code>{" "}
+          entrypoint and use <code>@nerio-ui/ui/client</code> only for interactive Base UI-backed
+          components.
         </p>
       </section>
 

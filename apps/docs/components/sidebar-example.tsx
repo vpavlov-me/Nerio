@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { LayoutDashboard, ListTree, Settings } from "@nerio/adapters/icons";
-import { Icon, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio/ui";
-import { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from "@nerio/ui/client";
+import { LayoutDashboard, ListTree, Settings } from "@nerio-ui/adapters/icons";
+import { Icon, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
+import { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from "@nerio-ui/ui/client";
 
 const items = [
   ["Overview", LayoutDashboard],

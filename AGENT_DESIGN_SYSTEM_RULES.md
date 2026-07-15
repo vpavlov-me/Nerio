@@ -174,7 +174,7 @@ After editing, run and report all relevant formatting, linting, type-checking, t
 - Nerio source owns composition, defaults, and public API.
 - Component CSS, recipes, and utilities own visual variants and state styling.
 - Semantic and component tokens own theme-wide and family-wide decisions.
-- `@nerio/ui` remains the server-safe default entrypoint; interactive Base UI-backed components belong in `@nerio/ui/client`.
+- `@nerio-ui/ui` remains the server-safe default entrypoint; interactive Base UI-backed components belong in `@nerio-ui/ui/client`.
 
 Agents MUST NOT duplicate primitive state solely for styling, hide behavior in undocumented utilities, add business logic to Core, create a new styling package without a proven cross-framework need, or add `use client` without an interaction requirement.
 

@@ -107,7 +107,7 @@
       "title": "Button",
       "description": "Triggers an explicit action with text, optional Badge content, directional icons, shortcut hints, tooltip help, or an icon-only mode.",
       "category": "actions",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": ["spinner", "tooltip", "kbd", "badge"],
       "files": [
         {
@@ -205,7 +205,7 @@
         "Deprecated subtle and destructive variants normalize to secondary and danger; use the canonical variants in new code.",
         "Keep the visible focus treatment enabled."
       ],
-      "usage": "import { Settings } from '@nerio/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
+      "usage": "import { Settings } from '@nerio-ui/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
     },
     {
       "name": "icon-button",
@@ -237,7 +237,7 @@
         "Deprecated compatibility wrapper: use Button with icon and aria-label in new code.",
         "This registry item remains installable until the next major release."
       ],
-      "usage": "import { Settings } from '@nerio/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n// Preferred replacement\n<Button icon={Settings} aria-label=\"Workspace settings\" />"
+      "usage": "import { Settings } from '@nerio-ui/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n// Preferred replacement\n<Button icon={Settings} aria-label=\"Workspace settings\" />"
     },
     {
       "name": "button-group",
@@ -281,7 +281,7 @@
       "title": "Badge",
       "description": "Labels status, category, or lightweight metadata.",
       "category": "data-display",
-      "dependencies": ["@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": ["spinner"],
       "files": [
         {
@@ -367,7 +367,7 @@
         "Use sm when the Badge is embedded inside a compact control such as Button.",
         "Use strong emphasis only when a warning, danger, or other status needs elevated attention."
       ],
-      "usage": "import { Check } from '@nerio/adapters/icons';\nimport { Badge } from '@/components/nerio/components/badge';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>"
+      "usage": "import { Check } from '@nerio-ui/adapters/icons';\nimport { Badge } from '@/components/nerio/components/badge';\n\n<Badge tone=\"success\" leadingIcon={Check}>Published</Badge>"
     },
     {
       "name": "spinner",
@@ -508,7 +508,7 @@
       "title": "Alert",
       "description": "Communicates inline feedback with a clear tone.",
       "category": "feedback",
-      "dependencies": ["@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -560,7 +560,7 @@
         "Tone is supported by text; do not rely on color alone.",
         "Optional icons must pass through the Nerio icon adapter."
       ],
-      "usage": "import { Circle } from '@nerio/adapters/icons';\nimport { Alert } from '@/components/nerio/components/alert';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>"
+      "usage": "import { Circle } from '@nerio-ui/adapters/icons';\nimport { Alert } from '@/components/nerio/components/alert';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>"
     },
     {
       "name": "card",
@@ -1007,7 +1007,7 @@
       "title": "Select",
       "description": "Chooses one option from a compact known list with data-driven options or curated item composition.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": ["form-message"],
       "files": [
         {
@@ -1325,7 +1325,7 @@
       "title": "Label",
       "description": "Provides an accessible name for a form control with a composable required marker and supplementary hint.",
       "category": "forms",
-      "dependencies": ["@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": ["tooltip"],
       "files": [
         {
@@ -1510,7 +1510,7 @@
       "title": "Checkbox",
       "description": "Toggles an independent form option.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -1632,7 +1632,7 @@
       "title": "Tabs",
       "description": "Switches between related panels in the same context.",
       "category": "navigation",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -1816,7 +1816,7 @@
       "title": "Dialog",
       "description": "Focuses a short decision or task above the current surface.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -1895,7 +1895,7 @@
       "title": "Sidebar Primitive",
       "description": "Provides a low-level collapsible sidebar layout with bounded rail geometry and stable native refs without owning product navigation or persistence.",
       "category": "navigation",
-      "dependencies": ["@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": [],
       "files": [
         {
@@ -1986,7 +1986,7 @@
       "title": "Command Primitive",
       "description": "Provides an accessible local or consumer-filtered action picker with separate label, stable-value, and keyword responsibilities.",
       "category": "navigation",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": ["spinner"],
       "files": [
         {
@@ -2091,7 +2091,7 @@
       "title": "Sheet",
       "description": "Presents a focused modal panel from an explicit side.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -2337,7 +2337,7 @@
       "title": "Toast",
       "description": "Acknowledges short-lived product events without interrupting work.",
       "category": "feedback",
-      "dependencies": ["@base-ui/react", "@nerio/adapters", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
       "registryDependencies": ["button"],
       "files": [
         {

@@ -1,4 +1,4 @@
-import { Badge, Code, Table, TableContainer } from "@nerio/ui";
+import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 

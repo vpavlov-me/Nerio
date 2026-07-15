@@ -1,5 +1,5 @@
 {
-  "name": "@nerio/adapters",
+  "name": "@nerio-ui/adapters",
   "version": "0.1.0-alpha.0",
   "description": "Responsibility-scoped Nerio Core adapters for icons, tables, charts, forms, and schemas.",
   "private": false,
@@ -51,7 +51,7 @@
     "lucide-react": "^0.561.0"
   },
   "devDependencies": {
-    "@nerio/config": "workspace:*",
+    "@nerio-ui/config": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
     "@types/react": "^19.2.7",
     "eslint": "^9.39.2",

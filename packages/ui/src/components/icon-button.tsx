@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import type { IconComponent } from "@nerio/adapters/icons";
+import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { Button, type ButtonProps } from "./button";
 
 /** @deprecated Use Button with icon and aria-label instead. */

@@ -31,10 +31,10 @@ import {
   Sun,
   Type,
   Wrench,
-} from "@nerio/adapters/icons";
-import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio/ui/client";
-import type { IconComponent } from "@nerio/adapters/icons";
-import { densities, modes, themes } from "@nerio/tokens";
+} from "@nerio-ui/adapters/icons";
+import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio-ui/ui/client";
+import type { IconComponent } from "@nerio-ui/adapters/icons";
+import { densities, modes, themes } from "@nerio-ui/tokens";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
 import {
   defaultAppearance,
@@ -474,7 +474,7 @@ function PageActions({ pathname }: { pathname: string }) {
 
   const copyInstallHint = async (target: "Cursor" | "VS Code") => {
     await copyToClipboard(
-      `Install the Nerio MCP server in ${target}: pnpm --filter @nerio/mcp start`,
+      `Install the Nerio MCP server in ${target}: pnpm --filter @nerio-ui/mcp start`,
       `${target} install command copied.`,
     );
   };

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Button as BaseButton } from "@base-ui/react/button";
-import type { IconComponent } from "@nerio/adapters/icons";
+import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { cn } from "../lib/cn";
 import { motionClasses } from "../lib/motion";
 import { Badge, type BadgeProps } from "./badge";

@@ -4,8 +4,8 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: The strict post-remediation Core 0.1 release gate passes. `0.1.0-alpha.0` is ready for a separate manual
-> maintainer approval; no package, tag, or GitHub Release has been published.
+> Status: The strict Core 0.1 release gate passes and the public-manifest release PR is merged.
+> `0.1.0-alpha.0` will publish under `@nerio-ui`; no package, tag, or GitHub Release exists yet.
 
 ## Product model
 
@@ -103,11 +103,11 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 
 ## Package entrypoints
 
-`@nerio/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, Switch, and IconButton are exported from `@nerio/ui/client`. Styles remain available through `@nerio/ui/styles.css`.
+`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, Switch, and IconButton are exported from `@nerio-ui/ui/client`. Styles remain available through `@nerio-ui/ui/styles.css`.
 
-`@nerio/adapters` has no aggregating root entrypoint. Import icons and their public SVG types from
-`@nerio/adapters/icons`. Optional integrations use `@nerio/adapters/table`,
-`@nerio/adapters/charts`, `@nerio/adapters/forms`, or `@nerio/adapters/schema`; install the matching
+`@nerio-ui/adapters` has no aggregating root entrypoint. Import icons and their public SVG types from
+`@nerio-ui/adapters/icons`. Optional integrations use `@nerio-ui/adapters/table`,
+`@nerio-ui/adapters/charts`, `@nerio-ui/adapters/forms`, or `@nerio-ui/adapters/schema`; install the matching
 TanStack Table, Recharts, React Hook Form, or Zod peer only when that subpath is used.
 
 Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
@@ -116,10 +116,10 @@ The Core packages ship TypeScript source. Next.js consumers must list the Nerio 
 in `transpilePackages`; the complete configuration is documented in Getting started.
 
 ```tsx
-import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio/ui";
-import { Settings } from "@nerio/adapters/icons";
-import { Button, Dialog, Select, ToastProvider } from "@nerio/ui/client";
-import "@nerio/ui/styles.css";
+import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio-ui/ui";
+import { Settings } from "@nerio-ui/adapters/icons";
+import { Button, Dialog, Select, ToastProvider } from "@nerio-ui/ui/client";
+import "@nerio-ui/ui/styles.css";
 ```
 
 ## Registry CLI
@@ -139,7 +139,7 @@ nerio doctor
 
 ## Pre-release status
 
-The root workspace and apps are private. The Core packages intended for a future public pre-release are `@nerio/tokens`, `@nerio/ui`, `@nerio/adapters`, `@nerio/registry`, `@nerio/cli`, and `@nerio/mcp`. `@nerio/config` remains private internal tooling.
+The root workspace and apps are private. The Core packages intended for a future public pre-release are `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and `@nerio-ui/mcp`. `@nerio-ui/config` remains private internal tooling.
 
 The release gate, packed-package audit, clean consumer build, and browser matrix pass for the
 intended `0.1.0-alpha.0` surface. Do not publish packages from this repository until maintainers

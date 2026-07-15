@@ -1,5 +1,5 @@
 {
-  "extends": "@nerio/config/tsconfig/base",
+  "extends": "@nerio-ui/config/tsconfig/base",
   "compilerOptions": {
     "allowJs": true,
     "checkJs": false,

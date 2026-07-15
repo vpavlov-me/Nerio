@@ -1,5 +1,5 @@
 {
-  "name": "@nerio/demo-app",
+  "name": "@nerio-ui/demo-app",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -9,16 +9,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@nerio/adapters": "workspace:*",
-    "@nerio/tokens": "workspace:*",
-    "@nerio/ui": "workspace:*",
+    "@nerio-ui/adapters": "workspace:*",
+    "@nerio-ui/tokens": "workspace:*",
+    "@nerio-ui/ui": "workspace:*",
     "next": "^16.2.10",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
-    "@nerio/config": "workspace:*",
+    "@nerio-ui/config": "workspace:*",
     "@types/node": "^24.10.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",

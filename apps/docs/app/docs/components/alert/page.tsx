@@ -1,8 +1,16 @@
 "use client";
 
-import { Check, Info, X } from "@nerio/adapters/icons";
-import { Alert, Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+import { Check, Info, X } from "@nerio-ui/adapters/icons";
+import {
+  Alert,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Icon,
+} from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -87,7 +95,7 @@ function AlertPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Info } from "@nerio/adapters/icons";\nimport { Alert } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<Alert\n  tone="info"\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>'
+          'import { Info } from "@nerio-ui/adapters/icons";\nimport { Alert } from "@nerio-ui/ui";\nimport { Button } from "@nerio-ui/ui/client";\n\n<Alert\n  tone="info"\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>'
         }
         label="Alert live preview code"
       />

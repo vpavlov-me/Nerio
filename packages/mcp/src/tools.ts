@@ -1,4 +1,4 @@
-import { getRegistryItem, registry } from "@nerio/registry";
+import { getRegistryItem, registry } from "@nerio-ui/registry";
 
 export function list_components() {
   return registry.map(({ name, title, description, category }) => ({

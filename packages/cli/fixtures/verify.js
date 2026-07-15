@@ -237,7 +237,7 @@ async function verify() {
       !infoOutput.includes("Button (button)") ||
       !infoOutput.includes("Dependencies:") ||
       !infoOutput.includes("Registry dependencies: spinner, tooltip, kbd, badge") ||
-      !infoOutput.includes("@nerio/adapters") ||
+      !infoOutput.includes("@nerio-ui/adapters") ||
       !infoOutput.includes("Required tokens:") ||
       !infoOutput.includes("Usage:") ||
       !infoOutput.includes('<Button icon={Settings} aria-label="Workspace settings"')
@@ -321,7 +321,7 @@ async function verify() {
       "utf8",
     );
     if (
-      !installedIconSource.includes('from "@nerio/adapters/icons"') ||
+      !installedIconSource.includes('from "@nerio-ui/adapters/icons"') ||
       installedIconSource.includes("@/") ||
       !installedIconSource.includes("lucideAbsoluteStrokeWidth") ||
       !installedIconSource.includes("focusable={false}") ||

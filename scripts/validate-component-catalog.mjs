@@ -272,7 +272,7 @@ function validate() {
         `Catalog component ${component.name} entrypoint differs from package: ${identity.entrypoint} !== ${component.package}`,
       );
     }
-    const expectedRuntime = identity.entrypoint === "@nerio/ui/client" ? "client" : "server";
+    const expectedRuntime = identity.entrypoint === "@nerio-ui/ui/client" ? "client" : "server";
     if (identity.runtime !== expectedRuntime) {
       failures.push(
         `Catalog component ${component?.name ?? identity.name} runtime differs from entrypoint: ${identity.runtime} !== ${expectedRuntime}`,

@@ -1,4 +1,4 @@
-import { Badge, Code, Table, TableContainer } from "@nerio/ui";
+import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -25,15 +25,15 @@ const componentSizes = [
   ["Large icon-only Button", "--n-icon-button-icon-size-lg", "--n-icon-size-xl"],
 ] as const;
 
-const usage = `import { Search } from '@nerio/adapters/icons';
-import { Icon } from '@nerio/ui';
-import { Button } from '@nerio/ui/client';
+const usage = `import { Search } from '@nerio-ui/adapters/icons';
+import { Icon } from '@nerio-ui/ui';
+import { Button } from '@nerio-ui/ui/client';
 
 <Icon icon={Search} />
 <Icon icon={Search} lucideAbsoluteStrokeWidth />
 <Button icon={Search} aria-label="Search workspace" tooltip="Search workspace" />`;
 
-const custom = `import type { IconSvgProps } from '@nerio/adapters/icons';
+const custom = `import type { IconSvgProps } from '@nerio-ui/adapters/icons';
 
 function CustomLogoIcon({ strokeWidth = 2, ...props }: IconSvgProps) {
   return (
@@ -60,7 +60,7 @@ export default function Page() {
       <section className="doc-section">
         <div className="section-heading">
           <h2 id="icon-adapter-contract">Icon adapter contract</h2>
-          <Badge>@nerio/adapters/icons</Badge>
+          <Badge>@nerio-ui/adapters/icons</Badge>
         </div>
         <TableContainer aria-label="Adapter sources">
           <Table>
@@ -74,7 +74,7 @@ export default function Page() {
               <tr>
                 <td>Lucide</td>
                 <td>
-                  Default icon source via <Code>@nerio/adapters/icons</Code>.
+                  Default icon source via <Code>@nerio-ui/adapters/icons</Code>.
                 </td>
               </tr>
               <tr>
@@ -203,19 +203,19 @@ export default function Page() {
         <h2 id="migration">Migration</h2>
         <p>
           Import <Code>IconComponent</Code> and <Code>IconSvgProps</Code> from{" "}
-          <Code>@nerio/adapters/icons</Code> for icon props and custom SVG implementations. The same
-          type names remain re-exported from <Code>@nerio/ui</Code> as compatible aliases, but new
-          component APIs should use the adapter boundary. Existing <Code>LucideIcon</Code> imports
-          remain compatible while Lucide is the default source. During the Core 0.1 alpha, replace
-          an explicit <Code>absoluteStrokeWidth</Code> Icon prop with{" "}
+          <Code>@nerio-ui/adapters/icons</Code> for icon props and custom SVG implementations. The
+          same type names remain re-exported from <Code>@nerio-ui/ui</Code> as compatible aliases,
+          but new component APIs should use the adapter boundary. Existing <Code>LucideIcon</Code>{" "}
+          imports remain compatible while Lucide is the default source. During the Core 0.1 alpha,
+          replace an explicit <Code>absoluteStrokeWidth</Code> Icon prop with{" "}
           <Code>lucideAbsoluteStrokeWidth</Code>; the old name remains as a deprecated alias until
           the next major version. Custom SVG components should accept and spread only{" "}
           <Code>IconSvgProps</Code>.
         </p>
         <p>
-          The previous <Code>@nerio/adapters</Code> root import is intentionally unsupported during
-          the pre-release alpha. Use the explicit icons subpath so UI consumers do not resolve
-          unrelated table, chart, form, or schema integrations.
+          The previous <Code>@nerio-ui/adapters</Code> root import is intentionally unsupported
+          during the pre-release alpha. Use the explicit icons subpath so UI consumers do not
+          resolve unrelated table, chart, form, or schema integrations.
         </p>
       </section>
 

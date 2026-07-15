@@ -1,5 +1,5 @@
-import { themes } from "@nerio/tokens";
-import { registry } from "@nerio/registry";
+import { themes } from "@nerio-ui/tokens";
+import { registry } from "@nerio-ui/registry";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@nerio/ui";
+} from "@nerio-ui/ui";
 import { PackagePreview } from "./package-preview";
 import { SourcePreview } from "./source-preview";
 

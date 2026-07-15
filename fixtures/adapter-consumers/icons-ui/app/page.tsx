@@ -1,5 +1,5 @@
-import { Check } from "@nerio/adapters/icons";
-import { Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio/ui";
+import { Check } from "@nerio-ui/adapters/icons";
+import { Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { ClientPreview } from "./client-preview";
 
 export default function Page() {

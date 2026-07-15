@@ -56,57 +56,57 @@
     "templates"
   ],
   "packageValues": [
-    "@nerio/tokens",
-    "@nerio/ui",
-    "@nerio/ui/client",
-    "@nerio/adapters",
-    "@nerio/adapters/icons",
-    "@nerio/pro"
+    "@nerio-ui/tokens",
+    "@nerio-ui/ui",
+    "@nerio-ui/ui/client",
+    "@nerio-ui/adapters",
+    "@nerio-ui/adapters/icons",
+    "@nerio-ui/pro"
   ],
-  "entrypointValues": ["@nerio/ui", "@nerio/ui/client"],
+  "entrypointValues": ["@nerio-ui/ui", "@nerio-ui/ui/client"],
   "runtimeValues": ["server", "client"],
   "registryIdentities": [
-    { "name": "typography", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "kbd", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "button", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "icon-button", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "button-group", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "badge", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "spinner", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "skeleton", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "empty-state", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "alert", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "card", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "separator", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "avatar", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "progress", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "stat", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "key-value", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "table", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "item", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "list", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "select", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "radio-group", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "input", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "input-group", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "textarea", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "label", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "form-message", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "field", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "form-group", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "checkbox", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "switch", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "tabs", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "breadcrumbs", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "pagination", "entrypoint": "@nerio/ui", "runtime": "server" },
-    { "name": "dialog", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "sidebar-primitive", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "command-primitive", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "sheet", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "popover", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "dropdown-menu", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "tooltip", "entrypoint": "@nerio/ui/client", "runtime": "client" },
-    { "name": "toast", "entrypoint": "@nerio/ui/client", "runtime": "client" }
+    { "name": "typography", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "kbd", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "icon-button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "button-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "badge", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "spinner", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "skeleton", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "empty-state", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "alert", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "card", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "separator", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "avatar", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "progress", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "stat", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "key-value", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "table", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "item", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "list", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "radio-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "input", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "input-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "textarea", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "label", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "form-message", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "field", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "form-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "checkbox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "switch", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "tabs", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "breadcrumbs", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "pagination", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "dialog", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "sidebar-primitive", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "command-primitive", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "sheet", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "popover", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "dropdown-menu", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "tooltip", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "toast", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" }
   ],
   "tiers": {
     "core": {
@@ -123,7 +123,7 @@
     {
       "name": "Tokens",
       "tier": "core",
-      "package": "@nerio/tokens",
+      "package": "@nerio-ui/tokens",
       "category": "foundation",
       "status": "stable-core",
       "description": "Color, spacing, radius, typography, motion, semantic tokens, and component tokens."
@@ -131,7 +131,7 @@
     {
       "name": "Themes",
       "tier": "core",
-      "package": "@nerio/tokens",
+      "package": "@nerio-ui/tokens",
       "category": "foundation",
       "status": "stable-core",
       "description": "Brand/accent themes: purple, blue, green, orange, red, neutral, plus custom theme support."
@@ -139,7 +139,7 @@
     {
       "name": "Modes",
       "tier": "core",
-      "package": "@nerio/tokens",
+      "package": "@nerio-ui/tokens",
       "category": "foundation",
       "status": "stable-core",
       "description": "Explicit system, light, and dark modes with independent persistence; system follows live OS preference changes."
@@ -147,7 +147,7 @@
     {
       "name": "Density",
       "tier": "core",
-      "package": "@nerio/tokens",
+      "package": "@nerio-ui/tokens",
       "category": "foundation",
       "status": "stable-core",
       "description": "Comfortable and compact density remap semantic and component contracts while primitive scales remain immutable."
@@ -155,7 +155,7 @@
     {
       "name": "Typography Tokens",
       "tier": "core",
-      "package": "@nerio/tokens",
+      "package": "@nerio-ui/tokens",
       "category": "foundation",
       "status": "stable-core",
       "description": "System UI defaults plus System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk token recipes through --n-font-sans and --n-font-mono. Consumer-loaded fonts only; not a v1 runtime axis."
@@ -163,7 +163,7 @@
     {
       "name": "Radius Tokens",
       "tier": "core",
-      "package": "@nerio/tokens",
+      "package": "@nerio-ui/tokens",
       "category": "foundation",
       "status": "stable-core",
       "description": "Token-customizable radius variables such as --n-radius-sm, --n-radius-md, --n-radius-lg, and --n-radius-xl. Not a v1 runtime axis."
@@ -171,7 +171,7 @@
     {
       "name": "Motion Tokens",
       "tier": "core",
-      "package": "@nerio/tokens",
+      "package": "@nerio-ui/tokens",
       "category": "foundation",
       "status": "stable-core",
       "description": "Token-customizable motion variables such as --n-duration-fast and --n-duration-normal. Not a v1 runtime axis."
@@ -179,7 +179,7 @@
     {
       "name": "Contrast Tokens",
       "tier": "core",
-      "package": "@nerio/tokens",
+      "package": "@nerio-ui/tokens",
       "category": "foundation",
       "status": "stable-core",
       "description": "Token-customizable semantic contrast variables. Not a v1 runtime axis."
@@ -187,7 +187,7 @@
     {
       "name": "Typography",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "foundation",
       "status": "stable-core",
       "description": "Semantic heading, text, and inline code primitives based on semantic font tokens."
@@ -195,7 +195,7 @@
     {
       "name": "Kbd",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "foundation",
       "status": "stable-core",
       "description": "Native keyboard shortcut notation with verified inline baseline, Button composition, compact-density, and forced-colors behavior."
@@ -203,7 +203,7 @@
     {
       "name": "Icon",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "foundation",
       "status": "stable-core",
       "description": "Server-safe icon renderer with protected non-focusable decorative and meaningful semantics, warning-free custom SVG forwarding, and isolated Lucide stroke behavior."
@@ -211,7 +211,7 @@
     {
       "name": "Icon Adapter",
       "tier": "core",
-      "package": "@nerio/adapters/icons",
+      "package": "@nerio-ui/adapters/icons",
       "category": "foundation",
       "status": "stable-core",
       "description": "Public generic SVG icon contract and named Lucide exports isolated from optional table, chart, form, and schema adapter peers."
@@ -219,7 +219,7 @@
     {
       "name": "Button",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "actions",
       "status": "stable-core",
       "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, and icon-only mode."
@@ -227,7 +227,7 @@
     {
       "name": "IconButton",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "actions",
       "status": "deprecated-compatibility",
       "deprecated": true,
@@ -237,7 +237,7 @@
     {
       "name": "ButtonGroup",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "actions",
       "status": "stable-core",
       "description": "Server-safe attached layout group for a small set of related Button controls."
@@ -245,7 +245,7 @@
     {
       "name": "Input",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
       "description": "Thin native single-line control for supported text-like values."
@@ -253,7 +253,7 @@
     {
       "name": "InputGroup",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
       "description": "Composable Input surface with explicit start and end addons."
@@ -261,7 +261,7 @@
     {
       "name": "Textarea",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
       "description": "Multiline text input component."
@@ -269,7 +269,7 @@
     {
       "name": "Label",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
       "description": "Accessible form label with a composable required marker and supplementary hint."
@@ -277,7 +277,7 @@
     {
       "name": "Field",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
       "description": "Form field wrapper with label, description, help text, and error states."
@@ -285,7 +285,7 @@
     {
       "name": "Form Message",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
       "description": "Field message or error text."
@@ -293,7 +293,7 @@
     {
       "name": "FormGroup",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
       "description": "Server-safe fieldset primitive for grouping related fields or controls with title, description, message, invalid state, and stack, inline, or responsive grid layout."
@@ -301,7 +301,7 @@
     {
       "name": "Checkbox",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only Base UI checkbox for independent options with checked, indeterminate, invalid, disabled, read-only, form metadata, and optional label and description support."
@@ -309,7 +309,7 @@
     {
       "name": "Radio Group",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only Base UI radio selection control with options or RadioGroupItem composition, group metadata, disabled options, and controlled or uncontrolled values."
@@ -317,7 +317,7 @@
     {
       "name": "Switch",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only Base UI toggle control for immediate binary settings with checked, disabled, read-only, form metadata, and optional label and description support."
@@ -325,7 +325,7 @@
     {
       "name": "Select",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only single-select control with data-driven options, curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior."
@@ -333,7 +333,7 @@
     {
       "name": "Dialog",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Accessible modal primitive with title, description, close affordance, controlled state, and Base UI focus behavior."
@@ -341,7 +341,7 @@
     {
       "name": "Sheet",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Base UI modal side-panel primitive with neutral close composition, safe-area-aware layout, four explicit sides, Core size scale, internal scrolling, and shared overlay motion contracts."
@@ -349,7 +349,7 @@
     {
       "name": "Popover",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Floating content primitive with optional context, controlled state, and overlay token contract."
@@ -357,7 +357,7 @@
     {
       "name": "Tooltip",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Short non-essential contextual help component backed by Base UI Tooltip."
@@ -365,7 +365,7 @@
     {
       "name": "Dropdown Menu",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
       "description": "Basic dropdown menu component with disabled and destructive item contracts."
@@ -373,7 +373,7 @@
     {
       "name": "Card",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "Composable surface primitive with verified semantic roots, visual placements, header actions, narrow layouts, focus, density, and browser overflow behavior."
@@ -381,7 +381,7 @@
     {
       "name": "Badge",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "Status and metadata label."
@@ -389,7 +389,7 @@
     {
       "name": "Avatar",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "User or entity avatar with verified image load/error and src-transition behavior, aspect-ratio cropping, accessible naming, decorative fallback, and density support."
@@ -397,7 +397,7 @@
     {
       "name": "Table",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "Native semantic table anatomy with runtime-safe named keyboard-scroll opt-in, tbody-only row states, responsive and RTL overflow, density, sticky-style compatibility, and consumer-owned data behavior."
@@ -405,7 +405,7 @@
     {
       "name": "Item",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "Universal composition primitive with composed render-element and forwarded refs, semantic roots, narrow wrapping, media, metadata, actions, density, and consumer-owned interaction semantics."
@@ -413,7 +413,7 @@
     {
       "name": "List",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "Structured ordered or unordered list with stable IDs, protected native links, package-agnostic router rendering, nested content, and verified browser behavior."
@@ -421,7 +421,7 @@
     {
       "name": "Separator",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "Layout divider component."
@@ -429,7 +429,7 @@
     {
       "name": "Key Value",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "Simple definition-list value display."
@@ -437,7 +437,7 @@
     {
       "name": "Stat",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
       "description": "Basic metric display. Advanced KPI cards belong to Pro."
@@ -445,7 +445,7 @@
     {
       "name": "Alert",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "feedback",
       "status": "stable-core",
       "description": "Inline feedback message."
@@ -453,7 +453,7 @@
     {
       "name": "Toast",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "feedback",
       "status": "stable-core",
       "description": "Static and managed anatomy stay separate; managed actions and icon-only dismissal use Button, status icons have no backing surface, and copy margins are reset inside the floating surface; the managed viewport is bottom-centered and the collapsed stack scales and steps upward behind the frontmost toast; a unified enter, expand, swipe, and dismissal coordinate system prevents transform jumps; inherited RTL, timers, managers, safe areas, accessibility, and clean installs are covered."
@@ -461,7 +461,7 @@
     {
       "name": "Progress",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "feedback",
       "status": "stable-core",
       "description": "Task-completion Progress has strict accessible naming, normalized range semantics, dedicated tokenized motion, registry install coverage, and contract and accessibility tests."
@@ -469,7 +469,7 @@
     {
       "name": "Skeleton",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "feedback",
       "status": "stable-core",
       "description": "Loading placeholder component."
@@ -477,7 +477,7 @@
     {
       "name": "Empty State",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "feedback",
       "status": "stable-core",
       "description": "Composable empty-state slots with verified media, header, actions, sizes, alignments, mobile stacking, role guidance, and optional anatomy."
@@ -485,7 +485,7 @@
     {
       "name": "Spinner",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "feedback",
       "status": "stable-core",
       "description": "Loading indicator."
@@ -493,7 +493,7 @@
     {
       "name": "Tabs",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "navigation",
       "status": "stable-core",
       "description": "Base UI compound Tabs primitive with verified controlled and uncontrolled state, disabled navigation, variants, sizes, orientation, overflow, RTL indicator, focus, hydration, and reduced motion."
@@ -501,7 +501,7 @@
     {
       "name": "Breadcrumbs",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "navigation",
       "status": "stable-core",
       "description": "Hierarchy navigation component with ordered list semantics and current page support."
@@ -509,7 +509,7 @@
     {
       "name": "Pagination",
       "tier": "core",
-      "package": "@nerio/ui",
+      "package": "@nerio-ui/ui",
       "category": "navigation",
       "status": "stable-core",
       "description": "Consumer-owned link, button, and static pagination with verified current-state parity, boundaries, ellipsis, package-agnostic router rendering, wrapping, density, RTL, and accessible labels."
@@ -517,7 +517,7 @@
     {
       "name": "Sidebar Primitive",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "navigation",
       "status": "stable-core",
       "description": "Composable layout primitive with controlled or uncontrolled collapse state, physical left and right placement, a bounded centered rail, inert collapsed content, accessible toggles, stable native refs, tokenized widths, and server-safe static regions."
@@ -525,7 +525,7 @@
     {
       "name": "Command Primitive",
       "tier": "core",
-      "package": "@nerio/ui/client",
+      "package": "@nerio-ui/ui/client",
       "category": "navigation",
       "status": "stable-core",
       "description": "Accessible Base UI autocomplete primitive with label-only selected queries, separate value and keyword matching, sound flat or grouped leaf data, explicit item layout, semantic leading content, disabled navigation, and deliberate empty and loading announcements."
@@ -533,7 +533,7 @@
     {
       "name": "DataGrid",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "data-heavy-ui",
       "status": "planned",
       "description": "Advanced data grid with sorting, filtering, column visibility, saved views, and bulk actions."
@@ -541,7 +541,7 @@
     {
       "name": "Advanced Table",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "data-heavy-ui",
       "status": "planned",
       "description": "Advanced table pattern with density controls, row actions, and bulk workflows."
@@ -549,7 +549,7 @@
     {
       "name": "Filter Bar",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "data-heavy-ui",
       "status": "planned",
       "description": "Complex filter bar for data-heavy products."
@@ -557,7 +557,7 @@
     {
       "name": "Saved Views",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "data-heavy-ui",
       "status": "planned",
       "description": "Named saved states for filters, tables, and product views."
@@ -565,7 +565,7 @@
     {
       "name": "Column Settings",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "data-heavy-ui",
       "status": "planned",
       "description": "Column visibility, ordering, and table configuration UI."
@@ -573,7 +573,7 @@
     {
       "name": "KPI Card",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "dashboards",
       "status": "planned",
       "description": "Advanced metric card with trend, comparison, state, actions, and chart context."
@@ -581,7 +581,7 @@
     {
       "name": "KPI Group",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "dashboards",
       "status": "planned",
       "description": "Dashboard metric cluster."
@@ -589,7 +589,7 @@
     {
       "name": "Trend Chip",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "dashboards",
       "status": "planned",
       "description": "Positive, negative, or neutral movement indicator."
@@ -597,7 +597,7 @@
     {
       "name": "Chart Card",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "dashboards",
       "status": "planned",
       "description": "Chart wrapper with metadata, timeframe controls, and states."
@@ -605,7 +605,7 @@
     {
       "name": "Activity Feed",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "dashboards",
       "status": "planned",
       "description": "Product activity timeline."
@@ -613,7 +613,7 @@
     {
       "name": "Analytics Panel",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "dashboards",
       "status": "planned",
       "description": "Advanced analytics section pattern."
@@ -621,7 +621,7 @@
     {
       "name": "AppShell",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "saas-admin",
       "status": "planned",
       "description": "Full application layout pattern."
@@ -629,7 +629,7 @@
     {
       "name": "AppSidebar",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "saas-admin",
       "status": "planned",
       "description": "Product-ready sidebar with workspace switcher, navigation, and user menu."
@@ -637,7 +637,7 @@
     {
       "name": "Settings Layout",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "saas-admin",
       "status": "planned",
       "description": "Settings page structure with navigation and content layout."
@@ -645,7 +645,7 @@
     {
       "name": "Billing Settings",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "saas-admin",
       "status": "planned",
       "description": "Plan, invoices, and payment method management UI."
@@ -653,7 +653,7 @@
     {
       "name": "Team Members",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "saas-admin",
       "status": "planned",
       "description": "Team member list, invites, and basic management pattern."
@@ -661,7 +661,7 @@
     {
       "name": "Roles & Permissions",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "saas-admin",
       "status": "planned",
       "description": "Permission and role management UI."
@@ -669,7 +669,7 @@
     {
       "name": "Audit Log",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "saas-admin",
       "status": "planned",
       "description": "Security and admin event log pattern."
@@ -677,7 +677,7 @@
     {
       "name": "Documentation Shell",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "documentation-ui",
       "status": "planned",
       "description": "Product-ready documentation layout with header, grouped sidebar, content region, and page table of contents."
@@ -685,7 +685,7 @@
     {
       "name": "Documentation Header",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "documentation-ui",
       "status": "planned",
       "description": "Documentation header with product identity, version, global search, theme controls, and project actions."
@@ -693,7 +693,7 @@
     {
       "name": "Documentation Sidebar",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "documentation-ui",
       "status": "planned",
       "description": "Grouped documentation navigation with active state and search-filtered items."
@@ -701,7 +701,7 @@
     {
       "name": "Page Table of Contents",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "documentation-ui",
       "status": "planned",
       "description": "Sticky in-page navigation generated from content headings."
@@ -709,7 +709,7 @@
     {
       "name": "Documentation Search",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "documentation-ui",
       "status": "planned",
       "description": "Search command pattern for documentation navigation and content discovery."
@@ -717,7 +717,7 @@
     {
       "name": "Portfolio Card",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "finance-crypto",
       "status": "planned",
       "description": "Portfolio summary component."
@@ -725,7 +725,7 @@
     {
       "name": "Asset Row",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "finance-crypto",
       "status": "planned",
       "description": "Asset or token row pattern."
@@ -733,7 +733,7 @@
     {
       "name": "Transaction List",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "finance-crypto",
       "status": "planned",
       "description": "Finance or crypto transaction list pattern."
@@ -741,7 +741,7 @@
     {
       "name": "Wallet Connector UI",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "finance-crypto",
       "status": "planned",
       "description": "Wallet connection and account selection pattern."
@@ -749,7 +749,7 @@
     {
       "name": "Balance Visibility",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "finance-crypto",
       "status": "planned",
       "description": "Hide/show sensitive financial values."
@@ -757,7 +757,7 @@
     {
       "name": "PnL Components",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "finance-crypto",
       "status": "planned",
       "description": "Profit and loss display components."
@@ -765,7 +765,7 @@
     {
       "name": "Risk Badge",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "finance-crypto",
       "status": "planned",
       "description": "Risk status indicator."
@@ -773,7 +773,7 @@
     {
       "name": "AI Chat Shell",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "ai-interfaces",
       "status": "planned",
       "description": "Full AI chat interface shell."
@@ -781,7 +781,7 @@
     {
       "name": "Prompt Input",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "ai-interfaces",
       "status": "planned",
       "description": "AI prompt composer with actions and attachments."
@@ -789,7 +789,7 @@
     {
       "name": "Message",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "ai-interfaces",
       "status": "planned",
       "description": "Assistant or user message component."
@@ -797,7 +797,7 @@
     {
       "name": "Sources",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "ai-interfaces",
       "status": "planned",
       "description": "Citations and source display pattern."
@@ -805,7 +805,7 @@
     {
       "name": "Tool Call",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "ai-interfaces",
       "status": "planned",
       "description": "Tool execution status and result UI."
@@ -813,7 +813,7 @@
     {
       "name": "Reasoning Block",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "ai-interfaces",
       "status": "planned",
       "description": "Collapsible reasoning or progress block."
@@ -821,7 +821,7 @@
     {
       "name": "Attachment",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "ai-interfaces",
       "status": "planned",
       "description": "File attachment display and state pattern."
@@ -829,7 +829,7 @@
     {
       "name": "Code Block",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "ai-interfaces",
       "status": "planned",
       "description": "Code response block for AI and developer workflows."
@@ -837,7 +837,7 @@
     {
       "name": "Universal Workspace Template",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "templates",
       "status": "planned",
       "description": "General SaaS/admin product template."
@@ -845,7 +845,7 @@
     {
       "name": "Banking Dashboard Template",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "templates",
       "status": "planned",
       "description": "Fintech dashboard template."
@@ -853,7 +853,7 @@
     {
       "name": "Crypto Portfolio Dashboard Template",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "templates",
       "status": "planned",
       "description": "Crypto and portfolio product template."
@@ -861,7 +861,7 @@
     {
       "name": "Admin Settings Template",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "templates",
       "status": "planned",
       "description": "SaaS settings product template."
@@ -869,7 +869,7 @@
     {
       "name": "Billing Portal Template",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "templates",
       "status": "planned",
       "description": "Subscription management product template."
@@ -877,7 +877,7 @@
     {
       "name": "AI Assistant Template",
       "tier": "pro",
-      "package": "@nerio/pro",
+      "package": "@nerio-ui/pro",
       "category": "templates",
       "status": "planned",
       "description": "AI assistant product template."

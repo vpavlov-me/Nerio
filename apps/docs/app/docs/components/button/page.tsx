@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ArrowUp, Check, Plus, Save, Settings, X } from "@nerio/adapters/icons";
+import { ArrowRight, ArrowUp, Check, Plus, Save, Settings, X } from "@nerio-ui/adapters/icons";
 import {
   Badge,
   Card,
@@ -10,8 +10,8 @@ import {
   CardTitle,
   Icon,
   Kbd,
-} from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -26,7 +26,7 @@ function ButtonPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { ArrowUp } from "@nerio/adapters/icons";\nimport { Button } from "@nerio/ui/client";\n\n<Button>Button</Button>\n<Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" />'
+          'import { ArrowUp } from "@nerio-ui/adapters/icons";\nimport { Button } from "@nerio-ui/ui/client";\n\n<Button>Button</Button>\n<Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" />'
         }
         label="Button live preview code"
       />
@@ -84,7 +84,7 @@ const implementationRows = [
   ["Registry item", "button installs Button with its Badge, Kbd, and Tooltip dependencies."],
   ["Base UI", "button"],
   ["Registry dependencies", "badge, tooltip, kbd"],
-  ["Package dependencies", "@base-ui/react, @nerio/adapters, clsx, react"],
+  ["Package dependencies", "@base-ui/react, @nerio-ui/adapters, clsx, react"],
 ] as const;
 
 const tokenRows = [

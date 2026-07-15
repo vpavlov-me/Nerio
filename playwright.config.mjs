@@ -10,13 +10,13 @@ export default defineConfig({
   use: { trace: "retain-on-failure" },
   webServer: [
     {
-      command: "pnpm --filter @nerio/demo-app dev",
+      command: "pnpm --filter @nerio-ui/demo-app dev",
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
       url: "http://localhost:3002",
     },
     {
-      command: "pnpm --filter @nerio/docs dev",
+      command: "pnpm --filter @nerio-ui/docs dev",
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
       url: "http://localhost:3000",

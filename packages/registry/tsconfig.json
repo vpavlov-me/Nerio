@@ -1,4 +1,4 @@
 {
-  "extends": "@nerio/config/tsconfig/base",
+  "extends": "@nerio-ui/config/tsconfig/base",
   "include": ["src/**/*.ts", "src/**/*.json"]
 }

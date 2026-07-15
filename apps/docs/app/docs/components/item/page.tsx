@@ -8,7 +8,7 @@ import {
   Settings,
   Sparkles,
   X,
-} from "@nerio/adapters/icons";
+} from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -27,8 +27,8 @@ import {
   ItemSeparator,
   ItemTitle,
   Skeleton,
-} from "@nerio/ui";
-import { Button } from "@nerio/ui/client";
+} from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
 import { StandardDocPage } from "../../../../components/doc-page";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
@@ -85,7 +85,7 @@ function ItemPreview() {
         className="component-example__code"
         label="Item live preview code"
         code={
-          'import { FileText } from "@nerio/adapters/icons";\nimport { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@nerio/ui";\nimport { Button } from "@nerio/ui/client";\n\n<Item variant="outline">\n  <ItemMedia variant="icon"><FileText /></ItemMedia>\n  <ItemContent>\n    <ItemTitle>Research brief</ItemTitle>\n    <ItemDescription>Updated today · 12 collaborators have access.</ItemDescription>\n  </ItemContent>\n  <ItemActions><Button size="sm" variant="secondary">Open</Button></ItemActions>\n</Item>'
+          'import { FileText } from "@nerio-ui/adapters/icons";\nimport { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@nerio-ui/ui";\nimport { Button } from "@nerio-ui/ui/client";\n\n<Item variant="outline">\n  <ItemMedia variant="icon"><FileText /></ItemMedia>\n  <ItemContent>\n    <ItemTitle>Research brief</ItemTitle>\n    <ItemDescription>Updated today · 12 collaborators have access.</ItemDescription>\n  </ItemContent>\n  <ItemActions><Button size="sm" variant="secondary">Open</Button></ItemActions>\n</Item>'
         }
       />
     </section>
@@ -234,7 +234,7 @@ export default function ItemPage() {
               ["Registry item", "item installs Item with the Separator registry dependency."],
               ["Base UI", "No interactive primitive required."],
               ["Registry dependencies", "separator"],
-              ["Package dependencies", "@nerio/adapters, clsx, react"],
+              ["Package dependencies", "@nerio-ui/adapters, clsx, react"],
             ]}
           />
         ),

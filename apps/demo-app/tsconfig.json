@@ -1,5 +1,5 @@
 {
-  "extends": "@nerio/config/tsconfig/next",
+  "extends": "@nerio-ui/config/tsconfig/next",
   "compilerOptions": {
     "baseUrl": "."
   },

@@ -1,6 +1,6 @@
-import { Check, X } from "@nerio/adapters/icons";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio/ui";
-import { Switch } from "@nerio/ui/client";
+import { Check, X } from "@nerio-ui/adapters/icons";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
+import { Switch } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -82,7 +82,7 @@ function SwitchPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Switch } from "@nerio/ui/client";\n\n<Switch\n  defaultChecked\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>'
+          'import { Switch } from "@nerio-ui/ui/client";\n\n<Switch\n  defaultChecked\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>'
         }
         label="Switch live preview code"
       />

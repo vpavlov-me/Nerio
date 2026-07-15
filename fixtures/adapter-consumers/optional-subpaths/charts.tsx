@@ -1,4 +1,4 @@
-import { Area, AreaChart, ResponsiveContainer } from "@nerio/adapters/charts";
+import { Area, AreaChart, ResponsiveContainer } from "@nerio-ui/adapters/charts";
 
 export const chart = (
   <ResponsiveContainer width="100%" height={240}>

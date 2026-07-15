@@ -2,10 +2,10 @@
 
 ## Decision
 
-**Ready for a separately approved manual `0.1.0-alpha.0` release.** The strict post-remediation
+**Approved for a manual `0.1.0-alpha.0` release under `@nerio-ui`.** The strict post-remediation
 repository gate, packed package smoke, isolated consumer builds, docs surface, and reproducible
-browser matrix pass. This decision does not authorize publishing packages, changing package privacy,
-creating a tag, or creating a GitHub Release.
+browser matrix pass. The public-manifest release PR is merged; package publication, the signed tag,
+and the GitHub prerelease remain to be completed in the documented order.
 
 ## Scope and status
 
@@ -18,11 +18,12 @@ creating a tag, or creating a GitHub Release.
 
 ## Package and consumer evidence
 
-The coordinated intended public packages are `@nerio/tokens`, `@nerio/adapters`,
-`@nerio/registry`, `@nerio/ui`, `@nerio/cli`, and `@nerio/mcp`, all at `0.1.0-alpha.0` and still
-`private: true`.
+The coordinated intended public packages are `@nerio-ui/tokens`, `@nerio-ui/adapters`,
+`@nerio-ui/registry`, `@nerio-ui/ui`, `@nerio-ui/cli`, and `@nerio-ui/mcp`, all at `0.1.0-alpha.0` with
+public-ready manifests (`private: false`).
 
-`pnpm validate:release` verifies every packed manifest's coordinated version, privacy mode,
+`NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release` verifies every packed manifest's coordinated
+version, public privacy mode,
 repository/license/homepage/issues/Node metadata, exports, bins, files, side effects, runtime
 dependencies, optional peers, file boundary, secret/Pro exclusions, and absence of workspace
 protocols. It then installs all six tarballs into an isolated Next.js project, exercises server-safe,
@@ -38,7 +39,7 @@ peer and pass once it is installed.
 
 Release-blocking defects reflected in the final post-remediation gate:
 
-- The packed MCP server now resolves `@nerio/registry/manifest.json` instead of a monorepo-relative
+- The packed MCP server now resolves `@nerio-ui/registry/manifest.json` instead of a monorepo-relative
   path.
 - Select source installation now includes `resolve-class-name.ts`.
 - Package consumers receive the required documented Next.js `transpilePackages` configuration for
@@ -90,14 +91,14 @@ pnpm validate:runtime-axes
 pnpm validate:typography
 pnpm validate:catalog
 pnpm validate:docs
-pnpm validate:release
+NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release
 pnpm pack:check
 ```
 
 ## Known non-blocking limitations
 
-- No public npm release exists. Package manifests deliberately remain private pending explicit
-  approval.
+- No public npm release exists yet; the approved public manifests are ready for the manual publish
+  sequence.
 - IconButton and documented Button aliases remain only for alpha migration compatibility.
 - Package distribution is source-first TypeScript; Next.js consumers configure
   `transpilePackages`.
