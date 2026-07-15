@@ -59,6 +59,7 @@ Nerio has not been publicly released yet. Items under `Unreleased` may change be
 - Added System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk typography preset recipes through CSS tokens.
 - Added a reproducible Chromium release smoke for the theme, mode, density, responsive,
   interaction, direction, motion, forced-color, and application-state matrix.
+- Added canonical design principles and normative Core UI implementation rules for contributors and coding agents.
 
 ### Changed
 
