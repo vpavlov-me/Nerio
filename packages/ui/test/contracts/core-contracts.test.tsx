@@ -1836,9 +1836,7 @@ describe("Core interactive action contracts", () => {
     const link = screen.getByRole("link", { name: "Button documentation" });
     const classNames = link.className.split(" ");
 
-    expect(classNames.indexOf("render-target-class")).toBeLessThan(
-      classNames.indexOf("n-button"),
-    );
+    expect(classNames.indexOf("render-target-class")).toBeLessThan(classNames.indexOf("n-button"));
     expect(classNames.indexOf("n-button")).toBeLessThan(
       classNames.indexOf("button-consumer-class"),
     );
@@ -3023,9 +3021,7 @@ describe("Core interactive action contracts", () => {
     expect(source).toContain("env(safe-area-inset-top)");
     expect(source).toContain("env(safe-area-inset-right)");
     expect(source).toContain("end-[max(var(--n-sheet-padding),env(safe-area-inset-right))]");
-    expect(source).toContain(
-      "rtl:end-[max(var(--n-sheet-padding),env(safe-area-inset-left))]",
-    );
+    expect(source).toContain("rtl:end-[max(var(--n-sheet-padding),env(safe-area-inset-left))]");
     expect(source).not.toContain("rtl:right-");
     expect(source).toContain("data-ending-style:data-[side=left]:animate-[n-sheet-exit-left");
     expect(source).toContain("motion-reduce:data-[side=left]:animate-none");
