@@ -1521,6 +1521,18 @@ describe("Core static contracts", () => {
     }
   });
 
+  it("keeps the Toast viewport centered with an explicit RTL direction", () => {
+    render(
+      <ToastProvider>
+        <ToastViewport direction="rtl" label="RTL notifications" />
+      </ToastProvider>,
+    );
+
+    const viewport = screen.getByRole("region", { name: "RTL notifications" });
+    expect(viewport).toHaveClass("left-1/2", "-translate-x-1/2");
+    expect(viewport).not.toHaveClass("rtl:translate-x-1/2");
+  });
+
   it("keeps inherited Toast direction synchronized with the document root", async () => {
     const originalDirection = document.documentElement.dir;
     document.documentElement.dir = "ltr";
