@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 export type SpinnerSize = "sm" | "md" | "lg";
 
@@ -36,7 +36,10 @@ export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(function 
   return (
     <span
       ref={ref}
-      className={cn("n-spinner", className)}
+      className={cn(
+        "n-spinner inline-block size-(--n-spinner-size-md) flex-none animate-[n-spin_var(--n-spinner-duration)_linear_infinite] rounded-(--n-radius-full) border-(length:--n-spinner-border-width) border-current border-t-transparent align-middle box-border data-[size=sm]:size-(--n-spinner-size-sm) data-[size=lg]:size-(--n-spinner-size-lg) motion-reduce:animate-none",
+        className,
+      )}
       {...props}
       data-slot="root"
       data-size={size}
@@ -57,7 +60,10 @@ export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(function 
           })}
     >
       {decorative ? null : (
-        <span className="n-spinner__label" data-slot="label">
+        <span
+          className="n-spinner__label absolute size-(--n-border-width-default) overflow-hidden whitespace-nowrap [clip:rect(0_0_0_0)] [clip-path:inset(50%)]"
+          data-slot="label"
+        >
           {label}
         </span>
       )}

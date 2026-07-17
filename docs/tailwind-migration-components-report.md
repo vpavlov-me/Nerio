@@ -27,5 +27,18 @@ builds, and browser comparison across the supported runtime axes.
 
 ## Remaining sequence
 
-1. Foundation, Data Display, Feedback, and Progress.
-2. Navigation, Layout, and Overlays.
+## Foundation, Data Display, Feedback, and Progress
+
+The second #173 family slice migrates Icon, Typography, Kbd, Spinner, Card, Avatar, Stat,
+KeyValue, Table, List, Item, Separator, Alert, Badge, EmptyState, Skeleton, and Progress. The former
+`icon.css`, `typography.css`, `kbd.css`, and `display.css` implementations are deleted. Spinner,
+Skeleton, and Progress retain only their named keyframes in residual CSS; ordinary visual rules and
+state application live in static Tailwind recipes.
+
+Registry items that embed the shared Icon now receive the Tailwind bridge and merge helper as part of
+the same source-install contract. Table, List, Item, Card, and feedback components retain their
+responsive, RTL, forced-colors, reduced-motion, semantic, and accessibility contracts.
+
+## Remaining sequence
+
+1. Navigation, Layout, and Overlays.

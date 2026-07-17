@@ -1,59 +1,4 @@
-.n-progress {
-  display: grid;
-  gap: var(--n-progress-gap);
-}
-
-.n-progress [data-slot="header"] {
-  align-items: baseline;
-  display: flex;
-  gap: var(--n-progress-header-gap);
-  justify-content: space-between;
-}
-
-.n-progress [data-slot="label"] {
-  color: var(--n-progress-label-color);
-  font-size: var(--n-progress-label-font-size);
-  font-weight: var(--n-progress-label-font-weight);
-}
-
-.n-progress [data-slot="value"] {
-  color: var(--n-progress-value-color);
-  font-size: var(--n-progress-value-font-size);
-  font-weight: var(--n-progress-value-font-weight);
-}
-
-.n-progress [data-slot="track"] {
-  background: var(--n-progress-track-background);
-  block-size: var(--n-progress-height);
-  border-radius: var(--n-progress-radius);
-  overflow: hidden;
-}
-
-.n-progress [data-slot="indicator"] {
-  background: var(--n-progress-indicator-background);
-  block-size: 100%;
-  display: block;
-  inline-size: 100%;
-  transform: scaleX(var(--n-progress-ratio, 0));
-  transform-origin: left center;
-  transition: transform var(--n-progress-duration) var(--n-progress-easing);
-}
-
-.n-progress:dir(rtl) [data-slot="indicator"] {
-  transform-origin: right center;
-}
-
-.n-progress[data-state="indeterminate"] [data-slot="indicator"] {
-  animation: n-progress-indeterminate var(--n-progress-indeterminate-duration)
-    var(--n-progress-easing) infinite;
-  inline-size: var(--n-progress-indeterminate-width);
-  transform: translateX(var(--n-progress-indeterminate-start));
-}
-
-.n-progress:dir(rtl)[data-state="indeterminate"] [data-slot="indicator"] {
-  animation-direction: reverse;
-}
-
+/* Residual named keyframe used by the Tailwind-first Progress recipe. */
 @keyframes n-progress-indeterminate {
   from {
     transform: translateX(var(--n-progress-indeterminate-start));
@@ -61,27 +6,5 @@
 
   to {
     transform: translateX(var(--n-progress-indeterminate-end));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .n-progress [data-slot="indicator"] {
-    transition: none;
-  }
-
-  .n-progress[data-state="indeterminate"] [data-slot="indicator"] {
-    animation: none;
-    transform: translateX(var(--n-progress-indeterminate-reduced-position));
-  }
-}
-
-@media (forced-colors: active) {
-  .n-progress [data-slot="track"] {
-    background: Canvas;
-    outline: 1px solid CanvasText;
-  }
-
-  .n-progress [data-slot="indicator"] {
-    background: Highlight;
   }
 }

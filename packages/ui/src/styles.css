@@ -1,15 +1,11 @@
 @import "@nerio-ui/tokens/styles.css";
 @import "./styles/motion.css";
-@import "./styles/icon.css";
-@import "./styles/typography.css";
-@import "./styles/kbd.css";
 @import "./styles/spinner.css";
 @import "./styles/navigation.css";
 @import "./styles/sidebar.css";
 @import "./styles/command.css";
 @import "./styles/feedback.css";
 @import "./styles/progress.css";
-@import "./styles/display.css";
 @import "./styles/select.css";
 @import "./styles/tabs.css";
 @import "./styles/overlays.css";

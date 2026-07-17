@@ -1,5 +1,8 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
+
+const tableClasses =
+  "n-table w-full border-collapse text-(length:--n-font-size-sm) [&_:is(th,td)]:h-(--n-table-row-min-height) [&_:is(th,td)]:border-b-(length:--n-table-border-width) [&_:is(th,td)]:border-(--n-table-border) [&_:is(th,td)]:p-(--n-table-cell-padding) [&_:is(th,td)]:text-start [&_th]:bg-(--n-table-header-background) [&_th]:font-(--n-font-weight-medium) [&_th]:text-(--n-table-header-foreground) [&_tbody>tr:hover>:is(th,td)]:bg-(--n-table-row-background-hover) [&_tbody>tr:focus-within>:is(th,td)]:bg-(--n-table-row-background-hover) [&_tbody>tr:is([data-selected],[aria-current]:not([aria-current=false]))>:is(th,td)]:bg-(--n-table-row-background-selected) [&_:is(th,td)[data-align=numeric]]:text-end [&_:is(th,td)[data-align=numeric]]:[font-variant-numeric:tabular-nums] [&_:is(th,td)[data-disabled]]:text-(--n-table-cell-foreground-disabled) [&_:is(th,td)[data-tone=danger]]:text-(--n-table-cell-foreground-danger) [&_caption]:mb-(--n-space-2) [&_caption]:text-start [&_caption]:text-(length:--n-font-size-sm) [&_caption]:text-(--n-color-text-tertiary)";
 
 export type TableProps = React.TableHTMLAttributes<HTMLTableElement>;
 type TableContainerBaseProps = Omit<
@@ -39,7 +42,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(function Tab
   { className, ...props },
   ref,
 ) {
-  return <table ref={ref} className={cn("n-table", className)} data-slot="root" {...props} />;
+  return <table ref={ref} className={cn(tableClasses, className)} data-slot="root" {...props} />;
 });
 
 export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerProps>(
@@ -60,7 +63,10 @@ export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerPro
         {...props}
         aria-label={normalizedAriaLabel}
         aria-labelledby={normalizedAriaLabelledBy}
-        className={cn("n-table-container", className)}
+        className={cn(
+          "n-table-container max-w-full overflow-x-auto rounded-(--n-table-container-radius) [border:var(--n-table-container-border)] data-focusable:focus-visible:outline-0 data-focusable:focus-visible:shadow-(--n-table-container-focus-ring) [&>.n-table]:min-w-max forced-colors:border-[CanvasText] forced-colors:data-focusable:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:data-focusable:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:data-focusable:focus-visible:outline-[Highlight]",
+          className,
+        )}
         data-focusable={isFocusableRegion ? "" : undefined}
         data-slot="container"
         role={hasAccessibleName ? "region" : undefined}
