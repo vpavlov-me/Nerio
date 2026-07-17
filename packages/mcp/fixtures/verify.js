@@ -1,6 +1,30 @@
 const path = require("node:path");
 const { Client } = require("@modelcontextprotocol/sdk/client/index.js");
 const { StdioClientTransport } = require("@modelcontextprotocol/sdk/client/stdio.js");
+const manifest = require(path.resolve(__dirname, "../../registry/src/manifest.json"));
+
+function assertFileTargets(actual, expected, description) {
+  const received = actual.map((file) => file.target).sort();
+  const required = [...expected].sort();
+  if (JSON.stringify(received) !== JSON.stringify(required)) {
+    throw new Error(
+      `${description} file targets drifted. Expected: ${required.join(", ")}. Received: ${received.join(", ")}.`,
+    );
+  }
+}
+
+function assertRegistryParity(name, usage, expectedFiles) {
+  const item = manifest.items.find((candidate) => candidate.name === name);
+  if (!item) {
+    throw new Error(`Registry is missing ${name} for MCP source-install parity coverage.`);
+  }
+  assertFileTargets(
+    usage.files,
+    item.files.map((file) => file.target),
+    `MCP ${name} Registry`,
+  );
+  assertFileTargets(usage.files, expectedFiles, `MCP ${name} source-install`);
+}
 
 async function verify() {
   const client = new Client({ name: "nerio-mcp-fixture", version: "0.1.0" });
@@ -188,6 +212,102 @@ async function verify() {
       !buttonUsage.accessibility.some((item) => item.includes("native anchor"))
     ) {
       throw new Error("MCP Button usage is not aligned with the native link contract.");
+    }
+
+    const sourceInstallContracts = {
+      avatar: [
+        "components/avatar.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      card: [
+        "components/card.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      "key-value": [
+        "components/key-value.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      separator: [
+        "components/separator.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      stat: [
+        "components/stat.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      table: [
+        "components/table.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      item: [
+        "components/item.tsx",
+        "lib/cn.ts",
+        "lib/compose-refs.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      list: [
+        "components/list.tsx",
+        "lib/cn.ts",
+        "lib/compose-refs.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      "empty-state": [
+        "components/empty-state.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      skeleton: [
+        "components/skeleton.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/feedback.css",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      spinner: [
+        "components/spinner.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/spinner.css",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+      progress: [
+        "components/progress.tsx",
+        "lib/cn.ts",
+        "lib/tailwind-cn.ts",
+        "styles/progress.css",
+        "styles/tailwind.css",
+        "styles/tokens.css",
+      ],
+    };
+    for (const [name, expectedFiles] of Object.entries(sourceInstallContracts)) {
+      const result = await client.callTool({ name: "get_component_usage", arguments: { name } });
+      assertRegistryParity(name, JSON.parse(result.content[0].text), expectedFiles);
     }
 
     const alertUsageResult = await client.callTool({
