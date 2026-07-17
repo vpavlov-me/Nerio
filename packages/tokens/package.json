@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
-    "eslint": "^9.39.2",
+    "eslint": "^10.7.0",
     "typescript": "^5.9.3"
   }
 }
