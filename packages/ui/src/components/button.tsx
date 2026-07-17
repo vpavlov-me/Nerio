@@ -4,6 +4,7 @@ import * as React from "react";
 import { Button as BaseButton } from "@base-ui/react/button";
 import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { cn } from "../lib/cn";
+import { composeRefs } from "../lib/compose-refs";
 import { motionClasses } from "../lib/motion";
 import { Badge, type BadgeProps } from "./badge";
 import { Icon } from "./icon";
@@ -39,6 +40,7 @@ type RenderElementProps = {
   "data-slot"?: string;
   "data-variant"?: CanonicalButtonVariant;
   onClick?: React.MouseEventHandler<HTMLElement>;
+  ref?: React.Ref<HTMLElement>;
 };
 
 function isRenderElement(render: unknown): render is React.ReactElement<RenderElementProps> {
@@ -172,8 +174,14 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     </>
   );
   const renderedElement = isRenderElement(render) ? render : null;
+  const renderRef = renderedElement?.props.ref;
+  const composedRef = React.useMemo(
+    () => (renderRef && ref ? composeRefs(renderRef, ref) : (renderRef ?? ref ?? undefined)),
+    [ref, renderRef],
+  );
   const content = renderedElement ? (
     React.cloneElement(renderedElement, {
+      ref: composedRef,
       className: cn(renderedElement.props.className, classNames),
       "aria-label": props["aria-label"] ?? renderedElement.props["aria-label"],
       "aria-busy": loading || undefined,

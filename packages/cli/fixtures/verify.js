@@ -14,6 +14,7 @@ const expectedFiles = [
   "components/spinner.tsx",
   "components/tooltip.tsx",
   "lib/cn.ts",
+  "lib/compose-refs.ts",
   "lib/motion.ts",
   "styles/button.css",
   "styles/icon.css",
@@ -545,10 +546,12 @@ async function verify() {
       !itemSource.includes("composeRefs(renderRef, ref)") ||
       !listSource.includes('from "../lib/compose-refs"') ||
       !composeRefsSource.includes('typeof ref === "function"') ||
-      !composeRefsSource.includes("ref.current = node")
+      !composeRefsSource.includes("ref.current = node") ||
+      !composeRefsSource.includes('typeof cleanup === "function"') ||
+      !composeRefsSource.includes("() => ref(null)")
     ) {
       throw new Error(
-        "Installed Item/List source does not preserve callback and object ref composition.",
+        "Installed Button/Item/List source does not preserve callback, object, and cleanup ref composition.",
       );
     }
     if (
@@ -624,9 +627,13 @@ async function verify() {
     );
     if (
       !buttonSource.includes("isRenderElement") ||
-      !buttonSource.includes("React.cloneElement(renderedElement")
+      !buttonSource.includes("React.cloneElement(renderedElement") ||
+      !buttonSource.includes('from "../lib/compose-refs"') ||
+      !buttonSource.includes("composeRefs(renderRef, ref)")
     ) {
-      throw new Error("Installed Button source does not preserve custom link rendering.");
+      throw new Error(
+        "Installed Button source does not preserve custom rendering and ref composition.",
+      );
     }
 
     const radioSource = fs.readFileSync(
