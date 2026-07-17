@@ -1856,8 +1856,16 @@ describe("Core interactive action contracts", () => {
     const forwardedCallbackRef = vi.fn<(node: HTMLElement | null) => void>();
     const renderCallbackRef = vi.fn<(node: HTMLAnchorElement | null) => void>();
     const forwardedObjectRef = React.createRef<HTMLElement>();
+    const renderCleanup = vi.fn();
+    const forwardedCleanup = vi.fn();
+    const renderCleanupRef = vi.fn((node: HTMLAnchorElement | null) =>
+      node ? renderCleanup : undefined,
+    );
+    const forwardedCleanupRef = vi.fn((node: HTMLElement | null) =>
+      node ? forwardedCleanup : undefined,
+    );
 
-    render(
+    const { unmount } = render(
       <>
         <Button
           ref={forwardedCallbackRef}
@@ -1873,6 +1881,13 @@ describe("Core interactive action contracts", () => {
         >
           Callback render ref
         </Button>
+        <Button
+          ref={forwardedCleanupRef}
+          nativeButton={false}
+          render={<a ref={renderCleanupRef} href="/cleanup-refs" />}
+        >
+          Cleanup refs
+        </Button>
       </>,
     );
 
@@ -1882,6 +1897,14 @@ describe("Core interactive action contracts", () => {
     expect(forwardedCallbackRef).toHaveBeenLastCalledWith(objectRefLink);
     expect(renderCallbackRef).toHaveBeenLastCalledWith(callbackRefLink);
     expect(forwardedObjectRef.current).toBe(callbackRefLink);
+
+    unmount();
+    expect(renderObjectRef.current).toBeNull();
+    expect(forwardedObjectRef.current).toBeNull();
+    expect(forwardedCallbackRef).toHaveBeenLastCalledWith(null);
+    expect(renderCallbackRef).toHaveBeenLastCalledWith(null);
+    expect(renderCleanup).toHaveBeenCalledOnce();
+    expect(forwardedCleanup).toHaveBeenCalledOnce();
   });
 
   it("normalizes deprecated Button variants and protects Button-owned state attributes", () => {

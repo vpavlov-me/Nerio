@@ -546,10 +546,12 @@ async function verify() {
       !itemSource.includes("composeRefs(renderRef, ref)") ||
       !listSource.includes('from "../lib/compose-refs"') ||
       !composeRefsSource.includes('typeof ref === "function"') ||
-      !composeRefsSource.includes("ref.current = node")
+      !composeRefsSource.includes("ref.current = node") ||
+      !composeRefsSource.includes('typeof cleanup === "function"') ||
+      !composeRefsSource.includes("() => ref(null)")
     ) {
       throw new Error(
-        "Installed Item/List source does not preserve callback and object ref composition.",
+        "Installed Button/Item/List source does not preserve callback, object, and cleanup ref composition.",
       );
     }
     if (
