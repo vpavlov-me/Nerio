@@ -1,7 +1,10 @@
 import * as React from "react";
 import { Label } from "./label";
 import { FormMessage } from "./form-message";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
+
+const fieldClasses =
+  "n-field grid gap-(--n-field-gap) [&_p]:m-0 [&_p]:text-(length:--n-helper-font-size) [&_p]:text-(--n-color-text-tertiary)";
 
 type FieldControlProps = {
   id?: string;
@@ -36,7 +39,7 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
   return (
     <div
       ref={ref}
-      className={cn("n-field", className)}
+      className={cn(fieldClasses, className)}
       data-invalid={invalid ? "" : undefined}
       data-slot="root"
       {...props}
@@ -55,7 +58,11 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
           })
         : children}
       {description ? (
-        <p className="n-field__description" data-slot="description" id={descriptionId}>
+        <p
+          className="n-field__description m-0 text-(length:--n-helper-font-size) text-(--n-color-text-tertiary)"
+          data-slot="description"
+          id={descriptionId}
+        >
           {description}
         </p>
       ) : null}

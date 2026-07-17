@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { tailwindCn } from "../../src/lib/tailwind-cn";
@@ -39,5 +39,38 @@ describe("Tailwind styling contract", () => {
     expect(dialogSource).toContain("n-dialog__close inline-flex");
     expect(dialogSource).toContain("rounded-(--n-radius-sm) border-0");
     expect(dialogSource).not.toContain("border-(--n-border-width-0)");
+  });
+
+  it("keeps the Actions and Forms family on one Tailwind-first visual source", () => {
+    const migratedComponents = [
+      "button-group",
+      "textarea",
+      "label",
+      "field",
+      "form-message",
+      "form-group",
+      "input-group",
+      "checkbox",
+      "radio-group",
+      "switch",
+      "select",
+    ];
+
+    for (const component of migratedComponents) {
+      const source = readFileSync(
+        resolve(process.cwd(), `src/components/${component}.tsx`),
+        "utf8",
+      );
+      expect(source, component).toContain('from "../lib/tailwind-cn"');
+    }
+
+    for (const obsoleteStylesheet of ["button-group.css", "forms.css", "input-group.css"]) {
+      expect(existsSync(resolve(process.cwd(), `src/styles/${obsoleteStylesheet}`))).toBe(false);
+    }
+
+    const selectResidual = readFileSync(resolve(process.cwd(), "src/styles/select.css"), "utf8");
+    expect(selectResidual).toContain("@keyframes n-select-popup-in");
+    expect(selectResidual).toContain("@keyframes n-select-popup-out");
+    expect(selectResidual).not.toContain(".n-select-");
   });
 });

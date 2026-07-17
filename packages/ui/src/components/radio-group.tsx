@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Radio } from "@base-ui/react/radio";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { FormMessage } from "./form-message";
 
@@ -57,6 +57,9 @@ export interface RadioGroupItemProps extends Omit<
   value: string;
 }
 
+const radioClasses =
+  "n-radio mt-(--n-space-0-5) inline-flex size-(--n-radio-size) cursor-pointer items-center justify-center rounded-(--n-radio-radius) border-(length:--n-input-border-width) border-(--n-input-border) bg-(--n-input-background) text-(--n-color-action-primary) transition-[background-color,border-color] duration-(--n-duration-fast) [&:hover:not([data-disabled]):not([data-readonly])]:border-(--n-input-border-hover) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-checked:border-(--n-color-action-primary) data-checked:bg-(--n-color-action-primary) data-checked:text-(--n-color-action-on-primary) data-disabled:cursor-not-allowed data-readonly:cursor-default data-invalid:border-(--n-input-border-danger) data-checked:[&_.n-radio__indicator]:scale-100 data-checked:[&_.n-radio__indicator]:opacity-100 forced-colors:border-[CanvasText] forced-colors:data-checked:[&_.n-radio__indicator]:bg-[Highlight] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2 forced-colors:focus-visible:outline-[Highlight] motion-reduce:duration-0";
+
 export const RadioGroupItem = React.forwardRef<HTMLElement, RadioGroupItemProps>(
   function RadioGroupItem(
     { children, className, description, disabled, readOnly, value, ...props },
@@ -64,14 +67,14 @@ export const RadioGroupItem = React.forwardRef<HTMLElement, RadioGroupItemProps>
   ) {
     return (
       <label
-        className="n-radio-option"
+        className="n-radio-option inline-grid cursor-pointer grid-cols-[auto_1fr] items-start gap-(--n-space-2) text-(--n-color-text-secondary) data-disabled:cursor-not-allowed data-disabled:text-(--n-color-text-disabled) data-readonly:cursor-default"
         data-disabled={disabled ? "" : undefined}
         data-readonly={readOnly ? "" : undefined}
         data-slot="option"
       >
         <Radio.Root
           ref={ref}
-          className={(state) => cn("n-radio", resolveClassName(className, state))}
+          className={(state) => cn(radioClasses, resolveClassName(className, state))}
           disabled={disabled}
           readOnly={readOnly}
           {...props}
@@ -80,9 +83,15 @@ export const RadioGroupItem = React.forwardRef<HTMLElement, RadioGroupItemProps>
           data-slot="control"
           value={value}
         >
-          <Radio.Indicator className="n-radio__indicator" data-slot="indicator" />
+          <Radio.Indicator
+            className="n-radio__indicator size-(--n-radio-dot-size) scale-[0.8] rounded-(--n-radio-radius) bg-current opacity-0 transition-[opacity,scale] duration-(--n-duration-fast) motion-reduce:duration-0"
+            data-slot="indicator"
+          />
         </Radio.Root>
-        <span className="n-radio-option__content" data-slot="option-content">
+        <span
+          className="n-radio-option__content grid gap-(--n-space-1) [&_[data-slot=option-description]]:text-(length:--n-font-size-sm) [&_[data-slot=option-description]]:text-(--n-color-text-tertiary)"
+          data-slot="option-content"
+        >
           <span data-slot="option-label">{children}</span>
           {description ? <span data-slot="option-description">{description}</span> : null}
         </span>
@@ -138,8 +147,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
   return (
     <div
       className={cn(
-        "n-field",
-        "n-radio-field",
+        "n-field n-radio-field grid gap-(--n-field-gap) data-invalid:[&_.n-radio]:border-(--n-input-border-danger) [&_p]:m-0 [&_p]:text-(length:--n-helper-font-size) [&_p]:text-(--n-color-text-tertiary)",
         typeof className === "string" ? className : undefined,
       )}
       data-disabled={disabled ? "" : undefined}
@@ -147,18 +155,29 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
       data-readonly={readOnly ? "" : undefined}
       data-slot="root"
     >
-      <span className="n-label" data-slot="label" id={labelId}>
+      <span
+        className="n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-secondary)"
+        data-slot="label"
+        id={labelId}
+      >
         {label}
       </span>
       {description ? (
-        <p className="n-field__description" data-slot="description" id={descriptionId}>
+        <p
+          className="n-field__description m-0 text-(length:--n-helper-font-size) text-(--n-color-text-tertiary)"
+          data-slot="description"
+          id={descriptionId}
+        >
           {description}
         </p>
       ) : null}
       <BaseRadioGroup<string>
         ref={ref}
         className={(state) =>
-          typeof className === "function" ? resolveClassName(className, state) : undefined
+          cn(
+            "grid gap-(--n-space-2)",
+            typeof className === "function" ? resolveClassName(className, state) : undefined,
+          )
         }
         disabled={disabled}
         readOnly={readOnly}

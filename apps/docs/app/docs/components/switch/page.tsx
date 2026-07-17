@@ -37,10 +37,13 @@ const apiRows = [
   ["className", "Extends the switch control, not the optional field wrapper."],
 ] as const;
 const implementationRows = [
-  ["Registry item", "switch installs 4 source files into the configured components directory."],
+  [
+    "Registry item",
+    "switch installs 5 Tailwind-first source files into the configured components directory.",
+  ],
   ["Base UI", "switch"],
   ["Registry dependencies", "None."],
-  ["Package dependencies", "@base-ui/react, clsx, react"],
+  ["Package dependencies", "@base-ui/react, clsx, react, tailwind-merge, tailwindcss"],
 ] as const;
 const tokenRows = [
   [

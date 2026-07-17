@@ -71,10 +71,13 @@ const stateRows = [
 ] as const;
 
 const implementationRows = [
-  ["Registry item", "label installs Label, composition helpers, and LabelHint source files."],
+  [
+    "Registry item",
+    "label installs Tailwind-first Label, composition helpers, LabelHint, and the token bridge.",
+  ],
   ["Base UI", "Tooltip for LabelHint only."],
   ["Registry dependencies", "tooltip"],
-  ["Package dependencies", "@nerio-ui/adapters, clsx, react"],
+  ["Package dependencies", "@nerio-ui/adapters, clsx, react, tailwind-merge, tailwindcss"],
 ] as const;
 
 const tokenRows = [

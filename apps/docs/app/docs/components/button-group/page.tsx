@@ -49,11 +49,11 @@ const stateRows = [
 const implementationRows = [
   [
     "Registry item",
-    "button-group installs 3 source files into the configured components directory.",
+    "button-group installs 4 Tailwind-first source files into the configured components directory.",
   ],
   ["Base UI", "No interactive primitive required."],
   ["Registry dependencies", "button"],
-  ["Package dependencies", "clsx, react"],
+  ["Package dependencies", "clsx, react, tailwind-merge, tailwindcss"],
 ] as const;
 
 const tokenRows = [

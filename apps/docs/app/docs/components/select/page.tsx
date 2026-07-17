@@ -57,11 +57,14 @@ const apiRows = [
 const implementationRows = [
   [
     "Registry item",
-    "select installs source and tokenized styles into the configured components directory.",
+    "select installs Tailwind-first source, the token bridge, and residual popup keyframes.",
   ],
   ["Base UI", "select"],
   ["Registry dependencies", "form-message"],
-  ["Package dependencies", "@base-ui/react, @nerio-ui/adapters, clsx, react"],
+  [
+    "Package dependencies",
+    "@base-ui/react, @nerio-ui/adapters, clsx, react, tailwind-merge, tailwindcss",
+  ],
 ] as const;
 
 export const metadata = createPageMetadata({

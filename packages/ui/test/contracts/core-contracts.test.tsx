@@ -535,25 +535,25 @@ describe("Core static contracts", () => {
     );
   });
 
-  it("keeps ButtonGroup attachment, focus layering, RTL, and density contracts in CSS", () => {
-    const buttonGroupStyles = readFileSync(
-      resolve(process.cwd(), "src/styles/button-group.css"),
+  it("keeps ButtonGroup attachment, focus layering, RTL, and density contracts in Tailwind", () => {
+    const buttonGroupSource = readFileSync(
+      resolve(process.cwd(), "src/components/button-group.tsx"),
       "utf8",
     );
-    expect(buttonGroupStyles).toContain("margin-inline-start");
-    expect(buttonGroupStyles).toContain('data-orientation="vertical"');
-    expect(buttonGroupStyles).toContain("margin-block-start");
-    expect(buttonGroupStyles).toContain(':dir(rtl)[data-orientation="vertical"]');
-    expect(buttonGroupStyles).toContain("transform: translateX(50%);");
-    expect(buttonGroupStyles).toContain("border-end-start-radius: var(--n-button-radius);");
-    expect(buttonGroupStyles).toContain("border-start-end-radius: var(--n-radius-none);");
-    expect(buttonGroupStyles).toContain(".n-button-group > .n-button:focus-visible");
-    expect(buttonGroupStyles).toContain("z-index: 2;");
-    expect(buttonGroupStyles).toContain(
-      '.n-button-group[data-orientation="vertical"] > .n-button:only-child',
+    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:ms-");
+    expect(buttonGroupSource).toContain("data-[orientation=vertical]:[&>.n-button+.n-button]:mt-");
+    expect(buttonGroupSource).toContain(
+      "rtl:data-[orientation=vertical]:[&>.n-button+.n-button::before]:translate-x-1/2",
     );
-    expect(buttonGroupStyles).toContain("border-radius: var(--n-button-radius);");
-    expect(buttonGroupStyles).not.toContain("overflow: hidden");
+    expect(buttonGroupSource).toContain("[&>.n-button:first-child]:rounded-s-");
+    expect(buttonGroupSource).toContain(
+      "data-[orientation=vertical]:[&>.n-button:first-child]:rounded-b-none",
+    );
+    expect(buttonGroupSource).toContain("[&>.n-button:focus-visible]:z-2");
+    expect(buttonGroupSource).toContain(
+      "data-[orientation=vertical]:[&>.n-button:only-child]:rounded-(--n-button-radius)",
+    );
+    expect(buttonGroupSource).not.toContain("overflow-hidden");
   });
 
   it("renders decorative Badge icons on either side of its status label and supports loading", () => {

@@ -1,5 +1,8 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
+
+const labelClasses =
+  "n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-secondary)";
 
 export type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement>;
 
@@ -13,7 +16,7 @@ export const Label = React.forwardRef<HTMLLabelElement, LabelProps>(function Lab
   { className, ...props },
   ref,
 ) {
-  return <label ref={ref} className={cn("n-label", className)} data-slot="root" {...props} />;
+  return <label ref={ref} className={cn(labelClasses, className)} data-slot="root" {...props} />;
 });
 
 /** Groups a label and its supplementary controls without nesting interactive content in <label>. */
@@ -21,7 +24,14 @@ export const LabelRow = React.forwardRef<HTMLDivElement, LabelRowProps>(function
   { className, ...props },
   ref,
 ) {
-  return <div ref={ref} className={cn("n-label-row", className)} data-slot="root" {...props} />;
+  return (
+    <div
+      ref={ref}
+      className={cn("n-label-row flex items-center gap-(--n-label-gap)", className)}
+      data-slot="root"
+      {...props}
+    />
+  );
 });
 
 export const LabelContent = React.forwardRef<HTMLSpanElement, LabelContentProps>(
@@ -29,7 +39,7 @@ export const LabelContent = React.forwardRef<HTMLSpanElement, LabelContentProps>
     return (
       <span
         ref={ref}
-        className={cn("n-label__content", className)}
+        className={cn("n-label__content flex min-w-0 items-center gap-(--n-label-gap)", className)}
         data-slot="content"
         {...props}
       />
@@ -44,7 +54,7 @@ export const LabelRequired = React.forwardRef<HTMLSpanElement, LabelRequiredProp
       <span
         ref={ref}
         aria-hidden
-        className={cn("n-label__required", className)}
+        className={cn("n-label__required text-(--n-label-required-color)", className)}
         data-slot="required"
         {...props}
       >
