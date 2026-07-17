@@ -102,6 +102,53 @@ test("keeps Actions and Forms Tailwind recipes active across public docs", async
   await expectHealthyPage(page, problems);
 });
 
+test("keeps the final Tailwind component families active across public docs", async ({ page }) => {
+  const problems = monitorPage(page);
+  const routes = [
+    ["breadcrumbs", ".n-breadcrumbs"],
+    ["pagination", ".n-pagination"],
+    ["tabs", ".n-tabs"],
+    ["toast", ".n-toast"],
+    ["sidebar-primitive", ".n-sidebar"],
+    ["command-primitive", ".n-command"],
+  ];
+
+  for (const [route, selector] of routes) {
+    await page.goto(`/docs/components/${route}`);
+    const component = page.locator(selector).first();
+    await expect(component, route).toBeVisible();
+    const snapshot = await component.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        display: style.display,
+        fontFamily: style.fontFamily,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    expect(snapshot.display, `${route} display`).not.toBe("none");
+    expect(snapshot.fontFamily, `${route} font`).not.toBe("");
+    expect(snapshot.overflow, `${route} overflow`).toBeLessThanOrEqual(1);
+  }
+
+  await page.goto("/docs/components/tooltip");
+  await page.getByRole("button", { name: "Copy link" }).hover();
+  await expect(page.getByRole("tooltip")).toBeVisible();
+
+  await page.goto("/docs/components/popover");
+  await page.getByRole("button", { name: "Filters" }).click();
+  await expect(page.getByRole("heading", { name: "View filters" })).toBeVisible();
+
+  await page.goto("/docs/components/dropdown-menu");
+  await page.getByRole("button", { name: "Actions", exact: true }).click();
+  await expect(page.getByRole("menuitem", { name: "Archive" })).toBeVisible();
+
+  await page.goto("/docs/components/sheet");
+  await page.getByRole("button", { name: "Open settings" }).click();
+  await expect(page.getByRole("heading", { name: "Workspace settings" })).toBeVisible();
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps the docs shell inside emulated safe areas without overflow", async ({
   page,
   browserName,

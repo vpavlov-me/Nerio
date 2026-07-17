@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 
 export interface TooltipProps extends Pick<
@@ -30,10 +30,14 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
       >
         <BaseTooltip.Trigger delay={delay} render={children} />
         <BaseTooltip.Portal>
-          <BaseTooltip.Positioner className="n-tooltip-positioner">
+          <BaseTooltip.Positioner className="n-tooltip-positioner z-(--n-overlay-z-index)">
             <BaseTooltip.Popup
               ref={ref}
-              className={cn("n-tooltip-popup", motionClasses.overlayEnter, className)}
+              className={cn(
+                "n-tooltip-popup z-(--n-overlay-z-index) max-w-(--n-size-tooltip-max) whitespace-normal rounded-(--n-tooltip-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) text-(length:--n-font-size-xs) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow)",
+                motionClasses.overlayEnter,
+                className,
+              )}
               data-slot="content"
               role="tooltip"
             >

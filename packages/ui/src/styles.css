@@ -1,15 +1,10 @@
 @import "@nerio-ui/tokens/styles.css";
 @import "./styles/motion.css";
 @import "./styles/spinner.css";
-@import "./styles/navigation.css";
-@import "./styles/sidebar.css";
-@import "./styles/command.css";
 @import "./styles/feedback.css";
 @import "./styles/progress.css";
 @import "./styles/select.css";
-@import "./styles/tabs.css";
 @import "./styles/overlays.css";
-@import "./styles/toast.css";
 
 /* Scoped compatibility rules for components awaiting the remaining #173 family slices. */
 :where([class^="n-"], [class*=" n-"]) {

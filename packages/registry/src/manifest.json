@@ -1856,11 +1856,6 @@
           "role": "component"
         },
         {
-          "source": "../../ui/src/styles/tabs.css",
-          "target": "styles/tabs.css",
-          "role": "style"
-        },
-        {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
@@ -1940,7 +1935,7 @@
       "title": "Breadcrumbs",
       "description": "Shows hierarchy navigation with native anchors and a current page item.",
       "category": "navigation",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1954,8 +1949,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/navigation.css",
-          "target": "styles/navigation.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1982,7 +1982,7 @@
       "title": "Pagination",
       "description": "Provides basic previous, next, and page navigation without owning pagination state.",
       "category": "navigation",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1996,8 +1996,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/navigation.css",
-          "target": "styles/navigation.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -2156,11 +2161,6 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/sidebar.css",
-          "target": "styles/sidebar.css",
-          "role": "style"
-        },
-        {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
@@ -2252,11 +2252,6 @@
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
           "role": "utility"
-        },
-        {
-          "source": "../../ui/src/styles/command.css",
-          "target": "styles/command.css",
-          "role": "style"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
@@ -2432,7 +2427,7 @@
       "title": "Popover",
       "description": "Reveals contextual controls or details near a trigger.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -2451,8 +2446,13 @@
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/overlays.css",
-          "target": "styles/overlays.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -2485,7 +2485,7 @@
       "title": "DropdownMenu",
       "description": "Groups secondary commands behind a compact trigger.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -2504,8 +2504,13 @@
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/overlays.css",
-          "target": "styles/overlays.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -2540,7 +2545,7 @@
       "title": "Tooltip",
       "description": "Clarifies compact controls without carrying essential meaning.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -2564,8 +2569,13 @@
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/overlays.css",
-          "target": "styles/overlays.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -2622,11 +2632,6 @@
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
           "role": "utility"
-        },
-        {
-          "source": "../../ui/src/styles/toast.css",
-          "target": "styles/toast.css",
-          "role": "style"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",

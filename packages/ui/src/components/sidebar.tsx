@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { PanelLeft } from "@nerio-ui/adapters/icons";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { Icon } from "./icon";
 
 export type SidebarSide = "left" | "right";
@@ -64,7 +64,10 @@ export function SidebarProvider({
     <SidebarContext.Provider value={value}>
       <div
         {...props}
-        className={cn("n-sidebar-provider", className)}
+        className={cn(
+          "n-sidebar-provider flex min-h-full w-full [direction:ltr] data-[side=right]:flex-row-reverse data-[direction=rtl]:[&>*]:[direction:rtl] data-[state=collapsed]:[&>.n-sidebar]:w-(--n-sidebar-collapsed-width) data-[state=collapsed]:[&>.n-sidebar]:basis-(--n-sidebar-collapsed-width)",
+          className,
+        )}
         data-direction={direction}
         data-side={side}
         data-slot="sidebar-provider"
@@ -101,13 +104,20 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
       ref={ref}
       {...props}
       id={sidebarId}
-      className={cn("n-sidebar", className)}
+      className={cn(
+        "n-sidebar sticky top-0 h-dvh min-h-80 w-(--n-sidebar-width) max-w-dvw flex-[0_0_var(--n-sidebar-width)] border-r-(length:--n-sidebar-border-width) border-(--n-sidebar-border) bg-(--n-sidebar-background) pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-(--n-sidebar-foreground) transition-[width,flex-basis] duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) data-[side=right]:border-r-0 data-[side=right]:border-l-(length:--n-sidebar-border-width) data-[state=collapsed]:w-(--n-sidebar-collapsed-width) data-[state=collapsed]:basis-(--n-sidebar-collapsed-width) motion-reduce:duration-[0.01ms] forced-colors:border-[CanvasText]",
+        className,
+      )}
       data-direction={direction}
       data-side={side}
       data-slot="sidebar"
       data-state={expanded ? "expanded" : "collapsed"}
     >
-      <div className="n-sidebar__inner" data-slot="sidebar-inner" inert={!expanded || undefined}>
+      <div
+        className="n-sidebar__inner grid h-full w-(--n-sidebar-width) grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
+        data-slot="sidebar-inner"
+        inert={!expanded || undefined}
+      >
         {content}
       </div>
       {rails}
@@ -151,7 +161,10 @@ export const SidebarTrigger = React.forwardRef<HTMLButtonElement, SidebarToggleP
     return (
       <SidebarToggle
         ref={ref}
-        className={cn("n-sidebar-trigger", className)}
+        className={cn(
+          "n-sidebar-trigger inline-flex min-h-(--n-sidebar-rail-hit-area) min-w-(--n-sidebar-rail-hit-area) cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) forced-colors:border forced-colors:border-[ButtonText]",
+          className,
+        )}
         data-slot="sidebar-trigger"
         {...props}
       />
@@ -164,7 +177,10 @@ export const SidebarRail = React.forwardRef<HTMLButtonElement, SidebarToggleProp
     return (
       <SidebarToggle
         ref={ref}
-        className={cn("n-sidebar-rail", className)}
+        className={cn(
+          "n-sidebar-rail absolute top-1/2 right-[calc(-0.5*var(--n-sidebar-rail-hit-area))] z-1 inline-flex size-(--n-sidebar-rail-hit-area) -translate-y-1/2 cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) [[data-side=right]_&]:right-auto [[data-side=right]_&]:left-[calc(-0.5*var(--n-sidebar-rail-hit-area))] forced-colors:border forced-colors:border-[ButtonText]",
+          className,
+        )}
         data-slot="sidebar-rail"
         {...props}
       />
