@@ -167,7 +167,7 @@ async function runFailure(cwd, ...args) {
   throw new Error(`nerio ${args.join(" ")} unexpectedly succeeded.`);
 }
 
-function writePackageTailwindSetup(target) {
+function writePackageTailwindSetup(target, { explicitPreflight = false } = {}) {
   const appDirectory = path.join(target, "app");
   fs.mkdirSync(appDirectory, { recursive: true });
   fs.writeFileSync(
@@ -175,12 +175,15 @@ function writePackageTailwindSetup(target) {
     [
       "@layer theme, base, components, utilities;",
       '@import "tailwindcss/theme.css" layer(theme);',
+      explicitPreflight ? '@import "tailwindcss/preflight.css" layer(base);' : "",
       '@import "tailwindcss/utilities.css" layer(utilities);',
       '@import "@nerio-ui/tokens/tailwind.css";',
       '@import "@nerio-ui/ui/styles.css";',
       '@source "../node_modules/@nerio-ui/ui/src";',
       "",
-    ].join("\n"),
+    ]
+      .filter(Boolean)
+      .join("\n"),
   );
 }
 
@@ -278,18 +281,22 @@ async function verify() {
   const localTarget = path.join(tempRoot, "local");
   const urlTarget = path.join(tempRoot, "url");
   const invalidPackageTarget = path.join(tempRoot, "invalid-package");
+  const preflightTarget = path.join(tempRoot, "preflight");
   const sourceTarget = path.join(tempRoot, "source");
   const missingBridgeTarget = path.join(tempRoot, "missing-bridge");
   const missingCompatibilityTarget = path.join(tempRoot, "missing-compatibility");
   const invalidSourceTarget = path.join(tempRoot, "invalid-source");
+  const missingInstalledTokenTarget = path.join(tempRoot, "missing-installed-token");
   const staleSourceTarget = path.join(tempRoot, "stale-source");
   fs.mkdirSync(localTarget);
   fs.mkdirSync(urlTarget);
   fs.mkdirSync(invalidPackageTarget);
+  fs.mkdirSync(preflightTarget);
   fs.mkdirSync(sourceTarget);
   fs.mkdirSync(missingBridgeTarget);
   fs.mkdirSync(missingCompatibilityTarget);
   fs.mkdirSync(invalidSourceTarget);
+  fs.mkdirSync(missingInstalledTokenTarget);
   fs.mkdirSync(staleSourceTarget);
 
   const { server, manifestUrl } = await startRegistryServer();
@@ -297,6 +304,9 @@ async function verify() {
     await run(localTarget, "init", "--registry", manifest);
     writePackageTailwindSetup(localTarget);
     await run(localTarget, "doctor");
+    await run(preflightTarget, "init", "--registry", manifest);
+    writePackageTailwindSetup(preflightTarget, { explicitPreflight: true });
+    await run(preflightTarget, "doctor");
 
     await run(invalidPackageTarget, "init", "--registry", manifest);
     fs.mkdirSync(path.join(invalidPackageTarget, "app"));
@@ -317,6 +327,7 @@ async function verify() {
       missingBridgeTarget,
       missingCompatibilityTarget,
       invalidSourceTarget,
+      missingInstalledTokenTarget,
       staleSourceTarget,
     ]) {
       await run(target, "init", "--registry", manifest);
@@ -338,6 +349,12 @@ async function verify() {
     const invalidSourceOutput = await runFailure(invalidSourceTarget, "doctor");
     if (!invalidSourceOutput.includes("styles/tokens.css")) {
       throw new Error("Doctor did not report the missing source-install token stylesheet.");
+    }
+    writeSourceTailwindSetup(missingInstalledTokenTarget);
+    fs.rmSync(path.join(missingInstalledTokenTarget, "components/nerio/styles/tokens.css"));
+    const missingInstalledTokenOutput = await runFailure(missingInstalledTokenTarget, "doctor");
+    if (!missingInstalledTokenOutput.includes("copied styles/tokens.css variables")) {
+      throw new Error("Doctor did not report a missing copied token stylesheet.");
     }
     writeSourceTailwindSetup(staleSourceTarget, { includeLegacyStyle: true });
     const staleSourceOutput = await runFailure(staleSourceTarget, "doctor");
