@@ -58,7 +58,8 @@ const expectedFieldFiles = [
   "components/label.tsx",
   "components/form-message.tsx",
   "lib/cn.ts",
-  "styles/forms.css",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
 ];
 const expectedInputGroupFiles = [
   "components/input.tsx",
@@ -66,8 +67,6 @@ const expectedInputGroupFiles = [
   "lib/cn.ts",
   "lib/motion.ts",
   "lib/tailwind-cn.ts",
-  "styles/forms.css",
-  "styles/input-group.css",
   "styles/motion.css",
   "styles/tailwind.css",
 ];
@@ -75,26 +74,29 @@ const expectedFormGroupFiles = [
   "components/form-group.tsx",
   "components/form-message.tsx",
   "lib/cn.ts",
-  "styles/forms.css",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
 ];
 const expectedBaseFormFiles = [
   "components/checkbox.tsx",
   "components/icon.tsx",
   "components/switch.tsx",
   "lib/cn.ts",
+  "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
-  "styles/forms.css",
   "styles/icon.css",
+  "styles/tailwind.css",
 ];
 const expectedSelectFiles = [
   "components/select.tsx",
   "components/form-message.tsx",
   "components/icon.tsx",
   "lib/cn.ts",
+  "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
-  "styles/forms.css",
   "styles/select.css",
   "styles/icon.css",
+  "styles/tailwind.css",
 ];
 const expectedPhase2BFiles = [
   "components/alert.tsx",
@@ -102,10 +104,11 @@ const expectedPhase2BFiles = [
   "components/icon.tsx",
   "components/radio-group.tsx",
   "lib/cn.ts",
+  "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
   "styles/feedback.css",
-  "styles/forms.css",
   "styles/icon.css",
+  "styles/tailwind.css",
 ];
 const expectedDisplayFiles = [
   "components/avatar.tsx",
@@ -280,7 +283,8 @@ async function verify() {
     if (
       !buttonGroupInfoOutput.includes("orientation: horizontal | vertical") ||
       !buttonGroupInfoOutput.includes("independent Tab order") ||
-      !buttonGroupInfoOutput.includes("styles/button-group.css")
+      !buttonGroupInfoOutput.includes("lib/tailwind-cn.ts") ||
+      !buttonGroupInfoOutput.includes("styles/tailwind.css")
     ) {
       throw new Error(
         "ButtonGroup registry metadata did not include the stable orientation contract.",

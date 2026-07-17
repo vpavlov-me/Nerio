@@ -60,6 +60,48 @@ test("covers public docs routes, Sidebar examples, and appearance controls", asy
   await expectHealthyPage(page, problems);
 });
 
+test("keeps Actions and Forms Tailwind recipes active across public docs", async ({ page }) => {
+  const problems = monitorPage(page);
+  const routes = [
+    ["button-group", ".n-button-group", ["flex", "inline-flex"]],
+    ["input-group", ".n-input-group", ["flex"]],
+    ["checkbox", ".n-checkbox", ["flex", "inline-flex"]],
+    ["radio-group", ".n-radio", ["flex", "inline-flex"]],
+    ["switch", ".n-switch", ["flex", "inline-flex"]],
+    ["select", ".n-select-trigger", ["flex", "inline-flex"]],
+    ["label", ".n-label", ["block", "inline"]],
+  ];
+
+  for (const [route, selector, expectedDisplays] of routes) {
+    await page.goto(`/docs/components/${route}`);
+    const component = page.locator(selector).first();
+    await expect(component, route).toBeVisible();
+    const snapshot = await component.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        borderStyle: style.borderStyle,
+        display: style.display,
+        fontFamily: style.fontFamily,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    expect(expectedDisplays, `${route} display`).toContain(snapshot.display);
+    expect(snapshot.fontFamily, `${route} font`).not.toBe("");
+    expect(snapshot.overflow, `${route} overflow`).toBeLessThanOrEqual(1);
+    if (["checkbox", "radio-group", "switch", "select"].includes(route)) {
+      expect(snapshot.borderStyle, `${route} border`).toBe("solid");
+    }
+  }
+
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await page.goto("/docs/components/checkbox");
+  await expect(page.locator(".n-checkbox").first()).toHaveCSS("transition-duration", "0s");
+  await page.goto("/docs/components/switch");
+  await expect(page.locator(".n-switch").first()).toHaveCSS("transition-duration", "0s");
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps the docs shell inside emulated safe areas without overflow", async ({
   page,
   browserName,

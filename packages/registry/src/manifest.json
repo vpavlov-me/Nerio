@@ -15,7 +15,11 @@
           "target": "components/typography.tsx",
           "role": "component"
         },
-        { "source": "../../ui/src/lib/cn.ts", "target": "lib/cn.ts", "role": "utility" },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
         {
           "source": "../../ui/src/styles/typography.css",
           "target": "styles/typography.css",
@@ -261,7 +265,7 @@
       "title": "ButtonGroup",
       "description": "Joins a small set of related Buttons into one attached horizontal or vertical control set.",
       "category": "actions",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -269,10 +273,19 @@
           "target": "components/button-group.tsx",
           "role": "component"
         },
-        { "source": "../../ui/src/lib/cn.ts", "target": "lib/cn.ts", "role": "utility" },
         {
-          "source": "../../ui/src/styles/button-group.css",
-          "target": "styles/button-group.css",
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1024,7 +1037,14 @@
       "title": "Select",
       "description": "Chooses one option from a compact known list with data-driven options or curated item composition.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": ["form-message"],
       "files": [
         {
@@ -1038,9 +1058,24 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
         },
         {
           "source": "../../ui/src/styles/select.css",
@@ -1117,7 +1152,7 @@
       "title": "RadioGroup",
       "description": "Chooses one option from a small visible set through data-driven options or RadioGroupItem composition.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["form-message"],
       "files": [
         {
@@ -1131,9 +1166,19 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
         }
       ],
       "baseUiPrimitives": ["radio-group", "radio"],
@@ -1248,7 +1293,7 @@
       "title": "InputGroup",
       "description": "Composable Input surface with explicit start and end inline addons.",
       "category": "forms",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["input"],
       "files": [
         {
@@ -1256,10 +1301,19 @@
           "target": "components/input-group.tsx",
           "role": "component"
         },
-        { "source": "../../ui/src/lib/cn.ts", "target": "lib/cn.ts", "role": "utility" },
         {
-          "source": "../../ui/src/styles/input-group.css",
-          "target": "styles/input-group.css",
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1292,7 +1346,7 @@
       "title": "Textarea",
       "description": "Collects longer notes, descriptions, and comments.",
       "category": "forms",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1306,8 +1360,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/forms.css",
-          "target": "styles/forms.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         },
         {
@@ -1347,7 +1406,7 @@
       "title": "Label",
       "description": "Provides an accessible name for a form control with a composable required marker and supplementary hint.",
       "category": "forms",
-      "dependencies": ["@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["tooltip"],
       "files": [
         {
@@ -1371,8 +1430,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/forms.css",
-          "target": "styles/forms.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1402,7 +1466,7 @@
       "title": "FormMessage",
       "description": "Communicates help, validation, and error messages near a control.",
       "category": "forms",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1416,8 +1480,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/forms.css",
-          "target": "styles/forms.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1442,7 +1511,7 @@
       "title": "Field",
       "description": "Composes a label, control, description, and validation message.",
       "category": "forms",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["label", "form-message"],
       "files": [
         {
@@ -1456,8 +1525,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/forms.css",
-          "target": "styles/forms.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1485,7 +1559,7 @@
       "title": "FormGroup",
       "description": "Groups related fields or controls with an optional title, description, message, and layout.",
       "category": "forms",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["form-message"],
       "files": [
         {
@@ -1499,8 +1573,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/forms.css",
-          "target": "styles/forms.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1532,7 +1611,14 @@
       "title": "Checkbox",
       "description": "Toggles an independent form option.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -1551,13 +1637,18 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/forms.css",
-          "target": "styles/forms.css",
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         },
         {
@@ -1595,7 +1686,7 @@
       "title": "Switch",
       "description": "Toggles an immediate binary setting.",
       "category": "forms",
-      "dependencies": ["@base-ui/react", "clsx", "react"],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1609,13 +1700,18 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/forms.css",
-          "target": "styles/forms.css",
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],

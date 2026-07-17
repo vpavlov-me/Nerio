@@ -51,11 +51,11 @@ const apiRows = [
 const implementationRows = [
   [
     "Registry item",
-    "radio-group installs 3 source files into the configured components directory.",
+    "radio-group installs 5 Tailwind-first source files into the configured components directory.",
   ],
   ["Base UI", "radio-group, radio"],
   ["Registry dependencies", "form-message"],
-  ["Package dependencies", "@base-ui/react, clsx, react"],
+  ["Package dependencies", "@base-ui/react, clsx, react, tailwind-merge, tailwindcss"],
 ] as const;
 
 export default function Page() {

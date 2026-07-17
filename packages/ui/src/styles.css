@@ -4,21 +4,18 @@
 @import "./styles/typography.css";
 @import "./styles/kbd.css";
 @import "./styles/spinner.css";
-@import "./styles/button-group.css";
 @import "./styles/navigation.css";
 @import "./styles/sidebar.css";
 @import "./styles/command.css";
 @import "./styles/feedback.css";
 @import "./styles/progress.css";
 @import "./styles/display.css";
-@import "./styles/forms.css";
-@import "./styles/input-group.css";
 @import "./styles/select.css";
 @import "./styles/tabs.css";
 @import "./styles/overlays.css";
 @import "./styles/toast.css";
 
-/* Scoped compatibility rules for components not yet migrated in #172. */
+/* Scoped compatibility rules for components awaiting the remaining #173 family slices. */
 :where([class^="n-"], [class*=" n-"]) {
   box-sizing: border-box;
 }
