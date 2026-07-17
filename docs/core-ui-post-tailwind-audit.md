@@ -30,16 +30,16 @@ public APIs, expand Core, or fix implementation defects in this audit PR.
 
 ## Post-migration family matrix
 
-| Family                         | Representative evidence                                                                               | Result                                                                                                                                                                       |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Foundation                     | Typography, Icon, Kbd, Spinner; token bridge and runtime-axis validators                              | **Aligned.** Static recipes use Nerio variable contracts; named keyframes remain within the residual allowlist.                                                              |
-| Actions                        | Button, IconButton compatibility wrapper, ButtonGroup; render/ref contracts and merge tests           | **Aligned.** The historical Button render-ref deviation is resolved by #169; Tailwind changes did not alter its public contract.                                             |
-| Forms                          | Input, Field, Checkbox, RadioGroup, Switch, Select; Base UI states, ARIA wiring, source-install files | **Aligned.** Static recipes, data-attribute states, reduced motion, forced colors, and controlled/uncontrolled behavior are covered.                                         |
-| Data display                   | Card, Table, List, Item, Badge, Avatar, Stat, KeyValue, Separator                                     | **Aligned implementation; fixture gap deferred to #184.** Registry closure is correct, but the CLI fixture does not independently prove it for every migrated family.        |
-| Feedback                       | Alert, Toast, Empty State, Progress, Skeleton, Spinner                                                | **Aligned implementation; fixture gap deferred to #184.** Residual keyframes are allowlisted and recipes remain Tailwind-first.                                              |
-| Navigation and layout          | Tabs, Breadcrumbs, Pagination, Sidebar Primitive, Command Primitive                                   | **Aligned.** Stable `data-slot` selectors replace ambiguous BEM arbitrary variants; RTL, responsive, focus, and source-install evidence remain covered.                      |
-| Overlays                       | Dialog, Sheet, Popover, Tooltip, Dropdown Menu, Toast lifecycle                                       | **Aligned.** Base UI continues to own interaction, portals, dismissal, and focus; residual motion remains keyframe-only.                                                     |
-| Distribution and documentation | package/source-install setup, Registry, CLI, MCP, docs, packed consumer, release smoke                | **Two objective deviations deferred:** #183 for missing Tailwind setup diagnostics in `nerio doctor`, and #184 for incomplete independent source-install closure assertions. |
+| Family                         | Representative evidence                                                                               | Result                                                                                                                                                                           |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Foundation                     | Typography, Icon, Kbd, Spinner; token bridge and runtime-axis validators                              | **Aligned.** Static recipes use Nerio variable contracts; named keyframes remain within the residual allowlist.                                                                  |
+| Actions                        | Button, IconButton compatibility wrapper, ButtonGroup; render/ref contracts and merge tests           | **Follow-up required: #188.** The historical render-ref deviation remains resolved, but promotion review found a separate class-precedence regression in the custom render path. |
+| Forms                          | Input, Field, Checkbox, RadioGroup, Switch, Select; Base UI states, ARIA wiring, source-install files | **Aligned.** Static recipes, data-attribute states, reduced motion, forced colors, and controlled/uncontrolled behavior are covered.                                             |
+| Data display                   | Card, Table, List, Item, Badge, Avatar, Stat, KeyValue, Separator                                     | **Aligned implementation; fixture gap deferred to #184.** Registry closure is correct, but the CLI fixture does not independently prove it for every migrated family.            |
+| Feedback                       | Alert, Toast, Empty State, Progress, Skeleton, Spinner                                                | **Follow-ups required: #184 and #190.** Residual keyframes are allowlisted, while Toast needs a focused RTL viewport-centering correction.                                       |
+| Navigation and layout          | Tabs, Breadcrumbs, Pagination, Sidebar Primitive, Command Primitive                                   | **Aligned.** Stable `data-slot` selectors replace ambiguous BEM arbitrary variants; RTL, responsive, focus, and source-install evidence remain covered.                          |
+| Overlays                       | Dialog, Sheet, Popover, Tooltip, Dropdown Menu, Toast lifecycle                                       | **Follow-up required: #189.** Base UI still owns interaction, portals, dismissal, and focus; Sheet needs focused backdrop and logical RTL close-placement corrections.           |
+| Distribution and documentation | package/source-install setup, Registry, CLI, MCP, docs, packed consumer, release smoke                | **Objective deviations deferred:** #183 for missing Tailwind setup diagnostics, #184 for incomplete source-install closure assertions, and #191 for incomplete validator reach.  |
 
 ## Reconciliation with the original audit
 
@@ -48,10 +48,11 @@ public APIs, expand Core, or fix implementation defects in this audit PR.
 | Handwritten component CSS as the implementation model                                    | **Superseded by the accepted Tailwind contract.** | Static Tailwind recipes now own visual rules; `--n-*` variables remain the canonical values.                                                |
 | Component semantic boundaries, API admission, Base UI ownership, and server/client split | **Still applicable.**                             | No migration-approved API or responsibility change was found.                                                                               |
 | Theme, mode, density, custom themes, RTL, forced colors, and reduced motion              | **Still applicable.**                             | Runtime-axis and browser evidence remain required because Tailwind consumes the same CSS-variable contracts.                                |
-| Button custom `render` ref composition (#169)                                            | **Resolved by #169.**                             | Current contract tests cover the composed callback and object-ref shapes.                                                                   |
+| Button custom `render` ref composition (#169)                                            | **Resolved by #169; separate follow-up #188.**    | Ref composition remains covered; #188 owns the independently discovered class-precedence regression.                                        |
 | Documentation gap addressed by original #155                                             | **Still applicable, extended for Tailwind.**      | This audit adds concise Tailwind authoring and distribution rules to agent and reviewer guidance without copying the full styling contract. |
 | No product-scope leak in representative Core samples                                     | **Still applicable.**                             | The migration did not add product workflows, new Core components, or Pro responsibility to Core.                                            |
 | Source-install/package alignment                                                         | **Replaced by Tailwind-specific deviations.**     | #183 and #184 cover setup diagnostics and family-complete dependency-closure proof.                                                         |
+| Promotion-review runtime/layout findings                                                 | **New focused follow-ups.**                       | #189 covers Sheet overlay/RTL placement, #190 Toast RTL centering, and #191 shared-recipe validator reach.                                  |
 
 ## Findings and ownership
 
@@ -71,10 +72,26 @@ target, the current test cannot prove family-local dependency closure. This is a
 blocker. The focused issue owns exact empty-target fixture coverage and MCP parity; this audit does
 not modify registry or fixture behavior.
 
+### #188 through #191 — Promotion-review contract regressions
+
+The `dev` to `main` promotion review identified four additional, narrow deviations in accepted
+Tailwind implementation. They are deliberately recorded as implementation issues rather than
+folded into this documentation-only audit:
+
+- #188 restores Button class precedence for custom render targets without changing its public API.
+- #189 restores Sheet backdrop viewport coverage and logical inline-end close placement in RTL.
+- #190 restores visually centered Toast viewport placement in RTL.
+- #191 extends runtime-axis validation to shared TypeScript/TSX Tailwind recipes.
+
+These are Core prerelease blockers: they affect a public customization contract, overlay behavior,
+RTL behavior, or the validator evidence behind those contracts. Each issue prohibits unrelated API,
+variant, visual-language, or product-scope changes.
+
 ## Execution order after this audit
 
-1. Resolve #183 and #184 as focused Tailwind distribution/tooling slices, then complete #174 and
-   the manual prerelease work in #175.
+1. Resolve #183, #184, and #191 as focused Tailwind distribution/tooling slices, and #188 through
+   #190 as focused component-contract fixes. Then complete #174 and the manual prerelease work in
+   #175.
 2. Execute #158 for Actions and Forms using only evidence-backed semantic, API, accessibility, and
    distribution findings; Tailwind migration itself is complete and out of scope.
 3. Execute #160 for Data Display and Feedback. It inherits #184 only as distribution evidence, not
@@ -88,6 +105,6 @@ issue for any deviation that does not fit its vertical slice.
 ## Conclusion
 
 The Tailwind-first migration preserves Core's semantic, accessibility, runtime-axis, public API,
-and ownership baseline. The remaining work is limited to the two focused distribution and validation
-deviations above. No visual redesign, runtime fix, public API migration, product-scope expansion, or
-new Core component is approved by this report.
+and ownership baseline, subject to the six focused follow-ups above. No visual redesign, runtime
+fix, public API migration, product-scope expansion, or new Core component is approved by this
+report; the four runtime findings remain explicitly owned by #188 through #191.
