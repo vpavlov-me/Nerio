@@ -1,65 +1,3 @@
-.n-motion-hover {
-  transition:
-    background-color var(--n-motion-hover-duration) var(--n-motion-hover-easing),
-    border-color var(--n-motion-hover-duration) var(--n-motion-hover-easing),
-    color var(--n-motion-hover-duration) var(--n-motion-hover-easing),
-    opacity var(--n-motion-hover-duration) var(--n-motion-hover-easing);
-}
-
-.n-motion-press {
-  transition:
-    background-color var(--n-motion-hover-duration) var(--n-motion-hover-easing),
-    border-color var(--n-motion-hover-duration) var(--n-motion-hover-easing),
-    color var(--n-motion-hover-duration) var(--n-motion-hover-easing),
-    opacity var(--n-motion-hover-duration) var(--n-motion-hover-easing),
-    transform var(--n-motion-press-duration) var(--n-motion-press-easing);
-}
-
-.n-motion-press:active:not(:disabled):not([data-disabled]) {
-  transform: scale(var(--n-motion-scale-subtle));
-}
-
-.n-motion-focus {
-  transition:
-    border-color var(--n-motion-focus-duration) var(--n-motion-focus-easing),
-    box-shadow var(--n-motion-focus-duration) var(--n-motion-focus-easing),
-    outline-color var(--n-motion-focus-duration) var(--n-motion-focus-easing);
-}
-
-.n-motion-overlay-enter {
-  animation: n-overlay-enter var(--n-motion-overlay-enter-duration)
-    var(--n-motion-overlay-enter-easing);
-}
-
-.n-motion-overlay-exit {
-  animation: n-overlay-exit var(--n-motion-overlay-exit-duration)
-    var(--n-motion-overlay-exit-easing);
-}
-
-.n-motion-disclosure {
-  transition:
-    block-size var(--n-motion-reveal-duration) var(--n-motion-reveal-easing),
-    opacity var(--n-motion-reveal-duration) var(--n-motion-reveal-easing);
-}
-
-.n-motion-tab-indicator {
-  transition:
-    inline-size var(--n-motion-hover-duration) var(--n-motion-hover-easing),
-    transform var(--n-motion-hover-duration) var(--n-motion-hover-easing);
-}
-
-.n-motion-toast-enter {
-  animation: n-toast-enter var(--n-motion-reveal-duration) var(--n-motion-reveal-easing);
-}
-
-.n-motion-toast-exit {
-  animation: n-toast-exit var(--n-motion-collapse-duration) var(--n-motion-collapse-easing);
-}
-
-.n-motion-skeleton {
-  animation: n-pulse var(--n-skeleton-duration) var(--n-easing-standard) infinite;
-}
-
 @keyframes n-overlay-enter {
   from {
     opacity: var(--n-opacity-hidden);
@@ -85,24 +23,6 @@
   to {
     opacity: var(--n-opacity-hidden);
     transform: translateY(var(--n-motion-translate-sm));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .n-motion-press:active:not(:disabled):not([data-disabled]) {
-    transform: none;
-  }
-
-  .n-motion-overlay-enter,
-  .n-motion-overlay-exit,
-  .n-motion-toast-enter,
-  .n-motion-toast-exit {
-    animation-name: n-fade-only;
-  }
-
-  .n-motion-skeleton {
-    animation: none;
-    opacity: var(--n-opacity-skeleton);
   }
 }
 

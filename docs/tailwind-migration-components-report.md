@@ -25,8 +25,6 @@ Validation for the slice covers UI contracts, accessibility, catalog and token p
 CLI and MCP source installs, package and source-consumer builds with and without Preflight, production
 builds, and browser comparison across the supported runtime axes.
 
-## Remaining sequence
-
 ## Foundation, Data Display, Feedback, and Progress
 
 The second #173 family slice migrates Icon, Typography, Kbd, Spinner, Card, Avatar, Stat,
@@ -39,6 +37,20 @@ Registry items that embed the shared Icon now receive the Tailwind bridge and me
 the same source-install contract. Table, List, Item, Card, and feedback components retain their
 responsive, RTL, forced-colors, reduced-motion, semantic, and accessibility contracts.
 
-## Remaining sequence
+## Navigation, Layout, Overlays, and compound UI
 
-1. Navigation, Layout, and Overlays.
+The final #173 family slice migrates Breadcrumbs, Pagination, Command, DropdownMenu, Popover, Sheet,
+Sidebar and SidebarLayout, Tabs, Toast, and Tooltip. The former `navigation.css`, `sidebar.css`,
+`command.css`, `tabs.css`, and `toast.css` implementations are deleted. `motion.css` and
+`overlays.css` retain only named keyframes; component layout, surfaces, typography, responsive
+behavior, interaction states, safe-area handling, RTL behavior, forced colors, and reduced-motion
+application now live in static Tailwind recipes.
+
+The registry, CLI fixtures, MCP projections, docs, and source-consumer release smoke use the same
+Tailwind bridge and deterministic merge helper. There is no remaining component-family migration
+sequence: all Core component source is Tailwind-first, while `--n-*` CSS variables remain the public
+theme, mode, density, and token customization contract.
+
+The component stylesheet entrypoint and residual keyframe files total 3,971 bytes. The residual files
+are explicit and contain no `.n-*` component selectors, so there is no second hand-maintained visual
+implementation alongside the Tailwind recipes.

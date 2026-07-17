@@ -119,4 +119,47 @@ describe("Tailwind styling contract", () => {
     const iconSource = readFileSync(resolve(process.cwd(), "src/components/icon.tsx"), "utf8");
     expect(iconSource).toContain("size-(--n-icon-inline-size)");
   });
+
+  it("keeps Navigation, Layout, Overlays, and compound UI on one Tailwind-first visual source", () => {
+    const migratedComponents = [
+      "breadcrumbs",
+      "pagination",
+      "command",
+      "dropdown-menu",
+      "popover",
+      "sheet",
+      "sidebar",
+      "sidebar-layout",
+      "tabs",
+      "toast",
+      "tooltip",
+    ];
+
+    for (const component of migratedComponents) {
+      const source = readFileSync(
+        resolve(process.cwd(), `src/components/${component}.tsx`),
+        "utf8",
+      );
+      expect(source, component).toContain('from "../lib/tailwind-cn"');
+    }
+
+    for (const obsoleteStylesheet of [
+      "navigation.css",
+      "sidebar.css",
+      "command.css",
+      "tabs.css",
+      "toast.css",
+    ]) {
+      expect(existsSync(resolve(process.cwd(), `src/styles/${obsoleteStylesheet}`))).toBe(false);
+    }
+
+    for (const residualStylesheet of ["motion.css", "overlays.css"]) {
+      const residual = readFileSync(
+        resolve(process.cwd(), `src/styles/${residualStylesheet}`),
+        "utf8",
+      );
+      expect(residual).toContain("@keyframes");
+      expect(residual).not.toMatch(/\.n-/);
+    }
+  });
 });

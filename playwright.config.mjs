@@ -16,10 +16,10 @@ export default defineConfig({
       url: "http://localhost:3002",
     },
     {
-      command: "pnpm --filter @nerio-ui/docs dev",
+      command: "pnpm --filter @nerio-ui/docs exec next dev --port 3100",
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
-      url: "http://localhost:3000",
+      url: "http://localhost:3100",
     },
   ],
   projects: [
@@ -31,7 +31,7 @@ export default defineConfig({
     {
       name: "docs-chromium",
       testMatch: "docs-smoke.spec.mjs",
-      use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3000" },
+      use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3100" },
     },
   ],
 });

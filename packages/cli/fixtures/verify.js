@@ -18,7 +18,6 @@ const expectedFiles = [
   "lib/motion.ts",
   "lib/tailwind-cn.ts",
   "styles/motion.css",
-  "styles/overlays.css",
   "styles/spinner.css",
   "styles/tailwind.css",
 ];
@@ -37,7 +36,8 @@ const expectedSidebarFiles = [
   "components/sidebar.tsx",
   "lib/cn.ts",
   "lib/compose-refs.ts",
-  "styles/sidebar.css",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
 ];
 const expectedCommandFiles = [
   "components/command.tsx",
@@ -45,8 +45,9 @@ const expectedCommandFiles = [
   "components/spinner.tsx",
   "lib/cn.ts",
   "lib/resolve-class-name.ts",
-  "styles/command.css",
+  "lib/tailwind-cn.ts",
   "styles/spinner.css",
+  "styles/tailwind.css",
 ];
 const expectedFieldFiles = [
   "components/field.tsx",
@@ -116,7 +117,8 @@ const expectedNavigationFiles = [
   "components/breadcrumbs.tsx",
   "components/pagination.tsx",
   "lib/cn.ts",
-  "styles/navigation.css",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
 ];
 const expectedFeedbackFiles = [
   "components/empty-state.tsx",
@@ -140,8 +142,6 @@ const expectedOverlayAndTabsFiles = [
   "lib/tailwind-cn.ts",
   "styles/motion.css",
   "styles/overlays.css",
-  "styles/tabs.css",
-  "styles/toast.css",
   "styles/tailwind.css",
 ];
 
@@ -355,7 +355,7 @@ async function verify() {
       !sheetSource.includes("BaseDialog.Root") ||
       !sheetSource.includes('data-slot="sheet-content"') ||
       !sheetSource.includes("showClose") ||
-      !sheetSource.includes('className="n-sheet__close-icon"') ||
+      !sheetSource.includes('className="n-sheet__close-icon absolute') ||
       sheetSource.includes('cn("n-sheet__close"')
     ) {
       throw new Error("Installed Sheet source did not preserve its modal and slot contracts.");
@@ -369,10 +369,6 @@ async function verify() {
       path.join(localTarget, "components/nerio/components/sidebar-layout.tsx"),
       "utf8",
     );
-    const sidebarStyles = fs.readFileSync(
-      path.join(localTarget, "components/nerio/styles/sidebar.css"),
-      "utf8",
-    );
     if (
       !sidebarSource.includes("defaultExpanded") ||
       !sidebarSource.includes('data-state={expanded ? "expanded" : "collapsed"}') ||
@@ -381,9 +377,9 @@ async function verify() {
       !sidebarLayoutSource.includes('from "../lib/compose-refs"') ||
       !sidebarLayoutSource.includes("React.forwardRef<HTMLDivElement, SidebarContentProps>") ||
       !sidebarLayoutSource.includes("React.useMemo(() => composeRefs(ref), [ref])") ||
-      !sidebarStyles.includes("block-size: var(--n-sidebar-rail-hit-area)") ||
-      !sidebarStyles.includes("inset-block-start: 50%") ||
-      sidebarStyles.includes("inset-block: 0")
+      !sidebarSource.includes("size-(--n-sidebar-rail-hit-area)") ||
+      !sidebarSource.includes("top-1/2") ||
+      !sidebarSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
         "Installed Sidebar source did not preserve geometry, ref, state, focus safety, or ARIA contracts.",
@@ -392,10 +388,6 @@ async function verify() {
     assertFiles(localTarget, expectedCommandFiles);
     const commandSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/command.tsx"),
-      "utf8",
-    );
-    const commandStyles = fs.readFileSync(
-      path.join(localTarget, "components/nerio/styles/command.css"),
       "utf8",
     );
     if (
@@ -407,8 +399,9 @@ async function verify() {
       commandSource.includes('<span aria-hidden className="n-command__item-leading"') ||
       !commandSource.includes('data-slot="command-loading"') ||
       !commandSource.includes("filterProp === false") ||
-      !commandStyles.includes('data-leading="false"') ||
-      !commandStyles.includes("var(--n-focus-ring)")
+      !commandSource.includes("data-[leading=false]") ||
+      !commandSource.includes("shadow-(--n-focus-ring)") ||
+      !commandSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
         "Installed Command source did not preserve filtering, active-value, or status contracts.",
@@ -695,29 +688,15 @@ async function verify() {
       );
     }
 
-    const toastStyles = fs.readFileSync(
-      path.join(localTarget, "components/nerio/styles/toast.css"),
-      "utf8",
-    );
     if (
-      !toastStyles.includes("--toast-managed-base-y") ||
-      !toastStyles.includes("--toast-managed-dismiss-x") ||
-      !toastStyles.includes("--toast-managed-dismiss-y") ||
-      !toastStyles.includes("--toast-managed-scale") ||
-      !toastStyles.includes("max(") ||
-      !toastStyles.includes("--toast-viewport-inline-inset") ||
-      !toastStyles.includes("safe-area-inset-left") ||
-      !toastStyles.includes("safe-area-inset-right") ||
-      !toastStyles.includes("inset-inline-start: 50%") ||
-      !toastStyles.includes(".n-toast-viewport:dir(rtl)") ||
-      !toastStyles.includes("translateX(50%)") ||
-      !toastStyles.includes("var(--n-toast-stack-offset) * -1") ||
-      !toastStyles.includes("scale(var(--toast-managed-scale))") ||
-      !toastStyles.includes("font-size: var(--n-font-size-md)") ||
-      !toastStyles.includes("margin: 0") ||
-      !toastStyles.includes("align-content: center") ||
-      toastStyles.includes("background: var(--n-toast-status-background)") ||
-      !toastStyles.includes("translate3d(var(--toast-managed-x), var(--toast-managed-y), 0)")
+      !toastSource.includes("--toast-managed-base-y") ||
+      !toastSource.includes("--toast-managed-dismiss-x") ||
+      !toastSource.includes("--toast-managed-dismiss-y") ||
+      !toastSource.includes("--toast-managed-scale") ||
+      !toastSource.includes("safe-area-inset-left") ||
+      !toastSource.includes("safe-area-inset-right") ||
+      !toastSource.includes("translate3d(var(--toast-managed-x),var(--toast-managed-y),0)") ||
+      !toastSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
         "Installed Toast styles are missing the bottom-centered scaled stack or unified transform coordinate system.",

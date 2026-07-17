@@ -3,7 +3,12 @@
 import * as React from "react";
 import { Autocomplete as BaseAutocomplete } from "@base-ui/react/autocomplete";
 import { Search } from "@nerio-ui/adapters/icons";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
+
+const commandItemClasses =
+  "n-command__item grid min-h-(--n-command-item-height) cursor-pointer items-center gap-(--n-command-item-gap) rounded-(--n-command-item-radius) px-(--n-command-item-padding-inline) py-(--n-command-item-padding-block) text-start text-(--n-color-text-secondary) data-[leading=false]:grid-cols-[minmax(0,1fr)_auto_auto] data-[leading=true]:grid-cols-[auto_minmax(0,1fr)_auto_auto] data-highlighted:bg-(--n-command-item-background-active) data-highlighted:text-(--n-color-text-primary) data-disabled:cursor-not-allowed data-disabled:text-(--n-color-text-disabled) data-disabled:opacity-(--n-opacity-disabled) forced-colors:data-highlighted:outline-2 forced-colors:data-highlighted:-outline-offset-2 forced-colors:data-highlighted:outline-[Highlight]";
+const commandStateClasses =
+  "flex min-h-(--n-command-state-min-height) items-center justify-center gap-(--n-space-2) p-(--n-command-state-padding) text-center text-(length:--n-font-size-sm) text-(--n-color-text-tertiary) empty:hidden";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { Icon } from "./icon";
 import { Spinner } from "./spinner";
@@ -227,7 +232,10 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
   const content = (
     <div
       ref={ref}
-      className={cn("n-command", className)}
+      className={cn(
+        "n-command w-[min(100%,var(--n-command-width))] overflow-hidden rounded-(--n-command-radius) border-(length:--n-command-border-width) border-(--n-command-border) bg-(--n-command-background) text-(--n-command-foreground) has-[.n-command__input:focus-visible]:shadow-(--n-focus-ring) data-disabled:opacity-(--n-opacity-disabled) forced-colors:border-[CanvasText]",
+        className,
+      )}
       {...props}
       data-disabled={disabled ? "" : undefined}
       data-readonly={readOnly ? "" : undefined}
@@ -257,17 +265,24 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
   function CommandInput({ className, ...props }, ref) {
     return (
       <BaseAutocomplete.InputGroup
-        className="n-command__input-group"
+        className="n-command__input-group grid min-h-(--n-command-input-height) grid-cols-[var(--n-icon-size-md)_minmax(0,1fr)] items-center border-b-(length:--n-command-border-width) border-(--n-command-border) px-(--n-command-item-padding-inline) forced-colors:border-[CanvasText]"
         data-slot="command-input-group"
       >
-        <span aria-hidden className="n-command__input-icon" data-slot="command-input-icon">
+        <span
+          aria-hidden
+          className="n-command__input-icon inline-flex items-center justify-center text-(--n-color-text-tertiary)"
+          data-slot="command-input-icon"
+        >
           <Icon icon={Search} />
         </span>
         <BaseAutocomplete.Input
           ref={ref}
           {...props}
           aria-expanded="true"
-          className={cn("n-command__input", className)}
+          className={cn(
+            "n-command__input min-h-(--n-command-input-height) w-full min-w-0 appearance-none border-0 bg-transparent ps-(--n-space-2) pe-0 font-inherit text-(--n-input-foreground) outline-0 placeholder:text-(--n-input-placeholder) forced-colors:focus-visible:outline-2 forced-colors:focus-visible:-outline-offset-2 forced-colors:focus-visible:outline-[Highlight]",
+            className,
+          )}
           data-slot="command-input"
         />
       </BaseAutocomplete.InputGroup>
@@ -311,7 +326,10 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(fu
       return (
         <BaseAutocomplete.List
           ref={ref}
-          className={cn("n-command__list", className)}
+          className={cn(
+            "n-command__list max-h-(--n-command-list-max-height) overflow-auto overscroll-contain p-(--n-command-list-padding) [scrollbar-width:thin]",
+            className,
+          )}
           {...props}
           data-slot="command-list"
         >
@@ -327,7 +345,10 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(fu
     return (
       <BaseAutocomplete.List
         ref={ref}
-        className={cn("n-command__list", className)}
+        className={cn(
+          "n-command__list max-h-(--n-command-list-max-height) overflow-auto overscroll-contain p-(--n-command-list-padding) [scrollbar-width:thin]",
+          className,
+        )}
         {...props}
         data-slot="command-list"
         children={renderItem}
@@ -338,7 +359,10 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(fu
   return (
     <BaseAutocomplete.List
       ref={ref}
-      className={cn("n-command__list", className)}
+      className={cn(
+        "n-command__list max-h-(--n-command-list-max-height) overflow-auto overscroll-contain p-(--n-command-list-padding) [scrollbar-width:thin]",
+        className,
+      )}
       {...props}
       data-slot="command-list"
     >
@@ -354,7 +378,10 @@ export const CommandGroup = React.forwardRef<
   return (
     <BaseAutocomplete.Group
       ref={ref}
-      className={cn("n-command__group", className)}
+      className={cn(
+        "n-command__group grid gap-(--n-command-group-gap) [&+.n-command__group]:mt-(--n-command-group-spacing)",
+        className,
+      )}
       {...props}
       data-slot="command-group"
     />
@@ -368,7 +395,10 @@ export const CommandGroupLabel = React.forwardRef<
   return (
     <BaseAutocomplete.GroupLabel
       ref={ref}
-      className={cn("n-command__group-label", className)}
+      className={cn(
+        "n-command__group-label px-(--n-command-item-padding-inline) pt-(--n-space-2) pb-(--n-space-1) text-(length:--n-font-size-xs) font-(--n-font-weight-medium) text-(--n-color-text-tertiary)",
+        className,
+      )}
       {...props}
       data-slot="command-group-label"
     />
@@ -413,7 +443,7 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
   return (
     <BaseAutocomplete.Item
       ref={ref}
-      className={(state) => cn("n-command__item", resolveClassName(className, state))}
+      className={(state) => cn(commandItemClasses, resolveClassName(className, state))}
       disabled={isDisabled}
       onClickCapture={(event) => {
         if (!rootDisabled && !isDisabled && !readOnly) {
@@ -428,27 +458,45 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
       data-slot="command-item"
     >
       {hasLeading ? (
-        <span className="n-command__item-leading" data-slot="command-item-leading">
+        <span
+          className="n-command__item-leading inline-flex items-center justify-center"
+          data-slot="command-item-leading"
+        >
           {leading}
         </span>
       ) : null}
-      <span className="n-command__item-content" data-slot="command-item-content">
-        <span className="n-command__item-label" data-slot="command-item-label">
+      <span
+        className="n-command__item-content grid min-w-0 gap-(--n-space-0-5)"
+        data-slot="command-item-content"
+      >
+        <span
+          className="n-command__item-label [overflow-wrap:anywhere]"
+          data-slot="command-item-label"
+        >
           {children}
         </span>
         {description ? (
-          <span className="n-command__item-description" data-slot="command-item-description">
+          <span
+            className="n-command__item-description text-(length:--n-font-size-xs) text-(--n-color-text-tertiary) [overflow-wrap:anywhere]"
+            data-slot="command-item-description"
+          >
             {description}
           </span>
         ) : null}
       </span>
       {metadata ? (
-        <span className="n-command__item-metadata" data-slot="command-item-metadata">
+        <span
+          className="n-command__item-metadata whitespace-nowrap text-(length:--n-font-size-xs) text-(--n-color-text-tertiary)"
+          data-slot="command-item-metadata"
+        >
           {metadata}
         </span>
       ) : null}
       {shortcut ? (
-        <span className="n-command__item-shortcut" data-slot="command-item-shortcut">
+        <span
+          className="n-command__item-shortcut whitespace-nowrap text-(length:--n-font-size-xs) text-(--n-color-text-tertiary)"
+          data-slot="command-item-shortcut"
+        >
           {shortcut}
         </span>
       ) : null}
@@ -463,7 +511,10 @@ export const CommandSeparator = React.forwardRef<
   return (
     <BaseAutocomplete.Separator
       ref={ref}
-      className={cn("n-command__separator", className)}
+      className={cn(
+        "n-command__separator mx-(--n-command-item-padding-inline) my-(--n-space-1) h-(--n-command-border-width) bg-(--n-command-border) forced-colors:border-[CanvasText]",
+        className,
+      )}
       {...props}
       data-slot="command-separator"
     />
@@ -477,7 +528,7 @@ export const CommandEmpty = React.forwardRef<
   return (
     <BaseAutocomplete.Empty
       ref={ref}
-      className={cn("n-command__empty", className)}
+      className={cn("n-command__empty", commandStateClasses, className)}
       {...props}
       data-slot="command-empty"
     >
@@ -502,7 +553,7 @@ export const CommandLoading = React.forwardRef<HTMLDivElement, CommandLoadingPro
     return (
       <BaseAutocomplete.Status
         ref={ref}
-        className={cn("n-command__loading", className)}
+        className={cn("n-command__loading", commandStateClasses, className)}
         {...props}
         data-loading={loading ? "" : undefined}
         data-slot="command-loading"
