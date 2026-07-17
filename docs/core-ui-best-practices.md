@@ -205,6 +205,30 @@ Poor placement:
 Visual customization SHOULD use token overrides, existing variants, `className`, or source
 ownership before adding component props.
 
+## Tailwind implementation and distribution
+
+Tailwind CSS v4 is Nerio Core's style authoring engine. The accepted implementation details live in
+[`docs/tailwind-styling-contract.md`](./tailwind-styling-contract.md); this section records the
+review rules without duplicating that contract.
+
+- Nerio `--n-*` variables remain the canonical primitive, semantic, and component value layer.
+  Tailwind MUST NOT introduce a parallel palette or token source.
+- Core recipes MUST use complete, statically detectable utility strings. They MUST NOT construct
+  utility fragments dynamically or use raw palette utilities for Core semantics.
+- Tailwind-first roots MUST use the shared conflict-aware merge helper so a consumer `className`
+  deterministically replaces conflicting utilities while preserving non-conflicting state rules.
+- Base UI and Nerio `data-*` attributes are the supported state-variant contract. Arbitrary
+  selectors MUST target stable attributes and MUST NOT depend on ambiguous BEM class parsing.
+- The public `@theme inline` bridge exposes stable foundation and semantic contracts only.
+  Component-internal `--n-*` variables remain static component-recipe references.
+- Package consumers MUST register installed UI source with `@source`; source-installed components
+  are detected from the consumer project and must include the copied bridge and merge helper.
+- Consumers own Tailwind Preflight. Nerio's residual CSS is limited to the documented keyframes and
+  scoped no-Preflight compatibility rules. A new residual category requires an architecture decision
+  and package/source-install evidence.
+- Package and source-install modes MUST produce equivalent component behavior and styling. Registry,
+  CLI, MCP, docs, fixtures, and packed-consumer evidence MUST describe the same setup.
+
 ## Component anatomy and composition
 
 ### Semantics and primitives
@@ -374,6 +398,8 @@ Reviewers MUST record the relevant evidence for:
 - [ ] API necessity: the admission rule passes and alternatives were considered in order.
 - [ ] Composition: single API versus compound anatomy is deliberate.
 - [ ] Token layer: system, family, and component-exception decisions are correctly placed.
+- [ ] Tailwind contract: static utilities, Nerio variables, deterministic `className` conflict
+      resolution, data-attribute variants, residual-CSS policy, and consumer setup are correct.
 - [ ] Anatomy and semantics: native/Base UI choice, slots, refs, render composition, and state hooks.
 - [ ] State matrix: every applicable state is implemented and documented.
 - [ ] Accessibility: naming, keyboard, focus, announcements, forced colors, reduced motion, zoom, and reflow.

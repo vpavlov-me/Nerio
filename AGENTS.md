@@ -22,6 +22,7 @@ This repository is the source of truth for Nerio. Read the following documents b
 - Templates may compose Core, Pro, and template-local components. A template does not need complete Core coverage.
 - Use **Base UI** as the sole primitive layer. Do not add Radix UI, shadcn/ui, Headless UI, Ariakit, or another overlapping primitive system.
 - Use Next.js, React, TypeScript, Tailwind CSS v4, pnpm workspaces, and Turborepo.
+- Tailwind CSS v4 is the Core style authoring engine while Nerio `--n-*` variables remain the canonical value layer. Before changing Tailwind-first component source, package/source-install setup, or residual CSS, read `docs/tailwind-styling-contract.md` and preserve its static-utility, `@theme inline`, `@source`, Preflight, class-merge, and residual-CSS rules.
 - The project may adopt ideas compatible with registry-based distribution, but it must have its own `nerio` CLI, own registry format, own documentation, and own component APIs. Do not depend on the shadcn CLI, registry, or package.
 - All public-facing docs, UI copy, code comments, and issue templates must be written in English.
 
