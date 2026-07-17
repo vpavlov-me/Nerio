@@ -1,5 +1,7 @@
 @import "tailwindcss";
+@import "@nerio-ui/tokens/tailwind.css";
 @import "@nerio-ui/ui/styles.css";
+@source "../../../packages/ui/src";
 
 :root {
   --n-docs-safe-area-block-start: env(safe-area-inset-top);

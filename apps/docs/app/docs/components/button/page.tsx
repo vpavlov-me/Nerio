@@ -84,7 +84,10 @@ const implementationRows = [
   ["Registry item", "button installs Button with its Badge, Kbd, and Tooltip dependencies."],
   ["Base UI", "button"],
   ["Registry dependencies", "badge, tooltip, kbd"],
-  ["Package dependencies", "@base-ui/react, @nerio-ui/adapters, clsx, react"],
+  [
+    "Package dependencies",
+    "@base-ui/react, @nerio-ui/adapters, clsx, react, tailwind-merge, tailwindcss",
+  ],
 ] as const;
 
 const tokenRows = [

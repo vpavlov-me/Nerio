@@ -28,16 +28,22 @@ const packageDirectories = Object.fromEntries(
 const packageContracts = {
   "@nerio-ui/tokens": {
     homepage: "https://nerio.vpavlov.com/docs/foundations/tokens",
-    exports: [".", "./styles.css"],
+    exports: [".", "./styles.css", "./tailwind.css"],
     dependencies: [],
     peers: [],
-    sideEffects: ["./src/styles.css"],
+    sideEffects: ["./src/styles.css", "./src/tailwind.css"],
   },
   "@nerio-ui/ui": {
     homepage: "https://nerio.vpavlov.com/docs/components/button",
     exports: [".", "./client", "./styles.css"],
-    dependencies: ["@base-ui/react", "@nerio-ui/adapters", "@nerio-ui/tokens", "clsx"],
-    peers: ["react", "react-dom"],
+    dependencies: [
+      "@base-ui/react",
+      "@nerio-ui/adapters",
+      "@nerio-ui/tokens",
+      "clsx",
+      "tailwind-merge",
+    ],
+    peers: ["react", "react-dom", "tailwindcss"],
     sideEffects: ["./src/styles.css"],
   },
   "@nerio-ui/adapters": {
@@ -222,15 +228,19 @@ try {
       ),
       "@base-ui/react": uiPackage.dependencies["@base-ui/react"],
       clsx: uiPackage.dependencies.clsx,
+      "tailwind-merge": uiPackage.dependencies["tailwind-merge"],
       "lucide-react": adaptersPackage.dependencies["lucide-react"],
       next: docsPackage.dependencies.next,
       react: docsPackage.dependencies.react,
       "react-dom": docsPackage.dependencies["react-dom"],
     },
     devDependencies: {
+      "@tailwindcss/postcss": docsPackage.devDependencies["@tailwindcss/postcss"],
       "@types/node": docsPackage.devDependencies["@types/node"],
       "@types/react": docsPackage.devDependencies["@types/react"],
       "@types/react-dom": docsPackage.devDependencies["@types/react-dom"],
+      postcss: docsPackage.devDependencies.postcss,
+      tailwindcss: docsPackage.dependencies.tailwindcss,
       typescript: docsPackage.devDependencies.typescript,
     },
   };
@@ -282,11 +292,27 @@ try {
     run(process.execPath, [cli, "add", component], { cwd: consumerDirectory });
   }
 
+  run(pnpm, ["build"], {
+    cwd: consumerDirectory,
+    env: { NEXT_TELEMETRY_DISABLED: "1" },
+  });
+
   const installedStyles = readdirSync(join(consumerDirectory, "components/nerio/styles")).sort();
   writeFileSync(
     join(consumerDirectory, "app/source-styles.css"),
     `${installedStyles.map((file) => `@import "../components/nerio/styles/${file}";`).join("\n")}\n`,
   );
+  writeFileSync(
+    join(consumerDirectory, "app/globals.css"),
+    [
+      "@layer theme, base, components, utilities;",
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities);',
+      '@import "./source-styles.css";',
+      "",
+    ].join("\n"),
+  );
+  rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
 
   const mcpCheck = [
     "const tools = require('@nerio-ui/mcp');",

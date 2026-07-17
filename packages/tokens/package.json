@@ -20,11 +20,13 @@
     "src"
   ],
   "sideEffects": [
-    "./src/styles.css"
+    "./src/styles.css",
+    "./src/tailwind.css"
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./styles.css": "./src/styles.css"
+    "./styles.css": "./src/styles.css",
+    "./tailwind.css": "./src/tailwind.css"
   },
   "scripts": {
     "build": "tsc --noEmit",
