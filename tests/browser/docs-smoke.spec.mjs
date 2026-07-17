@@ -30,6 +30,18 @@ test("covers public docs routes, Sidebar examples, and appearance controls", asy
 
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  const primaryHeroAction = page.getByRole("link", { name: "Get started", exact: true });
+  await expect(primaryHeroAction).toHaveCount(1);
+  const primaryHeroColors = await primaryHeroAction.evaluate((element) => {
+    const probe = document.createElement("span");
+    probe.style.color = "var(--n-button-foreground-primary)";
+    document.body.append(probe);
+    const expected = getComputedStyle(probe).color;
+    probe.remove();
+    return { actual: getComputedStyle(element).color, expected };
+  });
+  expect(primaryHeroColors.actual).toBe(primaryHeroColors.expected);
+
   await page.goto("/docs/getting-started");
   await expect(page.getByRole("heading", { name: "Getting started" })).toBeVisible();
 
@@ -57,6 +69,16 @@ test("covers public docs routes, Sidebar examples, and appearance controls", asy
   await page.getByRole("menuitem", { name: /Dark/ }).click();
   await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
 
+  await expectHealthyPage(page, problems);
+});
+
+test("allows wheel scrolling on the homepage", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.mouse.wheel(0, 600);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
   await expectHealthyPage(page, problems);
 });
 

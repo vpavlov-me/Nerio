@@ -96,8 +96,11 @@ body {
 }
 
 a {
-  color: inherit;
   text-decoration: none;
+}
+
+:where(a:not(.n-button)) {
+  color: inherit;
 }
 
 code,
