@@ -67,7 +67,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(function Dia
               ) : null}
             </div>
             <BaseDialog.Close
-              className="n-dialog__close inline-flex size-(--n-size-control-sm) cursor-pointer items-center justify-center rounded-(--n-radius-sm) border-(--n-border-width-0) bg-(--n-button-background-ghost) text-(length:--n-font-size-sm) text-(--n-color-text-tertiary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)"
+              className="n-dialog__close inline-flex size-(--n-size-control-sm) cursor-pointer items-center justify-center rounded-(--n-radius-sm) border-0 bg-(--n-button-background-ghost) text-(length:--n-font-size-sm) text-(--n-color-text-tertiary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)"
               aria-label="Close dialog"
             >
               <Icon icon={X} />

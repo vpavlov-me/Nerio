@@ -304,7 +304,13 @@ try {
   );
   writeFileSync(
     join(consumerDirectory, "app/globals.css"),
-    ['@import "tailwindcss";', '@import "./source-styles.css";', ""].join("\n"),
+    [
+      "@layer theme, base, components, utilities;",
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities);',
+      '@import "./source-styles.css";',
+      "",
+    ].join("\n"),
   );
   rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
 

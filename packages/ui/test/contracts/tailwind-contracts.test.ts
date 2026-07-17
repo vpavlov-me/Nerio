@@ -32,4 +32,12 @@ describe("Tailwind styling contract", () => {
     );
     expect(styles).toContain("font-family: inherit;");
   });
+
+  it("does not rely on Preflight to remove the Dialog close border", () => {
+    const dialogSource = readFileSync(resolve(process.cwd(), "src/components/dialog.tsx"), "utf8");
+
+    expect(dialogSource).toContain("n-dialog__close inline-flex");
+    expect(dialogSource).toContain("rounded-(--n-radius-sm) border-0");
+    expect(dialogSource).not.toContain("border-(--n-border-width-0)");
+  });
 });

@@ -13,7 +13,8 @@ receive explicit build setup.
 - The docs production build compiles `@theme`, `@source`, and component utilities; no Tailwind
   directives remain in emitted CSS.
 - The packed consumer registers `node_modules/@nerio-ui/ui/src`; the source-installed consumer uses
-  copied TSX and bridge files.
+  copied TSX and bridge files. Both release-consumer modes compile Tailwind theme and utilities layers
+  without Preflight, while docs and demo cover the default Preflight path.
 - Registry items for Button, Input, and Dialog include `tailwind-merge`, the merge helper, and the
   bridge; obsolete Button/Input style payloads are removed.
 - Root `className` conflicts are covered by focused merge tests.
@@ -33,6 +34,8 @@ unprocessed `@theme` and `@source` directives and generated none of the package 
 - Dialog keyframes in `overlays.css`: preserve enter/exit transforms and reduced-motion fade without a
   duplicate visual selector implementation.
 - Scoped `.n-*` box sizing in `styles.css`: temporary compatibility for components awaiting #173.
+- Scoped native-control font inheritance in `styles.css`: preserves Nerio typography when consumers
+  omit Preflight without imposing a document-wide form reset.
 
 ## Known limitations
 
