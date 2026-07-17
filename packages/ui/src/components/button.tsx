@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Button as BaseButton } from "@base-ui/react/button";
 import type { IconComponent } from "@nerio-ui/adapters/icons";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { composeRefs } from "../lib/compose-refs";
 import { motionClasses } from "../lib/motion";
 import { Badge, type BadgeProps } from "./badge";
@@ -26,6 +26,28 @@ export type ButtonVariant =
 export type ButtonSize = "sm" | "md" | "lg";
 
 type CanonicalButtonVariant = Exclude<ButtonVariant, "subtle" | "destructive">;
+
+const buttonBaseClasses =
+  "n-button box-border inline-flex h-(--n-button-height-md) cursor-pointer items-center justify-center gap-(--n-button-gap) whitespace-nowrap rounded-(--n-button-radius) border-(length:--n-button-border-width) border-(--n-button-border-transparent) px-(--n-button-padding-inline-md) text-(length:--n-button-font-size) font-(--n-button-font-weight) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) disabled:cursor-not-allowed disabled:opacity-(--n-button-disabled-opacity) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-button-disabled-opacity) [&_[data-slot=button-icon]]:inline-flex [&_[data-slot=button-icon]]:items-center [&_[data-slot=button-badge]]:inline-flex [&_[data-slot=button-badge]]:shrink-0 [&_.n-kbd]:bg-(--n-button-kbd-background) [&_.n-kbd]:border-(--n-button-kbd-border-color) [&_.n-kbd]:text-(--n-button-kbd-foreground) [&_.n-kbd]:opacity-(--n-button-kbd-opacity)";
+
+const buttonVariantClasses: Record<CanonicalButtonVariant, string> = {
+  primary:
+    "bg-(--n-button-background-primary) text-(--n-button-foreground-primary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-primary-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-primary-active)",
+  secondary:
+    "bg-(--n-button-background-secondary) border-(--n-button-border-secondary) text-(--n-button-foreground-secondary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-secondary-hover)",
+  outline:
+    "bg-(--n-button-background-outline) border-(--n-button-border-outline) text-(--n-button-foreground-outline) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-outline-hover)",
+  ghost:
+    "bg-(--n-button-background-ghost) border-(--n-button-border-ghost) text-(--n-button-foreground-ghost) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-ghost-hover) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-color-text-primary)",
+  link: "h-auto bg-transparent border-transparent px-(--n-space-0) text-(--n-link-color) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-link-color-hover)",
+  danger: "bg-(--n-button-background-destructive) text-(--n-button-foreground-destructive)",
+};
+
+const buttonSizeClasses: Record<ButtonSize, string> = {
+  sm: "h-(--n-button-height-sm) px-(--n-button-padding-inline-sm)",
+  md: "h-(--n-button-height-md) px-(--n-button-padding-inline-md)",
+  lg: "h-(--n-button-height-lg) px-(--n-button-padding-inline-lg)",
+};
 
 type RenderElementProps = {
   "aria-label"?: string;
@@ -126,7 +148,17 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   const labelledBy =
     badge && !hasCustomAccessibleName ? `${buttonLabelId} ${buttonBadgeId}` : undefined;
   const classNames = cn(
-    "n-button",
+    buttonBaseClasses,
+    buttonSizeClasses[size],
+    buttonVariantClasses[normalizedVariant],
+    iconOnly &&
+      "w-(--n-icon-button-size-md) rounded-(--n-icon-button-radius) p-(--n-space-0) [&_.n-icon]:size-(--n-icon-button-icon-size-md)",
+    iconOnly &&
+      size === "sm" &&
+      "w-(--n-icon-button-size-sm) [&_.n-icon]:size-(--n-icon-button-icon-size-sm)",
+    iconOnly &&
+      size === "lg" &&
+      "w-(--n-icon-button-size-lg) [&_.n-icon]:size-(--n-icon-button-icon-size-lg)",
     motionClasses.hover,
     motionClasses.press,
     motionClasses.focus,
@@ -182,7 +214,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   const content = renderedElement ? (
     React.cloneElement(renderedElement, {
       ref: composedRef,
-      className: cn(renderedElement.props.className, classNames),
+      className: cn(classNames, renderedElement.props.className),
       "aria-label": props["aria-label"] ?? renderedElement.props["aria-label"],
       "aria-busy": loading || undefined,
       "aria-disabled": disabled || loading || undefined,

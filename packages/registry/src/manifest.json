@@ -107,7 +107,14 @@
       "title": "Button",
       "description": "Triggers an explicit action with text, optional Badge content, directional icons, shortcut hints, tooltip help, or an icon-only mode.",
       "category": "actions",
-      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": ["spinner", "tooltip", "kbd", "badge"],
       "files": [
         {
@@ -131,6 +138,11 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/compose-refs.ts",
           "target": "lib/compose-refs.ts",
           "role": "utility"
@@ -141,8 +153,8 @@
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/button.css",
-          "target": "styles/button.css",
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         },
         {
@@ -1165,7 +1177,7 @@
       "title": "Input",
       "description": "Thin native single-line control for supported short text-like values.",
       "category": "forms",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1179,6 +1191,11 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
           "role": "utility"
@@ -1189,8 +1206,8 @@
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/forms.css",
-          "target": "styles/forms.css",
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1821,7 +1838,14 @@
       "title": "Dialog",
       "description": "Focuses a short decision or task above the current surface.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -1840,6 +1864,16 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
           "role": "style"
@@ -1852,6 +1886,11 @@
         {
           "source": "../../ui/src/styles/overlays.css",
           "target": "styles/overlays.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],

@@ -16,12 +16,13 @@ const expectedFiles = [
   "lib/cn.ts",
   "lib/compose-refs.ts",
   "lib/motion.ts",
-  "styles/button.css",
+  "lib/tailwind-cn.ts",
   "styles/icon.css",
   "styles/kbd.css",
   "styles/motion.css",
   "styles/overlays.css",
   "styles/spinner.css",
+  "styles/tailwind.css",
 ];
 const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
 const expectedSheetFiles = [
@@ -64,9 +65,11 @@ const expectedInputGroupFiles = [
   "components/input-group.tsx",
   "lib/cn.ts",
   "lib/motion.ts",
+  "lib/tailwind-cn.ts",
   "styles/forms.css",
   "styles/input-group.css",
   "styles/motion.css",
+  "styles/tailwind.css",
 ];
 const expectedFormGroupFiles = [
   "components/form-group.tsx",
@@ -140,11 +143,13 @@ const expectedOverlayAndTabsFiles = [
   "components/tooltip.tsx",
   "lib/cn.ts",
   "lib/motion.ts",
+  "lib/tailwind-cn.ts",
   "styles/icon.css",
   "styles/motion.css",
   "styles/overlays.css",
   "styles/tabs.css",
   "styles/toast.css",
+  "styles/tailwind.css",
 ];
 
 function run(cwd, ...args) {

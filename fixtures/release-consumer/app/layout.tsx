@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
-import "@nerio-ui/ui/styles.css";
-import "./source-styles.css";
+import "./globals.css";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
