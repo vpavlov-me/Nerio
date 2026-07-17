@@ -106,12 +106,17 @@ const expectedPhase2BFiles = [
 const expectedDisplayFiles = [
   "components/avatar.tsx",
   "components/card.tsx",
+  "components/item.tsx",
   "components/key-value.tsx",
   "components/list.tsx",
   "components/separator.tsx",
   "components/stat.tsx",
   "components/table.tsx",
   "lib/cn.ts",
+  "lib/compose-refs.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
 ];
 const expectedNavigationFiles = [
   "components/breadcrumbs.tsx",
@@ -125,10 +130,20 @@ const expectedFeedbackFiles = [
   "components/skeleton.tsx",
   "components/spinner.tsx",
   "lib/cn.ts",
+  "lib/tailwind-cn.ts",
   "styles/feedback.css",
   "styles/spinner.css",
+  "styles/tailwind.css",
+  "styles/tokens.css",
 ];
-const expectedProgressFiles = ["components/progress.tsx", "lib/cn.ts", "styles/progress.css"];
+const expectedProgressFiles = [
+  "components/progress.tsx",
+  "lib/cn.ts",
+  "lib/tailwind-cn.ts",
+  "styles/progress.css",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedOverlayAndTabsFiles = [
   "components/dialog.tsx",
   "components/dropdown-menu.tsx",
@@ -251,6 +266,33 @@ function assertInstall(target, files = expectedFiles) {
   }
 }
 
+function listInstalledFiles(target) {
+  const root = path.join(target, "components/nerio");
+  const files = [];
+  const visit = (directory) => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        visit(entryPath);
+      } else {
+        files.push(path.relative(root, entryPath));
+      }
+    }
+  };
+  visit(root);
+  return files.sort();
+}
+
+function assertExactInstall(target, expectedFiles, family) {
+  const actual = listInstalledFiles(target);
+  const expected = [...expectedFiles].sort();
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(
+      `${family} source install did not match its exact Registry closure.\nExpected: ${expected.join(", ")}\nActual: ${actual.join(", ")}`,
+    );
+  }
+}
+
 function startRegistryServer() {
   const server = http.createServer((request, response) => {
     const requestedPath = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
@@ -288,6 +330,9 @@ async function verify() {
   const invalidSourceTarget = path.join(tempRoot, "invalid-source");
   const missingInstalledTokenTarget = path.join(tempRoot, "missing-installed-token");
   const staleSourceTarget = path.join(tempRoot, "stale-source");
+  const displayTarget = path.join(tempRoot, "display");
+  const feedbackTarget = path.join(tempRoot, "feedback");
+  const progressTarget = path.join(tempRoot, "progress");
   fs.mkdirSync(localTarget);
   fs.mkdirSync(urlTarget);
   fs.mkdirSync(invalidPackageTarget);
@@ -298,6 +343,9 @@ async function verify() {
   fs.mkdirSync(invalidSourceTarget);
   fs.mkdirSync(missingInstalledTokenTarget);
   fs.mkdirSync(staleSourceTarget);
+  fs.mkdirSync(displayTarget);
+  fs.mkdirSync(feedbackTarget);
+  fs.mkdirSync(progressTarget);
 
   const { server, manifestUrl } = await startRegistryServer();
   try {
@@ -360,6 +408,23 @@ async function verify() {
     const staleSourceOutput = await runFailure(staleSourceTarget, "doctor");
     if (!staleSourceOutput.includes("unsupported legacy component stylesheet")) {
       throw new Error("Doctor did not report an imported legacy source stylesheet.");
+    }
+
+    for (const [target, components, expectedFiles, family] of [
+      [
+        displayTarget,
+        ["avatar", "card", "key-value", "separator", "stat", "table", "item", "list"],
+        expectedDisplayFiles,
+        "Display",
+      ],
+      [feedbackTarget, ["empty-state", "skeleton", "spinner"], expectedFeedbackFiles, "Feedback"],
+      [progressTarget, ["progress"], expectedProgressFiles, "Progress"],
+    ]) {
+      await run(target, "init", "--registry", manifest);
+      for (const component of components) {
+        await run(target, "add", component);
+      }
+      assertExactInstall(target, expectedFiles, family);
     }
 
     const helpOutput = await run(localTarget, "--help");

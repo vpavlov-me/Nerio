@@ -63,7 +63,7 @@ export const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
     return (
       <BaseDialog.Portal>
         <BaseDialog.Backdrop
-          className="n-backdrop bg-(--n-sheet-backdrop)"
+          className="n-backdrop fixed inset-0 isolate z-(--n-overlay-z-index) bg-(--n-sheet-backdrop)"
           data-slot="sheet-backdrop"
         />
         <BaseDialog.Popup
@@ -77,7 +77,7 @@ export const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
           {showClose ? (
             <SheetClose
               aria-label={closeLabel}
-              className="n-sheet__close-icon absolute top-[max(var(--n-sheet-padding),env(safe-area-inset-top))] right-[max(var(--n-sheet-padding),env(safe-area-inset-right))] inline-flex size-(--n-size-control-sm) flex-none cursor-pointer items-center justify-center rounded-(--n-radius-sm) border-0 bg-(--n-button-background-ghost) text-(--n-color-text-tertiary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) rtl:right-[max(var(--n-sheet-padding),env(safe-area-inset-left))] forced-colors:border forced-colors:border-[ButtonText]"
+              className="n-sheet__close-icon absolute top-[max(var(--n-sheet-padding),env(safe-area-inset-top))] end-[max(var(--n-sheet-padding),env(safe-area-inset-right))] inline-flex size-(--n-size-control-sm) flex-none cursor-pointer items-center justify-center rounded-(--n-radius-sm) border-0 bg-(--n-button-background-ghost) text-(--n-color-text-tertiary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) rtl:end-[max(var(--n-sheet-padding),env(safe-area-inset-left))] forced-colors:border forced-colors:border-[ButtonText]"
             >
               <Icon icon={X} />
             </SheetClose>
