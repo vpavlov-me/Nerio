@@ -14,6 +14,7 @@ const expectedFiles = [
   "components/spinner.tsx",
   "components/tooltip.tsx",
   "lib/cn.ts",
+  "lib/compose-refs.ts",
   "lib/motion.ts",
   "styles/button.css",
   "styles/icon.css",
@@ -624,9 +625,13 @@ async function verify() {
     );
     if (
       !buttonSource.includes("isRenderElement") ||
-      !buttonSource.includes("React.cloneElement(renderedElement")
+      !buttonSource.includes("React.cloneElement(renderedElement") ||
+      !buttonSource.includes('from "../lib/compose-refs"') ||
+      !buttonSource.includes("composeRefs(renderRef, ref)")
     ) {
-      throw new Error("Installed Button source does not preserve custom link rendering.");
+      throw new Error(
+        "Installed Button source does not preserve custom rendering and ref composition.",
+      );
     }
 
     const radioSource = fs.readFileSync(

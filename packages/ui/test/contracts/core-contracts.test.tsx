@@ -1851,6 +1851,39 @@ describe("Core interactive action contracts", () => {
     expect(link).toHaveClass("n-button");
   });
 
+  it("composes render-element and forwarded Button refs without dropping either ref shape", () => {
+    const renderObjectRef = React.createRef<HTMLAnchorElement>();
+    const forwardedCallbackRef = vi.fn<(node: HTMLElement | null) => void>();
+    const renderCallbackRef = vi.fn<(node: HTMLAnchorElement | null) => void>();
+    const forwardedObjectRef = React.createRef<HTMLElement>();
+
+    render(
+      <>
+        <Button
+          ref={forwardedCallbackRef}
+          nativeButton={false}
+          render={<a ref={renderObjectRef} href="/object-render-ref" />}
+        >
+          Object render ref
+        </Button>
+        <Button
+          ref={forwardedObjectRef}
+          nativeButton={false}
+          render={<a ref={renderCallbackRef} href="/callback-render-ref" />}
+        >
+          Callback render ref
+        </Button>
+      </>,
+    );
+
+    const objectRefLink = screen.getByRole("link", { name: "Object render ref" });
+    const callbackRefLink = screen.getByRole("link", { name: "Callback render ref" });
+    expect(renderObjectRef.current).toBe(objectRefLink);
+    expect(forwardedCallbackRef).toHaveBeenLastCalledWith(objectRefLink);
+    expect(renderCallbackRef).toHaveBeenLastCalledWith(callbackRefLink);
+    expect(forwardedObjectRef.current).toBe(callbackRefLink);
+  });
+
   it("normalizes deprecated Button variants and protects Button-owned state attributes", () => {
     render(
       <>

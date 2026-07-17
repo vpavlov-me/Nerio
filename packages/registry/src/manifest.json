@@ -131,6 +131,11 @@
           "role": "utility"
         },
         {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
           "role": "style"
