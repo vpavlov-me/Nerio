@@ -44,6 +44,15 @@ theme and utilities layers without Preflight. Nerio's compatibility stylesheet s
 Nerio class names and restores inherited typography on Nerio native controls. These are permanent,
 narrow compatibility rules, not a document-wide reset or evidence of an incomplete migration.
 
+## Setup diagnostics
+
+Run `nerio doctor` after configuring a consumer stylesheet. It validates the registry as well as the
+Tailwind setup it can inspect in the project: a Tailwind import, the package bridge and `@source`
+registration in package mode, copied bridge and token styles in source-install mode, the
+no-Preflight compatibility path, and unsupported legacy component styles imported from the installed
+source directory. The command reports all detected setup problems with remediation text; it does not
+modify consumer files.
+
 ## Authoring and overrides
 
 - Use complete, statically detectable class strings. Do not interpolate utility fragments.
