@@ -13,6 +13,7 @@ pnpm install --frozen-lockfile
 pnpm format:check
 pnpm lint
 pnpm typecheck
+pnpm test:branch-policy
 pnpm build
 pnpm test:ui
 pnpm test:a11y
@@ -46,6 +47,26 @@ and a Foundation item with complete dependency chains, and builds without worksp
 `schema` exports, verifies that an icons/UI-only consumer does not install optional integration
 peers, and checks each optional subpath both without and with its required peer. CI validates only;
 it never publishes, changes package privacy, creates tags, or creates a GitHub Release.
+
+Package and source-install builds cover Tailwind with and without Preflight. The UI stylesheet may
+contain only named shared keyframes and the documented scoped no-Preflight box-sizing and
+native-control typography rules; the Tailwind contract test rejects visual component selectors or a
+second styling layer.
+
+## Branch and release flow
+
+Normal changes start from `dev` and merge through a reviewed pull request back into `dev`. The only
+supported path to the stable `main` branch is a separately reviewed release pull request from `dev`:
+
+```text
+feat/*, fix/*, refactor/*, docs/*, test/*, chore/* -> dev -> main
+```
+
+Both pull request stages require the full CI and `branch-policy` checks. Direct pushes, force pushes,
+and branch deletion are prohibited for `main` and `dev`. `main` remains the default stable branch,
+and `dev` remains the permanent integration branch after a release. Release pull requests and merges
+to `main` are manual maintainer actions; coding agents must not merge them without a separate, direct
+request from the maintainer.
 
 ## Versioning and package order
 

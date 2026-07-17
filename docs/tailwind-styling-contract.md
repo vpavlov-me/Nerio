@@ -41,7 +41,8 @@ The CLI copies complete static class strings; workspace aliases are not required
 The consumer owns Preflight. Nerio packages never import `tailwindcss` or
 `tailwindcss/preflight.css`. Consumers may use the default `@import "tailwindcss"` or import Tailwind's
 theme and utilities layers without Preflight. Nerio's compatibility stylesheet scopes box sizing to
-Nerio class names while the remaining migration is in progress; it is not a document-wide reset.
+Nerio class names and restores inherited typography on Nerio native controls. These are permanent,
+narrow compatibility rules, not a document-wide reset or evidence of an incomplete migration.
 
 ## Authoring and overrides
 
@@ -54,13 +55,17 @@ Nerio class names while the remaining migration is in progress; it is not a docu
 
 ## Residual CSS policy
 
-Residual CSS is allowed only for shared keyframes, selectors that utilities make materially harder to
-audit, or compatibility rules for components not yet migrated. It must use Nerio variables, remain
-small, and be listed in the migration report. A migrated component must not retain a parallel visual
-selector implementation.
+Residual CSS is allowed only for these categories:
 
-The pilot retains shared motion recipes, icon styling, and Dialog keyframes. Button visual CSS is
-removed; Input and Dialog visual selectors are removed from their shared stylesheets.
+- named keyframes shared by Tailwind-first recipes;
+- the scoped Nerio-class `box-sizing: border-box` rule needed when package or source consumers omit
+  Preflight;
+- the scoped native-control `font-family: inherit` rule needed when those consumers omit Preflight.
+
+Residual CSS must remain small, documented, and covered by the Tailwind contract test. It must not
+contain `.n-*` visual component selectors, `@apply` mirrors, or any second styling layer parallel to
+the static Tailwind recipes. Adding another category requires an explicit architecture decision and
+updated consumer evidence.
 
 ## Published baseline compatibility
 

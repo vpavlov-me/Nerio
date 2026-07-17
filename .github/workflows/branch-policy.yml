@@ -1,0 +1,39 @@
+name: branch-policy
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+permissions:
+  contents: read
+
+jobs:
+  branch-policy:
+    name: branch-policy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate pull request direction
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [[ "$BASE_REF" == "main" ]]; then
+            if [[ "$HEAD_REF" != "dev" ]]; then
+              echo "Pull requests to main are allowed only from the dev integration branch." >&2
+              exit 1
+            fi
+            exit 0
+          fi
+
+          if [[ "$BASE_REF" == "dev" ]]; then
+            if [[ "$HEAD_REF" == "main" ]]; then
+              echo "Pull requests from main to dev are not allowed." >&2
+              exit 1
+            fi
+            if [[ ! "$HEAD_REF" =~ ^(feat|feature|fix|refactor|docs|test|chore)/[A-Za-z0-9._/-]+$ ]]; then
+              echo "Pull requests to dev must use a feat/, feature/, fix/, refactor/, docs/, test/, or chore/ branch." >&2
+              exit 1
+            fi
+          fi

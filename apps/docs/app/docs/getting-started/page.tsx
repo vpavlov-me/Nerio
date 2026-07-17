@@ -69,6 +69,12 @@ export default function Page() {
           path relative to your global stylesheet for other package-manager layouts.
         </p>
         <p>
+          Consumers may omit Preflight by importing only Tailwind&apos;s theme and utilities layers.
+          Nerio&apos;s residual stylesheet remains limited to named keyframes plus scoped box-sizing
+          and native-control typography compatibility for that mode; component visuals remain owned
+          by static Tailwind recipes.
+        </p>
+        <p>
           Import icons and icon types from <code>@nerio-ui/adapters/icons</code>. The adapter
           package has no aggregating root entrypoint: table, chart, form, and schema integrations
           use their dedicated subpaths and require only their matching optional peer.

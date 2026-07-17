@@ -135,9 +135,19 @@ Before moving any Core component toward `stable-core`, verify:
 
 ## Workflow
 
-1. Inspect the current workspace and relevant documentation.
-2. Check `COMPONENTS.md`, `data/component-catalog.json`, and the tiering guidance before creating, moving, or promoting components.
-3. State a concise implementation plan in the pull request or task output.
-4. Implement the smallest complete vertical slice.
-5. Add or update docs, examples, types, registry metadata, and component catalog entries in the same change.
-6. Run the repository checks and report exact results.
+1. Determine the intended base branch before starting. Normal work always targets `dev`.
+2. Update `dev` and create a `feat/*`, `fix/*`, `refactor/*`, `docs/*`, `test/*`, or `chore/*`
+   branch from it. Do not create a feature branch from `main`.
+3. Inspect the current workspace and relevant documentation.
+4. Check `COMPONENTS.md`, `data/component-catalog.json`, and the tiering guidance before creating, moving, or promoting components.
+5. State a concise implementation plan in the pull request or task output.
+6. Implement the smallest complete vertical slice.
+7. Add or update docs, examples, types, registry metadata, and component catalog entries in the same change.
+8. Run the repository checks and report exact results.
+9. Open ordinary pull requests into `dev`; never open a feature pull request directly into `main`.
+10. Use `dev -> main` only for an explicitly requested release pull request. Never merge a pull
+    request into `main` without a separate, direct request from the user.
+11. After a task pull request is merged and the final remote state is verified, stop processes
+    started from its worktree, remove that worktree from the local machine, and run
+    `git worktree prune`. Never remove a worktree that contains uncommitted changes or unmerged
+    commits; report it as retained instead.

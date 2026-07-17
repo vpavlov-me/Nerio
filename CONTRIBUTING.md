@@ -10,14 +10,20 @@ Thank you for contributing to Nerio. The project is open source, but its compone
 
 ## Development workflow
 
-1. Fork the repository and create a branch from `main`.
-2. Use a descriptive branch name, for example `feat/command-menu` or `fix/dialog-focus-return`.
-3. Follow the rules in `AGENTS.md` and the architecture in `PROJECT.md`.
-4. Review component and API work against the canonical
+`main` is Nerio's stable production branch and remains the repository default. `dev` is the permanent
+integration branch. Direct pushes, force pushes, and deletion are prohibited for both branches.
+
+1. Update `dev`, then create a focused branch from it.
+2. Use `feat/*`, `fix/*`, `refactor/*`, `docs/*`, `test/*`, or `chore/*`, for example
+   `feat/command-menu` or `fix/dialog-focus-return`.
+3. Open the pull request into `dev`. Feature branches must never target `main` directly.
+4. Follow the rules in `AGENTS.md` and the architecture in `PROJECT.md`.
+5. Review component and API work against the canonical
    [Core UI best practices](./docs/core-ui-best-practices.md), including responsibility ownership,
    API admission, styling layer, state, accessibility, responsive, motion, and evidence requirements.
-5. Add or update documentation, usage examples, types, registry metadata, and accessibility notes together with the implementation.
-6. Run the required checks before opening a pull request.
+6. Add or update documentation, usage examples, types, registry metadata, and accessibility notes together with the implementation.
+7. Run the required checks before opening a pull request.
+8. Merge into `dev` only after required CI checks pass and review conversations are resolved.
 
 Once the workspace is bootstrapped, the standard commands will be:
 
@@ -26,7 +32,8 @@ pnpm install
 pnpm dev
 pnpm lint
 pnpm typecheck
-pnpm test
+pnpm test:ui
+pnpm test:a11y
 pnpm build
 ```
 
@@ -62,6 +69,8 @@ A pull request should:
 - Avoid hard-coded visual values when a token can express the intent.
 - Keep documentation in English.
 - Pass required CI checks.
+- Target `dev` from a supported development branch, unless this is the release pull request from
+  `dev` to `main`.
 
 For every proposed prop, variant, size, state, slot, event, or imperative handle, explain why
 existing composition, tokens, consumer `className` or source ownership, and existing slots are
@@ -76,6 +85,16 @@ for implementation and review evidence.
 ## Changelog and release notes
 
 Meaningful public changes require a release note and an update to [CHANGELOG.md](./CHANGELOG.md) under `Unreleased`. Internal-only changes can select `No user-facing change` in the pull request template. Deprecated or breaking changes must include concise migration guidance and describe the preferred consumer path. Maintainers may edit release-note wording during review, and multiple pull request entries may later be consolidated into one release entry.
+
+## Release pull requests
+
+After the intended changes have landed in `dev` and the integration branch is release-ready, a
+maintainer creates a dedicated pull request from `dev` to `main`. No other source branch is accepted
+for `main`. The release pull request reruns all required checks and is merged manually by the
+maintainer. `dev` is not deleted after the release.
+
+Codex and other coding agents may prepare a release pull request only when explicitly asked. They
+must not merge a pull request into `main` without a separate, direct maintainer request.
 
 ## Review and ownership
 

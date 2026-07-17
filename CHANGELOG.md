@@ -10,6 +10,8 @@ Items under `Unreleased` may change before the next public release.
 
 - Added a canonical Core UI implementation standard, reusable review checklist, cross-category
   audit, and aligned agent, contributor, proposal, pull-request, architecture, and AI guidance.
+- Completed Tailwind CSS v4-first component authoring, documented and tested the narrow residual CSS
+  compatibility policy, and established the `feature -> dev -> main` pull request flow.
 
 ## 0.1.0-alpha.0 — 2026-07-15
 

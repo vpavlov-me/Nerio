@@ -91,6 +91,14 @@ function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
+function readBuiltCss(directory) {
+  const buildDirectory = join(directory, ".next");
+  return readdirSync(buildDirectory, { recursive: true })
+    .filter((entry) => typeof entry === "string" && entry.endsWith(".css"))
+    .map((entry) => readFileSync(join(buildDirectory, entry), "utf8"))
+    .join("\n");
+}
+
 function sortedKeys(value) {
   return Object.keys(value ?? {}).sort();
 }
@@ -303,6 +311,30 @@ try {
     run(process.execPath, [cli, "add", component], { cwd: consumerDirectory });
   }
 
+  run(pnpm, ["build"], {
+    cwd: consumerDirectory,
+    env: { NEXT_TELEMETRY_DISABLED: "1" },
+  });
+
+  const noPreflightCss = readBuiltCss(consumerDirectory);
+  if (!noPreflightCss.includes("box-sizing:border-box")) {
+    throw new Error("No-Preflight package CSS is missing scoped Nerio box sizing.");
+  }
+  if (!noPreflightCss.includes("font-family:inherit")) {
+    throw new Error("No-Preflight package CSS is missing native-control font inheritance.");
+  }
+
+  writeFileSync(
+    join(consumerDirectory, "app/globals.css"),
+    [
+      '@import "tailwindcss";',
+      '@import "@nerio-ui/tokens/tailwind.css";',
+      '@import "@nerio-ui/ui/styles.css";',
+      '@source "../node_modules/@nerio-ui/ui/src";',
+      "",
+    ].join("\n"),
+  );
+  rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
   run(pnpm, ["build"], {
     cwd: consumerDirectory,
     env: { NEXT_TELEMETRY_DISABLED: "1" },

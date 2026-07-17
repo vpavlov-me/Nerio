@@ -4,6 +4,54 @@ import { describe, expect, it } from "vitest";
 import { tailwindCn } from "../../src/lib/tailwind-cn";
 
 describe("Tailwind styling contract", () => {
+  const residualKeyframes = {
+    "feedback.css": ["n-pulse"],
+    "motion.css": [
+      "n-overlay-enter",
+      "n-overlay-exit",
+      "n-toast-enter",
+      "n-toast-exit",
+      "n-fade-only",
+    ],
+    "overlays.css": [
+      "n-sheet-enter-left",
+      "n-sheet-enter-right",
+      "n-sheet-enter-top",
+      "n-sheet-enter-bottom",
+      "n-sheet-exit-left",
+      "n-sheet-exit-right",
+      "n-sheet-exit-top",
+      "n-sheet-exit-bottom",
+      "n-dialog-enter",
+      "n-dialog-exit",
+      "n-dialog-fade-only",
+    ],
+    "progress.css": ["n-progress-indeterminate"],
+    "select.css": ["n-select-popup-in", "n-select-popup-out"],
+    "spinner.css": ["n-spin"],
+  } as const;
+
+  function topLevelBlockHeaders(source: string) {
+    const css = source.replace(/\/\*[\s\S]*?\*\//g, "");
+    const headers: string[] = [];
+    let depth = 0;
+    let segmentStart = 0;
+
+    for (let index = 0; index < css.length; index += 1) {
+      if (css[index] === "{") {
+        if (depth === 0) headers.push(css.slice(segmentStart, index).trim());
+        depth += 1;
+        segmentStart = index + 1;
+      } else if (css[index] === "}") {
+        depth -= 1;
+        if (depth === 0) segmentStart = index + 1;
+      }
+    }
+
+    expect(depth).toBe(0);
+    return headers;
+  }
+
   it("keeps arbitrary selectors on stable attributes instead of ambiguous BEM underscores", () => {
     const componentsDirectory = resolve(process.cwd(), "src/components");
     const failures = readdirSync(componentsDirectory)
@@ -72,6 +120,39 @@ describe("Tailwind styling contract", () => {
       ':where(button, input, select, textarea):where([class^="n-"], [class*=" n-"])',
     );
     expect(styles).toContain("font-family: inherit;");
+  });
+
+  it("keeps residual CSS on the documented keyframe and no-Preflight allowlist", () => {
+    const stylesDirectory = resolve(process.cwd(), "src/styles");
+    expect(readdirSync(stylesDirectory).sort()).toEqual(Object.keys(residualKeyframes).sort());
+
+    for (const [file, keyframes] of Object.entries(residualKeyframes)) {
+      const source = readFileSync(resolve(stylesDirectory, file), "utf8");
+      expect(topLevelBlockHeaders(source), file).toEqual(
+        keyframes.map((keyframe) => `@keyframes ${keyframe}`),
+      );
+      expect(source, file).not.toContain("@apply");
+      expect(source, file).not.toMatch(/\.n-[A-Za-z0-9_-]+\s*[{,]/);
+    }
+
+    const entrypoint = readFileSync(resolve(process.cwd(), "src/styles.css"), "utf8");
+    const imports = [...entrypoint.matchAll(/@import\s+"([^"]+)";/g)].map((match) => match[1]);
+    expect(imports).toEqual([
+      "@nerio-ui/tokens/styles.css",
+      "./styles/motion.css",
+      "./styles/spinner.css",
+      "./styles/feedback.css",
+      "./styles/progress.css",
+      "./styles/select.css",
+      "./styles/overlays.css",
+    ]);
+    expect(topLevelBlockHeaders(entrypoint.replaceAll(/@import\s+"[^"]+";/g, ""))).toEqual([
+      ':where([class^="n-"], [class*=" n-"])',
+      ':where(button, input, select, textarea):where([class^="n-"], [class*=" n-"])',
+    ]);
+    expect(entrypoint).toContain("box-sizing: border-box;");
+    expect(entrypoint).toContain("font-family: inherit;");
+    expect(entrypoint).not.toContain("@apply");
   });
 
   it("does not rely on Preflight to remove the Dialog close border", () => {

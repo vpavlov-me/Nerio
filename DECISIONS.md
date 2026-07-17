@@ -40,7 +40,10 @@ the canonical visual value layer. Tailwind utilities may reference semantic or c
 they must not introduce a parallel palette or token source. Package consumers register the published
 UI source with `@source`, while source-installed files are detected from the consumer project. Nerio
 packages do not import Tailwind Preflight. The detailed contract and residual-CSS policy are recorded
-in `docs/tailwind-styling-contract.md`.
+in `docs/tailwind-styling-contract.md`. Residual UI CSS is permanently limited to named shared
+keyframes and two scoped no-Preflight compatibility rules: Nerio-class box sizing and native-control
+font inheritance. These rules normalize package and source-install consumers without creating a
+second component styling layer.
 
 ## Distribution
 

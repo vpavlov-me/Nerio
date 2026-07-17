@@ -29,17 +29,22 @@ unprocessed `@theme` and `@source` directives and generated none of the package 
 
 ## Residual CSS
 
+This section records the historical pilot state. The final post-migration allowlist is defined in
+`docs/tailwind-styling-contract.md` and verified by `tailwind-contracts.test.ts`.
+
 - `motion.css`: shared transition recipes still used by migrated and unmigrated components.
 - `icon.css`: shared Icon implementation used inside Button and Dialog.
 - Dialog keyframes in `overlays.css`: preserve enter/exit transforms and reduced-motion fade without a
   duplicate visual selector implementation.
-- Scoped `.n-*` box sizing in `styles.css`: temporary compatibility for components awaiting #173.
+- Scoped `.n-*` box sizing in `styles.css`: no-Preflight compatibility for package and source
+  consumers.
 - Scoped native-control font inheritance in `styles.css`: preserves Nerio typography when consumers
   omit Preflight without imposing a document-wide form reset.
 
 ## Known limitations
 
-- Remaining Core components still use the pre-migration CSS architecture and are owned by #173.
+- At the pilot checkpoint, remaining Core components still used the pre-migration CSS architecture
+  and were owned by #173. The component migration is now complete.
 - Package consumers must register the installed UI source path explicitly because Tailwind ignores
   `node_modules` by default.
 - The final validators, CLI doctor guidance, migration documentation, and release recommendation are
@@ -47,7 +52,6 @@ unprocessed `@theme` and `@source` directives and generated none of the package 
 
 ## Recommendation
 
-**PROCEED.** The styling contract was accepted by the maintainer on 2026-07-17. Continue with #173 as
-sequential, reviewable component-family slices. Keep
-the static-class, Nerio-variable, consumer-owned Preflight, explicit package `@source`, conflict-aware
-merge, and narrow residual-CSS rules unchanged during the remaining family migrations.
+**COMPLETED.** The styling contract was accepted by the maintainer on 2026-07-17 and #173 completed
+the remaining component-family slices. Keep the static-class, Nerio-variable, consumer-owned
+Preflight, explicit package `@source`, conflict-aware merge, and narrow residual-CSS rules unchanged.
