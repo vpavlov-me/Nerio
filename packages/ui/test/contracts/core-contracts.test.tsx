@@ -3007,8 +3007,14 @@ describe("Core interactive action contracts", () => {
   it("uses Sheet-specific backdrop, safe-area close, exit motion, and reduced-motion contracts", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sheet.tsx"), "utf8");
     expect(source).toContain("bg-(--n-sheet-backdrop)");
+    expect(source).toContain("fixed inset-0 isolate z-(--n-overlay-z-index)");
     expect(source).toContain("env(safe-area-inset-top)");
     expect(source).toContain("env(safe-area-inset-right)");
+    expect(source).toContain("end-[max(var(--n-sheet-padding),env(safe-area-inset-right))]");
+    expect(source).toContain(
+      "rtl:end-[max(var(--n-sheet-padding),env(safe-area-inset-left))]",
+    );
+    expect(source).not.toContain("rtl:right-");
     expect(source).toContain("data-ending-style:data-[side=left]:animate-[n-sheet-exit-left");
     expect(source).toContain("motion-reduce:data-[side=left]:animate-none");
   });
