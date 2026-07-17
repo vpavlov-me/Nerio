@@ -44,6 +44,7 @@ unprocessed `@theme` and `@source` directives and generated none of the package 
 
 ## Recommendation
 
-**PROCEED WITH CONDITIONS.** Proceed to #173 only after maintainer acceptance of the contract. Keep
+**PROCEED.** The styling contract was accepted by the maintainer on 2026-07-17. Continue with #173 as
+sequential, reviewable component-family slices. Keep
 the static-class, Nerio-variable, consumer-owned Preflight, explicit package `@source`, conflict-aware
 merge, and narrow residual-CSS rules unchanged during the remaining family migrations.
