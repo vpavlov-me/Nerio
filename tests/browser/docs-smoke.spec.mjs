@@ -62,6 +62,20 @@ test("covers public docs routes, Sidebar examples, and appearance controls", asy
   await expect(page.locator("html")).toHaveAttribute("data-theme", "blue");
 
   await page.getByRole("button", { name: "Comfortable", exact: true }).click();
+  const densityMenu = page.getByRole("menu", { name: "Comfortable" });
+  const densityMenuSpacing = await densityMenu.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const probe = document.createElement("span");
+    probe.style.inlineSize = "var(--n-space-1)";
+    element.append(probe);
+    const expected = getComputedStyle(probe).inlineSize;
+    probe.remove();
+    return {
+      actual: style.gap,
+      expected,
+    };
+  });
+  expect(densityMenuSpacing.actual).toBe(densityMenuSpacing.expected);
   await page.getByRole("menuitem", { name: /Compact/ }).click();
   await expect(page.locator("html")).toHaveAttribute("data-density", "compact");
 
