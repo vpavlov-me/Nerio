@@ -297,6 +297,55 @@ function packageReadinessFailures() {
   return failures;
 }
 
+function tailwindDocumentationFailures() {
+  const motionPage = read("apps/docs/app/docs/foundations/motion/page.tsx");
+  const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const componentPage = read("apps/docs/components/doc-page.tsx");
+  const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
+  const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
+  const failures = [];
+
+  const required = [
+    [motionPage, "Tailwind motion recipes", "Motion Foundation must document Tailwind recipes"],
+    [tokenPage, "Tailwind bridge", "Tokens Foundation must document the Tailwind bridge"],
+    [componentPage, 'id="styling-contract"', "Component docs must expose a styling contract"],
+    [
+      docsChrome,
+      '{ href: "/docs/foundations/motion", label: "Motion"',
+      "Foundation navigation must use the canonical Motion route and label",
+    ],
+    [
+      gettingStarted,
+      "component visuals compile from their Tailwind recipes",
+      "Getting Started must describe Tailwind-owned component visuals",
+    ],
+    [
+      progressPage,
+      "residual progress keyframes",
+      "Progress docs must distinguish Tailwind visuals from residual keyframes",
+    ],
+  ];
+
+  for (const [source, expected, message] of required) {
+    if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (/['"]n-motion-[a-z]/.test(motionPage)) {
+    failures.push("Motion Foundation must not restore removed n-motion-* visual utility classes");
+  }
+  if (gettingStarted.includes("imports tokens and component styles")) {
+    failures.push(
+      "Getting Started must not describe styles.css as a parallel component styling layer",
+    );
+  }
+  if (progressPage.includes("dedicated progress.css stylesheet")) {
+    failures.push("Progress docs must not describe residual keyframes as component CSS");
+  }
+
+  return failures;
+}
+
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
 const documentedRegistrySlugs = registrySlugs.filter(
@@ -363,6 +412,7 @@ const rawPrimitiveTokens = rawPrimitiveTokenUsages();
 const themeTokenMatrixIssues = themeTokenMatrixFailures(tokenStyles);
 const uiEntrypointIssues = uiEntrypointFailures();
 const packageReadinessIssues = packageReadinessFailures();
+const tailwindDocumentationIssues = tailwindDocumentationFailures();
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -396,6 +446,7 @@ reportMissing("Raw primitive palette tokens used in component CSS", rawPrimitive
 reportMissing("Theme token matrix issues", themeTokenMatrixIssues);
 reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 reportMissing("Package readiness issues", packageReadinessIssues);
+reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
 
 const failures = [
   missingNav,
@@ -418,6 +469,7 @@ const failures = [
   themeTokenMatrixIssues,
   uiEntrypointIssues,
   packageReadinessIssues,
+  tailwindDocumentationIssues,
 ].flat();
 
 if (failures.length > 0) {
@@ -425,5 +477,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Docs registry, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
+  `Docs registry, Tailwind contract, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
 );

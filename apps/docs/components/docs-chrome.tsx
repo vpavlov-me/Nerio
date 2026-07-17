@@ -74,7 +74,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
       { href: "/docs/foundations/typography", label: "Typography", icon: Type },
       { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
-      { href: "/docs/foundations/animations", label: "Animations", icon: Sparkles },
+      { href: "/docs/foundations/motion", label: "Motion", icon: Sparkles },
       { href: "/docs/foundations/radius", label: "Radius", icon: Circle },
       { href: "/docs/foundations/effects", label: "Effects", icon: Wrench },
       { href: "/docs/foundations/icons", label: "Icons", icon: Box },
@@ -292,11 +292,11 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "custom-themes", label: "Custom themes" },
     { id: "do-do-not", label: "Do / do not" },
   ],
-  "/docs/foundations/animations": [
+  "/docs/foundations/motion": [
     { id: "duration-tokens", label: "Duration tokens" },
     { id: "easing-tokens", label: "Easing tokens" },
     { id: "semantic-motion", label: "Semantic motion" },
-    { id: "component-utilities", label: "Component utilities" },
+    { id: "tailwind-motion-recipes", label: "Tailwind motion recipes" },
     { id: "reduced-motion", label: "Reduced motion" },
     { id: "usage", label: "Usage" },
   ],

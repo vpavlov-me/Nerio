@@ -63,10 +63,12 @@ export default function Page() {
           <code>@nerio-ui/ui</code> is the server-safe entrypoint for static Core components and
           utilities, including Field and FormGroup. <code>@nerio-ui/ui/client</code> contains
           interactive Base UI-backed components such as Checkbox, RadioGroup, Switch, Select, and
-          Dialog. <code>@nerio-ui/ui/styles.css</code> imports tokens and component styles. Tailwind
-          Preflight remains consumer-owned; package source must be registered explicitly because
-          Tailwind ignores <code>node_modules</code> by default. Adjust the <code>@source</code>{" "}
-          path relative to your global stylesheet for other package-manager layouts.
+          Dialog. <code>@nerio-ui/ui/styles.css</code> imports tokens, named keyframes, and the
+          scoped no-Preflight compatibility rules; component visuals compile from their Tailwind
+          recipes. Tailwind Preflight remains consumer-owned, and package source must be registered
+          explicitly because Tailwind ignores <code>node_modules</code> by default. Adjust the{" "}
+          <code>@source</code> path relative to your global stylesheet for other package-manager
+          layouts.
         </p>
         <p>
           Consumers may omit Preflight by importing only Tailwind&apos;s theme and utilities layers.
