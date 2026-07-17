@@ -35,7 +35,7 @@ export interface ListProps extends Omit<
 }
 
 const listSurfaceClasses =
-  "grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-(--n-list-item-gap) rounded-(--n-list-item-radius) border-(length:--n-list-item-border-width) border-(--n-list-item-border) bg-(--n-list-item-background) p-(--n-list-item-padding) text-inherit no-underline [&:not(:has(.n-list__leading))]:grid-cols-[minmax(0,1fr)_auto] [&:not(:has(.n-list__trailing))]:grid-cols-[auto_minmax(0,1fr)] [&:not(:has(.n-list__leading)):not(:has(.n-list__trailing))]:grid-cols-[minmax(0,1fr)] forced-colors:border-[CanvasText]";
+  "grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-(--n-list-item-gap) rounded-(--n-list-item-radius) border-(length:--n-list-item-border-width) border-(--n-list-item-border) bg-(--n-list-item-background) p-(--n-list-item-padding) text-inherit no-underline [&:not(:has(>[data-slot=leading]))]:grid-cols-[minmax(0,1fr)_auto] [&:not(:has(>[data-slot=trailing]))]:grid-cols-[auto_minmax(0,1fr)] [&:not(:has(>[data-slot=leading])):not(:has(>[data-slot=trailing]))]:grid-cols-[minmax(0,1fr)] forced-colors:border-[CanvasText]";
 
 export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListProps>(function List(
   { className, items, ordered = false, ...props },
@@ -48,7 +48,7 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
     <Root
       ref={composedRef}
       className={cn(
-        "n-list m-0 grid list-none gap-(--n-list-gap) p-0 [counter-reset:n-list] [&:is(ol)>.n-list__item]:grid [&:is(ol)>.n-list__item]:grid-cols-[auto_minmax(0,1fr)] [&:is(ol)>.n-list__item]:items-start [&:is(ol)>.n-list__item]:gap-(--n-list-item-gap) [&:is(ol)>.n-list__item]:[counter-increment:n-list] [&:is(ol)>.n-list__item::before]:py-(--n-list-item-padding) [&:is(ol)>.n-list__item::before]:text-(length:--n-font-size-sm) [&:is(ol)>.n-list__item::before]:font-(--n-font-weight-medium) [&:is(ol)>.n-list__item::before]:text-(--n-color-text-tertiary) [&:is(ol)>.n-list__item::before]:content-[counter(n-list)'.']",
+        "n-list m-0 grid list-none gap-(--n-list-gap) p-0 [counter-reset:n-list] [&:is(ol)>[data-slot=item]]:grid [&:is(ol)>[data-slot=item]]:grid-cols-[auto_minmax(0,1fr)] [&:is(ol)>[data-slot=item]]:items-start [&:is(ol)>[data-slot=item]]:gap-(--n-list-item-gap) [&:is(ol)>[data-slot=item]]:[counter-increment:n-list] [&:is(ol)>[data-slot=item]::before]:py-(--n-list-item-padding) [&:is(ol)>[data-slot=item]::before]:text-(length:--n-font-size-sm) [&:is(ol)>[data-slot=item]::before]:font-(--n-font-weight-medium) [&:is(ol)>[data-slot=item]::before]:text-(--n-color-text-tertiary) [&:is(ol)>[data-slot=item]::before]:content-[counter(n-list)'.']",
         className,
       )}
       data-slot="root"

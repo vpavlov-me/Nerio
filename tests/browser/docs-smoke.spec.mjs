@@ -149,6 +149,89 @@ test("keeps the final Tailwind component families active across public docs", as
   await expectHealthyPage(page, problems);
 });
 
+test("preserves segmented surfaces, control indicators, and the mobile showcase layout", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+
+  const showcase = await page.locator(".home-gallery").evaluate((element) => {
+    const resolveToken = (property, token) => {
+      const probe = document.createElement("div");
+      probe.style.setProperty(property, `var(${token})`);
+      document.body.append(probe);
+      const value = getComputedStyle(probe).getPropertyValue(property);
+      probe.remove();
+      return value;
+    };
+    const tabsList = element.querySelector('.home-gallery__range-tabs [data-slot="list"]');
+    const tabsIndicator = element.querySelector(
+      '.home-gallery__range-tabs [data-slot="indicator"]',
+    );
+    const checkboxIndicator = element.querySelector(
+      '.n-checkbox[data-checked] [data-slot="indicator"]',
+    );
+    const radioIndicator = element.querySelector('.n-radio[data-checked] [data-slot="indicator"]');
+    const switchThumb = element.querySelector('.n-switch[data-checked] [data-slot="thumb"]');
+
+    if (!tabsList || !tabsIndicator || !checkboxIndicator || !radioIndicator || !switchThumb) {
+      throw new Error("The showcase is missing a styled compound component slot.");
+    }
+
+    const tabsListStyle = getComputedStyle(tabsList);
+    const tabsIndicatorStyle = getComputedStyle(tabsIndicator);
+    const checkboxIndicatorStyle = getComputedStyle(checkboxIndicator);
+    const radioIndicatorStyle = getComputedStyle(radioIndicator);
+    const switchThumbStyle = getComputedStyle(switchThumb);
+
+    return {
+      checkboxOpacity: checkboxIndicatorStyle.opacity,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      radioOpacity: radioIndicatorStyle.opacity,
+      switchOffset: switchThumbStyle.marginInlineStart,
+      switchOffsetToken: resolveToken("margin-inline-start", "--n-switch-thumb-offset"),
+      tabsBackground: tabsListStyle.backgroundColor,
+      tabsBackgroundToken: resolveToken("background-color", "--n-tabs-list-background"),
+      tabsGap: tabsListStyle.gap,
+      tabsIndicatorBackground: tabsIndicatorStyle.backgroundColor,
+      tabsIndicatorBackgroundToken: resolveToken(
+        "background-color",
+        "--n-tabs-indicator-background",
+      ),
+      tabsPadding: tabsListStyle.padding,
+    };
+  });
+
+  expect(showcase.overflow).toBeLessThanOrEqual(1);
+  expect(showcase.tabsBackground).toBe(showcase.tabsBackgroundToken);
+  expect(showcase.tabsIndicatorBackground).toBe(showcase.tabsIndicatorBackgroundToken);
+  expect(showcase.tabsGap).toBe("0px");
+  expect(showcase.tabsPadding).not.toBe("0px");
+  expect(showcase.checkboxOpacity).toBe("1");
+  expect(showcase.radioOpacity).toBe("1");
+  expect(showcase.switchOffset).toBe(showcase.switchOffsetToken);
+
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps an explicit light mode while navigating between showcase and docs", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/");
+  await page.getByRole("button", { name: "Color mode: System" }).click();
+  await page.getByRole("menuitem", { name: /Light/ }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-mode", "light");
+
+  await page.goto("/docs/getting-started");
+  await expect(page.locator("html")).toHaveAttribute("data-mode", "light");
+  await expect(page.getByRole("heading", { name: "Getting started" })).toBeVisible();
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(255, 255, 255)");
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps the docs shell inside emulated safe areas without overflow", async ({
   page,
   browserName,

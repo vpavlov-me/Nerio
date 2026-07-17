@@ -6,7 +6,7 @@
 @import "./styles/select.css";
 @import "./styles/overlays.css";
 
-/* Scoped compatibility rules for components awaiting the remaining #173 family slices. */
+/* Scoped no-Preflight compatibility for source and package consumers. */
 :where([class^="n-"], [class*=" n-"]) {
   box-sizing: border-box;
 }

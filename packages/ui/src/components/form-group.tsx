@@ -3,7 +3,7 @@ import { FormMessage } from "./form-message";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 const formGroupClasses =
-  "n-form-group m-0 grid min-w-0 gap-(--n-form-group-gap) border-0 p-0 data-[layout=inline]:[&_.n-form-group__content]:flex data-[layout=inline]:[&_.n-form-group__content]:flex-wrap data-[layout=inline]:[&_.n-form-group__content]:items-center data-[layout=inline]:[&_.n-form-group__content]:gap-(--n-form-group-inline-gap) data-[layout=grid]:[&_.n-form-group__content]:grid-cols-2 max-sm:data-[layout=grid]:[&_.n-form-group__content]:grid-cols-1 data-invalid:[&_.n-form-message]:text-(--n-form-group-message-color)";
+  "n-form-group m-0 grid min-w-0 gap-(--n-form-group-gap) border-0 p-0 data-[layout=inline]:[&>[data-slot=content]]:flex data-[layout=inline]:[&>[data-slot=content]]:flex-wrap data-[layout=inline]:[&>[data-slot=content]]:items-center data-[layout=inline]:[&>[data-slot=content]]:gap-(--n-form-group-inline-gap) data-[layout=grid]:[&>[data-slot=content]]:grid-cols-2 max-sm:data-[layout=grid]:[&>[data-slot=content]]:grid-cols-1 data-invalid:[&_.n-form-message]:text-(--n-form-group-message-color)";
 
 export interface FormGroupProps extends Omit<
   React.FieldsetHTMLAttributes<HTMLFieldSetElement>,

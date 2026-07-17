@@ -54,3 +54,18 @@ theme, mode, density, and token customization contract.
 The component stylesheet entrypoint and residual keyframe files total 3,971 bytes. The residual files
 are explicit and contain no `.n-*` component selectors, so there is no second hand-maintained visual
 implementation alongside the Tailwind recipes.
+
+## Post-migration visual contract review
+
+The review after all three family slices found one systemic Tailwind v4 selector ambiguity: BEM
+double underscores inside arbitrary variants were decoded as spaces. As a result, compiled selectors
+such as the segmented Tabs list selector did not match their intended elements. Compound recipes now
+target the existing stable `data-slot` contract instead. Alert, Checkbox, Command, EmptyState,
+FormGroup, List, RadioGroup, Select, Switch, and Tabs were audited and corrected together.
+
+The review also removes mobile showcase overflow caused by a no-wrap control row. Browser regression
+coverage now verifies the segmented Tabs surface and indicator, checked Checkbox, RadioGroup, and
+Switch slots, a 390 px showcase without horizontal overflow, and explicit light-mode persistence
+between the showcase and Getting Started. A source contract rejects ambiguous BEM arbitrary
+selectors, legacy merge helpers, `@apply` mirrors, and raw palette utilities before they can reach the
+compiled stylesheet again.

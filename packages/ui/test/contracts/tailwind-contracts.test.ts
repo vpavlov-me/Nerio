@@ -1,9 +1,50 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { tailwindCn } from "../../src/lib/tailwind-cn";
 
 describe("Tailwind styling contract", () => {
+  it("keeps arbitrary selectors on stable attributes instead of ambiguous BEM underscores", () => {
+    const componentsDirectory = resolve(process.cwd(), "src/components");
+    const failures = readdirSync(componentsDirectory)
+      .filter((file) => file.endsWith(".tsx"))
+      .flatMap((file) => {
+        const source = readFileSync(resolve(componentsDirectory, file), "utf8");
+        return [...source.matchAll(/[^\s"']*\.n-[^\s"']*__[^\s"']*/g)].map(
+          (match) => `${file}: ${match[0]}`,
+        );
+      });
+
+    expect(failures).toEqual([]);
+  });
+
+  it("scopes generic slots to their owning compound component", () => {
+    const tabsSource = readFileSync(resolve(process.cwd(), "src/components/tabs.tsx"), "utf8");
+    const formGroupSource = readFileSync(
+      resolve(process.cwd(), "src/components/form-group.tsx"),
+      "utf8",
+    );
+
+    expect(tabsSource).toContain("[&>[data-slot=list]]");
+    expect(tabsSource).not.toContain("[&_[data-slot=list]]");
+    expect(formGroupSource).toContain("[&>[data-slot=content]]");
+    expect(formGroupSource).not.toContain("[&_[data-slot=content]]");
+  });
+
+  it("does not reintroduce legacy merge helpers, apply mirrors, or raw palette utilities", () => {
+    const componentsDirectory = resolve(process.cwd(), "src/components");
+    const source = readdirSync(componentsDirectory)
+      .filter((file) => file.endsWith(".tsx"))
+      .map((file) => readFileSync(resolve(componentsDirectory, file), "utf8"))
+      .join("\n");
+
+    expect(source).not.toContain('from "../lib/cn"');
+    expect(source).not.toContain("@apply");
+    expect(source).not.toMatch(
+      /(?:bg|text|border|shadow)-(?:red|blue|green|purple|orange|yellow|gray|zinc|neutral)-\d+/,
+    );
+  });
+
   it("lets consumer utilities deterministically replace Nerio utilities", () => {
     expect(
       tailwindCn("h-(--n-button-height-md) bg-(--n-button-background-primary)", "h-12 bg-red-500"),

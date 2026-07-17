@@ -1116,7 +1116,9 @@ pre {
 .home-gallery__control-row {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   gap: var(--n-space-5);
+  min-inline-size: 0;
 }
 
 .home-gallery__spinner {
