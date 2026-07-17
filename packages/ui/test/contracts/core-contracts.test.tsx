@@ -1809,6 +1809,29 @@ describe("Core interactive action contracts", () => {
     expect(link).toHaveClass("n-button");
   });
 
+  it("keeps Button classes after custom render-target classes", () => {
+    render(
+      <Button
+        className="button-consumer-class"
+        nativeButton={false}
+        render={<a className="render-target-class" href="/docs/components/button" />}
+        variant="secondary"
+      >
+        Button documentation
+      </Button>,
+    );
+
+    const link = screen.getByRole("link", { name: "Button documentation" });
+    const classNames = link.className.split(" ");
+
+    expect(classNames.indexOf("render-target-class")).toBeLessThan(
+      classNames.indexOf("n-button"),
+    );
+    expect(classNames.indexOf("n-button")).toBeLessThan(
+      classNames.indexOf("button-consumer-class"),
+    );
+  });
+
   it("composes render-element and forwarded Button refs without dropping either ref shape", () => {
     const renderObjectRef = React.createRef<HTMLAnchorElement>();
     const forwardedCallbackRef = vi.fn<(node: HTMLElement | null) => void>();

@@ -214,7 +214,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   const content = renderedElement ? (
     React.cloneElement(renderedElement, {
       ref: composedRef,
-      className: cn(classNames, renderedElement.props.className),
+      className: cn(renderedElement.props.className, classNames),
       "aria-label": props["aria-label"] ?? renderedElement.props["aria-label"],
       "aria-busy": loading || undefined,
       "aria-disabled": disabled || loading || undefined,
