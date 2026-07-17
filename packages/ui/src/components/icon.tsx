@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { IconComponent, IconSvgProps, LucideIconProps } from "@nerio-ui/adapters/icons";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 export type { IconComponent, IconSvgProps, LucideIconProps } from "@nerio-ui/adapters/icons";
 
@@ -72,7 +72,10 @@ export function Icon(inputProps: IconProps) {
   return (
     <IconGraphic
       {...svgProps}
-      className={cn("n-icon", className)}
+      className={cn(
+        "n-icon inline-block size-(--n-icon-inline-size) shrink-0 align-middle",
+        className,
+      )}
       aria-hidden={decorative ? true : undefined}
       aria-label={decorative ? undefined : label}
       focusable={false}

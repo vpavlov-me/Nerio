@@ -73,4 +73,50 @@ describe("Tailwind styling contract", () => {
     expect(selectResidual).toContain("@keyframes n-select-popup-out");
     expect(selectResidual).not.toContain(".n-select-");
   });
+
+  it("keeps Foundation, Data Display, Feedback, and Progress on one Tailwind-first visual source", () => {
+    const migratedComponents = [
+      "icon",
+      "typography",
+      "kbd",
+      "spinner",
+      "card",
+      "avatar",
+      "stat",
+      "key-value",
+      "table",
+      "list",
+      "item",
+      "separator",
+      "alert",
+      "badge",
+      "empty-state",
+      "skeleton",
+      "progress",
+    ];
+
+    for (const component of migratedComponents) {
+      const source = readFileSync(
+        resolve(process.cwd(), `src/components/${component}.tsx`),
+        "utf8",
+      );
+      expect(source, component).toContain('from "../lib/tailwind-cn"');
+    }
+
+    for (const obsoleteStylesheet of ["icon.css", "typography.css", "kbd.css", "display.css"]) {
+      expect(existsSync(resolve(process.cwd(), `src/styles/${obsoleteStylesheet}`))).toBe(false);
+    }
+
+    for (const residualStylesheet of ["spinner.css", "feedback.css", "progress.css"]) {
+      const residual = readFileSync(
+        resolve(process.cwd(), `src/styles/${residualStylesheet}`),
+        "utf8",
+      );
+      expect(residual).toContain("@keyframes");
+      expect(residual).not.toMatch(/\.n-(spinner|badge|alert|empty-state|skeleton|progress)/);
+    }
+
+    const iconSource = readFileSync(resolve(process.cwd(), "src/components/icon.tsx"), "utf8");
+    expect(iconSource).toContain("size-(--n-icon-inline-size)");
+  });
 });

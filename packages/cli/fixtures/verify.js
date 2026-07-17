@@ -17,8 +17,6 @@ const expectedFiles = [
   "lib/compose-refs.ts",
   "lib/motion.ts",
   "lib/tailwind-cn.ts",
-  "styles/icon.css",
-  "styles/kbd.css",
   "styles/motion.css",
   "styles/overlays.css",
   "styles/spinner.css",
@@ -31,7 +29,6 @@ const expectedSheetFiles = [
   "components/icon.tsx",
   "components/sheet.tsx",
   "lib/cn.ts",
-  "styles/icon.css",
   "styles/overlays.css",
 ];
 const expectedSidebarFiles = [
@@ -40,7 +37,6 @@ const expectedSidebarFiles = [
   "components/sidebar.tsx",
   "lib/cn.ts",
   "lib/compose-refs.ts",
-  "styles/icon.css",
   "styles/sidebar.css",
 ];
 const expectedCommandFiles = [
@@ -50,7 +46,6 @@ const expectedCommandFiles = [
   "lib/cn.ts",
   "lib/resolve-class-name.ts",
   "styles/command.css",
-  "styles/icon.css",
   "styles/spinner.css",
 ];
 const expectedFieldFiles = [
@@ -84,7 +79,6 @@ const expectedBaseFormFiles = [
   "lib/cn.ts",
   "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
-  "styles/icon.css",
   "styles/tailwind.css",
 ];
 const expectedSelectFiles = [
@@ -95,7 +89,6 @@ const expectedSelectFiles = [
   "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
   "styles/select.css",
-  "styles/icon.css",
   "styles/tailwind.css",
 ];
 const expectedPhase2BFiles = [
@@ -107,7 +100,6 @@ const expectedPhase2BFiles = [
   "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
   "styles/feedback.css",
-  "styles/icon.css",
   "styles/tailwind.css",
 ];
 const expectedDisplayFiles = [
@@ -119,7 +111,6 @@ const expectedDisplayFiles = [
   "components/stat.tsx",
   "components/table.tsx",
   "lib/cn.ts",
-  "styles/display.css",
 ];
 const expectedNavigationFiles = [
   "components/breadcrumbs.tsx",
@@ -147,7 +138,6 @@ const expectedOverlayAndTabsFiles = [
   "lib/cn.ts",
   "lib/motion.ts",
   "lib/tailwind-cn.ts",
-  "styles/icon.css",
   "styles/motion.css",
   "styles/overlays.css",
   "styles/tabs.css",
@@ -344,7 +334,8 @@ async function verify() {
     }
     assertFiles(localTarget, [
       "components/typography.tsx",
-      "styles/typography.css",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
       "styles/tokens.css",
     ]);
     const installedTypographyTokens = fs.readFileSync(
@@ -523,17 +514,13 @@ async function verify() {
       throw new Error("Installed Table source does not preserve its named scroll-region contract.");
     }
 
-    const tableStyles = fs.readFileSync(
-      path.join(localTarget, "components/nerio/styles/display.css"),
-      "utf8",
-    );
     if (
-      !tableStyles.includes(".n-table-container > .n-table") ||
-      !tableStyles.includes('[data-align="numeric"]') ||
-      !tableStyles.includes("--n-table-container-focus-ring") ||
-      !tableStyles.includes(".n-table tbody > tr:hover") ||
-      !tableStyles.includes('[aria-current]:not([aria-current="false"])') ||
-      !tableStyles.includes(".n-table-container[data-focusable]:focus-visible")
+      !tableSource.includes("[&>.n-table]:min-w-max") ||
+      !tableSource.includes("[data-align=numeric]") ||
+      !tableSource.includes("--n-table-container-focus-ring") ||
+      !tableSource.includes("tbody>tr:hover") ||
+      !tableSource.includes("[aria-current]:not([aria-current=false])") ||
+      !tableSource.includes("data-focusable:focus-visible")
     ) {
       throw new Error("Installed Table styles do not preserve responsive and state hooks.");
     }
@@ -565,7 +552,8 @@ async function verify() {
     }
     if (
       !listSource.includes('const Root = ordered ? "ol" : "ul"') ||
-      !listSource.includes('className={cn("n-list__link", linkClassName)}') ||
+      !listSource.includes('"n-list__link"') ||
+      !listSource.includes("listSurfaceClasses") ||
       !listSource.includes('data-slot="link"') ||
       !listSource.includes("href={item.href}") ||
       !listSource.includes("React.cloneElement") ||

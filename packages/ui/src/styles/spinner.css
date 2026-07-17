@@ -1,44 +1,6 @@
-.n-spinner__label {
-  block-size: var(--n-border-width-default);
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  inline-size: var(--n-border-width-default);
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-}
-
-.n-spinner {
-  animation: n-spin var(--n-spinner-duration) linear infinite;
-  block-size: var(--n-spinner-size-md);
-  border: var(--n-spinner-border-width) solid currentColor;
-  border-block-start-color: transparent;
-  border-radius: var(--n-radius-full);
-  box-sizing: border-box;
-  display: inline-block;
-  flex: none;
-  inline-size: var(--n-spinner-size-md);
-  vertical-align: middle;
-}
-
-.n-spinner[data-size="sm"] {
-  block-size: var(--n-spinner-size-sm);
-  inline-size: var(--n-spinner-size-sm);
-}
-
-.n-spinner[data-size="lg"] {
-  block-size: var(--n-spinner-size-lg);
-  inline-size: var(--n-spinner-size-lg);
-}
-
+/* Residual named keyframe used by the Tailwind-first Spinner recipe. */
 @keyframes n-spin {
   to {
     transform: rotate(var(--n-transform-spin));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .n-spinner {
-    animation: none;
   }
 }

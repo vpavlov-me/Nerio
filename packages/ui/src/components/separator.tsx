@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 export type SeparatorProps = React.HTMLAttributes<HTMLHRElement>;
 
@@ -7,5 +7,15 @@ export const Separator = React.forwardRef<HTMLHRElement, SeparatorProps>(functio
   { className, ...props },
   ref,
 ) {
-  return <hr ref={ref} className={cn("n-separator", className)} data-slot="root" {...props} />;
+  return (
+    <hr
+      ref={ref}
+      className={cn(
+        "n-separator m-0 border-0 [border-block-start:var(--n-border-subtle)]",
+        className,
+      )}
+      data-slot="root"
+      {...props}
+    />
+  );
 });

@@ -7,7 +7,7 @@
       "title": "Typography",
       "description": "Semantic heading, text, and inline code primitives with System UI as the Core default and optional consumer-loaded Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk preset recipes.",
       "category": "foundation",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -21,13 +21,18 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/typography.css",
-          "target": "styles/typography.css",
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
           "role": "style"
         },
         {
-          "source": "../../tokens/src/styles.css",
-          "target": "styles/tokens.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -58,14 +63,14 @@
         "Use Code only for short inline code; use pre and code for larger code blocks.",
         "Typography presets are scoped CSS token recipes; load Geist or Inter in the consuming product before applying their preset class."
       ],
-      "usage": "@import './styles/tokens.css';\n@import './styles/typography.css';\n\nimport { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>"
+      "usage": "@import './styles/tokens.css';\n\nimport { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>"
     },
     {
       "name": "kbd",
       "title": "Kbd",
       "description": "Displays a keyboard shortcut with native kbd semantics.",
       "category": "foundation",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -79,8 +84,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/kbd.css",
-          "target": "styles/kbd.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -159,11 +169,6 @@
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
-        },
-        {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
           "role": "style"
         }
       ],
@@ -311,7 +316,7 @@
       "title": "Badge",
       "description": "Labels status, category, or lightweight metadata.",
       "category": "data-display",
-      "dependencies": ["@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["spinner"],
       "files": [
         {
@@ -330,8 +335,13 @@
           "role": "component"
         },
         {
-          "source": "../../ui/src/styles/feedback.css",
-          "target": "styles/feedback.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -404,7 +414,7 @@
       "title": "Spinner",
       "description": "Indicates short indeterminate loading activity without changing surrounding layout.",
       "category": "feedback",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -420,6 +430,16 @@
         {
           "source": "../../ui/src/styles/spinner.css",
           "target": "styles/spinner.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -447,7 +467,7 @@
       "title": "Skeleton",
       "description": "Reserves layout while content is loading.",
       "category": "feedback",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -463,6 +483,16 @@
         {
           "source": "../../ui/src/styles/feedback.css",
           "target": "styles/feedback.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -487,7 +517,7 @@
       "title": "EmptyState",
       "description": "Composable feedback structure for missing content, recovery paths, and first-use moments.",
       "category": "feedback",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -501,8 +531,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/feedback.css",
-          "target": "styles/feedback.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -538,7 +573,7 @@
       "title": "Alert",
       "description": "Communicates inline feedback with a clear tone.",
       "category": "feedback",
-      "dependencies": ["@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -557,13 +592,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/feedback.css",
-          "target": "styles/feedback.css",
-          "role": "style"
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -597,7 +632,7 @@
       "title": "Card",
       "description": "Groups related product information on a quiet surface.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -611,8 +646,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/display.css",
-          "target": "styles/display.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -656,7 +696,7 @@
       "title": "Separator",
       "description": "Divides related sections without adding visual noise.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -670,8 +710,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/display.css",
-          "target": "styles/display.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -691,7 +736,7 @@
       "title": "Avatar",
       "description": "Identifies a person, team, or entity.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -705,8 +750,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/display.css",
-          "target": "styles/display.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -731,7 +781,7 @@
       "title": "Progress",
       "description": "Communicates the completion status of one task that takes time.",
       "category": "feedback",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -747,6 +797,16 @@
         {
           "source": "../../ui/src/styles/progress.css",
           "target": "styles/progress.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -787,13 +847,28 @@
       "title": "Stat",
       "description": "Highlights a compact product metric.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["card"],
       "files": [
         {
           "source": "../../ui/src/components/stat.tsx",
           "target": "components/stat.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
         }
       ],
       "baseUiPrimitives": [],
@@ -812,7 +887,7 @@
       "title": "KeyValue",
       "description": "Displays compact metadata as a label and value pair.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -826,8 +901,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/display.css",
-          "target": "styles/display.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -847,7 +927,7 @@
       "title": "Table",
       "description": "Presents structured records for scanning and comparison.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -861,8 +941,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/display.css",
-          "target": "styles/display.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -900,7 +985,7 @@
       "title": "Item",
       "description": "Composes compact content, media, metadata, and independent actions without imposing list semantics.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["separator"],
       "files": [
         {
@@ -919,8 +1004,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/display.css",
-          "target": "styles/display.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -973,7 +1063,7 @@
       "title": "List",
       "description": "Presents simple structured lists with optional descriptions, metadata, and native links.",
       "category": "data-display",
-      "dependencies": ["clsx", "react"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -992,8 +1082,13 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/display.css",
-          "target": "styles/display.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1080,11 +1175,6 @@
         {
           "source": "../../ui/src/styles/select.css",
           "target": "styles/select.css",
-          "role": "style"
-        },
-        {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
           "role": "style"
         }
       ],
@@ -1368,11 +1458,6 @@
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
-        },
-        {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
-          "role": "style"
         }
       ],
       "baseUiPrimitives": [],
@@ -1650,11 +1735,6 @@
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
-        },
-        {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
-          "role": "style"
         }
       ],
       "baseUiPrimitives": ["checkbox"],
@@ -1750,7 +1830,14 @@
       "title": "Tabs",
       "description": "Switches between related panels in the same context.",
       "category": "navigation",
-      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": [],
       "files": [
         {
@@ -1771,6 +1858,16 @@
         {
           "source": "../../ui/src/styles/tabs.css",
           "target": "styles/tabs.css",
+          "role": "style"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -1975,11 +2072,6 @@
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
-          "role": "style"
-        },
-        {
           "source": "../../ui/src/styles/overlays.css",
           "target": "styles/overlays.css",
           "role": "style"
@@ -2035,7 +2127,7 @@
       "title": "Sidebar Primitive",
       "description": "Provides a low-level collapsible sidebar layout with bounded rail geometry and stable native refs without owning product navigation or persistence.",
       "category": "navigation",
-      "dependencies": ["@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -2069,8 +2161,13 @@
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -2126,7 +2223,14 @@
       "title": "Command Primitive",
       "description": "Provides an accessible local or consumer-filtered action picker with separate label, stable-value, and keyword responsibilities.",
       "category": "navigation",
-      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": ["spinner"],
       "files": [
         {
@@ -2155,8 +2259,13 @@
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -2231,7 +2340,14 @@
       "title": "Sheet",
       "description": "Presents a focused modal panel from an explicit side.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -2250,13 +2366,18 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
+          "source": "../../ui/src/styles/overlays.css",
+          "target": "styles/overlays.css",
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/overlays.css",
-          "target": "styles/overlays.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],
@@ -2477,7 +2598,14 @@
       "title": "Toast",
       "description": "Acknowledges short-lived product events without interrupting work.",
       "category": "feedback",
-      "dependencies": ["@base-ui/react", "@nerio-ui/adapters", "clsx", "react"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -2496,13 +2624,18 @@
           "role": "utility"
         },
         {
-          "source": "../../ui/src/styles/icon.css",
-          "target": "styles/icon.css",
+          "source": "../../ui/src/styles/toast.css",
+          "target": "styles/toast.css",
           "role": "style"
         },
         {
-          "source": "../../ui/src/styles/toast.css",
-          "target": "styles/toast.css",
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
           "role": "style"
         }
       ],

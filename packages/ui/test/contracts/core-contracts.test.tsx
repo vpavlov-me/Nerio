@@ -656,10 +656,13 @@ describe("Core static contracts", () => {
 
   it("keeps Spinner animation independent from Button tokens and stops it for reduced motion", () => {
     const spinnerStyles = readFileSync(resolve(process.cwd(), "src/styles/spinner.css"), "utf8");
-    expect(spinnerStyles).not.toContain("--n-button-");
-    expect(spinnerStyles).toMatch(
-      /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.n-spinner\s*\{\s*animation: none;/,
+    const spinnerSource = readFileSync(
+      resolve(process.cwd(), "src/components/spinner.tsx"),
+      "utf8",
     );
+    expect(spinnerStyles).not.toContain("--n-button-");
+    expect(spinnerStyles).toContain("@keyframes n-spin");
+    expect(spinnerSource).toContain("motion-reduce:animate-none");
   });
 
   it("renders Kbd with a native semantic element and a stable styling hook", () => {
@@ -669,10 +672,10 @@ describe("Core static contracts", () => {
     expect(shortcut).toHaveClass("n-kbd");
     expect(shortcut).toHaveAttribute("data-slot", "kbd");
 
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/kbd.css"), "utf8");
-    expect(styles).toContain("display: inline-block;");
-    expect(styles).toContain("vertical-align: baseline;");
-    expect(styles).toContain("@media (forced-colors: active)");
+    const source = readFileSync(resolve(process.cwd(), "src/components/kbd.tsx"), "utf8");
+    expect(source).toContain("inline-block");
+    expect(source).toContain("align-baseline");
+    expect(source).toContain("forced-colors:border-[CanvasText]");
   });
 
   it("keeps Progress semantics, root props, and protected anatomy intentional", () => {
@@ -825,17 +828,22 @@ describe("Core static contracts", () => {
   );
 
   it("keeps Progress styles isolated, transform-based, directional, and motion-safe", () => {
-    const progressStyles = readFileSync(resolve(process.cwd(), "src/styles/progress.css"), "utf8");
+    const progressSource = readFileSync(
+      resolve(process.cwd(), "src/components/progress.tsx"),
+      "utf8",
+    );
     const feedbackStyles = readFileSync(resolve(process.cwd(), "src/styles/feedback.css"), "utf8");
-    expect(progressStyles).toContain("transform: scaleX(var(--n-progress-ratio, 0));");
-    expect(progressStyles).not.toContain("transition: inline-size");
-    expect(progressStyles).toContain(".n-progress:dir(rtl)");
-    expect(progressStyles).toContain("animation-direction: reverse;");
-    expect(progressStyles).toContain("@media (prefers-reduced-motion: reduce)");
-    expect(progressStyles).toContain("animation: none;");
-    expect(progressStyles).toContain("--n-progress-indeterminate-reduced-position");
-    expect(progressStyles).toContain("@media (forced-colors: active)");
-    expect(progressStyles).not.toMatch(/--n-(purple|blue|green|orange|red|gray)-/);
+    expect(progressSource).toContain("scale-x-(--n-progress-ratio)");
+    expect(progressSource).toContain(
+      "data-[state=indeterminate]:[&_[data-slot=indicator]]:scale-x-100",
+    );
+    expect(progressSource).not.toContain("transition-[inline-size]");
+    expect(progressSource).toContain("rtl:[&_[data-slot=indicator]]:origin-right");
+    expect(progressSource).toContain("[animation-direction:reverse]");
+    expect(progressSource).toContain("motion-reduce:data-[state=indeterminate]");
+    expect(progressSource).toContain("--n-progress-indeterminate-reduced-position");
+    expect(progressSource).toContain("forced-colors:");
+    expect(progressSource).not.toMatch(/--n-(purple|blue|green|orange|red|gray)-/);
     expect(feedbackStyles).not.toContain(".n-progress");
   });
 
@@ -905,13 +913,11 @@ describe("Core static contracts", () => {
   });
 
   it("keeps Card narrow layouts and high-contrast focus visible", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/display.css"), "utf8");
-    expect(styles).toMatch(
-      /@media \(max-width: 30rem\)[\s\S]*\.n-card__header:has\(> \[data-slot="card-action"\]\)[\s\S]*grid-template-columns: minmax\(0, 1fr\);/,
+    const source = readFileSync(resolve(process.cwd(), "src/components/card.tsx"), "utf8");
+    expect(source).toContain(
+      "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
-    expect(styles).toMatch(
-      /@media \(forced-colors: active\)[\s\S]*\.n-card\[href\]:focus-visible[\s\S]*solid Highlight;/,
-    );
+    expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");
   });
 
   it("resets Avatar fallback state when src changes and exposes intentional fallback names", () => {
@@ -1180,24 +1186,21 @@ describe("Core static contracts", () => {
   });
 
   it("scopes Table row states to tbody and preserves responsive, RTL, density, and forced colors", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/display.css"), "utf8");
+    const source = readFileSync(resolve(process.cwd(), "src/components/table.tsx"), "utf8");
     const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
 
-    expect(styles).toContain("max-inline-size: 100%;");
-    expect(styles).toContain("overflow-x: auto;");
-    expect(styles).toContain("min-inline-size: max-content;");
-    expect(styles).toContain("text-align: start;");
-    expect(styles).toContain("text-align: end;");
-    expect(styles).toMatch(/\.n-table tbody > tr:hover > :is\(th, td\)/);
-    expect(styles).toMatch(/\.n-table tbody > tr:focus-within > :is\(th, td\)/);
-    expect(styles).toMatch(
-      /\.n-table tbody > tr:is\(\[data-selected\], \[aria-current\]:not\(\[aria-current="false"\]\)\) > :is\(th, td\)/,
-    );
-    expect(styles).not.toMatch(/\.n-table tr:hover/);
-    expect(styles).not.toMatch(/\.n-table tr:focus-within/);
-    expect(styles).toMatch(
-      /@media \(forced-colors: active\)[\s\S]*\.n-table-container\[data-focusable\]:focus-visible[\s\S]*solid Highlight;/,
-    );
+    expect(source).toContain("max-w-full");
+    expect(source).toContain("overflow-x-auto");
+    expect(source).toContain("[&>.n-table]:min-w-max");
+    expect(source).toContain("[&_:is(th,td)]:text-start");
+    expect(source).toContain("[data-align=numeric]]:text-end");
+    expect(source).toContain("[&_tbody>tr:hover>:is(th,td)]");
+    expect(source).toContain("[&_tbody>tr:focus-within>:is(th,td)]");
+    expect(source).toContain("[aria-current]:not([aria-current=false])");
+    expect(source).not.toContain("[&_tr:hover");
+    expect(source).not.toContain("[&_tr:focus-within");
+    expect(source).toContain("forced-colors:data-focusable:focus-visible:outline-[Highlight]");
+    expect(source).toContain("[border:var(--n-table-container-border)]");
     expect(tokens).toMatch(
       /:root\[data-density="compact"\][\s\S]*--n-table-cell-padding-y:[^;]+;[\s\S]*--n-table-row-min-height:[^;]+;/,
     );
@@ -1380,13 +1383,10 @@ describe("Core static contracts", () => {
   });
 
   it("stacks EmptyState actions at mobile widths without changing the composition API", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/feedback.css"), "utf8");
-    expect(styles).toMatch(
-      /@media \(max-width: 30rem\)[\s\S]*\.n-empty-state__actions[\s\S]*flex-direction: column;[\s\S]*inline-size: 100%;/,
-    );
-    expect(styles).toMatch(
-      /@media \(forced-colors: active\)[\s\S]*\.n-empty-state__media\[data-variant="icon"\]/,
-    );
+    const source = readFileSync(resolve(process.cwd(), "src/components/empty-state.tsx"), "utf8");
+    expect(source).toContain("max-[30rem]:w-full");
+    expect(source).toContain("max-[30rem]:flex-col");
+    expect(source).toContain("forced-colors:data-[variant=icon]:border-[CanvasText]");
   });
 
   it("renders Alert content and an optional trailing action slot", () => {

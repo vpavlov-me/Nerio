@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 
 export type SkeletonProps = React.HTMLAttributes<HTMLDivElement>;
@@ -11,7 +11,11 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(function
   return (
     <div
       ref={ref}
-      className={cn("n-skeleton", motionClasses.skeleton, className)}
+      className={cn(
+        "n-skeleton min-h-(--n-skeleton-height) rounded-(--n-radius-md) bg-(--n-color-surface-muted)",
+        motionClasses.skeleton,
+        className,
+      )}
       data-slot="skeleton"
       aria-hidden
       {...props}
