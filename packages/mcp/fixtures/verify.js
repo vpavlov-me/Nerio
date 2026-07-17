@@ -178,6 +178,9 @@ async function verify() {
       arguments: { name: "button" },
     });
     const buttonUsage = JSON.parse(buttonUsageResult.content[0].text);
+    if (!buttonUsage.files.some((file) => file.target === "styles/tokens.css")) {
+      throw new Error("MCP Button usage is missing the source-install token stylesheet.");
+    }
     if (
       !buttonUsage.requiredTokens.includes("--n-link-color") ||
       !buttonUsage.variants.includes("link") ||

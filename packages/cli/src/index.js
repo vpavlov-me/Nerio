@@ -188,7 +188,7 @@ async function add(name) {
       const content = await readText(source);
       fs.mkdirSync(path.dirname(target), { recursive: true });
       if (fs.existsSync(target) && !hasFlag("--overwrite")) {
-        if (fs.readFileSync(target, "utf8") === content) {
+        if (file.target === "styles/tokens.css" || fs.readFileSync(target, "utf8") === content) {
           skipped.push(path.relative(cwd, target));
           continue;
         }
