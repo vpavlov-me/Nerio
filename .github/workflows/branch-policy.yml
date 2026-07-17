@@ -16,11 +16,14 @@ jobs:
     steps:
       - name: Validate pull request direction
         env:
+          ALLOWED_DEVELOPMENT_BRANCH_PATTERN: "^(feat|feature|fix|refactor|docs|test|chore|dependabot)/[A-Za-z0-9._/-]+$"
           BASE_REF: ${{ github.base_ref }}
           HEAD_REF: ${{ github.head_ref }}
+          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          REPOSITORY: ${{ github.repository }}
         run: |
           if [[ "$BASE_REF" == "main" ]]; then
-            if [[ "$HEAD_REF" != "dev" ]]; then
+            if [[ "$HEAD_REF" != "dev" || "$HEAD_REPOSITORY" != "$REPOSITORY" ]]; then
               echo "Pull requests to main are allowed only from the dev integration branch." >&2
               exit 1
             fi
@@ -32,8 +35,8 @@ jobs:
               echo "Pull requests from main to dev are not allowed." >&2
               exit 1
             fi
-            if [[ ! "$HEAD_REF" =~ ^(feat|feature|fix|refactor|docs|test|chore)/[A-Za-z0-9._/-]+$ ]]; then
-              echo "Pull requests to dev must use a feat/, feature/, fix/, refactor/, docs/, test/, or chore/ branch." >&2
+            if [[ ! "$HEAD_REF" =~ $ALLOWED_DEVELOPMENT_BRANCH_PATTERN ]]; then
+              echo "Pull requests to dev must use a feat/, feature/, fix/, refactor/, docs/, test/, chore/, or bot-managed dependabot/ branch." >&2
               exit 1
             fi
           fi

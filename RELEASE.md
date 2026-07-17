@@ -66,7 +66,8 @@ Both pull request stages require the full CI and `branch-policy` checks. Direct 
 and branch deletion are prohibited for `main` and `dev`. `main` remains the default stable branch,
 and `dev` remains the permanent integration branch after a release. Release pull requests and merges
 to `main` are manual maintainer actions; coding agents must not merge them without a separate, direct
-request from the maintainer.
+request from the maintainer. Dependabot's reserved `dependabot/*` branches are the only automated
+development-branch exception and target `dev`.
 
 ## Versioning and package order
 

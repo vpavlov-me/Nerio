@@ -25,6 +25,9 @@ integration branch. Direct pushes, force pushes, and deletion are prohibited for
 7. Run the required checks before opening a pull request.
 8. Merge into `dev` only after required CI checks pass and review conversations are resolved.
 
+Dependabot is the only automated branch-name exception: its reserved `dependabot/*` branches target
+`dev` and must pass the same checks and review requirements.
+
 Once the workspace is bootstrapped, the standard commands will be:
 
 ```bash

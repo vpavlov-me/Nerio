@@ -317,10 +317,10 @@ try {
   });
 
   const noPreflightCss = readBuiltCss(consumerDirectory);
-  if (!noPreflightCss.includes("box-sizing:border-box")) {
+  if (!/box-sizing\s*:\s*border-box/.test(noPreflightCss)) {
     throw new Error("No-Preflight package CSS is missing scoped Nerio box sizing.");
   }
-  if (!noPreflightCss.includes("font-family:inherit")) {
+  if (!/font-family\s*:\s*inherit/.test(noPreflightCss)) {
     throw new Error("No-Preflight package CSS is missing native-control font inheritance.");
   }
 
