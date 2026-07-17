@@ -37,6 +37,7 @@ Use "No user-facing change" for internal-only work.
 
 - [ ] The scope is focused and the code follows `AGENTS.md`.
 - [ ] The implementation uses Nerio tokens rather than hard-coded design values where applicable.
+- [ ] Tailwind-first changes follow `docs/tailwind-styling-contract.md`, including static utilities, deterministic `className` overrides, residual CSS, and package/source-install evidence.
 - [ ] The component has deliberate keyboard, focus, and semantic behavior.
 - [ ] Component/API work passes the responsibility and public API admission rules in `docs/core-ui-best-practices.md`, or this is not applicable.
 - [ ] Styling decisions are classified as system, family, or justified component exceptions, or this is not applicable.

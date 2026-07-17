@@ -1,5 +1,8 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
+
+const progressClasses =
+  "n-progress grid gap-(--n-progress-gap) [&_[data-slot=header]]:flex [&_[data-slot=header]]:items-baseline [&_[data-slot=header]]:justify-between [&_[data-slot=header]]:gap-(--n-progress-header-gap) [&_[data-slot=label]]:text-(length:--n-progress-label-font-size) [&_[data-slot=label]]:font-(--n-progress-label-font-weight) [&_[data-slot=label]]:text-(--n-progress-label-color) [&_[data-slot=value]]:text-(length:--n-progress-value-font-size) [&_[data-slot=value]]:font-(--n-progress-value-font-weight) [&_[data-slot=value]]:text-(--n-progress-value-color) [&_[data-slot=track]]:h-(--n-progress-height) [&_[data-slot=track]]:overflow-hidden [&_[data-slot=track]]:rounded-(--n-progress-radius) [&_[data-slot=track]]:bg-(--n-progress-track-background) [&_[data-slot=indicator]]:block [&_[data-slot=indicator]]:h-full [&_[data-slot=indicator]]:w-full [&_[data-slot=indicator]]:origin-left [&_[data-slot=indicator]]:scale-x-(--n-progress-ratio) [&_[data-slot=indicator]]:bg-(--n-progress-indicator-background) [&_[data-slot=indicator]]:transition-transform [&_[data-slot=indicator]]:duration-(--n-progress-duration) [&_[data-slot=indicator]]:ease-(--n-progress-easing) rtl:[&_[data-slot=indicator]]:origin-right data-[state=indeterminate]:[&_[data-slot=indicator]]:w-(--n-progress-indeterminate-width) data-[state=indeterminate]:[&_[data-slot=indicator]]:scale-x-100 data-[state=indeterminate]:[&_[data-slot=indicator]]:translate-x-(--n-progress-indeterminate-start) data-[state=indeterminate]:[&_[data-slot=indicator]]:animate-[n-progress-indeterminate_var(--n-progress-indeterminate-duration)_var(--n-progress-easing)_infinite] rtl:data-[state=indeterminate]:[&_[data-slot=indicator]]:[animation-direction:reverse] motion-reduce:[&_[data-slot=indicator]]:transition-none motion-reduce:data-[state=indeterminate]:[&_[data-slot=indicator]]:animate-none motion-reduce:data-[state=indeterminate]:[&_[data-slot=indicator]]:translate-x-(--n-progress-indeterminate-reduced-position) forced-colors:[&_[data-slot=track]]:bg-[Canvas] forced-colors:[&_[data-slot=track]]:outline forced-colors:[&_[data-slot=track]]:outline-1 forced-colors:[&_[data-slot=track]]:outline-[CanvasText] forced-colors:[&_[data-slot=indicator]]:bg-[Highlight]";
 
 export type ProgressState = "indeterminate" | "progressing" | "complete";
 
@@ -124,7 +127,7 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(function
       aria-valuemin={normalized.min}
       aria-valuenow={normalized.value}
       aria-valuetext={valueText}
-      className={cn("n-progress", className)}
+      className={cn(progressClasses, className)}
       data-slot="root"
       data-state={normalized.state}
       role="progressbar"

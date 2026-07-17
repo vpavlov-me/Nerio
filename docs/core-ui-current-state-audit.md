@@ -2,12 +2,15 @@
 
 ## Scope
 
-This audit supports issue #155 and records a documentation-only review of Nerio Core after the
-0.1.0 alpha release. It does not approve visual changes or silently redefine public contracts.
+This historical baseline supports issue #155 and records the documentation-only review of Nerio Core
+after the 0.1.0 alpha release. It does not approve visual changes or silently redefine public
+contracts. It is not the post-Tailwind assessment; see
+[`core-ui-post-tailwind-audit.md`](./core-ui-post-tailwind-audit.md) for the durable delta report.
 
 The review sampled implementation, component CSS, registry metadata, public docs examples,
-contract tests, accessibility tests, and browser evidence from every Core category. Findings are
-grouped by systemic cause rather than subjective cosmetic preference.
+contract tests, accessibility tests, and browser evidence from every Core category. Paths in the
+matrix identify the 0.1.0-alpha.0 baseline rather than the current Tailwind-first implementation.
+Findings are grouped by systemic cause rather than subjective cosmetic preference.
 
 Classifications:
 
@@ -22,7 +25,7 @@ Classifications:
 | Core category         | Representative source and styles                                               | Registry and docs evidence                                                 | Test evidence                                                                                            | Classification                                                          |
 | --------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | Foundation            | `typography.tsx`, `icon.tsx`, `typography.css`, `icon.css`, token runtime axes | `typography` and `icon` registry items; typography and icon reference data | Core contracts, accessibility coverage, token/runtime-axis validators                                    | Already aligned; visual values remain future maintainer decisions       |
-| Actions               | `button.tsx`, `button-group.tsx`, `button.css`, `button-group.css`             | `button`/`button-group` metadata and Button docs                           | Button type, state, keyboard, loading, render, and group contracts                                       | One objective technical deviation; otherwise aligned                    |
+| Actions               | `button.tsx`, `button-group.tsx`, `button.css`, `button-group.css`             | `button`/`button-group` metadata and Button docs                           | Button type, state, keyboard, loading, render, and group contracts                                       | Baseline deviation resolved by #169; otherwise aligned                  |
 | Forms                 | `field.tsx`, `input.tsx`, `select.tsx`, `forms.css`, `select.css`              | `field`, `input`, and `select` metadata and examples                       | Label/description/error, controlled state, Base UI, and axe coverage                                     | Already aligned; systemic state-review guidance was a documentation gap |
 | Overlays              | `dialog.tsx`, `sheet.tsx`, `overlays.css`                                      | `dialog` and `sheet` metadata and examples                                 | Focus management/restoration, dismissal, safe-area, responsive, and source-install evidence              | Already aligned                                                         |
 | Data display          | `card.tsx`, `table.tsx`, `item.tsx`, `display.css`                             | `card`, `table`, and `item` metadata and examples                          | Semantic roots, refs, table naming/overflow, responsive and accessibility evidence                       | Already aligned                                                         |
@@ -61,16 +64,15 @@ standard that joined the following decisions:
 `docs/core-ui-best-practices.md` now owns that normative guidance. Other governance surfaces link to
 it instead of copying the full rules.
 
-### Objective technical deviation
+### Historical objective technical deviation — resolved
 
-Custom Button render targets do not currently preserve the complete ref contract. The native
-`BaseButton` path receives the forwarded ref, but the custom `render` branch clones the render
-element without composing its existing ref with the forwarded Button ref. Existing tests cover
-anchor semantics and styling but not the two ref shapes.
+At the time of the baseline audit, custom Button render targets did not preserve the complete ref
+contract. The native `BaseButton` path received the forwarded ref, but the custom `render` branch
+did not compose its existing ref with the forwarded Button ref.
 
-This deviation is tracked in [issue #169](https://github.com/vpavlov-me/Nerio/issues/169). It is not
-release-blocking and MUST be fixed in a focused follow-up without changing Button anatomy, styling,
-variants, link semantics, or the public API.
+This deviation was tracked and resolved by [issue #169](https://github.com/vpavlov-me/Nerio/issues/169)
+without changing Button anatomy, styling, variants, link semantics, or the public API. The
+post-Tailwind report records its final classification and current evidence.
 
 ### Future visual decisions
 
@@ -88,6 +90,6 @@ to the audited surfaces; future proposals must still pass the responsibility and
 
 - No production component, style, visual token value, rendered example, public prop, variant, slot,
   default, export, or runtime behavior changed in #155.
-- One objective deviation was moved to a focused follow-up issue.
+- One historical objective deviation was moved to a focused follow-up and resolved.
 - The audit found no reason to expand Core, begin Pro implementation, or alter the current visual
   baseline.

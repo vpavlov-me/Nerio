@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Button } from "./button";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 
 export interface PopoverProps extends Pick<
@@ -29,23 +29,36 @@ export const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(function P
         }
       />
       <BasePopover.Portal>
-        <BasePopover.Positioner className="n-popover-positioner">
+        <BasePopover.Positioner className="n-popover-positioner z-(--n-overlay-z-index)">
           <BasePopover.Popup
             ref={ref}
-            className={cn("n-popover__content", motionClasses.overlayEnter, className)}
+            className={cn(
+              "n-popover__content grid min-w-(--n-dropdown-min-width) max-w-(--n-popover-width-md) gap-(--n-space-2) rounded-(--n-radius-container) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) shadow-(--n-overlay-shadow)",
+              motionClasses.overlayEnter,
+              className,
+            )}
             data-slot="content"
           >
             {title ? (
-              <BasePopover.Title className="n-popover__title" data-slot="title">
+              <BasePopover.Title
+                className="n-popover__title m-0 px-(--n-space-2) pt-(--n-space-1) text-(length:--n-font-size-sm) font-(--n-font-weight-semibold) text-(--n-color-text-primary)"
+                data-slot="title"
+              >
                 {title}
               </BasePopover.Title>
             ) : null}
             {description ? (
-              <BasePopover.Description className="n-popover__description" data-slot="description">
+              <BasePopover.Description
+                className="n-popover__description m-0 px-(--n-space-2) text-(length:--n-font-size-sm) text-(--n-color-text-secondary)"
+                data-slot="description"
+              >
                 {description}
               </BasePopover.Description>
             ) : null}
-            <div className="n-popover__body" data-slot="body">
+            <div
+              className="n-popover__body grid gap-(--n-space-2) text-(length:--n-font-size-sm) text-(--n-color-text-secondary)"
+              data-slot="body"
+            >
               {children}
             </div>
           </BasePopover.Popup>

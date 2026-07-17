@@ -1,5 +1,7 @@
 @import "tailwindcss";
+@import "@nerio-ui/tokens/tailwind.css";
 @import "@nerio-ui/ui/styles.css";
+@source "../../../packages/ui/src";
 
 :root {
   --n-docs-safe-area-block-start: env(safe-area-inset-top);
@@ -94,8 +96,11 @@ body {
 }
 
 a {
-  color: inherit;
   text-decoration: none;
+}
+
+:where(a:not(.n-button)) {
+  color: inherit;
 }
 
 code,
@@ -1114,7 +1119,9 @@ pre {
 .home-gallery__control-row {
   align-items: center;
   display: flex;
+  flex-wrap: wrap;
   gap: var(--n-space-5);
+  min-inline-size: 0;
 }
 
 .home-gallery__spinner {
@@ -1490,12 +1497,6 @@ pre {
   border-radius: var(--n-radius-lg);
   block-size: calc(100vh - var(--n-docs-header-height) - var(--n-space-10));
   inline-size: 100%;
-}
-
-.grid {
-  display: grid;
-  gap: var(--n-space-4);
-  grid-template-columns: repeat(auto-fit, minmax(var(--n-docs-min-card-width), 1fr));
 }
 
 .doc-page {

@@ -28,16 +28,22 @@ const packageDirectories = Object.fromEntries(
 const packageContracts = {
   "@nerio-ui/tokens": {
     homepage: "https://nerio.vpavlov.com/docs/foundations/tokens",
-    exports: [".", "./styles.css"],
+    exports: [".", "./styles.css", "./tailwind.css"],
     dependencies: [],
     peers: [],
-    sideEffects: ["./src/styles.css"],
+    sideEffects: ["./src/styles.css", "./src/tailwind.css"],
   },
   "@nerio-ui/ui": {
     homepage: "https://nerio.vpavlov.com/docs/components/button",
     exports: [".", "./client", "./styles.css"],
-    dependencies: ["@base-ui/react", "@nerio-ui/adapters", "@nerio-ui/tokens", "clsx"],
-    peers: ["react", "react-dom"],
+    dependencies: [
+      "@base-ui/react",
+      "@nerio-ui/adapters",
+      "@nerio-ui/tokens",
+      "clsx",
+      "tailwind-merge",
+    ],
+    peers: ["react", "react-dom", "tailwindcss"],
     sideEffects: ["./src/styles.css"],
   },
   "@nerio-ui/adapters": {
@@ -83,6 +89,14 @@ function run(command, args, options = {}) {
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
+}
+
+function readBuiltCss(directory) {
+  const buildDirectory = join(directory, ".next");
+  return readdirSync(buildDirectory, { recursive: true })
+    .filter((entry) => typeof entry === "string" && entry.endsWith(".css"))
+    .map((entry) => readFileSync(join(buildDirectory, entry), "utf8"))
+    .join("\n");
 }
 
 function sortedKeys(value) {
@@ -222,15 +236,19 @@ try {
       ),
       "@base-ui/react": uiPackage.dependencies["@base-ui/react"],
       clsx: uiPackage.dependencies.clsx,
+      "tailwind-merge": uiPackage.dependencies["tailwind-merge"],
       "lucide-react": adaptersPackage.dependencies["lucide-react"],
       next: docsPackage.dependencies.next,
       react: docsPackage.dependencies.react,
       "react-dom": docsPackage.dependencies["react-dom"],
     },
     devDependencies: {
+      "@tailwindcss/postcss": docsPackage.devDependencies["@tailwindcss/postcss"],
       "@types/node": docsPackage.devDependencies["@types/node"],
       "@types/react": docsPackage.devDependencies["@types/react"],
       "@types/react-dom": docsPackage.devDependencies["@types/react-dom"],
+      postcss: docsPackage.devDependencies.postcss,
+      tailwindcss: docsPackage.dependencies.tailwindcss,
       typescript: docsPackage.devDependencies.typescript,
     },
   };
@@ -269,6 +287,17 @@ try {
   for (const component of [
     "typography",
     "button",
+    "button-group",
+    "input",
+    "input-group",
+    "textarea",
+    "label",
+    "field",
+    "form-message",
+    "form-group",
+    "checkbox",
+    "radio-group",
+    "switch",
     "select",
     "sheet",
     "toast",
@@ -282,11 +311,51 @@ try {
     run(process.execPath, [cli, "add", component], { cwd: consumerDirectory });
   }
 
+  run(pnpm, ["build"], {
+    cwd: consumerDirectory,
+    env: { NEXT_TELEMETRY_DISABLED: "1" },
+  });
+
+  const noPreflightCss = readBuiltCss(consumerDirectory);
+  if (!/box-sizing\s*:\s*border-box/.test(noPreflightCss)) {
+    throw new Error("No-Preflight package CSS is missing scoped Nerio box sizing.");
+  }
+  if (!/font-family\s*:\s*inherit/.test(noPreflightCss)) {
+    throw new Error("No-Preflight package CSS is missing native-control font inheritance.");
+  }
+
+  writeFileSync(
+    join(consumerDirectory, "app/globals.css"),
+    [
+      '@import "tailwindcss";',
+      '@import "@nerio-ui/tokens/tailwind.css";',
+      '@import "@nerio-ui/ui/styles.css";',
+      '@source "../node_modules/@nerio-ui/ui/src";',
+      "",
+    ].join("\n"),
+  );
+  rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
+  run(pnpm, ["build"], {
+    cwd: consumerDirectory,
+    env: { NEXT_TELEMETRY_DISABLED: "1" },
+  });
+
   const installedStyles = readdirSync(join(consumerDirectory, "components/nerio/styles")).sort();
   writeFileSync(
     join(consumerDirectory, "app/source-styles.css"),
     `${installedStyles.map((file) => `@import "../components/nerio/styles/${file}";`).join("\n")}\n`,
   );
+  writeFileSync(
+    join(consumerDirectory, "app/globals.css"),
+    [
+      "@layer theme, base, components, utilities;",
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities);',
+      '@import "./source-styles.css";',
+      "",
+    ].join("\n"),
+  );
+  rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
 
   const mcpCheck = [
     "const tools = require('@nerio-ui/mcp');",
@@ -294,6 +363,17 @@ try {
     `const expected = ${JSON.stringify([
       "typography",
       "button",
+      "button-group",
+      "input",
+      "input-group",
+      "textarea",
+      "label",
+      "field",
+      "form-message",
+      "form-group",
+      "checkbox",
+      "radio-group",
+      "switch",
       "select",
       "sheet",
       "toast",

@@ -1,5 +1,11 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
+
+const messageToneClasses: Record<FormMessageTone, string> = {
+  neutral: "text-(--n-color-text-tertiary)",
+  danger: "text-(--n-color-status-danger)",
+  success: "text-(--n-color-status-success)",
+};
 
 export type FormMessageTone = "neutral" | "danger" | "success";
 
@@ -12,7 +18,11 @@ export const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessagePro
     return (
       <p
         ref={ref}
-        className={cn("n-form-message", className)}
+        className={cn(
+          "n-form-message m-0 text-(length:--n-font-size-sm)",
+          messageToneClasses[tone],
+          className,
+        )}
         data-slot="root"
         data-tone={tone}
         {...props}

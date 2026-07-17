@@ -22,6 +22,7 @@ This repository is the source of truth for Nerio. Read the following documents b
 - Templates may compose Core, Pro, and template-local components. A template does not need complete Core coverage.
 - Use **Base UI** as the sole primitive layer. Do not add Radix UI, shadcn/ui, Headless UI, Ariakit, or another overlapping primitive system.
 - Use Next.js, React, TypeScript, Tailwind CSS v4, pnpm workspaces, and Turborepo.
+- Tailwind CSS v4 is the Core style authoring engine while Nerio `--n-*` variables remain the canonical value layer. Before changing Tailwind-first component source, package/source-install setup, or residual CSS, read `docs/tailwind-styling-contract.md` and preserve its static-utility, `@theme inline`, `@source`, Preflight, class-merge, and residual-CSS rules.
 - The project may adopt ideas compatible with registry-based distribution, but it must have its own `nerio` CLI, own registry format, own documentation, and own component APIs. Do not depend on the shadcn CLI, registry, or package.
 - All public-facing docs, UI copy, code comments, and issue templates must be written in English.
 
@@ -135,9 +136,19 @@ Before moving any Core component toward `stable-core`, verify:
 
 ## Workflow
 
-1. Inspect the current workspace and relevant documentation.
-2. Check `COMPONENTS.md`, `data/component-catalog.json`, and the tiering guidance before creating, moving, or promoting components.
-3. State a concise implementation plan in the pull request or task output.
-4. Implement the smallest complete vertical slice.
-5. Add or update docs, examples, types, registry metadata, and component catalog entries in the same change.
-6. Run the repository checks and report exact results.
+1. Determine the intended base branch before starting. Normal work always targets `dev`.
+2. Update `dev` and create a `feat/*`, `fix/*`, `refactor/*`, `docs/*`, `test/*`, or `chore/*`
+   branch from it. Do not create a feature branch from `main`.
+3. Inspect the current workspace and relevant documentation.
+4. Check `COMPONENTS.md`, `data/component-catalog.json`, and the tiering guidance before creating, moving, or promoting components.
+5. State a concise implementation plan in the pull request or task output.
+6. Implement the smallest complete vertical slice.
+7. Add or update docs, examples, types, registry metadata, and component catalog entries in the same change.
+8. Run the repository checks and report exact results.
+9. Open ordinary pull requests into `dev`; never open a feature pull request directly into `main`.
+10. Use `dev -> main` only for an explicitly requested release pull request. Never merge a pull
+    request into `main` without a separate, direct request from the user.
+11. After a task pull request is merged and the final remote state is verified, stop processes
+    started from its worktree, remove that worktree from the local machine, and run
+    `git worktree prune`. Never remove a worktree that contains uncommitted changes or unmerged
+    commits; report it as retained instead.

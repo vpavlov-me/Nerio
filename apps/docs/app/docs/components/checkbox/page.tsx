@@ -48,10 +48,16 @@ const apiRows = [
 ] as const;
 
 const implementationRows = [
-  ["Registry item", "checkbox installs 6 source files into the configured components directory."],
+  [
+    "Registry item",
+    "checkbox installs 7 Tailwind-first source files into the configured components directory.",
+  ],
   ["Base UI", "checkbox"],
   ["Registry dependencies", "None."],
-  ["Package dependencies", "@base-ui/react, @nerio-ui/adapters, clsx, react"],
+  [
+    "Package dependencies",
+    "@base-ui/react, @nerio-ui/adapters, clsx, react, tailwind-merge, tailwindcss",
+  ],
 ] as const;
 
 const tokenRows = [

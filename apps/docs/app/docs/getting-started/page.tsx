@@ -14,7 +14,14 @@ import { Button, Checkbox, Dialog, RadioGroup, Select, Switch, ToastProvider } f
 import "@nerio-ui/ui/styles.css";`;
 
 const packageInstall = `pnpm add @nerio-ui/tokens @nerio-ui/adapters @nerio-ui/ui
-pnpm add -D @nerio-ui/registry @nerio-ui/cli @nerio-ui/mcp`;
+pnpm add tailwindcss
+pnpm add -D @tailwindcss/postcss postcss @nerio-ui/registry @nerio-ui/cli @nerio-ui/mcp`;
+
+const tailwindSetup = `/* app/globals.css */
+@import "tailwindcss";
+@import "@nerio-ui/tokens/tailwind.css";
+@import "@nerio-ui/ui/styles.css";
+@source "../node_modules/@nerio-ui/ui/src";`;
 
 const sourceInstall = `nerio init
 nerio list
@@ -50,12 +57,24 @@ export default function Page() {
           application. No npm release exists while the package manifests remain private.
         </p>
         <CodeExample code={packageInstall} label="Package installation" />
+        <CodeExample code={tailwindSetup} label="Tailwind CSS v4 package setup" />
         <CodeExample code={packageImports} label="Package imports" />
         <p>
           <code>@nerio-ui/ui</code> is the server-safe entrypoint for static Core components and
           utilities, including Field and FormGroup. <code>@nerio-ui/ui/client</code> contains
           interactive Base UI-backed components such as Checkbox, RadioGroup, Switch, Select, and
-          Dialog. <code>@nerio-ui/ui/styles.css</code> imports tokens and component styles.
+          Dialog. <code>@nerio-ui/ui/styles.css</code> imports tokens, named keyframes, and the
+          scoped no-Preflight compatibility rules; component visuals compile from their Tailwind
+          recipes. Tailwind Preflight remains consumer-owned, and package source must be registered
+          explicitly because Tailwind ignores <code>node_modules</code> by default. Adjust the{" "}
+          <code>@source</code> path relative to your global stylesheet for other package-manager
+          layouts.
+        </p>
+        <p>
+          Consumers may omit Preflight by importing only Tailwind&apos;s theme and utilities layers.
+          Nerio&apos;s residual stylesheet remains limited to named keyframes plus scoped box-sizing
+          and native-control typography compatibility for that mode; component visuals remain owned
+          by static Tailwind recipes.
         </p>
         <p>
           Import icons and icon types from <code>@nerio-ui/adapters/icons</code>. The adapter
@@ -75,7 +94,9 @@ export default function Page() {
         <p>
           The CLI writes editable source files into the consuming app. Use <code>list</code> and{" "}
           <code>info</code> to inspect registry contents, <code>add --dry-run</code> to preview
-          files, and <code>doctor</code> to validate configuration.
+          files, and <code>doctor</code> to validate configuration. Tailwind-first source installs
+          include <code>styles/tailwind.css</code>; import it from a Tailwind-processed global
+          stylesheet alongside the installed token and residual styles.
         </p>
       </section>
 

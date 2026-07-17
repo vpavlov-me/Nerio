@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Switch as BaseSwitch } from "@base-ui/react/switch";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { resolveClassName } from "../lib/resolve-class-name";
 
 export interface SwitchProps extends React.ComponentProps<typeof BaseSwitch.Root> {
@@ -10,6 +10,9 @@ export interface SwitchProps extends React.ComponentProps<typeof BaseSwitch.Root
   label?: React.ReactNode;
   description?: React.ReactNode;
 }
+
+const switchClasses =
+  "n-switch box-border inline-flex h-(--n-switch-height) w-(--n-switch-width) cursor-pointer items-center rounded-(--n-switch-height) border-(length:--n-border-width-default) border-(--n-switch-border) bg-(--n-switch-background) p-(--n-switch-padding) transition-[background-color,border-color] duration-(--n-duration-fast) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-checked:border-(--n-switch-background-checked) data-checked:bg-(--n-switch-background-checked) [&:hover:not([data-disabled]):not([data-readonly])]:border-(--n-switch-border-hover) [&:hover:not([data-disabled]):not([data-readonly])]:bg-(--n-switch-background-hover) data-checked:[&:hover:not([data-disabled]):not([data-readonly])]:border-(--n-switch-background-checked-hover) data-checked:[&:hover:not([data-disabled]):not([data-readonly])]:bg-(--n-switch-background-checked-hover) data-checked:[&:active:not([data-disabled]):not([data-readonly])]:border-(--n-switch-background-checked-hover) data-checked:[&:active:not([data-disabled]):not([data-readonly])]:bg-(--n-switch-background-checked-hover) disabled:cursor-not-allowed disabled:border-(--n-color-border-subtle) disabled:opacity-(--n-opacity-disabled) data-disabled:cursor-not-allowed data-disabled:border-(--n-color-border-subtle) data-disabled:opacity-(--n-opacity-disabled) aria-disabled:cursor-not-allowed aria-disabled:border-(--n-color-border-subtle) aria-disabled:opacity-(--n-opacity-disabled) data-readonly:cursor-default data-checked:[&>[data-slot=thumb]]:ms-(--n-switch-thumb-offset) data-checked:[&>[data-slot=thumb]]:bg-(--n-switch-thumb-background-checked) forced-colors:border-[CanvasText] forced-colors:data-checked:border-[Highlight] forced-colors:data-checked:bg-[Highlight] forced-colors:data-checked:text-[HighlightText] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2 forced-colors:focus-visible:outline-[Highlight] motion-reduce:duration-0";
 
 export const Switch = React.forwardRef<HTMLElement, SwitchProps>(function Switch(
   {
@@ -38,7 +41,7 @@ export const Switch = React.forwardRef<HTMLElement, SwitchProps>(function Switch
   const control = (
     <BaseSwitch.Root
       ref={ref}
-      className={(state) => cn("n-switch", resolveClassName(className, state))}
+      className={(state) => cn(switchClasses, resolveClassName(className, state))}
       disabled={disabled}
       readOnly={readOnly}
       {...props}
@@ -50,7 +53,10 @@ export const Switch = React.forwardRef<HTMLElement, SwitchProps>(function Switch
       data-readonly={readOnly ? "" : undefined}
       data-slot="root"
     >
-      <BaseSwitch.Thumb className="n-switch__thumb" data-slot="thumb" />
+      <BaseSwitch.Thumb
+        className="n-switch__thumb ms-0 size-(--n-switch-thumb-size) flex-none rounded-(--n-switch-thumb-size) border-(length:--n-border-width-default) border-(--n-switch-thumb-border) bg-(--n-switch-thumb-background) transition-[margin-inline-start] duration-(--n-duration-fast) forced-colors:border-[CanvasText] motion-reduce:duration-0"
+        data-slot="thumb"
+      />
     </BaseSwitch.Root>
   );
 
@@ -60,20 +66,28 @@ export const Switch = React.forwardRef<HTMLElement, SwitchProps>(function Switch
 
   return (
     <span
-      className="n-switch-field"
+      className="n-switch-field inline-grid grid-cols-[auto_minmax(0,1fr)] items-start gap-(--n-switch-field-gap) data-disabled:[&_*]:cursor-not-allowed data-disabled:cursor-not-allowed data-readonly:cursor-default [&>.n-switch]:mt-(--n-space-0-5)"
       data-disabled={disabled ? "" : undefined}
       data-readonly={readOnly ? "" : undefined}
       data-slot="field"
     >
       {control}
-      <span className="n-switch__content">
+      <span className="n-switch__content grid gap-(--n-space-1)">
         {label ? (
-          <span className="n-switch__label" data-slot="label" id={labelId}>
+          <span
+            className="n-switch__label text-(--n-color-text-primary)"
+            data-slot="label"
+            id={labelId}
+          >
             {label}
           </span>
         ) : null}
         {description ? (
-          <span className="n-switch__description" data-slot="description" id={descriptionId}>
+          <span
+            className="n-switch__description text-(length:--n-font-size-sm) text-(--n-color-text-tertiary)"
+            data-slot="description"
+            id={descriptionId}
+          >
             {description}
           </span>
         ) : null}

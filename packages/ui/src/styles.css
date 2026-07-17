@@ -1,31 +1,17 @@
 @import "@nerio-ui/tokens/styles.css";
 @import "./styles/motion.css";
-@import "./styles/icon.css";
-@import "./styles/typography.css";
-@import "./styles/kbd.css";
 @import "./styles/spinner.css";
-@import "./styles/button.css";
-@import "./styles/button-group.css";
-@import "./styles/navigation.css";
-@import "./styles/sidebar.css";
-@import "./styles/command.css";
 @import "./styles/feedback.css";
 @import "./styles/progress.css";
-@import "./styles/display.css";
-@import "./styles/forms.css";
-@import "./styles/input-group.css";
 @import "./styles/select.css";
-@import "./styles/tabs.css";
 @import "./styles/overlays.css";
-@import "./styles/toast.css";
 
-* {
+/* Scoped no-Preflight compatibility for source and package consumers. */
+:where([class^="n-"], [class*=" n-"]) {
   box-sizing: border-box;
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
+/* Preserve Nerio control typography when consumers intentionally omit Tailwind Preflight. */
+:where(button, input, select, textarea):where([class^="n-"], [class*=" n-"]) {
+  font-family: inherit;
 }

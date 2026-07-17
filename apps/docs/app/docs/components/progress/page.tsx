@@ -163,7 +163,7 @@ export default function ProgressPage() {
             rows={[
               [
                 "Registry item",
-                "Progress installs its component, cn utility, and dedicated progress.css stylesheet.",
+                "Progress installs its Tailwind-first component, merge utility, token bridge, and residual progress keyframes.",
               ],
               ["Base UI", "No interactive primitive required."],
               ["Server safety", "Progress has no client boundary or runtime dependency."],

@@ -466,7 +466,8 @@ async function verify() {
     if (
       !buttonGroupUsage.variants.includes("orientation: horizontal | vertical") ||
       !buttonGroupUsage.accessibility.some((item) => item.includes("independent Tab order")) ||
-      !buttonGroupUsage.files.some((file) => file.target === "styles/button-group.css")
+      !buttonGroupUsage.files.some((file) => file.target === "lib/tailwind-cn.ts") ||
+      !buttonGroupUsage.files.some((file) => file.target === "styles/tailwind.css")
     ) {
       throw new Error(
         "MCP ButtonGroup usage is missing stable orientation or accessibility metadata.",

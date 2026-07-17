@@ -33,6 +33,18 @@ A component belongs in Pro when it is an advanced composition, data-heavy workfl
 
 Base UI is the only interactive primitive layer. Do not add shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive systems.
 
+## Tailwind CSS v4 styling
+
+Nerio Core is Tailwind CSS v4-first for component style authoring and keeps `--n-*` CSS variables as
+the canonical visual value layer. Tailwind utilities may reference semantic or component variables;
+they must not introduce a parallel palette or token source. Package consumers register the published
+UI source with `@source`, while source-installed files are detected from the consumer project. Nerio
+packages do not import Tailwind Preflight. The detailed contract and residual-CSS policy are recorded
+in `docs/tailwind-styling-contract.md`. Residual UI CSS is permanently limited to named shared
+keyframes and two scoped no-Preflight compatibility rules: Nerio-class box sizing and native-control
+font inheritance. These rules normalize package and source-install consumers without creating a
+second component styling layer.
+
 ## Distribution
 
 Nerio is source-first and independent. It has its own component APIs, registry format, CLI, documentation, MCP tooling, and visual language.

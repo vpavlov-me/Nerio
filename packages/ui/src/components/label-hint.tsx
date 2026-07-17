@@ -14,9 +14,13 @@ export interface LabelHintProps {
 
 export function LabelHint({ label, ariaLabel = "More information" }: LabelHintProps) {
   return (
-    <span className="n-label__hint" data-slot="hint">
+    <span className="n-label__hint inline-flex" data-slot="hint">
       <Tooltip delay={0} label={label}>
-        <span aria-label={ariaLabel} tabIndex={0}>
+        <span
+          className="inline-flex text-(--n-label-icon-color) hover:text-(--n-color-action-primary) focus-visible:text-(--n-color-action-primary) focus-visible:outline-0 [&_.n-icon]:size-(--n-label-hint-icon-size)"
+          aria-label={ariaLabel}
+          tabIndex={0}
+        >
           <Icon icon={CircleQuestionMark} />
         </span>
       </Tooltip>

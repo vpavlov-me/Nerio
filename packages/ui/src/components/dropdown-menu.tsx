@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Menu as BaseMenu } from "@base-ui/react/menu";
 import { Button } from "./button";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 
 export interface DropdownMenuItem {
@@ -32,16 +32,20 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
           }
         />
         <BaseMenu.Portal>
-          <BaseMenu.Positioner className="n-popover-positioner">
+          <BaseMenu.Positioner className="n-popover-positioner z-(--n-overlay-z-index)">
             <BaseMenu.Popup
               ref={ref}
-              className={cn("n-dropdown", motionClasses.overlayEnter, className)}
+              className={cn(
+                "n-dropdown grid min-w-(--n-dropdown-min-width) gap-(--n-space-1) rounded-(--n-radius-container) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) shadow-(--n-overlay-shadow)",
+                motionClasses.overlayEnter,
+                className,
+              )}
               data-slot="content"
             >
               {items.map((item, index) => (
                 <BaseMenu.Item
                   key={`${item.label}-${index}`}
-                  className="n-dropdown__item"
+                  className="n-dropdown__item cursor-pointer rounded-(--n-radius-md) border-0 bg-(--n-button-background-ghost) px-(--n-dropdown-item-padding-inline) py-(--n-space-2) text-start text-(length:--n-font-size-sm) text-(--n-color-text-secondary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) data-highlighted:bg-(--n-color-surface-muted) data-highlighted:text-(--n-color-text-primary) data-[variant=destructive]:text-(--n-color-danger) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-opacity-disabled) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)"
                   data-slot="item"
                   data-variant={item.destructive ? "destructive" : undefined}
                   disabled={item.disabled}

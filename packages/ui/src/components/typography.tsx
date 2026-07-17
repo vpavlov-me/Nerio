@@ -1,5 +1,8 @@
 import * as React from "react";
-import { cn } from "../lib/cn";
+import { tailwindCn as cn } from "../lib/tailwind-cn";
+
+const headingClasses =
+  "n-heading m-0 font-(--n-font-weight-semibold) leading-(--n-line-height-tight) text-(--n-color-text-primary) data-[size=xs]:text-(length:--n-font-size-sm) data-[size=sm]:text-(length:--n-font-size-base) data-[size=md]:text-(length:--n-font-size-lg) data-[size=lg]:text-(length:--n-font-size-xl) data-[size=xl]:text-(length:--n-font-size-2xl) data-[size=2xl]:text-(length:--n-font-size-3xl)";
 
 export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 export type HeadingSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
@@ -13,7 +16,9 @@ export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(functi
   { as: Component = "h2", className, size = "md", ...props },
   ref,
 ) {
-  return <Component ref={ref} className={cn("n-heading", className)} data-size={size} {...props} />;
+  return (
+    <Component ref={ref} className={cn(headingClasses, className)} data-size={size} {...props} />
+  );
 });
 
 export type TextTone = "default" | "secondary" | "tertiary";
@@ -25,7 +30,17 @@ export const Text = React.forwardRef<HTMLParagraphElement, TextProps>(function T
   { className, tone = "default", ...props },
   ref,
 ) {
-  return <p ref={ref} className={cn("n-text", className)} data-tone={tone} {...props} />;
+  return (
+    <p
+      ref={ref}
+      className={cn(
+        "n-text m-0 text-(length:--n-font-size-base) leading-(--n-line-height-normal) text-(--n-color-text-primary) data-[tone=secondary]:text-(--n-color-text-secondary) data-[tone=tertiary]:text-(--n-color-text-tertiary)",
+        className,
+      )}
+      data-tone={tone}
+      {...props}
+    />
+  );
 });
 
 export type CodeProps = React.HTMLAttributes<HTMLElement>;
@@ -34,5 +49,15 @@ export const Code = React.forwardRef<HTMLElement, CodeProps>(function Code(
   { className, ...props },
   ref,
 ) {
-  return <code ref={ref} className={cn("n-code", className)} data-slot="root" {...props} />;
+  return (
+    <code
+      ref={ref}
+      className={cn(
+        "n-code m-0 rounded-(--n-radius-sm) bg-(--n-color-surface-muted) px-(--n-space-1) py-(--n-space-0-5) font-(family-name:--n-font-mono) text-(length:--n-font-size-sm) text-(--n-color-text-primary)",
+        className,
+      )}
+      data-slot="root"
+      {...props}
+    />
+  );
 });

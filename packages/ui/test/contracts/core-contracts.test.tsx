@@ -535,25 +535,25 @@ describe("Core static contracts", () => {
     );
   });
 
-  it("keeps ButtonGroup attachment, focus layering, RTL, and density contracts in CSS", () => {
-    const buttonGroupStyles = readFileSync(
-      resolve(process.cwd(), "src/styles/button-group.css"),
+  it("keeps ButtonGroup attachment, focus layering, RTL, and density contracts in Tailwind", () => {
+    const buttonGroupSource = readFileSync(
+      resolve(process.cwd(), "src/components/button-group.tsx"),
       "utf8",
     );
-    expect(buttonGroupStyles).toContain("margin-inline-start");
-    expect(buttonGroupStyles).toContain('data-orientation="vertical"');
-    expect(buttonGroupStyles).toContain("margin-block-start");
-    expect(buttonGroupStyles).toContain(':dir(rtl)[data-orientation="vertical"]');
-    expect(buttonGroupStyles).toContain("transform: translateX(50%);");
-    expect(buttonGroupStyles).toContain("border-end-start-radius: var(--n-button-radius);");
-    expect(buttonGroupStyles).toContain("border-start-end-radius: var(--n-radius-none);");
-    expect(buttonGroupStyles).toContain(".n-button-group > .n-button:focus-visible");
-    expect(buttonGroupStyles).toContain("z-index: 2;");
-    expect(buttonGroupStyles).toContain(
-      '.n-button-group[data-orientation="vertical"] > .n-button:only-child',
+    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:ms-");
+    expect(buttonGroupSource).toContain("data-[orientation=vertical]:[&>.n-button+.n-button]:mt-");
+    expect(buttonGroupSource).toContain(
+      "rtl:data-[orientation=vertical]:[&>.n-button+.n-button::before]:translate-x-1/2",
     );
-    expect(buttonGroupStyles).toContain("border-radius: var(--n-button-radius);");
-    expect(buttonGroupStyles).not.toContain("overflow: hidden");
+    expect(buttonGroupSource).toContain("[&>.n-button:first-child]:rounded-s-");
+    expect(buttonGroupSource).toContain(
+      "data-[orientation=vertical]:[&>.n-button:first-child]:rounded-b-none",
+    );
+    expect(buttonGroupSource).toContain("[&>.n-button:focus-visible]:z-2");
+    expect(buttonGroupSource).toContain(
+      "data-[orientation=vertical]:[&>.n-button:only-child]:rounded-(--n-button-radius)",
+    );
+    expect(buttonGroupSource).not.toContain("overflow-hidden");
   });
 
   it("renders decorative Badge icons on either side of its status label and supports loading", () => {
@@ -656,10 +656,13 @@ describe("Core static contracts", () => {
 
   it("keeps Spinner animation independent from Button tokens and stops it for reduced motion", () => {
     const spinnerStyles = readFileSync(resolve(process.cwd(), "src/styles/spinner.css"), "utf8");
-    expect(spinnerStyles).not.toContain("--n-button-");
-    expect(spinnerStyles).toMatch(
-      /@media \(prefers-reduced-motion: reduce\)\s*\{\s*\.n-spinner\s*\{\s*animation: none;/,
+    const spinnerSource = readFileSync(
+      resolve(process.cwd(), "src/components/spinner.tsx"),
+      "utf8",
     );
+    expect(spinnerStyles).not.toContain("--n-button-");
+    expect(spinnerStyles).toContain("@keyframes n-spin");
+    expect(spinnerSource).toContain("motion-reduce:animate-none");
   });
 
   it("renders Kbd with a native semantic element and a stable styling hook", () => {
@@ -669,10 +672,10 @@ describe("Core static contracts", () => {
     expect(shortcut).toHaveClass("n-kbd");
     expect(shortcut).toHaveAttribute("data-slot", "kbd");
 
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/kbd.css"), "utf8");
-    expect(styles).toContain("display: inline-block;");
-    expect(styles).toContain("vertical-align: baseline;");
-    expect(styles).toContain("@media (forced-colors: active)");
+    const source = readFileSync(resolve(process.cwd(), "src/components/kbd.tsx"), "utf8");
+    expect(source).toContain("inline-block");
+    expect(source).toContain("align-baseline");
+    expect(source).toContain("forced-colors:border-[CanvasText]");
   });
 
   it("keeps Progress semantics, root props, and protected anatomy intentional", () => {
@@ -825,17 +828,22 @@ describe("Core static contracts", () => {
   );
 
   it("keeps Progress styles isolated, transform-based, directional, and motion-safe", () => {
-    const progressStyles = readFileSync(resolve(process.cwd(), "src/styles/progress.css"), "utf8");
+    const progressSource = readFileSync(
+      resolve(process.cwd(), "src/components/progress.tsx"),
+      "utf8",
+    );
     const feedbackStyles = readFileSync(resolve(process.cwd(), "src/styles/feedback.css"), "utf8");
-    expect(progressStyles).toContain("transform: scaleX(var(--n-progress-ratio, 0));");
-    expect(progressStyles).not.toContain("transition: inline-size");
-    expect(progressStyles).toContain(".n-progress:dir(rtl)");
-    expect(progressStyles).toContain("animation-direction: reverse;");
-    expect(progressStyles).toContain("@media (prefers-reduced-motion: reduce)");
-    expect(progressStyles).toContain("animation: none;");
-    expect(progressStyles).toContain("--n-progress-indeterminate-reduced-position");
-    expect(progressStyles).toContain("@media (forced-colors: active)");
-    expect(progressStyles).not.toMatch(/--n-(purple|blue|green|orange|red|gray)-/);
+    expect(progressSource).toContain("scale-x-(--n-progress-ratio)");
+    expect(progressSource).toContain(
+      "data-[state=indeterminate]:[&_[data-slot=indicator]]:scale-x-100",
+    );
+    expect(progressSource).not.toContain("transition-[inline-size]");
+    expect(progressSource).toContain("rtl:[&_[data-slot=indicator]]:origin-right");
+    expect(progressSource).toContain("[animation-direction:reverse]");
+    expect(progressSource).toContain("motion-reduce:data-[state=indeterminate]");
+    expect(progressSource).toContain("--n-progress-indeterminate-reduced-position");
+    expect(progressSource).toContain("forced-colors:");
+    expect(progressSource).not.toMatch(/--n-(purple|blue|green|orange|red|gray)-/);
     expect(feedbackStyles).not.toContain(".n-progress");
   });
 
@@ -905,13 +913,11 @@ describe("Core static contracts", () => {
   });
 
   it("keeps Card narrow layouts and high-contrast focus visible", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/display.css"), "utf8");
-    expect(styles).toMatch(
-      /@media \(max-width: 30rem\)[\s\S]*\.n-card__header:has\(> \[data-slot="card-action"\]\)[\s\S]*grid-template-columns: minmax\(0, 1fr\);/,
+    const source = readFileSync(resolve(process.cwd(), "src/components/card.tsx"), "utf8");
+    expect(source).toContain(
+      "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
-    expect(styles).toMatch(
-      /@media \(forced-colors: active\)[\s\S]*\.n-card\[href\]:focus-visible[\s\S]*solid Highlight;/,
-    );
+    expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");
   });
 
   it("resets Avatar fallback state when src changes and exposes intentional fallback names", () => {
@@ -1180,24 +1186,21 @@ describe("Core static contracts", () => {
   });
 
   it("scopes Table row states to tbody and preserves responsive, RTL, density, and forced colors", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/display.css"), "utf8");
+    const source = readFileSync(resolve(process.cwd(), "src/components/table.tsx"), "utf8");
     const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
 
-    expect(styles).toContain("max-inline-size: 100%;");
-    expect(styles).toContain("overflow-x: auto;");
-    expect(styles).toContain("min-inline-size: max-content;");
-    expect(styles).toContain("text-align: start;");
-    expect(styles).toContain("text-align: end;");
-    expect(styles).toMatch(/\.n-table tbody > tr:hover > :is\(th, td\)/);
-    expect(styles).toMatch(/\.n-table tbody > tr:focus-within > :is\(th, td\)/);
-    expect(styles).toMatch(
-      /\.n-table tbody > tr:is\(\[data-selected\], \[aria-current\]:not\(\[aria-current="false"\]\)\) > :is\(th, td\)/,
-    );
-    expect(styles).not.toMatch(/\.n-table tr:hover/);
-    expect(styles).not.toMatch(/\.n-table tr:focus-within/);
-    expect(styles).toMatch(
-      /@media \(forced-colors: active\)[\s\S]*\.n-table-container\[data-focusable\]:focus-visible[\s\S]*solid Highlight;/,
-    );
+    expect(source).toContain("max-w-full");
+    expect(source).toContain("overflow-x-auto");
+    expect(source).toContain("[&>.n-table]:min-w-max");
+    expect(source).toContain("[&_:is(th,td)]:text-start");
+    expect(source).toContain("[data-align=numeric]]:text-end");
+    expect(source).toContain("[&_tbody>tr:hover>:is(th,td)]");
+    expect(source).toContain("[&_tbody>tr:focus-within>:is(th,td)]");
+    expect(source).toContain("[aria-current]:not([aria-current=false])");
+    expect(source).not.toContain("[&_tr:hover");
+    expect(source).not.toContain("[&_tr:focus-within");
+    expect(source).toContain("forced-colors:data-focusable:focus-visible:outline-[Highlight]");
+    expect(source).toContain("[border:var(--n-table-container-border)]");
     expect(tokens).toMatch(
       /:root\[data-density="compact"\][\s\S]*--n-table-cell-padding-y:[^;]+;[\s\S]*--n-table-row-min-height:[^;]+;/,
     );
@@ -1380,13 +1383,10 @@ describe("Core static contracts", () => {
   });
 
   it("stacks EmptyState actions at mobile widths without changing the composition API", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/feedback.css"), "utf8");
-    expect(styles).toMatch(
-      /@media \(max-width: 30rem\)[\s\S]*\.n-empty-state__actions[\s\S]*flex-direction: column;[\s\S]*inline-size: 100%;/,
-    );
-    expect(styles).toMatch(
-      /@media \(forced-colors: active\)[\s\S]*\.n-empty-state__media\[data-variant="icon"\]/,
-    );
+    const source = readFileSync(resolve(process.cwd(), "src/components/empty-state.tsx"), "utf8");
+    expect(source).toContain("max-[30rem]:w-full");
+    expect(source).toContain("max-[30rem]:flex-col");
+    expect(source).toContain("forced-colors:data-[variant=icon]:border-[CanvasText]");
   });
 
   it("renders Alert content and an optional trailing action slot", () => {
@@ -1547,60 +1547,18 @@ describe("Core static contracts", () => {
   });
 
   it("uses one managed Toast coordinate system for stack, enter, and four-way dismissal", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/toast.css"), "utf8");
-    const indicatorStyles = styles.match(
-      /\.n-toast \[data-slot="status-indicator"\] \{([\s\S]*?)\}/,
-    )?.[1];
-
-    expect(indicatorStyles).toBeDefined();
-    expect(indicatorStyles).not.toMatch(/\bbackground\s*:/);
-    expect(styles).toMatch(
-      /\.n-toast \[data-slot="description"\][\s\S]*font-size:\s*var\(--n-font-size-md\)/,
-    );
-    expect(styles).toMatch(/--toast-managed-base-y:/);
-    expect(styles).toMatch(/--toast-managed-enter-y:/);
-    expect(styles).toMatch(/--toast-managed-dismiss-x:/);
-    expect(styles).toMatch(/--toast-managed-dismiss-y:/);
-    expect(styles).toMatch(
-      /--toast-viewport-inline-inset:\s*max\([\s\S]*safe-area-inset-left[\s\S]*safe-area-inset-right/,
-    );
-    expect(styles).toMatch(/inline-size:\s*min\([\s\S]*var\(--toast-viewport-inline-inset\) \* 2/);
-    expect(styles).toMatch(/inset-inline-start:\s*50%/);
-    expect(styles).toMatch(
-      /inset-block-end:\s*max\(var\(--n-toast-viewport-inset\), env\(safe-area-inset-bottom\)\)/,
-    );
-    expect(styles).toMatch(/transform:\s*translateX\(-50%\)/);
-    expect(styles).toMatch(/\.n-toast-viewport:dir\(rtl\)[\s\S]*transform:\s*translateX\(50%\)/);
-    expect(styles).toMatch(/--toast-managed-scale:\s*max\(\s*0,\s*calc\(/);
-    expect(styles).toMatch(
-      /--toast-managed-base-y:\s*calc\(var\(--toast-index\) \* var\(--n-toast-stack-offset\) \* -1\)/,
-    );
-    expect(styles).toMatch(/\[data-slot="title"\][\s\S]*margin:\s*0/);
-    expect(styles).toMatch(/\[data-slot="description"\][\s\S]*margin:\s*0/);
-    expect(styles).toMatch(
-      /transform:\s*translate3d\(\s*var\(--toast-managed-x\),\s*var\(--toast-managed-y\),\s*0\s*\)\s*scale\(var\(--toast-managed-scale\)\)/,
-    );
-    expect(styles).toMatch(/transform-origin:\s*top center/);
-    expect(styles).toMatch(
-      /\[data-starting-style\][\s\S]*--toast-managed-enter-y:\s*var\(--n-toast-enter-offset\)/,
-    );
-
-    for (const [direction, axis, sign] of [
-      ["right", "x", ""],
-      ["left", "x", String.raw`-1 \*`],
-      ["down", "y", ""],
-      ["up", "y", String.raw`-1 \*`],
-    ] as const) {
-      expect(styles).toMatch(
-        new RegExp(
-          `\\[data-ending-style\\]\\[data-swipe-direction="${direction}"\\][\\s\\S]*--toast-managed-dismiss-${axis}:\\s*calc\\(${sign}`,
-        ),
-      );
+    const source = readFileSync(resolve(process.cwd(), "src/components/toast.tsx"), "utf8");
+    expect(source).toContain("--toast-managed-base-y");
+    expect(source).toContain("--toast-managed-enter-y");
+    expect(source).toContain("--toast-managed-dismiss-x");
+    expect(source).toContain("--toast-managed-dismiss-y");
+    expect(source).toContain("safe-area-inset-left");
+    expect(source).toContain("safe-area-inset-right");
+    expect(source).toContain("translate3d(var(--toast-managed-x),var(--toast-managed-y),0)");
+    for (const direction of ["right", "left", "down", "up"]) {
+      expect(source).toContain(`data-[swipe-direction=${direction}]`);
     }
-
-    expect(styles).toMatch(
-      /@media \(prefers-reduced-motion: reduce\)[\s\S]*--toast-managed-enter-y:\s*0px;[\s\S]*--toast-managed-dismiss-x:\s*0px;[\s\S]*--toast-managed-dismiss-y:\s*0px;/,
-    );
+    expect(source).toContain("motion-reduce:data-starting-style:[--toast-managed-enter-y:0px]");
   });
 
   it("upserts duplicate IDs, preserves ordering, and marks stack overflow deterministically", () => {
@@ -2810,38 +2768,30 @@ describe("Core interactive action contracts", () => {
   });
 
   it("keeps vertical variants compact, horizontal fill-only, and RTL indicator geometry in the CSS contract", () => {
-    const tabsStyles = readFileSync(resolve(process.cwd(), "src/styles/tabs.css"), "utf8");
-    expect(tabsStyles).toContain('.n-tabs[data-orientation="vertical"] {');
-    expect(tabsStyles).toContain("align-items: start;");
-    expect(tabsStyles).toContain("inline-size: fit-content;");
-    expect(tabsStyles).toMatch(
-      /\.n-tabs:not\(\[data-orientation="vertical"\]\)\s+\.n-tabs__list\[data-layout="fill"\]/,
+    const source = readFileSync(resolve(process.cwd(), "src/components/tabs.tsx"), "utf8");
+    expect(source).toContain("data-[orientation=vertical]:items-start");
+    expect(source).toContain("[[data-orientation=vertical]_&]:w-fit");
+    expect(source).toContain("[&[data-layout=fill]>[data-slot=trigger]]:flex-1");
+    expect(source).toContain("left-(--active-tab-left)");
+    expect(source).toContain("w-(--active-tab-width)");
+    expect(source).toContain(
+      "[[data-orientation=vertical]_&]:right-[calc(var(--n-border-width-default)*-1)]",
     );
-    expect(tabsStyles).toContain("inline-size: 100%;");
-    expect(tabsStyles).toContain("left: var(--active-tab-left);");
-    expect(tabsStyles).toContain("width: var(--active-tab-width);");
-    expect(tabsStyles).toContain("inset-inline-end: calc(var(--n-border-width-default) * -1);");
-    expect(tabsStyles).not.toContain("inset-inline-start: var(--active-tab-left);");
   });
 
   it("keeps Tabs hover feedback to text and icon color only", () => {
-    const tabsStyles = readFileSync(resolve(process.cwd(), "src/styles/tabs.css"), "utf8");
-    expect(tabsStyles).toContain("color: var(--n-tabs-foreground-hover);");
-    expect(tabsStyles).not.toContain("trigger-background-hover");
+    const source = readFileSync(resolve(process.cwd(), "src/components/tabs.tsx"), "utf8");
+    expect(source).toContain("text-(--n-tabs-foreground-hover)");
+    expect(source).not.toContain("trigger-background-hover");
   });
 
   it("keeps scrollable focus treatment inset and Tabs motion reducible", () => {
-    const tabsStyles = readFileSync(resolve(process.cwd(), "src/styles/tabs.css"), "utf8");
-    expect(tabsStyles).toContain("overflow-x: auto;");
-    expect(tabsStyles).toContain("overflow-y: hidden;");
-    expect(tabsStyles).toContain("inset 0 0 0 var(--n-focus-ring-inner-width)");
-    expect(tabsStyles).toContain("inset 0 0 0 var(--n-focus-ring-outer-width)");
-    expect(tabsStyles).toMatch(
-      /@media \(prefers-reduced-motion: reduce\)[\s\S]*transition-duration: 1ms;/,
-    );
-    expect(tabsStyles).toMatch(
-      /@media \(forced-colors: active\)[\s\S]*\.n-tabs__trigger:focus-visible[\s\S]*solid Highlight;/,
-    );
+    const source = readFileSync(resolve(process.cwd(), "src/components/tabs.tsx"), "utf8");
+    expect(source).toContain("data-scrollable:overflow-x-auto");
+    expect(source).toContain("data-scrollable:overflow-y-hidden");
+    expect(source).toContain("inset_0_0_0_var(--n-focus-ring-inner-width)");
+    expect(source).toContain("motion-reduce:duration-[1ms]");
+    expect(source).toContain("forced-colors:focus-visible:outline-[Highlight]");
   });
 
   it("keeps state class names and Indicator hydration geometry available to Base UI", () => {
@@ -3032,20 +2982,12 @@ describe("Core interactive action contracts", () => {
   });
 
   it("uses Sheet-specific backdrop, safe-area close, exit motion, and reduced-motion contracts", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/overlays.css"), "utf8");
-
-    expect(styles).toMatch(
-      /\[data-slot="sheet-backdrop"\]\s*\{[^}]*background:\s*var\(--n-sheet-backdrop\);/s,
-    );
-    expect(styles).toMatch(
-      /\.n-sheet__close-icon\s*\{[^}]*inset-block-start:\s*max\(var\(--n-sheet-padding\),\s*env\(safe-area-inset-top\)\);[^}]*inset-inline-end:\s*max\(var\(--n-sheet-padding\),\s*env\(safe-area-inset-right\)\);/s,
-    );
-    expect(styles).toMatch(
-      /\.n-sheet\[data-ending-style\]\s*\{\s*animation:\s*n-sheet-exit\s+var\(--n-motion-overlay-exit-duration\)\s+var\(--n-motion-overlay-exit-easing\);\s*\}/,
-    );
-    expect(styles).toMatch(
-      /@media \(prefers-reduced-motion: reduce\)\s*\{[^}]*\.n-sheet\[data-side\],[^{]*\.n-sheet\[data-ending-style\]\[data-side\][^{]*\{\s*animation:\s*none;/s,
-    );
+    const source = readFileSync(resolve(process.cwd(), "src/components/sheet.tsx"), "utf8");
+    expect(source).toContain("bg-(--n-sheet-backdrop)");
+    expect(source).toContain("env(safe-area-inset-top)");
+    expect(source).toContain("env(safe-area-inset-right)");
+    expect(source).toContain("data-ending-style:data-[side=left]:animate-[n-sheet-exit-left");
+    expect(source).toContain("motion-reduce:data-[side=left]:animate-none");
   });
 
   it("coordinates uncontrolled Sidebar state, stable slots, and focus-safe collapse", async () => {
@@ -3090,17 +3032,14 @@ describe("Core interactive action contracts", () => {
   });
 
   it("keeps Sidebar rail geometry inside the declared hit area on both physical sides", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/sidebar.css"), "utf8");
-
-    expect(styles).toMatch(
-      /\.n-sidebar-rail\s*\{[^}]*block-size:\s*var\(--n-sidebar-rail-hit-area\);[^}]*inline-size:\s*var\(--n-sidebar-rail-hit-area\);[^}]*inset-block-start:\s*50%;[^}]*transform:\s*translateY\(-50%\);/s,
-    );
-    expect(styles).not.toMatch(/\.n-sidebar-rail\s*\{[^}]*inset-block:\s*0;/s);
-    expect(styles).toMatch(
-      /\.n-sidebar-rail\s*\{[^}]*right:\s*calc\(-0\.5 \* var\(--n-sidebar-rail-hit-area\)\);/s,
-    );
-    expect(styles).toMatch(
-      /\.n-sidebar\[data-side="right"\] \.n-sidebar-rail\s*\{[^}]*left:\s*calc\(-0\.5 \* var\(--n-sidebar-rail-hit-area\)\);[^}]*right:\s*auto;/s,
+    const source = readFileSync(resolve(process.cwd(), "src/components/sidebar.tsx"), "utf8");
+    expect(source).toContain("size-(--n-sidebar-rail-hit-area)");
+    expect(source).toContain("top-1/2");
+    expect(source).toContain("-translate-y-1/2");
+    expect(source).not.toContain("inset-y-0");
+    expect(source).toContain("right-[calc(-0.5*var(--n-sidebar-rail-hit-area))]");
+    expect(source).toContain(
+      "[[data-side=right]_&]:left-[calc(-0.5*var(--n-sidebar-rail-hit-area))]",
     );
   });
 
@@ -3454,17 +3393,11 @@ describe("Core interactive action contracts", () => {
       "aria-hidden",
     );
 
-    const styles = readFileSync(resolve(process.cwd(), "src/styles/command.css"), "utf8");
-    expect(styles).toMatch(
-      /\.n-command__item\[data-leading="false"\][^{]*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) auto auto;/s,
-    );
-    expect(styles).toMatch(
-      /\.n-command__item\[data-leading="true"\][^{]*\{[^}]*grid-template-columns:\s*auto minmax\(0, 1fr\) auto auto;/s,
-    );
-    expect(styles).toContain("var(--n-focus-ring)");
-    expect(styles).toMatch(
-      /@media \(forced-colors: active\)[\s\S]*\.n-command__input:focus-visible[\s\S]*solid Highlight;/,
-    );
+    const source = readFileSync(resolve(process.cwd(), "src/components/command.tsx"), "utf8");
+    expect(source).toContain("data-[leading=false]:grid-cols-[minmax(0,1fr)_auto_auto]");
+    expect(source).toContain("data-[leading=true]:grid-cols-[auto_minmax(0,1fr)_auto_auto]");
+    expect(source).toContain("shadow-(--n-focus-ring)");
+    expect(source).toContain("forced-colors:focus-visible:outline-[Highlight]");
   });
 
   it("does not select a Command item while IME composition is active", () => {

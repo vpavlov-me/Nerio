@@ -309,18 +309,16 @@ function validate() {
     }
   }
 
-  const uiStyleRules = readdirSync(join(root, "packages/ui/src/styles"))
-    .filter((file) => file.endsWith(".css"))
-    .flatMap((file) =>
-      collectRules(parseCss(readFileSync(join(root, "packages/ui/src/styles", file), "utf8"))),
-    );
-  for (const media of ["(forced-colors: active)", "(prefers-reduced-motion: reduce)"]) {
-    if (
-      !uiStyleRules.some((rule) =>
-        rule.atRules.some((atRule) => atRule.name === "media" && atRule.prelude === media),
-      )
-    ) {
-      failures.push(`UI styles are missing the ${media} media contract.`);
+  const uiComponentSource = readdirSync(join(root, "packages/ui/src/components"))
+    .filter((file) => file.endsWith(".tsx"))
+    .map((file) => readFileSync(join(root, "packages/ui/src/components", file), "utf8"))
+    .join("\n");
+  for (const [variant, label] of [
+    ["forced-colors:", "forced-colors"],
+    ["motion-reduce:", "reduced-motion"],
+  ]) {
+    if (!uiComponentSource.includes(variant)) {
+      failures.push(`UI Tailwind recipes are missing the ${label} variant contract.`);
     }
   }
 

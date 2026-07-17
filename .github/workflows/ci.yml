@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - dev
   workflow_dispatch:
 
 permissions:
@@ -26,6 +27,7 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
+      - run: pnpm test:branch-policy
       - run: pnpm test:ui
       - run: pnpm test:a11y
       - run: pnpm test:catalog

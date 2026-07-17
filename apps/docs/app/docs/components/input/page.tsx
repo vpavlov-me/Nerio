@@ -177,10 +177,10 @@ export default function Page() {
           <DocumentationTable
             headers={["Contract", "Value"]}
             rows={[
-              ["Registry item", "input installs 5 source files."],
+              ["Registry item", "input installs 6 source files."],
               ["Base UI", "No interactive primitive required."],
               ["Registry dependencies", "None."],
-              ["Package dependencies", "clsx, react"],
+              ["Package dependencies", "clsx, react, tailwind-merge, tailwindcss"],
             ]}
             codeColumns={1}
           />

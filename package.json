@@ -10,6 +10,7 @@
     "build": "turbo build",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
+    "test:branch-policy": "node --test scripts/check-branch-policy.test.mjs",
     "validate:catalog": "node scripts/validate-component-catalog.mjs",
     "test:catalog": "node --test scripts/validate-component-catalog.test.mjs scripts/validate-release-docs.test.mjs",
     "validate:tokens": "node scripts/validate-tokens.mjs",

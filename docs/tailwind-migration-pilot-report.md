@@ -1,0 +1,57 @@
+# Tailwind migration pilot report
+
+## Scope and structure
+
+The pilot migrates exactly Button, Input, and Dialog. Button's standalone visual stylesheet is
+deleted. Input rules are removed from `forms.css`; Dialog visual rules are removed from `overlays.css`.
+The components now contain static Tailwind v4 class recipes and use a conflict-aware merge helper.
+The public token package adds `tailwind.css`; docs, demo, packed-package, and source-install consumers
+receive explicit build setup.
+
+## Evidence
+
+- The docs production build compiles `@theme`, `@source`, and component utilities; no Tailwind
+  directives remain in emitted CSS.
+- The packed consumer registers `node_modules/@nerio-ui/ui/src`; the source-installed consumer uses
+  copied TSX and bridge files. Both release-consumer modes compile Tailwind theme and utilities layers
+  without Preflight, while docs and demo cover the default Preflight path.
+- Registry items for Button, Input, and Dialog include `tailwind-merge`, the merge helper, and the
+  bridge; obsolete Button/Input style payloads are removed.
+- Root `className` conflicts are covered by focused merge tests.
+- UI contract and accessibility suites preserve the published component behavior.
+
+## Size comparison
+
+The handwritten UI style directory is 85,837 bytes after the pilot versus 92,936 bytes at
+`0.1.0-alpha.0`, a reduction of 7,099 bytes (7.6%). The production docs CSS is 203,073 bytes before
+compression. The previous 182,716-byte build was not a valid Tailwind comparison because it emitted
+unprocessed `@theme` and `@source` directives and generated none of the package utilities.
+
+## Residual CSS
+
+This section records the historical pilot state. The final post-migration allowlist is defined in
+`docs/tailwind-styling-contract.md` and verified by `tailwind-contracts.test.ts`.
+
+- `motion.css`: shared transition recipes still used by migrated and unmigrated components.
+- `icon.css`: shared Icon implementation used inside Button and Dialog.
+- Dialog keyframes in `overlays.css`: preserve enter/exit transforms and reduced-motion fade without a
+  duplicate visual selector implementation.
+- Scoped `.n-*` box sizing in `styles.css`: no-Preflight compatibility for package and source
+  consumers.
+- Scoped native-control font inheritance in `styles.css`: preserves Nerio typography when consumers
+  omit Preflight without imposing a document-wide form reset.
+
+## Known limitations
+
+- At the pilot checkpoint, remaining Core components still used the pre-migration CSS architecture
+  and were owned by #173. The component migration is now complete.
+- Package consumers must register the installed UI source path explicitly because Tailwind ignores
+  `node_modules` by default.
+- The final validators, CLI doctor guidance, migration documentation, and release recommendation are
+  owned by #174.
+
+## Recommendation
+
+**COMPLETED.** The styling contract was accepted by the maintainer on 2026-07-17 and #173 completed
+the remaining component-family slices. Keep the static-class, Nerio-variable, consumer-owned
+Preflight, explicit package `@source`, conflict-aware merge, and narrow residual-CSS rules unchanged.

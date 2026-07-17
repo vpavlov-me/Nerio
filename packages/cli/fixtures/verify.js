@@ -16,12 +16,10 @@ const expectedFiles = [
   "lib/cn.ts",
   "lib/compose-refs.ts",
   "lib/motion.ts",
-  "styles/button.css",
-  "styles/icon.css",
-  "styles/kbd.css",
+  "lib/tailwind-cn.ts",
   "styles/motion.css",
-  "styles/overlays.css",
   "styles/spinner.css",
+  "styles/tailwind.css",
 ];
 const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
 const expectedSheetFiles = [
@@ -30,7 +28,6 @@ const expectedSheetFiles = [
   "components/icon.tsx",
   "components/sheet.tsx",
   "lib/cn.ts",
-  "styles/icon.css",
   "styles/overlays.css",
 ];
 const expectedSidebarFiles = [
@@ -39,8 +36,8 @@ const expectedSidebarFiles = [
   "components/sidebar.tsx",
   "lib/cn.ts",
   "lib/compose-refs.ts",
-  "styles/icon.css",
-  "styles/sidebar.css",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
 ];
 const expectedCommandFiles = [
   "components/command.tsx",
@@ -48,50 +45,52 @@ const expectedCommandFiles = [
   "components/spinner.tsx",
   "lib/cn.ts",
   "lib/resolve-class-name.ts",
-  "styles/command.css",
-  "styles/icon.css",
+  "lib/tailwind-cn.ts",
   "styles/spinner.css",
+  "styles/tailwind.css",
 ];
 const expectedFieldFiles = [
   "components/field.tsx",
   "components/label.tsx",
   "components/form-message.tsx",
   "lib/cn.ts",
-  "styles/forms.css",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
 ];
 const expectedInputGroupFiles = [
   "components/input.tsx",
   "components/input-group.tsx",
   "lib/cn.ts",
   "lib/motion.ts",
-  "styles/forms.css",
-  "styles/input-group.css",
+  "lib/tailwind-cn.ts",
   "styles/motion.css",
+  "styles/tailwind.css",
 ];
 const expectedFormGroupFiles = [
   "components/form-group.tsx",
   "components/form-message.tsx",
   "lib/cn.ts",
-  "styles/forms.css",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
 ];
 const expectedBaseFormFiles = [
   "components/checkbox.tsx",
   "components/icon.tsx",
   "components/switch.tsx",
   "lib/cn.ts",
+  "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
-  "styles/forms.css",
-  "styles/icon.css",
+  "styles/tailwind.css",
 ];
 const expectedSelectFiles = [
   "components/select.tsx",
   "components/form-message.tsx",
   "components/icon.tsx",
   "lib/cn.ts",
+  "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
-  "styles/forms.css",
   "styles/select.css",
-  "styles/icon.css",
+  "styles/tailwind.css",
 ];
 const expectedPhase2BFiles = [
   "components/alert.tsx",
@@ -99,10 +98,10 @@ const expectedPhase2BFiles = [
   "components/icon.tsx",
   "components/radio-group.tsx",
   "lib/cn.ts",
+  "lib/tailwind-cn.ts",
   "lib/resolve-class-name.ts",
   "styles/feedback.css",
-  "styles/forms.css",
-  "styles/icon.css",
+  "styles/tailwind.css",
 ];
 const expectedDisplayFiles = [
   "components/avatar.tsx",
@@ -113,13 +112,13 @@ const expectedDisplayFiles = [
   "components/stat.tsx",
   "components/table.tsx",
   "lib/cn.ts",
-  "styles/display.css",
 ];
 const expectedNavigationFiles = [
   "components/breadcrumbs.tsx",
   "components/pagination.tsx",
   "lib/cn.ts",
-  "styles/navigation.css",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
 ];
 const expectedFeedbackFiles = [
   "components/empty-state.tsx",
@@ -140,11 +139,10 @@ const expectedOverlayAndTabsFiles = [
   "components/tooltip.tsx",
   "lib/cn.ts",
   "lib/motion.ts",
-  "styles/icon.css",
+  "lib/tailwind-cn.ts",
   "styles/motion.css",
   "styles/overlays.css",
-  "styles/tabs.css",
-  "styles/toast.css",
+  "styles/tailwind.css",
 ];
 
 function run(cwd, ...args) {
@@ -275,7 +273,8 @@ async function verify() {
     if (
       !buttonGroupInfoOutput.includes("orientation: horizontal | vertical") ||
       !buttonGroupInfoOutput.includes("independent Tab order") ||
-      !buttonGroupInfoOutput.includes("styles/button-group.css")
+      !buttonGroupInfoOutput.includes("lib/tailwind-cn.ts") ||
+      !buttonGroupInfoOutput.includes("styles/tailwind.css")
     ) {
       throw new Error(
         "ButtonGroup registry metadata did not include the stable orientation contract.",
@@ -335,7 +334,8 @@ async function verify() {
     }
     assertFiles(localTarget, [
       "components/typography.tsx",
-      "styles/typography.css",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
       "styles/tokens.css",
     ]);
     const installedTypographyTokens = fs.readFileSync(
@@ -355,7 +355,7 @@ async function verify() {
       !sheetSource.includes("BaseDialog.Root") ||
       !sheetSource.includes('data-slot="sheet-content"') ||
       !sheetSource.includes("showClose") ||
-      !sheetSource.includes('className="n-sheet__close-icon"') ||
+      !sheetSource.includes('className="n-sheet__close-icon absolute') ||
       sheetSource.includes('cn("n-sheet__close"')
     ) {
       throw new Error("Installed Sheet source did not preserve its modal and slot contracts.");
@@ -369,10 +369,6 @@ async function verify() {
       path.join(localTarget, "components/nerio/components/sidebar-layout.tsx"),
       "utf8",
     );
-    const sidebarStyles = fs.readFileSync(
-      path.join(localTarget, "components/nerio/styles/sidebar.css"),
-      "utf8",
-    );
     if (
       !sidebarSource.includes("defaultExpanded") ||
       !sidebarSource.includes('data-state={expanded ? "expanded" : "collapsed"}') ||
@@ -381,9 +377,9 @@ async function verify() {
       !sidebarLayoutSource.includes('from "../lib/compose-refs"') ||
       !sidebarLayoutSource.includes("React.forwardRef<HTMLDivElement, SidebarContentProps>") ||
       !sidebarLayoutSource.includes("React.useMemo(() => composeRefs(ref), [ref])") ||
-      !sidebarStyles.includes("block-size: var(--n-sidebar-rail-hit-area)") ||
-      !sidebarStyles.includes("inset-block-start: 50%") ||
-      sidebarStyles.includes("inset-block: 0")
+      !sidebarSource.includes("size-(--n-sidebar-rail-hit-area)") ||
+      !sidebarSource.includes("top-1/2") ||
+      !sidebarSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
         "Installed Sidebar source did not preserve geometry, ref, state, focus safety, or ARIA contracts.",
@@ -392,10 +388,6 @@ async function verify() {
     assertFiles(localTarget, expectedCommandFiles);
     const commandSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/command.tsx"),
-      "utf8",
-    );
-    const commandStyles = fs.readFileSync(
-      path.join(localTarget, "components/nerio/styles/command.css"),
       "utf8",
     );
     if (
@@ -407,8 +399,9 @@ async function verify() {
       commandSource.includes('<span aria-hidden className="n-command__item-leading"') ||
       !commandSource.includes('data-slot="command-loading"') ||
       !commandSource.includes("filterProp === false") ||
-      !commandStyles.includes('data-leading="false"') ||
-      !commandStyles.includes("var(--n-focus-ring)")
+      !commandSource.includes("data-[leading=false]") ||
+      !commandSource.includes("shadow-(--n-focus-ring)") ||
+      !commandSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
         "Installed Command source did not preserve filtering, active-value, or status contracts.",
@@ -514,17 +507,13 @@ async function verify() {
       throw new Error("Installed Table source does not preserve its named scroll-region contract.");
     }
 
-    const tableStyles = fs.readFileSync(
-      path.join(localTarget, "components/nerio/styles/display.css"),
-      "utf8",
-    );
     if (
-      !tableStyles.includes(".n-table-container > .n-table") ||
-      !tableStyles.includes('[data-align="numeric"]') ||
-      !tableStyles.includes("--n-table-container-focus-ring") ||
-      !tableStyles.includes(".n-table tbody > tr:hover") ||
-      !tableStyles.includes('[aria-current]:not([aria-current="false"])') ||
-      !tableStyles.includes(".n-table-container[data-focusable]:focus-visible")
+      !tableSource.includes("[&>.n-table]:min-w-max") ||
+      !tableSource.includes("[data-align=numeric]") ||
+      !tableSource.includes("--n-table-container-focus-ring") ||
+      !tableSource.includes("tbody>tr:hover") ||
+      !tableSource.includes("[aria-current]:not([aria-current=false])") ||
+      !tableSource.includes("data-focusable:focus-visible")
     ) {
       throw new Error("Installed Table styles do not preserve responsive and state hooks.");
     }
@@ -556,7 +545,8 @@ async function verify() {
     }
     if (
       !listSource.includes('const Root = ordered ? "ol" : "ul"') ||
-      !listSource.includes('className={cn("n-list__link", linkClassName)}') ||
+      !listSource.includes('"n-list__link"') ||
+      !listSource.includes("listSurfaceClasses") ||
       !listSource.includes('data-slot="link"') ||
       !listSource.includes("href={item.href}") ||
       !listSource.includes("React.cloneElement") ||
@@ -698,29 +688,15 @@ async function verify() {
       );
     }
 
-    const toastStyles = fs.readFileSync(
-      path.join(localTarget, "components/nerio/styles/toast.css"),
-      "utf8",
-    );
     if (
-      !toastStyles.includes("--toast-managed-base-y") ||
-      !toastStyles.includes("--toast-managed-dismiss-x") ||
-      !toastStyles.includes("--toast-managed-dismiss-y") ||
-      !toastStyles.includes("--toast-managed-scale") ||
-      !toastStyles.includes("max(") ||
-      !toastStyles.includes("--toast-viewport-inline-inset") ||
-      !toastStyles.includes("safe-area-inset-left") ||
-      !toastStyles.includes("safe-area-inset-right") ||
-      !toastStyles.includes("inset-inline-start: 50%") ||
-      !toastStyles.includes(".n-toast-viewport:dir(rtl)") ||
-      !toastStyles.includes("translateX(50%)") ||
-      !toastStyles.includes("var(--n-toast-stack-offset) * -1") ||
-      !toastStyles.includes("scale(var(--toast-managed-scale))") ||
-      !toastStyles.includes("font-size: var(--n-font-size-md)") ||
-      !toastStyles.includes("margin: 0") ||
-      !toastStyles.includes("align-content: center") ||
-      toastStyles.includes("background: var(--n-toast-status-background)") ||
-      !toastStyles.includes("translate3d(var(--toast-managed-x), var(--toast-managed-y), 0)")
+      !toastSource.includes("--toast-managed-base-y") ||
+      !toastSource.includes("--toast-managed-dismiss-x") ||
+      !toastSource.includes("--toast-managed-dismiss-y") ||
+      !toastSource.includes("--toast-managed-scale") ||
+      !toastSource.includes("safe-area-inset-left") ||
+      !toastSource.includes("safe-area-inset-right") ||
+      !toastSource.includes("translate3d(var(--toast-managed-x),var(--toast-managed-y),0)") ||
+      !toastSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
         "Installed Toast styles are missing the bottom-centered scaled stack or unified transform coordinate system.",
