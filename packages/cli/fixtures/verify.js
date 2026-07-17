@@ -412,6 +412,13 @@ async function verify() {
       );
     }
     await run(localTarget, "add", "button");
+    const customizedTokensPath = path.join(localTarget, "components/nerio/styles/tokens.css");
+    fs.writeFileSync(customizedTokensPath, "/* Product token overrides. */\n");
+    await run(localTarget, "add", "card");
+    if (fs.readFileSync(customizedTokensPath, "utf8") !== "/* Product token overrides. */\n") {
+      throw new Error("Adding a component replaced customized source-install token styles.");
+    }
+    fs.copyFileSync(path.join(repoRoot, "packages/tokens/src/styles.css"), customizedTokensPath);
     await run(localTarget, "add", "typography");
     await run(localTarget, "add", "button-group");
     await run(localTarget, "add", "icon-button");
