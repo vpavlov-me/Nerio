@@ -158,6 +158,76 @@ function run(cwd, ...args) {
   });
 }
 
+async function runFailure(cwd, ...args) {
+  try {
+    await run(cwd, ...args);
+  } catch (error) {
+    return error.message;
+  }
+  throw new Error(`nerio ${args.join(" ")} unexpectedly succeeded.`);
+}
+
+function writePackageTailwindSetup(target) {
+  const appDirectory = path.join(target, "app");
+  fs.mkdirSync(appDirectory, { recursive: true });
+  fs.writeFileSync(
+    path.join(appDirectory, "globals.css"),
+    [
+      "@layer theme, base, components, utilities;",
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities);',
+      '@import "@nerio-ui/tokens/tailwind.css";',
+      '@import "@nerio-ui/ui/styles.css";',
+      '@source "../node_modules/@nerio-ui/ui/src";',
+      "",
+    ].join("\n"),
+  );
+}
+
+function writeSourceTailwindSetup(
+  target,
+  {
+    includeBridge = true,
+    includeCompatibility = true,
+    includeLegacyStyle = false,
+    includeTokens = true,
+  } = {},
+) {
+  const appDirectory = path.join(target, "app");
+  fs.mkdirSync(appDirectory, { recursive: true });
+  if (includeCompatibility) {
+    fs.writeFileSync(
+      path.join(appDirectory, "nerio-compat.css"),
+      [
+        ':where([class^="n-"], [class*=" n-"]) { box-sizing: border-box; }',
+        ':where(button, input, select, textarea):where([class^="n-"], [class*=" n-"]) { font-family: inherit; }',
+        "",
+      ].join("\n"),
+    );
+  }
+  if (includeLegacyStyle) {
+    fs.writeFileSync(
+      path.join(target, "components/nerio/styles/button.css"),
+      ".n-button { color: red; }\n",
+    );
+  }
+  fs.writeFileSync(
+    path.join(appDirectory, "globals.css"),
+    [
+      "@layer theme, base, components, utilities;",
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities);',
+      includeTokens ? '@import "../components/nerio/styles/tokens.css";' : "",
+      includeBridge ? '@import "../components/nerio/styles/tailwind.css";' : "",
+      includeCompatibility ? '@import "./nerio-compat.css";' : "",
+      includeLegacyStyle ? '@import "../components/nerio/styles/button.css";' : "",
+      "",
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  );
+}
+
 function assertFiles(target, files) {
   for (const file of files) {
     if (!fs.existsSync(path.join(target, "components/nerio", file))) {
@@ -207,13 +277,74 @@ async function verify() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "nerio-cli-"));
   const localTarget = path.join(tempRoot, "local");
   const urlTarget = path.join(tempRoot, "url");
+  const invalidPackageTarget = path.join(tempRoot, "invalid-package");
+  const sourceTarget = path.join(tempRoot, "source");
+  const missingBridgeTarget = path.join(tempRoot, "missing-bridge");
+  const missingCompatibilityTarget = path.join(tempRoot, "missing-compatibility");
+  const invalidSourceTarget = path.join(tempRoot, "invalid-source");
+  const staleSourceTarget = path.join(tempRoot, "stale-source");
   fs.mkdirSync(localTarget);
   fs.mkdirSync(urlTarget);
+  fs.mkdirSync(invalidPackageTarget);
+  fs.mkdirSync(sourceTarget);
+  fs.mkdirSync(missingBridgeTarget);
+  fs.mkdirSync(missingCompatibilityTarget);
+  fs.mkdirSync(invalidSourceTarget);
+  fs.mkdirSync(staleSourceTarget);
 
   const { server, manifestUrl } = await startRegistryServer();
   try {
     await run(localTarget, "init", "--registry", manifest);
+    writePackageTailwindSetup(localTarget);
     await run(localTarget, "doctor");
+
+    await run(invalidPackageTarget, "init", "--registry", manifest);
+    fs.mkdirSync(path.join(invalidPackageTarget, "app"));
+    fs.writeFileSync(
+      path.join(invalidPackageTarget, "app/globals.css"),
+      '@import "tailwindcss";\n@import "@nerio-ui/ui/styles.css";\n',
+    );
+    const invalidPackageOutput = await runFailure(invalidPackageTarget, "doctor");
+    if (
+      !invalidPackageOutput.includes("@nerio-ui/tokens/tailwind.css") ||
+      !invalidPackageOutput.includes("@source")
+    ) {
+      throw new Error("Doctor did not report actionable package Tailwind setup remediation.");
+    }
+
+    for (const target of [
+      sourceTarget,
+      missingBridgeTarget,
+      missingCompatibilityTarget,
+      invalidSourceTarget,
+      staleSourceTarget,
+    ]) {
+      await run(target, "init", "--registry", manifest);
+      await run(target, "add", "button");
+    }
+    writeSourceTailwindSetup(sourceTarget);
+    await run(sourceTarget, "doctor");
+    writeSourceTailwindSetup(missingBridgeTarget, { includeBridge: false });
+    const missingBridgeOutput = await runFailure(missingBridgeTarget, "doctor");
+    if (!missingBridgeOutput.includes("copied styles/tailwind.css bridge")) {
+      throw new Error("Doctor did not report the missing source-install Tailwind bridge.");
+    }
+    writeSourceTailwindSetup(missingCompatibilityTarget, { includeCompatibility: false });
+    const missingCompatibilityOutput = await runFailure(missingCompatibilityTarget, "doctor");
+    if (!missingCompatibilityOutput.includes("missing scoped Nerio compatibility styles")) {
+      throw new Error("Doctor did not report the missing no-Preflight compatibility path.");
+    }
+    writeSourceTailwindSetup(invalidSourceTarget, { includeTokens: false });
+    const invalidSourceOutput = await runFailure(invalidSourceTarget, "doctor");
+    if (!invalidSourceOutput.includes("styles/tokens.css")) {
+      throw new Error("Doctor did not report the missing source-install token stylesheet.");
+    }
+    writeSourceTailwindSetup(staleSourceTarget, { includeLegacyStyle: true });
+    const staleSourceOutput = await runFailure(staleSourceTarget, "doctor");
+    if (!staleSourceOutput.includes("unsupported legacy component stylesheet")) {
+      throw new Error("Doctor did not report an imported legacy source stylesheet.");
+    }
+
     const helpOutput = await run(localTarget, "--help");
     if (!helpOutput.includes("nerio list") || !helpOutput.includes("nerio info")) {
       throw new Error("Help output does not include list and info commands.");
@@ -721,6 +852,7 @@ async function verify() {
       throw new Error("Info output did not work with an HTTP registry override.");
     }
     await run(urlTarget, "add", "button");
+    writePackageTailwindSetup(urlTarget);
     await run(urlTarget, "doctor");
     assertInstall(urlTarget);
   } finally {

@@ -135,7 +135,7 @@ nerio add button
 nerio doctor
 ```
 
-`nerio list` and `nerio info <component>` read the configured registry. `nerio add` writes component source and registry dependencies into the configured `components` directory.
+`nerio list` and `nerio info <component>` read the configured registry. `nerio add` writes component source and registry dependencies into the configured `components` directory. Run `nerio doctor` after configuring the consumer stylesheet: it reports missing Tailwind bridge imports, package `@source` registration, source-install bridge/token imports, no-Preflight compatibility, and imported legacy Nerio component CSS.
 
 ## Pre-release status
 
