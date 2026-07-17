@@ -5,7 +5,7 @@ import { createPageMetadata } from "../../../../lib/seo";
 export const metadata = createPageMetadata({
   title: "Motion",
   description:
-    "Apply Nerio motion tokens and utilities for restrained, accessible interaction feedback with reduced-motion support.",
+    "Apply Nerio motion tokens and Tailwind recipes for restrained, accessible interaction feedback with reduced-motion support.",
   path: "/docs/foundations/motion",
 });
 
@@ -48,46 +48,53 @@ const utilityRows: TokenRow[] = [
   [
     "Hover",
     "motionClasses.hover",
-    "n-motion-hover",
+    "Static Tailwind recipe",
     "Background, border, color, and opacity transitions.",
   ],
   [
     "Press",
     "motionClasses.press",
-    "n-motion-press",
+    "Static Tailwind recipe",
     "Subtle press scale with reduced-motion fallback.",
   ],
-  ["Focus", "motionClasses.focus", "n-motion-focus", "Focus ring and border transitions."],
+  ["Focus", "motionClasses.focus", "Static Tailwind recipe", "Focus ring and border transitions."],
   [
     "Overlay enter",
     "motionClasses.overlayEnter",
-    "n-motion-overlay-enter",
+    "Static Tailwind recipe",
     "Opacity plus small translate/scale.",
   ],
   [
     "Disclosure",
     "motionClasses.disclosure",
-    "n-motion-disclosure",
+    "Static Tailwind recipe",
     "Height and opacity for open/close content.",
   ],
   [
     "Tab indicator",
     "motionClasses.tabIndicator",
-    "n-motion-tab-indicator",
+    "Static Tailwind recipe",
     "Active indicator movement.",
   ],
   [
     "Skeleton",
     "motionClasses.skeleton",
-    "n-motion-skeleton",
+    "Static Tailwind recipe",
     "Calm loading pulse with reduced-motion fallback.",
   ],
 ];
 
-const usage = `import { motionClasses } from "@nerio-ui/ui";
-import { cn } from "@nerio-ui/ui";
+const usage = `import { cn, motionClasses } from "@nerio-ui/ui";
 
-<button className={cn("n-button", motionClasses.hover, motionClasses.press, motionClasses.focus)}>
+<button
+  type="button"
+  className={cn(
+    "rounded-n-control border border-n-border bg-n-surface px-n-4 py-n-2 text-n-text focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)",
+    motionClasses.hover,
+    motionClasses.press,
+    motionClasses.focus,
+  )}
+>
   Save changes
 </button>`;
 
@@ -96,7 +103,7 @@ export default function Page() {
     <article className="doc-page">
       <header>
         <p className="doc-kicker">Foundation</p>
-        <h1>Animations</h1>
+        <h1>Motion</h1>
         <p className="doc-lede">
           Motion is a tokenized interaction contract for hover, press, focus, overlays, disclosure,
           tabs, toasts, loading, feedback, and reduced-motion behavior.
@@ -140,8 +147,13 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
-        <h2 id="component-utilities">Component utilities</h2>
-        <TokenTable rows={utilityRows} />
+        <h2 id="tailwind-motion-recipes">Tailwind motion recipes</h2>
+        <p>
+          <Code>motionClasses</Code> exposes complete, statically detectable Tailwind class strings.
+          The former <Code>n-motion-*</Code> visual utility classes are not part of the
+          post-migration contract.
+        </p>
+        <TokenTable rows={utilityRows} valueHeader="Authoring" />
       </section>
 
       <section className="doc-section">
@@ -178,7 +190,7 @@ export default function Page() {
         <h2 id="usage">Usage</h2>
         <CodeExample code={usage} label="Motion utility usage" />
         <ul className="doc-list">
-          <li>Use shared motion utilities before adding component-specific transition rules.</li>
+          <li>Use shared motion recipes before adding component-specific Tailwind transitions.</li>
           <li>
             Keep Core motion subtle; expressive motion belongs in product compositions and Pro
             examples.
@@ -192,7 +204,7 @@ export default function Page() {
   );
 }
 
-function TokenTable({ rows }: { rows: TokenRow[] }) {
+function TokenTable({ rows, valueHeader = "Value" }: { rows: TokenRow[]; valueHeader?: string }) {
   return (
     <TableContainer aria-label="Motion token reference">
       <Table>
@@ -200,7 +212,7 @@ function TokenTable({ rows }: { rows: TokenRow[] }) {
           <tr>
             <th>Name</th>
             <th>Token</th>
-            <th>Value</th>
+            <th>{valueHeader}</th>
             <th>Use</th>
           </tr>
         </thead>

@@ -1499,12 +1499,6 @@ pre {
   inline-size: 100%;
 }
 
-.grid {
-  display: grid;
-  gap: var(--n-space-4);
-  grid-template-columns: repeat(auto-fit, minmax(var(--n-docs-min-card-width), 1fr));
-}
-
 .doc-page {
   display: grid;
   gap: var(--n-space-8);

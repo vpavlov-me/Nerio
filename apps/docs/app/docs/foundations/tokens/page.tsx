@@ -118,6 +118,14 @@ const componentTokens = [
   ["Overlay layer", "--n-overlay-z-index"],
 ];
 
+const tailwindBridge = [
+  ["bg-n-surface", "--n-color-surface", "Default product and component surface."],
+  ["text-n-text", "--n-color-text-primary", "Primary foreground."],
+  ["border-n-border", "--n-color-border-default", "Default border color."],
+  ["rounded-n-control", "--n-radius-control", "Control shape role."],
+  ["p-n-4", "--n-space-4", "Token-backed spacing."],
+] as const;
+
 const usage = `/* Product CSS: add a theme without changing component source. */
 :root[data-theme="acme"] {
   --n-color-surface-selected: #ecfdf5;
@@ -315,6 +323,40 @@ export default function Page() {
       </section>
 
       <section className="doc-section">
+        <h2 id="tailwind-bridge">Tailwind bridge</h2>
+        <p>
+          Tailwind CSS v4 is the Core component authoring engine. The bridge exposes stable Nerio
+          foundation and semantic variables as utilities without copying their values into Tailwind.
+          Component recipes may reference narrower component variables directly with static
+          arbitrary utilities.
+        </p>
+        <TableContainer aria-label="Tailwind token bridge">
+          <Table>
+            <thead>
+              <tr>
+                <th>Utility</th>
+                <th>Value source</th>
+                <th>Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tailwindBridge.map(([utility, token, use]) => (
+                <tr key={utility}>
+                  <td>
+                    <Code>{utility}</Code>
+                  </td>
+                  <td>
+                    <Code>{token}</Code>
+                  </td>
+                  <td>{use}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </TableContainer>
+      </section>
+
+      <section className="doc-section">
         <h2 id="component-tokens">Component tokens</h2>
         <TableContainer>
           <Table>
@@ -346,6 +388,9 @@ export default function Page() {
           <li>Keep primitive values unchanged across theme, mode, and density selectors.</li>
           <li>Use semantic tokens for product layout, copy, borders, actions, and status.</li>
           <li>Use component tokens to adjust a component contract without forking source.</li>
+          <li>
+            Keep Tailwind recipes static and use the Nerio bridge instead of raw palette utilities.
+          </li>
           <li>Use runtime sets to remap tokens; do not encode mode or density into theme names.</li>
         </ul>
       </section>

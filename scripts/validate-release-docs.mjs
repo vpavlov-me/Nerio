@@ -31,6 +31,7 @@ const requiredReleaseCommands = [
   "pnpm format:check",
   "pnpm lint",
   "pnpm typecheck",
+  "pnpm test:branch-policy",
   "pnpm test:ui",
   "pnpm test:a11y",
   "pnpm test:catalog",

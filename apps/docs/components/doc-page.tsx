@@ -264,6 +264,30 @@ export function StandardDocPage({
         </section>
       ) : null}
       <section className="doc-section">
+        <h2 id="styling-contract">Styling contract</h2>
+        <DocumentationTable
+          headers={["Contract", "Value"]}
+          rows={[
+            [
+              "Authoring",
+              "Complete, statically detectable Tailwind CSS v4 recipes own component visuals.",
+            ],
+            [
+              "Values",
+              "Semantic and component --n-* variables remain the canonical customization layer.",
+            ],
+            [
+              "Overrides",
+              "Customizable slots merge consumer className values with tailwindCn so conflicting utilities resolve deterministically.",
+            ],
+            [
+              "Residual CSS",
+              "Only shared keyframes and scoped no-Preflight compatibility rules remain; there is no parallel visual selector layer.",
+            ],
+          ]}
+        />
+      </section>
+      <section className="doc-section">
         <h2 id="design-notes">Design notes</h2>
         <ul className="doc-list">
           {(
@@ -904,7 +928,7 @@ function Preview({ kind }: { kind: string }) {
                 ordered
                 items={[
                   { id: "install", title: "Install tokens" },
-                  { id: "import", title: "Import component styles" },
+                  { id: "source", title: "Register Tailwind source" },
                 ]}
               />
             </div>

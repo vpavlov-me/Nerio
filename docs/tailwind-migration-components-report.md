@@ -51,9 +51,11 @@ Tailwind bridge and deterministic merge helper. There is no remaining component-
 sequence: all Core component source is Tailwind-first, while `--n-*` CSS variables remain the public
 theme, mode, density, and token customization contract.
 
-The component stylesheet entrypoint and residual keyframe files total 3,971 bytes. The residual files
-are explicit and contain no `.n-*` component selectors, so there is no second hand-maintained visual
-implementation alongside the Tailwind recipes.
+The component stylesheet entrypoint and residual files total 3,954 bytes. Named keyframes are the only
+rules in `packages/ui/src/styles/*.css`. The entrypoint additionally contains the permanent scoped
+no-Preflight box-sizing and native-control typography compatibility rules. The allowlist is enforced
+by contract tests and contains no `.n-*` visual component selectors, so there is no second
+hand-maintained visual implementation alongside the Tailwind recipes.
 
 ## Post-migration visual contract review
 
