@@ -59,6 +59,22 @@ Agents MUST NOT invent or tune palette, spacing, typography, radius, border, sur
 density, motion, icon-character, signature-detail, or final-composition decisions. Maintainer-owned
 visual decisions require separately approved visual-language work.
 
+## Tailwind authoring and consumer setup
+
+Tailwind CSS v4 is the Core style authoring engine; `--n-*` variables remain the canonical value
+layer. Before changing Tailwind-first source or distribution projections, agents MUST read
+`docs/tailwind-styling-contract.md` and preserve its package/source-install contract.
+
+Agents MUST use complete static utility strings, semantic or component token contracts, the shared
+conflict-aware merge helper for consumer `className`, and stable Base UI/Nerio data attributes for
+state variants. They MUST NOT introduce dynamic utility construction, raw palette utilities,
+`@apply` mirrors, or a second visual implementation. Residual CSS is allowed only under the
+documented allowlist and requires focused evidence for package and source-installed consumers.
+
+Nerio does not own Tailwind Preflight. Package mode requires the public token bridge and explicit
+installed-source detection; source-installed mode requires the copied bridge and merge helper.
+Registry, CLI, MCP, docs, fixtures, and packed-consumer claims MUST remain aligned.
+
 ## Public contract alignment
 
 A public component change is incomplete until source, exports, `data/component-catalog.json`,
