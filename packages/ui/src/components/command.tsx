@@ -233,7 +233,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
     <div
       ref={ref}
       className={cn(
-        "n-command w-[min(100%,var(--n-command-width))] overflow-hidden rounded-(--n-command-radius) border-(length:--n-command-border-width) border-(--n-command-border) bg-(--n-command-background) text-(--n-command-foreground) has-[.n-command__input:focus-visible]:shadow-(--n-focus-ring) data-disabled:opacity-(--n-opacity-disabled) forced-colors:border-[CanvasText]",
+        "n-command w-[min(100%,var(--n-command-width))] overflow-hidden rounded-(--n-command-radius) border-(length:--n-command-border-width) border-(--n-command-border) bg-(--n-command-background) text-(--n-command-foreground) has-[[data-slot=command-input]:focus-visible]:shadow-(--n-focus-ring) data-disabled:opacity-(--n-opacity-disabled) forced-colors:border-[CanvasText]",
         className,
       )}
       {...props}
@@ -379,7 +379,7 @@ export const CommandGroup = React.forwardRef<
     <BaseAutocomplete.Group
       ref={ref}
       className={cn(
-        "n-command__group grid gap-(--n-command-group-gap) [&+.n-command__group]:mt-(--n-command-group-spacing)",
+        "n-command__group grid gap-(--n-command-group-gap) [&+[data-slot=command-group]]:mt-(--n-command-group-spacing)",
         className,
       )}
       {...props}

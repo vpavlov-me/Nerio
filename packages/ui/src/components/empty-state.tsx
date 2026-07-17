@@ -2,7 +2,7 @@ import * as React from "react";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 const emptyStateClasses =
-  "n-empty-state grid items-center justify-items-center gap-(--n-empty-state-gap) text-center text-(--n-color-text-secondary) data-[size=sm]:[--n-empty-state-gap:var(--n-space-2)] data-[size=sm]:[--n-empty-state-mark-size:var(--n-size-control-sm)] data-[size=sm]:[--n-empty-state-mark-icon-size:var(--n-icon-size-sm)] data-[size=lg]:[--n-empty-state-gap:var(--n-empty-state-gap-lg)] data-[size=lg]:[--n-empty-state-mark-size:var(--n-size-control-lg)] data-[size=lg]:[--n-empty-state-mark-icon-size:var(--n-icon-size-lg)] data-[align=start]:items-start data-[align=start]:justify-items-start data-[align=start]:text-start data-[align=start]:[&_.n-empty-state__actions]:justify-start";
+  "n-empty-state grid items-center justify-items-center gap-(--n-empty-state-gap) text-center text-(--n-color-text-secondary) data-[size=sm]:[--n-empty-state-gap:var(--n-space-2)] data-[size=sm]:[--n-empty-state-mark-size:var(--n-size-control-sm)] data-[size=sm]:[--n-empty-state-mark-icon-size:var(--n-icon-size-sm)] data-[size=lg]:[--n-empty-state-gap:var(--n-empty-state-gap-lg)] data-[size=lg]:[--n-empty-state-mark-size:var(--n-size-control-lg)] data-[size=lg]:[--n-empty-state-mark-icon-size:var(--n-icon-size-lg)] data-[align=start]:items-start data-[align=start]:justify-items-start data-[align=start]:text-start data-[align=start]:[&>[data-slot=empty-state-actions]]:justify-start";
 
 export type EmptyStateSize = "sm" | "md" | "lg";
 export type EmptyStateAlign = "start" | "center";

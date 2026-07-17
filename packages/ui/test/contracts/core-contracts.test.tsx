@@ -2771,7 +2771,7 @@ describe("Core interactive action contracts", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/tabs.tsx"), "utf8");
     expect(source).toContain("data-[orientation=vertical]:items-start");
     expect(source).toContain("[[data-orientation=vertical]_&]:w-fit");
-    expect(source).toContain("[&[data-layout=fill]>.n-tabs__trigger]:flex-1");
+    expect(source).toContain("[&[data-layout=fill]>[data-slot=trigger]]:flex-1");
     expect(source).toContain("left-(--active-tab-left)");
     expect(source).toContain("w-(--active-tab-width)");
     expect(source).toContain(
