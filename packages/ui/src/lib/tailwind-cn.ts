@@ -4,5 +4,5 @@ import { cn } from "./cn";
 
 /** Merges Tailwind utility conflicts while preserving clsx-compatible inputs. */
 export function tailwindCn(...inputs: ClassValue[]) {
-  return twMerge(cn(inputs));
+  return twMerge(cn(...inputs));
 }

@@ -22,3 +22,8 @@
 :where([class^="n-"], [class*=" n-"]) {
   box-sizing: border-box;
 }
+
+/* Preserve Nerio control typography when consumers intentionally omit Tailwind Preflight. */
+:where(button, input, select, textarea):where([class^="n-"], [class*=" n-"]) {
+  font-family: inherit;
+}
