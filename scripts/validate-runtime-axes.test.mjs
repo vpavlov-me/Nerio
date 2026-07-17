@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -36,9 +36,37 @@ function withFixture(option, name, contents, assertion, expectedStatus = 1) {
   }
 }
 
+function withSourceDirectory(files, assertion, expectedStatus = 1) {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-runtime-source-"));
+  try {
+    for (const [relativePath, contents] of Object.entries(files)) {
+      const target = resolve(directory, relativePath);
+      mkdirSync(dirname(target), { recursive: true });
+      writeFileSync(target, contents);
+    }
+    const result = run("--ui-source-dir", directory);
+    assert.equal(result.status, expectedStatus, result.stderr);
+    assertion(result.stderr);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
 test("runtime-axis validator accepts exact repository selectors", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
+});
+
+test("runtime-axis validator scans shared TypeScript recipes outside components", () => {
+  withSourceDirectory(
+    {
+      "components/accessibility.tsx":
+        'export const accessibility = "forced-colors:border-[CanvasText]";\n',
+      "lib/motion.ts": 'export const motion = "motion-reduce:animate-none";\n',
+    },
+    () => {},
+    0,
+  );
 });
 
 test("runtime-axis validator rejects selector substrings that are not exact selectors", () => {
