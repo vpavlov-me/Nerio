@@ -262,6 +262,10 @@ function isTailwindImport(value) {
   return value === "tailwindcss" || /^tailwindcss\/(?:theme|utilities)(?:\.css)?$/.test(value);
 }
 
+function importsPreflight(value) {
+  return value === "tailwindcss" || /^tailwindcss\/preflight(?:\.css)?$/.test(value);
+}
+
 function isWithin(directory, candidate) {
   const resolvedDirectory = path.resolve(directory);
   const resolvedCandidate = path.resolve(candidate);
@@ -318,13 +322,19 @@ function collectTailwindSetupProblems(config) {
   const importedLocalStyles = sourceStyles
     .map((entry) => entry.target)
     .filter((target) => target && target.endsWith(".css") && fs.existsSync(target));
-  const importsSourceBridge = sourceStyles.some((entry) => entry.target === sourceTailwindBridge);
-  const importsSourceTokens = sourceStyles.some((entry) => entry.target === sourceTokens);
+  const referencesSourceBridge = sourceStyles.some(
+    (entry) => entry.target === sourceTailwindBridge,
+  );
+  const referencesSourceTokens = sourceStyles.some((entry) => entry.target === sourceTokens);
+  const importsSourceBridge = referencesSourceBridge && fs.existsSync(sourceTailwindBridge);
+  const importsSourceTokens = referencesSourceTokens && fs.existsSync(sourceTokens);
   const usesPackageMode =
     importsPackageBridge ||
     importsPackageStyles ||
     stylesheets.some((stylesheet) => /@source\s+[^;]*@nerio-ui\/ui\/src/.test(stylesheet.source));
-  const hasInstalledSource = fs.existsSync(sourceTailwindBridge);
+  const usesSourceMode =
+    fs.existsSync(sourceStylesRoot) ||
+    sourceStyles.some((entry) => entry.target && isWithin(sourceStylesRoot, entry.target));
 
   if (!importsPackageBridge && !importsSourceBridge) {
     problems.push(
@@ -350,7 +360,7 @@ function collectTailwindSetupProblems(config) {
     }
   }
 
-  if (hasInstalledSource && !importsPackageBridge) {
+  if (usesSourceMode && !importsPackageBridge) {
     if (!importsSourceBridge) {
       problems.push("Source-install mode must import the copied styles/tailwind.css bridge.");
     }
@@ -377,7 +387,7 @@ function collectTailwindSetupProblems(config) {
 
   const omitsPreflight =
     importsTailwind &&
-    !stylesheets.some((stylesheet) => stylesheet.imports.includes("tailwindcss")) &&
+    !stylesheets.some((stylesheet) => stylesheet.imports.some(importsPreflight)) &&
     stylesheets.some((stylesheet) => stylesheet.imports.includes("tailwindcss/theme.css")) &&
     stylesheets.some((stylesheet) => stylesheet.imports.includes("tailwindcss/utilities.css"));
   const hasScopedCompatibility = [
