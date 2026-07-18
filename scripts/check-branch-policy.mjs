@@ -5,8 +5,7 @@ export const allowedDevelopmentBranchPattern =
   "^(feat|feature|fix|refactor|docs|test|chore|dependabot)/[A-Za-z0-9._/-]+$";
 export const branchPolicyMessages = {
   main: "Pull requests to main are allowed only from the dev integration branch.",
-  mainToDev:
-    "Pull requests from main to dev are allowed only for same-repository synchronization.",
+  mainToDev: "Pull requests from main to dev are allowed only for same-repository synchronization.",
   development:
     "Pull requests to dev must use a feat/, feature/, fix/, refactor/, docs/, test/, chore/, or bot-managed dependabot/ branch.",
 };
