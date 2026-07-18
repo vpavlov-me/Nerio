@@ -259,7 +259,15 @@ function cssImports(source) {
 }
 
 function isTailwindImport(value) {
-  return value === "tailwindcss" || /^tailwindcss\/(?:theme|utilities)(?:\.css)?$/.test(value);
+  return value === "tailwindcss" || importsTailwindTheme(value) || importsTailwindUtilities(value);
+}
+
+function importsTailwindTheme(value) {
+  return /^tailwindcss\/theme(?:\.css)?$/.test(value);
+}
+
+function importsTailwindUtilities(value) {
+  return /^tailwindcss\/utilities(?:\.css)?$/.test(value);
 }
 
 function importsPreflight(value) {
@@ -388,8 +396,8 @@ function collectTailwindSetupProblems(config) {
   const omitsPreflight =
     importsTailwind &&
     !stylesheets.some((stylesheet) => stylesheet.imports.some(importsPreflight)) &&
-    stylesheets.some((stylesheet) => stylesheet.imports.includes("tailwindcss/theme.css")) &&
-    stylesheets.some((stylesheet) => stylesheet.imports.includes("tailwindcss/utilities.css"));
+    stylesheets.some((stylesheet) => stylesheet.imports.some(importsTailwindTheme)) &&
+    stylesheets.some((stylesheet) => stylesheet.imports.some(importsTailwindUtilities));
   const hasScopedCompatibility = [
     ...stylesheets
       .filter((stylesheet) => stylesheet.imports.some(isTailwindImport))

@@ -13,10 +13,10 @@ Core = building blocks. Pro = product-ready solutions.
 
 ## Current release status
 
-The strict post-remediation Core 0.1 release gate passes for the intended `0.1.0-alpha.0` source and
-package surface, and the public-manifest release PR is merged. The six intended packages use the
-`@nerio-ui` npm namespace but have not been published yet. No release tag or GitHub Release exists;
-the remaining publication sequence is documented in `RELEASE.md`.
+Nerio Core `0.1.0-alpha.0` is published under the `@nerio-ui` npm namespace with a signed tag and
+GitHub prerelease. The Tailwind CSS v4-first implementation is complete and passes the release gate;
+`0.1.0-alpha.1` is the recommended next prerelease because `alpha.0` is already immutable on npm.
+The remaining manual publication sequence is documented in `RELEASE.md`.
 
 ## Primary users
 

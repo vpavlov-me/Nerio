@@ -13,6 +13,26 @@ Items under `Unreleased` may change before the next public release.
 - Completed Tailwind CSS v4-first component authoring, documented and tested the narrow residual CSS
   compatibility policy, and established the `feature -> dev -> main` pull request flow.
 
+### Changed
+
+- Migrated all Core component styling to static Tailwind CSS v4 recipes while preserving Nerio
+  semantic and component variables as the public theme, mode, density, and customization contract.
+- Added explicit package `@source` registration and source-install bridge guidance; Nerio does not
+  inject Tailwind Preflight.
+
+### Fixed
+
+- Extended `nerio doctor`, Registry/CLI/MCP fixtures, runtime-axis validation, and clean-consumer
+  coverage for Tailwind package and source-install setup.
+- Preserved consumer class precedence, Sheet viewport and RTL placement, and Toast RTL centering in
+  the Tailwind-first implementation.
+
+### Migration
+
+- Package consumers must import `@nerio-ui/tokens/tailwind.css` and register the installed
+  `@nerio-ui/ui` source path. Source-install consumers must import the copied Nerio bridge and token
+  styles. See `docs/tailwind-migration-report.md` for complete `0.1.0-alpha.0` guidance.
+
 ## 0.1.0-alpha.0 — 2026-07-15
 
 ### Core 0.1 alpha summary

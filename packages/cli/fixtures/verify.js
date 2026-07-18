@@ -207,6 +207,7 @@ function writeSourceTailwindSetup(
   {
     includeBridge = true,
     includeCompatibility = true,
+    extensionlessTailwindImports = false,
     includeLegacyStyle = false,
     includeTokens = true,
   } = {},
@@ -233,8 +234,8 @@ function writeSourceTailwindSetup(
     path.join(appDirectory, "globals.css"),
     [
       "@layer theme, base, components, utilities;",
-      '@import "tailwindcss/theme.css" layer(theme);',
-      '@import "tailwindcss/utilities.css" layer(utilities);',
+      `@import "tailwindcss/theme${extensionlessTailwindImports ? "" : ".css"}" layer(theme);`,
+      `@import "tailwindcss/utilities${extensionlessTailwindImports ? "" : ".css"}" layer(utilities);`,
       includeTokens ? '@import "../components/nerio/styles/tokens.css";' : "",
       includeBridge ? '@import "../components/nerio/styles/tailwind.css";' : "",
       includeCompatibility ? '@import "./nerio-compat.css";' : "",
@@ -327,6 +328,10 @@ async function verify() {
   const sourceTarget = path.join(tempRoot, "source");
   const missingBridgeTarget = path.join(tempRoot, "missing-bridge");
   const missingCompatibilityTarget = path.join(tempRoot, "missing-compatibility");
+  const missingExtensionlessCompatibilityTarget = path.join(
+    tempRoot,
+    "missing-extensionless-compatibility",
+  );
   const invalidSourceTarget = path.join(tempRoot, "invalid-source");
   const missingInstalledTokenTarget = path.join(tempRoot, "missing-installed-token");
   const staleSourceTarget = path.join(tempRoot, "stale-source");
@@ -340,6 +345,7 @@ async function verify() {
   fs.mkdirSync(sourceTarget);
   fs.mkdirSync(missingBridgeTarget);
   fs.mkdirSync(missingCompatibilityTarget);
+  fs.mkdirSync(missingExtensionlessCompatibilityTarget);
   fs.mkdirSync(invalidSourceTarget);
   fs.mkdirSync(missingInstalledTokenTarget);
   fs.mkdirSync(staleSourceTarget);
@@ -374,6 +380,7 @@ async function verify() {
       sourceTarget,
       missingBridgeTarget,
       missingCompatibilityTarget,
+      missingExtensionlessCompatibilityTarget,
       invalidSourceTarget,
       missingInstalledTokenTarget,
       staleSourceTarget,
@@ -392,6 +399,21 @@ async function verify() {
     const missingCompatibilityOutput = await runFailure(missingCompatibilityTarget, "doctor");
     if (!missingCompatibilityOutput.includes("missing scoped Nerio compatibility styles")) {
       throw new Error("Doctor did not report the missing no-Preflight compatibility path.");
+    }
+    writeSourceTailwindSetup(missingExtensionlessCompatibilityTarget, {
+      includeCompatibility: false,
+      extensionlessTailwindImports: true,
+    });
+    const missingExtensionlessCompatibilityOutput = await runFailure(
+      missingExtensionlessCompatibilityTarget,
+      "doctor",
+    );
+    if (
+      !missingExtensionlessCompatibilityOutput.includes("missing scoped Nerio compatibility styles")
+    ) {
+      throw new Error(
+        "Doctor did not report the missing no-Preflight compatibility path for extensionless Tailwind imports.",
+      );
     }
     writeSourceTailwindSetup(invalidSourceTarget, { includeTokens: false });
     const invalidSourceOutput = await runFailure(invalidSourceTarget, "doctor");
