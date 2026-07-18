@@ -2,10 +2,11 @@
 
 ## Decision
 
-**Approved for a manual `0.1.0-alpha.0` release under `@nerio-ui`.** The strict post-remediation
+**Released as `0.1.0-alpha.0` under `@nerio-ui` on 2026-07-15.** The strict post-remediation
 repository gate, packed package smoke, isolated consumer builds, docs surface, and reproducible
-browser matrix pass. The public-manifest release PR is merged; package publication, the signed tag,
-and the GitHub prerelease remain to be completed in the documented order.
+browser matrix passed. The coordinated packages, signed tag, and GitHub prerelease are public. This
+document records that historical pre-Tailwind release decision; the next Tailwind-first candidate is
+covered by `docs/tailwind-migration-report.md`.
 
 ## Scope and status
 
@@ -97,8 +98,8 @@ pnpm pack:check
 
 ## Known non-blocking limitations
 
-- No public npm release exists yet; the approved public manifests are ready for the manual publish
-  sequence.
+- `0.1.0-alpha.0` is a public pre-Tailwind alpha; consumers must follow the migration report before
+  adopting the Tailwind-first candidate.
 - IconButton and documented Button aliases remain only for alpha migration compatibility.
 - Package distribution is source-first TypeScript; Next.js consumers configure
   `transpilePackages`.
