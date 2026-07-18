@@ -32,8 +32,11 @@ jobs:
 
           if [[ "$BASE_REF" == "dev" ]]; then
             if [[ "$HEAD_REF" == "main" ]]; then
-              echo "Pull requests from main to dev are not allowed." >&2
-              exit 1
+              if [[ "$HEAD_REPOSITORY" != "$REPOSITORY" ]]; then
+                echo "Pull requests from main to dev are allowed only for same-repository synchronization." >&2
+                exit 1
+              fi
+              exit 0
             fi
             if [[ ! "$HEAD_REF" =~ $ALLOWED_DEVELOPMENT_BRANCH_PATTERN ]]; then
               echo "Pull requests to dev must use a feat/, feature/, fix/, refactor/, docs/, test/, chore/, or bot-managed dependabot/ branch." >&2
