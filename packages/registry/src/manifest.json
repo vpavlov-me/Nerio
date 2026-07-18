@@ -89,6 +89,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -164,6 +169,11 @@
         {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
           "role": "style"
         },
         {
@@ -289,6 +299,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -338,6 +353,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -438,6 +458,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -491,6 +516,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -534,6 +564,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -597,6 +632,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -649,6 +689,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -715,6 +760,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -753,6 +803,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -803,6 +858,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -866,6 +926,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -906,6 +971,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -944,6 +1014,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1007,6 +1082,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1085,6 +1165,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1166,6 +1251,11 @@
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1266,6 +1356,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -1341,6 +1436,11 @@
           "role": "style"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -1402,6 +1502,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -1453,6 +1558,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1520,6 +1630,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -1570,6 +1685,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -1613,6 +1733,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1661,6 +1786,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1732,6 +1862,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -1788,6 +1923,11 @@
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1859,6 +1999,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1954,6 +2099,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -1999,6 +2149,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2079,6 +2234,11 @@
         {
           "source": "../../ui/src/styles/overlays.css",
           "target": "styles/overlays.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
           "role": "style"
         },
         {
@@ -2164,6 +2324,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2257,6 +2422,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2371,6 +2541,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -2451,6 +2626,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -2507,6 +2687,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2574,6 +2759,11 @@
           "role": "utility"
         },
         {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
           "role": "style"
@@ -2637,6 +2827,11 @@
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
           "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
         },
         {
           "source": "../../tokens/src/tailwind.css",
