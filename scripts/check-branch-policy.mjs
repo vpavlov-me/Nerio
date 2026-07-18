@@ -5,7 +5,7 @@ export const allowedDevelopmentBranchPattern =
   "^(feat|feature|fix|refactor|docs|test|chore|dependabot)/[A-Za-z0-9._/-]+$";
 export const branchPolicyMessages = {
   main: "Pull requests to main are allowed only from the dev integration branch.",
-  mainToDev: "Pull requests from main to dev are not allowed.",
+  mainToDev: "Pull requests from main to dev are allowed only for same-repository synchronization.",
   development:
     "Pull requests to dev must use a feat/, feature/, fix/, refactor/, docs/, test/, chore/, or bot-managed dependabot/ branch.",
 };
@@ -29,7 +29,13 @@ export function checkBranchPolicy(baseRef, headRef, repositories = {}) {
 
   if (baseRef === "dev") {
     if (headRef === "main") {
-      return { allowed: false, message: branchPolicyMessages.mainToDev };
+      const isRepositoryMain =
+        Boolean(repositories.repository) &&
+        Boolean(repositories.headRepository) &&
+        repositories.repository === repositories.headRepository;
+      return isRepositoryMain
+        ? { allowed: true, message: "Synchronization pull request main -> dev is allowed." }
+        : { allowed: false, message: branchPolicyMessages.mainToDev };
     }
 
     return allowedDevelopmentBranch.test(headRef)
