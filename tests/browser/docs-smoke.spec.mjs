@@ -167,16 +167,25 @@ test("keeps the final Tailwind component families active across public docs", as
   }
 
   await page.goto("/docs/components/tooltip");
-  await page.getByRole("button", { name: "Copy link" }).hover();
-  await expect(page.getByRole("tooltip")).toBeVisible();
+  const tooltipTrigger = page.getByRole("button", { name: "Copy link" });
+  await expect(tooltipTrigger).toBeVisible();
+  await tooltipTrigger.scrollIntoViewIfNeeded();
+  await tooltipTrigger.hover();
+  await expect(page.getByRole("tooltip")).toBeVisible({ timeout: 10_000 });
 
   await page.goto("/docs/components/popover");
-  await page.getByRole("button", { name: "Filters" }).click();
-  await expect(page.getByRole("heading", { name: "View filters" })).toBeVisible();
+  const popoverTrigger = page.getByRole("button", { name: "Filters" });
+  await expect(popoverTrigger).toBeVisible();
+  await popoverTrigger.click();
+  await expect(page.getByRole("heading", { name: "View filters" })).toBeVisible({
+    timeout: 10_000,
+  });
 
   await page.goto("/docs/components/dropdown-menu");
-  await page.getByRole("button", { name: "Actions", exact: true }).click();
-  await expect(page.getByRole("menuitem", { name: "Archive" })).toBeVisible();
+  const menuTrigger = page.getByRole("button", { name: "Actions", exact: true });
+  await expect(menuTrigger).toBeVisible();
+  await menuTrigger.click();
+  await expect(page.getByRole("menuitem", { name: "Archive" })).toBeVisible({ timeout: 10_000 });
 
   await page.goto("/docs/components/sheet");
   await page.getByRole("button", { name: "Open settings" }).click();

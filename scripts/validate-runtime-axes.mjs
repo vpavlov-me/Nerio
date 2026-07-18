@@ -148,6 +148,14 @@ function sameValues(left, right) {
   return left.length === right.length && left.every((value, index) => value === right[index]);
 }
 
+function readTypeScriptSources(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) return readTypeScriptSources(path);
+    return entry.isFile() && /\.tsx?$/.test(entry.name) ? [readFileSync(path, "utf8")] : [];
+  });
+}
+
 function validate() {
   const paths = parsePathOptions(process.argv.slice(2), {
     "--token-file": join(root, "packages/tokens/src/styles.css"),
@@ -159,6 +167,7 @@ function validate() {
     "--demo-controls": join(root, "apps/demo-app/app/page.tsx"),
     "--demo-layout": join(root, "apps/demo-app/app/layout.tsx"),
     "--demo-appearance": join(root, "apps/demo-app/lib/appearance.ts"),
+    "--ui-source-dir": join(root, "packages/ui/src"),
   });
   const tokenCss = readFileSync(paths["--token-file"], "utf8");
   const catalog = JSON.parse(readFileSync(paths["--catalog"], "utf8"));
@@ -309,15 +318,12 @@ function validate() {
     }
   }
 
-  const uiComponentSource = readdirSync(join(root, "packages/ui/src/components"))
-    .filter((file) => file.endsWith(".tsx"))
-    .map((file) => readFileSync(join(root, "packages/ui/src/components", file), "utf8"))
-    .join("\n");
+  const uiSource = readTypeScriptSources(paths["--ui-source-dir"]).join("\n");
   for (const [variant, label] of [
     ["forced-colors:", "forced-colors"],
     ["motion-reduce:", "reduced-motion"],
   ]) {
-    if (!uiComponentSource.includes(variant)) {
+    if (!uiSource.includes(variant)) {
       failures.push(`UI Tailwind recipes are missing the ${label} variant contract.`);
     }
   }

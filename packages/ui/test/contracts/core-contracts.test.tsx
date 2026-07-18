@@ -1521,6 +1521,18 @@ describe("Core static contracts", () => {
     }
   });
 
+  it("keeps the Toast viewport centered with an explicit RTL direction", () => {
+    render(
+      <ToastProvider>
+        <ToastViewport direction="rtl" label="RTL notifications" />
+      </ToastProvider>,
+    );
+
+    const viewport = screen.getByRole("region", { name: "RTL notifications" });
+    expect(viewport).toHaveClass("left-1/2", "-translate-x-1/2");
+    expect(viewport).not.toHaveClass("rtl:translate-x-1/2");
+  });
+
   it("keeps inherited Toast direction synchronized with the document root", async () => {
     const originalDirection = document.documentElement.dir;
     document.documentElement.dir = "ltr";
@@ -1807,6 +1819,27 @@ describe("Core interactive action contracts", () => {
     expect(link).toHaveAttribute("href", "/docs/components/spinner");
     expect(link).toHaveAttribute("data-variant", "secondary");
     expect(link).toHaveClass("n-button");
+  });
+
+  it("keeps Button classes after custom render-target classes", () => {
+    render(
+      <Button
+        className="button-consumer-class"
+        nativeButton={false}
+        render={<a className="render-target-class" href="/docs/components/button" />}
+        variant="secondary"
+      >
+        Button documentation
+      </Button>,
+    );
+
+    const link = screen.getByRole("link", { name: "Button documentation" });
+    const classNames = link.className.split(" ");
+
+    expect(classNames.indexOf("render-target-class")).toBeLessThan(classNames.indexOf("n-button"));
+    expect(classNames.indexOf("n-button")).toBeLessThan(
+      classNames.indexOf("button-consumer-class"),
+    );
   });
 
   it("composes render-element and forwarded Button refs without dropping either ref shape", () => {
@@ -2984,8 +3017,12 @@ describe("Core interactive action contracts", () => {
   it("uses Sheet-specific backdrop, safe-area close, exit motion, and reduced-motion contracts", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sheet.tsx"), "utf8");
     expect(source).toContain("bg-(--n-sheet-backdrop)");
+    expect(source).toContain("fixed inset-0 isolate z-(--n-overlay-z-index)");
     expect(source).toContain("env(safe-area-inset-top)");
     expect(source).toContain("env(safe-area-inset-right)");
+    expect(source).toContain("end-[max(var(--n-sheet-padding),env(safe-area-inset-right))]");
+    expect(source).toContain("rtl:end-[max(var(--n-sheet-padding),env(safe-area-inset-left))]");
+    expect(source).not.toContain("rtl:right-");
     expect(source).toContain("data-ending-style:data-[side=left]:animate-[n-sheet-exit-left");
     expect(source).toContain("motion-reduce:data-[side=left]:animate-none");
   });

@@ -88,7 +88,7 @@ export function ToastViewport({
       <BaseToast.Viewport
         aria-label={label}
         className={cn(
-          "n-toast-viewport fixed bottom-[max(var(--n-toast-viewport-inset),env(safe-area-inset-bottom))] left-1/2 z-(--n-overlay-z-index) h-0 max-h-[calc(100dvh-max(var(--n-toast-viewport-inset),env(safe-area-inset-top))-max(var(--n-toast-viewport-inset),env(safe-area-inset-bottom)))] w-[min(calc(100dvw-(var(--toast-viewport-inline-inset)*2)),var(--n-toast-width))] -translate-x-1/2 pointer-events-none [--toast-viewport-inline-inset:max(var(--n-toast-viewport-inset),env(safe-area-inset-left),env(safe-area-inset-right))] rtl:translate-x-1/2",
+          "n-toast-viewport fixed bottom-[max(var(--n-toast-viewport-inset),env(safe-area-inset-bottom))] left-1/2 z-(--n-overlay-z-index) h-0 max-h-[calc(100dvh-max(var(--n-toast-viewport-inset),env(safe-area-inset-top))-max(var(--n-toast-viewport-inset),env(safe-area-inset-bottom)))] w-[min(calc(100dvw-(var(--toast-viewport-inline-inset)*2)),var(--n-toast-width))] -translate-x-1/2 pointer-events-none [--toast-viewport-inline-inset:max(var(--n-toast-viewport-inset),env(safe-area-inset-left),env(safe-area-inset-right))]",
           className,
         )}
         data-direction={resolvedDirection}
