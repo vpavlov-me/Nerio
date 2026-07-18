@@ -167,8 +167,11 @@ test("keeps the final Tailwind component families active across public docs", as
   }
 
   await page.goto("/docs/components/tooltip");
-  await page.getByRole("button", { name: "Copy link" }).hover();
-  await expect(page.getByRole("tooltip")).toBeVisible();
+  const tooltipTrigger = page.getByRole("button", { name: "Copy link" });
+  await expect(tooltipTrigger).toBeVisible();
+  await tooltipTrigger.scrollIntoViewIfNeeded();
+  await tooltipTrigger.hover();
+  await expect(page.getByRole("tooltip")).toBeVisible({ timeout: 10_000 });
 
   await page.goto("/docs/components/popover");
   await page.getByRole("button", { name: "Filters" }).click();
