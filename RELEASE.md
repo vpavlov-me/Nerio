@@ -1,8 +1,13 @@
 # Release Process
 
-Nerio Core is not published yet. The exact intended first public version is `0.1.0-alpha.0`. Every
-release action is manual and requires an explicit maintainer approval after the gate and tarball
-inspection pass.
+Nerio Core `0.1.0-alpha.0` was published on 2026-07-15 under `@nerio-ui`. It predates the Tailwind
+CSS v4-first migration. The recommended next coordinated version is `0.1.0-alpha.1`: npm versions
+are immutable, the public APIs remain alpha-compatible, and this release changes the styling and
+consumer-setup contract without claiming beta or stable compatibility.
+
+Every release action remains manual and requires explicit maintainer approval after the gate and
+tarball inspection pass. The recommendation does not authorize publishing, changing dist-tags,
+creating a tag, or creating a GitHub Release.
 
 ## Required checks
 
@@ -71,8 +76,9 @@ development-branch exception and target `dev`.
 
 ## Versioning and package order
 
-Keep the root workspace, apps, and `@nerio-ui/config` private. The intended public packages use the
-coordinated `0.1.0-alpha.0` version and are published in dependency order:
+Keep the root workspace, apps, and `@nerio-ui/config` private. The repository manifests remain at the
+published `0.1.0-alpha.0` baseline until the dedicated release PR bumps all six public packages and
+their coordinated internal dependency references to `0.1.0-alpha.1`. Publish in dependency order:
 
 1. `@nerio-ui/tokens`
 2. `@nerio-ui/adapters`
@@ -113,12 +119,12 @@ browser verification, changelog review, and tarball inspection.
 
 1. Record the release-readiness decision and any accepted non-blocking limitations.
 2. Convert `Unreleased` in [CHANGELOG.md](./CHANGELOG.md) to
-   `## 0.1.0-alpha.0 — YYYY-MM-DD`, then add a new empty `Unreleased` section above it.
-3. Change only the six intended package manifests from `private: true` to `private: false` in a
-   dedicated release PR. Rerun the complete gate, replacing the ordinary release validation command
-   with `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, then obtain a second approval. The
-   override requires every intended package to be public; it does not weaken the coordinated
-   version, metadata, contents, runtime, source-install, or consumer-build checks.
+   `## 0.1.0-alpha.1 — YYYY-MM-DD`, then add a new empty `Unreleased` section above it.
+3. In a dedicated release PR, bump only the six public package manifests and their coordinated
+   internal dependency references from `0.1.0-alpha.0` to `0.1.0-alpha.1`. Keep them public. Update
+   the release smoke expectation, rerun the complete gate with
+   `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, then obtain a second approval. The override
+   does not weaken version, metadata, contents, runtime, source-install, or consumer-build checks.
 4. Publish one package at a time in the documented dependency order with the `alpha` dist-tag, for
    example `pnpm --filter @nerio-ui/tokens publish --access public --tag alpha --no-git-checks`.
 5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
@@ -127,7 +133,7 @@ browser verification, changelog review, and tarball inspection.
 
 ## Post-release verification
 
-- Confirm `npm view <package>@0.1.0-alpha.0 version dist-tags files` for every package.
+- Confirm `npm view <package>@0.1.0-alpha.1 version dist-tags files` for every package.
 - Install the six published packages into a new supported Next.js project and rerun the package and
   source-install smoke paths.
 - Run `nerio init`, `list`, `info`, `add`, and `doctor` from the published CLI.
@@ -138,7 +144,7 @@ browser verification, changelog review, and tarball inspection.
 ## Rollback guidance
 
 If a package is wrong before later packages are published, stop the sequence and leave the release
-incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.1` and moving the
+incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.2` and moving the
 `alpha` dist-tag only after verification. If the registry permits and policy requires it, deprecate
 the faulty version with a concise install warning. Restore the previous dist-tag when one exists,
 document affected packages and consumers, and avoid npm unpublish except for a security incident or

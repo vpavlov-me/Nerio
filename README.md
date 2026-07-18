@@ -4,8 +4,8 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: The strict Core 0.1 release gate passes and the public-manifest release PR is merged.
-> `0.1.0-alpha.0` will publish under `@nerio-ui`; no package, tag, or GitHub Release exists yet.
+> Status: `0.1.0-alpha.0` is public under `@nerio-ui`. The Tailwind CSS v4-first implementation
+> passes the release gate and is being prepared as `0.1.0-alpha.1`.
 
 ## Product model
 
@@ -139,13 +139,18 @@ nerio doctor
 
 ## Pre-release status
 
-The root workspace and apps are private. The Core packages intended for a future public pre-release are `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and `@nerio-ui/mcp`. `@nerio-ui/config` remains private internal tooling.
+The root workspace, apps, and `@nerio-ui/config` remain private. The public Core packages are
+`@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
+`@nerio-ui/mcp`.
 
-The release gate, packed-package audit, clean consumer build, and browser matrix pass for the
-intended `0.1.0-alpha.0` surface. Do not publish packages from this repository until maintainers
-explicitly approve the manual sequence in [RELEASE.md](./RELEASE.md).
+The npm `alpha` and `latest` tags currently point to the published pre-Tailwind
+`0.1.0-alpha.0`. The Tailwind-first candidate passes the packed-package audit, clean consumer build,
+and browser matrix. Its architecture, migration guidance, limitations, and version recommendation
+are recorded in the [final migration report](./docs/tailwind-migration-report.md).
 
-No public release exists yet. See [CHANGELOG.md](./CHANGELOG.md) for notable unreleased changes.
+Publishing `0.1.0-alpha.1`, moving dist-tags, tagging the commit, and creating a GitHub prerelease
+remain manual maintainer actions. See [RELEASE.md](./RELEASE.md) and
+[CHANGELOG.md](./CHANGELOG.md).
 
 ## Contributing
 
