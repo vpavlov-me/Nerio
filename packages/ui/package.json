@@ -1,6 +1,6 @@
 {
   "name": "@nerio-ui/ui",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "description": "Nerio Core React components, utilities, and styles.",
   "private": false,
   "license": "MIT",

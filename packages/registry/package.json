@@ -1,6 +1,6 @@
 {
   "name": "@nerio-ui/registry",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "description": "Nerio Core source registry manifest and metadata helpers.",
   "private": false,
   "license": "MIT",
