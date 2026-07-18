@@ -6,6 +6,10 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+No changes yet.
+
+## 0.1.0-alpha.1 — 2026-07-18
+
 ### Documentation and governance
 
 - Added a canonical Core UI implementation standard, reusable review checklist, cross-category
@@ -31,7 +35,8 @@ Items under `Unreleased` may change before the next public release.
 
 - Package consumers must import `@nerio-ui/tokens/tailwind.css` and register the installed
   `@nerio-ui/ui` source path. Source-install consumers must import the copied Nerio bridge and token
-  styles. See `docs/tailwind-migration-report.md` for complete `0.1.0-alpha.0` guidance.
+  styles. See `docs/tailwind-migration-report.md` for complete migration guidance from
+  `0.1.0-alpha.0`.
 
 ## 0.1.0-alpha.0 — 2026-07-15
 

@@ -74,7 +74,7 @@ const packageContracts = {
     bin: ["nerio-mcp"],
   },
 };
-const expectedVersion = "0.1.0-alpha.0";
+const expectedVersion = "0.1.0-alpha.1";
 const expectPublicPackages = process.env.NERIO_RELEASE_EXPECT_PUBLIC === "1";
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 
