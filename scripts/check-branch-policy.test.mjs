@@ -49,7 +49,13 @@ test("allows conventional development branches into dev", () => {
 });
 
 test("allows same-repository main synchronization and rejects unclassified branches into dev", () => {
-  assert.equal(checkBranchPolicy("dev", "main").allowed, true);
+  assert.equal(
+    checkBranchPolicy("dev", "main", {
+      repository: "vpavlov-me/Nerio",
+      headRepository: "vpavlov-me/Nerio",
+    }).allowed,
+    true,
+  );
   assert.equal(
     checkBranchPolicy("dev", "main", {
       repository: "vpavlov-me/Nerio",

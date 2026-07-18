@@ -30,8 +30,8 @@ export function checkBranchPolicy(baseRef, headRef, repositories = {}) {
   if (baseRef === "dev") {
     if (headRef === "main") {
       const isRepositoryMain =
-        !repositories.repository ||
-        !repositories.headRepository ||
+        Boolean(repositories.repository) &&
+        Boolean(repositories.headRepository) &&
         repositories.repository === repositories.headRepository;
       return isRepositoryMain
         ? { allowed: true, message: "Synchronization pull request main -> dev is allowed." }
