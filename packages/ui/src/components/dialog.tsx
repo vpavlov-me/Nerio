@@ -22,6 +22,7 @@ export interface DialogProps extends Pick<
   children: React.ReactNode;
   className?: string;
   bodyClassName?: string;
+  closeLabel?: string;
 }
 
 export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(function Dialog(
@@ -32,6 +33,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(function Dia
     children,
     className,
     bodyClassName,
+    closeLabel = "Close dialog",
     open,
     defaultOpen,
     onOpenChange,
@@ -68,7 +70,8 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(function Dia
             </div>
             <BaseDialog.Close
               className="n-dialog__close inline-flex size-(--n-size-control-sm) cursor-pointer items-center justify-center rounded-(--n-radius-sm) border-0 bg-(--n-button-background-ghost) text-(length:--n-font-size-sm) text-(--n-color-text-tertiary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)"
-              aria-label="Close dialog"
+              aria-label={closeLabel}
+              data-slot="close"
             >
               <Icon icon={X} />
             </BaseDialog.Close>

@@ -336,7 +336,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Accessible modal primitive with title, description, close affordance, controlled state, and Base UI focus behavior."
+      "description": "Accessible modal primitive with title, description, localizable close affordance, controlled state, and Base UI focus behavior."
     },
     {
       "name": "Sheet",

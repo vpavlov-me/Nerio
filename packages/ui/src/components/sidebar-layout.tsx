@@ -10,12 +10,12 @@ export const SidebarHeader = React.forwardRef<HTMLElement, SidebarRegionProps>(
     return (
       <header
         ref={ref}
+        {...props}
         className={cn(
           "n-sidebar__header p-(--n-sidebar-region-padding) [[data-side=left]_&]:ps-[max(var(--n-sidebar-region-padding),env(safe-area-inset-left))] [[data-side=right]_&]:pe-[max(var(--n-sidebar-region-padding),env(safe-area-inset-right))]",
           className,
         )}
         data-slot="sidebar-header"
-        {...props}
       />
     );
   },
@@ -26,12 +26,12 @@ export const SidebarContent = React.forwardRef<HTMLDivElement, SidebarContentPro
     return (
       <div
         ref={ref}
+        {...props}
         className={cn(
           "n-sidebar__content min-h-0 overflow-auto overscroll-contain px-(--n-sidebar-region-padding) [[data-side=left]_&]:ps-[max(var(--n-sidebar-region-padding),env(safe-area-inset-left))] [[data-side=right]_&]:pe-[max(var(--n-sidebar-region-padding),env(safe-area-inset-right))]",
           className,
         )}
         data-slot="sidebar-content"
-        {...props}
       />
     );
   },
@@ -42,12 +42,12 @@ export const SidebarFooter = React.forwardRef<HTMLElement, SidebarRegionProps>(
     return (
       <footer
         ref={ref}
+        {...props}
         className={cn(
           "n-sidebar__footer p-(--n-sidebar-region-padding) [[data-side=left]_&]:ps-[max(var(--n-sidebar-region-padding),env(safe-area-inset-left))] [[data-side=right]_&]:pe-[max(var(--n-sidebar-region-padding),env(safe-area-inset-right))]",
           className,
         )}
         data-slot="sidebar-footer"
-        {...props}
       />
     );
   },
@@ -65,9 +65,9 @@ export const SidebarInset = React.forwardRef<HTMLElement, SidebarInsetProps>(fun
   return (
     <Component
       ref={composedRef}
+      {...props}
       className={cn("n-sidebar-inset min-w-0 flex-[1_1_auto] p-(--n-sidebar-inset-gap)", className)}
       data-slot="sidebar-inset"
-      {...props}
     />
   );
 });

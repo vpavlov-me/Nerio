@@ -464,7 +464,9 @@ async function verify() {
       !dialogUsage.requiredTokens.includes("--n-dialog-width-md") ||
       !dialogUsage.requiredTokens.includes("--n-motion-overlay-enter-duration") ||
       !dialogUsage.dependencies.includes("@nerio-ui/adapters") ||
-      !dialogUsage.accessibility.some((item) => item.includes("Close dialog"))
+      !dialogUsage.accessibility.some(
+        (item) => item.includes("Close dialog") && item.includes("localized accessible name"),
+      )
     ) {
       throw new Error("MCP Dialog usage is missing overlay, adapter, or close metadata.");
     }

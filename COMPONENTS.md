@@ -95,7 +95,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 | Component     | Status      | Package               | Notes                                                                                                                     |
 | ------------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Dialog        | stable-core | `@nerio-ui/ui/client` | Modal primitive with title, description, close, controlled state, ref, and Base UI focus behavior                         |
+| Dialog        | stable-core | `@nerio-ui/ui/client` | Modal primitive with title, description, localizable close, controlled state, ref, and Base UI focus behavior             |
 | Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral close composition, safe-area layout, four sides, sizes, and shared overlay motion |
 | Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                         |
 | Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                       |

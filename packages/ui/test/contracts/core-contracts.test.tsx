@@ -8,6 +8,7 @@ import {
   Avatar,
   Alert,
   Badge,
+  Breadcrumbs,
   ButtonGroup,
   Card,
   CardAction,
@@ -775,6 +776,27 @@ describe("Core static contracts", () => {
     expect(screen.getByText("Total").closest("tfoot")).toHaveAttribute("data-slot", "footer");
     expect(screen.getByTestId("list")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("stat")).toHaveAttribute("data-slot", "card");
+  });
+
+  it("protects static navigation anatomy while forwarding consumer attributes", () => {
+    const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
+    render(
+      <>
+        <Breadcrumbs
+          data-testid="breadcrumbs"
+          items={[{ label: "Docs", href: "/docs" }, { label: "Components" }]}
+          {...unsafeSlot}
+        />
+        <Pagination
+          data-testid="pagination"
+          pages={[{ key: "one", label: "1", current: true }]}
+          {...unsafeSlot}
+        />
+      </>,
+    );
+
+    expect(screen.getByTestId("breadcrumbs")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("pagination")).toHaveAttribute("data-slot", "root");
   });
 
   it("keeps Progress semantics, root props, and protected anatomy intentional", () => {
@@ -3146,6 +3168,73 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();
   });
 
+  it("keeps Dialog close anatomy truthful and its accessible name localizable", () => {
+    render(
+      <Dialog defaultOpen closeLabel="Close workspace dialog" title="Workspace" trigger="Open">
+        Dialog content
+      </Dialog>,
+    );
+
+    expect(screen.getByRole("button", { name: "Close workspace dialog" })).toHaveAttribute(
+      "data-slot",
+      "close",
+    );
+  });
+
+  it("protects Sheet anatomy, side, and size while forwarding popup attributes", () => {
+    const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
+    const unsafeContent = {
+      ...unsafeSlot,
+      "data-side": "left",
+      "data-size": "lg",
+    } as Record<string, string>;
+
+    render(
+      <Sheet defaultOpen>
+        <SheetTrigger
+          data-testid="sheet-trigger"
+          render={<button type="button">Open sheet</button>}
+          {...unsafeSlot}
+        />
+        <SheetContent
+          data-testid="sheet-content"
+          showClose={false}
+          side="right"
+          size="sm"
+          {...unsafeContent}
+        >
+          <SheetHeader data-testid="sheet-header" {...unsafeSlot}>
+            <SheetTitle data-testid="sheet-title" {...unsafeSlot}>
+              Protected sheet
+            </SheetTitle>
+            <SheetDescription data-testid="sheet-description" {...unsafeSlot}>
+              Description
+            </SheetDescription>
+          </SheetHeader>
+          <SheetBody data-testid="sheet-body" {...unsafeSlot}>
+            Body
+          </SheetBody>
+          <SheetFooter data-testid="sheet-footer" {...unsafeSlot}>
+            Footer
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>,
+    );
+
+    expect(screen.getByTestId("sheet-trigger")).toHaveAttribute("data-slot", "sheet-trigger");
+    expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-slot", "sheet-content");
+    expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-side", "right");
+    expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-size", "sm");
+    expect(screen.getByTestId("sheet-header")).toHaveAttribute("data-slot", "sheet-header");
+    expect(screen.getByTestId("sheet-title")).toHaveAttribute("data-slot", "sheet-title");
+    expect(screen.getByTestId("sheet-description")).toHaveAttribute(
+      "data-slot",
+      "sheet-description",
+    );
+    expect(screen.getByTestId("sheet-body")).toHaveAttribute("data-slot", "sheet-body");
+    expect(screen.getByTestId("sheet-footer")).toHaveAttribute("data-slot", "sheet-footer");
+  });
+
   it("keeps Sheet slots, controlled state, and modal dismissal contracts aligned", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
@@ -3223,20 +3312,38 @@ describe("Core interactive action contracts", () => {
 
   it("coordinates uncontrolled Sidebar state, stable slots, and focus-safe collapse", async () => {
     const user = userEvent.setup();
+    const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
+    const unsafeToggleProps = {
+      ...unsafeSlot,
+      "aria-controls": "consumer-sidebar",
+      "aria-expanded": true,
+      "aria-label": "Consumer label",
+      type: "submit",
+    } as React.ButtonHTMLAttributes<HTMLButtonElement>;
     render(
-      <SidebarProvider defaultExpanded={false} side="right" sidebarId="workspace-sidebar">
-        <Sidebar aria-label="Workspace tools">
-          <SidebarHeader>Workspace</SidebarHeader>
-          <SidebarContent>
+      <SidebarProvider
+        data-testid="sidebar-provider"
+        defaultExpanded={false}
+        side="right"
+        sidebarId="workspace-sidebar"
+        {...unsafeSlot}
+      >
+        <Sidebar aria-label="Workspace tools" {...unsafeSlot}>
+          <SidebarHeader data-testid="sidebar-header" {...unsafeSlot}>
+            Workspace
+          </SidebarHeader>
+          <SidebarContent data-testid="sidebar-content" {...unsafeSlot}>
             <nav aria-label="Workspace">
               <a href="/projects">Projects</a>
             </nav>
           </SidebarContent>
-          <SidebarFooter>Account</SidebarFooter>
-          <SidebarRail label="Collapse workspace sidebar" />
+          <SidebarFooter data-testid="sidebar-footer" {...unsafeSlot}>
+            Account
+          </SidebarFooter>
+          <SidebarRail label="Collapse workspace sidebar" {...unsafeSlot} />
         </Sidebar>
-        <SidebarInset>
-          <SidebarTrigger label="Expand workspace sidebar" />
+        <SidebarInset data-testid="sidebar-inset" {...unsafeSlot}>
+          <SidebarTrigger label="Expand workspace sidebar" {...unsafeToggleProps} />
           Workspace content
         </SidebarInset>
       </SidebarProvider>,
@@ -3250,6 +3357,17 @@ describe("Core interactive action contracts", () => {
     expect(sidebar.querySelector('[data-slot="sidebar-inner"]')).toHaveAttribute("inert");
     expect(trigger).toHaveAttribute("aria-controls", "workspace-sidebar");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveAttribute("data-slot", "sidebar-trigger");
+    expect(trigger).toHaveAttribute("type", "button");
+    expect(screen.getByRole("button", { name: "Collapse workspace sidebar" })).toHaveAttribute(
+      "data-slot",
+      "sidebar-rail",
+    );
+    expect(screen.getByTestId("sidebar-provider")).toHaveAttribute("data-slot", "sidebar-provider");
+    expect(screen.getByTestId("sidebar-header")).toHaveAttribute("data-slot", "sidebar-header");
+    expect(screen.getByTestId("sidebar-content")).toHaveAttribute("data-slot", "sidebar-content");
+    expect(screen.getByTestId("sidebar-footer")).toHaveAttribute("data-slot", "sidebar-footer");
+    expect(screen.getByTestId("sidebar-inset")).toHaveAttribute("data-slot", "sidebar-inset");
 
     trigger.focus();
     await user.click(trigger);
@@ -3398,6 +3516,7 @@ describe("Core interactive action contracts", () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     const onActiveValueChange = vi.fn();
+    const unsafeClickCapture = vi.fn();
     const items = [
       { value: "open", label: "Open project", disabled: true },
       { value: "settings", label: "Workspace settings", keywords: ["preferences"] },
@@ -3417,6 +3536,7 @@ describe("Core interactive action contracts", () => {
               disabled={item.disabled}
               description={`${item.label} description`}
               onSelect={onSelect}
+              {...({ onClickCapture: unsafeClickCapture } as React.HTMLAttributes<HTMLDivElement>)}
             >
               {item.label}
             </CommandItem>
@@ -3444,6 +3564,7 @@ describe("Core interactive action contracts", () => {
     expect(screen.queryByRole("option", { name: /Invite teammate/ })).not.toBeInTheDocument();
     await user.click(settings);
     expect(onSelect).toHaveBeenLastCalledWith("settings", expect.anything());
+    expect(unsafeClickCapture).not.toHaveBeenCalled();
     expect(input).toHaveValue("Workspace settings");
 
     await user.clear(input);

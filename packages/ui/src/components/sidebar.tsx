@@ -139,16 +139,16 @@ const SidebarToggle = React.forwardRef<HTMLButtonElement, SidebarToggleProps>(
     return (
       <button
         ref={ref}
-        type="button"
+        {...props}
         aria-controls={sidebarId}
         aria-expanded={expanded}
         aria-label={label}
         className={className}
-        {...props}
         onClick={(event) => {
           onClick?.(event);
           if (!event.defaultPrevented) toggle();
         }}
+        type="button"
       >
         {children ?? <Icon icon={PanelLeft} />}
       </button>
@@ -161,12 +161,12 @@ export const SidebarTrigger = React.forwardRef<HTMLButtonElement, SidebarToggleP
     return (
       <SidebarToggle
         ref={ref}
+        {...props}
         className={cn(
           "n-sidebar-trigger inline-flex min-h-(--n-sidebar-rail-hit-area) min-w-(--n-sidebar-rail-hit-area) cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) forced-colors:border forced-colors:border-[ButtonText]",
           className,
         )}
         data-slot="sidebar-trigger"
-        {...props}
       />
     );
   },
@@ -177,12 +177,12 @@ export const SidebarRail = React.forwardRef<HTMLButtonElement, SidebarToggleProp
     return (
       <SidebarToggle
         ref={ref}
+        {...props}
         className={cn(
           "n-sidebar-rail absolute top-1/2 right-[calc(-0.5*var(--n-sidebar-rail-hit-area))] z-1 inline-flex size-(--n-sidebar-rail-hit-area) -translate-y-1/2 cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) [[data-side=right]_&]:right-auto [[data-side=right]_&]:left-[calc(-0.5*var(--n-sidebar-rail-hit-area))] forced-colors:border forced-colors:border-[ButtonText]",
           className,
         )}
         data-slot="sidebar-rail"
-        {...props}
       />
     );
   },

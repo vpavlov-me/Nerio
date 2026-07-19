@@ -2288,7 +2288,7 @@
         "Uses the Base UI Dialog primitive.",
         "Includes a title and optional description.",
         "Focus is trapped while the dialog is open and returns to the trigger on close.",
-        "Includes an aria-label=\"Close dialog\" close button rendered through the Nerio icon adapter.",
+        "Defaults closeLabel to \"Close dialog\" for the icon close button; provide a localized accessible name when needed.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded popup ref."
       ],
       "usage": "import { Dialog } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\" description=\"Choose collaborators and permissions.\">...</Dialog>"
@@ -2797,7 +2797,7 @@
         "Requires an element trigger. Use a keyboard-focusable control when keyboard users need to discover the tooltip.",
         "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed."
       ],
-      "usage": "import { Tooltip } from '@/components/nerio/components/tooltip';\n\n<Tooltip label=\"Copies the share link\">...</Tooltip>"
+      "usage": "import { Tooltip } from '@/components/nerio/components/tooltip';\n\n<Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>"
     },
     {
       "name": "toast",
