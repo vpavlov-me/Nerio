@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   Avatar,
   Badge,
@@ -43,6 +43,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Textarea,
 } from "../../src/index";
 import {
   Button,
@@ -54,6 +55,7 @@ import {
   CommandList,
   CommandLoading,
   Dialog,
+  LabelHint,
   RadioGroup,
   RadioGroupItem,
   Select,
@@ -395,6 +397,27 @@ describe("Core accessibility contracts", () => {
         </Field>
       </>,
     );
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps read-only Textarea and LabelHint semantics discoverable without form submission", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn((event: React.FormEvent) => event.preventDefault());
+    const { container } = render(
+      <form onSubmit={onSubmit}>
+        <Field label="Release notes">
+          <Textarea readOnly defaultValue="Approved for release" />
+        </Field>
+        <LabelHint label="Only maintainers can edit release notes." />
+      </form>,
+    );
+
+    const notes = screen.getByRole("textbox", { name: "Release notes" });
+    const hint = screen.getByRole("button", { name: "More information" });
+    expect(notes).toHaveAttribute("readonly");
+    expect(hint).toHaveAttribute("type", "button");
+    await user.click(hint);
+    expect(onSubmit).not.toHaveBeenCalled();
     expect((await axe(container)).violations).toEqual([]);
   });
 

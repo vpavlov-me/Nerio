@@ -570,6 +570,11 @@ export const componentReference: Record<string, ComponentReference> = {
         description:
           "Optional supplemental tooltip, especially useful for icon-only actions. It never replaces aria-label.",
       },
+      {
+        title: "render / nativeButton",
+        description:
+          "Replaces the native button while preserving caller props, handlers, classes, content, state hooks, and refs. Element targets preserve their chosen native semantics; function renders keep Base UI button interaction semantics. Set nativeButton to false on an element target for a native anchor.",
+      },
     ],
     designNotes: [
       "Use one primary Button per local decision.",
@@ -1258,6 +1263,11 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Focus", description: "Visible focus treatment remains consistent with Input." },
       { title: "Disabled", description: "Keeps content visible while preventing edits." },
       {
+        title: "Read-only",
+        description:
+          "Stays focusable and selectable while using the shared read-only control surface.",
+      },
+      {
         title: "Required",
         description: "Use native required attributes for mandatory long-form values.",
       },
@@ -1267,6 +1277,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use a visible label and helpful description for long-form fields.",
       "Use aria-describedby for helper text and validation messages.",
       "Use aria-invalid only when the value is actually invalid.",
+      "Use readOnly when content must remain selectable but cannot be edited.",
     ],
     guidance: {
       do: ["Use for content that benefits from multiple lines."],
@@ -1278,6 +1289,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-background",
       "--n-input-border-focus",
       "--n-input-placeholder",
+      "--n-input-readonly-background",
+      "--n-input-readonly-border",
     ],
   },
   label: {
@@ -1317,6 +1330,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Connect labels to controls with htmlFor and matching id when they are separate.",
       "Label forwards native label attributes and refs.",
       "Keep the interactive hint outside the native label element by using LabelRow and LabelContent.",
+      "LabelHint uses a native type=button trigger and cannot submit the surrounding form.",
       "Tooltip guidance is supplementary; do not put essential requirements only in a tooltip.",
     ],
     guidance: {
@@ -1332,6 +1346,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-label-required-color",
       "--n-label-icon-color",
       "--n-label-hint-icon-size",
+      "--n-focus-ring",
     ],
   },
   field: {

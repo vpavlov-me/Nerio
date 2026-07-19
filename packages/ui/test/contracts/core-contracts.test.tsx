@@ -58,6 +58,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Textarea,
 } from "../../src/index";
 import {
   Button,
@@ -1286,6 +1287,28 @@ describe("Core static contracts", () => {
     ).toThrow("exactly one");
   });
 
+  it("keeps Textarea invalid, disabled, read-only, and focus contracts aligned with Input", () => {
+    render(
+      <>
+        <Textarea aria-label="Invalid notes" aria-invalid="true" />
+        <Textarea aria-label="Read-only notes" readOnly defaultValue="Approved" />
+        <Textarea aria-label="Disabled notes" disabled />
+      </>,
+    );
+
+    const invalid = screen.getByRole("textbox", { name: "Invalid notes" });
+    const readOnly = screen.getByRole("textbox", { name: "Read-only notes" });
+    const disabled = screen.getByRole("textbox", { name: "Disabled notes" });
+
+    expect(invalid).toHaveAttribute("data-invalid", "");
+    expect(invalid.className).toContain("focus-visible:border-(--n-input-border-focus)");
+    expect(readOnly).toHaveAttribute("data-readonly", "");
+    expect(readOnly).toHaveAttribute("readonly");
+    expect(readOnly.className).toContain("data-readonly:bg-(--n-input-readonly-background)");
+    expect(disabled).toHaveAttribute("data-disabled", "");
+    expect(disabled).toBeDisabled();
+  });
+
   it("composes label requirements and hint context without nesting a control inside the label", async () => {
     const user = userEvent.setup();
     render(
@@ -1304,6 +1327,10 @@ describe("Core static contracts", () => {
     expect(screen.getByText("*")).toHaveAttribute("data-slot", "required");
     expect(screen.getByText("*")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByRole("textbox", { name: "Project name" })).toBeRequired();
+    expect(screen.getByRole("button", { name: "More information" })).toHaveAttribute(
+      "type",
+      "button",
+    );
     expect(
       Array.from(document.querySelector("[data-slot=content]")!.children).map((child) =>
         child.getAttribute("data-slot"),
@@ -1840,6 +1867,69 @@ describe("Core interactive action contracts", () => {
     expect(classNames.indexOf("n-button")).toBeLessThan(
       classNames.indexOf("button-consumer-class"),
     );
+  });
+
+  it("preserves Button props, handlers, and function render composition", async () => {
+    const user = userEvent.setup();
+    const buttonHandler = vi.fn();
+    const functionHandler = vi.fn();
+    const targetHandler = vi.fn();
+
+    render(
+      <>
+        <Button
+          aria-keyshortcuts="Meta+K"
+          data-contract="preserved"
+          id="element-render-button"
+          nativeButton={false}
+          onClick={buttonHandler}
+          render={<a href="#element-render" onClick={targetHandler} />}
+        >
+          Element render
+        </Button>
+        <Button
+          nativeButton={false}
+          onClick={functionHandler}
+          render={(renderProps, state) => (
+            <div {...renderProps} data-render-disabled={state.disabled ? "true" : "false"} />
+          )}
+        >
+          Function render
+        </Button>
+        <Button disabled render={<button data-custom-native="true" />}>
+          Disabled custom button
+        </Button>
+        <Button disabled nativeButton={false} render={<a href="#disabled-render" />}>
+          Disabled custom link
+        </Button>
+      </>,
+    );
+
+    const elementLink = screen.getByRole("link", { name: "Element render" });
+    expect(elementLink).toHaveAttribute("id", "element-render-button");
+    expect(elementLink).toHaveAttribute("aria-keyshortcuts", "Meta+K");
+    expect(elementLink).toHaveAttribute("data-contract", "preserved");
+    await user.click(elementLink);
+    expect(targetHandler).toHaveBeenCalledOnce();
+    expect(buttonHandler).toHaveBeenCalledOnce();
+
+    const functionButton = screen.getByRole("button", { name: "Function render" });
+    expect(functionButton).toHaveAttribute("tabindex", "0");
+    expect(functionButton).toHaveAttribute("data-render-disabled", "false");
+    expect(functionButton).toHaveClass("n-button");
+    functionButton.focus();
+    await user.keyboard("{Enter}");
+    expect(functionHandler).toHaveBeenCalledOnce();
+
+    const nativeButton = screen.getByRole("button", { name: "Disabled custom button" });
+    expect(nativeButton).toBeDisabled();
+    expect(nativeButton).toHaveAttribute("data-disabled", "");
+    expect(nativeButton).toHaveAttribute("type", "button");
+    expect(nativeButton).toHaveAttribute("data-custom-native", "true");
+
+    const disabledLink = screen.getByRole("link", { name: "Disabled custom link" });
+    expect(disabledLink).toHaveAttribute("aria-disabled", "true");
+    expect(disabledLink).toHaveAttribute("data-disabled", "");
   });
 
   it("composes render-element and forwarded Button refs without dropping either ref shape", () => {
