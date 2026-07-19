@@ -69,13 +69,13 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(functio
   return (
     <nav
       ref={ref}
+      {...props}
       aria-label={ariaLabel}
       className={cn(
         "n-pagination text-(length:--n-font-size-sm) text-(--n-color-text-secondary)",
         className,
       )}
       data-slot="root"
-      {...props}
     >
       <ul
         className="n-pagination__list m-0 flex list-none flex-wrap items-center gap-(--n-pagination-gap) p-0"

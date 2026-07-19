@@ -588,6 +588,16 @@ async function verify() {
       throw new Error("Installed Typography token stylesheet is missing the Inter recipe.");
     }
     assertInstall(localTarget, expectedDialogFiles);
+    const dialogSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/dialog.tsx"),
+      "utf8",
+    );
+    if (
+      !dialogSource.includes('closeLabel = "Close dialog"') ||
+      !dialogSource.includes('data-slot="close"')
+    ) {
+      throw new Error("Installed Dialog source is missing its localizable close anatomy contract.");
+    }
     assertFiles(localTarget, expectedSheetFiles);
     const sheetSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/sheet.tsx"),

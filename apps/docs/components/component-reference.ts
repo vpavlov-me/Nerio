@@ -177,22 +177,24 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     name: "Sheet",
     description:
       "A focused Base UI modal side-panel primitive with compound slots and Core size scale.",
-    status: "beta",
+    status: "stable",
     layer: "core",
-    category: "Navigation and overlays",
+    category: "Overlays",
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui/client",
     related: ["Dialog", "Popover", "Button"],
     anatomy: [
       "sheet-trigger",
+      "sheet-backdrop",
       "sheet-content",
       "sheet-header",
       "sheet-title",
+      "sheet-description",
       "sheet-body",
       "sheet-footer",
       "sheet-close",
     ],
-    motion: ["directional overlay entry", "reduced-motion fade"],
+    motion: ["directional overlay entry and exit", "reduced-motion instant state change"],
     accessibility: ["Base UI modal focus management", "accessible name", "keyboard close path"],
   },
   "sidebar-primitive": {
@@ -208,6 +210,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: [
       "sidebar-provider",
       "sidebar",
+      "sidebar-inner",
       "sidebar-header",
       "sidebar-content",
       "sidebar-footer",
@@ -236,11 +239,18 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: [
       "command",
       "command-input-group",
+      "command-input-icon",
       "command-input",
       "command-list",
       "command-group",
       "command-group-label",
       "command-item",
+      "command-item-leading",
+      "command-item-content",
+      "command-item-label",
+      "command-item-description",
+      "command-item-metadata",
+      "command-item-shortcut",
       "command-separator",
       "command-empty",
       "command-loading",
@@ -312,7 +322,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   breadcrumbs: {
     name: "Breadcrumbs",
     description: "Shows hierarchy navigation with native anchors and current page semantics.",
-    status: "beta",
+    status: "stable",
     layer: "core",
     category: "Navigation",
     package: "@nerio-ui/ui",
@@ -325,7 +335,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   pagination: {
     name: "Pagination",
     description: "Provides previous, next, and page links without owning pagination state.",
-    status: "beta",
+    status: "stable",
     layer: "core",
     category: "Navigation",
     package: "@nerio-ui/ui",
@@ -2468,7 +2478,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   tabs: {
-    category: "Navigation and overlays",
+    category: "Navigation",
     purpose: "Use Tabs to switch between related panels within the same context.",
     anatomy: [
       {
@@ -2568,14 +2578,19 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   dialog: {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose:
       "Use Dialog to focus a short task, confirmation, or decision above the current surface.",
     anatomy: [
       { title: "trigger", description: "Control that opens the dialog." },
-      { title: "portal", description: "Layer that isolates overlay rendering and stacking." },
-      { title: "overlay", description: "Backdrop that separates the dialog from the page." },
-      { title: "content", description: "Modal surface with title, description, and actions." },
+      { title: "backdrop", description: "Backdrop that separates the dialog from the page." },
+      { title: "content", description: "Modal surface rendered through a portal." },
+      { title: "header", description: "Title, optional description, and close boundary." },
+      { title: "heading", description: "Grouped title and optional description." },
+      { title: "title", description: "Required accessible dialog heading." },
+      { title: "description", description: "Optional supporting context." },
+      { title: "body", description: "Task, decision, and action content." },
+      { title: "close", description: "Icon close control with a localizable accessible name." },
     ],
     variants: [
       { title: "Task", description: "Short focused task with clear completion." },
@@ -2597,6 +2612,10 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Accessible dialog heading and optional context.",
       },
       { title: "bodyClassName", description: "Optional class hook for the body slot." },
+      {
+        title: "closeLabel",
+        description: 'Accessible close-control name; defaults to "Close dialog".',
+      },
     ],
     guidance: {
       do: ["Use for short decisions that need context without a route change."],
@@ -2862,7 +2881,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   sheet: {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose:
       "Use Sheet for a focused modal panel that needs more room than a popover without becoming a product shell.",
     anatomy: [
@@ -2975,12 +2994,14 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   popover: {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose: "Use Popover for contextual controls or details tied to a trigger.",
     anatomy: [
       { title: "trigger", description: "Control that opens the popover." },
       { title: "content", description: "Layered panel with controls or supporting content." },
-      { title: "arrow", description: "Optional visual pointer when spatial context helps." },
+      { title: "title", description: "Optional contextual heading." },
+      { title: "description", description: "Optional supporting context." },
+      { title: "body", description: "Interactive or supporting content." },
     ],
     variants: [{ title: "Default", description: "Contextual panel near a trigger." }],
     states: [
@@ -3012,7 +3033,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   tooltip: {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose: "Use Tooltip to clarify compact controls or truncated metadata.",
     anatomy: [
       { title: "trigger", description: "Element that receives hover or focus." },
@@ -3029,7 +3050,10 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     api: [
       { title: "label", description: "Short non-essential explanatory content." },
-      { title: "children", description: "Trigger element; text children are wrapped in a span." },
+      {
+        title: "children",
+        description: "Required trigger element; prefer a keyboard-focusable control.",
+      },
       { title: "disabled", description: "Prevents tooltip display while preserving the trigger." },
     ],
     guidance: {
@@ -3047,7 +3071,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   "dropdown-menu": {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose: "Use DropdownMenu to group secondary commands behind a compact trigger.",
     anatomy: [
       { title: "trigger", description: "Control that opens the command list." },

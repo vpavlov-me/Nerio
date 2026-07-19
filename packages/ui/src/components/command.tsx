@@ -443,6 +443,7 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
   return (
     <BaseAutocomplete.Item
       ref={ref}
+      {...props}
       className={(state) => cn(commandItemClasses, resolveClassName(className, state))}
       disabled={isDisabled}
       onClickCapture={(event) => {
@@ -452,7 +453,6 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
         }
       }}
       value={item}
-      {...props}
       data-disabled={isDisabled ? "" : undefined}
       data-leading={hasLeading ? "true" : "false"}
       data-slot="command-item"

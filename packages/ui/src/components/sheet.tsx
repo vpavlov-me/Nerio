@@ -33,7 +33,7 @@ export const SheetTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<typeof BaseDialog.Trigger>
 >(function SheetTrigger(props, ref) {
-  return <BaseDialog.Trigger ref={ref} data-slot="sheet-trigger" {...props} />;
+  return <BaseDialog.Trigger ref={ref} {...props} data-slot="sheet-trigger" />;
 });
 
 export interface SheetContentProps extends Omit<
@@ -68,11 +68,11 @@ export const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
         />
         <BaseDialog.Popup
           ref={ref}
+          {...props}
           className={cn(sheetClasses, className)}
           data-side={side}
           data-size={size}
           data-slot="sheet-content"
-          {...props}
         >
           {showClose ? (
             <SheetClose
@@ -94,9 +94,9 @@ export const SheetHeader = React.forwardRef<HTMLElement, React.ComponentPropsWit
     return (
       <header
         ref={ref}
+        {...props}
         className={cn("n-sheet__header grid flex-none gap-(--n-space-1)", className)}
         data-slot="sheet-header"
-        {...props}
       />
     );
   },
@@ -109,12 +109,12 @@ export const SheetTitle = React.forwardRef<
   return (
     <BaseDialog.Title
       ref={ref}
+      {...props}
       className={cn(
         "n-sheet__title m-0 pe-(--n-size-control-sm) text-(length:--n-font-size-xl) leading-(--n-line-height-tight) text-(--n-color-text-primary)",
         className,
       )}
       data-slot="sheet-title"
-      {...props}
     />
   );
 });
@@ -126,12 +126,12 @@ export const SheetDescription = React.forwardRef<
   return (
     <BaseDialog.Description
       ref={ref}
+      {...props}
       className={cn(
         "n-sheet__description m-0 text-(length:--n-font-size-sm) text-(--n-color-text-secondary)",
         className,
       )}
       data-slot="sheet-description"
-      {...props}
     />
   );
 });
@@ -141,12 +141,12 @@ export const SheetBody = React.forwardRef<HTMLDivElement, React.ComponentPropsWi
     return (
       <div
         ref={ref}
+        {...props}
         className={cn(
           "n-sheet__body grid min-h-0 flex-[1_1_auto] gap-(--n-sheet-gap) overflow-auto overscroll-contain pe-(--n-space-1)",
           className,
         )}
         data-slot="sheet-body"
-        {...props}
       />
     );
   },
@@ -157,12 +157,12 @@ export const SheetFooter = React.forwardRef<HTMLElement, React.ComponentPropsWit
     return (
       <footer
         ref={ref}
+        {...props}
         className={cn(
           "n-sheet__footer grid flex-none gap-(--n-space-1) border-t-(length:--n-overlay-border-width) border-(--n-overlay-border) pt-(--n-sheet-gap)",
           className,
         )}
         data-slot="sheet-footer"
-        {...props}
       />
     );
   },

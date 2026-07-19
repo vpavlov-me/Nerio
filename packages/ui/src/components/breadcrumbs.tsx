@@ -21,13 +21,13 @@ export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(funct
   return (
     <nav
       ref={ref}
+      {...props}
       aria-label={ariaLabel}
       className={cn(
         "n-breadcrumbs text-(length:--n-font-size-sm) text-(--n-color-text-secondary)",
         className,
       )}
       data-slot="root"
-      {...props}
     >
       <ol
         className="n-breadcrumbs__list m-0 flex list-none flex-wrap items-center gap-(--n-breadcrumbs-gap) p-0"

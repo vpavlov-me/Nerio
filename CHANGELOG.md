@@ -6,7 +6,14 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
-No changes yet.
+### Changed
+
+- Added a localizable `Dialog.closeLabel` while preserving the existing "Close dialog" default.
+
+### Fixed
+
+- Protected Navigation, Sidebar, Command, Dialog, and Sheet anatomy/state ownership from escaped
+  consumer DOM props and synchronized their docs and Registry projections with the shipped APIs.
 
 ## 0.1.0-alpha.1 — 2026-07-18
 
