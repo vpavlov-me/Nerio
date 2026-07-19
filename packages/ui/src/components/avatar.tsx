@@ -15,6 +15,10 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
   ref,
 ) {
   const normalizedName = name.trim().replace(/\s+/g, " ");
+  const accessibleName = alt?.trim() || normalizedName;
+  if (!decorative && !accessibleName) {
+    throw new Error("Meaningful Avatar requires a non-empty name or alt text.");
+  }
   const initials =
     normalizedName
       .split(" ")
@@ -27,38 +31,36 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
   return (
     <span
       ref={ref}
+      {...props}
       className={cn(
         "n-avatar inline-flex size-(--n-avatar-size-md) items-center justify-center overflow-hidden rounded-(--n-avatar-radius) border-(length:--n-avatar-border-width) border-(--n-avatar-border) bg-(--n-avatar-background) text-(length:--n-font-size-xs) font-(--n-font-weight-semibold) text-(--n-avatar-foreground) data-[size=sm]:size-(--n-avatar-size-sm) data-[size=sm]:text-(length:--n-avatar-font-size-sm) data-[size=lg]:size-(--n-avatar-size-lg) data-[size=lg]:text-(length:--n-avatar-font-size-lg) [&_img]:size-full [&_img]:object-cover forced-colors:border-[CanvasText]",
         className,
       )}
       data-slot="root"
       data-size={size}
-      {...props}
     >
       <AvatarContent
         key={src ?? "fallback"}
-        alt={alt}
+        accessibleName={accessibleName}
         decorative={decorative}
         fallback={fallback}
         initials={initials}
-        normalizedName={normalizedName}
         src={src}
       />
     </span>
   );
 });
 
-type AvatarContentProps = Pick<AvatarProps, "alt" | "decorative" | "fallback" | "src"> & {
+type AvatarContentProps = Pick<AvatarProps, "decorative" | "fallback" | "src"> & {
+  accessibleName: string;
   initials: string;
-  normalizedName: string;
 };
 
 function AvatarContent({
-  alt,
+  accessibleName,
   decorative,
   fallback,
   initials,
-  normalizedName,
   src,
 }: AvatarContentProps) {
   const [imageFailed, setImageFailed] = React.useState(false);
@@ -67,7 +69,7 @@ function AvatarContent({
     return (
       <img
         src={src}
-        alt={decorative ? "" : (alt ?? normalizedName)}
+        alt={decorative ? "" : accessibleName}
         data-slot="image"
         onError={() => setImageFailed(true)}
       />
@@ -77,9 +79,7 @@ function AvatarContent({
   return (
     <span
       data-slot="fallback"
-      {...(decorative
-        ? { "aria-hidden": true }
-        : { role: "img", "aria-label": (alt ?? normalizedName) || "Avatar" })}
+      {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": accessibleName })}
     >
       {fallback ?? initials}
     </span>

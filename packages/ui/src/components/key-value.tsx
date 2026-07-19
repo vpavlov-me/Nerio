@@ -13,12 +13,12 @@ export const KeyValue = React.forwardRef<HTMLDListElement, KeyValueProps>(functi
   return (
     <dl
       ref={ref}
+      {...props}
       className={cn(
         "n-key-value grid gap-(--n-key-value-gap) [&_dd]:m-0 [&_dt]:m-0 [&_dt]:text-(length:--n-font-size-sm) [&_dt]:text-(--n-color-text-tertiary)",
         className,
       )}
       data-slot="root"
-      {...props}
     >
       <dt data-slot="label">{label}</dt>
       <dd data-slot="value">{value}</dd>

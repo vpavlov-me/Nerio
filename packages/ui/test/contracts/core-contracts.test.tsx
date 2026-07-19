@@ -15,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
   CardVisual,
+  Code,
   EmptyState,
   EmptyStateActions,
   EmptyStateDescription,
@@ -25,6 +26,7 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Heading,
   Icon,
   Item,
   ItemActions,
@@ -37,6 +39,7 @@ import {
   ItemSeparator,
   ItemTitle,
   Kbd,
+  KeyValue,
   Label,
   LabelContent,
   LabelRequired,
@@ -44,11 +47,14 @@ import {
   List,
   Pagination,
   Progress,
+  Separator,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarInset,
+  Skeleton,
   Spinner,
+  Stat,
   Table,
   TableBody,
   TableCaption,
@@ -58,6 +64,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Text,
   Textarea,
 } from "../../src/index";
 import {
@@ -679,6 +686,97 @@ describe("Core static contracts", () => {
     expect(source).toContain("forced-colors:border-[CanvasText]");
   });
 
+  it("protects static display and feedback anatomy while forwarding consumer attributes", () => {
+    const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
+    render(
+      <>
+        <Heading data-testid="heading" {...unsafeSlot}>
+          Overview
+        </Heading>
+        <Text data-testid="text" {...unsafeSlot}>
+          Supporting copy
+        </Text>
+        <Code data-testid="code" {...unsafeSlot}>
+          pnpm test
+        </Code>
+        <Badge
+          data-testid="badge"
+          loading
+          size="sm"
+          tone="success"
+          {...({
+            ...unsafeSlot,
+            "aria-busy": false,
+            "data-size": "lg",
+            "data-tone": "danger",
+          } as Record<string, string | boolean>)}
+        >
+          Publishing
+        </Badge>
+        <Avatar
+          data-testid="avatar"
+          name="Maya Chen"
+          size="sm"
+          {...({ ...unsafeSlot, "data-size": "lg" } as Record<string, string>)}
+        />
+        <Skeleton
+          data-testid="skeleton"
+          {...({ ...unsafeSlot, "aria-hidden": false } as Record<string, string | boolean>)}
+        />
+        <Separator data-testid="separator" />
+        <KeyValue data-testid="key-value" label="Owner" value="Product team" {...unsafeSlot} />
+        <Alert data-testid="alert" title="Saved" tone="success" {...unsafeSlot} />
+        <Toast data-testid="toast" title="Updated" tone="info" {...unsafeSlot} />
+        <Table data-testid="table" {...unsafeSlot}>
+          <TableCaption {...unsafeSlot}>Projects</TableCaption>
+          <TableHeader {...unsafeSlot}>
+            <TableRow {...unsafeSlot}>
+              <TableHead {...unsafeSlot}>Name</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody {...unsafeSlot}>
+            <TableRow {...unsafeSlot}>
+              <TableCell {...unsafeSlot}>Roadmap</TableCell>
+            </TableRow>
+          </TableBody>
+          <TableFooter {...unsafeSlot}>
+            <TableRow>
+              <TableCell>Total</TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+        <List data-testid="list" items={[{ id: "one", title: "List item" }]} {...unsafeSlot} />
+        <Stat data-testid="stat" label="Projects" value="12" />
+      </>,
+    );
+
+    expect(screen.getByTestId("heading")).toHaveAttribute("data-slot", "heading");
+    expect(screen.getByTestId("text")).toHaveAttribute("data-slot", "text");
+    expect(screen.getByTestId("code")).toHaveAttribute("data-slot", "code");
+    expect(screen.getByTestId("badge")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("badge")).toHaveAttribute("data-tone", "success");
+    expect(screen.getByTestId("badge")).toHaveAttribute("data-size", "sm");
+    expect(screen.getByTestId("badge")).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByTestId("avatar")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("avatar")).toHaveAttribute("data-size", "sm");
+    expect(screen.getByTestId("skeleton")).toHaveAttribute("data-slot", "skeleton");
+    expect(screen.getByTestId("skeleton")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByTestId("separator")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("key-value")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("alert")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("alert")).toHaveAttribute("data-tone", "success");
+    expect(screen.getByTestId("toast")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("toast")).toHaveAttribute("data-tone", "info");
+    const table = screen.getByTestId("table");
+    expect(table).toHaveAttribute("data-slot", "root");
+    expect(within(table).getByText("Projects")).toHaveAttribute("data-slot", "caption");
+    expect(screen.getByRole("columnheader", { name: "Name" })).toHaveAttribute("data-slot", "head");
+    expect(screen.getByText("Roadmap")).toHaveAttribute("data-slot", "cell");
+    expect(screen.getByText("Total").closest("tfoot")).toHaveAttribute("data-slot", "footer");
+    expect(screen.getByTestId("list")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("stat")).toHaveAttribute("data-slot", "card");
+  });
+
   it("keeps Progress semantics, root props, and protected anatomy intentional", () => {
     const ref = React.createRef<HTMLDivElement>();
     const onClick = vi.fn();
@@ -948,6 +1046,12 @@ describe("Core static contracts", () => {
     );
     rerender(<Avatar name="Maya" size="lg" />);
     expect(screen.getByText("M").parentElement).toHaveAttribute("data-size", "lg");
+
+    rerender(<Avatar alt="  " name="  Maya   Chen " src="/maya.png" />);
+    expect(screen.getByRole("img", { name: "Maya Chen" })).toHaveAttribute("alt", "Maya Chen");
+    expect(() => render(<Avatar name="  " />)).toThrow(
+      "Meaningful Avatar requires a non-empty name or alt text.",
+    );
   });
 
   it("keeps ordered lists visibly ordered and supports stable item IDs", () => {

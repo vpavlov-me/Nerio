@@ -827,7 +827,7 @@
       ],
       "accessibility": [
         "Use the name prop to generate fallback initials.",
-        "Non-decorative images and fallbacks receive the supplied alt text or normalized name; decorative fallbacks are hidden.",
+        "Non-decorative images and fallbacks require a non-empty supplied alt text or normalized name; decorative fallbacks are hidden.",
         "Do not rely on Avatar alone for critical identification in dense lists."
       ],
       "usage": "import { Avatar } from '@/components/nerio/components/avatar';\n\n<Avatar name=\"Maya Chen\" />"
@@ -938,7 +938,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "label", "value", "trend"],
+      "slots": ["card", "label", "value", "trend"],
       "variants": [],
       "requiredTokens": ["--n-stat-gap", "--n-stat-value-size", "--n-stat-trend-color"],
       "accessibility": [

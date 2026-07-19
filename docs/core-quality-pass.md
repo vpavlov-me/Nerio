@@ -107,6 +107,9 @@ The complete issue #158 family evidence and projection review is recorded in
 | KeyValue  | Reviewed | Reviewed           | Static label/value pair                                                                                                                                            | Root now renders native `dl` around `dt` and `dd`                                                                 | Reviewed | Reviewed          | Repository checks                                                                                                         | stable-core  | Use a custom definition-list composition for grouped multi-value records.             |
 | Stat      | Reviewed | Reviewed           | Label, value, optional trend                                                                                                                                       | Textual trend remains understandable without color                                                                | Reviewed | Reviewed          | Repository checks                                                                                                         | stable-core  | Advanced KPI cards and trend visualisation remain Pro.                                |
 
+The complete issue #160 family evidence and projection review is recorded in
+[`docs/audits/core-data-feedback-principles.md`](./audits/core-data-feedback-principles.md).
+
 ## Remaining polished-component verification — #88
 
 | Component | API and responsibility                                                                                                                                      | Targeted evidence                                                                                                                                 | Browser evidence                                                                     | Final status |

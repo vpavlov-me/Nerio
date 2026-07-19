@@ -118,11 +118,11 @@ export function Toast({
 }: ToastProps) {
   return (
     <div
+      {...props}
       className={cn(toastClasses, className)}
       data-slot="root"
       data-tone={tone}
       role={role ?? (priority === "high" ? "alert" : "status")}
-      {...props}
     >
       <ToastIndicator tone={tone} />
       <div
