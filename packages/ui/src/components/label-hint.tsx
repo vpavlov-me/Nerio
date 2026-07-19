@@ -16,13 +16,13 @@ export function LabelHint({ label, ariaLabel = "More information" }: LabelHintPr
   return (
     <span className="n-label__hint inline-flex" data-slot="hint">
       <Tooltip delay={0} label={label}>
-        <span
-          className="inline-flex text-(--n-label-icon-color) hover:text-(--n-color-action-primary) focus-visible:text-(--n-color-action-primary) focus-visible:outline-0 [&_.n-icon]:size-(--n-label-hint-icon-size)"
+        <button
+          className="inline-flex appearance-none border-0 bg-transparent p-0 text-(--n-label-icon-color) hover:text-(--n-color-action-primary) focus-visible:text-(--n-color-action-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) [&_.n-icon]:size-(--n-label-hint-icon-size)"
           aria-label={ariaLabel}
-          tabIndex={0}
+          type="button"
         >
           <Icon icon={CircleQuestionMark} />
-        </span>
+        </button>
       </Tooltip>
     </span>
   );

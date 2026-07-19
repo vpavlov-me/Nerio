@@ -222,7 +222,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "actions",
       "status": "stable-core",
-      "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, and icon-only mode."
+      "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, icon-only mode, and prop/ref-safe custom render composition."
     },
     {
       "name": "IconButton",
@@ -264,7 +264,7 @@
       "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Multiline text input component."
+      "description": "Multiline text input with native disabled and read-only behavior plus normalized focus and invalid-state hooks."
     },
     {
       "name": "Label",
@@ -272,7 +272,7 @@
       "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Accessible form label with a composable required marker and supplementary hint."
+      "description": "Accessible form label with a composable required marker and supplementary hint exposed through a native non-submit button."
     },
     {
       "name": "Field",
