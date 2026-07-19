@@ -57,11 +57,11 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Actions
 
-| Component   | Status                   | Package               | Notes                                                                                          |
-| ----------- | ------------------------ | --------------------- | ---------------------------------------------------------------------------------------------- |
-| Button      | stable-core              | `@nerio-ui/ui/client` | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip |
-| ButtonGroup | stable-core              | `@nerio-ui/ui`        | Server-safe attached group for related Buttons; supports horizontal and vertical layouts       |
-| IconButton  | deprecated-compatibility | `@nerio-ui/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release            |
+| Component   | Status                   | Package               | Notes                                                                                                                                       |
+| ----------- | ------------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Button      | stable-core              | `@nerio-ui/ui/client` | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip, and prop/ref-safe custom render composition |
+| ButtonGroup | stable-core              | `@nerio-ui/ui`        | Server-safe attached group for related Buttons; supports horizontal and vertical layouts                                                    |
+| IconButton  | deprecated-compatibility | `@nerio-ui/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release                                                         |
 
 ### Forms
 
@@ -69,8 +69,8 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | ----------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | Input       | stable-core | `@nerio-ui/ui`        | Thin native single-line control for text-like values; labels and validation belong to Field                                          |
 | InputGroup  | stable-core | `@nerio-ui/ui`        | Composable surface for an Input with explicit start/end addons                                                                       |
-| Textarea    | stable-core | `@nerio-ui/ui`        | Multiline input                                                                                                                      |
-| Label       | stable-core | `@nerio-ui/ui`        | Accessible form label                                                                                                                |
+| Textarea    | stable-core | `@nerio-ui/ui`        | Multiline input with native disabled/read-only behavior and normalized focus and invalid-state hooks                                 |
+| Label       | stable-core | `@nerio-ui/ui`        | Accessible form label with a native non-submit supplementary hint trigger                                                            |
 | Field       | stable-core | `@nerio-ui/ui`        | Label, help text, error, description                                                                                                 |
 | FormMessage | stable-core | `@nerio-ui/ui`        | Field message/error text                                                                                                             |
 | FormGroup   | stable-core | `@nerio-ui/ui`        | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout                         |

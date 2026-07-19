@@ -230,7 +230,8 @@
       ],
       "accessibility": [
         "Uses the Base UI Button primitive and renders a native button by default.",
-        "For navigation, render Button as a native anchor with variant link; it has no control padding or underline.",
+        "For navigation, set nativeButton={false} and render Button as a native anchor with variant link; it has no control padding or underline.",
+        "Custom render elements and render functions receive Button-owned content, state hooks, caller props, event handlers, classes, and refs without losing the chosen native semantics.",
         "Provide concise visible text or an accessible name.",
         "Loading preserves the action name, disables repeat activation, and exposes aria-busy; loadingLabel is deprecated.",
         "Disabled and loading states prevent repeat activation.",
@@ -1380,7 +1381,7 @@
         "option-description",
         "message"
       ],
-      "variants": ["default", "invalid", "disabled"],
+      "variants": ["default", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-radio-size",
         "--n-radio-dot-size",
@@ -1572,7 +1573,7 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["root"],
-      "variants": ["default", "invalid", "disabled"],
+      "variants": ["default", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-input-height-md",
         "--n-textarea-min-height",
@@ -1586,12 +1587,15 @@
         "--n-input-foreground",
         "--n-input-disabled-background",
         "--n-input-disabled-foreground",
+        "--n-input-readonly-background",
+        "--n-input-readonly-border",
         "--n-focus-ring"
       ],
       "accessibility": [
         "Use with Label or Field so the control has an accessible name.",
-        "Supports native textarea attributes including required, disabled, aria-describedby, and rows.",
-        "Invalid state maps to aria-invalid.",
+        "Supports native textarea attributes including required, disabled, readOnly, aria-describedby, and rows.",
+        "Invalid state maps to aria-invalid and a truthful data-invalid hook, including when aria-invalid is supplied directly.",
+        "Read-only stays focusable and selectable while exposing the same shared form-control boundary as Input.",
         "Keep resize behavior available unless a product workflow requires a fixed height."
       ],
       "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Textarea } from '@/components/nerio/components/textarea';\n\n<Field label=\"Notes\" description=\"Add useful context for collaborators.\"><Textarea placeholder=\"Add context\" /></Field>"
@@ -1648,7 +1652,8 @@
         "--n-label-font-weight",
         "--n-label-required-color",
         "--n-label-icon-color",
-        "--n-label-hint-icon-size"
+        "--n-label-hint-icon-size",
+        "--n-focus-ring"
       ],
       "accessibility": [
         "Use htmlFor to associate the label with a control id.",
@@ -1656,6 +1661,7 @@
         "Keep labels visible for reusable product forms.",
         "Avoid relying on placeholder text as the only label.",
         "Use LabelRow and LabelContent so the interactive hint is not nested inside the native label.",
+        "LabelHint uses a native type=button trigger so it remains keyboard discoverable without submitting the surrounding form.",
         "Pair LabelRequired with a native required control.",
         "Tooltip guidance is supplementary and must not carry essential requirements."
       ],

@@ -56,13 +56,15 @@ type RenderElementProps = {
   "aria-disabled"?: boolean;
   className?: string;
   children?: React.ReactNode;
+  disabled?: boolean;
   "data-icon-only"?: string;
   "data-loading"?: string;
   "data-size"?: ButtonSize;
   "data-slot"?: string;
   "data-variant"?: CanonicalButtonVariant;
-  onClick?: React.MouseEventHandler<HTMLElement>;
+  onClick?: React.ComponentProps<typeof BaseButton>["onClick"];
   ref?: React.Ref<HTMLElement>;
+  type?: "button" | "reset" | "submit";
 };
 
 function isRenderElement(render: unknown): render is React.ReactElement<RenderElementProps> {
@@ -211,27 +213,43 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     () => (renderRef && ref ? composeRefs(renderRef, ref) : (renderRef ?? ref ?? undefined)),
     [ref, renderRef],
   );
+  const customRenderProps: RenderElementProps = {
+    ...props,
+    ref: composedRef,
+    className: renderedElement ? cn(renderedElement.props.className, classNames) : classNames,
+    "aria-label": props["aria-label"] ?? renderedElement?.props["aria-label"],
+    "aria-busy": loading || undefined,
+    "aria-disabled": disabled || loading || undefined,
+    disabled: nativeButton !== false ? Boolean(disabled || loading) : undefined,
+    "data-icon-only": iconOnly ? "true" : undefined,
+    "data-loading": loading ? "true" : undefined,
+    "data-size": size,
+    "data-slot": dataSlot,
+    "data-variant": normalizedVariant,
+    "aria-labelledby":
+      labelledBy ?? props["aria-labelledby"] ?? renderedElement?.props["aria-labelledby"],
+    type:
+      nativeButton !== false ? (props.type ?? renderedElement?.props.type ?? "button") : undefined,
+    onClick: (event) => {
+      if (disabled || loading) {
+        event.preventDefault();
+        return;
+      }
+      renderedElement?.props.onClick?.(event);
+      if (!event.defaultPrevented) {
+        props.onClick?.(event);
+      }
+    },
+    children: contents,
+  };
   const content = renderedElement ? (
     React.cloneElement(renderedElement, {
+      ...customRenderProps,
       ref: composedRef,
-      className: cn(renderedElement.props.className, classNames),
-      "aria-label": props["aria-label"] ?? renderedElement.props["aria-label"],
-      "aria-busy": loading || undefined,
-      "aria-disabled": disabled || loading || undefined,
-      "data-icon-only": iconOnly ? "true" : undefined,
-      "data-loading": loading ? "true" : undefined,
-      "data-size": size,
-      "data-slot": dataSlot,
-      "data-variant": normalizedVariant,
-      "aria-labelledby": labelledBy ?? renderedElement.props["aria-labelledby"],
-      onClick: (event: React.MouseEvent<HTMLElement>) => {
-        if (disabled || loading) {
-          event.preventDefault();
-          return;
-        }
-        renderedElement.props.onClick?.(event);
-      },
-      children: contents,
+    })
+  ) : typeof render === "function" ? (
+    render(customRenderProps, {
+      disabled: Boolean(disabled || loading),
     })
   ) : (
     <BaseButton
