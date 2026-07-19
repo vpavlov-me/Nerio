@@ -47,12 +47,12 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
   return (
     <Root
       ref={composedRef}
+      {...props}
       className={cn(
         "n-list m-0 grid list-none gap-(--n-list-gap) p-0 [counter-reset:n-list] [&:is(ol)>[data-slot=item]]:grid [&:is(ol)>[data-slot=item]]:grid-cols-[auto_minmax(0,1fr)] [&:is(ol)>[data-slot=item]]:items-start [&:is(ol)>[data-slot=item]]:gap-(--n-list-item-gap) [&:is(ol)>[data-slot=item]]:[counter-increment:n-list] [&:is(ol)>[data-slot=item]::before]:py-(--n-list-item-padding) [&:is(ol)>[data-slot=item]::before]:text-(length:--n-font-size-sm) [&:is(ol)>[data-slot=item]::before]:font-(--n-font-weight-medium) [&:is(ol)>[data-slot=item]::before]:text-(--n-color-text-tertiary) [&:is(ol)>[data-slot=item]::before]:content-[counter(n-list)'.']",
         className,
       )}
       data-slot="root"
-      {...props}
     >
       {items.map((item) => {
         const {

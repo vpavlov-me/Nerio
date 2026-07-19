@@ -55,7 +55,7 @@ export const snippets: Record<string, string> = {
   alert:
     "import { Circle } from '@nerio-ui/adapters/icons';\nimport { Alert } from '@nerio-ui/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
   spinner: "import { Spinner } from '@nerio-ui/ui';\n\n<Spinner label=\"Loading activity\" />",
-  skeleton: "import { Skeleton } from '@nerio-ui/ui';\n\n<Skeleton aria-label=\"Loading\" />",
+  skeleton: "import { Skeleton } from '@nerio-ui/ui';\n\n<Skeleton />",
   "empty-state":
     "import { EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateHeader, EmptyStateTitle } from '@nerio-ui/ui';\nimport { Button } from '@nerio-ui/ui/client';\n\n<EmptyState>\n  <EmptyStateHeader>\n    <EmptyStateTitle>No collections</EmptyStateTitle>\n    <EmptyStateDescription>Create one to start organizing work.</EmptyStateDescription>\n  </EmptyStateHeader>\n  <EmptyStateActions>\n    <Button>Create collection</Button>\n    <Button variant=\"ghost\">Learn more</Button>\n  </EmptyStateActions>\n</EmptyState>",
   input:
@@ -122,7 +122,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   kbd: {
     name: "Kbd",
     description: "Native keyboard shortcut notation with quiet tokenized styling.",
-    status: "beta",
+    status: "stable",
     layer: "core",
     category: "Foundation",
     package: "@nerio-ui/ui",
@@ -139,7 +139,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   typography: {
     name: "Typography",
     description: "Semantic heading, text, and inline code primitives.",
-    status: "beta",
+    status: "stable",
     layer: "core",
     category: "Foundation",
     package: "@nerio-ui/ui",
@@ -294,7 +294,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     description: "Groups related product content on a restrained border-first surface.",
     status: "stable",
     layer: "core",
-    category: "Layout and display",
+    category: "Data display",
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["Separator", "Stat", "KeyValue"],
@@ -342,9 +342,9 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   list: {
     name: "List",
     description: "Presents simple structured items with optional descriptions and native links.",
-    status: "beta",
+    status: "stable",
     layer: "core",
-    category: "Layout and display",
+    category: "Data display",
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["Card", "Table", "Button"],
@@ -356,9 +356,9 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     name: "Item",
     description:
       "Composes compact content, media, and actions without imposing list semantics or interaction.",
-    status: "beta",
+    status: "stable",
     layer: "core",
-    category: "Layout and display",
+    category: "Data display",
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["List", "Card", "Separator"],
@@ -821,12 +821,12 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   badge: {
-    category: "Actions and feedback",
+    category: "Data display",
     purpose:
       "Use Badge to label status, category, or lightweight metadata without creating another action.",
     anatomy: [
       {
-        title: "empty-state",
+        title: "root",
         description: "Inline status container with tone, size, and tokenized radius.",
       },
       { title: "leading-icon", description: "Optional decorative icon before the visible label." },
@@ -896,7 +896,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   alert: {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose:
       "Use Alert for inline feedback that should stay in the page flow and remain visible until the content changes.",
     anatomy: [
@@ -942,7 +942,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   spinner: {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose:
       "Spinner indicates short indeterminate loading activity without changing surrounding layout.",
     anatomy: [
@@ -1017,7 +1017,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   skeleton: {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose: "Use Skeleton to reserve space for content while data loads.",
     anatomy: [
       {
@@ -1032,7 +1032,10 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       { title: "Loading", description: "Keeps layout stable until real content replaces it." },
     ],
-    accessibility: ["Mark the surrounding region busy when skeletons represent loading content."],
+    accessibility: [
+      "Skeleton is always hidden from assistive technology.",
+      "Mark the surrounding region busy when skeletons represent loading content.",
+    ],
     guidance: {
       do: ["Match the approximate dimensions of the content that will load."],
       dont: ["Do not show skeletons after data has failed; switch to an error or empty state."],
@@ -1040,7 +1043,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: ["--n-skeleton-height", "--n-skeleton-duration", "--n-radius-md"],
   },
   "empty-state": {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose:
       "Use EmptyState when a surface has no content and the user needs context or a next step.",
     anatomy: [
@@ -1781,7 +1784,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   toast: {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose: "Use Toast to acknowledge short-lived product events without blocking the workflow.",
     anatomy: [
       { title: "provider", description: "Client boundary that manages toast state." },
@@ -1905,7 +1908,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   card: {
-    category: "Layout and display",
+    category: "Data display",
     purpose:
       "Use Card to group a single related object or repeated item without turning page sections into nested panels.",
     anatomy: [
@@ -2008,22 +2011,16 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   separator: {
-    category: "Layout and display",
+    category: "Data display",
     purpose: "Use Separator to divide related content sections without adding visual weight.",
     anatomy: [
-      { title: "root", description: "Horizontal or vertical rule using the subtle border token." },
+      { title: "root", description: "Native horizontal rule using the subtle border token." },
     ],
-    variants: [
-      { title: "Horizontal", description: "Separates stacked content." },
-      {
-        title: "Vertical",
-        description: "Separates inline groups when spacing alone is not enough.",
-      },
-    ],
+    variants: [{ title: "Default", description: "Separates stacked content." }],
     states: [
       {
         title: "Static",
-        description: "Decorative by default unless exposed as structural semantics.",
+        description: "Uses native hr semantics without interaction or motion.",
       },
     ],
     accessibility: ["Use semantic sectioning when the separation changes document structure."],
@@ -2034,7 +2031,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: ["--n-color-border-subtle"],
   },
   avatar: {
-    category: "Layout and display",
+    category: "Data display",
     purpose: "Use Avatar to identify people, teams, or entities in compact product surfaces.",
     anatomy: [
       { title: "root", description: "Circular identity container with tokenized size." },
@@ -2053,7 +2050,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Decorative images and fallbacks are hidden from assistive technology.",
-      "Non-decorative fallbacks expose the supplied alt text or normalized name, never initials alone.",
+      "Non-decorative images and fallbacks require a non-empty supplied alt text or normalized name, never initials alone.",
     ],
     guidance: {
       do: ["Pair avatars with names in dense lists when possible."],
@@ -2067,7 +2064,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   progress: {
-    category: "Layout and display",
+    category: "Feedback",
     purpose: "Use Progress to communicate the completion status of one task that takes time.",
     anatomy: [
       {
@@ -2193,10 +2190,13 @@ export const componentReference: Record<string, ComponentReference> = {
     related: ["Spinner", "Skeleton", "Alert", "Toast", "Meter (future)"],
   },
   stat: {
-    category: "Layout and display",
+    category: "Data display",
     purpose: "Use Stat to summarize a single metric with optional trend context.",
     anatomy: [
-      { title: "root", description: "Metric block with label, value, and trend." },
+      {
+        title: "card",
+        description: "Card-composed metric root with the n-stat customization hook.",
+      },
       { title: "label", description: "Names the metric." },
       { title: "value", description: "Primary numeric or short text value." },
       { title: "trend", description: "Optional supporting comparison." },
@@ -2213,10 +2213,10 @@ export const componentReference: Record<string, ComponentReference> = {
         "Do not turn Stat into KPI Card; advanced dashboard cards belong to Pro.",
       ],
     },
-    tokens: ["--n-stat-gap", "--n-font-size-2xl", "--n-color-success"],
+    tokens: ["--n-stat-gap", "--n-stat-value-size", "--n-stat-trend-color"],
   },
   "key-value": {
-    category: "Layout and display",
+    category: "Data display",
     purpose: "Use KeyValue for compact metadata on records, settings, and object summaries.",
     anatomy: [
       { title: "root", description: "Native definition-list pair." },
@@ -2233,7 +2233,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: ["--n-key-value-gap", "--n-font-size-sm", ...sharedTokens],
   },
   table: {
-    category: "Layout and display",
+    category: "Data display",
     purpose:
       "Use Table to present structured records for scanning, comparison, and repeated operations.",
     anatomy: [
@@ -2308,7 +2308,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   list: {
-    category: "Layout and display",
+    category: "Data display",
     purpose:
       "Use List to present short structured items that are not tabular data and do not need selection behavior.",
     anatomy: [
@@ -2377,7 +2377,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   item: {
-    category: "Layout and display",
+    category: "Data display",
     purpose:
       "Use Item to compose a compact content unit with optional media, metadata, and actions without forcing list semantics or interaction.",
     anatomy: [

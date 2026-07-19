@@ -42,7 +42,7 @@ export const Table = React.forwardRef<HTMLTableElement, TableProps>(function Tab
   { className, ...props },
   ref,
 ) {
-  return <table ref={ref} className={cn(tableClasses, className)} data-slot="root" {...props} />;
+  return <table ref={ref} {...props} className={cn(tableClasses, className)} data-slot="root" />;
 });
 
 export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerProps>(
@@ -78,19 +78,19 @@ export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerPro
 
 export const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
   function TableHeader({ className, ...props }, ref) {
-    return <thead ref={ref} className={className} data-slot="header" {...props} />;
+    return <thead ref={ref} {...props} className={className} data-slot="header" />;
   },
 );
 
 export const TableBody = React.forwardRef<HTMLTableSectionElement, TableBodyProps>(
   function TableBody({ className, ...props }, ref) {
-    return <tbody ref={ref} className={className} data-slot="body" {...props} />;
+    return <tbody ref={ref} {...props} className={className} data-slot="body" />;
   },
 );
 
 export const TableFooter = React.forwardRef<HTMLTableSectionElement, TableFooterProps>(
   function TableFooter({ className, ...props }, ref) {
-    return <tfoot ref={ref} className={className} data-slot="footer" {...props} />;
+    return <tfoot ref={ref} {...props} className={className} data-slot="footer" />;
   },
 );
 
@@ -98,25 +98,25 @@ export const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(fun
   { className, ...props },
   ref,
 ) {
-  return <tr ref={ref} className={className} data-slot="row" {...props} />;
+  return <tr ref={ref} {...props} className={className} data-slot="row" />;
 });
 
 export const TableHead = React.forwardRef<HTMLTableCellElement, TableHeadProps>(function TableHead(
   { className, scope = "col", ...props },
   ref,
 ) {
-  return <th ref={ref} className={className} data-slot="head" scope={scope} {...props} />;
+  return <th ref={ref} {...props} className={className} data-slot="head" scope={scope} />;
 });
 
 export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(function TableCell(
   { className, ...props },
   ref,
 ) {
-  return <td ref={ref} className={className} data-slot="cell" {...props} />;
+  return <td ref={ref} {...props} className={className} data-slot="cell" />;
 });
 
 export const TableCaption = React.forwardRef<HTMLTableCaptionElement, TableCaptionProps>(
   function TableCaption({ className, ...props }, ref) {
-    return <caption ref={ref} className={className} data-slot="caption" {...props} />;
+    return <caption ref={ref} {...props} className={className} data-slot="caption" />;
   },
 );

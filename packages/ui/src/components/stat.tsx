@@ -19,7 +19,6 @@ export const Stat = React.forwardRef<HTMLElement, StatProps>(function Stat(
         "n-stat grid gap-(--n-stat-gap) [&>span]:text-(length:--n-font-size-sm) [&>span]:text-(--n-color-text-tertiary) [&>strong]:text-(length:--n-stat-value-size) [&>strong]:leading-(--n-line-height-tight) [&>em]:text-(length:--n-font-size-sm) [&>em]:not-italic [&>em]:text-(--n-stat-trend-color)",
         className,
       )}
-      data-slot="root"
       {...props}
     >
       <span data-slot="label">{label}</span>

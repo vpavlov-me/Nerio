@@ -56,6 +56,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
   return (
     <span
       ref={ref}
+      {...props}
       className={cn(badgeClasses, className)}
       data-slot="root"
       data-tone={resolvedTone}
@@ -63,7 +64,6 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(function Badg
       data-loading={loading || undefined}
       data-size={size}
       aria-busy={loading || undefined}
-      {...props}
     >
       {loading ? (
         <span data-slot="leading-icon" aria-hidden>

@@ -11,6 +11,7 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(function
   return (
     <div
       ref={ref}
+      {...props}
       className={cn(
         "n-skeleton min-h-(--n-skeleton-height) rounded-(--n-radius-md) bg-(--n-color-surface-muted)",
         motionClasses.skeleton,
@@ -18,7 +19,6 @@ export const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(function
       )}
       data-slot="skeleton"
       aria-hidden
-      {...props}
     />
   );
 });

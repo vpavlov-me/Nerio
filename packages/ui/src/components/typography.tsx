@@ -17,7 +17,13 @@ export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(functi
   ref,
 ) {
   return (
-    <Component ref={ref} className={cn(headingClasses, className)} data-size={size} {...props} />
+    <Component
+      ref={ref}
+      {...props}
+      className={cn(headingClasses, className)}
+      data-size={size}
+      data-slot="heading"
+    />
   );
 });
 
@@ -33,12 +39,13 @@ export const Text = React.forwardRef<HTMLParagraphElement, TextProps>(function T
   return (
     <p
       ref={ref}
+      {...props}
       className={cn(
         "n-text m-0 text-(length:--n-font-size-base) leading-(--n-line-height-normal) text-(--n-color-text-primary) data-[tone=secondary]:text-(--n-color-text-secondary) data-[tone=tertiary]:text-(--n-color-text-tertiary)",
         className,
       )}
       data-tone={tone}
-      {...props}
+      data-slot="text"
     />
   );
 });
@@ -52,12 +59,12 @@ export const Code = React.forwardRef<HTMLElement, CodeProps>(function Code(
   return (
     <code
       ref={ref}
+      {...props}
       className={cn(
         "n-code m-0 rounded-(--n-radius-sm) bg-(--n-color-surface-muted) px-(--n-space-1) py-(--n-space-0-5) font-(family-name:--n-font-mono) text-(length:--n-font-size-sm) text-(--n-color-text-primary)",
         className,
       )}
-      data-slot="root"
-      {...props}
+      data-slot="code"
     />
   );
 });
