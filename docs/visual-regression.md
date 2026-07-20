@@ -6,7 +6,9 @@ suite. It complements contract, accessibility, and browser behavior tests; it do
 ## Coverage
 
 The private, no-index `/visual-test` route renders deterministic Core fixtures with fixed content.
-The committed baselines cover every Core category and the load-bearing appearance matrix:
+The committed baselines cover every Core category and the load-bearing appearance matrix. They are
+stored under a `darwin` or `linux` directory because Chromium text rendering differs by operating
+system even when browser, fonts, locale, timezone, data, and device scale are fixed:
 
 - Purple, light, Comfortable on desktop;
 - Purple, dark, Comfortable on desktop;
@@ -45,6 +47,9 @@ Baseline updates are deliberate review artifacts, never an automatic side effect
 pnpm test:visual:update
 git diff -- tests/visual/__screenshots__
 ```
+
+Update and review only the current platform directory. Linux is the required CI baseline; macOS is
+kept so maintainers can run the same command locally without accepting platform-only font diffs.
 
 Keep the baseline-only commit separate from implementation and documentation commits. Review every
 changed expected image, attach representative evidence to the pull request, and explain the visual
