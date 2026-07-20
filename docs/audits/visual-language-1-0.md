@@ -1,8 +1,8 @@
 # Nerio 1.0 visual-language audit
 
-Status: Approved audit evidence
-Decision: [`docs/visual-language-1-0.md`](../visual-language-1-0.md)
-Issue: [#135](https://github.com/vpavlov-me/Nerio/issues/135)
+- Status: Approved audit evidence
+- Decision: [`docs/visual-language-1-0.md`](../visual-language-1-0.md)
+- Issue: [#135](https://github.com/vpavlov-me/Nerio/issues/135)
 
 ## Scope and method
 

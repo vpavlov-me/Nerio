@@ -108,7 +108,9 @@ Before moving any Core component toward `stable-core`, verify:
 - Build neutral-first interfaces: hierarchy comes primarily from typography, spacing, layout, and contrast.
 - Purple is the default constrained accent for primary actions, selection, active states, focus, links, small progress signals, the primary chart series, and brand moments.
 - Do not use brand colors as the default color for headings, normal icons, card backgrounds, standard borders, secondary actions, routine navigation, or broad page backgrounds.
-- Do not use drop shadows or glows. Use whitespace, surface contrast, restrained borders, and backdrops to establish hierarchy and overlays.
+- Do not use drop shadows or glows as a default hierarchy tool. Use whitespace, surface contrast,
+  restrained borders, and backdrops first. A very soft tokenized shadow is allowed only for an
+  approved narrow exception that communicates actual elevation or selected segmented geometry.
 - Use borders sparingly. Do not surround every content group with a card or border.
 - Default component density is Comfortable. Compact must be implemented through tokens, not parallel components.
 - The 4px spacing grid, 32px default control height, soft restrained radii, 12px minimum UI text, 1.5px default icon stroke, and 2px focus ring with 2px offset are baseline contracts.

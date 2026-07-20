@@ -1,8 +1,8 @@
 # Nerio Design System Direction
 
-Status: Superseded by [`docs/visual-language-1-0.md`](./visual-language-1-0.md)
-Audience: maintainers, designers, engineers, AI coding agents  
-Scope: Nerio Core, Nerio Pro, documentation, motion foundation, component-page standard
+- Status: Superseded by [`docs/visual-language-1-0.md`](./visual-language-1-0.md)
+- Audience: maintainers, designers, engineers, AI coding agents
+- Scope: Nerio Core, Nerio Pro, documentation, motion foundation, component-page standard
 
 > This historical draft is retained for decision context. Its visual recommendations are not
 > normative where they differ from the maintainer-approved Nerio 1.0 visual language.

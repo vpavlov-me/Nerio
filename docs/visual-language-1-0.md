@@ -1,9 +1,9 @@
 # Nerio 1.0 visual language
 
-Status: Approved
-Decision owner: Maintainer
-Approval date: 2026-07-20
-Decision issue: [#135](https://github.com/vpavlov-me/Nerio/issues/135)
+- Status: Approved
+- Decision owner: Maintainer
+- Approval date: 2026-07-20
+- Decision issue: [#135](https://github.com/vpavlov-me/Nerio/issues/135)
 
 ## Purpose
 
