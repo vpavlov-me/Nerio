@@ -1,5 +1,6 @@
 import * as React from "react";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
+import { motionClasses } from "../lib/motion";
 
 export type BreadcrumbsItem = {
   label: React.ReactNode;
@@ -38,7 +39,10 @@ export const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(funct
           const content =
             item.href && !isCurrent ? (
               <a
-                className="n-breadcrumbs__link text-(--n-link-color-muted) no-underline hover:text-(--n-link-color) hover:underline hover:decoration-(--n-link-underline-thickness) hover:underline-offset-(--n-link-underline-offset) focus-visible:rounded-(--n-radius-sm) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)"
+                className={cn(
+                  "n-breadcrumbs__link text-(--n-link-color-muted) no-underline hover:text-(--n-link-color) hover:underline hover:decoration-(--n-link-underline-thickness) hover:underline-offset-(--n-link-underline-offset) focus-visible:rounded-(--n-radius-sm) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)",
+                  motionClasses.hover,
+                )}
                 data-slot="link"
                 href={item.href}
               >

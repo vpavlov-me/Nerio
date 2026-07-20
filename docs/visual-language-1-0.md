@@ -339,8 +339,8 @@ Issue #136 implements the shared visual foundation in `packages/tokens/src/style
   dark-alpha or white-alpha semantic roles;
 - control, container, task-surface, compact-popup, Checkbox, Avatar isolation, and overlay-glass
   decisions resolve through semantic or component aliases;
-- legacy `--n-overlay-*` aliases remain neutral for compatibility until #139 migrates each
-  component family to the explicit `--n-overlay-glass-*` or task-surface contract;
+- `--n-overlay-*` aliases define the approved inverted-glass family after #139, while the
+  `--n-overlay-glass-*` aliases remain compatible component-facing mappings for Toast;
 - hover, press, focus, disclosure, and overlay timing resolve through shared motion aliases;
 - `scripts/validate-tokens.mjs` calculates load-bearing text, action, overlay, and focus contrast for
   every preset theme in light and dark modes;

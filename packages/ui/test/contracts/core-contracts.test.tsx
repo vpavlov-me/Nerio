@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import * as React from "react";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import {
@@ -78,6 +78,7 @@ import {
   CommandList,
   CommandLoading,
   Dialog,
+  DialogFooter,
   DropdownMenu,
   LabelHint,
   Popover,
@@ -2344,7 +2345,7 @@ describe("Core interactive action contracts", () => {
     await user.click(trigger);
     expect(screen.getByRole("dialog", { name: "Settings" })).toBeInTheDocument();
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(trigger).toHaveFocus();
   });
 
@@ -2374,7 +2375,7 @@ describe("Core interactive action contracts", () => {
     expect(dialog).toHaveAttribute("aria-describedby");
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
   });
 
@@ -3394,7 +3395,9 @@ describe("Core interactive action contracts", () => {
     }
     render(<ControlledSheet />);
     await user.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(screen.queryByRole("dialog", { name: "Workspace settings" })).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog", { name: "Workspace settings" })).not.toBeInTheDocument(),
+    );
   });
 
   it("keeps SheetClose neutral in normal flow and preserves Button composition and refs", async () => {
@@ -3428,18 +3431,22 @@ describe("Core interactive action contracts", () => {
     expect(closeRef.current).toBe(close);
 
     await user.click(close);
-    expect(screen.queryByRole("dialog", { name: "Composed sheet" })).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog", { name: "Composed sheet" })).not.toBeInTheDocument(),
+    );
     expect(screen.getByRole("button", { name: "Open composed sheet" })).toHaveFocus();
   });
 
-  it("uses Sheet-specific backdrop, safe-area close, exit motion, and reduced-motion contracts", () => {
+  it("uses a floating safe-area Sheet, directional exit motion, and reduced-motion contracts", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sheet.tsx"), "utf8");
     expect(source).toContain("bg-(--n-sheet-backdrop)");
     expect(source).toContain("fixed inset-0 isolate z-(--n-overlay-z-index)");
     expect(source).toContain("env(safe-area-inset-top)");
     expect(source).toContain("env(safe-area-inset-right)");
-    expect(source).toContain("end-[max(var(--n-sheet-padding),env(safe-area-inset-right))]");
-    expect(source).toContain("rtl:end-[max(var(--n-sheet-padding),env(safe-area-inset-left))]");
+    expect(source).toContain("max(var(--n-sheet-viewport-inset),env(safe-area-inset-right))");
+    expect(source).toContain("rounded-(--n-sheet-radius)");
+    expect(source).toContain('variant="secondary"');
+    expect(source).toContain("top-(--n-sheet-padding) end-(--n-sheet-padding)");
     expect(source).not.toContain("rtl:right-");
     expect(source).toContain("data-ending-style:data-[side=left]:animate-[n-sheet-exit-left");
     expect(source).toContain("motion-reduce:data-[side=left]:animate-none");
@@ -3909,6 +3916,50 @@ describe("Core interactive action contracts", () => {
     fireEvent.keyDown(input, { key: "Enter", keyCode: 229, which: 229 });
     expect(onSelect).not.toHaveBeenCalled();
     fireEvent.compositionEnd(input, { data: "検索" });
+  });
+
+  it("applies the approved neutral navigation and inverted overlay visual contracts", () => {
+    const componentSource = (name: string) =>
+      readFileSync(resolve(process.cwd(), `src/components/${name}.tsx`), "utf8");
+    const tokenSource = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
+    const overlayMotionSource = readFileSync(
+      resolve(process.cwd(), "src/styles/overlays.css"),
+      "utf8",
+    );
+
+    expect(componentSource("tabs")).toContain("shadow-(--n-tabs-indicator-shadow)");
+    for (const name of ["tabs", "breadcrumbs", "pagination", "sidebar", "dropdown-menu"]) {
+      expect(componentSource(name), name).toContain("motionClasses.hover");
+    }
+
+    expect(tokenSource).toContain("--n-overlay-background: rgb(0 0 0 / 0.88)");
+    expect(tokenSource).toContain("--n-overlay-border-width: var(--n-border-width-0)");
+    expect(tokenSource).toContain("--n-overlay-foreground: var(--n-gray-0)");
+    expect(tokenSource).toContain("--n-overlay-surface-filter: blur(24px) saturate(120%)");
+    expect(tokenSource).toContain("--n-overlay-backdrop-filter: blur(10px)");
+    expect(tokenSource).toContain("--n-popover-radius: var(--n-radius-lg)");
+    expect(tokenSource).toContain("--n-dropdown-radius: var(--n-radius-lg)");
+
+    for (const name of ["command", "dialog", "sheet", "popover", "tooltip", "dropdown-menu"]) {
+      expect(componentSource(name), name).toContain(
+        "[backdrop-filter:var(--n-overlay-surface-filter)]",
+      );
+    }
+    expect(componentSource("dialog")).toContain("n-dialog-backdrop-enter");
+    expect(overlayMotionSource).toContain("scale: var(--n-motion-scale-subtle)");
+    expect(componentSource("sheet")).toContain("--n-sheet-viewport-inset");
+    expect(componentSource("sheet")).toContain("n-sheet-enter-right");
+    expect(componentSource("popover")).toContain("rounded-(--n-popover-radius)");
+    expect(componentSource("dropdown-menu")).toContain("rounded-(--n-dropdown-radius)");
+    expect(componentSource("command")).toContain("rounded-(--n-radius-pill)");
+
+    render(
+      <DialogFooter data-testid="dialog-footer">
+        <Button>Save</Button>
+      </DialogFooter>,
+    );
+    expect(screen.getByTestId("dialog-footer")).toHaveAttribute("data-slot", "footer");
+    expect(screen.getByTestId("dialog-footer")).toHaveClass("justify-end");
   });
 
   it("composes Command with Popover, Dialog, and Sheet dismissal and focus contracts", async () => {

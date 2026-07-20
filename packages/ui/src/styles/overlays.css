@@ -50,13 +50,23 @@
 @keyframes n-dialog-enter {
   from {
     opacity: var(--n-opacity-hidden);
-    transform: translate(-50%, calc(-50% + var(--n-motion-translate-sm))) scale(0.98);
+    scale: var(--n-motion-scale-subtle);
   }
 }
 @keyframes n-dialog-exit {
   to {
     opacity: var(--n-opacity-hidden);
-    transform: translate(-50%, calc(-50% + var(--n-motion-translate-sm))) scale(0.98);
+    scale: var(--n-motion-scale-subtle);
+  }
+}
+@keyframes n-dialog-backdrop-enter {
+  from {
+    opacity: var(--n-opacity-hidden);
+  }
+}
+@keyframes n-dialog-backdrop-exit {
+  to {
+    opacity: var(--n-opacity-hidden);
   }
 }
 @keyframes n-dialog-fade-only {

@@ -391,11 +391,15 @@ function validate() {
 
   for (const [token, expected] of [
     ["--n-checkbox-radius", "var(--n-radius-xs)"],
-    ["--n-overlay-background", "var(--n-color-surface-raised)"],
-    ["--n-overlay-foreground", "var(--n-color-text-secondary)"],
+    ["--n-overlay-background", "rgb(0 0 0 / 0.88)"],
+    ["--n-overlay-border-width", "var(--n-border-width-0)"],
+    ["--n-overlay-foreground", "var(--n-gray-0)"],
+    ["--n-overlay-foreground-muted", "var(--n-gray-300)"],
+    ["--n-overlay-surface-filter", "blur(24px) saturate(120%)"],
+    ["--n-overlay-backdrop-filter", "blur(10px)"],
   ]) {
     if (rootRule?.declarations.get(token) !== expected) {
-      failures.push(`Compatibility alias ${token} must resolve to ${expected} before #139.`);
+      failures.push(`Approved component contract ${token} must resolve to ${expected}.`);
     }
   }
 
