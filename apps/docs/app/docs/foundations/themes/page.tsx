@@ -21,7 +21,7 @@ const themes = [
 const customTheme = `<html data-theme="purple" data-mode="system" data-density="comfortable">
 
 :root[data-theme="acme"] {
-  --n-color-surface-selected: #ecfdf5;
+  --n-color-surface-selected: var(--n-gray-a-8);
   --n-color-border-focus: #0f766e;
   --n-color-action-primary: #0f766e;
   --n-color-action-primary-hover: #115e59;
@@ -33,7 +33,7 @@ const customTheme = `<html data-theme="purple" data-mode="system" data-density="
 }
 
 :root[data-theme="acme"][data-mode="dark"] {
-  --n-color-surface-selected: #052e2b;
+  --n-color-surface-selected: var(--n-white-a-10);
   --n-color-border-focus: #5eead4;
   --n-color-action-primary: #5eead4;
   --n-color-action-primary-hover: #2dd4bf;
@@ -46,7 +46,7 @@ const customTheme = `<html data-theme="purple" data-mode="system" data-density="
 
 @media (prefers-color-scheme: dark) {
   :root[data-theme="acme"][data-mode="system"] {
-    --n-color-surface-selected: #052e2b;
+    --n-color-surface-selected: var(--n-white-a-10);
     --n-color-border-focus: #5eead4;
     --n-color-action-primary: #5eead4;
     --n-color-action-primary-hover: #2dd4bf;

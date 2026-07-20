@@ -376,6 +376,13 @@ component contracts, and component styles. Component CSS must consume semantic o
 tokens rather than raw values or palette primitives. Preserve public aliases when replacing a
 public token, and keep theme selectors limited to semantic accent overrides.
 
+The implemented foundation uses opaque cool grays for contrast-critical text and isolation, dark
+alpha-neutral primitives for adaptive light-mode layers, and white alpha-neutral primitives for
+adaptive dark-mode layers. The alpha scales are primitives and remain immutable across runtime
+selectors. The public implementation reference lives at
+`/docs/foundations/visual-language`; component-family issues own the later recipe-level adoption of
+these aliases.
+
 ## Density
 
 Comfortable is the default density.

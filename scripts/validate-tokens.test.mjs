@@ -79,6 +79,43 @@ test("token validator reports missing base semantic and contrast tokens", () => 
   );
 });
 
+test("token validator requires the complete neutral alpha foundation", () => {
+  withTokenFixture(
+    (source) => withoutDeclaration(source, "--n-gray-a-8"),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Required token is missing from :root base semantic contract: --n-gray-a-8/,
+      ),
+  );
+});
+
+test("token validator requires the approved visual foundation aliases", () => {
+  withTokenFixture(
+    (source) => withoutDeclaration(source, "--n-overlay-surface-filter"),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Required token is missing from :root base semantic contract: --n-overlay-surface-filter/,
+      ),
+  );
+});
+
+test("token validator calculates load-bearing semantic contrast", () => {
+  withTokenFixture(
+    (source) =>
+      source.replaceAll(
+        "--n-color-text-primary: var(--n-gray-950);",
+        "--n-color-text-primary: #ffffff;",
+      ),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /purple\/light contrast is 1\.00:1 for --n-color-text-primary on --n-color-surface-default/,
+      ),
+  );
+});
+
 test("token validator reports unresolved aliases", () => {
   withTokenFixture(
     (source) => `${source}\n:root { --n-test-unresolved: var(--n-does-not-exist); }\n`,

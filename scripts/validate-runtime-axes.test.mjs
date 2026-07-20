@@ -150,6 +150,16 @@ test("runtime-axis validator rejects primitive token overrides in runtime select
   });
 });
 
+test("runtime-axis validator treats alpha neutrals as immutable primitives", () => {
+  const source = readFileSync(tokenSource, "utf8").replace(
+    ':root[data-density="compact"] {',
+    ':root[data-density="compact"] {\n  --n-gray-a-8: rgb(15 23 42 / 0.5);',
+  );
+  withFixture("--token-file", "styles.css", source, (stderr) => {
+    assert.match(stderr, /redefines primitive token --n-gray-a-8/);
+  });
+});
+
 test("runtime-axis validator recognizes whitespace-padded runtime selectors", () => {
   withFixture(
     "--token-file",

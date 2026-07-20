@@ -300,8 +300,10 @@ function packageReadinessFailures() {
 function tailwindDocumentationFailures() {
   const motionPage = read("apps/docs/app/docs/foundations/motion/page.tsx");
   const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const visualLanguagePage = read("apps/docs/app/docs/foundations/visual-language/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const sitemap = read("apps/docs/app/sitemap.ts");
   const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
   const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
   const failures = [];
@@ -309,11 +311,31 @@ function tailwindDocumentationFailures() {
   const required = [
     [motionPage, "Tailwind motion recipes", "Motion Foundation must document Tailwind recipes"],
     [tokenPage, "Tailwind bridge", "Tokens Foundation must document the Tailwind bridge"],
+    [
+      visualLanguagePage,
+      "Surface hierarchy",
+      "Visual Language Foundation must expose the approved surface hierarchy",
+    ],
+    [
+      visualLanguagePage,
+      "--n-motion-hover-duration",
+      "Visual Language Foundation must expose the shared motion contract",
+    ],
     [componentPage, 'id="styling-contract"', "Component docs must expose a styling contract"],
     [
       docsChrome,
       '{ href: "/docs/foundations/motion", label: "Motion"',
       "Foundation navigation must use the canonical Motion route and label",
+    ],
+    [
+      docsChrome,
+      '{ href: "/docs/foundations/visual-language", label: "Visual language"',
+      "Foundation navigation must expose the Visual Language reference",
+    ],
+    [
+      sitemap,
+      '"/docs/foundations/visual-language"',
+      "The sitemap must expose the Visual Language reference",
     ],
     [
       gettingStarted,
