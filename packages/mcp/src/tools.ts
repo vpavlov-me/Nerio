@@ -24,8 +24,11 @@ export function get_component_usage(name: string) {
     title: item.title,
     description: item.description,
     category: item.category,
+    docsPath: "docsPath" in item ? item.docsPath : undefined,
     usage: item.usage,
     dependencies: item.dependencies,
+    optionalPeerDependencies:
+      "optionalPeerDependencies" in item ? item.optionalPeerDependencies : [],
     registryDependencies: item.registryDependencies,
     files: item.files,
     baseUiPrimitives: item.baseUiPrimitives,

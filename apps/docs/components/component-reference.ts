@@ -55,7 +55,7 @@ export const snippets: Record<string, string> = {
   alert:
     "import { Circle } from '@nerio-ui/adapters/icons';\nimport { Alert } from '@nerio-ui/ui';\n\n<Alert tone=\"info\" title=\"Invite sent\" icon={Circle}>Collaborators will receive an email shortly.</Alert>",
   spinner: "import { Spinner } from '@nerio-ui/ui';\n\n<Spinner label=\"Loading activity\" />",
-  skeleton: "import { Skeleton } from '@nerio-ui/ui';\n\n<Skeleton aria-label=\"Loading\" />",
+  skeleton: "import { Skeleton } from '@nerio-ui/ui';\n\n<Skeleton />",
   "empty-state":
     "import { EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateHeader, EmptyStateTitle } from '@nerio-ui/ui';\nimport { Button } from '@nerio-ui/ui/client';\n\n<EmptyState>\n  <EmptyStateHeader>\n    <EmptyStateTitle>No collections</EmptyStateTitle>\n    <EmptyStateDescription>Create one to start organizing work.</EmptyStateDescription>\n  </EmptyStateHeader>\n  <EmptyStateActions>\n    <Button>Create collection</Button>\n    <Button variant=\"ghost\">Learn more</Button>\n  </EmptyStateActions>\n</EmptyState>",
   input:
@@ -79,7 +79,7 @@ export const snippets: Record<string, string> = {
   switch:
     'import { Switch } from "@nerio-ui/ui/client";\n\n<Switch\n  defaultChecked\n  name="notifyCollaborators"\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>',
   dialog:
-    'import { Dialog } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>',
+    'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
@@ -122,7 +122,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   kbd: {
     name: "Kbd",
     description: "Native keyboard shortcut notation with quiet tokenized styling.",
-    status: "beta",
+    status: "stable",
     layer: "core",
     category: "Foundation",
     package: "@nerio-ui/ui",
@@ -139,7 +139,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   typography: {
     name: "Typography",
     description: "Semantic heading, text, and inline code primitives.",
-    status: "beta",
+    status: "stable",
     layer: "core",
     category: "Foundation",
     package: "@nerio-ui/ui",
@@ -177,22 +177,24 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     name: "Sheet",
     description:
       "A focused Base UI modal side-panel primitive with compound slots and Core size scale.",
-    status: "beta",
+    status: "stable",
     layer: "core",
-    category: "Navigation and overlays",
+    category: "Overlays",
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui/client",
     related: ["Dialog", "Popover", "Button"],
     anatomy: [
       "sheet-trigger",
+      "sheet-backdrop",
       "sheet-content",
       "sheet-header",
       "sheet-title",
+      "sheet-description",
       "sheet-body",
       "sheet-footer",
       "sheet-close",
     ],
-    motion: ["directional overlay entry", "reduced-motion fade"],
+    motion: ["directional overlay entry and exit", "reduced-motion instant state change"],
     accessibility: ["Base UI modal focus management", "accessible name", "keyboard close path"],
   },
   "sidebar-primitive": {
@@ -208,6 +210,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: [
       "sidebar-provider",
       "sidebar",
+      "sidebar-inner",
       "sidebar-header",
       "sidebar-content",
       "sidebar-footer",
@@ -236,11 +239,18 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: [
       "command",
       "command-input-group",
+      "command-input-icon",
       "command-input",
       "command-list",
       "command-group",
       "command-group-label",
       "command-item",
+      "command-item-leading",
+      "command-item-content",
+      "command-item-label",
+      "command-item-description",
+      "command-item-metadata",
+      "command-item-shortcut",
       "command-separator",
       "command-empty",
       "command-loading",
@@ -294,7 +304,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     description: "Groups related product content on a restrained border-first surface.",
     status: "stable",
     layer: "core",
-    category: "Layout and display",
+    category: "Data display",
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["Separator", "Stat", "KeyValue"],
@@ -312,7 +322,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   breadcrumbs: {
     name: "Breadcrumbs",
     description: "Shows hierarchy navigation with native anchors and current page semantics.",
-    status: "beta",
+    status: "stable",
     layer: "core",
     category: "Navigation",
     package: "@nerio-ui/ui",
@@ -325,7 +335,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   pagination: {
     name: "Pagination",
     description: "Provides previous, next, and page links without owning pagination state.",
-    status: "beta",
+    status: "stable",
     layer: "core",
     category: "Navigation",
     package: "@nerio-ui/ui",
@@ -342,9 +352,9 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   list: {
     name: "List",
     description: "Presents simple structured items with optional descriptions and native links.",
-    status: "beta",
+    status: "stable",
     layer: "core",
-    category: "Layout and display",
+    category: "Data display",
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["Card", "Table", "Button"],
@@ -356,9 +366,9 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     name: "Item",
     description:
       "Composes compact content, media, and actions without imposing list semantics or interaction.",
-    status: "beta",
+    status: "stable",
     layer: "core",
-    category: "Layout and display",
+    category: "Data display",
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["List", "Card", "Separator"],
@@ -387,7 +397,7 @@ const variantDescriptions: Record<string, string> = {
   secondary: "Supporting action with a visible control boundary.",
   ghost: "Low-emphasis action for dense or repeated surfaces.",
   destructive: "Risky action that needs explicit intent.",
-  link: "Text-level navigation without control padding or underlines.",
+  link: "Text-level navigation without control padding; underlined on hover and focus-visible.",
   neutral: "Low-emphasis status or message.",
   success: "Positive completion or validation state.",
   warning: "Warning state that needs attention without blocking the whole flow.",
@@ -569,6 +579,11 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "tooltip",
         description:
           "Optional supplemental tooltip, especially useful for icon-only actions. It never replaces aria-label.",
+      },
+      {
+        title: "render / nativeButton",
+        description:
+          "Replaces the native button while preserving caller props, handlers, classes, content, state hooks, and refs. Element targets preserve their chosen native semantics; function renders keep Base UI button interaction semantics. Set nativeButton to false on an element target for a native anchor.",
       },
     ],
     designNotes: [
@@ -816,12 +831,12 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   badge: {
-    category: "Actions and feedback",
+    category: "Data display",
     purpose:
       "Use Badge to label status, category, or lightweight metadata without creating another action.",
     anatomy: [
       {
-        title: "empty-state",
+        title: "root",
         description: "Inline status container with tone, size, and tokenized radius.",
       },
       { title: "leading-icon", description: "Optional decorative icon before the visible label." },
@@ -891,7 +906,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   alert: {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose:
       "Use Alert for inline feedback that should stay in the page flow and remain visible until the content changes.",
     anatomy: [
@@ -921,12 +936,18 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for inline validation summaries, persistent notices, and contextual feedback."],
       dont: ["Do not use Alert as a toast replacement or add dismiss behavior in this slice."],
     },
+    designNotes: [
+      "Alert is a flat muted surface: semantic color stays on the icon while title and description remain neutral.",
+      "Use the message text and optional icon together so status never depends on color alone.",
+    ],
     tokens: [
       "--n-alert-gap",
       "--n-alert-padding",
       "--n-alert-radius",
+      "--n-alert-border-width",
       "--n-alert-border",
       "--n-alert-background",
+      "--n-alert-shadow",
       "--n-alert-title-color",
       "--n-alert-icon-color",
       "--n-alert-icon-size",
@@ -937,7 +958,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   spinner: {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose:
       "Spinner indicates short indeterminate loading activity without changing surrounding layout.",
     anatomy: [
@@ -1012,7 +1033,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   skeleton: {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose: "Use Skeleton to reserve space for content while data loads.",
     anatomy: [
       {
@@ -1027,7 +1048,10 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [
       { title: "Loading", description: "Keeps layout stable until real content replaces it." },
     ],
-    accessibility: ["Mark the surrounding region busy when skeletons represent loading content."],
+    accessibility: [
+      "Skeleton is always hidden from assistive technology.",
+      "Mark the surrounding region busy when skeletons represent loading content.",
+    ],
     guidance: {
       do: ["Match the approximate dimensions of the content that will load."],
       dont: ["Do not show skeletons after data has failed; switch to an error or empty state."],
@@ -1035,7 +1059,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: ["--n-skeleton-height", "--n-skeleton-duration", "--n-radius-md"],
   },
   "empty-state": {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose:
       "Use EmptyState when a surface has no content and the user needs context or a next step.",
     anatomy: [
@@ -1258,6 +1282,11 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Focus", description: "Visible focus treatment remains consistent with Input." },
       { title: "Disabled", description: "Keeps content visible while preventing edits." },
       {
+        title: "Read-only",
+        description:
+          "Stays focusable and selectable while using the shared read-only control surface.",
+      },
+      {
         title: "Required",
         description: "Use native required attributes for mandatory long-form values.",
       },
@@ -1267,6 +1296,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use a visible label and helpful description for long-form fields.",
       "Use aria-describedby for helper text and validation messages.",
       "Use aria-invalid only when the value is actually invalid.",
+      "Use readOnly when content must remain selectable but cannot be edited.",
     ],
     guidance: {
       do: ["Use for content that benefits from multiple lines."],
@@ -1278,6 +1308,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-background",
       "--n-input-border-focus",
       "--n-input-placeholder",
+      "--n-input-readonly-background",
+      "--n-input-readonly-border",
     ],
   },
   label: {
@@ -1317,6 +1349,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Connect labels to controls with htmlFor and matching id when they are separate.",
       "Label forwards native label attributes and refs.",
       "Keep the interactive hint outside the native label element by using LabelRow and LabelContent.",
+      "LabelHint uses a native type=button trigger and cannot submit the surrounding form.",
       "Tooltip guidance is supplementary; do not put essential requirements only in a tooltip.",
     ],
     guidance: {
@@ -1332,6 +1365,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-label-required-color",
       "--n-label-icon-color",
       "--n-label-hint-icon-size",
+      "--n-focus-ring",
     ],
   },
   field: {
@@ -1399,7 +1433,7 @@ export const componentReference: Record<string, ComponentReference> = {
   checkbox: {
     category: "Forms",
     purpose:
-      "Use Checkbox for independent selection, consent, multi-select sets, and aggregate indeterminate state.",
+      "Use Checkbox for grouped multi-selection and aggregate indeterminate state; use Switch for standalone boolean values.",
     anatomy: [
       {
         title: "field",
@@ -1453,7 +1487,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "className", description: "Extends the root control." },
     ],
     guidance: {
-      do: ["Use for independent choices, agreement controls, and multi-select filters."],
+      do: ["Use for grouped filters, permissions, and other visible multi-select option sets."],
       dont: [
         "Do not use Checkbox for mutually exclusive options or immediate on/off settings; use RadioGroup or Switch instead.",
       ],
@@ -1577,7 +1611,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Switch is interactive and imports from @nerio-ui/ui/client.",
-      "Use for immediate binary settings; use Checkbox for independent options that are submitted as part of a form.",
+      "Use for immediate binary or yes/no values; use Checkbox for grouped multi-selection.",
       "Use a visible label, aria-label, or aria-labelledby so the setting has an accessible name.",
       "Base UI owns keyboard and checked-state behavior.",
       "Space toggles the focused switch; visible labels must stay stable between on and off states.",
@@ -1766,7 +1800,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   toast: {
-    category: "Actions and feedback",
+    category: "Feedback",
     purpose: "Use Toast to acknowledge short-lived product events without blocking the workflow.",
     anatomy: [
       { title: "provider", description: "Client boundary that manages toast state." },
@@ -1873,6 +1907,10 @@ export const componentReference: Record<string, ComponentReference> = {
         "Do not turn Toast into a notification inbox, activity feed, job manager, or persistent history.",
       ],
     },
+    designNotes: [
+      "Toast is an inverted dark glass surface in every mode so transient feedback is clearly separated from flat page content.",
+      "Semantic color is limited to the status icon; copy and controls use the toast foreground hierarchy.",
+    ],
     tokens: [
       "--n-toast-width",
       "--n-toast-viewport-inset",
@@ -1884,17 +1922,30 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toast-background",
       "--n-toast-border",
       "--n-toast-shadow",
+      "--n-toast-foreground",
+      "--n-toast-foreground-muted",
+      "--n-toast-control-background",
+      "--n-toast-control-background-hover",
+      "--n-toast-control-background-active",
       "--n-toast-status-color",
+      "--n-toast-status-info",
+      "--n-toast-status-success",
+      "--n-toast-status-warning",
+      "--n-toast-status-danger",
       "--n-motion-reveal-duration",
       "--n-motion-focus-duration",
     ],
   },
   card: {
-    category: "Layout and display",
+    category: "Data display",
     purpose:
       "Use Card to group a single related object or repeated item without turning page sections into nested panels.",
     anatomy: [
-      { title: "card", description: "Surface container with border, radius, and spacing tokens." },
+      {
+        title: "card",
+        description:
+          "Borderless surface container with radius, spacing, and soft elevation tokens.",
+      },
       {
         title: "card-visual",
         description:
@@ -1971,7 +2022,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     designNotes: [
       "Use Card for truly related content, not as a default wrapper for every section.",
-      "Keep hierarchy in typography, spacing, and borders rather than shadows.",
+      "Use typography and spacing first; the default white or black surface carries only a soft elevation shadow, while secondary grouping stays flat and muted.",
     ],
     related: ["Separator", "Stat", "KeyValue"],
     guidance: {
@@ -1984,31 +2035,28 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-card-padding-block",
       "--n-card-gap",
       "--n-card-radius",
+      "--n-card-background",
+      "--n-card-background-interactive-hover",
       "--n-card-background-secondary",
       "--n-card-background-secondary-hover",
       "--n-card-border-secondary",
       "--n-card-border-interactive",
+      "--n-card-shadow",
       "--n-card-shadow-secondary",
       "--n-focus-ring",
     ],
   },
   separator: {
-    category: "Layout and display",
+    category: "Data display",
     purpose: "Use Separator to divide related content sections without adding visual weight.",
     anatomy: [
-      { title: "root", description: "Horizontal or vertical rule using the subtle border token." },
+      { title: "root", description: "Native horizontal rule using the subtle border token." },
     ],
-    variants: [
-      { title: "Horizontal", description: "Separates stacked content." },
-      {
-        title: "Vertical",
-        description: "Separates inline groups when spacing alone is not enough.",
-      },
-    ],
+    variants: [{ title: "Default", description: "Separates stacked content." }],
     states: [
       {
         title: "Static",
-        description: "Decorative by default unless exposed as structural semantics.",
+        description: "Uses native hr semantics without interaction or motion.",
       },
     ],
     accessibility: ["Use semantic sectioning when the separation changes document structure."],
@@ -2019,7 +2067,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: ["--n-color-border-subtle"],
   },
   avatar: {
-    category: "Layout and display",
+    category: "Data display",
     purpose: "Use Avatar to identify people, teams, or entities in compact product surfaces.",
     anatomy: [
       { title: "root", description: "Circular identity container with tokenized size." },
@@ -2038,7 +2086,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Decorative images and fallbacks are hidden from assistive technology.",
-      "Non-decorative fallbacks expose the supplied alt text or normalized name, never initials alone.",
+      "Non-decorative images and fallbacks require a non-empty supplied alt text or normalized name, never initials alone.",
     ],
     guidance: {
       do: ["Pair avatars with names in dense lists when possible."],
@@ -2048,11 +2096,12 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-avatar-size-sm",
       "--n-avatar-size-md",
       "--n-avatar-size-lg",
+      "--n-avatar-border",
       "--n-avatar-background",
     ],
   },
   progress: {
-    category: "Layout and display",
+    category: "Feedback",
     purpose: "Use Progress to communicate the completion status of one task that takes time.",
     anatomy: [
       {
@@ -2178,10 +2227,13 @@ export const componentReference: Record<string, ComponentReference> = {
     related: ["Spinner", "Skeleton", "Alert", "Toast", "Meter (future)"],
   },
   stat: {
-    category: "Layout and display",
+    category: "Data display",
     purpose: "Use Stat to summarize a single metric with optional trend context.",
     anatomy: [
-      { title: "root", description: "Metric block with label, value, and trend." },
+      {
+        title: "card",
+        description: "Card-composed metric root with the n-stat customization hook.",
+      },
       { title: "label", description: "Names the metric." },
       { title: "value", description: "Primary numeric or short text value." },
       { title: "trend", description: "Optional supporting comparison." },
@@ -2190,6 +2242,7 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [{ title: "Static", description: "Displays a point-in-time value." }],
     accessibility: [
       "Keep labels and values readable together; do not encode meaning only in trend color.",
+      "Trend text is neutral by default because Stat does not infer positive or negative meaning from a string.",
     ],
     guidance: {
       do: ["Use for one simple metric with a clear label."],
@@ -2198,10 +2251,10 @@ export const componentReference: Record<string, ComponentReference> = {
         "Do not turn Stat into KPI Card; advanced dashboard cards belong to Pro.",
       ],
     },
-    tokens: ["--n-stat-gap", "--n-font-size-2xl", "--n-color-success"],
+    tokens: ["--n-stat-gap", "--n-stat-value-size", "--n-stat-trend-color"],
   },
   "key-value": {
-    category: "Layout and display",
+    category: "Data display",
     purpose: "Use KeyValue for compact metadata on records, settings, and object summaries.",
     anatomy: [
       { title: "root", description: "Native definition-list pair." },
@@ -2218,7 +2271,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: ["--n-key-value-gap", "--n-font-size-sm", ...sharedTokens],
   },
   table: {
-    category: "Layout and display",
+    category: "Data display",
     purpose:
       "Use Table to present structured records for scanning, comparison, and repeated operations.",
     anatomy: [
@@ -2240,7 +2293,10 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "cell", description: "A native td for values and independently labelled actions." },
     ],
     variants: [
-      { title: "Default", description: "Readable data table with subtle row separation." },
+      {
+        title: "Default",
+        description: "Readable data table grouped by a muted surface instead of an outer border.",
+      },
     ],
     states: [
       { title: "Empty", description: "Use one correctly spanned cell inside TableBody." },
@@ -2281,19 +2337,22 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-table-cell-padding-x",
       "--n-table-border",
       "--n-table-container-border",
+      "--n-table-container-background",
       "--n-table-container-radius",
       "--n-table-container-focus-ring",
       "--n-table-header-background",
       "--n-table-header-foreground",
       "--n-table-row-background-hover",
       "--n-table-row-background-selected",
+      "--n-table-row-selection-indicator",
+      "--n-table-row-selection-indicator-width",
       "--n-table-row-min-height",
       "--n-table-cell-foreground-disabled",
       "--n-table-cell-foreground-danger",
     ],
   },
   list: {
-    category: "Layout and display",
+    category: "Data display",
     purpose:
       "Use List to present short structured items that are not tabular data and do not need selection behavior.",
     anatomy: [
@@ -2362,7 +2421,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   item: {
-    category: "Layout and display",
+    category: "Data display",
     purpose:
       "Use Item to compose a compact content unit with optional media, metadata, and actions without forcing list semantics or interaction.",
     anatomy: [
@@ -2453,7 +2512,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   tabs: {
-    category: "Navigation and overlays",
+    category: "Navigation",
     purpose: "Use Tabs to switch between related panels within the same context.",
     anatomy: [
       {
@@ -2546,6 +2605,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-tabs-segmented-indicator-radius",
       "--n-tabs-foreground-active",
       "--n-tabs-indicator-background",
+      "--n-tabs-indicator-shadow",
       "--n-tabs-accent-color",
       "--n-tabs-indicator-duration",
       "--n-tabs-content-duration",
@@ -2553,14 +2613,26 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
   },
   dialog: {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose:
       "Use Dialog to focus a short task, confirmation, or decision above the current surface.",
     anatomy: [
       { title: "trigger", description: "Control that opens the dialog." },
-      { title: "portal", description: "Layer that isolates overlay rendering and stacking." },
-      { title: "overlay", description: "Backdrop that separates the dialog from the page." },
-      { title: "content", description: "Modal surface with title, description, and actions." },
+      { title: "backdrop", description: "Backdrop that separates the dialog from the page." },
+      { title: "content", description: "Modal surface rendered through a portal." },
+      { title: "header", description: "Title, optional description, and close boundary." },
+      { title: "heading", description: "Grouped title and optional description." },
+      { title: "title", description: "Required accessible dialog heading." },
+      { title: "description", description: "Optional supporting context." },
+      { title: "body", description: "Task, decision, and action content." },
+      {
+        title: "footer",
+        description: "Optional action row aligned to the inline end.",
+      },
+      {
+        title: "close",
+        description: "Secondary icon Button with a localizable accessible name.",
+      },
     ],
     variants: [
       { title: "Task", description: "Short focused task with clear completion." },
@@ -2582,6 +2654,14 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Accessible dialog heading and optional context.",
       },
       { title: "bodyClassName", description: "Optional class hook for the body slot." },
+      {
+        title: "DialogFooter",
+        description: "Composable footer that keeps modal actions aligned to the inline end.",
+      },
+      {
+        title: "closeLabel",
+        description: 'Accessible close-control name; defaults to "Close dialog".',
+      },
     ],
     guidance: {
       do: ["Use for short decisions that need context without a route change."],
@@ -2593,7 +2673,10 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-backdrop",
+      "--n-overlay-backdrop-filter",
       "--n-overlay-foreground",
+      "--n-overlay-foreground-muted",
+      "--n-overlay-surface-filter",
       "--n-overlay-shadow",
       "--n-motion-overlay-enter-duration",
       "--n-motion-overlay-exit-duration",
@@ -2843,11 +2926,13 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-command-background",
       "--n-command-border",
       "--n-command-item-background-active",
+      "--n-overlay-surface-filter",
+      "--n-overlay-control-background",
       "--n-focus-ring",
     ],
   },
   sheet: {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose:
       "Use Sheet for a focused modal panel that needs more room than a popover without becoming a product shell.",
     anatomy: [
@@ -2946,6 +3031,9 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-sheet-radius",
       "--n-sheet-backdrop",
       "--n-sheet-transition-distance",
+      "--n-sheet-viewport-inset",
+      "--n-sheet-available-inline",
+      "--n-sheet-available-block",
       "--n-motion-overlay-enter-duration",
       "--n-motion-overlay-enter-easing",
       "--n-motion-overlay-exit-duration",
@@ -2956,16 +3044,20 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-border",
       "--n-overlay-shadow",
       "--n-overlay-foreground",
+      "--n-overlay-backdrop-filter",
+      "--n-overlay-surface-filter",
       "--n-focus-ring",
     ],
   },
   popover: {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose: "Use Popover for contextual controls or details tied to a trigger.",
     anatomy: [
       { title: "trigger", description: "Control that opens the popover." },
       { title: "content", description: "Layered panel with controls or supporting content." },
-      { title: "arrow", description: "Optional visual pointer when spatial context helps." },
+      { title: "title", description: "Optional contextual heading." },
+      { title: "description", description: "Optional supporting context." },
+      { title: "body", description: "Interactive or supporting content." },
     ],
     variants: [{ title: "Default", description: "Contextual panel near a trigger." }],
     states: [
@@ -2988,16 +3080,20 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-popover-width-md",
+      "--n-popover-padding",
+      "--n-popover-gap",
+      "--n-popover-radius",
       "--n-overlay-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",
+      "--n-overlay-surface-filter",
       "--n-overlay-shadow",
       "--n-motion-overlay-enter-duration",
     ],
   },
   tooltip: {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose: "Use Tooltip to clarify compact controls or truncated metadata.",
     anatomy: [
       { title: "trigger", description: "Element that receives hover or focus." },
@@ -3014,7 +3110,10 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     api: [
       { title: "label", description: "Short non-essential explanatory content." },
-      { title: "children", description: "Trigger element; text children are wrapped in a span." },
+      {
+        title: "children",
+        description: "Required trigger element; prefer a keyboard-focusable control.",
+      },
       { title: "disabled", description: "Prevents tooltip display while preserving the trigger." },
     ],
     guidance: {
@@ -3027,12 +3126,13 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",
+      "--n-overlay-surface-filter",
       "--n-overlay-shadow",
       "--n-motion-overlay-enter-duration",
     ],
   },
   "dropdown-menu": {
-    category: "Navigation and overlays",
+    category: "Overlays",
     purpose: "Use DropdownMenu to group secondary commands behind a compact trigger.",
     anatomy: [
       { title: "trigger", description: "Control that opens the command list." },
@@ -3069,11 +3169,17 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-dropdown-min-width",
+      "--n-dropdown-item-padding-inline",
+      "--n-dropdown-radius",
       "--n-overlay-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
+      "--n-overlay-foreground",
+      "--n-overlay-foreground-muted",
+      "--n-overlay-control-background",
+      "--n-overlay-danger",
+      "--n-overlay-surface-filter",
       "--n-overlay-shadow",
-      "--n-color-status-danger",
       "--n-motion-overlay-enter-duration",
       "--n-focus-ring",
     ],

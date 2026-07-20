@@ -40,7 +40,7 @@ export const FormGroup = React.forwardRef<HTMLFieldSetElement, FormGroupProps>(f
     >
       {title ? (
         <legend
-          className="n-form-group__title m-0 block p-0 text-(length:--n-font-size-sm) font-(--n-font-weight-semibold) text-(--n-form-group-title-color)"
+          className="n-form-group__title m-0 block p-0 text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-form-group-title-color)"
           data-slot="title"
         >
           {title}
@@ -48,7 +48,7 @@ export const FormGroup = React.forwardRef<HTMLFieldSetElement, FormGroupProps>(f
       ) : null}
       {description ? (
         <p
-          className="n-form-group__description m-0 text-(length:--n-font-size-sm) text-(--n-form-group-description-color)"
+          className="n-form-group__description m-0 text-(length:--n-helper-font-size) leading-(--n-line-height-normal) text-(--n-form-group-description-color)"
           data-slot="description"
           id={descriptionId}
         >

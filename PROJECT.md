@@ -42,6 +42,8 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, data-ri
 - TanStack Table through an optional table adapter subpath
 - Recharts through an optional charts adapter subpath
 - React Hook Form and Zod through separate optional form and schema adapter subpaths
+- Motion through an optional client-only adapter subpath for advanced product composition; Core UI
+  remains CSS-first
 
 ## Workspace target
 

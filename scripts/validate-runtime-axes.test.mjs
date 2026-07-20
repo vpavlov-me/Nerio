@@ -11,6 +11,7 @@ const validator = resolve(root, "scripts/validate-runtime-axes.mjs");
 const tokenSource = resolve(root, "packages/tokens/src/styles.css");
 const catalogSource = resolve(root, "data/component-catalog.json");
 const docsSource = resolve(root, "apps/docs/components/docs-chrome.tsx");
+const docsPlaygroundSource = resolve(root, "apps/docs/components/visual-playground.tsx");
 const docsAppearanceSource = resolve(root, "apps/docs/lib/appearance.ts");
 const demoAppearanceSource = resolve(root, "apps/demo-app/lib/appearance.ts");
 
@@ -150,6 +151,26 @@ test("runtime-axis validator rejects primitive token overrides in runtime select
   });
 });
 
+test("runtime-axis validator treats alpha neutrals as immutable primitives", () => {
+  const source = readFileSync(tokenSource, "utf8").replace(
+    ':root[data-density="compact"] {',
+    ':root[data-density="compact"] {\n  --n-gray-a-8: rgb(15 23 42 / 0.5);',
+  );
+  withFixture("--token-file", "styles.css", source, (stderr) => {
+    assert.match(stderr, /redefines primitive token --n-gray-a-8/);
+  });
+});
+
+test("runtime-axis validator treats overlay elevation as an immutable primitive", () => {
+  const source = readFileSync(tokenSource, "utf8").replace(
+    ':root[data-density="compact"] {',
+    ':root[data-density="compact"] {\n  --n-shadow-overlay: none;',
+  );
+  withFixture("--token-file", "styles.css", source, (stderr) => {
+    assert.match(stderr, /redefines primitive token --n-shadow-overlay/);
+  });
+});
+
 test("runtime-axis validator recognizes whitespace-padded runtime selectors", () => {
   withFixture(
     "--token-file",
@@ -189,25 +210,27 @@ test("runtime-axis validator reads theme values from the canonical catalog", () 
 
 test("runtime-axis validator checks runtime controls through canonical imports", () => {
   withFixture(
-    "--docs-controls",
-    "docs-chrome.tsx",
-    readFileSync(docsSource, "utf8").replace(
+    "--docs-playground",
+    "visual-playground.tsx",
+    readFileSync(docsPlaygroundSource, "utf8").replace(
       'import { densities, modes, themes } from "@nerio-ui/tokens";',
       'import { densities, themes } from "@nerio-ui/tokens";',
     ),
-    (stderr) => assert.match(stderr, /Docs runtime controls must import canonical modes/),
+    (stderr) =>
+      assert.match(stderr, /Docs Playground runtime controls must import canonical modes/),
   );
 });
 
 test("runtime-axis validator ignores commented canonical imports", () => {
   withFixture(
-    "--docs-controls",
-    "docs-chrome.tsx",
-    readFileSync(docsSource, "utf8").replace(
+    "--docs-playground",
+    "visual-playground.tsx",
+    readFileSync(docsPlaygroundSource, "utf8").replace(
       'import { densities, modes, themes } from "@nerio-ui/tokens";',
       '// import { densities, modes, themes } from "@nerio-ui/tokens";\nimport { densities, themes } from "@nerio-ui/tokens";',
     ),
-    (stderr) => assert.match(stderr, /Docs runtime controls must import canonical modes/),
+    (stderr) =>
+      assert.match(stderr, /Docs Playground runtime controls must import canonical modes/),
   );
 });
 
@@ -248,10 +271,10 @@ test("runtime-axis validator requires independent appearance persistence", () =>
     "--docs-controls",
     "docs-chrome.tsx",
     readFileSync(docsSource, "utf8").replace(
-      'persistAppearanceAxis(document.documentElement, "density", value);',
-      'document.documentElement.setAttribute("data-density", value);',
+      'persistAppearanceAxis(document.documentElement, "mode", value);',
+      'document.documentElement.setAttribute("data-mode", value);',
     ),
-    (stderr) => assert.match(stderr, /Docs controls must persist the density axis independently/),
+    (stderr) => assert.match(stderr, /Docs controls must persist the mode axis independently/),
   );
 });
 

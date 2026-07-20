@@ -4,13 +4,25 @@ import {
   Alert,
   Avatar,
   Badge,
+  Dialog,
+  DialogFooter,
   Icon,
   Input,
   Label,
+  Popover,
   Progress,
   RadioGroup,
   Select,
   Separator,
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
   Spinner,
 } from "@nerio-ui/ui/client";
 import {
@@ -35,37 +47,8 @@ import {
   UserPlus,
   X,
 } from "@nerio-ui/adapters/icons";
-import type { IconComponent } from "@nerio-ui/adapters/icons";
 
 const avatars = ["Ava Cole", "Noah Lee", "Maya Chen", "Owen Hart", "Iris Park"];
-
-const GoogleIcon: IconComponent = ({ size = 24, strokeWidth, ...props }) => {
-  void strokeWidth;
-
-  return (
-    <svg {...props} height={size} viewBox="0 0 24 24" width={size}>
-      <path
-        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.16 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48Z"
-        fill="currentColor"
-        stroke="none"
-      />
-    </svg>
-  );
-};
-
-const AppleIcon: IconComponent = ({ size = 24, strokeWidth, ...props }) => {
-  void strokeWidth;
-
-  return (
-    <svg {...props} height={size} viewBox="0 0 24 24" width={size}>
-      <path
-        d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.32.03-1.75-.79-3.27-.79-1.53 0-2.01.77-3.26.82-1.31.05-2.3-1.32-3.14-2.53-1.71-2.47-3.02-6.96-1.26-10.01.87-1.52 2.47-2.48 4.19-2.51 1.31-.03 2.55.89 3.27.89.71 0 2.05-1.1 3.46-.94.59.03 2.24.24 3.3 1.79-.08.05-1.97 1.15-1.95 3.54.03 2.86 2.51 3.81 2.54 3.82-.03.07-.4 1.36-1.31 2.78M14.86 5.41c.69-.79 1.14-1.88 1.02-2.96-1 .04-2.21.67-2.91 1.46-.63.7-1.18 1.81-1.03 2.85 1.11.09 2.24-.56 2.92-1.35Z"
-        fill="currentColor"
-        stroke="none"
-      />
-    </svg>
-  );
-};
 
 function AvatarStack() {
   return (
@@ -164,6 +147,77 @@ export function HomeComponentShowcase() {
                 <TabsContent value="emails" />
               </TabsPanels>
             </Tabs>
+          </section>
+
+          <section className="home-gallery__overlays" aria-labelledby="overlays-title">
+            <div className="home-gallery__overlays-heading">
+              <h3 id="overlays-title">Overlays</h3>
+              <p>Contextual layers and focused tasks.</p>
+            </div>
+            <div className="home-gallery__overlay-triggers">
+              <Dialog
+                trigger={
+                  <Button size="sm" variant="secondary">
+                    Dialog
+                  </Button>
+                }
+                title="Invite teammates"
+                description="Share this workspace with your product team."
+              >
+                <Input aria-label="Teammate email" placeholder="name@company.com" type="email" />
+                <DialogFooter>
+                  <Button variant="secondary">Copy invite</Button>
+                  <Button>Send invite</Button>
+                </DialogFooter>
+              </Dialog>
+
+              <Sheet>
+                <SheetTrigger
+                  render={
+                    <Button size="sm" variant="secondary">
+                      Sheet
+                    </Button>
+                  }
+                />
+                <SheetContent side="right" size="sm">
+                  <SheetHeader>
+                    <SheetTitle>Workspace settings</SheetTitle>
+                    <SheetDescription>Adjust the defaults for this project.</SheetDescription>
+                  </SheetHeader>
+                  <SheetBody>
+                    <div className="home-gallery__overlay-setting">
+                      <span>
+                        <strong>Activity summaries</strong>
+                        <small>Receive a weekly project digest.</small>
+                      </span>
+                      <Switch aria-label="Enable activity summaries" defaultChecked />
+                    </div>
+                  </SheetBody>
+                  <SheetFooter>
+                    <SheetClose render={<Button variant="secondary">Cancel</Button>} />
+                    <Button>Save changes</Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+
+              <Popover
+                trigger={
+                  <Button size="sm" variant="secondary">
+                    Popover
+                  </Button>
+                }
+                title="Quick preferences"
+                description="Keep changes close to their trigger."
+              >
+                <div className="home-gallery__overlay-setting">
+                  <span>
+                    <strong>Compact updates</strong>
+                    <small>Reduce detail in the activity feed.</small>
+                  </span>
+                  <Switch aria-label="Enable compact updates" />
+                </div>
+              </Popover>
+            </div>
           </section>
 
           <section className="home-gallery__menu" aria-label="Action menu">
@@ -308,11 +362,29 @@ export function HomeComponentShowcase() {
               <Separator />
             </div>
             <div className="home-gallery__project-actions">
-              <Button leadingIcon={GoogleIcon} size="sm" variant="secondary">
-                Continue with Google
+              <Button size="sm" variant="secondary">
+                <span className="home-auth-action">
+                  <img
+                    alt=""
+                    className="home-auth-action__google"
+                    height="120"
+                    src="/brand/google-g.svg"
+                    width="118"
+                  />
+                  <span>Continue with Google</span>
+                </span>
               </Button>
-              <Button leadingIcon={AppleIcon} size="sm" variant="secondary">
-                Continue with Apple
+              <Button size="sm" variant="secondary">
+                <span className="home-auth-action">
+                  <img
+                    alt=""
+                    className="home-auth-action__apple"
+                    height="73"
+                    src="/brand/apple-logo.svg"
+                    width="73"
+                  />
+                  <span>Continue with Apple</span>
+                </span>
               </Button>
             </div>
           </section>

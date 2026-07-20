@@ -1,8 +1,10 @@
+import uiPackage from "../../../packages/ui/package.json";
+
 export const siteConfig = {
   name: "Nerio",
   url: "https://nerio.vpavlov.com",
   repositoryUrl: "https://github.com/vpavlov-me/Nerio",
-  version: "v0.1.0-alpha.0",
+  version: `v${uiPackage.version}`,
   defaultTitle: "Nerio — Open-source React design system",
   titleTemplate: "%s · Nerio",
   defaultDescription:

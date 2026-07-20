@@ -20,9 +20,40 @@ domain-agnostic semantic or behavioral need with multiple independent use cases,
 accessibility and entrypoint boundaries, and justified maintenance cost. Classify styling decisions
 as system rules, family rules, or reasoned component exceptions.
 
+The maintainer-approved Nerio 1.0 visual language is documented in
+`docs/visual-language-1-0.md`, with recurring inconsistencies grouped by system cause in
+`docs/audits/visual-language-1-0.md`. It is the implementation-ready art-direction contract for
+color and surfaces, typography, geometry and spacing, interaction states, motion, iconography, and
+signature details. It does not introduce a new runtime axis or silently change public APIs.
+
+Public documentation lives under `/docs`, the complete interactive Core workbench is `/playground`,
+and `/templates` embeds the app-local universal workspace demo. The demo proves composition but is
+not a released Core template or Pro distribution surface. Legacy `/docs/compositions/*` aliases
+redirect to unindexed `/docs/blocks/*` stress-test routes and are not part of public Core discovery.
+
+Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
+black surface with a soft shadow and no default border; secondary grouping and TableContainer use
+flat muted surfaces. Table keeps native semantics and consumer-owned behavior while selected or
+current rows combine a neutral fill with a logical-edge indicator. Avatar fallbacks use fixed
+light/dark fills and overlap borders so translucent seams do not appear in groups. Alert is a flat
+muted inline surface whose semantic tone is carried by its icon and complete message text. Toast is
+an inverted dark glass surface with blur in every mode, neutral white copy, glass-aware controls,
+and restrained semantic status icons. Stat trend text is neutral by default because Core does not
+infer direction or meaning from an arbitrary string.
+
+Navigation, Layout, and Overlays use one focus, selection, and motion language. Current navigation
+stays neutral unless a compact indicator is needed; segmented Tabs use a soft selected-surface
+shadow, and hover feedback resolves through shared motion tokens. Tooltip, Popover, Dropdown Menu,
+Command, Dialog, and Sheet use the approved inverted dark-glass surface with white hierarchy and
+blur; compact popups use smaller radii than Dialog and Sheet. Modal backdrops blur, Dialog settles
+with restrained scale and opacity, and Sheet preserves the physical direction of its side. Dialog
+and Sheet close controls are secondary icon Buttons, while their action footers align to the inline
+end. Sidebar and Command remain low-level primitives without routing, persistence, or product search
+policy.
+
 Use `COMPONENTS.md` and `data/component-catalog.json` as the source of truth for Core/Pro component tiering.
 
-Core `0.1.0-alpha.0` is public under `@nerio-ui` with npm `alpha` and `latest` dist-tags, a signed tag, and a GitHub prerelease. The Tailwind CSS v4-first candidate passes the release gate and is recommended as `0.1.0-alpha.1`; publication, dist-tag changes, tagging, and the GitHub prerelease remain manual maintainer actions. The approved Core scope is implemented with evidence-based statuses: all non-deprecated Core components are stable Core, and IconButton remains a deprecated compatibility wrapper. Pro components remain outside Core. Command Primitive owns the accessible query field, local or consumer-filtered leaf results, sound flat or grouped collections, active option, disabled navigation, selection events, and empty/loading presentation. Keyword and stable-value text affect matching only; selection writes the visible label to the controlled or uncontrolled query and form value while `onSelect` emits the stable value. CommandItem leading content owns its accessibility semantics, while decorative Nerio Icons hide themselves. Command does not own fetching, ranking, routing, global shortcuts, recent/history storage, analytics, permissions, or a complete command palette. Sidebar Primitive owns layout, physical side, controlled or uncontrolled collapse state, regions, and accessible toggles; it does not own routes, navigation data, menus, permissions, persistence, or AppShell behavior. Compose Sheet explicitly for mobile and render one interactive navigation tree per viewport. Sheet is a stable Base UI modal side-panel primitive with explicit left/right/top/bottom sides, sm/md/lg sizes, neutral SheetClose composition, a safe-area-aware default close, shared enter/exit motion contracts, compound slots, and no app navigation or settings behavior. RadioGroup supports concise data-driven `options` and compositional `RadioGroupItem` children; use composition for richer option content. A Core component should not move to `stable-core` until its API, accessibility, tokens, registry metadata, docs, CLI fixture, MCP metadata, and validation checks are aligned.
+Core `0.1.0-alpha.1` is published under the npm `alpha` tag with a signed tag and GitHub prerelease; npm `latest` intentionally remains on `0.1.0-alpha.0`. Alpha APIs may still change before 1.0. The approved Core scope is implemented with evidence-based statuses: all non-deprecated Core components are stable Core, and IconButton remains a deprecated compatibility wrapper. Pro components remain outside Core. Command Primitive owns the accessible query field, local or consumer-filtered leaf results, sound flat or grouped collections, active option, disabled navigation, selection events, and empty/loading presentation. Keyword and stable-value text affect matching only; selection writes the visible label to the controlled or uncontrolled query and form value while `onSelect` emits the stable value. CommandItem leading content owns its accessibility semantics, while decorative Nerio Icons hide themselves. Command does not own fetching, ranking, routing, global shortcuts, recent/history storage, analytics, permissions, or a complete command palette. Sidebar Primitive owns layout, physical side, controlled or uncontrolled collapse state, regions, and accessible toggles; it does not own routes, navigation data, menus, permissions, persistence, or AppShell behavior. Compose Sheet explicitly for mobile and render one interactive navigation tree per viewport. Sheet is a stable Base UI modal side-panel primitive with explicit left/right/top/bottom sides, sm/md/lg sizes, neutral SheetClose composition, a safe-area-aware default close, shared enter/exit motion contracts, compound slots, and no app navigation or settings behavior. Dialog keeps its icon close control localizable through `closeLabel` while preserving the default accessible name. RadioGroup supports concise data-driven `options` and compositional `RadioGroupItem` children; use composition for richer option content. A Core component should not move to `stable-core` until its API, accessibility, tokens, registry metadata, docs, CLI fixture, MCP metadata, and validation checks are aligned.
 
 Use primitive tokens only for raw values. Use semantic tokens such as `--n-color-surface-default`, `--n-color-text-primary`, `--n-color-action-primary`, `--n-color-border-default`, `--n-font-sans`, and `--n-font-mono` in product code. Components should prefer component tokens for local contracts such as `--n-button-background-primary`, `--n-input-border`, `--n-dialog-width-md`, `--n-overlay-background`, and `--n-table-cell-padding-x`.
 
@@ -30,7 +61,7 @@ System UI is the default Core font stack and the cross-platform system mono stac
 
 Nerio separates theme, mode, and density. Theme is selected with `data-theme="purple"`, `data-theme="blue"`, `data-theme="green"`, `data-theme="orange"`, `data-theme="red"`, `data-theme="neutral"`, or a custom product theme. Mode is selected with `data-mode="system"`, `data-mode="light"`, or `data-mode="dark"`. Density is selected with `data-density="comfortable"` or `data-density="compact"`.
 
-Primitive tokens are immutable raw values across theme, mode, and density selectors. Runtime selectors remap semantic and component contracts instead. The docs appearance controls expose System, Light, and Dark explicitly, follow OS preference changes while System is selected, and restore theme, mode, and density independently before hydration.
+Primitive tokens are immutable raw values across theme, mode, and density selectors. Runtime selectors remap semantic and component contracts instead. The docs header exposes System, Light, and Dark through one compact icon menu, follows OS preference changes while System is selected, and restores appearance before hydration. The public Playground exposes theme, mode, density, radius, scale, motion, and semantic color overrides as a visual workbench without promoting token overrides to new runtime axes.
 
 Default runtime attributes: `data-theme="purple" data-mode="system" data-density="comfortable"`.
 
@@ -39,6 +70,19 @@ Do not create or use combined theme names such as `purple-light`, `purple-dark`,
 Font, radius, motion, spacing, shadow/elevation, and contrast are token-customizable in v1, but they are not separate runtime axes. Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or `data-scale` unless a later architecture decision explicitly promotes them. Typography presets are CSS token recipes, not runtime attributes; customize typography with `--n-font-sans`, `--n-font-mono`, `--n-font-sans-system`, and scoped product overrides.
 
 Brand color is a restrained accent. Use it for primary actions, selection, active states, focus, links, small progress signals, the primary chart series, and brand moments. Do not use brand color for broad page backgrounds, routine icons, card backgrounds, standard borders, or secondary actions.
+
+The Nerio 1.0 foundation uses pure white light foundations, pure black dark foundations, cool
+alpha-neutral adaptive layers, generous role-based radii, compact 14px typography, and tokenized
+motion. Use opaque neutrals for contrast-critical or overlap-isolated geometry such as Avatar
+boundaries. Use semantic surface and border aliases instead of consuming alpha primitives directly.
+The implementation reference is `/docs/foundations/visual-language`.
+
+Core motion remains CSS-first. Install `motion` and use the optional client-only
+`@nerio-ui/adapters/motion` entrypoint only for coordinated presence, interruption, layout
+continuity, gestures, or product-level sequencing. `NerioMotionConfig` follows the user's reduced
+motion preference; the preferred loading path is strict `LazyMotion` plus `m` and
+`domAnimation`, with `domMax` reserved for layout, pan, or drag. Unrelated adapters and
+`@nerio-ui/ui` resolve no Motion runtime.
 
 Prefer composition, explicit slots, semantic HTML, visible focus states, and accessible labels. Use Nerio's icon adapter for Lucide or custom SVG React components.
 

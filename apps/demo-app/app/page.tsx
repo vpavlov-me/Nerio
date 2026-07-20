@@ -21,6 +21,7 @@ import {
   Sparkles,
 } from "@nerio-ui/adapters/icons";
 import {
+  Alert,
   Avatar,
   Badge,
   Button,
@@ -36,7 +37,6 @@ import {
   EmptyStateHeader,
   EmptyStateTitle,
   Field,
-  IconButton,
   Input,
   Progress,
   Popover,
@@ -63,6 +63,7 @@ import {
   TableRow,
   ToastProvider,
   ToastViewport,
+  Tooltip,
   useToastManager,
 } from "@nerio-ui/ui/client";
 import {
@@ -110,7 +111,11 @@ const activity = [
   ["Jordan shared an analytics snapshot", "Research archive", "Yesterday"],
 ];
 
-const chart = [42, 64, 58, 72, 48, 88, 76, 92, 67, 81, 74, 89];
+const deliverySignals = [
+  ["Launch readiness", "14 of 18 tasks complete", 78],
+  ["Content review", "11 of 16 entries approved", 69],
+  ["Research synthesis", "9 of 10 notes categorized", 90],
+] as const;
 
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
 const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
@@ -168,10 +173,17 @@ function WorkspaceNavigation() {
   return (
     <nav className="workspace-nav" aria-label="Workspace">
       {navItems.map(([item, icon], index) => (
-        <button key={item} type="button" data-state={index === 0 ? "active" : "inactive"}>
-          <Icon icon={icon} />
-          <span>{item}</span>
-        </button>
+        <Button
+          key={item}
+          aria-current={index === 0 ? "page" : undefined}
+          className="workspace-nav__item"
+          data-state={index === 0 ? "active" : "inactive"}
+          leadingIcon={icon}
+          size="sm"
+          variant={index === 0 ? "secondary" : "ghost"}
+        >
+          {item}
+        </Button>
       ))}
     </nav>
   );
@@ -189,9 +201,9 @@ export default function DemoApp() {
 function DemoWorkspace() {
   const [query, setQuery] = React.useState("");
   const [status, setStatus] = React.useState("all");
-  const [workspaceState, setWorkspaceState] = React.useState<"ready" | "loading" | "error">(
-    "ready",
-  );
+  const [workspaceState, setWorkspaceState] = React.useState<
+    "ready" | "loading" | "error" | "success"
+  >("ready");
   const [theme, setThemeValue] = React.useState<Appearance["theme"]>(defaultAppearance.theme);
   const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
   const [density, setDensityValue] = React.useState<Appearance["density"]>(
@@ -276,15 +288,18 @@ function DemoWorkspace() {
             <div className="workspace-navigation-trigger">
               {isMobile ? (
                 <Sheet>
-                  <SheetTrigger
-                    render={
-                      <Button
-                        icon={PanelLeft}
-                        aria-label="Open workspace navigation"
-                        variant="secondary"
-                      />
-                    }
-                  />
+                  <Tooltip label="Open workspace navigation">
+                    <SheetTrigger
+                      render={
+                        <Button
+                          icon={PanelLeft}
+                          aria-label="Open workspace navigation"
+                          tooltip={false}
+                          variant="secondary"
+                        />
+                      }
+                    />
+                  </Tooltip>
                   <SheetContent side="left" size="sm">
                     <SheetHeader>
                       <SheetTitle>Workspace navigation</SheetTitle>
@@ -308,7 +323,14 @@ function DemoWorkspace() {
           </div>
           <div className="workspace-actions">
             <Popover
-              trigger={<IconButton icon={Search} label="Search workspace" variant="secondary" />}
+              trigger={
+                <Button
+                  aria-label="Search workspace"
+                  icon={Search}
+                  tooltip="Search workspace"
+                  variant="secondary"
+                />
+              }
               title="Workspace commands"
               description="Filter this app-local workspace view."
             >
@@ -392,14 +414,20 @@ function DemoWorkspace() {
           <Card className="span-8 workspace-panel">
             <div className="panel-heading">
               <div>
-                <h2>Activity analytics</h2>
-                <p>Generic activity across projects, collections, and collaboration.</p>
+                <h2>Delivery signals</h2>
+                <p>Progress across active product work without a domain-specific dashboard.</p>
               </div>
-              <Badge variant="success">Live mock</Badge>
+              <Badge variant="success">On track</Badge>
             </div>
-            <div className="chart" aria-label="Activity chart">
-              {chart.map((height, index) => (
-                <span key={`${height}-${index}`} style={{ height: `${height}%` }} />
+            <div className="delivery-signals">
+              {deliverySignals.map(([label, description, value]) => (
+                <div className="delivery-signal" key={label}>
+                  <div>
+                    <strong>{label}</strong>
+                    <span>{description}</span>
+                  </div>
+                  <Progress aria-label={label} value={value} valueLabel={`${value}%`} />
+                </div>
               ))}
             </div>
           </Card>
@@ -432,6 +460,9 @@ function DemoWorkspace() {
                 <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("error")}>
                   Error
                 </Button>
+                <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("success")}>
+                  Success
+                </Button>
                 <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("ready")}>
                   Ready
                 </Button>
@@ -462,7 +493,14 @@ function DemoWorkspace() {
               </EmptyState>
             ) : null}
 
-            {workspaceState === "ready" && filteredProjects.length ? (
+            {workspaceState === "success" ? (
+              <Alert role="status" tone="success" title="Workspace synchronized">
+                Project data is current and ready for the next review.
+              </Alert>
+            ) : null}
+
+            {(workspaceState === "ready" || workspaceState === "success") &&
+            filteredProjects.length ? (
               <TableContainer focusable aria-label="Workspace projects">
                 <Table>
                   <TableHeader>
@@ -501,7 +539,8 @@ function DemoWorkspace() {
               </TableContainer>
             ) : null}
 
-            {workspaceState === "ready" && !filteredProjects.length ? (
+            {(workspaceState === "ready" || workspaceState === "success") &&
+            !filteredProjects.length ? (
               <EmptyState role="status" size="sm">
                 <EmptyStateHeader>
                   <EmptyStateTitle>No matching projects</EmptyStateTitle>

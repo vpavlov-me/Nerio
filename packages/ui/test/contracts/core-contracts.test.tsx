@@ -1,13 +1,14 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import * as React from "react";
-import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import {
   Avatar,
   Alert,
   Badge,
+  Breadcrumbs,
   ButtonGroup,
   Card,
   CardAction,
@@ -15,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
   CardVisual,
+  Code,
   EmptyState,
   EmptyStateActions,
   EmptyStateDescription,
@@ -25,6 +27,7 @@ import {
   Input,
   InputGroup,
   InputGroupAddon,
+  Heading,
   Icon,
   Item,
   ItemActions,
@@ -37,6 +40,7 @@ import {
   ItemSeparator,
   ItemTitle,
   Kbd,
+  KeyValue,
   Label,
   LabelContent,
   LabelRequired,
@@ -44,11 +48,14 @@ import {
   List,
   Pagination,
   Progress,
+  Separator,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarInset,
+  Skeleton,
   Spinner,
+  Stat,
   Table,
   TableBody,
   TableCaption,
@@ -58,6 +65,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Text,
+  Textarea,
 } from "../../src/index";
 import {
   Button,
@@ -69,6 +78,7 @@ import {
   CommandList,
   CommandLoading,
   Dialog,
+  DialogFooter,
   DropdownMenu,
   LabelHint,
   Popover,
@@ -527,6 +537,9 @@ describe("Core static contracts", () => {
       expect(group.querySelectorAll(`[data-variant="${variant}"]`)).toHaveLength(2);
     }
     const composedGroup = screen.getByRole("group", { name: "Composed actions" });
+    expect(screen.getByRole("button", { name: "outline one" })).toHaveClass(
+      "shadow-(--n-button-shadow-outline)",
+    );
     expect(composedGroup.querySelector('[data-slot="button-badge"]')).toHaveTextContent("3");
     expect(composedGroup.querySelector('[data-slot="button-kbd"]')).toHaveTextContent("⌘K");
     expect(screen.getByRole("button", { name: "More composed actions" })).toHaveAttribute(
@@ -676,6 +689,190 @@ describe("Core static contracts", () => {
     expect(source).toContain("inline-block");
     expect(source).toContain("align-baseline");
     expect(source).toContain("forced-colors:border-[CanvasText]");
+  });
+
+  it("protects static display and feedback anatomy while forwarding consumer attributes", () => {
+    const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
+    render(
+      <>
+        <Heading data-testid="heading" {...unsafeSlot}>
+          Overview
+        </Heading>
+        <Text data-testid="text" {...unsafeSlot}>
+          Supporting copy
+        </Text>
+        <Code data-testid="code" {...unsafeSlot}>
+          pnpm test
+        </Code>
+        <Badge
+          data-testid="badge"
+          loading
+          size="sm"
+          tone="success"
+          {...({
+            ...unsafeSlot,
+            "aria-busy": false,
+            "data-size": "lg",
+            "data-tone": "danger",
+          } as Record<string, string | boolean>)}
+        >
+          Publishing
+        </Badge>
+        <Avatar
+          data-testid="avatar"
+          name="Maya Chen"
+          size="sm"
+          {...({ ...unsafeSlot, "data-size": "lg" } as Record<string, string>)}
+        />
+        <Skeleton
+          data-testid="skeleton"
+          {...({ ...unsafeSlot, "aria-hidden": false } as Record<string, string | boolean>)}
+        />
+        <Separator data-testid="separator" />
+        <KeyValue data-testid="key-value" label="Owner" value="Product team" {...unsafeSlot} />
+        <Alert data-testid="alert" title="Saved" tone="success" {...unsafeSlot} />
+        <Toast data-testid="toast" title="Updated" tone="info" {...unsafeSlot} />
+        <Table data-testid="table" {...unsafeSlot}>
+          <TableCaption {...unsafeSlot}>Projects</TableCaption>
+          <TableHeader {...unsafeSlot}>
+            <TableRow {...unsafeSlot}>
+              <TableHead {...unsafeSlot}>Name</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody {...unsafeSlot}>
+            <TableRow {...unsafeSlot}>
+              <TableCell {...unsafeSlot}>Roadmap</TableCell>
+            </TableRow>
+          </TableBody>
+          <TableFooter {...unsafeSlot}>
+            <TableRow>
+              <TableCell>Total</TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+        <List data-testid="list" items={[{ id: "one", title: "List item" }]} {...unsafeSlot} />
+        <Stat data-testid="stat" label="Projects" value="12" />
+      </>,
+    );
+
+    expect(screen.getByTestId("heading")).toHaveAttribute("data-slot", "heading");
+    expect(screen.getByTestId("text")).toHaveAttribute("data-slot", "text");
+    expect(screen.getByTestId("code")).toHaveAttribute("data-slot", "code");
+    expect(screen.getByTestId("badge")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("badge")).toHaveAttribute("data-tone", "success");
+    expect(screen.getByTestId("badge")).toHaveAttribute("data-size", "sm");
+    expect(screen.getByTestId("badge")).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByTestId("avatar")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("avatar")).toHaveAttribute("data-size", "sm");
+    expect(screen.getByTestId("skeleton")).toHaveAttribute("data-slot", "skeleton");
+    expect(screen.getByTestId("skeleton")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByTestId("separator")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("key-value")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("alert")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("alert")).toHaveAttribute("data-tone", "success");
+    expect(screen.getByTestId("toast")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("toast")).toHaveAttribute("data-tone", "info");
+    const table = screen.getByTestId("table");
+    expect(table).toHaveAttribute("data-slot", "root");
+    expect(within(table).getByText("Projects")).toHaveAttribute("data-slot", "caption");
+    expect(screen.getByRole("columnheader", { name: "Name" })).toHaveAttribute("data-slot", "head");
+    expect(screen.getByText("Roadmap")).toHaveAttribute("data-slot", "cell");
+    expect(screen.getByText("Total").closest("tfoot")).toHaveAttribute("data-slot", "footer");
+    expect(screen.getByTestId("list")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("stat")).toHaveAttribute("data-slot", "card");
+  });
+
+  it("keeps Data Display and Feedback on the approved neutral-first visual hierarchy", () => {
+    render(
+      <>
+        <Heading data-testid="visual-heading">Overview</Heading>
+        <Card data-testid="visual-card" href="/projects">
+          <CardTitle>Projects</CardTitle>
+        </Card>
+        <Avatar data-testid="visual-avatar" name="Maya Chen" />
+        <Alert data-testid="visual-alert" icon={Check} title="Saved" tone="success">
+          Your changes are live.
+        </Alert>
+        <Toast
+          data-testid="visual-toast"
+          description="Your changes are live."
+          title="Saved"
+          tone="success"
+        />
+        <EmptyState>
+          <EmptyStateHeader>
+            <EmptyStateTitle>No projects</EmptyStateTitle>
+          </EmptyStateHeader>
+        </EmptyState>
+      </>,
+    );
+
+    expect(screen.getByTestId("visual-heading")).toHaveClass("font-(--n-font-weight-medium)");
+    expect(screen.getByTestId("visual-card")).toHaveClass(
+      "[&:is(a)]:duration-(--n-motion-hover-duration)",
+    );
+    expect(screen.getByRole("heading", { name: "Projects" })).toHaveClass(
+      "text-(length:--n-font-size-md)",
+      "font-(--n-font-weight-medium)",
+    );
+    expect(screen.getByTestId("visual-avatar")).toHaveClass("border-(--n-avatar-border)");
+    expect(screen.getByTestId("visual-alert")).toHaveClass(
+      "bg-(--n-alert-background)",
+      "shadow-(--n-alert-shadow)",
+    );
+    expect(within(screen.getByTestId("visual-alert")).getByText("Saved")).toHaveClass(
+      "font-(--n-font-weight-medium)",
+    );
+    expect(screen.getByTestId("visual-toast")).toHaveClass(
+      "[backdrop-filter:var(--n-overlay-surface-filter)]",
+      "[--n-button-foreground-ghost:var(--n-toast-foreground-muted)]",
+      "[&_[data-slot=close]:hover:not(:disabled):not([data-disabled])]:text-(--n-toast-foreground)",
+    );
+    expect(screen.getByRole("heading", { name: "No projects" })).toHaveClass(
+      "font-(--n-font-weight-medium)",
+    );
+
+    const alertSource = readFileSync(resolve(process.cwd(), "src/components/alert.tsx"), "utf8");
+    const listSource = readFileSync(resolve(process.cwd(), "src/components/list.tsx"), "utf8");
+    const itemSource = readFileSync(resolve(process.cwd(), "src/components/item.tsx"), "utf8");
+    const motionSource = readFileSync(resolve(process.cwd(), "src/lib/motion.ts"), "utf8");
+    const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
+
+    expect(alertSource).not.toContain(
+      "data-[tone=success]:[--n-alert-title-color:var(--n-color-status-success)]",
+    );
+    expect(listSource).toContain("duration-(--n-motion-hover-duration)");
+    expect(itemSource).toContain("duration-(--n-motion-press-duration)");
+    expect(itemSource).toContain("ease-(--n-motion-press-easing)");
+    expect(motionSource).toContain(
+      'press:\n    "transition-[background-color,border-color,color,opacity,scale] duration-(--n-motion-press-duration) ease-(--n-motion-press-easing)',
+    );
+    expect(tokens).toContain("--n-alert-border-width: var(--n-border-width-0)");
+    expect(tokens).toContain("--n-toast-background: var(--n-overlay-glass-background)");
+    expect(tokens).toContain("--n-avatar-border: var(--n-gray-0)");
+    expect(tokens).toContain("--n-avatar-border: var(--n-gray-1000)");
+    expect(tokens).toContain("--n-stat-trend-color: var(--n-color-text-secondary)");
+  });
+
+  it("protects static navigation anatomy while forwarding consumer attributes", () => {
+    const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
+    render(
+      <>
+        <Breadcrumbs
+          data-testid="breadcrumbs"
+          items={[{ label: "Docs", href: "/docs" }, { label: "Components" }]}
+          {...unsafeSlot}
+        />
+        <Pagination
+          data-testid="pagination"
+          pages={[{ key: "one", label: "1", current: true }]}
+          {...unsafeSlot}
+        />
+      </>,
+    );
+
+    expect(screen.getByTestId("breadcrumbs")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("pagination")).toHaveAttribute("data-slot", "root");
   });
 
   it("keeps Progress semantics, root props, and protected anatomy intentional", () => {
@@ -947,6 +1144,12 @@ describe("Core static contracts", () => {
     );
     rerender(<Avatar name="Maya" size="lg" />);
     expect(screen.getByText("M").parentElement).toHaveAttribute("data-size", "lg");
+
+    rerender(<Avatar alt="  " name="  Maya   Chen " src="/maya.png" />);
+    expect(screen.getByRole("img", { name: "Maya Chen" })).toHaveAttribute("alt", "Maya Chen");
+    expect(() => render(<Avatar name="  " />)).toThrow(
+      "Meaningful Avatar requires a non-empty name or alt text.",
+    );
   });
 
   it("keeps ordered lists visibly ordered and supports stable item IDs", () => {
@@ -1191,12 +1394,16 @@ describe("Core static contracts", () => {
 
     expect(source).toContain("max-w-full");
     expect(source).toContain("overflow-x-auto");
+    expect(source).toContain("bg-(--n-table-container-background)");
     expect(source).toContain("[&>.n-table]:min-w-max");
     expect(source).toContain("[&_:is(th,td)]:text-start");
     expect(source).toContain("[data-align=numeric]]:text-end");
     expect(source).toContain("[&_tbody>tr:hover>:is(th,td)]");
     expect(source).toContain("[&_tbody>tr:focus-within>:is(th,td)]");
     expect(source).toContain("[aria-current]:not([aria-current=false])");
+    expect(source).toContain("border-s-(length:--n-table-row-selection-indicator-width)");
+    expect(source).toContain("border-s-(--n-table-row-selection-indicator)");
+    expect(source).toContain("duration-(--n-motion-hover-duration)");
     expect(source).not.toContain("[&_tr:hover");
     expect(source).not.toContain("[&_tr:focus-within");
     expect(source).toContain("forced-colors:data-focusable:focus-visible:outline-[Highlight]");
@@ -1286,6 +1493,68 @@ describe("Core static contracts", () => {
     ).toThrow("exactly one");
   });
 
+  it("keeps Textarea invalid, disabled, read-only, and focus contracts aligned with Input", () => {
+    render(
+      <>
+        <Textarea aria-label="Invalid notes" aria-invalid="true" />
+        <Textarea aria-label="Read-only notes" readOnly defaultValue="Approved" />
+        <Textarea aria-label="Disabled notes" disabled />
+      </>,
+    );
+
+    const invalid = screen.getByRole("textbox", { name: "Invalid notes" });
+    const readOnly = screen.getByRole("textbox", { name: "Read-only notes" });
+    const disabled = screen.getByRole("textbox", { name: "Disabled notes" });
+
+    expect(invalid).toHaveAttribute("data-invalid", "");
+    expect(invalid.className).toContain("focus-visible:border-(--n-input-border-focus)");
+    expect(readOnly).toHaveAttribute("data-readonly", "");
+    expect(readOnly).toHaveAttribute("readonly");
+    expect(readOnly.className).toContain("data-readonly:bg-(--n-input-readonly-background)");
+    expect(disabled).toHaveAttribute("data-disabled", "");
+    expect(disabled).toBeDisabled();
+  });
+
+  it("keeps form-family hover and focus motion composable across control types", () => {
+    render(
+      <>
+        <Input aria-label="Project name" />
+        <InputGroup>
+          <Input aria-label="Workspace URL" />
+        </InputGroup>
+        <Textarea aria-label="Project notes" />
+        <Checkbox aria-label="Select analytics" />
+        <RadioGroup label="Visibility">
+          <RadioGroupItem value="team">Team</RadioGroupItem>
+        </RadioGroup>
+        <Switch aria-label="Enable notifications" />
+        <Select label="Status" options={[{ label: "Draft", value: "draft" }]} />
+      </>,
+    );
+
+    const controls = [
+      screen.getByRole("textbox", { name: "Project name" }),
+      document.querySelector(".n-input-group"),
+      screen.getByRole("textbox", { name: "Project notes" }),
+      screen.getByRole("checkbox", { name: "Select analytics" }),
+      screen.getByRole("radio", { name: "Team" }),
+      screen.getByRole("switch", { name: "Enable notifications" }),
+      screen.getByRole("combobox", { name: "Status" }),
+    ];
+
+    controls.forEach((control) => {
+      expect(control).not.toBeNull();
+      expect(control).toHaveClass(
+        "transition-[background-color,border-color,color,opacity,box-shadow,outline-color]",
+      );
+      expect(control).toHaveClass("duration-(--n-motion-hover-duration)");
+      expect(control).toHaveClass("focus-visible:duration-(--n-motion-focus-duration)");
+    });
+
+    const selectSource = readFileSync(resolve(process.cwd(), "src/components/select.tsx"), "utf8");
+    expect(selectSource).toContain("rounded-(--n-select-popup-radius)");
+  });
+
   it("composes label requirements and hint context without nesting a control inside the label", async () => {
     const user = userEvent.setup();
     render(
@@ -1304,6 +1573,10 @@ describe("Core static contracts", () => {
     expect(screen.getByText("*")).toHaveAttribute("data-slot", "required");
     expect(screen.getByText("*")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByRole("textbox", { name: "Project name" })).toBeRequired();
+    expect(screen.getByRole("button", { name: "More information" })).toHaveAttribute(
+      "type",
+      "button",
+    );
     expect(
       Array.from(document.querySelector("[data-slot=content]")!.children).map((child) =>
         child.getAttribute("data-slot"),
@@ -1780,6 +2053,17 @@ describe("Core interactive action contracts", () => {
     const iconButton = screen.getByRole("button", { name: "Open notifications" });
     expect(iconButton).toHaveAttribute("data-icon-only", "true");
     expect(iconButton.querySelector("[data-slot=button-label]")).not.toBeInTheDocument();
+    expect(iconButton).toHaveClass(
+      "transition-[background-color,border-color,color,opacity,scale,box-shadow,outline-color,text-decoration-color]",
+    );
+    expect(iconButton).toHaveClass("duration-(--n-motion-hover-duration)");
+    expect(iconButton).toHaveClass(
+      "[&:active:not(:disabled):not([data-disabled])]:duration-(--n-motion-press-duration)",
+    );
+    expect(iconButton).toHaveClass(
+      "[&:active:not(:disabled):not([data-disabled])]:ease-(--n-motion-press-easing)",
+    );
+    expect(iconButton).toHaveClass("focus-visible:duration-(--n-motion-focus-duration)");
   });
 
   it("renders the link Button variant as a native anchor without a separate Link component", () => {
@@ -1798,6 +2082,11 @@ describe("Core interactive action contracts", () => {
     expect(link).toHaveAttribute("href", "/docs");
     expect(link).toHaveAttribute("data-variant", "link");
     expect(link).toHaveClass("n-button");
+    expect(link).toHaveClass("underline");
+    expect(link).toHaveClass("decoration-transparent");
+    expect(link).toHaveClass("decoration-(length:--n-link-underline-thickness)");
+    expect(link).toHaveClass("[&:hover:not(:disabled):not([data-disabled])]:decoration-current");
+    expect(link).toHaveClass("focus-visible:decoration-current");
     expect(link.querySelector("[data-slot=button-icon] .n-icon")).toHaveAttribute(
       "aria-hidden",
       "true",
@@ -1840,6 +2129,69 @@ describe("Core interactive action contracts", () => {
     expect(classNames.indexOf("n-button")).toBeLessThan(
       classNames.indexOf("button-consumer-class"),
     );
+  });
+
+  it("preserves Button props, handlers, and function render composition", async () => {
+    const user = userEvent.setup();
+    const buttonHandler = vi.fn();
+    const functionHandler = vi.fn();
+    const targetHandler = vi.fn();
+
+    render(
+      <>
+        <Button
+          aria-keyshortcuts="Meta+K"
+          data-contract="preserved"
+          id="element-render-button"
+          nativeButton={false}
+          onClick={buttonHandler}
+          render={<a href="#element-render" onClick={targetHandler} />}
+        >
+          Element render
+        </Button>
+        <Button
+          nativeButton={false}
+          onClick={functionHandler}
+          render={(renderProps, state) => (
+            <div {...renderProps} data-render-disabled={state.disabled ? "true" : "false"} />
+          )}
+        >
+          Function render
+        </Button>
+        <Button disabled render={<button data-custom-native="true" />}>
+          Disabled custom button
+        </Button>
+        <Button disabled nativeButton={false} render={<a href="#disabled-render" />}>
+          Disabled custom link
+        </Button>
+      </>,
+    );
+
+    const elementLink = screen.getByRole("link", { name: "Element render" });
+    expect(elementLink).toHaveAttribute("id", "element-render-button");
+    expect(elementLink).toHaveAttribute("aria-keyshortcuts", "Meta+K");
+    expect(elementLink).toHaveAttribute("data-contract", "preserved");
+    await user.click(elementLink);
+    expect(targetHandler).toHaveBeenCalledOnce();
+    expect(buttonHandler).toHaveBeenCalledOnce();
+
+    const functionButton = screen.getByRole("button", { name: "Function render" });
+    expect(functionButton).toHaveAttribute("tabindex", "0");
+    expect(functionButton).toHaveAttribute("data-render-disabled", "false");
+    expect(functionButton).toHaveClass("n-button");
+    functionButton.focus();
+    await user.keyboard("{Enter}");
+    expect(functionHandler).toHaveBeenCalledOnce();
+
+    const nativeButton = screen.getByRole("button", { name: "Disabled custom button" });
+    expect(nativeButton).toBeDisabled();
+    expect(nativeButton).toHaveAttribute("data-disabled", "");
+    expect(nativeButton).toHaveAttribute("type", "button");
+    expect(nativeButton).toHaveAttribute("data-custom-native", "true");
+
+    const disabledLink = screen.getByRole("link", { name: "Disabled custom link" });
+    expect(disabledLink).toHaveAttribute("aria-disabled", "true");
+    expect(disabledLink).toHaveAttribute("data-disabled", "");
   });
 
   it("composes render-element and forwarded Button refs without dropping either ref shape", () => {
@@ -1974,9 +2326,9 @@ describe("Core interactive action contracts", () => {
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 
-  it("shows an optional tooltip for an icon-only Button", async () => {
+  it("shows the accessible name as the default tooltip for an icon-only Button", async () => {
     const user = userEvent.setup();
-    render(<Button icon={Bell} aria-label="Open notifications" tooltip="Open notifications" />);
+    render(<Button icon={Bell} aria-label="Open notifications" />);
 
     await user.hover(screen.getByRole("button", { name: "Open notifications" }));
     expect(await screen.findByRole("tooltip")).toHaveTextContent("Open notifications");
@@ -1993,7 +2345,7 @@ describe("Core interactive action contracts", () => {
     await user.click(trigger);
     expect(screen.getByRole("dialog", { name: "Settings" })).toBeInTheDocument();
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(trigger).toHaveFocus();
   });
 
@@ -2023,7 +2375,7 @@ describe("Core interactive action contracts", () => {
     expect(dialog).toHaveAttribute("aria-describedby");
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
   });
 
@@ -2952,6 +3304,73 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();
   });
 
+  it("keeps Dialog close anatomy truthful and its accessible name localizable", () => {
+    render(
+      <Dialog defaultOpen closeLabel="Close workspace dialog" title="Workspace" trigger="Open">
+        Dialog content
+      </Dialog>,
+    );
+
+    expect(screen.getByRole("button", { name: "Close workspace dialog" })).toHaveAttribute(
+      "data-slot",
+      "close",
+    );
+  });
+
+  it("protects Sheet anatomy, side, and size while forwarding popup attributes", () => {
+    const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
+    const unsafeContent = {
+      ...unsafeSlot,
+      "data-side": "left",
+      "data-size": "lg",
+    } as Record<string, string>;
+
+    render(
+      <Sheet defaultOpen>
+        <SheetTrigger
+          data-testid="sheet-trigger"
+          render={<button type="button">Open sheet</button>}
+          {...unsafeSlot}
+        />
+        <SheetContent
+          data-testid="sheet-content"
+          showClose={false}
+          side="right"
+          size="sm"
+          {...unsafeContent}
+        >
+          <SheetHeader data-testid="sheet-header" {...unsafeSlot}>
+            <SheetTitle data-testid="sheet-title" {...unsafeSlot}>
+              Protected sheet
+            </SheetTitle>
+            <SheetDescription data-testid="sheet-description" {...unsafeSlot}>
+              Description
+            </SheetDescription>
+          </SheetHeader>
+          <SheetBody data-testid="sheet-body" {...unsafeSlot}>
+            Body
+          </SheetBody>
+          <SheetFooter data-testid="sheet-footer" {...unsafeSlot}>
+            Footer
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>,
+    );
+
+    expect(screen.getByTestId("sheet-trigger")).toHaveAttribute("data-slot", "sheet-trigger");
+    expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-slot", "sheet-content");
+    expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-side", "right");
+    expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-size", "sm");
+    expect(screen.getByTestId("sheet-header")).toHaveAttribute("data-slot", "sheet-header");
+    expect(screen.getByTestId("sheet-title")).toHaveAttribute("data-slot", "sheet-title");
+    expect(screen.getByTestId("sheet-description")).toHaveAttribute(
+      "data-slot",
+      "sheet-description",
+    );
+    expect(screen.getByTestId("sheet-body")).toHaveAttribute("data-slot", "sheet-body");
+    expect(screen.getByTestId("sheet-footer")).toHaveAttribute("data-slot", "sheet-footer");
+  });
+
   it("keeps Sheet slots, controlled state, and modal dismissal contracts aligned", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
@@ -2976,7 +3395,9 @@ describe("Core interactive action contracts", () => {
     }
     render(<ControlledSheet />);
     await user.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(screen.queryByRole("dialog", { name: "Workspace settings" })).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog", { name: "Workspace settings" })).not.toBeInTheDocument(),
+    );
   });
 
   it("keeps SheetClose neutral in normal flow and preserves Button composition and refs", async () => {
@@ -3010,18 +3431,24 @@ describe("Core interactive action contracts", () => {
     expect(closeRef.current).toBe(close);
 
     await user.click(close);
-    expect(screen.queryByRole("dialog", { name: "Composed sheet" })).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByRole("dialog", { name: "Composed sheet" })).not.toBeInTheDocument(),
+    );
     expect(screen.getByRole("button", { name: "Open composed sheet" })).toHaveFocus();
   });
 
-  it("uses Sheet-specific backdrop, safe-area close, exit motion, and reduced-motion contracts", () => {
+  it("uses a floating safe-area Sheet, directional exit motion, and reduced-motion contracts", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sheet.tsx"), "utf8");
     expect(source).toContain("bg-(--n-sheet-backdrop)");
     expect(source).toContain("fixed inset-0 isolate z-(--n-overlay-z-index)");
     expect(source).toContain("env(safe-area-inset-top)");
     expect(source).toContain("env(safe-area-inset-right)");
-    expect(source).toContain("end-[max(var(--n-sheet-padding),env(safe-area-inset-right))]");
-    expect(source).toContain("rtl:end-[max(var(--n-sheet-padding),env(safe-area-inset-left))]");
+    expect(source).toContain("max(var(--n-sheet-viewport-inset),env(safe-area-inset-right))");
+    expect(source).toContain("max-w-(--n-sheet-available-inline)");
+    expect(source).toContain("max-h-(--n-sheet-available-block)");
+    expect(source).toContain("rounded-(--n-sheet-radius)");
+    expect(source).toContain('variant="secondary"');
+    expect(source).toContain("top-(--n-sheet-padding) end-(--n-sheet-padding)");
     expect(source).not.toContain("rtl:right-");
     expect(source).toContain("data-ending-style:data-[side=left]:animate-[n-sheet-exit-left");
     expect(source).toContain("motion-reduce:data-[side=left]:animate-none");
@@ -3029,20 +3456,38 @@ describe("Core interactive action contracts", () => {
 
   it("coordinates uncontrolled Sidebar state, stable slots, and focus-safe collapse", async () => {
     const user = userEvent.setup();
+    const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
+    const unsafeToggleProps = {
+      ...unsafeSlot,
+      "aria-controls": "consumer-sidebar",
+      "aria-expanded": true,
+      "aria-label": "Consumer label",
+      type: "submit",
+    } as React.ButtonHTMLAttributes<HTMLButtonElement>;
     render(
-      <SidebarProvider defaultExpanded={false} side="right" sidebarId="workspace-sidebar">
-        <Sidebar aria-label="Workspace tools">
-          <SidebarHeader>Workspace</SidebarHeader>
-          <SidebarContent>
+      <SidebarProvider
+        data-testid="sidebar-provider"
+        defaultExpanded={false}
+        side="right"
+        sidebarId="workspace-sidebar"
+        {...unsafeSlot}
+      >
+        <Sidebar aria-label="Workspace tools" {...unsafeSlot}>
+          <SidebarHeader data-testid="sidebar-header" {...unsafeSlot}>
+            Workspace
+          </SidebarHeader>
+          <SidebarContent data-testid="sidebar-content" {...unsafeSlot}>
             <nav aria-label="Workspace">
               <a href="/projects">Projects</a>
             </nav>
           </SidebarContent>
-          <SidebarFooter>Account</SidebarFooter>
-          <SidebarRail label="Collapse workspace sidebar" />
+          <SidebarFooter data-testid="sidebar-footer" {...unsafeSlot}>
+            Account
+          </SidebarFooter>
+          <SidebarRail label="Collapse workspace sidebar" {...unsafeSlot} />
         </Sidebar>
-        <SidebarInset>
-          <SidebarTrigger label="Expand workspace sidebar" />
+        <SidebarInset data-testid="sidebar-inset" {...unsafeSlot}>
+          <SidebarTrigger label="Expand workspace sidebar" {...unsafeToggleProps} />
           Workspace content
         </SidebarInset>
       </SidebarProvider>,
@@ -3056,6 +3501,17 @@ describe("Core interactive action contracts", () => {
     expect(sidebar.querySelector('[data-slot="sidebar-inner"]')).toHaveAttribute("inert");
     expect(trigger).toHaveAttribute("aria-controls", "workspace-sidebar");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).toHaveAttribute("data-slot", "sidebar-trigger");
+    expect(trigger).toHaveAttribute("type", "button");
+    expect(screen.getByRole("button", { name: "Collapse workspace sidebar" })).toHaveAttribute(
+      "data-slot",
+      "sidebar-rail",
+    );
+    expect(screen.getByTestId("sidebar-provider")).toHaveAttribute("data-slot", "sidebar-provider");
+    expect(screen.getByTestId("sidebar-header")).toHaveAttribute("data-slot", "sidebar-header");
+    expect(screen.getByTestId("sidebar-content")).toHaveAttribute("data-slot", "sidebar-content");
+    expect(screen.getByTestId("sidebar-footer")).toHaveAttribute("data-slot", "sidebar-footer");
+    expect(screen.getByTestId("sidebar-inset")).toHaveAttribute("data-slot", "sidebar-inset");
 
     trigger.focus();
     await user.click(trigger);
@@ -3204,6 +3660,7 @@ describe("Core interactive action contracts", () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
     const onActiveValueChange = vi.fn();
+    const unsafeClickCapture = vi.fn();
     const items = [
       { value: "open", label: "Open project", disabled: true },
       { value: "settings", label: "Workspace settings", keywords: ["preferences"] },
@@ -3223,6 +3680,7 @@ describe("Core interactive action contracts", () => {
               disabled={item.disabled}
               description={`${item.label} description`}
               onSelect={onSelect}
+              {...({ onClickCapture: unsafeClickCapture } as React.HTMLAttributes<HTMLDivElement>)}
             >
               {item.label}
             </CommandItem>
@@ -3250,6 +3708,7 @@ describe("Core interactive action contracts", () => {
     expect(screen.queryByRole("option", { name: /Invite teammate/ })).not.toBeInTheDocument();
     await user.click(settings);
     expect(onSelect).toHaveBeenLastCalledWith("settings", expect.anything());
+    expect(unsafeClickCapture).not.toHaveBeenCalled();
     expect(input).toHaveValue("Workspace settings");
 
     await user.clear(input);
@@ -3459,6 +3918,50 @@ describe("Core interactive action contracts", () => {
     fireEvent.keyDown(input, { key: "Enter", keyCode: 229, which: 229 });
     expect(onSelect).not.toHaveBeenCalled();
     fireEvent.compositionEnd(input, { data: "検索" });
+  });
+
+  it("applies the approved neutral navigation and inverted overlay visual contracts", () => {
+    const componentSource = (name: string) =>
+      readFileSync(resolve(process.cwd(), `src/components/${name}.tsx`), "utf8");
+    const tokenSource = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
+    const overlayMotionSource = readFileSync(
+      resolve(process.cwd(), "src/styles/overlays.css"),
+      "utf8",
+    );
+
+    expect(componentSource("tabs")).toContain("shadow-(--n-tabs-indicator-shadow)");
+    for (const name of ["tabs", "breadcrumbs", "pagination", "sidebar", "dropdown-menu"]) {
+      expect(componentSource(name), name).toContain("motionClasses.hover");
+    }
+
+    expect(tokenSource).toContain("--n-overlay-background: rgb(0 0 0 / 0.88)");
+    expect(tokenSource).toContain("--n-overlay-border-width: var(--n-border-width-0)");
+    expect(tokenSource).toContain("--n-overlay-foreground: var(--n-gray-0)");
+    expect(tokenSource).toContain("--n-overlay-surface-filter: blur(24px) saturate(120%)");
+    expect(tokenSource).toContain("--n-overlay-backdrop-filter: blur(10px)");
+    expect(tokenSource).toContain("--n-popover-radius: var(--n-radius-lg)");
+    expect(tokenSource).toContain("--n-dropdown-radius: var(--n-radius-lg)");
+
+    for (const name of ["command", "dialog", "sheet", "popover", "tooltip", "dropdown-menu"]) {
+      expect(componentSource(name), name).toContain(
+        "[backdrop-filter:var(--n-overlay-surface-filter)]",
+      );
+    }
+    expect(componentSource("dialog")).toContain("n-dialog-backdrop-enter");
+    expect(overlayMotionSource).toContain("scale: var(--n-motion-scale-subtle)");
+    expect(componentSource("sheet")).toContain("--n-sheet-viewport-inset");
+    expect(componentSource("sheet")).toContain("n-sheet-enter-right");
+    expect(componentSource("popover")).toContain("rounded-(--n-popover-radius)");
+    expect(componentSource("dropdown-menu")).toContain("rounded-(--n-dropdown-radius)");
+    expect(componentSource("command")).toContain("rounded-(--n-radius-pill)");
+
+    render(
+      <DialogFooter data-testid="dialog-footer">
+        <Button>Save</Button>
+      </DialogFooter>,
+    );
+    expect(screen.getByTestId("dialog-footer")).toHaveAttribute("data-slot", "footer");
+    expect(screen.getByTestId("dialog-footer")).toHaveClass("justify-end");
   });
 
   it("composes Command with Popover, Dialog, and Sheet dismissal and focus contracts", async () => {

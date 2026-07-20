@@ -233,7 +233,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
     <div
       ref={ref}
       className={cn(
-        "n-command w-[min(100%,var(--n-command-width))] overflow-hidden rounded-(--n-command-radius) border-(length:--n-command-border-width) border-(--n-command-border) bg-(--n-command-background) text-(--n-command-foreground) has-[[data-slot=command-input]:focus-visible]:shadow-(--n-focus-ring) data-disabled:opacity-(--n-opacity-disabled) forced-colors:border-[CanvasText]",
+        "n-command w-[min(100%,var(--n-command-width))] overflow-hidden rounded-(--n-command-radius) border-(length:--n-command-border-width) border-(--n-command-border) bg-(--n-command-background) text-(--n-command-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)] [--n-input-foreground:var(--n-input-foreground-on-overlay)] [--n-input-placeholder:var(--n-input-placeholder-on-overlay)] has-[[data-slot=command-input]:focus-visible]:shadow-(--n-focus-ring) data-disabled:opacity-(--n-opacity-disabled) forced-colors:border-[CanvasText]",
         className,
       )}
       {...props}
@@ -265,7 +265,7 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
   function CommandInput({ className, ...props }, ref) {
     return (
       <BaseAutocomplete.InputGroup
-        className="n-command__input-group grid min-h-(--n-command-input-height) grid-cols-[var(--n-icon-size-md)_minmax(0,1fr)] items-center border-b-(length:--n-command-border-width) border-(--n-command-border) px-(--n-command-item-padding-inline) forced-colors:border-[CanvasText]"
+        className="n-command__input-group m-(--n-space-2) grid min-h-(--n-command-input-height) grid-cols-[var(--n-icon-size-md)_minmax(0,1fr)] items-center rounded-(--n-radius-pill) border-0 bg-(--n-overlay-control-background) px-(--n-command-item-padding-inline) forced-colors:border forced-colors:border-[CanvasText]"
         data-slot="command-input-group"
       >
         <span
@@ -443,6 +443,7 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
   return (
     <BaseAutocomplete.Item
       ref={ref}
+      {...props}
       className={(state) => cn(commandItemClasses, resolveClassName(className, state))}
       disabled={isDisabled}
       onClickCapture={(event) => {
@@ -452,7 +453,6 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
         }
       }}
       value={item}
-      {...props}
       data-disabled={isDisabled ? "" : undefined}
       data-leading={hasLeading ? "true" : "false"}
       data-slot="command-item"

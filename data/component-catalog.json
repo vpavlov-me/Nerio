@@ -61,12 +61,19 @@
     "@nerio-ui/ui/client",
     "@nerio-ui/adapters",
     "@nerio-ui/adapters/icons",
+    "@nerio-ui/adapters/motion",
     "@nerio-ui/pro"
   ],
-  "entrypointValues": ["@nerio-ui/ui", "@nerio-ui/ui/client"],
+  "entrypointValues": ["@nerio-ui/ui", "@nerio-ui/ui/client", "@nerio-ui/adapters/motion"],
   "runtimeValues": ["server", "client"],
   "registryIdentities": [
     { "name": "typography", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    {
+      "name": "motion-adapter",
+      "entrypoint": "@nerio-ui/adapters/motion",
+      "runtime": "client",
+      "docsPath": "/docs/foundations/motion"
+    },
     { "name": "kbd", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "icon-button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -177,6 +184,17 @@
       "description": "Token-customizable motion variables such as --n-duration-fast and --n-duration-normal. Not a v1 runtime axis."
     },
     {
+      "name": "Motion Adapter",
+      "tier": "core",
+      "package": "@nerio-ui/adapters/motion",
+      "category": "foundation",
+      "status": "implemented-initial",
+      "runtime": "client",
+      "optionalPeer": "motion@^12.42.2",
+      "sourceInstall": "motion-adapter",
+      "description": "Optional client-only Motion integration with token-aligned typed transitions, variants, reduced-motion configuration, and bounded LazyMotion loading."
+    },
+    {
       "name": "Contrast Tokens",
       "tier": "core",
       "package": "@nerio-ui/tokens",
@@ -222,7 +240,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "actions",
       "status": "stable-core",
-      "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, and icon-only mode."
+      "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, icon-only mode, and prop/ref-safe custom render composition."
     },
     {
       "name": "IconButton",
@@ -264,7 +282,7 @@
       "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Multiline text input component."
+      "description": "Multiline text input with native disabled and read-only behavior plus normalized focus and invalid-state hooks."
     },
     {
       "name": "Label",
@@ -272,7 +290,7 @@
       "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Accessible form label with a composable required marker and supplementary hint."
+      "description": "Accessible form label with a composable required marker and supplementary hint exposed through a native non-submit button."
     },
     {
       "name": "Field",
@@ -304,7 +322,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "forms",
       "status": "stable-core",
-      "description": "Client-only Base UI checkbox for independent options with checked, indeterminate, invalid, disabled, read-only, form metadata, and optional label and description support."
+      "description": "Client-only Base UI checkbox for grouped multi-selection with checked, indeterminate, invalid, disabled, read-only, form metadata, and optional label and description support."
     },
     {
       "name": "Radio Group",
@@ -336,7 +354,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Accessible modal primitive with title, description, close affordance, controlled state, and Base UI focus behavior."
+      "description": "Accessible modal primitive with title, description, localizable close affordance, controlled state, and Base UI focus behavior."
     },
     {
       "name": "Sheet",

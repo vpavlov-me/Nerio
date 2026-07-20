@@ -3,11 +3,12 @@
 import * as React from "react";
 import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { X } from "@nerio-ui/adapters/icons";
-import { Icon } from "./icon";
+import { Button } from "./button";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 const sheetClasses =
-  "n-sheet fixed z-[calc(var(--n-overlay-z-index)+1)] flex max-h-dvh max-w-dvw flex-col gap-(--n-sheet-gap) overflow-hidden border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-[max(var(--n-sheet-padding),env(safe-area-inset-top))_max(var(--n-sheet-padding),env(safe-area-inset-right))_max(var(--n-sheet-padding),env(safe-area-inset-bottom))_max(var(--n-sheet-padding),env(safe-area-inset-left))] text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-dvh data-[side=left]:w-[min(100dvw,var(--n-sheet-width-md))] data-[side=left]:rounded-r-(--n-sheet-radius) data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-dvh data-[side=right]:w-[min(100dvw,var(--n-sheet-width-md))] data-[side=right]:rounded-l-(--n-sheet-radius) data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-[min(100dvh,var(--n-sheet-height-md))] data-[side=top]:w-dvw data-[side=top]:rounded-b-(--n-sheet-radius) data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-[min(100dvh,var(--n-sheet-height-md))] data-[side=bottom]:w-dvw data-[side=bottom]:rounded-t-(--n-sheet-radius) data-[size=sm]:data-[side=left]:w-[min(100dvw,var(--n-sheet-width-sm))] data-[size=sm]:data-[side=right]:w-[min(100dvw,var(--n-sheet-width-sm))] data-[size=lg]:data-[side=left]:w-[min(100dvw,var(--n-sheet-width-lg))] data-[size=lg]:data-[side=right]:w-[min(100dvw,var(--n-sheet-width-lg))] data-[size=sm]:data-[side=top]:h-[min(100dvh,var(--n-sheet-height-sm))] data-[size=sm]:data-[side=bottom]:h-[min(100dvh,var(--n-sheet-height-sm))] data-[size=lg]:data-[side=top]:h-[min(100dvh,var(--n-sheet-height-lg))] data-[size=lg]:data-[side=bottom]:h-[min(100dvh,var(--n-sheet-height-lg))] data-[side=left]:animate-[n-sheet-enter-left_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-[side=right]:animate-[n-sheet-enter-right_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-[side=top]:animate-[n-sheet-enter-top_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-[side=bottom]:animate-[n-sheet-enter-bottom_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-ending-style:data-[side=left]:animate-[n-sheet-exit-left_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] data-ending-style:data-[side=right]:animate-[n-sheet-exit-right_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] data-ending-style:data-[side=top]:animate-[n-sheet-exit-top_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] data-ending-style:data-[side=bottom]:animate-[n-sheet-exit-bottom_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] motion-reduce:data-[side=left]:animate-none motion-reduce:data-[side=right]:animate-none motion-reduce:data-[side=top]:animate-none motion-reduce:data-[side=bottom]:animate-none forced-colors:border-[CanvasText]";
+  "n-sheet fixed z-[calc(var(--n-overlay-z-index)+1)] flex max-h-dvh max-w-dvw flex-col gap-(--n-sheet-gap) overflow-hidden rounded-(--n-sheet-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-sheet-padding) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-button-background-ghost-hover:var(--n-overlay-control-background-hover)] [--n-button-background-secondary:var(--n-overlay-control-background)] [--n-button-background-secondary-hover:var(--n-overlay-control-background-hover)] [--n-button-foreground-ghost:var(--n-overlay-foreground-muted)] [--n-button-foreground-secondary:var(--n-overlay-foreground)] [--n-color-surface-muted:var(--n-overlay-control-background)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)] [--n-input-background:var(--n-input-background-on-overlay)] [--n-input-background-hover:var(--n-input-background-on-overlay-hover)] [--n-input-foreground:var(--n-input-foreground-on-overlay)] [--n-input-placeholder:var(--n-input-placeholder-on-overlay)] data-[side=left]:top-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-top))] data-[side=left]:bottom-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-bottom))] data-[side=left]:left-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-left))] data-[side=left]:w-[min(calc(100dvw-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-width-md))] data-[side=right]:top-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-top))] data-[side=right]:right-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-right))] data-[side=right]:bottom-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-bottom))] data-[side=right]:w-[min(calc(100dvw-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-width-md))] data-[side=top]:top-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-top))] data-[side=top]:right-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-right))] data-[side=top]:left-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-left))] data-[side=top]:h-[min(calc(100dvh-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-height-md))] data-[side=bottom]:right-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-right))] data-[side=bottom]:bottom-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-bottom))] data-[side=bottom]:left-[max(var(--n-sheet-viewport-inset),env(safe-area-inset-left))] data-[side=bottom]:h-[min(calc(100dvh-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-height-md))] data-[size=sm]:data-[side=left]:w-[min(calc(100dvw-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-width-sm))] data-[size=sm]:data-[side=right]:w-[min(calc(100dvw-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-width-sm))] data-[size=lg]:data-[side=left]:w-[min(calc(100dvw-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-width-lg))] data-[size=lg]:data-[side=right]:w-[min(calc(100dvw-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-width-lg))] data-[size=sm]:data-[side=top]:h-[min(calc(100dvh-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-height-sm))] data-[size=sm]:data-[side=bottom]:h-[min(calc(100dvh-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-height-sm))] data-[size=lg]:data-[side=top]:h-[min(calc(100dvh-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-height-lg))] data-[size=lg]:data-[side=bottom]:h-[min(calc(100dvh-(var(--n-sheet-viewport-inset)*2)),var(--n-sheet-height-lg))] data-[side=left]:animate-[n-sheet-enter-left_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-[side=right]:animate-[n-sheet-enter-right_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-[side=top]:animate-[n-sheet-enter-top_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-[side=bottom]:animate-[n-sheet-enter-bottom_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-ending-style:data-[side=left]:animate-[n-sheet-exit-left_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] data-ending-style:data-[side=right]:animate-[n-sheet-exit-right_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] data-ending-style:data-[side=top]:animate-[n-sheet-exit-top_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] data-ending-style:data-[side=bottom]:animate-[n-sheet-exit-bottom_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] motion-reduce:data-[side=left]:animate-none motion-reduce:data-[side=right]:animate-none motion-reduce:data-[side=top]:animate-none motion-reduce:data-[side=bottom]:animate-none forced-colors:border-[CanvasText]";
+const sheetBoundsClasses = "max-h-(--n-sheet-available-block) max-w-(--n-sheet-available-inline)";
 
 type SheetRootProps = Pick<
   React.ComponentProps<typeof BaseDialog.Root>,
@@ -33,7 +34,7 @@ export const SheetTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ComponentPropsWithoutRef<typeof BaseDialog.Trigger>
 >(function SheetTrigger(props, ref) {
-  return <BaseDialog.Trigger ref={ref} data-slot="sheet-trigger" {...props} />;
+  return <BaseDialog.Trigger ref={ref} {...props} data-slot="sheet-trigger" />;
 });
 
 export interface SheetContentProps extends Omit<
@@ -63,24 +64,30 @@ export const SheetContent = React.forwardRef<HTMLDivElement, SheetContentProps>(
     return (
       <BaseDialog.Portal>
         <BaseDialog.Backdrop
-          className="n-backdrop fixed inset-0 isolate z-(--n-overlay-z-index) bg-(--n-sheet-backdrop)"
+          className="n-backdrop fixed inset-0 isolate z-(--n-overlay-z-index) bg-(--n-sheet-backdrop) [backdrop-filter:var(--n-overlay-backdrop-filter)] [animation:n-dialog-backdrop-enter_var(--n-motion-overlay-enter-duration)_var(--n-motion-overlay-enter-easing)] data-ending-style:[animation:n-dialog-backdrop-exit_var(--n-motion-overlay-exit-duration)_var(--n-motion-overlay-exit-easing)] motion-reduce:[animation-name:n-dialog-fade-only]"
           data-slot="sheet-backdrop"
         />
         <BaseDialog.Popup
           ref={ref}
-          className={cn(sheetClasses, className)}
+          {...props}
+          className={cn(sheetClasses, sheetBoundsClasses, className)}
           data-side={side}
           data-size={size}
           data-slot="sheet-content"
-          {...props}
         >
           {showClose ? (
             <SheetClose
-              aria-label={closeLabel}
-              className="n-sheet__close-icon absolute top-[max(var(--n-sheet-padding),env(safe-area-inset-top))] end-[max(var(--n-sheet-padding),env(safe-area-inset-right))] inline-flex size-(--n-size-control-sm) flex-none cursor-pointer items-center justify-center rounded-(--n-radius-sm) border-0 bg-(--n-button-background-ghost) text-(--n-color-text-tertiary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) rtl:end-[max(var(--n-sheet-padding),env(safe-area-inset-left))] forced-colors:border forced-colors:border-[ButtonText]"
-            >
-              <Icon icon={X} />
-            </SheetClose>
+              render={
+                <Button
+                  aria-label={closeLabel}
+                  className="n-sheet__close-icon absolute top-(--n-sheet-padding) end-(--n-sheet-padding) flex-none"
+                  icon={X}
+                  size="sm"
+                  tooltip={false}
+                  variant="secondary"
+                />
+              }
+            />
           ) : null}
           {children}
         </BaseDialog.Popup>
@@ -94,9 +101,9 @@ export const SheetHeader = React.forwardRef<HTMLElement, React.ComponentPropsWit
     return (
       <header
         ref={ref}
+        {...props}
         className={cn("n-sheet__header grid flex-none gap-(--n-space-1)", className)}
         data-slot="sheet-header"
-        {...props}
       />
     );
   },
@@ -109,12 +116,12 @@ export const SheetTitle = React.forwardRef<
   return (
     <BaseDialog.Title
       ref={ref}
+      {...props}
       className={cn(
-        "n-sheet__title m-0 pe-(--n-size-control-sm) text-(length:--n-font-size-xl) leading-(--n-line-height-tight) text-(--n-color-text-primary)",
+        "n-sheet__title m-0 pe-(--n-size-control-sm) text-(length:--n-font-size-xl) font-(--n-font-weight-medium) leading-(--n-line-height-tight) text-(--n-color-text-primary)",
         className,
       )}
       data-slot="sheet-title"
-      {...props}
     />
   );
 });
@@ -126,12 +133,12 @@ export const SheetDescription = React.forwardRef<
   return (
     <BaseDialog.Description
       ref={ref}
+      {...props}
       className={cn(
         "n-sheet__description m-0 text-(length:--n-font-size-sm) text-(--n-color-text-secondary)",
         className,
       )}
       data-slot="sheet-description"
-      {...props}
     />
   );
 });
@@ -141,12 +148,12 @@ export const SheetBody = React.forwardRef<HTMLDivElement, React.ComponentPropsWi
     return (
       <div
         ref={ref}
+        {...props}
         className={cn(
-          "n-sheet__body grid min-h-0 flex-[1_1_auto] gap-(--n-sheet-gap) overflow-auto overscroll-contain pe-(--n-space-1)",
+          "n-sheet__body grid min-h-0 flex-[1_1_auto] content-start gap-(--n-sheet-gap) overflow-auto overscroll-contain pe-(--n-space-1)",
           className,
         )}
         data-slot="sheet-body"
-        {...props}
       />
     );
   },
@@ -157,12 +164,12 @@ export const SheetFooter = React.forwardRef<HTMLElement, React.ComponentPropsWit
     return (
       <footer
         ref={ref}
+        {...props}
         className={cn(
-          "n-sheet__footer grid flex-none gap-(--n-space-1) border-t-(length:--n-overlay-border-width) border-(--n-overlay-border) pt-(--n-sheet-gap)",
+          "n-sheet__footer flex flex-none flex-wrap items-center justify-end gap-(--n-space-2)",
           className,
         )}
         data-slot="sheet-footer"
-        {...props}
       />
     );
   },

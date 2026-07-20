@@ -12,7 +12,7 @@ export const metadata = createPageMetadata({
 const tokenLayers = [
   {
     name: "Primitive",
-    examples: ["--n-purple-600", "--n-gray-950", "--n-space-4", "--n-radius-md"],
+    examples: ["--n-purple-600", "--n-gray-a-8", "--n-space-4", "--n-radius-md"],
     purpose:
       "Raw values without product meaning. Use them to build semantic tokens, not product UI directly.",
   },
@@ -50,6 +50,8 @@ const primitiveColors = [
   ["gray-100", "--n-gray-100"],
   ["gray-500", "--n-gray-500"],
   ["gray-950", "--n-gray-950"],
+  ["cool gray alpha 8%", "--n-gray-a-8"],
+  ["white alpha 10%", "--n-white-a-10"],
   ["purple-600", "--n-purple-600"],
   ["blue-600", "--n-blue-600"],
   ["green-600", "--n-green-600"],
@@ -60,7 +62,7 @@ const primitiveColors = [
 const primitiveScales = [
   ["Spacing", "--n-space-4", "16px on the comfortable scale"],
   ["Control size", "--n-size-control-md", "32px default control height"],
-  ["Radius", "--n-radius-md", "10px primitive corner"],
+  ["Radius", "--n-radius-md", "16px primitive corner"],
   ["Icon size", "--n-icon-size-md", "16px default icon size"],
   ["Border width", "--n-border-width-default", "1px default border"],
   ["Elevation", "--n-shadow-sm", "Restrained raised-surface shadow"],
@@ -82,12 +84,14 @@ const semanticTokens = [
 ] as const;
 
 const semanticAliases = [
+  ["Adaptive control", "--n-color-surface-control", "--n-gray-a-6 / --n-white-a-8"],
+  ["Adaptive border", "--n-color-border-default", "--n-gray-a-10 / --n-white-a-10"],
   ["Density spacing", "--n-density-space-md", "--n-space-3"],
   ["Density spacing", "--n-density-space-lg", "--n-space-4"],
   ["Density spacing", "--n-density-space-xl", "--n-space-5"],
-  ["Control radius", "--n-radius-control", "--n-radius-md"],
-  ["Container radius", "--n-radius-container", "--n-radius-lg"],
-  ["Overlay radius", "--n-radius-overlay", "--n-radius-xl"],
+  ["Control radius", "--n-radius-control", "--n-radius-lg"],
+  ["Container radius", "--n-radius-container", "--n-radius-xl"],
+  ["Overlay radius", "--n-radius-overlay", "--n-radius-2xl"],
   ["Raised elevation", "--n-shadow-surface-raised", "--n-shadow-sm"],
   ["Floating elevation", "--n-shadow-surface-floating", "--n-shadow-md"],
   ["Body type", "--n-body-font-size", "--n-font-size-md"],
@@ -128,7 +132,7 @@ const tailwindBridge = [
 
 const usage = `/* Product CSS: add a theme without changing component source. */
 :root[data-theme="acme"] {
-  --n-color-surface-selected: #ecfdf5;
+  --n-color-surface-selected: var(--n-gray-a-8);
   --n-color-border-focus: #0f766e;
   --n-color-action-primary: #0f766e;
   --n-color-action-primary-hover: #115e59;
@@ -198,6 +202,14 @@ export default function Page() {
           Primitive tokens are immutable raw values. Theme, mode, and density selectors never
           redefine them; runtime changes remap semantic and component aliases instead.
         </p>
+        <p>
+          Nerio uses a hybrid neutral foundation. Opaque grays anchor canvas, primary surfaces,
+          text, actions, and contrast-critical roles. Cool dark alpha neutrals in light mode and
+          white alpha neutrals in dark mode drive adaptive controls, hover and pressed states,
+          selected surfaces, subdued borders, and grid lines. Their compositing is intentional: the
+          same semantic layer remains legible when it is placed on white or on a muted group
+          surface.
+        </p>
         <TableContainer className="token-color-table">
           <Table>
             <thead>
@@ -244,6 +256,12 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="semantic-tokens">Semantic tokens</h2>
+        <p>
+          Components consume semantic roles, never alpha primitives directly. Mode selectors map
+          adaptive roles to <Code>--n-gray-a-*</Code> or <Code>--n-white-a-*</Code>, while opaque
+          canvas, foreground, primary action, status, and chart-series roles retain predictable
+          contrast.
+        </p>
         <TableContainer className="token-color-table">
           <Table>
             <thead>

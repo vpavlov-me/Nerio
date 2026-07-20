@@ -103,6 +103,13 @@ Developers may customize those values by overriding CSS variables such as `--n-f
 
 Future runtime axes for radius, font, motion, contrast, or scale require a separate architecture decision.
 
+## Optional advanced motion
+
+Core components remain CSS-first and do not depend on an animation runtime. Product compositions
+that require coordinated presence, interruption, layout continuity, gestures, or sequencing may
+opt into `@nerio-ui/adapters/motion` and its optional `motion` peer. The adapter is a client-only
+subpath; it does not add a provider, dependency, import, or runtime cost to `@nerio-ui/ui`.
+
 ## Typography
 
 Geist is the default typeface through semantic font tokens. Components consume `--n-font-sans` and `--n-font-mono` rather than depending on app-specific font class names.

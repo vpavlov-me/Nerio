@@ -6,7 +6,35 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
-No changes yet.
+### Added
+
+- Added deterministic Core visual-regression fixtures, cross-axis screenshot baselines, CI diff artifacts, and an explicit maintainer approval workflow.
+
+### Changed
+
+- Redesigned the public documentation, component Playground, and universal workspace demo around
+  the approved Visual Language 1.0; added explicit Core/Pro and alpha boundaries, standardized
+  component installation and decision guidance, compact mobile navigation, realistic Core states,
+  and synchronized search, sitemap, README, and AI-readable discovery.
+- Added the optional `@nerio-ui/adapters/motion` client entrypoint with typed token-aligned
+  transitions and variants, user-preference reduced motion, strict LazyMotion guidance,
+  source-install metadata, and measured zero-runtime isolation for non-adopters.
+- Implemented the approved Nerio 1.0 visual foundation with cool alpha-neutral layers, pure
+  white/black foundations, role-based soft geometry, calm shared motion, inverted overlay-glass
+  aliases, calculated contrast validation, and a public visual-language reference.
+- Applied the approved visual language to Navigation, Layout, and Overlays: neutral navigation
+  states, soft selected Tabs elevation, tokenized hover motion, compact popup geometry, inverted
+  dark-glass layers, blurred modal backdrops, directional Sheet motion, secondary close controls,
+  and inline-end modal action footers.
+- Applied the approved visual language to Data Display and Feedback: compact medium-weight
+  hierarchy, borderless Card and muted table grouping, fixed Avatar overlap colors, neutral
+  inline Alerts, inverted glass Toasts, deliberate status color, and tokenized interaction motion.
+- Added a localizable `Dialog.closeLabel` while preserving the existing "Close dialog" default.
+
+### Fixed
+
+- Protected Navigation, Sidebar, Command, Dialog, and Sheet anatomy/state ownership from escaped
+  consumer DOM props and synchronized their docs and Registry projections with the shipped APIs.
 
 ## 0.1.0-alpha.1 — 2026-07-18
 

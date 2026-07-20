@@ -11,25 +11,28 @@ export const metadata = createPageMetadata({
 
 const radiusTokens = [
   ["None", "--n-radius-none", "Square edges and opt-out cases.", "0"],
-  ["Small", "--n-radius-sm", "Compact tags and small local details.", "8px"],
-  ["Medium", "--n-radius-md", "Default primitive for controls.", "10px"],
-  ["Large", "--n-radius-lg", "Default primitive for containers.", "14px"],
-  ["Extra large", "--n-radius-xl", "Default primitive for overlays.", "18px"],
+  ["Extra small", "--n-radius-xs", "Checkboxes and semantic geometry exceptions.", "4px"],
+  ["Small", "--n-radius-sm", "Compact tags and small local details.", "12px"],
+  ["Medium", "--n-radius-md", "Compact popup and item geometry.", "16px"],
+  ["Large", "--n-radius-lg", "Control geometry.", "20px"],
+  ["Extra large", "--n-radius-xl", "Container geometry.", "28px"],
+  ["2× extra large", "--n-radius-2xl", "Dialog, Sheet, and task-surface geometry.", "32px"],
   ["Full", "--n-radius-full", "Circular avatars, pills, progress marks, and spinners.", "999rem"],
 ] as const;
 
 const radiusRoles = [
-  ["Control", "--n-radius-control", "--n-radius-md"],
-  ["Container", "--n-radius-container", "--n-radius-lg"],
-  ["Overlay", "--n-radius-overlay", "--n-radius-xl"],
+  ["Control", "--n-radius-control", "--n-radius-lg"],
+  ["Container", "--n-radius-container", "--n-radius-xl"],
+  ["Overlay", "--n-radius-overlay", "--n-radius-2xl"],
   ["Pill", "--n-radius-pill", "--n-radius-full"],
 ] as const;
 
 const usage = `:root {
-  --n-radius-sm: 0.5rem;
-  --n-radius-md: 0.625rem;
-  --n-radius-lg: 0.875rem;
-  --n-radius-xl: 1.125rem;
+  --n-radius-sm: 0.75rem;
+  --n-radius-md: 1rem;
+  --n-radius-lg: 1.25rem;
+  --n-radius-xl: 1.75rem;
+  --n-radius-2xl: 2rem;
 }
 
 .project-card {
@@ -43,8 +46,9 @@ export default function RadiusPage() {
         <p className="doc-kicker">Foundation</p>
         <h1>Radius</h1>
         <p className="doc-lede">
-          Radius tokens create a consistent shape language across compact controls, containers, and
-          overlays without prescribing a product-specific visual style.
+          Radius tokens create Nerio's soft shape language while role aliases preserve semantic
+          recognition: compact popups remain tighter, task surfaces become rounder, and Checkbox
+          keeps its dedicated small-radius exception.
         </p>
       </header>
 

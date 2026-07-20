@@ -24,6 +24,8 @@ describe("Tailwind styling contract", () => {
       "n-sheet-exit-bottom",
       "n-dialog-enter",
       "n-dialog-exit",
+      "n-dialog-backdrop-enter",
+      "n-dialog-backdrop-exit",
       "n-dialog-fade-only",
     ],
     "progress.css": ["n-progress-indeterminate"],
@@ -155,11 +157,11 @@ describe("Tailwind styling contract", () => {
     expect(entrypoint).not.toContain("@apply");
   });
 
-  it("does not rely on Preflight to remove the Dialog close border", () => {
+  it("composes the Dialog close control from the secondary Button contract", () => {
     const dialogSource = readFileSync(resolve(process.cwd(), "src/components/dialog.tsx"), "utf8");
 
-    expect(dialogSource).toContain("n-dialog__close inline-flex");
-    expect(dialogSource).toContain("rounded-(--n-radius-sm) border-0");
+    expect(dialogSource).toContain('className="n-dialog__close flex-none"');
+    expect(dialogSource).toContain('variant="secondary"');
     expect(dialogSource).not.toContain("border-(--n-border-width-0)");
   });
 

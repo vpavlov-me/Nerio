@@ -65,20 +65,9 @@ body {
   gap: var(--n-space-1);
 }
 
-.workspace-nav button {
-  align-items: center;
-  background: transparent;
-  border: 0;
-  border-radius: var(--n-radius-md);
-  color: var(--n-color-text-secondary);
-  cursor: pointer;
-  display: grid;
-  font: inherit;
-  font-size: var(--n-font-size-sm);
-  gap: var(--n-space-2);
-  grid-template-columns: auto minmax(0, 1fr);
-  padding: var(--n-space-2) var(--n-space-3);
-  text-align: start;
+.workspace-nav .workspace-nav__item {
+  inline-size: 100%;
+  justify-content: start;
 }
 
 .workspace-nav .n-icon {
@@ -87,14 +76,13 @@ body {
   inline-size: 1rem;
 }
 
-.workspace-nav button[data-state="active"],
-.workspace-nav button:hover {
+.workspace-nav .workspace-nav__item[data-state="active"] {
   background: var(--n-color-surface-muted);
   color: var(--n-color-text-primary);
 }
 
-.workspace-nav button[data-state="active"] .n-icon {
-  color: var(--n-color-action-primary);
+.workspace-nav .workspace-nav__item[data-state="active"] .n-icon {
+  color: var(--n-color-text-primary);
 }
 
 .workspace-compact-preview {
@@ -217,19 +205,31 @@ body {
   margin: 0;
 }
 
-.chart {
-  align-items: end;
-  block-size: 13rem;
-  display: flex;
+.delivery-signals {
+  display: grid;
+  gap: var(--n-space-4);
+}
+
+.delivery-signal {
+  display: grid;
   gap: var(--n-space-2);
 }
 
-.chart span {
-  background: var(--n-color-action-primary);
-  border-radius: var(--n-radius-sm) var(--n-radius-sm) 0 0;
-  flex: 1 1 0;
-  min-inline-size: 0.5rem;
-  opacity: 0.82;
+.delivery-signal > div {
+  align-items: baseline;
+  display: flex;
+  gap: var(--n-space-3);
+  justify-content: space-between;
+}
+
+.delivery-signal strong {
+  font-size: var(--n-font-size-sm);
+  font-weight: var(--n-font-weight-medium);
+}
+
+.delivery-signal span {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-xs);
 }
 
 .team-list {
@@ -319,7 +319,7 @@ body {
 
   .state-controls {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .workspace-controls .n-field {
@@ -335,8 +335,7 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .workspace-nav button {
-    grid-template-columns: auto minmax(0, 1fr);
+  .workspace-nav .workspace-nav__item {
     white-space: normal;
   }
 }

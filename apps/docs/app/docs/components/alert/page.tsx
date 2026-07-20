@@ -64,17 +64,21 @@ const tokenRows = [
     "--n-alert-gap / --n-alert-padding / --n-alert-radius",
     "Controls compact spacing and shape.",
   ],
-  ["Surface", "--n-alert-border / --n-alert-background", "Controls the default quiet treatment."],
+  [
+    "Surface",
+    "--n-alert-border-width / --n-alert-border / --n-alert-background / --n-alert-shadow",
+    "Keeps persistent feedback flat, muted, and borderless by default.",
+  ],
   [
     "Emphasis",
     "--n-alert-title-color / --n-alert-icon-color",
-    "Controls the semantic focal points while the surface stays neutral.",
+    "Keeps the title neutral and applies semantic emphasis only to the icon.",
   ],
   ["Icon", "--n-alert-icon-size", "Controls the optional icon scale."],
   [
     "Semantic tones",
     "--n-color-status-info / success / warning / danger",
-    "Controls semantic title and icon emphasis without changing the surface.",
+    "Controls semantic icon emphasis without changing the neutral text hierarchy.",
   ],
 ] as const;
 

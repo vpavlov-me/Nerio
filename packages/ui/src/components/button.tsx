@@ -34,13 +34,14 @@ const buttonVariantClasses: Record<CanonicalButtonVariant, string> = {
   primary:
     "bg-(--n-button-background-primary) text-(--n-button-foreground-primary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-primary-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-primary-active)",
   secondary:
-    "bg-(--n-button-background-secondary) border-(--n-button-border-secondary) text-(--n-button-foreground-secondary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-secondary-hover)",
+    "bg-(--n-button-background-secondary) border-(--n-button-border-secondary) text-(--n-button-foreground-secondary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-secondary-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-secondary-active)",
   outline:
-    "bg-(--n-button-background-outline) border-(--n-button-border-outline) text-(--n-button-foreground-outline) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-outline-hover)",
+    "bg-(--n-button-background-outline) border-(--n-button-border-outline) text-(--n-button-foreground-outline) shadow-(--n-button-shadow-outline) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-outline-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-outline-active)",
   ghost:
-    "bg-(--n-button-background-ghost) border-(--n-button-border-ghost) text-(--n-button-foreground-ghost) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-ghost-hover) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-color-text-primary)",
-  link: "h-auto bg-transparent border-transparent px-(--n-space-0) text-(--n-link-color) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-link-color-hover)",
-  danger: "bg-(--n-button-background-destructive) text-(--n-button-foreground-destructive)",
+    "bg-(--n-button-background-ghost) border-(--n-button-border-ghost) text-(--n-button-foreground-ghost) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-ghost-hover) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-color-text-primary) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-ghost-active)",
+  link: "h-auto bg-transparent border-transparent px-(--n-space-0) text-(--n-link-color) underline decoration-transparent decoration-(length:--n-link-underline-thickness) underline-offset-(--n-link-underline-offset) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-link-color-hover) [&:hover:not(:disabled):not([data-disabled])]:decoration-current focus-visible:decoration-current",
+  danger:
+    "bg-(--n-button-background-destructive) text-(--n-button-foreground-destructive) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-destructive-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-destructive-active)",
 };
 
 const buttonSizeClasses: Record<ButtonSize, string> = {
@@ -56,13 +57,16 @@ type RenderElementProps = {
   "aria-disabled"?: boolean;
   className?: string;
   children?: React.ReactNode;
+  disabled?: boolean;
   "data-icon-only"?: string;
+  "data-disabled"?: string;
   "data-loading"?: string;
   "data-size"?: ButtonSize;
   "data-slot"?: string;
   "data-variant"?: CanonicalButtonVariant;
-  onClick?: React.MouseEventHandler<HTMLElement>;
+  onClick?: React.ComponentProps<typeof BaseButton>["onClick"];
   ref?: React.Ref<HTMLElement>;
+  type?: "button" | "reset" | "submit";
 };
 
 function isRenderElement(render: unknown): render is React.ReactElement<RenderElementProps> {
@@ -159,9 +163,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     iconOnly &&
       size === "lg" &&
       "w-(--n-icon-button-size-lg) [&_.n-icon]:size-(--n-icon-button-icon-size-lg)",
-    motionClasses.hover,
-    motionClasses.press,
-    motionClasses.focus,
+    motionClasses.interactive,
     className,
   );
   const keyboardShortcut =
@@ -211,28 +213,59 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     () => (renderRef && ref ? composeRefs(renderRef, ref) : (renderRef ?? ref ?? undefined)),
     [ref, renderRef],
   );
+  const customRenderProps: RenderElementProps = {
+    ...props,
+    ref: composedRef,
+    className: renderedElement ? cn(renderedElement.props.className, classNames) : classNames,
+    "aria-label": props["aria-label"] ?? renderedElement?.props["aria-label"],
+    "aria-busy": loading || undefined,
+    "aria-disabled": disabled || loading || undefined,
+    disabled: nativeButton !== false ? Boolean(disabled || loading) : undefined,
+    "data-disabled": disabled || loading ? "" : undefined,
+    "data-icon-only": iconOnly ? "true" : undefined,
+    "data-loading": loading ? "true" : undefined,
+    "data-size": size,
+    "data-slot": dataSlot,
+    "data-variant": normalizedVariant,
+    "aria-labelledby":
+      labelledBy ?? props["aria-labelledby"] ?? renderedElement?.props["aria-labelledby"],
+    type:
+      nativeButton !== false ? (props.type ?? renderedElement?.props.type ?? "button") : undefined,
+    onClick: (event) => {
+      if (disabled || loading) {
+        event.preventDefault();
+        return;
+      }
+      renderedElement?.props.onClick?.(event);
+      if (!event.defaultPrevented) {
+        props.onClick?.(event);
+      }
+    },
+    children: contents,
+  };
   const content = renderedElement ? (
     React.cloneElement(renderedElement, {
+      ...customRenderProps,
       ref: composedRef,
-      className: cn(renderedElement.props.className, classNames),
-      "aria-label": props["aria-label"] ?? renderedElement.props["aria-label"],
-      "aria-busy": loading || undefined,
-      "aria-disabled": disabled || loading || undefined,
-      "data-icon-only": iconOnly ? "true" : undefined,
-      "data-loading": loading ? "true" : undefined,
-      "data-size": size,
-      "data-slot": dataSlot,
-      "data-variant": normalizedVariant,
-      "aria-labelledby": labelledBy ?? renderedElement.props["aria-labelledby"],
-      onClick: (event: React.MouseEvent<HTMLElement>) => {
-        if (disabled || loading) {
-          event.preventDefault();
-          return;
-        }
-        renderedElement.props.onClick?.(event);
-      },
-      children: contents,
     })
+  ) : typeof render === "function" ? (
+    <BaseButton
+      ref={ref}
+      {...props}
+      render={render}
+      nativeButton={nativeButton}
+      className={classNames}
+      data-slot={dataSlot}
+      data-variant={normalizedVariant}
+      data-size={size}
+      data-loading={loading ? "true" : undefined}
+      data-icon-only={iconOnly ? "true" : undefined}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      aria-labelledby={labelledBy ?? props["aria-labelledby"]}
+    >
+      {contents}
+    </BaseButton>
   ) : (
     <BaseButton
       ref={ref}
@@ -252,8 +285,10 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     </BaseButton>
   );
 
-  return tooltip ? (
-    <Tooltip delay={iconOnly ? 0 : undefined} label={tooltip}>
+  const tooltipLabel = tooltip ?? (iconOnly ? props["aria-label"] : undefined);
+
+  return tooltipLabel ? (
+    <Tooltip delay={iconOnly ? 0 : undefined} label={tooltipLabel}>
       {content}
     </Tooltip>
   ) : (

@@ -1,0 +1,81 @@
+# Core Navigation, Layout, and Overlays principles review
+
+## Scope and decision boundary
+
+This is the family evidence matrix and Visual Language 1.0 application record for issue #139. It
+reviews the published Tailwind-first Navigation, Layout, and Overlays inventory from
+`data/component-catalog.json`: Tabs, Breadcrumbs,
+Pagination, Sidebar Primitive, Command Primitive, Dialog, Sheet, Popover, Tooltip, and Dropdown
+Menu. The review covers semantic responsibility, native or Base UI foundations, public anatomy and
+refs, state ownership, focus and dismissal, responsive and directional behavior, layering and safe
+areas, Tailwind and token contracts, server/client entrypoints, Registry metadata, docs, CLI/MCP
+projections, source installation, fixtures, and contract/accessibility/browser evidence.
+
+The review preserves public variants and component responsibilities while applying the approved
+visual language. It adds the compositional `DialogFooter` slot requested by the approved modal
+contract, but no Core component identity, runtime axis, product workflow, routing, persistence,
+navigation model, or breaking migration. AppShell, AppSidebar, GlobalSearch, CommandPalette,
+product filters, and documentation shells remain Pro or consumer composition.
+
+## Family evidence matrix
+
+| Component                     | Responsibility and foundation                                                                                                                                                                                                                                                  | Public contract, focus, and state                                                                                                                                                                                                                             | Layout, Tailwind, distribution, and evidence                                                                                                                                                                                                                                | Result                                                                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tabs                          | Related panel selection in one context through Base UI Tabs. Routing, URL state, analytics, and application navigation remain consumer-owned. Client entrypoint.                                                                                                               | Compound root/list/trigger/indicator/panels/content anatomy; controlled or uncontrolled value; variants, sizes, orientation, layout, overflow, disabled skipping, manual or automatic activation, refs, and accessible relationships.                         | Static Nerio-token recipes use `tailwindCn`; horizontal overflow, vertical layout, RTL indicator geometry, reduced motion, forced colors, Registry, docs, CLI/MCP, source install, contract/a11y/browser evidence reviewed.                                                 | **Aligned.**                                                                                                                                            |
+| Breadcrumbs                   | Native hierarchy navigation through `nav`, `ol`, anchors, and current-page text. Path derivation and route metadata remain consumer-owned. Server entrypoint.                                                                                                                  | Items, optional explicit current page, customizable landmark name, root ref/native attributes, wrapping, long labels, and decorative separators.                                                                                                              | Static logical-direction recipe; Registry, catalog, docs, package/source install, CLI/MCP and semantic coverage reviewed.                                                                                                                                                   | **Fixed.** The root slot is protected after consumer attributes and docs maturity matches the canonical `stable-core` catalog.                          |
+| Pagination                    | Native previous, next, page, and ellipsis controls without page calculation, fetching, URL policy, or product state. Server entrypoint.                                                                                                                                        | Link, button, router-render, static, current, and disabled parity; refs, labels, protected href/slot/current hooks, wrapping, RTL, keyboard focus, and density.                                                                                               | Static Nerio-token recipe with `tailwindCn`; Registry, docs, CLI/MCP router fixtures, package/source install, contract/a11y/browser evidence reviewed.                                                                                                                      | **Fixed.** The root slot is protected after consumer attributes and docs maturity matches `stable-core`.                                                |
+| Sidebar Primitive and regions | Collapsible complementary layout regions with physical side and explicit content direction. Navigation data, persistence, routing, workspace switching, AppSidebar, and AppShell remain outside Core. Provider and toggles are client-only; static regions remain server-safe. | Controlled or uncontrolled expansion, stable ID/ARIA relationships, native aside/header/div/footer/main refs, inert collapsed content, bounded rail and external trigger, protected toggle semantics, focus retention, and one interactive tree per viewport. | Sticky dynamic-viewport layout, safe-area region padding, physical left/right behavior in RTL, reduced motion, forced colors, density, Registry dependency closure, split entrypoints, CLI/MCP, source install, contract/a11y/browser evidence reviewed.                    | **Fixed.** Public region and toggle slots plus toggle type/ARIA ownership are protected; docs anatomy now includes the public inner region.             |
+| Command Primitive and anatomy | Generic local or consumer-filtered query/list selection through Base UI Autocomplete. Fetching, ranking, history, routing, permissions, analytics, global shortcuts, and complete search workflows remain outside Core. Client entrypoint.                                     | Flat or grouped items, label-only query with stable values and keywords, controlled/uncontrolled query, active-value events, read-only/disabled/loading/empty states, virtual focus, refs, IME safety, announcements, and semantic leading content.           | Static explicit-row recipes, constrained overflow, long labels, RTL, density, forced colors, Registry Spinner closure, docs, CLI/MCP, source install, contract/a11y/browser evidence reviewed.                                                                              | **Fixed.** CommandItem's internal selection/value contract cannot be replaced through escaped DOM props; docs anatomy now lists every public part.      |
+| Dialog                        | Short modal task or decision through Base UI Dialog. Multi-step product workflows remain route or Pro composition. Client entrypoint.                                                                                                                                          | Controlled/uncontrolled open state, trigger composition, popup ref, required title, optional description, close, Escape/outside dismissal, focus containment/restoration, scroll lock, and localizable close name.                                            | Portal, shared backdrop/layer tokens, viewport inset, overlay motion and reduced-motion fade, Registry Button/Icon closure, docs, CLI/MCP, source install, contract/a11y evidence reviewed.                                                                                 | **Fixed.** The Registry-declared close slot is now truthful and `closeLabel` localizes its accessible name without changing the default.                |
+| Sheet                         | Modal side, top, or bottom panel through Base UI Dialog. Persistent sidebars, product navigation, filters, settings policy, and AppShell remain outside Core. Client entrypoint.                                                                                               | Controlled/uncontrolled open state; trigger/content/header/title/description/body/footer/close refs and slots; side, size, optional default close, focus containment/restoration, dismissal, and scroll lock.                                                 | Dynamic viewport bounds, internal body overflow, physical left/right sides, logical RTL close placement, safe-area padding, shared layers, directional enter/exit motion, reduced motion, Registry, docs, CLI/MCP, source install, contract/a11y/browser evidence reviewed. | **Fixed.** Public slots, side, and size hooks remain truthful after consumer popup props; docs maturity and anatomy now match the catalog and Registry. |
+| Popover                       | Non-modal anchored contextual controls or details through Base UI Popover. Essential persistent content and modal decisions remain outside the primitive. Client entrypoint.                                                                                                   | Controlled/uncontrolled open state, trigger composition, optional title/description, popup ref, dismissal, and keyboard-reachable body content.                                                                                                               | Base UI portal/positioner owns anchoring and collision behavior; shared overlay layer, surface, motion, Registry, docs, CLI/MCP, source install and contract evidence reviewed.                                                                                             | **Fixed.** Docs now describe the implemented title, description, and body anatomy instead of an unsupported arrow.                                      |
+| Tooltip                       | Short non-essential help through Base UI Tooltip. Required instructions and actions remain visible elsewhere. Client entrypoint.                                                                                                                                               | Element trigger, label, controlled/uncontrolled open state, disabled state, delay, popup ref, hover/focus discovery, dismissal, and non-interactive content.                                                                                                  | Base UI portal/positioner, shared layer/surface/motion tokens, wrapping, Registry, docs, CLI/MCP, source install and contract evidence reviewed.                                                                                                                            | **Fixed.** Docs and Registry examples now require the element trigger implemented by the public type instead of promising a text wrapper.               |
+| Dropdown Menu                 | Basic secondary command menu through Base UI Menu. Product command systems, permissions, nested workflow policy, and primary actions remain outside Core. Client entrypoint.                                                                                                   | Controlled/uncontrolled open state, trigger composition, item labels, disabled and destructive states, popup ref, keyboard navigation, selection, dismissal, and focus restoration.                                                                           | Base UI portal/positioner, shared layer/surface/motion tokens, logical text alignment, Registry, docs, CLI/MCP, source install and contract/a11y evidence reviewed.                                                                                                         | **Aligned.**                                                                                                                                            |
+
+## Cross-family conclusions
+
+- Navigation primitives expose semantic hierarchy, panel selection, page controls, and generic query
+  mechanics without absorbing routing, fetching, persistence, permissions, or application policy.
+- Sidebar remains a layout primitive, not AppSidebar or AppShell. Responsive applications render one
+  active interaction tree and may compose the static regions inside Sheet for mobile navigation.
+- Overlay modality stays explicit: Dialog and Sheet are modal, Popover is anchored and non-modal,
+  Tooltip is non-essential help, and Dropdown Menu is a basic menu. Base UI retains focus,
+  positioning, dismissal, portal, restoration, and scroll-lock behavior.
+- Package and copied-source modes use the same complete static Tailwind recipes, Nerio variables,
+  `tailwindCn`, Registry dependency graph, residual keyframes, and server/client entrypoint split.
+- The corrections preserve existing anatomy, localization, and event ownership while refining
+  approved component aliases and static Tailwind recipes. `DialogFooter` is a compositional anatomy
+  slot rather than a new variant or responsibility.
+- No new focused follow-up issue is required. Breaking compatibility cleanup remains deferred to
+  the existing #145 API-freeze work; broader browser expansion remains owned by #142.
+
+## Visual Language 1.0 application record
+
+- Breadcrumbs, Pagination, Sidebar controls, Tabs, and Dropdown Menu use shared hover and focus
+  motion aliases; reduced motion keeps state changes immediate without hiding final state.
+- Current and selected navigation remain neutral by default. Segmented Tabs add only a small,
+  natural shadow to separate the selected surface; brand color remains limited to the compact
+  indicator variant and focus.
+- Tooltip, Popover, Dropdown Menu, Command, Dialog, and Sheet use the approved inverted dark-glass
+  hierarchy with white text, blur, restrained elevation, and borderless surfaces in every mode.
+- Popover and Dropdown Menu use smaller radii and compact internal spacing than Dialog and Sheet.
+- Dialog uses a subtle opacity and independent scale settle so centering transforms remain stable;
+  modal backdrops fade with blur. Sheet preserves physical side causality for enter and exit motion.
+- Dialog and Sheet close controls compose the secondary icon Button. `DialogFooter` and SheetFooter
+  align action groups to the inline end.
+- Sidebar and Command remain low-level primitives. No routing, persistence, navigation schema,
+  ranking, fetching, global shortcut, or product shell behavior is introduced.
+
+## Validation record
+
+All applicable gates passed on the issue branch:
+
+- `pnpm format:check`, `pnpm lint`, and `pnpm typecheck`;
+- `pnpm test:catalog`, `pnpm validate:catalog`, `pnpm test:tokens`, `pnpm validate:tokens`, and
+  `pnpm validate:runtime-axes`;
+- `pnpm validate:docs` and `pnpm test:docs-examples`;
+- `pnpm test:ui` and `pnpm test:a11y`;
+- `pnpm test:cli`, `pnpm test:mcp`, and `pnpm pack:check`;
+- `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`;
+- `pnpm build`;
+- `pnpm test:browser`.

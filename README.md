@@ -4,8 +4,9 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: `0.1.0-alpha.0` is public under `@nerio-ui`. The Tailwind CSS v4-first implementation
-> passes the release gate and is being prepared as `0.1.0-alpha.1`.
+> Status: `0.1.0-alpha.1` is published under the npm `alpha` tag and as a GitHub prerelease. The
+> `latest` tag intentionally remains on `0.1.0-alpha.0` while the Tailwind CSS v4-first line is
+> validated before 1.0.
 
 ## Product model
 
@@ -35,7 +36,7 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboa
 5. **Useful in real interfaces.** The system targets dense, data-heavy product work as confidently as marketing surfaces.
 6. **AI-readable, human-owned.** Agents can discover the system and assemble interfaces, while maintainers keep architectural control.
 
-## Planned stack
+## Technology
 
 - Next.js, React, TypeScript
 - Tailwind CSS v4
@@ -45,7 +46,7 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboa
 - Lucide, TanStack Table, Recharts, React Hook Form, and Zod through responsibility-scoped adapter
   subpaths
 
-## Planned workspace
+## Workspace
 
 ```text
 apps/
@@ -93,9 +94,12 @@ documentation application uses Geist as its local brand treatment. Core also pro
 products load optional font families themselves. No font files are bundled, and typography presets are
 not a runtime axis.
 
-## Initial Core scope
+## Core scope
 
-The first release will establish the token foundation and Core component categories: actions, forms, overlays, navigation, feedback, data display, layout primitives, and common reusable building blocks.
+The current alpha establishes the token foundation and Core component categories: actions, forms,
+overlays, navigation, feedback, data display, layout primitives, and common reusable building
+blocks. The approved visual language remains neutral-first, compact, alpha-neutral, and restrained
+in its use of brand color.
 
 Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows, finance/crypto widgets, AI chat shells, premium themes, Figma assets, and templates belong to Nerio Pro unless the component matrix says otherwise.
 
@@ -103,12 +107,14 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 
 ## Package entrypoints
 
-`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, Switch, and IconButton are exported from `@nerio-ui/ui/client`. Styles remain available through `@nerio-ui/ui/styles.css`.
+`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, and Switch are exported from `@nerio-ui/ui/client`. IconButton remains a deprecated alpha compatibility export; new work uses Button's icon-only mode. Styles remain available through `@nerio-ui/ui/styles.css`.
 
 `@nerio-ui/adapters` has no aggregating root entrypoint. Import icons and their public SVG types from
 `@nerio-ui/adapters/icons`. Optional integrations use `@nerio-ui/adapters/table`,
-`@nerio-ui/adapters/charts`, `@nerio-ui/adapters/forms`, or `@nerio-ui/adapters/schema`; install the matching
-TanStack Table, Recharts, React Hook Form, or Zod peer only when that subpath is used.
+`@nerio-ui/adapters/charts`, `@nerio-ui/adapters/forms`, `@nerio-ui/adapters/schema`, or the
+client-only `@nerio-ui/adapters/motion`; install the matching TanStack Table, Recharts, React Hook
+Form, Zod, or Motion peer only when that subpath is used. Core UI remains CSS-first and never
+imports Motion.
 
 Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
 
@@ -143,14 +149,11 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
 `@nerio-ui/mcp`.
 
-The npm `alpha` and `latest` tags currently point to the published pre-Tailwind
-`0.1.0-alpha.0`. The Tailwind-first candidate passes the packed-package audit, clean consumer build,
-and browser matrix. Its architecture, migration guidance, limitations, and version recommendation
-are recorded in the [final migration report](./docs/tailwind-migration-report.md).
-
-Publishing `0.1.0-alpha.1`, moving dist-tags, tagging the commit, and creating a GitHub prerelease
-remain manual maintainer actions. See [RELEASE.md](./RELEASE.md) and
-[CHANGELOG.md](./CHANGELOG.md).
+The npm `alpha` tag points to the published Tailwind-first `0.1.0-alpha.1`; `latest` remains on
+`0.1.0-alpha.0`. The alpha.1 package, signed tag, and GitHub prerelease passed the packed-package
+audit, clean consumer build, and browser matrix. Its architecture and migration guidance are
+recorded in the [final migration report](./docs/tailwind-migration-report.md). Alpha APIs may still
+change before 1.0. See [RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
 ## Contributing
 

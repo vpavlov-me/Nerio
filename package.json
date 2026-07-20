@@ -21,8 +21,11 @@
     "validate:release": "pnpm test:catalog && pnpm test:tokens && node scripts/validate-release-docs.mjs && node scripts/release-smoke.mjs",
     "test:cli": "pnpm --filter @nerio-ui/cli test:fixture",
     "test:mcp": "pnpm --filter @nerio-ui/mcp test:fixture",
-    "test:adapters": "node scripts/adapter-consumer-smoke.mjs",
+    "test:adapters": "node scripts/adapter-consumer-smoke.mjs && pnpm test:motion-adapter",
+    "test:motion-adapter": "pnpm --filter @nerio-ui/adapters test:motion && node scripts/validate-motion-adapter.mjs",
     "test:browser": "playwright test",
+    "test:visual": "playwright test --config playwright.visual.config.mjs",
+    "test:visual:update": "playwright test --config playwright.visual.config.mjs --update-snapshots",
     "test:docs-examples": "tsc -p apps/docs/fixtures/docs-examples/tsconfig.json",
     "test:ui": "pnpm --filter @nerio-ui/ui test",
     "test:a11y": "pnpm --filter @nerio-ui/ui test:a11y",
@@ -31,6 +34,7 @@
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
     "@playwright/test": "1.55.1",
+    "esbuild": "0.28.1",
     "prettier": "^3.7.4",
     "turbo": "^2.10.3",
     "typescript": "^5.9.3"

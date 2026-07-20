@@ -79,6 +79,70 @@ test("token validator reports missing base semantic and contrast tokens", () => 
   );
 });
 
+test("token validator requires the complete neutral alpha foundation", () => {
+  withTokenFixture(
+    (source) => withoutDeclaration(source, "--n-gray-a-8"),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Required token is missing from :root base semantic contract: --n-gray-a-8/,
+      ),
+  );
+});
+
+test("token validator requires the approved visual foundation aliases", () => {
+  withTokenFixture(
+    (source) => withoutDeclaration(source, "--n-overlay-surface-filter"),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Required token is missing from :root base semantic contract: --n-overlay-surface-filter/,
+      ),
+  );
+});
+
+test("token validator protects approved overlay and Checkbox component contracts", () => {
+  withTokenFixture(
+    (source) =>
+      source
+        .replace("--n-checkbox-radius: var(--n-radius-xs);", "--n-checkbox-radius: 0.25rem;")
+        .replace("--n-overlay-background: rgb(0 0 0 / 0.88);", "--n-overlay-background: black;")
+        .replace(
+          "--n-overlay-foreground: var(--n-gray-0);",
+          "--n-overlay-foreground: var(--n-color-text-primary);",
+        ),
+    (stderr) => {
+      assert.match(
+        stderr,
+        /Approved component contract --n-checkbox-radius must resolve to var\(--n-radius-xs\)/,
+      );
+      assert.match(
+        stderr,
+        /Approved component contract --n-overlay-background must resolve to rgb\(0 0 0 \/ 0\.88\)/,
+      );
+      assert.match(
+        stderr,
+        /Approved component contract --n-overlay-foreground must resolve to var\(--n-gray-0\)/,
+      );
+    },
+  );
+});
+
+test("token validator calculates load-bearing semantic contrast", () => {
+  withTokenFixture(
+    (source) =>
+      source.replaceAll(
+        "--n-color-text-primary: var(--n-gray-950);",
+        "--n-color-text-primary: #ffffff;",
+      ),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /purple\/light contrast is 1\.00:1 for --n-color-text-primary on --n-color-surface-default/,
+      ),
+  );
+});
+
 test("token validator reports unresolved aliases", () => {
   withTokenFixture(
     (source) => `${source}\n:root { --n-test-unresolved: var(--n-does-not-exist); }\n`,

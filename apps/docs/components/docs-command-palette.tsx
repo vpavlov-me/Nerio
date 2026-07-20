@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Search } from "@nerio-ui/adapters/icons";
-import { Button, Dialog, Icon, Input, Kbd } from "@nerio-ui/ui/client";
+import { Button, Dialog, Icon, Input, Kbd, Tooltip } from "@nerio-ui/ui/client";
 
 export type DocsCommandEntry = {
   href: string;
@@ -12,6 +12,25 @@ export type DocsCommandEntry = {
   group: string;
   description: string;
 };
+
+const DocsSearchTrigger = React.forwardRef<
+  HTMLButtonElement,
+  Omit<React.ComponentPropsWithoutRef<"button">, "children">
+>(function DocsSearchTrigger(props, ref) {
+  return (
+    <Tooltip delay={0} label="Search documentation (/ or ⌘K)">
+      <Button
+        {...props}
+        ref={ref}
+        aria-label="Search documentation"
+        className="docs-search-trigger"
+        icon={Search}
+        tooltip={false}
+        variant="ghost"
+      />
+    </Tooltip>
+  );
+});
 
 export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] }) {
   const router = useRouter();
@@ -84,15 +103,7 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
         onOpenChange={(nextOpen) => (nextOpen ? setOpen(true) : close())}
         open={open}
         title="Search documentation"
-        trigger={
-          <Button
-            aria-label="Search documentation"
-            className="docs-search-trigger"
-            icon={Search}
-            title="Search documentation (/ or ⌘K)"
-            variant="ghost"
-          />
-        }
+        trigger={<DocsSearchTrigger />}
       >
         <div className="docs-command">
           <div className="docs-command__input-wrap">

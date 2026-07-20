@@ -36,7 +36,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
             <BaseMenu.Popup
               ref={ref}
               className={cn(
-                "n-dropdown grid min-w-(--n-dropdown-min-width) gap-(--n-space-1) rounded-(--n-radius-container) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) shadow-(--n-overlay-shadow)",
+                "n-dropdown grid min-w-(--n-dropdown-min-width) gap-(--n-space-1) rounded-(--n-dropdown-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-color-danger:var(--n-overlay-danger)] [--n-color-surface-muted:var(--n-overlay-control-background)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)]",
                 motionClasses.overlayEnter,
                 className,
               )}
@@ -45,7 +45,10 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
               {items.map((item, index) => (
                 <BaseMenu.Item
                   key={`${item.label}-${index}`}
-                  className="n-dropdown__item cursor-pointer rounded-(--n-radius-md) border-0 bg-(--n-button-background-ghost) px-(--n-dropdown-item-padding-inline) py-(--n-space-2) text-start text-(length:--n-font-size-sm) text-(--n-color-text-secondary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) data-highlighted:bg-(--n-color-surface-muted) data-highlighted:text-(--n-color-text-primary) data-[variant=destructive]:text-(--n-color-danger) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-opacity-disabled) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)"
+                  className={cn(
+                    "n-dropdown__item cursor-pointer rounded-(--n-radius-md) border-0 bg-(--n-button-background-ghost) px-(--n-dropdown-item-padding-inline) py-(--n-space-2) text-start text-(length:--n-font-size-sm) text-(--n-color-text-secondary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) data-highlighted:bg-(--n-color-surface-muted) data-highlighted:text-(--n-color-text-primary) data-[variant=destructive]:text-(--n-color-danger) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-opacity-disabled) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)",
+                    motionClasses.hover,
+                  )}
                   data-slot="item"
                   data-variant={item.destructive ? "destructive" : undefined}
                   disabled={item.disabled}

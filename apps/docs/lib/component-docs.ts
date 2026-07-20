@@ -28,7 +28,7 @@ const componentLedes: Record<string, string> = {
     "InputGroup composes an Input with explicit inline addons without changing native form semantics.",
   label: "Labels provide accessible names and stable form hierarchy.",
   checkbox:
-    "Checkboxes toggle independent options and support checked, unchecked, indeterminate, invalid, disabled, and read-only states.",
+    "Checkboxes select zero or more options in a visible group and support checked, unchecked, indeterminate, invalid, disabled, and read-only states.",
   "radio-group":
     "Radio groups let people choose one option from a short visible set through options or RadioGroupItem composition.",
   switch:

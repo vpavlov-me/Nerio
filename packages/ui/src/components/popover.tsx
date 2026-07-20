@@ -33,7 +33,7 @@ export const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(function P
           <BasePopover.Popup
             ref={ref}
             className={cn(
-              "n-popover__content grid min-w-(--n-dropdown-min-width) max-w-(--n-popover-width-md) gap-(--n-space-2) rounded-(--n-radius-container) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) shadow-(--n-overlay-shadow)",
+              "n-popover__content grid min-w-(--n-dropdown-min-width) max-w-(--n-popover-width-md) gap-(--n-popover-gap) rounded-(--n-popover-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-popover-padding) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-button-background-ghost-hover:var(--n-overlay-control-background-hover)] [--n-button-background-secondary:var(--n-overlay-control-background)] [--n-button-background-secondary-hover:var(--n-overlay-control-background-hover)] [--n-button-foreground-ghost:var(--n-overlay-foreground-muted)] [--n-button-foreground-secondary:var(--n-overlay-foreground)] [--n-color-surface-muted:var(--n-overlay-control-background)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)] [--n-input-background:var(--n-input-background-on-overlay)] [--n-input-background-hover:var(--n-input-background-on-overlay-hover)] [--n-input-foreground:var(--n-input-foreground-on-overlay)] [--n-input-placeholder:var(--n-input-placeholder-on-overlay)]",
               motionClasses.overlayEnter,
               className,
             )}
@@ -41,7 +41,7 @@ export const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(function P
           >
             {title ? (
               <BasePopover.Title
-                className="n-popover__title m-0 px-(--n-space-2) pt-(--n-space-1) text-(length:--n-font-size-sm) font-(--n-font-weight-semibold) text-(--n-color-text-primary)"
+                className="n-popover__title m-0 text-(length:--n-font-size-sm) font-(--n-font-weight-medium) text-(--n-color-text-primary)"
                 data-slot="title"
               >
                 {title}
@@ -49,14 +49,14 @@ export const Popover = React.forwardRef<HTMLDivElement, PopoverProps>(function P
             ) : null}
             {description ? (
               <BasePopover.Description
-                className="n-popover__description m-0 px-(--n-space-2) text-(length:--n-font-size-sm) text-(--n-color-text-secondary)"
+                className="n-popover__description m-0 text-(length:--n-font-size-sm) text-(--n-color-text-secondary)"
                 data-slot="description"
               >
                 {description}
               </BasePopover.Description>
             ) : null}
             <div
-              className="n-popover__body grid gap-(--n-space-2) text-(length:--n-font-size-sm) text-(--n-color-text-secondary)"
+              className="n-popover__body grid gap-(--n-popover-gap) text-(length:--n-font-size-sm) text-(--n-color-text-secondary)"
               data-slot="body"
             >
               {children}

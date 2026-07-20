@@ -2,6 +2,7 @@ name: ci
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   push:
     branches:
       - main
@@ -48,3 +49,51 @@ jobs:
       - run: pnpm test:browser
       - run: pnpm build
       - run: pnpm pack:check
+
+  visual-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Require maintainer approval for baseline changes
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          EVENT_PATH: ${{ github.event_path }}
+        run: |
+          if git diff --name-only "origin/$BASE_REF...HEAD" -- tests/visual/__screenshots__ | grep -q .; then
+            node -e 'const event = require(process.env.EVENT_PATH); const approved = event.pull_request.labels.some(({ name }) => name === "visual-baseline-approved"); if (!approved) { console.error("Baseline changes require the visual-baseline-approved maintainer label."); process.exit(1); }'
+          fi
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:visual
+      - name: Upload visual regression artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-artifacts
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            test-results/visual/**/*-actual.png
+            test-results/visual/**/*-diff.png
+            test-results/visual/**/trace.zip
+            tests/visual/__screenshots__
+      - name: Upload visual regression actuals
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-actuals
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            test-results/visual/**/*-actual.png
+            tests/visual/__screenshots__/linux/*.png

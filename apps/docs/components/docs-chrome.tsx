@@ -16,7 +16,6 @@ import {
   Copy,
   ExternalLink,
   FileText,
-  Github,
   Layers,
   ListTree,
   Moon,
@@ -24,17 +23,29 @@ import {
   Palette,
   PanelLeft,
   PackageOpen,
-  Rows2,
-  Rows3,
   Search,
   Sparkles,
   Sun,
   Type,
   Wrench,
 } from "@nerio-ui/adapters/icons";
-import { Badge, Button, ButtonGroup, DropdownMenu, Icon } from "@nerio-ui/ui/client";
+import {
+  Badge,
+  Button,
+  ButtonGroup,
+  DropdownMenu,
+  Icon,
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  Tooltip,
+} from "@nerio-ui/ui/client";
 import type { IconComponent } from "@nerio-ui/adapters/icons";
-import { densities, modes, themes } from "@nerio-ui/tokens";
+import { modes } from "@nerio-ui/tokens";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
 import {
   defaultAppearance,
@@ -71,6 +82,7 @@ const navGroups: NavGroup[] = [
   {
     title: "Foundations",
     items: [
+      { href: "/docs/foundations/visual-language", label: "Visual language", icon: Palette },
       { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
       { href: "/docs/foundations/typography", label: "Typography", icon: Type },
       { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
@@ -158,7 +170,6 @@ const navGroups: NavGroup[] = [
 ];
 
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
-const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
 const modeIcons: Record<ColorMode, IconComponent> = {
   system: Monitor,
   light: Sun,
@@ -169,18 +180,8 @@ const modeOptions = modes.map((value) => ({
   label: runtimeLabel(value),
   value,
 }));
-const densityIcons: Record<(typeof densities)[number], IconComponent> = {
-  comfortable: Rows2,
-  compact: Rows3,
-};
-const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), value }));
-
 function isColorMode(value: string): value is ColorMode {
   return modes.some((mode) => mode === value);
-}
-
-function getThemeDotColor(theme: string) {
-  return theme === "neutral" ? "var(--n-color-text-secondary)" : `var(--n-${theme}-600)`;
 }
 
 type TocItem = {
@@ -190,6 +191,9 @@ type TocItem = {
 };
 
 const componentToc: TocItem[] = [
+  { id: "overview", label: "Overview" },
+  { id: "preview", label: "Preview" },
+  { id: "installation", label: "Installation" },
   { id: "usage", label: "Usage" },
   { id: "variants", label: "Variants" },
   { id: "anatomy", label: "Anatomy" },
@@ -198,6 +202,7 @@ const componentToc: TocItem[] = [
   { id: "accessibility", label: "Accessibility" },
   { id: "api", label: "API" },
   { id: "implementation-contract", label: "Implementation contract" },
+  { id: "styling-contract", label: "Styling contract" },
   { id: "design-notes", label: "Design notes" },
   { id: "do-do-not", label: "Do / do not" },
   { id: "related-components", label: "Related components" },
@@ -232,7 +237,9 @@ const compositionGroup: NavGroup = {
 };
 
 const buttonToc: TocItem[] = [
+  { id: "overview", label: "Overview" },
   { id: "preview", label: "Preview" },
+  { id: "installation", label: "Installation" },
   { id: "usage", label: "Usage" },
   { id: "variants", label: "Variants" },
   { id: "anatomy", label: "Anatomy" },
@@ -241,6 +248,7 @@ const buttonToc: TocItem[] = [
   { id: "accessibility", label: "Accessibility" },
   { id: "api", label: "API" },
   { id: "implementation-contract", label: "Implementation contract" },
+  { id: "styling-contract", label: "Styling contract" },
   { id: "design-notes", label: "Design notes" },
   { id: "do-do-not", label: "Do / do not" },
   { id: "related-components", label: "Related components" },
@@ -248,7 +256,9 @@ const buttonToc: TocItem[] = [
 ];
 
 const badgeToc: TocItem[] = [
+  { id: "overview", label: "Overview" },
   { id: "preview", label: "Preview" },
+  { id: "installation", label: "Installation" },
   { id: "usage", label: "Usage" },
   { id: "variants", label: "Variants" },
   { id: "anatomy", label: "Anatomy" },
@@ -257,6 +267,7 @@ const badgeToc: TocItem[] = [
   { id: "accessibility", label: "Accessibility" },
   { id: "api", label: "API" },
   { id: "implementation-contract", label: "Implementation contract" },
+  { id: "styling-contract", label: "Styling contract" },
   { id: "design-notes", label: "Design notes" },
   { id: "do-do-not", label: "Do / do not" },
   { id: "related-components", label: "Related components" },
@@ -264,6 +275,15 @@ const badgeToc: TocItem[] = [
 ];
 
 const tocByPath: Record<string, TocItem[]> = {
+  "/docs/foundations/visual-language": [
+    { id: "surfaces", label: "Surfaces" },
+    { id: "color", label: "Color" },
+    { id: "typography", label: "Typography" },
+    { id: "geometry", label: "Geometry" },
+    { id: "interaction", label: "Interaction" },
+    { id: "density", label: "Density" },
+    { id: "motion", label: "Motion" },
+  ],
   "/docs/getting-started": [
     { id: "install", label: "Install" },
     { id: "project-shape", label: "Project shape" },
@@ -297,8 +317,12 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "easing-tokens", label: "Easing tokens" },
     { id: "semantic-motion", label: "Semantic motion" },
     { id: "tailwind-motion-recipes", label: "Tailwind motion recipes" },
+    { id: "optional-motion-adapter", label: "Optional adapter" },
+    { id: "motion-examples", label: "Examples" },
+    { id: "decision-boundary", label: "Decision boundary" },
     { id: "reduced-motion", label: "Reduced motion" },
     { id: "usage", label: "Usage" },
+    { id: "source-install-and-removal", label: "Source install" },
   ],
   "/docs/foundations/radius": [
     { id: "radius-scale", label: "Radius scale" },
@@ -342,25 +366,39 @@ function getDefaultToc(pathname: string): TocItem[] {
   return tocByPath[pathname] ?? [];
 }
 
-const searchEntries: DocsCommandEntry[] = navGroups.flatMap((group) =>
-  group.items.flatMap((item) => {
-    const pageSections = getDefaultToc(item.href);
-    return [
-      {
-        href: item.href,
-        title: item.label,
-        group: group.title,
-        description: `${item.label} documentation and examples.`,
-      },
-      ...pageSections.map((section) => ({
-        href: `${item.href}#${section.id}`,
-        title: section.label,
-        group: item.label,
-        description: `${section.label} section in ${item.label}.`,
-      })),
-    ];
-  }),
-);
+const searchEntries: DocsCommandEntry[] = [
+  ...navGroups.flatMap((group) =>
+    group.items.flatMap((item) => {
+      const pageSections = getDefaultToc(item.href);
+      return [
+        {
+          href: item.href,
+          title: item.label,
+          group: group.title,
+          description: `${item.label} documentation and examples.`,
+        },
+        ...pageSections.map((section) => ({
+          href: `${item.href}#${section.id}`,
+          title: section.label,
+          group: item.label,
+          description: `${section.label} section in ${item.label}.`,
+        })),
+      ];
+    }),
+  ),
+  {
+    href: "/playground",
+    title: "Playground",
+    group: "Tools",
+    description: "Tune visual tokens and inspect every current Core component API.",
+  },
+  {
+    href: "/templates",
+    title: "Workspace demo",
+    group: "Tools",
+    description: "Test Core components together in a realistic universal product workspace.",
+  },
+];
 
 const foundationGroups = navGroups.slice(0, 2);
 const componentGroups = navGroups.slice(2);
@@ -384,6 +422,55 @@ function getAdjacentDocs(pathname: string) {
     previous: documentationItems[index - 1],
     next: documentationItems[index + 1],
   };
+}
+
+function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <Tooltip label="Open navigation">
+        <SheetTrigger
+          render={
+            <Button
+              aria-label="Open documentation navigation"
+              className="docs-mobile-navigation-trigger"
+              icon={PanelLeft}
+              tooltip={false}
+              variant="ghost"
+            />
+          }
+        />
+      </Tooltip>
+      <SheetContent side="left" size="sm">
+        <SheetHeader>
+          <SheetTitle>Documentation</SheetTitle>
+          <SheetDescription>Foundations, Core components, and delivery workflows.</SheetDescription>
+        </SheetHeader>
+        <SheetBody>
+          <nav className="docs-mobile-navigation" aria-label="Mobile documentation">
+            {navGroups.map((group) => (
+              <div className="docs-mobile-navigation__group" key={group.title}>
+                <h2>{group.title}</h2>
+                {group.items.map(({ href, label, icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={pathname === href ? "is-active" : undefined}
+                    aria-current={pathname === href ? "page" : undefined}
+                    onClick={() => setOpen(false)}
+                  >
+                    <Icon icon={icon} />
+                    <span>{label}</span>
+                  </Link>
+                ))}
+              </div>
+            ))}
+          </nav>
+        </SheetBody>
+      </SheetContent>
+    </Sheet>
+  );
 }
 
 function slugify(value: string) {
@@ -627,12 +714,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const currentYear = new Date().getFullYear();
   const isHomePage = pathname === "/";
   const isTemplatesPage = pathname === "/templates";
+  const isPlaygroundPage = pathname === "/playground";
   const fallbackToc = getDefaultToc(pathname);
-  const [theme, setThemeValue] = React.useState<Appearance["theme"]>(defaultAppearance.theme);
   const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
-  const [density, setDensityValue] = React.useState<Appearance["density"]>(
-    defaultAppearance.density,
-  );
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
@@ -643,9 +727,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
   React.useLayoutEffect(() => {
     const restored = readAppearanceFromRoot(document.documentElement);
-    setThemeValue(restored.theme);
     setModeValue(restored.mode);
-    setDensityValue(restored.density);
   }, []);
 
   React.useEffect(() => {
@@ -706,19 +788,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect();
   }, [pathname, toc]);
 
-  const setTheme = (value: Appearance["theme"]) => {
-    setThemeValue(value);
-    persistAppearanceAxis(document.documentElement, "theme", value);
-  };
-
   const setMode = (value: Appearance["mode"]) => {
     setModeValue(value);
     persistAppearanceAxis(document.documentElement, "mode", value);
-  };
-
-  const setDensity = (value: Appearance["density"]) => {
-    setDensityValue(value);
-    persistAppearanceAxis(document.documentElement, "density", value);
   };
 
   const scrollToTocItem = (event: React.MouseEvent<HTMLAnchorElement>, id: string) => {
@@ -739,6 +811,10 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
   const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
+  if (pathname === "/visual-test") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="docs-shell">
       <header className="docs-header">
@@ -747,8 +823,10 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             <Link href="/" className="brand">
               Nerio
             </Link>
-            <Badge tone="primary-soft">Core</Badge>
+            <Badge tone="neutral">{version}</Badge>
           </div>
+
+          <MobileDocumentationNavigation pathname={pathname} />
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
@@ -767,72 +845,27 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             >
               Components
             </Link>
+            <Link
+              href="/playground"
+              className={isPlaygroundPage ? "is-active" : undefined}
+              aria-current={isPlaygroundPage ? "page" : undefined}
+            >
+              Playground
+            </Link>
           </nav>
 
           <div className="docs-controls">
             <DocsCommandPalette entries={searchEntries} />
             <span className="docs-controls-divider" aria-hidden />
             <DropdownMenu
-              className="docs-theme-menu"
-              trigger={
-                <Button className="docs-theme-trigger" trailingIcon={ChevronDown} variant="ghost">
-                  <span
-                    className="theme-option-dot"
-                    style={{ backgroundColor: getThemeDotColor(theme) }}
-                    aria-hidden
-                  />
-                  {themeOptions.find((option) => option.value === theme)?.label}
-                </Button>
-              }
-              items={themeOptions.map((option) => ({
-                label: (
-                  <span className="theme-menu-item">
-                    <span
-                      className="theme-option-dot"
-                      style={{ backgroundColor: getThemeDotColor(option.value) }}
-                      aria-hidden
-                    />
-                    <span>{option.label}</span>
-                    {theme === option.value ? <Icon icon={Check} /> : null}
-                  </span>
-                ),
-                onSelect: () => setTheme(option.value),
-              }))}
-            />
-            <span className="docs-controls-divider" aria-hidden />
-            <DropdownMenu
-              trigger={
-                <Button
-                  leadingIcon={densityIcons[density]}
-                  trailingIcon={ChevronDown}
-                  variant="ghost"
-                >
-                  {densityOptions.find((option) => option.value === density)?.label}
-                </Button>
-              }
-              items={densityOptions.map((option) => ({
-                label: (
-                  <span className="runtime-menu-item">
-                    <Icon icon={densityIcons[option.value]} />
-                    <span>{option.label}</span>
-                    {density === option.value ? <Icon icon={Check} /> : null}
-                  </span>
-                ),
-                onSelect: () => setDensity(option.value),
-              }))}
-            />
-            <span className="docs-controls-divider" aria-hidden />
-            <DropdownMenu
               className="docs-mode-menu"
               trigger={
                 <Button
                   aria-label={`Color mode: ${runtimeLabel(mode)}`}
-                  leadingIcon={modeIcons[mode]}
-                  trailingIcon={ChevronDown}
+                  icon={modeIcons[mode]}
+                  tooltip={`Color mode: ${runtimeLabel(mode)}`}
                   variant="ghost"
-                >
-                  {runtimeLabel(mode)}
-                </Button>
+                />
               }
               items={modeOptions.map((option) => ({
                 label: (
@@ -849,11 +882,28 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             />
             <span className="docs-controls-divider" aria-hidden />
             <Button
-              leadingIcon={Github}
+              className="docs-github-link"
               nativeButton={false}
               render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
               variant="secondary"
             >
+              <span className="docs-github-mark" aria-hidden>
+                {mode === "system" ? (
+                  <picture>
+                    <source
+                      media="(prefers-color-scheme: dark)"
+                      srcSet="/brand/github-invertocat-white.svg"
+                    />
+                    <img src="/brand/github-invertocat-black.svg" alt="" width={14} />
+                  </picture>
+                ) : (
+                  <img
+                    src={`/brand/github-invertocat-${mode === "dark" ? "white" : "black"}.svg`}
+                    alt=""
+                    width={14}
+                  />
+                )}
+              </span>
               GitHub
             </Button>
           </div>
@@ -864,12 +914,12 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
         className={
           isHomePage
             ? "docs-layout docs-layout--landing"
-            : isTemplatesPage
+            : isTemplatesPage || isPlaygroundPage
               ? "docs-layout docs-layout--template"
               : "docs-layout"
         }
       >
-        {isHomePage || isTemplatesPage ? null : (
+        {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
           <aside className="docs-sidebar">
             <nav aria-label="Documentation">
               {sidebarGroups.map((group) => (
@@ -901,17 +951,23 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
           className={
             isHomePage
               ? "docs-main docs-main--landing"
-              : isTemplatesPage
-                ? "docs-main docs-main--template"
-                : "docs-main"
+              : isPlaygroundPage
+                ? "docs-main docs-main--template docs-main--playground"
+                : isTemplatesPage
+                  ? "docs-main docs-main--template"
+                  : "docs-main"
           }
         >
-          {isHomePage || isTemplatesPage ? null : <PageActions pathname={pathname} />}
+          {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+            <PageActions pathname={pathname} />
+          )}
           {children}
-          {isHomePage || isTemplatesPage ? null : <DocsPageNavigation pathname={pathname} />}
+          {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+            <DocsPageNavigation pathname={pathname} />
+          )}
         </main>
 
-        {isHomePage || isTemplatesPage ? null : (
+        {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
           <aside className="docs-toc" aria-label="On this page">
             <div className="docs-toc-card">
               <div className="docs-toc-title">On this page</div>
@@ -978,8 +1034,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
       <footer className="docs-footer">
         <p>
-          © <span suppressHydrationWarning>{currentYear}</span> Nerio Core · {version}. Built with
-          love by{" "}
+          © <span suppressHydrationWarning>{currentYear}</span> Nerio. Built with love by{" "}
           <a
             href="https://vpavlov.com?utm_source=nerio&utm_medium=referral&utm_campaign=docs_footer"
             target="_blank"

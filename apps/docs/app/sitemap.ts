@@ -8,6 +8,7 @@ const staticRoutes = [
   "/docs/getting-started",
   "/docs/registry",
   "/docs/ai",
+  "/docs/foundations/visual-language",
   "/docs/foundations/tokens",
   "/docs/foundations/themes",
   "/docs/foundations/effects",
@@ -15,6 +16,7 @@ const staticRoutes = [
   "/docs/foundations/motion",
   "/docs/foundations/radius",
   "/docs/foundations/typography",
+  "/playground",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

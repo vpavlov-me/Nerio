@@ -4,6 +4,7 @@ import * as React from "react";
 import { Radio } from "@base-ui/react/radio";
 import { RadioGroup as BaseRadioGroup } from "@base-ui/react/radio-group";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
+import { motionClasses } from "../lib/motion";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { FormMessage } from "./form-message";
 
@@ -58,7 +59,7 @@ export interface RadioGroupItemProps extends Omit<
 }
 
 const radioClasses =
-  "n-radio mt-(--n-space-0-5) inline-flex size-(--n-radio-size) cursor-pointer items-center justify-center rounded-(--n-radio-radius) border-(length:--n-input-border-width) border-(--n-input-border) bg-(--n-input-background) text-(--n-color-action-primary) transition-[background-color,border-color] duration-(--n-duration-fast) [&:hover:not([data-disabled]):not([data-readonly])]:border-(--n-input-border-hover) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-checked:border-(--n-color-action-primary) data-checked:bg-(--n-color-action-primary) data-checked:text-(--n-color-action-on-primary) data-disabled:cursor-not-allowed data-readonly:cursor-default data-invalid:border-(--n-input-border-danger) data-checked:[&>[data-slot=indicator]]:scale-100 data-checked:[&>[data-slot=indicator]]:opacity-100 forced-colors:border-[CanvasText] forced-colors:data-checked:[&>[data-slot=indicator]]:bg-[Highlight] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2 forced-colors:focus-visible:outline-[Highlight] motion-reduce:duration-0";
+  "n-radio mt-(--n-space-0-5) inline-flex size-(--n-radio-size) cursor-pointer items-center justify-center rounded-(--n-radio-radius) border-(length:--n-input-border-width) border-(--n-color-border-subtle) bg-(--n-input-background) text-(--n-color-action-primary) [&:hover:not([data-disabled]):not([data-readonly])]:border-(--n-color-border-default) [&:hover:not([data-disabled]):not([data-readonly])]:bg-(--n-input-background-hover) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-checked:border-(--n-color-action-primary) data-checked:bg-(--n-color-action-primary) data-checked:text-(--n-color-action-on-primary) data-checked:[&:hover:not([data-disabled]):not([data-readonly])]:border-(--n-color-action-primary-hover) data-checked:[&:hover:not([data-disabled]):not([data-readonly])]:bg-(--n-color-action-primary-hover) data-checked:[&:active:not([data-disabled]):not([data-readonly])]:border-(--n-color-action-primary-active) data-checked:[&:active:not([data-disabled]):not([data-readonly])]:bg-(--n-color-action-primary-active) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-input-disabled-opacity) data-readonly:cursor-default data-invalid:border-(--n-input-border-danger) data-checked:[&>[data-slot=indicator]]:scale-100 data-checked:[&>[data-slot=indicator]]:opacity-100 forced-colors:border-[CanvasText] forced-colors:data-checked:[&>[data-slot=indicator]]:bg-[Highlight] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2 forced-colors:focus-visible:outline-[Highlight]";
 
 export const RadioGroupItem = React.forwardRef<HTMLElement, RadioGroupItemProps>(
   function RadioGroupItem(
@@ -74,7 +75,9 @@ export const RadioGroupItem = React.forwardRef<HTMLElement, RadioGroupItemProps>
       >
         <Radio.Root
           ref={ref}
-          className={(state) => cn(radioClasses, resolveClassName(className, state))}
+          className={(state) =>
+            cn(radioClasses, motionClasses.control, resolveClassName(className, state))
+          }
           disabled={disabled}
           readOnly={readOnly}
           {...props}

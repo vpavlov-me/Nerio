@@ -37,6 +37,9 @@ export interface ListProps extends Omit<
 const listSurfaceClasses =
   "grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-(--n-list-item-gap) rounded-(--n-list-item-radius) border-(length:--n-list-item-border-width) border-(--n-list-item-border) bg-(--n-list-item-background) p-(--n-list-item-padding) text-inherit no-underline [&:not(:has(>[data-slot=leading]))]:grid-cols-[minmax(0,1fr)_auto] [&:not(:has(>[data-slot=trailing]))]:grid-cols-[auto_minmax(0,1fr)] [&:not(:has(>[data-slot=leading])):not(:has(>[data-slot=trailing]))]:grid-cols-[minmax(0,1fr)] forced-colors:border-[CanvasText]";
 
+const listInteractiveClasses =
+  "transition-[background-color,border-color,box-shadow] duration-(--n-motion-hover-duration) ease-(--n-motion-hover-easing) hover:border-(--n-list-item-border-hover) hover:bg-(--n-list-item-background-hover) focus-visible:duration-(--n-motion-focus-duration) focus-visible:ease-(--n-motion-focus-easing) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) motion-reduce:duration-(--n-duration-instant) forced-colors:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:focus-visible:outline-[Highlight]";
+
 export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListProps>(function List(
   { className, items, ordered = false, ...props },
   ref,
@@ -47,12 +50,12 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
   return (
     <Root
       ref={composedRef}
+      {...props}
       className={cn(
         "n-list m-0 grid list-none gap-(--n-list-gap) p-0 [counter-reset:n-list] [&:is(ol)>[data-slot=item]]:grid [&:is(ol)>[data-slot=item]]:grid-cols-[auto_minmax(0,1fr)] [&:is(ol)>[data-slot=item]]:items-start [&:is(ol)>[data-slot=item]]:gap-(--n-list-item-gap) [&:is(ol)>[data-slot=item]]:[counter-increment:n-list] [&:is(ol)>[data-slot=item]::before]:py-(--n-list-item-padding) [&:is(ol)>[data-slot=item]::before]:text-(length:--n-font-size-sm) [&:is(ol)>[data-slot=item]::before]:font-(--n-font-weight-medium) [&:is(ol)>[data-slot=item]::before]:text-(--n-color-text-tertiary) [&:is(ol)>[data-slot=item]::before]:content-[counter(n-list)'.']",
         className,
       )}
       data-slot="root"
-      {...props}
     >
       {items.map((item) => {
         const {
@@ -116,7 +119,7 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
                     className: cn(
                       "n-list__link",
                       listSurfaceClasses,
-                      "hover:border-(--n-list-item-border-hover) hover:bg-(--n-list-item-background-hover) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) forced-colors:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:focus-visible:outline-[Highlight]",
+                      listInteractiveClasses,
                       item.render.props.className,
                       linkClassName,
                     ),
@@ -131,7 +134,7 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
                   className={cn(
                     "n-list__link",
                     listSurfaceClasses,
-                    "hover:border-(--n-list-item-border-hover) hover:bg-(--n-list-item-background-hover) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) forced-colors:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:focus-visible:outline-[Highlight]",
+                    listInteractiveClasses,
                     linkClassName,
                   )}
                   data-slot="link"

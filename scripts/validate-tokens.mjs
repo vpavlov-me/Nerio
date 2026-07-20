@@ -43,8 +43,66 @@ const baseSemanticTokens = [
   "--n-color-success",
   "--n-overlay-backdrop",
 ];
+const neutralAlphaPrimitiveTokens = [
+  "--n-gray-1000",
+  "--n-gray-a-4",
+  "--n-gray-a-6",
+  "--n-gray-a-8",
+  "--n-gray-a-10",
+  "--n-gray-a-12",
+  "--n-gray-a-16",
+  "--n-gray-a-20",
+  "--n-gray-a-24",
+  "--n-white-a-4",
+  "--n-white-a-6",
+  "--n-white-a-8",
+  "--n-white-a-10",
+  "--n-white-a-12",
+  "--n-white-a-16",
+  "--n-white-a-20",
+  "--n-white-a-24",
+];
+const visualFoundationTokens = [
+  "--n-radius-2xl",
+  "--n-shadow-overlay",
+  "--n-motion-hover-duration",
+  "--n-motion-hover-easing",
+  "--n-radius-control",
+  "--n-radius-container",
+  "--n-radius-overlay",
+  "--n-button-shadow-outline",
+  "--n-avatar-background",
+  "--n-select-popup-radius",
+  "--n-checkbox-radius",
+  "--n-overlay-background",
+  "--n-overlay-foreground",
+  "--n-overlay-foreground-muted",
+  "--n-overlay-control-background",
+  "--n-overlay-control-background-hover",
+  "--n-overlay-selected-background",
+  "--n-overlay-divider",
+  "--n-overlay-surface-filter",
+  "--n-overlay-backdrop-filter",
+  "--n-overlay-shadow",
+  "--n-overlay-glass-background",
+  "--n-overlay-glass-border-width",
+  "--n-overlay-glass-border",
+  "--n-overlay-glass-foreground",
+  "--n-overlay-glass-foreground-muted",
+  "--n-overlay-glass-control-background",
+  "--n-overlay-glass-control-background-hover",
+  "--n-overlay-glass-selected-background",
+  "--n-overlay-glass-divider",
+  "--n-overlay-glass-danger",
+  "--n-overlay-glass-shadow",
+  "--n-dropdown-radius",
+  "--n-popover-radius",
+  "--n-tooltip-radius",
+];
 const requiredFoundationTokens = [
   ...baseSemanticTokens,
+  ...neutralAlphaPrimitiveTokens,
+  ...visualFoundationTokens,
   "--n-font-sans",
   "--n-radius-md",
   "--n-space-4",
@@ -75,7 +133,10 @@ const modeSemanticTokens = [
   "--n-color-surface-canvas",
   "--n-color-surface-default",
   "--n-color-surface-control",
+  "--n-color-surface-control-hover",
+  "--n-color-surface-control-active",
   "--n-color-surface-subtle",
+  "--n-color-surface-sunken",
   "--n-color-surface-raised",
   "--n-color-surface-overlay",
   "--n-color-text-primary",
@@ -86,6 +147,9 @@ const modeSemanticTokens = [
   "--n-color-border-subtle",
   "--n-color-border-default",
   "--n-color-border-strong",
+  "--n-color-border-interactive",
+  "--n-color-status-neutral-soft",
+  "--n-chart-grid",
 ];
 
 function references(value) {
@@ -123,6 +187,103 @@ function requireDeclarations(rule, tokens, scope, failures) {
   for (const token of tokens) {
     if (!rule.declarations.has(token))
       failures.push(`Required token is missing from ${scope}: ${token}`);
+  }
+}
+
+function resolveToken(token, declarations, stack = new Set()) {
+  if (stack.has(token)) return null;
+  const value = declarations.get(token);
+  if (!value) return null;
+  const nextStack = new Set(stack).add(token);
+  return value.replace(/var\(\s*(--n-[a-z0-9-]+)\s*\)/g, (_, reference) => {
+    return resolveToken(reference, declarations, nextStack) ?? `var(${reference})`;
+  });
+}
+
+function parseColor(value) {
+  const normalized = value.trim();
+  if (/^#[0-9a-f]{6}$/i.test(normalized)) {
+    return {
+      red: Number.parseInt(normalized.slice(1, 3), 16),
+      green: Number.parseInt(normalized.slice(3, 5), 16),
+      blue: Number.parseInt(normalized.slice(5, 7), 16),
+      alpha: 1,
+    };
+  }
+  const rgb = normalized.match(
+    /^rgb\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+%?))?\s*\)$/,
+  );
+  if (!rgb) return null;
+  const alpha = rgb[4]?.endsWith("%")
+    ? Number.parseFloat(rgb[4]) / 100
+    : Number.parseFloat(rgb[4] ?? "1");
+  return {
+    red: Number.parseFloat(rgb[1]),
+    green: Number.parseFloat(rgb[2]),
+    blue: Number.parseFloat(rgb[3]),
+    alpha,
+  };
+}
+
+function composite(foreground, background) {
+  const alpha = foreground.alpha + background.alpha * (1 - foreground.alpha);
+  if (alpha === 0) return { red: 0, green: 0, blue: 0, alpha: 0 };
+  return {
+    red:
+      (foreground.red * foreground.alpha +
+        background.red * background.alpha * (1 - foreground.alpha)) /
+      alpha,
+    green:
+      (foreground.green * foreground.alpha +
+        background.green * background.alpha * (1 - foreground.alpha)) /
+      alpha,
+    blue:
+      (foreground.blue * foreground.alpha +
+        background.blue * background.alpha * (1 - foreground.alpha)) /
+      alpha,
+    alpha,
+  };
+}
+
+function luminance(color) {
+  const channel = (value) => {
+    const normalized = value / 255;
+    return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(color.red) + 0.7152 * channel(color.green) + 0.0722 * channel(color.blue);
+}
+
+function contrastRatio(foreground, background) {
+  const light = Math.max(luminance(foreground), luminance(background));
+  const dark = Math.min(luminance(foreground), luminance(background));
+  return (light + 0.05) / (dark + 0.05);
+}
+
+function validateContrastPair({
+  context,
+  declarations,
+  foregroundToken,
+  backgroundToken,
+  canvasToken = "--n-color-surface-canvas",
+  minimum,
+  failures,
+}) {
+  const canvas = parseColor(resolveToken(canvasToken, declarations) ?? "");
+  const foreground = parseColor(resolveToken(foregroundToken, declarations) ?? "");
+  const background = parseColor(resolveToken(backgroundToken, declarations) ?? "");
+  if (!canvas || !foreground || !background) {
+    failures.push(
+      `Unable to calculate ${context} contrast for ${foregroundToken} on ${backgroundToken}.`,
+    );
+    return;
+  }
+  const opaqueBackground = composite(background, canvas);
+  const opaqueForeground = composite(foreground, opaqueBackground);
+  const ratio = contrastRatio(opaqueForeground, opaqueBackground);
+  if (ratio + Number.EPSILON < minimum) {
+    failures.push(
+      `${context} contrast is ${ratio.toFixed(2)}:1 for ${foregroundToken} on ${backgroundToken}; expected at least ${minimum}:1.`,
+    );
   }
 }
 
@@ -180,6 +341,36 @@ function validate() {
     "light mode",
     failures,
   );
+
+  for (const mode of ["light", "dark"]) {
+    for (const theme of themes) {
+      const declarations = new Map(rootRule?.declarations ?? []);
+      for (const rule of [
+        exactRule(rules, `:root[data-theme="${theme}"]`),
+        exactRule(rules, `:root[data-mode="${mode}"]`),
+        exactRule(rules, `:root[data-theme="${theme}"][data-mode="${mode}"]`),
+      ]) {
+        for (const [token, value] of rule?.declarations ?? []) declarations.set(token, value);
+      }
+      const context = `${theme}/${mode}`;
+      for (const [foregroundToken, backgroundToken, minimum] of [
+        ["--n-color-text-primary", "--n-color-surface-default", 4.5],
+        ["--n-color-text-secondary", "--n-color-surface-default", 4.5],
+        ["--n-overlay-glass-foreground", "--n-overlay-glass-background", 4.5],
+        ["--n-color-action-on-primary", "--n-color-action-primary", 4.5],
+        ["--n-color-focus-ring", "--n-color-surface-canvas", 3],
+      ]) {
+        validateContrastPair({
+          context,
+          declarations,
+          foregroundToken,
+          backgroundToken,
+          minimum,
+          failures,
+        });
+      }
+    }
+  }
   requireDeclarations(
     exactRule(rules, ':root[data-mode="dark"]'),
     modeSemanticTokens,
@@ -197,6 +388,20 @@ function validate() {
     failures.push(`Unresolved token reference: ${token}`);
   }
   for (const cycle of findCycles(graph)) failures.push(`Token alias cycle: ${cycle}`);
+
+  for (const [token, expected] of [
+    ["--n-checkbox-radius", "var(--n-radius-xs)"],
+    ["--n-overlay-background", "rgb(0 0 0 / 0.88)"],
+    ["--n-overlay-border-width", "var(--n-border-width-0)"],
+    ["--n-overlay-foreground", "var(--n-gray-0)"],
+    ["--n-overlay-foreground-muted", "var(--n-gray-300)"],
+    ["--n-overlay-surface-filter", "blur(24px) saturate(120%)"],
+    ["--n-overlay-backdrop-filter", "blur(10px)"],
+  ]) {
+    if (rootRule?.declarations.get(token) !== expected) {
+      failures.push(`Approved component contract ${token} must resolve to ${expected}.`);
+    }
+  }
 
   const registryFailures = new Map();
   for (const item of manifest.items ?? []) {

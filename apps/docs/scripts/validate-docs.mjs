@@ -252,6 +252,7 @@ function packageReadinessFailures() {
       "pnpm typecheck",
       "pnpm test:ui",
       "pnpm test:a11y",
+      "pnpm test:visual",
       "pnpm validate:docs",
       "pnpm validate:release",
       "pnpm test:cli",
@@ -300,8 +301,13 @@ function packageReadinessFailures() {
 function tailwindDocumentationFailures() {
   const motionPage = read("apps/docs/app/docs/foundations/motion/page.tsx");
   const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const visualLanguagePage = read("apps/docs/app/docs/foundations/visual-language/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const playgroundPage = read("apps/docs/app/playground/page.tsx");
+  const playground = read("apps/docs/components/visual-playground.tsx");
+  const playgroundSpecimens = read("apps/docs/components/component-playground-specimens.tsx");
+  const sitemap = read("apps/docs/app/sitemap.ts");
   const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
   const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
   const failures = [];
@@ -309,11 +315,50 @@ function tailwindDocumentationFailures() {
   const required = [
     [motionPage, "Tailwind motion recipes", "Motion Foundation must document Tailwind recipes"],
     [tokenPage, "Tailwind bridge", "Tokens Foundation must document the Tailwind bridge"],
+    [
+      visualLanguagePage,
+      "Surface hierarchy",
+      "Visual Language Foundation must expose the approved surface hierarchy",
+    ],
+    [
+      visualLanguagePage,
+      "--n-motion-hover-duration",
+      "Visual Language Foundation must expose the shared motion contract",
+    ],
     [componentPage, 'id="styling-contract"', "Component docs must expose a styling contract"],
+    [
+      componentPage,
+      'id="overview"',
+      "Component docs must expose an overview and decision boundary",
+    ],
+    [componentPage, 'id="installation"', "Component docs must expose installation and imports"],
     [
       docsChrome,
       '{ href: "/docs/foundations/motion", label: "Motion"',
       "Foundation navigation must use the canonical Motion route and label",
+    ],
+    [
+      docsChrome,
+      '{ href: "/docs/foundations/visual-language", label: "Visual language"',
+      "Foundation navigation must expose the Visual Language reference",
+    ],
+    [
+      sitemap,
+      '"/docs/foundations/visual-language"',
+      "The sitemap must expose the Visual Language reference",
+    ],
+    [sitemap, '"/playground"', "The sitemap must expose the public Playground"],
+    [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
+    [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
+    [
+      playground,
+      "there is no Chart component in Core",
+      "Playground must keep chart aliases separate from Core component coverage",
+    ],
+    [
+      playgroundSpecimens,
+      'aria-label="Component index"',
+      "Playground must expose a navigable Core component index",
     ],
     [
       gettingStarted,
@@ -329,6 +374,13 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (/\bIconButton\b/.test(playgroundSpecimens)) {
+    failures.push("Playground must not present the deprecated IconButton compatibility export");
+  }
+  if (/id="chart"|>Chart</.test(playgroundSpecimens)) {
+    failures.push("Playground must not present an app-local Chart as a Core component");
   }
 
   if (/['"]n-motion-[a-z]/.test(motionPage)) {
@@ -348,9 +400,10 @@ function tailwindDocumentationFailures() {
 
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
-const documentedRegistrySlugs = registrySlugs.filter(
-  (slug) => !manifest.items.find((item) => item.name === slug)?.deprecated,
-);
+const documentedRegistrySlugs = registrySlugs.filter((slug) => {
+  const item = manifest.items.find((candidate) => candidate.name === slug);
+  return !item?.deprecated && !item?.docsPath;
+});
 const componentCatalog = JSON.parse(read("data/component-catalog.json"));
 
 const docsChrome = read("apps/docs/components/docs-chrome.tsx");

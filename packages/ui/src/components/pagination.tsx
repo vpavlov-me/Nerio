@@ -1,5 +1,6 @@
 import * as React from "react";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
+import { motionClasses } from "../lib/motion";
 
 const paginationControlClasses =
   "n-pagination__control inline-flex min-h-(--n-pagination-item-size) min-w-(--n-pagination-item-size) items-center justify-center rounded-(--n-pagination-radius) border-(length:--n-pagination-border-width) border-(--n-pagination-border) bg-(--n-pagination-background) px-(--n-pagination-control-padding-inline) font-(--n-font-weight-medium) text-(--n-color-text-secondary) no-underline hover:bg-(--n-pagination-background-hover) hover:text-(--n-color-text-primary) focus-visible:rounded-(--n-radius-sm) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-current:border-(--n-pagination-border-current) data-current:bg-(--n-pagination-background-current) data-current:font-(--n-font-weight-semibold) data-current:text-(--n-color-text-primary) data-disabled:cursor-not-allowed data-disabled:text-(--n-color-text-disabled) data-disabled:opacity-(--n-opacity-muted) [&:is(button)]:cursor-pointer [&:is(button)]:appearance-none [&:is(button)]:font-inherit forced-colors:border-[CanvasText] forced-colors:data-current:outline-(length:--n-focus-ring-inner-width) forced-colors:data-current:outline-[Highlight] forced-colors:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:focus-visible:outline-[Highlight]";
@@ -69,13 +70,13 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(functio
   return (
     <nav
       ref={ref}
+      {...props}
       aria-label={ariaLabel}
       className={cn(
         "n-pagination text-(length:--n-font-size-sm) text-(--n-color-text-secondary)",
         className,
       )}
       data-slot="root"
-      {...props}
     >
       <ul
         className="n-pagination__list m-0 flex list-none flex-wrap items-center gap-(--n-pagination-gap) p-0"
@@ -158,7 +159,7 @@ function PaginationControl({
   slot,
   ...props
 }: PaginationControlProps) {
-  const className = paginationControlClasses;
+  const className = cn(paginationControlClasses, motionClasses.hover, motionClasses.focus);
 
   if (disabled) {
     return (
