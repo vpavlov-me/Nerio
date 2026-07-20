@@ -143,6 +143,13 @@ export function StandardDocPage({
   const variants = variantsFromRegistry(registryItem?.variants ?? [], fallbackVariants);
   const accessibility = registryItem?.accessibility ?? reference?.accessibility;
   const tokens = registryItem?.requiredTokens ?? reference?.tokens ?? sharedTokens;
+  const packageImports = usage
+    ?.split("\n")
+    .filter((line) => line.startsWith("import "))
+    .join("\n");
+  const installation = kind
+    ? [`pnpm dlx nerio add ${kind}`, packageImports].filter(Boolean).join("\n\n")
+    : undefined;
 
   return (
     <article className="doc-page">
@@ -150,7 +157,24 @@ export function StandardDocPage({
         <h1>{title}</h1>
         <p className="doc-lede">{lede}</p>
       </header>
+      <section className="doc-section">
+        <h2 id="overview">Overview and decision boundary</h2>
+        <p>{reference?.purpose ?? lede}</p>
+        {reference?.guidance.dont[0] ? (
+          <p className="doc-decision-boundary">{reference.guidance.dont[0]}</p>
+        ) : null}
+      </section>
       {preview ?? (kind ? <Preview kind={kind} /> : null)}
+      {installation ? (
+        <section className="doc-section">
+          <h2 id="installation">Installation and imports</h2>
+          <p>
+            Install the editable registry source, or use the matching package entrypoint when the
+            product keeps Nerio as a workspace dependency.
+          </p>
+          <CodeExample code={installation} label={`${title} installation and import`} />
+        </section>
+      ) : null}
       <section className="doc-section">
         <h2 id="usage">Usage</h2>
         {sectionPreviews?.usage}
@@ -462,7 +486,8 @@ function Preview({ kind }: { kind: string }) {
   const snippet = snippets[kind] ?? "";
 
   return (
-    <section id="preview" className="component-example" aria-label={`${kind} preview`}>
+    <section className="component-example" aria-label={`${kind} preview`}>
+      <h2 id="preview">Preview</h2>
       <div className="component-example__preview">
         <div className="preview-row">
           {kind === "button" ? (

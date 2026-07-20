@@ -1,5 +1,4 @@
-import { notFound } from "next/navigation";
-import { CompositionPage } from "../../../../components/composition-page";
+import { notFound, permanentRedirect } from "next/navigation";
 
 const compositionSlugs = [
   "login",
@@ -24,5 +23,5 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   if (!compositionSlugs.includes(slug)) notFound();
 
-  return <CompositionPage slug={slug} />;
+  permanentRedirect(`/docs/blocks/${slug}`);
 }

@@ -303,6 +303,9 @@ function tailwindDocumentationFailures() {
   const visualLanguagePage = read("apps/docs/app/docs/foundations/visual-language/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const playgroundPage = read("apps/docs/app/playground/page.tsx");
+  const playground = read("apps/docs/components/visual-playground.tsx");
+  const playgroundSpecimens = read("apps/docs/components/component-playground-specimens.tsx");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
   const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
@@ -323,6 +326,12 @@ function tailwindDocumentationFailures() {
     ],
     [componentPage, 'id="styling-contract"', "Component docs must expose a styling contract"],
     [
+      componentPage,
+      'id="overview"',
+      "Component docs must expose an overview and decision boundary",
+    ],
+    [componentPage, 'id="installation"', "Component docs must expose installation and imports"],
+    [
       docsChrome,
       '{ href: "/docs/foundations/motion", label: "Motion"',
       "Foundation navigation must use the canonical Motion route and label",
@@ -336,6 +345,19 @@ function tailwindDocumentationFailures() {
       sitemap,
       '"/docs/foundations/visual-language"',
       "The sitemap must expose the Visual Language reference",
+    ],
+    [sitemap, '"/playground"', "The sitemap must expose the public Playground"],
+    [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
+    [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
+    [
+      playground,
+      "there is no Chart component in Core",
+      "Playground must keep chart aliases separate from Core component coverage",
+    ],
+    [
+      playgroundSpecimens,
+      'aria-label="Component index"',
+      "Playground must expose a navigable Core component index",
     ],
     [
       gettingStarted,
@@ -351,6 +373,13 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (/\bIconButton\b/.test(playgroundSpecimens)) {
+    failures.push("Playground must not present the deprecated IconButton compatibility export");
+  }
+  if (/id="chart"|>Chart</.test(playgroundSpecimens)) {
+    failures.push("Playground must not present an app-local Chart as a Core component");
   }
 
   if (/['"]n-motion-[a-z]/.test(motionPage)) {
