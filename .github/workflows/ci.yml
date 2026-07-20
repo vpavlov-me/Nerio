@@ -94,4 +94,6 @@ jobs:
           name: visual-regression-actuals
           if-no-files-found: warn
           retention-days: 14
-          path: test-results/visual/**/*-actual.png
+          path: |
+            test-results/visual/**/*-actual.png
+            tests/visual/__screenshots__/linux/*.png
