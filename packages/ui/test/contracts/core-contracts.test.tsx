@@ -1983,6 +1983,9 @@ describe("Core interactive action contracts", () => {
     expect(iconButton).toHaveClass(
       "[&:active:not(:disabled):not([data-disabled])]:duration-(--n-motion-press-duration)",
     );
+    expect(iconButton).toHaveClass(
+      "[&:active:not(:disabled):not([data-disabled])]:ease-(--n-motion-press-easing)",
+    );
     expect(iconButton).toHaveClass("focus-visible:duration-(--n-motion-focus-duration)");
   });
 
