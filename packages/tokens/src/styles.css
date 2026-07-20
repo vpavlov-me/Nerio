@@ -616,6 +616,14 @@
   --n-sheet-radius: var(--n-radius-overlay);
   --n-sheet-backdrop: var(--n-overlay-backdrop);
   --n-sheet-viewport-inset: var(--n-density-space-lg);
+  --n-sheet-available-inline: calc(
+    100dvw - max(var(--n-sheet-viewport-inset), env(safe-area-inset-left)) -
+      max(var(--n-sheet-viewport-inset), env(safe-area-inset-right))
+  );
+  --n-sheet-available-block: calc(
+    100dvh - max(var(--n-sheet-viewport-inset), env(safe-area-inset-top)) -
+      max(var(--n-sheet-viewport-inset), env(safe-area-inset-bottom))
+  );
   --n-sheet-transition-distance: var(--n-density-space-lg);
   --n-sidebar-width: 17rem;
   --n-sidebar-collapsed-width: 3.5rem;

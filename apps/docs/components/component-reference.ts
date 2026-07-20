@@ -3032,6 +3032,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-sheet-backdrop",
       "--n-sheet-transition-distance",
       "--n-sheet-viewport-inset",
+      "--n-sheet-available-inline",
+      "--n-sheet-available-block",
       "--n-motion-overlay-enter-duration",
       "--n-motion-overlay-enter-easing",
       "--n-motion-overlay-exit-duration",

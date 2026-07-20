@@ -338,6 +338,11 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
   await expect(dialog).toHaveCount(0);
   await expect(dialogTrigger).toBeFocused();
 
+  const safeAreaSession = await page.context().newCDPSession(page);
+  await safeAreaSession.send("Emulation.setSafeAreaInsetsOverride", {
+    insets: { top: 47, right: 80, bottom: 34, left: 40 },
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/docs/components/sheet");
   await page.getByRole("button", { name: "Open settings" }).click();
   const sheet = page.getByRole("dialog", { name: "Workspace settings" });
@@ -353,6 +358,7 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
       animationName: style.animationName,
       borderRadius: Number.parseFloat(style.borderRadius),
       footerJustify: getComputedStyle(footer).justifyContent,
+      leftInset: rect.left,
       rightInset: window.innerWidth - rect.right,
       surfaceFilter: style.backdropFilter,
       topInset: rect.top,
@@ -361,8 +367,9 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
   expect(sheetVisual.animationName).toContain("n-sheet-enter-right");
   expect(sheetVisual.borderRadius).toBeGreaterThan(0);
   expect(sheetVisual.footerJustify).toBe("flex-end");
-  expect(sheetVisual.rightInset).toBeGreaterThan(0);
-  expect(sheetVisual.topInset).toBeGreaterThan(0);
+  expect(sheetVisual.leftInset).toBeGreaterThanOrEqual(40);
+  expect(sheetVisual.rightInset).toBeGreaterThanOrEqual(80);
+  expect(sheetVisual.topInset).toBeGreaterThanOrEqual(47);
   expect(sheetVisual.surfaceFilter).toContain("blur(24px)");
   await page.getByRole("button", { name: "Cancel" }).click();
   await expect(sheet).toHaveCount(0);
@@ -374,7 +381,21 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
     "data-variant",
     "secondary",
   );
+  await navigationSheet.evaluate(async (element) => {
+    await Promise.all(element.getAnimations().map((animation) => animation.finished));
+  });
+  const navigationBounds = await navigationSheet.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, right: window.innerWidth - rect.right };
+  });
+  expect(navigationBounds.left).toBeGreaterThanOrEqual(40);
+  expect(navigationBounds.right).toBeGreaterThanOrEqual(80);
   await navigationSheet.getByRole("button", { name: "Close sheet" }).click();
+
+  await safeAreaSession.send("Emulation.setSafeAreaInsetsOverride", {
+    insets: { top: 0, right: 0, bottom: 0, left: 0 },
+  });
+  await page.setViewportSize({ width: 1280, height: 720 });
 
   await page.goto("/docs/components/command-primitive");
   const commandVisual = await page

@@ -3444,6 +3444,8 @@ describe("Core interactive action contracts", () => {
     expect(source).toContain("env(safe-area-inset-top)");
     expect(source).toContain("env(safe-area-inset-right)");
     expect(source).toContain("max(var(--n-sheet-viewport-inset),env(safe-area-inset-right))");
+    expect(source).toContain("max-w-(--n-sheet-available-inline)");
+    expect(source).toContain("max-h-(--n-sheet-available-block)");
     expect(source).toContain("rounded-(--n-sheet-radius)");
     expect(source).toContain('variant="secondary"');
     expect(source).toContain("top-(--n-sheet-padding) end-(--n-sheet-padding)");
