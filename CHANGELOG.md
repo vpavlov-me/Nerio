@@ -8,6 +8,9 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added the optional `@nerio-ui/adapters/motion` client entrypoint with typed token-aligned
+  transitions and variants, user-preference reduced motion, strict LazyMotion guidance,
+  source-install metadata, and measured zero-runtime isolation for non-adopters.
 - Implemented the approved Nerio 1.0 visual foundation with cool alpha-neutral layers, pure
   white/black foundations, role-based soft geometry, calm shared motion, inverted overlay-glass
   aliases, calculated contrast validation, and a public visual-language reference.

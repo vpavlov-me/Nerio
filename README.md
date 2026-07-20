@@ -107,8 +107,10 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 
 `@nerio-ui/adapters` has no aggregating root entrypoint. Import icons and their public SVG types from
 `@nerio-ui/adapters/icons`. Optional integrations use `@nerio-ui/adapters/table`,
-`@nerio-ui/adapters/charts`, `@nerio-ui/adapters/forms`, or `@nerio-ui/adapters/schema`; install the matching
-TanStack Table, Recharts, React Hook Form, or Zod peer only when that subpath is used.
+`@nerio-ui/adapters/charts`, `@nerio-ui/adapters/forms`, `@nerio-ui/adapters/schema`, or the
+client-only `@nerio-ui/adapters/motion`; install the matching TanStack Table, Recharts, React Hook
+Form, Zod, or Motion peer only when that subpath is used. Core UI remains CSS-first and never
+imports Motion.
 
 Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
 

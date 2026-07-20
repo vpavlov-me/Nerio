@@ -48,9 +48,9 @@ const packageContracts = {
   },
   "@nerio-ui/adapters": {
     homepage: "https://nerio.vpavlov.com/docs/foundations/icons",
-    exports: ["./icons", "./table", "./charts", "./forms", "./schema"],
+    exports: ["./icons", "./table", "./charts", "./forms", "./schema", "./motion"],
     dependencies: ["lucide-react"],
-    peers: ["@tanstack/react-table", "react", "react-hook-form", "recharts", "zod"],
+    peers: ["@tanstack/react-table", "motion", "react", "react-hook-form", "recharts", "zod"],
     sideEffects: false,
   },
   "@nerio-ui/registry": {
@@ -182,8 +182,8 @@ function validatePackedPackage(name, tarball) {
   }
 
   if (name === "@nerio-ui/adapters") {
-    const expectedSubpaths = ["./icons", "./table", "./charts", "./forms", "./schema"];
-    const optionalPeers = ["@tanstack/react-table", "recharts", "react-hook-form", "zod"];
+    const expectedSubpaths = ["./icons", "./table", "./charts", "./forms", "./schema", "./motion"];
+    const optionalPeers = ["@tanstack/react-table", "recharts", "react-hook-form", "zod", "motion"];
     if (packageJson.exports?.["."]) {
       throw new Error("@nerio-ui/adapters must not restore the coupled root entrypoint.");
     }
@@ -272,7 +272,13 @@ try {
 
   run(pnpm, ["install", "--prefer-offline", "--ignore-scripts"], { cwd: consumerDirectory });
 
-  for (const dependency of ["@tanstack/react-table", "recharts", "react-hook-form", "zod"]) {
+  for (const dependency of [
+    "@tanstack/react-table",
+    "recharts",
+    "react-hook-form",
+    "zod",
+    "motion",
+  ]) {
     if (existsSync(join(consumerDirectory, "node_modules", ...dependency.split("/")))) {
       throw new Error(
         `Clean UI consumer unexpectedly installed optional adapter peer ${dependency}.`,

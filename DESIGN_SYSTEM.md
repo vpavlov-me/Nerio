@@ -394,3 +394,16 @@ primitive spacing, radius, typography, icon-size, control-size, color, or motion
 density remaps reusable semantic density aliases and component contracts instead. Product code that
 uses a primitive such as `--n-space-4` therefore receives the same raw value in comfortable and
 compact contexts, while a component contract such as `--n-table-cell-padding-y` may become tighter.
+
+## Motion architecture
+
+Shared CSS variables and `motionClasses` remain the default for Core hover, press, focus,
+disclosure, loading, and reliable Base UI enter/exit states. Advanced consumer compositions may
+install `motion` and opt into `@nerio-ui/adapters/motion` for coordinated presence,
+interruption, layout continuity, gestures, or sequencing.
+
+The optional adapter maps typed transitions and variants to the approved duration, easing, distance,
+scale, and reduced-motion contracts. Its client-only `NerioMotionConfig` uses the user preference.
+The documented default is strict `LazyMotion` with `domAnimation`; `domMax` is reserved for
+layout, pan, or drag capability. Core UI entrypoints and unrelated adapter subpaths must not resolve
+or bundle Motion.

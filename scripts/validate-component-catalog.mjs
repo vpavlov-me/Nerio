@@ -272,7 +272,11 @@ function validate() {
         `Catalog component ${component.name} entrypoint differs from package: ${identity.entrypoint} !== ${component.package}`,
       );
     }
-    const expectedRuntime = identity.entrypoint === "@nerio-ui/ui/client" ? "client" : "server";
+    const expectedRuntime = ["@nerio-ui/ui/client", "@nerio-ui/adapters/motion"].includes(
+      identity.entrypoint,
+    )
+      ? "client"
+      : "server";
     if (identity.runtime !== expectedRuntime) {
       failures.push(
         `Catalog component ${component?.name ?? identity.name} runtime differs from entrypoint: ${identity.runtime} !== ${expectedRuntime}`,
@@ -299,6 +303,10 @@ function validate() {
       failures.push(
         `Registry component ${item.name} category differs from catalog: ${item.category} !== ${component.category}`,
       );
+    const identity = identityByName.get(item.name);
+    if ((item.docsPath ?? null) !== (identity?.docsPath ?? null)) {
+      failures.push(`Registry component ${item.name} documentation path differs from catalog.`);
+    }
     if (Boolean(item.deprecated) !== Boolean(component.deprecated))
       failures.push(`Registry component ${item.name} deprecated flag differs from catalog.`);
     if (item.deprecated && item.replacement !== slugify(component.replacement))
@@ -336,6 +344,7 @@ function validate() {
   }
 
   const expectedDocs = identities
+    .filter((identity) => !identity.docsPath)
     .map((identity) => identity.name)
     .filter((slug) => !catalogBySlug.get(slug)?.deprecated);
   const navSlugs = propertyStringValues(docsChrome, "href")

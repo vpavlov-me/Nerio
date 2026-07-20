@@ -433,6 +433,10 @@ async function info(name) {
   console.log(`Description: ${item.description}`);
   console.log(`Category: ${item.category}`);
   console.log(`Dependencies: ${formatList(item.dependencies)}`);
+  if (item.optionalPeerDependencies?.length) {
+    console.log(`Optional peer dependencies: ${formatList(item.optionalPeerDependencies)}`);
+  }
+  if (item.docsPath) console.log(`Documentation: ${item.docsPath}`);
   console.log(`Registry dependencies: ${formatList(item.registryDependencies)}`);
   console.log(`Files: ${item.files.length} (${item.files.map((file) => file.target).join(", ")})`);
   console.log(`Variants: ${formatList(item.variants)}`);

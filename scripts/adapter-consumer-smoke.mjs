@@ -19,6 +19,7 @@ const optionalAdapters = {
   table: "@tanstack/react-table",
   charts: "recharts",
   forms: "react-hook-form",
+  motion: "motion",
   schema: "zod",
 };
 
@@ -88,7 +89,7 @@ function writeConsumerPackage(directory, manifest, overrides = {}) {
 function assertPackedAdapterContract(tarball) {
   const manifest = JSON.parse(run("tar", ["-xOf", tarball, "package/package.json"]));
   const entries = run("tar", ["-tzf", tarball]).trim().split("\n");
-  const expectedExports = ["./icons", "./table", "./charts", "./forms", "./schema"];
+  const expectedExports = ["./icons", "./table", "./charts", "./forms", "./schema", "./motion"];
 
   if (manifest.exports?.["."]) {
     throw new Error("@nerio-ui/adapters must not expose a coupled root entrypoint.");
@@ -106,7 +107,14 @@ function assertPackedAdapterContract(tarball) {
       throw new Error(`${peer} must not remain a mandatory dependency.`);
     }
   }
-  const expectedSources = ["icons.ts", "table.ts", "charts.ts", "forms.ts", "schema.ts"];
+  const expectedSources = [
+    "icons.ts",
+    "table.ts",
+    "charts.ts",
+    "forms.ts",
+    "schema.ts",
+    "motion.tsx",
+  ];
   for (const source of expectedSources) {
     if (!entries.includes(`package/src/${source}`)) {
       throw new Error(`Packed @nerio-ui/adapters is missing src/${source}.`);
@@ -221,8 +229,24 @@ try {
     run(pnpm, ["exec", "tsc", "--project", configPath], { cwd: optionalConsumer });
   }
 
+  cpSync(
+    join(root, "packages/adapters/src/motion.tsx"),
+    join(optionalConsumer, "motion-source.tsx"),
+  );
+  writeFileSync(
+    join(optionalConsumer, "tsconfig.motion-source.json"),
+    `${JSON.stringify(
+      { extends: "./tsconfig.json", include: ["./motion-source.tsx"] },
+      null,
+      2,
+    )}\n`,
+  );
+  run(pnpm, ["exec", "tsc", "--project", "tsconfig.motion-source.json"], {
+    cwd: optionalConsumer,
+  });
+
   console.log(
-    "Adapter consumer smoke passed for the packed subpath contract, icons/UI-only isolation, and optional table, charts, forms, and schema peers.",
+    "Adapter consumer smoke passed for the packed subpath contract, icons/UI-only isolation, source-installed Motion, and optional table, charts, forms, schema, and Motion peers.",
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });

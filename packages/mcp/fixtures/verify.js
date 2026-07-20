@@ -98,6 +98,20 @@ async function verify() {
       throw new Error("MCP Typography usage is missing the preset token or install contract.");
     }
 
+    const motionUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "motion-adapter" },
+    });
+    const motionUsage = JSON.parse(motionUsageResult.content[0].text);
+    if (
+      motionUsage.docsPath !== "/docs/foundations/motion" ||
+      !motionUsage.optionalPeerDependencies.includes("motion") ||
+      !motionUsage.files.some((file) => file.target === "lib/motion-adapter.tsx") ||
+      !motionUsage.requiredTokens.includes("--n-duration-normal")
+    ) {
+      throw new Error("MCP Motion Adapter usage is missing its optional-peer or token contract.");
+    }
+
     const cardUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "card" },
@@ -603,6 +617,7 @@ async function verify() {
     const components = JSON.parse(listResult.content[0].text);
     for (const required of [
       "button",
+      "motion-adapter",
       "button-group",
       "icon-button",
       "dialog",

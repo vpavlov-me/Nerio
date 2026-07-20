@@ -461,6 +461,7 @@ async function verify() {
     if (
       !listOutput.includes("button\tButton\tactions") ||
       !listOutput.includes("icon-button\tIconButton\tactions") ||
+      !listOutput.includes("motion-adapter\tMotion Adapter\tfoundation") ||
       !listOutput.includes("alert\tAlert\tfeedback") ||
       !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation")
     ) {
@@ -489,6 +490,16 @@ async function verify() {
       !typographyInfoOutput.includes("consumer-loaded Geist, Inter, IBM Plex")
     ) {
       throw new Error("Typography registry metadata did not include the preset token contract.");
+    }
+    const motionInfoOutput = await run(localTarget, "info", "motion-adapter");
+    if (
+      !motionInfoOutput.includes("Optional peer dependencies: motion") ||
+      !motionInfoOutput.includes("Documentation: /docs/foundations/motion") ||
+      !motionInfoOutput.includes("lib/motion-adapter.tsx")
+    ) {
+      throw new Error(
+        "Motion Adapter registry metadata did not include its optional-peer contract.",
+      );
     }
     const dryRunOutput = await run(localTarget, "add", "input", "--dry-run");
     if (
@@ -524,6 +535,7 @@ async function verify() {
     }
     fs.copyFileSync(path.join(repoRoot, "packages/tokens/src/styles.css"), customizedTokensPath);
     await run(localTarget, "add", "typography");
+    await run(localTarget, "add", "motion-adapter");
     await run(localTarget, "add", "button-group");
     await run(localTarget, "add", "icon-button");
     await run(localTarget, "add", "button");
@@ -576,10 +588,22 @@ async function verify() {
     }
     assertFiles(localTarget, [
       "components/typography.tsx",
+      "lib/motion-adapter.tsx",
       "lib/tailwind-cn.ts",
       "styles/tailwind.css",
       "styles/tokens.css",
     ]);
+    const installedMotionAdapter = fs.readFileSync(
+      path.join(localTarget, "components/nerio/lib/motion-adapter.tsx"),
+      "utf8",
+    );
+    if (
+      !installedMotionAdapter.includes('"use client"') ||
+      !installedMotionAdapter.includes('reducedMotion="user"') ||
+      !installedMotionAdapter.includes("motionTransitions")
+    ) {
+      throw new Error("Installed Motion Adapter source is missing its client or motion contract.");
+    }
     const installedTypographyTokens = fs.readFileSync(
       path.join(localTarget, "components/nerio/styles/tokens.css"),
       "utf8",

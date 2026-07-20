@@ -5,7 +5,9 @@ export interface RegistryItem {
   title: string;
   description: string;
   category: string;
+  docsPath?: string;
   dependencies: string[];
+  optionalPeerDependencies?: string[];
   registryDependencies: string[];
   files: Array<{
     source: string;

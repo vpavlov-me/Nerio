@@ -307,8 +307,12 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "easing-tokens", label: "Easing tokens" },
     { id: "semantic-motion", label: "Semantic motion" },
     { id: "tailwind-motion-recipes", label: "Tailwind motion recipes" },
+    { id: "optional-motion-adapter", label: "Optional adapter" },
+    { id: "motion-examples", label: "Examples" },
+    { id: "decision-boundary", label: "Decision boundary" },
     { id: "reduced-motion", label: "Reduced motion" },
     { id: "usage", label: "Usage" },
+    { id: "source-install-and-removal", label: "Source install" },
   ],
   "/docs/foundations/radius": [
     { id: "radius-scale", label: "Radius scale" },
