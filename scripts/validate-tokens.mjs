@@ -84,6 +84,17 @@ const visualFoundationTokens = [
   "--n-overlay-surface-filter",
   "--n-overlay-backdrop-filter",
   "--n-overlay-shadow",
+  "--n-overlay-glass-background",
+  "--n-overlay-glass-border-width",
+  "--n-overlay-glass-border",
+  "--n-overlay-glass-foreground",
+  "--n-overlay-glass-foreground-muted",
+  "--n-overlay-glass-control-background",
+  "--n-overlay-glass-control-background-hover",
+  "--n-overlay-glass-selected-background",
+  "--n-overlay-glass-divider",
+  "--n-overlay-glass-danger",
+  "--n-overlay-glass-shadow",
   "--n-dropdown-radius",
   "--n-popover-radius",
   "--n-tooltip-radius",
@@ -345,7 +356,7 @@ function validate() {
       for (const [foregroundToken, backgroundToken, minimum] of [
         ["--n-color-text-primary", "--n-color-surface-default", 4.5],
         ["--n-color-text-secondary", "--n-color-surface-default", 4.5],
-        ["--n-overlay-foreground", "--n-color-surface-overlay", 4.5],
+        ["--n-overlay-glass-foreground", "--n-overlay-glass-background", 4.5],
         ["--n-color-action-on-primary", "--n-color-action-primary", 4.5],
         ["--n-color-focus-ring", "--n-color-surface-canvas", 3],
       ]) {
@@ -377,6 +388,16 @@ function validate() {
     failures.push(`Unresolved token reference: ${token}`);
   }
   for (const cycle of findCycles(graph)) failures.push(`Token alias cycle: ${cycle}`);
+
+  for (const [token, expected] of [
+    ["--n-checkbox-radius", "var(--n-radius-xs)"],
+    ["--n-overlay-background", "var(--n-color-surface-raised)"],
+    ["--n-overlay-foreground", "var(--n-color-text-secondary)"],
+  ]) {
+    if (rootRule?.declarations.get(token) !== expected) {
+      failures.push(`Compatibility alias ${token} must resolve to ${expected} before #139.`);
+    }
+  }
 
   const registryFailures = new Map();
   for (const item of manifest.items ?? []) {

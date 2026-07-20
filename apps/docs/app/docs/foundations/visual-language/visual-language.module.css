@@ -77,9 +77,9 @@
 }
 
 .surfaceOverlay {
-  color: var(--n-gray-0);
-  background: rgb(0 0 0 / 0.88);
-  box-shadow: var(--n-shadow-overlay);
+  color: var(--n-overlay-glass-foreground);
+  background: var(--n-overlay-glass-background);
+  box-shadow: var(--n-overlay-glass-shadow);
   backdrop-filter: var(--n-overlay-surface-filter);
 }
 

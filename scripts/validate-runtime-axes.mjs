@@ -62,7 +62,7 @@ const primitiveTokenPatterns = [
   /^--n-space-/,
   /^--n-radius-(?:none|xs|sm|md|lg|xl|2xl|full)$/,
   /^--n-border-width-/,
-  /^--n-shadow-(?:none|xs|sm|md)$/,
+  /^--n-shadow-(?:none|xs|sm|md|overlay)$/,
   /^--n-size-(?:control|textarea|tooltip|select|empty-state|toast-stack)-/,
   /^--n-icon-size-/,
   /^--n-opacity-/,

@@ -11,7 +11,7 @@ export const metadata = createPageMetadata({
 
 const radiusTokens = [
   ["None", "--n-radius-none", "Square edges and opt-out cases.", "0"],
-  ["Extra small", "--n-radius-xs", "Checkboxes and semantic geometry exceptions.", "8px"],
+  ["Extra small", "--n-radius-xs", "Checkboxes and semantic geometry exceptions.", "4px"],
   ["Small", "--n-radius-sm", "Compact tags and small local details.", "12px"],
   ["Medium", "--n-radius-md", "Compact popup and item geometry.", "16px"],
   ["Large", "--n-radius-lg", "Control geometry.", "20px"],
