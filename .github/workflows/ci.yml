@@ -2,6 +2,7 @@ name: ci
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   push:
     branches:
       - main
@@ -82,6 +83,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
           path: |
-            test-results/visual
-            playwright-report/visual
+            test-results/visual/**/*-actual.png
+            test-results/visual/**/*-diff.png
+            test-results/visual/**/trace.zip
             tests/visual/__screenshots__

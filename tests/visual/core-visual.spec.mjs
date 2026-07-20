@@ -78,7 +78,10 @@ async function captureFixture(page, name) {
   await expect(page.locator("[data-visual-test-fixture]")).toHaveScreenshot(name);
 }
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
+  if (testInfo.title.includes("reduced-motion")) {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+  }
   await prepareFixture(page);
   await setAppearance(page);
 });
@@ -113,28 +116,35 @@ test("protects purple light comfortable mobile", async ({ page }) => {
 });
 
 test("protects reduced-motion overlay end states", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
   await showSections(page, categoryFixtures.overlays);
 
   await page.getByRole("button", { name: "Open dialog" }).click();
-  await expect(page.getByRole("dialog", { name: "Invite people" })).toBeVisible();
+  const dialog = page.getByRole("dialog", { name: "Invite people" });
+  await expect(dialog).toBeVisible();
   await expect(page).toHaveScreenshot("overlay-dialog-reduced-motion.png");
   await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
 
   await page.getByRole("button", { name: "right · md" }).click();
-  await expect(page.getByRole("dialog", { name: "right sheet" })).toBeVisible();
+  const sheet = page.getByRole("dialog", { name: "right sheet" });
+  await expect(sheet).toBeVisible();
   await expect(page).toHaveScreenshot("overlay-sheet-reduced-motion.png");
   await page.keyboard.press("Escape");
+  await expect(sheet).toBeHidden();
 
   await page.getByRole("button", { name: "With heading" }).click();
-  await expect(page.getByRole("dialog", { name: "Quick filters" })).toBeVisible();
+  const popover = page.getByRole("dialog", { name: "Quick filters" });
+  await expect(popover).toBeVisible();
   await expect(page).toHaveScreenshot("overlay-popover-reduced-motion.png");
   await page.keyboard.press("Escape");
+  await expect(popover).toBeHidden();
 
   await page.getByRole("button", { name: "Actions", exact: true }).click();
-  await expect(page.getByRole("menu")).toBeVisible();
+  const menu = page.getByRole("menu");
+  await expect(menu).toBeVisible();
   await expect(page).toHaveScreenshot("overlay-dropdown-reduced-motion.png");
   await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
 
   await page.getByRole("button", { name: "Copy link" }).hover();
   await expect(page.getByRole("tooltip", { name: "Copies the current URL" })).toBeVisible();
