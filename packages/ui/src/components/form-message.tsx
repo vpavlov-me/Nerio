@@ -19,7 +19,7 @@ export const FormMessage = React.forwardRef<HTMLParagraphElement, FormMessagePro
       <p
         ref={ref}
         className={cn(
-          "n-form-message m-0 text-(length:--n-font-size-sm)",
+          "n-form-message m-0 text-(length:--n-helper-font-size) leading-(--n-line-height-normal)",
           messageToneClasses[tone],
           className,
         )}

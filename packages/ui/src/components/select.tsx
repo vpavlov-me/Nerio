@@ -4,6 +4,7 @@ import * as React from "react";
 import { Select as BaseSelect } from "@base-ui/react/select";
 import { Check, ChevronDown } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
+import { motionClasses } from "../lib/motion";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { FormMessage } from "./form-message";
 import { Icon } from "./icon";
@@ -79,7 +80,7 @@ const selectItemClasses =
   "n-select-item grid min-h-(--n-size-control-sm) cursor-pointer grid-cols-[minmax(0,1fr)_var(--n-icon-size-md)] items-center gap-(--n-select-item-gap) rounded-(--n-radius-md) px-(--n-select-item-padding-inline) py-(--n-space-2) text-(--n-color-text-secondary) [&:not([data-disabled]):hover]:bg-(--n-color-surface-muted) [&:not([data-disabled]):hover]:text-(--n-color-text-primary) [&:not([data-disabled])[data-highlighted]]:bg-(--n-color-surface-muted) [&:not([data-disabled])[data-highlighted]]:text-(--n-color-text-primary) data-selected:bg-(--n-color-surface-selected) data-selected:text-(--n-color-text-primary) data-selected:data-highlighted:bg-(--n-color-surface-control-active) data-disabled:cursor-not-allowed data-disabled:text-(--n-color-text-disabled) data-disabled:opacity-(--n-opacity-disabled)";
 
 const selectTriggerClasses =
-  "n-select-trigger inline-flex min-h-(--n-select-height-md) w-full cursor-pointer items-center justify-between gap-(--n-select-trigger-gap) rounded-(--n-input-radius) border-(length:--n-input-border-width) border-(--n-input-border) bg-(--n-input-background) px-(--n-select-padding-inline) text-start text-(length:--n-input-font-size) font-(--n-input-font-weight) text-(--n-input-foreground) transition-[background-color,border-color,color] duration-(--n-overlay-duration) ease-(--n-overlay-easing) data-[size=sm]:min-h-(--n-select-height-sm) data-[size=lg]:min-h-(--n-select-height-lg) [&:hover:not(:disabled):not([data-disabled]):not([data-readonly])]:border-(--n-input-border-hover) [&:hover:not(:disabled):not([data-disabled]):not([data-readonly])]:bg-(--n-input-background-hover) [&:active:not(:disabled):not([data-disabled]):not([data-readonly])]:bg-(--n-color-surface-control-active) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-invalid:border-(--n-input-border-danger) aria-invalid:border-(--n-input-border-danger) data-placeholder:text-(--n-input-placeholder) disabled:cursor-not-allowed disabled:bg-(--n-input-disabled-background) disabled:text-(--n-input-disabled-foreground) disabled:opacity-(--n-input-disabled-opacity) data-disabled:cursor-not-allowed data-disabled:bg-(--n-input-disabled-background) data-disabled:text-(--n-input-disabled-foreground) data-disabled:opacity-(--n-input-disabled-opacity) data-readonly:cursor-default data-readonly:border-(--n-input-readonly-border) data-readonly:bg-(--n-input-readonly-background) data-popup-open:[&>[data-slot=icon]]:rotate-180 motion-reduce:duration-[1ms]";
+  "n-select-trigger inline-flex min-h-(--n-select-height-md) w-full cursor-pointer items-center justify-between gap-(--n-select-trigger-gap) rounded-(--n-input-radius) border-(length:--n-input-border-width) border-(--n-input-border) bg-(--n-input-background) px-(--n-select-padding-inline) text-start text-(length:--n-input-font-size) font-(--n-input-font-weight) text-(--n-input-foreground) data-[size=sm]:min-h-(--n-select-height-sm) data-[size=lg]:min-h-(--n-select-height-lg) [&:hover:not(:disabled):not([data-disabled]):not([data-readonly])]:border-(--n-input-border-hover) [&:hover:not(:disabled):not([data-disabled]):not([data-readonly])]:bg-(--n-input-background-hover) [&:active:not(:disabled):not([data-disabled]):not([data-readonly])]:bg-(--n-color-surface-control-active) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-invalid:border-(--n-input-border-danger) aria-invalid:border-(--n-input-border-danger) data-placeholder:text-(--n-input-placeholder) disabled:cursor-not-allowed disabled:bg-(--n-input-disabled-background) disabled:text-(--n-input-disabled-foreground) disabled:opacity-(--n-input-disabled-opacity) data-disabled:cursor-not-allowed data-disabled:bg-(--n-input-disabled-background) data-disabled:text-(--n-input-disabled-foreground) data-disabled:opacity-(--n-input-disabled-opacity) data-readonly:cursor-default data-readonly:border-(--n-input-readonly-border) data-readonly:bg-(--n-input-readonly-background) data-popup-open:[&>[data-slot=icon]]:rotate-180";
 
 export const SelectItem = React.forwardRef<HTMLElement, SelectItemProps>(function SelectItem(
   { children, className, description, disabled, textValue, value, ...props },
@@ -271,7 +272,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
         </BaseSelect.Label>
         <BaseSelect.Trigger
           ref={triggerRef}
-          className={selectTriggerClasses}
+          className={cn(selectTriggerClasses, motionClasses.control)}
           aria-describedby={describedBy}
           aria-invalid={isInvalid ? true : ariaInvalid}
           {...(ariaLabel ? { "aria-label": ariaLabel } : undefined)}
@@ -303,7 +304,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
             sideOffset={4}
           >
             <BaseSelect.Popup
-              className="n-select-popup max-h-(--available-height) w-[max(var(--anchor-width),var(--n-size-select-min))] min-w-[min(var(--anchor-width),var(--available-width))] max-w-(--available-width) origin-(--transform-origin) overflow-hidden rounded-(--n-radius-lg) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-1) shadow-(--n-overlay-shadow) data-open:[animation:n-select-popup-in_var(--n-overlay-duration)_var(--n-overlay-easing)] data-closed:[animation:n-select-popup-out_var(--n-overlay-duration)_var(--n-overlay-easing)] motion-reduce:data-open:[animation-duration:1ms] motion-reduce:data-closed:[animation-duration:1ms]"
+              className="n-select-popup max-h-(--available-height) w-[max(var(--anchor-width),var(--n-size-select-min))] min-w-[min(var(--anchor-width),var(--available-width))] max-w-(--available-width) origin-(--transform-origin) overflow-hidden rounded-(--n-select-popup-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-1) shadow-(--n-overlay-shadow) data-open:[animation:n-select-popup-in_var(--n-overlay-duration)_var(--n-overlay-easing)] data-closed:[animation:n-select-popup-out_var(--n-overlay-duration)_var(--n-overlay-easing)] motion-reduce:data-open:[animation-duration:1ms] motion-reduce:data-closed:[animation-duration:1ms]"
               data-slot="content"
             >
               <BaseSelect.ScrollUpArrow

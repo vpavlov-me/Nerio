@@ -536,6 +536,9 @@ describe("Core static contracts", () => {
       expect(group.querySelectorAll(`[data-variant="${variant}"]`)).toHaveLength(2);
     }
     const composedGroup = screen.getByRole("group", { name: "Composed actions" });
+    expect(screen.getByRole("button", { name: "outline one" })).toHaveClass(
+      "shadow-(--n-button-shadow-outline)",
+    );
     expect(composedGroup.querySelector('[data-slot="button-badge"]')).toHaveTextContent("3");
     expect(composedGroup.querySelector('[data-slot="button-kbd"]')).toHaveTextContent("⌘K");
     expect(screen.getByRole("button", { name: "More composed actions" })).toHaveAttribute(
@@ -1435,6 +1438,46 @@ describe("Core static contracts", () => {
     expect(disabled).toBeDisabled();
   });
 
+  it("keeps form-family hover and focus motion composable across control types", () => {
+    render(
+      <>
+        <Input aria-label="Project name" />
+        <InputGroup>
+          <Input aria-label="Workspace URL" />
+        </InputGroup>
+        <Textarea aria-label="Project notes" />
+        <Checkbox aria-label="Select analytics" />
+        <RadioGroup label="Visibility">
+          <RadioGroupItem value="team">Team</RadioGroupItem>
+        </RadioGroup>
+        <Switch aria-label="Enable notifications" />
+        <Select label="Status" options={[{ label: "Draft", value: "draft" }]} />
+      </>,
+    );
+
+    const controls = [
+      screen.getByRole("textbox", { name: "Project name" }),
+      document.querySelector(".n-input-group"),
+      screen.getByRole("textbox", { name: "Project notes" }),
+      screen.getByRole("checkbox", { name: "Select analytics" }),
+      screen.getByRole("radio", { name: "Team" }),
+      screen.getByRole("switch", { name: "Enable notifications" }),
+      screen.getByRole("combobox", { name: "Status" }),
+    ];
+
+    controls.forEach((control) => {
+      expect(control).not.toBeNull();
+      expect(control).toHaveClass(
+        "transition-[background-color,border-color,color,opacity,box-shadow,outline-color]",
+      );
+      expect(control).toHaveClass("duration-(--n-motion-hover-duration)");
+      expect(control).toHaveClass("focus-visible:duration-(--n-motion-focus-duration)");
+    });
+
+    const selectSource = readFileSync(resolve(process.cwd(), "src/components/select.tsx"), "utf8");
+    expect(selectSource).toContain("rounded-(--n-select-popup-radius)");
+  });
+
   it("composes label requirements and hint context without nesting a control inside the label", async () => {
     const user = userEvent.setup();
     render(
@@ -1933,6 +1976,17 @@ describe("Core interactive action contracts", () => {
     const iconButton = screen.getByRole("button", { name: "Open notifications" });
     expect(iconButton).toHaveAttribute("data-icon-only", "true");
     expect(iconButton.querySelector("[data-slot=button-label]")).not.toBeInTheDocument();
+    expect(iconButton).toHaveClass(
+      "transition-[background-color,border-color,color,opacity,scale,box-shadow,outline-color,text-decoration-color]",
+    );
+    expect(iconButton).toHaveClass("duration-(--n-motion-hover-duration)");
+    expect(iconButton).toHaveClass(
+      "[&:active:not(:disabled):not([data-disabled])]:duration-(--n-motion-press-duration)",
+    );
+    expect(iconButton).toHaveClass(
+      "[&:active:not(:disabled):not([data-disabled])]:ease-(--n-motion-press-easing)",
+    );
+    expect(iconButton).toHaveClass("focus-visible:duration-(--n-motion-focus-duration)");
   });
 
   it("renders the link Button variant as a native anchor without a separate Link component", () => {
@@ -1951,6 +2005,11 @@ describe("Core interactive action contracts", () => {
     expect(link).toHaveAttribute("href", "/docs");
     expect(link).toHaveAttribute("data-variant", "link");
     expect(link).toHaveClass("n-button");
+    expect(link).toHaveClass("underline");
+    expect(link).toHaveClass("decoration-transparent");
+    expect(link).toHaveClass("decoration-(length:--n-link-underline-thickness)");
+    expect(link).toHaveClass("[&:hover:not(:disabled):not([data-disabled])]:decoration-current");
+    expect(link).toHaveClass("focus-visible:decoration-current");
     expect(link.querySelector("[data-slot=button-icon] .n-icon")).toHaveAttribute(
       "aria-hidden",
       "true",
@@ -2190,9 +2249,9 @@ describe("Core interactive action contracts", () => {
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
   });
 
-  it("shows an optional tooltip for an icon-only Button", async () => {
+  it("shows the accessible name as the default tooltip for an icon-only Button", async () => {
     const user = userEvent.setup();
-    render(<Button icon={Bell} aria-label="Open notifications" tooltip="Open notifications" />);
+    render(<Button icon={Bell} aria-label="Open notifications" />);
 
     await user.hover(screen.getByRole("button", { name: "Open notifications" }));
     expect(await screen.findByRole("tooltip")).toHaveTextContent("Open notifications");

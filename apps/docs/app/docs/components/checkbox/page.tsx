@@ -1,5 +1,13 @@
 import { Check, X } from "@nerio-ui/adapters/icons";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  FormGroup,
+  Icon,
+} from "@nerio-ui/ui";
 import { Checkbox } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
@@ -9,11 +17,11 @@ import { createPageMetadata } from "../../../../lib/seo";
 export const metadata = createPageMetadata({
   title: "Checkbox component",
   description:
-    "Checkboxes toggle independent options with checked, indeterminate, disabled, read-only, and descriptive label states.",
+    "Checkboxes select zero or more options in a group with checked, indeterminate, disabled, read-only, and descriptive label states.",
   path: "/docs/components/checkbox",
 });
 
-const variantRows = [["Default", "Independent binary option."]] as const;
+const variantRows = [["Default", "One option in a visible multi-selection group."]] as const;
 
 const anatomyRows = [
   ["field", "Optional wrapper that groups a Checkbox with its label and description."],
@@ -76,7 +84,7 @@ function CheckboxPreview() {
   return (
     <section id="preview" className="component-example" aria-label="Checkbox preview">
       <div className="component-example__preview">
-        <div className="form-preview-stack">
+        <FormGroup title="Visible collections">
           <Checkbox
             defaultChecked
             description="Archived collections remain visible in search results."
@@ -88,12 +96,12 @@ function CheckboxPreview() {
             label="Some collections are archived"
           />
           <Checkbox disabled label="Archived collections are unavailable" />
-        </div>
+        </FormGroup>
       </div>
       <CodeExample
         className="component-example__code"
         code={
-          'import { Checkbox } from "@nerio-ui/ui/client";\n\n<Checkbox\n  defaultChecked\n  label="Include archived collections"\n  description="Archived collections remain visible in search results."\n/>'
+          'import { FormGroup } from "@nerio-ui/ui";\nimport { Checkbox } from "@nerio-ui/ui/client";\n\n<FormGroup title="Visible collections">\n  <Checkbox defaultChecked label="Active collections" />\n  <Checkbox label="Archived collections" />\n</FormGroup>'
         }
         label="Checkbox live preview code"
       />
@@ -105,7 +113,7 @@ export default function Page() {
   return (
     <StandardDocPage
       title="Checkbox"
-      lede="Checkboxes toggle independent options and support checked, unchecked, indeterminate, invalid, disabled, and read-only states."
+      lede="Checkboxes select zero or more options in a visible group and support checked, unchecked, indeterminate, invalid, disabled, and read-only states."
       kind="checkbox"
       preview={<CheckboxPreview />}
       sectionContent={{
@@ -134,7 +142,8 @@ export default function Page() {
                 <CardTitle>Do</CardTitle>
               </CardHeader>
               <CardContent>
-                Use Checkbox for independent choices, agreement controls, and multi-select filters.
+                Use Checkbox for grouped multi-selection such as filters, permissions, or visible
+                option lists.
               </CardContent>
             </Card>
             <Card>
@@ -143,8 +152,8 @@ export default function Page() {
                 <CardTitle>Do not</CardTitle>
               </CardHeader>
               <CardContent>
-                Use Checkbox for mutually exclusive options or immediate on/off settings; use
-                RadioGroup or Switch instead.
+                Use Checkbox for a standalone yes/no value or mutually exclusive options; use Switch
+                or RadioGroup instead.
               </CardContent>
             </Card>
           </div>

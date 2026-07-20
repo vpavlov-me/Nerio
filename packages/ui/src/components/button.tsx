@@ -34,13 +34,14 @@ const buttonVariantClasses: Record<CanonicalButtonVariant, string> = {
   primary:
     "bg-(--n-button-background-primary) text-(--n-button-foreground-primary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-primary-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-primary-active)",
   secondary:
-    "bg-(--n-button-background-secondary) border-(--n-button-border-secondary) text-(--n-button-foreground-secondary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-secondary-hover)",
+    "bg-(--n-button-background-secondary) border-(--n-button-border-secondary) text-(--n-button-foreground-secondary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-secondary-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-secondary-active)",
   outline:
-    "bg-(--n-button-background-outline) border-(--n-button-border-outline) text-(--n-button-foreground-outline) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-outline-hover)",
+    "bg-(--n-button-background-outline) border-(--n-button-border-outline) text-(--n-button-foreground-outline) shadow-(--n-button-shadow-outline) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-outline-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-outline-active)",
   ghost:
-    "bg-(--n-button-background-ghost) border-(--n-button-border-ghost) text-(--n-button-foreground-ghost) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-ghost-hover) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-color-text-primary)",
-  link: "h-auto bg-transparent border-transparent px-(--n-space-0) text-(--n-link-color) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-link-color-hover)",
-  danger: "bg-(--n-button-background-destructive) text-(--n-button-foreground-destructive)",
+    "bg-(--n-button-background-ghost) border-(--n-button-border-ghost) text-(--n-button-foreground-ghost) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-ghost-hover) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-color-text-primary) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-ghost-active)",
+  link: "h-auto bg-transparent border-transparent px-(--n-space-0) text-(--n-link-color) underline decoration-transparent decoration-(length:--n-link-underline-thickness) underline-offset-(--n-link-underline-offset) [&:hover:not(:disabled):not([data-disabled])]:text-(--n-link-color-hover) [&:hover:not(:disabled):not([data-disabled])]:decoration-current focus-visible:decoration-current",
+  danger:
+    "bg-(--n-button-background-destructive) text-(--n-button-foreground-destructive) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-destructive-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-destructive-active)",
 };
 
 const buttonSizeClasses: Record<ButtonSize, string> = {
@@ -162,9 +163,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     iconOnly &&
       size === "lg" &&
       "w-(--n-icon-button-size-lg) [&_.n-icon]:size-(--n-icon-button-icon-size-lg)",
-    motionClasses.hover,
-    motionClasses.press,
-    motionClasses.focus,
+    motionClasses.interactive,
     className,
   );
   const keyboardShortcut =
@@ -286,8 +285,10 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     </BaseButton>
   );
 
-  return tooltip ? (
-    <Tooltip delay={iconOnly ? 0 : undefined} label={tooltip}>
+  const tooltipLabel = tooltip ?? (iconOnly ? props["aria-label"] : undefined);
+
+  return tooltipLabel ? (
+    <Tooltip delay={iconOnly ? 0 : undefined} label={tooltipLabel}>
       {content}
     </Tooltip>
   ) : (

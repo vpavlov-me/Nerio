@@ -397,7 +397,7 @@ const variantDescriptions: Record<string, string> = {
   secondary: "Supporting action with a visible control boundary.",
   ghost: "Low-emphasis action for dense or repeated surfaces.",
   destructive: "Risky action that needs explicit intent.",
-  link: "Text-level navigation without control padding or underlines.",
+  link: "Text-level navigation without control padding; underlined on hover and focus-visible.",
   neutral: "Low-emphasis status or message.",
   success: "Positive completion or validation state.",
   warning: "Warning state that needs attention without blocking the whole flow.",
@@ -1427,7 +1427,7 @@ export const componentReference: Record<string, ComponentReference> = {
   checkbox: {
     category: "Forms",
     purpose:
-      "Use Checkbox for independent selection, consent, multi-select sets, and aggregate indeterminate state.",
+      "Use Checkbox for grouped multi-selection and aggregate indeterminate state; use Switch for standalone boolean values.",
     anatomy: [
       {
         title: "field",
@@ -1481,7 +1481,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "className", description: "Extends the root control." },
     ],
     guidance: {
-      do: ["Use for independent choices, agreement controls, and multi-select filters."],
+      do: ["Use for grouped filters, permissions, and other visible multi-select option sets."],
       dont: [
         "Do not use Checkbox for mutually exclusive options or immediate on/off settings; use RadioGroup or Switch instead.",
       ],
@@ -1605,7 +1605,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Switch is interactive and imports from @nerio-ui/ui/client.",
-      "Use for immediate binary settings; use Checkbox for independent options that are submitted as part of a form.",
+      "Use for immediate binary or yes/no values; use Checkbox for grouped multi-selection.",
       "Use a visible label, aria-label, or aria-labelledby so the setting has an accessible name.",
       "Base UI owns keyboard and checked-state behavior.",
       "Space toggles the focused switch; visible labels must stay stable between on and off states.",

@@ -381,6 +381,7 @@
   --n-button-foreground-secondary: var(--n-color-text-primary);
   --n-button-background-outline: transparent;
   --n-button-background-outline-hover: var(--n-color-action-secondary-hover);
+  --n-button-background-outline-active: var(--n-color-surface-control-active);
   --n-button-border-outline: var(--n-color-border-default);
   --n-button-foreground-outline: var(--n-color-text-primary);
   --n-button-shadow-outline: var(--n-shadow-xs);
@@ -389,10 +390,13 @@
   --n-button-kbd-foreground: currentColor;
   --n-button-kbd-opacity: 0.78;
   --n-button-background-ghost-hover: var(--n-color-surface-subtle);
+  --n-button-background-ghost-active: var(--n-color-surface-control-active);
   --n-button-background-ghost: transparent;
   --n-button-border-ghost: transparent;
   --n-button-foreground-ghost: var(--n-color-text-secondary);
   --n-button-background-destructive: var(--n-color-danger);
+  --n-button-background-destructive-hover: var(--n-color-status-danger-strong);
+  --n-button-background-destructive-active: var(--n-color-status-danger-strong);
   --n-button-foreground-destructive: var(--n-color-text-on-danger);
   --n-icon-button-size-sm: var(--n-button-height-sm);
   --n-icon-button-size-md: var(--n-button-height-md);
@@ -562,7 +566,7 @@
   --n-select-item-padding-inline: var(--n-density-space-md);
   --n-select-group-label-padding-inline: var(--n-density-space-md);
   --n-select-empty-padding: var(--n-density-space-md);
-  --n-select-popup-radius: var(--n-radius-lg);
+  --n-select-popup-radius: var(--n-radius-md);
   --n-textarea-min-height: var(--n-size-textarea-min);
   --n-textarea-padding-block: var(--n-space-2);
   --n-textarea-padding-inline: var(--n-density-space-md);
@@ -588,8 +592,10 @@
   --n-switch-background-hover: var(--n-color-surface-control-hover);
   --n-switch-background-checked: var(--n-color-action-primary);
   --n-switch-background-checked-hover: var(--n-color-action-primary-hover);
+  --n-switch-background-checked-active: var(--n-color-action-primary-active);
   --n-switch-border: var(--n-color-border-subtle);
   --n-switch-border-hover: var(--n-color-border-interactive);
+  --n-switch-border-invalid: var(--n-input-border-danger);
   --n-switch-thumb-background: var(--n-color-surface);
   --n-switch-thumb-background-checked: var(--n-color-action-on-primary);
   --n-switch-thumb-border: var(--n-color-border-subtle);
