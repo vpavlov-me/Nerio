@@ -101,6 +101,36 @@ test("token validator requires the approved visual foundation aliases", () => {
   );
 });
 
+test("token validator protects staged overlay and Checkbox compatibility aliases", () => {
+  withTokenFixture(
+    (source) =>
+      source
+        .replace("--n-checkbox-radius: var(--n-radius-xs);", "--n-checkbox-radius: 0.25rem;")
+        .replace(
+          "--n-overlay-background: var(--n-color-surface-raised);",
+          "--n-overlay-background: var(--n-color-surface-overlay);",
+        )
+        .replace(
+          "--n-overlay-foreground: var(--n-color-text-secondary);",
+          "--n-overlay-foreground: var(--n-color-text-primary);",
+        ),
+    (stderr) => {
+      assert.match(
+        stderr,
+        /Compatibility alias --n-checkbox-radius must resolve to var\(--n-radius-xs\) before #139/,
+      );
+      assert.match(
+        stderr,
+        /Compatibility alias --n-overlay-background must resolve to var\(--n-color-surface-raised\) before #139/,
+      );
+      assert.match(
+        stderr,
+        /Compatibility alias --n-overlay-foreground must resolve to var\(--n-color-text-secondary\) before #139/,
+      );
+    },
+  );
+});
+
 test("token validator calculates load-bearing semantic contrast", () => {
   withTokenFixture(
     (source) =>

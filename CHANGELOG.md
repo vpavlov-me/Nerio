@@ -11,6 +11,8 @@ Items under `Unreleased` may change before the next public release.
 - Implemented the approved Nerio 1.0 visual foundation with cool alpha-neutral layers, pure
   white/black foundations, role-based soft geometry, calm shared motion, inverted overlay-glass
   aliases, calculated contrast validation, and a public visual-language reference.
+- Staged the inverted-glass aliases separately so existing overlay recipes retain readable neutral
+  foreground/background pairs until their category migration.
 - Added a localizable `Dialog.closeLabel` while preserving the existing "Close dialog" default.
 
 ### Fixed

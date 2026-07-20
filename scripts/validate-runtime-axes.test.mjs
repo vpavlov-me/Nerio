@@ -160,6 +160,16 @@ test("runtime-axis validator treats alpha neutrals as immutable primitives", () 
   });
 });
 
+test("runtime-axis validator treats overlay elevation as an immutable primitive", () => {
+  const source = readFileSync(tokenSource, "utf8").replace(
+    ':root[data-density="compact"] {',
+    ':root[data-density="compact"] {\n  --n-shadow-overlay: none;',
+  );
+  withFixture("--token-file", "styles.css", source, (stderr) => {
+    assert.match(stderr, /redefines primitive token --n-shadow-overlay/);
+  });
+});
+
 test("runtime-axis validator recognizes whitespace-padded runtime selectors", () => {
   withFixture(
     "--token-file",
