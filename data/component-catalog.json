@@ -322,7 +322,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "forms",
       "status": "stable-core",
-      "description": "Client-only Base UI checkbox for independent options with checked, indeterminate, invalid, disabled, read-only, form metadata, and optional label and description support."
+      "description": "Client-only Base UI checkbox for grouped multi-selection with checked, indeterminate, invalid, disabled, read-only, form metadata, and optional label and description support."
     },
     {
       "name": "Radio Group",

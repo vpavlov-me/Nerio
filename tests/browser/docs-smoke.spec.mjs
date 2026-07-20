@@ -164,6 +164,7 @@ test("keeps Actions and Forms Tailwind recipes active across public docs", async
         display: style.display,
         fontFamily: style.fontFamily,
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        transitionDuration: style.transitionDuration,
       };
     });
     expect(expectedDisplays, `${route} display`).toContain(snapshot.display);
@@ -172,13 +173,23 @@ test("keeps Actions and Forms Tailwind recipes active across public docs", async
     if (["checkbox", "radio-group", "switch", "select"].includes(route)) {
       expect(snapshot.borderStyle, `${route} border`).toBe("solid");
     }
+    if (["input-group", "checkbox", "radio-group", "switch", "select"].includes(route)) {
+      expect(snapshot.transitionDuration, `${route} transition`).toBe("0.22s");
+    }
+    if (route === "checkbox") {
+      await expect(component).toHaveCSS("border-radius", "4px");
+    }
   }
+
+  await page.goto("/docs/components/select");
+  await page.getByRole("combobox", { name: "Status" }).click();
+  await expect(page.locator(".n-select-popup")).toHaveCSS("border-radius", "16px");
 
   await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
   await page.goto("/docs/components/checkbox");
-  await expect(page.locator(".n-checkbox").first()).toHaveCSS("transition-duration", "0s");
+  await expect(page.locator(".n-checkbox").first()).toHaveCSS("transition-duration", "0.001s");
   await page.goto("/docs/components/switch");
-  await expect(page.locator(".n-switch").first()).toHaveCSS("transition-duration", "0s");
+  await expect(page.locator(".n-switch").first()).toHaveCSS("transition-duration", "0.001s");
 
   await expectHealthyPage(page, problems);
 });

@@ -235,12 +235,15 @@
         "--n-button-foreground-primary",
         "--n-button-background-secondary",
         "--n-button-background-secondary-hover",
+        "--n-button-background-secondary-active",
         "--n-button-border-secondary",
         "--n-button-foreground-secondary",
         "--n-button-background-outline",
         "--n-button-background-outline-hover",
+        "--n-button-background-outline-active",
         "--n-button-border-outline",
         "--n-button-foreground-outline",
+        "--n-button-shadow-outline",
         "--n-button-kbd-background",
         "--n-button-kbd-border-color",
         "--n-button-kbd-foreground",
@@ -253,10 +256,13 @@
         "--n-badge-gap-sm",
         "--n-badge-icon-size-sm",
         "--n-button-background-ghost-hover",
+        "--n-button-background-ghost-active",
         "--n-button-foreground-ghost",
         "--n-link-color",
         "--n-link-color-hover",
         "--n-button-background-destructive",
+        "--n-button-background-destructive-hover",
+        "--n-button-background-destructive-active",
         "--n-button-foreground-destructive",
         "--n-icon-button-size-sm",
         "--n-icon-button-size-md",
@@ -269,13 +275,13 @@
       ],
       "accessibility": [
         "Uses the Base UI Button primitive and renders a native button by default.",
-        "For navigation, set nativeButton={false} and render Button as a native anchor with variant link; it has no control padding or underline.",
+        "For navigation, set nativeButton={false} and render Button as a native anchor with variant link; it has no control padding and underlines on hover or focus-visible.",
         "Custom render elements receive Button-owned content, state hooks, caller props, event handlers, classes, and refs without losing their chosen native semantics; function renders retain the Base UI button interaction contract.",
         "Provide concise visible text or an accessible name.",
         "Loading preserves the action name, disables repeat activation, and exposes aria-busy; loadingLabel is deprecated.",
         "Disabled and loading states prevent repeat activation.",
         "Icons render through the Nerio icon adapter and remain decorative by default.",
-        "For an icon-only Button, provide icon and an aria-label; tooltip can add supplementary help but does not replace the action name.",
+        "For an icon-only Button, provide icon and an aria-label; Button uses that accessible name as the Tooltip label unless an explicit tooltip is provided.",
         "Shortcut display is supplemental; add aria-keyshortcuts yourself when a keyboard shortcut is functional.",
         "Badge content remains part of the Button accessible name; use a concise count or status that refines the action.",
         "Deprecated subtle and destructive variants normalize to secondary and danger; use the canonical variants in new code.",
@@ -1273,6 +1279,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
           "role": "component"
@@ -1339,6 +1350,7 @@
         "--n-select-item-padding-inline",
         "--n-select-group-label-padding-inline",
         "--n-select-empty-padding",
+        "--n-select-popup-radius",
         "--n-input-radius",
         "--n-input-background",
         "--n-input-border",
@@ -1379,6 +1391,11 @@
           "source": "../../ui/src/components/radio-group.tsx",
           "target": "components/radio-group.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
@@ -1532,6 +1549,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
           "role": "utility"
@@ -1588,6 +1610,11 @@
           "source": "../../ui/src/components/textarea.tsx",
           "target": "components/textarea.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
@@ -1656,6 +1683,11 @@
           "source": "../../ui/src/components/label-hint.tsx",
           "target": "components/label-hint.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
@@ -1869,7 +1901,7 @@
     {
       "name": "checkbox",
       "title": "Checkbox",
-      "description": "Toggles an independent form option.",
+      "description": "Selects one option within a grouped multi-selection control.",
       "category": "forms",
       "dependencies": [
         "@base-ui/react",
@@ -1885,6 +1917,11 @@
           "source": "../../ui/src/components/checkbox.tsx",
           "target": "components/checkbox.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
@@ -1923,8 +1960,8 @@
       "requiredTokens": [
         "--n-checkbox-size",
         "--n-checkbox-radius",
-        "--n-color-surface",
-        "--n-color-border-strong",
+        "--n-color-border-subtle",
+        "--n-color-border-default",
         "--n-color-action-primary",
         "--n-color-action-on-primary",
         "--n-input-border-danger",
@@ -1932,6 +1969,7 @@
       ],
       "accessibility": [
         "Uses the Base UI Checkbox primitive for keyboard and checked-state behavior.",
+        "Use Checkbox only for grouped multi-selection; use Switch for standalone boolean values and RadioGroup for mutually exclusive choices.",
         "Provide a visible label or accessible name with aria-label or aria-labelledby; label automatically connects the visible name.",
         "Description automatically connects supporting text with aria-describedby, while explicit aria-describedby values are preserved.",
         "Supports checked, defaultChecked, onCheckedChange, disabled, required, name, value, form, id, and aria-describedby through the Base UI root props.",
@@ -1939,7 +1977,7 @@
         "Disabled state prevents interaction and reduces emphasis.",
         "The Check and Minus indicators render through the Nerio icon adapter, including aria-checked=mixed for indeterminate state."
       ],
-      "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<Checkbox name=\"includeArchived\" defaultChecked label=\"Include archived collections\" description=\"Archived collections remain visible in search results.\" />"
+      "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<fieldset><legend>Visible collections</legend><Checkbox name=\"collections\" value=\"active\" defaultChecked label=\"Active collections\" /><Checkbox name=\"collections\" value=\"archived\" label=\"Archived collections\" /></fieldset>"
     },
     {
       "name": "switch",
@@ -1953,6 +1991,11 @@
           "source": "../../ui/src/components/switch.tsx",
           "target": "components/switch.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
@@ -1992,8 +2035,11 @@
         "--n-switch-background",
         "--n-switch-background-hover",
         "--n-switch-background-checked",
+        "--n-switch-background-checked-hover",
+        "--n-switch-background-checked-active",
         "--n-switch-border",
         "--n-switch-border-hover",
+        "--n-switch-border-invalid",
         "--n-switch-thumb-background",
         "--n-switch-thumb-background-checked",
         "--n-switch-thumb-border",

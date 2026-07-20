@@ -58,7 +58,10 @@ const variantRows = [
   ["secondary", "Support the primary action without competing with it."],
   ["outline", "Offer a bounded secondary action on a quiet surface."],
   ["ghost", "Keep repeated or low-emphasis actions visually calm."],
-  ["link", "Use for navigation with an anchor render target; it has no padding or underline."],
+  [
+    "link",
+    "Use for navigation with an anchor render target; it has no control padding and underlines on hover or focus-visible.",
+  ],
   ["danger", "Signal a destructive action that needs explicit intent."],
 ] as const;
 
@@ -100,7 +103,11 @@ const tokenRows = [
     "Supporting action treatment.",
   ],
   ["Ghost", "--n-button-background-ghost / hover / foreground", "Low-emphasis action treatment."],
-  ["Link", "--n-link-color / hover", "Text-level navigation with color-only interaction."],
+  [
+    "Link",
+    "--n-link-color / hover / underline-offset / underline-thickness",
+    "Text-level navigation with an underline on hover and focus-visible.",
+  ],
   [
     "Danger",
     "--n-button-background-destructive / foreground-destructive",
@@ -194,8 +201,9 @@ export default function Page() {
               Create project
             </Button>
             <p>
-              For an icon-only action, use <code>icon</code> and an <code>aria-label</code>; label,
-              kbd, and directional icon slots are intentionally omitted.
+              For an icon-only action, use <code>icon</code> and an <code>aria-label</code>. Button
+              uses that accessible name as the required Tooltip label unless an explicit tooltip is
+              provided; label, kbd, and directional icon slots are intentionally omitted.
             </p>
           </ButtonSectionPreview>
         ),

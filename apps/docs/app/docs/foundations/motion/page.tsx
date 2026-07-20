@@ -47,6 +47,18 @@ const semanticTokens = [
 
 const utilityRows: TokenRow[] = [
   [
+    "Interactive control",
+    "motionClasses.interactive",
+    "Static Tailwind recipe",
+    "Composable hover, press, and focus transitions for actions.",
+  ],
+  [
+    "Form control",
+    "motionClasses.control",
+    "Static Tailwind recipe",
+    "Composable hover and focus transitions without press scaling.",
+  ],
+  [
     "Hover",
     "motionClasses.hover",
     "Static Tailwind recipe",
@@ -91,9 +103,7 @@ const usage = `import { cn, motionClasses } from "@nerio-ui/ui";
   type="button"
   className={cn(
     "rounded-n-control border border-n-border bg-n-surface px-n-4 py-n-2 text-n-text focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)",
-    motionClasses.hover,
-    motionClasses.press,
-    motionClasses.focus,
+    motionClasses.interactive,
   )}
 >
   Save changes
