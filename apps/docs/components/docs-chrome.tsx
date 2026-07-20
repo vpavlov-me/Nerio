@@ -846,6 +846,15 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               Components
             </Link>
             <Link
+              href="/docs/blocks/login"
+              className={pathname.startsWith("/docs/blocks") ? "is-active" : undefined}
+            >
+              Blocks
+            </Link>
+            <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
+              Templates
+            </Link>
+            <Link
               href="/playground"
               className={isPlaygroundPage ? "is-active" : undefined}
               aria-current={isPlaygroundPage ? "page" : undefined}
