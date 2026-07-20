@@ -66,7 +66,7 @@ const tokenRows = [
   ],
   [
     "Surface",
-    "--n-alert-border-width / --n-alert-background / --n-alert-shadow",
+    "--n-alert-border-width / --n-alert-border / --n-alert-background / --n-alert-shadow",
     "Keeps persistent feedback flat, muted, and borderless by default.",
   ],
   [

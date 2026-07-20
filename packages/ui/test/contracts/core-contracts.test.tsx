@@ -825,6 +825,7 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("visual-toast")).toHaveClass(
       "[backdrop-filter:var(--n-overlay-surface-filter)]",
       "[--n-button-foreground-ghost:var(--n-toast-foreground-muted)]",
+      "[&_[data-slot=close]:hover:not(:disabled):not([data-disabled])]:text-(--n-toast-foreground)",
     );
     expect(screen.getByRole("heading", { name: "No projects" })).toHaveClass(
       "font-(--n-font-weight-medium)",

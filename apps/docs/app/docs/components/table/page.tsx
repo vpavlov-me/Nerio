@@ -520,7 +520,7 @@ export default function Page() {
               ],
               [
                 "Rows",
-                "--n-table-row-min-height, --n-table-row-background-hover, --n-table-row-background-selected, --n-table-row-selection-indicator",
+                "--n-table-row-min-height, --n-table-row-background-hover, --n-table-row-background-selected, --n-table-row-selection-indicator, --n-table-row-selection-indicator-width",
                 "Density, smooth interaction, and selected/current state cues.",
               ],
               [

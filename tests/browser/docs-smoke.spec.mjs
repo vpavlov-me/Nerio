@@ -236,8 +236,14 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   expect(await toast.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
     "blur(24px)",
   );
+  await page.getByRole("button", { name: "Stack notifications" }).click();
+  const toastClose = page.locator(".n-toast__close").first();
+  await expect(toastClose).toBeVisible();
+  await toastClose.hover();
+  await expect(toastClose).toHaveCSS("color", "rgb(255, 255, 255)");
   await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
   await expect(toast).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "light"));
 
   await page.goto("/docs/components/table");
   const tableContainer = page.locator(".n-table-container").first();
