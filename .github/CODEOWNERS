@@ -9,3 +9,8 @@
 /AGENTS.md @vpavlov-me
 /PROJECT.md @vpavlov-me
 /LICENSE @vpavlov-me
+
+# Visual baselines require explicit maintainer sign-off
+/playwright.visual.config.mjs @vpavlov-me
+/tests/visual/ @vpavlov-me
+/apps/docs/app/visual-test/ @vpavlov-me

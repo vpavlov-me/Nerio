@@ -14,6 +14,9 @@ Closes #
 
 Add screenshots, a recording, or a link to the relevant docs/demo route for visible changes.
 
+If expected screenshots change, keep them in a separate baseline-only commit and request the
+maintainer-owned `visual-baseline-approved` label after reviewing every diff.
+
 ## Release note
 
 - [ ] No user-facing change
@@ -42,6 +45,7 @@ Use "No user-facing change" for internal-only work.
 - [ ] Component/API work passes the responsibility and public API admission rules in `docs/core-ui-best-practices.md`, or this is not applicable.
 - [ ] Styling decisions are classified as system, family, or justified component exceptions, or this is not applicable.
 - [ ] Applicable state, accessibility, responsive/RTL/localization, motion, source-install, and documentation evidence is recorded.
+- [ ] Visual baseline changes, if any, are isolated and have explicit maintainer sign-off.
 - [ ] Docs, usage snippets, examples, and registry metadata are updated when the public API changes.
 - [ ] Public copy and documentation are in English.
 - [ ] I added a DCO sign-off to my commits (`git commit -s`).

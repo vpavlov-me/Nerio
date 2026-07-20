@@ -811,6 +811,10 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
   const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
+  if (pathname === "/visual-test") {
+    return <>{children}</>;
+  }
+
   return (
     <div className="docs-shell">
       <header className="docs-header">

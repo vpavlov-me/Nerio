@@ -252,6 +252,7 @@ function packageReadinessFailures() {
       "pnpm typecheck",
       "pnpm test:ui",
       "pnpm test:a11y",
+      "pnpm test:visual",
       "pnpm validate:docs",
       "pnpm validate:release",
       "pnpm test:cli",

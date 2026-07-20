@@ -296,7 +296,7 @@ implementation issues land.
 
 - A persistent visible form-label pattern that remains as visually quiet as a placeholder.
 - Figma library production.
-- Visual-regression baseline creation after implementation.
+- Additional visual-regression coverage beyond the focused Core matrix.
 - Pro components, templates, marketing identity, and product-specific compositions.
 
 ## Token implications
@@ -372,6 +372,10 @@ The approved direction feeds the current downstream work:
 - #139: Navigation, Layout, and Overlays;
 - #140: documentation and demo presentation;
 - #141: approved visual-regression baselines after implementation.
+
+The #141 baseline suite and approval workflow are documented in
+[`docs/visual-regression.md`](./visual-regression.md). The screenshot contract protects the approved
+rules while semantic, accessibility, and interaction assertions remain independent gates.
 
 The recurring inconsistency audit that supports these implications is recorded in
 [`docs/audits/visual-language-1-0.md`](./audits/visual-language-1-0.md).
