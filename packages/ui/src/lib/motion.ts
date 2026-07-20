@@ -6,7 +6,7 @@ export const motionClasses = {
   hover:
     "transition-[background-color,border-color,color,opacity] duration-(--n-motion-hover-duration) ease-(--n-motion-hover-easing) motion-reduce:duration-(--n-duration-instant)",
   press:
-    "transition-[background-color,border-color,color,opacity,scale] duration-(--n-motion-press-duration) ease-(--n-motion-hover-easing) [&:active:not(:disabled):not([data-disabled])]:scale-(--n-motion-scale-subtle) motion-reduce:duration-(--n-duration-instant) motion-reduce:[&:active:not(:disabled):not([data-disabled])]:scale-100",
+    "transition-[background-color,border-color,color,opacity,scale] duration-(--n-motion-press-duration) ease-(--n-motion-press-easing) [&:active:not(:disabled):not([data-disabled])]:scale-(--n-motion-scale-subtle) motion-reduce:duration-(--n-duration-instant) motion-reduce:[&:active:not(:disabled):not([data-disabled])]:scale-100",
   focus:
     "transition-[border-color,box-shadow,outline-color] duration-(--n-motion-focus-duration) ease-(--n-motion-focus-easing) motion-reduce:duration-(--n-duration-instant)",
   overlayEnter:

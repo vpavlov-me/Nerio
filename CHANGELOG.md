@@ -16,6 +16,9 @@ Items under `Unreleased` may change before the next public release.
   aliases, calculated contrast validation, and a public visual-language reference.
 - Staged the inverted-glass aliases separately so existing overlay recipes retain readable neutral
   foreground/background pairs until their category migration.
+- Applied the approved visual language to Data Display and Feedback: compact medium-weight
+  hierarchy, borderless Card and muted table grouping, fixed Avatar overlap colors, neutral
+  inline Alerts, inverted glass Toasts, deliberate status color, and tokenized interaction motion.
 - Added a localizable `Dialog.closeLabel` while preserving the existing "Close dialog" default.
 
 ### Fixed

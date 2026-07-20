@@ -2,15 +2,16 @@
 
 ## Scope and decision boundary
 
-This is the family evidence matrix for issue #160. It reviews the published Tailwind-first Data
+This is the family evidence matrix and Visual Language 1.0 application record for issue #138. It
+reviews the published Tailwind-first Data
 Display and Feedback inventory from `data/component-catalog.json`, including the shared Typography,
 Icon, and Kbd foundations used by those families. The review covers semantic responsibility,
 native or Base UI foundations, public API and anatomy, accessibility author responsibilities,
 Tailwind and token contracts, package and source-install entrypoints, Registry metadata, docs,
 CLI/MCP projections, fixtures, and contract/accessibility evidence.
 
-The review preserves the published visual language and component responsibilities. It does not add
-a Core component, runtime axis, product workflow, visual value, or breaking API migration. Counter
+The review preserves component responsibilities while applying the approved visual language. It
+does not add a Core component, runtime axis, product workflow, or breaking API migration. Counter
 and StatusDot are not present in the catalog at task start and are not added here. Compatibility
 cleanup such as the deprecated Badge `variant` alias remains owned by the final API-freeze work in
 #145.
@@ -46,24 +47,45 @@ cleanup such as the deprecated Badge `variant` alias remains owned by the final 
   job orchestration, and business outcomes remain outside Core.
 - Package and copied-source modes use the same complete static Tailwind recipes, Nerio variables,
   `tailwindCn`, Registry dependency graph, and server/client entrypoint split.
-- The corrections repair existing anatomy, naming, documentation, and metadata contracts. They add
-  no prop, variant, token, runtime axis, component, visual value, or intentional art-direction change.
+- The corrections keep existing anatomy, naming, documentation, and metadata contracts while
+  refining approved component aliases and static Tailwind recipes. They add no prop, variant,
+  runtime axis, component, or product behavior.
 - No new focused follow-up issue is required. Breaking compatibility cleanup remains deferred to
   the existing #145 API-freeze work.
+
+## Visual Language 1.0 application record
+
+- Information hierarchy uses compact 12–14px supporting text, medium rather than semibold display
+  weight, and larger size steps for headings and metric values.
+- Card remains a generic raised white or black surface with no default border and a very soft shadow;
+  the secondary surface remains flat and muted. Linked Cards, Lists, Items, and table rows use the
+  shared hover, press, focus, and reduced-motion timing tokens.
+- TableContainer groups data on a muted surface without an outer border. Hover and focus stay
+  neutral; selected and current rows add a logical-edge indicator so state is not color-only.
+- Avatar fallback fill and overlap border use fixed light/dark aliases, preventing translucent
+  seams when avatars overlap while preserving all image, fallback, and decorative behavior.
+- Alert is a flat muted inline surface. Status color is limited to its icon; title and description
+  remain neutral and continue to carry the complete message in text.
+- Toast is an inverted dark glass surface with blur, restrained semantic status icons, neutral
+  white copy, and glass-aware action controls in both light and dark modes.
+- Stat trends are neutral by default because Core cannot infer whether an arbitrary trend string is
+  positive or negative. Progress remains the only default accent-colored feedback track; Spinner,
+  Skeleton, and Empty State remain restrained and reduced-motion safe.
 
 ## Validation record
 
 All applicable gates passed on the issue branch:
 
 - `pnpm format:check`, `pnpm lint`, and `pnpm typecheck`;
-- `pnpm test:catalog` (14 tests), `pnpm validate:catalog` (95 catalog entries, 41 installable
-  identities, 95 matrix rows, 41 Registry items), `pnpm test:tokens` (41 tests),
-  `pnpm validate:tokens` (749 definitions, 209 resolved references, 6 theme scopes, 41 Registry
+- `pnpm test:catalog` (15 tests), `pnpm validate:catalog` (96 catalog entries, 42 installable
+  identities, 96 matrix rows, 42 Registry items), `pnpm test:tokens` (47 tests),
+  `pnpm validate:tokens` (818 definitions, 227 resolved references, 6 theme scopes, 42 Registry
   items), and `pnpm validate:runtime-axes` (6 themes, 3 modes, 2 densities);
-- `pnpm validate:docs` (41 components and 749 tokens) and `pnpm test:docs-examples`;
-- `pnpm test:ui` (141 tests) and `pnpm test:a11y` (18 tests);
-- `pnpm test:cli`, `pnpm test:mcp`, and `pnpm pack:check` (all 6 public packages);
+- `pnpm validate:docs` (42 components and 818 tokens) and `pnpm test:docs-examples`;
+- `pnpm test:ui` (146 tests) and `pnpm test:a11y` (18 tests);
+- `pnpm test:cli`, `pnpm test:mcp`, `pnpm test:adapters`, and `pnpm pack:check` (all 6 public
+  packages);
 - `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, including packed package/source-install,
   CLI/MCP discovery, and clean Next.js consumer evidence;
 - `pnpm build` (8 successful workspace build tasks, including both Next.js applications);
-- `pnpm test:browser` (14 Chromium scenarios across docs and demo).
+- `pnpm test:browser` (16 Chromium scenarios across docs and demo).
