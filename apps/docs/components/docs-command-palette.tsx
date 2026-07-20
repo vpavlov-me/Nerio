@@ -15,14 +15,12 @@ export type DocsCommandEntry = {
 
 const DocsSearchTrigger = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentPropsWithoutRef<"button">
+  Omit<React.ComponentPropsWithoutRef<"button">, "children">
 >(function DocsSearchTrigger(props, ref) {
-  const { children: _children, ...buttonProps } = props;
-
   return (
     <Tooltip delay={0} label="Search documentation (/ or ⌘K)">
       <Button
-        {...buttonProps}
+        {...props}
         ref={ref}
         aria-label="Search documentation"
         className="docs-search-trigger"

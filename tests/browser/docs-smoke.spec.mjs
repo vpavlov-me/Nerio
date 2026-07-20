@@ -52,6 +52,11 @@ test("covers public docs routes, standardized component docs, and the restrained
     await expect(page.getByRole("main")).toBeVisible();
   }
 
+  await page.goto("/docs/components/button");
+  const buttonInstallation = page.getByLabel("Button installation and import", { exact: true });
+  await expect(buttonInstallation).toContainText("@nerio-ui/adapters/icons");
+  await expect(buttonInstallation).toContainText("@nerio-ui/ui/client");
+
   await page.goto("/docs/components/sidebar-primitive");
   await expect(page.getByLabel("Sidebar preview")).toBeVisible();
   await expect(
@@ -136,12 +141,12 @@ test("applies every Playground control to the component canvas", async ({ page }
 
   await page.getByRole("radio", { name: "blue", exact: true }).click();
   await page
-    .getByRole("group", { name: "Appearance" })
-    .getByRole("button", { name: "Dark" })
+    .getByRole("radiogroup", { name: "Appearance" })
+    .getByRole("radio", { name: "Dark" })
     .click();
   await page
-    .getByRole("group", { name: "Density" })
-    .getByRole("button", { name: "Compact" })
+    .getByRole("radiogroup", { name: "Density" })
+    .getByRole("radio", { name: "Compact" })
     .click();
   await page
     .getByRole("radiogroup", { name: "Radius" })
@@ -153,8 +158,8 @@ test("applies every Playground control to the component canvas", async ({ page }
     .getByRole("radio", { name: "90%" })
     .click();
   await page
-    .getByRole("group", { name: "Motion" })
-    .getByRole("button", { name: "Reduced" })
+    .getByRole("radiogroup", { name: "Motion" })
+    .getByRole("radio", { name: "Reduced" })
     .click();
 
   await expect(playground).toHaveAttribute("data-theme", "blue");
@@ -177,12 +182,34 @@ test("applies every Playground control to the component canvas", async ({ page }
   });
 
   await page
-    .getByRole("group", { name: "Settings view" })
-    .getByRole("button", { name: "Colors" })
+    .getByRole("radiogroup", { name: "Settings view" })
+    .getByRole("radio", { name: "Colors" })
     .click();
   await expect(page.getByRole("textbox", { name: "Canvas CSS color value" })).toHaveValue(
     "#000000",
   );
+
+  await page
+    .getByRole("radiogroup", { name: "Settings view" })
+    .getByRole("radio", { name: "Theme" })
+    .click();
+  const darkTextBefore = await playground.evaluate((element) =>
+    getComputedStyle(element).getPropertyValue("--n-color-text-secondary").trim(),
+  );
+  await page.getByRole("radio", { name: "mauve", exact: true }).click();
+  const darkTextAfter = await playground.evaluate((element) =>
+    getComputedStyle(element).getPropertyValue("--n-color-text-secondary").trim(),
+  );
+  expect(darkTextAfter).not.toBe(darkTextBefore);
+
+  await page
+    .getByRole("radiogroup", { name: "Settings view" })
+    .getByRole("radio", { name: "Colors" })
+    .click();
+  const canvasValue = page.getByRole("textbox", { name: "Canvas CSS color value" });
+  await canvasValue.fill("rgb(255, 0, 0)");
+  await expect(canvasValue).toHaveValue("rgb(255, 0, 0)");
+  await expect(page.locator(".playground-color-control__picker").first()).toHaveValue("#ff0000");
   await expectHealthyPage(page, problems);
 });
 

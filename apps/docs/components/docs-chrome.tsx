@@ -442,7 +442,7 @@ function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
           }
         />
       </Tooltip>
-      <SheetContent side="left" size="sm" aria-label="Documentation navigation">
+      <SheetContent side="left" size="sm">
         <SheetHeader>
           <SheetTitle>Documentation</SheetTitle>
           <SheetDescription>Foundations, Core components, and delivery workflows.</SheetDescription>

@@ -227,6 +227,63 @@ const neutralRecipes: Record<
   },
 };
 
+const darkNeutralRecipes: typeof neutralRecipes = {
+  slate: {
+    subtle: "rgb(255 255 255 / 0.04)",
+    control: "rgb(255 255 255 / 0.08)",
+    borderSubtle: "rgb(255 255 255 / 0.06)",
+    borderDefault: "rgb(255 255 255 / 0.1)",
+    textPrimary: "#f4f7fb",
+    textSecondary: "#aab4c4",
+    textTertiary: "#7f899a",
+  },
+  gray: {
+    subtle: "rgb(255 255 255 / 0.045)",
+    control: "rgb(255 255 255 / 0.09)",
+    borderSubtle: "rgb(255 255 255 / 0.065)",
+    borderDefault: "rgb(255 255 255 / 0.11)",
+    textPrimary: "#f5f5f5",
+    textSecondary: "#b5b5b5",
+    textTertiary: "#858585",
+  },
+  mauve: {
+    subtle: "rgb(249 240 250 / 0.045)",
+    control: "rgb(249 240 250 / 0.09)",
+    borderSubtle: "rgb(249 240 250 / 0.065)",
+    borderDefault: "rgb(249 240 250 / 0.11)",
+    textPrimary: "#f7f2f7",
+    textSecondary: "#bdb2be",
+    textTertiary: "#8e8490",
+  },
+  sage: {
+    subtle: "rgb(236 250 241 / 0.045)",
+    control: "rgb(236 250 241 / 0.09)",
+    borderSubtle: "rgb(236 250 241 / 0.065)",
+    borderDefault: "rgb(236 250 241 / 0.11)",
+    textPrimary: "#f0f7f2",
+    textSecondary: "#adbbb0",
+    textTertiary: "#7f8d82",
+  },
+  olive: {
+    subtle: "rgb(247 248 226 / 0.045)",
+    control: "rgb(247 248 226 / 0.09)",
+    borderSubtle: "rgb(247 248 226 / 0.065)",
+    borderDefault: "rgb(247 248 226 / 0.11)",
+    textPrimary: "#f5f6ed",
+    textSecondary: "#b8baa9",
+    textTertiary: "#898b7b",
+  },
+  sand: {
+    subtle: "rgb(253 245 232 / 0.045)",
+    control: "rgb(253 245 232 / 0.09)",
+    borderSubtle: "rgb(253 245 232 / 0.065)",
+    borderDefault: "rgb(253 245 232 / 0.11)",
+    textPrimary: "#f8f4ed",
+    textSecondary: "#bdb5aa",
+    textTertiary: "#8e867c",
+  },
+};
+
 const colorGroups: Array<{ label: string; colors: Array<[ColorKey, string]> }> = [
   {
     label: "Surfaces",
@@ -468,16 +525,24 @@ function toCss(style: PlaygroundStyle) {
     .join("\n")}\n}`;
 }
 
+function rgbChannels(value: string) {
+  const channels = value.match(
+    /^rgb\(\s*(\d+)(?:\s*,\s*|\s+)(\d+)(?:\s*,\s*|\s+)(\d+)(?:\s*(?:\/|,)\s*[\d.]+%?)?\s*\)$/i,
+  );
+  if (!channels || channels.slice(1, 4).some((channel) => Number(channel) > 255)) {
+    return undefined;
+  }
+
+  return channels.slice(1, 4).map(Number);
+}
+
 function colorPickerValue(value: string) {
   if (/^#[0-9a-f]{6}$/i.test(value)) return value;
 
-  const channels = value.match(/^rgb\(\s*(\d+)\s+(\d+)\s+(\d+)/i);
+  const channels = rgbChannels(value);
   if (!channels) return "#000000";
 
-  return `#${channels
-    .slice(1, 4)
-    .map((channel) => Number(channel).toString(16).padStart(2, "0"))
-    .join("")}`;
+  return `#${channels.map((channel) => Number(channel).toString(16).padStart(2, "0")).join("")}`;
 }
 
 function ColorControl({
@@ -507,7 +572,7 @@ function ColorControl({
           spellCheck={false}
           onChange={(event) => {
             const nextValue = event.target.value;
-            if (/^#[0-9a-fA-F]{6}$/.test(nextValue) || /^rgb\(.+\)$/.test(nextValue)) {
+            if (/^#[0-9a-fA-F]{6}$/.test(nextValue) || rgbChannels(nextValue)) {
               onChange(nextValue.toLowerCase());
             }
           }}
@@ -529,10 +594,12 @@ function Segmented<T extends string>({
   onChange: (value: T) => void;
 }) {
   return (
-    <div className="playground-segmented" role="group" aria-label={label}>
+    <div className="playground-segmented" role="radiogroup" aria-label={label}>
       {options.map((option) => (
         <button
           type="button"
+          role="radio"
+          aria-checked={value === option}
           key={option}
           data-active={value === option || undefined}
           onClick={() => onChange(option)}
@@ -607,6 +674,15 @@ export function VisualPlayground() {
       sunken: neutralRecipes[nextNeutral].control,
       statusNeutral: neutralRecipes[nextNeutral].textSecondary,
       statusNeutralSoft: neutralRecipes[nextNeutral].control,
+    }));
+    setDarkColors((current) => ({
+      ...current,
+      ...darkNeutralRecipes[nextNeutral],
+      controlHover: darkNeutralRecipes[nextNeutral].borderSubtle,
+      controlActive: darkNeutralRecipes[nextNeutral].borderDefault,
+      sunken: darkNeutralRecipes[nextNeutral].control,
+      statusNeutral: darkNeutralRecipes[nextNeutral].textSecondary,
+      statusNeutralSoft: darkNeutralRecipes[nextNeutral].control,
     }));
   };
 

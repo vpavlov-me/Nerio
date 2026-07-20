@@ -143,9 +143,12 @@ export function StandardDocPage({
   const variants = variantsFromRegistry(registryItem?.variants ?? [], fallbackVariants);
   const accessibility = registryItem?.accessibility ?? reference?.accessibility;
   const tokens = registryItem?.requiredTokens ?? reference?.tokens ?? sharedTokens;
-  const packageImport = usage?.split("\n").find((line) => line.startsWith("import "));
+  const packageImports = usage
+    ?.split("\n")
+    .filter((line) => line.startsWith("import "))
+    .join("\n");
   const installation = kind
-    ? [`pnpm dlx nerio add ${kind}`, packageImport].filter(Boolean).join("\n\n")
+    ? [`pnpm dlx nerio add ${kind}`, packageImports].filter(Boolean).join("\n\n")
     : undefined;
 
   return (
