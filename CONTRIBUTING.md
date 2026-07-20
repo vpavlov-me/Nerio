@@ -25,6 +25,10 @@ integration branch. Direct pushes, force pushes, and deletion are prohibited for
 7. Run the required checks before opening a pull request.
 8. Merge into `dev` only after required CI checks pass and review conversations are resolved.
 
+Visual changes also follow the [visual regression workflow](./docs/visual-regression.md). Expected
+image updates belong in a separate baseline-only commit and require the maintainer-owned
+`visual-baseline-approved` label.
+
 Dependabot is the only automated branch-name exception: its reserved `dependabot/*` branches target
 `dev` and must pass the same checks and review requirements.
 
@@ -37,6 +41,7 @@ pnpm lint
 pnpm typecheck
 pnpm test:ui
 pnpm test:a11y
+pnpm test:visual
 pnpm build
 ```
 

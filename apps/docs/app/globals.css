@@ -3879,6 +3879,19 @@ pre {
   padding-block-end: var(--n-space-10);
 }
 
+.visual-test-fixture {
+  background: var(--n-color-canvas);
+  color: var(--n-color-text-primary);
+  display: grid;
+  inline-size: 100%;
+  min-block-size: 100vh;
+  padding: var(--n-space-8);
+}
+
+.visual-test-fixture .component-lab-section {
+  padding-block: var(--n-space-6);
+}
+
 .component-lab-hero > div,
 .component-lab-section > header > div {
   display: grid;

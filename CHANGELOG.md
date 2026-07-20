@@ -6,6 +6,10 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+### Added
+
+- Added deterministic Core visual-regression fixtures, cross-axis screenshot baselines, CI diff artifacts, and an explicit maintainer approval workflow.
+
 ### Changed
 
 - Redesigned the public documentation, component Playground, and universal workspace demo around
