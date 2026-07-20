@@ -10,6 +10,11 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboa
 
 ## Visual direction
 
+The maintainer-approved implementation-ready visual decision is recorded in
+[`docs/visual-language-1-0.md`](./docs/visual-language-1-0.md). This document defines the token and
+system architecture that implements it. The supporting inconsistency audit is recorded in
+[`docs/audits/visual-language-1-0.md`](./docs/audits/visual-language-1-0.md).
+
 ### Neutral-first UI, brand-led interaction
 
 Nerio uses a neutral-first visual language. Most interface hierarchy comes from typography, whitespace, layout, grouping, and contrast rather than color.
@@ -164,7 +169,8 @@ The default `purple` theme remains visually neutral-first:
 - cards, tables, panels, and forms are neutral surfaces;
 - purple is reserved for primary actions, selected states, focus, links, small progress indicators, the primary chart series, and brand moments;
 - hover states should use neutral surface changes before using purple;
-- selected navigation and tabs use a very light lavender surface plus a small purple indicator, underline, or icon;
+- selected navigation uses a neutral selected surface; tabs and other selection controls may use a
+  small purple indicator, underline, or icon when the state needs additional emphasis;
 - semantic colors remain subdued and appear only when they communicate product meaning.
 
 ## Token architecture
@@ -351,14 +357,19 @@ border.strong
 
 Use borders sparingly. Do not surround every content group with a card or border.
 
-Do not use drop shadows or glows as a default hierarchy tool. Prefer spacing, surface contrast, restrained borders, and backdrops.
+Do not use drop shadows or glows as a default hierarchy tool. Prefer spacing, surface contrast,
+restrained borders, and backdrops. A very soft natural shadow is allowed as a narrow tokenized
+exception when it clarifies actual elevation or selected segmented geometry.
 
 ### Compact soft-surface baseline
 
-The default visual language is a compact soft-surface interface: a white canvas, neutral gray
-control surfaces, white raised containers, restrained borders, and very light elevation only
-where it communicates layering. The default body and control type is 14px; the default control
-height is 32px. Radius increases by role: controls use 10px, containers 14px, and overlays 18px.
+The default visual language is a compact soft-surface interface: a pure white light canvas, pure
+black dark foundations, cool alpha-neutral control and grouping surfaces, sparse low-contrast
+borders, and very light elevation only where it communicates real layering. The default body and
+control type is 14px; the default control height is 32px. Radius increases by role: controls are
+softly rounded or pill-like, containers are generously rounded, task overlays are larger, and
+compact popups use a smaller exception. Checkbox uses a small radius so it remains distinct from
+Radio.
 
 Implement this language through the four token layers only: primitive values, semantic intent,
 component contracts, and component styles. Component CSS must consume semantic or component
