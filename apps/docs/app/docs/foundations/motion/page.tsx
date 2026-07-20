@@ -12,9 +12,9 @@ export const metadata = createPageMetadata({
 type TokenRow = readonly [label: string, token: string, value: string, use: string];
 
 const durationTokens: TokenRow[] = [
-  ["Instant", "--n-duration-instant", "80ms", "Press and immediate state acknowledgement."],
-  ["Fast", "--n-duration-fast", "140ms", "Hover, focus, and compact state changes."],
-  ["Normal", "--n-duration-normal", "220ms", "Reveals, overlays, and feedback."],
+  ["Instant", "--n-duration-instant", "80ms", "Reduced-motion and technical synchronization."],
+  ["Fast", "--n-duration-fast", "140ms", "Press, focus, and compact acknowledgement."],
+  ["Normal", "--n-duration-normal", "220ms", "Hover, reveals, overlays, and feedback."],
   ["Slow", "--n-duration-slow", "360ms", "Page-level reveals used sparingly."],
 ];
 
@@ -124,7 +124,9 @@ export default function Page() {
         <h2 id="semantic-motion">Semantic motion</h2>
         <p>
           Semantic motion variables describe intent and point to duration and easing tokens.
-          Component source should use these aliases instead of repeating raw timing values.
+          Component source should use these aliases instead of repeating raw timing values. Hover
+          feedback always transitions with the semantic hover pair; instant timing is not used for
+          ordinary pointer interaction.
         </p>
         <TableContainer aria-label="Semantic motion aliases">
           <Table>

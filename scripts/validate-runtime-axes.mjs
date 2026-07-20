@@ -23,6 +23,8 @@ const modeTokens = [
   "--n-color-surface-canvas",
   "--n-color-surface-default",
   "--n-color-surface-control",
+  "--n-color-surface-control-hover",
+  "--n-color-surface-control-active",
   "--n-color-surface-subtle",
   "--n-color-surface-sunken",
   "--n-color-surface-raised",
@@ -36,6 +38,8 @@ const modeTokens = [
   "--n-color-border-default",
   "--n-color-border-strong",
   "--n-color-border-interactive",
+  "--n-color-status-neutral-soft",
+  "--n-chart-grid",
   "--n-overlay-backdrop",
 ];
 const compactTokens = [
@@ -54,8 +58,9 @@ const compactTokens = [
 ];
 const primitiveTokenPatterns = [
   /^--n-(?:gray|purple|blue|green|orange|red|amber|cyan|magenta)-\d+$/,
+  /^--n-(?:gray|white)-a-\d+$/,
   /^--n-space-/,
-  /^--n-radius-(?:none|xs|sm|md|lg|xl|full)$/,
+  /^--n-radius-(?:none|xs|sm|md|lg|xl|2xl|full)$/,
   /^--n-border-width-/,
   /^--n-shadow-(?:none|xs|sm|md)$/,
   /^--n-size-(?:control|textarea|tooltip|select|empty-state|toast-stack)-/,

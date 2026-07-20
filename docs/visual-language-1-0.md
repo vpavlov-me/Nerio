@@ -330,6 +330,28 @@ The implementation should preserve the existing architecture and classify change
 Every downstream token change must run the token, runtime-axis, docs, component contract,
 accessibility, and browser evidence required by the changed surface.
 
+## Foundation implementation mapping
+
+Issue #136 implements the shared visual foundation in `packages/tokens/src/styles.css`:
+
+- cool opaque gray and alpha-neutral primitive scales remain immutable across runtime selectors;
+- light and dark modes map canvas/default/raised to pure white or black and adaptive layers to
+  dark-alpha or white-alpha semantic roles;
+- control, container, task-surface, compact-popup, Checkbox, Avatar isolation, and overlay-glass
+  decisions resolve through semantic or component aliases;
+- hover, press, focus, disclosure, and overlay timing resolve through shared motion aliases;
+- `scripts/validate-tokens.mjs` calculates load-bearing text, action, overlay, and focus contrast for
+  every preset theme in light and dark modes;
+- `scripts/validate-runtime-axes.mjs` protects alpha-neutral, radius, spacing, typography, icon, and
+  motion primitives from runtime-axis mutation;
+- `/docs/foundations/visual-language` is the implementation reference for surfaces, color,
+  typography, geometry, spacing, focus, density, and motion.
+
+No public component prop, variant, slot, entrypoint, or runtime appearance axis changes as part of
+this mapping. Registry and source-install consumers continue to receive the canonical token file;
+later category passes update component-specific required-token projections when their recipes begin
+consuming the new aliases.
+
 ## API impact and downstream work
 
 This decision introduces no breaking public API change. Visual implementation should use tokens,
@@ -339,13 +361,15 @@ If implementation discovers a true behavioral or semantic API gap, it must be is
 issue with migration and synchronized source, catalog, registry, docs, CLI, MCP, fixture, and test
 work. It must not be hidden inside visual cleanup.
 
-The approved direction feeds the existing downstream work:
+The approved direction feeds the current downstream work:
 
-- #136: color and surface token implementation;
-- #137: typography and density implementation;
-- #138: geometry, spacing, and component-family implementation;
-- #139: interaction state and motion implementation;
-- #140: visual evidence and regression coverage after implementation.
+- #136: shared visual-foundation tokens and reference;
+- #226: optional Motion adapter built on the token contract;
+- #137: Actions and Forms;
+- #138: Data Display and Feedback;
+- #139: Navigation, Layout, and Overlays;
+- #140: documentation and demo presentation;
+- #141: approved visual-regression baselines after implementation.
 
 The recurring inconsistency audit that supports these implications is recorded in
 [`docs/audits/visual-language-1-0.md`](./audits/visual-language-1-0.md).

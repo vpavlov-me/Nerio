@@ -71,6 +71,7 @@ const navGroups: NavGroup[] = [
   {
     title: "Foundations",
     items: [
+      { href: "/docs/foundations/visual-language", label: "Visual language", icon: Palette },
       { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
       { href: "/docs/foundations/typography", label: "Typography", icon: Type },
       { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
@@ -264,6 +265,15 @@ const badgeToc: TocItem[] = [
 ];
 
 const tocByPath: Record<string, TocItem[]> = {
+  "/docs/foundations/visual-language": [
+    { id: "surfaces", label: "Surfaces" },
+    { id: "color", label: "Color" },
+    { id: "typography", label: "Typography" },
+    { id: "geometry", label: "Geometry" },
+    { id: "interaction", label: "Interaction" },
+    { id: "density", label: "Density" },
+    { id: "motion", label: "Motion" },
+  ],
   "/docs/getting-started": [
     { id: "install", label: "Install" },
     { id: "project-shape", label: "Project shape" },
