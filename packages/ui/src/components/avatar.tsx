@@ -33,7 +33,7 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
       ref={ref}
       {...props}
       className={cn(
-        "n-avatar inline-flex size-(--n-avatar-size-md) items-center justify-center overflow-hidden rounded-(--n-avatar-radius) border-(length:--n-avatar-border-width) border-(--n-avatar-border) bg-(--n-avatar-background) text-(length:--n-font-size-xs) font-(--n-font-weight-semibold) text-(--n-avatar-foreground) data-[size=sm]:size-(--n-avatar-size-sm) data-[size=sm]:text-(length:--n-avatar-font-size-sm) data-[size=lg]:size-(--n-avatar-size-lg) data-[size=lg]:text-(length:--n-avatar-font-size-lg) [&_img]:size-full [&_img]:object-cover forced-colors:border-[CanvasText]",
+        "n-avatar inline-flex size-(--n-avatar-size-md) items-center justify-center overflow-hidden rounded-(--n-avatar-radius) border-(length:--n-avatar-border-width) border-(--n-avatar-border) bg-(--n-avatar-background) text-(length:--n-font-size-xs) font-(--n-font-weight-medium) text-(--n-avatar-foreground) data-[size=sm]:size-(--n-avatar-size-sm) data-[size=sm]:text-(length:--n-avatar-font-size-sm) data-[size=lg]:size-(--n-avatar-size-lg) data-[size=lg]:text-(length:--n-avatar-font-size-lg) [&_img]:size-full [&_img]:object-cover forced-colors:border-[CanvasText]",
         className,
       )}
       data-slot="root"

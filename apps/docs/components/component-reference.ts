@@ -936,12 +936,18 @@ export const componentReference: Record<string, ComponentReference> = {
       do: ["Use for inline validation summaries, persistent notices, and contextual feedback."],
       dont: ["Do not use Alert as a toast replacement or add dismiss behavior in this slice."],
     },
+    designNotes: [
+      "Alert is a flat muted surface: semantic color stays on the icon while title and description remain neutral.",
+      "Use the message text and optional icon together so status never depends on color alone.",
+    ],
     tokens: [
       "--n-alert-gap",
       "--n-alert-padding",
       "--n-alert-radius",
+      "--n-alert-border-width",
       "--n-alert-border",
       "--n-alert-background",
+      "--n-alert-shadow",
       "--n-alert-title-color",
       "--n-alert-icon-color",
       "--n-alert-icon-size",
@@ -1901,6 +1907,10 @@ export const componentReference: Record<string, ComponentReference> = {
         "Do not turn Toast into a notification inbox, activity feed, job manager, or persistent history.",
       ],
     },
+    designNotes: [
+      "Toast is an inverted dark glass surface in every mode so transient feedback is clearly separated from flat page content.",
+      "Semantic color is limited to the status icon; copy and controls use the toast foreground hierarchy.",
+    ],
     tokens: [
       "--n-toast-width",
       "--n-toast-viewport-inset",
@@ -1912,7 +1922,16 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toast-background",
       "--n-toast-border",
       "--n-toast-shadow",
+      "--n-toast-foreground",
+      "--n-toast-foreground-muted",
+      "--n-toast-control-background",
+      "--n-toast-control-background-hover",
+      "--n-toast-control-background-active",
       "--n-toast-status-color",
+      "--n-toast-status-info",
+      "--n-toast-status-success",
+      "--n-toast-status-warning",
+      "--n-toast-status-danger",
       "--n-motion-reveal-duration",
       "--n-motion-focus-duration",
     ],
@@ -1922,7 +1941,11 @@ export const componentReference: Record<string, ComponentReference> = {
     purpose:
       "Use Card to group a single related object or repeated item without turning page sections into nested panels.",
     anatomy: [
-      { title: "card", description: "Surface container with border, radius, and spacing tokens." },
+      {
+        title: "card",
+        description:
+          "Borderless surface container with radius, spacing, and soft elevation tokens.",
+      },
       {
         title: "card-visual",
         description:
@@ -1999,7 +2022,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     designNotes: [
       "Use Card for truly related content, not as a default wrapper for every section.",
-      "Keep hierarchy in typography, spacing, and borders rather than shadows.",
+      "Use typography and spacing first; the default white or black surface carries only a soft elevation shadow, while secondary grouping stays flat and muted.",
     ],
     related: ["Separator", "Stat", "KeyValue"],
     guidance: {
@@ -2012,10 +2035,13 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-card-padding-block",
       "--n-card-gap",
       "--n-card-radius",
+      "--n-card-background",
+      "--n-card-background-interactive-hover",
       "--n-card-background-secondary",
       "--n-card-background-secondary-hover",
       "--n-card-border-secondary",
       "--n-card-border-interactive",
+      "--n-card-shadow",
       "--n-card-shadow-secondary",
       "--n-focus-ring",
     ],
@@ -2070,6 +2096,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-avatar-size-sm",
       "--n-avatar-size-md",
       "--n-avatar-size-lg",
+      "--n-avatar-border",
       "--n-avatar-background",
     ],
   },
@@ -2215,6 +2242,7 @@ export const componentReference: Record<string, ComponentReference> = {
     states: [{ title: "Static", description: "Displays a point-in-time value." }],
     accessibility: [
       "Keep labels and values readable together; do not encode meaning only in trend color.",
+      "Trend text is neutral by default because Stat does not infer positive or negative meaning from a string.",
     ],
     guidance: {
       do: ["Use for one simple metric with a clear label."],
@@ -2265,7 +2293,10 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "cell", description: "A native td for values and independently labelled actions." },
     ],
     variants: [
-      { title: "Default", description: "Readable data table with subtle row separation." },
+      {
+        title: "Default",
+        description: "Readable data table grouped by a muted surface instead of an outer border.",
+      },
     ],
     states: [
       { title: "Empty", description: "Use one correctly spanned cell inside TableBody." },
@@ -2306,12 +2337,15 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-table-cell-padding-x",
       "--n-table-border",
       "--n-table-container-border",
+      "--n-table-container-background",
       "--n-table-container-radius",
       "--n-table-container-focus-ring",
       "--n-table-header-background",
       "--n-table-header-foreground",
       "--n-table-row-background-hover",
       "--n-table-row-background-selected",
+      "--n-table-row-selection-indicator",
+      "--n-table-row-selection-indicator-width",
       "--n-table-row-min-height",
       "--n-table-cell-foreground-disabled",
       "--n-table-cell-foreground-danger",

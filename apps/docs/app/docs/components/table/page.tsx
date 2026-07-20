@@ -515,13 +515,13 @@ export default function Page() {
             rows={[
               [
                 "Container",
-                "--n-table-container-border, --n-table-container-radius, --n-table-container-focus-ring",
-                "Boundary and focus treatment.",
+                "--n-table-container-background, --n-table-container-border, --n-table-container-radius, --n-table-container-focus-ring",
+                "Muted grouping surface, boundary, and focus treatment.",
               ],
               [
                 "Rows",
-                "--n-table-row-min-height, --n-table-row-background-hover, --n-table-row-background-selected",
-                "Density and consumer states.",
+                "--n-table-row-min-height, --n-table-row-background-hover, --n-table-row-background-selected, --n-table-row-selection-indicator, --n-table-row-selection-indicator-width",
+                "Density, smooth interaction, and selected/current state cues.",
               ],
               [
                 "Cells",

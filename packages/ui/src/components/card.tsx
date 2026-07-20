@@ -2,7 +2,7 @@ import * as React from "react";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 const cardClasses =
-  "n-card grid gap-(--n-card-gap) overflow-hidden rounded-(--n-card-radius) border-(length:--n-card-border-width) border-(--n-card-border-color) bg-(--n-card-background) px-(--n-card-padding-inline) py-(--n-card-padding-block) shadow-(--n-card-shadow) data-[variant=secondary]:border-(--n-card-border-secondary) data-[variant=secondary]:bg-(--n-card-background-secondary) data-[variant=secondary]:shadow-(--n-card-shadow-secondary) [&:is(a)]:cursor-pointer [&:is(a)]:text-inherit [&:is(a)]:no-underline [&:is(a):hover]:border-(--n-card-border-interactive) [&:is(a):hover[data-variant=secondary]]:bg-(--n-card-background-secondary-hover) [&:is(a):focus-visible]:outline-0 [&:is(a):focus-visible]:shadow-(--n-focus-ring) [&>:is(h1,h2,h3,h4,h5,h6,p)]:m-0 forced-colors:border-[CanvasText] forced-colors:[&:is(a):focus-visible]:outline-(length:--n-focus-ring-inner-width) forced-colors:[&:is(a):focus-visible]:outline-offset-(--n-focus-ring-inner-width) forced-colors:[&:is(a):focus-visible]:outline-[Highlight]";
+  "n-card grid gap-(--n-card-gap) overflow-hidden rounded-(--n-card-radius) border-(length:--n-card-border-width) border-(--n-card-border-color) bg-(--n-card-background) px-(--n-card-padding-inline) py-(--n-card-padding-block) shadow-(--n-card-shadow) data-[variant=secondary]:border-(--n-card-border-secondary) data-[variant=secondary]:bg-(--n-card-background-secondary) data-[variant=secondary]:shadow-(--n-card-shadow-secondary) [&:is(a)]:cursor-pointer [&:is(a)]:text-inherit [&:is(a)]:no-underline [&:is(a)]:transition-[background-color,border-color,box-shadow] [&:is(a)]:duration-(--n-motion-hover-duration) [&:is(a)]:ease-(--n-motion-hover-easing) [&:is(a):hover]:border-(--n-card-border-interactive) [&:is(a):hover:not([data-variant=secondary])]:bg-(--n-card-background-interactive-hover) [&:is(a):hover[data-variant=secondary]]:bg-(--n-card-background-secondary-hover) [&:is(a):focus-visible]:duration-(--n-motion-focus-duration) [&:is(a):focus-visible]:ease-(--n-motion-focus-easing) [&:is(a):focus-visible]:outline-0 [&:is(a):focus-visible]:shadow-(--n-focus-ring) motion-reduce:[&:is(a)]:duration-(--n-duration-instant) [&>:is(h1,h2,h3,h4,h5,h6,p)]:m-0 forced-colors:border-[CanvasText] forced-colors:[&:is(a):focus-visible]:outline-(length:--n-focus-ring-inner-width) forced-colors:[&:is(a):focus-visible]:outline-offset-(--n-focus-ring-inner-width) forced-colors:[&:is(a):focus-visible]:outline-[Highlight]";
 
 export type CardElement = "section" | "article" | "div";
 export type CardVariant = "default" | "secondary";
@@ -112,7 +112,7 @@ export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(fu
       ref={ref as React.Ref<never>}
       {...props}
       className={cn(
-        "n-card__title m-0 text-(length:--n-font-size-lg) leading-(--n-line-height-tight) font-(--n-font-weight-semibold) text-(--n-color-text-primary)",
+        "n-card__title m-0 text-(length:--n-font-size-md) leading-(--n-line-height-tight) font-(--n-font-weight-medium) text-(--n-color-text-primary)",
         className,
       )}
       data-slot="card-title"

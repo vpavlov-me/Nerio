@@ -208,6 +208,84 @@ test("keeps Actions and Forms Tailwind recipes active across public docs", async
   await expectHealthyPage(page, problems);
 });
 
+test("keeps Data Display and Feedback neutral, compact, and motion-aware", async ({ page }) => {
+  const problems = monitorPage(page);
+
+  await page.goto("/docs/components/card");
+  const card = page.locator(".n-card").first();
+  await expect(card).toBeVisible();
+  await expect(card).toHaveCSS("border-top-width", "0px");
+  await expect(card.locator("[data-slot=card-title]").first()).toHaveCSS("font-weight", "500");
+  expect(await card.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe("none");
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
+  await expect(card).toHaveCSS("background-color", "rgb(0, 0, 0)");
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "light"));
+
+  await page.goto("/docs/components/alert");
+  const alert = page.locator(".n-alert").first();
+  await expect(alert).toBeVisible();
+  await expect(alert).toHaveCSS("border-top-width", "0px");
+  await expect(alert).toHaveCSS("box-shadow", "none");
+  await expect(alert.locator("[data-slot=title]")).toHaveCSS("font-weight", "500");
+
+  await page.goto("/docs/components/toast");
+  const toast = page.locator(".n-toast").first();
+  await expect(toast).toBeVisible();
+  await expect(toast).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
+  await expect(toast).toHaveCSS("color", "rgb(255, 255, 255)");
+  expect(await toast.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
+    "blur(24px)",
+  );
+  await page.getByRole("button", { name: "Stack notifications" }).click();
+  const toastClose = page.locator(".n-toast__close").first();
+  await expect(toastClose).toBeVisible();
+  await toastClose.hover();
+  await expect(toastClose).toHaveCSS("color", "rgb(255, 255, 255)");
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
+  await expect(toast).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "light"));
+
+  await page.goto("/docs/components/table");
+  const tableContainer = page.locator(".n-table-container").first();
+  const selectedCell = page
+    .locator('.n-table tbody tr:is([data-selected],[aria-current]:not([aria-current="false"]))')
+    .first()
+    .locator(":scope > :first-child");
+  await expect(tableContainer).toBeVisible();
+  expect(
+    await tableContainer.evaluate((element) => getComputedStyle(element).backgroundColor),
+  ).not.toBe("rgba(0, 0, 0, 0)");
+  await expect(selectedCell).toHaveCSS("border-inline-start-width", "2px");
+  await expect(selectedCell).toHaveCSS("transition-duration", "0.22s");
+  const comfortableCellHeight = await selectedCell.evaluate(
+    (element) => getComputedStyle(element).height,
+  );
+  await page.locator("html").evaluate((element) => element.setAttribute("data-density", "compact"));
+  const compactCellHeight = await selectedCell.evaluate(
+    (element) => getComputedStyle(element).height,
+  );
+  expect(Number.parseFloat(compactCellHeight)).toBeLessThan(
+    Number.parseFloat(comfortableCellHeight),
+  );
+
+  await page.goto("/");
+  const avatar = page.locator(".n-avatar").first();
+  await expect(avatar).toBeVisible();
+  await expect(avatar).toHaveCSS("border-color", "rgb(255, 255, 255)");
+  await expect(avatar).toHaveCSS("font-weight", "500");
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
+  await expect(avatar).toHaveCSS("border-color", "rgb(0, 0, 0)");
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/docs/components/table");
+  await expect(page.locator(".n-table tbody td").first()).toHaveCSS(
+    "transition-duration",
+    "0.001s",
+  );
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps the final Tailwind component families active across public docs", async ({ page }) => {
   const problems = monitorPage(page);
   const routes = [

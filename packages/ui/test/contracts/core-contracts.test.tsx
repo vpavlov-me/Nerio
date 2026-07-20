@@ -781,6 +781,78 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("stat")).toHaveAttribute("data-slot", "card");
   });
 
+  it("keeps Data Display and Feedback on the approved neutral-first visual hierarchy", () => {
+    render(
+      <>
+        <Heading data-testid="visual-heading">Overview</Heading>
+        <Card data-testid="visual-card" href="/projects">
+          <CardTitle>Projects</CardTitle>
+        </Card>
+        <Avatar data-testid="visual-avatar" name="Maya Chen" />
+        <Alert data-testid="visual-alert" icon={Check} title="Saved" tone="success">
+          Your changes are live.
+        </Alert>
+        <Toast
+          data-testid="visual-toast"
+          description="Your changes are live."
+          title="Saved"
+          tone="success"
+        />
+        <EmptyState>
+          <EmptyStateHeader>
+            <EmptyStateTitle>No projects</EmptyStateTitle>
+          </EmptyStateHeader>
+        </EmptyState>
+      </>,
+    );
+
+    expect(screen.getByTestId("visual-heading")).toHaveClass("font-(--n-font-weight-medium)");
+    expect(screen.getByTestId("visual-card")).toHaveClass(
+      "[&:is(a)]:duration-(--n-motion-hover-duration)",
+    );
+    expect(screen.getByRole("heading", { name: "Projects" })).toHaveClass(
+      "text-(length:--n-font-size-md)",
+      "font-(--n-font-weight-medium)",
+    );
+    expect(screen.getByTestId("visual-avatar")).toHaveClass("border-(--n-avatar-border)");
+    expect(screen.getByTestId("visual-alert")).toHaveClass(
+      "bg-(--n-alert-background)",
+      "shadow-(--n-alert-shadow)",
+    );
+    expect(within(screen.getByTestId("visual-alert")).getByText("Saved")).toHaveClass(
+      "font-(--n-font-weight-medium)",
+    );
+    expect(screen.getByTestId("visual-toast")).toHaveClass(
+      "[backdrop-filter:var(--n-overlay-surface-filter)]",
+      "[--n-button-foreground-ghost:var(--n-toast-foreground-muted)]",
+      "[&_[data-slot=close]:hover:not(:disabled):not([data-disabled])]:text-(--n-toast-foreground)",
+    );
+    expect(screen.getByRole("heading", { name: "No projects" })).toHaveClass(
+      "font-(--n-font-weight-medium)",
+    );
+
+    const alertSource = readFileSync(resolve(process.cwd(), "src/components/alert.tsx"), "utf8");
+    const listSource = readFileSync(resolve(process.cwd(), "src/components/list.tsx"), "utf8");
+    const itemSource = readFileSync(resolve(process.cwd(), "src/components/item.tsx"), "utf8");
+    const motionSource = readFileSync(resolve(process.cwd(), "src/lib/motion.ts"), "utf8");
+    const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
+
+    expect(alertSource).not.toContain(
+      "data-[tone=success]:[--n-alert-title-color:var(--n-color-status-success)]",
+    );
+    expect(listSource).toContain("duration-(--n-motion-hover-duration)");
+    expect(itemSource).toContain("duration-(--n-motion-press-duration)");
+    expect(itemSource).toContain("ease-(--n-motion-press-easing)");
+    expect(motionSource).toContain(
+      'press:\n    "transition-[background-color,border-color,color,opacity,scale] duration-(--n-motion-press-duration) ease-(--n-motion-press-easing)',
+    );
+    expect(tokens).toContain("--n-alert-border-width: var(--n-border-width-0)");
+    expect(tokens).toContain("--n-toast-background: var(--n-overlay-glass-background)");
+    expect(tokens).toContain("--n-avatar-border: var(--n-gray-0)");
+    expect(tokens).toContain("--n-avatar-border: var(--n-gray-1000)");
+    expect(tokens).toContain("--n-stat-trend-color: var(--n-color-text-secondary)");
+  });
+
   it("protects static navigation anatomy while forwarding consumer attributes", () => {
     const unsafeSlot = { "data-slot": "consumer" } as Record<string, string>;
     render(
@@ -1321,12 +1393,16 @@ describe("Core static contracts", () => {
 
     expect(source).toContain("max-w-full");
     expect(source).toContain("overflow-x-auto");
+    expect(source).toContain("bg-(--n-table-container-background)");
     expect(source).toContain("[&>.n-table]:min-w-max");
     expect(source).toContain("[&_:is(th,td)]:text-start");
     expect(source).toContain("[data-align=numeric]]:text-end");
     expect(source).toContain("[&_tbody>tr:hover>:is(th,td)]");
     expect(source).toContain("[&_tbody>tr:focus-within>:is(th,td)]");
     expect(source).toContain("[aria-current]:not([aria-current=false])");
+    expect(source).toContain("border-s-(length:--n-table-row-selection-indicator-width)");
+    expect(source).toContain("border-s-(--n-table-row-selection-indicator)");
+    expect(source).toContain("duration-(--n-motion-hover-duration)");
     expect(source).not.toContain("[&_tr:hover");
     expect(source).not.toContain("[&_tr:focus-within");
     expect(source).toContain("forced-colors:data-focusable:focus-visible:outline-[Highlight]");
