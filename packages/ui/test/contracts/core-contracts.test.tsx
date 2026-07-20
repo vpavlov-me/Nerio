@@ -2007,6 +2007,7 @@ describe("Core interactive action contracts", () => {
     expect(link).toHaveClass("n-button");
     expect(link).toHaveClass("underline");
     expect(link).toHaveClass("decoration-transparent");
+    expect(link).toHaveClass("decoration-(length:--n-link-underline-thickness)");
     expect(link).toHaveClass("[&:hover:not(:disabled):not([data-disabled])]:decoration-current");
     expect(link).toHaveClass("focus-visible:decoration-current");
     expect(link.querySelector("[data-slot=button-icon] .n-icon")).toHaveAttribute(

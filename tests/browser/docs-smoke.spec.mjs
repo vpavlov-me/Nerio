@@ -181,6 +181,20 @@ test("keeps Actions and Forms Tailwind recipes active across public docs", async
     }
   }
 
+  await page.goto("/docs/components/button");
+  const linkButton = page.getByRole("link", { name: "Link", exact: true });
+  const linkDecoration = await linkButton.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      color: style.textDecorationColor,
+      line: style.textDecorationLine,
+      thickness: style.textDecorationThickness,
+    };
+  });
+  expect(linkDecoration.line).toContain("underline");
+  expect(linkDecoration.color).toBe("rgba(0, 0, 0, 0)");
+  expect(linkDecoration.thickness).not.toBe("auto");
+
   await page.goto("/docs/components/select");
   await page.getByRole("combobox", { name: "Status" }).click();
   await expect(page.locator(".n-select-popup")).toHaveCSS("border-radius", "16px");
