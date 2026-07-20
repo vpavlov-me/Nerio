@@ -56,7 +56,7 @@ export {
 } from "./components/tabs";
 export { Tooltip, type TooltipProps } from "./components/tooltip";
 export { LabelHint, type LabelHintProps } from "./components/label-hint";
-export { Dialog, type DialogProps } from "./components/dialog";
+export { Dialog, DialogFooter, type DialogProps } from "./components/dialog";
 export {
   Sheet,
   SheetBody,

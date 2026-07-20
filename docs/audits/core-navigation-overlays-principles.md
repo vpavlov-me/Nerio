@@ -2,18 +2,20 @@
 
 ## Scope and decision boundary
 
-This is the family evidence matrix for issue #161. It reviews the published Tailwind-first
-Navigation, Layout, and Overlays inventory from `data/component-catalog.json`: Tabs, Breadcrumbs,
+This is the family evidence matrix and Visual Language 1.0 application record for issue #139. It
+reviews the published Tailwind-first Navigation, Layout, and Overlays inventory from
+`data/component-catalog.json`: Tabs, Breadcrumbs,
 Pagination, Sidebar Primitive, Command Primitive, Dialog, Sheet, Popover, Tooltip, and Dropdown
 Menu. The review covers semantic responsibility, native or Base UI foundations, public anatomy and
 refs, state ownership, focus and dismissal, responsive and directional behavior, layering and safe
 areas, Tailwind and token contracts, server/client entrypoints, Registry metadata, docs, CLI/MCP
 projections, source installation, fixtures, and contract/accessibility/browser evidence.
 
-The review preserves the published visual language, public variants, motion values, and component
-responsibilities. It does not add a Core component, runtime axis, product workflow, routing,
-persistence, navigation model, or breaking migration. AppShell, AppSidebar, GlobalSearch,
-CommandPalette, product filters, and documentation shells remain Pro or consumer composition.
+The review preserves public variants and component responsibilities while applying the approved
+visual language. It adds the compositional `DialogFooter` slot requested by the approved modal
+contract, but no Core component identity, runtime axis, product workflow, routing, persistence,
+navigation model, or breaking migration. AppShell, AppSidebar, GlobalSearch, CommandPalette,
+product filters, and documentation shells remain Pro or consumer composition.
 
 ## Family evidence matrix
 
@@ -41,11 +43,28 @@ CommandPalette, product filters, and documentation shells remain Pro or consumer
   positioning, dismissal, portal, restoration, and scroll-lock behavior.
 - Package and copied-source modes use the same complete static Tailwind recipes, Nerio variables,
   `tailwindCn`, Registry dependency graph, residual keyframes, and server/client entrypoint split.
-- The corrections repair existing anatomy, localization, event ownership, documentation, and
-  metadata contracts. They add one backward-compatible accessible-name prop, but no visual variant,
-  token, runtime axis, component, visual value, or intentional art-direction change.
+- The corrections preserve existing anatomy, localization, and event ownership while refining
+  approved component aliases and static Tailwind recipes. `DialogFooter` is a compositional anatomy
+  slot rather than a new variant or responsibility.
 - No new focused follow-up issue is required. Breaking compatibility cleanup remains deferred to
   the existing #145 API-freeze work; broader browser expansion remains owned by #142.
+
+## Visual Language 1.0 application record
+
+- Breadcrumbs, Pagination, Sidebar controls, Tabs, and Dropdown Menu use shared hover and focus
+  motion aliases; reduced motion keeps state changes immediate without hiding final state.
+- Current and selected navigation remain neutral by default. Segmented Tabs add only a small,
+  natural shadow to separate the selected surface; brand color remains limited to the compact
+  indicator variant and focus.
+- Tooltip, Popover, Dropdown Menu, Command, Dialog, and Sheet use the approved inverted dark-glass
+  hierarchy with white text, blur, restrained elevation, and borderless surfaces in every mode.
+- Popover and Dropdown Menu use smaller radii and compact internal spacing than Dialog and Sheet.
+- Dialog uses a subtle opacity and independent scale settle so centering transforms remain stable;
+  modal backdrops fade with blur. Sheet preserves physical side causality for enter and exit motion.
+- Dialog and Sheet close controls compose the secondary icon Button. `DialogFooter` and SheetFooter
+  align action groups to the inline end.
+- Sidebar and Command remain low-level primitives. No routing, persistence, navigation schema,
+  ranking, fetching, global shortcut, or product shell behavior is introduced.
 
 ## Validation record
 

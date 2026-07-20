@@ -101,31 +101,28 @@ test("token validator requires the approved visual foundation aliases", () => {
   );
 });
 
-test("token validator protects staged overlay and Checkbox compatibility aliases", () => {
+test("token validator protects approved overlay and Checkbox component contracts", () => {
   withTokenFixture(
     (source) =>
       source
         .replace("--n-checkbox-radius: var(--n-radius-xs);", "--n-checkbox-radius: 0.25rem;")
+        .replace("--n-overlay-background: rgb(0 0 0 / 0.88);", "--n-overlay-background: black;")
         .replace(
-          "--n-overlay-background: var(--n-color-surface-raised);",
-          "--n-overlay-background: var(--n-color-surface-overlay);",
-        )
-        .replace(
-          "--n-overlay-foreground: var(--n-color-text-secondary);",
+          "--n-overlay-foreground: var(--n-gray-0);",
           "--n-overlay-foreground: var(--n-color-text-primary);",
         ),
     (stderr) => {
       assert.match(
         stderr,
-        /Compatibility alias --n-checkbox-radius must resolve to var\(--n-radius-xs\) before #139/,
+        /Approved component contract --n-checkbox-radius must resolve to var\(--n-radius-xs\)/,
       );
       assert.match(
         stderr,
-        /Compatibility alias --n-overlay-background must resolve to var\(--n-color-surface-raised\) before #139/,
+        /Approved component contract --n-overlay-background must resolve to rgb\(0 0 0 \/ 0\.88\)/,
       );
       assert.match(
         stderr,
-        /Compatibility alias --n-overlay-foreground must resolve to var\(--n-color-text-secondary\) before #139/,
+        /Approved component contract --n-overlay-foreground must resolve to var\(--n-gray-0\)/,
       );
     },
   );

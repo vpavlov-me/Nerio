@@ -616,6 +616,14 @@
   --n-sheet-radius: var(--n-radius-overlay);
   --n-sheet-backdrop: var(--n-overlay-backdrop);
   --n-sheet-viewport-inset: var(--n-density-space-lg);
+  --n-sheet-available-inline: calc(
+    100dvw - max(var(--n-sheet-viewport-inset), env(safe-area-inset-left)) -
+      max(var(--n-sheet-viewport-inset), env(safe-area-inset-right))
+  );
+  --n-sheet-available-block: calc(
+    100dvh - max(var(--n-sheet-viewport-inset), env(safe-area-inset-top)) -
+      max(var(--n-sheet-viewport-inset), env(safe-area-inset-bottom))
+  );
   --n-sheet-transition-distance: var(--n-density-space-lg);
   --n-sidebar-width: 17rem;
   --n-sidebar-collapsed-width: 3.5rem;
@@ -652,33 +660,31 @@
   --n-command-item-radius: var(--n-radius-md);
   --n-command-item-background-active: var(--n-overlay-selected-background);
   --n-overlay-z-index: 50;
-  /* Compatibility aliases remain neutral until #139 migrates each overlay family
-     to either the task-surface or transient-glass contract. */
-  --n-overlay-background: var(--n-color-surface-raised);
-  --n-overlay-border-width: var(--n-border-width-default);
-  --n-overlay-border: var(--n-color-border-subtle);
+  --n-overlay-background: rgb(0 0 0 / 0.88);
+  --n-overlay-border-width: var(--n-border-width-0);
+  --n-overlay-border: transparent;
   --n-overlay-backdrop: rgb(15 23 42 / 0.18);
-  --n-overlay-foreground: var(--n-color-text-secondary);
-  --n-overlay-foreground-muted: var(--n-color-text-tertiary);
-  --n-overlay-control-background: var(--n-color-surface-control);
-  --n-overlay-control-background-hover: var(--n-color-surface-control-hover);
-  --n-overlay-selected-background: var(--n-color-surface-selected);
-  --n-overlay-divider: var(--n-color-border-subtle);
-  --n-overlay-danger: var(--n-color-status-danger);
+  --n-overlay-foreground: var(--n-gray-0);
+  --n-overlay-foreground-muted: var(--n-gray-300);
+  --n-overlay-control-background: rgb(255 255 255 / 0.08);
+  --n-overlay-control-background-hover: rgb(255 255 255 / 0.13);
+  --n-overlay-selected-background: rgb(255 255 255 / 0.12);
+  --n-overlay-divider: rgb(255 255 255 / 0.12);
+  --n-overlay-danger: var(--n-red-400);
   --n-overlay-surface-filter: blur(24px) saturate(120%);
   --n-overlay-backdrop-filter: blur(10px);
-  --n-overlay-shadow: var(--n-shadow-surface-floating);
-  --n-overlay-glass-background: rgb(0 0 0 / 0.88);
-  --n-overlay-glass-border-width: var(--n-border-width-0);
-  --n-overlay-glass-border: transparent;
-  --n-overlay-glass-foreground: var(--n-gray-0);
-  --n-overlay-glass-foreground-muted: var(--n-gray-300);
-  --n-overlay-glass-control-background: rgb(255 255 255 / 0.08);
-  --n-overlay-glass-control-background-hover: rgb(255 255 255 / 0.13);
-  --n-overlay-glass-selected-background: rgb(255 255 255 / 0.12);
-  --n-overlay-glass-divider: rgb(255 255 255 / 0.12);
-  --n-overlay-glass-danger: var(--n-red-400);
-  --n-overlay-glass-shadow: var(--n-shadow-overlay);
+  --n-overlay-shadow: var(--n-shadow-overlay);
+  --n-overlay-glass-background: var(--n-overlay-background);
+  --n-overlay-glass-border-width: var(--n-overlay-border-width);
+  --n-overlay-glass-border: var(--n-overlay-border);
+  --n-overlay-glass-foreground: var(--n-overlay-foreground);
+  --n-overlay-glass-foreground-muted: var(--n-overlay-foreground-muted);
+  --n-overlay-glass-control-background: var(--n-overlay-control-background);
+  --n-overlay-glass-control-background-hover: var(--n-overlay-control-background-hover);
+  --n-overlay-glass-selected-background: var(--n-overlay-selected-background);
+  --n-overlay-glass-divider: var(--n-overlay-divider);
+  --n-overlay-glass-danger: var(--n-overlay-danger);
+  --n-overlay-glass-shadow: var(--n-overlay-shadow);
   --n-dropdown-item-padding-inline: var(--n-density-space-md);
   --n-dropdown-radius: var(--n-radius-lg);
   --n-toast-width: 34rem;

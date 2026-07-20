@@ -21,6 +21,7 @@ import {
   Checkbox,
   Code,
   Dialog,
+  DialogFooter,
   Sheet,
   SheetBody,
   SheetClose,
@@ -661,7 +662,9 @@ function Preview({ kind }: { kind: string }) {
               description="Choose how this collection should be shared."
             >
               <p>Choose collaborators and permissions before sharing this workspace collection.</p>
-              <Button>Send invite</Button>
+              <DialogFooter>
+                <Button>Send invite</Button>
+              </DialogFooter>
             </Dialog>
           ) : null}
           {kind === "sheet" ? (
@@ -761,7 +764,7 @@ function Preview({ kind }: { kind: string }) {
             </ToastProvider>
           ) : null}
           {kind === "tabs" ? (
-            <Tabs defaultValue="overview">
+            <Tabs defaultValue="overview" variant="segmented">
               <TabsList aria-label="Workspace sections">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="files">Files</TabsTrigger>

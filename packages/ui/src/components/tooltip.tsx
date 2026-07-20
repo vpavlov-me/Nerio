@@ -34,7 +34,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
             <BaseTooltip.Popup
               ref={ref}
               className={cn(
-                "n-tooltip-popup z-(--n-overlay-z-index) max-w-(--n-size-tooltip-max) whitespace-normal rounded-(--n-tooltip-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) text-(length:--n-font-size-xs) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow)",
+                "n-tooltip-popup z-(--n-overlay-z-index) max-w-(--n-size-tooltip-max) whitespace-normal rounded-(--n-tooltip-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) px-(--n-space-3) py-(--n-space-2) text-(length:--n-font-size-xs) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)]",
                 motionClasses.overlayEnter,
                 className,
               )}

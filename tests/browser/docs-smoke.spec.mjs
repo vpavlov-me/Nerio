@@ -286,6 +286,185 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   await expectHealthyPage(page, problems);
 });
 
+test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally animated", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+
+  await page.goto("/docs/components/tabs");
+  const tabs = page.locator(".n-tabs").first();
+  await expect(tabs).toHaveAttribute("data-variant", "segmented");
+  const tabsVisual = await tabs.evaluate((element) => {
+    const indicator = element.querySelector(".n-tabs__indicator");
+    const trigger = element.querySelector('[role="tab"]');
+    return {
+      indicatorShadow: getComputedStyle(indicator).boxShadow,
+      triggerDuration: getComputedStyle(trigger).transitionDuration,
+    };
+  });
+  expect(tabsVisual.indicatorShadow).not.toBe("none");
+  expect(tabsVisual.triggerDuration).not.toBe("0s");
+
+  await page.goto("/docs/components/dialog");
+  const dialogTrigger = page.getByRole("button", { name: "Open dialog" });
+  await dialogTrigger.click();
+  const dialog = page.getByRole("dialog", { name: "Share collection" });
+  await expect(dialog).toBeVisible();
+  const dialogVisual = await dialog.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const backdrop = document.querySelector('[data-slot="backdrop"]');
+    const footer = element.querySelector('[data-slot="footer"]');
+    const close = element.querySelector('[data-slot="close"]');
+    return {
+      animationName: style.animationName,
+      backdropFilter: getComputedStyle(backdrop).backdropFilter,
+      background: style.backgroundColor,
+      borderWidth: style.borderWidth,
+      closeVariant: close?.getAttribute("data-variant"),
+      color: style.color,
+      footerJustify: getComputedStyle(footer).justifyContent,
+      surfaceFilter: style.backdropFilter,
+    };
+  });
+  expect(dialogVisual.background).toBe("rgba(0, 0, 0, 0.88)");
+  expect(dialogVisual.color).toBe("rgb(255, 255, 255)");
+  expect(dialogVisual.borderWidth).toBe("0px");
+  expect(dialogVisual.surfaceFilter).toContain("blur(24px)");
+  expect(dialogVisual.backdropFilter).toContain("blur(10px)");
+  expect(dialogVisual.animationName).toContain("n-dialog-enter");
+  expect(dialogVisual.closeVariant).toBe("secondary");
+  expect(dialogVisual.footerJustify).toBe("flex-end");
+  await page.getByRole("button", { name: "Close dialog" }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(dialogTrigger).toBeFocused();
+
+  const safeAreaSession = await page.context().newCDPSession(page);
+  await safeAreaSession.send("Emulation.setSafeAreaInsetsOverride", {
+    insets: { top: 47, right: 80, bottom: 34, left: 40 },
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/docs/components/sheet");
+  await page.getByRole("button", { name: "Open settings" }).click();
+  const sheet = page.getByRole("dialog", { name: "Workspace settings" });
+  await expect(sheet).toBeVisible();
+  await sheet.evaluate(async (element) => {
+    await Promise.all(element.getAnimations().map((animation) => animation.finished));
+  });
+  const sheetVisual = await sheet.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    const style = getComputedStyle(element);
+    const footer = element.querySelector('[data-slot="sheet-footer"]');
+    return {
+      animationName: style.animationName,
+      borderRadius: Number.parseFloat(style.borderRadius),
+      footerJustify: getComputedStyle(footer).justifyContent,
+      leftInset: rect.left,
+      rightInset: window.innerWidth - rect.right,
+      surfaceFilter: style.backdropFilter,
+      topInset: rect.top,
+    };
+  });
+  expect(sheetVisual.animationName).toContain("n-sheet-enter-right");
+  expect(sheetVisual.borderRadius).toBeGreaterThan(0);
+  expect(sheetVisual.footerJustify).toBe("flex-end");
+  expect(sheetVisual.leftInset).toBeGreaterThanOrEqual(40);
+  expect(sheetVisual.rightInset).toBeGreaterThanOrEqual(80);
+  expect(sheetVisual.topInset).toBeGreaterThanOrEqual(47);
+  expect(sheetVisual.surfaceFilter).toContain("blur(24px)");
+  await page.getByRole("button", { name: "Cancel" }).click();
+  await expect(sheet).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Open mobile navigation" }).click();
+  const navigationSheet = page.getByRole("dialog", { name: "Workspace navigation" });
+  await expect(navigationSheet).toHaveAttribute("data-side", "left");
+  await expect(navigationSheet.getByRole("button", { name: "Close sheet" })).toHaveAttribute(
+    "data-variant",
+    "secondary",
+  );
+  await navigationSheet.evaluate(async (element) => {
+    await Promise.all(element.getAnimations().map((animation) => animation.finished));
+  });
+  const navigationBounds = await navigationSheet.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, right: window.innerWidth - rect.right };
+  });
+  expect(navigationBounds.left).toBeGreaterThanOrEqual(40);
+  expect(navigationBounds.right).toBeGreaterThanOrEqual(80);
+  await navigationSheet.getByRole("button", { name: "Close sheet" }).click();
+
+  await safeAreaSession.send("Emulation.setSafeAreaInsetsOverride", {
+    insets: { top: 0, right: 0, bottom: 0, left: 0 },
+  });
+  await page.setViewportSize({ width: 1280, height: 720 });
+
+  await page.goto("/docs/components/command-primitive");
+  const commandVisual = await page
+    .locator(".n-command")
+    .first()
+    .evaluate((element) => {
+      const style = getComputedStyle(element);
+      const inputGroup = element.querySelector('[data-slot="command-input-group"]');
+      return {
+        background: style.backgroundColor,
+        inputRadius: Number.parseFloat(getComputedStyle(inputGroup).borderRadius),
+        surfaceFilter: style.backdropFilter,
+      };
+    });
+  expect(commandVisual.background).toBe("rgba(0, 0, 0, 0.88)");
+  expect(commandVisual.inputRadius).toBeGreaterThan(100);
+  expect(commandVisual.surfaceFilter).toContain("blur(24px)");
+
+  await page.goto("/docs/components/popover");
+  await page.getByRole("button", { name: "Filters" }).click();
+  const popover = page.locator(".n-popover__content");
+  await expect(popover).toBeVisible();
+  const popoverVisual = await popover.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      background: style.backgroundColor,
+      padding: Number.parseFloat(style.paddingTop),
+      radius: Number.parseFloat(style.borderRadius),
+      surfaceFilter: style.backdropFilter,
+    };
+  });
+  expect(popoverVisual.background).toBe("rgba(0, 0, 0, 0.88)");
+  expect(popoverVisual.padding).toBeGreaterThan(0);
+  expect(popoverVisual.radius).toBeGreaterThan(0);
+  expect(popoverVisual.surfaceFilter).toContain("blur(24px)");
+
+  await page.goto("/docs/components/tooltip");
+  const tooltipTrigger = page.getByRole("button", { name: "Copy link" });
+  await tooltipTrigger.scrollIntoViewIfNeeded();
+  await tooltipTrigger.focus();
+  const tooltip = page.getByRole("tooltip");
+  await expect(tooltip).toBeVisible({ timeout: 10_000 });
+  await expect(tooltip).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
+  expect(await tooltip.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
+    "blur(24px)",
+  );
+
+  await page.goto("/docs/components/dropdown-menu");
+  await page.getByRole("button", { name: "Actions", exact: true }).click();
+  const dropdown = page.locator(".n-dropdown");
+  await expect(dropdown).toBeVisible();
+  const dropdownVisual = await dropdown.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const item = element.querySelector('[data-slot="item"]');
+    return {
+      background: style.backgroundColor,
+      itemDuration: getComputedStyle(item).transitionDuration,
+      radius: Number.parseFloat(style.borderRadius),
+      surfaceFilter: style.backdropFilter,
+    };
+  });
+  expect(dropdownVisual.background).toBe("rgba(0, 0, 0, 0.88)");
+  expect(dropdownVisual.itemDuration).not.toBe("0s");
+  expect(dropdownVisual.radius).toBe(popoverVisual.radius);
+  expect(dropdownVisual.surfaceFilter).toContain("blur(24px)");
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps the final Tailwind component families active across public docs", async ({ page }) => {
   const problems = monitorPage(page);
   const routes = [

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { PanelLeft } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
+import { motionClasses } from "../lib/motion";
 import { Icon } from "./icon";
 
 export type SidebarSide = "left" | "right";
@@ -164,6 +165,7 @@ export const SidebarTrigger = React.forwardRef<HTMLButtonElement, SidebarToggleP
         {...props}
         className={cn(
           "n-sidebar-trigger inline-flex min-h-(--n-sidebar-rail-hit-area) min-w-(--n-sidebar-rail-hit-area) cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) forced-colors:border forced-colors:border-[ButtonText]",
+          motionClasses.hover,
           className,
         )}
         data-slot="sidebar-trigger"
@@ -180,6 +182,7 @@ export const SidebarRail = React.forwardRef<HTMLButtonElement, SidebarToggleProp
         {...props}
         className={cn(
           "n-sidebar-rail absolute top-1/2 right-[calc(-0.5*var(--n-sidebar-rail-hit-area))] z-1 inline-flex size-(--n-sidebar-rail-hit-area) -translate-y-1/2 cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) [[data-side=right]_&]:right-auto [[data-side=right]_&]:left-[calc(-0.5*var(--n-sidebar-rail-hit-area))] forced-colors:border forced-colors:border-[ButtonText]",
+          motionClasses.hover,
           className,
         )}
         data-slot="sidebar-rail"
