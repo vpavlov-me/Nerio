@@ -370,9 +370,10 @@ function tailwindDocumentationFailures() {
 
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
-const documentedRegistrySlugs = registrySlugs.filter(
-  (slug) => !manifest.items.find((item) => item.name === slug)?.deprecated,
-);
+const documentedRegistrySlugs = registrySlugs.filter((slug) => {
+  const item = manifest.items.find((candidate) => candidate.name === slug);
+  return !item?.deprecated && !item?.docsPath;
+});
 const componentCatalog = JSON.parse(read("data/component-catalog.json"));
 
 const docsChrome = read("apps/docs/components/docs-chrome.tsx");

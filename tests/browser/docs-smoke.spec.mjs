@@ -96,6 +96,51 @@ test("allows wheel scrolling on the homepage", async ({ page }) => {
   await expectHealthyPage(page, problems);
 });
 
+test("keeps the optional Motion adapter deterministic and preference-aware", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/foundations/motion");
+  await expect(page.getByRole("heading", { name: "Motion", exact: true })).toBeVisible();
+
+  const presenceItem = page.getByTestId("motion-presence-item");
+  await expect(presenceItem).toBeVisible();
+  await page.getByRole("button", { name: "Hide update" }).click();
+  await expect(presenceItem).toHaveCount(0);
+  await page.getByRole("button", { name: "Show update" }).press("Enter");
+  await expect(presenceItem).toBeVisible();
+
+  const reverse = page.getByRole("button", { name: "Reverse state" });
+  await reverse.click();
+  await reverse.click();
+  await reverse.click();
+  const interruption = page.getByTestId("motion-interruption-indicator");
+  await expect(interruption).toHaveAttribute("data-active", "end");
+  await expect(interruption).toHaveAttribute("data-settled", "true");
+
+  const layoutItems = page.getByTestId("motion-layout-list").locator("span");
+  await expect(layoutItems.first()).toHaveText("Plan");
+  await page.getByRole("button", { name: "Reorder steps" }).click();
+  await expect(layoutItems.first()).toHaveText("Review");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
+  await expect(page.getByTestId("motion-layout-list")).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth))
+    .toBeLessThanOrEqual(1);
+
+  const reducedProbe = page.getByTestId("motion-reduced-probe");
+  await expect(reducedProbe).toHaveAttribute("data-reduced-motion", "false");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(reducedProbe).toHaveAttribute("data-reduced-motion", "true");
+  await page.getByRole("button", { name: "Toggle state" }).click();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(reducedProbe).toHaveAttribute("data-reduced-motion", "false");
+
+  await page.getByRole("button", { name: "Hide update" }).click();
+  await page.goto("/docs/foundations/tokens");
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Actions and Forms Tailwind recipes active across public docs", async ({ page }) => {
   const problems = monitorPage(page);
   const routes = [

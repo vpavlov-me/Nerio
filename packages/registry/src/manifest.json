@@ -66,6 +66,45 @@
       "usage": "@import './styles/tokens.css';\n\nimport { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>"
     },
     {
+      "name": "motion-adapter",
+      "title": "Motion Adapter",
+      "description": "Optional client-only Motion integration with token-aligned transitions, variants, user-preference reduced motion, and bounded LazyMotion loading.",
+      "category": "foundation",
+      "docsPath": "/docs/foundations/motion",
+      "dependencies": ["motion", "react"],
+      "optionalPeerDependencies": ["motion"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../adapters/src/motion.tsx",
+          "target": "lib/motion-adapter.tsx",
+          "role": "utility"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["motion-config"],
+      "variants": ["fade", "fadeScale", "directional slide", "collapse"],
+      "states": ["hidden", "visible", "exit"],
+      "requiredTokens": [
+        "--n-duration-instant",
+        "--n-duration-fast",
+        "--n-duration-normal",
+        "--n-duration-slow",
+        "--n-easing-standard",
+        "--n-easing-enter",
+        "--n-easing-exit",
+        "--n-easing-expressive",
+        "--n-motion-translate-md"
+      ],
+      "accessibility": [
+        "NerioMotionConfig always uses reducedMotion=user so operating-system preference removes transform and layout movement while preserving useful opacity feedback.",
+        "useNerioReducedMotion exposes a server-stable snapshot and updates mounted compositions when the operating-system preference changes.",
+        "Animation must not carry information that is unavailable in the static end state.",
+        "Keep the adapter inside the smallest Next.js client boundary; Nerio Core remains CSS-first and server-safe."
+      ],
+      "usage": "\"use client\";\n\nimport { NerioMotionConfig, motionVariants } from '@/components/nerio/lib/motion-adapter';\nimport { LazyMotion, domAnimation } from 'motion/react';\nimport * as m from 'motion/react-m';\n\n<NerioMotionConfig>\n  <LazyMotion features={domAnimation} strict>\n    <m.div initial=\"hidden\" animate=\"visible\" variants={motionVariants.fade} />\n  </LazyMotion>\n</NerioMotionConfig>"
+    },
+    {
       "name": "kbd",
       "title": "Kbd",
       "description": "Displays a keyboard shortcut with native kbd semantics.",

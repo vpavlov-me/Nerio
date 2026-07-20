@@ -52,6 +52,13 @@ motion. Use opaque neutrals for contrast-critical or overlap-isolated geometry s
 boundaries. Use semantic surface and border aliases instead of consuming alpha primitives directly.
 The implementation reference is `/docs/foundations/visual-language`.
 
+Core motion remains CSS-first. Install `motion` and use the optional client-only
+`@nerio-ui/adapters/motion` entrypoint only for coordinated presence, interruption, layout
+continuity, gestures, or product-level sequencing. `NerioMotionConfig` follows the user's reduced
+motion preference; the preferred loading path is strict `LazyMotion` plus `m` and
+`domAnimation`, with `domMax` reserved for layout, pan, or drag. Unrelated adapters and
+`@nerio-ui/ui` resolve no Motion runtime.
+
 Prefer composition, explicit slots, semantic HTML, visible focus states, and accessible labels. Use Nerio's icon adapter for Lucide or custom SVG React components.
 
 Card anatomy is `Card`, optional `CardVisual`, `CardHeader`, `CardTitle`, `CardDescription`, optional `CardAction`, `CardContent`, and `CardFooter`. `CardVisual` accepts generic visual content and only supports `inset` or `bleed` placement. `CardAction` is for surface Cards only; linked Cards must not contain interactive descendants.

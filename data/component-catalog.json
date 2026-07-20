@@ -61,12 +61,19 @@
     "@nerio-ui/ui/client",
     "@nerio-ui/adapters",
     "@nerio-ui/adapters/icons",
+    "@nerio-ui/adapters/motion",
     "@nerio-ui/pro"
   ],
-  "entrypointValues": ["@nerio-ui/ui", "@nerio-ui/ui/client"],
+  "entrypointValues": ["@nerio-ui/ui", "@nerio-ui/ui/client", "@nerio-ui/adapters/motion"],
   "runtimeValues": ["server", "client"],
   "registryIdentities": [
     { "name": "typography", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    {
+      "name": "motion-adapter",
+      "entrypoint": "@nerio-ui/adapters/motion",
+      "runtime": "client",
+      "docsPath": "/docs/foundations/motion"
+    },
     { "name": "kbd", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "icon-button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -175,6 +182,17 @@
       "category": "foundation",
       "status": "stable-core",
       "description": "Token-customizable motion variables such as --n-duration-fast and --n-duration-normal. Not a v1 runtime axis."
+    },
+    {
+      "name": "Motion Adapter",
+      "tier": "core",
+      "package": "@nerio-ui/adapters/motion",
+      "category": "foundation",
+      "status": "implemented-initial",
+      "runtime": "client",
+      "optionalPeer": "motion@^12.42.2",
+      "sourceInstall": "motion-adapter",
+      "description": "Optional client-only Motion integration with token-aligned typed transitions, variants, reduced-motion configuration, and bounded LazyMotion loading."
     },
     {
       "name": "Contrast Tokens",

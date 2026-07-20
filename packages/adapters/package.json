@@ -40,11 +40,16 @@
     "./schema": {
       "types": "./src/schema.ts",
       "default": "./src/schema.ts"
+    },
+    "./motion": {
+      "types": "./src/motion.tsx",
+      "default": "./src/motion.tsx"
     }
   },
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
+    "test:motion": "vitest run test/motion.test.tsx",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -54,23 +59,31 @@
     "@nerio-ui/config": "workspace:*",
     "@tanstack/react-table": "^8.21.3",
     "@types/react": "^19.2.7",
+    "@types/react-dom": "19.2.3",
     "eslint": "^9.39.2",
+    "jsdom": "29.1.1",
+    "motion": "12.42.2",
     "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react-dom": "^19.2.7",
     "react-hook-form": "^7.68.0",
     "recharts": "^3.6.0",
     "typescript": "^5.9.3",
+    "vitest": "4.1.10",
     "zod": "^4.2.1"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.21.3",
-    "react-hook-form": "^7.68.0",
+    "motion": "^12.42.2",
     "react": ">=19",
+    "react-hook-form": "^7.68.0",
     "recharts": "^3.6.0",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {
     "@tanstack/react-table": {
+      "optional": true
+    },
+    "motion": {
       "optional": true
     },
     "react-hook-form": {

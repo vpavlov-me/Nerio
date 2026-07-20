@@ -192,6 +192,23 @@ test("catalog validator reports entrypoint and runtime drift from canonical cata
   );
 });
 
+test("catalog validator reports Foundation documentation-path drift", () => {
+  withFixture(
+    catalog,
+    (value) => {
+      value.registryIdentities.find((item) => item.name === "motion-adapter").docsPath =
+        "/docs/foundations/animations";
+      return value;
+    },
+    "--catalog",
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Registry component motion-adapter documentation path differs from catalog/,
+      ),
+  );
+});
+
 test("catalog validator requires registry items for installable Foundation components", () => {
   withFixture(
     manifest,
