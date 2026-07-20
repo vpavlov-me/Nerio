@@ -371,7 +371,30 @@ test("keeps Actions and Forms Tailwind recipes active across public docs", async
 
   await page.goto("/docs/components/select");
   await page.getByRole("combobox", { name: "Status" }).click();
-  await expect(page.locator(".n-select-popup")).toHaveCSS("border-radius", "16px");
+  const selectPopup = page.locator(".n-select-popup");
+  await expect(selectPopup).toHaveCSS("border-radius", "16px");
+  const selectOverlayTokens = await selectPopup.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      divider: style.getPropertyValue("--n-color-border-subtle").trim(),
+      foreground: style.getPropertyValue("--n-color-text-primary").trim(),
+      foregroundMuted: style.getPropertyValue("--n-color-text-secondary").trim(),
+      itemBackground: style.getPropertyValue("--n-color-surface-muted").trim(),
+      itemSelectedBackground: style.getPropertyValue("--n-color-surface-selected").trim(),
+      overlayDivider: style.getPropertyValue("--n-overlay-divider").trim(),
+      overlayForeground: style.getPropertyValue("--n-overlay-foreground").trim(),
+      overlayForegroundMuted: style.getPropertyValue("--n-overlay-foreground-muted").trim(),
+      overlayItemBackground: style.getPropertyValue("--n-overlay-control-background").trim(),
+      overlaySelectedBackground: style.getPropertyValue("--n-overlay-selected-background").trim(),
+    };
+  });
+  expect(selectOverlayTokens.divider).toBe(selectOverlayTokens.overlayDivider);
+  expect(selectOverlayTokens.foreground).toBe(selectOverlayTokens.overlayForeground);
+  expect(selectOverlayTokens.foregroundMuted).toBe(selectOverlayTokens.overlayForegroundMuted);
+  expect(selectOverlayTokens.itemBackground).toBe(selectOverlayTokens.overlayItemBackground);
+  expect(selectOverlayTokens.itemSelectedBackground).toBe(
+    selectOverlayTokens.overlaySelectedBackground,
+  );
 
   await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
   await page.goto("/docs/components/checkbox");
