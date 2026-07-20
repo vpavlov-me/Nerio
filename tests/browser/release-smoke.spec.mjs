@@ -6,6 +6,7 @@ const densities = ["comfortable", "compact"];
 const healthStabilityWindowMs = 250;
 const viewports = [
   { name: "desktop", width: 1440, height: 1000 },
+  { name: "tablet", width: 820, height: 1180 },
   { name: "mobile", width: 390, height: 844 },
 ];
 
@@ -58,7 +59,7 @@ test("covers the release appearance and responsive matrix without overflow", asy
     await expect(
       page.getByRole("heading", { name: "Product operations without a vertical bias" }),
     ).toBeVisible();
-    if (viewport.name === "mobile") {
+    if (viewport.width <= 1080) {
       await expect(page.getByRole("button", { name: "Open workspace navigation" })).toBeVisible();
     } else {
       await expect(page.getByRole("complementary", { name: "Workspace sidebar" })).toBeVisible();
@@ -288,13 +289,30 @@ test("covers loading, empty, error, success, reduced motion, and forced colors",
   ).toBeVisible();
   await page.getByRole("button", { name: "Ready" }).click();
   await expect(page.getByRole("region", { name: "Workspace projects" })).toBeVisible();
+  await page.getByRole("button", { name: "Success" }).click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Workspace synchronized" }),
+  ).toBeVisible();
+  await expect(page.getByRole("region", { name: "Workspace projects" })).toBeVisible();
 
   await page.getByRole("textbox", { name: "Search projects" }).fill("no-such-project");
-  await expect(page.getByRole("status")).toContainText("No matching projects");
+  await expect(page.getByRole("status").filter({ hasText: "No matching projects" })).toBeVisible();
   await page.getByRole("button", { name: "Create project" }).click();
   await expect(
     page.locator(".n-toast--managed").filter({ hasText: "Project draft created" }),
   ).toBeVisible();
 
+  await expectHealthyPage(page, problems);
+});
+
+test("uses current Core primitives without an app-local Chart or deprecated IconButton", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "Delivery signals" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Chart/ })).toHaveCount(0);
+  await expect(page.locator(".n-icon-button")).toHaveCount(0);
+  await expect(page.getByRole("progressbar", { name: "Research" })).toBeVisible();
   await expectHealthyPage(page, problems);
 });

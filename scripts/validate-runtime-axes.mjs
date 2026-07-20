@@ -167,6 +167,7 @@ function validate() {
     "--catalog": join(root, "data/component-catalog.json"),
     "--token-contract": join(root, "packages/tokens/src/index.ts"),
     "--docs-controls": join(root, "apps/docs/components/docs-chrome.tsx"),
+    "--docs-playground": join(root, "apps/docs/components/visual-playground.tsx"),
     "--docs-layout": join(root, "apps/docs/app/layout.tsx"),
     "--docs-appearance": join(root, "apps/docs/lib/appearance.ts"),
     "--demo-controls": join(root, "apps/demo-app/app/page.tsx"),
@@ -178,6 +179,7 @@ function validate() {
   const catalog = JSON.parse(readFileSync(paths["--catalog"], "utf8"));
   const tokenContract = readFileSync(paths["--token-contract"], "utf8");
   const docsControls = readFileSync(paths["--docs-controls"], "utf8");
+  const docsPlayground = readFileSync(paths["--docs-playground"], "utf8");
   const docsLayout = readFileSync(paths["--docs-layout"], "utf8");
   const docsAppearance = readFileSync(paths["--docs-appearance"], "utf8");
   const demoControls = readFileSync(paths["--demo-controls"], "utf8");
@@ -258,12 +260,13 @@ function validate() {
     }
   }
 
-  for (const [surface, source] of [
-    ["Docs", docsControls],
-    ["Demo", demoControls],
+  for (const [surface, source, requiredImports] of [
+    ["Docs header", docsControls, ["modes"]],
+    ["Docs Playground", docsPlayground, ["themes", "modes", "densities"]],
+    ["Demo", demoControls, ["themes", "modes", "densities"]],
   ]) {
     const imports = namedImports(source, "@nerio-ui/tokens");
-    for (const name of ["themes", "modes", "densities"]) {
+    for (const name of requiredImports) {
       if (!imports.has(name))
         failures.push(
           `${surface} runtime controls must import canonical ${name} from @nerio-ui/tokens.`,
@@ -286,15 +289,30 @@ function validate() {
   if (docsControls.includes("toggleMode")) {
     failures.push("Docs controls must not collapse System, Light, and Dark into a binary toggle.");
   }
+  if (
+    !docsPlayground.includes("themes.map") ||
+    !docsPlayground.includes("const playgroundModes = [modes[1], modes[2], modes[0]]") ||
+    !docsPlayground.includes("options={playgroundModes}") ||
+    !docsPlayground.includes("options={densities}")
+  ) {
+    failures.push(
+      "Docs Playground must derive Theme, Mode, and Density controls from canonical runtime axes.",
+    );
+  }
+  if (docsPlayground.includes("persistAppearanceAxis")) {
+    failures.push("Docs Playground token experiments must remain local to its component canvas.");
+  }
 
-  for (const [surface, controls, layout, appearance] of [
-    ["Docs", docsControls, docsLayout, docsAppearance],
-    ["Demo", demoControls, demoLayout, demoAppearance],
+  for (const [surface, controls, persistedAxes, layout, appearance] of [
+    ["Docs", docsControls, ["mode"], docsLayout, docsAppearance],
+    ["Demo", demoControls, ["theme", "mode", "density"], demoLayout, demoAppearance],
   ]) {
-    for (const axis of ["theme", "mode", "density"]) {
+    for (const axis of persistedAxes) {
       if (!controls.includes(`persistAppearanceAxis(document.documentElement, "${axis}"`)) {
         failures.push(`${surface} controls must persist the ${axis} axis independently.`);
       }
+    }
+    for (const axis of ["theme", "mode", "density"]) {
       if (!appearance.includes(`${axis}: "nerio-`)) {
         failures.push(`${surface} appearance runtime is missing a ${axis} storage key.`);
       }

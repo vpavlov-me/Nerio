@@ -25,7 +25,9 @@ async function expectHealthyPage(page, problems) {
   expect(problems).toEqual([]);
 }
 
-test("covers public docs routes, Sidebar examples, and appearance controls", async ({ page }) => {
+test("covers public docs routes, standardized component docs, and the restrained header", async ({
+  page,
+}) => {
   const problems = monitorPage(page);
 
   await page.goto("/");
@@ -57,32 +59,177 @@ test("covers public docs routes, Sidebar examples, and appearance controls", asy
   ).toBeVisible();
   await expect(page.getByText('import * as React from "react";', { exact: false })).toBeVisible();
 
-  await page.getByRole("button", { name: "Purple", exact: true }).click();
-  await page.getByRole("menuitem", { name: /Blue/ }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "blue");
+  await page.goto("/docs/components/stat");
 
-  await page.getByRole("button", { name: "Comfortable", exact: true }).click();
-  const densityMenu = page.getByRole("menu", { name: "Comfortable" });
-  const densityMenuSpacing = await densityMenu.evaluate((element) => {
-    const style = getComputedStyle(element);
-    const probe = document.createElement("span");
-    probe.style.inlineSize = "var(--n-space-1)";
-    element.append(probe);
-    const expected = getComputedStyle(probe).inlineSize;
-    probe.remove();
-    return {
-      actual: style.gap,
-      expected,
-    };
-  });
-  expect(densityMenuSpacing.actual).toBe(densityMenuSpacing.expected);
-  await page.getByRole("menuitem", { name: /Compact/ }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-density", "compact");
+  for (const heading of [
+    "Overview and decision boundary",
+    "Preview",
+    "Installation and imports",
+    "Usage",
+    "Accessibility",
+    "API",
+    "Styling contract",
+  ]) {
+    await expect(page.getByRole("heading", { name: heading })).toBeAttached();
+  }
+
+  await expect(page.getByText("v0.1.0-alpha.1", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Purple", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Comfortable", exact: true })).toHaveCount(0);
+  const search = page.getByRole("button", { name: "Search documentation" });
+  await search.hover();
+  await expect(page.getByRole("tooltip", { name: "Search documentation (/ or ⌘K)" })).toBeVisible();
+  const github = page.getByRole("link", { name: "GitHub", exact: true }).first();
+  await expect(github.locator('img[src="/brand/github-invertocat-black.svg"]')).toBeAttached();
 
   await page.getByRole("button", { name: "Color mode: System" }).click();
   await page.getByRole("menuitem", { name: /Dark/ }).click();
   await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
 
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps homepage positioning, public tooling, and product layers explicit", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/");
+
+  await expect(
+    page.getByRole("heading", {
+      name: "Open-source React design system for adaptable product teams.",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Own the component code without losing the system." }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Core builds the language. Pro will build product solutions.",
+    }),
+  ).toBeVisible();
+  await expect(page.getByText("Registry", { exact: true })).toBeVisible();
+  await expect(page.getByText("CLI", { exact: true })).toBeVisible();
+  await expect(page.getByText("MCP", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Inspect Playground" })).toHaveAttribute(
+    "href",
+    "/playground",
+  );
+  await expect(page.locator('img[src="/brand/google-g.svg"]')).toBeAttached();
+  await expect(page.locator('img[src="/brand/apple-logo.svg"]')).toBeAttached();
+
+  await expectHealthyPage(page, problems);
+});
+
+test("applies every Playground control to the component canvas", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/playground");
+  const playground = page.locator(".visual-playground");
+  await expect(page.getByRole("heading", { name: "Nerio Playground" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Component index" })).toContainText("Button");
+  await expect(page.getByRole("navigation", { name: "Component index" })).not.toContainText(
+    "IconButton",
+  );
+  await expect(page.getByRole("navigation", { name: "Component index" })).not.toContainText(
+    "Chart",
+  );
+
+  await page.getByRole("radio", { name: "blue", exact: true }).click();
+  await page
+    .getByRole("group", { name: "Appearance" })
+    .getByRole("button", { name: "Dark" })
+    .click();
+  await page
+    .getByRole("group", { name: "Density" })
+    .getByRole("button", { name: "Compact" })
+    .click();
+  await page
+    .getByRole("radiogroup", { name: "Radius" })
+    .getByRole("radio")
+    .filter({ hasText: "none" })
+    .click();
+  await page
+    .getByRole("radiogroup", { name: "Scaling" })
+    .getByRole("radio", { name: "90%" })
+    .click();
+  await page
+    .getByRole("group", { name: "Motion" })
+    .getByRole("button", { name: "Reduced" })
+    .click();
+
+  await expect(playground).toHaveAttribute("data-theme", "blue");
+  await expect(playground).toHaveAttribute("data-mode", "dark");
+  await expect(playground).toHaveAttribute("data-density", "compact");
+  const applied = await playground.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      controlHeight: style.getPropertyValue("--n-button-height-md").trim(),
+      duration: style.getPropertyValue("--n-duration-normal").trim(),
+      radius: style.getPropertyValue("--n-radius-md").trim(),
+      space: style.getPropertyValue("--n-space-4").trim(),
+    };
+  });
+  expect(applied).toEqual({
+    controlHeight: "25.2px",
+    duration: "1ms",
+    radius: "0px",
+    space: "14.4px",
+  });
+
+  await page
+    .getByRole("group", { name: "Settings view" })
+    .getByRole("button", { name: "Colors" })
+    .click();
+  await expect(page.getByRole("textbox", { name: "Canvas CSS color value" })).toHaveValue(
+    "#000000",
+  );
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps mobile navigation singular, searchable, and safe", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/docs/getting-started");
+
+  await expect(page.locator(".docs-sidebar")).toBeHidden();
+  await page.getByRole("button", { name: "Open documentation navigation" }).click();
+  const navigation = page.getByRole("dialog", { name: "Documentation" });
+  await expect(navigation).toBeVisible();
+  await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
+    "Visual language",
+  );
+  await navigation.getByRole("link", { name: "Visual language" }).click();
+  await expect(page).toHaveURL(/\/docs\/foundations\/visual-language$/);
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  await page.getByRole("combobox", { name: "Search documentation" }).fill("Playground");
+  await page.getByRole("option", { name: /Playground/ }).click();
+  await expect(page).toHaveURL(/\/playground$/);
+  await expectHealthyPage(page, problems);
+});
+
+test("publishes canonical discovery routes and redirects legacy compositions", async ({
+  page,
+  request,
+}) => {
+  const problems = monitorPage(page);
+  const [sitemap, robots, llms, legacy] = await Promise.all([
+    request.get("/sitemap.xml"),
+    request.get("/robots.txt"),
+    request.get("/llms.txt"),
+    request.get("/docs/compositions/login", { maxRedirects: 0 }),
+  ]);
+
+  expect(await sitemap.text()).toContain("/playground");
+  expect(await sitemap.text()).not.toContain("/docs/blocks/");
+  expect(await robots.text()).toContain("Sitemap: https://nerio.vpavlov.com/sitemap.xml");
+  expect(await llms.text()).toContain("0.1.0-alpha.1");
+  expect(await llms.text()).toContain("Playground");
+  expect(legacy.status()).toBe(308);
+  expect(legacy.headers().location).toBe("/docs/blocks/login");
+
+  await page.goto("/docs/blocks/login");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   await expectHealthyPage(page, problems);
 });
 

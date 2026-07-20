@@ -8,6 +8,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Redesigned the public documentation, component Playground, and universal workspace demo around
+  the approved Visual Language 1.0; added explicit Core/Pro and alpha boundaries, standardized
+  component installation and decision guidance, compact mobile navigation, realistic Core states,
+  and synchronized search, sitemap, README, and AI-readable discovery.
 - Added the optional `@nerio-ui/adapters/motion` client entrypoint with typed token-aligned
   transitions and variants, user-preference reduced motion, strict LazyMotion guidance,
   source-install metadata, and measured zero-runtime isolation for non-adopters.
