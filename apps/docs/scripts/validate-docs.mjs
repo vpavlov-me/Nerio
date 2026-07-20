@@ -343,6 +343,16 @@ function tailwindDocumentationFailures() {
       "Foundation navigation must expose the Visual Language reference",
     ],
     [
+      docsChrome,
+      'href="/docs/blocks/login"',
+      "Primary navigation must expose the Blocks reference surface",
+    ],
+    [
+      docsChrome,
+      'href="/templates"',
+      "Primary navigation must expose the Templates workspace demo",
+    ],
+    [
       sitemap,
       '"/docs/foundations/visual-language"',
       "The sitemap must expose the Visual Language reference",
