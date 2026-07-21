@@ -225,8 +225,17 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
   await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
     "Visual language",
   );
+  await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
+    "Composition previews",
+  );
+  await expect(navigation.getByRole("link", { name: "Login" })).toBeVisible();
   await navigation.getByRole("link", { name: "Visual language" }).click();
   await expect(page).toHaveURL(/\/docs\/foundations\/visual-language$/);
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  await page.getByRole("combobox", { name: "Search documentation" }).fill("Login");
+  await expect(page.getByRole("option", { name: /^Login Login documentation and/ })).toBeVisible();
+  await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByRole("combobox", { name: "Search documentation" }).fill("Playground");
@@ -251,7 +260,7 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   expect(await sitemap.text()).not.toContain("/docs/blocks/");
   expect(await robots.text()).toContain("Sitemap: https://nerio.vpavlov.com/sitemap.xml");
   expect(await llms.text()).toContain("0.1.0-alpha.1");
-  expect(await llms.text()).not.toContain("`/playground`");
+  expect(await llms.text()).not.toContain("/playground");
   expect(legacy.status()).toBe(308);
   expect(legacy.headers().location).toBe("/docs/blocks/login");
 
