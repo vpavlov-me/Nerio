@@ -366,8 +366,10 @@ function getDefaultToc(pathname: string): TocItem[] {
   return tocByPath[pathname] ?? [];
 }
 
+const publicNavigationGroups = [...navGroups, compositionGroup];
+
 const searchEntries: DocsCommandEntry[] = [
-  ...navGroups.flatMap((group) =>
+  ...publicNavigationGroups.flatMap((group) =>
     group.items.flatMap((item) => {
       const pageSections = getDefaultToc(item.href);
       return [
@@ -449,7 +451,7 @@ function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
         </SheetHeader>
         <SheetBody>
           <nav className="docs-mobile-navigation" aria-label="Mobile documentation">
-            {navGroups.map((group) => (
+            {publicNavigationGroups.map((group) => (
               <div className="docs-mobile-navigation__group" key={group.title}>
                 <h2>{group.title}</h2>
                 {group.items.map(({ href, label, icon }) => (
