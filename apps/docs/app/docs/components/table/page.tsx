@@ -72,7 +72,9 @@ import { Button, Checkbox } from "@nerio-ui/ui/client";
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead aria-label="Select rows"><Checkbox /></TableHead>
+          <TableHead aria-label="Select rows">
+            <Checkbox aria-label="Select all rows on this page" />
+          </TableHead>
           <TableHead aria-sort="ascending">
             <Button trailingIcon={ArrowUp} variant="ghost">Name</Button>
           </TableHead>
@@ -139,22 +141,22 @@ function StableTablePreview({ presentation = "primary" }: { presentation?: Table
 
   const reorderMember = (sourceId: string, targetId: string) => {
     if (sourceId === targetId) return;
-    setSort(undefined);
     setMembers((current) => {
-      const sourceIndex = current.findIndex((member) => member.id === sourceId);
-      const targetIndex = current.findIndex((member) => member.id === targetId);
+      const next = sort ? [...orderedMembers] : [...current];
+      const sourceIndex = next.findIndex((member) => member.id === sourceId);
+      const targetIndex = next.findIndex((member) => member.id === targetId);
       if (sourceIndex === -1 || targetIndex === -1) return current;
-      const next = [...current];
       const [moved] = next.splice(sourceIndex, 1);
       if (!moved) return current;
       next.splice(targetIndex, 0, moved);
       return next;
     });
+    setSort(undefined);
   };
 
   const moveMember = (id: string, offset: -1 | 1) => {
-    const currentIndex = members.findIndex((member) => member.id === id);
-    const target = members[currentIndex + offset];
+    const currentIndex = orderedMembers.findIndex((member) => member.id === id);
+    const target = orderedMembers[currentIndex + offset];
     if (target) reorderMember(id, target.id);
   };
 
@@ -230,7 +232,10 @@ function StableTablePreview({ presentation = "primary" }: { presentation?: Table
             <TableHeader>
               <TableRow>
                 <TableHead aria-label="Reorder rows" className="table-doc-control-column" />
-                <TableHead className="table-doc-control-column table-doc-checkbox-column">
+                <TableHead
+                  aria-label="Select rows"
+                  className="table-doc-control-column table-doc-checkbox-column"
+                >
                   <Checkbox
                     aria-label="Select all rows on this page"
                     checked={allVisibleSelected}

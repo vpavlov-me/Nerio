@@ -97,7 +97,7 @@ export default function Page() {
   return (
     <StandardDocPage
       title="Switch"
-      lede="Switches represent every standalone boolean yes/no value, whether it applies immediately or is submitted later, including read-only and invalid states."
+      lede="Switches represent standalone boolean settings that apply immediately, including read-only and invalid states."
       kind="switch"
       preview={<SwitchPreview />}
       sectionContent={{
