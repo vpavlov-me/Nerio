@@ -3,6 +3,9 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { RiOpenaiFill } from "react-icons/ri";
+import { SiClaude, SiCursor } from "react-icons/si";
+import { VscVscode } from "react-icons/vsc";
 import {
   ArrowLeft,
   ArrowRight,
@@ -22,7 +25,6 @@ import {
   Monitor,
   Palette,
   PanelLeft,
-  PackageOpen,
   Search,
   Sparkles,
   Sun,
@@ -506,8 +508,6 @@ function pageToMarkdown() {
 function PageActions({ pathname }: { pathname: string }) {
   const [copied, setCopied] = React.useState(false);
   const [actionStatus, setActionStatus] = React.useState("");
-  const [actionsOpen, setActionsOpen] = React.useState(false);
-  const pageActionsRef = React.useRef<HTMLDivElement | null>(null);
   const copyResetTimer = React.useRef<number | undefined>(undefined);
   const statusResetTimer = React.useRef<number | undefined>(undefined);
 
@@ -518,24 +518,6 @@ function PageActions({ pathname }: { pathname: string }) {
     },
     [],
   );
-
-  React.useEffect(() => {
-    if (!actionsOpen) return;
-    const closeOnOutsidePointer = (event: PointerEvent) => {
-      if (event.target instanceof Node && !pageActionsRef.current?.contains(event.target)) {
-        setActionsOpen(false);
-      }
-    };
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setActionsOpen(false);
-    };
-    document.addEventListener("pointerdown", closeOnOutsidePointer);
-    document.addEventListener("keydown", closeOnEscape);
-    return () => {
-      document.removeEventListener("pointerdown", closeOnOutsidePointer);
-      document.removeEventListener("keydown", closeOnEscape);
-    };
-  }, [actionsOpen]);
 
   const copyToClipboard = async (value: string, successMessage: string) => {
     try {
@@ -577,30 +559,38 @@ function PageActions({ pathname }: { pathname: string }) {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  const runAction = async (action: () => void | Promise<void>) => {
-    await action();
-    setActionsOpen(false);
-  };
-
   const actionItem = (
     icon: IconComponent,
     title: string,
     description: string,
     external = false,
-  ) => (
-    <span className="docs-action-item">
-      <Icon icon={icon} />
-      <span>
-        <span>{title}</span>
-        <small>{description}</small>
+    brand = false,
+  ) => {
+    const ActionIcon = icon;
+
+    return (
+      <span className="docs-action-item">
+        {brand ? (
+          <ActionIcon
+            aria-hidden="true"
+            className="n-icon docs-action-item__brand-icon"
+            focusable="false"
+          />
+        ) : (
+          <Icon icon={icon} />
+        )}
+        <span>
+          <span>{title}</span>
+          <small>{description}</small>
+        </span>
+        {external ? <Icon icon={ExternalLink} /> : null}
       </span>
-      {external ? <Icon icon={ExternalLink} /> : null}
-    </span>
-  );
+    );
+  };
   const { previous, next } = getAdjacentDocs(pathname);
 
   return (
-    <div ref={pageActionsRef} className="docs-page-actions" aria-label="Page actions">
+    <div className="docs-page-actions" aria-label="Page actions">
       <ButtonGroup aria-label="Documentation actions">
         <Button
           leadingIcon={copied ? Check : Copy}
@@ -610,14 +600,62 @@ function PageActions({ pathname }: { pathname: string }) {
         >
           {copied ? "Copied" : "Copy Markdown"}
         </Button>
-        <Button
-          aria-controls="docs-page-actions-menu"
-          aria-expanded={actionsOpen}
-          aria-label="Open page actions"
-          icon={ChevronDown}
-          size="sm"
-          variant="secondary"
-          onClick={() => setActionsOpen((open) => !open)}
+        <DropdownMenu
+          className="docs-page-actions-dropdown"
+          trigger={
+            <Button
+              aria-label="Open page actions"
+              icon={ChevronDown}
+              size="sm"
+              variant="secondary"
+            />
+          }
+          items={[
+            {
+              label: actionItem(FileText, "View as Markdown", "View page as Markdown format"),
+              onSelect: viewMarkdown,
+            },
+            {
+              label: actionItem(
+                SiCursor,
+                "Add to Cursor",
+                "Install MCP Server on Cursor",
+                false,
+                true,
+              ),
+              onSelect: () => void copyInstallHint("Cursor"),
+            },
+            {
+              label: actionItem(
+                VscVscode,
+                "Add to VS Code",
+                "Install MCP Server on VS Code",
+                false,
+                true,
+              ),
+              onSelect: () => void copyInstallHint("VS Code"),
+            },
+            {
+              label: actionItem(
+                RiOpenaiFill,
+                "Open in ChatGPT",
+                "Ask questions about this page",
+                true,
+                true,
+              ),
+              onSelect: () => openAssistant("chatgpt"),
+            },
+            {
+              label: actionItem(
+                SiClaude,
+                "Open in Claude",
+                "Ask questions about this page",
+                true,
+                true,
+              ),
+              onSelect: () => openAssistant("claude"),
+            },
+          ]}
         />
       </ButtonGroup>
       <nav aria-label="Page navigation" className="docs-page-actions__navigation">
@@ -644,41 +682,6 @@ function PageActions({ pathname }: { pathname: string }) {
           />
         ) : null}
       </nav>
-      {actionsOpen ? (
-        <div className="docs-actions-menu" id="docs-page-actions-menu" role="menu">
-          <button role="menuitem" type="button" onClick={() => void runAction(viewMarkdown)}>
-            {actionItem(FileText, "View as Markdown", "View page as Markdown format")}
-          </button>
-          <button
-            role="menuitem"
-            type="button"
-            onClick={() => void runAction(() => copyInstallHint("Cursor"))}
-          >
-            {actionItem(PackageOpen, "Add to Cursor", "Install MCP Server on Cursor")}
-          </button>
-          <button
-            role="menuitem"
-            type="button"
-            onClick={() => void runAction(() => copyInstallHint("VS Code"))}
-          >
-            {actionItem(Code2, "Add to VS Code", "Install MCP Server on VS Code")}
-          </button>
-          <button
-            role="menuitem"
-            type="button"
-            onClick={() => void runAction(() => openAssistant("chatgpt"))}
-          >
-            {actionItem(Sparkles, "Open in ChatGPT", "Ask questions about this page", true)}
-          </button>
-          <button
-            role="menuitem"
-            type="button"
-            onClick={() => void runAction(() => openAssistant("claude"))}
-          >
-            {actionItem(Circle, "Open in Claude", "Ask questions about this page", true)}
-          </button>
-        </div>
-      ) : null}
       <span className="n-visually-hidden" aria-live="polite">
         {actionStatus}
       </span>

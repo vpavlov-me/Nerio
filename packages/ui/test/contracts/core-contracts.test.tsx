@@ -1395,19 +1395,49 @@ describe("Core static contracts", () => {
     expect(source).toContain("max-w-full");
     expect(source).toContain("overflow-x-auto");
     expect(source).toContain("bg-(--n-table-container-background)");
-    expect(source).toContain("[&>.n-table]:min-w-max");
+    expect(source).not.toContain("[&>.n-table]:min-w-max");
+    expect(source).toContain('cn("whitespace-normal break-words", className)');
     expect(source).toContain("[&_:is(th,td)]:text-start");
+    expect(source).toContain("[&_:is(th,td)]:align-middle");
     expect(source).toContain("[data-align=numeric]]:text-end");
     expect(source).toContain("[&_tbody>tr:hover>:is(th,td)]");
     expect(source).toContain("[&_tbody>tr:focus-within>:is(th,td)]");
     expect(source).toContain("[aria-current]:not([aria-current=false])");
     expect(source).toContain("border-s-(length:--n-table-row-selection-indicator-width)");
     expect(source).toContain("border-s-(--n-table-row-selection-indicator)");
+    expect(source).toContain("[&_tbody>tr[data-selected]>:is(th,td)]:border-b-transparent");
+    expect(source).toContain(
+      "[&_tbody>tr[aria-current]:not([aria-current=false])>:is(th,td)]:border-b-transparent",
+    );
     expect(source).toContain("duration-(--n-motion-hover-duration)");
     expect(source).not.toContain("[&_tr:hover");
     expect(source).not.toContain("[&_tr:focus-within");
     expect(source).toContain("forced-colors:data-focusable:focus-visible:outline-[Highlight]");
     expect(source).toContain("[border:var(--n-table-container-border)]");
+    expect(source).toContain("p-(--n-table-container-padding)");
+    expect(tokens).toContain("--n-table-container-padding: var(--n-space-1);");
+    expect(tokens).toContain("--n-table-container-radius: var(--n-radius-lg);");
+    expect(source).toContain("rounded-ss-(--n-table-row-group-radius)");
+    expect(source).toContain("rounded-ee-(--n-table-row-group-radius)");
+    expect(tokens).toContain("--n-table-row-group-radius: var(--n-radius-md);");
+    expect(source).toContain("[&_tbody]:before:h-(--n-table-section-gap)");
+    expect(source).toContain("[&_tbody]:overflow-hidden");
+    expect(source).not.toContain("[&_thead>tr>th+th]:border-s-");
+    expect(source).toContain("[&_thead>tr>th+th]:before:h-[1em]");
+    expect(source).toContain("[&_thead>tr>th+th]:before:w-(--n-table-border-width)");
+    expect(source).toContain("[&_thead>tr>th+th]:before:bg-(--n-table-border)");
+    expect(tokens).toContain("--n-table-container-border: none;");
+    expect(tokens).toContain("--n-table-section-gap: var(--n-space-1);");
+    expect(tokens).toContain("--n-table-row-selection-indicator: var(--n-color-border-default);");
+    expect(tokens).toContain(
+      "--n-pagination-background-current: var(--n-button-background-secondary);",
+    );
+    expect(tokens).toContain("--n-pagination-border-current: var(--n-button-border-secondary);");
+    expect(tokens).toContain(
+      "--n-pagination-foreground-current: var(--n-button-foreground-secondary);",
+    );
+    expect(tokens).toContain("--n-pagination-shadow: var(--n-button-shadow-outline);");
+    expect(tokens).toContain("--n-pagination-shadow-current: var(--n-shadow-none);");
     expect(tokens).toMatch(
       /:root\[data-density="compact"\][\s\S]*--n-table-cell-padding-y:[^;]+;[\s\S]*--n-table-row-min-height:[^;]+;/,
     );
@@ -2825,6 +2855,7 @@ describe("Core interactive action contracts", () => {
       </form>,
     );
     const selected = screen.getByRole("checkbox", { name: "Selected" });
+    expect(selected).toHaveClass("align-middle");
     expect(selected.querySelector(".n-checkbox__check")).toBeInTheDocument();
     const indeterminate = screen.getByRole("checkbox", { name: "Indeterminate" });
     expect(indeterminate.querySelector(".n-checkbox__minus")).toBeInTheDocument();
@@ -3308,12 +3339,21 @@ describe("Core interactive action contracts", () => {
     render(
       <Dialog defaultOpen closeLabel="Close workspace dialog" title="Workspace" trigger="Open">
         Dialog content
+        <DialogFooter>
+          <Button variant="secondary">Cancel</Button>
+          <Button>Save</Button>
+        </DialogFooter>
       </Dialog>,
     );
 
-    expect(screen.getByRole("button", { name: "Close workspace dialog" })).toHaveAttribute(
-      "data-slot",
-      "close",
+    const close = screen.getByRole("button", { name: "Close workspace dialog" });
+    expect(close).toHaveAttribute("data-slot", "close");
+    expect(close).toHaveAttribute("data-variant", "secondary");
+    expect(close).toHaveAttribute("data-size", "sm");
+    expect(document.querySelector('[data-slot="footer"]')).toHaveClass(
+      "flex",
+      "flex-wrap",
+      "justify-end",
     );
   });
 
@@ -3385,6 +3425,10 @@ describe("Core interactive action contracts", () => {
     expect(sheet.querySelector('[data-slot="sheet-body"]')).toHaveTextContent("Settings content");
     expect(sheet.querySelector('[data-slot="sheet-footer"]')).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Close sheet" })).toHaveClass("n-sheet__close-icon");
+    expect(screen.getByRole("button", { name: "Close sheet" })).toHaveAttribute(
+      "data-variant",
+      "secondary",
+    );
     expect(screen.getByRole("button", { name: "Cancel" })).not.toHaveClass("n-sheet__close-icon");
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());

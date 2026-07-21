@@ -1,4 +1,14 @@
-import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
+import {
+  Badge,
+  Code,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -88,27 +98,27 @@ export default function Page() {
         </p>
         <TableContainer aria-label="Focus ring tokens">
           <Table>
-            <thead>
-              <tr>
-                <th>Role</th>
-                <th>Token</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableHead>Token</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {[
                 ["Offset", "--n-color-focus-offset"],
                 ["Soft ring", "--n-color-focus-ring-soft"],
                 ["Inner width", "--n-focus-ring-inner-width"],
                 ["Outer width", "--n-focus-ring-outer-width"],
               ].map(([label, token]) => (
-                <tr key={token}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -117,22 +127,22 @@ export default function Page() {
         <h2 id="component-contracts">Component contracts</h2>
         <TableContainer aria-label="Component effect contracts">
           <Table>
-            <thead>
-              <tr>
-                <th>Contract</th>
-                <th>Token</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Contract</TableHead>
+                <TableHead>Token</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {componentContracts.map(([label, token]) => (
-                <tr key={token}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -157,24 +167,24 @@ function EffectTable({ label, rows }: { label: string; rows: TokenExample[] }) {
   return (
     <TableContainer aria-label={label}>
       <Table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Token</th>
-            <th>Use</th>
-          </tr>
-        </thead>
-        <tbody>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Token</TableHead>
+            <TableHead>Use</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {rows.map(([name, token, use]) => (
-            <tr key={token}>
-              <td>{name}</td>
-              <td>
+            <TableRow key={token}>
+              <TableCell>{name}</TableCell>
+              <TableCell>
                 <Code>{token}</Code>
-              </td>
-              <td>{use}</td>
-            </tr>
+              </TableCell>
+              <TableCell>{use}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
+        </TableBody>
       </Table>
     </TableContainer>
   );
