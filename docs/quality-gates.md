@@ -11,10 +11,10 @@ The shared suite covers focus-visible and keyboard order, Dialog and Sheet focus
 Popover, Tooltip, Dropdown Menu, Select, and command positioning, Toast lifecycle, Table overflow,
 Sidebar collapse, native forms, dynamic viewport bounds, RTL, and reduced motion.
 
-CI allows one retry and writes `test-results/browser/results.json`, so a pass on retry remains visible
-instead of becoming a hidden green result. Traces, screenshots, and videos are retained only on
-failure. Run `pnpm test:browser:repeat` before merging changes that affect browser behavior; two clean
-iterations are the minimum local flake check. Engine limitations are listed in
+CI allows one diagnostic retry, writes `test-results/browser/results.json`, and enables
+`failOnFlakyTests`, so a pass on retry remains visible and still fails the job. Traces, screenshots,
+and videos are retained only on failure. Run `pnpm test:browser:repeat` before merging changes that
+affect browser behavior; two clean iterations are the minimum local flake check. Engine limitations are listed in
 [`platform-support.md`](./platform-support.md); skips require a narrow test annotation and a matching
 documented limitation.
 

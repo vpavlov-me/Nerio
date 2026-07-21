@@ -52,6 +52,11 @@ PR #256 quality run `29841581017` passed all 40 browser tests in 2.0 minutes: 30
 and 5 WebKit. The first attempt passed without a retry or flaky result. The same SHA passed branch
 policy, visual regression, docs and demo Vercel previews, build, and package inspection.
 
+A later documentation-only SHA exposed two WebKit keyboard timing races as pass-on-retry results.
+The harness now waits for the Base UI focus transfer before sending the next key; the two affected
+scenarios passed 10/10 locally with `--repeat-each=5`. CI now enables `failOnFlakyTests`, so a future
+retry cannot produce an approval-ready green job.
+
 The local macOS Firefox 141 binary still cannot establish Playwright's Juggler connection. It times
 out before opening a page with the browser-level graphics error
 `RenderCompositorSWGL failed mapping default framebuffer`; Chromium and WebKit launch normally on the

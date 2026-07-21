@@ -66,14 +66,12 @@ test("keeps Dialog, Popover, Tooltip, and Dropdown Menu positioned and keyboard-
 
   const menuTrigger = page.getByRole("button", { name: "More actions" });
   await menuTrigger.press("Enter");
-  await expect(page.getByRole("menuitem", { name: "Duplicate" })).toHaveAttribute(
-    "data-highlighted",
-    "",
-  );
+  const duplicate = page.getByRole("menuitem", { name: "Duplicate" });
+  await expect(duplicate).toBeFocused();
   const archive = page.getByRole("menuitem", { name: "Archive" });
   await expect(archive).toBeVisible();
-  await page.keyboard.press("ArrowDown");
-  await expect(archive).toHaveAttribute("data-highlighted", "");
+  await duplicate.press("ArrowDown");
+  await expect(archive).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(menuTrigger).toBeFocused();
 
@@ -95,9 +93,12 @@ test("keeps Select, command search, and focus-visible behavior portable", async 
   await select.focus();
   expect(await select.evaluate((element) => element.matches(":focus-visible"))).toBe(true);
   await select.press("ArrowDown");
-  await expect(page.getByRole("option", { name: "Draft" })).toBeVisible();
-  await page.keyboard.press("ArrowDown");
-  await page.keyboard.press("Enter");
+  const draft = page.getByRole("option", { name: "Draft" });
+  await expect(draft).toBeFocused();
+  await draft.press("ArrowDown");
+  const inReview = page.getByRole("option", { name: "In review" });
+  await expect(inReview).toBeFocused();
+  await inReview.press("Enter");
   await expect(select).toContainText("In review");
 
   await page.getByRole("button", { name: "Search documentation" }).click();
