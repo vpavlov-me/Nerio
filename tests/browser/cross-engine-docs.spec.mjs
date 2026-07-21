@@ -12,7 +12,15 @@ function monitorPage(page, browserName) {
   page.on("requestfailed", (request) => {
     const errorText = request.failure()?.errorText ?? "failed";
     if (errorText === "net::ERR_ABORTED") return;
-    if (browserName === "webkit" && errorText === "cancelled") return;
+    const isRscPrefetch = new URL(request.url()).searchParams.has("_rsc");
+    if (browserName === "firefox" && isRscPrefetch && errorText === "NS_BINDING_ABORTED") return;
+    if (
+      browserName === "webkit" &&
+      isRscPrefetch &&
+      ["cancelled", "Load request cancelled"].includes(errorText)
+    ) {
+      return;
+    }
     problems.push(`request: ${request.url()} (${errorText})`);
   });
   return problems;
@@ -58,10 +66,14 @@ test("keeps Dialog, Popover, Tooltip, and Dropdown Menu positioned and keyboard-
 
   const menuTrigger = page.getByRole("button", { name: "More actions" });
   await menuTrigger.press("Enter");
+  await expect(page.getByRole("menuitem", { name: "Duplicate" })).toHaveAttribute(
+    "data-highlighted",
+    "",
+  );
   const archive = page.getByRole("menuitem", { name: "Archive" });
   await expect(archive).toBeVisible();
   await page.keyboard.press("ArrowDown");
-  await expect(archive).toBeFocused();
+  await expect(archive).toHaveAttribute("data-highlighted", "");
   await page.keyboard.press("Escape");
   await expect(menuTrigger).toBeFocused();
 
@@ -73,7 +85,7 @@ test("keeps Dialog, Popover, Tooltip, and Dropdown Menu positioned and keyboard-
   expect(problems).toEqual([]);
 });
 
-test("keeps Select, command search, mobile safe-area layout, and focus-visible behavior portable", async ({
+test("keeps Select, command search, and focus-visible behavior portable", async ({
   browserName,
   page,
 }) => {
@@ -94,6 +106,11 @@ test("keeps Select, command search, mobile safe-area layout, and focus-visible b
   await expect(page.getByRole("option", { name: /^Button / }).first()).toBeVisible();
   await page.keyboard.press("Escape");
 
+  expect(problems).toEqual([]);
+});
+
+test("keeps mobile navigation inside the dynamic viewport", async ({ browserName, page }) => {
+  const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 390, height: 720 });
   await page.goto("/docs/getting-started");
   await page.getByRole("button", { name: "Open documentation navigation" }).click();

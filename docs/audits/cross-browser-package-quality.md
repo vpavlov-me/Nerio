@@ -31,8 +31,8 @@ The implementation adds:
 | Platform policy                         | `pnpm validate:platform-support` passed                                                                                                        |
 | Package budgets                         | `pnpm validate:package-budgets` passed for all configured thresholds                                                                           |
 | Packed release consumer                 | `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release` passed for 6 public packages and all three consumer style modes                          |
-| Chromium browser                        | Full docs/demo suite passed: 29 tests                                                                                                          |
-| WebKit browser                          | Shared docs/demo suite passed: 4 passed                                                                                                        |
+| Chromium browser                        | Full docs/demo suite passed: 30 tests                                                                                                          |
+| WebKit browser                          | Shared docs/demo suite passed: 5 tests                                                                                                         |
 | Visual regression                       | `pnpm test:visual` passed, 18 screenshots                                                                                                      |
 | Branch/docs examples/package inspection | `pnpm test:branch-policy`, `pnpm test:docs-examples`, and `pnpm pack:check` passed                                                             |
 

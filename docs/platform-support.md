@@ -38,9 +38,10 @@ component-family matrix remains on Chromium to avoid multiplying equivalent cove
 - WebKit does not synthesize native Arrow-key scrolling for a focused generic overflow region in
   Playwright. WebKit still verifies that Table overflow is focusable and scrollable; Chromium and
   Firefox additionally verify the native Arrow-key path.
-- During synthetic full-page navigation, Playwright WebKit reports canceled same-origin Next.js RSC
-  prefetches as `cancelled` requests and access-control page errors. The gate ignores only those
-  exact cancellation signatures; real resource failures, console errors, and page errors still fail.
+- Firefox and WebKit report intentionally canceled same-origin Next.js RSC prefetches with
+  engine-specific errors when an overlay closes. The gate ignores only exact cancellation signatures
+  on `_rsc` requests. WebKit may also report the matching access-control page error; real resource
+  failures, console errors, and page errors still fail.
 - Automated browser checks complement, but do not replace, the manual assistive-technology and
   real-device audit tracked separately in #143.
 - Native form chrome and font rasterization may differ by operating system. The contract is semantic
