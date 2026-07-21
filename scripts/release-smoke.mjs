@@ -99,6 +99,15 @@ function readBuiltCss(directory) {
     .join("\n");
 }
 
+function assertSingleTokenPayload(css, mode) {
+  const declarations = css.match(/--n-gray-0\s*:/g) ?? [];
+  if (declarations.length !== 1) {
+    throw new Error(
+      `${mode} consumer emitted ${declarations.length} token payloads; expected exactly one.`,
+    );
+  }
+}
+
 function sortedKeys(value) {
   return Object.keys(value ?? {}).sort();
 }
@@ -323,6 +332,7 @@ try {
   });
 
   const noPreflightCss = readBuiltCss(consumerDirectory);
+  assertSingleTokenPayload(noPreflightCss, "No-Preflight package");
   if (!/box-sizing\s*:\s*border-box/.test(noPreflightCss)) {
     throw new Error("No-Preflight package CSS is missing scoped Nerio box sizing.");
   }
@@ -345,6 +355,7 @@ try {
     cwd: consumerDirectory,
     env: { NEXT_TELEMETRY_DISABLED: "1" },
   });
+  assertSingleTokenPayload(readBuiltCss(consumerDirectory), "Preflight package");
 
   const installedStyles = readdirSync(join(consumerDirectory, "components/nerio/styles")).sort();
   writeFileSync(
@@ -397,6 +408,7 @@ try {
     cwd: consumerDirectory,
     env: { NEXT_TELEMETRY_DISABLED: "1" },
   });
+  assertSingleTokenPayload(readBuiltCss(consumerDirectory), "Source-install");
 
   console.log(
     `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, packed CLI/MCP discovery, representative source installs, and a clean Next.js consumer build.`,

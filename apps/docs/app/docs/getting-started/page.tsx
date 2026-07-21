@@ -86,6 +86,15 @@ export default function Page() {
           Next.js <code>transpilePackages</code>.
         </p>
         <CodeExample code={nextConfig} label="next.config.ts" />
+        <p>
+          The supported baseline is Node.js 20.9 or newer, React 19, Next.js 16.2, TypeScript 5.9,
+          and Tailwind CSS v4. Automated browser evidence covers current Chromium, Firefox, and
+          WebKit engine lines. See the repository&apos;s{" "}
+          <a href="https://github.com/vpavlov-me/Nerio/blob/main/docs/platform-support.md">
+            platform support policy
+          </a>{" "}
+          for exact ranges and manual assistive-technology limitations.
+        </p>
       </section>
 
       <section className="doc-section" id="project-shape">
