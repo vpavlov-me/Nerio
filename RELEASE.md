@@ -27,6 +27,8 @@ pnpm test:tokens
 pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
+pnpm validate:platform-support
+pnpm validate:package-budgets
 pnpm test:browser
 pnpm test:visual
 pnpm test:docs-examples
@@ -39,9 +41,11 @@ pnpm validate:release
 pnpm pack:check
 ```
 
-Install the pinned Chromium runtime once before the browser gate with
-`pnpm exec playwright install --with-deps chromium`. `pnpm test:browser` starts the demo and public
-docs applications locally and runs focused release smoke. `pnpm test:visual` separately compares
+Install the pinned browser runtimes once before the browser gate with
+`pnpm exec playwright install --with-deps chromium firefox webkit`. `pnpm test:browser` starts the
+demo and public docs applications locally, keeps the broad appearance matrix on Chromium, and runs
+focused interaction coverage across Chromium, Firefox, and WebKit. Run `pnpm test:browser:repeat`
+for two clean iterations before merging browser-sensitive changes. `pnpm test:visual` separately compares
 the deterministic Core fixtures against maintainer-approved image baselines; review and update them
 through [`docs/visual-regression.md`](./docs/visual-regression.md). `pnpm test:docs-examples`
 typechecks published Sidebar examples in an isolated fixture.
@@ -54,6 +58,11 @@ and a Foundation item with complete dependency chains, and builds without worksp
 `schema` exports, verifies that an icons/UI-only consumer does not install optional integration
 peers, and checks each optional subpath both without and with its required peer. CI validates only;
 it never publishes, changes package privacy, creates tags, or creates a GitHub Release.
+
+`validate:platform-support` keeps package engines, peer ranges, app baselines, Playwright projects,
+CI, and the documented policy aligned. `validate:package-budgets` enforces packed/unpacked package,
+CSS, named component/icon import, and optional adapter budgets. Threshold changes follow the
+reviewed override policy in `docs/quality-gates.md`.
 
 Package and source-install builds cover Tailwind with and without Preflight. The UI stylesheet may
 contain only named shared keyframes and the documented scoped no-Preflight box-sizing and

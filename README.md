@@ -121,6 +121,9 @@ Source-installed registry components keep their local paths, such as `@/componen
 The Core packages ship TypeScript source. Next.js consumers must list the Nerio packages they use
 in `transpilePackages`; the complete configuration is documented in Getting started.
 
+Runtime, framework, browser-engine, operating-system, and assistive-technology expectations are
+defined in the [platform support policy](./docs/platform-support.md) and checked in CI.
+
 ```tsx
 import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio-ui/ui";
 import { Settings } from "@nerio-ui/adapters/icons";

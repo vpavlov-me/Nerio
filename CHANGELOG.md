@@ -9,6 +9,9 @@ Items under `Unreleased` may change before the next public release.
 ### Added
 
 - Added deterministic Core visual-regression fixtures, cross-axis screenshot baselines, CI diff artifacts, and an explicit maintainer approval workflow.
+- Added Chromium, Firefox, and WebKit interaction gates for docs and demo, an explicit platform
+  support policy, deterministic route/search performance checks, retry/failure artifacts, and
+  enforced package, CSS, named-import, icon, and optional-adapter budgets.
 
 ### Changed
 

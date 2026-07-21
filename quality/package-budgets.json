@@ -1,0 +1,27 @@
+{
+  "packages": {
+    "@nerio-ui/tokens": { "tarballBytes": 15000, "unpackedBytes": 100000 },
+    "@nerio-ui/ui": { "tarballBytes": 65000, "unpackedBytes": 500000 },
+    "@nerio-ui/adapters": { "tarballBytes": 5000, "unpackedBytes": 30000 },
+    "@nerio-ui/registry": { "tarballBytes": 28000, "unpackedBytes": 250000 },
+    "@nerio-ui/cli": { "tarballBytes": 8000, "unpackedBytes": 50000 },
+    "@nerio-ui/mcp": { "tarballBytes": 4000, "unpackedBytes": 30000 }
+  },
+  "css": {
+    "tokensRawBytes": 70000,
+    "tokensGzipBytes": 11000,
+    "uiResidualRawBytes": 5000,
+    "uiResidualGzipBytes": 3000
+  },
+  "bundles": {
+    "serverCardBytes": 20000,
+    "clientButtonBytes": 50000,
+    "namedIconBytes": 10000,
+    "tableAdapterBytes": 1000,
+    "chartsAdapterBytes": 1000,
+    "formsAdapterBytes": 1000,
+    "schemaAdapterBytes": 1000,
+    "motionAdapterBytes": 8000
+  },
+  "overridePolicy": "Raise a threshold only in a focused, reviewed change that records the measured delta and consumer value in the pull request and changelog."
+}

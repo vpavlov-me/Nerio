@@ -45,10 +45,22 @@ jobs:
       - run: pnpm test:mcp
       - run: pnpm test:adapters
       - run: pnpm test:docs-examples
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm validate:platform-support
+      - run: pnpm validate:package-budgets
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:browser
       - run: pnpm build
       - run: pnpm pack:check
+      - name: Upload browser failure and retry evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-quality-artifacts
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            test-results/browser/results.json
+            test-results/browser/artifacts/**
 
   visual-regression:
     runs-on: ubuntu-latest

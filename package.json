@@ -24,12 +24,19 @@
     "test:adapters": "node scripts/adapter-consumer-smoke.mjs && pnpm test:motion-adapter",
     "test:motion-adapter": "pnpm --filter @nerio-ui/adapters test:motion && node scripts/validate-motion-adapter.mjs",
     "test:browser": "playwright test",
+    "test:browser:repeat": "playwright test --repeat-each=2",
+    "test:performance": "playwright test tests/browser/performance-smoke.spec.mjs tests/browser/docs-performance-smoke.spec.mjs --project=demo-chromium --project=docs-chromium",
     "test:visual": "playwright test --config playwright.visual.config.mjs",
     "test:visual:update": "playwright test --config playwright.visual.config.mjs --update-snapshots",
     "test:docs-examples": "tsc -p apps/docs/fixtures/docs-examples/tsconfig.json",
     "test:ui": "pnpm --filter @nerio-ui/ui test",
     "test:a11y": "pnpm --filter @nerio-ui/ui test:a11y",
+    "validate:package-budgets": "node scripts/validate-package-budgets.mjs",
+    "validate:platform-support": "node scripts/validate-platform-support.mjs",
     "pack:check": "node scripts/pack-check.mjs"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   },
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
