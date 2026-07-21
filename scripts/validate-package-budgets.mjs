@@ -30,7 +30,12 @@ function packedBytes(tarball) {
     );
 }
 
-async function bundleProbe(label, source, maximum, { includeLucide = false } = {}) {
+async function bundleProbe(
+  label,
+  source,
+  maximum,
+  { includeLucide = false, resolveDir = root } = {},
+) {
   const result = await build({
     absWorkingDir: root,
     bundle: true,
@@ -57,7 +62,7 @@ async function bundleProbe(label, source, maximum, { includeLucide = false } = {
     metafile: true,
     minify: true,
     platform: "browser",
-    stdin: { contents: source, loader: "tsx", resolveDir: root, sourcefile: `${label}.tsx` },
+    stdin: { contents: source, loader: "tsx", resolveDir, sourcefile: `${label}.tsx` },
     treeShaking: true,
     write: false,
   });
@@ -133,9 +138,9 @@ try {
   );
   const directIconBundle = await bundleProbe(
     "Direct Search icon control",
-    'import { Search } from "./packages/adapters/node_modules/lucide-react/dist/esm/lucide-react.js"; console.log(Search);',
+    'import { Search } from "lucide-react"; console.log(Search);',
     budgets.bundles.namedIconBytes,
-    { includeLucide: true },
+    { includeLucide: true, resolveDir: join(root, "packages/adapters") },
   );
   if (adapterIconBundle.bytes > directIconBundle.bytes + 250) {
     throw new Error("Named adapter icon import retained more than the direct Lucide icon.");

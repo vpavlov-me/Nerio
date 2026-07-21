@@ -14,6 +14,7 @@ const publicPackagePaths = [
   "packages/cli/package.json",
   "packages/mcp/package.json",
 ];
+const nextPolicyMatch = support.next.match(/^>=(\d+)\.(\d+)\.(\d+) <(\d+)$/);
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -24,6 +25,17 @@ assert(
   rootPackage.devDependencies?.typescript?.startsWith("^5.9."),
   "Workspace TypeScript must stay inside the documented 5.9 support line.",
 );
+assert(nextPolicyMatch, `Unsupported Next.js policy format: ${support.next}`);
+
+const nextPolicyMinimum = nextPolicyMatch.slice(1, 4).map(Number);
+const nextPolicyMaximumMajor = Number(nextPolicyMatch[4]);
+
+function compareVersions(left, right) {
+  for (let index = 0; index < 3; index += 1) {
+    if (left[index] !== right[index]) return left[index] - right[index];
+  }
+  return 0;
+}
 assert(
   rootPackage.devDependencies?.["@playwright/test"] === support.playwright,
   "Pinned Playwright version must match platform support.",
@@ -47,8 +59,11 @@ assert(
 
 for (const path of ["apps/docs/package.json", "apps/demo-app/package.json"]) {
   const manifest = readJson(path);
+  const nextRangeMatch = manifest.dependencies?.next?.match(/^\^(\d+)\.(\d+)\.(\d+)$/);
   assert(
-    manifest.dependencies?.next?.startsWith("^16.2."),
+    nextRangeMatch &&
+      compareVersions(nextRangeMatch.slice(1).map(Number), nextPolicyMinimum) >= 0 &&
+      Number(nextRangeMatch[1]) + 1 <= nextPolicyMaximumMajor,
     `${manifest.name} Next.js is out of policy.`,
   );
   assert(
