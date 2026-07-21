@@ -32,6 +32,7 @@ The implementation adds:
 | Package budgets                         | `pnpm validate:package-budgets` passed for all configured thresholds                                                                           |
 | Packed release consumer                 | `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release` passed for 6 public packages and all three consumer style modes                          |
 | Chromium browser                        | Full docs/demo suite passed: 30 tests                                                                                                          |
+| Firefox browser                         | Shared docs/demo suite passed in Linux CI: 5 tests                                                                                             |
 | WebKit browser                          | Shared docs/demo suite passed: 5 tests                                                                                                         |
 | Visual regression                       | `pnpm test:visual` passed, 18 screenshots                                                                                                      |
 | Branch/docs examples/package inspection | `pnpm test:branch-policy`, `pnpm test:docs-examples`, and `pnpm pack:check` passed                                                             |
@@ -45,16 +46,17 @@ Representative measured budgets:
 - named Button import: 12,695 bytes, identical to the direct Button control;
 - named Search icon: 1,739 bytes, identical to the direct Lucide Search control.
 
-## Pending CI evidence
+## Pull request CI evidence — 2026-07-21
 
-The required Firefox projects are configured and installed in CI, but the local macOS Firefox 141
-binary cannot establish Playwright's Juggler connection. It times out before opening a page with the
-browser-level graphics error `RenderCompositorSWGL failed mapping default framebuffer`; Chromium and
-WebKit launch normally on the same machine. This is not converted into a skip or exception. Linux CI
-Firefox remains required before #142 can be considered fully verified.
+PR #256 quality run `29841581017` passed all 40 browser tests in 2.0 minutes: 30 Chromium, 5 Firefox,
+and 5 WebKit. The first attempt passed without a retry or flaky result. The same SHA passed branch
+policy, visual regression, docs and demo Vercel previews, build, and package inspection.
 
-CI must also provide one clean complete `pnpm test:browser` result with retry evidence visible in
-`test-results/browser/results.json`. Any pass-on-retry is treated as flake evidence to investigate,
+The local macOS Firefox 141 binary still cannot establish Playwright's Juggler connection. It times
+out before opening a page with the browser-level graphics error
+`RenderCompositorSWGL failed mapping default framebuffer`; Chromium and WebKit launch normally on the
+same machine. This local browser-runtime limitation is not converted into a test skip because the
+required Linux Firefox evidence is green. Future passes on retry remain flake evidence to investigate,
 not silently equivalent to a first-attempt pass.
 
 ## Boundaries
