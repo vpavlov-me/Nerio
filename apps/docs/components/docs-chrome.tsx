@@ -709,7 +709,13 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
   );
 }
 
-export function DocsChrome({ children }: { children: React.ReactNode }) {
+export function DocsChrome({
+  children,
+  showPlayground,
+}: {
+  children: React.ReactNode;
+  showPlayground: boolean;
+}) {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const isHomePage = pathname === "/";
@@ -720,6 +726,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
+  const visibleSearchEntries = showPlayground
+    ? searchEntries
+    : searchEntries.filter((entry) => !entry.href.startsWith("/playground"));
 
   React.useEffect(() => {
     setFeedback(null);
@@ -854,17 +863,19 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
               Templates
             </Link>
-            <Link
-              href="/playground"
-              className={isPlaygroundPage ? "is-active" : undefined}
-              aria-current={isPlaygroundPage ? "page" : undefined}
-            >
-              Playground
-            </Link>
+            {showPlayground ? (
+              <Link
+                href="/playground"
+                className={isPlaygroundPage ? "is-active" : undefined}
+                aria-current={isPlaygroundPage ? "page" : undefined}
+              >
+                Playground
+              </Link>
+            ) : null}
           </nav>
 
           <div className="docs-controls">
-            <DocsCommandPalette entries={searchEntries} />
+            <DocsCommandPalette entries={visibleSearchEntries} />
             <span className="docs-controls-divider" aria-hidden />
             <DropdownMenu
               className="docs-mode-menu"

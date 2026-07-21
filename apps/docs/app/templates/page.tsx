@@ -1,5 +1,7 @@
 import { createPageMetadata } from "../../lib/seo";
 
+const productionDemoAppUrl = "https://nerio-demo.vercel.app";
+
 export const metadata = createPageMetadata({
   title: "Workspace demo",
   description:
@@ -9,7 +11,9 @@ export const metadata = createPageMetadata({
 });
 
 export default function TemplatesPage() {
-  const demoAppUrl = process.env.NEXT_PUBLIC_DEMO_APP_URL ?? "http://localhost:3002";
+  const demoAppUrl =
+    process.env.NEXT_PUBLIC_DEMO_APP_URL ??
+    (process.env.VERCEL_ENV ? productionDemoAppUrl : "http://localhost:3002");
 
   return (
     <article className="doc-page templates-page">

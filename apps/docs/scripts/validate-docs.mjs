@@ -357,8 +357,13 @@ function tailwindDocumentationFailures() {
       '"/docs/foundations/visual-language"',
       "The sitemap must expose the Visual Language reference",
     ],
-    [sitemap, '"/playground"', "The sitemap must expose the public Playground"],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
+    [playgroundPage, "indexable: false", "Playground metadata must remain private"],
+    [
+      playgroundPage,
+      'process.env.VERCEL_ENV === "production"',
+      "Playground must be unavailable in production",
+    ],
     [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
     [
       playground,
@@ -384,6 +389,10 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (sitemap.includes('"/playground"')) {
+    failures.push("The sitemap must not expose the maintainer-only Playground");
   }
 
   if (/\bIconButton\b/.test(playgroundSpecimens)) {
