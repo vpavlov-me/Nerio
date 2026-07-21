@@ -16,7 +16,6 @@ const staticRoutes = [
   "/docs/foundations/motion",
   "/docs/foundations/radius",
   "/docs/foundations/typography",
-  "/playground",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
