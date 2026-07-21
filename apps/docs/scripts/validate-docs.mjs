@@ -304,6 +304,7 @@ function tailwindDocumentationFailures() {
   const visualLanguagePage = read("apps/docs/app/docs/foundations/visual-language/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const deployment = read("apps/docs/lib/deployment.ts");
   const playgroundPage = read("apps/docs/app/playground/page.tsx");
   const playground = read("apps/docs/components/visual-playground.tsx");
   const playgroundSpecimens = read("apps/docs/components/component-playground-specimens.tsx");
@@ -343,12 +344,37 @@ function tailwindDocumentationFailures() {
       "Foundation navigation must expose the Visual Language reference",
     ],
     [
+      docsChrome,
+      'href="/docs/blocks/login"',
+      "Primary navigation must expose the Blocks reference surface",
+    ],
+    [
+      docsChrome,
+      'href="/templates"',
+      "Primary navigation must expose the Templates workspace demo",
+    ],
+    [
       sitemap,
       '"/docs/foundations/visual-language"',
       "The sitemap must expose the Visual Language reference",
     ],
-    [sitemap, '"/playground"', "The sitemap must expose the public Playground"],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
+    [playgroundPage, "indexable: false", "Playground metadata must remain private"],
+    [
+      playgroundPage,
+      "isPublicProductionDeployment()",
+      "Playground must be unavailable in production",
+    ],
+    [
+      deployment,
+      'return process.env.NODE_ENV === "production"',
+      "Deployment detection must protect non-Vercel production builds",
+    ],
+    [
+      deployment,
+      'vercelEnvironment === "preview" || vercelEnvironment === "production"',
+      "Hosted demo detection must distinguish Vercel preview and production from development",
+    ],
     [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
     [
       playground,
@@ -374,6 +400,10 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (sitemap.includes('"/playground"')) {
+    failures.push("The sitemap must not expose the maintainer-only Playground");
   }
 
   if (/\bIconButton\b/.test(playgroundSpecimens)) {

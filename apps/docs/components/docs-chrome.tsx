@@ -366,8 +366,10 @@ function getDefaultToc(pathname: string): TocItem[] {
   return tocByPath[pathname] ?? [];
 }
 
+const publicNavigationGroups = [...navGroups, compositionGroup];
+
 const searchEntries: DocsCommandEntry[] = [
-  ...navGroups.flatMap((group) =>
+  ...publicNavigationGroups.flatMap((group) =>
     group.items.flatMap((item) => {
       const pageSections = getDefaultToc(item.href);
       return [
@@ -449,7 +451,7 @@ function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
         </SheetHeader>
         <SheetBody>
           <nav className="docs-mobile-navigation" aria-label="Mobile documentation">
-            {navGroups.map((group) => (
+            {publicNavigationGroups.map((group) => (
               <div className="docs-mobile-navigation__group" key={group.title}>
                 <h2>{group.title}</h2>
                 {group.items.map(({ href, label, icon }) => (
@@ -709,7 +711,13 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
   );
 }
 
-export function DocsChrome({ children }: { children: React.ReactNode }) {
+export function DocsChrome({
+  children,
+  showPlayground,
+}: {
+  children: React.ReactNode;
+  showPlayground: boolean;
+}) {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const isHomePage = pathname === "/";
@@ -720,6 +728,9 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
+  const visibleSearchEntries = showPlayground
+    ? searchEntries
+    : searchEntries.filter((entry) => !entry.href.startsWith("/playground"));
 
   React.useEffect(() => {
     setFeedback(null);
@@ -846,16 +857,27 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               Components
             </Link>
             <Link
-              href="/playground"
-              className={isPlaygroundPage ? "is-active" : undefined}
-              aria-current={isPlaygroundPage ? "page" : undefined}
+              href="/docs/blocks/login"
+              className={pathname.startsWith("/docs/blocks") ? "is-active" : undefined}
             >
-              Playground
+              Blocks
             </Link>
+            <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
+              Templates
+            </Link>
+            {showPlayground ? (
+              <Link
+                href="/playground"
+                className={isPlaygroundPage ? "is-active" : undefined}
+                aria-current={isPlaygroundPage ? "page" : undefined}
+              >
+                Playground
+              </Link>
+            ) : null}
           </nav>
 
           <div className="docs-controls">
-            <DocsCommandPalette entries={searchEntries} />
+            <DocsCommandPalette entries={visibleSearchEntries} />
             <span className="docs-controls-divider" aria-hidden />
             <DropdownMenu
               className="docs-mode-menu"

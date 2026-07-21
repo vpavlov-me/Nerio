@@ -94,9 +94,7 @@ test("covers public docs routes, standardized component docs, and the restrained
   await expectHealthyPage(page, problems);
 });
 
-test("keeps homepage positioning, public tooling, and product layers explicit", async ({
-  page,
-}) => {
+test("keeps the homepage concise while local tooling remains accessible", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/");
 
@@ -107,16 +105,18 @@ test("keeps homepage positioning, public tooling, and product layers explicit", 
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Own the component code without losing the system." }),
-  ).toBeVisible();
+  ).toHaveCount(0);
   await expect(
     page.getByRole("heading", {
       name: "Core builds the language. Pro will build product solutions.",
     }),
-  ).toBeVisible();
-  await expect(page.getByText("Registry", { exact: true })).toBeVisible();
-  await expect(page.getByText("CLI", { exact: true })).toBeVisible();
-  await expect(page.getByText("MCP", { exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Inspect Playground" })).toHaveAttribute(
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", {
+      name: "One visual contract, tested through real product composition.",
+    }),
+  ).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Playground", exact: true })).toHaveAttribute(
     "href",
     "/playground",
   );
@@ -225,12 +225,22 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
   await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
     "Visual language",
   );
+  await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
+    "Composition previews",
+  );
+  await expect(navigation.getByRole("link", { name: "Login" })).toBeVisible();
   await navigation.getByRole("link", { name: "Visual language" }).click();
   await expect(page).toHaveURL(/\/docs\/foundations\/visual-language$/);
 
   await page.getByRole("button", { name: "Search documentation" }).click();
+  await page.getByRole("combobox", { name: "Search documentation" }).fill("Login");
+  await expect(page.getByRole("option", { name: /^Login Login documentation and/ })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByRole("combobox", { name: "Search documentation" }).fill("Playground");
-  await page.getByRole("option", { name: /Playground/ }).click();
+  await expect(page.getByRole("option").first()).toHaveAttribute("href", "/playground");
+  await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/playground$/);
   await expectHealthyPage(page, problems);
 });
@@ -247,11 +257,11 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
     request.get("/docs/compositions/login", { maxRedirects: 0 }),
   ]);
 
-  expect(await sitemap.text()).toContain("/playground");
+  expect(await sitemap.text()).not.toContain("/playground");
   expect(await sitemap.text()).not.toContain("/docs/blocks/");
   expect(await robots.text()).toContain("Sitemap: https://nerio.vpavlov.com/sitemap.xml");
   expect(await llms.text()).toContain("0.1.0-alpha.1");
-  expect(await llms.text()).toContain("Playground");
+  expect(await llms.text()).not.toContain("/playground");
   expect(legacy.status()).toBe(308);
   expect(legacy.headers().location).toBe("/docs/blocks/login");
 
