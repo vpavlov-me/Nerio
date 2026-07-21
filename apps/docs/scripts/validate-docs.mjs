@@ -304,6 +304,7 @@ function tailwindDocumentationFailures() {
   const visualLanguagePage = read("apps/docs/app/docs/foundations/visual-language/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const deployment = read("apps/docs/lib/deployment.ts");
   const playgroundPage = read("apps/docs/app/playground/page.tsx");
   const playground = read("apps/docs/components/visual-playground.tsx");
   const playgroundSpecimens = read("apps/docs/components/component-playground-specimens.tsx");
@@ -361,8 +362,18 @@ function tailwindDocumentationFailures() {
     [playgroundPage, "indexable: false", "Playground metadata must remain private"],
     [
       playgroundPage,
-      'process.env.VERCEL_ENV === "production"',
+      "isPublicProductionDeployment()",
       "Playground must be unavailable in production",
+    ],
+    [
+      deployment,
+      'return process.env.NODE_ENV === "production"',
+      "Deployment detection must protect non-Vercel production builds",
+    ],
+    [
+      deployment,
+      'vercelEnvironment === "preview" || vercelEnvironment === "production"',
+      "Hosted demo detection must distinguish Vercel preview and production from development",
     ],
     [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
     [

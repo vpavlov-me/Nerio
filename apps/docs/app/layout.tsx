@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { DocsChrome } from "../components/docs-chrome";
 import { createAppearanceInitializationScript } from "../lib/appearance";
+import { isPublicProductionDeployment } from "../lib/deployment";
 import { siteConfig } from "../lib/site-config";
 
 const geistSans = Geist({
@@ -75,7 +76,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const showPlayground = process.env.VERCEL_ENV !== "production";
+  const showPlayground = !isPublicProductionDeployment();
 
   return (
     <html
