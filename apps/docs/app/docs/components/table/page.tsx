@@ -62,6 +62,14 @@ type TeamSortKey = "name" | "role" | "status" | "email";
 type TeamSort = { key: TeamSortKey; direction: "ascending" | "descending" };
 type TablePresentation = "primary" | "secondary";
 
+function sortMembers(items: readonly TeamMember[], activeSort?: TeamSort) {
+  if (!activeSort) return [...items];
+  return [...items].sort((left, right) => {
+    const comparison = left[activeSort.key].localeCompare(right[activeSort.key]);
+    return activeSort.direction === "ascending" ? comparison : -comparison;
+  });
+}
+
 const stableTableCode = `import { ArrowUp, ChevronDown } from "@nerio-ui/adapters/icons";
 import { Pagination, Table, TableBody, TableCell,
   TableContainer, TableHead, TableHeader, TableRow } from "@nerio-ui/ui";
@@ -124,13 +132,7 @@ function StableTablePreview({ presentation = "primary" }: { presentation?: Table
   const [dragTargetId, setDragTargetId] = React.useState<string>();
   const dragPreviewRef = React.useRef<HTMLTableElement | null>(null);
 
-  const orderedMembers = React.useMemo(() => {
-    if (!sort) return members;
-    return [...members].sort((left, right) => {
-      const comparison = left[sort.key].localeCompare(right[sort.key]);
-      return sort.direction === "ascending" ? comparison : -comparison;
-    });
-  }, [members, sort]);
+  const orderedMembers = React.useMemo(() => sortMembers(members, sort), [members, sort]);
 
   const pageSize = 4;
   const pageStart = (currentPage - 1) * pageSize;
@@ -141,8 +143,9 @@ function StableTablePreview({ presentation = "primary" }: { presentation?: Table
 
   const reorderMember = (sourceId: string, targetId: string) => {
     if (sourceId === targetId) return;
+    const activeSort = sort;
     setMembers((current) => {
-      const next = sort ? [...orderedMembers] : [...current];
+      const next = sortMembers(current, activeSort);
       const sourceIndex = next.findIndex((member) => member.id === sourceId);
       const targetIndex = next.findIndex((member) => member.id === targetId);
       if (sourceIndex === -1 || targetIndex === -1) return current;

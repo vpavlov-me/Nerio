@@ -2556,12 +2556,12 @@ pre {
   text-align: center;
 }
 
-.table-doc-checkbox-column {
-  border-inline-start: 0 !important;
+.n-table.table-doc-product-table thead > tr > th.table-doc-checkbox-column {
+  border-inline-start: 0;
 }
 
-.table-doc-product-table thead .table-doc-checkbox-column::before {
-  display: none !important;
+.n-table.table-doc-product-table thead > tr > th.table-doc-checkbox-column::before {
+  display: none;
 }
 
 .table-doc-drag-handle {
@@ -2613,23 +2613,27 @@ pre {
   padding-block: var(--n-space-6);
 }
 
-.table-doc-empty-row > :is(th, td),
-.table-doc-empty-row:hover > :is(th, td),
-.table-doc-empty-row:focus-within > :is(th, td) {
-  background: transparent !important;
-  border-color: transparent !important;
+.n-table.table-doc-product-table tbody > tr.table-doc-empty-row > :is(th, td),
+.n-table.table-doc-product-table tbody > tr.table-doc-empty-row:hover > :is(th, td),
+.n-table.table-doc-product-table tbody > tr.table-doc-empty-row:focus-within > :is(th, td) {
+  background: transparent;
+  border-color: transparent;
 }
 
-.table-doc-product-table .n-table tbody tr[data-checked-row] > :is(th, td) {
+.n-table.table-doc-product-table tbody > tr[data-checked-row] > :is(th, td) {
   background: var(--n-color-surface-default);
-  border-bottom-color: transparent !important;
+  border-bottom-color: transparent;
 }
 
 .table-doc-sort-button {
-  background: transparent !important;
+  --n-button-background-ghost: transparent;
+  --n-button-background-ghost-active: transparent;
+  --n-button-background-ghost-hover: transparent;
+  --n-button-border-ghost: transparent;
+  --n-button-foreground-ghost: currentColor;
+
   block-size: auto;
-  border-color: transparent !important;
-  color: inherit !important;
+  color: inherit;
   justify-content: flex-start;
   margin-inline: calc(var(--n-table-cell-padding-x) * -1);
   padding-inline: var(--n-table-cell-padding-x);
