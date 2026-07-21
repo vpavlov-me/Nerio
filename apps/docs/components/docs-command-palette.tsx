@@ -39,19 +39,26 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
   const [activeIndex, setActiveIndex] = React.useState(0);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
   const queryText = query.trim().toLowerCase();
-  const results = React.useMemo(
-    () =>
-      (queryText
-        ? entries.filter((entry) =>
-            [entry.title, entry.group, entry.description, entry.href]
-              .join(" ")
-              .toLowerCase()
-              .includes(queryText),
-          )
-        : entries.filter((entry) => !entry.href.includes("#"))
-      ).slice(0, 12),
-    [entries, queryText],
-  );
+  const results = React.useMemo(() => {
+    const matches = queryText
+      ? entries.filter((entry) =>
+          [entry.title, entry.group, entry.description, entry.href]
+            .join(" ")
+            .toLowerCase()
+            .includes(queryText),
+        )
+      : entries.filter((entry) => !entry.href.includes("#"));
+
+    if (!queryText) return matches.slice(0, 12);
+
+    const exactMatches: DocsCommandEntry[] = [];
+    const partialMatches: DocsCommandEntry[] = [];
+    matches.forEach((entry) => {
+      (entry.title.toLowerCase() === queryText ? exactMatches : partialMatches).push(entry);
+    });
+
+    return [...exactMatches, ...partialMatches].slice(0, 12);
+  }, [entries, queryText]);
   const groupedResults = React.useMemo(() => {
     const groups = new Map<string, Array<{ entry: DocsCommandEntry; index: number }>>();
 

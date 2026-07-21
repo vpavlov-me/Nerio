@@ -239,7 +239,8 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
 
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByRole("combobox", { name: "Search documentation" }).fill("Playground");
-  await page.getByRole("option", { name: /Playground/ }).click();
+  await expect(page.getByRole("option").first()).toHaveAttribute("href", "/playground");
+  await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/playground$/);
   await expectHealthyPage(page, problems);
 });
