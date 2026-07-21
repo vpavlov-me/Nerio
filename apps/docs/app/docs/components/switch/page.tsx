@@ -9,11 +9,11 @@ import { createPageMetadata } from "../../../../lib/seo";
 export const metadata = createPageMetadata({
   title: "Switch component",
   description:
-    "Switches toggle immediate settings with familiar on and off affordances, optional descriptions, and accessible state behavior.",
+    "Switches represent every standalone boolean yes/no value with familiar on and off affordances, optional descriptions, and accessible state behavior.",
   path: "/docs/components/switch",
 });
 
-const variantRows = [["Default", "Immediate binary setting."]] as const;
+const variantRows = [["Default", "Standalone boolean yes/no value."]] as const;
 const anatomyRows = [
   ["field", "Optional wrapper that groups Switch with its label and description."],
   ["root", "Interactive Base UI switch control with checked state."],
@@ -97,7 +97,7 @@ export default function Page() {
   return (
     <StandardDocPage
       title="Switch"
-      lede="Switches toggle immediate settings with clear on and off affordances, including read-only and invalid states."
+      lede="Switches represent standalone boolean settings that apply immediately, including read-only and invalid states."
       kind="switch"
       preview={<SwitchPreview />}
       sectionContent={{
@@ -125,7 +125,10 @@ export default function Page() {
                 <Icon icon={Check} />
                 <CardTitle>Do</CardTitle>
               </CardHeader>
-              <CardContent>Use for preferences like notifications or compact mode.</CardContent>
+              <CardContent>
+                Use for any standalone yes/no value, including preferences, permissions, and form
+                settings.
+              </CardContent>
             </Card>
             <Card>
               <CardHeader>
@@ -133,7 +136,8 @@ export default function Page() {
                 <CardTitle>Do not</CardTitle>
               </CardHeader>
               <CardContent>
-                Use Switch when a separate Save, Apply, Submit, or Confirm action is still required.
+                Use Switch for selecting several options from a group; use Checkbox for that
+                pattern.
               </CardContent>
             </Card>
           </div>
@@ -143,7 +147,7 @@ export default function Page() {
             {[
               [
                 "Checkbox",
-                "Choose independent options submitted as part of a form.",
+                "Choose zero or more options inside an explicit group.",
                 "/docs/components/checkbox",
               ],
               [

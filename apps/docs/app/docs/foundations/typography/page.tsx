@@ -1,4 +1,14 @@
-import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
+import {
+  Badge,
+  Code,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -73,29 +83,29 @@ export default function Page() {
         </div>
         <TableContainer aria-label="Default font tokens">
           <Table>
-            <thead>
-              <tr>
-                <th>Role</th>
-                <th>Default token</th>
-                <th>Use</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Sans</td>
-                <td>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableHead>Default token</TableHead>
+                <TableHead>Use</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Sans</TableCell>
+                <TableCell>
                   <Code>--n-font-sans → --n-font-sans-system</Code>
-                </td>
-                <td>Product UI and body copy</td>
-              </tr>
-              <tr>
-                <td>Mono</td>
-                <td>
+                </TableCell>
+                <TableCell>Product UI and body copy</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Mono</TableCell>
+                <TableCell>
                   <Code>--n-font-mono → --n-font-mono-system</Code>
-                </td>
-                <td>Code and numeric values</td>
-              </tr>
-            </tbody>
+                </TableCell>
+                <TableCell>Code and numeric values</TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
         <p>
@@ -109,93 +119,93 @@ export default function Page() {
         <h2 id="presets">Typography presets</h2>
         <TableContainer aria-label="Typography preset tokens">
           <Table>
-            <thead>
-              <tr>
-                <th>Preset</th>
-                <th>Sans token</th>
-                <th>Mono token</th>
-                <th>Font loading</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>System</td>
-                <td>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Preset</TableHead>
+                <TableHead>Sans token</TableHead>
+                <TableHead>Mono token</TableHead>
+                <TableHead>Font loading</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>System</TableCell>
+                <TableCell>
                   <Code>--n-font-sans-system</Code>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Code>--n-font-mono-system</Code>
-                </td>
-                <td>None</td>
-              </tr>
-              <tr>
-                <td>Geist</td>
-                <td>
+                </TableCell>
+                <TableCell>None</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Geist</TableCell>
+                <TableCell>
                   <Code>--n-font-sans-geist</Code>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Code>--n-font-mono-geist</Code>
-                </td>
-                <td>Consumer-owned</td>
-              </tr>
-              <tr>
-                <td>Inter</td>
-                <td>
+                </TableCell>
+                <TableCell>Consumer-owned</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Inter</TableCell>
+                <TableCell>
                   <Code>--n-font-sans-inter</Code>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Code>--n-font-mono-system</Code>
-                </td>
-                <td>Consumer-owned</td>
-              </tr>
-              <tr>
-                <td>IBM Plex</td>
-                <td>
+                </TableCell>
+                <TableCell>Consumer-owned</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>IBM Plex</TableCell>
+                <TableCell>
                   <Code>--n-font-sans-ibm-plex</Code>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Code>--n-font-mono-ibm-plex</Code>
-                </td>
-                <td>Consumer-owned</td>
-              </tr>
-              <tr>
-                <td>Manrope</td>
-                <td>
+                </TableCell>
+                <TableCell>Consumer-owned</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Manrope</TableCell>
+                <TableCell>
                   <Code>--n-font-sans-manrope</Code>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Code>--n-font-mono-system</Code>
-                </td>
-                <td>Consumer-owned</td>
-              </tr>
-              <tr>
-                <td>Source Sans 3</td>
-                <td>
+                </TableCell>
+                <TableCell>Consumer-owned</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Source Sans 3</TableCell>
+                <TableCell>
                   <Code>--n-font-sans-source-sans</Code>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Code>--n-font-mono-system</Code>
-                </td>
-                <td>Consumer-owned</td>
-              </tr>
-              <tr>
-                <td>Space Grotesk</td>
-                <td>
+                </TableCell>
+                <TableCell>Consumer-owned</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Space Grotesk</TableCell>
+                <TableCell>
                   <Code>--n-font-sans-space-grotesk</Code>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <Code>--n-font-mono-system</Code>
-                </td>
-                <td>Consumer-owned</td>
-              </tr>
-              <tr>
-                <td>Custom</td>
-                <td colSpan={2}>
+                </TableCell>
+                <TableCell>Consumer-owned</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Custom</TableCell>
+                <TableCell colSpan={2}>
                   Override <Code>--n-font-sans</Code> at root or on a product surface.
-                </td>
-                <td>Consumer-owned</td>
-              </tr>
-            </tbody>
+                </TableCell>
+                <TableCell>Consumer-owned</TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
         <p>
@@ -228,26 +238,26 @@ export default function Page() {
         <h2 id="type-scale">Type scale</h2>
         <TableContainer aria-label="Type scale tokens">
           <Table>
-            <thead>
-              <tr>
-                <th>Size</th>
-                <th>Token</th>
-                <th>Default</th>
-                <th>Use</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Size</TableHead>
+                <TableHead>Token</TableHead>
+                <TableHead>Default</TableHead>
+                <TableHead>Use</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {scale.map(([name, token, value, purpose]) => (
-                <tr key={token}>
-                  <td>{name}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{name}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                  <td>{value}</td>
-                  <td>{purpose}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{value}</TableCell>
+                  <TableCell>{purpose}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -256,26 +266,26 @@ export default function Page() {
         <h2 id="semantic-roles">Semantic roles</h2>
         <TableContainer aria-label="Semantic typography roles">
           <Table>
-            <thead>
-              <tr>
-                <th>Role</th>
-                <th>Alias</th>
-                <th>Default</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableHead>Alias</TableHead>
+                <TableHead>Default</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {semanticRoles.map(([label, token, primitive]) => (
-                <tr key={token}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <Code>{primitive}</Code>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>

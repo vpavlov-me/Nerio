@@ -14,6 +14,7 @@ import {
 import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
+import { DocumentationTable } from "../../../../components/documentation-table";
 
 const apiRows = [
   ["children", "ReactNode", "Related Buttons that share one compact context and visual variant."],
@@ -70,39 +71,6 @@ const tokenRows = [
   ],
   ["Focus", "--n-focus-ring", "Keeps each child Button visibly focusable above adjacent borders."],
 ] as const;
-
-function DocumentationTable({
-  headers,
-  rows,
-  codeColumns = 2,
-}: {
-  headers: readonly string[];
-  rows: readonly (readonly string[])[];
-  codeColumns?: number;
-}) {
-  return (
-    <div className="documentation-table-wrap">
-      <table className="documentation-table">
-        <thead>
-          <tr>
-            {headers.map((header) => (
-              <th key={header}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
-              {row.map((cell, index) => (
-                <td key={cell}>{index < codeColumns ? <code>{cell}</code> : cell}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 function Preview({ children }: { children: React.ReactNode }) {
   return <div className="button-section-preview">{children}</div>;

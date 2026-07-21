@@ -2,7 +2,7 @@ import * as React from "react";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 const tableClasses =
-  "n-table w-full border-collapse text-(length:--n-font-size-sm) [&_:is(th,td)]:h-(--n-table-row-min-height) [&_:is(th,td)]:border-b-(length:--n-table-border-width) [&_:is(th,td)]:border-(--n-table-border) [&_:is(th,td)]:p-(--n-table-cell-padding) [&_:is(th,td)]:text-start [&_:is(th,td)]:transition-[background-color,border-color] [&_:is(th,td)]:duration-(--n-motion-hover-duration) [&_:is(th,td)]:ease-(--n-motion-hover-easing) motion-reduce:[&_:is(th,td)]:duration-(--n-duration-instant) [&_th]:bg-(--n-table-header-background) [&_th]:font-(--n-font-weight-medium) [&_th]:text-(--n-table-header-foreground) [&_tbody>tr:hover>:is(th,td)]:bg-(--n-table-row-background-hover) [&_tbody>tr:focus-within>:is(th,td)]:bg-(--n-table-row-background-hover) [&_tbody>tr:is([data-selected],[aria-current]:not([aria-current=false]))>:is(th,td)]:bg-(--n-table-row-background-selected) [&_tbody>tr:is([data-selected],[aria-current]:not([aria-current=false]))>:first-child]:border-s-(length:--n-table-row-selection-indicator-width) [&_tbody>tr:is([data-selected],[aria-current]:not([aria-current=false]))>:first-child]:border-s-(--n-table-row-selection-indicator) [&_:is(th,td)[data-align=numeric]]:text-end [&_:is(th,td)[data-align=numeric]]:[font-variant-numeric:tabular-nums] [&_:is(th,td)[data-disabled]]:text-(--n-table-cell-foreground-disabled) [&_:is(th,td)[data-tone=danger]]:text-(--n-table-cell-foreground-danger) [&_caption]:mb-(--n-space-2) [&_caption]:text-start [&_caption]:text-(length:--n-font-size-sm) [&_caption]:text-(--n-color-text-tertiary)";
+  "n-table w-full border-separate border-spacing-0 text-(length:--n-font-size-sm) [&_:is(th,td)]:h-(--n-table-row-min-height) [&_:is(th,td)]:border-(--n-table-border) [&_:is(th,td)]:p-(--n-table-cell-padding) [&_:is(th,td)]:text-start [&_:is(th,td)]:align-middle [&_:is(th,td)]:transition-[background-color,border-color] [&_:is(th,td)]:duration-(--n-motion-hover-duration) [&_:is(th,td)]:ease-(--n-motion-hover-easing) motion-reduce:[&_:is(th,td)]:duration-(--n-duration-instant) [&_thead_th]:bg-(--n-table-header-background) [&_thead_th]:font-(--n-font-weight-medium) [&_thead_th]:text-(--n-table-header-foreground) [&_thead>tr>th]:relative [&_thead>tr>th+th]:before:pointer-events-none [&_thead>tr>th+th]:before:absolute [&_thead>tr>th+th]:before:inset-s-0 [&_thead>tr>th+th]:before:top-1/2 [&_thead>tr>th+th]:before:h-[1em] [&_thead>tr>th+th]:before:w-(--n-table-border-width) [&_thead>tr>th+th]:before:-translate-y-1/2 [&_thead>tr>th+th]:before:bg-(--n-table-border) [&_thead>tr>th+th]:before:content-[''] [&_tbody]:overflow-hidden [&_tbody]:before:table-row [&_tbody]:before:h-(--n-table-section-gap) [&_tbody]:before:content-[''] [&_tbody_th]:font-(--n-font-weight-regular) [&_tbody>:first-child>:first-child]:rounded-ss-(--n-table-row-group-radius) [&_tbody>:first-child>:last-child]:rounded-se-(--n-table-row-group-radius) [&_tbody>:last-child>:first-child]:rounded-es-(--n-table-row-group-radius) [&_tbody>:last-child>:last-child]:rounded-ee-(--n-table-row-group-radius) [&_tbody>tr>:is(th,td)]:bg-(--n-color-surface-default) [&_tbody>tr:not(:last-child)>:is(th,td)]:border-b-(length:--n-table-border-width) [&_tbody>tr[data-selected]>:is(th,td)]:border-b-transparent [&_tbody>tr[aria-current]:not([aria-current=false])>:is(th,td)]:border-b-transparent [&_tbody>tr:hover>:is(th,td)]:bg-(--n-table-row-background-hover) [&_tbody>tr:focus-within>:is(th,td)]:bg-(--n-table-row-background-hover) [&_tbody>tr:is([data-selected],[aria-current]:not([aria-current=false]))>:is(th,td)]:bg-(--n-table-row-background-selected) [&_tbody>tr:is([data-selected],[aria-current]:not([aria-current=false]))>:first-child]:border-s-(length:--n-table-row-selection-indicator-width) [&_tbody>tr:is([data-selected],[aria-current]:not([aria-current=false]))>:first-child]:border-s-(--n-table-row-selection-indicator) [&_tfoot>tr:first-child>:is(th,td)]:border-t-(length:--n-table-border-width) [&_:is(th,td)[data-align=numeric]]:text-end [&_:is(th,td)[data-align=numeric]]:[font-variant-numeric:tabular-nums] [&_:is(th,td)[data-disabled]]:text-(--n-table-cell-foreground-disabled) [&_:is(th,td)[data-tone=danger]]:text-(--n-table-cell-foreground-danger) [&_caption]:mb-(--n-space-2) [&_caption]:text-start [&_caption]:text-(length:--n-font-size-sm) [&_caption]:text-(--n-color-text-tertiary)";
 
 export type TableProps = React.TableHTMLAttributes<HTMLTableElement>;
 type TableContainerBaseProps = Omit<
@@ -64,7 +64,7 @@ export const TableContainer = React.forwardRef<HTMLDivElement, TableContainerPro
         aria-label={normalizedAriaLabel}
         aria-labelledby={normalizedAriaLabelledBy}
         className={cn(
-          "n-table-container max-w-full overflow-x-auto overscroll-x-contain rounded-(--n-table-container-radius) bg-(--n-table-container-background) [border:var(--n-table-container-border)] data-focusable:focus-visible:outline-0 data-focusable:focus-visible:shadow-(--n-table-container-focus-ring) [&>.n-table]:min-w-max forced-colors:border-[CanvasText] forced-colors:data-focusable:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:data-focusable:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:data-focusable:focus-visible:outline-[Highlight]",
+          "n-table-container max-w-full overflow-x-auto overscroll-x-contain rounded-(--n-table-container-radius) bg-(--n-table-container-background) p-(--n-table-container-padding) [--n-input-background:var(--n-input-background-on-muted)] [--n-input-background-hover:var(--n-input-background-on-muted)] [border:var(--n-table-container-border)] data-focusable:focus-visible:outline-0 data-focusable:focus-visible:shadow-(--n-table-container-focus-ring) forced-colors:border-[CanvasText] forced-colors:data-focusable:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:data-focusable:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:data-focusable:focus-visible:outline-[Highlight]",
           className,
         )}
         data-focusable={isFocusableRegion ? "" : undefined}
@@ -112,7 +112,14 @@ export const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
   { className, ...props },
   ref,
 ) {
-  return <td ref={ref} {...props} className={className} data-slot="cell" />;
+  return (
+    <td
+      ref={ref}
+      {...props}
+      className={cn("whitespace-normal break-words", className)}
+      data-slot="cell"
+    />
+  );
 });
 
 export const TableCaption = React.forwardRef<HTMLTableCaptionElement, TableCaptionProps>(

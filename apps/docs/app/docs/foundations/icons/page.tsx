@@ -1,4 +1,14 @@
-import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
+import {
+  Badge,
+  Code,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -64,27 +74,27 @@ export default function Page() {
         </div>
         <TableContainer aria-label="Adapter sources">
           <Table>
-            <thead>
-              <tr>
-                <th>Source</th>
-                <th>Contract</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Lucide</td>
-                <td>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Source</TableHead>
+                <TableHead>Contract</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Lucide</TableCell>
+                <TableCell>
                   Default icon source via <Code>@nerio-ui/adapters/icons</Code>.
-                </td>
-              </tr>
-              <tr>
-                <td>Custom SVG</td>
-                <td>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Custom SVG</TableCell>
+                <TableCell>
                   React SVG components implement <Code>IconSvgProps</Code> and use the same{" "}
                   <Code>Icon</Code> contract.
-                </td>
-              </tr>
-            </tbody>
+                </TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -93,48 +103,48 @@ export default function Page() {
         <h2 id="size-contract">Size contract</h2>
         <TableContainer aria-label="Icon size tokens">
           <Table>
-            <thead>
-              <tr>
-                <th>Size</th>
-                <th>Token</th>
-                <th>Default</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Size</TableHead>
+                <TableHead>Token</TableHead>
+                <TableHead>Default</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {iconSizes.map(([label, token, value]) => (
-                <tr key={token}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                  <td>{value}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{value}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
         <TableContainer aria-label="Component icon size aliases">
           <Table>
-            <thead>
-              <tr>
-                <th>Role</th>
-                <th>Token</th>
-                <th>Default</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableHead>Token</TableHead>
+                <TableHead>Default</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {componentSizes.map(([label, token, value]) => (
-                <tr key={token}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <Code>{value}</Code>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -143,52 +153,60 @@ export default function Page() {
         <h2 id="contract">Contract</h2>
         <TableContainer aria-label="Icon implementation rules">
           <Table>
-            <thead>
-              <tr>
-                <th>Rule</th>
-                <th>Reason</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Pass React icon components through the icon prop.</td>
-                <td>Components stay independent from Lucide implementation details.</td>
-              </tr>
-              <tr>
-                <td>Use the default decorative mode inside named controls and labelled content.</td>
-                <td>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Rule</TableHead>
+                <TableHead>Reason</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Pass React icon components through the icon prop.</TableCell>
+                <TableCell>
+                  Components stay independent from Lucide implementation details.
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  Use the default decorative mode inside named controls and labelled content.
+                </TableCell>
+                <TableCell>
                   The renderer sets <Code>aria-hidden</Code> and prevents the SVG from receiving
                   keyboard focus, so the surrounding text remains the accessible name.
-                </td>
-              </tr>
-              <tr>
-                <td>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
                   Set <Code>decorative={"{false}"}</Code> and provide <Code>label</Code> for a
                   standalone meaningful icon.
-                </td>
-                <td>The renderer exposes an image role and the supplied accessible name.</td>
-              </tr>
-              <tr>
-                <td>Icon-only controls require an accessible label.</td>
-                <td>The visible icon is decorative; the label names the action.</td>
-              </tr>
-              <tr>
-                <td>Use semantic color tokens around icons.</td>
-                <td>Icons inherit text color and stay theme-aware.</td>
-              </tr>
-              <tr>
-                <td>Let component aliases set icon size.</td>
-                <td>Buttons and icon-only controls keep glyphs proportional to their hit area.</td>
-              </tr>
-              <tr>
-                <td>Opt into Lucide fixed strokes explicitly.</td>
-                <td>
+                </TableCell>
+                <TableCell>
+                  The renderer exposes an image role and the supplied accessible name.
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Icon-only controls require an accessible label.</TableCell>
+                <TableCell>The visible icon is decorative; the label names the action.</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Use semantic color tokens around icons.</TableCell>
+                <TableCell>Icons inherit text color and stay theme-aware.</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Let component aliases set icon size.</TableCell>
+                <TableCell>
+                  Buttons and icon-only controls keep glyphs proportional to their hit area.
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Opt into Lucide fixed strokes explicitly.</TableCell>
+                <TableCell>
                   Use <Code>lucideAbsoluteStrokeWidth</Code> only with Lucide icons. Generic{" "}
                   <Code>IconSvgProps</Code> never includes the Lucide-only property, so ordinary
                   custom SVG prop spreads stay warning-free.
-                </td>
-              </tr>
-            </tbody>
+                </TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -223,26 +241,26 @@ export default function Page() {
         <h2 id="do-do-not">Do / do not</h2>
         <TableContainer aria-label="Icon guidance">
           <Table>
-            <thead>
-              <tr>
-                <th>Guidance</th>
-                <th>Recommendation</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Do</td>
-                <td>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Guidance</TableHead>
+                <TableHead>Recommendation</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Do</TableCell>
+                <TableCell>
                   Use icons to clarify compact actions and metadata when text would be repetitive.
-                </td>
-              </tr>
-              <tr>
-                <td>Do not</td>
-                <td>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Do not</TableCell>
+                <TableCell>
                   Use brand color for routine icons or rely on an icon without an accessible name.
-                </td>
-              </tr>
-            </tbody>
+                </TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>

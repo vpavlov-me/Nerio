@@ -454,15 +454,17 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
 
   await page.goto("/docs/components/table");
   const tableContainer = page.locator(".n-table-container").first();
-  const selectedCell = page
-    .locator('.n-table tbody tr:is([data-selected],[aria-current]:not([aria-current="false"]))')
-    .first()
-    .locator(":scope > :first-child");
+  const tableShell = page.locator(".table-doc-product-shell").first();
+  const selectedRow = tableContainer.locator("tbody tr").first();
+  const selectedCell = selectedRow.locator(":scope > :first-child");
   await expect(tableContainer).toBeVisible();
+  await expect(tableShell).toBeVisible();
   expect(
-    await tableContainer.evaluate((element) => getComputedStyle(element).backgroundColor),
+    await tableShell.evaluate((element) => getComputedStyle(element).backgroundColor),
   ).not.toBe("rgba(0, 0, 0, 0)");
-  await expect(selectedCell).toHaveCSS("border-inline-start-width", "2px");
+  await expect(tableContainer).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  await selectedRow.evaluate((element) => element.setAttribute("data-selected", ""));
+  await expect(selectedCell).toHaveCSS("border-inline-start-width", "1px");
   await expect(selectedCell).toHaveCSS("transition-duration", "0.22s");
   const comfortableCellHeight = await selectedCell.evaluate(
     (element) => getComputedStyle(element).height,

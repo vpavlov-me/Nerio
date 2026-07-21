@@ -129,13 +129,13 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Navigation and layout
 
-| Component         | Status      | Package               | Notes                                                                                                                                                |
-| ----------------- | ----------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tabs              | stable-core | `@nerio-ui/ui/client` | Compound tabs with verified controlled state, disabled skipping, variants, overflow, RTL indicator, focus, hydration, and motion                     |
-| Breadcrumbs       | stable-core | `@nerio-ui/ui`        | Hierarchy navigation with ordered list semantics and explicit current-page support                                                                   |
-| Pagination        | stable-core | `@nerio-ui/ui`        | Link, button, and static pagination with current-state parity, boundaries, ellipsis, router rendering, density, wrapping, and RTL                    |
-| Sidebar Primitive | stable-core | `@nerio-ui/ui/client` | Stateful layout primitive with a bounded rail, stable native refs, server-safe regions, accessible collapse, physical sides, and consumer-owned data |
-| Command Primitive | stable-core | `@nerio-ui/ui/client` | Label-only selected queries, separate keyword matching, sound groups, explicit row layout, semantic leading content, and accessible states           |
+| Component         | Status      | Package               | Notes                                                                                                                                                         |
+| ----------------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tabs              | stable-core | `@nerio-ui/ui/client` | Compound tabs with verified controlled state, disabled skipping, variants, overflow, RTL indicator, focus, hydration, and motion                              |
+| Breadcrumbs       | stable-core | `@nerio-ui/ui`        | Hierarchy navigation with ordered list semantics and explicit current-page support                                                                            |
+| Pagination        | stable-core | `@nerio-ui/ui`        | Link, button, and static pagination with outline defaults, secondary current-state parity, boundaries, ellipsis, router rendering, density, wrapping, and RTL |
+| Sidebar Primitive | stable-core | `@nerio-ui/ui/client` | Stateful layout primitive with a bounded rail, stable native refs, server-safe regions, accessible collapse, physical sides, and consumer-owned data          |
+| Command Primitive | stable-core | `@nerio-ui/ui/client` | Label-only selected queries, separate keyword matching, sound groups, explicit row layout, semantic leading content, and accessible states                    |
 
 ---
 

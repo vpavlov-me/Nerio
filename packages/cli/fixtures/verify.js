@@ -784,7 +784,12 @@ async function verify() {
     }
 
     if (
-      !tableSource.includes("[&>.n-table]:min-w-max") ||
+      tableSource.includes("[&>.n-table]:min-w-max") ||
+      !tableSource.includes("p-(--n-table-container-padding)") ||
+      !tableSource.includes('cn("whitespace-normal break-words", className)') ||
+      !tableSource.includes("[&_:is(th,td)]:align-middle") ||
+      !tableSource.includes("rounded-ss-(--n-table-row-group-radius)") ||
+      !tableSource.includes("[&_tbody]:before:h-(--n-table-section-gap)") ||
       !tableSource.includes("[data-align=numeric]") ||
       !tableSource.includes("--n-table-container-focus-ring") ||
       !tableSource.includes("tbody>tr:hover") ||

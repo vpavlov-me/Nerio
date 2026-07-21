@@ -1185,42 +1185,8 @@ pre {
   margin-inline-start: var(--n-space-2);
 }
 
-.docs-actions-menu {
-  background: var(--n-overlay-background);
-  border: var(--n-overlay-border-width) solid var(--n-overlay-border);
-  border-radius: var(--n-radius-xl);
-  box-shadow: var(--n-shadow-surface-floating);
-  display: grid;
-  gap: var(--n-space-1);
-  inset-block-start: calc(100% + var(--n-space-2));
-  inset-inline-end: 0;
+.docs-page-actions-dropdown {
   min-inline-size: var(--n-docs-content-min-width);
-  padding: var(--n-docs-actions-menu-padding);
-  position: absolute;
-  z-index: var(--n-overlay-z-index);
-}
-
-.docs-actions-menu > button {
-  background: var(--n-button-background-ghost);
-  border: 0;
-  border-radius: var(--n-radius-md);
-  color: var(--n-color-text-secondary);
-  cursor: pointer;
-  font: inherit;
-  padding-block: var(--n-docs-actions-menu-item-padding-block);
-  padding-inline: var(--n-docs-actions-menu-item-padding-inline);
-  text-align: start;
-}
-
-.docs-actions-menu > button:hover,
-.docs-actions-menu > button:focus-visible {
-  background: var(--n-color-surface-muted);
-  color: var(--n-color-text-primary);
-  outline: 0;
-}
-
-.docs-actions-menu > button:focus-visible {
-  box-shadow: var(--n-focus-ring);
 }
 
 .docs-action-item {
@@ -1234,6 +1200,12 @@ pre {
 .docs-action-item > .n-icon {
   margin-block-start: var(--n-docs-actions-menu-icon-offset);
   color: var(--n-color-text-primary);
+}
+
+.docs-action-item > .docs-action-item__brand-icon {
+  --n-icon-inline-size: var(--n-icon-size-lg);
+  block-size: var(--n-icon-inline-size);
+  inline-size: var(--n-icon-inline-size);
 }
 
 .docs-action-item > span {
@@ -2483,65 +2455,210 @@ pre {
   box-shadow: var(--n-focus-ring);
 }
 
-.table-doc-preview {
+.component-example__preview.table-doc-preview {
   align-items: stretch;
   justify-content: stretch;
+  padding-inline: var(--n-space-12);
 }
 
-.table-doc-narrow {
-  inline-size: min(100%, 36rem);
-  min-inline-size: 0;
-}
-
-.table-doc-title {
-  font-size: var(--n-font-size-sm);
-  margin: 0 0 var(--n-space-2);
-}
-
-.table-doc-min-column {
-  min-inline-size: 12rem;
-}
-
-.table-doc-wrapped {
-  inline-size: 18rem;
-  max-inline-size: 18rem;
-  white-space: normal;
-}
-
-.table-doc-nowrap {
-  display: block;
-  margin-block-start: var(--n-space-1);
-  white-space: nowrap;
-}
-
-.table-doc-sticky .n-table-container {
-  max-block-size: 10rem;
-  overflow: auto;
-}
-
-.table-doc-sticky {
+.table-doc-product-surface {
   inline-size: 100%;
-  max-inline-size: 100%;
+  margin-inline: auto;
+  max-inline-size: 48rem;
   min-inline-size: 0;
 }
 
-.table-doc-sticky .n-table [data-slot="head"] {
-  inset-block-start: 0;
-  position: sticky;
-  z-index: 1;
+.table-doc-product-shell {
+  background: var(--n-table-container-background);
+  border: var(--n-table-container-border);
+  border-radius: var(--n-table-container-radius);
+  display: grid;
+  gap: var(--n-space-3);
+  overflow: hidden;
+  padding: var(--n-table-container-padding);
 }
 
-.table-doc-sticky .n-table :is([data-slot="head"], [data-slot="cell"]):first-child {
-  inset-inline-start: 0;
-  position: sticky;
+.table-doc-product-surface[data-table-presentation="secondary"] .table-doc-product-shell {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  padding: 0;
 }
 
-.table-doc-sticky .n-table [data-slot="head"]:first-child {
-  z-index: 2;
+.table-doc-product-table {
+  --n-table-container-border: none;
+  --n-table-container-padding: 0;
+
+  background: transparent;
+  border-radius: var(--n-table-row-group-radius);
 }
 
-.table-doc-sticky .n-table [data-slot="cell"]:first-child {
-  background: var(--n-color-surface);
+.table-doc-product-surface[data-table-presentation="secondary"] .table-doc-product-table thead th {
+  background: var(--n-table-container-background);
+}
+
+.table-doc-product-surface[data-table-presentation="secondary"]
+  .table-doc-product-table
+  tbody
+  tr
+  > :first-child {
+  border-end-start-radius: 0;
+  border-start-start-radius: 0;
+}
+
+.table-doc-product-surface[data-table-presentation="secondary"]
+  .table-doc-product-table
+  tbody
+  tr
+  > :last-child {
+  border-end-end-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.table-doc-product-surface[data-table-presentation="secondary"]
+  .table-doc-product-table
+  tbody
+  tr:hover
+  > :first-child {
+  border-end-start-radius: var(--n-table-row-group-radius);
+  border-start-start-radius: var(--n-table-row-group-radius);
+}
+
+.table-doc-product-surface[data-table-presentation="secondary"]
+  .table-doc-product-table
+  tbody
+  tr:hover
+  > :last-child {
+  border-end-end-radius: var(--n-table-row-group-radius);
+  border-start-end-radius: var(--n-table-row-group-radius);
+}
+
+.table-doc-product-surface[data-table-presentation="secondary"]
+  .table-doc-product-table
+  thead
+  th:first-child {
+  border-start-start-radius: var(--n-table-container-radius);
+  border-end-start-radius: var(--n-table-container-radius);
+}
+
+.table-doc-product-surface[data-table-presentation="secondary"]
+  .table-doc-product-table
+  thead
+  th:last-child {
+  border-start-end-radius: var(--n-table-container-radius);
+  border-end-end-radius: var(--n-table-container-radius);
+}
+
+.table-doc-control-column {
+  inline-size: var(--n-size-control-md);
+  padding-inline: var(--n-space-1);
+  text-align: center;
+}
+
+.n-table.table-doc-product-table thead > tr > th.table-doc-checkbox-column {
+  border-inline-start: 0;
+}
+
+.n-table.table-doc-product-table thead > tr > th.table-doc-checkbox-column::before {
+  display: none;
+}
+
+.table-doc-drag-handle {
+  color: var(--n-color-text-disabled);
+  user-select: none;
+}
+
+.table-doc-product-table tbody tr[data-dragging] > :is(th, td) {
+  opacity: var(--n-opacity-muted);
+}
+
+.table-doc-product-table tbody tr[data-drag-target] > :is(th, td) {
+  box-shadow: inset 0 var(--n-focus-ring-inner-width) 0 var(--n-color-action-primary);
+}
+
+.table-doc-product-surface[data-drag-active] {
+  user-select: none;
+}
+
+.table-doc-drag-preview {
+  background: var(--n-color-surface-default);
+  border-collapse: separate;
+  border-radius: var(--n-table-row-group-radius);
+  border-spacing: 0;
+  color: var(--n-color-text-primary);
+  font-family: var(--n-font-sans);
+  font-size: var(--n-font-size-sm);
+  inset-block-start: -1000px;
+  inset-inline-start: -1000px;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+}
+
+.table-doc-drag-preview :is(th, td) {
+  background: var(--n-color-surface-default);
+  border-block-end: var(--n-table-border);
+  block-size: var(--n-table-row-min-height);
+  padding: var(--n-table-cell-padding);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.table-doc-drag-preview :is(button, input) {
+  pointer-events: none;
+}
+
+.table-doc-empty-state {
+  padding-block: var(--n-space-6);
+}
+
+.n-table.table-doc-product-table tbody > tr.table-doc-empty-row > :is(th, td),
+.n-table.table-doc-product-table tbody > tr.table-doc-empty-row:hover > :is(th, td),
+.n-table.table-doc-product-table tbody > tr.table-doc-empty-row:focus-within > :is(th, td) {
+  background: transparent;
+  border-color: transparent;
+}
+
+.n-table.table-doc-product-table tbody > tr[data-checked-row] > :is(th, td) {
+  background: var(--n-color-surface-default);
+  border-bottom-color: transparent;
+}
+
+.table-doc-sort-button {
+  --n-button-background-ghost: transparent;
+  --n-button-background-ghost-active: transparent;
+  --n-button-background-ghost-hover: transparent;
+  --n-button-border-ghost: transparent;
+  --n-button-foreground-ghost: currentColor;
+
+  block-size: auto;
+  color: inherit;
+  justify-content: flex-start;
+  margin-inline: calc(var(--n-table-cell-padding-x) * -1);
+  padding-inline: var(--n-table-cell-padding-x);
+}
+
+.table-doc-pagination {
+  align-items: center;
+  color: var(--n-color-text-tertiary);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--n-font-size-sm);
+  gap: var(--n-space-3);
+  justify-content: space-between;
+  padding: 0 var(--n-space-2) var(--n-space-1);
+}
+
+.table-doc-product-surface[data-table-presentation="secondary"] .table-doc-pagination {
+  padding: 0;
+}
+
+@media (max-width: 40rem) {
+  .table-doc-pagination {
+    align-items: start;
+    flex-direction: column;
+  }
 }
 
 .doc-guidance-cards,
@@ -3259,8 +3376,13 @@ pre {
 .doc-list {
   display: grid;
   gap: var(--n-space-2);
+  list-style: disc;
   margin: 0;
   padding-inline-start: var(--n-space-5);
+}
+
+.doc-list li::marker {
+  color: var(--n-color-action-primary);
 }
 
 .guidance-grid > div {
