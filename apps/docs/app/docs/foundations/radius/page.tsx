@@ -1,4 +1,14 @@
-import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
+import {
+  Badge,
+  Code,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -59,26 +69,26 @@ export default function RadiusPage() {
         </div>
         <TableContainer aria-label="Radius primitive scale">
           <Table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Token</th>
-                <th>Default</th>
-                <th>Use</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Token</TableHead>
+                <TableHead>Default</TableHead>
+                <TableHead>Use</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {radiusTokens.map(([label, token, description, value]) => (
-                <tr key={token}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                  <td>{value}</td>
-                  <td>{description}</td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{value}</TableCell>
+                  <TableCell>{description}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -91,26 +101,26 @@ export default function RadiusPage() {
         </p>
         <TableContainer aria-label="Radius role aliases">
           <Table>
-            <thead>
-              <tr>
-                <th>Role</th>
-                <th>Alias</th>
-                <th>Default primitive</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableHead>Alias</TableHead>
+                <TableHead>Default primitive</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {radiusRoles.map(([label, token, primitive]) => (
-                <tr key={token}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <Code>{primitive}</Code>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>

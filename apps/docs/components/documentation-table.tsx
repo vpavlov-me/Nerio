@@ -1,4 +1,13 @@
 import * as React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
 
 export type DocumentationTableRow = readonly string[];
 
@@ -12,25 +21,27 @@ export function DocumentationTable({
   codeColumns?: number;
 }) {
   return (
-    <div className="documentation-table-wrap">
-      <table className="documentation-table">
-        <thead>
-          <tr>
+    <TableContainer>
+      <Table>
+        <TableHeader>
+          <TableRow>
             {headers.map((header) => (
-              <th key={header}>{header}</th>
+              <TableHead key={header}>{header}</TableHead>
             ))}
-          </tr>
-        </thead>
-        <tbody>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {rows.map((row) => (
-            <tr key={row.join("__")}>
+            <TableRow key={row.join("__")}>
               {row.map((cell, index) => (
-                <td key={cell}>{index < codeColumns ? <code>{cell}</code> : cell}</td>
+                <TableCell key={`${index}-${cell}`}>
+                  {index < codeColumns ? <code>{cell}</code> : cell}
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

@@ -827,6 +827,11 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-pagination-background-current",
       "--n-pagination-border",
       "--n-pagination-border-current",
+      "--n-pagination-foreground",
+      "--n-pagination-foreground-hover",
+      "--n-pagination-foreground-current",
+      "--n-pagination-shadow",
+      "--n-pagination-shadow-current",
       "--n-focus-ring",
     ],
   },
@@ -2290,12 +2295,22 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "head",
         description: "A native th with col scope by default and overrideable scope.",
       },
-      { title: "cell", description: "A native td for values and independently labelled actions." },
+      {
+        title: "cell",
+        description:
+          "A native td that wraps text by default and supports values or independently labelled actions.",
+      },
     ],
     variants: [
       {
-        title: "Default",
-        description: "Readable data table grouped by a muted surface instead of an outer border.",
+        title: "Primary composition",
+        description:
+          "Consumer-owned muted frame with an inset white row group and a Pagination footer on the same surface.",
+      },
+      {
+        title: "Secondary composition",
+        description:
+          "Page-level table with a muted rounded header, open rows and footer, and no outer surface.",
       },
     ],
     states: [
@@ -2325,6 +2340,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     guidance: {
       do: [
+        "Use the default wrapping cells for readable records, and opt into nowrap only for bounded identifiers or short values.",
         "Use for comparable records, semantic headers, numeric values, and compact row actions.",
       ],
       dont: [
@@ -2344,6 +2360,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-table-header-foreground",
       "--n-table-row-background-hover",
       "--n-table-row-background-selected",
+      "--n-table-row-group-radius",
       "--n-table-row-selection-indicator",
       "--n-table-row-selection-indicator-width",
       "--n-table-row-min-height",

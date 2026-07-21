@@ -530,7 +530,7 @@
       "package": "@nerio-ui/ui",
       "category": "navigation",
       "status": "stable-core",
-      "description": "Consumer-owned link, button, and static pagination with verified current-state parity, boundaries, ellipsis, package-agnostic router rendering, wrapping, density, RTL, and accessible labels."
+      "description": "Consumer-owned link, button, and static pagination with outline defaults, secondary current-state parity, boundaries, ellipsis, package-agnostic router rendering, wrapping, density, RTL, and accessible labels."
     },
     {
       "name": "Sidebar Primitive",

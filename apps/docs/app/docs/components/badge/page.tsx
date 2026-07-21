@@ -2,6 +2,7 @@ import { Check, Circle, CircleAlert, Info, X } from "@nerio-ui/adapters/icons";
 import { Badge, Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
+import { DocumentationTable } from "../../../../components/documentation-table";
 import { getComponentDoc } from "../../../../lib/component-docs";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -159,39 +160,6 @@ const tokenRows = [
   ],
   ["Details", "--n-badge-icon-size / --n-spinner-size-sm", "Icon and loading indicator sizing."],
 ] as const;
-
-function DocumentationTable({
-  headers,
-  rows,
-  codeColumns = 2,
-}: {
-  headers: readonly string[];
-  rows: readonly (readonly string[])[];
-  codeColumns?: number;
-}) {
-  return (
-    <div className="documentation-table-wrap">
-      <table className="documentation-table">
-        <thead>
-          <tr>
-            {headers.map((header) => (
-              <th key={header}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
-              {row.map((cell, index) => (
-                <td key={cell}>{index < codeColumns ? <code>{cell}</code> : cell}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 export default function Page() {
   return (

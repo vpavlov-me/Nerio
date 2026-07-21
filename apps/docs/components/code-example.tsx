@@ -313,7 +313,7 @@ export function CodeExample({
   return (
     <div className={["code-example", className].filter(Boolean).join(" ")}>
       <Button
-        className="code-copy"
+        className="code-copy [--n-button-background-secondary:var(--n-color-surface-default)] [--n-button-background-secondary-active:var(--n-color-surface-default)] [--n-button-background-secondary-hover:var(--n-color-surface-default)]"
         icon={copied ? Check : Copy}
         aria-label={copied ? "Copied" : `Copy ${label.toLowerCase()}`}
         tooltip={copied ? "Copied" : `Copy ${label.toLowerCase()}`}

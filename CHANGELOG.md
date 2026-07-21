@@ -29,6 +29,25 @@ Items under `Unreleased` may change before the next public release.
 - Applied the approved visual language to Data Display and Feedback: compact medium-weight
   hierarchy, borderless Card and muted table grouping, fixed Avatar overlap colors, neutral
   inline Alerts, inverted glass Toasts, deliberate status color, and tokenized interaction motion.
+- Made Table body cells wrap text by default while retaining explicit consumer control for bounded
+  identifiers and intentionally non-wrapping values.
+- Refined Table's neutral product-table recipe with a borderless 4px container gutter, compensated
+  20px/16px outer and row-group radii, clipped tbody content, short tokenized header dividers,
+  neutral selected-row boundaries, and a focused set of interactive documentation
+  previews composed from Nerio Checkbox, Button, Icon, and Pagination components; the complete
+  preview now keeps its footer inside the muted shell, uses a full-row drag image, and removes the
+  selected row's lower divider without changing its geometry. Added Secondary-only per-row rounded
+  interaction surfaces that round only on hover in Secondary, vertically centered cells, stable
+  inline Checkbox alignment, a composed EmptyState example with icon, comfortable spacing, and a
+  secondary create action on a transparent non-row surface without hover treatment, a four-row
+  loading preview, and intentional sans/code
+  typography. Unified all data headers as neutral sortable controls with trailing direction arrows,
+  removed the select-all leading divider, and refined reordering with a dedicated floating row clone,
+  insertion cue, selection suppression, and concise `Reorder` tooltip. Documented faithful Primary (unified muted body)
+  and Secondary (open page-level rows) presentation recipes without moving DataGrid behavior into
+  the Core primitive.
+- Aligned Pagination with Button's presentation recipes: outline controls by default and a secondary
+  surface for the current page, while retaining stable geometry and `aria-current` state.
 - Added a localizable `Dialog.closeLabel` while preserving the existing "Close dialog" default.
 
 ### Fixed

@@ -1,4 +1,14 @@
-import { Badge, Code, Table, TableContainer } from "@nerio-ui/ui";
+import {
+  Badge,
+  Code,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
 
@@ -74,36 +84,36 @@ export default function Page() {
         <h2 id="runtime-axes">Runtime axes</h2>
         <TableContainer aria-label="Runtime appearance axes">
           <Table>
-            <thead>
-              <tr>
-                <th>Axis</th>
-                <th>Attribute</th>
-                <th>Values</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Theme</td>
-                <td>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Axis</TableHead>
+                <TableHead>Attribute</TableHead>
+                <TableHead>Values</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Theme</TableCell>
+                <TableCell>
                   <Code>data-theme</Code>
-                </td>
-                <td>purple, blue, green, orange, red, neutral, or custom</td>
-              </tr>
-              <tr>
-                <td>Mode</td>
-                <td>
+                </TableCell>
+                <TableCell>purple, blue, green, orange, red, neutral, or custom</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Mode</TableCell>
+                <TableCell>
                   <Code>data-mode</Code>
-                </td>
-                <td>system, light, dark</td>
-              </tr>
-              <tr>
-                <td>Density</td>
-                <td>
+                </TableCell>
+                <TableCell>system, light, dark</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Density</TableCell>
+                <TableCell>
                   <Code>data-density</Code>
-                </td>
-                <td>comfortable, compact</td>
-              </tr>
-            </tbody>
+                </TableCell>
+                <TableCell>comfortable, compact</TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -115,26 +125,26 @@ export default function Page() {
         </div>
         <TableContainer aria-label="Preset theme contracts">
           <Table>
-            <thead>
-              <tr>
-                <th>Theme</th>
-                <th>Attribute value</th>
-                <th>Primary accent token</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Theme</TableHead>
+                <TableHead>Attribute value</TableHead>
+                <TableHead>Primary accent token</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {themes.map(([label, value, token]) => (
-                <tr key={value}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={value}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>data-theme="{value}"</Code>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -153,13 +163,13 @@ export default function Page() {
         </p>
         <TableContainer aria-label="Mode-mapped semantic tokens">
           <Table>
-            <thead>
-              <tr>
-                <th>Role</th>
-                <th>Token</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableHead>Token</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {[
                 ["Canvas", "--n-color-surface-canvas"],
                 ["Control", "--n-color-surface-control"],
@@ -167,14 +177,14 @@ export default function Page() {
                 ["Primary action", "--n-color-action-primary"],
                 ["Action foreground", "--n-color-action-on-primary"],
               ].map(([label, token]) => (
-                <tr key={token}>
-                  <td>{label}</td>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -183,29 +193,29 @@ export default function Page() {
         <h2 id="density">Density</h2>
         <TableContainer aria-label="Density contracts">
           <Table>
-            <thead>
-              <tr>
-                <th>Value</th>
-                <th>Use</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Value</TableHead>
+                <TableHead>Use</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>
                   <Code>comfortable</Code>
-                </td>
-                <td>Default spacing for mixed product and documentation surfaces.</td>
-              </tr>
-              <tr>
-                <td>
+                </TableCell>
+                <TableCell>Default spacing for mixed product and documentation surfaces.</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
                   <Code>compact</Code>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   Remaps semantic density aliases and component tokens for dense operational
                   interfaces without changing primitive spacing values.
-                </td>
-              </tr>
-            </tbody>
+                </TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -225,22 +235,26 @@ export default function Page() {
         <h2 id="do-do-not">Do / do not</h2>
         <TableContainer aria-label="Theme guidance">
           <Table>
-            <thead>
-              <tr>
-                <th>Guidance</th>
-                <th>Recommendation</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Do</td>
-                <td>Use generic brand theme names and let mode handle light or dark rendering.</td>
-              </tr>
-              <tr>
-                <td>Do not</td>
-                <td>Fork component source to hard-code a product color into a button or field.</td>
-              </tr>
-            </tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Guidance</TableHead>
+                <TableHead>Recommendation</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Do</TableCell>
+                <TableCell>
+                  Use generic brand theme names and let mode handle light or dark rendering.
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Do not</TableCell>
+                <TableCell>
+                  Fork component source to hard-code a product color into a button or field.
+                </TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>

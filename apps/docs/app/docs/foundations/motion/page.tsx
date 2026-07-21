@@ -1,4 +1,13 @@
-import { Code, Table, TableContainer } from "@nerio-ui/ui";
+import {
+  Code,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { MotionAdapterExamples } from "../../../../components/motion-adapter-examples";
 import { createPageMetadata } from "../../../../lib/seo";
@@ -183,20 +192,20 @@ export default function Page() {
         </p>
         <TableContainer aria-label="Semantic motion aliases">
           <Table>
-            <thead>
-              <tr>
-                <th>Token</th>
-              </tr>
-            </thead>
-            <tbody>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Token</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {semanticTokens.map((token) => (
-                <tr key={token}>
-                  <td>
+                <TableRow key={token}>
+                  <TableCell>
                     <Code>{token}</Code>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -289,28 +298,34 @@ export default function Page() {
         <h2 id="reduced-motion">Reduced motion</h2>
         <TableContainer aria-label="Motion accessibility behavior">
           <Table>
-            <thead>
-              <tr>
-                <th>Preference</th>
-                <th>Behavior</th>
-                <th>Examples</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Default</td>
-                <td>Core components use short durations and avoid layout-heavy motion.</td>
-                <td>Hover, focus, overlays, and skeleton loading resolve through CSS variables.</td>
-              </tr>
-              <tr>
-                <td>Reduced motion</td>
-                <td>Large movement collapses to opacity or immediate state changes.</td>
-                <td>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Preference</TableHead>
+                <TableHead>Behavior</TableHead>
+                <TableHead>Examples</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>Default</TableCell>
+                <TableCell>
+                  Core components use short durations and avoid layout-heavy motion.
+                </TableCell>
+                <TableCell>
+                  Hover, focus, overlays, and skeleton loading resolve through CSS variables.
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Reduced motion</TableCell>
+                <TableCell>
+                  Large movement collapses to opacity or immediate state changes.
+                </TableCell>
+                <TableCell>
                   Press scale, overlay translation, and repeated skeleton movement are removed or
                   minimized.
-                </td>
-              </tr>
-            </tbody>
+                </TableCell>
+              </TableRow>
+            </TableBody>
           </Table>
         </TableContainer>
       </section>
@@ -347,28 +362,28 @@ function TokenTable({ rows, valueHeader = "Value" }: { rows: TokenRow[]; valueHe
   return (
     <TableContainer aria-label="Motion token reference">
       <Table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Token</th>
-            <th>{valueHeader}</th>
-            <th>Use</th>
-          </tr>
-        </thead>
-        <tbody>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Token</TableHead>
+            <TableHead>{valueHeader}</TableHead>
+            <TableHead>Use</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {rows.map(([label, token, value, use]) => (
-            <tr key={token}>
-              <td>{label}</td>
-              <td>
+            <TableRow key={token}>
+              <TableCell>{label}</TableCell>
+              <TableCell>
                 <Code>{token}</Code>
-              </td>
-              <td>
+              </TableCell>
+              <TableCell>
                 <Code>{value}</Code>
-              </td>
-              <td>{use}</td>
-            </tr>
+              </TableCell>
+              <TableCell>{use}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
+        </TableBody>
       </Table>
     </TableContainer>
   );
