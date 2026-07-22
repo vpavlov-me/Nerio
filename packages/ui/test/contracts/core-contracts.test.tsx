@@ -4147,6 +4147,7 @@ describe("Core interactive action contracts", () => {
           label="Workspace volume"
           description="Controls notification playback."
           defaultValue={40}
+          id="workspace-volume"
           min={0}
           max={100}
           step={5}
@@ -4165,6 +4166,7 @@ describe("Core interactive action contracts", () => {
     expect(rootRef.current).toHaveAttribute("data-slot", "root");
     expect(inputRef.current).toBe(slider);
     expect(slider).toHaveAttribute("type", "range");
+    expect(slider).toHaveAttribute("id", "workspace-volume");
     expect(slider).toHaveAttribute("required");
     expect(slider).toHaveAttribute("aria-required", "true");
     expect(slider).toHaveAttribute("aria-invalid", "true");

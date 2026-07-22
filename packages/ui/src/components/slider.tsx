@@ -128,6 +128,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(function Sli
     description,
     disabled = false,
     getAriaValueText,
+    id,
     inputRef,
     invalid = false,
     label,
@@ -143,9 +144,9 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(function Sli
   ref,
 ) {
   const generatedId = React.useId();
-  const inputId = `${generatedId}-input`;
-  const labelId = label === undefined ? undefined : `${generatedId}-label`;
-  const descriptionId = description ? `${generatedId}-description` : undefined;
+  const inputId = id ?? generatedId;
+  const labelId = label === undefined ? undefined : `${inputId}-label`;
+  const descriptionId = description ? `${inputId}-description` : undefined;
   const describedBy = mergeIds(ariaDescribedBy, descriptionId);
   const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
   const nativeInputRef = React.useRef<HTMLInputElement>(null);

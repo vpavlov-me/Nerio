@@ -241,39 +241,42 @@ test("keeps Slider touch input portable", async ({ browser, browserName }, testI
     hasTouch: true,
     viewport: { width: 390, height: 844 },
   });
-  const page = await context.newPage();
-  const problems = monitorPage(page, browserName);
-  await page.goto("/docs/components/slider");
+  try {
+    const page = await context.newPage();
+    const problems = monitorPage(page, browserName);
+    await page.goto("/docs/components/slider");
 
-  const volume = page.getByRole("slider", { name: "Volume", exact: true });
-  const control = page.locator('[data-slot="control"]').first();
-  const controlBox = await control.boundingBox();
-  const thumbBox = await page.locator('[data-slot="thumb"]').first().boundingBox();
-  expect(controlBox).not.toBeNull();
-  expect(thumbBox).not.toBeNull();
-  if (browserName === "chromium") {
-    const session = await page.context().newCDPSession(page);
-    await session.send("Input.dispatchTouchEvent", {
-      type: "touchStart",
-      touchPoints: [{ x: thumbBox.x + thumbBox.width / 2, y: thumbBox.y + thumbBox.height / 2 }],
-    });
-    await session.send("Input.dispatchTouchEvent", {
-      type: "touchMove",
-      touchPoints: [
-        { x: controlBox.x + controlBox.width * 0.75, y: controlBox.y + controlBox.height / 2 },
-      ],
-    });
-    await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
-    await session.detach();
-  } else {
-    await page.touchscreen.tap(
-      controlBox.x + controlBox.width * 0.75,
-      controlBox.y + controlBox.height / 2,
-    );
+    const volume = page.getByRole("slider", { name: "Volume", exact: true });
+    const control = page.locator('[data-slot="control"]').first();
+    const controlBox = await control.boundingBox();
+    const thumbBox = await page.locator('[data-slot="thumb"]').first().boundingBox();
+    expect(controlBox).not.toBeNull();
+    expect(thumbBox).not.toBeNull();
+    if (browserName === "chromium") {
+      const session = await page.context().newCDPSession(page);
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchStart",
+        touchPoints: [{ x: thumbBox.x + thumbBox.width / 2, y: thumbBox.y + thumbBox.height / 2 }],
+      });
+      await session.send("Input.dispatchTouchEvent", {
+        type: "touchMove",
+        touchPoints: [
+          { x: controlBox.x + controlBox.width * 0.75, y: controlBox.y + controlBox.height / 2 },
+        ],
+      });
+      await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+      await session.detach();
+    } else {
+      await page.touchscreen.tap(
+        controlBox.x + controlBox.width * 0.75,
+        controlBox.y + controlBox.height / 2,
+      );
+    }
+    expect(Number(await volume.inputValue())).toBeGreaterThanOrEqual(70);
+    expect(problems).toEqual([]);
+  } finally {
+    await context.close();
   }
-  expect(Number(await volume.inputValue())).toBeGreaterThanOrEqual(70);
-  expect(problems).toEqual([]);
-  await context.close();
 });
 
 test("keeps mobile navigation inside the dynamic viewport", async ({ browserName, page }) => {
