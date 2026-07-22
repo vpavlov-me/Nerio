@@ -104,6 +104,10 @@ in its use of brand color.
 Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows, finance/crypto widgets, AI chat shells, premium themes, Figma assets, and templates belong to Nerio Pro unless the component matrix says otherwise.
 
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
+See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
+the complete native-versus-component boundary. Core 1.0 has approved follow-up work for native
+temporal inputs, a single-value Slider, FileInput, Calendar, and a bounded single-date DatePicker;
+their product-workflow extensions remain outside Core.
 
 ## Package entrypoints
 

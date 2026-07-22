@@ -126,6 +126,298 @@
     }
   },
   "rule": "Core = building blocks. Pro = product-ready solutions.",
+  "platformCoverageModes": {
+    "dedicated-component": "A Core component owns durable shared behavior, accessibility, styling, state, or composition.",
+    "supported-native": "Existing Core foundations intentionally support the native element or state while the browser owns its behavior.",
+    "native-guidance": "Plain semantic HTML is preferred because a wrapper would add no stable product value.",
+    "intentionally-deferred": "The capability is a product workflow, advanced composition, or non-essential abstraction outside Core 1.0."
+  },
+  "platformCoverageStatuses": ["covered", "planned", "deferred"],
+  "platformCoverage": [
+    {
+      "id": "button-actions",
+      "surface": "Button plus native form semantics",
+      "catalogComponents": ["Button"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "button, submit, reset, and button input states",
+      "rationale": "Native activation and form behavior remain intact while Base UI protects composed button behavior.",
+      "boundary": "Core owns action presentation and state. Consumers own submission logic and side effects."
+    },
+    {
+      "id": "text-inputs",
+      "surface": "Input",
+      "catalogComponents": ["Input"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "text, search, telephone, URL, email, password, and number inputs",
+      "rationale": "A thin native input preserves keyboard, autofill, validation, and form behavior with typed supported states.",
+      "boundary": "Core owns the control surface. Field owns labels and messages. Consumers own parsing and validation policy."
+    },
+    {
+      "id": "temporal-inputs",
+      "surface": "Input extension or focused native temporal control",
+      "catalogComponents": [],
+      "coverageMode": "supported-native",
+      "status": "planned",
+      "issue": 258,
+      "capability": "date, month, week, time, and datetime-local inputs",
+      "rationale": "Browser pickers, localized chrome, native values, validity, and mobile integration must remain platform-owned.",
+      "boundary": "Core will provide one typed and styled native path. Calendar and DatePicker remain separate responsibilities."
+    },
+    {
+      "id": "range-input",
+      "surface": "Slider",
+      "catalogComponents": ["Slider"],
+      "coverageMode": "dedicated-component",
+      "status": "planned",
+      "issue": 259,
+      "capability": "single-value range input",
+      "rationale": "A maintained Slider primitive adds consistent keyboard, pointer, touch, form, orientation, and focus behavior.",
+      "boundary": "Core owns one numeric value and one thumb. Consumers own units, marks, thresholds, and product meaning."
+    },
+    {
+      "id": "color-input",
+      "surface": "Native input type=color with an explicit label",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null,
+      "capability": "color input",
+      "rationale": "The operating system color picker and native value contract add more value than a Core wrapper.",
+      "boundary": "Consumers own labelling, presentation, color models, swatches, alpha, palettes, and advanced editors."
+    },
+    {
+      "id": "checkbox-radio",
+      "surface": "Checkbox and Radio Group",
+      "catalogComponents": ["Checkbox", "Radio Group"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "checkbox, indeterminate checkbox, and radio selection",
+      "rationale": "Base UI supplies established keyboard, checked-state, group, and form behavior beyond presentation alone.",
+      "boundary": "Core owns individual and grouped selection primitives. Consumers own option meaning and validation policy."
+    },
+    {
+      "id": "file-input",
+      "surface": "FileInput",
+      "catalogComponents": ["FileInput"],
+      "coverageMode": "dedicated-component",
+      "status": "planned",
+      "issue": 260,
+      "capability": "native file selection",
+      "rationale": "A native input must remain accessible and expose FileList, form, reset, picker, and security behavior.",
+      "boundary": "Core owns selection only. Uploads, drop zones, previews, queues, progress, retries, and storage are consumer or Pro work."
+    },
+    {
+      "id": "textarea",
+      "surface": "Textarea",
+      "catalogComponents": ["Textarea"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "multiline text input",
+      "rationale": "Native textarea semantics preserve editing, selection, form, disabled, and read-only behavior.",
+      "boundary": "Core owns presentation and state hooks. Consumers own content policy, counting, and validation."
+    },
+    {
+      "id": "custom-select",
+      "surface": "Select",
+      "catalogComponents": ["Select"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "custom single selection",
+      "rationale": "Base UI provides listbox, popup, focus, typeahead, and controlled-state behavior for a styled single-select.",
+      "boundary": "Core owns single selection. Async data, creatable options, filtering, and product workflows remain outside the primitive."
+    },
+    {
+      "id": "native-select",
+      "surface": "Native select, option, and optgroup with an explicit label",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null,
+      "capability": "native select, option, and optgroup",
+      "rationale": "Native selection remains the preferred alternative when operating-system UI and direct form behavior are desired.",
+      "boundary": "Consumers own labelling, styling, and option data and may choose native select instead of the custom Select component."
+    },
+    {
+      "id": "datalist",
+      "surface": "Input with native datalist",
+      "catalogComponents": ["Input"],
+      "coverageMode": "supported-native",
+      "status": "covered",
+      "issue": null,
+      "capability": "datalist suggestions",
+      "rationale": "Native suggestions preserve browser behavior without creating a custom combobox contract.",
+      "boundary": "Consumers own suggestion data. Search, fetching, filtering, and a custom combobox remain separate work."
+    },
+    {
+      "id": "field-grouping",
+      "surface": "FormGroup with native fieldset semantics",
+      "catalogComponents": ["FormGroup"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "fieldset, legend, and grouped form semantics",
+      "rationale": "Native fieldset and legend relationships group related controls for assistive technology and form behavior.",
+      "boundary": "Core owns semantic grouping and layout. Consumers own group content and validation policy."
+    },
+    {
+      "id": "labels-messages",
+      "surface": "Label, Field, and Form Message",
+      "catalogComponents": ["Label", "Field", "Form Message"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "label, description, error, and help relationships",
+      "rationale": "Native labels and explicit description or error relationships provide stable accessible naming and messaging.",
+      "boundary": "Core owns relationships and presentation. Consumers own copy, validation rules, and message timing."
+    },
+    {
+      "id": "output",
+      "surface": "Native output with semantic text and form association",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null,
+      "capability": "calculated form output",
+      "rationale": "The native element already expresses a calculation result and form relationship without an interaction state machine.",
+      "boundary": "Consumers own calculation, formatting, and announcement policy."
+    },
+    {
+      "id": "form-contracts",
+      "surface": "Applicable native or Base UI-backed Core controls",
+      "catalogComponents": [
+        "Button",
+        "Input",
+        "Textarea",
+        "Checkbox",
+        "Radio Group",
+        "Switch",
+        "Select"
+      ],
+      "coverageMode": "supported-native",
+      "status": "covered",
+      "issue": null,
+      "capability": "form ownership, validation, disabled, read-only, required, min, max, step, multiple, and autocomplete",
+      "rationale": "Each control must forward the applicable native contract rather than simulate one incompatible universal state API.",
+      "boundary": "Core owns truthful forwarding per component. Consumers own cross-field rules and submission workflows."
+    },
+    {
+      "id": "progress",
+      "surface": "Progress",
+      "catalogComponents": ["Progress"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "task completion progress",
+      "rationale": "A named native progress surface adds normalized ranges, determinate and indeterminate states, and accessible task status.",
+      "boundary": "Core owns task-completion presentation. Consumers own task lifecycle and progress calculation."
+    },
+    {
+      "id": "meter",
+      "surface": "Native meter with Nerio typography and tokens",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null,
+      "capability": "scalar measurement within a known range",
+      "rationale": "Meter has distinct native semantics from task progress and needs no shared Core state machine.",
+      "boundary": "Consumers own thresholds, optimum ranges, labels, and domain meaning."
+    },
+    {
+      "id": "disclosure",
+      "surface": "Native details and summary",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null,
+      "capability": "details and summary disclosure",
+      "rationale": "Native disclosure provides semantics, keyboard activation, and open state without a Core wrapper.",
+      "boundary": "Consumers own content and may compose a product-specific accordion outside this primitive decision."
+    },
+    {
+      "id": "dialog",
+      "surface": "Dialog",
+      "catalogComponents": ["Dialog"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "modal dialog",
+      "rationale": "Base UI supplies modal focus containment, dismissal, inertness, labelling, and restoration that native styling alone does not standardize.",
+      "boundary": "Core owns the modal primitive. Consumers own task content and confirmation policy."
+    },
+    {
+      "id": "popover",
+      "surface": "Popover",
+      "catalogComponents": ["Popover"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "anchored non-modal popup behavior",
+      "rationale": "Base UI supplies positioning, dismissal, focus, portal, and controlled-state behavior across supported browsers.",
+      "boundary": "Core owns the popup primitive. Consumers own the product interaction and content."
+    },
+    {
+      "id": "links-landmarks",
+      "surface": "Native anchors and navigation landmarks plus Button link rendering",
+      "catalogComponents": ["Button"],
+      "coverageMode": "supported-native",
+      "status": "covered",
+      "issue": null,
+      "capability": "links and navigation landmarks",
+      "rationale": "Native anchor and landmark semantics preserve navigation behavior, destinations, and assistive-technology structure.",
+      "boundary": "Core styles or composes primitives. Consumers own routing, route state, and navigation data."
+    },
+    {
+      "id": "tables-lists",
+      "surface": "Table and List",
+      "catalogComponents": ["Table", "List"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "native tables and ordered or unordered lists",
+      "rationale": "Native table and list roots preserve structural semantics while Nerio adds resilient presentation and composition.",
+      "boundary": "Core owns static presentation primitives. Consumers or Pro own sorting, filtering, virtualization, selection workflows, and data policy."
+    },
+    {
+      "id": "calendar",
+      "surface": "Calendar",
+      "catalogComponents": ["Calendar"],
+      "coverageMode": "dedicated-component",
+      "status": "planned",
+      "issue": 261,
+      "capability": "custom single-date calendar grid",
+      "rationale": "A custom grid needs roving focus, date navigation, localization, constraints, announcements, and real assistive-technology evidence.",
+      "boundary": "Core owns one visible month and one selected date. Ranges, events, availability, and scheduling remain outside Core."
+    },
+    {
+      "id": "date-picker",
+      "surface": "DatePicker composed from Calendar and Core overlays",
+      "catalogComponents": ["DatePicker"],
+      "coverageMode": "dedicated-component",
+      "status": "planned",
+      "issue": 262,
+      "capability": "custom single-date selection control",
+      "rationale": "A bounded composite must coordinate field value, popup focus, calendar navigation, dismissal, form participation, and localization.",
+      "boundary": "Core owns one date. Parsing, ranges, presets, time zones, recurrence, and scheduling remain consumer or Pro work."
+    },
+    {
+      "id": "advanced-platform-workflows",
+      "surface": "Consumer code or Nerio Pro",
+      "catalogComponents": [],
+      "coverageMode": "intentionally-deferred",
+      "status": "deferred",
+      "issue": null,
+      "capability": "date ranges, scheduling, upload workflows, multi-thumb ranges, advanced filtering, and domain-specific controls",
+      "rationale": "These capabilities combine product policy, data, or advanced workflow behavior rather than one platform primitive.",
+      "boundary": "Consumers or Pro own the workflow. No Core 1.0 component is implied by visual similarity."
+    }
+  ],
   "components": [
     {
       "name": "Tokens",
@@ -347,6 +639,38 @@
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only single-select control with data-driven options, curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior."
+    },
+    {
+      "name": "Slider",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "planned",
+      "description": "Approved Core 1.0 single-value range primitive. Multi-thumb ranges, marks, thresholds, and product-specific scales remain outside Core."
+    },
+    {
+      "name": "FileInput",
+      "tier": "core",
+      "package": "@nerio-ui/ui",
+      "category": "forms",
+      "status": "planned",
+      "description": "Approved Core 1.0 native file-selection primitive without upload, drop-zone, preview, queue, retry, or storage workflow ownership."
+    },
+    {
+      "name": "Calendar",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "planned",
+      "description": "Approved Core 1.0 single-date calendar grid. Ranges, events, availability, scheduling, and time-zone workflows remain outside Core."
+    },
+    {
+      "name": "DatePicker",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "planned",
+      "description": "Approved Core 1.0 bounded single-date control composed from Calendar and Core overlays. Ranges, presets, parsing, and scheduling remain outside Core."
     },
     {
       "name": "Dialog",
