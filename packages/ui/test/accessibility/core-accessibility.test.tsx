@@ -216,6 +216,30 @@ describe("Core accessibility contracts", () => {
     expect((await axe(container)).violations).toEqual([]);
   });
 
+  it("keeps every native temporal Input path explicitly labelled", async () => {
+    const { container } = render(
+      <form aria-label="Planning window">
+        <Field label="Start date">
+          <Input type="date" name="startDate" required />
+        </Field>
+        <Field label="Billing month">
+          <Input type="month" name="billingMonth" />
+        </Field>
+        <Field label="Reporting week">
+          <Input type="week" name="reportingWeek" />
+        </Field>
+        <Field label="Start time">
+          <Input type="time" name="startTime" />
+        </Field>
+        <Field label="Local deadline">
+          <Input type="datetime-local" name="localDeadline" readOnly />
+        </Field>
+      </form>,
+    );
+
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
   it("keeps focusable table overflow regions named and keyboard reachable", async () => {
     const user = userEvent.setup();
     const { container } = render(

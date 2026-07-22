@@ -187,8 +187,15 @@ const invalidIconButtonBadge = (
 );
 // @ts-expect-error linked Cards cannot also choose a surface root
 const invalidLinkedCard = <Card href="/docs" as="article" />;
-// @ts-expect-error Date inputs have a dedicated future component boundary.
-const invalidInputType = <Input type="date" />;
+const validTemporalInputTypes = [
+  <Input key="date" type="date" />,
+  <Input key="month" type="month" />,
+  <Input key="week" type="week" />,
+  <Input key="time" type="time" />,
+  <Input key="datetime-local" type="datetime-local" />,
+];
+// @ts-expect-error File selection has a separate FileInput component boundary.
+const invalidFileInputType = <Input type="file" />;
 // @ts-expect-error Native HTML size is exposed as htmlSize, not Input size.
 const invalidNativeInputSize = <Input size={24} />;
 // @ts-expect-error Input sizes are limited to the shared control scale.
@@ -249,7 +256,8 @@ void [
   invalidButtonKbd,
   invalidIconButtonBadge,
   invalidLinkedCard,
-  invalidInputType,
+  validTemporalInputTypes,
+  invalidFileInputType,
   invalidNativeInputSize,
   invalidInputScale,
   invalidMixedRadioGroup,
@@ -3304,6 +3312,58 @@ describe("Core interactive action contracts", () => {
     expect(onInput).toHaveBeenCalled();
     expect(screen.getAllByRole("textbox")[1]).toHaveAttribute("aria-invalid", "true");
     expect(screen.getAllByRole("textbox")[1]).toHaveAttribute("data-invalid", "");
+  });
+
+  it("preserves native temporal values, constraints, events, and forwarded refs", () => {
+    const onChange = vi.fn();
+    const dateRef = React.createRef<HTMLInputElement>();
+    const { rerender } = render(
+      <form aria-label="Temporal values">
+        <Input
+          ref={dateRef}
+          aria-label="Start date"
+          type="date"
+          name="startDate"
+          min="2026-01-01"
+          max="2026-12-31"
+          step={1}
+          defaultValue="2026-07-22"
+          onChange={onChange}
+          required
+        />
+        <Input aria-label="Billing month" type="month" defaultValue="2026-07" />
+        <Input aria-label="Reporting week" type="week" defaultValue="2026-W30" />
+        <Input aria-label="Start time" type="time" defaultValue="09:30" step={900} />
+        <Input
+          aria-label="Local deadline"
+          type="datetime-local"
+          defaultValue="2026-07-22T17:30"
+          readOnly
+        />
+      </form>,
+    );
+
+    const form = screen.getByRole("form", { name: "Temporal values" });
+    const date = screen.getByLabelText("Start date");
+    expect(date).toHaveAttribute("type", "date");
+    expect(date).toHaveAttribute("min", "2026-01-01");
+    expect(date).toHaveAttribute("max", "2026-12-31");
+    expect(date).toHaveAttribute("step", "1");
+    expect(date).toBeRequired();
+    expect(dateRef.current).toBe(date);
+    expect(dateRef.current?.valueAsDate?.toISOString()).toBe("2026-07-22T00:00:00.000Z");
+    expect(Number.isFinite(dateRef.current?.valueAsNumber)).toBe(true);
+    fireEvent.change(date, { target: { value: "2026-08-03" } });
+    expect(onChange).toHaveBeenCalled();
+    expect(date).toHaveValue("2026-08-03");
+    expect(screen.getByLabelText("Local deadline")).toHaveAttribute("readonly");
+    form.reset();
+    expect(date).toHaveValue("2026-07-22");
+
+    rerender(
+      <Input aria-label="Controlled date" type="date" value="2026-09-15" onChange={onChange} />,
+    );
+    expect(screen.getByLabelText("Controlled date")).toHaveValue("2026-09-15");
   });
 
   it("composes InputGroup without replacing the native input contract", () => {

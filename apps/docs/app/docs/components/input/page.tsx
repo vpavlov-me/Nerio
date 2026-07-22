@@ -14,7 +14,6 @@ import {
 import { LabelHint } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
-import { PhoneInputPreview } from "../../../../components/phone-input-preview";
 import { StandardDocPage } from "../../../../components/doc-page";
 import { getComponentDoc } from "../../../../lib/component-docs";
 import { createPageMetadata } from "../../../../lib/seo";
@@ -23,11 +22,18 @@ const inputDoc = getComponentDoc("input");
 
 const variantRows = [
   ["sm / md / lg", "Shared density-aware control sizes; md is the default."],
-  ["Native types", "Text, email, password, search, tel, url, and number semantics."],
+  [
+    "Text-like types",
+    "Text, email, password, search, tel, url, and number preserve native semantics.",
+  ],
+  [
+    "Temporal types",
+    "Date, month, week, time, and datetime-local preserve browser pickers, localized chrome, and native values.",
+  ],
 ] as const;
 
 const stateRows = [
-  ["Default", "Accepts editable text-like values through native input behavior."],
+  ["Default", "Accepts supported values through native input behavior."],
   ["Invalid", "Exposes aria-invalid and the danger border token without owning validation."],
   ["Read-only", "Keeps the value focusable and selectable without accepting edits."],
   ["Disabled", "Removes the control from interaction and applies disabled tokens."],
@@ -35,8 +41,9 @@ const stateRows = [
 
 const apiRows = [
   ["size", "sm | md | lg", "Selects the density-aware control height."],
-  ["htmlSize", "number", "Forwards the native input size attribute."],
+  ["htmlSize", "number", "Forwards the native input size attribute where applicable."],
   ["type", "Supported native type", "Preserves native keyboard and form semantics."],
+  ["min / max / step", "Native values", "Forwards temporal and numeric constraints unchanged."],
   ["invalid", "boolean", "Exposes the invalid state for Field and FormMessage composition."],
   ["className", "string", "Extends the root without replacing component tokens."],
 ] as const;
@@ -127,17 +134,57 @@ export default function Page() {
         ),
         api: (
           <div className="doc-section-preview" aria-label="Input type preview">
-            <div className="docs-input-grid">
-              <Input
-                aria-label="Email address"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder="name@company.com"
-              />
-              <PhoneInputPreview key="phone-input-preview" />
-              <Input aria-label="Seats" type="number" min={1} step={1} defaultValue={12} />
-            </div>
+            <form className="form-preview-stack" aria-label="Native temporal input examples">
+              <div className="docs-input-grid">
+                <Label htmlFor="input-preview-start-date">Start date</Label>
+                <Input
+                  id="input-preview-start-date"
+                  name="startDate"
+                  type="date"
+                  min="2026-01-01"
+                  max="2026-12-31"
+                  step={1}
+                  defaultValue="2026-07-22"
+                  required
+                />
+                <Label htmlFor="input-preview-billing-month">Billing month</Label>
+                <Input
+                  id="input-preview-billing-month"
+                  name="billingMonth"
+                  type="month"
+                  defaultValue="2026-07"
+                />
+                <Label htmlFor="input-preview-reporting-week">Reporting week</Label>
+                <Input
+                  id="input-preview-reporting-week"
+                  name="reportingWeek"
+                  type="week"
+                  defaultValue="2026-W30"
+                />
+                <Label htmlFor="input-preview-start-time">Start time</Label>
+                <Input
+                  id="input-preview-start-time"
+                  name="startTime"
+                  type="time"
+                  step={900}
+                  defaultValue="09:30"
+                />
+                <Label htmlFor="input-preview-local-deadline">Local deadline</Label>
+                <Input
+                  id="input-preview-local-deadline"
+                  name="localDeadline"
+                  type="datetime-local"
+                  defaultValue="2026-07-22T17:30"
+                  readOnly
+                />
+              </div>
+            </form>
+            <CodeExample
+              code={
+                '<Label htmlFor="start-date">Start date</Label>\n<Input id="start-date" name="startDate" type="date" min="2026-01-01" max="2026-12-31" required />'
+              }
+              label="Native temporal Input example code"
+            />
           </div>
         ),
       }}
@@ -158,7 +205,8 @@ export default function Page() {
               </CardHeader>
               <CardContent>
                 Use autocomplete and inputMode intentionally, and compose labels and messages
-                outside the native Input.
+                outside the native Input. Prefer temporal types when browser-owned entry, picker,
+                validation, and direct form submission are the right product path.
               </CardContent>
             </Card>
             <Card>
@@ -167,8 +215,8 @@ export default function Page() {
                 <CardTitle>Do not</CardTitle>
               </CardHeader>
               <CardContent>
-                Add prefix, suffix, search results, or validation behavior directly to Input; use
-                InputGroup or a dedicated control.
+                Parse localized temporal display strings, suppress native picker affordances, or
+                turn Input into Calendar, DatePicker, scheduling, or timezone workflow behavior.
               </CardContent>
             </Card>
           </div>
@@ -177,8 +225,9 @@ export default function Page() {
           <DocumentationTable
             headers={["Contract", "Value"]}
             rows={[
-              ["Registry item", "input installs 6 source files."],
+              ["Registry item", "input installs 7 source files."],
               ["Base UI", "No interactive primitive required."],
+              ["Temporal behavior", "Native browser and operating-system control."],
               ["Registry dependencies", "None."],
               ["Package dependencies", "clsx, react, tailwind-merge, tailwindcss"],
             ]}

@@ -156,6 +156,19 @@ async function verify() {
       );
     }
 
+    const inputUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "input" },
+    });
+    const inputUsage = JSON.parse(inputUsageResult.content[0].text);
+    if (
+      !inputUsage.variants.some((item) => item.includes("datetime-local")) ||
+      !inputUsage.accessibility.some((item) => item.includes("browser-owned pickers")) ||
+      !inputUsage.accessibility.some((item) => item.includes("valueAsDate"))
+    ) {
+      throw new Error("MCP Input usage is missing the native temporal contract.");
+    }
+
     const selectUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "select" },

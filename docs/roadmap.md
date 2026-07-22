@@ -26,7 +26,8 @@
 - [ ] FormGroup, Radio Group, Alert, List, Breadcrumbs, Pagination
 - [ ] Sidebar Primitive and Command Primitive
 - [ ] Close the canonical Core 1.0 platform coverage decision
-- [ ] Add native temporal input coverage, Slider, FileInput, Calendar, and single-date DatePicker
+- [x] Add native temporal Input coverage
+- [ ] Add Slider, FileInput, Calendar, and single-date DatePicker
 
 ## Product building blocks
 

@@ -1480,7 +1480,7 @@
     {
       "name": "input",
       "title": "Input",
-      "description": "Thin native single-line control for supported short text-like values.",
+      "description": "Thin native single-line control for text-like, numeric, and platform temporal values.",
       "category": "forms",
       "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
@@ -1523,7 +1523,15 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["input"],
-      "variants": ["sm", "md", "lg", "invalid", "disabled", "read-only"],
+      "variants": [
+        "sm",
+        "md",
+        "lg",
+        "type: text | email | password | search | tel | url | number | date | month | week | time | datetime-local",
+        "invalid",
+        "disabled",
+        "read-only"
+      ],
       "requiredTokens": [
         "--n-input-height-md",
         "--n-input-height-sm",
@@ -1546,12 +1554,14 @@
       ],
       "accessibility": [
         "Use with Label or Field so the control has an accessible name.",
-        "Supports native input attributes including required, disabled, autocomplete, and aria-describedby.",
+        "Supports native input attributes including required, disabled, readOnly, min, max, step, autocomplete, and aria-describedby.",
+        "Temporal types preserve browser-owned pickers, localized chrome, native values, validity, and form submission.",
+        "Use the forwarded input ref for valueAsDate where supported and valueAsNumber; datetime-local does not have a standard valueAsDate representation.",
         "Invalid state normalizes to aria-invalid=true only for true validation errors.",
         "Disabled state uses the native disabled attribute; read-only stays focusable and selectable.",
-        "Supported types are text, email, password, search, tel, url, and number."
+        "Supported types are text, email, password, search, tel, url, number, date, month, week, time, and datetime-local."
       ],
-      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Use a short recognizable name.\"><Input placeholder=\"Launch materials\" required autoComplete=\"organization\" /></Field>"
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Use a short recognizable name.\"><Input placeholder=\"Launch materials\" required autoComplete=\"organization\" /></Field>\n\n<Field label=\"Start date\"><Input name=\"startDate\" type=\"date\" min=\"2026-01-01\" max=\"2026-12-31\" required /></Field>"
     },
     {
       "name": "input-group",

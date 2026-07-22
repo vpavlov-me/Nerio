@@ -158,14 +158,14 @@
     },
     {
       "id": "temporal-inputs",
-      "surface": "Input extension or focused native temporal control",
-      "catalogComponents": [],
+      "surface": "Input",
+      "catalogComponents": ["Input"],
       "coverageMode": "supported-native",
-      "status": "planned",
-      "issue": 258,
+      "status": "covered",
+      "issue": null,
       "capability": "date, month, week, time, and datetime-local inputs",
-      "rationale": "Browser pickers, localized chrome, native values, validity, and mobile integration must remain platform-owned.",
-      "boundary": "Core will provide one typed and styled native path. Calendar and DatePicker remain separate responsibilities."
+      "rationale": "Browser pickers, localized chrome, native values, validity, and mobile integration remain platform-owned.",
+      "boundary": "Core provides one typed and styled native Input path. Calendar and DatePicker remain separate responsibilities."
     },
     {
       "id": "range-input",
@@ -558,7 +558,7 @@
       "package": "@nerio-ui/ui",
       "category": "forms",
       "status": "stable-core",
-      "description": "Thin native single-line control for supported text-like values."
+      "description": "Thin native single-line control for text-like, numeric, and platform temporal values."
     },
     {
       "name": "InputGroup",
