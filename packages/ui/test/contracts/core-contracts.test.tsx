@@ -194,6 +194,8 @@ const validTemporalInputTypes = [
   <Input key="time" type="time" />,
   <Input key="datetime-local" type="datetime-local" />,
 ];
+// @ts-expect-error File selection has a separate FileInput component boundary.
+const invalidFileInputType = <Input type="file" />;
 // @ts-expect-error Native HTML size is exposed as htmlSize, not Input size.
 const invalidNativeInputSize = <Input size={24} />;
 // @ts-expect-error Input sizes are limited to the shared control scale.
@@ -255,6 +257,7 @@ void [
   invalidIconButtonBadge,
   invalidLinkedCard,
   validTemporalInputTypes,
+  invalidFileInputType,
   invalidNativeInputSize,
   invalidInputScale,
   invalidMixedRadioGroup,
