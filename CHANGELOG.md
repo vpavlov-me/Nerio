@@ -8,6 +8,9 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added native `date`, `month`, `week`, `time`, and `datetime-local` coverage to the server-safe
+  Input contract while preserving browser-owned pickers, localized chrome, validity, value, and
+  form-submission behavior.
 - Added the canonical Core 1.0 platform-primitive coverage matrix, approved bounded follow-up
   identities for Slider, FileInput, Calendar, and DatePicker, and catalog drift validation for the
   native/component/deferred boundary.

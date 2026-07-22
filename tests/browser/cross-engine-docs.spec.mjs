@@ -110,6 +110,69 @@ test("keeps Select, command search, and focus-visible behavior portable", async 
   expect(problems).toEqual([]);
 });
 
+test("preserves native temporal Input values, constraints, form data, and reflow", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/docs/components/input");
+
+  const form = page.getByRole("form", { name: "Native temporal input examples" });
+  const date = page.getByLabel("Start date", { exact: true });
+  await expect(date).toHaveAttribute("type", "date");
+  await expect(date).toHaveAttribute("min", "2026-01-01");
+  await expect(date).toHaveAttribute("max", "2026-12-31");
+  await expect(date).toHaveAttribute("step", "1");
+  await expect(date).toHaveValue("2026-07-22");
+  await expect(page.getByLabel("Billing month", { exact: true })).toHaveValue("2026-07");
+  await expect(page.getByLabel("Reporting week", { exact: true })).toHaveValue("2026-W30");
+  await expect(page.getByLabel("Start time", { exact: true })).toHaveValue("09:30");
+  await expect(page.getByLabel("Local deadline", { exact: true })).toHaveValue("2026-07-22T17:30");
+  await expect(page.getByLabel("Local deadline", { exact: true })).toHaveAttribute("readonly", "");
+
+  const nativeValues = await form.evaluate((element) => {
+    const data = new FormData(element);
+    const dateInput = element.elements.namedItem("startDate");
+    return {
+      entries: Object.fromEntries(data.entries()),
+      valueAsDate: dateInput.valueAsDate?.toISOString(),
+      valueAsNumber: dateInput.valueAsNumber,
+    };
+  });
+  expect(nativeValues).toEqual({
+    entries: {
+      startDate: "2026-07-22",
+      billingMonth: "2026-07",
+      reportingWeek: "2026-W30",
+      startTime: "09:30",
+      localDeadline: "2026-07-22T17:30",
+    },
+    valueAsDate: "2026-07-22T00:00:00.000Z",
+    valueAsNumber: Date.UTC(2026, 6, 22),
+  });
+
+  await date.fill("2027-01-01");
+  expect(await date.evaluate((element) => element.checkValidity())).toBe(false);
+  await date.fill("2026-08-03");
+  expect(await date.evaluate((element) => element.checkValidity())).toBe(true);
+  const time = page.getByLabel("Start time", { exact: true });
+  await time.fill("09:37");
+  expect(await time.evaluate((element) => element.checkValidity())).toBe(false);
+  await form.evaluate((element) => element.reset());
+  await expect(date).toHaveValue("2026-07-22");
+  await expect(time).toHaveValue("09:30");
+  await date.focus();
+  await expect(date).toBeFocused();
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+  expect(problems).toEqual([]);
+});
+
 test("keeps mobile navigation inside the dynamic viewport", async ({ browserName, page }) => {
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 390, height: 720 });

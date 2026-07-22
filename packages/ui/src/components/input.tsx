@@ -2,7 +2,19 @@ import * as React from "react";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 
-export type InputType = "text" | "email" | "password" | "search" | "tel" | "url" | "number";
+export type InputType =
+  | "text"
+  | "email"
+  | "password"
+  | "search"
+  | "tel"
+  | "url"
+  | "number"
+  | "date"
+  | "month"
+  | "week"
+  | "time"
+  | "datetime-local";
 
 export type InputSize = "sm" | "md" | "lg";
 

@@ -266,7 +266,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   },
   input: {
     name: "Input",
-    description: "A thin native single-line control for supported text-like values.",
+    description:
+      "A thin native single-line control for text-like, numeric, and platform temporal values.",
     status: "stable",
     layer: "core",
     category: "Forms",
@@ -277,6 +278,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     motion: ["hover", "focus"],
     accessibility: [
       "native input attributes",
+      "browser-owned temporal picker and localized chrome",
       "aria-invalid support",
       "label through Field or Label",
     ],
@@ -1130,22 +1132,28 @@ export const componentReference: Record<string, ComponentReference> = {
   },
   input: {
     category: "Forms",
-    purpose: "Use Input for short text values such as names, filters, URLs, and settings.",
+    purpose:
+      "Use Input for native text-like, numeric, or temporal values when browser-owned entry and form behavior fit the product.",
     anatomy: [
       {
         title: "root",
         description: "Native input element with tokenized height, radius, border, and focus state.",
       },
-      { title: "value", description: "User-entered short text value." },
+      { title: "value", description: "Native text, number, date, month, week, or time value." },
       { title: "placeholder", description: "Optional hint that never replaces a visible label." },
     ],
     variants: [
       { title: "Default", description: "General text entry." },
+      {
+        title: "Temporal",
+        description: "Native date, month, week, time, or local date-time entry and picker.",
+      },
       { title: "Invalid", description: "Pair with Field and FormMessage for validation." },
     ],
     states: [
       { title: "Default and focus", description: "Focus uses the shared Nerio focus ring." },
       { title: "Disabled", description: "Prevents editing while preserving layout." },
+      { title: "Read-only", description: "Keeps supported native values focusable and submitted." },
       { title: "Required", description: "Use native required attributes and visible helper text." },
       { title: "Invalid", description: "Use semantic error color and nearby text." },
     ],
@@ -1159,6 +1167,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use aria-describedby for helper text and validation messages.",
       "Use aria-invalid only when the value is actually invalid.",
       "Use autocomplete and input type where appropriate.",
+      "Keep temporal picker chrome, localized display, validity, and value semantics browser-owned.",
     ],
     api: [
       {
@@ -1167,16 +1176,32 @@ export const componentReference: Record<string, ComponentReference> = {
           "Sets visual invalid state and aria-invalid when aria-invalid is not supplied.",
       },
       { title: "className", description: "Extends the root input without replacing defaults." },
-      { title: "native props", description: "Supports standard React input attributes." },
+      {
+        title: "type",
+        description:
+          "Supports the documented text-like, number, date, month, week, time, and datetime-local types.",
+      },
+      {
+        title: "native props and ref",
+        description:
+          "Forwards applicable input attributes and exposes native valueAsDate/valueAsNumber behavior.",
+      },
     ],
     designNotes: [
       "Use Input for short values; use Textarea for longer notes.",
+      "Use native temporal types for platform entry; use Calendar or DatePicker only when their bounded custom UI is required.",
       "Prefer Field when the control needs label, description, or validation message.",
     ],
     related: ["Field", "Label", "Textarea"],
     guidance: {
-      do: ["Use Field for production forms so labels and messages stay connected."],
-      dont: ["Do not use placeholder text as the only label."],
+      do: [
+        "Use Field for production forms so labels and messages stay connected.",
+        "Use min, max, and step without converting native temporal values to localized strings.",
+      ],
+      dont: [
+        "Do not use placeholder text as the only label.",
+        "Do not suppress native temporal pickers or add scheduling, timezone, or parsing policy to Input.",
+      ],
     },
     tokens: [
       "--n-input-height-md",

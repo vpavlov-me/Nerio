@@ -105,9 +105,10 @@ Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows,
 
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
-the complete native-versus-component boundary. Core 1.0 has approved follow-up work for native
-temporal inputs, a single-value Slider, FileInput, Calendar, and a bounded single-date DatePicker;
-their product-workflow extensions remain outside Core.
+the complete native-versus-component boundary. Input supports native date, month, week, time, and
+`datetime-local` values while preserving browser-owned picker, validity, and form behavior. Core
+1.0 has approved follow-up work for a single-value Slider, FileInput, Calendar, and a bounded
+single-date DatePicker; their product-workflow extensions remain outside Core.
 
 ## Package entrypoints
 

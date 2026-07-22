@@ -483,6 +483,14 @@ async function verify() {
     if (!cardInfoOutput.includes("--n-card-padding-inline")) {
       throw new Error("Card registry metadata did not include the spacing contract.");
     }
+    const inputInfoOutput = await run(localTarget, "info", "input");
+    if (
+      !inputInfoOutput.includes("datetime-local") ||
+      !inputInfoOutput.includes("browser-owned pickers") ||
+      !inputInfoOutput.includes("valueAsDate")
+    ) {
+      throw new Error("Input registry metadata did not include the native temporal contract.");
+    }
     const typographyInfoOutput = await run(localTarget, "info", "typography");
     if (
       !typographyInfoOutput.includes("--n-font-sans-system") ||
