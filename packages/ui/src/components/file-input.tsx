@@ -26,11 +26,18 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(func
   ref,
 ) {
   const isInvalid = invalid === true || ariaInvalid === true || ariaInvalid === "true";
+  const inputProps: React.InputHTMLAttributes<HTMLInputElement> = { ...props };
+
+  delete inputProps.children;
+  delete inputProps.defaultValue;
+  delete inputProps.readOnly;
+  delete inputProps.type;
+  delete inputProps.value;
 
   return (
     <input
       ref={ref}
-      {...props}
+      {...inputProps}
       aria-invalid={invalid ? true : ariaInvalid}
       className={cn(
         fileInputBaseClasses,

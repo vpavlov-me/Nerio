@@ -24,7 +24,7 @@ const stateRows = [
 const apiRows = [
   ["accept", "string", "Native picker hint for file extensions or MIME types."],
   ["multiple", "boolean", "Allows more than one selected file in FileList."],
-  ["capture", "boolean | user | environment", "Native compatible-device capture hint."],
+  ["capture", 'boolean | "user" | "environment"', "Native compatible-device capture hint."],
   ["name / form / required / disabled", "native props", "Form ownership and validity behavior."],
   ["onChange", "ChangeEvent<HTMLInputElement>", "Reads event.currentTarget.files directly."],
   ["ref", "HTMLInputElement", "Accesses files, validity, focus, and an intentional reset path."],

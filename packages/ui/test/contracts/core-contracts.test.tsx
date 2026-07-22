@@ -4300,9 +4300,16 @@ describe("Core interactive action contracts", () => {
 
   it("keeps FileInput single selection and protected owned attributes", async () => {
     const user = userEvent.setup();
+    const unsafeProtectedProps = {
+      children: "Consumer child",
+      defaultValue: "default.pdf",
+      readOnly: true,
+      type: "text",
+      value: "controlled.pdf",
+    };
     render(
       <>
-        <FileInput aria-label="Resume" data-slot="consumer-slot" />
+        <FileInput aria-label="Resume" data-slot="consumer-slot" {...unsafeProtectedProps} />
         <FileInput aria-label="Unavailable files" disabled />
       </>,
     );
@@ -4314,6 +4321,9 @@ describe("Core interactive action contracts", () => {
 
     expect(input.files).toHaveLength(1);
     expect(input.files?.[0]).toBe(first);
+    expect(input).not.toHaveAttribute("readonly");
+    expect(input).not.toHaveAttribute("value");
+    expect(input).toHaveAttribute("type", "file");
     expect(input).toHaveAttribute("data-slot", "file-input");
     expect(screen.getByLabelText("Unavailable files")).toBeDisabled();
   });
