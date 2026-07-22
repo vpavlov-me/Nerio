@@ -27,7 +27,8 @@
 - [ ] Sidebar Primitive and Command Primitive
 - [ ] Close the canonical Core 1.0 platform coverage decision
 - [x] Add native temporal Input coverage
-- [ ] Add Slider, FileInput, Calendar, and single-date DatePicker
+- [x] Add single-value Slider
+- [ ] Add FileInput, Calendar, and single-date DatePicker
 
 ## Product building blocks
 

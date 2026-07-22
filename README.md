@@ -107,12 +107,12 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
 the complete native-versus-component boundary. Input supports native date, month, week, time, and
 `datetime-local` values while preserving browser-owned picker, validity, and form behavior. Core
-1.0 has approved follow-up work for a single-value Slider, FileInput, Calendar, and a bounded
-single-date DatePicker; their product-workflow extensions remain outside Core.
+1.0 includes a single-value Slider and has approved follow-up work for FileInput, Calendar, and a
+bounded single-date DatePicker; their product-workflow extensions remain outside Core.
 
 ## Package entrypoints
 
-`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, and Switch are exported from `@nerio-ui/ui/client`. IconButton remains a deprecated alpha compatibility export; new work uses Button's icon-only mode. Styles remain available through `@nerio-ui/ui/styles.css`.
+`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Slider, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, and Switch are exported from `@nerio-ui/ui/client`. IconButton remains a deprecated alpha compatibility export; new work uses Button's icon-only mode. Styles remain available through `@nerio-ui/ui/styles.css`.
 
 `@nerio-ui/adapters` has no aggregating root entrypoint. Import icons and their public SVG types from
 `@nerio-ui/adapters/icons`. Optional integrations use `@nerio-ui/adapters/table`,
@@ -132,7 +132,7 @@ defined in the [platform support policy](./docs/platform-support.md) and checked
 ```tsx
 import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio-ui/ui";
 import { Settings } from "@nerio-ui/adapters/icons";
-import { Button, Dialog, Select, ToastProvider } from "@nerio-ui/ui/client";
+import { Button, Dialog, Select, Slider, ToastProvider } from "@nerio-ui/ui/client";
 import "@nerio-ui/ui/styles.css";
 ```
 

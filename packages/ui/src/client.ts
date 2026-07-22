@@ -25,6 +25,13 @@ export {
 } from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
 export {
+  Slider,
+  type SliderChangeEventDetails,
+  type SliderCommitEventDetails,
+  type SliderOrientation,
+  type SliderProps,
+} from "./components/slider";
+export {
   Select,
   SelectGroup,
   SelectGroupLabel,

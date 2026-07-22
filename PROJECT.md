@@ -113,7 +113,7 @@ spacing, radius, typography, icon, or control-size scales.
 
 `@nerio-ui/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
 
-Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, IconButton, Checkbox, RadioGroup, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
+Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, IconButton, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
 
 `@nerio-ui/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
 
@@ -144,8 +144,8 @@ Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or 
 
 Nerio Core includes foundation and base reusable components: Button, IconButton, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive. Button's link variant covers text-level navigation when it renders a native anchor.
 
-Core 1.0 Input supports native date, month, week, time, and `datetime-local` values. Approved
-implementation tasks remain for a single-value Slider, native FileInput, a single-date Calendar,
+Core 1.0 Input supports native date, month, week, time, and `datetime-local` values, and Slider
+provides one Base UI-backed numeric value and thumb. Approved implementation tasks remain for native FileInput, a single-date Calendar,
 and a bounded single-date DatePicker. The canonical coverage decision is
 `docs/core-platform-primitive-coverage.md`. Plain native HTML remains the preferred path where a
 wrapper adds no durable value; ranges, scheduling, upload workflows, multi-thumb sliders, and other

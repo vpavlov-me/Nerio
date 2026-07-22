@@ -144,6 +144,16 @@ const expectedProgressFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedSliderFiles = [
+  "components/slider.tsx",
+  "lib/cn.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedOverlayAndTabsFiles = [
   "components/dialog.tsx",
   "components/dropdown-menu.tsx",
@@ -463,7 +473,8 @@ async function verify() {
       !listOutput.includes("icon-button\tIconButton\tactions") ||
       !listOutput.includes("motion-adapter\tMotion Adapter\tfoundation") ||
       !listOutput.includes("alert\tAlert\tfeedback") ||
-      !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation")
+      !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation") ||
+      !listOutput.includes("slider\tSlider\tforms")
     ) {
       throw new Error("List output did not include registry component name, title, and category.");
     }
@@ -557,6 +568,7 @@ async function verify() {
     await run(localTarget, "add", "checkbox");
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "select");
+    await run(localTarget, "add", "slider");
     await run(localTarget, "add", "alert");
     await run(localTarget, "add", "radio-group");
     await run(localTarget, "add", "avatar");
@@ -765,6 +777,22 @@ async function verify() {
       !selectSource.includes("autoComplete={autoComplete}")
     ) {
       throw new Error("Installed Select source did not preserve placeholder and form metadata.");
+    }
+    assertFiles(localTarget, expectedSliderFiles);
+    const sliderSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/slider.tsx"),
+      "utf8",
+    );
+    if (
+      !sliderSource.includes("@base-ui/react/slider") ||
+      !sliderSource.includes("BaseSlider.Root<number>") ||
+      !sliderSource.includes("eventDetails.cancel()") ||
+      !sliderSource.includes('data-slot="thumb"') ||
+      !sliderSource.includes("getAriaValueText")
+    ) {
+      throw new Error(
+        "Installed Slider source did not preserve its single-value accessibility contract.",
+      );
     }
     assertFiles(localTarget, expectedPhase2BFiles);
     assertFiles(localTarget, expectedDisplayFiles);

@@ -173,6 +173,110 @@ test("preserves native temporal Input values, constraints, form data, and reflow
   expect(problems).toEqual([]);
 });
 
+test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only behavior portable", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/docs/components/slider");
+
+  const volume = page.getByRole("slider", { name: "Volume", exact: true });
+  await expect(volume).toHaveValue("40");
+  await volume.focus();
+  await volume.press("ArrowRight");
+  await expect(volume).toHaveValue("41");
+  await volume.press("PageUp");
+  await expect(volume).toHaveValue("51");
+  await volume.press("End");
+  await expect(volume).toHaveValue("100");
+  await volume.press("Home");
+  await expect(volume).toHaveValue("0");
+  await expect(volume).toHaveAttribute("aria-valuetext", "0 percent");
+  await expect(page.locator('[data-slot="value"]').first()).toHaveText("0%");
+  expect(
+    await page
+      .getByRole("form", { name: "Slider form example" })
+      .evaluate((form) => Object.fromEntries(new FormData(form).entries())),
+  ).toEqual({ volume: "0" });
+
+  const control = page.locator('[data-slot="control"]').first();
+  const controlBox = await control.boundingBox();
+  expect(controlBox).not.toBeNull();
+  const thumbBox = await page.locator('[data-slot="thumb"]').first().boundingBox();
+  expect(thumbBox).not.toBeNull();
+  await page.mouse.move(thumbBox.x + thumbBox.width / 2, thumbBox.y + thumbBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(
+    controlBox.x + controlBox.width * 0.75,
+    controlBox.y + controlBox.height / 2,
+    { steps: 4 },
+  );
+  await page.mouse.up();
+  expect(Number(await volume.inputValue())).toBeGreaterThanOrEqual(70);
+
+  const readOnly = page.getByRole("slider", { name: "Read-only volume" });
+  await readOnly.focus();
+  await readOnly.press("End");
+  await expect(readOnly).toHaveValue("72");
+  await expect(readOnly).toHaveAttribute("aria-readonly", "true");
+
+  const vertical = page.getByRole("slider", { name: "Vertical volume" });
+  await expect(vertical).toHaveAttribute("aria-orientation", "vertical");
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  await volume.focus();
+  await volume.press("ArrowRight");
+  expect(Number(await volume.inputValue())).toBeGreaterThanOrEqual(71);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+  expect(problems).toEqual([]);
+});
+
+test("keeps Slider touch input portable", async ({ browser, browserName }, testInfo) => {
+  const context = await browser.newContext({
+    baseURL: testInfo.project.use.baseURL,
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 390, height: 844 },
+  });
+  const page = await context.newPage();
+  const problems = monitorPage(page, browserName);
+  await page.goto("/docs/components/slider");
+
+  const volume = page.getByRole("slider", { name: "Volume", exact: true });
+  const control = page.locator('[data-slot="control"]').first();
+  const controlBox = await control.boundingBox();
+  const thumbBox = await page.locator('[data-slot="thumb"]').first().boundingBox();
+  expect(controlBox).not.toBeNull();
+  expect(thumbBox).not.toBeNull();
+  if (browserName === "chromium") {
+    const session = await page.context().newCDPSession(page);
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchStart",
+      touchPoints: [{ x: thumbBox.x + thumbBox.width / 2, y: thumbBox.y + thumbBox.height / 2 }],
+    });
+    await session.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
+      touchPoints: [
+        { x: controlBox.x + controlBox.width * 0.75, y: controlBox.y + controlBox.height / 2 },
+      ],
+    });
+    await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    await session.detach();
+  } else {
+    await page.touchscreen.tap(
+      controlBox.x + controlBox.width * 0.75,
+      controlBox.y + controlBox.height / 2,
+    );
+  }
+  expect(Number(await volume.inputValue())).toBeGreaterThanOrEqual(70);
+  expect(problems).toEqual([]);
+  await context.close();
+});
+
 test("keeps mobile navigation inside the dynamic viewport", async ({ browserName, page }) => {
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 390, height: 720 });

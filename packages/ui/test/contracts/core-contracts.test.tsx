@@ -102,6 +102,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
+  Slider,
   Switch,
   Tabs,
   TabsContent,
@@ -229,6 +230,18 @@ const invalidProgressTone = <Progress aria-label="Upload progress" tone="success
 const validVisibleProgress = <Progress label="Upload" value={50} />;
 const validAriaLabelProgress = <Progress aria-label="Upload progress" value={50} />;
 const validAriaLabelledByProgress = <Progress aria-labelledby="upload-label" value={50} />;
+// @ts-expect-error Slider requires exactly one accessible naming strategy.
+const _invalidUnnamedSlider = <Slider defaultValue={50} />;
+// @ts-expect-error Slider does not accept both visible and ARIA labels.
+const _invalidConflictingSliderName = (
+  <Slider aria-label="Volume" label="Volume" defaultValue={50} />
+);
+// @ts-expect-error Slider intentionally rejects Base UI's multi-thumb range values.
+const _invalidRangeSlider = <Slider aria-label="Budget" value={[20, 80]} />;
+// @ts-expect-error Product-specific marks remain consumer-owned.
+const _invalidSliderMarks = <Slider aria-label="Volume" marks={[0, 50, 100]} />;
+const _validVisibleSlider = <Slider label="Volume" defaultValue={50} />;
+const _validAriaSlider = <Slider aria-label="Volume" defaultValue={50} />;
 const validComposedRadioGroup = (
   <RadioGroup label="Visibility">
     <RadioGroupItem value="team">Team</RadioGroupItem>
@@ -4117,5 +4130,113 @@ describe("Core interactive action contracts", () => {
       expect(screen.queryByRole("combobox", { name: inputName })).not.toBeInTheDocument();
       expect(trigger).toHaveFocus();
     }
+  });
+
+  it("keeps Slider single-value keyboard, form, state, and ref contracts", async () => {
+    const user = userEvent.setup();
+    const inputRef = React.createRef<HTMLInputElement>();
+    const rootRef = React.createRef<HTMLDivElement>();
+    const onValueChange = vi.fn();
+    const onValueCommitted = vi.fn();
+
+    render(
+      <form data-testid="slider-form">
+        <Slider
+          ref={rootRef}
+          inputRef={inputRef}
+          label="Workspace volume"
+          description="Controls notification playback."
+          defaultValue={40}
+          min={0}
+          max={100}
+          step={5}
+          largeStep={20}
+          name="volume"
+          required
+          invalid
+          valueLabel="40%"
+          onValueChange={onValueChange}
+          onValueCommitted={onValueCommitted}
+        />
+      </form>,
+    );
+
+    const slider = screen.getByRole("slider", { name: "Workspace volume" });
+    expect(rootRef.current).toHaveAttribute("data-slot", "root");
+    expect(inputRef.current).toBe(slider);
+    expect(slider).toHaveAttribute("type", "range");
+    expect(slider).toHaveAttribute("required");
+    expect(slider).toHaveAttribute("aria-required", "true");
+    expect(slider).toHaveAttribute("aria-invalid", "true");
+    expect(slider).toHaveAccessibleDescription("Controls notification playback.");
+    expect(screen.getByText("40%")).toHaveAttribute("data-slot", "value");
+
+    await user.tab();
+    expect(slider).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(slider).toHaveValue("45");
+    await user.keyboard("{PageUp}");
+    expect(slider).toHaveValue("65");
+    await user.keyboard("{End}");
+    expect(slider).toHaveValue("100");
+    await user.keyboard("{Home}");
+    expect(slider).toHaveValue("0");
+    expect(onValueChange).toHaveBeenCalled();
+    expect(onValueCommitted).toHaveBeenCalled();
+
+    const form = screen.getByTestId("slider-form") as HTMLFormElement;
+    expect(new FormData(form).get("volume")).toBe("0");
+    expect(rootRef.current?.querySelector('[data-slot="track"]')).not.toBeNull();
+    expect(rootRef.current?.querySelector('[data-slot="indicator"]')).not.toBeNull();
+    expect(rootRef.current?.querySelector('[data-slot="thumb"]')).not.toBeNull();
+  });
+
+  it("keeps read-only Slider focusable without changing its value", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const onValueCommitted = vi.fn();
+    render(
+      <Slider
+        aria-label="Read-only score"
+        defaultValue={25}
+        readOnly
+        onValueChange={onValueChange}
+        onValueCommitted={onValueCommitted}
+      />,
+    );
+
+    const slider = screen.getByRole("slider", { name: "Read-only score" });
+    await user.tab();
+    expect(slider).toHaveFocus();
+    expect(slider).toHaveAttribute("aria-readonly", "true");
+    await user.keyboard("{ArrowRight}{End}");
+    expect(slider).toHaveValue("25");
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onValueCommitted).not.toHaveBeenCalled();
+  });
+
+  it("keeps controlled Slider values and event details explicit", async () => {
+    const user = userEvent.setup();
+    function ControlledSlider() {
+      const [value, setValue] = React.useState(30);
+      return (
+        <Slider
+          aria-label="Controlled volume"
+          value={value}
+          valueLabel={`${value}%`}
+          onValueChange={(nextValue, details) => {
+            expect(details.reason).toBe("keyboard");
+            setValue(nextValue);
+          }}
+        />
+      );
+    }
+
+    render(<ControlledSlider />);
+    const slider = screen.getByRole("slider", { name: "Controlled volume" });
+    await user.tab();
+    await user.keyboard("{ArrowRight}");
+    expect(slider).toHaveValue("31");
+    expect(screen.getByText("31%")).toBeInTheDocument();
   });
 });

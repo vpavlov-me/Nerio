@@ -15,6 +15,7 @@ const categoryFixtures = {
     "radio-group",
     "switch",
     "select",
+    "slider",
   ],
   data: ["card", "badge", "avatar", "table", "item", "list", "separator", "key-value", "stat"],
   feedback: ["alert", "toast", "progress", "skeleton", "empty-state", "spinner"],
@@ -22,7 +23,7 @@ const categoryFixtures = {
   overlays: ["dialog", "sheet", "popover", "tooltip", "dropdown-menu"],
 };
 
-const matrixSections = ["typography", "button", "input", "card", "alert", "tabs"];
+const matrixSections = ["typography", "button", "input", "slider", "card", "alert", "tabs"];
 
 async function prepareFixture(page) {
   await page.route("https://mc.yandex.ru/**", (route) => route.abort());
