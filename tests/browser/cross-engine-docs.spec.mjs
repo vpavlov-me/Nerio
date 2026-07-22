@@ -239,7 +239,6 @@ test("keeps Slider touch input portable", async ({ browser, browserName }, testI
   const context = await browser.newContext({
     baseURL: testInfo.project.use.baseURL,
     hasTouch: true,
-    isMobile: true,
     viewport: { width: 390, height: 844 },
   });
   const page = await context.newPage();
