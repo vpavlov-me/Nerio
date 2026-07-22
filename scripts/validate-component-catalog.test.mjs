@@ -177,6 +177,25 @@ test("catalog validator reports invalid platform coverage claims", () => {
   );
 });
 
+test("catalog validator reports platform coverage boundary drift", () => {
+  withFixture(
+    catalog,
+    (value) => {
+      const range = value.platformCoverage.find((entry) => entry.id === "range-input");
+      range.capability = "multi-value range input";
+      range.rationale = "A wrapper is enough.";
+      range.boundary = "Core owns multiple thumbs.";
+      return value;
+    },
+    "--catalog",
+    (stderr) => {
+      assert.match(stderr, /Platform coverage capability differs for range-input/);
+      assert.match(stderr, /Platform coverage rationale differs for range-input/);
+      assert.match(stderr, /Platform coverage boundary differs for range-input/);
+    },
+  );
+});
+
 test("catalog validator reports platform coverage document drift", () => {
   withFixture(
     platformCoverage,

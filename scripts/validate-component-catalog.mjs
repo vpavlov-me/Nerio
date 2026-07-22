@@ -423,7 +423,14 @@ function validate() {
       failures.push(`Platform coverage document is missing catalog claim: ${entry.id}`);
       continue;
     }
-    for (const field of ["surface", "coverageMode", "status"]) {
+    for (const field of [
+      "capability",
+      "surface",
+      "coverageMode",
+      "rationale",
+      "boundary",
+      "status",
+    ]) {
       if (documentEntry[field] !== entry[field])
         failures.push(
           `Platform coverage ${field} differs for ${entry.id}: ${documentEntry[field]} !== ${entry[field]}`,
