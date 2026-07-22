@@ -126,6 +126,223 @@
     }
   },
   "rule": "Core = building blocks. Pro = product-ready solutions.",
+  "platformCoverageModes": {
+    "dedicated-component": "A Core component owns durable shared behavior, accessibility, styling, state, or composition.",
+    "supported-native": "Existing Core foundations intentionally support the native element or state while the browser owns its behavior.",
+    "native-guidance": "Plain semantic HTML is preferred because a wrapper would add no stable product value.",
+    "intentionally-deferred": "The capability is a product workflow, advanced composition, or non-essential abstraction outside Core 1.0."
+  },
+  "platformCoverageStatuses": ["covered", "planned", "deferred"],
+  "platformCoverage": [
+    {
+      "id": "button-actions",
+      "surface": "Button plus native form semantics",
+      "catalogComponents": ["Button"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "text-inputs",
+      "surface": "Input",
+      "catalogComponents": ["Input"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "temporal-inputs",
+      "surface": "Input extension or focused native temporal control",
+      "catalogComponents": [],
+      "coverageMode": "supported-native",
+      "status": "planned",
+      "issue": 258
+    },
+    {
+      "id": "range-input",
+      "surface": "Slider",
+      "catalogComponents": ["Slider"],
+      "coverageMode": "dedicated-component",
+      "status": "planned",
+      "issue": 259
+    },
+    {
+      "id": "color-input",
+      "surface": "Native input type=color with an explicit label",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "checkbox-radio",
+      "surface": "Checkbox and Radio Group",
+      "catalogComponents": ["Checkbox", "Radio Group"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "file-input",
+      "surface": "FileInput",
+      "catalogComponents": ["FileInput"],
+      "coverageMode": "dedicated-component",
+      "status": "planned",
+      "issue": 260
+    },
+    {
+      "id": "textarea",
+      "surface": "Textarea",
+      "catalogComponents": ["Textarea"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "custom-select",
+      "surface": "Select",
+      "catalogComponents": ["Select"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "native-select",
+      "surface": "Native select, option, and optgroup with an explicit label",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "datalist",
+      "surface": "Input with native datalist",
+      "catalogComponents": ["Input"],
+      "coverageMode": "supported-native",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "field-grouping",
+      "surface": "FormGroup with native fieldset semantics",
+      "catalogComponents": ["FormGroup"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "labels-messages",
+      "surface": "Label, Field, and Form Message",
+      "catalogComponents": ["Label", "Field", "Form Message"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "output",
+      "surface": "Native output with semantic text and form association",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "form-contracts",
+      "surface": "Applicable native or Base UI-backed Core controls",
+      "catalogComponents": [
+        "Button",
+        "Input",
+        "Textarea",
+        "Checkbox",
+        "Radio Group",
+        "Switch",
+        "Select"
+      ],
+      "coverageMode": "supported-native",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "progress",
+      "surface": "Progress",
+      "catalogComponents": ["Progress"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "meter",
+      "surface": "Native meter with Nerio typography and tokens",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "disclosure",
+      "surface": "Native details and summary",
+      "catalogComponents": [],
+      "coverageMode": "native-guidance",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "dialog",
+      "surface": "Dialog",
+      "catalogComponents": ["Dialog"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "popover",
+      "surface": "Popover",
+      "catalogComponents": ["Popover"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "links-landmarks",
+      "surface": "Native anchors and navigation landmarks plus Button link rendering",
+      "catalogComponents": ["Button"],
+      "coverageMode": "supported-native",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "tables-lists",
+      "surface": "Table and List",
+      "catalogComponents": ["Table", "List"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null
+    },
+    {
+      "id": "calendar",
+      "surface": "Calendar",
+      "catalogComponents": ["Calendar"],
+      "coverageMode": "dedicated-component",
+      "status": "planned",
+      "issue": 261
+    },
+    {
+      "id": "date-picker",
+      "surface": "DatePicker composed from Calendar and Core overlays",
+      "catalogComponents": ["DatePicker"],
+      "coverageMode": "dedicated-component",
+      "status": "planned",
+      "issue": 262
+    },
+    {
+      "id": "advanced-platform-workflows",
+      "surface": "Consumer code or Nerio Pro",
+      "catalogComponents": [],
+      "coverageMode": "intentionally-deferred",
+      "status": "deferred",
+      "issue": null
+    }
+  ],
   "components": [
     {
       "name": "Tokens",
@@ -347,6 +564,38 @@
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only single-select control with data-driven options, curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior."
+    },
+    {
+      "name": "Slider",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "planned",
+      "description": "Approved Core 1.0 single-value range primitive. Multi-thumb ranges, marks, thresholds, and product-specific scales remain outside Core."
+    },
+    {
+      "name": "FileInput",
+      "tier": "core",
+      "package": "@nerio-ui/ui",
+      "category": "forms",
+      "status": "planned",
+      "description": "Approved Core 1.0 native file-selection primitive without upload, drop-zone, preview, queue, retry, or storage workflow ownership."
+    },
+    {
+      "name": "Calendar",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "planned",
+      "description": "Approved Core 1.0 single-date calendar grid. Ranges, events, availability, scheduling, and time-zone workflows remain outside Core."
+    },
+    {
+      "name": "DatePicker",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "planned",
+      "description": "Approved Core 1.0 bounded single-date control composed from Calendar and Core overlays. Ranges, presets, parsing, and scheduling remain outside Core."
     },
     {
       "name": "Dialog",

@@ -11,6 +11,7 @@ const validator = resolve(root, "scripts/validate-component-catalog.mjs");
 const catalog = resolve(root, "data/component-catalog.json");
 const manifest = resolve(root, "packages/registry/src/manifest.json");
 const components = resolve(root, "COMPONENTS.md");
+const platformCoverage = resolve(root, "docs/core-platform-primitive-coverage.md");
 const docsChrome = resolve(root, "apps/docs/components/docs-chrome.tsx");
 const componentDocs = resolve(root, "apps/docs/lib/component-docs.ts");
 
@@ -152,6 +153,48 @@ test("catalog validator reports matrix tier, status, and package drift", () => {
     (source) => source.replace("## Core components", "## Pro components"),
     "--components",
     (stderr) => assert.match(stderr, /COMPONENTS\.md tier differs for Button/),
+  );
+});
+
+test("catalog validator reports invalid platform coverage claims", () => {
+  withFixture(
+    catalog,
+    (value) => {
+      const range = value.platformCoverage.find((entry) => entry.id === "range-input");
+      range.coverageMode = "custom-wrapper";
+      range.status = "covered";
+      range.issue = 259;
+      range.catalogComponents = ["UnknownSlider"];
+      return value;
+    },
+    "--catalog",
+    (stderr) => {
+      assert.match(stderr, /range-input has invalid coverage mode: custom-wrapper/);
+      assert.match(stderr, /range-input must not link an implementation issue unless planned/);
+      assert.match(stderr, /range-input references unknown catalog component: UnknownSlider/);
+      assert.match(stderr, /Platform coverage coverageMode differs for range-input/);
+    },
+  );
+});
+
+test("catalog validator reports platform coverage document drift", () => {
+  withFixture(
+    platformCoverage,
+    (source) =>
+      source
+        .replace(
+          /^(\| range-input\s+\| single-value range input\s+\|) Slider(\s+\|)/m,
+          "$1 RangeControl$2",
+        )
+        .replace(/^\| file-input .*\n/m, ""),
+    "--platform-coverage",
+    (stderr) => {
+      assert.match(
+        stderr,
+        /Platform coverage surface differs for range-input: RangeControl !== Slider/,
+      );
+      assert.match(stderr, /Platform coverage document is missing catalog claim: file-input/);
+    },
   );
 });
 

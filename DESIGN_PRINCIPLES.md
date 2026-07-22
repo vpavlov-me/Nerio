@@ -22,6 +22,7 @@ These principles are a general decision framework. They fill gaps and guide futu
 - `DESIGN_SYSTEM.md` governs approved visual and token contracts.
 - `COMPONENT_ARCHITECTURE.md` governs component responsibility and API boundaries.
 - `TIERING_AND_TEMPLATE_EVOLUTION.md`, `COMPONENTS.md`, and `data/component-catalog.json` govern ownership, tiering, and inventory within their declared scopes.
+- `docs/core-platform-primitive-coverage.md` governs whether a web-platform capability uses a dedicated Core component, supported native composition, native guidance, or intentional deferral.
 - The root `AGENTS.md` and `AGENT_DESIGN_SYSTEM_RULES.md` govern agent operating procedure.
 
 Apply the most specific current source within its declared scope. Principles may support a proposed change, but they must not silently override an accepted public API or recorded decision. When two authoritative sources disagree or their scope is ambiguous, stop the affected implementation, identify the conflicting documents and clauses, and require an explicit decision that updates the relevant sources before proceeding.

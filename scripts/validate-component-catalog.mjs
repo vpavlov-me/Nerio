@@ -69,6 +69,37 @@ function parseMatrix(source) {
   return rows;
 }
 
+function parsePlatformCoverage(source) {
+  const startMarker = "<!-- platform-coverage:start -->";
+  const endMarker = "<!-- platform-coverage:end -->";
+  const start = source.indexOf(startMarker);
+  const end = source.indexOf(endMarker);
+  if (start === -1 || end === -1 || end <= start) return [];
+
+  const rows = [];
+  for (const line of source.slice(start + startMarker.length, end).split("\n")) {
+    if (!line.startsWith("|")) continue;
+    const cells = line
+      .split("|")
+      .slice(1, -1)
+      .map((cell) => cell.trim().replace(/`/g, ""));
+    if (cells.length !== 9 || cells[0] === "Coverage ID" || /^-+$/.test(cells[0])) continue;
+    rows.push({
+      id: cells[0],
+      capability: cells[1],
+      surface: cells[2],
+      catalogComponents:
+        cells[3] === "none" ? [] : cells[3].split(",").map((value) => value.trim()),
+      coverageMode: cells[4],
+      rationale: cells[5],
+      boundary: cells[6],
+      status: cells[7],
+      issue: cells[8],
+    });
+  }
+  return rows;
+}
+
 function tokenize(source) {
   const tokens = [];
   let index = 0;
@@ -180,6 +211,7 @@ function validate() {
     "--catalog": resolve(root, "data/component-catalog.json"),
     "--manifest": resolve(root, "packages/registry/src/manifest.json"),
     "--components": resolve(root, "COMPONENTS.md"),
+    "--platform-coverage": resolve(root, "docs/core-platform-primitive-coverage.md"),
     "--docs-chrome": resolve(root, "apps/docs/components/docs-chrome.tsx"),
     "--component-docs": resolve(root, "apps/docs/lib/component-docs.ts"),
     "--cli-runtime": resolve(root, "packages/cli/src/index.js"),
@@ -193,6 +225,9 @@ function validate() {
   const catalog = readJson(paths["--catalog"]);
   const manifest = readJson(paths["--manifest"]);
   const matrixRows = parseMatrix(readFileSync(paths["--components"], "utf8"));
+  const platformCoverageRows = parsePlatformCoverage(
+    readFileSync(paths["--platform-coverage"], "utf8"),
+  );
   const docsChrome = readFileSync(paths["--docs-chrome"], "utf8");
   const componentDocs = readFileSync(paths["--component-docs"], "utf8");
   const cliRuntime = readFileSync(paths["--cli-runtime"], "utf8");
@@ -206,6 +241,9 @@ function validate() {
   const allowedEntrypoints = new Set(catalog.entrypointValues ?? []);
   const allowedRuntimes = new Set(catalog.runtimeValues ?? []);
   const identities = Array.isArray(catalog.registryIdentities) ? catalog.registryIdentities : [];
+  const platformCoverage = Array.isArray(catalog.platformCoverage) ? catalog.platformCoverage : [];
+  const allowedCoverageModes = new Set(Object.keys(catalog.platformCoverageModes ?? {}));
+  const allowedCoverageStatuses = new Set(catalog.platformCoverageStatuses ?? []);
 
   if (!components.length) failures.push("Catalog must define a non-empty components array.");
   for (const [label, values] of [
@@ -213,6 +251,8 @@ function validate() {
     ["packageValues", allowedPackages],
     ["entrypointValues", allowedEntrypoints],
     ["runtimeValues", allowedRuntimes],
+    ["platformCoverageModes", allowedCoverageModes],
+    ["platformCoverageStatuses", allowedCoverageStatuses],
   ]) {
     if (!values.size) failures.push(`Catalog must define ${label}.`);
   }
@@ -343,6 +383,70 @@ function validate() {
       failures.push(`COMPONENTS.md references unknown catalog component: ${row.name}`);
   }
 
+  if (!platformCoverage.length)
+    failures.push("Catalog must define a non-empty platformCoverage projection.");
+  if (!platformCoverageRows.length)
+    failures.push("Platform coverage document must define a non-empty marked matrix.");
+
+  const catalogCoverageIds = platformCoverage.map((entry) => entry.id);
+  const documentCoverageIds = platformCoverageRows.map((entry) => entry.id);
+  for (const id of duplicates(catalogCoverageIds))
+    failures.push(`Duplicate catalog platform coverage ID: ${id}`);
+  for (const id of duplicates(documentCoverageIds))
+    failures.push(`Duplicate document platform coverage ID: ${id}`);
+
+  const documentCoverageById = new Map(platformCoverageRows.map((entry) => [entry.id, entry]));
+  for (const entry of platformCoverage) {
+    const label = `Catalog platform coverage ${entry.id ?? "<missing>"}`;
+    if (typeof entry.id !== "string" || !entry.id) failures.push(`${label} has an invalid ID.`);
+    if (typeof entry.surface !== "string" || !entry.surface)
+      failures.push(`${label} has no surface.`);
+    if (!allowedCoverageModes.has(entry.coverageMode))
+      failures.push(`${label} has invalid coverage mode: ${entry.coverageMode}`);
+    if (!allowedCoverageStatuses.has(entry.status))
+      failures.push(`${label} has invalid status: ${entry.status}`);
+    if (entry.status === "planned" && !Number.isInteger(entry.issue))
+      failures.push(`${label} must link a focused issue while planned.`);
+    if (entry.status !== "planned" && entry.issue !== null)
+      failures.push(`${label} must not link an implementation issue unless planned.`);
+    if (!Array.isArray(entry.catalogComponents)) {
+      failures.push(`${label} must define catalogComponents.`);
+    } else {
+      for (const componentName of entry.catalogComponents) {
+        if (!catalogNames.includes(componentName))
+          failures.push(`${label} references unknown catalog component: ${componentName}`);
+      }
+    }
+
+    const documentEntry = documentCoverageById.get(entry.id);
+    if (!documentEntry) {
+      failures.push(`Platform coverage document is missing catalog claim: ${entry.id}`);
+      continue;
+    }
+    for (const field of ["surface", "coverageMode", "status"]) {
+      if (documentEntry[field] !== entry[field])
+        failures.push(
+          `Platform coverage ${field} differs for ${entry.id}: ${documentEntry[field]} !== ${entry[field]}`,
+        );
+    }
+    const catalogIssue = entry.issue === null ? "none" : String(entry.issue);
+    if (documentEntry.issue !== catalogIssue)
+      failures.push(
+        `Platform coverage issue differs for ${entry.id}: ${documentEntry.issue} !== ${catalogIssue}`,
+      );
+    const catalogComponentSet = [...(entry.catalogComponents ?? [])].sort();
+    const documentComponentSet = [...documentEntry.catalogComponents].sort();
+    if (JSON.stringify(catalogComponentSet) !== JSON.stringify(documentComponentSet))
+      failures.push(`Platform coverage catalog components differ for ${entry.id}.`);
+  }
+  for (const row of platformCoverageRows) {
+    if (!catalogCoverageIds.includes(row.id))
+      failures.push(`Platform coverage document references unknown catalog claim: ${row.id}`);
+    for (const field of ["capability", "rationale", "boundary"]) {
+      if (!row[field]) failures.push(`Platform coverage document ${row.id} has no ${field}.`);
+    }
+  }
+
   const expectedDocs = identities
     .filter((identity) => !identity.docsPath)
     .map((identity) => identity.name)
@@ -366,7 +470,7 @@ function validate() {
     return;
   }
   console.log(
-    `Component catalog verified across ${components.length} catalog entries, ${identities.length} installable identities, ${matrixRows.length} matrix rows, and ${registryItems.length} registry items.`,
+    `Component catalog verified across ${components.length} catalog entries, ${identities.length} installable identities, ${matrixRows.length} matrix rows, ${platformCoverage.length} platform coverage claims, and ${registryItems.length} registry items.`,
   );
 }
 

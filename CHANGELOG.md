@@ -8,6 +8,9 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the canonical Core 1.0 platform-primitive coverage matrix, approved bounded follow-up
+  identities for Slider, FileInput, Calendar, and DatePicker, and catalog drift validation for the
+  native/component/deferred boundary.
 - Added deterministic Core visual-regression fixtures, cross-axis screenshot baselines, CI diff artifacts, and an explicit maintainer approval workflow.
 - Added Chromium, Firefox, and WebKit interaction gates for docs and demo, an explicit platform
   support policy, deterministic route/search performance checks, retry/failure artifacts, and

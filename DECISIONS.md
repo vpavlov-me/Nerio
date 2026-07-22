@@ -29,6 +29,22 @@ A component belongs in Core when it is a generic primitive, base component, or f
 
 A component belongs in Pro when it is an advanced composition, data-heavy workflow, SaaS/admin pattern, fintech/crypto pattern, AI interface pattern, premium theme, Figma asset, or template.
 
+## Platform primitive coverage
+
+Core covers universal web-platform capabilities, but it does not provide a React wrapper for every
+HTML element. A capability is covered by a dedicated Core component, supported native composition,
+or explicit native HTML guidance. Product workflows and advanced compositions remain consumer or
+Pro responsibilities.
+
+Native temporal controls, a single-value Slider, FileInput, Calendar, and a bounded single-date
+DatePicker are approved for the Core 1.0 delivery sequence. Calendar and DatePicker are intentional
+bounded exceptions because single-date selection is universal and has a durable accessibility
+contract. Date ranges, scheduling, recurrence, availability, upload workflows, multi-thumb ranges,
+and domain-specific controls remain outside Core 1.0.
+
+`docs/core-platform-primitive-coverage.md` is the canonical decision matrix.
+`data/component-catalog.json` is its machine-readable projection and validation boundary.
+
 ## Primitive layer
 
 Base UI is the only interactive primitive layer. Do not add shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive systems.

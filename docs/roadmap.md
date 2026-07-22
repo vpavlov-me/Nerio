@@ -25,6 +25,8 @@
 
 - [ ] FormGroup, Radio Group, Alert, List, Breadcrumbs, Pagination
 - [ ] Sidebar Primitive and Command Primitive
+- [ ] Close the canonical Core 1.0 platform coverage decision
+- [ ] Add native temporal input coverage, Slider, FileInput, Calendar, and single-date DatePicker
 
 ## Product building blocks
 
@@ -33,8 +35,8 @@
 - [ ] Overlay patterns and notifications
 - [ ] Data table adapter and empty/loading/error patterns
 - [ ] Chart adapter and universal analytics examples
-- [ ] Calendar and date picker
-- [ ] File upload
+- [ ] Product date, scheduling, and availability workflows above the bounded Core single-date primitives
+- [ ] File upload workflows above native Core file selection
 
 ## Distribution and adoption
 
@@ -43,4 +45,7 @@
 - [ ] Expanded AI recipes and model-agnostic agent instructions
 - [ ] More product patterns: settings, billing, auth, onboarding, and data-dense dashboards
 
-The roadmap describes direction, not a promise or release schedule. Maintainers prioritize production needs and quality over raw component count.
+The roadmap describes direction, not a promise or release schedule. GitHub issue #152 owns the
+current executable sequence; `docs/core-platform-primitive-coverage.md` owns the Core 1.0
+native-versus-component boundary. Maintainers prioritize production needs and quality over raw
+component count.
