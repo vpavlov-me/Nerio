@@ -17,6 +17,7 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Field,
+  FileInput,
   FormGroup,
   Input,
   InputGroup,
@@ -704,6 +705,22 @@ describe("Core accessibility contracts", () => {
       "aria-readonly",
       "true",
     );
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps labelled, multiple, invalid, and disabled FileInputs accessible", async () => {
+    const { container } = render(
+      <>
+        <Field label="Attachments" description="PDF or image files." invalid>
+          <FileInput accept=".pdf,image/*" multiple required invalid />
+        </Field>
+        <FileInput aria-label="Unavailable attachment" disabled />
+      </>,
+    );
+
+    expect(screen.getByLabelText("Attachments")).toHaveAccessibleDescription("PDF or image files.");
+    expect(screen.getByLabelText("Attachments")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("Unavailable attachment")).toBeDisabled();
     expect((await axe(container)).violations).toEqual([]);
   });
 });

@@ -173,6 +173,66 @@ test("preserves native temporal Input values, constraints, form data, and reflow
   expect(problems).toEqual([]);
 });
 
+test("preserves native FileInput selection, FileList, form reset, and reflow", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/docs/components/file-input");
+
+  const form = page.getByRole("form", { name: "Native file input examples" });
+  const input = page.getByLabel("Attachments", { exact: true });
+  await expect(input).toHaveAttribute("type", "file");
+  await expect(input).toHaveAttribute("accept", ".pdf,image/*");
+  await expect(input).toHaveAttribute("capture", "environment");
+  await expect(input).toHaveAttribute("multiple", "");
+  await expect(input).toHaveAttribute("required", "");
+
+  await input.setInputFiles([
+    {
+      name: "launch-brief-with-a-very-long-localized-name.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.from("brief"),
+    },
+    {
+      name: "проекция.png",
+      mimeType: "image/png",
+      buffer: Buffer.from("image"),
+    },
+  ]);
+  expect(
+    await input.evaluate((element) =>
+      Array.from(element.files ?? [], (file) => ({ name: file.name, type: file.type })),
+    ),
+  ).toEqual([
+    {
+      name: "launch-brief-with-a-very-long-localized-name.pdf",
+      type: "application/pdf",
+    },
+    { name: "проекция.png", type: "image/png" },
+  ]);
+  expect(
+    await form.evaluate((element) => {
+      const values = new FormData(element).getAll("attachments");
+      return values.map((value) => (value instanceof File ? value.name : value));
+    }),
+  ).toEqual(["launch-brief-with-a-very-long-localized-name.pdf", "проекция.png"]);
+
+  await form.evaluate((element) => element.reset());
+  expect(await input.evaluate((element) => element.files?.length)).toBe(0);
+  await input.focus();
+  await expect(input).toBeFocused();
+  await expect(page.getByLabel("Unavailable attachment")).toBeDisabled();
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+  expect(problems).toEqual([]);
+});
+
 test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only behavior portable", async ({
   browserName,
   page,

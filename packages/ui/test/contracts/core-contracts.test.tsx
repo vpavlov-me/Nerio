@@ -24,6 +24,7 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Field,
+  FileInput,
   Input,
   InputGroup,
   InputGroupAddon,
@@ -168,6 +169,10 @@ const invalidUnnamedIconButton = <Button icon={Bell} />;
 const invalidUnnamedMeaningfulIcon = <Icon decorative={false} icon={Bell} />;
 // @ts-expect-error Icon owns its non-focusable SVG contract.
 const invalidFocusableIcon = <Icon focusable icon={Bell} />;
+// @ts-expect-error FileInput always owns the native file type.
+const _invalidFileInputOverride = <FileInput type="text" />;
+// @ts-expect-error browsers prohibit populating a native file input value.
+const _invalidFileInputValue = <FileInput value="report.pdf" />;
 // @ts-expect-error Icon never exposes the SVG in the tab order.
 const invalidTabIndexedIcon = <Icon icon={Bell} tabIndex={0} />;
 // @ts-expect-error icon-only Button cannot include visible children
@@ -4240,5 +4245,86 @@ describe("Core interactive action contracts", () => {
     await user.keyboard("{ArrowRight}");
     expect(slider).toHaveValue("31");
     expect(screen.getByText("31%")).toBeInTheDocument();
+  });
+
+  it("keeps FileInput native selection, form, event, reset, and ref contracts", async () => {
+    const user = userEvent.setup();
+    const inputRef = React.createRef<HTMLInputElement>();
+    let eventFiles: FileList | null = null;
+    const onChange = vi.fn((event: React.ChangeEvent<HTMLInputElement>) => {
+      eventFiles = event.currentTarget.files;
+    });
+    render(
+      <form data-testid="file-form">
+        <label htmlFor="attachments">Attachments</label>
+        <FileInput
+          ref={inputRef}
+          id="attachments"
+          name="attachments"
+          accept=".pdf,image/*"
+          capture="environment"
+          multiple
+          required
+          invalid
+          onChange={onChange}
+        />
+      </form>,
+    );
+
+    const input = screen.getByLabelText("Attachments") as HTMLInputElement;
+    const files = [
+      new File(["brief"], "launch brief.pdf", { type: "application/pdf" }),
+      new File(["image"], "проекция.png", { type: "image/png" }),
+    ];
+
+    expect(inputRef.current).toBe(input);
+    expect(input).toHaveAttribute("type", "file");
+    expect(input).toHaveAttribute("accept", ".pdf,image/*");
+    expect(input).toHaveAttribute("capture", "environment");
+    expect(input).toHaveAttribute("multiple");
+    expect(input).toHaveAttribute("required");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("data-slot", "file-input");
+
+    await user.upload(input, files);
+    expect(input.files).toHaveLength(2);
+    expect(input.files?.[0]).toBe(files[0]);
+    expect(input.files?.[1]?.name).toBe("проекция.png");
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(eventFiles).toHaveLength(2);
+
+    const form = screen.getByTestId("file-form") as HTMLFormElement;
+    const formData = new FormData(form);
+    expect(formData.get("attachments")).toBeInstanceOf(File);
+  });
+
+  it("keeps FileInput single selection and protected owned attributes", async () => {
+    const user = userEvent.setup();
+    const unsafeProtectedProps = {
+      children: "Consumer child",
+      defaultValue: "default.pdf",
+      readOnly: true,
+      type: "text",
+      value: "controlled.pdf",
+    };
+    render(
+      <>
+        <FileInput aria-label="Resume" data-slot="consumer-slot" {...unsafeProtectedProps} />
+        <FileInput aria-label="Unavailable files" disabled />
+      </>,
+    );
+
+    const input = screen.getByLabelText("Resume") as HTMLInputElement;
+    const first = new File(["first"], "first.txt", { type: "text/plain" });
+    const second = new File(["second"], "second.txt", { type: "text/plain" });
+    await user.upload(input, [first, second]);
+
+    expect(input.files).toHaveLength(1);
+    expect(input.files?.[0]).toBe(first);
+    expect(input).not.toHaveAttribute("readonly");
+    expect(input).not.toHaveAttribute("value");
+    expect(input).toHaveAttribute("type", "file");
+    expect(input).toHaveAttribute("data-slot", "file-input");
+    expect(screen.getByLabelText("Unavailable files")).toBeDisabled();
   });
 });

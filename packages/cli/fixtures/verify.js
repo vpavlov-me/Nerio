@@ -154,6 +154,15 @@ const expectedSliderFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedFileInputFiles = [
+  "components/file-input.tsx",
+  "lib/cn.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/motion.css",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedOverlayAndTabsFiles = [
   "components/dialog.tsx",
   "components/dropdown-menu.tsx",
@@ -474,7 +483,8 @@ async function verify() {
       !listOutput.includes("motion-adapter\tMotion Adapter\tfoundation") ||
       !listOutput.includes("alert\tAlert\tfeedback") ||
       !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation") ||
-      !listOutput.includes("slider\tSlider\tforms")
+      !listOutput.includes("slider\tSlider\tforms") ||
+      !listOutput.includes("file-input\tFileInput\tforms")
     ) {
       throw new Error("List output did not include registry component name, title, and category.");
     }
@@ -493,6 +503,15 @@ async function verify() {
     const cardInfoOutput = await run(localTarget, "info", "card");
     if (!cardInfoOutput.includes("--n-card-padding-inline")) {
       throw new Error("Card registry metadata did not include the spacing contract.");
+    }
+    const fileInputInfoOutput = await run(localTarget, "info", "file-input");
+    if (
+      !fileInputInfoOutput.includes("FileInput (file-input)") ||
+      !fileInputInfoOutput.includes("--n-file-input-button-background") ||
+      !fileInputInfoOutput.includes("FileList") ||
+      !fileInputInfoOutput.includes("components/file-input.tsx")
+    ) {
+      throw new Error("FileInput registry metadata did not include its native selection contract.");
     }
     const inputInfoOutput = await run(localTarget, "info", "input");
     if (
@@ -569,6 +588,7 @@ async function verify() {
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "slider");
+    await run(localTarget, "add", "file-input");
     await run(localTarget, "add", "alert");
     await run(localTarget, "add", "radio-group");
     await run(localTarget, "add", "avatar");
@@ -793,6 +813,21 @@ async function verify() {
       throw new Error(
         "Installed Slider source did not preserve its single-value accessibility contract.",
       );
+    }
+    assertFiles(localTarget, expectedFileInputFiles);
+    const fileInputSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/file-input.tsx"),
+      "utf8",
+    );
+    if (
+      !fileInputSource.includes('type="file"') ||
+      !fileInputSource.includes('data-slot="file-input"') ||
+      !fileInputSource.includes(
+        '"children" | "defaultValue" | "readOnly" | "size" | "type" | "value"',
+      ) ||
+      !fileInputSource.includes("file:bg-(--n-file-input-button-background)")
+    ) {
+      throw new Error("Installed FileInput source did not preserve its native file-only contract.");
     }
     assertFiles(localTarget, expectedPhase2BFiles);
     assertFiles(localTarget, expectedDisplayFiles);

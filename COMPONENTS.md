@@ -80,7 +80,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Switch      | stable-core | `@nerio-ui/ui/client` | Base UI toggle for immediate binary settings with invalid and read-only state support                                                             |
 | Select      | stable-core | `@nerio-ui/ui/client` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior              |
 | Slider      | stable-core | `@nerio-ui/ui/client` | Base UI single-value range primitive with form metadata, horizontal/vertical orientation, read-only behavior, localized value text, and one thumb |
-| FileInput   | planned     | `@nerio-ui/ui`        | Approved Core 1.0 native file selection without upload workflow ownership                                                                         |
+| FileInput   | stable-core | `@nerio-ui/ui`        | Native file selection with forwarded FileList, form/reset semantics, single or multiple selection, and no upload workflow ownership               |
 | Calendar    | planned     | `@nerio-ui/ui/client` | Approved Core 1.0 single-date calendar grid; ranges, events, availability, and scheduling remain outside Core                                     |
 | DatePicker  | planned     | `@nerio-ui/ui/client` | Approved Core 1.0 bounded single-date control composed from Calendar and Core overlays                                                            |
 
@@ -89,8 +89,8 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 The canonical native and composite platform boundary lives in
 `docs/core-platform-primitive-coverage.md`. Input provides the supported native path for date,
 month, week, time, and `datetime-local` values without a second component identity. Slider,
-FileInput, Calendar, and DatePicker are approved planned Core components above and are implemented
-only by #259–#262.
+Calendar and DatePicker are approved planned Core components above. FileInput is the bounded native
+selection primitive delivered by #260; upload workflows remain consumer or Pro responsibility.
 
 | Component                                                                            | Tier            | Status | Boundary                                                                                                                              |
 | ------------------------------------------------------------------------------------ | --------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------- |

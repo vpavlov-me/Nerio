@@ -48,6 +48,7 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Field,
+  FileInput,
   FormGroup,
   FormMessage,
   Heading,
@@ -135,6 +136,7 @@ const componentLinks = [
     "Forms",
     [
       ["Input", "input"],
+      ["FileInput", "file-input"],
       ["Input Group", "input-group"],
       ["Textarea", "textarea"],
       ["Label", "label"],
@@ -431,7 +433,6 @@ export function ComponentPlayground() {
           <Code>const theme = "nerio"</Code>
         </div>
       </SpecimenSection>
-
       <SpecimenSection id="kbd" title="Kbd" api="Keyboard hint · single key · shortcut sequence">
         <div className="component-lab-inline">
           <Kbd>⌘</Kbd>
@@ -529,6 +530,34 @@ export function ComponentPlayground() {
               <Input key="readonly" size={size} defaultValue="Read only" readOnly />,
               <Input key="invalid" size={size} defaultValue="Invalid" invalid />,
               <Input key="disabled" size={size} defaultValue="Disabled" disabled />,
+            ],
+          }))}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="file-input"
+        title="File Input"
+        api="size · accept · capture · multiple · required · invalid · disabled"
+      >
+        <Matrix
+          columns={["Single", "Multiple", "Invalid", "Disabled"]}
+          rows={(["sm", "md", "lg"] as const).map((size) => ({
+            label: size,
+            cells: [
+              <FileInput key="single" aria-label={`${size} single file`} size={size} />,
+              <FileInput
+                key="multiple"
+                aria-label={`${size} multiple files`}
+                size={size}
+                multiple
+              />,
+              <FileInput key="invalid" aria-label={`${size} invalid file`} size={size} invalid />,
+              <FileInput
+                key="disabled"
+                aria-label={`${size} disabled file`}
+                size={size}
+                disabled
+              />,
             ],
           }))}
         />

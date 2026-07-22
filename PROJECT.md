@@ -144,8 +144,9 @@ Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or 
 
 Nerio Core includes foundation and base reusable components: Button, IconButton, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive. Button's link variant covers text-level navigation when it renders a native anchor.
 
-Core 1.0 Input supports native date, month, week, time, and `datetime-local` values, and Slider
-provides one Base UI-backed numeric value and thumb. Approved implementation tasks remain for native FileInput, a single-date Calendar,
+Core 1.0 Input supports native date, month, week, time, and `datetime-local` values, Slider provides
+one Base UI-backed numeric value and thumb, and FileInput preserves native file selection and form
+behavior without owning uploads. Approved implementation tasks remain for a single-date Calendar
 and a bounded single-date DatePicker. The canonical coverage decision is
 `docs/core-platform-primitive-coverage.md`. Plain native HTML remains the preferred path where a
 wrapper adds no durable value; ranges, scheduling, upload workflows, multi-thumb sliders, and other

@@ -96,6 +96,7 @@
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "radio-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "input", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
+    { "name": "file-input", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "input-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "textarea", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "label", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
@@ -206,8 +207,8 @@
       "surface": "FileInput",
       "catalogComponents": ["FileInput"],
       "coverageMode": "dedicated-component",
-      "status": "planned",
-      "issue": 260,
+      "status": "covered",
+      "issue": null,
       "capability": "native file selection",
       "rationale": "A native input must remain accessible and expose FileList, form, reset, picker, and security behavior.",
       "boundary": "Core owns selection only. Uploads, drop zones, previews, queues, progress, retries, and storage are consumer or Pro work."
@@ -654,8 +655,8 @@
       "tier": "core",
       "package": "@nerio-ui/ui",
       "category": "forms",
-      "status": "planned",
-      "description": "Approved Core 1.0 native file-selection primitive without upload, drop-zone, preview, queue, retry, or storage workflow ownership."
+      "status": "stable-core",
+      "description": "Server-safe native file-selection primitive with forwarded FileList and form semantics, single or multiple selection, reset behavior, and no upload workflow ownership."
     },
     {
       "name": "Calendar",

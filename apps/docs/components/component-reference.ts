@@ -60,6 +60,8 @@ export const snippets: Record<string, string> = {
     "import { EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateHeader, EmptyStateTitle } from '@nerio-ui/ui';\nimport { Button } from '@nerio-ui/ui/client';\n\n<EmptyState>\n  <EmptyStateHeader>\n    <EmptyStateTitle>No collections</EmptyStateTitle>\n    <EmptyStateDescription>Create one to start organizing work.</EmptyStateDescription>\n  </EmptyStateHeader>\n  <EmptyStateActions>\n    <Button>Create collection</Button>\n    <Button variant=\"ghost\">Learn more</Button>\n  </EmptyStateActions>\n</EmptyState>",
   input:
     'import { Field, Input } from \'@nerio-ui/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required autoComplete="organization" /></Field>',
+  "file-input":
+    'import { Field, FileInput } from \'@nerio-ui/ui\';\n\n<Field label="Attachments" description="Choose PDF or image files."><FileInput name="attachments" accept=".pdf,image/*" multiple /></Field>',
   "input-group":
     'import { Input, InputGroup, InputGroupAddon } from \'@nerio-ui/ui\';\n\n<InputGroup><InputGroupAddon placement="start" aria-hidden="true">https://</InputGroupAddon><Input aria-label="Website" /><InputGroupAddon placement="end">.com</InputGroupAddon></InputGroup>',
   textarea:
@@ -283,6 +285,25 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "browser-owned temporal picker and localized chrome",
       "aria-invalid support",
       "label through Field or Label",
+    ],
+  },
+  "file-input": {
+    name: "FileInput",
+    description:
+      "A server-safe native file-selection control that preserves FileList, picker security, and form behavior.",
+    status: "stable",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
+    related: ["Input", "Field", "Label"],
+    anatomy: ["file-input"],
+    motion: ["hover", "focus"],
+    accessibility: [
+      "native file input and picker",
+      "FileList events and forwarded ref",
+      "label through Field or Label",
+      "native form submission and reset",
     ],
   },
   "input-group": {
@@ -1213,6 +1234,84 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-placeholder",
       "--n-motion-hover-duration",
       "--n-motion-focus-duration",
+    ],
+  },
+  "file-input": {
+    category: "Forms",
+    purpose:
+      "Use FileInput for native single or multiple file selection when the product owns everything that happens after selection.",
+    anatomy: [
+      {
+        title: "file-input",
+        description:
+          "Native file input with tokenized control geometry and browser-owned picker behavior.",
+      },
+    ],
+    variants: [
+      { title: "Single", description: "Selects one file through the native picker." },
+      { title: "Multiple", description: "Uses the native multiple attribute and FileList." },
+      {
+        title: "Accept and capture",
+        description: "Forwards browser hints without validating files.",
+      },
+    ],
+    states: [
+      { title: "Default and focus", description: "Keeps the native input in the tab order." },
+      { title: "Selected", description: "Browser chrome displays the native file selection." },
+      { title: "Required", description: "Uses native form validity and submission behavior." },
+      { title: "Invalid", description: "Uses aria-invalid and the shared danger boundary." },
+      { title: "Disabled", description: "Uses the native disabled attribute." },
+    ],
+    motion: [
+      "Hover and focus transition through shared control motion tokens.",
+      "Reduced motion keeps every state visible without nonessential timing.",
+    ],
+    accessibility: [
+      "Pair FileInput with Field, Label, aria-label, or aria-labelledby.",
+      "Keep the native input visible, focusable, and available to assistive technology.",
+      "Use accept and capture only as picker hints; consumers own validation policy and messages.",
+      "Read files from event.currentTarget.files or the forwarded native input ref.",
+      "Reset through a native form reset or an intentional remount/ref strategy; file values cannot be populated programmatically.",
+    ],
+    api: [
+      { title: "accept", description: "Native file-type picker hint." },
+      { title: "multiple", description: "Allows one FileList to contain multiple selections." },
+      { title: "capture", description: "Native compatible-device capture hint." },
+      {
+        title: "name / form / required / disabled",
+        description: "Native form ownership, validity, availability, and submission behavior.",
+      },
+      {
+        title: "onChange / ref",
+        description: "Provides direct typed access to the native FileList and input element.",
+      },
+      { title: "size", description: "Uses the shared sm, md, or lg control geometry." },
+      { title: "invalid", description: "Normalizes the visual and aria-invalid state." },
+    ],
+    designNotes: [
+      "FileInput is server-safe and renders one native input without mirrored selection state.",
+      "Browser file-picker chrome and security restrictions remain platform-owned.",
+      "Consumers may render localized file summaries outside the primitive from the change event.",
+    ],
+    related: ["Field", "Label", "Input"],
+    guidance: {
+      do: [
+        "Use accept as a picker hint and validate selected files in consumer code.",
+        "Use native form reset or clear the ref value intentionally when the product needs reset outside a form.",
+      ],
+      dont: [
+        "Do not add upload requests, Dropzone behavior, previews, queues, progress, retry, storage, or product validation policy to FileInput.",
+      ],
+    },
+    tokens: [
+      "--n-input-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border-focus",
+      "--n-file-input-button-background",
+      "--n-file-input-button-foreground",
+      "--n-file-input-button-border",
+      "--n-focus-ring",
     ],
   },
   "input-group": {

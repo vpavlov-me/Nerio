@@ -440,6 +440,31 @@ async function verify() {
       );
     }
 
+    const fileInputUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "file-input" },
+    });
+    const fileInputUsage = JSON.parse(fileInputUsageResult.content[0].text);
+    assertRegistryParity("file-input", fileInputUsage, [
+      "components/file-input.tsx",
+      "lib/cn.ts",
+      "lib/motion.ts",
+      "lib/tailwind-cn.ts",
+      "styles/motion.css",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      fileInputUsage.baseUiPrimitives.length !== 0 ||
+      !fileInputUsage.slots.includes("file-input") ||
+      !fileInputUsage.variants.includes("multiple") ||
+      !fileInputUsage.requiredTokens.includes("--n-file-input-button-background") ||
+      !fileInputUsage.accessibility.some((item) => item.includes("FileList")) ||
+      !fileInputUsage.accessibility.some((item) => item.includes("rejects controlled value"))
+    ) {
+      throw new Error("MCP FileInput usage is missing native selection or token metadata.");
+    }
+
     const itemUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "item" },
