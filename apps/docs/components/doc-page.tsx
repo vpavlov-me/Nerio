@@ -39,6 +39,7 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Field,
+  FileInput,
   FormGroup,
   FormMessage,
   Heading,
@@ -578,6 +579,22 @@ function Preview({ kind }: { kind: string }) {
                 <Input placeholder="Archived collection" disabled />
               </Field>
             </div>
+          ) : null}
+          {kind === "file-input" ? (
+            <form className="form-preview-stack" aria-label="Native file input examples">
+              <Field label="Attachments" description="Choose PDF or image files.">
+                <FileInput
+                  name="attachments"
+                  accept=".pdf,image/*"
+                  capture="environment"
+                  multiple
+                  required
+                />
+              </Field>
+              <Field label="Unavailable attachment">
+                <FileInput disabled />
+              </Field>
+            </form>
           ) : null}
           {kind === "textarea" ? (
             <Field

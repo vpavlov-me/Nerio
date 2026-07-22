@@ -24,6 +24,8 @@ const componentLedes: Record<string, string> = {
   textarea: "Textareas collect longer notes, descriptions, and collaborative product content.",
   input:
     "Input is a thin native control for text-like, numeric, and platform temporal values; Field owns labels, descriptions, and validation messages.",
+  "file-input":
+    "FileInput preserves native file selection, FileList access, picker security, and form behavior without owning an upload workflow.",
   "input-group":
     "InputGroup composes an Input with explicit inline addons without changing native form semantics.",
   label: "Labels provide accessible names and stable form hierarchy.",
@@ -78,6 +80,7 @@ const componentTitles: Record<string, string> = {
   "form-group": "FormGroup",
   "form-message": "FormMessage",
   "input-group": "InputGroup",
+  "file-input": "FileInput",
   "key-value": "KeyValue",
   "radio-group": "RadioGroup",
   "sidebar-primitive": "Sidebar",

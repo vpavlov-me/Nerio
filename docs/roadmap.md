@@ -28,7 +28,8 @@
 - [ ] Close the canonical Core 1.0 platform coverage decision
 - [x] Add native temporal Input coverage
 - [x] Add single-value Slider
-- [ ] Add FileInput, Calendar, and single-date DatePicker
+- [x] Add FileInput
+- [ ] Add Calendar and single-date DatePicker
 
 ## Product building blocks
 

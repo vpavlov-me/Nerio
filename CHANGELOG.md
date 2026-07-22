@@ -8,6 +8,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the server-safe native FileInput with typed file-only props, forwarded ref and FileList
+  events, single or multiple selection, native form/reset behavior, tokenized file-button states,
+  Registry, CLI/MCP, docs, package/source-install, accessibility, and cross-browser coverage. Upload,
+  drop-zone, preview, validation-workflow, progress, retry, queue, and storage behavior remain outside
+  Core.
 - Added the client-only single-value Slider with Base UI keyboard, pointer, touch, form, orientation,
   read-only, localized value-text, token, Registry, CLI/MCP, docs, source-install, and browser
   contracts. Existing native range usage can migrate to `Slider` when a tokenized cross-browser

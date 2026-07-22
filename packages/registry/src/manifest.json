@@ -1564,6 +1564,91 @@
       "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Use a short recognizable name.\"><Input placeholder=\"Launch materials\" required autoComplete=\"organization\" /></Field>\n\n<Field label=\"Start date\"><Input name=\"startDate\" type=\"date\" min=\"2026-01-01\" max=\"2026-12-31\" required /></Field>"
     },
     {
+      "name": "file-input",
+      "title": "FileInput",
+      "description": "Native file selection with FileList, picker security, form, and reset behavior.",
+      "category": "forms",
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/file-input.tsx",
+          "target": "components/file-input.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["file-input"],
+      "variants": ["sm", "md", "lg", "single", "multiple"],
+      "states": ["default", "selected", "required", "invalid", "disabled"],
+      "requiredTokens": [
+        "--n-input-height-md",
+        "--n-input-height-sm",
+        "--n-input-height-lg",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-background-hover",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
+        "--n-input-border-danger",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
+        "--n-file-input-button-gap",
+        "--n-file-input-button-padding-inline",
+        "--n-file-input-button-background",
+        "--n-file-input-button-background-hover",
+        "--n-file-input-button-border",
+        "--n-file-input-button-foreground",
+        "--n-file-input-button-disabled-background",
+        "--n-file-input-button-disabled-foreground",
+        "--n-motion-hover-duration",
+        "--n-motion-focus-duration",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Use with Label or Field, aria-label, or aria-labelledby so the native file input has an accessible name.",
+        "The native input remains visible, focusable, and available to assistive technology; browser picker and security behavior stay platform-owned.",
+        "Supports accept, capture, multiple, name, form, required, disabled, aria-describedby, and native form reset.",
+        "Read FileList from event.currentTarget.files or the forwarded HTMLInputElement ref.",
+        "The public API rejects controlled value, defaultValue, readOnly, and alternate input types because browsers prohibit populating file selection.",
+        "Accept and capture are native picker hints; consumers own file validation and localized messages.",
+        "Uploads, Dropzone, previews, queues, progress, retries, persistence, and storage remain consumer or Pro responsibilities."
+      ],
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { FileInput } from '@/components/nerio/components/file-input';\n\n<Field label=\"Attachments\" description=\"Choose PDF or image files.\"><FileInput name=\"attachments\" accept=\".pdf,image/*\" multiple /></Field>"
+    },
+    {
       "name": "input-group",
       "title": "InputGroup",
       "description": "Composable Input surface with explicit start and end inline addons.",

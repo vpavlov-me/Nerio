@@ -117,6 +117,7 @@ const navGroups: NavGroup[] = [
     title: "Forms",
     items: [
       { href: "/docs/components/input", label: "Input", icon: Circle },
+      { href: "/docs/components/file-input", label: "FileInput", icon: FileText },
       { href: "/docs/components/input-group", label: "InputGroup", icon: Circle },
       { href: "/docs/components/textarea", label: "Textarea", icon: FileText },
       { href: "/docs/components/label", label: "Label", icon: Circle },

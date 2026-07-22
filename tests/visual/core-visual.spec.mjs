@@ -5,6 +5,7 @@ const categoryFixtures = {
   actions: ["button", "button-group"],
   forms: [
     "input",
+    "file-input",
     "input-group",
     "textarea",
     "label",
@@ -23,7 +24,16 @@ const categoryFixtures = {
   overlays: ["dialog", "sheet", "popover", "tooltip", "dropdown-menu"],
 };
 
-const matrixSections = ["typography", "button", "input", "slider", "card", "alert", "tabs"];
+const matrixSections = [
+  "typography",
+  "button",
+  "input",
+  "file-input",
+  "slider",
+  "card",
+  "alert",
+  "tabs",
+];
 
 async function prepareFixture(page) {
   await page.route("https://mc.yandex.ru/**", (route) => route.abort());

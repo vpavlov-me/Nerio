@@ -53,6 +53,7 @@ export {
 export { Alert, type AlertProps, type AlertTone } from "./components/alert";
 export { Breadcrumbs, type BreadcrumbsItem, type BreadcrumbsProps } from "./components/breadcrumbs";
 export { Input, type InputProps, type InputSize, type InputType } from "./components/input";
+export { FileInput, type FileInputProps, type FileInputSize } from "./components/file-input";
 export {
   InputGroup,
   InputGroupAddon,

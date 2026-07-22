@@ -562,6 +562,14 @@
   --n-input-addon-foreground: var(--n-color-text-tertiary);
   --n-input-addon-gap: var(--n-space-1-5);
   --n-input-addon-padding-inline: var(--n-density-space-md);
+  --n-file-input-button-gap: var(--n-input-padding-inline);
+  --n-file-input-button-padding-inline: var(--n-input-padding-inline);
+  --n-file-input-button-background: var(--n-color-action-secondary);
+  --n-file-input-button-background-hover: var(--n-color-action-secondary-hover);
+  --n-file-input-button-border: var(--n-color-border-subtle);
+  --n-file-input-button-foreground: var(--n-color-text-primary);
+  --n-file-input-button-disabled-background: var(--n-color-surface-subtle);
+  --n-file-input-button-disabled-foreground: var(--n-color-text-disabled);
   --n-select-height-sm: var(--n-input-height-sm);
   --n-select-height-md: var(--n-input-height-md);
   --n-select-height-lg: var(--n-input-height-lg);

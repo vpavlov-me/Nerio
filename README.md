@@ -107,8 +107,8 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
 the complete native-versus-component boundary. Input supports native date, month, week, time, and
 `datetime-local` values while preserving browser-owned picker, validity, and form behavior. Core
-1.0 includes a single-value Slider and has approved follow-up work for FileInput, Calendar, and a
-bounded single-date DatePicker; their product-workflow extensions remain outside Core.
+1.0 includes a single-value Slider and native FileInput, with approved follow-up work for Calendar
+and a bounded single-date DatePicker; their product-workflow extensions remain outside Core.
 
 ## Package entrypoints
 
@@ -130,7 +130,7 @@ Runtime, framework, browser-engine, operating-system, and assistive-technology e
 defined in the [platform support policy](./docs/platform-support.md) and checked in CI.
 
 ```tsx
-import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio-ui/ui";
+import { Alert, Breadcrumbs, Card, FileInput, List, Pagination, Table } from "@nerio-ui/ui";
 import { Settings } from "@nerio-ui/adapters/icons";
 import { Button, Dialog, Select, Slider, ToastProvider } from "@nerio-ui/ui/client";
 import "@nerio-ui/ui/styles.css";
