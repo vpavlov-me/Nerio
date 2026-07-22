@@ -2085,6 +2085,111 @@
       "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<Switch defaultChecked label=\"Notify collaborators\" description=\"Collaborators receive updates as they happen.\" />"
     },
     {
+      "name": "slider",
+      "title": "Slider",
+      "description": "Chooses one numeric value within a known range with one thumb.",
+      "category": "forms",
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/slider.tsx",
+          "target": "components/slider.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["slider"],
+      "slots": [
+        "root",
+        "header",
+        "label",
+        "value",
+        "control",
+        "track",
+        "indicator",
+        "thumb",
+        "description"
+      ],
+      "variants": ["horizontal", "vertical"],
+      "states": ["default", "dragging", "disabled", "read-only", "invalid", "required"],
+      "requiredTokens": [
+        "--n-slider-control-size",
+        "--n-slider-length",
+        "--n-slider-track-size",
+        "--n-slider-track-radius",
+        "--n-slider-thumb-size",
+        "--n-slider-thumb-radius",
+        "--n-slider-thumb-border-width",
+        "--n-slider-gap",
+        "--n-slider-header-gap",
+        "--n-slider-header-width",
+        "--n-slider-label-font-size",
+        "--n-slider-label-font-weight",
+        "--n-slider-label-color",
+        "--n-slider-value-font-size",
+        "--n-slider-value-color",
+        "--n-slider-track-background",
+        "--n-slider-indicator-background",
+        "--n-slider-thumb-background",
+        "--n-slider-thumb-border",
+        "--n-slider-thumb-border-hover",
+        "--n-slider-thumb-shadow",
+        "--n-slider-focus-ring",
+        "--n-slider-disabled-opacity",
+        "--n-slider-disabled-track-background",
+        "--n-slider-disabled-indicator-background",
+        "--n-slider-disabled-thumb-background",
+        "--n-slider-disabled-thumb-border",
+        "--n-slider-duration",
+        "--n-slider-easing"
+      ],
+      "accessibility": [
+        "Uses the Base UI Slider primitive for keyboard, pointer, touch, form, and orientation behavior.",
+        "Requires exactly one accessible name through a visible label, aria-label, or aria-labelledby.",
+        "Supports Arrow keys, Home, End, Page Up, and Page Down through the nested native range input.",
+        "Supports value, defaultValue, onValueChange, onValueCommitted, min, max, step, largeStep, name, form, disabled, readOnly, and required while intentionally rejecting arrays and multiple thumbs.",
+        "Use format and locale for number formatting, and aria-valuetext or getAriaValueText for localized semantic value text.",
+        "Read-only Slider remains focusable and form-associated while canceling value changes.",
+        "Consumers own units, marks, thresholds, tooltips, charts, filters, media logic, and product-specific scales."
+      ],
+      "usage": "import { Slider } from '@/components/nerio/components/slider';\n\n<Slider label=\"Volume\" name=\"volume\" defaultValue={40} valueLabel=\"40%\" getAriaValueText={(_, value) => `${value} percent`} />"
+    },
+    {
       "name": "tabs",
       "title": "Tabs",
       "description": "Switches between related panels in the same context.",

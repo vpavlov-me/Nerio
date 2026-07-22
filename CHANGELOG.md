@@ -8,6 +8,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the client-only single-value Slider with Base UI keyboard, pointer, touch, form, orientation,
+  read-only, localized value-text, token, Registry, CLI/MCP, docs, source-install, and browser
+  contracts. Existing native range usage can migrate to `Slider` when a tokenized cross-browser
+  presentation adds value; multi-thumb ranges and product-specific scale behavior remain outside Core.
 - Added native `date`, `month`, `week`, `time`, and `datetime-local` coverage to the server-safe
   Input contract while preserving browser-owned pickers, localized chrome, validity, value, and
   form-submission behavior.

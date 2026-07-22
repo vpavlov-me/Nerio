@@ -38,6 +38,8 @@ const componentLedes: Record<string, string> = {
     "Sheets present a focused modal panel from an explicit side while leaving product workflows to the consumer.",
   select:
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
+  slider:
+    "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
   toast: "Toasts acknowledge short-lived product events without interrupting the current workflow.",
   field: "Fields compose labels, controls, descriptions, and validation messages.",
   "form-message":

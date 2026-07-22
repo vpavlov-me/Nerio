@@ -97,6 +97,7 @@ import {
   SidebarRail,
   SidebarTrigger,
   Skeleton,
+  Slider,
   Spinner,
   Stat,
   Switch,
@@ -144,6 +145,7 @@ const componentLinks = [
       ["Radio Group", "radio-group"],
       ["Switch", "switch"],
       ["Select", "select"],
+      ["Slider", "slider"],
     ],
   ],
   [
@@ -752,6 +754,31 @@ export function ComponentPlayground() {
                   disabled
                   placeholder="Unavailable"
                   options={[{ label: "Active", value: "active" }]}
+                />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="slider"
+        title="Slider"
+        api="single value · horizontal · vertical · disabled · readOnly"
+      >
+        <Matrix
+          columns={["Default", "Read only", "Disabled", "Vertical"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Slider key="default" aria-label="Default volume" defaultValue={40} />,
+                <Slider key="readonly" aria-label="Read-only volume" defaultValue={70} readOnly />,
+                <Slider key="disabled" aria-label="Disabled volume" defaultValue={25} disabled />,
+                <Slider
+                  key="vertical"
+                  aria-label="Vertical volume"
+                  defaultValue={60}
+                  orientation="vertical"
                 />,
               ],
             },

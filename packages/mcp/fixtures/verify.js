@@ -412,6 +412,34 @@ async function verify() {
       throw new Error("MCP Switch usage is missing Base UI, dependency, or token metadata.");
     }
 
+    const sliderUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "slider" },
+    });
+    const sliderUsage = JSON.parse(sliderUsageResult.content[0].text);
+    assertRegistryParity("slider", sliderUsage, [
+      "components/slider.tsx",
+      "lib/cn.ts",
+      "lib/compose-refs.ts",
+      "lib/motion.ts",
+      "lib/resolve-class-name.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      !sliderUsage.baseUiPrimitives.includes("slider") ||
+      !sliderUsage.slots.includes("thumb") ||
+      !sliderUsage.variants.includes("vertical") ||
+      !sliderUsage.requiredTokens.includes("--n-slider-focus-ring") ||
+      !sliderUsage.accessibility.some((item) => item.includes("exactly one accessible name")) ||
+      !sliderUsage.accessibility.some((item) => item.includes("intentionally rejecting arrays"))
+    ) {
+      throw new Error(
+        "MCP Slider usage is missing single-value, accessibility, or token metadata.",
+      );
+    }
+
     const itemUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "item" },

@@ -78,6 +78,8 @@ export const snippets: Record<string, string> = {
     'import { RadioGroup, RadioGroupItem } from \'@nerio-ui/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team">\n  <RadioGroupItem value="private" description="Only you can access it.">Private</RadioGroupItem>\n  <RadioGroupItem value="team">Team</RadioGroupItem>\n</RadioGroup>\n\n// Options API remains available for concise data-driven groups.\n<RadioGroup label="Visibility" options={[{ label: "Private", value: "private" }]} />',
   switch:
     'import { Switch } from "@nerio-ui/ui/client";\n\n<Switch\n  defaultChecked\n  name="notifyCollaborators"\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>',
+  slider:
+    'import { Slider } from "@nerio-ui/ui/client";\n\n<Slider\n  label="Volume"\n  name="volume"\n  defaultValue={40}\n  valueLabel="40%"\n  getAriaValueText={(_, value) => `${value} percent`}\n/>',
   dialog:
     'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
   sheet:
@@ -1684,6 +1686,100 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-switch-border-hover",
       "--n-switch-thumb-background-checked",
       "--n-focus-ring",
+    ],
+  },
+  slider: {
+    category: "Forms",
+    purpose: "Use Slider to choose one numeric value within a known bounded range.",
+    anatomy: [
+      { title: "root", description: "Single-value Base UI Slider state and form owner." },
+      { title: "header", description: "Optional row for a visible label and value label." },
+      { title: "label", description: "Visible accessible name associated with the thumb." },
+      { title: "value", description: "Optional consumer-formatted visible value." },
+      { title: "control", description: "Pointer and touch interaction surface." },
+      { title: "track", description: "Neutral full numeric range." },
+      { title: "indicator", description: "Accent fill from min to the current value." },
+      { title: "thumb", description: "One draggable handle containing a native range input." },
+      { title: "description", description: "Optional supporting text connected to the input." },
+    ],
+    variants: [
+      { title: "Horizontal", description: "Default fluid inline-axis control." },
+      { title: "Vertical", description: "Bounded block-axis control with the same value API." },
+    ],
+    states: [
+      { title: "Default", description: "Uncontrolled value defaults to min." },
+      { title: "Dragging", description: "Pointer or touch interaction updates one value." },
+      { title: "Focus", description: "Keyboard focus remains visible on the thumb." },
+      { title: "Disabled", description: "Removes interaction and native form contribution." },
+      {
+        title: "Read-only",
+        description: "Remains focusable and form-associated without changing.",
+      },
+      { title: "Invalid", description: "Exposes aria-invalid and a stable data-invalid hook." },
+      { title: "Required", description: "Preserves native range required semantics and metadata." },
+    ],
+    motion: [
+      "Track and thumb feedback use shared hover duration and easing tokens.",
+      "Value changes remain immediate; reduced motion removes nonessential transition duration.",
+    ],
+    accessibility: [
+      "Slider is interactive and imports from @nerio-ui/ui/client.",
+      "Provide exactly one visible label, aria-label, or aria-labelledby.",
+      "Base UI owns Arrow keys, Home, End, Page Up, Page Down, pointer, touch, RTL, and orientation behavior.",
+      "Use aria-valuetext or getAriaValueText when the numeric value alone does not communicate units or meaning.",
+      "Read-only remains keyboard focusable but cancels value changes; disabled removes interaction.",
+      "The nested native range input preserves name, form, min, max, step, required, and ref access.",
+    ],
+    api: [
+      { title: "value / defaultValue", description: "Controlled or uncontrolled single number." },
+      {
+        title: "onValueChange / onValueCommitted",
+        description: "Receives one number plus Base UI reason and native event details.",
+      },
+      { title: "min / max / step / largeStep", description: "Defines the bounded numeric scale." },
+      { title: "orientation", description: "horizontal or vertical." },
+      {
+        title: "name / form / required / disabled / readOnly",
+        description: "Form and availability metadata.",
+      },
+      {
+        title: "label / aria-label / aria-labelledby",
+        description: "Exactly one naming strategy.",
+      },
+      { title: "valueLabel", description: "Optional visible consumer-formatted value." },
+      {
+        title: "format / locale / aria-valuetext / getAriaValueText",
+        description: "Localized numeric presentation and accessible semantic value text.",
+      },
+      {
+        title: "ref / inputRef",
+        description: "Refs for the root div and nested native range input.",
+      },
+    ],
+    guidance: {
+      do: [
+        "Use for one approximate or continuously adjustable value with known bounds.",
+        "Show units outside Slider and provide accessible value text when the number is ambiguous.",
+      ],
+      dont: [
+        "Do not use Slider for exact text entry when Input is clearer.",
+        "Do not add multiple thumbs, marks, tooltips, charts, thresholds, filters, pricing, or media policy to Core Slider.",
+      ],
+    },
+    related: ["input", "progress", "field"],
+    tokens: [
+      "--n-slider-control-size",
+      "--n-slider-length",
+      "--n-slider-track-size",
+      "--n-slider-track-background",
+      "--n-slider-indicator-background",
+      "--n-slider-thumb-size",
+      "--n-slider-thumb-background",
+      "--n-slider-thumb-border",
+      "--n-slider-focus-ring",
+      "--n-slider-disabled-opacity",
+      "--n-slider-duration",
+      "--n-slider-easing",
     ],
   },
   "form-group": {

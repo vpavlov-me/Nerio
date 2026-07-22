@@ -75,6 +75,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
+  Slider,
   Switch,
   Tabs,
   TabsContent,
@@ -670,6 +671,39 @@ describe("Core accessibility contracts", () => {
 
     expect(screen.getByRole("combobox", { name: "Workspace command" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "Navigation" })).toBeInTheDocument();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps horizontal, vertical, disabled, and read-only Sliders accessible", async () => {
+    const { container } = render(
+      <>
+        <Slider
+          label="Volume"
+          description="Notification playback level."
+          defaultValue={45}
+          valueLabel="45%"
+          getAriaValueText={(_, value) => `${value} percent`}
+        />
+        <Slider aria-label="Vertical volume" defaultValue={60} orientation="vertical" />
+        <Slider aria-label="Unavailable volume" defaultValue={20} disabled />
+        <Slider aria-labelledby="readonly-slider-label" defaultValue={80} readOnly />
+        <span id="readonly-slider-label">Read-only volume</span>
+      </>,
+    );
+
+    expect(screen.getByRole("slider", { name: "Volume" })).toHaveAttribute(
+      "aria-valuetext",
+      "45 percent",
+    );
+    expect(screen.getByRole("slider", { name: "Vertical volume" })).toHaveAttribute(
+      "aria-orientation",
+      "vertical",
+    );
+    expect(screen.getByRole("slider", { name: "Unavailable volume" })).toBeDisabled();
+    expect(screen.getByRole("slider", { name: "Read-only volume" })).toHaveAttribute(
+      "aria-readonly",
+      "true",
+    );
     expect((await axe(container)).violations).toEqual([]);
   });
 });

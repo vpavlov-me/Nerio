@@ -93,6 +93,7 @@
     { "name": "item", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "list", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "radio-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "input", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "input-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
@@ -172,8 +173,8 @@
       "surface": "Slider",
       "catalogComponents": ["Slider"],
       "coverageMode": "dedicated-component",
-      "status": "planned",
-      "issue": 259,
+      "status": "covered",
+      "issue": null,
       "capability": "single-value range input",
       "rationale": "A maintained Slider primitive adds consistent keyboard, pointer, touch, form, orientation, and focus behavior.",
       "boundary": "Core owns one numeric value and one thumb. Consumers own units, marks, thresholds, and product meaning."
@@ -645,8 +646,8 @@
       "tier": "core",
       "package": "@nerio-ui/ui/client",
       "category": "forms",
-      "status": "planned",
-      "description": "Approved Core 1.0 single-value range primitive. Multi-thumb ranges, marks, thresholds, and product-specific scales remain outside Core."
+      "status": "stable-core",
+      "description": "Client-only Base UI single-value range primitive with controlled and uncontrolled state, form metadata, horizontal and vertical orientation, read-only behavior, localized value text, and one thumb."
     },
     {
       "name": "FileInput",
