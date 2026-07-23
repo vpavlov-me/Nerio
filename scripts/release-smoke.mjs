@@ -356,8 +356,8 @@ try {
   ) {
     throw new Error("Packed CLI did not record portable exact installed-source metadata.");
   }
-  runLocalCli("diff");
-  runLocalCli("update", "--dry-run");
+  runLocalCli("diff", "button");
+  runLocalCli("update", "button", "--dry-run");
 
   const oneOffDirectory = join(tempRoot, "one-off-consumer");
   mkdirSync(oneOffDirectory, { recursive: true });

@@ -25,7 +25,13 @@ const optionNames = new Map([
 
 function optionPath(name, fallback) {
   const index = process.argv.indexOf(name);
-  return resolve(root, index >= 0 ? process.argv[index + 1] : fallback);
+  if (index < 0) return resolve(root, fallback);
+
+  const value = process.argv[index + 1];
+  if (!value || value.startsWith("--")) {
+    throw new Error(`Missing path after ${name}.`);
+  }
+  return resolve(root, value);
 }
 
 function read(path) {
@@ -138,7 +144,7 @@ const forbiddenPatterns = [
   [/pnpm --filter @nerio-ui\/mcp start/g, "workspace-only MCP command"],
   [/^\s*(?:npx|pnpm)\s+nerio\b/gm, "unsupported CLI runner"],
   [/^\s*nerio (?:init|list|info|add|diff|update|doctor)\b/gm, "bare public CLI command"],
-  [/@nerio\/(?!ui)/g, "obsolete package scope"],
+  [/@nerio\//g, "obsolete package scope"],
   [/No npm release exists/g, "stale unpublished-package copy"],
 ];
 for (const [path, source] of Object.entries(sources)) {

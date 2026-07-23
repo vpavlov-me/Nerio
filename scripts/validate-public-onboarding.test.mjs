@@ -30,6 +30,15 @@ test("public onboarding validator accepts the canonical command model", () => {
   assert.equal(result.status, 0, result.stderr);
 });
 
+test("public onboarding validator reports a missing option path", () => {
+  const result = spawnSync(process.execPath, [validator, "--readme"], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Missing path after --readme/);
+});
+
 test("public onboarding validator rejects README command drift", () => {
   const stderr = invalidFixture("--readme", "README.md", (source) =>
     source.replace("pnpm exec nerio doctor", "nerio doctor"),
@@ -46,6 +55,13 @@ test("public onboarding validator rejects monorepo-only MCP configuration", () =
     ),
   );
   assert.match(stderr, /monorepo-only MCP path/);
+});
+
+test("public onboarding validator rejects the obsolete package scope", () => {
+  const stderr = invalidFixture("--readme", "README.md", (source) =>
+    source.replace("@nerio-ui/ui", "@nerio/ui"),
+  );
+  assert.match(stderr, /obsolete package scope/);
 });
 
 test("public onboarding validator rejects internal CLI release smoke", () => {
