@@ -32,6 +32,13 @@ export {
   type SliderProps,
 } from "./components/slider";
 export {
+  Calendar,
+  type CalendarDate,
+  type CalendarFirstDayOfWeek,
+  type CalendarLabels,
+  type CalendarProps,
+} from "./components/calendar";
+export {
   Select,
   SelectGroup,
   SelectGroupLabel,

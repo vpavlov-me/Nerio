@@ -81,7 +81,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Select      | stable-core | `@nerio-ui/ui/client` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior              |
 | Slider      | stable-core | `@nerio-ui/ui/client` | Base UI single-value range primitive with form metadata, horizontal/vertical orientation, read-only behavior, localized value text, and one thumb |
 | FileInput   | stable-core | `@nerio-ui/ui`        | Native file selection with forwarded FileList, form/reset semantics, single or multiple selection, and no upload workflow ownership               |
-| Calendar    | planned     | `@nerio-ui/ui/client` | Approved Core 1.0 single-date calendar grid; ranges, events, availability, and scheduling remain outside Core                                     |
+| Calendar    | stable-core | `@nerio-ui/ui/client` | Timezone-safe single-date grid with ISO values, roving focus, locale labels, week starts, constraints, and controlled or uncontrolled state       |
 | DatePicker  | planned     | `@nerio-ui/ui/client` | Approved Core 1.0 bounded single-date control composed from Calendar and Core overlays                                                            |
 
 ### Input-family roadmap

@@ -82,6 +82,8 @@ export const snippets: Record<string, string> = {
     'import { Switch } from "@nerio-ui/ui/client";\n\n<Switch\n  defaultChecked\n  name="notifyCollaborators"\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>',
   slider:
     'import { Slider } from "@nerio-ui/ui/client";\n\n<Slider\n  label="Volume"\n  name="volume"\n  defaultValue={40}\n  valueLabel="40%"\n  getAriaValueText={(_, value) => `${value} percent`}\n/>',
+  calendar:
+    'import { Calendar } from "@nerio-ui/ui/client";\n\n<Calendar\n  aria-label="Release date"\n  defaultValue="2026-06-15"\n  min="2026-06-01"\n  max="2026-06-30"\n  firstDayOfWeek={1}\n/>',
   dialog:
     'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
   sheet:
@@ -304,6 +306,37 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "FileList events and forwarded ref",
       "label through Field or Label",
       "native form submission and reset",
+    ],
+  },
+  calendar: {
+    name: "Calendar",
+    description:
+      "Selects one timezone-safe ISO date in a localizable month grid with roving focus and explicit constraints.",
+    status: "stable",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "DatePicker", "Popover"],
+    anatomy: [
+      "root",
+      "header",
+      "previous-month",
+      "heading",
+      "next-month",
+      "grid",
+      "weekday-header",
+      "row",
+      "cell",
+      "day",
+    ],
+    motion: ["hover", "focus", "reduced-motion compatible"],
+    accessibility: [
+      "named ARIA grid",
+      "one roving day tab stop",
+      "Arrow, Home, End, Page, Enter, and Space keyboard model",
+      "localized full date labels and live month announcement",
+      "RTL, forced-colors, disabled, and read-only support",
     ],
   },
   "input-group": {
@@ -1879,6 +1912,114 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-slider-disabled-opacity",
       "--n-slider-duration",
       "--n-slider-easing",
+    ],
+  },
+  calendar: {
+    category: "Forms",
+    purpose:
+      "Use Calendar to select one ISO calendar date in a custom inline month grid when native Input type=date is not sufficient.",
+    anatomy: [
+      { title: "root", description: "Named Calendar group and state owner." },
+      { title: "header", description: "Month navigation and live localized heading." },
+      { title: "grid", description: "Six-week native table with ARIA grid semantics." },
+      { title: "weekday-header", description: "Localized abbreviated and full weekday names." },
+      { title: "row", description: "One calendar week." },
+      { title: "cell", description: "Gridcell carrying selected state." },
+      { title: "day", description: "Native date button in the roving-focus model." },
+    ],
+    variants: [
+      { title: "Uncontrolled", description: "Owns selected date and visible month from defaults." },
+      {
+        title: "Controlled",
+        description: "Consumer owns selected date and visible month independently.",
+      },
+      {
+        title: "Localized",
+        description: "Locale, week start, and navigation labels change presentation only.",
+      },
+    ],
+    states: [
+      {
+        title: "Selected",
+        description: "Accent fill, border, and aria-selected identify one date.",
+      },
+      {
+        title: "Today",
+        description: "aria-current, weight, and underline identify today without selecting it.",
+      },
+      {
+        title: "Outside month",
+        description: "Muted but selectable dates preserve six complete weeks.",
+      },
+      {
+        title: "Unavailable",
+        description: "Constraints prevent selection and expose aria-disabled.",
+      },
+      {
+        title: "Read-only",
+        description: "Navigation and focus remain available without value changes.",
+      },
+      { title: "Disabled", description: "Navigation and all day buttons are disabled." },
+    ],
+    motion: [
+      "State feedback uses shared hover and focus duration and easing tokens.",
+      "Month changes are immediate; reduced motion removes nonessential transitions.",
+    ],
+    accessibility: [
+      "Calendar imports from @nerio-ui/ui/client and requires aria-label or aria-labelledby.",
+      "Only one available day participates in the page Tab sequence.",
+      "Arrow keys move by day or week; Home and End move within the week.",
+      "Page keys move by month and Shift plus Page keys move by year.",
+      "Enter and Space select; constraints, disabled, and read-only prevent value changes.",
+      "Month headings announce politely and day buttons use full localized date names.",
+      "Horizontal Arrow behavior follows the computed text direction in RTL.",
+    ],
+    api: [
+      { title: "value / defaultValue", description: "Controlled or uncontrolled YYYY-MM-DD date." },
+      { title: "onValueChange", description: "Receives one valid, available CalendarDate." },
+      {
+        title: "month / defaultMonth / onMonthChange",
+        description: "Visible month using the same ISO date representation.",
+      },
+      {
+        title: "min / max / isDateDisabled",
+        description: "Inclusive boundaries and consumer disabled-date policy.",
+      },
+      {
+        title: "locale / firstDayOfWeek / labels",
+        description: "Localized presentation with explicit week-start policy.",
+      },
+      {
+        title: "today",
+        description: "Stable current date for today styling and deterministic SSR.",
+      },
+      { title: "disabled / readOnly", description: "Availability and value-change behavior." },
+      { title: "aria-label / aria-labelledby", description: "Exactly one naming strategy." },
+      { title: "ref", description: "HTMLDivElement root ref." },
+    ],
+    guidance: {
+      do: [
+        "Use native Input type=date when browser-owned picker UI is sufficient.",
+        "Use Calendar for one inline, localizable date grid with stable ISO values.",
+      ],
+      dont: [
+        "Do not add DatePicker popup ownership, ranges, multiple selection, events, availability data, scheduling, recurrence, time, or timezone conversion to Calendar.",
+      ],
+    },
+    related: ["input", "popover", "field"],
+    tokens: [
+      "--n-calendar-width",
+      "--n-calendar-padding",
+      "--n-calendar-cell-size",
+      "--n-calendar-background",
+      "--n-calendar-border",
+      "--n-calendar-day-background-hover",
+      "--n-calendar-day-background-selected",
+      "--n-calendar-day-foreground-selected",
+      "--n-calendar-day-foreground-unavailable",
+      "--n-calendar-duration",
+      "--n-calendar-easing",
+      "--n-focus-ring",
     ],
   },
   "form-group": {

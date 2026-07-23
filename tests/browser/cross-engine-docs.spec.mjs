@@ -339,6 +339,80 @@ test("keeps Slider touch input portable", async ({ browser, browserName }, testI
   }
 });
 
+test("keeps Calendar keyboard, pointer, locale, constraints, RTL, and reflow portable", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 320, height: 844 });
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await page.goto("/docs/components/calendar");
+
+  const calendar = page.getByRole("group", { name: "Release date" });
+  await expect(calendar).toBeVisible();
+  await expect(calendar.getByRole("grid", { name: "June 2026" })).toBeVisible();
+  await expect(calendar.getByRole("button", { name: "June 15, 2026" })).toHaveAttribute(
+    "aria-current",
+    "date",
+  );
+  await expect(calendar.getByRole("gridcell", { selected: true })).toContainText("15");
+  await expect(calendar.getByRole("button", { name: "June 18, 2026" })).toHaveAttribute(
+    "aria-disabled",
+    "true",
+  );
+
+  await calendar.getByRole("button", { name: "June 16, 2026" }).click();
+  await expect(calendar.getByRole("gridcell", { selected: true })).toContainText("16");
+  await expect(page.getByText("Selected date: 2026-06-16")).toBeVisible();
+  await calendar.getByRole("button", { name: "June 18, 2026" }).dispatchEvent("click");
+  await expect(page.getByText("Selected date: 2026-06-16")).toBeVisible();
+
+  const selected = calendar.getByRole("button", { name: "June 16, 2026" });
+  await selected.focus();
+  await selected.press("ArrowRight");
+  await expect(calendar.getByRole("button", { name: "June 17, 2026" })).toBeFocused();
+  await page.keyboard.press("ArrowRight");
+  await expect(calendar.getByRole("button", { name: "June 19, 2026" })).toBeFocused();
+  await page.keyboard.press("Home");
+  await expect(calendar.getByRole("button", { name: "June 15, 2026" })).toBeFocused();
+  await page.keyboard.press("End");
+  await expect(calendar.getByRole("button", { name: "June 21, 2026" })).toBeFocused();
+  await page.keyboard.press("PageDown");
+  await expect(calendar.getByRole("button", { name: "July 21, 2026" })).toBeFocused();
+  await expect(calendar.getByRole("grid", { name: "July 2026" })).toBeVisible();
+  await page.keyboard.press("Shift+PageUp");
+  await expect(calendar.getByRole("button", { name: "June 8, 2026" })).toBeFocused();
+
+  await calendar.getByRole("button", { name: "June 16, 2026" }).focus();
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  await page.keyboard.press("ArrowRight");
+  await expect(calendar.getByRole("button", { name: "June 15, 2026" })).toBeFocused();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+  expect(problems).toEqual([]);
+});
+
+test("keeps Calendar touch selection portable", async ({ browser, browserName }, testInfo) => {
+  const context = await browser.newContext({
+    baseURL: testInfo.project.use.baseURL,
+    hasTouch: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    const page = await context.newPage();
+    const problems = monitorPage(page, browserName);
+    await page.goto("/docs/components/calendar");
+    await page.getByRole("button", { name: "June 17, 2026" }).tap();
+    await expect(page.getByText("Selected date: 2026-06-17")).toBeVisible();
+    expect(problems).toEqual([]);
+  } finally {
+    await context.close();
+  }
+});
+
 test("keeps mobile navigation inside the dynamic viewport", async ({ browserName, page }) => {
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 390, height: 720 });

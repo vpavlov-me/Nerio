@@ -29,7 +29,8 @@
 - [x] Add native temporal Input coverage
 - [x] Add single-value Slider
 - [x] Add FileInput
-- [ ] Add Calendar and single-date DatePicker
+- [x] Add Calendar
+- [ ] Add single-date DatePicker
 
 ## Product building blocks
 

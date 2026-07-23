@@ -94,6 +94,7 @@
     { "name": "list", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "calendar", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "radio-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "input", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "file-input", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
@@ -391,8 +392,8 @@
       "surface": "Calendar",
       "catalogComponents": ["Calendar"],
       "coverageMode": "dedicated-component",
-      "status": "planned",
-      "issue": 261,
+      "status": "covered",
+      "issue": null,
       "capability": "custom single-date calendar grid",
       "rationale": "A custom grid needs roving focus, date navigation, localization, constraints, announcements, and real assistive-technology evidence.",
       "boundary": "Core owns one visible month and one selected date. Ranges, events, availability, and scheduling remain outside Core."
@@ -663,8 +664,8 @@
       "tier": "core",
       "package": "@nerio-ui/ui/client",
       "category": "forms",
-      "status": "planned",
-      "description": "Approved Core 1.0 single-date calendar grid. Ranges, events, availability, scheduling, and time-zone workflows remain outside Core."
+      "status": "stable-core",
+      "description": "Client-only, timezone-safe single-date calendar grid with ISO values, controlled or uncontrolled selection and visible month, roving focus, locale labels, week-start control, constraints, and disabled-date rules."
     },
     {
       "name": "DatePicker",
