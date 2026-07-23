@@ -1,12 +1,12 @@
 # Release Process
 
-Nerio Core `0.1.0-alpha.0` was published on 2026-07-15 under `@nerio-ui`. It predates the Tailwind
-CSS v4-first migration. The recommended next coordinated version is `0.1.0-alpha.1`: npm versions
-are immutable, the public APIs remain alpha-compatible, and this release changes the styling and
-consumer-setup contract without claiming beta or stable compatibility.
+Nerio Core `0.1.0-alpha.1` was published on 2026-07-18 under the npm `alpha` tag and is the current
+Tailwind CSS v4-first prerelease. The `latest` tag intentionally remains on `0.1.0-alpha.0` while the
+complete 1.0 surface is stabilized. The roadmap determines the next coordinated prerelease; no beta
+or stable compatibility is claimed yet.
 
 Every release action remains manual and requires explicit maintainer approval after the gate and
-tarball inspection pass. The recommendation does not authorize publishing, changing dist-tags,
+tarball inspection pass. This document does not authorize publishing, changing dist-tags,
 creating a tag, or creating a GitHub Release.
 
 ## Required checks
@@ -24,6 +24,7 @@ pnpm test:ui
 pnpm test:a11y
 pnpm test:catalog
 pnpm test:tokens
+pnpm test:onboarding
 pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
@@ -37,6 +38,7 @@ pnpm validate:runtime-axes
 pnpm validate:typography
 pnpm validate:catalog
 pnpm validate:docs
+pnpm validate:onboarding
 pnpm validate:release
 pnpm pack:check
 ```
@@ -52,10 +54,12 @@ typechecks published Sidebar examples in an isolated fixture.
 
 `validate:release` packs all intended packages, checks packed manifests, exports, dependencies, side
 effects, bins, file boundaries, and secret/Pro exclusions, installs the tarballs into an isolated
-Next.js consumer, verifies that the CLI resolves its immutable packaged Registry without a checkout
-or moving branch URL, exercises installed-source metadata, `diff`, and update planning, checks MCP
-Registry discovery, source-installs representative components and a Foundation item with complete
-dependency chains, and builds without workspace aliases.
+Next.js consumer, runs the canonical local CLI workflow through `pnpm exec nerio`, verifies one-off
+CLI execution through the packed package, resolves the immutable packaged Registry without a
+checkout or moving branch URL, exercises installed-source metadata, `diff`, and update planning,
+starts the packaged MCP bin through `pnpm exec nerio-mcp`, verifies its read-only discovery and
+coordinated version metadata, source-installs representative components and a Foundation item with
+complete dependency chains, and builds without workspace aliases.
 `test:adapters` separately proves the packed `icons`, `table`, `charts`, `forms`, and
 `schema` exports, verifies that an icons/UI-only consumer does not install optional integration
 peers, and checks each optional subpath both without and with its required peer. CI validates only;
@@ -89,9 +93,10 @@ development-branch exception and target `dev`.
 
 ## Versioning and package order
 
-Keep the root workspace, apps, and `@nerio-ui/config` private. The repository manifests remain at the
-published `0.1.0-alpha.0` baseline until the dedicated release PR bumps all six public packages and
-their coordinated internal dependency references to `0.1.0-alpha.1`. Publish in dependency order:
+Keep the root workspace, apps, and `@nerio-ui/config` private. The six public package manifests are
+coordinated at the current published prerelease. A future release PR must bump all six packages,
+their internal dependency references, Registry metadata, and release-smoke expectation to the same
+approved version. Publish in dependency order:
 
 1. `@nerio-ui/tokens`
 2. `@nerio-ui/adapters`
@@ -132,11 +137,11 @@ browser verification, changelog review, and tarball inspection.
 
 1. Record the release-readiness decision and any accepted non-blocking limitations.
 2. Convert `Unreleased` in [CHANGELOG.md](./CHANGELOG.md) to
-   `## 0.1.0-alpha.1 — YYYY-MM-DD`, then add a new empty `Unreleased` section above it.
+   `## <approved-version> — YYYY-MM-DD`, then add a new empty `Unreleased` section above it.
 3. In a dedicated release PR, bump only the six public package manifests and their coordinated
-   internal dependency references from `0.1.0-alpha.0` to `0.1.0-alpha.1`. Keep them public. Update
-   the Registry top-level `version` and immutable `sourceRevision` to the same release tag, update
-   the release smoke expectation, rerun the complete gate with
+   internal dependency references to the approved version. Keep them public. Update the Registry
+   top-level `version` and immutable `sourceRevision` to the same release tag, update the release
+   smoke expectation, rerun the complete gate with
    `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, then obtain a second approval. The override
    does not weaken version, metadata, contents, runtime, source-install, or consumer-build checks.
 4. Publish one package at a time in the documented dependency order with the `alpha` dist-tag, for
@@ -147,14 +152,15 @@ browser verification, changelog review, and tarball inspection.
 
 ## Post-release verification
 
-- Confirm `npm view <package>@0.1.0-alpha.1 version dist-tags files` for every package.
+- Confirm `npm view <package>@<approved-version> version dist-tags files` for every package.
 - Install the six published packages into a new supported Next.js project and rerun the package and
   source-install smoke paths.
-- Run `nerio init`, `list`, `info`, `add`, `diff`, `update --dry-run`, and `doctor` from the
-  published CLI without supplying a Registry override; confirm `nerio.json` points to the packaged
-  Registry and `nerio.lock.json` contains no absolute paths or source content.
-- Start the published MCP server and verify all discovery tools, including exact Registry version,
-  revision, schema, and style contract metadata.
+- Run `pnpm exec nerio init`, `list`, `info`, `add`, `diff`, `update --dry-run`, and `doctor` from a
+  local `@nerio-ui/cli` and `@nerio-ui/registry` install without supplying a Registry override;
+  confirm `nerio.json` points to the packaged Registry and `nerio.lock.json` contains no absolute
+  paths or source content.
+- Start the published MCP server with `pnpm exec nerio-mcp` and verify all discovery tools,
+  including exact package/Registry version, revision, schema, and style contract metadata.
 - Verify public docs links, `llms.txt`, canonical metadata, sitemap, robots behavior, and the live
   demo with no console or hydration errors.
 

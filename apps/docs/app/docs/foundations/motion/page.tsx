@@ -10,6 +10,7 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { MotionAdapterExamples } from "../../../../components/motion-adapter-examples";
+import { sourceInstallCommand } from "../../../../lib/public-commands";
 import { createPageMetadata } from "../../../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -151,7 +152,7 @@ export function Presence({ visible }: { visible: boolean }) {
 }`;
 
 const sourceInstall = `pnpm add motion
-pnpm nerio add motion-adapter
+${sourceInstallCommand("motion-adapter")}
 
 import {
   NerioMotionConfig,

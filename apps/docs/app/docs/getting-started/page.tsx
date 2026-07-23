@@ -1,4 +1,10 @@
 import { CodeExample } from "../../../components/code-example";
+import {
+  localCliInstall,
+  localCliWorkflow,
+  oneOffCliWorkflow,
+  packageInstall,
+} from "../../../lib/public-commands";
 import { createPageMetadata } from "../../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -13,29 +19,16 @@ import { Alert, Card, Field, FormGroup, Table } from "@nerio-ui/ui";
 import { Button, Checkbox, Dialog, RadioGroup, Select, Switch, ToastProvider } from "@nerio-ui/ui/client";
 import "@nerio-ui/ui/styles.css";`;
 
-const packageInstall = `pnpm add @nerio-ui/tokens @nerio-ui/adapters @nerio-ui/ui
-pnpm add tailwindcss
-pnpm add -D @tailwindcss/postcss postcss @nerio-ui/registry @nerio-ui/cli @nerio-ui/mcp`;
-
 const tailwindSetup = `/* app/globals.css */
 @import "tailwindcss";
 @import "@nerio-ui/tokens/tailwind.css";
 @import "@nerio-ui/ui/styles.css";
 @source "../node_modules/@nerio-ui/ui/src";`;
 
-const sourceInstall = `nerio init
-nerio list
-nerio info button
-nerio add button --dry-run
-nerio add button
-nerio diff button
-nerio update button --dry-run
-nerio doctor`;
-
 const nextConfig = `import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@nerio-ui/adapters", "@nerio-ui/registry", "@nerio-ui/tokens", "@nerio-ui/ui"],
+  transpilePackages: ["@nerio-ui/adapters", "@nerio-ui/tokens", "@nerio-ui/ui"],
 };
 
 export default nextConfig;`;
@@ -55,8 +48,9 @@ export default function Page() {
       <section className="doc-section" id="install">
         <h2>Install</h2>
         <p>
-          After the manually approved public alpha is available, install the packages needed by your
-          application. No npm release exists while the package manifests remain private.
+          Nerio Core <code>0.1.0-alpha.1</code> is published under the npm <code>alpha</code> tag.
+          Install only the packages and peers used by your application; the stable 1.0 release is
+          not published yet.
         </p>
         <CodeExample code={packageInstall} label="Package installation" />
         <CodeExample code={tailwindSetup} label="Tailwind CSS v4 package setup" />
@@ -100,8 +94,13 @@ export default function Page() {
       </section>
 
       <section className="doc-section" id="project-shape">
-        <h2>Project shape</h2>
-        <CodeExample code={sourceInstall} label="Source install" />
+        <h2>Editable source installation</h2>
+        <p>
+          The recommended workflow installs the version-aligned Registry and CLI in the consuming
+          project, then invokes the local <code>nerio</code> bin through pnpm.
+        </p>
+        <CodeExample code={localCliInstall} label="Install the local CLI" />
+        <CodeExample code={localCliWorkflow} label="Local CLI workflow" />
         <p>
           The CLI writes editable source files into the consuming app. Use <code>list</code> and{" "}
           <code>info</code> to inspect registry contents, <code>add --dry-run</code> to preview
@@ -113,6 +112,55 @@ export default function Page() {
           <code>styles/tailwind.css</code>; import it from a Tailwind-processed global stylesheet
           alongside the installed token and residual styles.
         </p>
+        <h3>One-off CLI execution</h3>
+        <p>
+          Use the package-qualified one-off form for a quick initialization or install. Prefer the
+          local workflow above for repeatable updates and version alignment.
+        </p>
+        <CodeExample code={oneOffCliWorkflow} label="One-off CLI commands" />
+      </section>
+
+      <section className="doc-section" id="troubleshooting">
+        <h2>Troubleshooting</h2>
+        <ul className="doc-list">
+          <li>
+            Missing styles usually mean the Tailwind bridge import or package <code>@source</code>{" "}
+            path is absent. Run <code>pnpm exec nerio doctor</code> and verify the path relative to
+            the global stylesheet.
+          </li>
+          <li>
+            Next.js syntax or module errors from package source usually mean a used Nerio package is
+            missing from <code>transpilePackages</code>.
+          </li>
+          <li>
+            Server Component errors mean an interactive primitive was imported from the wrong
+            entrypoint. Keep static components on <code>@nerio-ui/ui</code> and add a client
+            boundary for <code>@nerio-ui/ui/client</code>.
+          </li>
+          <li>
+            Adapter import failures require the peer for that exact subpath. Install Motion,
+            TanStack Table, Recharts, React Hook Form, or Zod only when the matching adapter is
+            used.
+          </li>
+          <li>
+            CLI/Registry incompatibility requires coordinated local versions. Reinstall{" "}
+            <code>@nerio-ui/cli</code> and <code>@nerio-ui/registry</code> together.
+          </li>
+          <li>
+            Source drift is never silently overwritten. Run <code>pnpm exec nerio diff</code>,
+            review <code>update --dry-run</code>, and resolve conflicts before applying an update.
+          </li>
+          <li>
+            If pnpm cannot resolve the <code>nerio</code> or <code>nerio-mcp</code> bin, confirm the
+            package is installed in the project and use <code>pnpm exec</code>; do not call an
+            internal package file.
+          </li>
+          <li>
+            MCP clients must run command <code>pnpm</code> with arguments{" "}
+            <code>[&quot;exec&quot;, &quot;nerio-mcp&quot;]</code> from the project containing the
+            local package install.
+          </li>
+        </ul>
       </section>
 
       <section className="doc-section" id="principles">

@@ -56,6 +56,7 @@ import {
   type Appearance,
 } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
+import { mcpInstall, mcpLocalConfiguration } from "../lib/public-commands";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
 type ColorMode = (typeof modes)[number];
@@ -549,7 +550,7 @@ function PageActions({ pathname }: { pathname: string }) {
 
   const copyInstallHint = async (target: "Cursor" | "VS Code") => {
     await copyToClipboard(
-      `Install the Nerio MCP server in ${target}: pnpm --filter @nerio-ui/mcp start`,
+      `Install the Nerio MCP server in ${target}:\n\n${mcpInstall}\n\n${mcpLocalConfiguration}`,
       `${target} install command copied.`,
     );
   };

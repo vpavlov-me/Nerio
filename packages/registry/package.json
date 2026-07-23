@@ -21,7 +21,8 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./manifest.json": "./src/manifest.json"
+    "./manifest.json": "./src/manifest.json",
+    "./public-commands.json": "./src/public-commands.json"
   },
   "scripts": {
     "build": "tsc --noEmit",

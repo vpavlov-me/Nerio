@@ -858,8 +858,16 @@ async function verify() {
     }
 
     const helpOutput = await run(localTarget, "--help");
-    if (!helpOutput.includes("nerio list") || !helpOutput.includes("nerio info")) {
-      throw new Error("Help output does not include list and info commands.");
+    if (
+      !helpOutput.includes("nerio list") ||
+      !helpOutput.includes("nerio info") ||
+      !helpOutput.includes("pnpm add -D @nerio-ui/registry @nerio-ui/cli") ||
+      !helpOutput.includes("pnpm exec nerio <command>") ||
+      !helpOutput.includes("pnpm dlx @nerio-ui/cli init")
+    ) {
+      throw new Error(
+        "Help output does not include the canonical local and one-off command model.",
+      );
     }
     const addHelpOutput = await run(localTarget, "add", "--help");
     if (!addHelpOutput.includes("nerio add <component>") || !addHelpOutput.includes("--dry-run")) {

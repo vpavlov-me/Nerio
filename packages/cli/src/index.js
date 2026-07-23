@@ -75,6 +75,10 @@ function help(commandName) {
       "  nerio info     Show metadata for one component",
       "  nerio doctor   Validate configuration and registry metadata",
       "",
+      "Recommended local install: pnpm add -D @nerio-ui/registry @nerio-ui/cli",
+      "Run local commands with: pnpm exec nerio <command> [options]",
+      "One-off example: pnpm dlx @nerio-ui/cli init",
+      "",
       "Run nerio <command> --help for command options.",
     ],
   };

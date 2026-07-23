@@ -1,6 +1,7 @@
 import { registry, registryMetadata } from "@nerio-ui/registry";
 import { Badge } from "@nerio-ui/ui";
 import { CodeExample } from "../../../components/code-example";
+import { localCliInstall, localCliWorkflow, oneOffCliWorkflow } from "../../../lib/public-commands";
 import { createPageMetadata } from "../../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -9,17 +10,6 @@ export const metadata = createPageMetadata({
     "Configure the Nerio registry and CLI to discover, validate, and install editable component source into an application.",
   path: "/docs/registry",
 });
-
-const init = `nerio init
-nerio doctor
-nerio list
-nerio info button
-nerio info form-group
-nerio add button
-nerio add form-group
-nerio add input --dry-run
-nerio diff button
-nerio update button --dry-run`;
 
 const config = `{
   "schemaVersion": "1.0.0",
@@ -41,7 +31,8 @@ export default function Page() {
 
       <section className="doc-section">
         <h2>Quick start</h2>
-        <CodeExample code={init} label="CLI quick start" />
+        <CodeExample code={localCliInstall} label="Install the local CLI" />
+        <CodeExample code={localCliWorkflow} label="CLI quick start" />
         <p>
           <code>init</code> creates configuration, <code>doctor</code> validates the manifest, and{" "}
           <code>add</code> writes the selected component and source dependencies. Use{" "}
@@ -49,6 +40,11 @@ export default function Page() {
           <code>add --dry-run</code> to review the initial install plan. Use <code>diff</code> and{" "}
           <code>update --dry-run</code> before applying an upstream source update.
         </p>
+        <p>
+          For a one-off initialization or component install, invoke the real package name. Keep the
+          local installation above as the default for repeatable lifecycle work.
+        </p>
+        <CodeExample code={oneOffCliWorkflow} label="One-off CLI commands" />
       </section>
 
       <section className="doc-section">
