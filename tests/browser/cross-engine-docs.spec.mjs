@@ -351,7 +351,7 @@ test("keeps Calendar keyboard, pointer, locale, constraints, RTL, and reflow por
   const calendar = page.getByRole("group", { name: "Release date" });
   await expect(calendar).toBeVisible();
   await expect(calendar.getByRole("grid", { name: "June 2026" })).toBeVisible();
-  await expect(calendar.getByRole("button", { name: "June 15, 2026" })).toHaveAttribute(
+  await expect(calendar.getByRole("button", { name: "June 15, 2026, Selected" })).toHaveAttribute(
     "aria-current",
     "date",
   );
@@ -367,7 +367,7 @@ test("keeps Calendar keyboard, pointer, locale, constraints, RTL, and reflow por
   await calendar.getByRole("button", { name: "June 18, 2026" }).dispatchEvent("click");
   await expect(page.getByText("Selected date: 2026-06-16")).toBeVisible();
 
-  const selected = calendar.getByRole("button", { name: "June 16, 2026" });
+  const selected = calendar.getByRole("button", { name: "June 16, 2026, Selected" });
   await selected.focus();
   await selected.press("ArrowRight");
   await expect(calendar.getByRole("button", { name: "June 17, 2026" })).toBeFocused();
@@ -383,7 +383,7 @@ test("keeps Calendar keyboard, pointer, locale, constraints, RTL, and reflow por
   await page.keyboard.press("Shift+PageUp");
   await expect(calendar.getByRole("button", { name: "June 8, 2026" })).toBeFocused();
 
-  await calendar.getByRole("button", { name: "June 16, 2026" }).focus();
+  await calendar.getByRole("button", { name: "June 16, 2026, Selected" }).focus();
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
   await page.keyboard.press("ArrowRight");
   await expect(calendar.getByRole("button", { name: "June 15, 2026" })).toBeFocused();

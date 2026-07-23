@@ -2277,7 +2277,7 @@
         "Enter and Space select the focused date; unavailable, disabled, and read-only states cannot change the value.",
         "Controlled and uncontrolled selected-date and visible-month state use timezone-safe YYYY-MM-DD values.",
         "Locale formats labels while firstDayOfWeek intentionally controls the visual week start.",
-        "The heading announces visible-month changes politely; today, selection, focus, and unavailable states do not rely on color alone.",
+        "The heading announces visible-month changes politely; the focused day includes localized selection context; today, selection, focus, and unavailable states do not rely on color alone.",
         "DatePicker, ranges, multiple selection, events, availability, scheduling, recurrence, time, timezone conversion, fetching, and persistence remain outside Calendar."
       ],
       "usage": "import { Calendar } from '@/components/nerio/components/calendar';\n\n<Calendar aria-label=\"Release date\" defaultValue=\"2026-06-15\" min=\"2026-06-01\" max=\"2026-06-30\" firstDayOfWeek={1} />"

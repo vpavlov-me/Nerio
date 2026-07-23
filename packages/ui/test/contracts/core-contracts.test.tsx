@@ -72,6 +72,7 @@ import {
 import {
   Button,
   Calendar,
+  type CalendarDate,
   Checkbox,
   Command,
   CommandEmpty,
@@ -256,6 +257,10 @@ const _invalidConflictingCalendarName = (
 );
 // @ts-expect-error Calendar values use the ISO YYYY-MM-DD date shape.
 const _invalidCalendarValue = <Calendar aria-label="Schedule" value="06/15/2026" />;
+// @ts-expect-error Calendar month and day segments must be zero-padded.
+const _invalidUnpaddedCalendarValue = <Calendar aria-label="Schedule" value="2026-6-1" />;
+// @ts-expect-error Calendar years require four numeric segments.
+const _invalidShortYearCalendarValue = <Calendar aria-label="Schedule" value="26-06-01" />;
 const _validCalendar = (
   <Calendar aria-label="Schedule" value="2026-06-15" month="2026-06-01" firstDayOfWeek={1} />
 );
@@ -4233,7 +4238,7 @@ describe("Core interactive action contracts", () => {
       "polite",
     );
     expect(within(calendar).getByRole("gridcell", { selected: true })).toContainElement(
-      within(calendar).getByRole("button", { name: "February 29, 2024" }),
+      within(calendar).getByRole("button", { name: "February 29, 2024, Selected" }),
     );
     expect(within(calendar).getByRole("button", { name: "February 15, 2024" })).toHaveAttribute(
       "aria-current",
@@ -4246,7 +4251,7 @@ describe("Core interactive action contracts", () => {
     await user.click(within(calendar).getByRole("button", { name: "February 28, 2024" }));
     expect(onValueChange).toHaveBeenLastCalledWith("2024-02-28");
     expect(within(calendar).getByRole("gridcell", { selected: true })).toContainElement(
-      within(calendar).getByRole("button", { name: "February 28, 2024" }),
+      within(calendar).getByRole("button", { name: "February 28, 2024, Selected" }),
     );
   });
 
@@ -4263,7 +4268,7 @@ describe("Core interactive action contracts", () => {
       />,
     );
 
-    let focused = screen.getByRole("button", { name: "January 31, 2026" });
+    let focused = screen.getByRole("button", { name: "January 31, 2026, Selected" });
     focused.focus();
     await user.keyboard("{ArrowRight}");
     focused = screen.getByRole("button", { name: "February 1, 2026" });
@@ -4294,7 +4299,7 @@ describe("Core interactive action contracts", () => {
         />
       </div>,
     );
-    focused = screen.getByRole("button", { name: "January 15, 2026" });
+    focused = screen.getByRole("button", { name: "January 15, 2026, Selected" });
     focused.focus();
     await user.keyboard("{ArrowRight}");
     expect(screen.getByRole("button", { name: "January 14, 2026" })).toHaveFocus();
@@ -4306,7 +4311,7 @@ describe("Core interactive action contracts", () => {
 
     function ControlledCalendar() {
       const [value, setValue] = React.useState<"2026-06-15" | "2026-06-16">("2026-06-15");
-      const [month, setMonth] = React.useState<`${number}-${number}-${number}`>("2026-06-01");
+      const [month, setMonth] = React.useState<CalendarDate>("2026-06-01");
       return (
         <Calendar
           aria-label="Controlled calendar"
@@ -4345,13 +4350,13 @@ describe("Core interactive action contracts", () => {
       "true",
     );
     await user.click(within(controlled).getByRole("button", { name: "June 18, 2026" }));
-    expect(within(controlled).getByRole("button", { name: "June 15, 2026" })).toHaveAttribute(
-      "data-selected",
-    );
+    expect(
+      within(controlled).getByRole("button", { name: "June 15, 2026, Selected" }),
+    ).toHaveAttribute("data-selected");
     await user.click(within(controlled).getByRole("button", { name: "June 16, 2026" }));
-    expect(within(controlled).getByRole("button", { name: "June 16, 2026" })).toHaveAttribute(
-      "data-selected",
-    );
+    expect(
+      within(controlled).getByRole("button", { name: "June 16, 2026, Selected" }),
+    ).toHaveAttribute("data-selected");
 
     const readOnly = screen.getByRole("group", { name: "Read-only calendar" });
     expect(within(readOnly).getByRole("grid")).toHaveAttribute("aria-readonly", "true");
@@ -4366,7 +4371,12 @@ describe("Core interactive action contracts", () => {
         defaultMonth="2026-06-01"
         firstDayOfWeek={1}
         locale="de-DE"
-        labels={{ nextMonth: "Nächster Monat", previousMonth: "Vorheriger Monat" }}
+        defaultValue="2026-06-15"
+        labels={{
+          nextMonth: "Nächster Monat",
+          previousMonth: "Vorheriger Monat",
+          selectedDate: "Ausgewählt",
+        }}
         today="2026-06-15"
       />,
     );
@@ -4375,6 +4385,35 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("columnheader", { name: "Mo" })).toHaveAttribute("abbr", "Montag");
     expect(screen.getByRole("button", { name: "Vorheriger Monat" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Nächster Monat" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "15. Juni 2026, Ausgewählt" })).toBeInTheDocument();
+  });
+
+  it("keeps Calendar today updates reactive and month-button focus stable", async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <Calendar aria-label="Reactive calendar" defaultMonth="2026-06-01" today="2026-06-15" />,
+    );
+
+    expect(screen.getByRole("button", { name: "June 15, 2026" })).toHaveAttribute(
+      "aria-current",
+      "date",
+    );
+    rerender(
+      <Calendar aria-label="Reactive calendar" defaultMonth="2026-06-01" today="2026-06-16" />,
+    );
+    expect(screen.getByRole("button", { name: "June 15, 2026" })).not.toHaveAttribute(
+      "aria-current",
+    );
+    expect(screen.getByRole("button", { name: "June 16, 2026" })).toHaveAttribute(
+      "aria-current",
+      "date",
+    );
+
+    const nextMonth = screen.getByRole("button", { name: "Next month" });
+    nextMonth.focus();
+    await user.keyboard("{Enter}");
+    expect(nextMonth).toHaveFocus();
+    expect(screen.getByRole("heading", { name: "July 2026" })).toBeInTheDocument();
   });
 
   it("rejects invalid Calendar dates and inverted constraints", () => {

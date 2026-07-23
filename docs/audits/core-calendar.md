@@ -36,9 +36,10 @@ state relies on color alone. Compact density remaps the cell and padding aliases
   dates, read-only, disabled, selected, today, outside-month, and invalid public dates are covered.
 - Arrow, Home, End, Page Up, Page Down, Shift plus Page keys, Enter, and Space follow the approved
   calendar-grid model; direction-sensitive horizontal movement is verified in RTL.
-- Full localized date labels, abbreviated weekday headers with full `abbr` values, polite month
-  announcements, one tab stop, focus continuity across month rerenders, pointer selection, forced
-  colors, reduced motion, narrow layout, touch, and zoom are covered by automated evidence.
+- Full localized date labels with selected context on the focused day, abbreviated weekday headers
+  with full `abbr` values, polite month announcements, one tab stop, grid-owned focus continuity,
+  pointer selection, forced colors, reduced motion, narrow layout, touch, and zoom are covered by
+  automated evidence.
 - Real VoiceOver, iOS, NVDA, and physical-device evidence remains part of manual issue #143.
 
 ## Distribution evidence

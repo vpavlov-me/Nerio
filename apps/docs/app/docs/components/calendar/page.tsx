@@ -27,7 +27,10 @@ const anatomyRows = [
 
 const stateRows = [
   ["Default", "Shows one month with one keyboard tab stop."],
-  ["Selected", "Uses accent fill and border plus aria-selected on the containing gridcell."],
+  [
+    "Selected",
+    "Uses accent fill and border, aria-selected on the gridcell, and a localized selected label on the focused day.",
+  ],
   ["Today", "Uses aria-current=date, weight, and underline without changing selection."],
   ["Outside month", "Remains available with muted text and moves the visible month when selected."],
   ["Unavailable", "Min, max, or isDateDisabled prevents selection and adds aria-disabled."],
@@ -44,8 +47,8 @@ const apiRows = [
   ["isDateDisabled", "(date) => boolean", "Consumer policy hook for unavailable dates."],
   ["locale", "string | string[]", "Intl locale for month, weekday, and date labels."],
   ["firstDayOfWeek", "0–6", "Explicit Sunday-through-Saturday week start; defaults to Sunday."],
-  ["today", "CalendarDate", "Stable current date for today state and deterministic SSR."],
-  ["labels", "CalendarLabels", "Localized previous- and next-month action names."],
+  ["today", "CalendarDate", "Current date; supply a stable value for deterministic SSR."],
+  ["labels", "CalendarLabels", "Localized month-action names and selected-date context."],
   ["disabled / readOnly", "boolean", "Availability and selection behavior."],
   ["aria-label / aria-labelledby", "string", "Exactly one required Calendar naming strategy."],
   ["ref", "HTMLDivElement", "Accesses the Calendar root group."],

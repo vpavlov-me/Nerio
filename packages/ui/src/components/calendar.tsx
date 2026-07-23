@@ -6,12 +6,49 @@ import { composeRefs } from "../lib/compose-refs";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { Button } from "./button";
 
-export type CalendarDate = `${number}-${number}-${number}`;
+type CalendarMonth =
+  "01" | "02" | "03" | "04" | "05" | "06" | "07" | "08" | "09" | "10" | "11" | "12";
+type CalendarDay =
+  | "01"
+  | "02"
+  | "03"
+  | "04"
+  | "05"
+  | "06"
+  | "07"
+  | "08"
+  | "09"
+  | "10"
+  | "11"
+  | "12"
+  | "13"
+  | "14"
+  | "15"
+  | "16"
+  | "17"
+  | "18"
+  | "19"
+  | "20"
+  | "21"
+  | "22"
+  | "23"
+  | "24"
+  | "25"
+  | "26"
+  | "27"
+  | "28"
+  | "29"
+  | "30"
+  | "31";
+type CalendarYear = `${number}${number}${number}${number}`;
+
+export type CalendarDate = `${CalendarYear}-${CalendarMonth}-${CalendarDay}`;
 export type CalendarFirstDayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface CalendarLabels {
   previousMonth: string;
   nextMonth: string;
+  selectedDate: string;
 }
 
 type CalendarNamingProps =
@@ -206,7 +243,8 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
 
   const generatedId = React.useId();
   const headingId = `${generatedId}-heading`;
-  const [resolvedToday] = React.useState(() => todayProp ?? localToday());
+  const [defaultToday] = React.useState(localToday);
+  const resolvedToday = todayProp ?? defaultToday;
   const initialMonth = normalizeMonth(
     month ?? defaultMonth ?? value ?? defaultValue ?? resolvedToday,
     "month",
@@ -243,7 +281,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
   }, [dates, focusedDate, initialFocus, isUnavailable]);
 
   React.useLayoutEffect(() => {
-    if (shouldRestoreGridFocus.current || rootRef.current?.contains(document.activeElement)) {
+    if (shouldRestoreGridFocus.current) {
       dayRefs.current.get(focusedDate)?.focus();
       shouldRestoreGridFocus.current = false;
     }
@@ -309,6 +347,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
   const monthLabel = monthFormatter.format(toUtcDate(visibleMonth));
   const previousMonthLabel = labels?.previousMonth ?? "Previous month";
   const nextMonthLabel = labels?.nextMonth ?? "Next month";
+  const selectedDateLabel = labels?.selectedDate ?? "Selected";
   const previousMonth = addMonths(visibleMonth, -1);
   const nextMonth = addMonths(visibleMonth, 1);
   const canVisitPrevious = !min || addMonths(visibleMonth, -1).slice(0, 7) >= min.slice(0, 7);
@@ -402,7 +441,9 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
                       }}
                       aria-current={date === resolvedToday ? "date" : undefined}
                       aria-disabled={unavailable || undefined}
-                      aria-label={dateFormatter.format(toUtcDate(date))}
+                      aria-label={`${dateFormatter.format(toUtcDate(date))}${
+                        selected ? `, ${selectedDateLabel}` : ""
+                      }`}
                       className={dayClasses}
                       data-outside-month={outsideMonth ? "" : undefined}
                       data-selected={selected ? "" : undefined}

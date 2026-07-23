@@ -1971,7 +1971,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Arrow keys move by day or week; Home and End move within the week.",
       "Page keys move by month and Shift plus Page keys move by year.",
       "Enter and Space select; constraints, disabled, and read-only prevent value changes.",
-      "Month headings announce politely and day buttons use full localized date names.",
+      "Month headings announce politely; day buttons use full localized date names and expose selection in the focused accessible name.",
       "Horizontal Arrow behavior follows the computed text direction in RTL.",
     ],
     api: [
@@ -1991,7 +1991,7 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "today",
-        description: "Stable current date for today styling and deterministic SSR.",
+        description: "Current date for today styling; supply a stable value for deterministic SSR.",
       },
       { title: "disabled / readOnly", description: "Availability and value-change behavior." },
       { title: "aria-label / aria-labelledby", description: "Exactly one naming strategy." },
