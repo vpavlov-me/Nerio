@@ -243,10 +243,26 @@ export default function Page() {
           compositions when the operating-system preference changes.
         </p>
         <p>
+          The stable adapter exports <Code>NerioMotionConfig</Code>,{" "}
+          <Code>useNerioReducedMotion</Code>, <Code>motionTransitions</Code>, and{" "}
+          <Code>motionVariants</Code>. The config accepts only <Code>children</Code>, an optional
+          CSP <Code>nonce</Code>, and <Code>skipAnimations</Code> for deterministic tests. Apply
+          token-aligned transitions to individual animated elements instead of replacing the
+          adapter&apos;s global contract.
+        </p>
+        <p>
           <Code>domAnimation</Code> covers variants, presence, and tap, hover, and focus gestures.
           Load <Code>domMax</Code> only for layout, pan, or drag capabilities. Strict mode catches
           an accidental full <Code>motion</Code> component inside a <Code>LazyMotion</Code>{" "}
           boundary; use <Code>m</Code> from <Code>motion/react-m</Code> there.
+        </p>
+        <p>
+          Alpha consumers that passed <Code>transition</Code>, <Code>isValidProp</Code>,{" "}
+          <Code>isStatic</Code>, or <Code>transformPagePoint</Code> through{" "}
+          <Code>NerioMotionConfig</Code> should move transition choices to each animated element.
+          Compositions that require the other low-level Motion options own a direct Motion
+          integration and must preserve <Code>reducedMotion=&quot;user&quot;</Code>; those options
+          are outside the supported Nerio wrapper.
         </p>
       </section>
 

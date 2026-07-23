@@ -60,10 +60,12 @@ checkout or moving branch URL, exercises installed-source metadata, `diff`, and 
 starts the packaged MCP bin through `pnpm exec nerio-mcp`, verifies its read-only discovery and
 coordinated version metadata, source-installs representative components and a Foundation item with
 complete dependency chains, and builds without workspace aliases.
-`test:adapters` separately proves the packed `icons`, `table`, `charts`, `forms`, and
-`schema` exports, verifies that an icons/UI-only consumer does not install optional integration
-peers, and checks each optional subpath both without and with its required peer. CI validates only;
-it never publishes, changes package privacy, creates tags, or creates a GitHub Release.
+`test:adapters` separately proves the packed `icons`, `table`, `charts`, `forms`, `schema`, and
+client-only `motion` exports, verifies that an icons/UI-only consumer does not install optional
+integration peers, and checks each optional subpath both without and with its required peer. The
+Motion gate additionally snapshot-protects the stable API, checks SSR/hydration and live preference
+changes, and measures Core, token-only, `domAnimation`, and `domMax` bundles. CI validates only; it
+never publishes, changes package privacy, creates tags, or creates a GitHub Release.
 
 `validate:platform-support` keeps package engines, peer ranges, app baselines, Playwright projects,
 CI, and the documented policy aligned. `validate:package-budgets` enforces packed/unpacked package,
@@ -127,8 +129,8 @@ code, and workspace protocols.
 
 For `@nerio-ui/adapters`, also confirm that the packed manifest exposes only the documented subpaths,
 keeps Lucide as the icon implementation dependency, and marks TanStack Table, Recharts, React Hook
-Form, and Zod as optional peers. The unsupported package root must not statically aggregate adapter
-implementations.
+Form, Zod, and Motion as optional peers. The unsupported package root must not statically aggregate
+adapter implementations.
 
 ## Manual approval and publish sequence
 

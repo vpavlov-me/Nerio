@@ -138,7 +138,8 @@ async function verify() {
       motionUsage.docsPath !== "/docs/foundations/motion" ||
       !motionUsage.optionalPeerDependencies.includes("motion") ||
       !motionUsage.files.some((file) => file.target === "lib/motion-adapter.tsx") ||
-      !motionUsage.requiredTokens.includes("--n-duration-normal")
+      !motionUsage.requiredTokens.includes("--n-duration-normal") ||
+      !motionUsage.accessibility.some((item) => item.includes("accepts only children"))
     ) {
       throw new Error("MCP Motion Adapter usage is missing its optional-peer or token contract.");
     }

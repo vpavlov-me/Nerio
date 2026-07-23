@@ -1,7 +1,7 @@
 {
   "name": "@nerio-ui/adapters",
   "version": "0.1.0-alpha.1",
-  "description": "Responsibility-scoped Nerio Core adapters for icons, tables, charts, forms, and schemas.",
+  "description": "Responsibility-scoped Nerio Core adapters for icons, tables, charts, forms, schemas, and optional advanced motion.",
   "private": false,
   "license": "MIT",
   "repository": {
@@ -49,7 +49,7 @@
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
-    "test:motion": "vitest run test/motion.test.tsx",
+    "test:motion": "tsc --project tsconfig.test.json && vitest run test/motion.test.tsx",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

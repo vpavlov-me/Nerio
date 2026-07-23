@@ -954,7 +954,8 @@ async function verify() {
     if (
       !motionInfoOutput.includes("Optional peer dependencies: motion") ||
       !motionInfoOutput.includes("Documentation: /docs/foundations/motion") ||
-      !motionInfoOutput.includes("lib/motion-adapter.tsx")
+      !motionInfoOutput.includes("lib/motion-adapter.tsx") ||
+      !motionInfoOutput.includes("accepts only children")
     ) {
       throw new Error(
         "Motion Adapter registry metadata did not include its optional-peer contract.",
@@ -1063,7 +1064,9 @@ async function verify() {
     if (
       !installedMotionAdapter.includes('"use client"') ||
       !installedMotionAdapter.includes('reducedMotion="user"') ||
-      !installedMotionAdapter.includes("motionTransitions")
+      !installedMotionAdapter.includes("motionTransitions") ||
+      !installedMotionAdapter.includes("skipAnimations") ||
+      installedMotionAdapter.includes("<MotionConfig {...props}")
     ) {
       throw new Error("Installed Motion Adapter source is missing its client or motion contract.");
     }

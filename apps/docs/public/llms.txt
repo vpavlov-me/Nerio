@@ -84,7 +84,9 @@ Core motion remains CSS-first. Install `motion` and use the optional client-only
 continuity, gestures, or product-level sequencing. `NerioMotionConfig` follows the user's reduced
 motion preference; the preferred loading path is strict `LazyMotion` plus `m` and
 `domAnimation`, with `domMax` reserved for layout, pan, or drag. Unrelated adapters and
-`@nerio-ui/ui` resolve no Motion runtime.
+`@nerio-ui/ui` resolve no Motion runtime. The stable adapter exports `NerioMotionConfig`,
+`useNerioReducedMotion`, `motionTransitions`, and `motionVariants`; the config accepts only
+`children`, an optional CSP `nonce`, and deterministic-test `skipAnimations`.
 
 Prefer composition, explicit slots, semantic HTML, visible focus states, and accessible labels. Use Nerio's icon adapter for Lucide or custom SVG React components.
 

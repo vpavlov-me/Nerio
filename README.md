@@ -56,7 +56,7 @@ apps/
 packages/
   tokens/        Design tokens, themes, modes, and CSS variable contracts
   ui/            Core component source and public registry items
-  adapters/      Isolated icon, table, chart, form, and schema integration subpaths
+  adapters/      Isolated icon, table, chart, form, schema, and optional Motion integration subpaths
   cli/           `nerio` project and component commands
   mcp/           Public AI discovery and composition tools
   config/        Shared TypeScript, linting, and build configuration

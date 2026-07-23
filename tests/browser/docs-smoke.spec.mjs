@@ -317,6 +317,19 @@ test("keeps the optional Motion adapter deterministic and preference-aware", asy
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(reducedProbe).toHaveAttribute("data-reduced-motion", "true");
   await page.getByRole("button", { name: "Toggle state" }).click();
+  await expect
+    .poll(() => reducedProbe.evaluate((element) => getComputedStyle(element).opacity))
+    .toBe("0");
+  await expect
+    .poll(() =>
+      reducedProbe.evaluate((element) => {
+        const style = getComputedStyle(element);
+        const rootFontSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const translateX = new DOMMatrixReadOnly(style.transform).m41;
+        return Math.abs(translateX - -0.375 * rootFontSize);
+      }),
+    )
+    .toBeLessThan(0.1);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(reducedProbe).toHaveAttribute("data-reduced-motion", "false");
 
