@@ -95,6 +95,7 @@
     { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "calendar", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "date-picker", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "radio-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "input", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "file-input", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
@@ -403,8 +404,8 @@
       "surface": "DatePicker composed from Calendar and Core overlays",
       "catalogComponents": ["DatePicker"],
       "coverageMode": "dedicated-component",
-      "status": "planned",
-      "issue": 262,
+      "status": "covered",
+      "issue": null,
       "capability": "custom single-date selection control",
       "rationale": "A bounded composite must coordinate field value, popup focus, calendar navigation, dismissal, form participation, and localization.",
       "boundary": "Core owns one date. Parsing, ranges, presets, time zones, recurrence, and scheduling remain consumer or Pro work."
@@ -672,8 +673,8 @@
       "tier": "core",
       "package": "@nerio-ui/ui/client",
       "category": "forms",
-      "status": "planned",
-      "description": "Approved Core 1.0 bounded single-date control composed from Calendar and Core overlays. Ranges, presets, parsing, and scheduling remain outside Core."
+      "status": "stable-core",
+      "description": "Client-only, form-backed single-date control composed from Calendar and an anchored Base UI Popover with ISO values, controlled or uncontrolled value and open state, focus restoration, localization, constraints, reset, and optional clear behavior."
     },
     {
       "name": "Dialog",

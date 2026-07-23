@@ -30,7 +30,7 @@
 - [x] Add single-value Slider
 - [x] Add FileInput
 - [x] Add Calendar
-- [ ] Add single-date DatePicker
+- [x] Add single-date DatePicker
 
 ## Product building blocks
 

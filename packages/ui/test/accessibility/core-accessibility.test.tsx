@@ -57,6 +57,7 @@ import {
   CommandList,
   CommandLoading,
   Dialog,
+  DatePicker,
   LabelHint,
   RadioGroup,
   RadioGroupItem,
@@ -759,6 +760,34 @@ describe("Core accessibility contracts", () => {
         .getByRole("group", { name: "Unavailable calendar" })
         .querySelectorAll("button:disabled"),
     ).toHaveLength(44);
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps DatePicker naming, form state, popup focus, and constraints accessible", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <form>
+        <Field label="Release date" description="Choose one calendar date.">
+          <DatePicker
+            clearable
+            defaultValue="2026-06-15"
+            firstDayOfWeek={1}
+            min="2026-06-10"
+            max="2026-06-20"
+            name="releaseDate"
+            required
+            today="2026-06-15"
+          />
+        </Field>
+      </form>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Release date" });
+    expect(trigger).toHaveAccessibleDescription(
+      expect.stringContaining("Choose one calendar date."),
+    );
+    await user.click(trigger);
+    expect(await screen.findByRole("group", { name: "Choose date" })).toBeInTheDocument();
     expect((await axe(container)).violations).toEqual([]);
   });
 });

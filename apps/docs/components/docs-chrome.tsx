@@ -130,6 +130,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/select", label: "Select", icon: Circle },
       { href: "/docs/components/slider", label: "Slider", icon: Circle },
       { href: "/docs/components/calendar", label: "Calendar", icon: Circle },
+      { href: "/docs/components/date-picker", label: "DatePicker", icon: Circle },
     ],
   },
   {

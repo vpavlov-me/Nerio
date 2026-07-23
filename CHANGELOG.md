@@ -8,6 +8,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the client-only single-date DatePicker composed from Calendar and an anchored Base UI
+  Popover, with timezone-safe ISO values, controlled and uncontrolled value/open state, localized
+  display, min/max and disabled-date constraints, form submission/reset/required behavior, optional
+  clear, focus transfer/restoration, Registry, CLI/MCP, docs, source-install, accessibility, and
+  cross-browser coverage. Ranges, parsing, presets, time zones, scheduling, availability,
+  recurrence, and product shortcuts remain outside Core.
 - Added the client-only single-date Calendar with timezone-safe ISO values, controlled and
   uncontrolled selection and visible-month state, roving grid focus, locale-aware labels,
   localized selected-date context, configurable week starts, min/max and disabled-date constraints,

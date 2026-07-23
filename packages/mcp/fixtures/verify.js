@@ -490,6 +490,26 @@ async function verify() {
       throw new Error("MCP Calendar usage is missing ISO, grid, keyboard, or token metadata.");
     }
 
+    const datePickerUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "date-picker" },
+    });
+    const datePickerUsage = JSON.parse(datePickerUsageResult.content[0].text);
+    assertRegistryParity("date-picker", datePickerUsage, ["components/date-picker.tsx"]);
+    if (
+      !datePickerUsage.baseUiPrimitives.includes("popover") ||
+      !datePickerUsage.registryDependencies.includes("calendar") ||
+      !datePickerUsage.registryDependencies.includes("field") ||
+      !datePickerUsage.registryDependencies.includes("popover") ||
+      !datePickerUsage.slots.includes("form-control") ||
+      !datePickerUsage.states.includes("required") ||
+      !datePickerUsage.requiredTokens.includes("--n-calendar-day-background-selected") ||
+      !datePickerUsage.accessibility.some((item) => item.includes("YYYY-MM-DD")) ||
+      !datePickerUsage.accessibility.some((item) => item.includes("restore focus"))
+    ) {
+      throw new Error("MCP DatePicker usage is missing ISO, form, focus, or token metadata.");
+    }
+
     const itemUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "item" },

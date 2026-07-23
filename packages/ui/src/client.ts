@@ -39,6 +39,12 @@ export {
   type CalendarProps,
 } from "./components/calendar";
 export {
+  DatePicker,
+  type DatePickerLabels,
+  type DatePickerOpenChangeEventDetails,
+  type DatePickerProps,
+} from "./components/date-picker";
+export {
   Select,
   SelectGroup,
   SelectGroupLabel,

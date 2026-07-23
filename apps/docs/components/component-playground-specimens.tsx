@@ -40,6 +40,7 @@ import {
   CommandItem,
   CommandList,
   Dialog,
+  DatePicker,
   DialogFooter,
   DropdownMenu,
   EmptyState,
@@ -150,6 +151,7 @@ const componentLinks = [
       ["Select", "select"],
       ["Slider", "slider"],
       ["Calendar", "calendar"],
+      ["DatePicker", "date-picker"],
     ],
   ],
   [
@@ -456,7 +458,6 @@ export function ComponentPlayground() {
           ))}
         </div>
       </SpecimenSection>
-
       <SpecimenSection
         id="button"
         title="Button"
@@ -850,6 +851,38 @@ export function ComponentPlayground() {
                   readOnly
                   today="2026-06-15"
                 />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="date-picker"
+        title="DatePicker"
+        api="single date · form value · clearable · readOnly · disabled"
+      >
+        <Matrix
+          columns={["Empty", "Selected", "Read only", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <DatePicker key="empty" aria-label="Empty release date" />,
+                <DatePicker
+                  key="selected"
+                  aria-label="Selected release date"
+                  clearable
+                  defaultValue="2026-06-15"
+                  today="2026-06-15"
+                />,
+                <DatePicker
+                  key="readonly"
+                  aria-label="Read-only release date"
+                  defaultValue="2026-06-15"
+                  readOnly
+                  today="2026-06-15"
+                />,
+                <DatePicker key="disabled" aria-label="Disabled release date" disabled />,
               ],
             },
           ]}

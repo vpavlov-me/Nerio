@@ -2283,6 +2283,67 @@
       "usage": "import { Calendar } from '@/components/nerio/components/calendar';\n\n<Calendar aria-label=\"Release date\" defaultValue=\"2026-06-15\" min=\"2026-06-01\" max=\"2026-06-30\" firstDayOfWeek={1} />"
     },
     {
+      "name": "date-picker",
+      "title": "DatePicker",
+      "description": "Selects one timezone-safe ISO date through a form-backed trigger and Calendar popup.",
+      "category": "forms",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["calendar", "field", "popover"],
+      "files": [
+        {
+          "source": "../../ui/src/components/date-picker.tsx",
+          "target": "components/date-picker.tsx",
+          "role": "component"
+        }
+      ],
+      "baseUiPrimitives": ["popover"],
+      "slots": ["root", "trigger", "content", "clear", "form-control"],
+      "variants": ["single-date", "clearable"],
+      "states": ["empty", "selected", "open", "invalid", "required", "disabled", "read-only"],
+      "requiredTokens": [
+        "--n-input-radius",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-danger",
+        "--n-input-background",
+        "--n-input-background-hover",
+        "--n-input-readonly-border",
+        "--n-input-readonly-background",
+        "--n-input-foreground",
+        "--n-input-placeholder",
+        "--n-popover-radius",
+        "--n-popover-gap",
+        "--n-overlay-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border-width",
+        "--n-overlay-border",
+        "--n-overlay-foreground",
+        "--n-overlay-shadow",
+        "--n-calendar-width",
+        "--n-calendar-padding",
+        "--n-calendar-day-background-selected",
+        "--n-calendar-day-foreground-selected",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Name the trigger through Field, Label, aria-label, or aria-labelledby.",
+        "Opening moves focus to Calendar's selected or active roving day; selection, Escape, outside dismissal, and clear restore focus to the trigger.",
+        "The public value and single named form mirror use the timezone-independent YYYY-MM-DD CalendarDate contract; null is the explicit controlled empty value.",
+        "Required, disabled, read-only, invalid, form ownership, submission, and reset behavior remain truthful.",
+        "Locale and formatValue change display only; DatePicker does not parse localized or natural-language text.",
+        "Calendar preserves its complete keyboard, RTL, constraint, forced-colors, reduced-motion, and localization contract.",
+        "Ranges, presets, time, timezone conversion, availability, scheduling, recurrence, and product shortcuts remain outside DatePicker."
+      ],
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { DatePicker } from '@/components/nerio/components/date-picker';\n\n<Field label=\"Release date\" description=\"Choose one calendar date.\"><DatePicker name=\"releaseDate\" defaultValue=\"2026-06-15\" clearable /></Field>"
+    },
+    {
       "name": "slider",
       "title": "Slider",
       "description": "Chooses one numeric value within a known range with one thumb.",

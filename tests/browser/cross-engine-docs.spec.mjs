@@ -413,6 +413,71 @@ test("keeps Calendar touch selection portable", async ({ browser, browserName },
   }
 });
 
+test("keeps DatePicker focus, form value, constraints, dismissal, RTL, and reflow portable", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 320, height: 844 });
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await page.goto("/docs/components/date-picker");
+
+  const trigger = page.getByRole("button", { name: "Release date" });
+  await expect(trigger).toContainText("Jun 15, 2026");
+  await trigger.press("Enter");
+  const calendar = page.getByRole("group", { name: "Choose date" });
+  await expect(calendar).toBeVisible();
+  await expect(calendar.getByRole("button", { name: "June 15, 2026, Selected" })).toBeFocused();
+  await expect(calendar.getByRole("button", { name: "June 18, 2026" })).toHaveAttribute(
+    "aria-disabled",
+    "true",
+  );
+  await page.keyboard.press("Escape");
+  await expect(trigger).toBeFocused();
+
+  await trigger.click();
+  await calendar.getByRole("button", { name: "June 16, 2026" }).click();
+  await expect(calendar).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await expect(trigger).toContainText("Jun 16, 2026");
+  await expect(page.getByText("Form value: 2026-06-16")).toBeVisible();
+  await expect(page.locator('[data-slot="form-control"]')).toHaveValue("2026-06-16");
+  expect(await page.locator("form").evaluate((form) => new FormData(form).get("releaseDate"))).toBe(
+    "2026-06-16",
+  );
+
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  await trigger.click();
+  await expectInsideViewport(calendar, { width: 320, height: 844 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+  expect(problems).toEqual([]);
+});
+
+test("keeps DatePicker touch selection portable", async ({ browser, browserName }, testInfo) => {
+  const context = await browser.newContext({
+    baseURL: testInfo.project.use.baseURL,
+    hasTouch: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    const page = await context.newPage();
+    const problems = monitorPage(page, browserName);
+    await page.goto("/docs/components/date-picker");
+    const trigger = page.getByRole("button", { name: "Release date" });
+    await trigger.tap();
+    await page.getByRole("button", { name: "June 17, 2026" }).tap();
+    await expect(trigger).toContainText("Jun 17, 2026");
+    await expect(page.getByText("Form value: 2026-06-17")).toBeVisible();
+    expect(problems).toEqual([]);
+  } finally {
+    await context.close();
+  }
+});
+
 test("keeps mobile navigation inside the dynamic viewport", async ({ browserName, page }) => {
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 390, height: 720 });

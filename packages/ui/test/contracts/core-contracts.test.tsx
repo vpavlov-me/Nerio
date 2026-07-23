@@ -82,6 +82,7 @@ import {
   CommandLoading,
   Dialog,
   DialogFooter,
+  DatePicker,
   DropdownMenu,
   LabelHint,
   Popover,
@@ -264,6 +265,15 @@ const _invalidShortYearCalendarValue = <Calendar aria-label="Schedule" value="26
 const _validCalendar = (
   <Calendar aria-label="Schedule" value="2026-06-15" month="2026-06-01" firstDayOfWeek={1} />
 );
+// @ts-expect-error DatePicker values reuse the ISO YYYY-MM-DD date shape.
+const _invalidDatePickerValue = <DatePicker aria-label="Release date" value="06/15/2026" />;
+// @ts-expect-error DatePicker intentionally excludes range selection.
+const _invalidDatePickerRange = (
+  <DatePicker aria-label="Release dates" value={["2026-06-15", "2026-06-20"]} />
+);
+// @ts-expect-error Arbitrary localized parsing is outside the DatePicker contract.
+const _invalidDatePickerParser = <DatePicker aria-label="Release date" parseValue={() => null} />;
+const _validEmptyControlledDatePicker = <DatePicker aria-label="Release date" value={null} />;
 const validComposedRadioGroup = (
   <RadioGroup label="Visibility">
     <RadioGroupItem value="team">Team</RadioGroupItem>
@@ -308,6 +318,10 @@ void [
   validVisibleProgress,
   validAriaLabelProgress,
   validAriaLabelledByProgress,
+  _invalidDatePickerValue,
+  _invalidDatePickerRange,
+  _invalidDatePickerParser,
+  _validEmptyControlledDatePicker,
   validComposedRadioGroup,
   invalidMixedSelect,
   validComposedSelect,
@@ -4456,6 +4470,171 @@ describe("Core interactive action contracts", () => {
       "data-month",
       "9999-12-01",
     );
+  });
+
+  it("composes DatePicker selection, form value, reset, focus, and anatomy", async () => {
+    const user = userEvent.setup();
+    const triggerRef = React.createRef<HTMLElement>();
+    const onValueChange = vi.fn();
+    render(
+      <form aria-label="Release form">
+        <Field label="Release date">
+          <DatePicker
+            ref={triggerRef}
+            clearable
+            defaultValue="2026-06-15"
+            firstDayOfWeek={1}
+            locale="en-GB"
+            min="2026-06-10"
+            max="2026-06-20"
+            name="releaseDate"
+            onValueChange={onValueChange}
+            today="2026-06-15"
+          />
+        </Field>
+      </form>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Release date" });
+    expect(triggerRef.current).toBe(trigger);
+    expect(trigger).toHaveTextContent("15 Jun 2026");
+    expect(trigger.closest('[data-slot="root"]')).toHaveAttribute("data-slot", "root");
+    expect(trigger).toHaveAttribute("data-slot", "trigger");
+    expect(trigger).toHaveAttribute("aria-describedby", expect.stringContaining("-action"));
+
+    await user.click(trigger);
+    const calendar = await screen.findByRole("group", { name: "Choose date" });
+    await waitFor(() =>
+      expect(
+        within(calendar).getByRole("button", { name: "15 June 2026, Selected" }),
+      ).toHaveFocus(),
+    );
+    await user.click(within(calendar).getByRole("button", { name: "16 June 2026" }));
+    expect(onValueChange).toHaveBeenLastCalledWith("2026-06-16");
+    await waitFor(() => expect(screen.queryByRole("group", { name: "Choose date" })).toBeNull());
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveTextContent("16 Jun 2026");
+    expect(
+      new FormData(screen.getByRole("form", { name: "Release form" })).get("releaseDate"),
+    ).toBe("2026-06-16");
+
+    act(() => screen.getByRole("form", { name: "Release form" }).reset());
+    await waitFor(() => expect(trigger).toHaveTextContent("15 Jun 2026"));
+    expect(
+      new FormData(screen.getByRole("form", { name: "Release form" })).get("releaseDate"),
+    ).toBe("2026-06-15");
+  });
+
+  it("keeps DatePicker controlled value, open state, clear action, and localization explicit", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+
+    function ControlledDatePicker() {
+      const [value, setValue] = React.useState<CalendarDate | null>("2026-06-15");
+      const [open, setOpen] = React.useState(false);
+      return (
+        <DatePicker
+          aria-label="Veröffentlichungsdatum"
+          clearable
+          labels={{
+            calendar: "Datum auswählen",
+            change: "Datum ändern",
+            clear: "Datum löschen",
+            nextMonth: "Nächster Monat",
+            open: "Datumswahl öffnen",
+            previousMonth: "Vorheriger Monat",
+            selectedDate: "Ausgewählt",
+          }}
+          locale="de-DE"
+          onOpenChange={(nextOpen, details) => {
+            onOpenChange(nextOpen, details);
+            setOpen(nextOpen);
+          }}
+          onValueChange={setValue}
+          open={open}
+          value={value}
+        />
+      );
+    }
+
+    render(<ControlledDatePicker />);
+    const trigger = screen.getByRole("button", { name: "Veröffentlichungsdatum" });
+    expect(trigger).toHaveAccessibleDescription("Datum ändern");
+    await user.click(trigger);
+    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
+    const calendar = await screen.findByRole("group", { name: "Datum auswählen" });
+    expect(
+      within(calendar).getByRole("button", { name: "15. Juni 2026, Ausgewählt" }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Datum löschen" }));
+    await waitFor(() => expect(trigger).toHaveTextContent("Choose a date"));
+    expect(trigger).toHaveAccessibleDescription("Datumswahl öffnen");
+    expect(trigger).toHaveFocus();
+  });
+
+  it("keeps DatePicker required, invalid, disabled, and read-only contracts truthful", async () => {
+    const user = userEvent.setup();
+    const onInvalid = vi.fn();
+    const onReadOnlyChange = vi.fn();
+    render(
+      <>
+        <DatePicker
+          aria-label="Required date"
+          invalid
+          name="requiredDate"
+          onInvalid={onInvalid}
+          required
+        />
+        <DatePicker aria-label="Unavailable date" disabled />
+        <DatePicker
+          aria-label="Read-only date"
+          defaultValue="2026-06-15"
+          onValueChange={onReadOnlyChange}
+          readOnly
+        />
+      </>,
+    );
+
+    expect(screen.getByRole("button", { name: "Required date" })).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    const requiredInput = document.querySelector<HTMLInputElement>('[data-slot="form-control"]');
+    expect(requiredInput).toBeRequired();
+    expect(requiredInput?.checkValidity()).toBe(false);
+    expect(onInvalid).toHaveBeenCalledOnce();
+    expect(screen.getByRole("button", { name: "Required date" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "Unavailable date" })).toBeDisabled();
+    const readOnlyTrigger = screen.getByRole("button", { name: "Read-only date" });
+    await user.click(readOnlyTrigger);
+    await user.click(
+      within(await screen.findByRole("group", { name: "Choose date" })).getByRole("button", {
+        name: "June 16, 2026",
+      }),
+    );
+    expect(onReadOnlyChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("group", { name: "Choose date" })).toBeInTheDocument();
+  });
+
+  it("keeps DatePicker focus and selection coherent inside a modal overlay", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dialog trigger="Open release settings" title="Release settings">
+        <Field label="Release date">
+          <DatePicker defaultValue="2026-06-15" today="2026-06-15" />
+        </Field>
+      </Dialog>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Open release settings" }));
+    const dialog = await screen.findByRole("dialog", { name: "Release settings" });
+    const trigger = within(dialog).getByRole("button", { name: "Release date" });
+    await user.click(trigger);
+    const calendar = await screen.findByRole("group", { name: "Choose date" });
+    await user.click(within(calendar).getByRole("button", { name: "June 16, 2026" }));
+    expect(dialog).toBeVisible();
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveTextContent("Jun 16, 2026");
   });
 
   it("keeps read-only Slider focusable without changing its value", async () => {
