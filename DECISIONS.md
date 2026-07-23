@@ -130,8 +130,14 @@ subpath; it does not add a provider, dependency, import, or runtime cost to `@ne
 
 Geist is the default typeface through semantic font tokens. Components consume `--n-font-sans` and `--n-font-mono` rather than depending on app-specific font class names.
 
-## Demo app
+## Templates and preview Views
 
-The showcase application is `apps/demo-app` and is called Nerio Workspace. It should demonstrate a credible universal product workspace, not a banking or finance-only dashboard.
+Templates and full-screen preview Views live inside `apps/docs`; they are not standalone
+applications, domains, repositories, or Vercel projects. `/templates` is the catalog,
+`/templates/[slug]` is the descriptive page, and `/views/[slug]` is the clean same-origin preview
+without documentation chrome.
 
-Future Pro templates may include SaaS, fintech, crypto, dashboard, billing, and AI assistant examples.
+Operations Workspace is the first Template and remains a credible universal product workspace rather
+than a banking or finance-only dashboard. Templates may compose Core and template-local code.
+Unproven product patterns remain local until the evidence in `TIERING_AND_TEMPLATE_EVOLUTION.md`
+supports promotion.

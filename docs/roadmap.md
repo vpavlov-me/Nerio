@@ -6,7 +6,7 @@
 - [ ] Token architecture and first theme contracts
 - [ ] Core Base UI-backed components
 - [ ] Public docs application and live component previews
-- [ ] Nerio Workspace demo application
+- [x] Docs-local Operations Workspace Template and same-origin preview View
 - [ ] Registry proof of concept and `nerio add button`
 - [ ] Initial AI guidance: `llms.txt` and MCP component discovery
 - [ ] CI, release workflow, and DCO enforcement

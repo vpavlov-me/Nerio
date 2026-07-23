@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { templateCatalog } from "../features/templates/catalog";
 import { componentDocSlugs } from "../lib/component-docs";
 import { absoluteUrl } from "../lib/seo";
 
@@ -16,11 +17,15 @@ const staticRoutes = [
   "/docs/foundations/motion",
   "/docs/foundations/radius",
   "/docs/foundations/typography",
+  "/templates",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...staticRoutes.map((path) => ({ url: absoluteUrl(path) })),
     ...componentDocSlugs.map((slug) => ({ url: absoluteUrl(`/docs/components/${slug}`) })),
+    ...templateCatalog
+      .filter((template) => template.indexable)
+      .map((template) => ({ url: absoluteUrl(template.detailRoute) })),
   ];
 }

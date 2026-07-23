@@ -27,55 +27,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  apps/demo-app:
-    dependencies:
-      '@nerio-ui/adapters':
-        specifier: workspace:*
-        version: link:../../packages/adapters
-      '@nerio-ui/tokens':
-        specifier: workspace:*
-        version: link:../../packages/tokens
-      '@nerio-ui/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      next:
-        specifier: ^16.2.10
-        version: 16.2.10(@playwright/test@1.55.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react:
-        specifier: ^19.2.3
-        version: 19.2.7
-      react-dom:
-        specifier: ^19.2.3
-        version: 19.2.7(react@19.2.7)
-      tailwindcss:
-        specifier: ^4.3.2
-        version: 4.3.2
-    devDependencies:
-      '@nerio-ui/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@tailwindcss/postcss':
-        specifier: ^4.3.2
-        version: 4.3.2
-      '@types/node':
-        specifier: ^24.10.2
-        version: 24.13.2
-      '@types/react':
-        specifier: ^19.2.7
-        version: 19.2.17
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.17)
-      eslint:
-        specifier: ^9.39.2
-        version: 9.39.4(jiti@2.7.0)
-      postcss:
-        specifier: ^8.5.6
-        version: 8.5.17
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   apps/docs:
     dependencies:
       '@nerio-ui/adapters':

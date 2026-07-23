@@ -24,7 +24,7 @@ The pinned Playwright gate verifies Chromium `140+`, Firefox `141+`, and WebKit 
 minimum engine lines with automated release evidence for this alpha. Patch releases within those
 lines and newer evergreen releases are supported; legacy engines and Internet Explorer are not.
 
-The compact cross-engine suite covers the docs and demo applications, keyboard focus, modal focus
+The compact cross-engine suite covers documentation and docs-local Template routes, keyboard focus, modal focus
 containment and restoration, popup positioning, native form behavior, table overflow, Sidebar,
 Toast lifecycle, RTL, reduced motion, and mobile dynamic-viewport bounds. The larger appearance and
 component-family matrix remains on Chromium to avoid multiplying equivalent coverage.

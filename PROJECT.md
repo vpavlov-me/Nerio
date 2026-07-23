@@ -49,8 +49,7 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, data-ri
 
 ```text
 apps/
-  docs/          Public documentation, live previews, and playgrounds
-  demo-app/      A realistic universal product workspace used as the visual showcase
+  docs/          Public documentation, live previews, playgrounds, Templates, and full-screen Views
 
 packages/
   tokens/        Token source, generated CSS variables, themes, modes, density contracts
@@ -172,7 +171,8 @@ Deliver a functional monorepo and a polished Core foundation suitable for public
 4. Base UI-backed core components: Button, IconButton, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
 6. Public docs application with navigation, theme/mode/density switcher, component preview, usage snippets, anatomy, variants, states, and accessibility notes.
-7. Nerio Workspace demo app that uses the published components rather than bespoke UI.
+7. Docs-local Operations Workspace Template that composes the published components and renders
+   through a same-origin full-screen View.
 8. Registry foundations and a minimal `nerio add button` vertical slice.
 9. `llms.txt` and a minimal MCP component-index endpoint or package.
 10. `COMPONENTS.md` and `data/component-catalog.json` kept aligned with implementation status.
@@ -193,4 +193,6 @@ Deliver a functional monorepo and a polished Core foundation suitable for public
 - WCAG 2.2 AA is the target for color contrast, focus, keyboard access, labels, semantics, and overlay behavior.
 - Mobile and desktop behavior must be intentional.
 - Components must remain visually calm, neutral-first, and suitable for both editorial product surfaces and dense operational interfaces.
-- The demo must make the system look credible in a real universal product workspace, not like a component catalog pasted onto a page.
+- Templates must make the system look credible in real product scenarios, not like component
+  catalogs pasted onto a page. They remain inside the docs application and keep unproven patterns
+  template-local.

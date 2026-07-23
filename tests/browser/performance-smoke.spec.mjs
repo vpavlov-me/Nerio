@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const routeBudgetBytes = 8 * 1024 * 1024;
+const workspaceRoute = "/views/operations-workspace";
 
 test("keeps the primary route locally owned, hydration-clean, shift-safe, and within budget", async ({
   page,
@@ -33,7 +34,7 @@ test("keeps the primary route locally owned, hydration-clean, shift-safe, and wi
   });
   page.on("pageerror", (error) => errors.push(error.message));
 
-  await page.goto("/");
+  await page.goto(workspaceRoute);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(250);

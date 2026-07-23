@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 const themes = ["purple", "blue", "green", "orange", "red", "neutral"];
 const modes = ["system", "light", "dark"];
 const densities = ["comfortable", "compact"];
+const workspaceRoute = "/views/operations-workspace";
 const healthStabilityWindowMs = 250;
 const viewports = [
   { name: "desktop", width: 1440, height: 1000 },
@@ -55,7 +56,7 @@ test("covers the release appearance and responsive matrix without overflow", asy
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto(workspaceRoute);
     await expect(
       page.getByRole("heading", { name: "Product operations without a vertical bias" }),
     ).toBeVisible();
@@ -114,7 +115,7 @@ test("covers focus, Sheet restoration, Table scrolling, and Sidebar collapse", a
   const problems = monitorPage(page);
 
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/");
+  await page.goto(workspaceRoute);
   const rail = page.locator('[data-slot="sidebar-rail"]');
   await expect(rail).toHaveAccessibleName("Toggle workspace sidebar");
   await rail.click();
@@ -151,7 +152,7 @@ test("covers focus, Sheet restoration, Table scrolling, and Sidebar collapse", a
   await expectHealthyPage(page, problems);
 });
 
-test("keeps the demo shell inside emulated safe areas without overflow", async ({
+test("keeps the template shell inside emulated safe areas without overflow", async ({
   page,
   browserName,
 }) => {
@@ -162,16 +163,16 @@ test("keeps the demo shell inside emulated safe areas without overflow", async (
     insets: { top: 47, right: 4, bottom: 34, left: 12 },
   });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto(workspaceRoute);
 
-  const shell = await page.locator('[data-slot="sidebar-provider"]').evaluate(() => {
-    const rootStyle = getComputedStyle(document.documentElement);
+  const shell = await page.locator('[data-slot="sidebar-provider"]').evaluate((element) => {
+    const rootStyle = getComputedStyle(element);
     return {
-      bottom: rootStyle.getPropertyValue("--n-demo-safe-area-block-end").trim(),
-      inlineEnd: rootStyle.getPropertyValue("--n-demo-safe-area-inline-end").trim(),
-      inlineStart: rootStyle.getPropertyValue("--n-demo-safe-area-inline-start").trim(),
+      bottom: rootStyle.getPropertyValue("--n-template-safe-area-block-end").trim(),
+      inlineEnd: rootStyle.getPropertyValue("--n-template-safe-area-inline-end").trim(),
+      inlineStart: rootStyle.getPropertyValue("--n-template-safe-area-inline-start").trim(),
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      top: rootStyle.getPropertyValue("--n-demo-safe-area-block-start").trim(),
+      top: rootStyle.getPropertyValue("--n-template-safe-area-block-start").trim(),
     };
   });
 
@@ -184,11 +185,11 @@ test("keeps the demo shell inside emulated safe areas without overflow", async (
   await page.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  const rtlInsets = await page.locator('[data-slot="sidebar-provider"]').evaluate(() => {
-    const rootStyle = getComputedStyle(document.documentElement);
+  const rtlInsets = await page.locator('[data-slot="sidebar-provider"]').evaluate((element) => {
+    const rootStyle = getComputedStyle(element);
     return {
-      inlineEnd: rootStyle.getPropertyValue("--n-demo-safe-area-inline-end").trim(),
-      inlineStart: rootStyle.getPropertyValue("--n-demo-safe-area-inline-start").trim(),
+      inlineEnd: rootStyle.getPropertyValue("--n-template-safe-area-inline-end").trim(),
+      inlineStart: rootStyle.getPropertyValue("--n-template-safe-area-inline-start").trim(),
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     };
   });
@@ -200,7 +201,7 @@ test("keeps the demo shell inside emulated safe areas without overflow", async (
 
 test("covers Command groups, IME safety, leading layout, and selection", async ({ page }) => {
   const problems = monitorPage(page);
-  await page.goto("/");
+  await page.goto(workspaceRoute);
   await page.getByRole("button", { name: "Search workspace" }).click();
   const input = page.getByRole("combobox", { name: "Workspace commands" });
 
@@ -232,7 +233,7 @@ test("covers Command groups, IME safety, leading layout, and selection", async (
 
 test("covers Toast stacking and logical swipe in LTR and RTL", async ({ page }) => {
   const problems = monitorPage(page);
-  await page.goto("/");
+  await page.goto(workspaceRoute);
   const create = page.getByRole("button", { name: "Create project" });
   await create.click();
   await create.click();
@@ -275,7 +276,7 @@ test("covers loading, empty, error, success, reduced motion, and forced colors",
 }) => {
   const problems = monitorPage(page);
   await page.emulateMedia({ colorScheme: "dark", forcedColors: "active", reducedMotion: "reduce" });
-  await page.goto("/");
+  await page.goto(workspaceRoute);
   expect(await page.evaluate(() => matchMedia("(forced-colors: active)").matches)).toBe(true);
   expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(
     true,
@@ -309,7 +310,7 @@ test("uses current Core primitives without an app-local Chart or deprecated Icon
   page,
 }) => {
   const problems = monitorPage(page);
-  await page.goto("/");
+  await page.goto(workspaceRoute);
   await expect(page.getByRole("heading", { name: "Delivery signals" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Chart/ })).toHaveCount(0);
   await expect(page.locator(".n-icon-button")).toHaveCount(0);

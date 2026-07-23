@@ -170,9 +170,7 @@ function validate() {
     "--docs-playground": join(root, "apps/docs/components/visual-playground.tsx"),
     "--docs-layout": join(root, "apps/docs/app/layout.tsx"),
     "--docs-appearance": join(root, "apps/docs/lib/appearance.ts"),
-    "--demo-controls": join(root, "apps/demo-app/app/page.tsx"),
-    "--demo-layout": join(root, "apps/demo-app/app/layout.tsx"),
-    "--demo-appearance": join(root, "apps/demo-app/lib/appearance.ts"),
+    "--template-controls": join(root, "apps/docs/features/templates/operations-workspace/view.tsx"),
     "--ui-source-dir": join(root, "packages/ui/src"),
   });
   const tokenCss = readFileSync(paths["--token-file"], "utf8");
@@ -182,9 +180,7 @@ function validate() {
   const docsPlayground = readFileSync(paths["--docs-playground"], "utf8");
   const docsLayout = readFileSync(paths["--docs-layout"], "utf8");
   const docsAppearance = readFileSync(paths["--docs-appearance"], "utf8");
-  const demoControls = readFileSync(paths["--demo-controls"], "utf8");
-  const demoLayout = readFileSync(paths["--demo-layout"], "utf8");
-  const demoAppearance = readFileSync(paths["--demo-appearance"], "utf8");
+  const templateControls = readFileSync(paths["--template-controls"], "utf8");
   const rules = collectRules(parseCss(tokenCss));
   const failures = [];
   const themes = catalog.runtimeAxes?.theme ?? [];
@@ -263,7 +259,7 @@ function validate() {
   for (const [surface, source, requiredImports] of [
     ["Docs header", docsControls, ["modes"]],
     ["Docs Playground", docsPlayground, ["themes", "modes", "densities"]],
-    ["Demo", demoControls, ["themes", "modes", "densities"]],
+    ["Operations Workspace", templateControls, ["themes", "modes", "densities"]],
   ]) {
     const imports = namedImports(source, "@nerio-ui/tokens");
     for (const name of requiredImports) {
@@ -305,7 +301,13 @@ function validate() {
 
   for (const [surface, controls, persistedAxes, layout, appearance] of [
     ["Docs", docsControls, ["mode"], docsLayout, docsAppearance],
-    ["Demo", demoControls, ["theme", "mode", "density"], demoLayout, demoAppearance],
+    [
+      "Operations Workspace",
+      templateControls,
+      ["theme", "mode", "density"],
+      docsLayout,
+      docsAppearance,
+    ],
   ]) {
     for (const axis of persistedAxes) {
       if (!controls.includes(`persistAppearanceAxis(document.documentElement, "${axis}"`)) {
@@ -330,7 +332,12 @@ function validate() {
         `${surface} initialization must write all persisted root appearance attributes.`,
       );
     }
-    if (!controls.includes("readAppearanceFromRoot(document.documentElement)")) {
+    const restoresAppearanceDirectly =
+      /readAppearanceFromRoot\(\s*document\.documentElement\s*\)/.test(controls);
+    const restoresAppearanceFromRootAlias =
+      /const\s+root\s*=\s*document\.documentElement\s*;/.test(controls) &&
+      /readAppearanceFromRoot\(\s*root\s*\)/.test(controls);
+    if (!restoresAppearanceDirectly && !restoresAppearanceFromRootAlias) {
       failures.push(`${surface} controls must restore pre-hydrated appearance state.`);
     }
     if (

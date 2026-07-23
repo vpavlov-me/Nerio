@@ -57,7 +57,7 @@ assert(
   "UI Tailwind peer is out of policy.",
 );
 
-for (const path of ["apps/docs/package.json", "apps/demo-app/package.json"]) {
+for (const path of ["apps/docs/package.json"]) {
   const manifest = readJson(path);
   const nextRangeMatch = manifest.dependencies?.next?.match(/^\^(\d+)\.(\d+)\.(\d+)$/);
   assert(

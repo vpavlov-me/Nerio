@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+const workspaceRoute = "/views/operations-workspace";
+
 function monitorPage(page) {
   const problems = [];
   page.on("console", (message) => {
@@ -23,7 +25,7 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
 }) => {
   const problems = monitorPage(page);
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
+  await page.goto(workspaceRoute);
 
   const rail = page.locator('[data-slot="sidebar-rail"]');
   await rail.focus();
@@ -79,7 +81,7 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   const problems = monitorPage(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 390, height: 720 });
-  await page.goto("/");
+  await page.goto(workspaceRoute);
 
   await page.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
