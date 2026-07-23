@@ -16,6 +16,7 @@ function serverCommand() {
   return {
     command: process.argv[commandIndex + 1],
     args: separatorIndex < 0 ? [] : process.argv.slice(separatorIndex + 1),
+    env: process.env,
   };
 }
 
