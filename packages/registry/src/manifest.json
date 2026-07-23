@@ -71,7 +71,7 @@
     {
       "name": "motion-adapter",
       "title": "Motion Adapter",
-      "description": "Optional client-only Motion integration with token-aligned transitions, variants, user-preference reduced motion, and bounded LazyMotion loading.",
+      "description": "Stable optional client-only Motion integration with snapshot-protected token-aligned transitions and variants, locked user-preference reduced motion, bounded configuration, and LazyMotion loading.",
       "category": "foundation",
       "docsPath": "/docs/foundations/motion",
       "dependencies": ["motion", "react"],
@@ -101,6 +101,7 @@
       ],
       "accessibility": [
         "NerioMotionConfig always uses reducedMotion=user so operating-system preference removes transform and layout movement while preserving useful opacity feedback.",
+        "NerioMotionConfig accepts only children, a Content Security Policy nonce, and the deterministic skipAnimations test switch; set token-aligned transitions on individual animated elements.",
         "useNerioReducedMotion exposes a server-stable snapshot and updates mounted compositions when the operating-system preference changes.",
         "Animation must not carry information that is unavailable in the static end state.",
         "Keep the adapter inside the smallest Next.js client boundary; Nerio Core remains CSS-first and server-safe."

@@ -49,6 +49,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Stabilized the optional `@nerio-ui/adapters/motion` Core 1.0 contract. Runtime exports,
+  transition and variant values, package/source parity, reduced-motion updates, SSR/hydration, and
+  bundle isolation are snapshot- or fixture-protected. `NerioMotionConfig` now accepts only
+  `children`, CSP `nonce`, and deterministic-test `skipAnimations`; alpha passthrough options such
+  as global `transition`, `isValidProp`, `isStatic`, and `transformPagePoint` move to consumer-owned
+  Motion composition.
 - Standardized public package, Registry CLI, and MCP onboarding around version-aligned local
   installs, `pnpm exec` bins, and package-qualified `pnpm dlx` one-off execution. Active docs,
   component install blocks, README, `llms.txt`, CLI help, and release guidance now share one
