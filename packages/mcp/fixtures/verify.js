@@ -3,6 +3,23 @@ const { Client } = require("@modelcontextprotocol/sdk/client/index.js");
 const { StdioClientTransport } = require("@modelcontextprotocol/sdk/client/stdio.js");
 const manifest = require(path.resolve(__dirname, "../../registry/src/manifest.json"));
 
+function serverCommand() {
+  const commandIndex = process.argv.indexOf("--command");
+  if (commandIndex < 0) {
+    return {
+      command: process.execPath,
+      args: [path.resolve(__dirname, "../src/server.js")],
+    };
+  }
+
+  const separatorIndex = process.argv.indexOf("--", commandIndex + 2);
+  return {
+    command: process.argv[commandIndex + 1],
+    args: separatorIndex < 0 ? [] : process.argv.slice(separatorIndex + 1),
+    env: process.env,
+  };
+}
+
 function assertFileTargets(actual, expected, description) {
   const received = actual.map((file) => file.target).sort();
   const required = [...expected].sort();
@@ -28,13 +45,16 @@ function assertRegistryParity(name, usage, expectedFiles) {
 
 async function verify() {
   const client = new Client({ name: "nerio-mcp-fixture", version: "0.1.0" });
-  const transport = new StdioClientTransport({
-    command: process.execPath,
-    args: [path.resolve(__dirname, "../src/server.js")],
-  });
+  const transport = new StdioClientTransport(serverCommand());
 
   try {
     await client.connect(transport);
+    const serverVersion = client.getServerVersion();
+    if (serverVersion?.name !== "nerio-components" || serverVersion.version !== manifest.version) {
+      throw new Error(
+        `MCP server metadata drifted. Expected nerio-components ${manifest.version}; received ${serverVersion?.name ?? "unknown"} ${serverVersion?.version ?? "unknown"}.`,
+      );
+    }
     const listed = await client.listTools();
     const names = listed.tools.map((tool) => tool.name).sort();
     const expected = ["get_component", "get_component_usage", "get_registry", "list_components"];

@@ -10,6 +10,7 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { MotionAdapterExamples } from "../../../../components/motion-adapter-examples";
+import { sourceInstallCommand } from "../../../../lib/public-commands";
 import { createPageMetadata } from "../../../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -151,7 +152,7 @@ export function Presence({ visible }: { visible: boolean }) {
 }`;
 
 const sourceInstall = `pnpm add motion
-pnpm nerio add motion-adapter
+${sourceInstallCommand("motion-adapter")}
 
 import {
   NerioMotionConfig,
@@ -228,7 +229,10 @@ export default function Page() {
           orchestration fragile. Nerio Core never imports Motion, and unrelated adapter subpaths do
           not resolve the optional peer.
         </p>
-        <CodeExample code="pnpm add motion @nerio-ui/adapters" label="Package installation" />
+        <CodeExample
+          code="pnpm add motion @nerio-ui/adapters@0.1.0-alpha.1"
+          label="Package installation"
+        />
         <CodeExample code={adapterUsage} label="LazyMotion package usage" />
         <p>
           The adapter entrypoint is client-only. Keep the <Code>use client</Code> boundary at the

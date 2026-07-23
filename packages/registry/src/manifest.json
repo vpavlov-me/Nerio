@@ -66,7 +66,7 @@
         "Use Code only for short inline code; use pre and code for larger code blocks.",
         "Typography presets are scoped CSS token recipes; load Geist or Inter in the consuming product before applying their preset class."
       ],
-      "usage": "@import './styles/tokens.css';\n\nimport { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>"
+      "usage": "@import './styles/tokens.css';\n\nimport { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>pnpm exec nerio add typography</Code>"
     },
     {
       "name": "motion-adapter",

@@ -10,7 +10,7 @@ body:
     id: package
     attributes:
       label: Affected package or area
-      placeholder: "@nerio/ui, docs, tokens, registry, demo-bank"
+      placeholder: "@nerio-ui/ui, docs, tokens, registry, demo-app"
     validations:
       required: true
   - type: input

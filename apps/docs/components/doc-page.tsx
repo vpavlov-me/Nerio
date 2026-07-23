@@ -86,6 +86,7 @@ import {
   useToastManager,
 } from "@nerio-ui/ui/client";
 import { CodeExample } from "./code-example";
+import { sourceInstallCommand } from "../lib/public-commands";
 import { DocumentationTable } from "./documentation-table";
 import {
   anatomyFromSlots,
@@ -149,7 +150,7 @@ export function StandardDocPage({
     .filter((line) => line.startsWith("import "))
     .join("\n");
   const installation = kind
-    ? [`pnpm dlx nerio add ${kind}`, packageImports].filter(Boolean).join("\n\n")
+    ? [sourceInstallCommand(kind), packageImports].filter(Boolean).join("\n\n")
     : undefined;
 
   return (
@@ -512,7 +513,7 @@ function Preview({ kind }: { kind: string }) {
               </Heading>
               <Text tone="secondary">Changes apply to every member.</Text>
               <Text>
-                Install with <Code>nerio add typography</Code>.
+                Install with <Code>pnpm exec nerio add typography</Code>.
               </Text>
             </div>
           ) : null}

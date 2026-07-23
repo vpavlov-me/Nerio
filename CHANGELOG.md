@@ -49,6 +49,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Standardized public package, Registry CLI, and MCP onboarding around version-aligned local
+  installs, `pnpm exec` bins, and package-qualified `pnpm dlx` one-off execution. Active docs,
+  component install blocks, README, `llms.txt`, CLI help, and release guidance now share one
+  validated command contract. Clean-consumer release smoke executes the documented CLI lifecycle
+  and packaged MCP bin, while MCP server version metadata derives from the coordinated package.
 - Redesigned the public documentation, component Playground, and universal workspace demo around
   the approved Visual Language 1.0; added explicit Core/Pro and alpha boundaries, standardized
   component installation and decision guidance, compact mobile navigation, realistic Core states,

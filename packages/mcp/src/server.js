@@ -2,6 +2,7 @@
 const { McpServer } = require("@modelcontextprotocol/sdk/server/mcp.js");
 const { StdioServerTransport } = require("@modelcontextprotocol/sdk/server/stdio.js");
 const { z } = require("zod");
+const mcpPackage = require("../package.json");
 const {
   get_component,
   get_component_usage,
@@ -9,7 +10,7 @@ const {
   list_components,
 } = require("./tool-runtime.js");
 
-const server = new McpServer({ name: "nerio-components", version: "0.1.0" });
+const server = new McpServer({ name: "nerio-components", version: mcpPackage.version });
 const readOnly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true };
 
 function textResult(value) {

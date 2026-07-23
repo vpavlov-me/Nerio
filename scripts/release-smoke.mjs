@@ -55,7 +55,7 @@ const packageContracts = {
   },
   "@nerio-ui/registry": {
     homepage: "https://nerio.vpavlov.com/docs/registry",
-    exports: [".", "./manifest.json"],
+    exports: [".", "./manifest.json", "./public-commands.json"],
     dependencies: ["@nerio-ui/adapters", "@nerio-ui/tokens", "@nerio-ui/ui"],
     peers: [],
   },
@@ -77,6 +77,7 @@ const packageContracts = {
 const expectedVersion = "0.1.0-alpha.1";
 const expectPublicPackages = process.env.NERIO_RELEASE_EXPECT_PUBLIC === "1";
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+const publicCommands = readJson(join(root, "packages/registry/src/public-commands.json"));
 
 function run(command, args, options = {}) {
   return execFileSync(command, args, {
@@ -309,13 +310,17 @@ try {
     }
   }
 
-  const cli = join(consumerDirectory, "node_modules/@nerio-ui/cli/src/index.js");
-  run(process.execPath, [cli, "init"], { cwd: consumerDirectory });
+  const runLocalCli = (...args) =>
+    run(pnpm, ["exec", "nerio", ...args], { cwd: consumerDirectory });
+  runLocalCli("init");
   const consumerConfig = readJson(join(consumerDirectory, "nerio.json"));
   if (consumerConfig.registry !== "@nerio-ui/registry/manifest.json") {
     throw new Error("Packed CLI did not default to its immutable packaged Registry.");
   }
-  run(process.execPath, [cli, "doctor"], { cwd: consumerDirectory });
+  runLocalCli("list");
+  runLocalCli("info", "button");
+  runLocalCli("add", "button", "--dry-run");
+  runLocalCli("doctor");
   for (const component of [
     "typography",
     "button",
@@ -340,7 +345,7 @@ try {
     "item",
     "list",
   ]) {
-    run(process.execPath, [cli, "add", component], { cwd: consumerDirectory });
+    runLocalCli("add", component);
   }
   const installedState = readJson(join(consumerDirectory, "nerio.lock.json"));
   if (
@@ -351,8 +356,39 @@ try {
   ) {
     throw new Error("Packed CLI did not record portable exact installed-source metadata.");
   }
-  run(process.execPath, [cli, "diff"], { cwd: consumerDirectory });
-  run(process.execPath, [cli, "update", "--dry-run"], { cwd: consumerDirectory });
+  runLocalCli("diff", "button");
+  runLocalCli("update", "button", "--dry-run");
+
+  const oneOffDirectory = join(tempRoot, "one-off-consumer");
+  mkdirSync(oneOffDirectory, { recursive: true });
+  const runOneOffCli = (args, options = {}) =>
+    run(
+      pnpm,
+      [
+        "dlx",
+        "--package",
+        tarballs["@nerio-ui/cli"],
+        "--package",
+        tarballs["@nerio-ui/registry"],
+        "nerio",
+        ...args,
+      ],
+      { cwd: oneOffDirectory, ...options },
+    );
+  runOneOffCli(["init"]);
+  runOneOffCli(["add", "button"], {
+    env: {
+      NERIO_REGISTRY: join(consumerDirectory, "node_modules/@nerio-ui/registry/src/manifest.json"),
+    },
+  });
+  const oneOffButton = join(oneOffDirectory, "components/nerio/components/button.tsx");
+  if (!existsSync(oneOffButton)) {
+    throw new Error("One-off packed CLI did not install Button through the public bin.");
+  }
+  const oneOffConfig = readJson(join(oneOffDirectory, "nerio.json"));
+  if (oneOffConfig.registry !== "@nerio-ui/registry/manifest.json") {
+    throw new Error("One-off packed CLI did not create the canonical Registry configuration.");
+  }
 
   run(pnpm, ["build"], {
     cwd: consumerDirectory,
@@ -379,7 +415,7 @@ try {
     ].join("\n"),
   );
   rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
-  run(process.execPath, [cli, "doctor"], { cwd: consumerDirectory });
+  runLocalCli("doctor");
   run(pnpm, ["build"], {
     cwd: consumerDirectory,
     env: { NEXT_TELEMETRY_DISABLED: "1" },
@@ -403,36 +439,10 @@ try {
   );
   rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
 
-  const mcpCheck = [
-    "const tools = require('@nerio-ui/mcp');",
-    "const items = tools.list_components();",
-    `const expected = ${JSON.stringify([
-      "typography",
-      "button",
-      "button-group",
-      "input",
-      "input-group",
-      "textarea",
-      "label",
-      "field",
-      "form-message",
-      "form-group",
-      "checkbox",
-      "radio-group",
-      "switch",
-      "select",
-      "sheet",
-      "toast",
-      "table",
-      "pagination",
-      "sidebar-primitive",
-      "command-primitive",
-      "item",
-      "list",
-    ])};`,
-    "if (!expected.every((name) => items.some((item) => item.name === name))) process.exit(1);",
-  ].join(" ");
-  run(process.execPath, ["-e", mcpCheck], { cwd: consumerDirectory });
+  const mcpFixture = join(root, "packages/mcp/fixtures/verify.js");
+  run(process.execPath, [mcpFixture, "--command", pnpm, "--", "exec", "nerio-mcp"], {
+    cwd: consumerDirectory,
+  });
   run(pnpm, ["build"], {
     cwd: consumerDirectory,
     env: { NEXT_TELEMETRY_DISABLED: "1" },
@@ -440,7 +450,7 @@ try {
   assertSingleTokenPayload(readBuiltCss(consumerDirectory), "Source-install");
 
   console.log(
-    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, packed CLI/MCP discovery, representative source installs, and a clean Next.js consumer build.`,
+    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, documented ${publicCommands.cli.localCommands.length}-command local CLI workflow, one-off CLI execution, packaged MCP-bin discovery, representative source installs, and a clean Next.js consumer build.`,
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });

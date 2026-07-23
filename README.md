@@ -107,8 +107,8 @@ See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
 the complete native-versus-component boundary. Input supports native date, month, week, time, and
 `datetime-local` values while preserving browser-owned picker, validity, and form behavior. Core
-1.0 includes a single-value Slider and native FileInput, with approved follow-up work for Calendar
-and a bounded single-date DatePicker; their product-workflow extensions remain outside Core.
+1.0 includes a single-value Slider, native FileInput, Calendar, and a bounded single-date DatePicker;
+their product-workflow extensions remain outside Core.
 
 ## Package entrypoints
 
@@ -138,18 +138,25 @@ import "@nerio-ui/ui/styles.css";
 
 ## Registry CLI
 
-The `nerio` CLI installs editable source files into a consuming app:
+Install the version-aligned Registry and CLI in the consuming project. The `nerio` CLI then installs
+editable source files through the project-local bin:
 
 ```bash
-nerio init
-nerio list
-nerio info button
-nerio add button --dry-run
-nerio add button
-nerio diff button
-nerio update button --dry-run
-nerio doctor
+pnpm add -D @nerio-ui/registry@0.1.0-alpha.1 @nerio-ui/cli@0.1.0-alpha.1
+pnpm exec nerio init
+pnpm exec nerio list
+pnpm exec nerio info button
+pnpm exec nerio add button --dry-run
+pnpm exec nerio add button
+pnpm exec nerio diff button
+pnpm exec nerio update button --dry-run
+pnpm exec nerio doctor
 ```
+
+For one-off initialization or installation, use the real package name:
+`pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 init` or
+`pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 add button`. Prefer the local installation for repeatable
+updates and explicit CLI/Registry version alignment.
 
 The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
 version; local-path and HTTP overrides remain available. `nerio add` writes the requested source
@@ -159,6 +166,15 @@ update --dry-run` previews a deterministic update, while `nerio update` applies 
 changes and never overwrites locally modified source silently. Run `nerio doctor` after configuring
 the consumer stylesheet to validate versions, installed metadata, dependencies, source drift, the
 Tailwind bridge, package `@source`, token imports, no-Preflight compatibility, and stale legacy CSS.
+
+## MCP server
+
+Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@0.1.0-alpha.1`, then configure the
+client to run the published bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`. A
+package-qualified one-off configuration may use command `pnpm` and arguments
+`["dlx", "@nerio-ui/mcp@0.1.0-alpha.1"]`. The server version comes from coordinated package
+metadata, and its Registry tools report the exact Registry version, source revision, schema, and
+style contract.
 
 ## Pre-release status
 
