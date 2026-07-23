@@ -107,8 +107,13 @@ export type NerioMotionConfigProps = PropsWithChildren<{
 }>;
 
 export function NerioMotionConfig({ children, nonce, skipAnimations }: NerioMotionConfigProps) {
+  const optionalConfig = {
+    ...(nonce === undefined ? {} : { nonce }),
+    ...(skipAnimations === undefined ? {} : { skipAnimations }),
+  };
+
   return (
-    <MotionConfig nonce={nonce} reducedMotion="user" skipAnimations={skipAnimations}>
+    <MotionConfig {...optionalConfig} reducedMotion="user">
       {children}
     </MotionConfig>
   );

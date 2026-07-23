@@ -45,11 +45,11 @@ predictably, while icons/UI-only consumers install no optional integration peers
 ## Accessibility, SSR, and browser contract
 
 The operating-system reduced-motion preference is honored by default and updates mounted
-compositions live. Transform and layout movement is removed under reduced motion while opacity and
-the static end state remain available. The preference hook uses a deterministic server snapshot,
-and the config renders and hydrates without drift. Browser evidence covers presence completion,
-rapid reversal, layout reordering, keyboard and pointer activation, live preference changes,
-unmount cleanup, dark mode, mobile width, overflow, and console/hydration health.
+compositions live. Animated transform and layout travel is removed under reduced motion while
+opacity and the static end state remain available. The preference hook uses a deterministic server
+snapshot, and the config renders and hydrates without drift. Browser evidence covers presence
+completion, rapid reversal, layout reordering, keyboard and pointer activation, live preference
+changes, unmount cleanup, dark mode, mobile width, overflow, and console/hydration health.
 
 Automated evidence does not replace the real assistive-technology and device audit in issue #143.
 

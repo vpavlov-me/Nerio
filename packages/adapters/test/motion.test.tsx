@@ -2,7 +2,7 @@ import * as React from "react";
 import { act } from "react";
 import { createRoot, hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
-import { MotionConfigContext } from "motion/react";
+import { MotionConfig, MotionConfigContext } from "motion/react";
 import { describe, expect, it, vi } from "vitest";
 import * as motionAdapter from "../src/motion";
 import {
@@ -96,6 +96,20 @@ describe("Motion adapter", () => {
     );
 
     expect(container.firstElementChild?.getAttribute("data-nonce")).toBe("test-nonce");
+    expect(container.firstElementChild?.getAttribute("data-reduced-motion")).toBe("user");
+    expect(container.firstElementChild?.getAttribute("data-skip-animations")).toBe("true");
+
+    await act(async () =>
+      root.render(
+        <MotionConfig nonce="parent-nonce" reducedMotion="never" skipAnimations>
+          <NerioMotionConfig>
+            <ConfigProbe />
+          </NerioMotionConfig>
+        </MotionConfig>,
+      ),
+    );
+
+    expect(container.firstElementChild?.getAttribute("data-nonce")).toBe("parent-nonce");
     expect(container.firstElementChild?.getAttribute("data-reduced-motion")).toBe("user");
     expect(container.firstElementChild?.getAttribute("data-skip-animations")).toBe("true");
     await act(async () => root.unmount());

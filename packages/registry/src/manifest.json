@@ -100,7 +100,7 @@
         "--n-motion-translate-md"
       ],
       "accessibility": [
-        "NerioMotionConfig always uses reducedMotion=user so operating-system preference removes transform and layout movement while preserving useful opacity feedback.",
+        "NerioMotionConfig always uses reducedMotion=user so operating-system preference avoids animated transform and layout travel while preserving static end states and useful opacity feedback.",
         "NerioMotionConfig accepts only children, a Content Security Policy nonce, and the deterministic skipAnimations test switch; set token-aligned transitions on individual animated elements.",
         "useNerioReducedMotion exposes a server-stable snapshot and updates mounted compositions when the operating-system preference changes.",
         "Animation must not carry information that is unavailable in the static end state.",
