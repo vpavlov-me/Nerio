@@ -5,7 +5,10 @@ The executable fixture in `../verify.js` creates temporary projects and verifies
 ```bash
 nerio init
 nerio add button
+nerio diff button
+nerio update button --dry-run
 nerio doctor
 ```
 
-It asserts that Button installs only its component source, direct source dependencies, utility, and scoped styles.
+It asserts that Button installs only its exact source closure, records portable original hashes, and
+supports non-destructive drift inspection and update planning.

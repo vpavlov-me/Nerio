@@ -28,6 +28,11 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@nerio-ui/adapters": "workspace:*",
+    "@nerio-ui/tokens": "workspace:*",
+    "@nerio-ui/ui": "workspace:*"
+  },
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
     "eslint": "^9.39.2",

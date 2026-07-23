@@ -1,5 +1,15 @@
 const manifest = require("@nerio-ui/registry/manifest.json");
 
+function get_registry() {
+  return {
+    schemaVersion: manifest.schemaVersion,
+    name: manifest.name,
+    version: manifest.version,
+    sourceRevision: manifest.sourceRevision,
+    styleContractVersion: manifest.styleContractVersion,
+  };
+}
+
 function findComponent(name) {
   const item = manifest.items.find((entry) => entry.name === name);
   if (!item) {
@@ -43,4 +53,4 @@ function get_component_usage(name) {
   };
 }
 
-module.exports = { get_component, get_component_usage, list_components };
+module.exports = { get_component, get_component_usage, get_registry, list_components };

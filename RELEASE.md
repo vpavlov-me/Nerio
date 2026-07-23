@@ -52,8 +52,10 @@ typechecks published Sidebar examples in an isolated fixture.
 
 `validate:release` packs all intended packages, checks packed manifests, exports, dependencies, side
 effects, bins, file boundaries, and secret/Pro exclusions, installs the tarballs into an isolated
-Next.js consumer, exercises packed CLI and MCP discovery, source-installs representative components
-and a Foundation item with complete dependency chains, and builds without workspace aliases.
+Next.js consumer, verifies that the CLI resolves its immutable packaged Registry without a checkout
+or moving branch URL, exercises installed-source metadata, `diff`, and update planning, checks MCP
+Registry discovery, source-installs representative components and a Foundation item with complete
+dependency chains, and builds without workspace aliases.
 `test:adapters` separately proves the packed `icons`, `table`, `charts`, `forms`, and
 `schema` exports, verifies that an icons/UI-only consumer does not install optional integration
 peers, and checks each optional subpath both without and with its required peer. CI validates only;
@@ -133,6 +135,7 @@ browser verification, changelog review, and tarball inspection.
    `## 0.1.0-alpha.1 — YYYY-MM-DD`, then add a new empty `Unreleased` section above it.
 3. In a dedicated release PR, bump only the six public package manifests and their coordinated
    internal dependency references from `0.1.0-alpha.0` to `0.1.0-alpha.1`. Keep them public. Update
+   the Registry top-level `version` and immutable `sourceRevision` to the same release tag, update
    the release smoke expectation, rerun the complete gate with
    `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, then obtain a second approval. The override
    does not weaken version, metadata, contents, runtime, source-install, or consumer-build checks.
@@ -147,8 +150,11 @@ browser verification, changelog review, and tarball inspection.
 - Confirm `npm view <package>@0.1.0-alpha.1 version dist-tags files` for every package.
 - Install the six published packages into a new supported Next.js project and rerun the package and
   source-install smoke paths.
-- Run `nerio init`, `list`, `info`, `add`, and `doctor` from the published CLI.
-- Start the published MCP server and verify all discovery tools against current registry metadata.
+- Run `nerio init`, `list`, `info`, `add`, `diff`, `update --dry-run`, and `doctor` from the
+  published CLI without supplying a Registry override; confirm `nerio.json` points to the packaged
+  Registry and `nerio.lock.json` contains no absolute paths or source content.
+- Start the published MCP server and verify all discovery tools, including exact Registry version,
+  revision, schema, and style contract metadata.
 - Verify public docs links, `llms.txt`, canonical metadata, sitemap, robots behavior, and the live
   demo with no console or hydration errors.
 

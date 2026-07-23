@@ -243,6 +243,16 @@ importers:
         version: 5.9.3
 
   packages/registry:
+    dependencies:
+      '@nerio-ui/adapters':
+        specifier: workspace:*
+        version: link:../adapters
+      '@nerio-ui/tokens':
+        specifier: workspace:*
+        version: link:../tokens
+      '@nerio-ui/ui':
+        specifier: workspace:*
+        version: link:../ui
     devDependencies:
       '@nerio-ui/config':
         specifier: workspace:*

@@ -28,6 +28,8 @@ nerio list
 nerio info button
 nerio add button --dry-run
 nerio add button
+nerio diff button
+nerio update button --dry-run
 nerio doctor`;
 
 const nextConfig = `import type { NextConfig } from "next";
@@ -103,9 +105,13 @@ export default function Page() {
         <p>
           The CLI writes editable source files into the consuming app. Use <code>list</code> and{" "}
           <code>info</code> to inspect registry contents, <code>add --dry-run</code> to preview
-          files, and <code>doctor</code> to validate configuration. Tailwind-first source installs
-          include <code>styles/tailwind.css</code>; import it from a Tailwind-processed global
-          stylesheet alongside the installed token and residual styles.
+          files, <code>diff</code> and <code>update --dry-run</code> to review local/upstream drift,
+          and <code>doctor</code> to validate configuration. The default Registry is version-aligned
+          with the installed CLI instead of a moving branch. Successful installs record portable
+          file hashes and dependency closure in <code>nerio.lock.json</code>; locally modified files
+          are never overwritten by a normal update. Tailwind-first source installs include{" "}
+          <code>styles/tailwind.css</code>; import it from a Tailwind-processed global stylesheet
+          alongside the installed token and residual styles.
         </p>
       </section>
 

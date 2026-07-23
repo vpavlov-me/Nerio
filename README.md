@@ -146,10 +146,19 @@ nerio list
 nerio info button
 nerio add button --dry-run
 nerio add button
+nerio diff button
+nerio update button --dry-run
 nerio doctor
 ```
 
-`nerio list` and `nerio info <component>` read the configured registry. `nerio add` writes component source and registry dependencies into the configured `components` directory. Run `nerio doctor` after configuring the consumer stylesheet: it reports missing Tailwind bridge imports, package `@source` registration, source-install bridge/token imports, no-Preflight compatibility, and imported legacy Nerio component CSS.
+The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
+version; local-path and HTTP overrides remain available. `nerio add` writes the requested source
+closure and records its exact Registry version, revision, file paths, dependency closure, and
+original hashes in `nerio.lock.json`. `nerio diff` separates local and upstream drift. `nerio
+update --dry-run` previews a deterministic update, while `nerio update` applies only safe upstream
+changes and never overwrites locally modified source silently. Run `nerio doctor` after configuring
+the consumer stylesheet to validate versions, installed metadata, dependencies, source drift, the
+Tailwind bridge, package `@source`, token imports, no-Preflight compatibility, and stale legacy CSS.
 
 ## Pre-release status
 

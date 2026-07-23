@@ -8,6 +8,13 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added an immutable, release-versioned Registry contract and a portable `nerio.lock.json` source
+  record with exact revision, style contract, dependency closure, installed paths, and original
+  hashes. Added `nerio diff`, deterministic `nerio update --dry-run`, safe source updates,
+  conflict-preserving normal updates, explicit force replacement, expanded doctor diagnostics,
+  MCP Registry metadata, migration fixtures, and packed-consumer verification. The CLI tarball
+  budget moves from 8,000 to 12,000 bytes for this lifecycle contract; the measured tarball is
+  10,224 bytes and the unpacked budget remains unchanged.
 - Added the client-only single-date DatePicker composed from Calendar and an anchored Base UI
   Popover, with timezone-safe ISO values, controlled and uncontrolled value/open state, localized
   display, min/max and disabled-date constraints, form submission/reset/required behavior, optional

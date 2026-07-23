@@ -37,9 +37,20 @@ async function verify() {
     await client.connect(transport);
     const listed = await client.listTools();
     const names = listed.tools.map((tool) => tool.name).sort();
-    const expected = ["get_component", "get_component_usage", "list_components"];
+    const expected = ["get_component", "get_component_usage", "get_registry", "list_components"];
     if (JSON.stringify(names) !== JSON.stringify(expected)) {
       throw new Error(`Unexpected MCP tools: ${names.join(", ")}`);
+    }
+
+    const registryResult = await client.callTool({ name: "get_registry", arguments: {} });
+    const registry = JSON.parse(registryResult.content[0].text);
+    if (
+      registry.schemaVersion !== manifest.schemaVersion ||
+      registry.version !== manifest.version ||
+      registry.sourceRevision !== manifest.sourceRevision ||
+      registry.styleContractVersion !== manifest.styleContractVersion
+    ) {
+      throw new Error("MCP Registry metadata drifted from the versioned manifest.");
     }
 
     const result = await client.callTool({ name: "get_component", arguments: { name: "button" } });
