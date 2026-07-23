@@ -46,6 +46,12 @@ Budgets include limited maintenance headroom. A threshold may be raised only in 
 change that records the measured delta, the consumer value that justifies it, and the result in the
 pull request and changelog. Moving a number merely to make CI green is not an override process.
 
+The versioned Registry/source-lifecycle slice measured the CLI tarball at 10,131 bytes after adding
+portable installed metadata, three-way hash comparison, non-destructive updates, conflict handling,
+and actionable doctor diagnostics. The previous 8,000-byte ceiling was raised to 12,000 bytes; the
+50,000-byte unpacked limit remains unchanged. This records the reviewed product value and retains
+roughly 15% compressed maintenance headroom without weakening runtime bundle budgets.
+
 ## Local gate
 
 ```bash

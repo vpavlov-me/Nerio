@@ -363,6 +363,369 @@ function startRegistryServer() {
   });
 }
 
+function writeLifecycleRegistry(
+  registryRoot,
+  {
+    version = "0.1.0-alpha.1",
+    sourceRevision = "fixture-alpha.1",
+    schemaVersion = "1.0.0",
+    sharedSource = "export const shared = 'one';\n",
+    buttonSource = "export const button = 'one';\n",
+    tokenSource = ":root { --fixture: one; }\n",
+    includeExtra = false,
+  } = {},
+) {
+  const sourceRoot = path.join(registryRoot, "source");
+  fs.mkdirSync(sourceRoot, { recursive: true });
+  fs.writeFileSync(path.join(sourceRoot, "shared.ts"), sharedSource);
+  fs.writeFileSync(path.join(sourceRoot, "button.ts"), buttonSource);
+  fs.writeFileSync(path.join(sourceRoot, "tokens.css"), tokenSource);
+  fs.writeFileSync(path.join(sourceRoot, "tailwind.css"), "@theme inline {}\n");
+  if (includeExtra) {
+    fs.writeFileSync(path.join(sourceRoot, "extra.ts"), "export const extra = true;\n");
+  }
+
+  const items = [
+    {
+      name: "shared",
+      title: "Shared",
+      description: "Fixture shared source.",
+      category: "foundation",
+      dependencies: ["react"],
+      registryDependencies: [],
+      files: [
+        { source: "./source/shared.ts", target: "lib/shared.ts", role: "utility" },
+        { source: "./source/tokens.css", target: "styles/tokens.css", role: "style" },
+        { source: "./source/tailwind.css", target: "styles/tailwind.css", role: "style" },
+      ],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: "import { shared } from '@/components/nerio/lib/shared';",
+    },
+    {
+      name: "button",
+      title: "Button",
+      description: "Fixture button source.",
+      category: "actions",
+      dependencies: ["react"],
+      registryDependencies: includeExtra ? ["shared", "extra"] : ["shared"],
+      files: [{ source: "./source/button.ts", target: "components/button.ts", role: "component" }],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: "import { button } from '@/components/nerio/components/button';",
+    },
+  ];
+  if (includeExtra) {
+    items.splice(1, 0, {
+      name: "extra",
+      title: "Extra",
+      description: "Fixture dependency added by an upstream release.",
+      category: "foundation",
+      dependencies: [],
+      registryDependencies: [],
+      files: [{ source: "./source/extra.ts", target: "lib/extra.ts", role: "utility" }],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: "import { extra } from '@/components/nerio/lib/extra';",
+    });
+  }
+
+  const manifestPath = path.join(registryRoot, "manifest.json");
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(
+      {
+        schemaVersion,
+        name: "nerio-fixture",
+        version,
+        sourceRevision,
+        styleContractVersion: "tailwind-v1",
+        items,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  return manifestPath;
+}
+
+async function verifySourceLifecycle(tempRoot) {
+  const registryRoot = path.join(tempRoot, "lifecycle-registry");
+  const target = path.join(tempRoot, "lifecycle-consumer");
+  const legacyTarget = path.join(tempRoot, "legacy-consumer");
+  fs.mkdirSync(registryRoot);
+  fs.mkdirSync(target);
+  fs.mkdirSync(legacyTarget);
+  const fixtureManifest = writeLifecycleRegistry(registryRoot);
+
+  fs.writeFileSync(
+    path.join(target, "package.json"),
+    `${JSON.stringify({ name: "fixture", private: true, dependencies: { react: "19.0.0" } }, null, 2)}\n`,
+  );
+  await run(target, "init", "--registry", fixtureManifest);
+  await run(target, "add", "button");
+  writeSourceTailwindSetup(target);
+  const initialDoctor = await run(target, "doctor");
+  if (!initialDoctor.includes("Registry nerio-fixture 0.1.0-alpha.1 (fixture-alpha.1)")) {
+    throw new Error("Doctor did not report the exact installed Registry contract.");
+  }
+
+  const lockPath = path.join(target, "nerio.lock.json");
+  const initialLock = JSON.parse(fs.readFileSync(lockPath, "utf8"));
+  if (
+    initialLock.schemaVersion !== "1.0.0" ||
+    initialLock.registry.version !== "0.1.0-alpha.1" ||
+    initialLock.registry.sourceRevision !== "fixture-alpha.1" ||
+    initialLock.registry.styleContractVersion !== "tailwind-v1" ||
+    !initialLock.requestedItems.includes("button") ||
+    !initialLock.items.shared ||
+    !initialLock.files["components/nerio/components/button.ts"]?.hash ||
+    JSON.stringify(initialLock).includes(tempRoot)
+  ) {
+    throw new Error("Installed source metadata is incomplete or contains machine-specific paths.");
+  }
+  const legacyConfigTarget = path.join(tempRoot, "legacy-config");
+  fs.cpSync(target, legacyConfigTarget, { recursive: true });
+  const legacyConfigPath = path.join(legacyConfigTarget, "nerio.json");
+  const legacyConfig = JSON.parse(fs.readFileSync(legacyConfigPath, "utf8"));
+  legacyConfig.schemaVersion = "0.1.0";
+  fs.writeFileSync(legacyConfigPath, `${JSON.stringify(legacyConfig, null, 2)}\n`);
+  const legacyConfigDoctor = await run(legacyConfigTarget, "doctor");
+  if (!legacyConfigDoctor.includes("supported legacy 0.1.0 schema")) {
+    throw new Error("Doctor did not provide migration guidance for legacy nerio.json.");
+  }
+
+  const missingMetadataTarget = path.join(tempRoot, "missing-lifecycle-metadata");
+  fs.cpSync(target, missingMetadataTarget, { recursive: true });
+  fs.rmSync(path.join(missingMetadataTarget, "nerio.lock.json"));
+  const missingMetadataDoctor = await runFailure(missingMetadataTarget, "doctor");
+  if (!missingMetadataDoctor.includes("nerio.lock.json is missing for installed source")) {
+    throw new Error("Doctor did not report installed source with missing lifecycle metadata.");
+  }
+
+  const missingRegistryDependencyTarget = path.join(tempRoot, "missing-registry-dependency");
+  fs.cpSync(target, missingRegistryDependencyTarget, { recursive: true });
+  const incompleteLockPath = path.join(missingRegistryDependencyTarget, "nerio.lock.json");
+  const incompleteLock = JSON.parse(fs.readFileSync(incompleteLockPath, "utf8"));
+  delete incompleteLock.items.shared;
+  fs.writeFileSync(incompleteLockPath, `${JSON.stringify(incompleteLock, null, 2)}\n`);
+  const missingRegistryDependencyDoctor = await runFailure(
+    missingRegistryDependencyTarget,
+    "doctor",
+  );
+  if (!missingRegistryDependencyDoctor.includes("missing Registry dependency shared")) {
+    throw new Error("Doctor did not report an incomplete installed dependency closure.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    version: "0.1.0-alpha.2",
+    sourceRevision: "fixture-version-mismatch",
+  });
+  const versionMismatchDoctor = await runFailure(target, "doctor");
+  if (
+    !versionMismatchDoctor.includes("CLI 0.1.0-alpha.1 and Registry 0.1.0-alpha.2 do not match")
+  ) {
+    throw new Error("Doctor did not report an incompatible Registry and CLI version.");
+  }
+  writeLifecycleRegistry(registryRoot);
+
+  const unchangedDiff = await run(target, "diff", "button");
+  if (!unchangedDiff.includes("unchanged\tcomponents/nerio/components/button.ts")) {
+    throw new Error("Diff did not report an unchanged installed file.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-upstream-shared",
+    sharedSource: "export const shared = 'two';\n",
+  });
+  const upstreamDiff = await run(target, "diff", "button");
+  if (!upstreamDiff.includes("upstream changed\tcomponents/nerio/lib/shared.ts")) {
+    throw new Error("Diff did not report an upstream-only shared utility change.");
+  }
+  await run(target, "update", "button");
+  if (
+    fs.readFileSync(path.join(target, "components/nerio/lib/shared.ts"), "utf8") !==
+    "export const shared = 'two';\n"
+  ) {
+    throw new Error("Update did not apply a safe upstream-only shared utility change.");
+  }
+
+  const buttonPath = path.join(target, "components/nerio/components/button.ts");
+  fs.writeFileSync(buttonPath, "export const button = 'local';\n");
+  const localDiff = await run(target, "diff", "button");
+  if (!localDiff.includes("locally modified\tcomponents/nerio/components/button.ts")) {
+    throw new Error("Diff did not report a local-only modification.");
+  }
+  await run(target, "update", "button");
+  if (fs.readFileSync(buttonPath, "utf8") !== "export const button = 'local';\n") {
+    throw new Error("Update replaced a local-only modification.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-conflict",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+  });
+  const conflictPreview = await run(target, "update", "button", "--dry-run");
+  if (
+    !conflictPreview.includes(
+      "locally modified, upstream changed\tcomponents/nerio/components/button.ts",
+    ) ||
+    !conflictPreview.includes("require local resolution")
+  ) {
+    throw new Error("Dry-run did not report a deterministic source conflict.");
+  }
+  const conflictFailure = await runFailure(target, "update", "button");
+  if (
+    !conflictFailure.includes("Update stopped before writing") ||
+    fs.readFileSync(buttonPath, "utf8") !== "export const button = 'local';\n"
+  ) {
+    throw new Error("Update did not stop before overwriting a conflicting local change.");
+  }
+  await run(target, "update", "button", "--force");
+  if (fs.readFileSync(buttonPath, "utf8") !== "export const button = 'upstream';\n") {
+    throw new Error("Intentional force update did not apply upstream source.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-added-dependency",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+    includeExtra: true,
+  });
+  const addedDependency = await run(target, "update", "button", "--dry-run");
+  if (!addedDependency.includes("added\tcomponents/nerio/lib/extra.ts")) {
+    throw new Error("Update did not report a newly added Registry dependency file.");
+  }
+  await run(target, "update", "button");
+  const extraPath = path.join(target, "components/nerio/lib/extra.ts");
+  if (!fs.existsSync(extraPath)) {
+    throw new Error("Update did not install a newly added Registry dependency file.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-removed-dependency",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+  });
+  const removedDependency = await run(target, "update", "button", "--dry-run");
+  if (!removedDependency.includes("removed\tcomponents/nerio/lib/extra.ts")) {
+    throw new Error("Update did not report a removed Registry dependency file.");
+  }
+  await run(target, "update", "button");
+  if (fs.existsSync(extraPath)) {
+    throw new Error("Update did not remove an unchanged obsolete dependency file.");
+  }
+
+  fs.writeFileSync(extraPath, "export const extra = 'consumer';\n");
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-added-dependency-collision",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+    includeExtra: true,
+  });
+  const addedCollision = await runFailure(target, "update", "button");
+  if (
+    !addedCollision.includes("Update stopped before writing") ||
+    fs.readFileSync(extraPath, "utf8") !== "export const extra = 'consumer';\n"
+  ) {
+    throw new Error("Update overwrote an untracked local file added by a new dependency.");
+  }
+  await run(target, "update", "button", "--force");
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-removed-dependency-after-collision",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+  });
+  await run(target, "update", "button");
+
+  const tokensPath = path.join(target, "components/nerio/styles/tokens.css");
+  fs.writeFileSync(tokensPath, ":root { --fixture: local; }\n");
+  await run(target, "update", "button");
+  if (fs.readFileSync(tokensPath, "utf8") !== ":root { --fixture: local; }\n") {
+    throw new Error("Update replaced customized tokens without an upstream token change.");
+  }
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-token-conflict",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+    tokenSource: ":root { --fixture: upstream; }\n",
+  });
+  const tokenConflict = await runFailure(target, "update", "button");
+  if (
+    !tokenConflict.includes("Update stopped before writing") ||
+    fs.readFileSync(tokensPath, "utf8") !== ":root { --fixture: local; }\n"
+  ) {
+    throw new Error("Customized token conflict was not preserved for review.");
+  }
+
+  const incompatibleManifest = writeLifecycleRegistry(registryRoot, {
+    schemaVersion: "2.0.0",
+    sourceRevision: "fixture-future-schema",
+  });
+  const incompatibleOutput = await runFailure(target, "list", "--registry", incompatibleManifest);
+  if (!incompatibleOutput.includes("newer than this CLI supports")) {
+    throw new Error("CLI did not reject an unsupported future Registry schema.");
+  }
+
+  const restoredManifest = writeLifecycleRegistry(registryRoot, {
+    version: "1.0.0",
+    sourceRevision: "fixture-1.0.0",
+  });
+  await run(legacyTarget, "init", "--registry", restoredManifest);
+  const prereleaseConfigPath = path.join(legacyTarget, "nerio.json");
+  const prereleaseConfig = JSON.parse(fs.readFileSync(prereleaseConfigPath, "utf8"));
+  prereleaseConfig.schemaVersion = "0.1.0";
+  fs.writeFileSync(prereleaseConfigPath, `${JSON.stringify(prereleaseConfig, null, 2)}\n`);
+  for (const [source, installed] of [
+    ["shared.ts", "lib/shared.ts"],
+    ["tokens.css", "styles/tokens.css"],
+    ["tailwind.css", "styles/tailwind.css"],
+    ["button.ts", "components/button.ts"],
+  ]) {
+    const destination = path.join(legacyTarget, "components/nerio", installed);
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.copyFileSync(path.join(registryRoot, "source", source), destination);
+  }
+  await run(legacyTarget, "add", "button");
+  const migratedLock = JSON.parse(
+    fs.readFileSync(path.join(legacyTarget, "nerio.lock.json"), "utf8"),
+  );
+  if (
+    migratedLock.registry.version !== "1.0.0" ||
+    migratedLock.registry.sourceRevision !== "fixture-1.0.0"
+  ) {
+    throw new Error("Matching prerelease source could not be adopted into 1.0 metadata.");
+  }
+
+  const missingDependenciesPackage = JSON.parse(
+    fs.readFileSync(path.join(target, "package.json"), "utf8"),
+  );
+  missingDependenciesPackage.dependencies = {};
+  fs.writeFileSync(
+    path.join(target, "package.json"),
+    `${JSON.stringify(missingDependenciesPackage, null, 2)}\n`,
+  );
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-conflict",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+  });
+  const missingDependencyDoctor = await runFailure(target, "doctor");
+  if (!missingDependencyDoctor.includes("Required source dependencies are not declared: react")) {
+    throw new Error("Doctor did not report a missing required npm dependency.");
+  }
+}
+
 async function verify() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "nerio-cli-"));
   const localTarget = path.join(tempRoot, "local");
@@ -399,6 +762,7 @@ async function verify() {
 
   const { server, manifestUrl } = await startRegistryServer();
   try {
+    await verifySourceLifecycle(tempRoot);
     await run(localTarget, "init", "--registry", manifest);
     writePackageTailwindSetup(localTarget);
     await run(localTarget, "doctor");

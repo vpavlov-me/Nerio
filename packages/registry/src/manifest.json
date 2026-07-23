@@ -1,6 +1,9 @@
 {
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "1.0.0",
   "name": "nerio",
+  "version": "0.1.0-alpha.1",
+  "sourceRevision": "v0.1.0-alpha.1",
+  "styleContractVersion": "tailwind-v1",
   "items": [
     {
       "name": "typography",

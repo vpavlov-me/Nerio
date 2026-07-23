@@ -23,7 +23,22 @@ export interface RegistryItem {
   usage: string;
 }
 
+export interface RegistryMetadata {
+  schemaVersion: string;
+  name: string;
+  version: string;
+  sourceRevision: string;
+  styleContractVersion: string;
+}
+
 export const registry = manifest.items as RegistryItem[];
+export const registryMetadata: RegistryMetadata = {
+  schemaVersion: manifest.schemaVersion,
+  name: manifest.name,
+  version: manifest.version,
+  sourceRevision: manifest.sourceRevision,
+  styleContractVersion: manifest.styleContractVersion,
+};
 
 export function getRegistryItem(name: string) {
   return registry.find((item) => item.name === name);

@@ -56,7 +56,7 @@ const packageContracts = {
   "@nerio-ui/registry": {
     homepage: "https://nerio.vpavlov.com/docs/registry",
     exports: [".", "./manifest.json"],
-    dependencies: [],
+    dependencies: ["@nerio-ui/adapters", "@nerio-ui/tokens", "@nerio-ui/ui"],
     peers: [],
   },
   "@nerio-ui/cli": {
@@ -207,6 +207,20 @@ function validatePackedPackage(name, tarball) {
       }
     }
   }
+  if (name === "@nerio-ui/registry") {
+    const manifest = JSON.parse(run("tar", ["-xOf", tarball, "package/src/manifest.json"]));
+    if (
+      manifest.schemaVersion !== "1.0.0" ||
+      manifest.version !== expectedVersion ||
+      manifest.sourceRevision !== `v${expectedVersion}` ||
+      manifest.styleContractVersion !== "tailwind-v1" ||
+      !Array.isArray(manifest.items)
+    ) {
+      throw new Error(
+        "@nerio-ui/registry must pack coordinated immutable version, revision, style, and item metadata.",
+      );
+    }
+  }
 }
 
 const tempRoot = mkdtempSync(join(tmpdir(), "nerio-release-smoke-"));
@@ -296,8 +310,11 @@ try {
   }
 
   const cli = join(consumerDirectory, "node_modules/@nerio-ui/cli/src/index.js");
-  const manifest = join(consumerDirectory, "node_modules/@nerio-ui/registry/src/manifest.json");
-  run(process.execPath, [cli, "init", "--registry", manifest], { cwd: consumerDirectory });
+  run(process.execPath, [cli, "init"], { cwd: consumerDirectory });
+  const consumerConfig = readJson(join(consumerDirectory, "nerio.json"));
+  if (consumerConfig.registry !== "@nerio-ui/registry/manifest.json") {
+    throw new Error("Packed CLI did not default to its immutable packaged Registry.");
+  }
   run(process.execPath, [cli, "doctor"], { cwd: consumerDirectory });
   for (const component of [
     "typography",
@@ -325,6 +342,17 @@ try {
   ]) {
     run(process.execPath, [cli, "add", component], { cwd: consumerDirectory });
   }
+  const installedState = readJson(join(consumerDirectory, "nerio.lock.json"));
+  if (
+    installedState.registry.version !== expectedVersion ||
+    installedState.registry.sourceRevision !== `v${expectedVersion}` ||
+    !installedState.requestedItems.includes("button") ||
+    JSON.stringify(installedState).includes(consumerDirectory)
+  ) {
+    throw new Error("Packed CLI did not record portable exact installed-source metadata.");
+  }
+  run(process.execPath, [cli, "diff"], { cwd: consumerDirectory });
+  run(process.execPath, [cli, "update", "--dry-run"], { cwd: consumerDirectory });
 
   run(pnpm, ["build"], {
     cwd: consumerDirectory,
@@ -351,6 +379,7 @@ try {
     ].join("\n"),
   );
   rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
+  run(process.execPath, [cli, "doctor"], { cwd: consumerDirectory });
   run(pnpm, ["build"], {
     cwd: consumerDirectory,
     env: { NEXT_TELEMETRY_DISABLED: "1" },
