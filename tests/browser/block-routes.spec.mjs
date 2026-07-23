@@ -99,6 +99,17 @@ test("redirects legacy public and internal composition routes", async ({ request
     expect(response.status()).toBe(308);
     expect(response.headers().location).toBe(destination);
   }
+
+  for (const route of [
+    "/blocks/toString",
+    "/views/blocks/toString",
+    "/visual-test/blocks/toString",
+    "/docs/blocks/toString",
+    "/docs/compositions/toString",
+  ]) {
+    const response = await request.get(route);
+    expect(response.status()).toBe(404);
+  }
 });
 
 test("supports responsive, dark, compact, RTL, and keyboard Block behavior", async ({ page }) => {

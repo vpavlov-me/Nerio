@@ -567,7 +567,12 @@ function blockArchitectureFailures() {
     }
   }
 
-  for (const internalSlug of ["overlay-playground", "navigation-patterns", "dense-form"]) {
+  for (const internalSlug of [
+    "overlay-playground",
+    "navigation-patterns",
+    "dense-form",
+    "feedback",
+  ]) {
     if (
       catalog.includes(`detailRoute: "/blocks/${internalSlug}"`) ||
       docsChrome.includes(`href: "/blocks/${internalSlug}"`)

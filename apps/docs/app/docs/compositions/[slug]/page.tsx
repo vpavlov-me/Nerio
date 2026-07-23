@@ -1,5 +1,6 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import {
+  getLegacyPublicBlockRedirect,
   isInternalBlockFixture,
   legacyPublicBlockRedirects,
 } from "../../../../features/blocks/catalog";
@@ -21,7 +22,7 @@ export default async function LegacyCompositionPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const replacement = legacyPublicBlockRedirects[slug];
+  const replacement = getLegacyPublicBlockRedirect(slug);
 
   if (replacement) permanentRedirect(`/blocks/${replacement}`);
   if (isInternalBlockFixture(slug)) permanentRedirect(`/visual-test/blocks/${slug}`);

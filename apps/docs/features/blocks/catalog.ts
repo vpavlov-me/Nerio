@@ -243,6 +243,12 @@ export const legacyPublicBlockRedirects: Record<string, (typeof blockCatalog)[nu
   feedback: "file-upload-state",
 };
 
+export function getLegacyPublicBlockRedirect(slug: string) {
+  return Object.hasOwn(legacyPublicBlockRedirects, slug)
+    ? legacyPublicBlockRedirects[slug]
+    : undefined;
+}
+
 export const internalBlockFixtures = {
   "overlay-playground": {
     title: "Overlay playground",
@@ -266,5 +272,5 @@ export const internalBlockFixtures = {
 export type InternalBlockFixtureSlug = keyof typeof internalBlockFixtures;
 
 export function isInternalBlockFixture(slug: string): slug is InternalBlockFixtureSlug {
-  return slug in internalBlockFixtures;
+  return Object.hasOwn(internalBlockFixtures, slug);
 }

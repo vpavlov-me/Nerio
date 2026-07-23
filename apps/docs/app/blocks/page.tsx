@@ -13,6 +13,13 @@ export const metadata = createPageMetadata({
 
 const categories = [...new Set(blockCatalog.map((block) => block.category))];
 
+function getCategoryId(category: string) {
+  return `blocks-${category
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9]+/g, "-")
+    .replaceAll(/^-|-$/g, "")}`;
+}
+
 export default function BlocksPage() {
   return (
     <article className="doc-page blocks-page">
@@ -27,8 +34,12 @@ export default function BlocksPage() {
       </header>
 
       {categories.map((category) => (
-        <section key={category} className="blocks-category" aria-labelledby={`blocks-${category}`}>
-          <h2 id={`blocks-${category}`}>{category}</h2>
+        <section
+          key={category}
+          className="blocks-category"
+          aria-labelledby={getCategoryId(category)}
+        >
+          <h2 id={getCategoryId(category)}>{category}</h2>
           <div className="templates-grid">
             {blockCatalog
               .filter((block) => block.category === category)
