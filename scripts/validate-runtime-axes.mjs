@@ -332,7 +332,12 @@ function validate() {
         `${surface} initialization must write all persisted root appearance attributes.`,
       );
     }
-    if (!/readAppearanceFromRoot\((?:document\.documentElement|root)\)/.test(controls)) {
+    const restoresAppearanceDirectly =
+      /readAppearanceFromRoot\(\s*document\.documentElement\s*\)/.test(controls);
+    const restoresAppearanceFromRootAlias =
+      /const\s+root\s*=\s*document\.documentElement\s*;/.test(controls) &&
+      /readAppearanceFromRoot\(\s*root\s*\)/.test(controls);
+    if (!restoresAppearanceDirectly && !restoresAppearanceFromRootAlias) {
       failures.push(`${surface} controls must restore pre-hydrated appearance state.`);
     }
     if (

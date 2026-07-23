@@ -294,6 +294,22 @@ test("runtime-axis validator requires template controls to import canonical axes
   );
 });
 
+test("runtime-axis validator rejects an unrelated root appearance restore", () => {
+  withFixture(
+    "--template-controls",
+    "view.tsx",
+    readFileSync(templateControlsSource, "utf8").replace(
+      "const root = document.documentElement;",
+      "const root = document.body;",
+    ),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Operations Workspace controls must restore pre-hydrated appearance state/,
+      ),
+  );
+});
+
 test("runtime-axis validator requires docs appearance helpers to write root attributes", () => {
   withFixture(
     "--docs-appearance",
