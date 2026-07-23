@@ -1,10 +1,10 @@
 {
   "packageInstall": [
-    "pnpm add @nerio-ui/tokens @nerio-ui/adapters @nerio-ui/ui tailwindcss",
+    "pnpm add @nerio-ui/tokens@0.1.0-alpha.1 @nerio-ui/adapters@0.1.0-alpha.1 @nerio-ui/ui@0.1.0-alpha.1 tailwindcss",
     "pnpm add -D @tailwindcss/postcss postcss"
   ],
   "cli": {
-    "localInstall": "pnpm add -D @nerio-ui/registry @nerio-ui/cli",
+    "localInstall": "pnpm add -D @nerio-ui/registry@0.1.0-alpha.1 @nerio-ui/cli@0.1.0-alpha.1",
     "localCommands": [
       "pnpm exec nerio init",
       "pnpm exec nerio list",
@@ -15,17 +15,20 @@
       "pnpm exec nerio update button --dry-run",
       "pnpm exec nerio doctor"
     ],
-    "oneOffCommands": ["pnpm dlx @nerio-ui/cli init", "pnpm dlx @nerio-ui/cli add button"]
+    "oneOffCommands": [
+      "pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 init",
+      "pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 add button"
+    ]
   },
   "mcp": {
-    "localInstall": "pnpm add -D @nerio-ui/mcp",
+    "localInstall": "pnpm add -D @nerio-ui/mcp@0.1.0-alpha.1",
     "localConfiguration": {
       "command": "pnpm",
       "args": ["exec", "nerio-mcp"]
     },
     "oneOffConfiguration": {
       "command": "pnpm",
-      "args": ["dlx", "@nerio-ui/mcp"]
+      "args": ["dlx", "@nerio-ui/mcp@0.1.0-alpha.1"]
     }
   }
 }

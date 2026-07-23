@@ -142,7 +142,7 @@ Install the version-aligned Registry and CLI in the consuming project. The `neri
 editable source files through the project-local bin:
 
 ```bash
-pnpm add -D @nerio-ui/registry @nerio-ui/cli
+pnpm add -D @nerio-ui/registry@0.1.0-alpha.1 @nerio-ui/cli@0.1.0-alpha.1
 pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
@@ -154,8 +154,9 @@ pnpm exec nerio doctor
 ```
 
 For one-off initialization or installation, use the real package name:
-`pnpm dlx @nerio-ui/cli init` or `pnpm dlx @nerio-ui/cli add button`. Prefer the local installation
-for repeatable updates and explicit CLI/Registry version alignment.
+`pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 init` or
+`pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 add button`. Prefer the local installation for repeatable
+updates and explicit CLI/Registry version alignment.
 
 The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
 version; local-path and HTTP overrides remain available. `nerio add` writes the requested source
@@ -168,11 +169,12 @@ Tailwind bridge, package `@source`, token imports, no-Preflight compatibility, a
 
 ## MCP server
 
-Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp`, then configure the client to run
-the published bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`. A package-qualified
-one-off configuration may use command `pnpm` and arguments `["dlx", "@nerio-ui/mcp"]`. The server
-version comes from coordinated package metadata, and its Registry tools report the exact Registry
-version, source revision, schema, and style contract.
+Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@0.1.0-alpha.1`, then configure the
+client to run the published bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`. A
+package-qualified one-off configuration may use command `pnpm` and arguments
+`["dlx", "@nerio-ui/mcp@0.1.0-alpha.1"]`. The server version comes from coordinated package
+metadata, and its Registry tools report the exact Registry version, source revision, schema, and
+style contract.
 
 ## Pre-release status
 

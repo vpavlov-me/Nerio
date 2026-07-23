@@ -64,6 +64,16 @@ test("public onboarding validator rejects the obsolete package scope", () => {
   assert.match(stderr, /obsolete package scope/);
 });
 
+test("public onboarding validator rejects unpinned prerelease installs", () => {
+  const stderr = invalidFixture("--readme", "README.md", (source) =>
+    source.replace(
+      "@nerio-ui/registry@0.1.0-alpha.1 @nerio-ui/cli@0.1.0-alpha.1",
+      "@nerio-ui/registry @nerio-ui/cli",
+    ),
+  );
+  assert.match(stderr, /unpinned prerelease package install/);
+});
+
 test("public onboarding validator rejects internal CLI release smoke", () => {
   const stderr = invalidFixture("--release-smoke", "scripts/release-smoke.mjs", (source) =>
     source.replace('run(pnpm, ["exec", "nerio"', "run(process.execPath, [cli"),
