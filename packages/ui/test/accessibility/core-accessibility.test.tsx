@@ -786,6 +786,7 @@ describe("Core accessibility contracts", () => {
     expect(trigger).toHaveAccessibleDescription(
       expect.stringContaining("Choose one calendar date."),
     );
+    expect(trigger).toHaveAccessibleDescription(expect.stringContaining("Jun 15, 2026"));
     await user.click(trigger);
     expect(await screen.findByRole("group", { name: "Choose date" })).toBeInTheDocument();
     expect((await axe(container)).violations).toEqual([]);

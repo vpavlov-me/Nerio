@@ -2334,6 +2334,7 @@
       ],
       "accessibility": [
         "Name the trigger through Field, Label, aria-label, or aria-labelledby.",
+        "The trigger description includes the localized selected value or empty placeholder before the open/change action.",
         "Opening moves focus to Calendar's selected or active roving day; selection, Escape, outside dismissal, and clear restore focus to the trigger.",
         "The public value and single named form mirror use the timezone-independent YYYY-MM-DD CalendarDate contract; null is the explicit controlled empty value.",
         "Required, disabled, read-only, invalid, form ownership, submission, and reset behavior remain truthful.",

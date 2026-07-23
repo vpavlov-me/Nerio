@@ -4504,6 +4504,9 @@ describe("Core interactive action contracts", () => {
 
     await user.click(trigger);
     const calendar = await screen.findByRole("group", { name: "Choose date" });
+    expect(calendar.closest('[data-slot="content"]')?.className).toContain(
+      "animate-[n-overlay-enter_",
+    );
     await waitFor(() =>
       expect(
         within(calendar).getByRole("button", { name: "15 June 2026, Selected" }),
@@ -4559,7 +4562,7 @@ describe("Core interactive action contracts", () => {
 
     render(<ControlledDatePicker />);
     const trigger = screen.getByRole("button", { name: "Veröffentlichungsdatum" });
-    expect(trigger).toHaveAccessibleDescription("Datum ändern");
+    expect(trigger).toHaveAccessibleDescription("15. Juni 2026 Datum ändern");
     await user.click(trigger);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     const calendar = await screen.findByRole("group", { name: "Datum auswählen" });
@@ -4568,7 +4571,7 @@ describe("Core interactive action contracts", () => {
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Datum löschen" }));
     await waitFor(() => expect(trigger).toHaveTextContent("Choose a date"));
-    expect(trigger).toHaveAccessibleDescription("Datumswahl öffnen");
+    expect(trigger).toHaveAccessibleDescription("Choose a date Datumswahl öffnen");
     expect(trigger).toHaveFocus();
   });
 
@@ -4614,6 +4617,21 @@ describe("Core interactive action contracts", () => {
     );
     expect(onReadOnlyChange).not.toHaveBeenCalled();
     expect(screen.getByRole("group", { name: "Choose date" })).toBeInTheDocument();
+  });
+
+  it("does not expose a live clear action when a disabled DatePicker is forced open", () => {
+    render(
+      <DatePicker
+        aria-label="Unavailable date"
+        clearable
+        defaultOpen
+        defaultValue="2026-06-15"
+        disabled
+      />,
+    );
+
+    expect(screen.getByRole("group", { name: "Choose date" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Clear date" })).toBeNull();
   });
 
   it("keeps DatePicker focus and selection coherent inside a modal overlay", async () => {

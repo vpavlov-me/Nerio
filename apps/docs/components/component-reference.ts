@@ -2075,6 +2075,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Name the trigger through Field, Label, aria-label, or aria-labelledby.",
+      "The trigger description includes the localized selected value or empty placeholder before the open/change action.",
       "Opening moves focus to the selected or active Calendar day.",
       "Selection, Escape, outside dismissal, and clear restore focus to the trigger.",
       "Calendar retains Arrow, Home, End, Page, Enter, Space, RTL, and constraint behavior.",

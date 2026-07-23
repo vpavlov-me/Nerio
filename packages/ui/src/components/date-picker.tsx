@@ -122,6 +122,7 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
 ) {
   const generatedId = React.useId();
   const triggerId = id ?? generatedId;
+  const valueDescriptionId = `${triggerId}-value`;
   const actionDescriptionId = `${triggerId}-action`;
   const inputRef = React.useRef<HTMLInputElement>(null);
   const triggerRef = React.useRef<HTMLElement>(null);
@@ -182,7 +183,7 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
             <Button
               ref={triggerRef}
               {...triggerProps}
-              aria-describedby={mergeIds(ariaDescribedBy, actionDescriptionId)}
+              aria-describedby={mergeIds(ariaDescribedBy, valueDescriptionId, actionDescriptionId)}
               aria-invalid={isInvalid ? true : ariaInvalid}
               className={cn(triggerClasses, motionClasses.control, className)}
               data-placeholder={selectedValue ? undefined : ""}
@@ -210,6 +211,7 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
             <BasePopover.Popup
               className={cn(
                 popoverPopupClasses,
+                motionClasses.overlayEnter,
                 "w-(--n-calendar-width) min-w-0 max-w-(--available-width) gap-(--n-space-2) p-0 [--n-overlay-background:var(--n-calendar-background)] [--n-overlay-control-background:var(--n-calendar-background)] [--n-overlay-control-background-hover:var(--n-calendar-day-background-hover)] [--n-overlay-foreground:var(--n-calendar-foreground)] [--n-overlay-foreground-muted:var(--n-calendar-weekday-foreground)]",
               )}
               data-slot="content"
@@ -243,7 +245,7 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
                 today={today}
                 value={selectedValue ?? undefined}
               />
-              {clearable && selectedValue && !readOnly ? (
+              {clearable && selectedValue && !disabled && !readOnly ? (
                 <Button
                   className="mx-(--n-calendar-padding) mb-(--n-calendar-padding)"
                   data-slot="clear"
@@ -262,6 +264,9 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
           </BasePopover.Positioner>
         </BasePopover.Portal>
       </BasePopover.Root>
+      <span className="sr-only" id={valueDescriptionId}>
+        {displayValue}
+      </span>
       <span className="sr-only" id={actionDescriptionId}>
         {actionLabel}
       </span>
