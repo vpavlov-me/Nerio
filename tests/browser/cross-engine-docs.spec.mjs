@@ -46,7 +46,7 @@ test("keeps Dialog, Popover, Tooltip, and Dropdown Menu positioned and keyboard-
   const problems = monitorPage(page, browserName);
   const viewport = { width: 1024, height: 820 };
   await page.setViewportSize(viewport);
-  await page.goto("/docs/blocks/overlay-playground");
+  await page.goto("/visual-test/blocks/overlay-playground");
 
   const dialogTrigger = page.getByRole("button", { name: "Open dialog" });
   await dialogTrigger.click();

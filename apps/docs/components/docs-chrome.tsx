@@ -57,6 +57,7 @@ import {
 } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
 import { mcpInstall, mcpLocalConfiguration } from "../lib/public-commands";
+import { blockCatalog } from "../features/blocks/catalog";
 import { templateCatalog } from "../features/templates/catalog";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
@@ -220,28 +221,29 @@ const componentToc: TocItem[] = [
 const compositionToc: TocItem[] = [
   { id: "overview", label: "Overview" },
   { id: "live-preview", label: "Live preview" },
+  { id: "intended-use", label: "Intended use" },
   { id: "code", label: "Code" },
-  { id: "components-used", label: "Components used" },
+  { id: "anatomy", label: "Anatomy" },
   { id: "accessibility", label: "Accessibility" },
   { id: "responsive-behaviour", label: "Responsive behaviour" },
-  { id: "notes", label: "Notes" },
+  { id: "boundaries", label: "Boundaries" },
+  { id: "related-surfaces", label: "Related surfaces" },
 ];
 
 const compositionGroup: NavGroup = {
-  title: "Composition previews",
-  items: [
-    { href: "/docs/blocks/login", label: "Login", icon: PanelLeft },
-    { href: "/docs/blocks/register", label: "Register", icon: PanelLeft },
-    { href: "/docs/blocks/forgot-password", label: "Forgot password", icon: PanelLeft },
-    { href: "/docs/blocks/settings-form", label: "Settings form", icon: Wrench },
-    { href: "/docs/blocks/table-toolbar", label: "Table toolbar", icon: ListTree },
-    { href: "/docs/blocks/user-profile", label: "User profile", icon: Circle },
-    { href: "/docs/blocks/empty-states", label: "Empty states", icon: FileText },
-    { href: "/docs/blocks/feedback", label: "Feedback", icon: Circle },
-    { href: "/docs/blocks/overlay-playground", label: "Overlay playground", icon: PanelLeft },
-    { href: "/docs/blocks/navigation-patterns", label: "Navigation patterns", icon: Layers },
-    { href: "/docs/blocks/dense-form", label: "Dense form", icon: Wrench },
-  ],
+  title: "Blocks",
+  items: blockCatalog.map((block) => ({
+    href: block.detailRoute,
+    label: block.title,
+    icon:
+      block.category === "Authentication"
+        ? PanelLeft
+        : block.category === "Settings and account"
+          ? Wrench
+          : block.category === "Team and operations"
+            ? ListTree
+            : FileText,
+  })),
 };
 
 const buttonToc: TocItem[] = [
@@ -368,7 +370,7 @@ function getDefaultToc(pathname: string): TocItem[] {
   if (pathname === "/docs/components/button") return buttonToc;
   if (pathname === "/docs/components/badge") return badgeToc;
   if (pathname.startsWith("/docs/components/")) return componentToc;
-  if (pathname.startsWith("/docs/blocks/") || pathname.startsWith("/docs/compositions/")) {
+  if (pathname.startsWith("/blocks/")) {
     return compositionToc;
   }
   return tocByPath[pathname] ?? [];
@@ -397,6 +399,12 @@ const searchEntries: DocsCommandEntry[] = [
     }),
   ),
   {
+    href: "/blocks",
+    title: "Blocks",
+    group: "Product compositions",
+    description: "Explore bounded, reusable Nerio compositions for one clear product task.",
+  },
+  {
     href: "/playground",
     title: "Playground",
     group: "Tools",
@@ -424,7 +432,7 @@ const documentationItems: NavItem[] = [
 ];
 
 function getSidebarGroups(pathname: string): NavGroup[] {
-  if (pathname.startsWith("/docs/blocks") || pathname.startsWith("/docs/compositions")) {
+  if (pathname.startsWith("/blocks/")) {
     return [compositionGroup];
   }
   return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
@@ -736,6 +744,7 @@ export function DocsChrome({
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const isHomePage = pathname === "/";
+  const isBlocksPage = pathname === "/blocks";
   const isTemplatesPage = pathname.startsWith("/templates");
   const isTemplateView = pathname.startsWith("/views/");
   const isPlaygroundPage = pathname === "/playground";
@@ -838,7 +847,7 @@ export function DocsChrome({
 
   const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
-  if (pathname === "/visual-test" || isTemplateView) {
+  if (pathname.startsWith("/visual-test") || isTemplateView) {
     return <>{children}</>;
   }
 
@@ -873,8 +882,8 @@ export function DocsChrome({
               Components
             </Link>
             <Link
-              href="/docs/blocks/login"
-              className={pathname.startsWith("/docs/blocks") ? "is-active" : undefined}
+              href="/blocks"
+              className={pathname.startsWith("/blocks") ? "is-active" : undefined}
             >
               Blocks
             </Link>
@@ -952,12 +961,12 @@ export function DocsChrome({
         className={
           isHomePage
             ? "docs-layout docs-layout--landing"
-            : isTemplatesPage || isPlaygroundPage
+            : isBlocksPage || isTemplatesPage || isPlaygroundPage
               ? "docs-layout docs-layout--template"
               : "docs-layout"
         }
       >
-        {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+        {isHomePage || isBlocksPage || isTemplatesPage || isPlaygroundPage ? null : (
           <aside className="docs-sidebar">
             <nav aria-label="Documentation">
               {sidebarGroups.map((group) => (
@@ -991,21 +1000,21 @@ export function DocsChrome({
               ? "docs-main docs-main--landing"
               : isPlaygroundPage
                 ? "docs-main docs-main--template docs-main--playground"
-                : isTemplatesPage
+                : isBlocksPage || isTemplatesPage
                   ? "docs-main docs-main--template"
                   : "docs-main"
           }
         >
-          {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+          {isHomePage || isBlocksPage || isTemplatesPage || isPlaygroundPage ? null : (
             <PageActions pathname={pathname} />
           )}
           {children}
-          {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+          {isHomePage || isBlocksPage || isTemplatesPage || isPlaygroundPage ? null : (
             <DocsPageNavigation pathname={pathname} />
           )}
         </main>
 
-        {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+        {isHomePage || isBlocksPage || isTemplatesPage || isPlaygroundPage ? null : (
           <aside className="docs-toc" aria-label="On this page">
             <div className="docs-toc-card">
               <div className="docs-toc-title">On this page</div>

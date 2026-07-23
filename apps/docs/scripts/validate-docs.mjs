@@ -343,11 +343,7 @@ function tailwindDocumentationFailures() {
       '{ href: "/docs/foundations/visual-language", label: "Visual language"',
       "Foundation navigation must expose the Visual Language reference",
     ],
-    [
-      docsChrome,
-      'href="/docs/blocks/login"',
-      "Primary navigation must expose the Blocks reference surface",
-    ],
+    [docsChrome, 'href="/blocks"', "Primary navigation must expose the Blocks reference surface"],
     [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
     [
       sitemap,
@@ -507,6 +503,87 @@ function templateArchitectureFailures() {
   return failures;
 }
 
+function blockArchitectureFailures() {
+  const catalog = read("apps/docs/features/blocks/catalog.ts");
+  const gallery = read("apps/docs/app/blocks/page.tsx");
+  const detail = read("apps/docs/app/blocks/[slug]/page.tsx");
+  const viewRoute = read("apps/docs/app/views/blocks/[slug]/page.tsx");
+  const internalRoute = read("apps/docs/app/visual-test/blocks/[slug]/page.tsx");
+  const redirects = read("apps/docs/app/docs/blocks/[slug]/page.tsx");
+  const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const sitemap = read("apps/docs/app/sitemap.ts");
+  const robots = read("apps/docs/app/robots.ts");
+  const audit = read("docs/audits/blocks-catalog-audit.md");
+  const failures = [];
+
+  const required = [
+    [catalog, "export const blockCatalog", "Blocks must have one canonical metadata catalog"],
+    [catalog, 'previewRoute: "/views/blocks/', "Block previews must be same-origin Views"],
+    [catalog, "internalBlockFixtures", "Internal Block fixtures must be classified separately"],
+    [gallery, "blockCatalog", "Blocks gallery must derive from the canonical catalog"],
+    [detail, "blockSlugs.map", "Block detail routes must derive static params from the catalog"],
+    [detail, "getBlock(slug)", "Block detail routes must reject unknown slugs"],
+    [viewRoute, "blockSlugs.map", "Block View routes must derive static params from the catalog"],
+    [viewRoute, "indexable: false", "Block Views must remain unindexed"],
+    [internalRoute, "isInternalBlockFixture", "Internal fixtures must reject unknown slugs"],
+    [internalRoute, "index: false", "Internal fixtures must remain unindexed"],
+    [
+      redirects,
+      "legacyPublicBlockRedirects",
+      "Legacy public Block routes must redirect canonically",
+    ],
+    [docsChrome, 'href="/blocks"', "Primary navigation must use the canonical Blocks catalog"],
+    [sitemap, "blockCatalog", "Indexable Blocks must be derived into the sitemap"],
+    [robots, '"/views/"', "Robots must exclude full-screen Views from crawling"],
+    [robots, '"/visual-test/"', "Robots must exclude internal fixtures from crawling"],
+  ];
+
+  for (const [source, expected, message] of required) {
+    if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  const publicSlugs = [...catalog.matchAll(/slug: "([^"]+)"/g)].map((match) => match[1]);
+  if (publicSlugs.length < 8 || publicSlugs.length > 12) {
+    failures.push(
+      `Blocks catalog must remain compact at 8-12 entries; found ${publicSlugs.length}.`,
+    );
+  }
+
+  for (const legacySlug of [
+    "login",
+    "register",
+    "forgot-password",
+    "settings-form",
+    "table-toolbar",
+    "user-profile",
+    "empty-states",
+    "feedback",
+    "overlay-playground",
+    "navigation-patterns",
+    "dense-form",
+  ]) {
+    if (!audit.includes(`\`${legacySlug}\``)) {
+      failures.push(`Blocks audit is missing an explicit decision for ${legacySlug}.`);
+    }
+  }
+
+  for (const internalSlug of [
+    "overlay-playground",
+    "navigation-patterns",
+    "dense-form",
+    "feedback",
+  ]) {
+    if (
+      catalog.includes(`detailRoute: "/blocks/${internalSlug}"`) ||
+      docsChrome.includes(`href: "/blocks/${internalSlug}"`)
+    ) {
+      failures.push(`${internalSlug} must not be presented as a public Block.`);
+    }
+  }
+
+  return failures;
+}
+
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
 const documentedRegistrySlugs = registrySlugs.filter((slug) => {
@@ -576,6 +653,7 @@ const uiEntrypointIssues = uiEntrypointFailures();
 const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
+const blockArchitectureIssues = blockArchitectureFailures();
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -611,6 +689,7 @@ reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
+reportMissing("Block architecture issues", blockArchitectureIssues);
 
 const failures = [
   missingNav,
@@ -635,6 +714,7 @@ const failures = [
   packageReadinessIssues,
   tailwindDocumentationIssues,
   templateArchitectureIssues,
+  blockArchitectureIssues,
 ].flat();
 
 if (failures.length > 0) {
@@ -642,5 +722,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Docs registry, Tailwind contract, template architecture, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
+  `Docs registry, Tailwind contract, Blocks and Templates architecture, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
 );
