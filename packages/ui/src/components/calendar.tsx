@@ -117,7 +117,7 @@ function normalizeMonth(value: CalendarDate, name: string): CalendarDate {
   return formatDate({ ...parseDate(value, name), day: 1 });
 }
 
-function toUtcDate(value: CalendarDate) {
+export function calendarDateToUtcDate(value: CalendarDate) {
   const { year, month, day } = parseDate(value, "date");
   const date = new Date(0);
   date.setUTCHours(12, 0, 0, 0);
@@ -136,7 +136,7 @@ function fromUtcDate(date: Date): CalendarDate {
 }
 
 function addDays(value: CalendarDate, amount: number): CalendarDate {
-  const date = toUtcDate(value);
+  const date = calendarDateToUtcDate(value);
   date.setUTCDate(date.getUTCDate() + amount);
   return fromUtcDate(date);
 }
@@ -166,7 +166,7 @@ function localToday(): CalendarDate {
 
 function getMonthDates(month: CalendarDate, firstDayOfWeek: CalendarFirstDayOfWeek) {
   const first = normalizeMonth(month, "month");
-  const offset = (toUtcDate(first).getUTCDay() - firstDayOfWeek + 7) % 7;
+  const offset = (calendarDateToUtcDate(first).getUTCDay() - firstDayOfWeek + 7) % 7;
   const gridStart = addDays(first, -offset);
   return Array.from({ length: 42 }, (_, index) => addDays(gridStart, index));
 }
@@ -344,7 +344,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
   const weekdayDates = Array.from({ length: 7 }, (_, index) =>
     addDays("2026-01-04", (firstDayOfWeek + index) % 7),
   );
-  const monthLabel = monthFormatter.format(toUtcDate(visibleMonth));
+  const monthLabel = monthFormatter.format(calendarDateToUtcDate(visibleMonth));
   const previousMonthLabel = labels?.previousMonth ?? "Previous month";
   const nextMonthLabel = labels?.nextMonth ?? "Next month";
   const selectedDateLabel = labels?.selectedDate ?? "Selected";
@@ -403,7 +403,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
         <thead data-slot="weekday-header">
           <tr data-slot="weekday-row">
             {weekdayDates.map((date) => {
-              const nativeDate = toUtcDate(date);
+              const nativeDate = calendarDateToUtcDate(date);
               const longLabel = weekdayLongFormatter.format(nativeDate);
               return (
                 <th
@@ -441,7 +441,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
                       }}
                       aria-current={date === resolvedToday ? "date" : undefined}
                       aria-disabled={unavailable || undefined}
-                      aria-label={`${dateFormatter.format(toUtcDate(date))}${
+                      aria-label={`${dateFormatter.format(calendarDateToUtcDate(date))}${
                         selected ? `, ${selectedDateLabel}` : ""
                       }`}
                       className={dayClasses}
@@ -476,12 +476,12 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
                             break;
                           case "Home": {
                             step = -1;
-                            const weekday = toUtcDate(date).getUTCDay();
+                            const weekday = calendarDateToUtcDate(date).getUTCDay();
                             nextDate = addDays(date, -((weekday - firstDayOfWeek + 7) % 7));
                             break;
                           }
                           case "End": {
-                            const weekday = toUtcDate(date).getUTCDay();
+                            const weekday = calendarDateToUtcDate(date).getUTCDay();
                             nextDate = addDays(date, 6 - ((weekday - firstDayOfWeek + 7) % 7));
                             break;
                           }

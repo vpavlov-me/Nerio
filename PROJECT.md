@@ -146,11 +146,11 @@ Nerio Core includes foundation and base reusable components: Button, IconButton,
 
 Core 1.0 Input supports native date, month, week, time, and `datetime-local` values, Slider provides
 one Base UI-backed numeric value and thumb, and FileInput preserves native file selection and form
-behavior without owning uploads. Approved implementation tasks remain for a single-date Calendar
-and a bounded single-date DatePicker. The canonical coverage decision is
-`docs/core-platform-primitive-coverage.md`. Plain native HTML remains the preferred path where a
-wrapper adds no durable value; ranges, scheduling, upload workflows, multi-thumb sliders, and other
-product policy remain outside Core 1.0.
+behavior without owning uploads. Calendar and DatePicker provide the implemented bounded custom
+single-date path. The canonical coverage decision is `docs/core-platform-primitive-coverage.md`.
+Plain native HTML remains the preferred path where a wrapper adds no durable value; ranges,
+scheduling, upload workflows, multi-thumb sliders, parsing, time zones, and other product policy
+remain outside Core 1.0.
 
 Core should be strong enough to build real products without a paid license. It should not contain advanced product compositions that are better treated as Pro value.
 

@@ -44,6 +44,8 @@ const componentLedes: Record<string, string> = {
     "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
   calendar:
     "Calendar selects one timezone-safe ISO date in a localizable month grid with complete keyboard navigation and explicit constraints.",
+  "date-picker":
+    "DatePicker composes Calendar and an anchored overlay into one localizable, form-backed single-date control.",
   toast: "Toasts acknowledge short-lived product events without interrupting the current workflow.",
   field: "Fields compose labels, controls, descriptions, and validation messages.",
   "form-message":

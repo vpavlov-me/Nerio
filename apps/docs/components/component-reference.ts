@@ -84,6 +84,8 @@ export const snippets: Record<string, string> = {
     'import { Slider } from "@nerio-ui/ui/client";\n\n<Slider\n  label="Volume"\n  name="volume"\n  defaultValue={40}\n  valueLabel="40%"\n  getAriaValueText={(_, value) => `${value} percent`}\n/>',
   calendar:
     'import { Calendar } from "@nerio-ui/ui/client";\n\n<Calendar\n  aria-label="Release date"\n  defaultValue="2026-06-15"\n  min="2026-06-01"\n  max="2026-06-30"\n  firstDayOfWeek={1}\n/>',
+  "date-picker":
+    'import { Field } from "@nerio-ui/ui";\nimport { DatePicker } from "@nerio-ui/ui/client";\n\n<Field label="Release date" description="Choose one calendar date.">\n  <DatePicker name="releaseDate" defaultValue="2026-06-15" clearable />\n</Field>',
   dialog:
     'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
   sheet:
@@ -337,6 +339,26 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "Arrow, Home, End, Page, Enter, and Space keyboard model",
       "localized full date labels and live month announcement",
       "RTL, forced-colors, disabled, and read-only support",
+    ],
+  },
+  "date-picker": {
+    name: "DatePicker",
+    description:
+      "Composes Calendar and an anchored overlay into one localizable, form-backed single-date control.",
+    status: "stable",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Calendar", "Input", "Field", "Popover"],
+    anatomy: ["root", "trigger", "content", "clear", "form-control"],
+    motion: ["Popover enter and exit", "hover", "focus", "reduced-motion compatible"],
+    accessibility: [
+      "Field or explicit ARIA naming",
+      "Calendar keyboard model",
+      "focus transfer and restoration",
+      "Escape and outside dismissal",
+      "native form value, required, disabled, and reset behavior",
     ],
   },
   "input-group": {
@@ -2019,6 +2041,95 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-calendar-day-foreground-unavailable",
       "--n-calendar-duration",
       "--n-calendar-easing",
+      "--n-focus-ring",
+    ],
+  },
+  "date-picker": {
+    category: "Forms",
+    purpose:
+      "Use DatePicker for one custom, localizable ISO calendar date when native Input type=date is not sufficient.",
+    anatomy: [
+      { title: "root", description: "State wrapper for trigger, popup, and form mirror." },
+      { title: "trigger", description: "Native button aligned with the form family." },
+      { title: "content", description: "Anchored Base UI Popover surface." },
+      { title: "Calendar", description: "The existing complete single-date grid." },
+      { title: "clear", description: "Optional explicit empty-value action." },
+      { title: "form-control", description: "Single hidden native form value mirror." },
+    ],
+    variants: [
+      { title: "Uncontrolled", description: "Owns selected value and popup state from defaults." },
+      { title: "Controlled", description: "Consumer owns value and open state independently." },
+      { title: "Clearable", description: "Adds an explicit optional clear action." },
+    ],
+    states: [
+      { title: "Empty", description: "Shows an explicit placeholder." },
+      { title: "Selected", description: "Formats one ISO date for display and form submission." },
+      { title: "Open", description: "Moves focus into Calendar and restores it on close." },
+      { title: "Invalid", description: "Uses form-family invalid presentation and aria-invalid." },
+      { title: "Read-only", description: "Allows inspection without value changes." },
+      { title: "Disabled", description: "Disables trigger and form value." },
+    ],
+    motion: [
+      "Popover uses the shared overlay enter and exit contract.",
+      "Reduced motion keeps dismissal and focus behavior immediate.",
+    ],
+    accessibility: [
+      "Name the trigger through Field, Label, aria-label, or aria-labelledby.",
+      "The trigger description includes the localized selected value or empty placeholder before the open/change action.",
+      "Opening moves focus to the selected or active Calendar day.",
+      "Selection, Escape, outside dismissal, and clear restore focus to the trigger.",
+      "Calendar retains Arrow, Home, End, Page, Enter, Space, RTL, and constraint behavior.",
+      "The single named form mirror preserves submission, reset, required, disabled, and read-only semantics.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled CalendarDate; null is the explicit empty value.",
+      },
+      {
+        title: "open / defaultOpen / onOpenChange",
+        description: "Controlled or uncontrolled Popover state with Base UI event details.",
+      },
+      {
+        title: "name / form / required / onInvalid",
+        description:
+          "Native form ownership, stable ISO submission, constraint validation, and validation observation.",
+      },
+      {
+        title: "min / max / isDateDisabled",
+        description: "Existing Calendar boundaries and disabled-date policy.",
+      },
+      {
+        title: "locale / firstDayOfWeek / formatValue",
+        description:
+          "Localized display and week order without localized parsing; locale defaults to en-US for deterministic SSR.",
+      },
+      {
+        title: "labels / placeholder / clearable",
+        description: "Localizable control copy and one optional explicit clear action.",
+      },
+      { title: "disabled / readOnly / invalid", description: "Interaction and form states." },
+      { title: "ref", description: "HTMLElement ref for the public trigger." },
+    ],
+    guidance: {
+      do: [
+        "Use native Input type=date when direct text entry or browser-owned picker UI is preferred.",
+        "Use DatePicker for one bounded custom date workflow and compose it with Field.",
+      ],
+      dont: [
+        "Do not add ranges, presets, localized parsing, time, timezone conversion, scheduling, availability, recurrence, or product shortcuts.",
+      ],
+    },
+    related: ["calendar", "input", "field", "popover"],
+    tokens: [
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-placeholder",
+      "--n-popover-radius",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-calendar-width",
+      "--n-calendar-day-background-selected",
       "--n-focus-ring",
     ],
   },

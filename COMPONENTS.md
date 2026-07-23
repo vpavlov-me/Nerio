@@ -82,15 +82,16 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Slider      | stable-core | `@nerio-ui/ui/client` | Base UI single-value range primitive with form metadata, horizontal/vertical orientation, read-only behavior, localized value text, and one thumb |
 | FileInput   | stable-core | `@nerio-ui/ui`        | Native file selection with forwarded FileList, form/reset semantics, single or multiple selection, and no upload workflow ownership               |
 | Calendar    | stable-core | `@nerio-ui/ui/client` | Timezone-safe single-date grid with ISO values, roving focus, locale labels, week starts, constraints, and controlled or uncontrolled state       |
-| DatePicker  | planned     | `@nerio-ui/ui/client` | Approved Core 1.0 bounded single-date control composed from Calendar and Core overlays                                                            |
+| DatePicker  | stable-core | `@nerio-ui/ui/client` | Form-backed single-date control composed from Calendar and Popover with ISO values, localization, constraints, reset, and focus restoration       |
 
 ### Input-family roadmap
 
 The canonical native and composite platform boundary lives in
 `docs/core-platform-primitive-coverage.md`. Input provides the supported native path for date,
 month, week, time, and `datetime-local` values without a second component identity. Slider,
-Calendar and DatePicker are approved planned Core components above. FileInput is the bounded native
-selection primitive delivered by #260; upload workflows remain consumer or Pro responsibility.
+Calendar and DatePicker provide the bounded custom single-date path. FileInput is the bounded native
+selection primitive delivered by #260; ranges, scheduling, parsing, and upload workflows remain
+consumer or Pro responsibility.
 
 | Component                                                                            | Tier            | Status | Boundary                                                                                                                              |
 | ------------------------------------------------------------------------------------ | --------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------- |

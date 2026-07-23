@@ -162,6 +162,23 @@ const expectedCalendarFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedDatePickerFiles = [
+  "components/button.tsx",
+  "components/calendar.tsx",
+  "components/date-picker.tsx",
+  "components/field.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/label.tsx",
+  "components/popover.tsx",
+  "lib/cn.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/motion.css",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedFileInputFiles = [
   "components/file-input.tsx",
   "lib/cn.ts",
@@ -493,7 +510,8 @@ async function verify() {
       !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation") ||
       !listOutput.includes("slider\tSlider\tforms") ||
       !listOutput.includes("file-input\tFileInput\tforms") ||
-      !listOutput.includes("calendar\tCalendar\tforms")
+      !listOutput.includes("calendar\tCalendar\tforms") ||
+      !listOutput.includes("date-picker\tDatePicker\tforms")
     ) {
       throw new Error("List output did not include registry component name, title, and category.");
     }
@@ -539,6 +557,16 @@ async function verify() {
       !calendarInfoOutput.includes("components/calendar.tsx")
     ) {
       throw new Error("Calendar registry metadata did not include its ISO grid contract.");
+    }
+    const datePickerInfoOutput = await run(localTarget, "info", "date-picker");
+    if (
+      !datePickerInfoOutput.includes("DatePicker (date-picker)") ||
+      !datePickerInfoOutput.includes("Registry dependencies: calendar, field, popover") ||
+      !datePickerInfoOutput.includes("--n-calendar-day-background-selected") ||
+      !datePickerInfoOutput.includes("YYYY-MM-DD") ||
+      !datePickerInfoOutput.includes("components/date-picker.tsx")
+    ) {
+      throw new Error("DatePicker registry metadata did not include its ISO form contract.");
     }
     const typographyInfoOutput = await run(localTarget, "info", "typography");
     if (
@@ -608,6 +636,7 @@ async function verify() {
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "slider");
     await run(localTarget, "add", "calendar");
+    await run(localTarget, "add", "date-picker");
     await run(localTarget, "add", "file-input");
     await run(localTarget, "add", "alert");
     await run(localTarget, "add", "radio-group");
@@ -847,6 +876,20 @@ async function verify() {
       !calendarSource.includes('case "PageUp"')
     ) {
       throw new Error("Installed Calendar source did not preserve its ISO grid contract.");
+    }
+    assertFiles(localTarget, expectedDatePickerFiles);
+    const datePickerSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/date-picker.tsx"),
+      "utf8",
+    );
+    if (
+      !datePickerSource.includes("BasePopover.Root") ||
+      !datePickerSource.includes('data-slot="form-control"') ||
+      !datePickerSource.includes("calendarDateToUtcDate") ||
+      !datePickerSource.includes("actionsRef.current?.close()") ||
+      !datePickerSource.includes("formatValue")
+    ) {
+      throw new Error("Installed DatePicker source did not preserve its ISO form contract.");
     }
     assertFiles(localTarget, expectedFileInputFiles);
     const fileInputSource = fs.readFileSync(
