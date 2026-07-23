@@ -48,6 +48,7 @@ export default defineConfig({
     {
       name: "docs-chromium",
       testMatch: [
+        "block-routes.spec.mjs",
         "docs-smoke.spec.mjs",
         "cross-engine-docs.spec.mjs",
         "docs-performance-smoke.spec.mjs",

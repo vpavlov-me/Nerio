@@ -2125,8 +2125,19 @@ pre {
   min-inline-size: var(--n-size-control-lg);
 }
 
-.templates-page {
+.templates-page,
+.blocks-page {
   gap: var(--n-space-6);
+}
+
+.blocks-category {
+  display: grid;
+  gap: var(--n-space-4);
+}
+
+.blocks-category > h2 {
+  font-size: var(--n-font-size-xl);
+  margin: 0;
 }
 
 .templates-hero {
@@ -2200,6 +2211,48 @@ pre {
   border-radius: var(--n-radius-lg);
   block-size: min(48rem, calc(100dvh - var(--n-docs-header-height) - var(--n-space-10)));
   inline-size: 100%;
+}
+
+.block-preview-frame {
+  background: var(--n-color-surface);
+  border: var(--n-border-subtle);
+  border-radius: var(--n-radius-lg);
+  block-size: min(38rem, calc(100dvh - var(--n-docs-header-height) - var(--n-space-10)));
+  inline-size: 100%;
+}
+
+.block-view {
+  align-items: center;
+  background: var(--n-color-surface-canvas);
+  display: grid;
+  min-block-size: 100dvh;
+  padding: clamp(var(--n-space-4), 5vw, var(--n-space-12));
+}
+
+.block-view > .composition-preview {
+  inline-size: min(100%, 64rem);
+  margin-inline: auto;
+}
+
+.block-view--internal {
+  align-content: start;
+  gap: var(--n-space-5);
+}
+
+.block-view--internal > header {
+  display: grid;
+  gap: var(--n-space-2);
+  inline-size: min(100%, 64rem);
+  margin-inline: auto;
+}
+
+.composition-inline-status span {
+  display: grid;
+  gap: var(--n-space-1);
+}
+
+.composition-inline-status small {
+  color: var(--n-color-text-tertiary);
 }
 
 .template-detail-grid {

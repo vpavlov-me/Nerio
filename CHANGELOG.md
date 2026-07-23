@@ -8,6 +8,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added a metadata-driven catalog of ten bounded product Blocks at `/blocks`, with same-origin
+  full-screen previews at `/views/blocks/[slug]`, canonical detail metadata, responsive and
+  accessible task-focused examples, and explicit product boundaries. The previous broad settings
+  composition was split into profile, security, and notification Blocks; profile, empty-state, and
+  feedback galleries were simplified around recognizable tasks; valuable overlay, navigation,
+  feedback-family, and dense-form stress coverage moved to unindexed internal fixtures.
 - Added an immutable, release-versioned Registry contract and a portable `nerio.lock.json` source
   record with exact revision, style contract, dependency closure, installed paths, and original
   hashes. Added `nerio diff`, deterministic `nerio update --dry-run`, safe source updates,

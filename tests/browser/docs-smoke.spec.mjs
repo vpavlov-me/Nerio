@@ -226,15 +226,17 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
     "Visual language",
   );
   await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
-    "Composition previews",
+    "Blocks",
   );
-  await expect(navigation.getByRole("link", { name: "Login" })).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "Sign in" })).toBeVisible();
   await navigation.getByRole("link", { name: "Visual language" }).click();
   await expect(page).toHaveURL(/\/docs\/foundations\/visual-language$/);
 
   await page.getByRole("button", { name: "Search documentation" }).click();
-  await page.getByRole("combobox", { name: "Search documentation" }).fill("Login");
-  await expect(page.getByRole("option", { name: /^Login Login documentation and/ })).toBeVisible();
+  await page.getByRole("combobox", { name: "Search documentation" }).fill("Sign in");
+  await expect(
+    page.getByRole("option", { name: /^Sign in Sign in documentation and/ }),
+  ).toBeVisible();
   await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "Search documentation" }).click();
@@ -258,14 +260,18 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   ]);
 
   expect(await sitemap.text()).not.toContain("/playground");
-  expect(await sitemap.text()).not.toContain("/docs/blocks/");
+  expect(await sitemap.text()).toContain("/blocks/sign-in");
+  expect(await sitemap.text()).not.toContain("/views/blocks/");
   expect(await robots.text()).toContain("Sitemap: https://nerio.vpavlov.com/sitemap.xml");
+  expect(await robots.text()).toContain("Disallow: /views/");
+  expect(await robots.text()).toContain("Disallow: /visual-test/");
   expect(await llms.text()).toContain("0.1.0-alpha.1");
+  expect(await llms.text()).toContain("The public Blocks catalog is available at `/blocks`");
   expect(await llms.text()).not.toContain("/playground");
   expect(legacy.status()).toBe(308);
-  expect(legacy.headers().location).toBe("/docs/blocks/login");
+  expect(legacy.headers().location).toBe("/blocks/sign-in");
 
-  await page.goto("/docs/blocks/login");
+  await page.goto("/views/blocks/sign-in");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   await expectHealthyPage(page, problems);
 });

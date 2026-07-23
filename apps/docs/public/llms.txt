@@ -26,12 +26,12 @@ The maintainer-approved Nerio 1.0 visual language is documented in
 color and surfaces, typography, geometry and spacing, interaction states, motion, iconography, and
 signature details. It does not introduce a new runtime axis or silently change public APIs.
 
-Public documentation lives under `/docs`. `/templates` is the metadata-driven catalog,
-`/templates/operations-workspace` is the first descriptive Template page, and
-`/views/operations-workspace` is its same-origin full-screen preview. Operations Workspace proves
-composition but is not a released Pro package or stable distribution surface.
-Legacy `/docs/compositions/*` aliases
-redirect to unindexed `/docs/blocks/*` stress-test routes and are not part of public Core discovery.
+Public component documentation lives under `/docs`. `/blocks` is the metadata-driven catalog for
+bounded product tasks, while `/templates` is the catalog for complete app-like scenarios. Their
+same-origin full-screen previews live under `/views/blocks/[slug]` and `/views/[slug]`. Internal
+stress fixtures live under unindexed `/visual-test/blocks/[slug]` routes and are not public Blocks.
+Operations Workspace proves complete product composition but is not a released Pro package or
+stable distribution surface.
 
 Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
 black surface with a soft shadow and no default border; secondary grouping and TableContainer use
@@ -117,3 +117,10 @@ Nerio Core uses Tailwind CSS v4-first component authoring while `--n-*` variable
 Supported package consumers use Node.js >=20.9.0, React >=19, Next.js >=16.2.0 <17, TypeScript >=5.9 <6, and Tailwind CSS >=4.0.0 <5. Automated browser evidence covers Chromium 140+, Firefox 141+, and WebKit 26+ across documentation and docs-local Template routes. Exact safe-area inset and forced-colors emulation remain Chromium-specific automated evidence; assistive-technology and real-device coverage is tracked as a manual release gate.
 
 AI agents should select the smallest component set that matches the workflow, avoid unnecessary domain-specific assumptions in Core, use Pro for advanced product workflows, keep examples universal unless the task explicitly asks for a vertical, and never introduce shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive libraries.
+
+The public Blocks catalog is available at `/blocks`. Its ten docs-local compositions cover sign in,
+account creation, password recovery, profile settings, security settings, notification preferences,
+a basic table toolbar, an account summary, an empty project, and deterministic file-upload states.
+Each `/blocks/[slug]` detail page explains intended use and product boundaries and embeds a
+same-origin `/views/blocks/[slug]` preview. Blocks solve one bounded task; they are not Templates,
+Core component APIs, complete application shells, or backend workflows.

@@ -102,6 +102,12 @@ in its use of brand color.
 
 Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows, finance/crypto widgets, AI chat shells, premium themes, Figma assets, and templates belong to Nerio Pro unless the component matrix says otherwise.
 
+The documentation application also includes a focused
+[Blocks catalog](https://nerio.design/blocks) of bounded product compositions and a separate
+[Templates catalog](https://nerio.design/templates) for complete app-like scenarios. Blocks use
+same-origin full-screen previews, stay smaller than a product page or shell, and do not add Core
+APIs or backend behavior.
+
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
 the complete native-versus-component boundary. Input supports native date, month, week, time, and

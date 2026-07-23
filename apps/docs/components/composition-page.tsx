@@ -23,16 +23,13 @@ import {
   Heading,
   Input,
   KeyValue,
-  List,
   Pagination,
   Popover,
   Progress,
-  RadioGroup,
   Select,
   Separator,
   Skeleton,
   Spinner,
-  Stat,
   Switch,
   Tabs,
   TabsContent,
@@ -55,7 +52,7 @@ import {
   useToastManager,
 } from "@nerio-ui/ui/client";
 import { CodeExample } from "./code-example";
-import { compositionDocs } from "../lib/composition-docs";
+import { getBlock, internalBlockFixtures } from "../features/blocks/catalog";
 
 type Composition = {
   purpose: string;
@@ -71,6 +68,8 @@ const authComponents = ["Card", "Field", "Input", "Button", "Alert"];
 
 function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
   const [submitted, setSubmitted] = React.useState(false);
+  const [busy, setBusy] = React.useState(false);
+  const [completed, setCompleted] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const invalid = submitted && !email.includes("@");
   const copy = {
@@ -96,7 +95,7 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
         <Text tone="secondary">{copy.description}</Text>
       </CardHeader>
       <CardContent>
-        {submitted && !invalid ? (
+        {completed ? (
           <Alert
             tone="success"
             title={kind === "forgot" ? "Check your inbox" : "Ready to continue"}
@@ -111,11 +110,19 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
           onSubmit={(event) => {
             event.preventDefault();
             setSubmitted(true);
+            setCompleted(false);
+            if (email.includes("@")) {
+              setBusy(true);
+              window.setTimeout(() => {
+                setBusy(false);
+                setCompleted(true);
+              }, 400);
+            }
           }}
         >
           {kind === "register" ? (
             <Field label="Full name">
-              <Input placeholder="Alex Morgan" />
+              <Input autoComplete="name" placeholder="Alex Morgan" />
             </Field>
           ) : null}
           <Field
@@ -124,6 +131,8 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
             message={invalid ? "Enter a valid email address." : undefined}
           >
             <Input
+              autoComplete="email"
+              type="email"
               value={email}
               onChange={(event) => setEmail(event.currentTarget.value)}
               placeholder="you@company.com"
@@ -131,14 +140,18 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
           </Field>
           {kind !== "forgot" ? (
             <Field label="Password">
-              <Input type="password" placeholder="At least 8 characters" />
+              <Input
+                autoComplete={kind === "login" ? "current-password" : "new-password"}
+                type="password"
+                placeholder="At least 8 characters"
+              />
             </Field>
           ) : null}
-          <Button loading={submitted && !invalid}>{copy.action}</Button>
+          <Button loading={busy}>{copy.action}</Button>
           {kind === "login" ? (
             <Button
               nativeButton={false}
-              render={<a href="/docs/blocks/forgot-password" />}
+              render={<a href="/blocks/reset-password" />}
               variant="link"
             >
               Forgot your password?
@@ -155,7 +168,7 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
   );
 }
 
-function SettingsPreview() {
+function ProfileSettingsPreview() {
   const [saved, setSaved] = React.useState(false);
   return (
     <form
@@ -174,71 +187,110 @@ function SettingsPreview() {
           <Textarea defaultValue="A focused product team." />
         </Field>
       </section>
-      <Separator />
-      <section>
-        <h3>Preferences</h3>
-        <FormGroup title="Notifications" description="Choose how updates reach you.">
-          <label className="composition-choice">
-            <Checkbox defaultChecked /> Product updates
-          </label>
-          <label className="composition-choice">
-            <Checkbox /> Weekly digest
-          </label>
-        </FormGroup>
-        <RadioGroup
-          label="Default view"
-          defaultValue="board"
-          options={[
-            { label: "Board", value: "board" },
-            { label: "List", value: "list" },
-          ]}
-        />
-        <Select
-          label="Time zone"
-          defaultValue="utc"
-          options={[
-            { label: "UTC", value: "utc" },
-            { label: "Tbilisi", value: "tbilisi" },
-          ]}
-        />
-      </section>
-      <Separator />
-      <section>
-        <h3>Security</h3>
-        <label className="composition-switch">
-          <span>
-            Require two-factor authentication<small>Applies to every member.</small>
-          </span>
-          <Switch aria-label="Require two-factor authentication" />
-        </label>
-      </section>
-      <section className="composition-danger">
-        <h3>Danger zone</h3>
-        <p>Deleting a workspace cannot be undone.</p>
-        <Dialog
-          trigger={<Button variant="danger">Delete workspace</Button>}
-          title="Delete workspace"
-          description="This permanently removes all workspace data."
-        >
-          <p>Type the workspace name in a real product before enabling this action.</p>
-          <Button variant="danger">Delete workspace</Button>
-        </Dialog>
-      </section>
+      {saved ? (
+        <Alert role="status" tone="success" title="Profile saved">
+          Workspace details are up to date.
+        </Alert>
+      ) : null}
       <div className="composition-save-bar">
         <span>{saved ? "Changes saved." : "Unsaved changes"}</span>
         <Button type="submit" loading={false}>
-          Save changes
+          Save profile
         </Button>
       </div>
     </form>
   );
 }
 
+function NotificationPreferencesPreview() {
+  const [saved, setSaved] = React.useState(false);
+  return (
+    <form
+      className="composition-settings"
+      onSubmit={(event) => {
+        event.preventDefault();
+        setSaved(true);
+      }}
+    >
+      <section>
+        <h3>Notification preferences</h3>
+        <p>Choose which workspace updates should reach your inbox.</p>
+        <FormGroup
+          title="Email notifications"
+          description="Select every update you want to receive."
+        >
+          <label className="composition-choice">
+            <Checkbox defaultChecked /> Mentions and assignments
+          </label>
+          <label className="composition-choice">
+            <Checkbox defaultChecked /> Project status changes
+          </label>
+          <label className="composition-choice">
+            <Checkbox /> Product announcements
+          </label>
+        </FormGroup>
+        <Select
+          label="Digest frequency"
+          defaultValue="weekly"
+          options={[
+            { label: "Daily", value: "daily" },
+            { label: "Weekly", value: "weekly" },
+            { label: "Never", value: "never" },
+          ]}
+        />
+      </section>
+      {saved ? (
+        <Alert role="status" tone="success" title="Preferences saved">
+          Future workspace updates will use these choices.
+        </Alert>
+      ) : null}
+      <div className="composition-save-bar">
+        <span>{saved ? "Up to date" : "Review your notification choices"}</span>
+        <Button type="submit">Save preferences</Button>
+      </div>
+    </form>
+  );
+}
+
+function SecuritySettingsPreview() {
+  return (
+    <div className="composition-settings">
+      <section>
+        <h3>Account security</h3>
+        <label className="composition-switch">
+          <span>
+            Require two-factor authentication
+            <small>Add a second verification step when signing in.</small>
+          </span>
+          <Switch aria-label="Require two-factor authentication" />
+        </label>
+      </section>
+      <Separator />
+      <section className="composition-danger">
+        <h3>Delete account</h3>
+        <p>Permanently remove this account and its personal data.</p>
+        <Dialog
+          trigger={<Button variant="danger">Delete account</Button>}
+          title="Delete account"
+          description="This action cannot be undone."
+        >
+          <Field label="Type DELETE to confirm">
+            <Input autoComplete="off" />
+          </Field>
+          <Button variant="danger">Delete account</Button>
+        </Dialog>
+      </section>
+    </div>
+  );
+}
+
 function TableToolbarPreview() {
   const [query, setQuery] = React.useState("");
+  const [selected, setSelected] = React.useState<string[]>([]);
   const rows = ["Aster", "Canvas", "Luma"].filter((row) =>
     row.toLowerCase().includes(query.toLowerCase()),
   );
+  const visibleSelected = rows.filter((row) => selected.includes(row));
   return (
     <div className="composition-table">
       <div className="composition-toolbar">
@@ -257,20 +309,25 @@ function TableToolbarPreview() {
           items={[{ label: "All projects" }, { label: "Active" }, { label: "Archived" }]}
         />
       </div>
-      <div className="composition-bulk">
-        <span>{rows.length} selected</span>
-        <Button size="sm" variant="ghost">
-          Archive
-        </Button>
-        <Button size="sm" variant="ghost">
-          Assign owner
-        </Button>
-      </div>
+      {visibleSelected.length ? (
+        <div className="composition-bulk" role="status">
+          <span>{visibleSelected.length} selected</span>
+          <Button size="sm" variant="ghost">
+            Archive
+          </Button>
+          <Button size="sm" variant="ghost">
+            Assign owner
+          </Button>
+        </div>
+      ) : null}
       {rows.length ? (
         <TableContainer aria-label="Projects">
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>
+                  <span className="sr-only">Select</span>
+                </TableHead>
                 <TableHead>Project</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Owner</TableHead>
@@ -279,6 +336,17 @@ function TableToolbarPreview() {
             <TableBody>
               {rows.map((row) => (
                 <TableRow key={row}>
+                  <TableCell>
+                    <Checkbox
+                      aria-label={`Select ${row}`}
+                      checked={selected.includes(row)}
+                      onCheckedChange={(checked) =>
+                        setSelected((current) =>
+                          checked ? [...current, row] : current.filter((item) => item !== row),
+                        )
+                      }
+                    />
+                  </TableCell>
                   <TableCell>{row}</TableCell>
                   <TableCell>
                     <Badge variant="success">Active</Badge>
@@ -315,90 +383,117 @@ function TableToolbarPreview() {
   );
 }
 
-function ProfilePreview() {
+function AccountSummaryPreview() {
   return (
-    <div className="composition-profile">
-      <Card>
-        <CardContent>
-          <div className="composition-profile-head">
-            <Avatar name="Alex Morgan" />
-            <div>
-              <h3>Alex Morgan</h3>
-              <p>Product designer · Northstar</p>
-            </div>
-            <Badge variant="success">Active</Badge>
+    <Card className="composition-profile">
+      <CardContent>
+        <div className="composition-profile-head">
+          <Avatar name="Alex Morgan" />
+          <div>
+            <h3>Alex Morgan</h3>
+            <p>Product designer · Northstar</p>
           </div>
-          <div className="composition-stat-grid">
-            <Stat label="Projects" value="12" />
-            <Stat label="Followers" value="248" />
-          </div>
-          <dl className="composition-key-values">
-            <KeyValue label="Location" value="Tbilisi, GE" />
-            <KeyValue label="Member since" value="May 2024" />
-          </dl>
-          <div className="composition-actions">
-            <Button>Edit profile</Button>
-            <Dialog
-              trigger={<Button variant="secondary">Message</Button>}
-              title="Message Alex"
-              description="Start a focused conversation."
-            >
-              <Field label="Message">
-                <Textarea placeholder="Write a message" />
-              </Field>
-              <Button>Send message</Button>
-            </Dialog>
-          </div>
-        </CardContent>
-      </Card>
-      <section>
-        <h3>Recent activity</h3>
-        <List
-          items={[
-            {
-              id: "updated-brief",
-              title: "Updated the design brief",
-              description: "Today at 10:42",
-              meta: <Badge>Design</Badge>,
-            },
-            {
-              id: "joined-project",
-              title: "Joined the research project",
-              description: "Yesterday",
-              meta: <Badge variant="info">Team</Badge>,
-            },
-          ]}
-        />
-      </section>
-    </div>
+          <Badge variant="success">Active</Badge>
+        </div>
+        <dl className="composition-key-values">
+          <KeyValue label="Email" value="alex@northstar.example" />
+          <KeyValue label="Location" value="Tbilisi, Georgia" />
+          <KeyValue label="Member since" value="May 2024" />
+        </dl>
+        <div className="composition-actions">
+          <Dialog
+            trigger={<Button>Edit account</Button>}
+            title="Edit account"
+            description="Update the public account details shown to collaborators."
+          >
+            <Field label="About">
+              <Textarea defaultValue="Product designer at Northstar." />
+            </Field>
+            <Button>Save changes</Button>
+          </Dialog>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
-function EmptyStatesPreview() {
-  const states: Array<[string, string]> = [
-    ["No data", "Create the first record to begin."],
-    ["No search results", "Try a broader search term."],
-    ["No notifications", "You are all caught up."],
-    ["No projects", "Start a project for your team."],
-    ["Offline", "Reconnect to update this view."],
-    ["Permission denied", "Ask an owner for access."],
-  ];
+function EmptyProjectPreview() {
   return (
-    <div className="composition-empty-grid">
-      {states.map(([title, description]) => (
-        <EmptyState key={title} size="sm">
-          <EmptyStateHeader>
-            <EmptyStateTitle>{title}</EmptyStateTitle>
-            <EmptyStateDescription>{description}</EmptyStateDescription>
-          </EmptyStateHeader>
-          <EmptyStateActions>
-            <Button size="sm">Primary action</Button>
-            <Button size="sm" variant="ghost">
-              Learn more
+    <EmptyState size="sm">
+      <EmptyStateHeader>
+        <EmptyStateTitle>Create your first project</EmptyStateTitle>
+        <EmptyStateDescription>
+          Organize a delivery goal, invite collaborators, and keep progress visible in one place.
+        </EmptyStateDescription>
+      </EmptyStateHeader>
+      <EmptyStateActions>
+        <Button size="sm">Create project</Button>
+        <Button
+          nativeButton={false}
+          size="sm"
+          variant="ghost"
+          render={<a href="/templates/operations-workspace" />}
+        >
+          See a project workspace
+        </Button>
+      </EmptyStateActions>
+    </EmptyState>
+  );
+}
+
+type UploadState = "uploading" | "complete" | "failed" | "cancelled";
+
+function FileUploadStatePreview() {
+  const [state, setState] = React.useState<UploadState>("uploading");
+  const progress = state === "complete" ? 100 : state === "uploading" ? 64 : 0;
+  return (
+    <div className="composition-feedback">
+      <div>
+        <div className="composition-inline-status">
+          <span>
+            <strong>research-notes.pdf</strong>
+            <small>{state === "uploading" ? "4.8 MB of 7.5 MB" : "7.5 MB"}</small>
+          </span>
+          {state === "uploading" ? <Spinner label="Uploading research-notes.pdf" /> : null}
+        </div>
+        {state === "uploading" || state === "complete" ? (
+          <Progress value={progress} aria-label="File upload progress" />
+        ) : null}
+      </div>
+      {state === "complete" ? (
+        <Alert role="status" tone="success" title="Upload complete">
+          research-notes.pdf is ready to use.
+        </Alert>
+      ) : null}
+      {state === "failed" ? (
+        <Alert role="alert" tone="danger" title="Upload failed">
+          The connection was interrupted. Retry when you are ready.
+        </Alert>
+      ) : null}
+      {state === "cancelled" ? (
+        <Alert role="status" title="Upload cancelled">
+          The file was not added to this project.
+        </Alert>
+      ) : null}
+      <div className="composition-actions">
+        {state === "uploading" ? (
+          <>
+            <Button variant="secondary" onClick={() => setState("complete")}>
+              Complete upload
             </Button>
-          </EmptyStateActions>
-        </EmptyState>
-      ))}
+            <Button variant="ghost" onClick={() => setState("cancelled")}>
+              Cancel
+            </Button>
+          </>
+        ) : (
+          <Button variant="secondary" onClick={() => setState("uploading")}>
+            {state === "failed" ? "Retry upload" : "Upload again"}
+          </Button>
+        )}
+        <Button variant="ghost" onClick={() => setState("failed")}>
+          Show failure
+        </Button>
+      </div>
     </div>
   );
 }
@@ -502,7 +597,7 @@ function NavigationPreview() {
       <Breadcrumbs
         items={[
           { label: "Docs", href: "/docs" },
-          { label: "Composition previews", href: "/docs/blocks/login" },
+          { label: "Blocks", href: "/blocks" },
           { label: "Navigation patterns" },
         ]}
       />
@@ -578,8 +673,8 @@ function DenseFormPreview() {
   );
 }
 
-const compositions: Record<string, Composition> = {
-  login: {
+const blocks: Record<string, Composition> = {
+  "sign-in": {
     purpose:
       "Combines the smallest authentication flow from Core building blocks, including validation, loading, and recovery navigation.",
     components: authComponents,
@@ -592,7 +687,7 @@ const compositions: Record<string, Composition> = {
     code: '<Card><Field label="Email"><Input /></Field><Button>Sign in</Button></Card>',
     Preview: () => <AuthPreview kind="login" />,
   },
-  register: {
+  "create-account": {
     purpose:
       "Tests the relationship between a small account form, validation, and explanatory feedback.",
     components: authComponents,
@@ -605,7 +700,7 @@ const compositions: Record<string, Composition> = {
     code: '<Field label="Full name"><Input /></Field><Field label="Email"><Input /></Field>',
     Preview: () => <AuthPreview kind="register" />,
   },
-  "forgot-password": {
+  "reset-password": {
     purpose:
       "Validates how feedback changes a compact recovery action without changing page structure.",
     components: authComponents,
@@ -618,29 +713,44 @@ const compositions: Record<string, Composition> = {
     code: '<Alert tone="success" title="Check your inbox" /><Field label="Email"><Input /></Field>',
     Preview: () => <AuthPreview kind="forgot" />,
   },
-  "settings-form": {
+  "profile-settings": {
     purpose:
-      "Stress-tests long-form hierarchy and the distinction between immediate settings and saved fields.",
-    components: [
-      "Field",
-      "FormGroup",
-      "Checkbox",
-      "RadioGroup",
-      "Select",
-      "Textarea",
-      "Switch",
-      "Dialog",
-      "Button",
-      "Alert",
-    ],
+      "Keeps profile editing to one recognizable task rather than presenting a complete settings page.",
+    components: ["Field", "Input", "Textarea", "Button", "Alert"],
     accessibility:
-      "FormGroup uses fieldset semantics, every switch has an accessible name, and destructive action opens a labelled dialog.",
+      "Every control has a visible label, native form submission supports Enter, and saved feedback uses a status message.",
     responsive:
-      "Sections collapse naturally to one column; the save bar wraps instead of compressing controls.",
+      "The fields remain one column and the save row wraps instead of compressing its action.",
     notes:
-      "This is a documentation-local composition. A reusable settings layout, permissions model, or billing workflow would be Pro.",
-    code: '<FormGroup title="Notifications"><Checkbox /><Checkbox /></FormGroup>\n<Dialog title="Delete workspace">...</Dialog>',
-    Preview: SettingsPreview,
+      "The application still owns the settings route, persistence, navigation, and permission model.",
+    code: '<form><Field label="Workspace name"><Input /></Field><Field label="About"><Textarea /></Field><Button type="submit">Save profile</Button></form>',
+    Preview: ProfileSettingsPreview,
+  },
+  "security-settings": {
+    purpose:
+      "Pairs one immediate security preference with an appropriately separated destructive confirmation.",
+    components: ["Switch", "Separator", "Dialog", "Field", "Input", "Button"],
+    accessibility:
+      "The switch has an explicit accessible name and deletion opens a labelled modal with focus restoration.",
+    responsive:
+      "The setting row and destructive action wrap without changing source order or shrinking controls.",
+    notes:
+      "Authorization, reauthentication, audit history, and deletion policy remain product responsibilities.",
+    code: '<Switch aria-label="Require two-factor authentication" />\n<Dialog title="Delete account">...</Dialog>',
+    Preview: SecuritySettingsPreview,
+  },
+  "notification-preferences": {
+    purpose:
+      "Collects a small set of related notification choices without becoming a product-wide preferences system.",
+    components: ["FormGroup", "Checkbox", "Select", "Alert", "Button"],
+    accessibility:
+      "Related checkboxes use FormGroup semantics, the frequency control has a label, and save feedback is announced politely.",
+    responsive:
+      "Choices stay in a readable vertical sequence and the save row wraps at narrow widths.",
+    notes:
+      "Consent rules, delivery infrastructure, and available channels remain application policy.",
+    code: '<FormGroup title="Email notifications"><Checkbox />...</FormGroup>\n<Select label="Digest frequency" />',
+    Preview: NotificationPreferencesPreview,
   },
   "table-toolbar": {
     purpose:
@@ -655,44 +765,44 @@ const compositions: Record<string, Composition> = {
     code: '<Input aria-label="Search projects" />\n<DropdownMenu items={filters} />\n<Table>...</Table>',
     Preview: TableToolbarPreview,
   },
-  "user-profile": {
+  "account-summary": {
     purpose:
-      "Checks whether display primitives form a calm profile without implying a dashboard system.",
-    components: ["Card", "Avatar", "Stat", "KeyValue", "List", "Badge", "Button", "Dialog"],
+      "Combines identity and account metadata in a bounded summary rather than a full profile page.",
+    components: ["Card", "Avatar", "KeyValue", "Badge", "Button", "Dialog", "Field", "Textarea"],
     accessibility:
-      "Avatar text fallback is derived from the person’s name; metadata uses a definition list and the dialog provides a labelled interaction.",
-    responsive:
-      "Statistics move into a single column and actions wrap while profile identity stays visually first.",
+      "Avatar fallback is derived from the person’s name, metadata uses a definition list, and editing opens a labelled dialog.",
+    responsive: "Identity and actions wrap while the account name remains first in reading order.",
     notes:
-      "A complete activity feed, profile permissions, or dashboard layout would be a Pro product pattern.",
-    code: '<Avatar name="Alex Morgan" />\n<Stat label="Projects" value="12" />\n<KeyValue label="Location" value="Tbilisi, GE" />',
-    Preview: ProfilePreview,
+      "Activity feeds, social metrics, profile permissions, and a dashboard layout are intentionally excluded.",
+    code: '<Avatar name="Alex Morgan" />\n<KeyValue label="Email" value="alex@northstar.example" />\n<Dialog title="Edit account">...</Dialog>',
+    Preview: AccountSummaryPreview,
   },
-  "empty-states": {
+  "empty-project": {
     purpose:
-      "Compares repeated EmptyState compositions across expected, filtered, offline, and permission-limited situations.",
+      "Gives a genuinely empty collection one clear creation path and restrained supporting context.",
     components: ["EmptyState", "Button"],
     accessibility:
-      "Each state is structured with an explicit heading and descriptive text; the decorative mark remains hidden from assistive technology.",
-    responsive:
-      "Cards remain usable in a single column and action pairs wrap without reducing tap targets.",
+      "The state has an explicit heading, descriptive text, a primary action, and a separate navigation link.",
+    responsive: "Actions wrap without reducing target size or changing their reading order.",
     notes:
-      "Product-specific illustrations, recovery flows, and permission requests belong to the app or a future Pro template—not Core.",
-    code: "<EmptyState><EmptyStateHeader><EmptyStateTitle>No projects</EmptyStateTitle><EmptyStateDescription>Start a project for your team.</EmptyStateDescription></EmptyStateHeader><EmptyStateActions><Button>Create project</Button></EmptyStateActions></EmptyState>",
-    Preview: EmptyStatesPreview,
+      "Search, permission, offline, and failure cases need separate product-specific recovery language.",
+    code: "<EmptyState><EmptyStateHeader><EmptyStateTitle>Create your first project</EmptyStateTitle></EmptyStateHeader><EmptyStateActions><Button>Create project</Button></EmptyStateActions></EmptyState>",
+    Preview: EmptyProjectPreview,
   },
-  feedback: {
-    purpose: "Tests how persistent and temporary feedback coexist without competing for attention.",
-    components: ["Alert", "Toast", "Progress", "Skeleton", "Spinner", "Button"],
+  "file-upload-state": {
+    purpose: "Frames progress and outcome feedback around one recognizable file-upload operation.",
+    components: ["Alert", "Progress", "Spinner", "Button"],
     accessibility:
-      "Critical inline feedback uses clear text; progress has a name; managed toasts include a dismiss action and status semantics.",
-    responsive:
-      "Feedback stacks vertically and preserves reading order; transient toast placement remains independent from the content column.",
+      "Progress has a file-specific accessible name, failure is urgent, routine outcomes are polite, and every transition has text.",
+    responsive: "Status, progress, and actions stack and wrap while preserving reading order.",
     notes:
-      "Core owns feedback primitives. Cross-product notification centres and workflow orchestration remain out of scope.",
-    code: '<Alert tone="success" title="Changes saved" />\n<Progress label="Upload progress" value={64} />\n<ToastViewport />',
-    Preview: FeedbackPreview,
+      "File selection, transfer, retry policy, persistence, and server errors remain application responsibilities.",
+    code: '<Progress aria-label="File upload progress" value={64} />\n<Alert tone="success" title="Upload complete" />',
+    Preview: FileUploadStatePreview,
   },
+};
+
+const internalFixtures: Record<keyof typeof internalBlockFixtures, Composition> = {
   "overlay-playground": {
     purpose:
       "Validates focus management, keyboard navigation, layering, scrolling, and return focus using existing Base UI-backed Core primitives.",
@@ -731,19 +841,64 @@ const compositions: Record<string, Composition> = {
     code: "{Array.from({ length: 42 }, (_, index) => <Field label={`Control ${index + 1}`}><Input /></Field>)}",
     Preview: DenseFormPreview,
   },
+  feedback: {
+    purpose:
+      "Exercises the complete feedback family without presenting it as one copyable product task.",
+    components: ["Alert", "Toast", "Progress", "Skeleton", "Spinner", "Button"],
+    accessibility:
+      "Critical feedback uses text, progress has a name, and managed toasts preserve status and dismissal semantics.",
+    responsive:
+      "The fixture stacks vertically and preserves reading order while the Toast viewport remains independent.",
+    notes: "This is deterministic component-family regression evidence, not a public Block.",
+    code: '<Alert />\n<Progress aria-label="Upload progress" />\n<ToastViewport />',
+    Preview: FeedbackPreview,
+  },
 };
 
-export function CompositionPage({ slug }: { slug: string }) {
-  const composition = compositions[slug];
-  const doc = compositionDocs[slug];
-  if (!composition || !doc) return null;
-  const { Preview } = composition;
+export function BlockPreview({ slug }: { slug: string }) {
+  const block = blocks[slug];
+  if (!block) return null;
+  const { Preview } = block;
+  return (
+    <main className="block-view">
+      <div className="composition-preview">
+        <Preview />
+      </div>
+    </main>
+  );
+}
+
+export function InternalBlockFixture({ slug }: { slug: keyof typeof internalBlockFixtures }) {
+  const fixture = internalFixtures[slug];
+  const metadata = internalBlockFixtures[slug];
+  if (!fixture || !metadata) return null;
+  const { Preview } = fixture;
+  return (
+    <main className="block-view block-view--internal">
+      <header>
+        <p className="doc-kicker">Internal deterministic fixture</p>
+        <h1>{metadata.title}</h1>
+        <p>{metadata.description}</p>
+      </header>
+      <div className="composition-preview">
+        <Preview />
+      </div>
+    </main>
+  );
+}
+
+export function BlockDetail({ slug }: { slug: string }) {
+  const composition = blocks[slug];
+  const block = getBlock(slug);
+  if (!composition || !block) return null;
   return (
     <article className="doc-page composition-page">
       <header>
-        <p className="doc-kicker">Composition Gallery</p>
-        <h1>{doc.title}</h1>
-        <p className="doc-lede">{doc.description}</p>
+        <p className="doc-kicker">
+          {block.category} · {block.status}
+        </p>
+        <h1>{block.title}</h1>
+        <p className="doc-lede">{block.description}</p>
       </header>
       <section className="doc-section">
         <h2 id="overview">Overview</h2>
@@ -751,16 +906,23 @@ export function CompositionPage({ slug }: { slug: string }) {
       </section>
       <section className="doc-section">
         <h2 id="live-preview">Live Preview</h2>
-        <div className="composition-preview">
-          <Preview />
-        </div>
+        <iframe
+          className="block-preview-frame"
+          src={block.previewRoute}
+          title={`${block.title} preview`}
+        />
+      </section>
+      <section className="doc-section">
+        <h2 id="intended-use">Intended Use</h2>
+        <p>{block.intendedUse}</p>
       </section>
       <section className="doc-section">
         <h2 id="code">Code</h2>
-        <CodeExample code={composition.code} label={`${doc.title} composition`} />
+        <CodeExample code={composition.code} label={`${block.title} block`} />
       </section>
       <section className="doc-section">
-        <h2 id="components-used">Components Used</h2>
+        <h2 id="anatomy">Anatomy</h2>
+        <p>This Block composes the following Nerio Core parts with block-local layout.</p>
         <div className="token-chip-row">
           {composition.components.map((component) => (
             <code key={component}>{component}</code>
@@ -776,8 +938,37 @@ export function CompositionPage({ slug }: { slug: string }) {
         <p>{composition.responsive}</p>
       </section>
       <section className="doc-section">
-        <h2 id="notes">Notes</h2>
+        <h2 id="boundaries">Boundaries</h2>
         <p>{composition.notes}</p>
+        <ul>
+          {block.boundaries.map((boundary) => (
+            <li key={boundary}>{boundary}</li>
+          ))}
+        </ul>
+      </section>
+      <section className="doc-section">
+        <h2 id="related-surfaces">Related Surfaces</h2>
+        <ul>
+          {block.relatedBlocks.map((relatedSlug) => {
+            const related = getBlock(relatedSlug);
+            return related ? (
+              <li key={related.slug}>
+                <a href={related.detailRoute}>{related.title} Block</a>
+              </li>
+            ) : null;
+          })}
+          {block.relatedTemplates.map((templateSlug) => (
+            <li key={templateSlug}>
+              <a href={`/templates/${templateSlug}`}>
+                {templateSlug
+                  .split("-")
+                  .map((word) => word[0]?.toUpperCase() + word.slice(1))
+                  .join(" ")}{" "}
+                Template
+              </a>
+            </li>
+          ))}
+        </ul>
       </section>
     </article>
   );
