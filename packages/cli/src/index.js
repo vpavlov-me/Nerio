@@ -275,6 +275,11 @@ function relativeTarget(componentsRoot, target) {
   return path.relative(cwd, resolveTarget(componentsRoot, target));
 }
 
+function isTokenStylesTarget(target) {
+  const segments = target.split(path.sep);
+  return segments.at(-2) === "styles" && segments.at(-1) === "tokens.css";
+}
+
 function resolveInstalledTarget(componentsRoot, storedTarget) {
   const root = path.resolve(cwd, componentsRoot);
   const resolved = path.resolve(cwd, storedTarget);
@@ -406,7 +411,7 @@ async function add(name) {
     if (fs.existsSync(target) && !hasFlag("--overwrite")) {
       const content = fs.readFileSync(target, "utf8");
       const tracked = state.files[relative];
-      if (content === file.content || relative.endsWith("/styles/tokens.css")) {
+      if (content === file.content || isTokenStylesTarget(relative)) {
         skipped.push(relative);
       } else if (tracked && hashContent(content) !== tracked.hash) {
         throw new Error(
@@ -565,7 +570,9 @@ function conflictStatus(status) {
 
 async function update(name) {
   if (name?.startsWith("--")) {
-    throw new Error("Usage: nerio update [component] [--dry-run] [--force]");
+    throw new Error(
+      "Usage: nerio update [component] [--registry <path-or-url>] [--dry-run] [--force]",
+    );
   }
   const config = readConfig(true);
   const state = readState(true);
@@ -615,10 +622,16 @@ async function update(name) {
     }
 
     const preserveBaseline = ["locally modified", "locally removed"].includes(entry.status);
+    const metadata = {
+      hash: preserveBaseline ? entry.previous?.hash : entry.upstream?.hash || entry.previous?.hash,
+      role: entry.upstream?.role || entry.previous?.role,
+      source: entry.upstream?.source || entry.previous?.source,
+    };
+    if (!metadata.hash || !metadata.role || !metadata.source) {
+      throw new Error(`Cannot record complete update metadata for ${entry.target}.`);
+    }
     state.files[entry.target] = {
-      hash: preserveBaseline ? entry.previous.hash : entry.upstream?.hash || entry.previous.hash,
-      role: entry.upstream?.role || entry.previous.role,
-      source: entry.upstream?.source || entry.previous.source,
+      ...metadata,
       owners: entry.owners,
     };
   }
