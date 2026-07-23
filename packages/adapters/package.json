@@ -65,9 +65,9 @@
     "motion": "12.42.2",
     "react": "^19.2.3",
     "react-dom": "^19.2.7",
-    "react-hook-form": "^7.68.0",
-    "recharts": "^3.6.0",
-    "typescript": "^5.9.3",
+    "react-hook-form": "^7.82.0",
+    "recharts": "^3.10.0",
+    "typescript": "^7.0.2",
     "vitest": "4.1.10",
     "zod": "^4.2.1"
   },
@@ -75,8 +75,8 @@
     "@tanstack/react-table": "^8.21.3",
     "motion": "^12.42.2",
     "react": ">=19",
-    "react-hook-form": "^7.68.0",
-    "recharts": "^3.6.0",
+    "react-hook-form": "^7.82.0",
+    "recharts": "^3.10.0",
     "zod": "^4.2.1"
   },
   "peerDependenciesMeta": {
