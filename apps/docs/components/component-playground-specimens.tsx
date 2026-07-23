@@ -23,6 +23,7 @@ import {
   Breadcrumbs,
   Button,
   ButtonGroup,
+  Calendar,
   Card,
   CardAction,
   CardContent,
@@ -148,6 +149,7 @@ const componentLinks = [
       ["Switch", "switch"],
       ["Select", "select"],
       ["Slider", "slider"],
+      ["Calendar", "calendar"],
     ],
   ],
   [
@@ -808,6 +810,45 @@ export function ComponentPlayground() {
                   aria-label="Vertical volume"
                   defaultValue={60}
                   orientation="vertical"
+                />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="calendar"
+        title="Calendar"
+        api="single date · ISO value · localized · constrained · readOnly"
+      >
+        <Matrix
+          columns={["Selected", "Constrained", "Read only"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Calendar
+                  key="selected"
+                  aria-label="Selected release date"
+                  defaultValue="2026-06-15"
+                  firstDayOfWeek={1}
+                  today="2026-06-15"
+                />,
+                <Calendar
+                  key="constrained"
+                  aria-label="Constrained release date"
+                  defaultMonth="2026-06-01"
+                  min="2026-06-10"
+                  max="2026-06-20"
+                  isDateDisabled={(date) => date === "2026-06-18"}
+                  today="2026-06-15"
+                />,
+                <Calendar
+                  key="readonly"
+                  aria-label="Read-only release date"
+                  defaultValue="2026-06-15"
+                  readOnly
+                  today="2026-06-15"
                 />,
               ],
             },

@@ -154,6 +154,14 @@ const expectedSliderFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedCalendarFiles = [
+  "components/calendar.tsx",
+  "lib/cn.ts",
+  "lib/compose-refs.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedFileInputFiles = [
   "components/file-input.tsx",
   "lib/cn.ts",
@@ -484,7 +492,8 @@ async function verify() {
       !listOutput.includes("alert\tAlert\tfeedback") ||
       !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation") ||
       !listOutput.includes("slider\tSlider\tforms") ||
-      !listOutput.includes("file-input\tFileInput\tforms")
+      !listOutput.includes("file-input\tFileInput\tforms") ||
+      !listOutput.includes("calendar\tCalendar\tforms")
     ) {
       throw new Error("List output did not include registry component name, title, and category.");
     }
@@ -520,6 +529,16 @@ async function verify() {
       !inputInfoOutput.includes("valueAsDate")
     ) {
       throw new Error("Input registry metadata did not include the native temporal contract.");
+    }
+    const calendarInfoOutput = await run(localTarget, "info", "calendar");
+    if (
+      !calendarInfoOutput.includes("Calendar (calendar)") ||
+      !calendarInfoOutput.includes("Registry dependencies: button") ||
+      !calendarInfoOutput.includes("--n-calendar-day-background-selected") ||
+      !calendarInfoOutput.includes("YYYY-MM-DD") ||
+      !calendarInfoOutput.includes("components/calendar.tsx")
+    ) {
+      throw new Error("Calendar registry metadata did not include its ISO grid contract.");
     }
     const typographyInfoOutput = await run(localTarget, "info", "typography");
     if (
@@ -588,6 +607,7 @@ async function verify() {
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "slider");
+    await run(localTarget, "add", "calendar");
     await run(localTarget, "add", "file-input");
     await run(localTarget, "add", "alert");
     await run(localTarget, "add", "radio-group");
@@ -813,6 +833,20 @@ async function verify() {
       throw new Error(
         "Installed Slider source did not preserve its single-value accessibility contract.",
       );
+    }
+    assertFiles(localTarget, expectedCalendarFiles);
+    const calendarSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/calendar.tsx"),
+      "utf8",
+    );
+    if (
+      !calendarSource.includes('role="grid"') ||
+      !calendarSource.includes('data-slot="day"') ||
+      !calendarSource.includes("firstDayOfWeek") ||
+      !calendarSource.includes("isDateDisabled") ||
+      !calendarSource.includes('case "PageUp"')
+    ) {
+      throw new Error("Installed Calendar source did not preserve its ISO grid contract.");
     }
     assertFiles(localTarget, expectedFileInputFiles);
     const fileInputSource = fs.readFileSync(

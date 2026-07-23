@@ -71,6 +71,8 @@ import {
 } from "../../src/index";
 import {
   Button,
+  Calendar,
+  type CalendarDate,
   Checkbox,
   Command,
   CommandEmpty,
@@ -247,6 +249,21 @@ const _invalidRangeSlider = <Slider aria-label="Budget" value={[20, 80]} />;
 const _invalidSliderMarks = <Slider aria-label="Volume" marks={[0, 50, 100]} />;
 const _validVisibleSlider = <Slider label="Volume" defaultValue={50} />;
 const _validAriaSlider = <Slider aria-label="Volume" defaultValue={50} />;
+// @ts-expect-error Calendar requires exactly one accessible naming strategy.
+const _invalidUnnamedCalendar = <Calendar />;
+// @ts-expect-error Calendar does not accept both accessible naming strategies.
+const _invalidConflictingCalendarName = (
+  <Calendar aria-label="Schedule" aria-labelledby="schedule-label" />
+);
+// @ts-expect-error Calendar values use the ISO YYYY-MM-DD date shape.
+const _invalidCalendarValue = <Calendar aria-label="Schedule" value="06/15/2026" />;
+// @ts-expect-error Calendar month and day segments must be zero-padded.
+const _invalidUnpaddedCalendarValue = <Calendar aria-label="Schedule" value="2026-6-1" />;
+// @ts-expect-error Calendar years require four numeric segments.
+const _invalidShortYearCalendarValue = <Calendar aria-label="Schedule" value="26-06-01" />;
+const _validCalendar = (
+  <Calendar aria-label="Schedule" value="2026-06-15" month="2026-06-01" firstDayOfWeek={1} />
+);
 const validComposedRadioGroup = (
   <RadioGroup label="Visibility">
     <RadioGroupItem value="team">Team</RadioGroupItem>
@@ -4196,6 +4213,249 @@ describe("Core interactive action contracts", () => {
     expect(rootRef.current?.querySelector('[data-slot="track"]')).not.toBeNull();
     expect(rootRef.current?.querySelector('[data-slot="indicator"]')).not.toBeNull();
     expect(rootRef.current?.querySelector('[data-slot="thumb"]')).not.toBeNull();
+  });
+
+  it("keeps Calendar ISO dates, leap years, anatomy, selection, and refs explicit", async () => {
+    const user = userEvent.setup();
+    const rootRef = React.createRef<HTMLDivElement>();
+    const onValueChange = vi.fn();
+    render(
+      <Calendar
+        ref={rootRef}
+        aria-label="Release calendar"
+        defaultMonth="2024-02-01"
+        defaultValue="2024-02-29"
+        onValueChange={onValueChange}
+        today="2024-02-15"
+      />,
+    );
+
+    const calendar = screen.getByRole("group", { name: "Release calendar" });
+    expect(rootRef.current).toBe(calendar);
+    expect(within(calendar).getAllByRole("gridcell")).toHaveLength(42);
+    expect(within(calendar).getByRole("heading", { name: "February 2024" })).toHaveAttribute(
+      "aria-live",
+      "polite",
+    );
+    expect(within(calendar).getByRole("gridcell", { selected: true })).toContainElement(
+      within(calendar).getByRole("button", { name: "February 29, 2024, Selected" }),
+    );
+    expect(within(calendar).getByRole("button", { name: "February 15, 2024" })).toHaveAttribute(
+      "aria-current",
+      "date",
+    );
+    expect(calendar.querySelector('[data-slot="header"]')).not.toBeNull();
+    expect(calendar.querySelector('[data-slot="weekday-header"]')).not.toBeNull();
+    expect(calendar.querySelectorAll('[data-slot="row"]')).toHaveLength(6);
+
+    await user.click(within(calendar).getByRole("button", { name: "February 28, 2024" }));
+    expect(onValueChange).toHaveBeenLastCalledWith("2024-02-28");
+    expect(within(calendar).getByRole("gridcell", { selected: true })).toContainElement(
+      within(calendar).getByRole("button", { name: "February 28, 2024, Selected" }),
+    );
+  });
+
+  it("keeps Calendar roving focus, week, month, year, boundary, and RTL navigation coherent", async () => {
+    const user = userEvent.setup();
+    const onMonthChange = vi.fn();
+    const { rerender } = render(
+      <Calendar
+        aria-label="Keyboard calendar"
+        defaultMonth="2026-01-01"
+        defaultValue="2026-01-31"
+        onMonthChange={onMonthChange}
+        today="2026-01-15"
+      />,
+    );
+
+    let focused = screen.getByRole("button", { name: "January 31, 2026, Selected" });
+    focused.focus();
+    await user.keyboard("{ArrowRight}");
+    focused = screen.getByRole("button", { name: "February 1, 2026" });
+    expect(focused).toHaveFocus();
+    expect(onMonthChange).toHaveBeenLastCalledWith("2026-02-01");
+    expect(
+      screen
+        .getAllByRole("button")
+        .filter((button) => button.dataset.slot === "day" && button.tabIndex === 0),
+    ).toHaveLength(1);
+
+    await user.keyboard("{Home}");
+    expect(screen.getByRole("button", { name: "February 1, 2026" })).toHaveFocus();
+    await user.keyboard("{End}");
+    expect(screen.getByRole("button", { name: "February 7, 2026" })).toHaveFocus();
+    await user.keyboard("{PageDown}");
+    expect(screen.getByRole("button", { name: "March 7, 2026" })).toHaveFocus();
+    await user.keyboard("{Shift>}{PageDown}{/Shift}");
+    expect(screen.getByRole("button", { name: "March 7, 2027" })).toHaveFocus();
+
+    rerender(
+      <div dir="rtl">
+        <Calendar
+          aria-label="Keyboard calendar"
+          defaultMonth="2026-01-01"
+          defaultValue="2026-01-15"
+          today="2026-01-15"
+        />
+      </div>,
+    );
+    focused = screen.getByRole("button", { name: "January 15, 2026, Selected" });
+    focused.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("button", { name: "January 14, 2026" })).toHaveFocus();
+  });
+
+  it("keeps Calendar constraints, disabled dates, read-only selection, and controlled state explicit", async () => {
+    const user = userEvent.setup();
+    const onReadOnlyChange = vi.fn();
+
+    function ControlledCalendar() {
+      const [value, setValue] = React.useState<"2026-06-15" | "2026-06-16">("2026-06-15");
+      const [month, setMonth] = React.useState<CalendarDate>("2026-06-01");
+      return (
+        <Calendar
+          aria-label="Controlled calendar"
+          value={value}
+          month={month}
+          min="2026-06-10"
+          max="2026-06-20"
+          isDateDisabled={(date) => date === "2026-06-18"}
+          onMonthChange={setMonth}
+          onValueChange={(nextValue) => setValue(nextValue as "2026-06-15" | "2026-06-16")}
+          today="2026-06-15"
+        />
+      );
+    }
+
+    render(
+      <>
+        <ControlledCalendar />
+        <Calendar
+          aria-label="Read-only calendar"
+          defaultValue="2026-06-15"
+          onValueChange={onReadOnlyChange}
+          readOnly
+          today="2026-06-15"
+        />
+      </>,
+    );
+
+    const controlled = screen.getByRole("group", { name: "Controlled calendar" });
+    expect(within(controlled).getByRole("button", { name: "June 9, 2026" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    expect(within(controlled).getByRole("button", { name: "June 18, 2026" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await user.click(within(controlled).getByRole("button", { name: "June 18, 2026" }));
+    expect(
+      within(controlled).getByRole("button", { name: "June 15, 2026, Selected" }),
+    ).toHaveAttribute("data-selected");
+    await user.click(within(controlled).getByRole("button", { name: "June 16, 2026" }));
+    expect(
+      within(controlled).getByRole("button", { name: "June 16, 2026, Selected" }),
+    ).toHaveAttribute("data-selected");
+
+    const readOnly = screen.getByRole("group", { name: "Read-only calendar" });
+    expect(within(readOnly).getByRole("grid")).toHaveAttribute("aria-readonly", "true");
+    await user.click(within(readOnly).getByRole("button", { name: "June 16, 2026" }));
+    expect(onReadOnlyChange).not.toHaveBeenCalled();
+  });
+
+  it("keeps Calendar locale labels and week starts independent from ISO values", () => {
+    render(
+      <Calendar
+        aria-label="Lokalisierter Kalender"
+        defaultMonth="2026-06-01"
+        firstDayOfWeek={1}
+        locale="de-DE"
+        defaultValue="2026-06-15"
+        labels={{
+          nextMonth: "Nächster Monat",
+          previousMonth: "Vorheriger Monat",
+          selectedDate: "Ausgewählt",
+        }}
+        today="2026-06-15"
+      />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Juni 2026" })).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: "Mo" })).toHaveAttribute("abbr", "Montag");
+    expect(screen.getByRole("button", { name: "Vorheriger Monat" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Nächster Monat" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "15. Juni 2026, Ausgewählt" })).toBeInTheDocument();
+  });
+
+  it("keeps Calendar today updates reactive and month-button focus stable", async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <Calendar aria-label="Reactive calendar" defaultMonth="2026-06-01" today="2026-06-15" />,
+    );
+
+    expect(screen.getByRole("button", { name: "June 15, 2026" })).toHaveAttribute(
+      "aria-current",
+      "date",
+    );
+    rerender(
+      <Calendar aria-label="Reactive calendar" defaultMonth="2026-06-01" today="2026-06-16" />,
+    );
+    expect(screen.getByRole("button", { name: "June 15, 2026" })).not.toHaveAttribute(
+      "aria-current",
+    );
+    expect(screen.getByRole("button", { name: "June 16, 2026" })).toHaveAttribute(
+      "aria-current",
+      "date",
+    );
+
+    const nextMonth = screen.getByRole("button", { name: "Next month" });
+    nextMonth.focus();
+    await user.keyboard("{Enter}");
+    expect(nextMonth).toHaveFocus();
+    expect(screen.getByRole("heading", { name: "July 2026" })).toBeInTheDocument();
+  });
+
+  it("rejects invalid Calendar dates and inverted constraints", () => {
+    expect(() => render(<Calendar aria-label="Invalid calendar" value="2026-02-30" />)).toThrow(
+      /valid calendar date/,
+    );
+    expect(() =>
+      render(
+        <Calendar
+          aria-label="Invalid range"
+          max="2026-06-01"
+          min="2026-06-02"
+          today="2026-06-01"
+        />,
+      ),
+    ).toThrow(/min must not be after max/);
+  });
+
+  it("keeps Calendar navigation inside the supported ISO year boundaries", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <Calendar aria-label="Earliest calendar" defaultValue="0001-01-01" today="0001-01-01" />,
+    );
+    const earliest = document.querySelector<HTMLButtonElement>('[data-value="0001-01-01"]');
+    earliest?.focus();
+    await user.keyboard("{PageUp}{Shift>}{PageUp}{/Shift}");
+    expect(earliest).toHaveFocus();
+    expect(screen.getByRole("group", { name: "Earliest calendar" })).toHaveAttribute(
+      "data-month",
+      "0001-01-01",
+    );
+
+    unmount();
+    render(<Calendar aria-label="Latest calendar" defaultValue="9999-12-31" today="9999-12-31" />);
+    const latest = document.querySelector<HTMLButtonElement>('[data-value="9999-12-31"]');
+    latest?.focus();
+    await user.keyboard("{PageDown}{Shift>}{PageDown}{/Shift}");
+    expect(latest).toHaveFocus();
+    expect(screen.getByRole("group", { name: "Latest calendar" })).toHaveAttribute(
+      "data-month",
+      "9999-12-01",
+    );
   });
 
   it("keeps read-only Slider focusable without changing its value", async () => {

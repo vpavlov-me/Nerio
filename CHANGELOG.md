@@ -8,6 +8,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the client-only single-date Calendar with timezone-safe ISO values, controlled and
+  uncontrolled selection and visible-month state, roving grid focus, locale-aware labels,
+  localized selected-date context, configurable week starts, min/max and disabled-date constraints,
+  Registry, CLI/MCP, docs, package/source-install, accessibility, and cross-browser coverage.
+  DatePicker, date ranges, scheduling, availability, events, recurrence, time, and timezone
+  workflows remain outside this primitive.
 - Added the server-safe native FileInput with typed file-only props, forwarded ref and FileList
   events, single or multiple selection, native form/reset behavior, tokenized file-button states,
   Registry, CLI/MCP, docs, package/source-install, accessibility, and cross-browser coverage. Upload,

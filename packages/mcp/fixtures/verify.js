@@ -465,6 +465,31 @@ async function verify() {
       throw new Error("MCP FileInput usage is missing native selection or token metadata.");
     }
 
+    const calendarUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "calendar" },
+    });
+    const calendarUsage = JSON.parse(calendarUsageResult.content[0].text);
+    assertRegistryParity("calendar", calendarUsage, [
+      "components/calendar.tsx",
+      "lib/cn.ts",
+      "lib/compose-refs.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      calendarUsage.baseUiPrimitives.length !== 0 ||
+      !calendarUsage.registryDependencies.includes("button") ||
+      !calendarUsage.slots.includes("day") ||
+      !calendarUsage.states.includes("unavailable") ||
+      !calendarUsage.requiredTokens.includes("--n-calendar-day-background-selected") ||
+      !calendarUsage.accessibility.some((item) => item.includes("YYYY-MM-DD")) ||
+      !calendarUsage.accessibility.some((item) => item.includes("Shift plus Page"))
+    ) {
+      throw new Error("MCP Calendar usage is missing ISO, grid, keyboard, or token metadata.");
+    }
+
     const itemUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "item" },

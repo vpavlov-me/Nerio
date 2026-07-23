@@ -42,6 +42,8 @@ const componentLedes: Record<string, string> = {
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
   slider:
     "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
+  calendar:
+    "Calendar selects one timezone-safe ISO date in a localizable month grid with complete keyboard navigation and explicit constraints.",
   toast: "Toasts acknowledge short-lived product events without interrupting the current workflow.",
   field: "Fields compose labels, controls, descriptions, and validation messages.",
   "form-message":

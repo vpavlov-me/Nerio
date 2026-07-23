@@ -48,6 +48,7 @@ import {
 } from "../../src/index";
 import {
   Button,
+  Calendar,
   Checkbox,
   Command,
   CommandEmpty,
@@ -721,6 +722,43 @@ describe("Core accessibility contracts", () => {
     expect(screen.getByLabelText("Attachments")).toHaveAccessibleDescription("PDF or image files.");
     expect(screen.getByLabelText("Attachments")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText("Unavailable attachment")).toBeDisabled();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps localized, constrained, read-only, and disabled Calendars accessible", async () => {
+    const { container } = render(
+      <>
+        <Calendar
+          aria-label="Release calendar"
+          defaultMonth="2026-06-01"
+          defaultValue="2026-06-15"
+          firstDayOfWeek={1}
+          min="2026-06-10"
+          max="2026-06-20"
+          isDateDisabled={(date) => date === "2026-06-18"}
+          locale="en-GB"
+          today="2026-06-15"
+        />
+        <span id="readonly-calendar-label">Read-only calendar</span>
+        <Calendar
+          aria-labelledby="readonly-calendar-label"
+          defaultValue="2026-06-15"
+          readOnly
+          today="2026-06-15"
+        />
+        <Calendar aria-label="Unavailable calendar" disabled today="2026-06-15" />
+      </>,
+    );
+
+    expect(screen.getAllByRole("grid", { name: "June 2026" })).toHaveLength(3);
+    expect(
+      screen.getByRole("group", { name: "Read-only calendar" }).querySelector('[role="grid"]'),
+    ).toHaveAttribute("aria-readonly", "true");
+    expect(
+      screen
+        .getByRole("group", { name: "Unavailable calendar" })
+        .querySelectorAll("button:disabled"),
+    ).toHaveLength(44);
     expect((await axe(container)).violations).toEqual([]);
   });
 });

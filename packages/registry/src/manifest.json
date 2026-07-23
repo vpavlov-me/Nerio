@@ -2170,6 +2170,119 @@
       "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<Switch defaultChecked label=\"Notify collaborators\" description=\"Collaborators receive updates as they happen.\" />"
     },
     {
+      "name": "calendar",
+      "title": "Calendar",
+      "description": "Selects one timezone-safe ISO calendar date in a localizable month grid.",
+      "category": "forms",
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/calendar.tsx",
+          "target": "components/calendar.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": [
+        "root",
+        "header",
+        "previous-month",
+        "heading",
+        "next-month",
+        "grid",
+        "weekday-header",
+        "weekday-row",
+        "weekday",
+        "body",
+        "row",
+        "cell",
+        "day"
+      ],
+      "variants": ["single-date", "localized week start"],
+      "states": [
+        "default",
+        "focused",
+        "selected",
+        "today",
+        "outside-month",
+        "unavailable",
+        "disabled",
+        "read-only"
+      ],
+      "requiredTokens": [
+        "--n-calendar-width",
+        "--n-calendar-padding",
+        "--n-calendar-radius",
+        "--n-calendar-border-width",
+        "--n-calendar-border",
+        "--n-calendar-background",
+        "--n-calendar-foreground",
+        "--n-calendar-header-gap",
+        "--n-calendar-grid-gap",
+        "--n-calendar-cell-gap",
+        "--n-calendar-cell-size",
+        "--n-calendar-heading-font-size",
+        "--n-calendar-heading-font-weight",
+        "--n-calendar-weekday-font-size",
+        "--n-calendar-weekday-font-weight",
+        "--n-calendar-weekday-foreground",
+        "--n-calendar-day-radius",
+        "--n-calendar-day-border-width",
+        "--n-calendar-day-font-size",
+        "--n-calendar-day-foreground",
+        "--n-calendar-day-foreground-outside",
+        "--n-calendar-day-foreground-unavailable",
+        "--n-calendar-day-background-hover",
+        "--n-calendar-day-background-selected",
+        "--n-calendar-day-foreground-selected",
+        "--n-calendar-day-border-selected",
+        "--n-calendar-today-font-weight",
+        "--n-calendar-today-underline-width",
+        "--n-calendar-today-underline-offset",
+        "--n-calendar-disabled-opacity",
+        "--n-calendar-duration",
+        "--n-calendar-easing",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Requires exactly one accessible name through aria-label or aria-labelledby.",
+        "Uses a native table with grid semantics, full localized date labels, weekday abbreviations, and one roving day tab stop.",
+        "Arrow keys move by day or week, Home and End move within the week, Page keys move by month, and Shift plus Page keys move by year.",
+        "Enter and Space select the focused date; unavailable, disabled, and read-only states cannot change the value.",
+        "Controlled and uncontrolled selected-date and visible-month state use timezone-safe YYYY-MM-DD values.",
+        "Locale formats labels while firstDayOfWeek intentionally controls the visual week start.",
+        "The heading announces visible-month changes politely; the focused day includes localized selection context; today, selection, focus, and unavailable states do not rely on color alone.",
+        "DatePicker, ranges, multiple selection, events, availability, scheduling, recurrence, time, timezone conversion, fetching, and persistence remain outside Calendar."
+      ],
+      "usage": "import { Calendar } from '@/components/nerio/components/calendar';\n\n<Calendar aria-label=\"Release date\" defaultValue=\"2026-06-15\" min=\"2026-06-01\" max=\"2026-06-30\" firstDayOfWeek={1} />"
+    },
+    {
       "name": "slider",
       "title": "Slider",
       "description": "Chooses one numeric value within a known range with one thumb.",
