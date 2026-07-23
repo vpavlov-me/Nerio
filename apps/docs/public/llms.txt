@@ -31,7 +31,11 @@ bounded product tasks, while `/templates` is the catalog for complete app-like s
 same-origin full-screen previews live under `/views/blocks/[slug]` and `/views/[slug]`. Internal
 stress fixtures live under unindexed `/visual-test/blocks/[slug]` routes and are not public Blocks.
 Operations Workspace proves complete product composition but is not a released Pro package or
-stable distribution surface.
+stable distribution surface. Finance & Assets adds a deterministic consolidated portfolio,
+holdings, transaction, transfer-review, and security/display scenario at
+`/templates/finance-assets` with a same-origin `/views/finance-assets` preview. It uses the optional
+charts adapter and local mock data only; it is not a released financial product, backend, or Pro
+package.
 
 Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
 black surface with a soft shadow and no default border; secondary grouping and TableContainer use

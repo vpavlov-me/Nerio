@@ -106,7 +106,8 @@ The documentation application also includes a focused
 [Blocks catalog](https://nerio.design/blocks) of bounded product compositions and a separate
 [Templates catalog](https://nerio.design/templates) for complete app-like scenarios. Blocks use
 same-origin full-screen previews, stay smaller than a product page or shell, and do not add Core
-APIs or backend behavior.
+APIs or backend behavior. Operations Workspace and Finance & Assets are deterministic docs-local
+previews rather than released Pro packages.
 
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
