@@ -49,6 +49,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Moved the Operations Workspace showcase into a metadata-driven docs-local Template architecture.
+  `/templates`, `/templates/operations-workspace`, and `/views/operations-workspace` now share one
+  catalog and one docs deployment; the standalone demo application, external demo URL, port 3002,
+  duplicate appearance runtime, and separate browser build were retired. Existing runtime-axis,
+  responsive, accessibility, performance, and product-state coverage now runs against the
+  same-origin full-screen View.
 - Stabilized the optional `@nerio-ui/adapters/motion` Core 1.0 contract. Runtime exports,
   transition and variant values, package/source parity, reduced-motion updates, SSR/hydration, and
   bundle isolation are snapshot- or fixture-protected. `NerioMotionConfig` now accepts only

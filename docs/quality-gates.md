@@ -6,7 +6,8 @@ engine, package budget, consumer contract, or deterministic performance check re
 ## Browser strategy
 
 `pnpm test:browser` runs the broad appearance and component-family matrix in Chromium and a compact,
-shared interaction suite in Chromium, Firefox, and WebKit for both the docs and demo applications.
+shared interaction suite in Chromium, Firefox, and WebKit for both documentation and docs-local
+Template routes.
 The shared suite covers focus-visible and keyboard order, Dialog and Sheet focus restoration,
 Popover, Tooltip, Dropdown Menu, Select, and command positioning, Toast lifecycle, Table overflow,
 Sidebar collapse, native forms, dynamic viewport bounds, RTL, and reduced motion.
@@ -20,8 +21,8 @@ documented limitation.
 
 ## Deterministic performance checks
 
-The Chromium docs and demo projects run `tests/browser/performance-smoke.spec.mjs`; the docs project
-also runs `tests/browser/docs-performance-smoke.spec.mjs`. Together they block every third-party
+The Chromium Template project runs `tests/browser/performance-smoke.spec.mjs`; the docs project runs
+`tests/browser/docs-performance-smoke.spec.mjs`. Together they block every third-party
 request, reject console, page, and hydration errors, cap primary-route transferred resources at 8
 MiB, limit cumulative layout shift to 0.1 after local fonts settle, and require a documentation
 search result within one second. These are regression tripwires, not public speed claims or a

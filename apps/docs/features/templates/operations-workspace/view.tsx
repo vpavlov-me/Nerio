@@ -71,7 +71,8 @@ import {
   persistAppearanceAxis,
   readAppearanceFromRoot,
   type Appearance,
-} from "../lib/appearance";
+} from "../../../lib/appearance";
+import styles from "./view.module.css";
 
 const projects = [
   {
@@ -171,12 +172,12 @@ function useMobileViewport() {
 
 function WorkspaceNavigation() {
   return (
-    <nav className="workspace-nav" aria-label="Workspace">
+    <nav className={styles["workspace-nav"]} aria-label="Workspace">
       {navItems.map(([item, icon], index) => (
         <Button
           key={item}
           aria-current={index === 0 ? "page" : undefined}
-          className="workspace-nav__item"
+          className={styles["workspace-nav__item"]}
           data-state={index === 0 ? "active" : "inactive"}
           leadingIcon={icon}
           size="sm"
@@ -189,16 +190,16 @@ function WorkspaceNavigation() {
   );
 }
 
-export default function DemoApp() {
+export function OperationsWorkspaceView() {
   return (
     <ToastProvider>
-      <DemoWorkspace />
+      <OperationsWorkspace />
       <ToastViewport swipeDirection={["inline-end", "down"]} />
     </ToastProvider>
   );
 }
 
-function DemoWorkspace() {
+function OperationsWorkspace() {
   const [query, setQuery] = React.useState("");
   const [status, setStatus] = React.useState("all");
   const [workspaceState, setWorkspaceState] = React.useState<
@@ -214,10 +215,17 @@ function DemoWorkspace() {
   const toasts = useToastManager();
 
   React.useLayoutEffect(() => {
-    const restored = readAppearanceFromRoot(document.documentElement);
+    const root = document.documentElement;
+    const initialDirection = root.getAttribute("dir");
+    const restored = readAppearanceFromRoot(root);
     setThemeValue(restored.theme);
     setModeValue(restored.mode);
     setDensityValue(restored.density);
+
+    return () => {
+      if (initialDirection) root.setAttribute("dir", initialDirection);
+      else root.removeAttribute("dir");
+    };
   }, []);
 
   React.useEffect(() => {
@@ -254,11 +262,14 @@ function DemoWorkspace() {
   };
 
   return (
-    <SidebarProvider className="workspace" sidebarId="workspace-sidebar">
+    <SidebarProvider
+      className={`${styles.workspace} n-typography-system`}
+      sidebarId="workspace-sidebar"
+    >
       {!isMobile ? (
         <Sidebar aria-label="Workspace sidebar">
           <SidebarHeader>
-            <div className="workspace-brand">
+            <div className={styles["workspace-brand"]}>
               <span aria-hidden />
               <div>
                 <strong>Nerio Workspace</strong>
@@ -270,7 +281,7 @@ function DemoWorkspace() {
             <WorkspaceNavigation />
           </SidebarContent>
           <SidebarFooter>
-            <Card className="workspace-compact-preview">
+            <Card className={styles["workspace-compact-preview"]}>
               <Badge>Compact density</Badge>
               <p>Switch density to preview how the same UI tightens for operational screens.</p>
               <Button size="sm" variant="secondary" onClick={() => setDensity("compact")}>
@@ -282,10 +293,10 @@ function DemoWorkspace() {
         </Sidebar>
       ) : null}
 
-      <SidebarInset className="workspace-main">
-        <header className="workspace-topbar">
-          <div className="workspace-title">
-            <div className="workspace-navigation-trigger">
+      <SidebarInset className={styles["workspace-main"]}>
+        <header className={styles["workspace-topbar"]}>
+          <div className={styles["workspace-title"]}>
+            <div className={styles["workspace-navigation-trigger"]}>
               {isMobile ? (
                 <Sheet>
                   <Tooltip label="Open workspace navigation">
@@ -321,7 +332,7 @@ function DemoWorkspace() {
               states in one adaptable product surface.
             </p>
           </div>
-          <div className="workspace-actions">
+          <div className={styles["workspace-actions"]}>
             <Popover
               trigger={
                 <Button
@@ -382,7 +393,7 @@ function DemoWorkspace() {
           </div>
         </header>
 
-        <section className="workspace-controls">
+        <section className={styles["workspace-controls"]}>
           <Field label="Search projects">
             <Input
               value={query}
@@ -405,23 +416,28 @@ function DemoWorkspace() {
           <Select label="Density" value={density} onChange={setDensity} options={densityOptions} />
         </section>
 
-        <section className="workspace-grid">
-          <Stat label="Active projects" value="12" trend="+3 this week" className="span-3" />
-          <Stat label="Open tasks" value="48" trend="8 due today" className="span-3" />
-          <Stat label="Collaborators" value="9" trend="4 teams" className="span-3" />
-          <Stat label="Collections" value="27" trend="Updated daily" className="span-3" />
+        <section className={styles["workspace-grid"]}>
+          <Stat
+            label="Active projects"
+            value="12"
+            trend="+3 this week"
+            className={styles["span-3"]}
+          />
+          <Stat label="Open tasks" value="48" trend="8 due today" className={styles["span-3"]} />
+          <Stat label="Collaborators" value="9" trend="4 teams" className={styles["span-3"]} />
+          <Stat label="Collections" value="27" trend="Updated daily" className={styles["span-3"]} />
 
-          <Card className="span-8 workspace-panel">
-            <div className="panel-heading">
+          <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`}>
+            <div className={styles["panel-heading"]}>
               <div>
                 <h2>Delivery signals</h2>
                 <p>Progress across active product work without a domain-specific dashboard.</p>
               </div>
               <Badge variant="success">On track</Badge>
             </div>
-            <div className="delivery-signals">
+            <div className={styles["delivery-signals"]}>
               {deliverySignals.map(([label, description, value]) => (
-                <div className="delivery-signal" key={label}>
+                <div className={styles["delivery-signal"]} key={label}>
                   <div>
                     <strong>{label}</strong>
                     <span>{description}</span>
@@ -432,14 +448,14 @@ function DemoWorkspace() {
             </div>
           </Card>
 
-          <Card className="span-4 workspace-panel">
-            <div className="panel-heading">
+          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+            <div className={styles["panel-heading"]}>
               <div>
                 <h2>Collaborators</h2>
                 <p>Shared ownership across teams.</p>
               </div>
             </div>
-            <div className="team-list">
+            <div className={styles["team-list"]}>
               {["Mira Chen", "Alex Morgan", "Sam Taylor", "Jordan Lee"].map((name) => (
                 <Avatar key={name} name={name} />
               ))}
@@ -447,13 +463,13 @@ function DemoWorkspace() {
             <Progress label="Weekly collaboration health" value={82} />
           </Card>
 
-          <Card className="span-8 workspace-panel">
-            <div className="panel-heading">
+          <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`}>
+            <div className={styles["panel-heading"]}>
               <div>
                 <h2>Recent items</h2>
                 <p>Filtered by search and status controls above.</p>
               </div>
-              <div className="state-controls" aria-label="Demo state controls">
+              <div className={styles["state-controls"]} aria-label="Preview state controls">
                 <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("loading")}>
                   Loading
                 </Button>
@@ -470,7 +486,7 @@ function DemoWorkspace() {
             </div>
 
             {workspaceState === "loading" ? (
-              <div className="loading-stack" aria-label="Loading recent items">
+              <div className={styles["loading-stack"]} aria-label="Loading recent items">
                 <Skeleton />
                 <Skeleton />
                 <Skeleton />
@@ -564,16 +580,16 @@ function DemoWorkspace() {
             ) : null}
           </Card>
 
-          <Card className="span-4 workspace-panel">
-            <div className="panel-heading">
+          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+            <div className={styles["panel-heading"]}>
               <div>
                 <h2>Task feed</h2>
                 <p>Recent workspace movement.</p>
               </div>
             </div>
-            <div className="activity-feed">
+            <div className={styles["activity-feed"]}>
               {activity.map(([title, scope, time]) => (
-                <div key={title} className="activity-item">
+                <div key={title} className={styles["activity-item"]}>
                   <Icon icon={Check} />
                   <div>
                     <strong>{title}</strong>

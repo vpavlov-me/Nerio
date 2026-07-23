@@ -1,28 +1,13 @@
-@import "tailwindcss";
-@import "@nerio-ui/tokens/tailwind.css";
-@import "@nerio-ui/ui/styles.css";
-@source "../../../packages/ui/src";
-
-:root {
-  --n-demo-safe-area-block-start: env(safe-area-inset-top);
-  --n-demo-safe-area-block-end: env(safe-area-inset-bottom);
-  --n-demo-safe-area-inline-start: env(safe-area-inset-left);
-  --n-demo-safe-area-inline-end: env(safe-area-inset-right);
+.workspace {
+  --n-template-safe-area-block-start: env(safe-area-inset-top);
+  --n-template-safe-area-block-end: env(safe-area-inset-bottom);
+  --n-template-safe-area-inline-start: env(safe-area-inset-left);
+  --n-template-safe-area-inline-end: env(safe-area-inset-right);
 }
 
-:root[dir="rtl"] {
-  --n-demo-safe-area-inline-start: env(safe-area-inset-right);
-  --n-demo-safe-area-inline-end: env(safe-area-inset-left);
-}
-
-html,
-body {
-  min-block-size: 100%;
-}
-
-body {
-  font-size: var(--n-font-size-md);
-  line-height: var(--n-line-height-normal);
+:global(:root[dir="rtl"]) .workspace {
+  --n-template-safe-area-inline-start: env(safe-area-inset-right);
+  --n-template-safe-area-inline-end: env(safe-area-inset-left);
 }
 
 .workspace {
@@ -70,7 +55,7 @@ body {
   justify-content: start;
 }
 
-.workspace-nav .n-icon {
+.workspace-nav :global(.n-icon) {
   block-size: 1rem;
   color: var(--n-color-text-tertiary);
   inline-size: 1rem;
@@ -81,7 +66,7 @@ body {
   color: var(--n-color-text-primary);
 }
 
-.workspace-nav .workspace-nav__item[data-state="active"] .n-icon {
+.workspace-nav .workspace-nav__item[data-state="active"] :global(.n-icon) {
   color: var(--n-color-text-primary);
 }
 
@@ -100,10 +85,10 @@ body {
   display: grid;
   gap: var(--n-space-5);
   min-inline-size: 0;
-  padding-block: calc(var(--n-space-6) + var(--n-demo-safe-area-block-start))
-    calc(var(--n-space-6) + var(--n-demo-safe-area-block-end));
-  padding-inline: calc(var(--n-space-6) + var(--n-demo-safe-area-inline-start))
-    calc(var(--n-space-6) + var(--n-demo-safe-area-inline-end));
+  padding-block: calc(var(--n-space-6) + var(--n-template-safe-area-block-start))
+    calc(var(--n-space-6) + var(--n-template-safe-area-block-end));
+  padding-inline: calc(var(--n-space-6) + var(--n-template-safe-area-inline-start))
+    calc(var(--n-space-6) + var(--n-template-safe-area-inline-end));
 }
 
 .workspace-navigation-trigger {
@@ -122,8 +107,8 @@ body {
   gap: var(--n-space-2);
 }
 
-.workspace-title .n-badge,
-.panel-heading .n-badge {
+.workspace-title :global(.n-badge),
+.panel-heading :global(.n-badge) {
   justify-self: start;
 }
 
@@ -158,11 +143,11 @@ body {
   padding: var(--n-space-3);
 }
 
-.workspace-controls .n-field:first-child {
+.workspace-controls :global(.n-field):first-child {
   flex: 1 1 18rem;
 }
 
-.workspace-controls .n-field {
+.workspace-controls :global(.n-field) {
   min-inline-size: 10rem;
 }
 
@@ -243,7 +228,7 @@ body {
   gap: var(--n-space-3);
 }
 
-.loading-stack .n-skeleton {
+.loading-stack :global(.n-skeleton) {
   block-size: 3rem;
 }
 
@@ -259,7 +244,7 @@ body {
   grid-template-columns: auto minmax(0, 1fr);
 }
 
-.activity-item > .n-icon {
+.activity-item > :global(.n-icon) {
   background: var(--n-color-surface-muted);
   border: 1px solid var(--n-color-border-subtle);
   border-radius: var(--n-radius-full);
@@ -286,7 +271,7 @@ body {
 }
 
 @media (max-width: 1080px) {
-  .workspace > .n-sidebar {
+  .workspace > :global(.n-sidebar) {
     display: none;
   }
 
@@ -299,10 +284,10 @@ body {
 
 @media (max-width: 720px) {
   .workspace-main {
-    padding-block: calc(var(--n-space-4) + var(--n-demo-safe-area-block-start))
-      calc(var(--n-space-4) + var(--n-demo-safe-area-block-end));
-    padding-inline: calc(var(--n-space-4) + var(--n-demo-safe-area-inline-start))
-      calc(var(--n-space-4) + var(--n-demo-safe-area-inline-end));
+    padding-block: calc(var(--n-space-4) + var(--n-template-safe-area-block-start))
+      calc(var(--n-space-4) + var(--n-template-safe-area-block-end));
+    padding-inline: calc(var(--n-space-4) + var(--n-template-safe-area-inline-start))
+      calc(var(--n-space-4) + var(--n-template-safe-area-inline-end));
   }
 
   .workspace-topbar {
@@ -322,7 +307,7 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .workspace-controls .n-field {
+  .workspace-controls :global(.n-field) {
     min-inline-size: 0;
   }
 

@@ -50,8 +50,7 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboa
 
 ```text
 apps/
-  docs/          Public documentation and component playground
-  demo-app/      Universal showcase product built with Nerio Core
+  docs/          Public documentation, component playground, Templates, and full-screen Views
 
 packages/
   tokens/        Design tokens, themes, modes, and CSS variable contracts

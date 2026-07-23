@@ -13,7 +13,10 @@ const catalogSource = resolve(root, "data/component-catalog.json");
 const docsSource = resolve(root, "apps/docs/components/docs-chrome.tsx");
 const docsPlaygroundSource = resolve(root, "apps/docs/components/visual-playground.tsx");
 const docsAppearanceSource = resolve(root, "apps/docs/lib/appearance.ts");
-const demoAppearanceSource = resolve(root, "apps/demo-app/lib/appearance.ts");
+const templateControlsSource = resolve(
+  root,
+  "apps/docs/features/templates/operations-workspace/view.tsx",
+);
 
 function run(...args) {
   return spawnSync(process.execPath, [validator, ...args], { cwd: root, encoding: "utf8" });
@@ -278,28 +281,34 @@ test("runtime-axis validator requires independent appearance persistence", () =>
   );
 });
 
-for (const [surface, option, source] of [
-  ["Docs", "--docs-appearance", docsAppearanceSource],
-  ["Demo", "--demo-appearance", demoAppearanceSource],
-]) {
-  test(`runtime-axis validator requires ${surface} appearance helpers to write root attributes`, () => {
-    withFixture(
-      option,
-      "appearance.ts",
-      readFileSync(source, "utf8").replace(
-        "root.setAttribute(`data-${axis}`, value);",
-        "// Root attribute write removed.",
+test("runtime-axis validator requires template controls to import canonical axes", () => {
+  withFixture(
+    "--template-controls",
+    "view.tsx",
+    readFileSync(templateControlsSource, "utf8").replace(
+      'import { densities, modes, themes } from "@nerio-ui/tokens";',
+      'import { densities, themes } from "@nerio-ui/tokens";',
+    ),
+    (stderr) =>
+      assert.match(stderr, /Operations Workspace runtime controls must import canonical modes/),
+  );
+});
+
+test("runtime-axis validator requires docs appearance helpers to write root attributes", () => {
+  withFixture(
+    "--docs-appearance",
+    "appearance.ts",
+    readFileSync(docsAppearanceSource, "utf8").replace(
+      "root.setAttribute(`data-${axis}`, value);",
+      "// Root attribute write removed.",
+    ),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /Docs appearance runtime must write data-theme, data-mode, and data-density/,
       ),
-      (stderr) =>
-        assert.match(
-          stderr,
-          new RegExp(
-            `${surface} appearance runtime must write data-theme, data-mode, and data-density`,
-          ),
-        ),
-    );
-  });
-}
+  );
+});
 
 test("runtime-axis validator tolerates formatting around initialization root writes", () => {
   withFixture(

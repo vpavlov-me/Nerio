@@ -57,6 +57,7 @@ import {
 } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
 import { mcpInstall, mcpLocalConfiguration } from "../lib/public-commands";
+import { templateCatalog } from "../features/templates/catalog";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
 type ColorMode = (typeof modes)[number];
@@ -403,10 +404,16 @@ const searchEntries: DocsCommandEntry[] = [
   },
   {
     href: "/templates",
-    title: "Workspace demo",
-    group: "Tools",
-    description: "Test Core components together in a realistic universal product workspace.",
+    title: "Templates",
+    group: "Product scenarios",
+    description: "Explore complete app-like Nerio previews rendered inside the docs application.",
   },
+  ...templateCatalog.map((template) => ({
+    href: template.detailRoute,
+    title: template.title,
+    group: "Templates",
+    description: template.description,
+  })),
 ];
 
 const foundationGroups = navGroups.slice(0, 2);
@@ -729,7 +736,8 @@ export function DocsChrome({
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const isHomePage = pathname === "/";
-  const isTemplatesPage = pathname === "/templates";
+  const isTemplatesPage = pathname.startsWith("/templates");
+  const isTemplateView = pathname.startsWith("/views/");
   const isPlaygroundPage = pathname === "/playground";
   const fallbackToc = getDefaultToc(pathname);
   const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
@@ -830,7 +838,7 @@ export function DocsChrome({
 
   const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
-  if (pathname === "/visual-test") {
+  if (pathname === "/visual-test" || isTemplateView) {
     return <>{children}</>;
   }
 

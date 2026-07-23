@@ -348,11 +348,7 @@ function tailwindDocumentationFailures() {
       'href="/docs/blocks/login"',
       "Primary navigation must expose the Blocks reference surface",
     ],
-    [
-      docsChrome,
-      'href="/templates"',
-      "Primary navigation must expose the Templates workspace demo",
-    ],
+    [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
     [
       sitemap,
       '"/docs/foundations/visual-language"',
@@ -369,11 +365,6 @@ function tailwindDocumentationFailures() {
       deployment,
       'return process.env.NODE_ENV === "production"',
       "Deployment detection must protect non-Vercel production builds",
-    ],
-    [
-      deployment,
-      'vercelEnvironment === "preview" || vercelEnvironment === "production"',
-      "Hosted demo detection must distinguish Vercel preview and production from development",
     ],
     [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
     [
@@ -423,6 +414,94 @@ function tailwindDocumentationFailures() {
   }
   if (progressPage.includes("dedicated progress.css stylesheet")) {
     failures.push("Progress docs must not describe residual keyframes as component CSS");
+  }
+
+  return failures;
+}
+
+function templateArchitectureFailures() {
+  const catalog = read("apps/docs/features/templates/catalog.ts");
+  const gallery = read("apps/docs/app/templates/page.tsx");
+  const detail = read("apps/docs/app/templates/[slug]/page.tsx");
+  const viewRoute = read("apps/docs/app/views/[slug]/page.tsx");
+  const workspace = read("apps/docs/features/templates/operations-workspace/view.tsx");
+  const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const sitemap = read("apps/docs/app/sitemap.ts");
+  const playwright = read("playwright.config.mjs");
+  const failures = [];
+
+  const required = [
+    [
+      catalog,
+      'slug: "operations-workspace"',
+      "Template catalog must register Operations Workspace",
+    ],
+    [
+      catalog,
+      'previewRoute: "/views/operations-workspace"',
+      "Template catalog must own the same-origin Operations Workspace preview route",
+    ],
+    [gallery, "templateCatalog.map", "Templates gallery must derive from the canonical catalog"],
+    [detail, "getTemplate(slug)", "Template detail route must derive from the canonical catalog"],
+    [
+      detail,
+      "src={template.previewRoute}",
+      "Template detail iframe must use its catalog-owned same-origin preview route",
+    ],
+    [
+      viewRoute,
+      "templateSlugs.map",
+      "Template view route must generate catalog-owned static params",
+    ],
+    [viewRoute, "notFound()", "Template view route must reject unknown slugs"],
+    [
+      workspace,
+      "OperationsWorkspaceView",
+      "Operations Workspace implementation must remain template-local",
+    ],
+    [
+      docsChrome,
+      'pathname.startsWith("/views/")',
+      "Full-screen template Views must bypass documentation chrome",
+    ],
+    [
+      sitemap,
+      "templateCatalog",
+      "Indexable template detail routes must be derived into the sitemap",
+    ],
+    [
+      playwright,
+      'baseURL: "http://localhost:3100"',
+      "Template and docs browser checks must share the docs deployment",
+    ],
+  ];
+
+  for (const [source, expected, message] of required) {
+    if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (existsSync(join(root, "apps/demo-app"))) {
+    failures.push("The retired standalone apps/demo-app workspace must not exist.");
+  }
+
+  const forbiddenSource = [
+    catalog,
+    gallery,
+    detail,
+    viewRoute,
+    workspace,
+    docsChrome,
+    playwright,
+  ].join("\n");
+  for (const forbidden of [
+    "NEXT_PUBLIC_DEMO_APP_URL",
+    "nerio-demo.vercel.app",
+    "localhost:3002",
+    "@nerio-ui/demo-app",
+  ]) {
+    if (forbiddenSource.includes(forbidden)) {
+      failures.push(`Templates architecture still depends on ${forbidden}.`);
+    }
   }
 
   return failures;
@@ -496,6 +575,7 @@ const themeTokenMatrixIssues = themeTokenMatrixFailures(tokenStyles);
 const uiEntrypointIssues = uiEntrypointFailures();
 const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
+const templateArchitectureIssues = templateArchitectureFailures();
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -530,6 +610,7 @@ reportMissing("Theme token matrix issues", themeTokenMatrixIssues);
 reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
+reportMissing("Template architecture issues", templateArchitectureIssues);
 
 const failures = [
   missingNav,
@@ -553,6 +634,7 @@ const failures = [
   uiEntrypointIssues,
   packageReadinessIssues,
   tailwindDocumentationIssues,
+  templateArchitectureIssues,
 ].flat();
 
 if (failures.length > 0) {
@@ -560,5 +642,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Docs registry, Tailwind contract, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
+  `Docs registry, Tailwind contract, template architecture, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
 );

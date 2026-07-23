@@ -2129,17 +2129,109 @@ pre {
   gap: var(--n-space-6);
 }
 
-.templates-page > div {
+.templates-hero {
+  display: grid;
+  gap: var(--n-space-3);
+  max-inline-size: var(--n-docs-content-extra-wide-max-width);
+}
+
+.templates-grid {
+  display: grid;
+  gap: var(--n-space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+}
+
+.template-card {
+  align-content: start;
+  display: grid;
+}
+
+.template-card__eyebrow,
+.template-detail-title,
+.template-detail-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-3);
+  justify-content: space-between;
+}
+
+.template-card__eyebrow {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-sm);
+}
+
+.template-card__coverage {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-sm);
+}
+
+.template-card .n-card__footer {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--n-space-2);
+}
+
+.template-detail-page {
+  gap: var(--n-space-6);
+}
+
+.template-detail-header {
+  max-inline-size: var(--n-docs-content-extra-wide-max-width);
+}
+
+.template-detail-title {
+  align-items: start;
+}
+
+.template-detail-title > div {
+  display: grid;
+  gap: var(--n-space-3);
+  max-inline-size: var(--n-docs-content-wide-max-width);
+}
+
+.template-detail-actions {
+  justify-content: start;
+}
+
+.template-preview-frame {
+  background: var(--n-color-surface);
+  border: var(--n-border-subtle);
+  border-radius: var(--n-radius-lg);
+  block-size: min(48rem, calc(100dvh - var(--n-docs-header-height) - var(--n-space-10)));
+  inline-size: 100%;
+}
+
+.template-detail-grid {
+  display: grid;
+  gap: var(--n-space-6);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.template-detail-grid section {
+  align-content: start;
   display: grid;
   gap: var(--n-space-3);
 }
 
-.templates-demo-frame {
-  background: var(--n-color-surface);
-  border: var(--n-border-subtle);
-  border-radius: var(--n-radius-lg);
-  block-size: calc(100vh - var(--n-docs-header-height) - var(--n-space-10));
-  inline-size: 100%;
+.template-detail-grid :is(h2, p, ul) {
+  margin: 0;
+}
+
+.template-detail-grid ul {
+  display: grid;
+  gap: var(--n-space-2);
+  padding-inline-start: var(--n-space-5);
+}
+
+@media (max-width: 720px) {
+  .template-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .template-preview-frame {
+    block-size: 42rem;
+  }
 }
 
 .doc-page {

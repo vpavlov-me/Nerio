@@ -1,45 +1,61 @@
-import { isHostedDeployment } from "../../lib/deployment";
+import Link from "next/link";
+import { Badge, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@nerio-ui/ui";
+import { Button } from "@nerio-ui/ui/client";
+import { templateCatalog } from "../../features/templates/catalog";
 import { createPageMetadata } from "../../lib/seo";
 
-const productionDemoAppUrl = "https://nerio-demo.vercel.app";
-
 export const metadata = createPageMetadata({
-  title: "Workspace demo",
+  title: "Templates",
   description:
-    "Explore an app-local Nerio Core workspace demo built with accessible components and semantic design tokens.",
+    "Explore complete app-like Nerio product scenarios rendered as same-origin previews inside the documentation application.",
   path: "/templates",
-  indexable: false,
 });
 
 export default function TemplatesPage() {
-  const demoAppUrl =
-    process.env.NEXT_PUBLIC_DEMO_APP_URL ??
-    (isHostedDeployment() ? productionDemoAppUrl : "http://localhost:3002");
-
   return (
     <article className="doc-page templates-page">
-      <div>
-        <p className="doc-kicker">Demo · Core alpha</p>
-        <h1>Explore the Nerio workspace demo.</h1>
+      <header className="templates-hero">
+        <p className="doc-kicker">Product scenarios · Preview</p>
+        <h1>See Nerio working in complete product interfaces.</h1>
         <p className="doc-lede">
-          This app-local demonstration shows an adaptable product workspace built with Cards,
-          Fields, Buttons, navigation patterns, and semantic design tokens.
+          Templates are realistic, deterministic product scenarios that stress-test Core composition
+          and reveal future Pro patterns. They are previews, not independently deployed products or
+          released Pro packages.
         </p>
-        <p>
-          It is a product stress test for Core primitives, not a released Core template or Pro
-          distribution surface. It demonstrates the current alpha contract and may change before
-          1.0.
-        </p>
-        <a className="text-link" href={demoAppUrl} target="_blank" rel="noreferrer">
-          Open the workspace demo in a new tab
-        </a>
-      </div>
-      <iframe
-        className="templates-demo-frame"
-        src={demoAppUrl}
-        title="Nerio Demo App"
-        allow="clipboard-read; clipboard-write"
-      />
+      </header>
+
+      <section className="templates-grid" aria-label="Template catalog">
+        {templateCatalog.map((template) => (
+          <Card key={template.slug} className="template-card">
+            <CardHeader>
+              <div className="template-card__eyebrow">
+                <span>{template.category}</span>
+                <Badge variant="info">{template.status}</Badge>
+              </div>
+              <CardTitle>{template.title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{template.description}</p>
+              <p className="template-card__coverage">
+                {template.componentsUsed.length} Core components · {template.runtimeCoverage.length}{" "}
+                runtime and responsive checks
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button
+                nativeButton={false}
+                variant="secondary"
+                render={<Link href={template.detailRoute} />}
+              >
+                View details
+              </Button>
+              <Button nativeButton={false} render={<Link href={template.previewRoute} />}>
+                Open full-screen preview
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </section>
     </article>
   );
 }
