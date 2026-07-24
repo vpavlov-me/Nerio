@@ -69,6 +69,20 @@ test("renders the Finance & Assets detail and same-origin preview from catalog m
   expect(problems).toEqual([]);
 });
 
+test("renders the Content Library detail and same-origin preview from catalog metadata", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/templates/content-library");
+  await expect(page.getByRole("heading", { level: 1, name: "Content Library" })).toBeVisible();
+  const frame = page.locator('iframe[title="Content Library preview"]');
+  await expect(frame).toHaveAttribute("src", "/views/content-library");
+  await expect(
+    frame.contentFrame().getByRole("heading", { name: "Everything your team can publish" }),
+  ).toBeVisible();
+  expect(problems).toEqual([]);
+});
+
 test("supports direct navigation and refresh without documentation chrome", async ({ page }) => {
   const problems = monitorPage(page);
 
