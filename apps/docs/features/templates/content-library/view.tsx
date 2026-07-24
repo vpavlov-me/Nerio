@@ -274,6 +274,9 @@ function ContentLibraryApp() {
   const [titleError, setTitleError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [imports, setImports] = React.useState(initialImports);
+  const [assetEdits, setAssetEdits] = React.useState<
+    Record<string, Pick<Asset, "title" | "description">>
+  >({});
   const [appearance, setAppearance] = React.useState<Appearance>(defaultAppearance);
   const [direction, setDirection] = React.useState("ltr");
   const previewTriggerRef = React.useRef<HTMLButtonElement | null>(null);
@@ -292,8 +295,9 @@ function ContentLibraryApp() {
     document.documentElement.setAttribute("dir", direction);
   }, [direction]);
 
-  const selectedAsset = assets.find((asset) => asset.id === previewId) ?? assets[0]!;
-  const filteredAssets = assets.filter((asset) => {
+  const libraryAssets = assets.map((asset) => ({ ...asset, ...assetEdits[asset.id] }));
+  const selectedAsset = libraryAssets.find((asset) => asset.id === previewId) ?? libraryAssets[0]!;
+  const filteredAssets = libraryAssets.filter((asset) => {
     const normalizedQuery = query.trim().toLowerCase();
     const matchesQuery =
       !normalizedQuery ||
@@ -338,6 +342,13 @@ function ContentLibraryApp() {
       return;
     }
     setTitleError("");
+    setAssetEdits((current) => ({
+      ...current,
+      [selectedAsset.id]: {
+        title: title.trim(),
+        description: description.trim(),
+      },
+    }));
     setEditing(false);
     toasts.add({
       title: "Metadata saved",

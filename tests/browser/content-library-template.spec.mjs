@@ -67,8 +67,12 @@ test("previews an asset, validates metadata, saves, and restores focus", async (
   await editor.getByRole("textbox", { name: "Title" }).fill("Research brief 2026");
   await editor.getByRole("button", { name: "Save metadata" }).click();
   await expect(page.locator(".n-toast--managed")).toContainText("Metadata saved");
+  await expect(page.getByRole("dialog", { name: "Research brief 2026" })).toBeVisible();
   await page.getByRole("button", { name: "Close dialog" }).click();
   await expect(preview).toBeFocused();
+  await expect(
+    page.getByLabel("grid asset view").getByText("Research brief 2026", { exact: true }),
+  ).toBeVisible();
   expect(problems).toEqual([]);
 });
 
