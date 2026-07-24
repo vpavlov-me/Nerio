@@ -297,11 +297,14 @@ function SupportDeskApp() {
         .toLowerCase()
         .includes(normalizedQuery);
     const currentStatus = statusById[ticket.id] ?? ticket.status;
+    const currentPriority = priorityById[ticket.id] ?? ticket.priority;
     const matchesView =
       savedView === "mine"
         ? (assigneeById[ticket.id] ?? ticket.assignee) === "You" && currentStatus !== "Resolved"
         : savedView === "priority"
-          ? currentStatus === "Escalated" || ticket.priority === "High"
+          ? currentStatus === "Escalated" ||
+            currentPriority === "High" ||
+            currentPriority === "Urgent"
           : savedView === "pending"
             ? currentStatus === "Pending"
             : currentStatus === "Resolved";
@@ -578,6 +581,7 @@ function SupportDeskApp() {
               queueState={queueState}
               tickets={visibleTickets}
               selectedId={selectedId}
+              priorityById={priorityById}
               statusById={statusById}
               onRetry={() => setQueueState("ready")}
               onSelect={selectTicket}
@@ -790,6 +794,7 @@ function QueueContent({
   queueState,
   tickets: visible,
   selectedId,
+  priorityById,
   statusById,
   onRetry,
   onSelect,
@@ -799,6 +804,7 @@ function QueueContent({
   queueState: QueueState;
   tickets: readonly Ticket[];
   selectedId: string;
+  priorityById: Record<string, Ticket["priority"]>;
   statusById: Record<string, TicketStatus>;
   onRetry: () => void;
   onSelect: (id: string) => void;
@@ -857,6 +863,7 @@ function QueueContent({
     <div className={styles["ticket-list"]}>
       {visible.map((ticket) => {
         const status = statusById[ticket.id] ?? ticket.status;
+        const priority = priorityById[ticket.id] ?? ticket.priority;
         return (
           <button
             key={ticket.id}
@@ -876,10 +883,10 @@ function QueueContent({
               <small>{ticket.preview}</small>
               <div className={styles["ticket-meta"]}>
                 <Badge tone={statusTone(status)}>{status}</Badge>
-                {ticket.priority === "Urgent" || ticket.priority === "High" ? (
-                  <span data-priority={ticket.priority}>
+                {priority === "Urgent" || priority === "High" ? (
+                  <span data-priority={priority}>
                     <TriangleAlert aria-hidden />
-                    {ticket.priority}
+                    {priority}
                   </span>
                 ) : (
                   <span>{ticket.company}</span>

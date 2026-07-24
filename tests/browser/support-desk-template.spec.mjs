@@ -42,6 +42,9 @@ test("selects tickets and updates assignment, priority, and status", async ({ pa
   await page.getByRole("combobox", { name: "Status" }).click();
   await page.getByRole("option", { name: "Pending", exact: true }).click();
   await expect(page.getByText("Pending", { exact: true }).first()).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /No puedo exportar el informe mensual, Lucía Torres/ }),
+  ).toBeVisible();
   expect(problems).toEqual([]);
 });
 
@@ -61,7 +64,9 @@ test("validates, sends, and resolves a ticket reply", async ({ page }) => {
   await page.getByRole("option", { name: "Resolved", exact: true }).click();
   await expect(page.getByRole("dialog", { name: "Resolve this ticket?" })).toBeVisible();
   await page.getByRole("button", { name: "Resolve ticket" }).click();
-  await expect(page.getByRole("dialog", { name: "Ticket resolved" })).toBeVisible();
+  await expect(
+    page.locator(".n-toast--managed").filter({ hasText: "Ticket resolved" }),
+  ).toBeVisible();
   expect(problems).toEqual([]);
 });
 
@@ -113,7 +118,9 @@ test("uses mobile drill-in, customer context, and runtime settings", async ({ pa
   await page.getByRole("button", { name: "Customer" }).click();
   await expect(page.getByRole("dialog", { name: "Customer context" })).toBeVisible();
   await page.getByRole("button", { name: "View account" }).click();
-  await expect(page.getByRole("dialog", { name: "Account opened" })).toBeVisible();
+  await expect(
+    page.locator(".n-toast--managed").filter({ hasText: "Account opened" }),
+  ).toBeVisible();
 
   await page.getByRole("button", { name: "Open workspace settings" }).click();
   await page.getByRole("button", { name: "Dark mode" }).click();
