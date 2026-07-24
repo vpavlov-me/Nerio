@@ -48,8 +48,13 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   await sheetTrigger.click();
   const sheet = page.getByRole("dialog", { name: "Workspace navigation" });
   await expect(sheet).toBeVisible();
+  await expect
+    .poll(() => sheet.evaluate((element) => element.contains(document.activeElement)))
+    .toBe(true);
   await page.keyboard.press("Tab");
-  expect(await sheet.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  await expect
+    .poll(() => sheet.evaluate((element) => element.contains(document.activeElement)))
+    .toBe(true);
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
   await expect(sheetTrigger).toBeFocused();
