@@ -31,3 +31,16 @@ No Finance & Assets pattern changes or widens a Core API.
 | Tokenized local artwork     | CSS-only deterministic visuals and a document fallback provide stable docs and visual-regression evidence          | Keep template-local                                | No promotion needed; consumer artwork and media loading remain product-owned                                                           |
 
 No Content Library pattern changes or widens a Core API.
+
+## AI Research Workspace
+
+| Pattern                         | Current evidence                                                                                                  | Recommendation                                       | Evidence needed before promotion                                                                                                            |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Evidence-grounded answer        | One response connects claims to numbered, inspectable local sources and restores focus after inspection           | Pro AI composition candidate                         | Multiple research and agent products with stable claim, citation, source-quality, conflict, and accessibility contracts                     |
+| Research composer               | Prompt validation, attachments, model context, run action, interruption, and recovery share one bounded workspace | Keep template-local; possible Pro composer candidate | Proven streaming ownership, file policy, token budgets, keyboard shortcuts, persistence, mobile behavior, and assistive-technology evidence |
+| Tool-run status                 | Running progress plus completed, interrupted, failed, and retry states use existing status primitives             | Keep template-local                                  | Real tool orchestration, concurrent and nested runs, cancellation, partial results, telemetry, timeout, and recovery policy                 |
+| Source rail and library         | Desktop evidence rail and full source library share source identity, provenance, relevance, and inspection        | Pro knowledge-work candidate                         | Reuse across independent products, ranking and trust policy, stale-source behavior, permissions, filtering, and large-set navigation        |
+| Saved research threads          | Search, no-results recovery, status, update context, and return-to-thread behavior are deterministic fixtures     | Keep template-local                                  | Persistence, collaboration, rename/archive/delete policy, pagination, permissions, and real history semantics                               |
+| Local model/runtime preferences | Model profile sits beside theme, mode, density, and direction without creating a new Nerio runtime axis           | Keep product-owned                                   | No Core promotion; model selection and product preferences remain application responsibilities                                              |
+
+No AI Research Workspace pattern changes or widens a Core API.

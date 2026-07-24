@@ -3,6 +3,7 @@ import { expect, test } from "@playwright/test";
 const workspaceRoute = "/views/operations-workspace";
 const financeRoute = "/views/finance-assets";
 const contentLibraryRoute = "/views/content-library";
+const aiResearchRoute = "/views/ai-research-workspace";
 
 async function prepareTemplate(page, viewport) {
   await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
@@ -93,4 +94,34 @@ test("protects the Content Library desktop preview", async ({ page }) => {
 test("protects the Content Library mobile preview", async ({ page }) => {
   await prepareContentLibraryTemplate(page, { width: 390, height: 844 });
   await expect(page).toHaveScreenshot("content-library-mobile.png", { fullPage: true });
+});
+
+async function prepareAiResearchTemplate(page, viewport) {
+  await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
+  await page.addInitScript(() => window.localStorage.clear());
+  await page.setViewportSize(viewport);
+  await page.goto(aiResearchRoute);
+  await page.evaluate(() => document.fonts.ready);
+  await page.addStyleTag({
+    content: `
+      *, *::before, *::after {
+        animation: none !important;
+        caret-color: transparent !important;
+        transition: none !important;
+      }
+    `,
+  });
+  await expect(
+    page.getByRole("heading", { level: 2, name: "Activation opportunity brief" }),
+  ).toBeVisible();
+}
+
+test("protects the AI Research Workspace desktop preview", async ({ page }) => {
+  await prepareAiResearchTemplate(page, { width: 1440, height: 1000 });
+  await expect(page).toHaveScreenshot("ai-research-workspace-desktop.png", { fullPage: true });
+});
+
+test("protects the AI Research Workspace mobile preview", async ({ page }) => {
+  await prepareAiResearchTemplate(page, { width: 390, height: 844 });
+  await expect(page).toHaveScreenshot("ai-research-workspace-mobile.png", { fullPage: true });
 });

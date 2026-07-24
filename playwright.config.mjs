@@ -28,6 +28,7 @@ export default defineConfig({
     {
       name: "template-chromium",
       testMatch: [
+        "ai-research-template.spec.mjs",
         "template-release-smoke.spec.mjs",
         "cross-engine-template.spec.mjs",
         "content-library-template.spec.mjs",

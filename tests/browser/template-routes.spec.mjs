@@ -83,6 +83,22 @@ test("renders the Content Library detail and same-origin preview from catalog me
   expect(problems).toEqual([]);
 });
 
+test("renders the AI Research Workspace detail and same-origin preview from catalog metadata", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/templates/ai-research-workspace");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "AI Research Workspace" }),
+  ).toBeVisible();
+  const frame = page.locator('iframe[title="AI Research Workspace preview"]');
+  await expect(frame).toHaveAttribute("src", "/views/ai-research-workspace");
+  await expect(
+    frame.contentFrame().getByRole("heading", { name: "Activation opportunity brief" }),
+  ).toBeVisible();
+  expect(problems).toEqual([]);
+});
+
 test("supports direct navigation and refresh without documentation chrome", async ({ page }) => {
   const problems = monitorPage(page);
 
