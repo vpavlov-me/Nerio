@@ -35,7 +35,11 @@ stable distribution surface. Finance & Assets adds a deterministic consolidated 
 holdings, transaction, transfer-review, and security/display scenario at
 `/templates/finance-assets` with a same-origin `/views/finance-assets` preview. It uses the optional
 charts adapter and local mock data only; it is not a released financial product, backend, or Pro
-package.
+package. Content Library adds a deterministic media catalog, grid/mobile-list switching,
+multi-selection, local preview and metadata editing, and a complete import-state queue at
+`/templates/content-library` with a same-origin `/views/content-library` preview. Its CSS artwork,
+metadata, and workflow state are local fixtures; it is not a DAM backend, upload service, or
+released Pro package.
 
 Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
 black surface with a soft shadow and no default border; secondary grouping and TableContainer use

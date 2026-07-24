@@ -55,6 +55,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added Content Library as a docs-local Template with a media-first library overview, desktop grid
+  and mobile list, search and filters, bounded multi-selection, local preview and metadata editing,
+  complete import queue states, responsive navigation, runtime-axis inspection, and focused browser
+  and visual evidence. It uses deterministic CSS artwork and metadata without adding remote media,
+  uploads, persistence, a DAM backend, or Core API.
 - Added Finance & Assets as a second docs-local Template with a consolidated portfolio overview,
   searchable holdings and asset detail, semantic transaction states, a validated local transfer
   flow, responsive navigation, sensitive-value controls, runtime-axis inspection, and focused

@@ -30,6 +30,7 @@ export default defineConfig({
       testMatch: [
         "template-release-smoke.spec.mjs",
         "cross-engine-template.spec.mjs",
+        "content-library-template.spec.mjs",
         "finance-template.spec.mjs",
         "template-routes.spec.mjs",
         "performance-smoke.spec.mjs",
