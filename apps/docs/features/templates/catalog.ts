@@ -170,6 +170,56 @@ export const templateCatalog = [
     ],
     indexable: true,
   },
+  {
+    slug: "ai-research-workspace",
+    title: "AI Research Workspace",
+    description:
+      "An evidence-grounded research workspace for conversations, citations, attachments, tool runs, and saved threads.",
+    category: "AI and research",
+    status: "Preview",
+    previewRoute: "/views/ai-research-workspace",
+    detailRoute: "/templates/ai-research-workspace",
+    audience:
+      "AI assistants, research tools, agent products, knowledge work, and developer AI products.",
+    scenarios: [
+      "Evidence-grounded research thread with inspectable citations",
+      "Prompt composer with local attachment processing and recovery",
+      "Running, completed, failed, interrupted, and retry tool states",
+      "Searchable saved threads and local model/runtime settings",
+    ],
+    runtimeCoverage: [
+      "System, light, and dark modes",
+      "Comfortable and compact density",
+      "LTR and RTL direction",
+      "Desktop thread-plus-sources and mobile single-column flow",
+      "Reduced-motion-safe progress, forced colors, live status, and safe-area behavior",
+    ],
+    componentsUsed: [
+      "Alert",
+      "Badge",
+      "Button",
+      "Card",
+      "Dialog",
+      "EmptyState",
+      "Field",
+      "Input",
+      "Progress",
+      "Select",
+      "Sheet",
+      "Sidebar",
+      "Skeleton",
+      "Textarea",
+      "Toast",
+      "Tooltip",
+      "Typography",
+    ],
+    limitations: [
+      "Deterministic local prompts, responses, sources, attachments, and tool states only",
+      "No model API, streaming backend, remote files, vector database, or persistence",
+      "Template-local AI patterns are not released Core or Pro components",
+    ],
+    indexable: true,
+  },
 ] as const satisfies readonly TemplateDefinition[];
 
 export const templateSlugs = templateCatalog.map((template) => template.slug);

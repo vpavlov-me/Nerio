@@ -55,6 +55,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added AI Research Workspace as a docs-local Template with an evidence-grounded conversation,
+  inspectable citations, local attachments, deterministic running, completed, interrupted, failed,
+  and retry tool states, searchable saved threads, responsive navigation, runtime-axis inspection,
+  and focused browser and visual evidence. It does not add a model API, streaming backend, remote
+  files, persistence, or Core API.
 - Added Content Library as a docs-local Template with a media-first library overview, desktop grid
   and mobile list, search and filters, bounded multi-selection, local preview and metadata editing,
   complete import queue states, responsive navigation, runtime-axis inspection, and focused browser

@@ -39,7 +39,11 @@ package. Content Library adds a deterministic media catalog, grid/mobile-list sw
 multi-selection, local preview and metadata editing, and a complete import-state queue at
 `/templates/content-library` with a same-origin `/views/content-library` preview. Its CSS artwork,
 metadata, and workflow state are local fixtures; it is not a DAM backend, upload service, or
-released Pro package.
+released Pro package. AI Research Workspace adds an evidence-grounded conversation, inspectable
+citations, attachments, deterministic tool states, and saved-thread navigation at
+`/templates/ai-research-workspace` with a same-origin `/views/ai-research-workspace` preview. Its
+prompts, responses, sources, and runtime state are local fixtures; it is not a model API, agent
+backend, vector database, or released Pro package.
 
 Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
 black surface with a soft shadow and no default border; secondary grouping and TableContainer use
