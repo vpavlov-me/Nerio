@@ -131,7 +131,7 @@
 }
 
 .navigation-item[data-state="active"] {
-  background: var(--n-navigation-item-background-active);
+  background: var(--n-color-surface-muted);
   color: var(--n-color-text-primary);
 }
 
