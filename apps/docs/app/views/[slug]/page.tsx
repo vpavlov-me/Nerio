@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AiResearchWorkspaceView } from "../../../features/templates/ai-research-workspace/view";
 import { ContentLibraryView } from "../../../features/templates/content-library/view";
+import { DeveloperPortalView } from "../../../features/templates/developer-portal/view";
 import { FinanceAssetsView } from "../../../features/templates/finance-assets/view";
 import { OperationsWorkspaceView } from "../../../features/templates/operations-workspace/view";
 import { getTemplate, templateSlugs } from "../../../features/templates/catalog";
@@ -49,6 +50,10 @@ export default async function TemplateViewPage({ params }: { params: Promise<{ s
 
   if (template.slug === "ai-research-workspace") {
     return <AiResearchWorkspaceView />;
+  }
+
+  if (template.slug === "developer-portal") {
+    return <DeveloperPortalView />;
   }
 
   notFound();

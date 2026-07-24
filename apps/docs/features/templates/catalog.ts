@@ -220,6 +220,55 @@ export const templateCatalog = [
     ],
     indexable: true,
   },
+  {
+    slug: "developer-portal",
+    title: "Developer Portal",
+    description:
+      "A complete developer product for onboarding, documentation discovery, API reference, examples, and release context.",
+    category: "Developer tools",
+    status: "Preview",
+    previewRoute: "/views/developer-portal",
+    detailRoute: "/templates/developer-portal",
+    audience:
+      "Open-source projects, API companies, infrastructure tools, SDK products, and developer platforms.",
+    scenarios: [
+      "Developer landing and guided quickstart with copyable examples",
+      "Deep documentation navigation and keyboard-accessible search",
+      "API request, response, parameter, event, loading, and error reference states",
+      "Versioned changelog and local portal appearance settings",
+    ],
+    runtimeCoverage: [
+      "System, light, and dark modes",
+      "Comfortable and compact density",
+      "LTR and RTL direction",
+      "Sticky desktop navigation and single-tree mobile Sheet navigation",
+      "Long code overflow, reduced motion, forced colors, and narrow reflow",
+    ],
+    componentsUsed: [
+      "Alert",
+      "Badge",
+      "Breadcrumbs",
+      "Button",
+      "Card",
+      "Command",
+      "Kbd",
+      "Popover",
+      "Select",
+      "Separator",
+      "Sheet",
+      "Sidebar",
+      "Tabs",
+      "Toast",
+      "Tooltip",
+      "Typography",
+    ],
+    limitations: [
+      "Deterministic local documentation, endpoints, responses, search, and release data only",
+      "No docs backend, authentication, remote API, live SDK, analytics, or persistence",
+      "Template-local documentation patterns are not released Core or Pro components",
+    ],
+    indexable: true,
+  },
 ] as const satisfies readonly TemplateDefinition[];
 
 export const templateSlugs = templateCatalog.map((template) => template.slug);

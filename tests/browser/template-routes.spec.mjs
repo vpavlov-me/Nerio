@@ -99,6 +99,20 @@ test("renders the AI Research Workspace detail and same-origin preview from cata
   expect(problems).toEqual([]);
 });
 
+test("renders the Developer Portal detail and same-origin preview from catalog metadata", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/templates/developer-portal");
+  await expect(page.getByRole("heading", { level: 1, name: "Developer Portal" })).toBeVisible();
+  const frame = page.locator('iframe[title="Developer Portal preview"]');
+  await expect(frame).toHaveAttribute("src", "/views/developer-portal");
+  await expect(
+    frame.contentFrame().getByRole("heading", { name: "Build a connected workspace in minutes" }),
+  ).toBeVisible();
+  expect(problems).toEqual([]);
+});
+
 test("supports direct navigation and refresh without documentation chrome", async ({ page }) => {
   const problems = monitorPage(page);
 

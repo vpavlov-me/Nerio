@@ -43,7 +43,11 @@ released Pro package. AI Research Workspace adds an evidence-grounded conversati
 citations, attachments, deterministic tool states, and saved-thread navigation at
 `/templates/ai-research-workspace` with a same-origin `/views/ai-research-workspace` preview. Its
 prompts, responses, sources, and runtime state are local fixtures; it is not a model API, agent
-backend, vector database, or released Pro package.
+backend, vector database, or released Pro package. Developer Portal adds a developer landing, deep
+navigation, keyboard-accessible search, quickstart examples, API reference states, and a versioned
+changelog at `/templates/developer-portal` with a same-origin `/views/developer-portal` preview. Its
+documentation, endpoints, responses, search, and release data are local fixtures; it is not a docs
+backend, remote API, live SDK, or released Pro package.
 
 Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
 black surface with a soft shadow and no default border; secondary grouping and TableContainer use
