@@ -300,6 +300,7 @@ function FinanceAssets() {
   >("details");
   const [amount, setAmount] = React.useState("");
   const [amountError, setAmountError] = React.useState("");
+  const transferTimerRef = React.useRef<number | null>(null);
   const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
   const [density, setDensityValue] = React.useState<Appearance["density"]>(
     defaultAppearance.density,
@@ -325,6 +326,15 @@ function FinanceAssets() {
   React.useEffect(() => {
     document.documentElement.setAttribute("dir", direction);
   }, [direction]);
+
+  React.useEffect(
+    () => () => {
+      if (transferTimerRef.current !== null) {
+        window.clearTimeout(transferTimerRef.current);
+      }
+    },
+    [],
+  );
 
   const visibleHoldings = holdings.filter((holding) => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -358,6 +368,10 @@ function FinanceAssets() {
   };
 
   const resetTransfer = () => {
+    if (transferTimerRef.current !== null) {
+      window.clearTimeout(transferTimerRef.current);
+      transferTimerRef.current = null;
+    }
     setTransferStep("details");
     setAmount("");
     setAmountError("");
@@ -377,7 +391,10 @@ function FinanceAssets() {
   };
   const submitTransfer = () => {
     setTransferStep("submitting");
-    window.setTimeout(() => setTransferStep("success"), 700);
+    transferTimerRef.current = window.setTimeout(() => {
+      transferTimerRef.current = null;
+      setTransferStep("success");
+    }, 700);
   };
 
   return (
@@ -637,8 +654,14 @@ function Overview({
         <div>
           <p>Consolidated portfolio</p>
           <h2 id="portfolio-heading">{displayMoney(125448, balancesVisible)}</h2>
-          <span aria-label="Portfolio increased by 3.8 percent over the selected period">
-            <ArrowUp aria-hidden /> 3.8% · +$4,612
+          <span
+            aria-label={
+              balancesVisible
+                ? "Portfolio increased by 3.8 percent and 4,612 dollars over the selected period"
+                : "Portfolio increased by 3.8 percent; monetary change hidden"
+            }
+          >
+            <ArrowUp aria-hidden /> 3.8% · {balancesVisible ? "+$4,612" : "value hidden"}
           </span>
         </div>
         <div className={styles.periods} aria-label="Performance period">
@@ -686,7 +709,11 @@ function Overview({
           <div
             className={styles.chart}
             role="img"
-            aria-label={`Portfolio value chart for ${period}, rising from ${currency.format(currentPerformance[0]?.value ?? 0)} to ${currency.format(currentPerformance.at(-1)?.value ?? 0)}`}
+            aria-label={
+              balancesVisible
+                ? `Portfolio value chart for ${period}, rising from ${currency.format(currentPerformance[0]?.value ?? 0)} to ${currency.format(currentPerformance.at(-1)?.value ?? 0)}`
+                : `Portfolio value chart for ${period}. Values hidden.`
+            }
           >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
@@ -708,7 +735,9 @@ function Overview({
                 />
                 <YAxis hide domain={["dataMin - 2500", "dataMax + 1500"]} />
                 <ChartTooltip
-                  formatter={(value) => currency.format(Number(value))}
+                  formatter={(value) =>
+                    balancesVisible ? currency.format(Number(value)) : maskedValue
+                  }
                   contentStyle={{
                     background: "var(--n-color-surface)",
                     border: "1px solid var(--n-color-border-subtle)",

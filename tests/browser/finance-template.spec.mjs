@@ -63,6 +63,16 @@ test("validates and completes the deterministic transfer while restoring focus",
   await dialog.getByRole("button", { name: "Review transfer" }).click();
   await expect(page.getByRole("dialog", { name: "Review transfer" })).toBeVisible();
   await page.getByRole("button", { name: "Confirm transfer" }).click();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await page.waitForTimeout(800);
+
+  await trigger.click();
+  await expect(page.getByRole("dialog", { name: "New transfer" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Amount" })).toHaveValue("");
+  await page.getByRole("textbox", { name: "Amount" }).fill("1200");
+  await page.getByRole("button", { name: "Review transfer" }).click();
+  await page.getByRole("button", { name: "Confirm transfer" }).click();
   await expect(page.getByRole("dialog", { name: "Transfer scheduled" })).toBeVisible();
   await page.getByRole("button", { name: "Done" }).click();
   await expect(trigger).toBeFocused();
@@ -80,6 +90,8 @@ test("supports balance privacy, mobile navigation, runtime axes, RTL, and reflow
 
   await page.getByRole("button", { name: "Hide balances" }).click();
   await expect(page.getByRole("heading", { name: "Balance hidden" })).toBeVisible();
+  await expect(page.getByText("+$4,612", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("img", { name: /Values hidden/ })).toBeVisible();
 
   const navigationTrigger = page.getByRole("button", { name: "Open finance navigation" });
   await navigationTrigger.click();
