@@ -7,9 +7,12 @@ import { FinanceAssetsView } from "../../../features/templates/finance-assets/vi
 import { OperationsWorkspaceView } from "../../../features/templates/operations-workspace/view";
 import { SupportDeskView } from "../../../features/templates/support-desk/view";
 import { getTemplate, templateSlugs } from "../../../features/templates/catalog";
+import { arePreviewSurfacesEnabled } from "../../../lib/deployment";
 import { createPageMetadata } from "../../../lib/seo";
 
 export function generateStaticParams() {
+  if (!arePreviewSurfacesEnabled()) return [];
+
   return templateSlugs.map((slug) => ({ slug }));
 }
 
@@ -18,6 +21,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+  if (!arePreviewSurfacesEnabled()) notFound();
+
   const { slug } = await params;
   const template = getTemplate(slug);
 
@@ -32,6 +37,8 @@ export async function generateMetadata({
 }
 
 export default async function TemplateViewPage({ params }: { params: Promise<{ slug: string }> }) {
+  if (!arePreviewSurfacesEnabled()) notFound();
+
   const { slug } = await params;
   const template = getTemplate(slug);
 

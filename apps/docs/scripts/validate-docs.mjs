@@ -352,11 +352,7 @@ function tailwindDocumentationFailures() {
     ],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
     [playgroundPage, "indexable: false", "Playground metadata must remain private"],
-    [
-      playgroundPage,
-      "isPublicProductionDeployment()",
-      "Playground must be unavailable in production",
-    ],
+    [playgroundPage, "arePreviewSurfacesEnabled()", "Playground must be unavailable in production"],
     [
       deployment,
       'return process.env.NODE_ENV === "production"',
@@ -584,6 +580,109 @@ function blockArchitectureFailures() {
   return failures;
 }
 
+function previewSurfaceGateFailures() {
+  const deployment = read("apps/docs/lib/deployment.ts");
+  const layout = read("apps/docs/app/layout.tsx");
+  const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const sitemap = read("apps/docs/app/sitemap.ts");
+  const robots = read("apps/docs/app/robots.ts");
+  const browserConfig = read("playwright.config.mjs");
+  const visualConfig = read("playwright.visual.config.mjs");
+  const llmsRoute = read("apps/docs/app/llms.txt/route.ts");
+  const llmsSource = read("apps/docs/content/llms.txt");
+  const routeFiles = [
+    "apps/docs/app/playground/page.tsx",
+    "apps/docs/app/blocks/page.tsx",
+    "apps/docs/app/blocks/[slug]/page.tsx",
+    "apps/docs/app/templates/page.tsx",
+    "apps/docs/app/templates/[slug]/page.tsx",
+    "apps/docs/app/views/[slug]/page.tsx",
+    "apps/docs/app/views/blocks/[slug]/page.tsx",
+    "apps/docs/app/docs/blocks/[slug]/page.tsx",
+    "apps/docs/app/docs/compositions/[slug]/page.tsx",
+  ];
+  const failures = [];
+  const required = [
+    [
+      deployment,
+      "NERIO_SHOW_PREVIEW_SURFACES",
+      "Preview surfaces must expose one explicit environment override",
+    ],
+    [
+      deployment,
+      "return !isPublicProductionDeployment()",
+      "Preview surfaces must default off only in public production",
+    ],
+    [
+      layout,
+      "showPreviewSurfaces={showPreviewSurfaces}",
+      "The docs shell must receive the server-evaluated preview-surface flag",
+    ],
+    [
+      docsChrome,
+      '!entry.href.startsWith("/blocks")',
+      "Production search must exclude Block entries",
+    ],
+    [
+      docsChrome,
+      '!entry.href.startsWith("/templates")',
+      "Production search must exclude Template entries",
+    ],
+    [
+      sitemap,
+      "if (!arePreviewSurfacesEnabled()) return publicRoutes",
+      "Production sitemap generation must exclude preview surfaces",
+    ],
+    [
+      robots,
+      `["/blocks", "/templates", "/views/", "/visual-test/"]`,
+      "Production robots rules must exclude preview surfaces",
+    ],
+    [
+      browserConfig,
+      "VERCEL_ENV=development",
+      "Browser checks must explicitly enable preview surfaces",
+    ],
+    [
+      visualConfig,
+      "VERCEL_ENV=development",
+      "Visual checks must explicitly enable preview surfaces",
+    ],
+    [
+      llmsRoute,
+      "if (!arePreviewSurfacesEnabled())",
+      "Production llms.txt must use the preview-surface gate",
+    ],
+    [
+      llmsRoute,
+      'join(process.cwd(), "content", "llms.txt")',
+      "The llms.txt route must render the canonical source",
+    ],
+    [
+      llmsSource,
+      "<!-- nerio-preview-surfaces:start -->",
+      "The canonical llms.txt source must mark preview-only discovery sections",
+    ],
+  ];
+
+  for (const [source, expected, message] of required) {
+    if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  for (const routeFile of routeFiles) {
+    const source = read(routeFile);
+    if (!source.includes("arePreviewSurfacesEnabled()") || !source.includes("notFound()")) {
+      failures.push(`${routeFile}: preview surface route must return notFound when disabled`);
+    }
+  }
+
+  if (existsSync(join(root, "apps/docs/public/llms.txt"))) {
+    failures.push("Static public llms.txt must not bypass the deployment gate");
+  }
+
+  return failures;
+}
+
 const manifest = JSON.parse(read("packages/registry/src/manifest.json"));
 const registrySlugs = unique(manifest.items.map((item) => item.name));
 const documentedRegistrySlugs = registrySlugs.filter((slug) => {
@@ -654,6 +753,7 @@ const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
 const blockArchitectureIssues = blockArchitectureFailures();
+const previewSurfaceGateIssues = previewSurfaceGateFailures();
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -690,6 +790,7 @@ reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
+reportMissing("Preview surface gate issues", previewSurfaceGateIssues);
 
 const failures = [
   missingNav,
@@ -715,6 +816,7 @@ const failures = [
   tailwindDocumentationIssues,
   templateArchitectureIssues,
   blockArchitectureIssues,
+  previewSurfaceGateIssues,
 ].flat();
 
 if (failures.length > 0) {

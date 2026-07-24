@@ -102,13 +102,13 @@ in its use of brand color.
 
 Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows, finance/crypto widgets, AI chat shells, premium themes, Figma assets, and templates belong to Nerio Pro unless the component matrix says otherwise.
 
-The documentation application also includes a focused
-[Blocks catalog](https://nerio.design/blocks) of bounded product compositions and a separate
-[Templates catalog](https://nerio.design/templates) for complete app-like scenarios. Blocks use
-same-origin full-screen previews, stay smaller than a product page or shell, and do not add Core
-APIs or backend behavior. Operations Workspace, Finance & Assets, Content Library, AI Research
-Workspace, Developer Portal, and Support Desk are deterministic docs-local previews rather than
-released Pro packages.
+Development and preview deployments of the documentation application include a focused Blocks
+catalog of bounded product compositions and a separate Templates catalog for complete app-like
+scenarios. These preview surfaces remain hidden from the public production documentation until
+launch. Blocks use same-origin full-screen previews, stay smaller than a product page or shell, and
+do not add Core APIs or backend behavior. Operations Workspace, Finance & Assets, Content Library,
+AI Research Workspace, Developer Portal, and Support Desk are deterministic docs-local previews
+rather than released Pro packages.
 
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for

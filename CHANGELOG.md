@@ -55,6 +55,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Gated Blocks, Templates, their full-screen Views, and the visual Playground behind
+  `NERIO_SHOW_PREVIEW_SURFACES`. They remain available by default in local and preview deployments
+  while public production hides their navigation, search entries, sitemap and `llms.txt` discovery,
+  redirects, and direct routes until launch.
 - Added Support Desk as a docs-local Template with saved inbox views, dense ticket selection,
   desktop split view, mobile drill-in, localized conversations, assignment and status controls,
   customer context, reply validation and feedback, complete queue states, runtime-axis inspection,

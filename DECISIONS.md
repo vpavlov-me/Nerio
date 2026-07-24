@@ -141,3 +141,15 @@ Operations Workspace is the first Template and remains a credible universal prod
 than a banking or finance-only dashboard. Templates may compose Core and template-local code.
 Unproven product patterns remain local until the evidence in `TIERING_AND_TEMPLATE_EVOLUTION.md`
 supports promotion.
+
+## Preview-only documentation surfaces
+
+Blocks, Templates, their same-origin preview Views, and the visual Playground are available by
+default in local development and preview deployments, but remain hidden from the public production
+documentation until they are ready to launch. `NERIO_SHOW_PREVIEW_SURFACES=true|false` is the single
+deployment override. When it is unset, public production defaults to hidden while development and
+preview environments default to visible.
+
+The gate applies to primary and mobile navigation, documentation search, sitemap and `llms.txt`
+discovery, catalog and detail routes, legacy public redirects, and full-screen Views. Internal
+unindexed visual-test fixtures remain separate from the public Blocks and Templates contract.

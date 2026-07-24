@@ -5,3 +5,12 @@ export function isPublicProductionDeployment() {
 
   return process.env.NODE_ENV === "production";
 }
+
+export function arePreviewSurfacesEnabled() {
+  const override = process.env.NERIO_SHOW_PREVIEW_SURFACES;
+
+  if (override === "true") return true;
+  if (override === "false") return false;
+
+  return !isPublicProductionDeployment();
+}

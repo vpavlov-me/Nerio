@@ -4,9 +4,12 @@ import { notFound } from "next/navigation";
 import { Badge } from "@nerio-ui/ui";
 import { Button } from "@nerio-ui/ui/client";
 import { getTemplate, templateSlugs } from "../../../features/templates/catalog";
+import { arePreviewSurfacesEnabled } from "../../../lib/deployment";
 import { createPageMetadata } from "../../../lib/seo";
 
 export function generateStaticParams() {
+  if (!arePreviewSurfacesEnabled()) return [];
+
   return templateSlugs.map((slug) => ({ slug }));
 }
 
@@ -15,6 +18,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
+  if (!arePreviewSurfacesEnabled()) notFound();
+
   const { slug } = await params;
   const template = getTemplate(slug);
 
@@ -33,6 +38,8 @@ export default async function TemplateDetailPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  if (!arePreviewSurfacesEnabled()) notFound();
+
   const { slug } = await params;
   const template = getTemplate(slug);
 
