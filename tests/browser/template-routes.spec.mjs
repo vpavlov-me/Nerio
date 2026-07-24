@@ -34,8 +34,13 @@ test("derives the gallery, detail, and same-origin preview from one route model"
     }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Operations Workspace" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Finance & Assets" })).toBeVisible();
 
-  await page.getByRole("link", { name: "View details" }).click();
+  await page
+    .locator(".template-card")
+    .filter({ hasText: "Operations Workspace" })
+    .getByRole("link", { name: "View details" })
+    .click();
   await expect(page).toHaveURL(/\/templates\/operations-workspace$/);
   const frame = page.locator('iframe[title="Operations Workspace preview"]');
   await expect(frame).toHaveAttribute("src", workspaceRoute);
@@ -47,6 +52,20 @@ test("derives the gallery, detail, and same-origin preview from one route model"
   ).toBeVisible();
 
   expect([...requestedHosts]).not.toContain("nerio-demo.vercel.app");
+  expect(problems).toEqual([]);
+});
+
+test("renders the Finance & Assets detail and same-origin preview from catalog metadata", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/templates/finance-assets");
+  await expect(page.getByRole("heading", { level: 1, name: "Finance & Assets" })).toBeVisible();
+  const frame = page.locator('iframe[title="Finance & Assets preview"]');
+  await expect(frame).toHaveAttribute("src", "/views/finance-assets");
+  await expect(
+    frame.contentFrame().getByRole("heading", { level: 2, name: "Portfolio movement" }),
+  ).toBeVisible();
   expect(problems).toEqual([]);
 });
 

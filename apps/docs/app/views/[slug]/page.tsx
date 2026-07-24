@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { FinanceAssetsView } from "../../../features/templates/finance-assets/view";
 import { OperationsWorkspaceView } from "../../../features/templates/operations-workspace/view";
 import { getTemplate, templateSlugs } from "../../../features/templates/catalog";
 import { createPageMetadata } from "../../../lib/seo";
@@ -34,6 +35,10 @@ export default async function TemplateViewPage({ params }: { params: Promise<{ s
 
   if (template.slug === "operations-workspace") {
     return <OperationsWorkspaceView />;
+  }
+
+  if (template.slug === "finance-assets") {
+    return <FinanceAssetsView />;
   }
 
   notFound();

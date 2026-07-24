@@ -55,6 +55,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added Finance & Assets as a second docs-local Template with a consolidated portfolio overview,
+  searchable holdings and asset detail, semantic transaction states, a validated local transfer
+  flow, responsive navigation, sensitive-value controls, runtime-axis inspection, and focused
+  browser and visual evidence. It uses deterministic data and the existing charts adapter without
+  adding a backend, remote market data, or Core API.
 - Moved the Operations Workspace showcase into a metadata-driven docs-local Template architecture.
   `/templates`, `/templates/operations-workspace`, and `/views/operations-workspace` now share one
   catalog and one docs deployment; the standalone demo application, external demo URL, port 3002,
