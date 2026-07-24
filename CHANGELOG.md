@@ -55,6 +55,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added Support Desk as a docs-local Template with saved inbox views, dense ticket selection,
+  desktop split view, mobile drill-in, localized conversations, assignment and status controls,
+  customer context, reply validation and feedback, complete queue states, runtime-axis inspection,
+  and focused browser and visual evidence. It does not add a CRM backend, email delivery,
+  persistence, permissions, or Core API.
 - Added Developer Portal as a docs-local Template with a developer landing, deep navigation,
   keyboard-accessible documentation search, quickstart examples, API request and response states,
   versioned changelog, responsive navigation, runtime-axis inspection, and focused browser and
