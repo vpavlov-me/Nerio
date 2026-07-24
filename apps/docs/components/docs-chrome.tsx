@@ -448,8 +448,15 @@ function getAdjacentDocs(pathname: string) {
   };
 }
 
-function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
+function MobileDocumentationNavigation({
+  pathname,
+  showPreviewSurfaces,
+}: {
+  pathname: string;
+  showPreviewSurfaces: boolean;
+}) {
   const [open, setOpen] = React.useState(false);
+  const navigationGroups = showPreviewSurfaces ? publicNavigationGroups : navGroups;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -473,7 +480,7 @@ function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
         </SheetHeader>
         <SheetBody>
           <nav className="docs-mobile-navigation" aria-label="Mobile documentation">
-            {publicNavigationGroups.map((group) => (
+            {navigationGroups.map((group) => (
               <div className="docs-mobile-navigation__group" key={group.title}>
                 <h2>{group.title}</h2>
                 {group.items.map(({ href, label, icon }) => (
@@ -736,10 +743,10 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
 
 export function DocsChrome({
   children,
-  showPlayground,
+  showPreviewSurfaces,
 }: {
   children: React.ReactNode;
-  showPlayground: boolean;
+  showPreviewSurfaces: boolean;
 }) {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
@@ -753,9 +760,14 @@ export function DocsChrome({
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
-  const visibleSearchEntries = showPlayground
+  const visibleSearchEntries = showPreviewSurfaces
     ? searchEntries
-    : searchEntries.filter((entry) => !entry.href.startsWith("/playground"));
+    : searchEntries.filter(
+        (entry) =>
+          !entry.href.startsWith("/playground") &&
+          !entry.href.startsWith("/blocks") &&
+          !entry.href.startsWith("/templates"),
+      );
 
   React.useEffect(() => {
     setFeedback(null);
@@ -862,7 +874,10 @@ export function DocsChrome({
             <Badge tone="neutral">{version}</Badge>
           </div>
 
-          <MobileDocumentationNavigation pathname={pathname} />
+          <MobileDocumentationNavigation
+            pathname={pathname}
+            showPreviewSurfaces={showPreviewSurfaces}
+          />
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
@@ -881,23 +896,25 @@ export function DocsChrome({
             >
               Components
             </Link>
-            <Link
-              href="/blocks"
-              className={pathname.startsWith("/blocks") ? "is-active" : undefined}
-            >
-              Blocks
-            </Link>
-            <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
-              Templates
-            </Link>
-            {showPlayground ? (
-              <Link
-                href="/playground"
-                className={isPlaygroundPage ? "is-active" : undefined}
-                aria-current={isPlaygroundPage ? "page" : undefined}
-              >
-                Playground
-              </Link>
+            {showPreviewSurfaces ? (
+              <>
+                <Link
+                  href="/blocks"
+                  className={pathname.startsWith("/blocks") ? "is-active" : undefined}
+                >
+                  Blocks
+                </Link>
+                <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
+                  Templates
+                </Link>
+                <Link
+                  href="/playground"
+                  className={isPlaygroundPage ? "is-active" : undefined}
+                  aria-current={isPlaygroundPage ? "page" : undefined}
+                >
+                  Playground
+                </Link>
+              </>
             ) : null}
           </nav>
 

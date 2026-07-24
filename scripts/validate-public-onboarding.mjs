@@ -7,7 +7,7 @@ const optionNames = new Map([
   ["--readme", "README.md"],
   ["--project", "PROJECT.md"],
   ["--release", "RELEASE.md"],
-  ["--llms", "apps/docs/public/llms.txt"],
+  ["--llms", "apps/docs/content/llms.txt"],
   ["--getting-started", "apps/docs/app/docs/getting-started/page.tsx"],
   ["--registry-docs", "apps/docs/app/docs/registry/page.tsx"],
   ["--ai", "apps/docs/app/docs/ai/page.tsx"],
@@ -107,7 +107,7 @@ for (const command of [
   ...commands.cli.oneOffCommands,
   commands.mcp.localInstall,
 ]) {
-  requireText(sources["apps/docs/public/llms.txt"], command, "llms.txt", failures);
+  requireText(sources["apps/docs/content/llms.txt"], command, "llms.txt", failures);
 }
 
 for (const path of [

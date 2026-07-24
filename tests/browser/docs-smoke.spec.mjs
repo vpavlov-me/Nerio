@@ -120,6 +120,14 @@ test("keeps the homepage concise while local tooling remains accessible", async 
     "href",
     "/playground",
   );
+  await expect(page.getByRole("link", { name: "Blocks", exact: true })).toHaveAttribute(
+    "href",
+    "/blocks",
+  );
+  await expect(page.getByRole("link", { name: "Templates", exact: true })).toHaveAttribute(
+    "href",
+    "/templates",
+  );
   await expect(page.locator('img[src="/brand/google-g.svg"]')).toBeAttached();
   await expect(page.locator('img[src="/brand/apple-logo.svg"]')).toBeAttached();
 
@@ -265,9 +273,11 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   expect(await robots.text()).toContain("Sitemap: https://nerio.vpavlov.com/sitemap.xml");
   expect(await robots.text()).toContain("Disallow: /views/");
   expect(await robots.text()).toContain("Disallow: /visual-test/");
-  expect(await llms.text()).toContain("0.1.0-alpha.1");
-  expect(await llms.text()).toContain("The public Blocks catalog is available at `/blocks`");
-  expect(await llms.text()).not.toContain("/playground");
+  const llmsText = await llms.text();
+  expect(llmsText).toContain("0.1.0-alpha.1");
+  expect(llmsText).toContain("The public Blocks catalog is available at `/blocks`");
+  expect(llmsText).not.toContain("/playground");
+  expect(llmsText).not.toContain("nerio-preview-surfaces");
   expect(legacy.status()).toBe(308);
   expect(legacy.headers().location).toBe("/blocks/sign-in");
 

@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Badge, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@nerio-ui/ui";
 import { Button } from "@nerio-ui/ui/client";
 import { blockCatalog } from "../../features/blocks/catalog";
+import { arePreviewSurfacesEnabled } from "../../lib/deployment";
 import { createPageMetadata } from "../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -21,6 +23,8 @@ function getCategoryId(category: string) {
 }
 
 export default function BlocksPage() {
+  if (!arePreviewSurfacesEnabled()) notFound();
+
   return (
     <article className="doc-page blocks-page">
       <header className="templates-hero">

@@ -4,6 +4,7 @@ import {
   isInternalBlockFixture,
   legacyPublicBlockRedirects,
 } from "../../../../features/blocks/catalog";
+import { arePreviewSurfacesEnabled } from "../../../../lib/deployment";
 
 const compositionSlugs = [
   ...Object.keys(legacyPublicBlockRedirects),
@@ -13,6 +14,8 @@ const compositionSlugs = [
 ];
 
 export function generateStaticParams() {
+  if (!arePreviewSurfacesEnabled()) return [];
+
   return compositionSlugs.map((slug) => ({ slug }));
 }
 
@@ -21,6 +24,8 @@ export default async function LegacyCompositionPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  if (!arePreviewSurfacesEnabled()) notFound();
+
   const { slug } = await params;
   const replacement = getLegacyPublicBlockRedirect(slug);
 
