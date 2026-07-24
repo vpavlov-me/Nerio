@@ -44,3 +44,16 @@ No Content Library pattern changes or widens a Core API.
 | Local model/runtime preferences | Model profile sits beside theme, mode, density, and direction without creating a new Nerio runtime axis           | Keep product-owned                                   | No Core promotion; model selection and product preferences remain application responsibilities                                              |
 
 No AI Research Workspace pattern changes or widens a Core API.
+
+## Developer Portal
+
+| Pattern                      | Current evidence                                                                                                      | Recommendation                              | Evidence needed before promotion                                                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Documentation shell          | Product header, deep grouped navigation, content, and page table of contents form one responsive developer experience | Pro documentation composition candidate     | Reuse across independent documentation products, routing contracts, permissions, versioning, responsive hierarchy, and content tooling |
+| Documentation search         | Keyboard shortcut, grouped result filtering, no-results state, and destination navigation compose Command and Popover | Pro search candidate                        | Real index ownership, ranking, remote loading, recent items, analytics, large result sets, and assistive-technology review             |
+| API endpoint reference       | Method, path, parameters, response, loading, error, events, and recovery form one product-owned reference layout      | Pro developer-tool candidate                | Multiple API products, schema generation, language examples, versioning, deprecation, expandable models, and deep-link behavior        |
+| Code example                 | Language tabs, copy feedback, long-line containment, and local syntax content support a practical quickstart          | Keep template-local; possible Pro candidate | Stable syntax-highlighting adapter, multiple consumers, line actions, wrapping policy, accessible annotation, and copy telemetry       |
+| Versioned changelog timeline | Version selection, current/previous status, dates, highlights, and migration context are deterministic fixtures       | Keep template-local                         | Real release feeds, pagination, compare/migration behavior, subscriptions, deep links, and localization                                |
+| Runtime preference panel     | Theme mode, density, and direction remain canonical Nerio axes inside a product-owned settings page                   | Keep product-owned                          | No Core promotion; persistence and portal preference policy remain application responsibilities                                        |
+
+No Developer Portal pattern changes or widens a Core API.

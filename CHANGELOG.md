@@ -55,6 +55,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added Developer Portal as a docs-local Template with a developer landing, deep navigation,
+  keyboard-accessible documentation search, quickstart examples, API request and response states,
+  versioned changelog, responsive navigation, runtime-axis inspection, and focused browser and
+  visual evidence. It remains distinct from the Nerio docs application and does not add a docs
+  backend, live API, SDK, persistence, or Core API.
 - Added AI Research Workspace as a docs-local Template with an evidence-grounded conversation,
   inspectable citations, local attachments, deterministic running, completed, interrupted, failed,
   and retry tool states, searchable saved threads, responsive navigation, runtime-axis inspection,

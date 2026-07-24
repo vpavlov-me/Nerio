@@ -4,6 +4,7 @@ const workspaceRoute = "/views/operations-workspace";
 const financeRoute = "/views/finance-assets";
 const contentLibraryRoute = "/views/content-library";
 const aiResearchRoute = "/views/ai-research-workspace";
+const developerPortalRoute = "/views/developer-portal";
 
 async function prepareTemplate(page, viewport) {
   await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
@@ -124,4 +125,34 @@ test("protects the AI Research Workspace desktop preview", async ({ page }) => {
 test("protects the AI Research Workspace mobile preview", async ({ page }) => {
   await prepareAiResearchTemplate(page, { width: 390, height: 844 });
   await expect(page).toHaveScreenshot("ai-research-workspace-mobile.png", { fullPage: true });
+});
+
+async function prepareDeveloperPortal(page, viewport) {
+  await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
+  await page.addInitScript(() => window.localStorage.clear());
+  await page.setViewportSize(viewport);
+  await page.goto(developerPortalRoute);
+  await page.evaluate(() => document.fonts.ready);
+  await page.addStyleTag({
+    content: `
+      *, *::before, *::after {
+        animation: none !important;
+        caret-color: transparent !important;
+        transition: none !important;
+      }
+    `,
+  });
+  await expect(
+    page.getByRole("heading", { name: "Build a connected workspace in minutes" }),
+  ).toBeVisible();
+}
+
+test("protects the Developer Portal desktop preview", async ({ page }) => {
+  await prepareDeveloperPortal(page, { width: 1440, height: 1000 });
+  await expect(page).toHaveScreenshot("developer-portal-desktop.png", { fullPage: true });
+});
+
+test("protects the Developer Portal mobile preview", async ({ page }) => {
+  await prepareDeveloperPortal(page, { width: 390, height: 844 });
+  await expect(page).toHaveScreenshot("developer-portal-mobile.png", { fullPage: true });
 });
