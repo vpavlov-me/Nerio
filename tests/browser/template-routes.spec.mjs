@@ -113,6 +113,20 @@ test("renders the Developer Portal detail and same-origin preview from catalog m
   expect(problems).toEqual([]);
 });
 
+test("renders the Support Desk detail and same-origin preview from catalog metadata", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/templates/support-desk");
+  await expect(page.getByRole("heading", { level: 1, name: "Support Desk" })).toBeVisible();
+  const frame = page.locator('iframe[title="Support Desk preview"]');
+  await expect(frame).toHaveAttribute("src", "/views/support-desk");
+  await expect(
+    frame.contentFrame().getByRole("heading", { name: "My open tickets" }),
+  ).toBeVisible();
+  expect(problems).toEqual([]);
+});
+
 test("supports direct navigation and refresh without documentation chrome", async ({ page }) => {
   const problems = monitorPage(page);
 

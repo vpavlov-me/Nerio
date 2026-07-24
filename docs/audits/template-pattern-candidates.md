@@ -57,3 +57,16 @@ No AI Research Workspace pattern changes or widens a Core API.
 | Runtime preference panel     | Theme mode, density, and direction remain canonical Nerio axes inside a product-owned settings page                   | Keep product-owned                          | No Core promotion; persistence and portal preference policy remain application responsibilities                                        |
 
 No Developer Portal pattern changes or widens a Core API.
+
+## Support Desk
+
+| Pattern                    | Current evidence                                                                                                         | Recommendation                              | Evidence needed before promotion                                                                                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Saved support views        | Named queues combine count, ownership, urgency, waiting, and resolution policy without changing Core navigation APIs     | Pro inbox-navigation candidate              | Multiple support, moderation, and case products with stable query ownership, counts, permissions, ordering, and notification semantics     |
+| Ticket list and split view | Dense ticket identity, unread and priority signals, desktop selection, and mobile drill-in form one responsive workflow  | Pro operations-workspace candidate          | Reuse across CRM, support, moderation, and case management with large-set navigation, virtualization, shortcuts, and assistive-tech review |
+| Conversation and composer  | Localized messages, internal system notes, reply validation, keyboard send, transient feedback, and status transition    | Pro conversation candidate                  | Real transport, drafts, attachments, mentions, collision policy, delivery states, permissions, localization, and offline recovery          |
+| Customer context rail      | Account health, plan, locale, note, and activity remain adjacent to the active ticket on desktop and move to Sheet       | Keep template-local; possible Pro candidate | Independent products with stable customer identity, privacy, permission, responsive disclosure, and cross-record navigation                |
+| Assignment and resolution  | Assignee, priority, status, confirmation, and Toast feedback compose existing controls with product-owned queue policy   | Keep template-local workflow                | Real routing rules, SLAs, automation, audit history, bulk actions, reopen policy, authorization, and concurrent update behavior            |
+| Deterministic queue states | Loading, retryable error, empty queue, search no-result, unread, pending, escalated, resolved, and sent states are local | Keep as product-owned state orchestration   | No direct promotion; Core state primitives remain sufficient until repeated orchestration contracts are proven                             |
+
+No Support Desk pattern changes or widens a Core API.

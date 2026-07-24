@@ -47,7 +47,11 @@ backend, vector database, or released Pro package. Developer Portal adds a devel
 navigation, keyboard-accessible search, quickstart examples, API reference states, and a versioned
 changelog at `/templates/developer-portal` with a same-origin `/views/developer-portal` preview. Its
 documentation, endpoints, responses, search, and release data are local fixtures; it is not a docs
-backend, remote API, live SDK, or released Pro package.
+backend, remote API, live SDK, or released Pro package. Support Desk adds saved inbox views, dense
+ticket selection, localized conversations, assignment and status controls, customer context, and a
+validated local reply flow at `/templates/support-desk` with a same-origin `/views/support-desk`
+preview. Its tickets, customers, replies, and workflow state are local fixtures; it is not a CRM
+backend, email service, persistence layer, or released Pro package.
 
 Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
 black surface with a soft shadow and no default border; secondary grouping and TableContainer use

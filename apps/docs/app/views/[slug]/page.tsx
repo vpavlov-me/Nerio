@@ -5,6 +5,7 @@ import { ContentLibraryView } from "../../../features/templates/content-library/
 import { DeveloperPortalView } from "../../../features/templates/developer-portal/view";
 import { FinanceAssetsView } from "../../../features/templates/finance-assets/view";
 import { OperationsWorkspaceView } from "../../../features/templates/operations-workspace/view";
+import { SupportDeskView } from "../../../features/templates/support-desk/view";
 import { getTemplate, templateSlugs } from "../../../features/templates/catalog";
 import { createPageMetadata } from "../../../lib/seo";
 
@@ -54,6 +55,10 @@ export default async function TemplateViewPage({ params }: { params: Promise<{ s
 
   if (template.slug === "developer-portal") {
     return <DeveloperPortalView />;
+  }
+
+  if (template.slug === "support-desk") {
+    return <SupportDeskView />;
   }
 
   notFound();

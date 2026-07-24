@@ -107,8 +107,8 @@ The documentation application also includes a focused
 [Templates catalog](https://nerio.design/templates) for complete app-like scenarios. Blocks use
 same-origin full-screen previews, stay smaller than a product page or shell, and do not add Core
 APIs or backend behavior. Operations Workspace, Finance & Assets, Content Library, AI Research
-Workspace, and Developer Portal are deterministic docs-local previews rather than released Pro
-packages.
+Workspace, Developer Portal, and Support Desk are deterministic docs-local previews rather than
+released Pro packages.
 
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for

@@ -34,6 +34,7 @@ export default defineConfig({
         "content-library-template.spec.mjs",
         "developer-portal-template.spec.mjs",
         "finance-template.spec.mjs",
+        "support-desk-template.spec.mjs",
         "template-routes.spec.mjs",
         "performance-smoke.spec.mjs",
       ],
