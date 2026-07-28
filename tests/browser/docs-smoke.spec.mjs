@@ -748,9 +748,21 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
   const tooltip = page.getByRole("tooltip");
   await expect(tooltip).toBeVisible({ timeout: 10_000 });
   await expect(tooltip).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
-  expect(await tooltip.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
-    "blur(24px)",
-  );
+  const tooltipVisual = await tooltip.evaluate((element) => {
+    const arrow = element.querySelector('[data-slot="arrow"]');
+    const popupBounds = element.getBoundingClientRect();
+    const arrowBounds = arrow.getBoundingClientRect();
+    return {
+      arrowAttached: Math.abs(arrowBounds.top - popupBounds.bottom),
+      arrowParent: arrow.parentElement === element,
+      arrowSide: arrow.dataset.side,
+      surfaceFilter: getComputedStyle(element).backdropFilter,
+    };
+  });
+  expect(tooltipVisual.arrowParent).toBe(true);
+  expect(tooltipVisual.arrowSide).toBe("top");
+  expect(tooltipVisual.arrowAttached).toBeLessThanOrEqual(1);
+  expect(tooltipVisual.surfaceFilter).toContain("blur(24px)");
 
   await page.goto("/docs/components/dropdown-menu");
   await page.getByRole("button", { name: "Actions", exact: true }).click();

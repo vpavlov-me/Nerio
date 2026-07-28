@@ -663,6 +663,11 @@ describe("Core static contracts", () => {
     );
     expect(componentSource("date-picker")).toContain("trailingIcon={CalendarDays}");
     expect(componentSource("tooltip")).toContain("<BaseTooltip.Arrow");
+    expect(componentSource("tooltip")).toContain("sideOffset={10}");
+    expect(componentSource("tooltip")).toContain("overflow-clip");
+    expect(componentSource("tooltip")).toContain(
+      "before:[transform:translate(-50%,50%)_rotate(45deg)]",
+    );
     expect(componentSource("input")).toContain("focus:border-(--n-input-border-focus)");
     expect(componentSource("input")).not.toContain("focus-visible:shadow-(--n-focus-ring)");
     expect(componentSource("textarea")).toContain("focus:border-(--n-input-border-focus)");
@@ -2518,7 +2523,9 @@ describe("Core interactive action contracts", () => {
       </Tooltip>,
     );
     await user.tab();
-    expect(await screen.findByRole("tooltip")).toHaveTextContent("Copy link");
+    const tooltip = await screen.findByRole("tooltip");
+    expect(tooltip).toHaveTextContent("Copy link");
+    expect(tooltip.querySelector('[data-slot="arrow"]')?.parentElement).toBe(tooltip);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     rerender(
       <Tooltip label="Copy link" open={false} disabled>

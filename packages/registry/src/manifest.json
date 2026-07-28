@@ -3480,6 +3480,7 @@
       ],
       "accessibility": [
         "Uses the Base UI Tooltip primitive.",
+        "The arrow stays inside the popup and clips its bordered overlay surface toward the trigger.",
         "Do not put required information only inside a tooltip.",
         "Keep tooltip text short and specific.",
         "Requires an element trigger. Use a keyboard-focusable control when keyboard users need to discover the tooltip.",
