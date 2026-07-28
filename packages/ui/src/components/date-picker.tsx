@@ -212,7 +212,7 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
               className={cn(
                 popoverPopupClasses,
                 motionClasses.overlayEnter,
-                "w-(--n-calendar-width) min-w-0 max-w-(--available-width) gap-(--n-space-2) p-0 [--n-overlay-background:var(--n-calendar-background)] [--n-overlay-control-background:var(--n-calendar-background)] [--n-overlay-control-background-hover:var(--n-calendar-day-background-hover)] [--n-overlay-foreground:var(--n-calendar-foreground)] [--n-overlay-foreground-muted:var(--n-calendar-weekday-foreground)]",
+                "w-(--n-calendar-width) min-w-0 max-w-(--available-width) gap-(--n-space-2) p-0",
               )}
               data-slot="content"
               finalFocus={triggerRef}
@@ -225,7 +225,7 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
               <Calendar
                 ref={calendarRef}
                 aria-label={calendarLabel}
-                className="max-w-none border-0 bg-transparent"
+                className="max-w-none border-0 bg-transparent shadow-none backdrop-filter-none"
                 disabled={disabled}
                 firstDayOfWeek={firstDayOfWeek}
                 isDateDisabled={isDateDisabled}

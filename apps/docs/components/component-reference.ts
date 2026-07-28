@@ -1109,9 +1109,10 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-spinner-size-sm",
       "--n-spinner-size-md",
       "--n-spinner-size-lg",
+      "--n-spinner-radius",
       "--n-spinner-border-width",
       "--n-spinner-duration",
-      "--n-radius-full",
+      "--n-radius-pill",
     ],
   },
   skeleton: {
@@ -1836,7 +1837,9 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: [
       "--n-switch-height",
       "--n-switch-width",
+      "--n-switch-radius",
       "--n-switch-thumb-size",
+      "--n-switch-thumb-radius",
       "--n-switch-thumb-offset",
       "--n-switch-background",
       "--n-switch-background-hover",
@@ -2582,6 +2585,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-avatar-size-sm",
       "--n-avatar-size-md",
       "--n-avatar-size-lg",
+      "--n-avatar-radius",
       "--n-avatar-border",
       "--n-avatar-background",
     ],
@@ -3602,6 +3606,7 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       { title: "trigger", description: "Element that receives hover or focus." },
       { title: "content", description: "Short non-interactive explanation." },
+      { title: "arrow", description: "Directional indicator pointing back to the trigger." },
     ],
     variants: [{ title: "Default", description: "Small text label in the overlay layer." }],
     states: [

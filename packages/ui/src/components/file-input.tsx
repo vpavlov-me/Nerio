@@ -49,7 +49,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(func
 
   return (
     <span
-      className={cn("n-file-input__root relative inline-grid w-full min-w-0", className)}
+      className={cn("n-file-input__root inline-grid w-full min-w-0", className)}
       data-disabled={disabled ? "" : undefined}
       data-slot="file-input-root"
       dir={dir}
@@ -60,7 +60,12 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(func
         ref={ref}
         {...inputProps}
         aria-invalid={invalid ? true : ariaInvalid}
-        className={cn(fileInputBaseClasses, fileInputSizeClasses[size], motionClasses.control)}
+        className={cn(
+          "[grid-area:1/1]",
+          fileInputBaseClasses,
+          fileInputSizeClasses[size],
+          motionClasses.control,
+        )}
         data-disabled={disabled ? "" : undefined}
         data-invalid={isInvalid ? "" : undefined}
         data-multiple={multiple ? "" : undefined}
@@ -72,7 +77,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(func
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-block-0 start-0 inline-flex w-(--n-file-input-button-size) items-center justify-center text-(--n-file-input-button-foreground) [[data-disabled]_&]:text-(--n-file-input-button-disabled-foreground) forced-colors:text-[ButtonText]"
+        className="pointer-events-none z-1 inline-flex h-full w-(--n-file-input-button-size) items-center justify-center justify-self-start text-(--n-file-input-button-foreground) [grid-area:1/1] [[data-disabled]_&]:text-(--n-file-input-button-disabled-foreground) forced-colors:text-[ButtonText]"
         data-slot="file-input-icon"
       >
         <Icon icon={Upload} />

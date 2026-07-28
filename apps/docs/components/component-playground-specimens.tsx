@@ -1233,7 +1233,7 @@ export function ComponentPlayground() {
               title={`${tone} alert`}
               action={
                 tone === "danger" ? (
-                  <Button size="sm" variant="ghost">
+                  <Button size="sm" variant="secondary">
                     Review
                   </Button>
                 ) : undefined

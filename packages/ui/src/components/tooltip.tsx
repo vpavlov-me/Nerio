@@ -43,6 +43,10 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
             >
               {label}
             </BaseTooltip.Popup>
+            <BaseTooltip.Arrow
+              className="n-tooltip-arrow z-(--n-overlay-z-index) size-(--n-space-2) rotate-45 bg-(--n-overlay-background)"
+              data-slot="arrow"
+            />
           </BaseTooltip.Positioner>
         </BaseTooltip.Portal>
       </BaseTooltip.Root>

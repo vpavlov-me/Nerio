@@ -78,7 +78,7 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
             ) : null}
             <div className="n-list__content grid min-w-0 gap-(--n-space-1)" data-slot="content">
               <div
-                className="n-list__title font-(--n-font-weight-medium) text-(--n-color-text-primary)"
+                className="n-list__title font-(--n-font-weight-regular) text-(--n-color-text-primary)"
                 data-slot="title"
               >
                 {item.title}
@@ -121,7 +121,7 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
             {resolvedMarker !== "none" ? (
               <span
                 aria-hidden
-                className="n-list__marker inline-flex min-w-(--n-list-marker-width) items-center justify-center pt-(--n-list-item-padding) text-(length:--n-font-size-sm) font-(--n-font-weight-medium) text-(--n-color-text-tertiary)"
+                className="n-list__marker inline-flex min-w-(--n-list-marker-width) items-center justify-center pt-(--n-list-item-padding) text-(length:--n-font-size-sm) font-(--n-font-weight-regular) text-(--n-color-text-tertiary)"
                 data-slot="marker"
               >
                 {resolvedMarker === "decimal"

@@ -611,9 +611,10 @@ describe("Core static contracts", () => {
       resolve(process.cwd(), "src/components/button-group.tsx"),
       "utf8",
     );
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:ms-");
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:border-s-transparent");
+    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:border-s-0");
     expect(buttonGroupSource).toContain("[&>.n-button+.n-button::before]:h-");
+    expect(buttonGroupSource).toContain("[&>.n-button+.n-button::before]:start-0");
+    expect(buttonGroupSource).not.toContain("[&>.n-button+.n-button]:ms-");
     expect(buttonGroupSource).toContain("[&>.n-button:first-child]:rounded-s-");
     expect(buttonGroupSource).toContain("[&>.n-button:focus-visible]:z-2");
     expect(buttonGroupSource).not.toContain("orientation");
@@ -634,12 +635,43 @@ describe("Core static contracts", () => {
       "group-data-disabled/slider:opacity-(--n-slider-disabled-opacity)",
     );
     expect(componentSource("calendar")).toContain("overflow-hidden");
+    expect(componentSource("calendar")).not.toContain("<h2");
+    expect(componentSource("calendar")).toContain('className="p-0 text-center align-middle"');
     expect(componentSource("calendar")).toContain('locale = "en-US"');
     expect(componentSource("calendar")).not.toContain("underline");
     expect(componentSource("calendar")).toContain(
       "data-selected:[&:hover:not(:disabled):not([aria-disabled=true])]",
     );
     expect(componentSource("date-picker")).toContain("trailingIcon={CalendarDays}");
+    expect(componentSource("tooltip")).toContain("<BaseTooltip.Arrow");
+    expect(componentSource("input")).toContain("focus:border-(--n-input-border-focus)");
+    expect(componentSource("input")).not.toContain("focus-visible:shadow-(--n-focus-ring)");
+    expect(componentSource("textarea")).toContain("focus:border-(--n-input-border-focus)");
+    expect(componentSource("textarea")).not.toContain("focus-visible:shadow-(--n-focus-ring)");
+    expect(componentSource("input-group")).not.toContain("focus-within:shadow-(--n-focus-ring)");
+    expect(componentSource("input-group")).not.toContain("overflow-hidden");
+    expect(componentSource("input-group")).not.toContain("!border-0");
+    expect(componentSource("input-group")).not.toContain("!bg-transparent");
+    expect(componentSource("input-group")).not.toContain("!shadow-none");
+    expect(componentSource("input-group")).toContain(
+      '"min-w-0 rounded-none border-0 bg-transparent shadow-none disabled:opacity-100"',
+    );
+    expect(componentSource("file-input")).toContain("[grid-area:1/1]");
+    expect(componentSource("file-input")).not.toContain("absolute inset-block-0");
+    expect(componentSource("switch")).toContain("rounded-(--n-switch-radius)");
+    expect(componentSource("switch")).toContain("rounded-(--n-switch-thumb-radius)");
+    expect(componentSource("switch")).toContain("translate-x-(--n-switch-thumb-offset)");
+    expect(tokens).toContain(
+      "--n-radius-pill: min(var(--n-radius-control), var(--n-radius-full));",
+    );
+    expect(tokens).toContain("--n-badge-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-avatar-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-progress-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-spinner-radius: var(--n-radius-pill);");
+    expect(componentSource("spinner")).toContain("rounded-(--n-spinner-radius)");
     expect(componentSource("badge")).toContain(
       "data-[emphasis=strong]:data-[tone=success]:[--n-badge-foreground:var(--n-badge-foreground-strong)]",
     );
@@ -931,9 +963,10 @@ describe("Core static contracts", () => {
     const motionSource = readFileSync(resolve(process.cwd(), "src/lib/motion.ts"), "utf8");
     const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
 
-    expect(alertSource).not.toContain(
+    expect(alertSource).toContain(
       "data-[tone=success]:[--n-alert-title-color:var(--n-color-status-success)]",
     );
+    expect(listSource).toContain("font-(--n-font-weight-regular)");
     expect(listSource).toContain("duration-(--n-motion-hover-duration)");
     expect(itemSource).toContain("duration-(--n-motion-press-duration)");
     expect(itemSource).toContain("ease-(--n-motion-press-easing)");
@@ -1654,7 +1687,7 @@ describe("Core static contracts", () => {
     const disabled = screen.getByRole("textbox", { name: "Disabled notes" });
 
     expect(invalid).toHaveAttribute("data-invalid", "");
-    expect(invalid.className).toContain("focus-visible:border-(--n-input-border-focus)");
+    expect(invalid.className).toContain("focus:border-(--n-input-border-focus)");
     expect(readOnly).toHaveAttribute("data-readonly", "");
     expect(readOnly).toHaveAttribute("readonly");
     expect(readOnly.className).toContain("data-readonly:bg-(--n-input-readonly-background)");
@@ -3493,7 +3526,7 @@ describe("Core interactive action contracts", () => {
       <Field label="Website" description="Use your public domain." message="Required" invalid>
         <InputGroup ref={ref} data-slot="consumer">
           <InputGroupAddon placement="start">https://</InputGroupAddon>
-          <Input aria-describedby="custom-description" />
+          <Input aria-describedby="custom-description" className="border-2 bg-current shadow-sm" />
           <InputGroupAddon placement="end">
             <Button aria-label="Validate website">Check</Button>
           </InputGroupAddon>
@@ -3511,6 +3544,7 @@ describe("Core interactive action contracts", () => {
       group.querySelector('[data-slot="input-group-addon"][data-placement="end"]'),
     ).toBeTruthy();
     expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveClass("border-2", "bg-current", "shadow-sm");
     expect(input.getAttribute("aria-describedby")).toContain("custom-description");
     expect(input.getAttribute("aria-describedby")).toContain("-description");
     expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();
@@ -4331,10 +4365,7 @@ describe("Core interactive action contracts", () => {
     const calendar = screen.getByRole("group", { name: "Release calendar" });
     expect(rootRef.current).toBe(calendar);
     expect(within(calendar).getAllByRole("gridcell")).toHaveLength(42);
-    expect(within(calendar).getByRole("heading", { name: "February 2024" })).toHaveAttribute(
-      "aria-live",
-      "polite",
-    );
+    expect(within(calendar).getByText("February 2024")).toHaveAttribute("aria-live", "polite");
     expect(within(calendar).getByRole("gridcell", { selected: true })).toContainElement(
       within(calendar).getByRole("button", { name: "February 29, 2024, Selected" }),
     );
@@ -4479,7 +4510,7 @@ describe("Core interactive action contracts", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Juni 2026" })).toBeInTheDocument();
+    expect(screen.getByText("Juni 2026")).toHaveAttribute("data-slot", "heading");
     expect(screen.getByRole("columnheader", { name: "Mo" })).toHaveAttribute("abbr", "Montag");
     expect(screen.getByRole("button", { name: "Vorheriger Monat" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Nächster Monat" })).toBeInTheDocument();
@@ -4511,7 +4542,7 @@ describe("Core interactive action contracts", () => {
     nextMonth.focus();
     await user.keyboard("{Enter}");
     expect(nextMonth).toHaveFocus();
-    expect(screen.getByRole("heading", { name: "July 2026" })).toBeInTheDocument();
+    expect(screen.getByText("July 2026")).toHaveAttribute("data-slot", "heading");
   });
 
   it("rejects invalid Calendar dates and inverted constraints", () => {
