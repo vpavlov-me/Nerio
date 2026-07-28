@@ -53,7 +53,11 @@ export default function FileInputPage() {
         anatomy: (
           <DocumentationTable
             headers={["Slot", "Description"]}
-            rows={[["file-input", "Native input, picker trigger, and browser file summary."]]}
+            rows={[
+              ["file-input-root", "Layout wrapper for the input and decorative icon."],
+              ["file-input", "Native input, picker trigger, and browser file summary."],
+              ["file-input-icon", "Decorative upload icon over the compact native selector."],
+            ]}
             codeColumns={1}
           />
         ),

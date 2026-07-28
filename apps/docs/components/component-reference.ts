@@ -91,7 +91,7 @@ export const snippets: Record<string, string> = {
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
-    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio-ui/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from \'@nerio-ui/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Toggle workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
+    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio-ui/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail } from \'@nerio-ui/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>',
   "command-primitive":
     'import { Kbd } from \'@nerio-ui/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio-ui/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
@@ -106,7 +106,8 @@ export const snippets: Record<string, string> = {
   "dropdown-menu":
     'import { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
   card: 'import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\n\n<Card as="article">\n  <CardVisual>...</CardVisual>\n  <CardHeader>\n    <div>\n      <CardTitle as="h2">Launch workspace</CardTitle>\n      <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n    </div>\n    <CardAction>...</CardAction>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
-  separator: "import { Separator } from '@nerio-ui/ui';\n\n<Separator />",
+  separator:
+    "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
   avatar: "import { Avatar } from '@nerio-ui/ui';\n\n<Avatar name=\"Maya Chen\" />",
   progress:
     'import { Progress } from \'@nerio-ui/ui\';\n\n<Progress label="Uploading files" value={68} />\n\n<Progress aria-label="Synchronizing workspace" value={null} valueText="Synchronizing" />',
@@ -170,7 +171,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   "button-group": {
     name: "ButtonGroup",
     description:
-      "Groups related Buttons with the same visual variant into one compact attached horizontal or vertical control.",
+      "Groups related Buttons with the same visual variant into one compact attached horizontal control.",
     status: "stable",
     layer: "core",
     category: "Actions",
@@ -301,7 +302,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["Input", "Field", "Label"],
-    anatomy: ["file-input"],
+    anatomy: ["file-input-root", "file-input", "file-input-icon"],
     motion: ["hover", "focus"],
     accessibility: [
       "native file input and picker",
@@ -438,7 +439,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["Card", "Table", "Button"],
-    anatomy: ["root", "item", "body", "link", "title", "description", "meta"],
+    anatomy: ["root", "item", "marker", "body", "link", "title", "description", "meta"],
     motion: ["hover", "focus"],
     accessibility: ["semantic ul or ol", "native anchors", "natural reading order"],
   },
@@ -720,12 +721,7 @@ export const componentReference: Record<string, ComponentReference> = {
     purpose:
       "Use ButtonGroup when adjacent actions form one compact, related set with the same visual variant.",
     anatomy: [{ title: "button-group", description: "Native group wrapper for adjacent Buttons." }],
-    variants: [
-      {
-        title: "Orientation",
-        description: "Horizontal is the default; vertical stacks the same direct Button children.",
-      },
-    ],
+    variants: [{ title: "Variant parity", description: "Every child uses one Button variant." }],
     states: [
       { title: "Focus", description: "Each child Button keeps its own visible focus ring." },
       { title: "Disabled and loading", description: "Each child Button keeps its own state." },
@@ -982,6 +978,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-badge-background-strong",
       "--n-badge-foreground-strong",
       "--n-badge-background-strong-primary",
+      "--n-badge-foreground-strong-primary",
       "--n-badge-background-strong-info",
       "--n-badge-background-strong-success",
       "--n-badge-background-strong-warning",
@@ -1297,9 +1294,17 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use FileInput for native single or multiple file selection when the product owns everything that happens after selection.",
     anatomy: [
       {
+        title: "file-input-root",
+        description: "Layout wrapper for the native input and decorative selector icon.",
+      },
+      {
         title: "file-input",
         description:
           "Native file input with tokenized control geometry and browser-owned picker behavior.",
+      },
+      {
+        title: "file-input-icon",
+        description: "Decorative upload icon over the compact native selector button.",
       },
     ],
     variants: [
@@ -1967,7 +1972,7 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "Today",
-        description: "aria-current, weight, and underline identify today without selecting it.",
+        description: "aria-current and weight identify today without adding a competing underline.",
       },
       {
         title: "Outside month",
@@ -2009,7 +2014,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "locale / firstDayOfWeek / labels",
-        description: "Localized presentation with explicit week-start policy.",
+        description:
+          "Localized presentation with explicit week-start policy; locale defaults to en-US for deterministic SSR.",
       },
       {
         title: "today",
@@ -2036,7 +2042,9 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-calendar-background",
       "--n-calendar-border",
       "--n-calendar-day-background-hover",
+      "--n-calendar-day-background-active",
       "--n-calendar-day-background-selected",
+      "--n-calendar-day-background-selected-hover",
       "--n-calendar-day-foreground-selected",
       "--n-calendar-day-foreground-unavailable",
       "--n-calendar-duration",
@@ -2526,10 +2534,11 @@ export const componentReference: Record<string, ComponentReference> = {
   separator: {
     category: "Data display",
     purpose: "Use Separator to divide related content sections without adding visual weight.",
-    anatomy: [
-      { title: "root", description: "Native horizontal rule using the subtle border token." },
+    anatomy: [{ title: "root", description: "Native rule using the subtle border token." }],
+    variants: [
+      { title: "Horizontal", description: "Separates stacked content." },
+      { title: "Vertical", description: "Separates adjacent inline content." },
     ],
-    variants: [{ title: "Default", description: "Separates stacked content." }],
     states: [
       {
         title: "Static",
@@ -2845,16 +2854,20 @@ export const componentReference: Record<string, ComponentReference> = {
     purpose:
       "Use List to present short structured items that are not tabular data and do not need selection behavior.",
     anatomy: [
-      { title: "root", description: "Semantic ul by default or ol when ordered is true." },
+      { title: "root", description: "Semantic ul or ol selected by the marker meaning." },
       { title: "item", description: "One structured list item." },
+      { title: "marker", description: "Disc, decimal, dash, or consumer-supplied icon marker." },
       { title: "link", description: "Native anchor wrapper when an item has href." },
       { title: "title", description: "Primary item label." },
       { title: "description", description: "Optional supporting item copy." },
       { title: "meta", description: "Optional compact metadata in the trailing slot." },
     ],
     variants: [
-      { title: "Unordered", description: "Default semantic list for peer items." },
-      { title: "Ordered", description: "Use ordered when sequence or rank matters." },
+      { title: "Disc", description: "Default semantic bullet list for peer items." },
+      { title: "Decimal", description: "Ordered numbering for sequence or rank." },
+      { title: "Dash", description: "Quiet unordered dash marker." },
+      { title: "Icon", description: "Uses each item's explicit marker content." },
+      { title: "None", description: "Retains list semantics without a visible marker." },
     ],
     states: [
       { title: "Static", description: "Items without href render as non-interactive content." },
@@ -2873,8 +2886,8 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Array of title, description, meta, href, leading, and trailing values.",
       },
       {
-        title: "ordered",
-        description: "Renders an ol when sequence matters; otherwise renders a ul.",
+        title: "marker",
+        description: "disc, decimal, dash, icon, or none; decimal renders an ol.",
       },
       {
         title: "linkProps",
@@ -3187,7 +3200,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "footer", description: "Stable trailing region for consumer content." },
       {
         title: "rail",
-        description: "Named, vertically centered toggle bounded to the declared hit-area token.",
+        description: "Named bottom-right toggle inside the Sidebar, available in both states.",
       },
       { title: "inset", description: "Primary page content adjacent to the sidebar." },
       { title: "trigger", description: "External named control for expansion and collapse." },
@@ -3224,11 +3237,11 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Sidebar renders an aside landmark; add a labelled nav inside SidebarContent for navigation.",
-      "SidebarTrigger and SidebarRail require localized labels and expose aria-expanded and aria-controls.",
-      "Give the trigger and rail distinct labels when both render so each control is unambiguous.",
-      "The rail occupies only its declared hit area and does not create a full-height invisible click target.",
+      "SidebarRail and any optional external SidebarTrigger require localized labels and expose aria-expanded and aria-controls.",
+      "Use the rail as the persistent in-sidebar toggle; render an external trigger only when another product surface requires it.",
+      "The rail stays bottom-right and occupies only its declared hit area without creating a full-height invisible click target.",
       "Collapsed descendants are inert so invisible links and controls cannot receive focus.",
-      "Keep the trigger in SidebarInset or use SidebarRail so collapsing does not remove the focused control.",
+      "Keep the bottom-right SidebarRail mounted so collapsing does not remove the focused control.",
       "The primitive adds no roving focus or Arrow-key behavior to arbitrary consumer navigation.",
       "Render one interactive tree per viewport; use an explicit Sheet composition for mobile.",
     ],
@@ -3389,6 +3402,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     designNotes: [
       "Command is not GlobalSearch, EntitySearch, Documentation Search, or a complete Command Palette.",
+      "The outer radius follows the global overlay radius and is capped at 24px.",
       "Fetching, ranking, routing, permissions, analytics, history, recent items, and global shortcuts stay outside Core.",
       "Use consumer state to replace items and toggle CommandLoading for asynchronous results.",
       "Leading content is general React content and owns its semantics; use decorative Nerio Icons when no accessible meaning is needed.",
@@ -3414,6 +3428,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-command-group-spacing",
       "--n-command-background",
       "--n-command-border",
+      "--n-command-radius",
       "--n-command-item-background-active",
       "--n-overlay-surface-filter",
       "--n-overlay-control-background",
@@ -3626,7 +3641,10 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       { title: "trigger", description: "Control that opens the command list." },
       { title: "content", description: "Layered menu surface." },
-      { title: "item", description: "Command row with optional destructive intent." },
+      {
+        title: "item",
+        description: "Command row with optional leading icon, trailing icon, hotkey, and intent.",
+      },
     ],
     variants: [
       { title: "Default", description: "Neutral command groups." },
@@ -3644,7 +3662,8 @@ export const componentReference: Record<string, ComponentReference> = {
     api: [
       {
         title: "items",
-        description: "Small list of label, onSelect, disabled, and destructive flags.",
+        description:
+          "Small list of label, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
       },
       { title: "disabled item", description: "Stays visible in context without activation." },
       {
@@ -3659,6 +3678,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: [
       "--n-dropdown-min-width",
       "--n-dropdown-item-padding-inline",
+      "--n-dropdown-item-gap",
       "--n-dropdown-radius",
       "--n-overlay-z-index",
       "--n-overlay-background",

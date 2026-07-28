@@ -98,7 +98,6 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
   Skeleton,
   Slider,
   Spinner,
@@ -125,6 +124,7 @@ import {
   Tooltip,
   useToastManager,
 } from "@nerio-ui/ui/client";
+import { avatarPreviewAssets } from "../lib/avatar-preview-assets";
 
 const componentLinks = [
   [
@@ -236,14 +236,16 @@ function SpecimenSection({
 }
 
 function Matrix({
+  className,
   columns,
   rows,
 }: {
+  className?: string;
   columns: string[];
   rows: Array<{ label: string; cells: React.ReactNode[] }>;
 }) {
   return (
-    <div className="component-api-matrix">
+    <div className={["component-api-matrix", className].filter(Boolean).join(" ")}>
       <table>
         <thead>
           <tr>
@@ -503,17 +505,12 @@ export function ComponentPlayground() {
         </div>
       </SpecimenSection>
 
-      <SpecimenSection id="button-group" title="Button Group" api="orientation · grouped actions">
+      <SpecimenSection id="button-group" title="Button Group" api="horizontal grouped actions">
         <div className="component-lab-inline">
           <ButtonGroup>
             <Button variant="secondary">Day</Button>
             <Button variant="secondary">Week</Button>
             <Button variant="secondary">Month</Button>
-          </ButtonGroup>
-          <ButtonGroup orientation="vertical">
-            <Button variant="secondary">Top</Button>
-            <Button variant="secondary">Middle</Button>
-            <Button variant="secondary">Bottom</Button>
           </ButtonGroup>
         </div>
       </SpecimenSection>
@@ -823,6 +820,7 @@ export function ComponentPlayground() {
         api="single date · ISO value · localized · constrained · readOnly"
       >
         <Matrix
+          className="component-api-matrix--calendar"
           columns={["Selected", "Constrained", "Read only"]}
           rows={[
             {
@@ -974,7 +972,7 @@ export function ComponentPlayground() {
       <SpecimenSection
         id="dropdown-menu"
         title="Dropdown Menu"
-        api="trigger · items · disabled · destructive · onSelect"
+        api="trigger · leading and trailing icons · hotkey · disabled · destructive · onSelect"
       >
         <DropdownMenu
           trigger={
@@ -983,10 +981,10 @@ export function ComponentPlayground() {
             </Button>
           }
           items={[
-            { label: "Rename" },
-            { label: "Duplicate" },
-            { label: "Archive", disabled: true },
-            { label: "Delete", destructive: true },
+            { label: "Rename", leadingIcon: FileText, hotkey: <Kbd>⌘ R</Kbd> },
+            { label: "Duplicate", leadingIcon: Copy, hotkey: <Kbd>⌘ D</Kbd> },
+            { label: "Archive", disabled: true, trailingIcon: ChevronDown },
+            { label: "Delete", destructive: true, leadingIcon: CircleAlert },
           ]}
         />
       </SpecimenSection>
@@ -1074,20 +1072,26 @@ export function ComponentPlayground() {
         api="size · image · initials fallback · custom fallback · decorative"
       >
         <Matrix
-          columns={["sm", "md", "lg", "Initials", "Custom"]}
+          columns={["sm", "md", "lg", "Image", "Initials", "Custom"]}
           rows={[
             {
-              label: "Fallback",
+              label: "Preview",
               cells: [
-                <Avatar key="sm" name="Maya Chen" size="sm" />,
-                <Avatar key="md" name="Maya Chen" />,
-                <Avatar key="lg" name="Maya Chen" size="lg" />,
+                <Avatar key="sm" {...avatarPreviewAssets[0]} size="sm" />,
+                <Avatar key="md" {...avatarPreviewAssets[1]} />,
+                <Avatar key="lg" {...avatarPreviewAssets[2]} size="lg" />,
+                <Avatar key="image" {...avatarPreviewAssets[3]} />,
                 <Avatar key="fallback" name="Alex Reed" />,
                 <Avatar key="custom" name="Nerio Team" fallback={<Icon icon={Sparkles} />} />,
               ],
             },
           ]}
         />
+        <div className="component-lab-inline" aria-label="Avatar preview set">
+          {avatarPreviewAssets.map((avatar) => (
+            <Avatar key={avatar.name} {...avatar} size="lg" />
+          ))}
+        </div>
       </SpecimenSection>
       <SpecimenSection
         id="table"
@@ -1166,29 +1170,24 @@ export function ComponentPlayground() {
       <SpecimenSection
         id="list"
         title="List"
-        api="static · linked · ordered · leading · trailing · metadata"
+        api="disc · decimal · dash · icon · none · leading · trailing · metadata"
       >
         <div className="component-lab-card-grid">
           <List
             items={[
               {
                 id: "one",
-                title: "Static row",
-                description: "Description",
-                leading: <Icon icon={FileText} />,
-                meta: "Meta",
+                title: "Write the component contract",
               },
               {
                 id: "two",
-                title: "Linked row",
-                description: "One destination",
-                href: "#list",
-                trailing: <Icon icon={ChevronDown} />,
+                title: "Add accessible states",
               },
+              { id: "three", title: "Verify the public preview" },
             ]}
           />
           <List
-            ordered
+            marker="decimal"
             items={[
               { id: "install", title: "Install tokens" },
               { id: "source", title: "Register source" },
@@ -1197,10 +1196,15 @@ export function ComponentPlayground() {
           />
         </div>
       </SpecimenSection>
-      <SpecimenSection id="separator" title="Separator" api="semantic horizontal separator">
+      <SpecimenSection id="separator" title="Separator" api="horizontal · vertical">
         <div className="component-lab-stack">
           <span>Overview</span>
           <Separator />
+          <span>Activity</span>
+        </div>
+        <div className="component-lab-inline">
+          <span>Overview</span>
+          <Separator orientation="vertical" />
           <span>Activity</span>
         </div>
       </SpecimenSection>
@@ -1413,7 +1417,6 @@ export function ComponentPlayground() {
             <SidebarRail label="Toggle specimen sidebar" />
           </Sidebar>
           <SidebarInset as="div">
-            <SidebarTrigger label="Toggle specimen sidebar" />
             <Heading as="h3">Product content</Heading>
             <Text tone="secondary">The consuming app owns routes and navigation.</Text>
           </SidebarInset>

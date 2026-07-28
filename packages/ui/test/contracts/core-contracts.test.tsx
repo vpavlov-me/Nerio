@@ -176,6 +176,8 @@ const invalidFocusableIcon = <Icon focusable icon={Bell} />;
 const _invalidFileInputOverride = <FileInput type="text" />;
 // @ts-expect-error browsers prohibit populating a native file input value.
 const _invalidFileInputValue = <FileInput value="report.pdf" />;
+// @ts-expect-error ButtonGroup supports only its horizontal attached layout.
+const _invalidVerticalButtonGroup = <ButtonGroup orientation="vertical" />;
 // @ts-expect-error Icon never exposes the SVG in the tab order.
 const invalidTabIndexedIcon = <Icon icon={Bell} tabIndex={0} />;
 // @ts-expect-error icon-only Button cannot include visible children
@@ -530,7 +532,7 @@ describe("Core static contracts", () => {
     expect(groupForwardedRef).toHaveBeenLastCalledWith(screen.getByText("Group refs"));
   });
 
-  it("groups related Buttons with named horizontal and vertical layouts", async () => {
+  it("groups related Buttons in one named horizontal layout", async () => {
     const user = userEvent.setup();
     render(
       <>
@@ -542,7 +544,7 @@ describe("Core static contracts", () => {
           <Button variant="secondary">Save</Button>
         </ButtonGroup>
         <div data-density="compact" dir="rtl">
-          <ButtonGroup aria-label="Publishing actions" orientation="vertical">
+          <ButtonGroup aria-label="Publishing actions">
             <Button loading variant="secondary">
               Publish
             </Button>
@@ -555,12 +557,11 @@ describe("Core static contracts", () => {
     );
     const group = screen.getByRole("group", { name: "Document actions" });
     expect(group).toHaveAttribute("data-slot", "button-group");
-    expect(group).toHaveAttribute("data-orientation", "horizontal");
     expect(screen.getByRole("link", { name: "Preview" })).toHaveAttribute("href", "/preview");
-    const verticalGroup = screen.getByRole("group", { name: "Publishing actions" });
-    expect(verticalGroup).toHaveAttribute("data-orientation", "vertical");
-    expect(verticalGroup.parentElement).toHaveAttribute("data-density", "compact");
-    expect(verticalGroup.parentElement).toHaveAttribute("dir", "rtl");
+    const publishingGroup = screen.getByRole("group", { name: "Publishing actions" });
+    expect(publishingGroup).not.toHaveAttribute("data-orientation");
+    expect(publishingGroup.parentElement).toHaveAttribute("data-density", "compact");
+    expect(publishingGroup.parentElement).toHaveAttribute("dir", "rtl");
     expect(screen.getByRole("button", { name: "Publish" })).toHaveAttribute("aria-busy", "true");
     expect(screen.getByRole("button", { name: "Archive" })).toBeDisabled();
 
@@ -605,25 +606,51 @@ describe("Core static contracts", () => {
     );
   });
 
-  it("keeps ButtonGroup attachment, focus layering, RTL, and density contracts in Tailwind", () => {
+  it("keeps ButtonGroup attachment, decorative dividers, and focus layering in Tailwind", () => {
     const buttonGroupSource = readFileSync(
       resolve(process.cwd(), "src/components/button-group.tsx"),
       "utf8",
     );
     expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:ms-");
-    expect(buttonGroupSource).toContain("data-[orientation=vertical]:[&>.n-button+.n-button]:mt-");
-    expect(buttonGroupSource).toContain(
-      "rtl:data-[orientation=vertical]:[&>.n-button+.n-button::before]:translate-x-1/2",
-    );
+    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:border-s-transparent");
+    expect(buttonGroupSource).toContain("[&>.n-button+.n-button::before]:h-");
     expect(buttonGroupSource).toContain("[&>.n-button:first-child]:rounded-s-");
-    expect(buttonGroupSource).toContain(
-      "data-[orientation=vertical]:[&>.n-button:first-child]:rounded-b-none",
-    );
     expect(buttonGroupSource).toContain("[&>.n-button:focus-visible]:z-2");
-    expect(buttonGroupSource).toContain(
-      "data-[orientation=vertical]:[&>.n-button:only-child]:rounded-(--n-button-radius)",
-    );
+    expect(buttonGroupSource).not.toContain("orientation");
     expect(buttonGroupSource).not.toContain("overflow-hidden");
+  });
+
+  it("keeps the reviewed control-state refinements explicit in source and tokens", () => {
+    const componentSource = (name: string) =>
+      readFileSync(resolve(process.cwd(), `src/components/${name}.tsx`), "utf8");
+    const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
+
+    expect(componentSource("checkbox")).toContain("strokeWidth={2.2}");
+    expect(componentSource("slider")).not.toContain("data-disabled:opacity-(--n-opacity-disabled)");
+    expect(componentSource("slider")).toContain(
+      "group-data-disabled/slider:bg-(--n-slider-disabled-thumb-background)",
+    );
+    expect(componentSource("slider")).toContain(
+      "group-data-disabled/slider:opacity-(--n-slider-disabled-opacity)",
+    );
+    expect(componentSource("calendar")).toContain("overflow-hidden");
+    expect(componentSource("calendar")).toContain('locale = "en-US"');
+    expect(componentSource("calendar")).not.toContain("underline");
+    expect(componentSource("calendar")).toContain(
+      "data-selected:[&:hover:not(:disabled):not([aria-disabled=true])]",
+    );
+    expect(componentSource("date-picker")).toContain("trailingIcon={CalendarDays}");
+    expect(componentSource("badge")).toContain(
+      "data-[emphasis=strong]:data-[tone=success]:[--n-badge-foreground:var(--n-badge-foreground-strong)]",
+    );
+    expect(componentSource("form-group")).toContain("items-start");
+    expect(componentSource("command")).not.toContain("[--n-command-radius:");
+    expect(tokens).toContain("--n-command-radius: min(var(--n-radius-overlay), 1.5rem);");
+    expect(tokens).toContain("--n-badge-background-strong-primary: var(--n-purple-400);");
+    expect(tokens).toContain("--n-badge-foreground-strong: var(--n-gray-950);");
+    expect(tokens).toContain(
+      "--n-badge-foreground-strong-primary: var(--n-color-action-on-primary);",
+    );
   });
 
   it("renders decorative Badge icons on either side of its status label and supports loading", () => {
@@ -785,7 +812,12 @@ describe("Core static contracts", () => {
           data-testid="skeleton"
           {...({ ...unsafeSlot, "aria-hidden": false } as Record<string, string | boolean>)}
         />
-        <Separator data-testid="separator" />
+        <Separator
+          aria-orientation="horizontal"
+          className="h-6"
+          data-testid="separator"
+          orientation="vertical"
+        />
         <KeyValue data-testid="key-value" label="Owner" value="Product team" {...unsafeSlot} />
         <Alert data-testid="alert" title="Saved" tone="success" {...unsafeSlot} />
         <Toast data-testid="toast" title="Updated" tone="info" {...unsafeSlot} />
@@ -824,6 +856,10 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("skeleton")).toHaveAttribute("data-slot", "skeleton");
     expect(screen.getByTestId("skeleton")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByTestId("separator")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("separator")).toHaveAttribute("data-orientation", "vertical");
+    expect(screen.getByTestId("separator")).toHaveAttribute("aria-orientation", "vertical");
+    expect(screen.getByTestId("separator")).toHaveClass("h-6");
+    expect(screen.getByTestId("separator")).not.toHaveClass("h-auto");
     expect(screen.getByTestId("key-value")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-tone", "success");
@@ -1223,6 +1259,30 @@ describe("Core static contracts", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
   });
 
+  it("supports the complete List marker contract and keeps disc as the default", () => {
+    const { rerender } = render(
+      <List data-testid="markers" items={[{ id: "one", title: "First" }]} />,
+    );
+    expect(screen.getByTestId("markers")).toHaveAttribute("data-marker", "disc");
+    expect(document.querySelector('[data-slot="marker"]')).toHaveTextContent("•");
+
+    rerender(<List data-testid="markers" marker="dash" items={[{ id: "one", title: "First" }]} />);
+    expect(screen.getByTestId("markers")).toHaveAttribute("data-marker", "dash");
+    expect(document.querySelector('[data-slot="marker"]')).toHaveTextContent("–");
+
+    rerender(
+      <List
+        data-testid="markers"
+        marker="icon"
+        items={[{ id: "one", title: "First", marker: <Icon icon={Check} /> }]}
+      />,
+    );
+    expect(document.querySelector('[data-slot="marker"] svg')).not.toBeNull();
+
+    rerender(<List data-testid="markers" marker="none" items={[{ id: "one", title: "First" }]} />);
+    expect(document.querySelector('[data-slot="marker"]')).toBeNull();
+  });
+
   it("protects List destinations and anatomy while preserving safe link props", () => {
     render(
       <List
@@ -1487,13 +1547,13 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-table-section-gap: var(--n-space-1);");
     expect(tokens).toContain("--n-table-row-selection-indicator: var(--n-color-border-default);");
     expect(tokens).toContain(
-      "--n-pagination-background-current: var(--n-button-background-secondary);",
+      "--n-pagination-background-current: var(--n-button-background-secondary-active);",
     );
     expect(tokens).toContain("--n-pagination-border-current: var(--n-button-border-secondary);");
     expect(tokens).toContain(
       "--n-pagination-foreground-current: var(--n-button-foreground-secondary);",
     );
-    expect(tokens).toContain("--n-pagination-shadow: var(--n-button-shadow-outline);");
+    expect(tokens).toContain("--n-pagination-shadow: var(--n-shadow-none);");
     expect(tokens).toContain("--n-pagination-shadow-current: var(--n-shadow-none);");
     expect(tokens).toMatch(
       /:root\[data-density="compact"\][\s\S]*--n-table-cell-padding-y:[^;]+;[\s\S]*--n-table-row-min-height:[^;]+;/,
@@ -3301,9 +3361,9 @@ describe("Core interactive action contracts", () => {
         trigger="Actions"
         onOpenChange={onOpenChange}
         items={[
-          { label: "Rename", onSelect },
+          { label: "Rename", leadingIcon: Bell, hotkey: "⌘R", onSelect },
           { label: "Unavailable", disabled: true },
-          { label: "Archive", destructive: true, onSelect },
+          { label: "Archive", trailingIcon: ArrowRight, destructive: true, onSelect },
         ]}
       />,
     );
@@ -3315,6 +3375,18 @@ describe("Core interactive action contracts", () => {
       "aria-disabled",
       "true",
     );
+    expect(screen.getByRole("menuitem", { name: "Rename" })).toContainElement(
+      document.querySelector('[data-slot="leading-icon"]'),
+    );
+    expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");
+    expect(document.querySelector('[data-slot="hotkey"]')).toHaveClass("col-start-3");
+    expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveClass(
+      "grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)]",
+    );
+    expect(screen.getByRole("menuitem", { name: "Archive" })).toContainElement(
+      document.querySelector('[data-slot="trailing-icon"]'),
+    );
+    expect(document.querySelector('[data-slot="trailing-icon"]')).toHaveClass("col-start-4");
     await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
@@ -3677,16 +3749,28 @@ describe("Core interactive action contracts", () => {
     expect(sidebar.querySelector('[data-slot="sidebar-footer"]')).toHaveTextContent("Account");
   });
 
-  it("keeps Sidebar rail geometry inside the declared hit area on both physical sides", () => {
+  it("keeps Sidebar rail geometry bottom-right inside the declared hit area", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sidebar.tsx"), "utf8");
     expect(source).toContain("size-(--n-sidebar-rail-hit-area)");
-    expect(source).toContain("top-1/2");
-    expect(source).toContain("-translate-y-1/2");
-    expect(source).not.toContain("inset-y-0");
-    expect(source).toContain("right-[calc(-0.5*var(--n-sidebar-rail-hit-area))]");
     expect(source).toContain(
-      "[[data-side=right]_&]:left-[calc(-0.5*var(--n-sidebar-rail-hit-area))]",
+      "right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))]",
     );
+    expect(source).toContain(
+      "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
+    );
+    expect(source).toContain('data-has-rail={rails.length > 0 ? "true" : undefined}');
+    expect(source).toContain('data-has-footer={hasFooter ? "true" : "false"}');
+    expect(source).toContain(
+      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+    );
+    expect(source).toContain(
+      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+    );
+    expect(source).toContain(
+      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-bottom))]",
+    );
+    expect(source).not.toContain("inset-y-0");
+    expect(source).not.toContain("top-1/2");
   });
 
   it("exposes an exact SidebarContent div ref and does not churn SidebarInset refs", () => {
@@ -3751,7 +3835,7 @@ describe("Core interactive action contracts", () => {
       /import\s*\{[\s\S]*SidebarContent[\s\S]*SidebarInset[\s\S]*\}\s*from "@nerio-ui\/ui";/,
     );
     expect(docsExample).not.toMatch(/label="(?:Collapse|Expand) preview sidebar"/);
-    expect(docsReference).not.toMatch(/SidebarRail, SidebarTrigger, useSidebar/);
+    expect(docsReference).not.toMatch(/SidebarRail, SidebarTrigger/);
     expect(docsReference).not.toMatch(/label="(?:Collapse|Expand) workspace sidebar"/);
     expect(sidebarPage).toContain('import * as React from "react";');
     expect(sidebarPage).not.toMatch(/SidebarInset, Icon|SidebarTrigger, useSidebar/);
@@ -4501,6 +4585,7 @@ describe("Core interactive action contracts", () => {
     expect(trigger.closest('[data-slot="root"]')).toHaveAttribute("data-slot", "root");
     expect(trigger).toHaveAttribute("data-slot", "trigger");
     expect(trigger).toHaveAttribute("aria-describedby", expect.stringContaining("-action"));
+    expect(trigger.querySelectorAll('[data-slot="button-icon"]')).toHaveLength(1);
 
     await user.click(trigger);
     const calendar = await screen.findByRole("group", { name: "Choose date" });
@@ -4720,11 +4805,15 @@ describe("Core interactive action contracts", () => {
           name="attachments"
           accept=".pdf,image/*"
           capture="environment"
+          className="consumer-file-input-root"
+          dir="rtl"
           multiple
           required
           invalid
           onChange={onChange}
+          style={{ marginInlineStart: 2 }}
         />
+        <FileInput aria-label="Hidden upload" hidden />
       </form>,
     );
 
@@ -4742,6 +4831,17 @@ describe("Core interactive action contracts", () => {
     expect(input).toHaveAttribute("required");
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveAttribute("data-slot", "file-input");
+    expect(input).not.toHaveClass("consumer-file-input-root");
+    const root = input.closest('[data-slot="file-input-root"]');
+    expect(root).toHaveClass("consumer-file-input-root");
+    expect(root).toHaveAttribute("dir", "rtl");
+    expect(root).toHaveStyle({ marginInlineStart: "2px" });
+    expect(input).not.toHaveAttribute("dir");
+    expect(input).not.toHaveAttribute("style");
+    expect(root).toContainElement(document.querySelector('[data-slot="file-input-icon"]'));
+    const hiddenInput = document.querySelector('input[aria-label="Hidden upload"]');
+    expect(hiddenInput).not.toHaveAttribute("hidden");
+    expect(hiddenInput?.closest('[data-slot="file-input-root"]')).toHaveAttribute("hidden");
 
     await user.upload(input, files);
     expect(input.files).toHaveLength(2);

@@ -75,13 +75,13 @@ export type SliderProps = BaseSliderRootProps &
   };
 
 const sliderClasses =
-  "n-slider group/slider grid w-full gap-(--n-slider-gap) text-(--n-color-text-primary) data-[orientation=vertical]:w-max data-disabled:cursor-not-allowed data-disabled:opacity-(--n-slider-disabled-opacity) data-readonly:cursor-default";
+  "n-slider group/slider grid w-full gap-(--n-slider-gap) text-(--n-color-text-primary) data-[orientation=vertical]:w-max data-disabled:cursor-not-allowed data-disabled:text-(--n-color-text-disabled) data-readonly:cursor-default";
 
 const sliderControlClasses =
   "n-slider__control relative flex h-(--n-slider-control-size) w-full touch-none select-none items-center data-[orientation=vertical]:h-(--n-slider-length) data-[orientation=vertical]:w-(--n-slider-control-size) data-[orientation=vertical]:justify-center data-readonly:touch-auto";
 
 const sliderTrackClasses =
-  "n-slider__track relative h-(--n-slider-track-size) w-full overflow-hidden rounded-(--n-slider-track-radius) bg-(--n-slider-track-background) data-[orientation=vertical]:h-full data-[orientation=vertical]:w-(--n-slider-track-size) group-data-disabled/slider:bg-(--n-slider-disabled-track-background) forced-colors:bg-[Canvas] forced-colors:outline forced-colors:outline-1 forced-colors:outline-[CanvasText]";
+  "n-slider__track relative h-(--n-slider-track-size) w-full overflow-hidden rounded-(--n-slider-track-radius) bg-(--n-slider-track-background) data-[orientation=vertical]:h-full data-[orientation=vertical]:w-(--n-slider-track-size) group-data-disabled/slider:bg-(--n-slider-disabled-track-background) group-data-disabled/slider:opacity-(--n-slider-disabled-opacity) forced-colors:bg-[Canvas] forced-colors:opacity-100 forced-colors:outline forced-colors:outline-1 forced-colors:outline-[CanvasText]";
 
 const sliderIndicatorClasses =
   "n-slider__indicator absolute bg-(--n-slider-indicator-background) data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full group-data-disabled/slider:bg-(--n-slider-disabled-indicator-background) forced-colors:bg-[Highlight]";

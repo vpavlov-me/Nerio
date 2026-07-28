@@ -143,6 +143,36 @@ test("token validator calculates load-bearing semantic contrast", () => {
   );
 });
 
+test("token validator protects strong Badge contrast across themes and modes", () => {
+  withTokenFixture(
+    (source) =>
+      source.replace(
+        "--n-badge-background-strong-primary: var(--n-purple-400);",
+        "--n-badge-background-strong-primary: var(--n-purple-500);",
+      ),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /purple\/dark contrast is 3\.54:1 for --n-badge-foreground-strong-primary on --n-badge-background-strong-primary/,
+      ),
+  );
+});
+
+test("dark Badge aliases preserve custom status semantics outside preset themes", () => {
+  const source = readFileSync(tokenSource, "utf8");
+  const explicitDark = source.match(/:root\[data-mode="dark"\]\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+  const systemDark = source.match(/:root\[data-mode="system"\]\s*\{([\s\S]*?)\n  \}/)?.[1] ?? "";
+
+  for (const modeSource of [explicitDark, systemDark]) {
+    assert.doesNotMatch(modeSource, /--n-badge-background-strong-(info|success|warning|danger):/);
+  }
+  assert.match(source, /--n-badge-background-strong-info: var\(--n-color-status-info-strong\);/);
+  assert.match(
+    source,
+    /:root\[data-theme="purple"\]\[data-mode="dark"\][\s\S]*?--n-badge-background-strong-info: var\(--n-blue-400\);/,
+  );
+});
+
 test("token validator reports unresolved aliases", () => {
   withTokenFixture(
     (source) => `${source}\n:root { --n-test-unresolved: var(--n-does-not-exist); }\n`,

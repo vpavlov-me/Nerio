@@ -75,6 +75,7 @@ export type CalendarProps = CalendarRootProps &
     min?: CalendarDate;
     max?: CalendarDate;
     isDateDisabled?: (date: CalendarDate) => boolean;
+    /** Intl locale for labels. Defaults to en-US so server and client markup stay deterministic. */
     locale?: string | string[];
     firstDayOfWeek?: CalendarFirstDayOfWeek;
     /** Stable current date for today styling and deterministic server rendering. */
@@ -193,7 +194,7 @@ function findAvailableDate(
 }
 
 const rootClasses =
-  "n-calendar box-border w-full max-w-(--n-calendar-width) rounded-(--n-calendar-radius) border-(length:--n-calendar-border-width) border-(--n-calendar-border) bg-(--n-calendar-background) p-(--n-calendar-padding) text-(--n-calendar-foreground)";
+  "n-calendar box-border w-full max-w-(--n-calendar-width) overflow-hidden rounded-(--n-calendar-radius) border-(length:--n-calendar-border-width) border-(--n-calendar-border) bg-(--n-calendar-background) p-(--n-calendar-padding) text-(--n-calendar-foreground)";
 const headerClasses = "flex items-center justify-between gap-(--n-calendar-header-gap)";
 const headingClasses =
   "m-0 min-w-0 text-center text-(length:--n-calendar-heading-font-size) font-(--n-calendar-heading-font-weight)";
@@ -202,7 +203,7 @@ const gridClasses =
 const weekdayClasses =
   "h-(--n-calendar-cell-size) p-0 text-center text-(length:--n-calendar-weekday-font-size) font-(--n-calendar-weekday-font-weight) text-(--n-calendar-weekday-foreground)";
 const dayClasses =
-  "size-(--n-calendar-cell-size) rounded-(--n-calendar-day-radius) border-(length:--n-calendar-day-border-width) border-transparent bg-transparent p-0 text-(length:--n-calendar-day-font-size) text-(--n-calendar-day-foreground) transition-[background-color,border-color,color] duration-(--n-calendar-duration) ease-(--n-calendar-easing) [&:hover:not(:disabled):not([aria-disabled=true])]:bg-(--n-calendar-day-background-hover) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-outside-month:text-(--n-calendar-day-foreground-outside) data-today:font-(--n-calendar-today-font-weight) data-today:underline data-today:decoration-(length:--n-calendar-today-underline-width) data-today:underline-offset-(--n-calendar-today-underline-offset) data-selected:border-(--n-calendar-day-border-selected) data-selected:bg-(--n-calendar-day-background-selected) data-selected:text-(--n-calendar-day-foreground-selected) data-unavailable:cursor-not-allowed data-unavailable:text-(--n-calendar-day-foreground-unavailable) data-unavailable:line-through disabled:cursor-not-allowed disabled:opacity-(--n-calendar-disabled-opacity) forced-colors:border-[Canvas] forced-colors:data-selected:border-[Highlight] forced-colors:data-selected:bg-[Highlight] forced-colors:data-selected:text-[HighlightText] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2 forced-colors:focus-visible:outline-[Highlight] forced-colors:focus-visible:shadow-none motion-reduce:duration-(--n-duration-instant)";
+  "size-(--n-calendar-cell-size) cursor-pointer rounded-(--n-calendar-day-radius) border-(length:--n-calendar-day-border-width) border-transparent bg-transparent p-0 text-(length:--n-calendar-day-font-size) text-(--n-calendar-day-foreground) transition-[background-color,border-color,color] duration-(--n-calendar-duration) ease-(--n-calendar-easing) [&:hover:not(:disabled):not([aria-disabled=true])]:bg-(--n-calendar-day-background-hover) [&:active:not(:disabled):not([aria-disabled=true])]:bg-(--n-calendar-day-background-active) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) data-outside-month:text-(--n-calendar-day-foreground-outside) data-today:font-(--n-calendar-today-font-weight) data-selected:border-(--n-calendar-day-border-selected) data-selected:bg-(--n-calendar-day-background-selected) data-selected:text-(--n-calendar-day-foreground-selected) data-selected:[&:hover:not(:disabled):not([aria-disabled=true])]:border-(--n-calendar-day-background-selected-hover) data-selected:[&:hover:not(:disabled):not([aria-disabled=true])]:bg-(--n-calendar-day-background-selected-hover) data-selected:[&:active:not(:disabled):not([aria-disabled=true])]:border-(--n-calendar-day-background-selected-active) data-selected:[&:active:not(:disabled):not([aria-disabled=true])]:bg-(--n-calendar-day-background-selected-active) data-unavailable:cursor-not-allowed data-unavailable:text-(--n-calendar-day-foreground-unavailable) data-unavailable:line-through disabled:cursor-not-allowed disabled:opacity-(--n-calendar-disabled-opacity) forced-colors:border-[Canvas] forced-colors:data-selected:border-[Highlight] forced-colors:data-selected:bg-[Highlight] forced-colors:data-selected:text-[HighlightText] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2 forced-colors:focus-visible:outline-[Highlight] forced-colors:focus-visible:shadow-none motion-reduce:duration-(--n-duration-instant)";
 
 export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function Calendar(
   {
@@ -215,7 +216,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
     firstDayOfWeek = 0,
     isDateDisabled,
     labels,
-    locale,
+    locale = "en-US",
     max,
     min,
     month,

@@ -55,6 +55,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Refined the Core component presentation contracts from Playground review: ButtonGroup is now
+  horizontal-only with short decorative dividers; FileInput uses a compact upload icon; Checkbox,
+  Slider, Calendar, DatePicker, Badge, FormGroup, Pagination, Sidebar, and Command states have
+  corrected visual treatment; Dropdown Menu items support leading and trailing icons plus hotkeys;
+  List supports dot, number, dash, and icon markers; Separator supports both orientations; and docs
+  avatar previews use a shared representative image set.
 - Gated Blocks, Templates, their full-screen Views, and the visual Playground behind
   `NERIO_SHOW_PREVIEW_SURFACES`. They remain available by default in local and preview deployments
   while public production hides their navigation, search entries, sitemap and `llms.txt` discovery,
@@ -135,14 +141,21 @@ Items under `Unreleased` may change before the next public release.
   insertion cue, selection suppression, and concise `Reorder` tooltip. Documented faithful Primary (unified muted body)
   and Secondary (open page-level rows) presentation recipes without moving DataGrid behavior into
   the Core primitive.
-- Aligned Pagination with Button's presentation recipes: outline controls by default and a secondary
-  surface for the current page, while retaining stable geometry and `aria-current` state.
+- Aligned Pagination with Button's secondary presentation recipe: secondary controls by default and
+  a secondary-active surface for the current page, while retaining stable geometry and
+  `aria-current` state.
 - Added a localizable `Dialog.closeLabel` while preserving the existing "Close dialog" default.
 
 ### Fixed
 
 - Protected Navigation, Sidebar, Command, Dialog, and Sheet anatomy/state ownership from escaped
   consumer DOM props and synchronized their docs and Registry projections with the shipped APIs.
+
+### Migration
+
+- `ButtonGroup` no longer accepts `orientation="vertical"` and no longer exports
+  `ButtonGroupOrientation`. Replace a vertical ButtonGroup with application-owned stack layout and
+  independent Buttons; the attached ButtonGroup contract is horizontal-only.
 
 ## 0.1.0-alpha.1 — 2026-07-18
 
