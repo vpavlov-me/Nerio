@@ -513,21 +513,21 @@ export function ComponentPlayground() {
         api="pressed · defaultPressed · variant · size · icon-only · disabled"
       >
         <Matrix
-          columns={["Ghost", "Pressed", "Outline", "Icon only", "Disabled pressed"]}
+          columns={["Ghost", "Selected", "Outline selected", "Icon only", "Disabled selected"]}
           rows={[
             {
               label: "State",
               cells: [
-                <Toggle key="ghost">Follow updates</Toggle>,
+                <Toggle key="ghost">Save article</Toggle>,
                 <Toggle key="pressed" defaultPressed>
-                  Follow updates
+                  Save article
                 </Toggle>,
-                <Toggle key="outline" variant="outline">
-                  Follow updates
+                <Toggle key="outline" defaultPressed variant="outline">
+                  Reading mode
                 </Toggle>,
                 <Toggle key="icon" icon={Bell} aria-label="Follow updates" />,
                 <Toggle key="disabled" defaultPressed disabled>
-                  Follow updates
+                  Save article
                 </Toggle>,
               ],
             },

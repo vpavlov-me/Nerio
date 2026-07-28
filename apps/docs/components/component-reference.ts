@@ -44,7 +44,7 @@ export const snippets: Record<string, string> = {
   button:
     'import { Save, Settings } from \'@nerio-ui/adapters/icons\';\nimport { Badge, Kbd } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
   toggle:
-    "import { Bell } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@nerio-ui/ui/client';\n\n<Toggle icon={Bell} aria-label=\"Follow updates\" defaultPressed />\n<Toggle leadingIcon={Bell} variant=\"outline\">Follow updates</Toggle>",
+    "\"use client\";\n\nimport * as React from 'react';\nimport { Check, Save } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@nerio-ui/ui/client';\n\nexport function SaveToggle() {\n  const [saved, setSaved] = React.useState(false);\n\n  return (\n    <Toggle leadingIcon={saved ? Check : Save} pressed={saved} onPressedChange={setSaved}>\n      Save article\n    </Toggle>\n  );\n}",
   "button-group":
     'import { ButtonGroup } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio-ui/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
@@ -761,7 +761,11 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     states: [
       { title: "Unpressed", description: "aria-pressed is false and data-pressed is absent." },
-      { title: "Pressed", description: "aria-pressed is true and data-pressed is present." },
+      {
+        title: "Pressed",
+        description:
+          "aria-pressed is true; a neutral selected fill and accent foreground replace the transient active treatment.",
+      },
       {
         title: "Hover and active",
         description: "Transient interaction remains distinct from pressed.",
@@ -817,7 +821,7 @@ export const componentReference: Record<string, ComponentReference> = {
     related: ["Button", "Switch", "Checkbox", "ButtonGroup"],
     guidance: {
       do: [
-        "Use one stable label and let aria-pressed communicate whether the retained state is on.",
+        "Use one stable label and let aria-pressed communicate state; a state-dependent icon may reinforce it visually.",
       ],
       dont: [
         "Do not use Toggle for immediate settings, form selection, disclosure, grouped selection, or a momentary action.",

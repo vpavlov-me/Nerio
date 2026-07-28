@@ -25,7 +25,10 @@ const anatomyRows = [
 ] as const;
 const stateRows = [
   ["Unpressed", 'aria-pressed="false"; data-pressed is absent.'],
-  ["Pressed", 'aria-pressed="true"; data-pressed is present.'],
+  [
+    "Pressed",
+    'aria-pressed="true"; data-pressed adds a neutral selected fill and accent foreground.',
+  ],
   ["Hover / active", "Transient interaction remains distinct from the retained pressed state."],
   ["Focus-visible", "Shared focus ring remains visible in both pressed states."],
   ["Disabled", "Activation is blocked while pressed or unpressed presentation remains visible."],
@@ -68,7 +71,7 @@ const tokenRows = [
   [
     "Pressed",
     "--n-toggle-background-pressed / --n-toggle-border-pressed / --n-toggle-foreground-pressed",
-    "Retained-state treatment across variants.",
+    "Neutral retained-state fill with a restrained accent foreground across variants.",
   ],
   ["Focus", "--n-focus-ring", "Visible keyboard focus in either pressed state."],
 ] as const;
@@ -82,7 +85,7 @@ function Preview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Bell } from "@nerio-ui/adapters/icons";\nimport { Toggle } from "@nerio-ui/ui/client";\n\n<Toggle icon={Bell} aria-label="Follow updates" defaultPressed />\n<Toggle leadingIcon={Bell} variant="outline">Follow updates</Toggle>'
+          '"use client";\n\nimport * as React from "react";\nimport { Check, Save } from "@nerio-ui/adapters/icons";\nimport { Toggle } from "@nerio-ui/ui/client";\n\nexport function SaveToggle() {\n  const [saved, setSaved] = React.useState(false);\n\n  return (\n    <Toggle\n      leadingIcon={saved ? Check : Save}\n      pressed={saved}\n      onPressedChange={setSaved}\n    >\n      Save article\n    </Toggle>\n  );\n}'
         }
         label="Toggle live preview code"
       />
@@ -123,8 +126,8 @@ export default function Page() {
                 <CardTitle>Do</CardTitle>
               </CardHeader>
               <CardContent>
-                Keep one stable label while aria-pressed communicates whether the retained state is
-                on.
+                Keep one stable label while aria-pressed communicates state. The visual icon may
+                change to reinforce the selected state.
               </CardContent>
             </Card>
             <Card>
