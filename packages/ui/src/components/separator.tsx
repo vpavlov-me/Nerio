@@ -21,7 +21,10 @@ export const Separator = React.forwardRef<HTMLHRElement, SeparatorProps>(functio
       ref={ref}
       {...props}
       className={cn(
-        "n-separator m-0 shrink-0 border-0 data-[orientation=horizontal]:w-full data-[orientation=horizontal]:[border-block-start:var(--n-border-subtle)] data-[orientation=vertical]:h-auto data-[orientation=vertical]:self-stretch data-[orientation=vertical]:[border-inline-start:var(--n-border-subtle)]",
+        "n-separator m-0 shrink-0 border-0",
+        orientation === "horizontal"
+          ? "w-full [border-block-start:var(--n-border-subtle)]"
+          : "h-auto self-stretch [border-inline-start:var(--n-border-subtle)]",
         className,
       )}
       aria-orientation={orientation}

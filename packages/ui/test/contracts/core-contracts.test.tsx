@@ -812,7 +812,12 @@ describe("Core static contracts", () => {
           data-testid="skeleton"
           {...({ ...unsafeSlot, "aria-hidden": false } as Record<string, string | boolean>)}
         />
-        <Separator aria-orientation="horizontal" data-testid="separator" orientation="vertical" />
+        <Separator
+          aria-orientation="horizontal"
+          className="h-6"
+          data-testid="separator"
+          orientation="vertical"
+        />
         <KeyValue data-testid="key-value" label="Owner" value="Product team" {...unsafeSlot} />
         <Alert data-testid="alert" title="Saved" tone="success" {...unsafeSlot} />
         <Toast data-testid="toast" title="Updated" tone="info" {...unsafeSlot} />
@@ -853,6 +858,8 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("separator")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("separator")).toHaveAttribute("data-orientation", "vertical");
     expect(screen.getByTestId("separator")).toHaveAttribute("aria-orientation", "vertical");
+    expect(screen.getByTestId("separator")).toHaveClass("h-6");
+    expect(screen.getByTestId("separator")).not.toHaveClass("h-auto");
     expect(screen.getByTestId("key-value")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-tone", "success");
@@ -3373,6 +3380,9 @@ describe("Core interactive action contracts", () => {
     );
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveClass("col-start-3");
+    expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveClass(
+      "grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)]",
+    );
     expect(screen.getByRole("menuitem", { name: "Archive" })).toContainElement(
       document.querySelector('[data-slot="trailing-icon"]'),
     );
@@ -3742,11 +3752,15 @@ describe("Core interactive action contracts", () => {
   it("keeps Sidebar rail geometry bottom-right inside the declared hit area", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sidebar.tsx"), "utf8");
     expect(source).toContain("size-(--n-sidebar-rail-hit-area)");
-    expect(source).toContain("right-(--n-sidebar-rail-inset)");
-    expect(source).toContain("bottom-(--n-sidebar-rail-inset)");
+    expect(source).toContain(
+      "right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))]",
+    );
+    expect(source).toContain(
+      "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
+    );
     expect(source).toContain('data-has-rail={rails.length > 0 ? "true" : undefined}');
     expect(source).toContain(
-      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area))]",
+      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
     );
     expect(source).not.toContain("inset-y-0");
     expect(source).not.toContain("top-1/2");
