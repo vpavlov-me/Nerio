@@ -38,7 +38,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(func
 
   return (
     <span
-      className="n-file-input__root relative inline-grid w-full min-w-0"
+      className={cn("n-file-input__root relative inline-grid w-full min-w-0", className)}
       data-disabled={disabled ? "" : undefined}
       data-slot="file-input-root"
     >
@@ -46,12 +46,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(func
         ref={ref}
         {...inputProps}
         aria-invalid={invalid ? true : ariaInvalid}
-        className={cn(
-          fileInputBaseClasses,
-          fileInputSizeClasses[size],
-          motionClasses.control,
-          className,
-        )}
+        className={cn(fileInputBaseClasses, fileInputSizeClasses[size], motionClasses.control)}
         data-disabled={disabled ? "" : undefined}
         data-invalid={isInvalid ? "" : undefined}
         data-multiple={multiple ? "" : undefined}

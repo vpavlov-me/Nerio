@@ -4784,6 +4784,7 @@ describe("Core interactive action contracts", () => {
           name="attachments"
           accept=".pdf,image/*"
           capture="environment"
+          className="consumer-file-input-root"
           multiple
           required
           invalid
@@ -4806,6 +4807,8 @@ describe("Core interactive action contracts", () => {
     expect(input).toHaveAttribute("required");
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveAttribute("data-slot", "file-input");
+    expect(input).not.toHaveClass("consumer-file-input-root");
+    expect(input.closest('[data-slot="file-input-root"]')).toHaveClass("consumer-file-input-root");
     expect(input.closest('[data-slot="file-input-root"]')).toContainElement(
       document.querySelector('[data-slot="file-input-icon"]'),
     );
