@@ -3557,6 +3557,10 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByText("Workspace", { selector: '[data-slot="group-label"]' })).toBeVisible();
     expect(screen.getByText("Manage", { selector: '[data-slot="group-label"]' })).toBeVisible();
     expect(document.querySelectorAll('[data-slot="group"]')).toHaveLength(2);
+    expect(document.querySelector('[data-slot="content"]')).toHaveClass("gap-0");
+    for (const group of document.querySelectorAll('[data-slot="group"]')) {
+      expect(group).toHaveClass("gap-0");
+    }
     expect(document.querySelectorAll('[data-slot="separator"]')).toHaveLength(1);
     expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveClass(
       "grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)]",

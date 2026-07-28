@@ -150,16 +150,29 @@ test("keeps the homepage concise while local tooling remains accessible", async 
   await expect(page.getByText("Member", { exact: true })).toBeVisible();
   await expect(page.getByText("Access", { exact: true })).toBeVisible();
   await expect(page.locator('[data-slot="separator"]')).toHaveCount(1);
-  const overlayColors = await actionMenu.evaluate((element) => {
+  const actionMenuVisual = await actionMenu.evaluate((element) => {
     const style = getComputedStyle(element);
+    const firstGroup = element.querySelector('[data-slot="group"]');
+    const [firstItem, secondItem] = firstGroup.querySelectorAll('[data-slot="item"]');
     const probe = document.createElement("div");
     probe.style.background = "var(--n-overlay-background)";
     document.body.append(probe);
     const tokenBackground = getComputedStyle(probe).backgroundColor;
     probe.remove();
-    return { menuBackground: style.backgroundColor, tokenBackground };
+    return {
+      groupGap: getComputedStyle(firstGroup).rowGap,
+      itemGap: secondItem.getBoundingClientRect().top - firstItem.getBoundingClientRect().bottom,
+      menuBackground: style.backgroundColor,
+      menuGap: style.rowGap,
+      tokenBackground,
+    };
   });
-  expect(overlayColors.menuBackground).toBe(overlayColors.tokenBackground);
+  expect(actionMenuVisual).toMatchObject({
+    groupGap: "0px",
+    itemGap: 0,
+    menuGap: "0px",
+  });
+  expect(actionMenuVisual.menuBackground).toBe(actionMenuVisual.tokenBackground);
   await expect(page.getByRole("heading", { name: "Start a group chat" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Start chat" })).toHaveAttribute(
     "data-variant",

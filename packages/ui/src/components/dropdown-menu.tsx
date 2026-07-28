@@ -58,7 +58,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
             <BaseMenu.Popup
               ref={ref}
               className={cn(
-                "n-dropdown grid min-w-(--n-dropdown-min-width) gap-(--n-space-1) rounded-(--n-dropdown-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-color-danger:var(--n-overlay-danger)] [--n-color-surface-muted:var(--n-overlay-control-background)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)]",
+                "n-dropdown grid min-w-(--n-dropdown-min-width) gap-0 rounded-(--n-dropdown-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-color-danger:var(--n-overlay-danger)] [--n-color-surface-muted:var(--n-overlay-control-background)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)]",
                 motionClasses.overlayEnter,
                 className,
               )}
@@ -72,7 +72,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
                       data-slot="separator"
                     />
                   ) : null}
-                  <BaseMenu.Group className="grid gap-(--n-space-1)" data-slot="group">
+                  <BaseMenu.Group className="grid gap-0" data-slot="group">
                     {group.label ? (
                       <BaseMenu.GroupLabel
                         className="px-(--n-dropdown-item-padding-inline) pt-(--n-space-1) pb-(--n-space-0-5) text-(length:--n-font-size-xs) font-(--n-font-weight-medium) text-(--n-color-text-tertiary)"
