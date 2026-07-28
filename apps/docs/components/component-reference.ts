@@ -3606,6 +3606,7 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       { title: "trigger", description: "Element that receives hover or focus." },
       { title: "content", description: "Short non-interactive explanation." },
+      { title: "arrow", description: "Directional indicator pointing back to the trigger." },
     ],
     variants: [{ title: "Default", description: "Small text label in the overlay layer." }],
     states: [

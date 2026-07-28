@@ -649,10 +649,13 @@ describe("Core static contracts", () => {
     expect(componentSource("textarea")).toContain("focus:border-(--n-input-border-focus)");
     expect(componentSource("textarea")).not.toContain("focus-visible:shadow-(--n-focus-ring)");
     expect(componentSource("input-group")).not.toContain("focus-within:shadow-(--n-focus-ring)");
-    expect(componentSource("input-group")).toContain("overflow-hidden");
-    expect(componentSource("input-group")).toContain("[&>.n-input]:!border-0");
-    expect(componentSource("input-group")).toContain("[&>.n-input]:!bg-transparent");
-    expect(componentSource("input-group")).toContain("[&>.n-input]:!shadow-none");
+    expect(componentSource("input-group")).not.toContain("overflow-hidden");
+    expect(componentSource("input-group")).not.toContain("!border-0");
+    expect(componentSource("input-group")).not.toContain("!bg-transparent");
+    expect(componentSource("input-group")).not.toContain("!shadow-none");
+    expect(componentSource("input-group")).toContain(
+      '"min-w-0 rounded-none border-0 bg-transparent shadow-none disabled:opacity-100"',
+    );
     expect(componentSource("file-input")).toContain("[grid-area:1/1]");
     expect(componentSource("file-input")).not.toContain("absolute inset-block-0");
     expect(componentSource("switch")).toContain("rounded-(--n-switch-radius)");
@@ -3523,7 +3526,7 @@ describe("Core interactive action contracts", () => {
       <Field label="Website" description="Use your public domain." message="Required" invalid>
         <InputGroup ref={ref} data-slot="consumer">
           <InputGroupAddon placement="start">https://</InputGroupAddon>
-          <Input aria-describedby="custom-description" />
+          <Input aria-describedby="custom-description" className="border-2 bg-current shadow-sm" />
           <InputGroupAddon placement="end">
             <Button aria-label="Validate website">Check</Button>
           </InputGroupAddon>
@@ -3541,6 +3544,7 @@ describe("Core interactive action contracts", () => {
       group.querySelector('[data-slot="input-group-addon"][data-placement="end"]'),
     ).toBeTruthy();
     expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveClass("border-2", "bg-current", "shadow-sm");
     expect(input.getAttribute("aria-describedby")).toContain("custom-description");
     expect(input.getAttribute("aria-describedby")).toContain("-description");
     expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();

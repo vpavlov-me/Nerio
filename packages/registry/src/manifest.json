@@ -3342,7 +3342,7 @@
         }
       ],
       "baseUiPrimitives": ["tooltip"],
-      "slots": ["content"],
+      "slots": ["content", "arrow"],
       "variants": [],
       "requiredTokens": [
         "--n-tooltip-radius",
