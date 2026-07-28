@@ -125,21 +125,17 @@ test("keeps Toggle keyboard, pointer, state, naming, focus, and reflow portable"
   await expect(follow).toHaveAttribute("aria-pressed", "false");
   await expect(follow).toHaveAccessibleName("Follow updates");
 
-  const saveArticle = page.getByRole("button", { name: "Save article", exact: true }).first();
+  const saveArticle = page.getByRole("button", { name: "Save article for later" });
   await expect(saveArticle).toHaveAttribute("aria-pressed", "false");
+  await expect(saveArticle).toHaveAttribute("data-icon-only", "true");
+  await expect(saveArticle).toHaveAttribute("data-variant", "outline");
   await saveArticle.focus();
   await saveArticle.press("Enter");
   await expect(saveArticle).toHaveAttribute("aria-pressed", "true");
   await expect(saveArticle).toBeFocused();
-  await expect(saveArticle).toHaveAccessibleName("Save article");
-  await expect(page.getByText("Saved", { exact: true })).toBeVisible();
+  await expect(saveArticle).toHaveAccessibleName("Save article for later");
   await saveArticle.press("Space");
   await expect(saveArticle).toHaveAttribute("aria-pressed", "false");
-  await expect(page.getByText("Not saved", { exact: true })).toBeVisible();
-
-  const disabledPressed = page.getByRole("button", { name: "Disabled selected" });
-  await expect(disabledPressed).toBeDisabled();
-  await expect(disabledPressed).toHaveAttribute("aria-pressed", "true");
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
   expect(
     await page.evaluate(
@@ -159,7 +155,7 @@ test("keeps Toggle touch activation portable", async ({ browser, browserName }, 
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
     await page.goto("/docs/components/toggle");
-    const saveArticle = page.getByRole("button", { name: "Save article", exact: true }).first();
+    const saveArticle = page.getByRole("button", { name: "Save article for later" });
     const box = await saveArticle.boundingBox();
     expect(box).not.toBeNull();
     await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);

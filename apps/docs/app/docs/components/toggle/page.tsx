@@ -85,7 +85,7 @@ function Preview() {
       <CodeExample
         className="component-example__code"
         code={
-          '"use client";\n\nimport * as React from "react";\nimport { Check, Save } from "@nerio-ui/adapters/icons";\nimport { Toggle } from "@nerio-ui/ui/client";\n\nexport function SaveToggle() {\n  const [saved, setSaved] = React.useState(false);\n\n  return (\n    <Toggle\n      leadingIcon={saved ? Check : Save}\n      pressed={saved}\n      onPressedChange={setSaved}\n    >\n      Save article\n    </Toggle>\n  );\n}'
+          'import { Bell, Save } from "@nerio-ui/adapters/icons";\nimport { Toggle } from "@nerio-ui/ui/client";\n\n<Toggle icon={Bell} aria-label="Follow updates" defaultPressed />\n<Toggle icon={Save} aria-label="Save article for later" variant="outline" />'
         }
         label="Toggle live preview code"
       />
