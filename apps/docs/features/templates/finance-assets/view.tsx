@@ -19,7 +19,6 @@ import {
   Check,
   FileText,
   LayoutDashboard,
-  Minus,
   Monitor,
   PanelLeft,
   Rows3,
@@ -65,6 +64,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Toggle,
   ToastProvider,
   ToastViewport,
   Tooltip,
@@ -464,13 +464,15 @@ function FinanceAssets() {
             </div>
           </div>
           <div className={styles.actions}>
-            <Button
-              icon={balancesVisible ? Minus : Monitor}
-              aria-label={balancesVisible ? "Hide balances" : "Show balances"}
-              tooltip={balancesVisible ? "Hide balances" : "Show balances"}
-              variant="secondary"
-              onClick={() => setBalancesVisible((visible) => !visible)}
-            />
+            <Tooltip label="Show balances">
+              <Toggle
+                icon={Monitor}
+                aria-label="Show balances"
+                pressed={balancesVisible}
+                variant="outline"
+                onPressedChange={setBalancesVisible}
+              />
+            </Tooltip>
             <Dialog
               open={transferOpen}
               onOpenChange={(open) => {

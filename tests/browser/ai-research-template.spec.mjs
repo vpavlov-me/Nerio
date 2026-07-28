@@ -80,6 +80,21 @@ test("recovers attachments and saved-thread search states", async ({ page }) => 
   expect(problems).toEqual([]);
 });
 
+test("uses a stable retained state for source loading simulation", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto(researchRoute);
+
+  await page.getByRole("button", { name: "Sources" }).click();
+  const loadingToggle = page.getByRole("button", { name: "Simulate loading" });
+  await expect(loadingToggle).toHaveAttribute("aria-pressed", "false");
+  await loadingToggle.click();
+  await expect(loadingToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(loadingToggle).toHaveAccessibleName("Simulate loading");
+  await loadingToggle.click();
+  await expect(loadingToggle).toHaveAttribute("aria-pressed", "false");
+  expect(problems).toEqual([]);
+});
+
 test("supports mobile navigation, runtime axes, and narrow reflow", async ({ page }) => {
   const problems = monitorPage(page);
   await page.emulateMedia({ reducedMotion: "reduce", forcedColors: "active" });

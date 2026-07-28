@@ -444,6 +444,33 @@ async function verify() {
       throw new Error("MCP Switch usage is missing Base UI, dependency, or token metadata.");
     }
 
+    const toggleUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "toggle" },
+    });
+    const toggleUsage = JSON.parse(toggleUsageResult.content[0].text);
+    assertRegistryParity("toggle", toggleUsage, [
+      "components/icon.tsx",
+      "components/toggle.tsx",
+      "lib/cn.ts",
+      "lib/motion.ts",
+      "lib/resolve-class-name.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      !toggleUsage.baseUiPrimitives.includes("toggle") ||
+      !toggleUsage.dependencies.includes("@nerio-ui/adapters") ||
+      !toggleUsage.slots.includes("toggle-label") ||
+      !toggleUsage.states.includes("pressed") ||
+      !toggleUsage.requiredTokens.includes("--n-toggle-background-pressed") ||
+      !toggleUsage.accessibility.some((item) => item.includes("stable accessible name")) ||
+      !toggleUsage.accessibility.some((item) => item.includes("future ToggleGroup"))
+    ) {
+      throw new Error("MCP Toggle usage is missing Base UI, naming, state, or boundary metadata.");
+    }
+
     const sliderUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "slider" },

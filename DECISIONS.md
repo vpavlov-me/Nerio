@@ -45,6 +45,10 @@ and domain-specific controls remain outside Core 1.0.
 `docs/core-platform-primitive-coverage.md` is the canonical decision matrix.
 `data/component-catalog.json` is its machine-readable projection and validation boundary.
 
+Toggle is an approved Core 1.0 action primitive through issue #290. It owns one independent
+pressed/not-pressed button state with `aria-pressed`; it does not absorb Switch, Checkbox, Tabs,
+ButtonGroup, ToggleGroup, Toolbar, persistence, or product workflow responsibilities.
+
 ## Primitive layer
 
 Base UI is the only interactive primitive layer. Do not add shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive systems.

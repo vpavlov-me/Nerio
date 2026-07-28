@@ -108,6 +108,7 @@ import {
   SidebarTrigger,
   Slider,
   Switch,
+  Toggle,
   Tabs,
   TabsContent,
   TabsIndicator,
@@ -196,6 +197,18 @@ const invalidButtonKbd = <Button kbd={<span>⌘K</span>}>Search</Button>;
 const invalidIconButtonBadge = (
   <Button icon={Bell} aria-label="Notifications" badge={<Badge>2</Badge>} />
 );
+// @ts-expect-error icon-only Toggle requires a stable accessible name
+const _invalidUnnamedIconToggle = <Toggle icon={Bell} />;
+// @ts-expect-error icon-only Toggle cannot include visible children
+const _invalidMixedIconToggle = (
+  <Toggle icon={Bell} aria-label="Favorite">
+    Favorite
+  </Toggle>
+);
+// @ts-expect-error visible-label Toggle uses leadingIcon rather than icon
+const _invalidVisibleToggleIcon = <Toggle icon={Bell}>Favorite</Toggle>;
+const _validIconToggle = <Toggle icon={Bell} aria-label="Favorite" />;
+const _validVisibleToggle = <Toggle leadingIcon={Bell}>Favorite</Toggle>;
 // @ts-expect-error linked Cards cannot also choose a surface root
 const invalidLinkedCard = <Card href="/docs" as="article" />;
 const validTemporalInputTypes = [
@@ -302,6 +315,11 @@ void [
   invalidDirectionalIconButton,
   invalidButtonKbd,
   invalidIconButtonBadge,
+  _invalidUnnamedIconToggle,
+  _invalidMixedIconToggle,
+  _invalidVisibleToggleIcon,
+  _validIconToggle,
+  _validVisibleToggle,
   invalidLinkedCard,
   validTemporalInputTypes,
   invalidFileInputType,
@@ -2790,6 +2808,105 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("switch", { name: "Disabled notifications" })).toHaveAttribute(
       "aria-disabled",
       "true",
+    );
+  });
+
+  it("supports Toggle state, naming, keyboard, pointer, disabled, form, ref, and render contracts", async () => {
+    const user = userEvent.setup();
+    const onPressedChange = vi.fn();
+    const onDisabledPressedChange = vi.fn();
+    const onSubmit = vi.fn((event: React.FormEvent) => event.preventDefault());
+    const ref = React.createRef<HTMLButtonElement>();
+    render(
+      <form onSubmit={onSubmit}>
+        <Toggle
+          ref={ref}
+          aria-label="Favorite"
+          icon={Bell}
+          onPressedChange={onPressedChange}
+          size="lg"
+          variant="outline"
+        />
+        <Toggle disabled onPressedChange={onDisabledPressedChange}>
+          Pin
+        </Toggle>
+        <Toggle defaultPressed render={<button data-render-target="toggle" />}>
+          Retain layout
+        </Toggle>
+      </form>,
+    );
+
+    const favorite = screen.getByRole("button", { name: "Favorite" });
+    expect(ref.current).toBe(favorite);
+    expect(favorite).toHaveAttribute("type", "button");
+    expect(favorite).toHaveAttribute("aria-pressed", "false");
+    expect(favorite).toHaveAttribute("data-icon-only", "true");
+    expect(favorite).toHaveAttribute("data-size", "lg");
+    expect(favorite).toHaveAttribute("data-slot", "toggle");
+    expect(favorite).toHaveAttribute("data-variant", "outline");
+
+    favorite.focus();
+    await user.keyboard("{Enter}");
+    expect(favorite).toHaveAttribute("aria-pressed", "true");
+    expect(favorite).toHaveFocus();
+    await user.keyboard(" ");
+    expect(favorite).toHaveAttribute("aria-pressed", "false");
+    await user.click(favorite);
+    expect(favorite).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Favorite" })).toBe(favorite);
+    expect(onPressedChange).toHaveBeenCalledTimes(3);
+    expect(onPressedChange).toHaveBeenLastCalledWith(true, expect.anything());
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: "Pin" }));
+    expect(onDisabledPressedChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Pin" })).toHaveAttribute("data-disabled");
+
+    const rendered = screen.getByRole("button", { name: "Retain layout" });
+    expect(rendered).toHaveAttribute("data-render-target", "toggle");
+    expect(rendered).toHaveAttribute("aria-pressed", "true");
+    expect(rendered).toHaveClass("n-toggle");
+  });
+
+  it("keeps controlled and canceled Toggle state owned by the public contract", async () => {
+    const user = userEvent.setup();
+    const controlledChange = vi.fn();
+    const canceledChange = vi.fn((_pressed: boolean, details: { cancel: () => void }) => {
+      details.cancel();
+    });
+    const { rerender } = render(
+      <>
+        <Toggle pressed={false} onPressedChange={controlledChange}>
+          Show guides
+        </Toggle>
+        <Toggle onPressedChange={canceledChange}>Lock canvas</Toggle>
+      </>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Show guides" }));
+    expect(controlledChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(screen.getByRole("button", { name: "Show guides" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    rerender(
+      <>
+        <Toggle pressed onPressedChange={controlledChange}>
+          Show guides
+        </Toggle>
+        <Toggle onPressedChange={canceledChange}>Lock canvas</Toggle>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Show guides" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    await user.click(screen.getByRole("button", { name: "Lock canvas" }));
+    expect(canceledChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(screen.getByRole("button", { name: "Lock canvas" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
     );
   });
 

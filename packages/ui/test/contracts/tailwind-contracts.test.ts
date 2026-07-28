@@ -177,6 +177,7 @@ describe("Tailwind styling contract", () => {
       "checkbox",
       "radio-group",
       "switch",
+      "toggle",
       "select",
     ];
 

@@ -110,6 +110,64 @@ test("keeps Select, command search, and focus-visible behavior portable", async 
   expect(problems).toEqual([]);
 });
 
+test("keeps Toggle keyboard, pointer, state, naming, focus, and reflow portable", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/docs/components/toggle");
+
+  const follow = page.getByRole("button", { name: "Follow updates" }).first();
+  await expect(follow).toHaveAttribute("aria-pressed", "true");
+  await expect(follow).toHaveAttribute("data-icon-only", "true");
+  await follow.click();
+  await expect(follow).toHaveAttribute("aria-pressed", "false");
+  await expect(follow).toHaveAccessibleName("Follow updates");
+
+  const guides = page.getByRole("button", { name: "Show guides" });
+  await expect(guides).toHaveAttribute("aria-pressed", "false");
+  await guides.focus();
+  await guides.press("Enter");
+  await expect(guides).toHaveAttribute("aria-pressed", "true");
+  await expect(guides).toBeFocused();
+  await guides.press("Space");
+  await expect(guides).toHaveAttribute("aria-pressed", "false");
+  await expect(guides).toHaveAttribute("data-variant", "outline");
+
+  const disabledPressed = page.getByRole("button", { name: "Disabled pressed" });
+  await expect(disabledPressed).toBeDisabled();
+  await expect(disabledPressed).toHaveAttribute("aria-pressed", "true");
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+  expect(problems).toEqual([]);
+});
+
+test("keeps Toggle touch activation portable", async ({ browser, browserName }, testInfo) => {
+  const context = await browser.newContext({
+    baseURL: testInfo.project.use.baseURL,
+    hasTouch: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    const page = await context.newPage();
+    const problems = monitorPage(page, browserName);
+    await page.goto("/docs/components/toggle");
+    const guides = page.getByRole("button", { name: "Show guides" });
+    const box = await guides.boundingBox();
+    expect(box).not.toBeNull();
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(guides).toHaveAttribute("aria-pressed", "true");
+    expect(problems).toEqual([]);
+  } finally {
+    await context.close();
+  }
+});
+
 test("preserves native temporal Input values, constraints, form data, and reflow", async ({
   browserName,
   page,

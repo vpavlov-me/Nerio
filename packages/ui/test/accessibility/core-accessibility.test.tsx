@@ -79,6 +79,7 @@ import {
   SidebarRail,
   Slider,
   Switch,
+  Toggle,
   Tabs,
   TabsContent,
   TabsIndicator,
@@ -468,6 +469,31 @@ describe("Core accessibility contracts", () => {
         </label>
       </>,
     );
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps icon-only and visible-label Toggle names stable across pressed states", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <Toggle aria-label="Favorite" icon={Bell} />
+        <Toggle defaultPressed leadingIcon={Bell}>
+          Pin project
+        </Toggle>
+        <Toggle aria-label="Muted view" disabled icon={Bell} pressed />
+      </>,
+    );
+
+    const favorite = screen.getByRole("button", { name: "Favorite" });
+    const pin = screen.getByRole("button", { name: "Pin project" });
+    expect(favorite).toHaveAttribute("aria-pressed", "false");
+    expect(pin).toHaveAttribute("aria-pressed", "true");
+    await user.click(favorite);
+    expect(screen.getByRole("button", { name: "Favorite" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "Muted view" })).toBeDisabled();
     expect((await axe(container)).violations).toEqual([]);
   });
 

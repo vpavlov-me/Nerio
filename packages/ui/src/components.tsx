@@ -81,6 +81,13 @@ export {
 } from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
 export {
+  Toggle,
+  type ToggleChangeEventDetails,
+  type ToggleProps,
+  type ToggleSize,
+  type ToggleVariant,
+} from "./components/toggle";
+export {
   Select,
   SelectGroup,
   SelectGroupLabel,

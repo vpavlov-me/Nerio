@@ -154,6 +154,16 @@ const expectedSliderFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedToggleFiles = [
+  "components/icon.tsx",
+  "components/toggle.tsx",
+  "lib/cn.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedCalendarFiles = [
   "components/calendar.tsx",
   "lib/cn.ts",
@@ -1009,6 +1019,7 @@ async function verify() {
     await run(localTarget, "add", "form-group");
     await run(localTarget, "add", "checkbox");
     await run(localTarget, "add", "switch");
+    await run(localTarget, "add", "toggle");
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "slider");
     await run(localTarget, "add", "calendar");
@@ -1218,6 +1229,22 @@ async function verify() {
       !switchSource.includes("data-readonly")
     ) {
       throw new Error("Installed Switch source is missing Base UI or ref support.");
+    }
+    assertFiles(localTarget, expectedToggleFiles);
+    const toggleSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/toggle.tsx"),
+      "utf8",
+    );
+    if (
+      !toggleSource.includes("@base-ui/react/toggle") ||
+      !toggleSource.includes("ToggleChangeEventDetails") ||
+      !toggleSource.includes("data-slot={dataSlot}") ||
+      !toggleSource.includes('data-icon-only={iconOnly ? "true" : undefined}') ||
+      !toggleSource.includes('type={nativeButton !== false ? (type ?? "button") : undefined}')
+    ) {
+      throw new Error(
+        "Installed Toggle source did not preserve pressed state, naming, or non-submit behavior.",
+      );
     }
     assertFiles(localTarget, expectedSelectFiles);
     const selectSource = fs.readFileSync(

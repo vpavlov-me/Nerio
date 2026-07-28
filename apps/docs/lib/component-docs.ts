@@ -13,6 +13,8 @@ const componentLedes: Record<string, string> = {
   "button-group": "ButtonGroup joins related actions into a compact, accessible control set.",
   button:
     "Buttons trigger user actions with clear intent, accessible focus treatment, loading states, and icon support.",
+  toggle:
+    "Toggle represents one independent button state that remains pressed or not pressed with a stable accessible name.",
   badge: "Badges label status, category, or lightweight metadata without becoming primary actions.",
   alert: "Alerts communicate inline feedback with clear tone, text, and accessible semantics.",
   spinner:

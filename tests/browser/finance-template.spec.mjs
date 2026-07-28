@@ -88,7 +88,11 @@ test("supports balance privacy, mobile navigation, runtime axes, RTL, and reflow
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(financeRoute);
 
-  await page.getByRole("button", { name: "Hide balances" }).click();
+  const balanceToggle = page.getByRole("button", { name: "Show balances" });
+  await expect(balanceToggle).toHaveAttribute("aria-pressed", "true");
+  await balanceToggle.click();
+  await expect(balanceToggle).toHaveAttribute("aria-pressed", "false");
+  await expect(balanceToggle).toHaveAccessibleName("Show balances");
   await expect(page.getByRole("heading", { name: "Balance hidden" })).toBeVisible();
   await expect(page.getByText("+$4,612", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("img", { name: /Values hidden/ })).toBeVisible();

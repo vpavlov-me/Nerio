@@ -102,6 +102,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/docs/components/kbd", label: "Kbd", icon: Code2 },
       { href: "/docs/components/button", label: "Button", icon: Circle },
+      { href: "/docs/components/toggle", label: "Toggle", icon: Circle },
       { href: "/docs/components/button-group", label: "ButtonGroup", icon: Circle },
     ],
   },

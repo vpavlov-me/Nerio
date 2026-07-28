@@ -294,6 +294,115 @@
       "usage": "import { Settings } from '@nerio-ui/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
     },
     {
+      "name": "toggle",
+      "title": "Toggle",
+      "description": "Represents one independent button state that remains pressed or not pressed.",
+      "category": "actions",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/toggle.tsx",
+          "target": "components/toggle.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["toggle"],
+      "slots": ["toggle", "toggle-icon", "toggle-label"],
+      "variants": ["ghost", "outline", "sm", "md", "lg"],
+      "states": ["unpressed", "pressed", "disabled"],
+      "requiredTokens": [
+        "--n-toggle-height-sm",
+        "--n-toggle-height-md",
+        "--n-toggle-height-lg",
+        "--n-toggle-radius",
+        "--n-toggle-font-size",
+        "--n-toggle-font-weight",
+        "--n-toggle-gap",
+        "--n-toggle-padding-inline-sm",
+        "--n-toggle-padding-inline-md",
+        "--n-toggle-padding-inline-lg",
+        "--n-toggle-border-width",
+        "--n-toggle-disabled-opacity",
+        "--n-toggle-icon-size-sm",
+        "--n-toggle-icon-size-md",
+        "--n-toggle-icon-size-lg",
+        "--n-toggle-background-ghost",
+        "--n-toggle-background-ghost-hover",
+        "--n-toggle-background-ghost-active",
+        "--n-toggle-border-ghost",
+        "--n-toggle-foreground-ghost",
+        "--n-toggle-background-outline",
+        "--n-toggle-background-outline-hover",
+        "--n-toggle-background-outline-active",
+        "--n-toggle-border-outline",
+        "--n-toggle-foreground-outline",
+        "--n-toggle-shadow-outline",
+        "--n-toggle-background-pressed",
+        "--n-toggle-background-pressed-hover",
+        "--n-toggle-background-pressed-active",
+        "--n-toggle-border-pressed",
+        "--n-toggle-border-pressed-hover",
+        "--n-toggle-border-pressed-active",
+        "--n-toggle-foreground-pressed",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Toggle primitive and renders a native type=button by default.",
+        "Expose the persistent state through pressed, defaultPressed, onPressedChange, aria-pressed, and data-pressed.",
+        "Use a stable accessible name while the pressed state changes; do not alternate labels such as Mute and Unmute when aria-pressed is present.",
+        "Icon-only usage requires aria-label at the TypeScript level; visible-label usage derives its name from children unless an explicit ARIA name is supplied.",
+        "Enter, Space, pointer, and touch activation toggle exactly one state while focus remains on the control.",
+        "Disabled Toggle prevents state changes and preserves a visible pressed or unpressed state.",
+        "Use Toggle for an independent retained button state, Button for momentary actions, Switch for immediate settings, and Checkbox for selection.",
+        "ButtonGroup does not add grouped selection; use a future ToggleGroup for exclusive or multiple grouped values.",
+        "Pressed state remains distinguishable in forced-colors mode and does not depend on motion."
+      ],
+      "usage": "import { Bell } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@/components/nerio/components/toggle';\n\n<Toggle icon={Bell} aria-label=\"Follow updates\" defaultPressed />"
+    },
+    {
       "name": "icon-button",
       "title": "IconButton",
       "description": "Deprecated compatibility wrapper for Button icon-only mode.",
