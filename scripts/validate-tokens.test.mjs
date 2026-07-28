@@ -105,7 +105,10 @@ test("token validator protects approved overlay and Checkbox component contracts
   withTokenFixture(
     (source) =>
       source
-        .replace("--n-checkbox-radius: var(--n-radius-xs);", "--n-checkbox-radius: 0.25rem;")
+        .replace(
+          "--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);",
+          "--n-checkbox-radius: 0.5rem;",
+        )
         .replace("--n-overlay-background: rgb(0 0 0 / 0.88);", "--n-overlay-background: black;")
         .replace(
           "--n-overlay-foreground: var(--n-gray-0);",
@@ -114,7 +117,7 @@ test("token validator protects approved overlay and Checkbox component contracts
     (stderr) => {
       assert.match(
         stderr,
-        /Approved component contract --n-checkbox-radius must resolve to var\(--n-radius-xs\)/,
+        /Approved component contract --n-checkbox-radius must resolve to min\(var\(--n-radius-xs\), 0\.25rem\)/,
       );
       assert.match(
         stderr,

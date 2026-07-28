@@ -4,7 +4,6 @@ import * as React from "react";
 import { densities, modes } from "@nerio-ui/tokens";
 import {
   Boxes,
-  Check,
   FileText,
   Layers,
   LayoutDashboard,
@@ -46,6 +45,7 @@ import {
   SidebarRail,
   SidebarTrigger,
   Skeleton,
+  Toggle,
   ToastProvider,
   ToastViewport,
   Tooltip,
@@ -473,7 +473,7 @@ function ContentLibraryApp() {
               viewMode={isMobile ? "list" : viewMode}
               onClearFilters={clearFilters}
               onKindChange={setKind}
-              onLoadingChange={() => setLoading((value) => !value)}
+              onLoadingChange={setLoading}
               onOpenPreview={openPreview}
               onQueryChange={setQuery}
               onSelect={toggleSelection}
@@ -622,7 +622,7 @@ function LibrarySection({
   viewMode: ViewMode;
   onClearFilters: () => void;
   onKindChange: (value: string) => void;
-  onLoadingChange: () => void;
+  onLoadingChange: (pressed: boolean) => void;
   onOpenPreview: (asset: Asset, trigger: HTMLButtonElement) => void;
   onQueryChange: (value: string) => void;
   onSelect: (id: string) => void;
@@ -671,13 +671,13 @@ function LibrarySection({
           }))}
         />
         <div className={styles["toolbar-actions"]}>
-          <Tooltip label={loading ? "Show assets" : "Simulate loading"}>
-            <Button
-              icon={loading ? Check : Monitor}
-              aria-label={loading ? "Show assets" : "Simulate loading"}
-              tooltip={false}
-              variant="secondary"
-              onClick={onLoadingChange}
+          <Tooltip label="Simulate loading">
+            <Toggle
+              icon={Monitor}
+              aria-label="Simulate loading"
+              pressed={loading}
+              variant="outline"
+              onPressedChange={onLoadingChange}
             />
           </Tooltip>
           <div className={styles["view-switch"]} aria-label="View style">

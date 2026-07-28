@@ -84,10 +84,17 @@ test("covers public docs routes, standardized component docs, and the restrained
   const search = page.getByRole("button", { name: "Search documentation" });
   await search.hover();
   await expect(page.getByRole("tooltip", { name: "Search documentation (/ or ⌘K)" })).toBeVisible();
+  await expect(page.getByRole("tooltip")).toHaveCount(1);
+  const colorMode = page.getByRole("button", { name: "Color mode: System" });
+  await colorMode.hover();
+  await expect(page.getByRole("tooltip", { name: "Color mode: System" })).toBeVisible();
+  await expect(page.getByRole("tooltip")).toHaveCount(1);
   const github = page.getByRole("link", { name: "GitHub", exact: true }).first();
   await expect(github.locator('img[src="/brand/github-invertocat-black.svg"]')).toBeAttached();
+  await github.hover();
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Color mode: System" }).click();
+  await colorMode.click();
   await page.getByRole("menuitem", { name: /Dark/ }).click();
   await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
 
@@ -128,6 +135,60 @@ test("keeps the homepage concise while local tooling remains accessible", async 
     "href",
     "/templates",
   );
+  const homepageToggle = page.getByRole("button", { name: "Follow updates" });
+  await expect(homepageToggle).toHaveClass(/n-toggle/);
+  await expect(homepageToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText("38 Components", { exact: true })).toBeVisible();
+
+  const actionMenu = page.locator(".home-gallery__action-dropdown");
+  await expect(page.getByRole("heading", { name: "Team members" })).toBeVisible();
+  const memberActions = page.getByRole("button", { name: "Actions for Maya Chen" });
+  await expect(memberActions).toBeVisible();
+  await expect(actionMenu).toHaveCount(0);
+  await memberActions.click();
+  await expect(actionMenu).toBeVisible();
+  const teamHeaderSpacing = await page.locator(".home-gallery__team-header").evaluate((element) => {
+    const title = element.querySelector("h3");
+    const description = element.querySelector("p");
+    return {
+      gap: description.getBoundingClientRect().top - title.getBoundingClientRect().bottom,
+      marginTop: getComputedStyle(description).marginTop,
+    };
+  });
+  expect(teamHeaderSpacing).toEqual({ gap: 4, marginTop: "0px" });
+  await expect(page.getByRole("menuitem", { name: "View profile" })).toBeVisible();
+  await expect(page.getByText("Member", { exact: true })).toBeVisible();
+  await expect(page.getByText("Access", { exact: true })).toBeVisible();
+  await expect(page.locator('[data-slot="separator"]')).toHaveCount(1);
+  const actionMenuVisual = await actionMenu.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const firstGroup = element.querySelector('[data-slot="group"]');
+    const [firstItem, secondItem] = firstGroup.querySelectorAll('[data-slot="item"]');
+    const probe = document.createElement("div");
+    probe.style.background = "var(--n-overlay-background)";
+    document.body.append(probe);
+    const tokenBackground = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return {
+      groupGap: getComputedStyle(firstGroup).rowGap,
+      itemGap: secondItem.getBoundingClientRect().top - firstItem.getBoundingClientRect().bottom,
+      menuBackground: style.backgroundColor,
+      menuGap: style.rowGap,
+      tokenBackground,
+    };
+  });
+  expect(actionMenuVisual).toMatchObject({
+    groupGap: "0px",
+    itemGap: 0,
+    menuGap: "0px",
+  });
+  expect(actionMenuVisual.menuBackground).toBe(actionMenuVisual.tokenBackground);
+  await expect(page.getByRole("heading", { name: "Start a group chat" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start chat" })).toHaveAttribute(
+    "data-variant",
+    "outline",
+  );
+  await expect(page.getByLabel("Chat participants")).toBeVisible();
   await expect(page.locator('img[src="/brand/google-g.svg"]')).toBeAttached();
   await expect(page.locator('img[src="/brand/apple-logo.svg"]')).toBeAttached();
 
@@ -218,6 +279,50 @@ test("applies every Playground control to the component canvas", async ({ page }
   await canvasValue.fill("rgb(255, 0, 0)");
   await expect(canvasValue).toHaveValue("rgb(255, 0, 0)");
   await expect(page.locator(".playground-color-control__picker").first()).toHaveValue("#ff0000");
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps Calendar, InputGroup, and Checkbox component states coherent", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/playground");
+
+  const checkbox = page.locator("#checkbox .n-checkbox").first();
+  await expect(checkbox).toBeVisible();
+  expect(
+    await checkbox.evaluate((element) => Number.parseFloat(getComputedStyle(element).borderRadius)),
+  ).toBeLessThanOrEqual(4);
+
+  const inputGroup = page.locator("#input-group .n-input-group").last();
+  const groupedInput = inputGroup.locator(".n-input");
+  const restingGroupBackground = await inputGroup.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  );
+  await groupedInput.hover();
+  const hoveredInputGroup = await inputGroup.evaluate((element) => {
+    const input = element.querySelector(".n-input");
+    return {
+      groupBackground: getComputedStyle(element).backgroundColor,
+      inputBackground: getComputedStyle(input).backgroundColor,
+    };
+  });
+  expect(hoveredInputGroup.groupBackground).not.toBe(restingGroupBackground);
+  expect(hoveredInputGroup.inputBackground).toBe("rgba(0, 0, 0, 0)");
+
+  const constrainedCalendar = page.getByRole("group", { name: "Constrained release date" });
+  const unavailableDate = constrainedCalendar.getByRole("button", { name: "June 4, 2026" });
+  await expect(unavailableDate).toHaveAttribute("aria-disabled", "true");
+  const unavailableVisual = await unavailableDate.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const probe = document.createElement("span");
+    probe.style.color = "var(--n-calendar-day-foreground-unavailable)";
+    element.parentElement?.append(probe);
+    const tokenColor = getComputedStyle(probe).color;
+    probe.remove();
+    return { color: style.color, decoration: style.textDecorationLine, tokenColor };
+  });
+  expect(unavailableVisual.color).toBe(unavailableVisual.tokenColor);
+  expect(unavailableVisual.decoration).toBe("none");
+
   await expectHealthyPage(page, problems);
 });
 
@@ -678,9 +783,21 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
   const tooltip = page.getByRole("tooltip");
   await expect(tooltip).toBeVisible({ timeout: 10_000 });
   await expect(tooltip).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
-  expect(await tooltip.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
-    "blur(24px)",
-  );
+  const tooltipVisual = await tooltip.evaluate((element) => {
+    const arrow = element.querySelector('[data-slot="arrow"]');
+    const popupBounds = element.getBoundingClientRect();
+    const arrowBounds = arrow.getBoundingClientRect();
+    return {
+      arrowAttached: Math.abs(arrowBounds.top - popupBounds.bottom),
+      arrowParent: arrow.parentElement === element,
+      arrowSide: arrow.dataset.side,
+      surfaceFilter: getComputedStyle(element).backdropFilter,
+    };
+  });
+  expect(tooltipVisual.arrowParent).toBe(true);
+  expect(tooltipVisual.arrowSide).toBe("top");
+  expect(tooltipVisual.arrowAttached).toBeLessThanOrEqual(1);
+  expect(tooltipVisual.surfaceFilter).toContain("blur(24px)");
 
   await page.goto("/docs/components/dropdown-menu");
   await page.getByRole("button", { name: "Actions", exact: true }).click();

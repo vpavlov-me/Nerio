@@ -41,7 +41,7 @@ export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(func
       id: child.props.id ?? id,
       invalid: child.props.invalid ?? normalizedInvalid,
       className: cn(
-        "min-w-0 rounded-none border-0 bg-transparent shadow-none disabled:opacity-100",
+        "min-w-0 rounded-none border-0 bg-transparent shadow-none [&:hover:not(:focus):not(:disabled):not([data-readonly])]:border-transparent [&:hover:not(:focus):not(:disabled):not([data-readonly])]:bg-transparent focus:border-transparent disabled:opacity-100",
         child.props.className,
       ),
       "aria-describedby": mergeIds(child.props["aria-describedby"], describedBy),

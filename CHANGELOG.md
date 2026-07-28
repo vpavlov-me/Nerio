@@ -8,6 +8,17 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the client-only Base UI Toggle for one independent retained button state, with controlled
+  and uncontrolled `pressed` state, stable accessible naming, icon-only and visible-label content,
+  ghost and outline variants, three control sizes, render composition, tokens, Registry, CLI/MCP,
+  docs, source-install, accessibility, and cross-browser coverage. ToggleGroup, Toolbar, grouped
+  selection, form-field semantics, persistence, and product policy remain outside this primitive.
+  Existing retained-state Buttons now reuse Toggle for balance visibility and deterministic loading
+  modes in the Finance & Assets, Content Library, and AI Research Workspace templates; grouped and
+  disclosure controls remain on their existing semantics.
+  The raw token CSS budget moves from 70,000 to 72,000 bytes for the component token contract; the
+  measured stylesheet grows by 2,149 bytes to 71,355 bytes while remaining below the existing
+  11,000-byte gzip budget.
 - Added a metadata-driven catalog of ten bounded product Blocks at `/blocks`, with same-origin
   full-screen previews at `/views/blocks/[slug]`, canonical detail metadata, responsive and
   accessible task-focused examples, and explicit product boundaries. The previous broad settings

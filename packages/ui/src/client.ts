@@ -21,6 +21,13 @@ export {
 } from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
 export {
+  Toggle,
+  type ToggleChangeEventDetails,
+  type ToggleProps,
+  type ToggleSize,
+  type ToggleVariant,
+} from "./components/toggle";
+export {
   Slider,
   type SliderChangeEventDetails,
   type SliderCommitEventDetails,
@@ -70,7 +77,12 @@ export {
   type TabsTriggerProps,
   type TabsVariant,
 } from "./components/tabs";
-export { Tooltip, type TooltipProps } from "./components/tooltip";
+export {
+  Tooltip,
+  TooltipProvider,
+  type TooltipProps,
+  type TooltipProviderProps,
+} from "./components/tooltip";
 export { LabelHint, type LabelHintProps } from "./components/label-hint";
 export { Dialog, DialogFooter, type DialogProps } from "./components/dialog";
 export {

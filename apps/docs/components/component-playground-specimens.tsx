@@ -103,6 +103,7 @@ import {
   Spinner,
   Stat,
   Switch,
+  Toggle,
   Table,
   TableBody,
   TableCaption,
@@ -131,6 +132,7 @@ const componentLinks = [
     "Actions",
     [
       ["Button", "button"],
+      ["Toggle", "toggle"],
       ["Button Group", "button-group"],
     ],
   ],
@@ -503,6 +505,34 @@ export function ComponentPlayground() {
           </Button>
           <Button icon={Copy} aria-label="Copy" tooltip="Copy to clipboard" variant="ghost" />
         </div>
+      </SpecimenSection>
+
+      <SpecimenSection
+        id="toggle"
+        title="Toggle"
+        api="pressed · defaultPressed · variant · size · icon-only · disabled"
+      >
+        <Matrix
+          columns={["Ghost", "Selected", "Outline selected", "Icon only", "Disabled selected"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Toggle key="ghost">Save article</Toggle>,
+                <Toggle key="pressed" defaultPressed>
+                  Save article
+                </Toggle>,
+                <Toggle key="outline" defaultPressed variant="outline">
+                  Reading mode
+                </Toggle>,
+                <Toggle key="icon" icon={Bell} aria-label="Follow updates" />,
+                <Toggle key="disabled" defaultPressed disabled>
+                  Save article
+                </Toggle>,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
 
       <SpecimenSection id="button-group" title="Button Group" api="horizontal grouped actions">

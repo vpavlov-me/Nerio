@@ -61,6 +61,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Component   | Status                   | Package               | Notes                                                                                                                                       |
 | ----------- | ------------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | Button      | stable-core              | `@nerio-ui/ui/client` | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip, and prop/ref-safe custom render composition |
+| Toggle      | stable-core              | `@nerio-ui/ui/client` | Base UI two-state button with one pressed state, stable naming, icon-only or visible-label content, variants, sizes, and render composition |
 | ButtonGroup | stable-core              | `@nerio-ui/ui`        | Server-safe horizontal attached group for related Buttons with short decorative dividers                                                    |
 | IconButton  | deprecated-compatibility | `@nerio-ui/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release                                                         |
 

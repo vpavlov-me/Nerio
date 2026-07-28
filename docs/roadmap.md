@@ -31,6 +31,7 @@
 - [x] Add FileInput
 - [x] Add Calendar
 - [x] Add single-date DatePicker
+- [x] Add independent two-state Toggle
 
 ## Product building blocks
 

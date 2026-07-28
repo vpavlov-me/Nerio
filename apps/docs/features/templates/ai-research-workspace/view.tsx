@@ -45,6 +45,7 @@ import {
   SidebarRail,
   SidebarTrigger,
   Skeleton,
+  Toggle,
   ToastProvider,
   ToastViewport,
   Tooltip,
@@ -802,9 +803,9 @@ function SourcesSection({
           <p>Trace every recommendation to local evidence</p>
           <h2>Source library</h2>
         </div>
-        <Button variant="secondary" onClick={() => setLoading((value) => !value)}>
-          {loading ? "Show sources" : "Simulate loading"}
-        </Button>
+        <Toggle pressed={loading} onPressedChange={setLoading} variant="outline">
+          Simulate loading
+        </Toggle>
       </header>
       {loading ? (
         <div className={styles["source-grid"]} role="status" aria-label="Loading sources">

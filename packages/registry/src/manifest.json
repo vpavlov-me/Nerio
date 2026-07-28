@@ -294,6 +294,115 @@
       "usage": "import { Settings } from '@nerio-ui/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
     },
     {
+      "name": "toggle",
+      "title": "Toggle",
+      "description": "Represents one independent button state that remains pressed or not pressed.",
+      "category": "actions",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/toggle.tsx",
+          "target": "components/toggle.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["toggle"],
+      "slots": ["toggle", "toggle-icon", "toggle-label"],
+      "variants": ["ghost", "outline", "sm", "md", "lg"],
+      "states": ["unpressed", "pressed", "disabled"],
+      "requiredTokens": [
+        "--n-toggle-height-sm",
+        "--n-toggle-height-md",
+        "--n-toggle-height-lg",
+        "--n-toggle-radius",
+        "--n-toggle-font-size",
+        "--n-toggle-font-weight",
+        "--n-toggle-gap",
+        "--n-toggle-padding-inline-sm",
+        "--n-toggle-padding-inline-md",
+        "--n-toggle-padding-inline-lg",
+        "--n-toggle-border-width",
+        "--n-toggle-disabled-opacity",
+        "--n-toggle-icon-size-sm",
+        "--n-toggle-icon-size-md",
+        "--n-toggle-icon-size-lg",
+        "--n-toggle-background-ghost",
+        "--n-toggle-background-ghost-hover",
+        "--n-toggle-background-ghost-active",
+        "--n-toggle-border-ghost",
+        "--n-toggle-foreground-ghost",
+        "--n-toggle-background-outline",
+        "--n-toggle-background-outline-hover",
+        "--n-toggle-background-outline-active",
+        "--n-toggle-border-outline",
+        "--n-toggle-foreground-outline",
+        "--n-toggle-shadow-outline",
+        "--n-toggle-background-pressed",
+        "--n-toggle-background-pressed-hover",
+        "--n-toggle-background-pressed-active",
+        "--n-toggle-border-pressed",
+        "--n-toggle-border-pressed-hover",
+        "--n-toggle-border-pressed-active",
+        "--n-toggle-foreground-pressed",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Toggle primitive and renders a native type=button by default.",
+        "Expose the persistent state through pressed, defaultPressed, onPressedChange, aria-pressed, and data-pressed.",
+        "Use a stable accessible name while the pressed state changes; do not alternate labels such as Mute and Unmute when aria-pressed is present.",
+        "Icon-only usage requires aria-label at the TypeScript level; visible-label usage derives its name from children unless an explicit ARIA name is supplied.",
+        "Enter, Space, pointer, and touch activation toggle exactly one state while focus remains on the control.",
+        "Disabled Toggle prevents state changes and preserves a visible pressed or unpressed state.",
+        "Use Toggle for an independent retained button state, Button for momentary actions, Switch for immediate settings, and Checkbox for selection.",
+        "ButtonGroup does not add grouped selection; use a future ToggleGroup for exclusive or multiple grouped values.",
+        "Pressed state uses a persistent accent border in ordinary color modes, remains distinguishable in forced-colors mode, and does not depend on motion."
+      ],
+      "usage": "import { Bell } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@/components/nerio/components/toggle';\n\n<Toggle icon={Bell} aria-label=\"Follow updates\" defaultPressed />"
+    },
+    {
       "name": "icon-button",
       "title": "IconButton",
       "description": "Deprecated compatibility wrapper for Button icon-only mode.",
@@ -2296,7 +2405,7 @@
         "Enter and Space select the focused date; unavailable, disabled, and read-only states cannot change the value.",
         "Controlled and uncontrolled selected-date and visible-month state use timezone-safe YYYY-MM-DD values.",
         "Locale formats labels while firstDayOfWeek intentionally controls the visual week start; locale defaults to en-US for deterministic SSR.",
-        "The heading announces visible-month changes politely; the focused day includes localized selection context; today, selection, focus, and unavailable states do not rely on color alone.",
+        "The heading announces visible-month changes politely; the focused day includes localized selection context; unavailable days expose aria-disabled and use the disabled foreground token without text decoration.",
         "DatePicker, ranges, multiple selection, events, availability, scheduling, recurrence, time, timezone conversion, fetching, and persistence remain outside Calendar."
       ],
       "usage": "import { Calendar } from '@/components/nerio/components/calendar';\n\n<Calendar aria-label=\"Release date\" defaultValue=\"2026-06-15\" min=\"2026-06-01\" max=\"2026-06-30\" firstDayOfWeek={1} />"
@@ -3264,8 +3373,18 @@
         }
       ],
       "baseUiPrimitives": ["menu"],
-      "slots": ["content", "item", "leading-icon", "label", "hotkey", "trailing-icon"],
-      "variants": ["default", "destructive", "leading icon", "trailing icon", "hotkey"],
+      "slots": [
+        "content",
+        "group",
+        "group-label",
+        "separator",
+        "item",
+        "leading-icon",
+        "label",
+        "hotkey",
+        "trailing-icon"
+      ],
+      "variants": ["default", "grouped", "destructive", "leading icon", "trailing icon", "hotkey"],
       "requiredTokens": [
         "--n-dropdown-min-width",
         "--n-dropdown-item-padding-inline",
@@ -3277,6 +3396,7 @@
         "--n-overlay-foreground",
         "--n-overlay-foreground-muted",
         "--n-overlay-control-background",
+        "--n-overlay-divider",
         "--n-overlay-surface-filter",
         "--n-overlay-danger",
         "--n-overlay-shadow",
@@ -3291,11 +3411,12 @@
       "accessibility": [
         "Uses the Base UI Menu primitive.",
         "Items are keyboard reachable and can be disabled.",
+        "Group labels and separators organize related commands without becoming menu items.",
         "Disabled items stay visible but cannot be selected.",
         "Use destructive tone only for irreversible or high-risk commands.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded menu popup ref."
       ],
-      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ label: 'Rename' }, { label: 'Duplicate', disabled: true }, { label: 'Archive', destructive: true }]} />"
+      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ group: 'Workspace', label: 'Share' }, { group: 'Workspace', label: 'Duplicate' }, { group: 'Manage', label: 'Delete', destructive: true }]} />"
     },
     {
       "name": "tooltip",
@@ -3359,12 +3480,14 @@
       ],
       "accessibility": [
         "Uses the Base UI Tooltip primitive.",
+        "The arrow stays inside the popup and clips its bordered overlay surface toward the trigger.",
         "Do not put required information only inside a tooltip.",
         "Keep tooltip text short and specific.",
         "Requires an element trigger. Use a keyboard-focusable control when keyboard users need to discover the tooltip.",
-        "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed."
+        "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed.",
+        "Wrap adjacent tooltip triggers in TooltipProvider so their open and close delays are coordinated."
       ],
-      "usage": "import { Tooltip } from '@/components/nerio/components/tooltip';\n\n<Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>"
+      "usage": "import { Tooltip, TooltipProvider } from '@/components/nerio/components/tooltip';\n\n<TooltipProvider>\n  <Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>\n  <Tooltip label=\"Opens settings\"><button type=\"button\">Settings</button></Tooltip>\n</TooltipProvider>"
     },
     {
       "name": "toast",

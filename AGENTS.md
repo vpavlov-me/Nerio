@@ -31,7 +31,10 @@ This repository is the source of truth for Nerio. Read the following documents b
 
 - Current work is closing the bounded Core 1.0 platform surface before beta quality and API freeze.
 - Follow issue #152 for the executable sequence and `docs/core-platform-primitive-coverage.md` for the accepted native/component boundary.
-- Native temporal input coverage, Slider, FileInput, Calendar, and single-date DatePicker are approved only through issues #258–#262. Do not expand those slices into ranges, scheduling, uploads, parsing, or other product workflows.
+- Native temporal input coverage, Slider, FileInput, Calendar, single-date DatePicker, and the
+  independent Toggle primitive are approved only through issues #258–#262 and #290. Do not expand
+  those slices into ranges, scheduling, uploads, parsing, ToggleGroup, Toolbar, persistence, or
+  other product workflows.
 - Do not add another Core component unless the coverage matrix identifies an objective 1.0 blocker and the roadmap contains a focused issue.
 - Do not mark a component `stable-core` until it passes the full Core quality checklist.
 

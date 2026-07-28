@@ -43,6 +43,8 @@ export const snippets: Record<string, string> = {
     'import { Code, Heading, Text } from \'@nerio-ui/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>pnpm exec nerio add typography</Code>',
   button:
     'import { Save, Settings } from \'@nerio-ui/adapters/icons\';\nimport { Badge, Kbd } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
+  toggle:
+    "\"use client\";\n\nimport * as React from 'react';\nimport { Check, Save } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@nerio-ui/ui/client';\n\nexport function SaveToggle() {\n  const [saved, setSaved] = React.useState(false);\n\n  return (\n    <Toggle leadingIcon={saved ? Check : Save} pressed={saved} onPressedChange={setSaved}>\n      Save article\n    </Toggle>\n  );\n}",
   "button-group":
     'import { ButtonGroup } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio-ui/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
@@ -100,11 +102,11 @@ export const snippets: Record<string, string> = {
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
   tooltip:
-    "import { Button, Tooltip } from '@nerio-ui/ui/client';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
+    'import { Button, Tooltip, TooltipProvider } from \'@nerio-ui/ui/client\';\n\n<TooltipProvider>\n  <Tooltip label="Copies the share link"><Button>Copy link</Button></Tooltip>\n  <Tooltip label="Opens settings"><Button>Settings</Button></Tooltip>\n</TooltipProvider>',
   popover:
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
+    'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Delete workspace", leadingIcon: X, destructive: true },\n  ]}\n/>',
   card: 'import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\n\n<Card as="article">\n  <CardVisual>...</CardVisual>\n  <CardHeader>\n    <div>\n      <CardTitle as="h2">Launch workspace</CardTitle>\n      <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n    </div>\n    <CardAction>...</CardAction>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
   separator:
     "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
@@ -167,6 +169,24 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: ["button", "button-icon", "button-label", "button-badge"],
     motion: ["hover", "press", "focus"],
     accessibility: ["Base UI button primitive", "aria-busy while loading", "visible focus ring"],
+  },
+  toggle: {
+    name: "Toggle",
+    description: "Represents one independent pressed or not-pressed button state.",
+    status: "stable",
+    layer: "core",
+    category: "Actions",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Button", "Switch", "Checkbox", "ButtonGroup"],
+    anatomy: ["toggle", "toggle-icon", "toggle-label"],
+    motion: ["hover", "press", "focus", "reduced motion"],
+    accessibility: [
+      "Base UI toggle primitive",
+      "stable accessible name",
+      "aria-pressed state",
+      "visible focus ring",
+    ],
   },
   "button-group": {
     name: "ButtonGroup",
@@ -713,6 +733,114 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-icon-button-radius",
       "--n-motion-hover-duration",
       "--n-motion-press-duration",
+      "--n-focus-ring",
+    ],
+  },
+  toggle: {
+    category: "Actions",
+    purpose:
+      "Use Toggle for one independent button state that remains pressed or not pressed, such as following, pinning, muting, or showing an optional layer.",
+    anatomy: [
+      {
+        title: "toggle",
+        description: "Native Base UI toggle button with controlled or uncontrolled pressed state.",
+      },
+      {
+        title: "toggle-icon",
+        description: "Optional leading icon rendered through the Nerio icon adapter.",
+      },
+      {
+        title: "toggle-label",
+        description: "Visible label that remains semantically stable while state changes.",
+      },
+    ],
+    variants: [
+      { title: "Ghost", description: "Restrained default for compact repeated controls." },
+      { title: "Outline", description: "Adds a stable boundary around the control." },
+      { title: "Small, medium, large", description: "Aligns with shared action control heights." },
+    ],
+    states: [
+      { title: "Unpressed", description: "aria-pressed is false and data-pressed is absent." },
+      {
+        title: "Pressed",
+        description:
+          "aria-pressed is true; a neutral selected fill and accent foreground replace the transient active treatment.",
+      },
+      {
+        title: "Hover and active",
+        description: "Transient interaction remains distinct from pressed.",
+      },
+      {
+        title: "Focus-visible",
+        description: "Uses the shared focus ring in either pressed state.",
+      },
+      { title: "Disabled", description: "Prevents activation while preserving the visible state." },
+    ],
+    motion: [
+      "Hover and press reuse shared CSS-first interaction motion.",
+      "The retained pressed state never depends on animation.",
+      "Reduced motion removes nonessential duration and scale.",
+    ],
+    accessibility: [
+      "Base UI synchronizes native activation, controlled or uncontrolled state, aria-pressed, and data-pressed.",
+      "Keep the accessible name stable while state changes; use Mute with aria-pressed rather than alternating Mute and Unmute.",
+      "Icon-only usage requires aria-label; Tooltip never replaces an accessible name.",
+      "Enter and Space activate the native button, and focus remains on the Toggle after activation.",
+      "The native root defaults to type=button so it does not submit a surrounding form.",
+      "Pressed state remains visible in forced-colors mode and does not rely on color alone.",
+    ],
+    api: [
+      {
+        title: "pressed / defaultPressed / onPressedChange",
+        description: "Controlled and uncontrolled Base UI state with cancellable event details.",
+      },
+      {
+        title: "icon / aria-label",
+        description: "Creates an icon-only Toggle with a required stable accessible name.",
+      },
+      {
+        title: "children / leadingIcon",
+        description: "Creates a visible-label Toggle with an optional leading icon.",
+      },
+      { title: "variant", description: "ghost or outline." },
+      { title: "size", description: "sm, md, or lg through shared control-height contracts." },
+      {
+        title: "value",
+        description: "Stable identifier reserved for future direct ToggleGroup composition.",
+      },
+      {
+        title: "render / nativeButton",
+        description: "Preserves Base UI render composition and native-button behavior.",
+      },
+    ],
+    designNotes: [
+      "Persistent public state is pressed; active remains the transient pointer or keyboard state.",
+      "Button performs momentary actions, Switch changes settings, and Checkbox represents selection.",
+      "ButtonGroup owns layout only; grouped values and roving focus require ToggleGroup.",
+    ],
+    related: ["Button", "Switch", "Checkbox", "ButtonGroup"],
+    guidance: {
+      do: [
+        "Use one stable label and let aria-pressed communicate state; a state-dependent icon may reinforce it visually.",
+      ],
+      dont: [
+        "Do not use Toggle for immediate settings, form selection, disclosure, grouped selection, or a momentary action.",
+      ],
+    },
+    tokens: [
+      "--n-toggle-height-sm",
+      "--n-toggle-height-md",
+      "--n-toggle-height-lg",
+      "--n-toggle-radius",
+      "--n-toggle-background-ghost",
+      "--n-toggle-background-ghost-hover",
+      "--n-toggle-background-outline",
+      "--n-toggle-background-outline-hover",
+      "--n-toggle-border-outline",
+      "--n-toggle-background-pressed",
+      "--n-toggle-background-pressed-hover",
+      "--n-toggle-border-pressed",
+      "--n-toggle-foreground-pressed",
       "--n-focus-ring",
     ],
   },
@@ -2002,6 +2130,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Page keys move by month and Shift plus Page keys move by year.",
       "Enter and Space select; constraints, disabled, and read-only prevent value changes.",
       "Month headings announce politely; day buttons use full localized date names and expose selection in the focused accessible name.",
+      "Unavailable days expose aria-disabled and use the disabled foreground color without a strike-through.",
       "Horizontal Arrow behavior follows the computed text direction in RTL.",
     ],
     api: [
@@ -3606,7 +3735,10 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       { title: "trigger", description: "Element that receives hover or focus." },
       { title: "content", description: "Short non-interactive explanation." },
-      { title: "arrow", description: "Directional indicator pointing back to the trigger." },
+      {
+        title: "arrow",
+        description: "Clipped continuation of the overlay surface pointing back to the trigger.",
+      },
     ],
     variants: [{ title: "Default", description: "Small text label in the overlay layer." }],
     states: [
@@ -3624,6 +3756,11 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Required trigger element; prefer a keyboard-focusable control.",
       },
       { title: "disabled", description: "Prevents tooltip display while preserving the trigger." },
+      {
+        title: "TooltipProvider",
+        description:
+          "Coordinates open and close delays across a group of adjacent tooltip triggers.",
+      },
     ],
     guidance: {
       do: ["Use to name icon-only actions or clarify dense metadata."],
@@ -3648,8 +3785,10 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "content", description: "Layered menu surface." },
       {
         title: "item",
-        description: "Command row with optional leading icon, trailing icon, hotkey, and intent.",
+        description:
+          "Command row with optional group, leading icon, trailing icon, hotkey, and intent.",
       },
+      { title: "group", description: "Labeled command cluster separated from adjacent groups." },
     ],
     variants: [
       { title: "Default", description: "Neutral command groups." },
@@ -3668,7 +3807,11 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "items",
         description:
-          "Small list of label, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+          "Ordered list of label, group, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+      },
+      {
+        title: "group",
+        description: "Creates labeled, separated command clusters without custom menu markup.",
       },
       { title: "disabled item", description: "Stays visible in context without activation." },
       {
@@ -3691,6 +3834,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-foreground",
       "--n-overlay-foreground-muted",
       "--n-overlay-control-background",
+      "--n-overlay-divider",
       "--n-overlay-danger",
       "--n-overlay-surface-filter",
       "--n-overlay-shadow",

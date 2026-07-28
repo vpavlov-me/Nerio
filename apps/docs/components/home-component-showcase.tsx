@@ -28,6 +28,7 @@ import {
 import {
   Button,
   Checkbox,
+  DropdownMenu,
   Kbd,
   Switch,
   Tabs,
@@ -36,12 +37,14 @@ import {
   TabsList,
   TabsPanels,
   TabsTrigger,
+  Toggle,
 } from "@nerio-ui/ui/client";
 import {
+  Bell,
   CircleAlert,
+  EllipsisVertical,
   Mail,
   MessageCircle,
-  Plus,
   Save,
   Settings,
   UserPlus,
@@ -49,9 +52,9 @@ import {
 } from "@nerio-ui/adapters/icons";
 import { avatarPreviewAssets } from "../lib/avatar-preview-assets";
 
-function AvatarStack() {
+function AvatarStack({ label = "Chat participants" }: { label?: string }) {
   return (
-    <div className="home-avatar-stack" aria-label="Project collaborators">
+    <div className="home-avatar-stack" aria-label={label}>
       {avatarPreviewAssets.slice(0, 5).map(({ name, src }) => (
         <Avatar key={name} name={name} size="lg" src={src} />
       ))}
@@ -87,6 +90,7 @@ export function HomeComponentShowcase() {
             <div className="home-gallery__control-row" aria-label="Control states">
               <Checkbox aria-label="Selected" defaultChecked />
               <Switch aria-label="Enabled" defaultChecked />
+              <Toggle icon={Bell} aria-label="Follow updates" defaultPressed />
               <RadioGroup
                 className="home-gallery__radio"
                 defaultValue="selected"
@@ -219,30 +223,71 @@ export function HomeComponentShowcase() {
             </div>
           </section>
 
-          <section className="home-gallery__menu" aria-label="Action menu">
-            <p>Actions</p>
-            <Button kbd={<Kbd>⌘N</Kbd>} leadingIcon={Plus} variant="ghost">
-              <span className="home-gallery__menu-label">
-                <strong>New component</strong>
+          <section className="home-gallery__team" aria-labelledby="team-members-title">
+            <div className="home-gallery__team-header">
+              <div>
+                <h3 id="team-members-title">Team members</h3>
+                <p>Manage access to this workspace.</p>
+              </div>
+              <Badge>3 members</Badge>
+            </div>
+            <div className="home-gallery__member">
+              <Avatar
+                name={avatarPreviewAssets[0].name}
+                size="lg"
+                src={avatarPreviewAssets[0].src}
+              />
+              <span className="home-gallery__member-copy">
+                <strong>Maya Chen</strong>
+                <small>Product designer · Member</small>
               </span>
-            </Button>
-            <Button kbd={<Kbd>⌘,</Kbd>} leadingIcon={Settings} variant="ghost">
-              <span className="home-gallery__menu-label">
-                <strong>Edit theme</strong>
-              </span>
-            </Button>
-            <Separator />
-            <Button kbd={<Kbd>⌘⌫</Kbd>} leadingIcon={X} variant="ghost">
-              <span className="home-gallery__menu-label">
-                <strong>Archive project</strong>
-              </span>
-            </Button>
+              <DropdownMenu
+                className="home-gallery__action-dropdown"
+                trigger={
+                  <Button
+                    icon={EllipsisVertical}
+                    aria-label="Actions for Maya Chen"
+                    variant="ghost"
+                  />
+                }
+                items={[
+                  {
+                    group: "Member",
+                    label: "View profile",
+                    leadingIcon: UserPlus,
+                  },
+                  {
+                    group: "Member",
+                    label: "Send message",
+                    leadingIcon: MessageCircle,
+                  },
+                  {
+                    group: "Access",
+                    label: "Change role",
+                    leadingIcon: Settings,
+                  },
+                  {
+                    group: "Access",
+                    label: "Remove from team",
+                    leadingIcon: X,
+                    destructive: true,
+                  },
+                ]}
+              />
+            </div>
           </section>
         </div>
 
         <div className="home-gallery__column">
-          <section className="home-gallery__avatars" aria-label="Project collaborators">
+          <section className="home-gallery__chat-empty" aria-labelledby="group-chat-title">
             <AvatarStack />
+            <div>
+              <h3 id="group-chat-title">Start a group chat</h3>
+              <p>Bring project collaborators into one conversation.</p>
+            </div>
+            <Button leadingIcon={MessageCircle} size="sm" variant="outline">
+              Start chat
+            </Button>
           </section>
 
           <section className="home-gallery__verification" aria-labelledby="verification-title">
@@ -310,7 +355,7 @@ export function HomeComponentShowcase() {
               <strong>Accessible building blocks for adaptable product teams.</strong>
               <div className="home-gallery__profile-stats">
                 <span>
-                  <b>37</b> Components
+                  <b>38</b> Components
                 </span>
                 <span>
                   <b>587</b> Tokens

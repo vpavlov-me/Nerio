@@ -108,6 +108,7 @@ import {
   SidebarTrigger,
   Slider,
   Switch,
+  Toggle,
   Tabs,
   TabsContent,
   TabsIndicator,
@@ -115,6 +116,7 @@ import {
   TabsPanels,
   TabsTrigger,
   Tooltip,
+  TooltipProvider,
   Toast,
   ToastProvider,
   ToastViewport,
@@ -196,6 +198,18 @@ const invalidButtonKbd = <Button kbd={<span>⌘K</span>}>Search</Button>;
 const invalidIconButtonBadge = (
   <Button icon={Bell} aria-label="Notifications" badge={<Badge>2</Badge>} />
 );
+// @ts-expect-error icon-only Toggle requires a stable accessible name
+const _invalidUnnamedIconToggle = <Toggle icon={Bell} />;
+// @ts-expect-error icon-only Toggle cannot include visible children
+const _invalidMixedIconToggle = (
+  <Toggle icon={Bell} aria-label="Favorite">
+    Favorite
+  </Toggle>
+);
+// @ts-expect-error visible-label Toggle uses leadingIcon rather than icon
+const _invalidVisibleToggleIcon = <Toggle icon={Bell}>Favorite</Toggle>;
+const _validIconToggle = <Toggle icon={Bell} aria-label="Favorite" />;
+const _validVisibleToggle = <Toggle leadingIcon={Bell}>Favorite</Toggle>;
 // @ts-expect-error linked Cards cannot also choose a surface root
 const invalidLinkedCard = <Card href="/docs" as="article" />;
 const validTemporalInputTypes = [
@@ -302,6 +316,11 @@ void [
   invalidDirectionalIconButton,
   invalidButtonKbd,
   invalidIconButtonBadge,
+  _invalidUnnamedIconToggle,
+  _invalidMixedIconToggle,
+  _invalidVisibleToggleIcon,
+  _validIconToggle,
+  _validVisibleToggle,
   invalidLinkedCard,
   validTemporalInputTypes,
   invalidFileInputType,
@@ -639,11 +658,17 @@ describe("Core static contracts", () => {
     expect(componentSource("calendar")).toContain('className="p-0 text-center align-middle"');
     expect(componentSource("calendar")).toContain('locale = "en-US"');
     expect(componentSource("calendar")).not.toContain("underline");
+    expect(componentSource("calendar")).not.toContain("line-through");
     expect(componentSource("calendar")).toContain(
       "data-selected:[&:hover:not(:disabled):not([aria-disabled=true])]",
     );
     expect(componentSource("date-picker")).toContain("trailingIcon={CalendarDays}");
     expect(componentSource("tooltip")).toContain("<BaseTooltip.Arrow");
+    expect(componentSource("tooltip")).toContain("sideOffset={10}");
+    expect(componentSource("tooltip")).toContain("overflow-clip");
+    expect(componentSource("tooltip")).toContain(
+      "before:[transform:translate(-50%,50%)_rotate(45deg)]",
+    );
     expect(componentSource("input")).toContain("focus:border-(--n-input-border-focus)");
     expect(componentSource("input")).not.toContain("focus-visible:shadow-(--n-focus-ring)");
     expect(componentSource("textarea")).toContain("focus:border-(--n-input-border-focus)");
@@ -654,7 +679,7 @@ describe("Core static contracts", () => {
     expect(componentSource("input-group")).not.toContain("!bg-transparent");
     expect(componentSource("input-group")).not.toContain("!shadow-none");
     expect(componentSource("input-group")).toContain(
-      '"min-w-0 rounded-none border-0 bg-transparent shadow-none disabled:opacity-100"',
+      "[&:hover:not(:focus):not(:disabled):not([data-readonly])]:bg-transparent",
     );
     expect(componentSource("file-input")).toContain("[grid-area:1/1]");
     expect(componentSource("file-input")).not.toContain("absolute inset-block-0");
@@ -670,6 +695,11 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);");
+    expect(tokens).toContain("--n-toggle-border-pressed: var(--n-color-action-primary);");
+    expect(tokens).toContain(
+      "--n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);",
+    );
     expect(tokens).toContain("--n-spinner-radius: var(--n-radius-pill);");
     expect(componentSource("spinner")).toContain("rounded-(--n-spinner-radius)");
     expect(componentSource("badge")).toContain(
@@ -2490,17 +2520,23 @@ describe("Core interactive action contracts", () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
     const { rerender } = render(
-      <Tooltip label="Copy link" onOpenChange={onOpenChange}>
-        <button>Copy</button>
-      </Tooltip>,
+      <TooltipProvider>
+        <Tooltip label="Copy link" onOpenChange={onOpenChange}>
+          <button>Copy</button>
+        </Tooltip>
+      </TooltipProvider>,
     );
     await user.tab();
-    expect(await screen.findByRole("tooltip")).toHaveTextContent("Copy link");
+    const tooltip = await screen.findByRole("tooltip");
+    expect(tooltip).toHaveTextContent("Copy link");
+    expect(tooltip.querySelector('[data-slot="arrow"]')?.parentElement).toBe(tooltip);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     rerender(
-      <Tooltip label="Copy link" open={false} disabled>
-        <button>Copy</button>
-      </Tooltip>,
+      <TooltipProvider>
+        <Tooltip label="Copy link" open={false} disabled>
+          <button>Copy</button>
+        </Tooltip>
+      </TooltipProvider>,
     );
     await user.hover(screen.getByRole("button", { name: "Copy" }));
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
@@ -2790,6 +2826,114 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("switch", { name: "Disabled notifications" })).toHaveAttribute(
       "aria-disabled",
       "true",
+    );
+  });
+
+  it("supports Toggle state, naming, keyboard, pointer, disabled, form, ref, and render contracts", async () => {
+    const user = userEvent.setup();
+    const onPressedChange = vi.fn();
+    const onDisabledPressedChange = vi.fn();
+    const onSubmit = vi.fn((event: React.FormEvent) => event.preventDefault());
+    const ref = React.createRef<HTMLElement>();
+    const customRootRef = React.createRef<HTMLElement>();
+    render(
+      <form onSubmit={onSubmit}>
+        <Toggle
+          ref={ref}
+          aria-label="Favorite"
+          icon={Bell}
+          onPressedChange={onPressedChange}
+          size="lg"
+          variant="outline"
+        />
+        <Toggle disabled onPressedChange={onDisabledPressedChange}>
+          Pin
+        </Toggle>
+        <Toggle defaultPressed render={<button data-render-target="toggle" />}>
+          Retain layout
+        </Toggle>
+        <Toggle
+          ref={customRootRef}
+          nativeButton={false}
+          render={<div role="button" tabIndex={0} data-render-target="custom-toggle" />}
+        >
+          Custom root
+        </Toggle>
+      </form>,
+    );
+
+    const favorite = screen.getByRole("button", { name: "Favorite" });
+    expect(ref.current).toBe(favorite);
+    expect(favorite).toHaveAttribute("type", "button");
+    expect(favorite).toHaveAttribute("aria-pressed", "false");
+    expect(favorite).toHaveAttribute("data-icon-only", "true");
+    expect(favorite).toHaveAttribute("data-size", "lg");
+    expect(favorite).toHaveAttribute("data-slot", "toggle");
+    expect(favorite).toHaveAttribute("data-variant", "outline");
+
+    favorite.focus();
+    await user.keyboard("{Enter}");
+    expect(favorite).toHaveAttribute("aria-pressed", "true");
+    expect(favorite).toHaveFocus();
+    await user.keyboard(" ");
+    expect(favorite).toHaveAttribute("aria-pressed", "false");
+    await user.click(favorite);
+    expect(favorite).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Favorite" })).toBe(favorite);
+    expect(onPressedChange).toHaveBeenCalledTimes(3);
+    expect(onPressedChange).toHaveBeenLastCalledWith(true, expect.anything());
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: "Pin" }));
+    expect(onDisabledPressedChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Pin" })).toHaveAttribute("data-disabled");
+
+    const rendered = screen.getByRole("button", { name: "Retain layout" });
+    expect(rendered).toHaveAttribute("data-render-target", "toggle");
+    expect(rendered).toHaveAttribute("aria-pressed", "true");
+    expect(rendered).toHaveClass("n-toggle");
+    expect(customRootRef.current).toBe(screen.getByRole("button", { name: "Custom root" }));
+  });
+
+  it("keeps controlled and canceled Toggle state owned by the public contract", async () => {
+    const user = userEvent.setup();
+    const controlledChange = vi.fn();
+    const canceledChange = vi.fn((_pressed: boolean, details: { cancel: () => void }) => {
+      details.cancel();
+    });
+    const { rerender } = render(
+      <>
+        <Toggle pressed={false} onPressedChange={controlledChange}>
+          Show guides
+        </Toggle>
+        <Toggle onPressedChange={canceledChange}>Lock canvas</Toggle>
+      </>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Show guides" }));
+    expect(controlledChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(screen.getByRole("button", { name: "Show guides" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    rerender(
+      <>
+        <Toggle pressed onPressedChange={controlledChange}>
+          Show guides
+        </Toggle>
+        <Toggle onPressedChange={canceledChange}>Lock canvas</Toggle>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Show guides" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    await user.click(screen.getByRole("button", { name: "Lock canvas" }));
+    expect(canceledChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(screen.getByRole("button", { name: "Lock canvas" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
     );
   });
 
@@ -3394,9 +3538,21 @@ describe("Core interactive action contracts", () => {
         trigger="Actions"
         onOpenChange={onOpenChange}
         items={[
-          { label: "Rename", leadingIcon: Bell, hotkey: "⌘R", onSelect },
-          { label: "Unavailable", disabled: true },
-          { label: "Archive", trailingIcon: ArrowRight, destructive: true, onSelect },
+          {
+            group: "Workspace",
+            label: "Rename",
+            leadingIcon: Bell,
+            hotkey: "⌘R",
+            onSelect,
+          },
+          { group: "Workspace", label: "Unavailable", disabled: true },
+          {
+            group: "Manage",
+            label: "Archive",
+            trailingIcon: ArrowRight,
+            destructive: true,
+            onSelect,
+          },
         ]}
       />,
     );
@@ -3413,6 +3569,14 @@ describe("Core interactive action contracts", () => {
     );
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveClass("col-start-3");
+    expect(screen.getByText("Workspace", { selector: '[data-slot="group-label"]' })).toBeVisible();
+    expect(screen.getByText("Manage", { selector: '[data-slot="group-label"]' })).toBeVisible();
+    expect(document.querySelectorAll('[data-slot="group"]')).toHaveLength(2);
+    expect(document.querySelector('[data-slot="content"]')).toHaveClass("gap-0");
+    for (const group of document.querySelectorAll('[data-slot="group"]')) {
+      expect(group).toHaveClass("gap-0");
+    }
+    expect(document.querySelectorAll('[data-slot="separator"]')).toHaveLength(1);
     expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveClass(
       "grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)]",
     );

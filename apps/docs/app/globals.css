@@ -1714,9 +1714,18 @@ pre {
   grid-area: verification;
 }
 
-.home-gallery__avatars {
-  display: flex;
-  justify-content: center;
+.home-gallery__chat-empty {
+  align-items: center;
+  display: grid;
+  gap: var(--n-space-3);
+  justify-items: center;
+  text-align: center;
+}
+
+.home-gallery__chat-empty p {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+  margin: var(--n-space-1) 0 0;
 }
 
 .home-gallery h3 {
@@ -1937,51 +1946,53 @@ pre {
   text-transform: uppercase;
 }
 
-.home-gallery__menu {
+.home-gallery__team {
   display: grid;
-  gap: 0;
+  gap: var(--n-space-4);
   grid-area: menu;
-  padding: var(--n-space-2);
 }
 
-.home-gallery__menu > p {
-  color: var(--n-color-text-tertiary);
+.home-gallery__team-header {
+  align-items: center;
+  display: flex;
+  gap: var(--n-space-3);
+  justify-content: space-between;
+}
+
+.home-gallery__team-header > div,
+.home-gallery__member-copy {
+  display: grid;
+  gap: var(--n-space-1);
+}
+
+.home-gallery__team-header h3 + p {
+  color: var(--n-color-text-secondary);
   font-size: var(--n-font-size-sm);
   margin: 0;
-  padding: var(--n-space-1) var(--n-space-2);
 }
 
-.home-gallery__menu .n-button {
-  block-size: auto;
-  gap: var(--n-space-2);
-  justify-content: start;
-  padding: var(--n-space-1-5) var(--n-space-2);
-  white-space: normal;
-}
-
-.home-gallery__menu .n-button [data-slot="button-label"] {
-  flex: 1;
-  min-inline-size: 0;
-}
-
-.home-gallery__menu .n-button [data-slot="button-kbd"] {
-  flex: none;
-  margin-inline-start: auto;
-}
-
-.home-gallery__menu-label {
+.home-gallery__member {
+  align-items: center;
+  background: var(--n-color-surface-subtle);
+  border-radius: var(--n-radius-md);
   display: grid;
-  gap: 0;
-  text-align: start;
+  gap: var(--n-space-3);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: var(--n-space-3);
 }
 
-.home-gallery__menu-label strong {
+.home-gallery__member-copy strong {
   color: var(--n-color-text-primary);
-  font: inherit;
+  font-size: var(--n-font-size-sm);
 }
 
-.home-gallery__menu .n-separator {
-  margin-block: var(--n-space-1);
+.home-gallery__member-copy small {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-xs);
+}
+
+.home-gallery__action-dropdown {
+  inline-size: min(var(--n-popover-width-md), calc(100vw - var(--n-space-8)));
 }
 
 .home-gallery__profile {

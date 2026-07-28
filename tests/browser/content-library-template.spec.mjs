@@ -28,6 +28,13 @@ test("filters, switches views, selects assets, and recovers from no results", as
   await expect(
     page.getByRole("heading", { name: "Everything your team can publish" }),
   ).toBeVisible();
+  const loadingToggle = page.getByRole("button", { name: "Simulate loading" });
+  await expect(loadingToggle).toHaveAttribute("aria-pressed", "false");
+  await loadingToggle.click();
+  await expect(loadingToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(loadingToggle).toHaveAccessibleName("Simulate loading");
+  await loadingToggle.click();
+  await expect(loadingToggle).toHaveAttribute("aria-pressed", "false");
   await page.getByRole("button", { name: "List view" }).click();
   await expect(page.getByLabel("list asset view")).toBeVisible();
 

@@ -851,9 +851,19 @@ function Preview({ kind }: { kind: string }) {
             <DropdownMenu
               trigger="Actions"
               items={[
-                { label: "Rename" },
-                { label: "Duplicate", disabled: true },
-                { label: "Archive", destructive: true },
+                {
+                  group: "Collaborate",
+                  label: "Share workspace",
+                },
+                {
+                  group: "Collaborate",
+                  label: "Duplicate workspace",
+                },
+                {
+                  group: "Manage",
+                  label: "Archive",
+                  destructive: true,
+                },
               ]}
             />
           ) : null}

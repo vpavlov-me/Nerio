@@ -76,6 +76,7 @@
     },
     { "name": "kbd", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "toggle", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "icon-button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "button-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "badge", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
@@ -148,6 +149,17 @@
       "capability": "button, submit, reset, and button input states",
       "rationale": "Native activation and form behavior remain intact while Base UI protects composed button behavior.",
       "boundary": "Core owns action presentation and state. Consumers own submission logic and side effects."
+    },
+    {
+      "id": "toggle-button",
+      "surface": "Toggle",
+      "catalogComponents": ["Toggle"],
+      "coverageMode": "dedicated-component",
+      "status": "covered",
+      "issue": null,
+      "capability": "two-state pressed and not-pressed button",
+      "rationale": "Base UI supplies controlled and uncontrolled pressed state, aria-pressed synchronization, native activation, disabled behavior, and render composition.",
+      "boundary": "Core owns one independent pressed state. Consumers own persistence, product meaning, grouped selection, and toolbar behavior."
     },
     {
       "id": "text-inputs",
@@ -537,6 +549,14 @@
       "category": "actions",
       "status": "stable-core",
       "description": "Primary action component with variants, sizes, loading state, directional icon slots, keyboard shortcuts, optional tooltips, icon-only mode, and prop/ref-safe custom render composition."
+    },
+    {
+      "name": "Toggle",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "actions",
+      "status": "stable-core",
+      "description": "Client-only Base UI two-state button with one controlled or uncontrolled pressed state, stable accessible naming, icon-only or visible-label content, variants, sizes, and prop/ref-safe render composition."
     },
     {
       "name": "IconButton",
