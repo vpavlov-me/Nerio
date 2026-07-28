@@ -150,6 +150,12 @@ Items under `Unreleased` may change before the next public release.
 - Protected Navigation, Sidebar, Command, Dialog, and Sheet anatomy/state ownership from escaped
   consumer DOM props and synchronized their docs and Registry projections with the shipped APIs.
 
+### Migration
+
+- `ButtonGroup` no longer accepts `orientation="vertical"` and no longer exports
+  `ButtonGroupOrientation`. Replace a vertical ButtonGroup with application-owned stack layout and
+  independent Buttons; the attached ButtonGroup contract is horizontal-only.
+
 ## 0.1.0-alpha.1 — 2026-07-18
 
 ### Documentation and governance

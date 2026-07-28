@@ -1490,7 +1490,7 @@
       "title": "Input",
       "description": "Thin native single-line control for text-like, numeric, and platform temporal values.",
       "category": "forms",
-      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {

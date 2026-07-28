@@ -630,6 +630,9 @@ describe("Core static contracts", () => {
     expect(componentSource("slider")).toContain(
       "group-data-disabled/slider:bg-(--n-slider-disabled-thumb-background)",
     );
+    expect(componentSource("slider")).toContain(
+      "group-data-disabled/slider:opacity-(--n-slider-disabled-opacity)",
+    );
     expect(componentSource("calendar")).toContain("overflow-hidden");
     expect(componentSource("calendar")).toContain('locale = "en-US"');
     expect(componentSource("calendar")).not.toContain("underline");
@@ -641,9 +644,7 @@ describe("Core static contracts", () => {
       "data-[emphasis=strong]:data-[tone=success]:[--n-badge-foreground:var(--n-badge-foreground-strong)]",
     );
     expect(componentSource("form-group")).toContain("items-start");
-    expect(componentSource("command")).toContain(
-      "[--n-command-radius:min(var(--n-radius-overlay),1.5rem)]",
-    );
+    expect(componentSource("command")).not.toContain("[--n-command-radius:");
     expect(tokens).toContain("--n-command-radius: min(var(--n-radius-overlay), 1.5rem);");
     expect(tokens).toContain("--n-badge-background-strong-primary: var(--n-purple-400);");
     expect(tokens).toContain("--n-badge-foreground-strong: var(--n-gray-950);");
@@ -3368,9 +3369,11 @@ describe("Core interactive action contracts", () => {
       document.querySelector('[data-slot="leading-icon"]'),
     );
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");
+    expect(document.querySelector('[data-slot="hotkey"]')).toHaveClass("col-start-3");
     expect(screen.getByRole("menuitem", { name: "Archive" })).toContainElement(
       document.querySelector('[data-slot="trailing-icon"]'),
     );
+    expect(document.querySelector('[data-slot="trailing-icon"]')).toHaveClass("col-start-4");
     await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());

@@ -60,24 +60,24 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
                   onClick={item.onSelect}
                 >
                   {item.leadingIcon ? (
-                    <span aria-hidden className="inline-flex" data-slot="leading-icon">
+                    <span aria-hidden className="col-start-1 inline-flex" data-slot="leading-icon">
                       <Icon icon={item.leadingIcon} />
                     </span>
                   ) : null}
-                  <span className="min-w-0" data-slot="label">
+                  <span className="col-start-2 min-w-0" data-slot="label">
                     {item.label}
                   </span>
                   {item.hotkey ? (
                     <span
                       aria-hidden
-                      className="text-(length:--n-font-size-xs) text-(--n-color-text-tertiary)"
+                      className="col-start-3 justify-self-end text-(length:--n-font-size-xs) text-(--n-color-text-tertiary)"
                       data-slot="hotkey"
                     >
                       {item.hotkey}
                     </span>
                   ) : null}
                   {item.trailingIcon ? (
-                    <span aria-hidden className="inline-flex" data-slot="trailing-icon">
+                    <span aria-hidden className="col-start-4 inline-flex" data-slot="trailing-icon">
                       <Icon icon={item.trailingIcon} />
                     </span>
                   ) : null}
