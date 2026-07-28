@@ -648,6 +648,9 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-command-radius: min(var(--n-radius-overlay), 1.5rem);");
     expect(tokens).toContain("--n-badge-background-strong-primary: var(--n-purple-400);");
     expect(tokens).toContain("--n-badge-foreground-strong: var(--n-gray-950);");
+    expect(tokens).toContain(
+      "--n-badge-foreground-strong-primary: var(--n-color-action-on-primary);",
+    );
   });
 
   it("renders decorative Badge icons on either side of its status label and supports loading", () => {
@@ -3741,6 +3744,10 @@ describe("Core interactive action contracts", () => {
     expect(source).toContain("size-(--n-sidebar-rail-hit-area)");
     expect(source).toContain("right-(--n-sidebar-rail-inset)");
     expect(source).toContain("bottom-(--n-sidebar-rail-inset)");
+    expect(source).toContain('data-has-rail={rails.length > 0 ? "true" : undefined}');
+    expect(source).toContain(
+      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area))]",
+    );
     expect(source).not.toContain("inset-y-0");
     expect(source).not.toContain("top-1/2");
   });

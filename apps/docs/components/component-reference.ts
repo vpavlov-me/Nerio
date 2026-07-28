@@ -978,6 +978,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-badge-background-strong",
       "--n-badge-foreground-strong",
       "--n-badge-background-strong-primary",
+      "--n-badge-foreground-strong-primary",
       "--n-badge-background-strong-info",
       "--n-badge-background-strong-success",
       "--n-badge-background-strong-warning",

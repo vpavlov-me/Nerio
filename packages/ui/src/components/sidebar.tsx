@@ -115,7 +115,8 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
       data-state={expanded ? "expanded" : "collapsed"}
     >
       <div
-        className="n-sidebar__inner grid h-full w-(--n-sidebar-width) grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
+        className="n-sidebar__inner grid h-full w-(--n-sidebar-width) grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area))] [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
+        data-has-rail={rails.length > 0 ? "true" : undefined}
         data-slot="sidebar-inner"
         inert={!expanded || undefined}
       >

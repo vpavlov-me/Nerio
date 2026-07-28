@@ -153,7 +153,7 @@ test("token validator protects strong Badge contrast across themes and modes", (
     (stderr) =>
       assert.match(
         stderr,
-        /purple\/dark contrast is 3\.54:1 for --n-badge-foreground-strong on --n-badge-background-strong-primary/,
+        /purple\/dark contrast is 3\.54:1 for --n-badge-foreground-strong-primary on --n-badge-background-strong-primary/,
       ),
   );
 });

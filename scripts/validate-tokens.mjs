@@ -360,7 +360,7 @@ function validate() {
         ["--n-color-action-on-primary", "--n-color-action-primary", 4.5],
         ["--n-color-focus-ring", "--n-color-surface-canvas", 3],
         ["--n-badge-foreground-strong", "--n-badge-background-strong", 4.5],
-        ["--n-badge-foreground-strong", "--n-badge-background-strong-primary", 4.5],
+        ["--n-badge-foreground-strong-primary", "--n-badge-background-strong-primary", 4.5],
         ["--n-badge-foreground-strong", "--n-badge-background-strong-info", 4.5],
         ["--n-badge-foreground-strong", "--n-badge-background-strong-success", 4.5],
         ["--n-badge-foreground-strong", "--n-badge-background-strong-warning", 4.5],
