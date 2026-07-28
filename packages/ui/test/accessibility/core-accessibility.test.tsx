@@ -59,6 +59,7 @@ import {
   Dialog,
   DatePicker,
   LabelHint,
+  DropdownMenu,
   RadioGroup,
   RadioGroupItem,
   Select,
@@ -814,5 +815,35 @@ describe("Core accessibility contracts", () => {
     await user.click(trigger);
     expect(await screen.findByRole("group", { name: "Choose date" })).toBeInTheDocument();
     expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps grouped DropdownMenu labels accessible", async () => {
+    render(
+      <DropdownMenu
+        defaultOpen
+        trigger="Workspace actions"
+        items={[
+          {
+            group: "Collaborate",
+            label: "Share workspace",
+          },
+          {
+            group: "Manage",
+            label: "Delete workspace",
+            destructive: true,
+          },
+        ]}
+      />,
+    );
+
+    expect(await screen.findByRole("group", { name: "Collaborate" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Manage" })).toBeInTheDocument();
+    expect(
+      (
+        await axe(document.body, {
+          rules: { region: { enabled: false } },
+        })
+      ).violations,
+    ).toEqual([]);
   });
 });

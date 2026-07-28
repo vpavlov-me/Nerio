@@ -3373,8 +3373,18 @@
         }
       ],
       "baseUiPrimitives": ["menu"],
-      "slots": ["content", "item", "leading-icon", "label", "hotkey", "trailing-icon"],
-      "variants": ["default", "destructive", "leading icon", "trailing icon", "hotkey"],
+      "slots": [
+        "content",
+        "group",
+        "group-label",
+        "separator",
+        "item",
+        "leading-icon",
+        "label",
+        "hotkey",
+        "trailing-icon"
+      ],
+      "variants": ["default", "grouped", "destructive", "leading icon", "trailing icon", "hotkey"],
       "requiredTokens": [
         "--n-dropdown-min-width",
         "--n-dropdown-item-padding-inline",
@@ -3386,6 +3396,7 @@
         "--n-overlay-foreground",
         "--n-overlay-foreground-muted",
         "--n-overlay-control-background",
+        "--n-overlay-divider",
         "--n-overlay-surface-filter",
         "--n-overlay-danger",
         "--n-overlay-shadow",
@@ -3400,11 +3411,12 @@
       "accessibility": [
         "Uses the Base UI Menu primitive.",
         "Items are keyboard reachable and can be disabled.",
+        "Group labels and separators organize related commands without becoming menu items.",
         "Disabled items stay visible but cannot be selected.",
         "Use destructive tone only for irreversible or high-risk commands.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded menu popup ref."
       ],
-      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ label: 'Rename' }, { label: 'Duplicate', disabled: true }, { label: 'Archive', destructive: true }]} />"
+      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ group: 'Workspace', label: 'Share' }, { group: 'Workspace', label: 'Duplicate' }, { group: 'Manage', label: 'Delete', destructive: true }]} />"
     },
     {
       "name": "tooltip",

@@ -38,6 +38,7 @@ export {
   Code2,
   Circle,
   Copy,
+  EllipsisVertical,
   ExternalLink,
   FileText,
   Github,

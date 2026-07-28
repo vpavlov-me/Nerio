@@ -106,7 +106,7 @@ export const snippets: Record<string, string> = {
   popover:
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
+    'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Delete workspace", leadingIcon: X, destructive: true },\n  ]}\n/>',
   card: 'import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\n\n<Card as="article">\n  <CardVisual>...</CardVisual>\n  <CardHeader>\n    <div>\n      <CardTitle as="h2">Launch workspace</CardTitle>\n      <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n    </div>\n    <CardAction>...</CardAction>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
   separator:
     "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
@@ -3776,8 +3776,10 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "content", description: "Layered menu surface." },
       {
         title: "item",
-        description: "Command row with optional leading icon, trailing icon, hotkey, and intent.",
+        description:
+          "Command row with optional group, leading icon, trailing icon, hotkey, and intent.",
       },
+      { title: "group", description: "Labeled command cluster separated from adjacent groups." },
     ],
     variants: [
       { title: "Default", description: "Neutral command groups." },
@@ -3796,7 +3798,11 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "items",
         description:
-          "Small list of label, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+          "Ordered list of label, group, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+      },
+      {
+        title: "group",
+        description: "Creates labeled, separated command clusters without custom menu markup.",
       },
       { title: "disabled item", description: "Stays visible in context without activation." },
       {
@@ -3819,6 +3825,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-foreground",
       "--n-overlay-foreground-muted",
       "--n-overlay-control-background",
+      "--n-overlay-divider",
       "--n-overlay-danger",
       "--n-overlay-surface-filter",
       "--n-overlay-shadow",

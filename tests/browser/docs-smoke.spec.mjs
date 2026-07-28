@@ -135,7 +135,12 @@ test("keeps the homepage concise while local tooling remains accessible", async 
 
   const actionMenu = page.locator(".home-gallery__action-dropdown");
   await expect(actionMenu).toBeVisible();
-  await expect(page.getByRole("menuitem", { name: "New component" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Team members" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Actions for Maya Chen" })).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "View profile" })).toBeVisible();
+  await expect(page.getByText("Member", { exact: true })).toBeVisible();
+  await expect(page.getByText("Access", { exact: true })).toBeVisible();
+  await expect(page.locator('[data-slot="separator"]')).toHaveCount(1);
   const overlayColors = await actionMenu.evaluate((element) => {
     const style = getComputedStyle(element);
     const probe = document.createElement("div");
@@ -146,6 +151,9 @@ test("keeps the homepage concise while local tooling remains accessible", async 
     return { menuBackground: style.backgroundColor, tokenBackground };
   });
   expect(overlayColors.menuBackground).toBe(overlayColors.tokenBackground);
+  await expect(page.getByRole("heading", { name: "Start a group chat" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start chat" })).toBeVisible();
+  await expect(page.getByLabel("Chat participants")).toBeVisible();
   await expect(page.locator('img[src="/brand/google-g.svg"]')).toBeAttached();
   await expect(page.locator('img[src="/brand/apple-logo.svg"]')).toBeAttached();
 

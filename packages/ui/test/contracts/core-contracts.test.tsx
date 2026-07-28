@@ -3511,9 +3511,21 @@ describe("Core interactive action contracts", () => {
         trigger="Actions"
         onOpenChange={onOpenChange}
         items={[
-          { label: "Rename", leadingIcon: Bell, hotkey: "⌘R", onSelect },
-          { label: "Unavailable", disabled: true },
-          { label: "Archive", trailingIcon: ArrowRight, destructive: true, onSelect },
+          {
+            group: "Workspace",
+            label: "Rename",
+            leadingIcon: Bell,
+            hotkey: "⌘R",
+            onSelect,
+          },
+          { group: "Workspace", label: "Unavailable", disabled: true },
+          {
+            group: "Manage",
+            label: "Archive",
+            trailingIcon: ArrowRight,
+            destructive: true,
+            onSelect,
+          },
         ]}
       />,
     );
@@ -3530,6 +3542,10 @@ describe("Core interactive action contracts", () => {
     );
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveClass("col-start-3");
+    expect(screen.getByText("Workspace", { selector: '[data-slot="group-label"]' })).toBeVisible();
+    expect(screen.getByText("Manage", { selector: '[data-slot="group-label"]' })).toBeVisible();
+    expect(document.querySelectorAll('[data-slot="group"]')).toHaveLength(2);
+    expect(document.querySelectorAll('[data-slot="separator"]')).toHaveLength(1);
     expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveClass(
       "grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)]",
     );
