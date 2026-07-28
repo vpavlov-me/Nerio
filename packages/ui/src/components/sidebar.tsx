@@ -5,6 +5,7 @@ import { PanelLeft } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 import { Icon } from "./icon";
+import { SidebarFooter } from "./sidebar-layout";
 
 export type SidebarSide = "left" | "right";
 export type SidebarDirection = "ltr" | "rtl";
@@ -95,9 +96,13 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
   const { direction, expanded, side, sidebarId } = useSidebar();
   const content: React.ReactNode[] = [];
   const rails: React.ReactNode[] = [];
+  let hasFooter = false;
   React.Children.forEach(children, (child) => {
     if (React.isValidElement(child) && child.type === SidebarRail) rails.push(child);
-    else content.push(child);
+    else {
+      if (React.isValidElement(child) && child.type === SidebarFooter) hasFooter = true;
+      content.push(child);
+    }
   });
 
   return (
@@ -115,7 +120,8 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
       data-state={expanded ? "expanded" : "collapsed"}
     >
       <div
-        className="n-sidebar__inner grid h-full w-(--n-sidebar-width) grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))] [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
+        className="n-sidebar__inner grid h-full w-(--n-sidebar-width) grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))] data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))] data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-bottom))] [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
+        data-has-footer={hasFooter ? "true" : "false"}
         data-has-rail={rails.length > 0 ? "true" : undefined}
         data-slot="sidebar-inner"
         inert={!expanded || undefined}

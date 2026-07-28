@@ -3759,8 +3759,15 @@ describe("Core interactive action contracts", () => {
       "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
     );
     expect(source).toContain('data-has-rail={rails.length > 0 ? "true" : undefined}');
+    expect(source).toContain('data-has-footer={hasFooter ? "true" : "false"}');
     expect(source).toContain(
       "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+    );
+    expect(source).toContain(
+      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+    );
+    expect(source).toContain(
+      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-bottom))]",
     );
     expect(source).not.toContain("inset-y-0");
     expect(source).not.toContain("top-1/2");

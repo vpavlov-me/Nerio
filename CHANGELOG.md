@@ -141,8 +141,9 @@ Items under `Unreleased` may change before the next public release.
   insertion cue, selection suppression, and concise `Reorder` tooltip. Documented faithful Primary (unified muted body)
   and Secondary (open page-level rows) presentation recipes without moving DataGrid behavior into
   the Core primitive.
-- Aligned Pagination with Button's presentation recipes: outline controls by default and a secondary
-  surface for the current page, while retaining stable geometry and `aria-current` state.
+- Aligned Pagination with Button's secondary presentation recipe: secondary controls by default and
+  a secondary-active surface for the current page, while retaining stable geometry and
+  `aria-current` state.
 - Added a localizable `Dialog.closeLabel` while preserving the existing "Close dialog" default.
 
 ### Fixed
