@@ -84,10 +84,17 @@ test("covers public docs routes, standardized component docs, and the restrained
   const search = page.getByRole("button", { name: "Search documentation" });
   await search.hover();
   await expect(page.getByRole("tooltip", { name: "Search documentation (/ or ⌘K)" })).toBeVisible();
+  await expect(page.getByRole("tooltip")).toHaveCount(1);
+  const colorMode = page.getByRole("button", { name: "Color mode: System" });
+  await colorMode.hover();
+  await expect(page.getByRole("tooltip", { name: "Color mode: System" })).toBeVisible();
+  await expect(page.getByRole("tooltip")).toHaveCount(1);
   const github = page.getByRole("link", { name: "GitHub", exact: true }).first();
   await expect(github.locator('img[src="/brand/github-invertocat-black.svg"]')).toBeAttached();
+  await github.hover();
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Color mode: System" }).click();
+  await colorMode.click();
   await page.getByRole("menuitem", { name: /Dark/ }).click();
   await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
 
@@ -134,9 +141,12 @@ test("keeps the homepage concise while local tooling remains accessible", async 
   await expect(page.getByText("38 Components", { exact: true })).toBeVisible();
 
   const actionMenu = page.locator(".home-gallery__action-dropdown");
-  await expect(actionMenu).toBeVisible();
   await expect(page.getByRole("heading", { name: "Team members" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Actions for Maya Chen" })).toBeVisible();
+  const memberActions = page.getByRole("button", { name: "Actions for Maya Chen" });
+  await expect(memberActions).toBeVisible();
+  await expect(actionMenu).toHaveCount(0);
+  await memberActions.click();
+  await expect(actionMenu).toBeVisible();
   const teamHeaderSpacing = await page.locator(".home-gallery__team-header").evaluate((element) => {
     const title = element.querySelector("h3");
     const description = element.querySelector("p");

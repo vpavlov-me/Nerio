@@ -117,7 +117,12 @@ export {
   type TabsTriggerProps,
   type TabsVariant,
 } from "./components/tabs";
-export { Tooltip, type TooltipProps } from "./components/tooltip";
+export {
+  Tooltip,
+  TooltipProvider,
+  type TooltipProps,
+  type TooltipProviderProps,
+} from "./components/tooltip";
 export { Dialog, DialogFooter, type DialogProps } from "./components/dialog";
 export {
   Sheet,

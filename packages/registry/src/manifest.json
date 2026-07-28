@@ -3484,9 +3484,10 @@
         "Do not put required information only inside a tooltip.",
         "Keep tooltip text short and specific.",
         "Requires an element trigger. Use a keyboard-focusable control when keyboard users need to discover the tooltip.",
-        "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed."
+        "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed.",
+        "Wrap adjacent tooltip triggers in TooltipProvider so their open and close delays are coordinated."
       ],
-      "usage": "import { Tooltip } from '@/components/nerio/components/tooltip';\n\n<Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>"
+      "usage": "import { Tooltip, TooltipProvider } from '@/components/nerio/components/tooltip';\n\n<TooltipProvider>\n  <Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>\n  <Tooltip label=\"Opens settings\"><button type=\"button\">Settings</button></Tooltip>\n</TooltipProvider>"
     },
     {
       "name": "toast",

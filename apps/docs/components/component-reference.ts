@@ -102,7 +102,7 @@ export const snippets: Record<string, string> = {
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
   tooltip:
-    "import { Button, Tooltip } from '@nerio-ui/ui/client';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
+    'import { Button, Tooltip, TooltipProvider } from \'@nerio-ui/ui/client\';\n\n<TooltipProvider>\n  <Tooltip label="Copies the share link"><Button>Copy link</Button></Tooltip>\n  <Tooltip label="Opens settings"><Button>Settings</Button></Tooltip>\n</TooltipProvider>',
   popover:
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
@@ -3756,6 +3756,11 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Required trigger element; prefer a keyboard-focusable control.",
       },
       { title: "disabled", description: "Prevents tooltip display while preserving the trigger." },
+      {
+        title: "TooltipProvider",
+        description:
+          "Coordinates open and close delays across a group of adjacent tooltip triggers.",
+      },
     ],
     guidance: {
       do: ["Use to name icon-only actions or clarify dense metadata."],

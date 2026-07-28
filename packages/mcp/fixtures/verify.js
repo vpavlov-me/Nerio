@@ -731,9 +731,11 @@ async function verify() {
     const tooltipUsage = JSON.parse(tooltipUsageResult.content[0].text);
     if (
       !tooltipUsage.requiredTokens.includes("--n-overlay-background") ||
-      !tooltipUsage.requiredTokens.includes("--n-overlay-foreground")
+      !tooltipUsage.requiredTokens.includes("--n-overlay-foreground") ||
+      !tooltipUsage.usage.includes("TooltipProvider") ||
+      !tooltipUsage.accessibility.some((item) => item.includes("adjacent tooltip triggers"))
     ) {
-      throw new Error("MCP Tooltip usage is missing overlay token metadata.");
+      throw new Error("MCP Tooltip usage is missing overlay token or provider metadata.");
     }
 
     const dropdownUsageResult = await client.callTool({

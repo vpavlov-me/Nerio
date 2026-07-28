@@ -1514,6 +1514,18 @@ async function verify() {
       throw new Error("Installed DropdownMenu source is missing item state or open control.");
     }
 
+    const tooltipSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/tooltip.tsx"),
+      "utf8",
+    );
+    if (
+      !tooltipSource.includes("TooltipProvider") ||
+      !tooltipSource.includes("<BaseTooltip.Provider {...props}>") ||
+      tooltipSource.includes("<BaseTooltip.Provider>\\n      <BaseTooltip.Root")
+    ) {
+      throw new Error("Installed Tooltip source is missing shared delay-group composition.");
+    }
+
     const toastSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/toast.tsx"),
       "utf8",

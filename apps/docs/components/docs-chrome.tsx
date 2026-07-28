@@ -45,6 +45,7 @@ import {
   SheetTitle,
   SheetTrigger,
   Tooltip,
+  TooltipProvider,
 } from "@nerio-ui/ui/client";
 import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { modes } from "@nerio-ui/tokens";
@@ -919,59 +920,61 @@ export function DocsChrome({
             ) : null}
           </nav>
 
-          <div className="docs-controls">
-            <DocsCommandPalette entries={visibleSearchEntries} />
-            <span className="docs-controls-divider" aria-hidden />
-            <DropdownMenu
-              className="docs-mode-menu"
-              trigger={
-                <Button
-                  aria-label={`Color mode: ${runtimeLabel(mode)}`}
-                  icon={modeIcons[mode]}
-                  tooltip={`Color mode: ${runtimeLabel(mode)}`}
-                  variant="ghost"
-                />
-              }
-              items={modeOptions.map((option) => ({
-                label: (
-                  <span className="runtime-menu-item">
-                    <Icon icon={option.icon} />
-                    <span>{option.label}</span>
-                    {mode === option.value ? <Icon icon={Check} /> : null}
-                  </span>
-                ),
-                onSelect: () => {
-                  if (isColorMode(option.value)) setMode(option.value);
-                },
-              }))}
-            />
-            <span className="docs-controls-divider" aria-hidden />
-            <Button
-              className="docs-github-link"
-              nativeButton={false}
-              render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
-              variant="secondary"
-            >
-              <span className="docs-github-mark" aria-hidden>
-                {mode === "system" ? (
-                  <picture>
-                    <source
-                      media="(prefers-color-scheme: dark)"
-                      srcSet="/brand/github-invertocat-white.svg"
-                    />
-                    <img src="/brand/github-invertocat-black.svg" alt="" width={14} />
-                  </picture>
-                ) : (
-                  <img
-                    src={`/brand/github-invertocat-${mode === "dark" ? "white" : "black"}.svg`}
-                    alt=""
-                    width={14}
+          <TooltipProvider closeDelay={0} delay={600}>
+            <div className="docs-controls">
+              <DocsCommandPalette entries={visibleSearchEntries} />
+              <span className="docs-controls-divider" aria-hidden />
+              <DropdownMenu
+                className="docs-mode-menu"
+                trigger={
+                  <Button
+                    aria-label={`Color mode: ${runtimeLabel(mode)}`}
+                    icon={modeIcons[mode]}
+                    tooltip={`Color mode: ${runtimeLabel(mode)}`}
+                    variant="ghost"
                   />
-                )}
-              </span>
-              GitHub
-            </Button>
-          </div>
+                }
+                items={modeOptions.map((option) => ({
+                  label: (
+                    <span className="runtime-menu-item">
+                      <Icon icon={option.icon} />
+                      <span>{option.label}</span>
+                      {mode === option.value ? <Icon icon={Check} /> : null}
+                    </span>
+                  ),
+                  onSelect: () => {
+                    if (isColorMode(option.value)) setMode(option.value);
+                  },
+                }))}
+              />
+              <span className="docs-controls-divider" aria-hidden />
+              <Button
+                className="docs-github-link"
+                nativeButton={false}
+                render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
+                variant="secondary"
+              >
+                <span className="docs-github-mark" aria-hidden>
+                  {mode === "system" ? (
+                    <picture>
+                      <source
+                        media="(prefers-color-scheme: dark)"
+                        srcSet="/brand/github-invertocat-white.svg"
+                      />
+                      <img src="/brand/github-invertocat-black.svg" alt="" width={14} />
+                    </picture>
+                  ) : (
+                    <img
+                      src={`/brand/github-invertocat-${mode === "dark" ? "white" : "black"}.svg`}
+                      alt=""
+                      width={14}
+                    />
+                  )}
+                </span>
+                GitHub
+              </Button>
+            </div>
+          </TooltipProvider>
         </div>
       </header>
 

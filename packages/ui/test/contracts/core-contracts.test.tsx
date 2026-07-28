@@ -116,6 +116,7 @@ import {
   TabsPanels,
   TabsTrigger,
   Tooltip,
+  TooltipProvider,
   Toast,
   ToastProvider,
   ToastViewport,
@@ -2518,9 +2519,11 @@ describe("Core interactive action contracts", () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
     const { rerender } = render(
-      <Tooltip label="Copy link" onOpenChange={onOpenChange}>
-        <button>Copy</button>
-      </Tooltip>,
+      <TooltipProvider>
+        <Tooltip label="Copy link" onOpenChange={onOpenChange}>
+          <button>Copy</button>
+        </Tooltip>
+      </TooltipProvider>,
     );
     await user.tab();
     const tooltip = await screen.findByRole("tooltip");
@@ -2528,9 +2531,11 @@ describe("Core interactive action contracts", () => {
     expect(tooltip.querySelector('[data-slot="arrow"]')?.parentElement).toBe(tooltip);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     rerender(
-      <Tooltip label="Copy link" open={false} disabled>
-        <button>Copy</button>
-      </Tooltip>,
+      <TooltipProvider>
+        <Tooltip label="Copy link" open={false} disabled>
+          <button>Copy</button>
+        </Tooltip>
+      </TooltipProvider>,
     );
     await user.hover(screen.getByRole("button", { name: "Copy" }));
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();

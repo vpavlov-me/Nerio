@@ -243,7 +243,6 @@ export function HomeComponentShowcase() {
               </span>
               <DropdownMenu
                 className="home-gallery__action-dropdown"
-                defaultOpen
                 trigger={
                   <Button
                     icon={EllipsisVertical}
