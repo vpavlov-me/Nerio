@@ -2130,6 +2130,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Page keys move by month and Shift plus Page keys move by year.",
       "Enter and Space select; constraints, disabled, and read-only prevent value changes.",
       "Month headings announce politely; day buttons use full localized date names and expose selection in the focused accessible name.",
+      "Unavailable days expose aria-disabled and use the disabled foreground color without a strike-through.",
       "Horizontal Arrow behavior follows the computed text direction in RTL.",
     ],
     api: [

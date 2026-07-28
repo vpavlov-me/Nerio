@@ -402,7 +402,7 @@ function validate() {
   for (const cycle of findCycles(graph)) failures.push(`Token alias cycle: ${cycle}`);
 
   for (const [token, expected] of [
-    ["--n-checkbox-radius", "var(--n-radius-xs)"],
+    ["--n-checkbox-radius", "min(var(--n-radius-xs), 0.25rem)"],
     ["--n-overlay-background", "rgb(0 0 0 / 0.88)"],
     ["--n-overlay-border-width", "var(--n-border-width-0)"],
     ["--n-overlay-foreground", "var(--n-gray-0)"],

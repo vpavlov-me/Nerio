@@ -626,7 +626,7 @@
   --n-form-group-message-color: var(--n-color-status-danger);
   --n-checkbox-size: var(--n-icon-size-md);
   --n-checkbox-border-width: var(--n-border-width-default);
-  --n-checkbox-radius: var(--n-radius-xs);
+  --n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);
   --n-radio-size: var(--n-icon-size-md);
   --n-radio-dot-size: var(--n-space-1-5);
   --n-radio-radius: var(--n-radius-pill);
@@ -699,7 +699,7 @@
   --n-calendar-day-font-size: var(--n-font-size-sm);
   --n-calendar-day-foreground: var(--n-overlay-foreground);
   --n-calendar-day-foreground-outside: var(--n-overlay-foreground-muted);
-  --n-calendar-day-foreground-unavailable: var(--n-overlay-foreground-muted);
+  --n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);
   --n-calendar-day-background-hover: var(--n-overlay-control-background-hover);
   --n-calendar-day-background-active: var(--n-overlay-selected-background);
   --n-calendar-day-background-selected: var(--n-color-action-primary);

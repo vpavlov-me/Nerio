@@ -519,7 +519,7 @@ function toStyle(
     "--n-calendar-radius": `${xl}px`,
     "--n-calendar-day-radius": `${lg}px`,
     "--n-card-radius": `${xl}px`,
-    "--n-checkbox-radius": `${xs}px`,
+    "--n-checkbox-radius": `${Math.min(xs, 4)}px`,
     "--n-command-radius": `${Math.min(xxl, 24)}px`,
     "--n-command-item-radius": `${md}px`,
     "--n-dropdown-radius": `${lg}px`,

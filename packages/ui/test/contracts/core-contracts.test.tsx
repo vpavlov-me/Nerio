@@ -657,6 +657,7 @@ describe("Core static contracts", () => {
     expect(componentSource("calendar")).toContain('className="p-0 text-center align-middle"');
     expect(componentSource("calendar")).toContain('locale = "en-US"');
     expect(componentSource("calendar")).not.toContain("underline");
+    expect(componentSource("calendar")).not.toContain("line-through");
     expect(componentSource("calendar")).toContain(
       "data-selected:[&:hover:not(:disabled):not([aria-disabled=true])]",
     );
@@ -672,7 +673,7 @@ describe("Core static contracts", () => {
     expect(componentSource("input-group")).not.toContain("!bg-transparent");
     expect(componentSource("input-group")).not.toContain("!shadow-none");
     expect(componentSource("input-group")).toContain(
-      '"min-w-0 rounded-none border-0 bg-transparent shadow-none disabled:opacity-100"',
+      "[&:hover:not(:focus):not(:disabled):not([data-readonly])]:bg-transparent",
     );
     expect(componentSource("file-input")).toContain("[grid-area:1/1]");
     expect(componentSource("file-input")).not.toContain("absolute inset-block-0");
@@ -688,6 +689,10 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);");
+    expect(tokens).toContain(
+      "--n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);",
+    );
     expect(tokens).toContain("--n-spinner-radius: var(--n-radius-pill);");
     expect(componentSource("spinner")).toContain("rounded-(--n-spinner-radius)");
     expect(componentSource("badge")).toContain(

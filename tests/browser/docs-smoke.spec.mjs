@@ -247,6 +247,50 @@ test("applies every Playground control to the component canvas", async ({ page }
   await expectHealthyPage(page, problems);
 });
 
+test("keeps Calendar, InputGroup, and Checkbox component states coherent", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/playground");
+
+  const checkbox = page.locator("#checkbox .n-checkbox").first();
+  await expect(checkbox).toBeVisible();
+  expect(
+    await checkbox.evaluate((element) => Number.parseFloat(getComputedStyle(element).borderRadius)),
+  ).toBeLessThanOrEqual(4);
+
+  const inputGroup = page.locator("#input-group .n-input-group").last();
+  const groupedInput = inputGroup.locator(".n-input");
+  const restingGroupBackground = await inputGroup.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  );
+  await groupedInput.hover();
+  const hoveredInputGroup = await inputGroup.evaluate((element) => {
+    const input = element.querySelector(".n-input");
+    return {
+      groupBackground: getComputedStyle(element).backgroundColor,
+      inputBackground: getComputedStyle(input).backgroundColor,
+    };
+  });
+  expect(hoveredInputGroup.groupBackground).not.toBe(restingGroupBackground);
+  expect(hoveredInputGroup.inputBackground).toBe("rgba(0, 0, 0, 0)");
+
+  const constrainedCalendar = page.getByRole("group", { name: "Constrained release date" });
+  const unavailableDate = constrainedCalendar.getByRole("button", { name: "June 4, 2026" });
+  await expect(unavailableDate).toHaveAttribute("aria-disabled", "true");
+  const unavailableVisual = await unavailableDate.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const probe = document.createElement("span");
+    probe.style.color = "var(--n-calendar-day-foreground-unavailable)";
+    element.parentElement?.append(probe);
+    const tokenColor = getComputedStyle(probe).color;
+    probe.remove();
+    return { color: style.color, decoration: style.textDecorationLine, tokenColor };
+  });
+  expect(unavailableVisual.color).toBe(unavailableVisual.tokenColor);
+  expect(unavailableVisual.decoration).toBe("none");
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps mobile navigation singular, searchable, and safe", async ({ page }) => {
   const problems = monitorPage(page);
   await page.setViewportSize({ width: 390, height: 844 });
