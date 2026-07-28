@@ -24,7 +24,18 @@ const fileInputSizeClasses: Record<FileInputSize, string> = {
 };
 
 export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(function FileInput(
-  { "aria-invalid": ariaInvalid, className, disabled, invalid, multiple, size = "md", ...props },
+  {
+    "aria-invalid": ariaInvalid,
+    className,
+    dir,
+    disabled,
+    hidden,
+    invalid,
+    multiple,
+    size = "md",
+    style,
+    ...props
+  },
   ref,
 ) {
   const isInvalid = invalid === true || ariaInvalid === true || ariaInvalid === "true";
@@ -41,6 +52,9 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(func
       className={cn("n-file-input__root relative inline-grid w-full min-w-0", className)}
       data-disabled={disabled ? "" : undefined}
       data-slot="file-input-root"
+      dir={dir}
+      hidden={hidden}
+      style={style}
     >
       <input
         ref={ref}

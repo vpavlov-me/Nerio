@@ -4806,11 +4806,14 @@ describe("Core interactive action contracts", () => {
           accept=".pdf,image/*"
           capture="environment"
           className="consumer-file-input-root"
+          dir="rtl"
           multiple
           required
           invalid
           onChange={onChange}
+          style={{ marginInlineStart: 2 }}
         />
+        <FileInput aria-label="Hidden upload" hidden />
       </form>,
     );
 
@@ -4829,10 +4832,16 @@ describe("Core interactive action contracts", () => {
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(input).toHaveAttribute("data-slot", "file-input");
     expect(input).not.toHaveClass("consumer-file-input-root");
-    expect(input.closest('[data-slot="file-input-root"]')).toHaveClass("consumer-file-input-root");
-    expect(input.closest('[data-slot="file-input-root"]')).toContainElement(
-      document.querySelector('[data-slot="file-input-icon"]'),
-    );
+    const root = input.closest('[data-slot="file-input-root"]');
+    expect(root).toHaveClass("consumer-file-input-root");
+    expect(root).toHaveAttribute("dir", "rtl");
+    expect(root).toHaveStyle({ marginInlineStart: "2px" });
+    expect(input).not.toHaveAttribute("dir");
+    expect(input).not.toHaveAttribute("style");
+    expect(root).toContainElement(document.querySelector('[data-slot="file-input-icon"]'));
+    const hiddenInput = document.querySelector('input[aria-label="Hidden upload"]');
+    expect(hiddenInput).not.toHaveAttribute("hidden");
+    expect(hiddenInput?.closest('[data-slot="file-input-root"]')).toHaveAttribute("hidden");
 
     await user.upload(input, files);
     expect(input.files).toHaveLength(2);
