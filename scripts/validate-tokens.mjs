@@ -348,6 +348,12 @@ function validate() {
       for (const rule of [
         exactRule(rules, `:root[data-theme="${theme}"]`),
         exactRule(rules, `:root[data-mode="${mode}"]`),
+        ...rules.filter(
+          (rule) =>
+            rule.atRules.length === 0 &&
+            rule.selectors.length > 1 &&
+            rule.selectors.includes(`:root[data-theme="${theme}"][data-mode="${mode}"]`),
+        ),
         exactRule(rules, `:root[data-theme="${theme}"][data-mode="${mode}"]`),
       ]) {
         for (const [token, value] of rule?.declarations ?? []) declarations.set(token, value);
