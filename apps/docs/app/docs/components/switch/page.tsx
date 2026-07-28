@@ -48,12 +48,12 @@ const implementationRows = [
 const tokenRows = [
   [
     "Sizing",
-    "--n-switch-height / --n-switch-width",
+    "--n-switch-height / --n-switch-width / --n-switch-radius",
     "Compact web track with iOS-like proportions.",
   ],
   [
     "Thumb",
-    "--n-switch-thumb-size / --n-switch-thumb-offset",
+    "--n-switch-thumb-size / --n-switch-thumb-offset / --n-switch-thumb-radius",
     "Fixed 2px inset and circular thumb motion.",
   ],
   ["Off track", "--n-switch-background / --n-switch-background-hover", "Neutral inactive state."],

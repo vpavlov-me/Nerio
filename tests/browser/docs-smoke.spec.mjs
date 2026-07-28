@@ -649,7 +649,8 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
       };
     });
   expect(commandVisual.background).toBe("rgba(0, 0, 0, 0.88)");
-  expect(commandVisual.inputRadius).toBeGreaterThan(100);
+  expect(commandVisual.inputRadius).toBeGreaterThan(0);
+  expect(commandVisual.inputRadius).toBeLessThanOrEqual(24);
   expect(commandVisual.surfaceFilter).toContain("blur(24px)");
 
   await page.goto("/docs/components/popover");
@@ -799,8 +800,8 @@ test("preserves segmented surfaces, control indicators, and the mobile showcase 
       checkboxOpacity: checkboxIndicatorStyle.opacity,
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       radioOpacity: radioIndicatorStyle.opacity,
-      switchOffset: switchThumbStyle.marginInlineStart,
-      switchOffsetToken: resolveToken("margin-inline-start", "--n-switch-thumb-offset"),
+      switchOffset: Number.parseFloat(switchThumbStyle.translate),
+      switchOffsetToken: Number.parseFloat(resolveToken("width", "--n-switch-thumb-offset")),
       tabsBackground: tabsListStyle.backgroundColor,
       tabsBackgroundToken: resolveToken("background-color", "--n-tabs-list-background"),
       tabsGap: tabsListStyle.gap,

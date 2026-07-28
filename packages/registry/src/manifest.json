@@ -526,9 +526,10 @@
         "--n-spinner-size-sm",
         "--n-spinner-size-md",
         "--n-spinner-size-lg",
+        "--n-spinner-radius",
         "--n-spinner-border-width",
         "--n-spinner-duration",
-        "--n-radius-full"
+        "--n-radius-pill"
       ],
       "accessibility": [
         "Provide a localized label when Spinner is the loading announcement; use decorative when a parent already exposes loading state.",
@@ -882,6 +883,7 @@
         "--n-avatar-size-sm",
         "--n-avatar-size-md",
         "--n-avatar-size-lg",
+        "--n-avatar-radius",
         "--n-avatar-border",
         "--n-avatar-background"
       ],
@@ -2156,7 +2158,9 @@
       "requiredTokens": [
         "--n-switch-height",
         "--n-switch-width",
+        "--n-switch-radius",
         "--n-switch-thumb-size",
+        "--n-switch-thumb-radius",
         "--n-switch-thumb-offset",
         "--n-switch-field-gap",
         "--n-switch-background",
