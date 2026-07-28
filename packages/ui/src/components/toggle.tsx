@@ -63,7 +63,7 @@ const toggleIconOnlySizeClasses: Record<ToggleSize, string> = {
   lg: "w-(--n-toggle-height-lg) p-(--n-space-0) [&_.n-icon]:size-(--n-toggle-icon-size-lg)",
 };
 
-export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(function Toggle(
+export const Toggle = React.forwardRef<HTMLElement, ToggleProps>(function Toggle(
   {
     "data-slot": dataSlot = "toggle",
     children,
@@ -83,7 +83,7 @@ export const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(function 
 
   return (
     <BaseToggle
-      ref={ref}
+      ref={ref as React.Ref<HTMLButtonElement>}
       {...props}
       className={(state) =>
         cn(

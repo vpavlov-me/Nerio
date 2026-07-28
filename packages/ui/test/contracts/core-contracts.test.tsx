@@ -696,6 +696,7 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);");
+    expect(tokens).toContain("--n-toggle-border-pressed: var(--n-color-action-primary);");
     expect(tokens).toContain(
       "--n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);",
     );
@@ -2833,7 +2834,8 @@ describe("Core interactive action contracts", () => {
     const onPressedChange = vi.fn();
     const onDisabledPressedChange = vi.fn();
     const onSubmit = vi.fn((event: React.FormEvent) => event.preventDefault());
-    const ref = React.createRef<HTMLButtonElement>();
+    const ref = React.createRef<HTMLElement>();
+    const customRootRef = React.createRef<HTMLElement>();
     render(
       <form onSubmit={onSubmit}>
         <Toggle
@@ -2849,6 +2851,13 @@ describe("Core interactive action contracts", () => {
         </Toggle>
         <Toggle defaultPressed render={<button data-render-target="toggle" />}>
           Retain layout
+        </Toggle>
+        <Toggle
+          ref={customRootRef}
+          nativeButton={false}
+          render={<div role="button" tabIndex={0} data-render-target="custom-toggle" />}
+        >
+          Custom root
         </Toggle>
       </form>,
     );
@@ -2883,6 +2892,7 @@ describe("Core interactive action contracts", () => {
     expect(rendered).toHaveAttribute("data-render-target", "toggle");
     expect(rendered).toHaveAttribute("aria-pressed", "true");
     expect(rendered).toHaveClass("n-toggle");
+    expect(customRootRef.current).toBe(screen.getByRole("button", { name: "Custom root" }));
   });
 
   it("keeps controlled and canceled Toggle state owned by the public contract", async () => {

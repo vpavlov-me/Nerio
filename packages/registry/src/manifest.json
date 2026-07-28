@@ -398,7 +398,7 @@
         "Disabled Toggle prevents state changes and preserves a visible pressed or unpressed state.",
         "Use Toggle for an independent retained button state, Button for momentary actions, Switch for immediate settings, and Checkbox for selection.",
         "ButtonGroup does not add grouped selection; use a future ToggleGroup for exclusive or multiple grouped values.",
-        "Pressed state remains distinguishable in forced-colors mode and does not depend on motion."
+        "Pressed state uses a persistent accent border in ordinary color modes, remains distinguishable in forced-colors mode, and does not depend on motion."
       ],
       "usage": "import { Bell } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@/components/nerio/components/toggle';\n\n<Toggle icon={Bell} aria-label=\"Follow updates\" defaultPressed />"
     },

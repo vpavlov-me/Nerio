@@ -434,9 +434,9 @@
   --n-toggle-background-pressed: var(--n-color-surface-selected);
   --n-toggle-background-pressed-hover: var(--n-color-surface-control-hover);
   --n-toggle-background-pressed-active: var(--n-color-surface-control-active);
-  --n-toggle-border-pressed: transparent;
-  --n-toggle-border-pressed-hover: transparent;
-  --n-toggle-border-pressed-active: transparent;
+  --n-toggle-border-pressed: var(--n-color-action-primary);
+  --n-toggle-border-pressed-hover: var(--n-color-action-primary);
+  --n-toggle-border-pressed-active: var(--n-color-action-primary);
   --n-toggle-foreground-pressed: var(--n-color-action-primary);
   --n-kbd-background: var(--n-color-surface-muted);
   --n-kbd-border-width: var(--n-border-width-0);

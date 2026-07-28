@@ -556,7 +556,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "actions",
       "status": "stable-core",
-      "description": "Client-only Base UI two-state button with one controlled or uncontrolled pressed state, stable accessible naming, icon-only or visible-label content, variants, sizes, and render composition."
+      "description": "Client-only Base UI two-state button with one controlled or uncontrolled pressed state, stable accessible naming, icon-only or visible-label content, variants, sizes, and prop/ref-safe render composition."
     },
     {
       "name": "IconButton",
