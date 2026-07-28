@@ -359,6 +359,12 @@ function validate() {
         ["--n-overlay-glass-foreground", "--n-overlay-glass-background", 4.5],
         ["--n-color-action-on-primary", "--n-color-action-primary", 4.5],
         ["--n-color-focus-ring", "--n-color-surface-canvas", 3],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-primary", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-info", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-success", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-warning", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-danger", 4.5],
       ]) {
         validateContrastPair({
           context,

@@ -18,11 +18,6 @@ import { DocumentationTable } from "../../../../components/documentation-table";
 
 const apiRows = [
   ["children", "ReactNode", "Related Buttons that share one compact context and visual variant."],
-  [
-    "orientation",
-    '"horizontal" | "vertical"',
-    "Horizontal is the default; vertical stacks direct Button children.",
-  ],
   ["aria-label", "string", "Names the group for assistive technology."],
   ["aria-labelledby", "string", "Uses an existing visible label as the group name."],
   ["role", "string", "Defaults to group; keep group semantics for related actions."],
@@ -30,11 +25,11 @@ const apiRows = [
 ] as const;
 
 const anatomyRows = [
-  ["button-group", "Native group wrapper that owns one attached horizontal or vertical layout."],
+  ["button-group", "Native group wrapper that owns one attached horizontal layout."],
   ["button", "Child Buttons retain their individual semantics, labels, and states."],
   ["button-badge", "An optional count or status remains inside its child Button."],
   ["first / last button", "Keep the group radius only on the outside corners."],
-  ["shared border", "Adjacent borders overlap so the controls read as one compact set."],
+  ["divider", "A short decorative separator distinguishes adjacent actions without a full border."],
 ] as const;
 
 const stateRows = [
@@ -152,13 +147,13 @@ export default function Page() {
         variants: (
           <Preview>
             <div className="preview-row">
-              <ButtonGroup aria-label="Horizontal document actions">
+              <ButtonGroup aria-label="Secondary document actions">
                 <Button variant="secondary">Cancel</Button>
                 <Button variant="secondary">Save</Button>
               </ButtonGroup>
-              <ButtonGroup aria-label="Vertical document actions" orientation="vertical">
-                <Button variant="secondary">Cancel</Button>
-                <Button variant="secondary">Save</Button>
+              <ButtonGroup aria-label="Primary document actions">
+                <Button variant="primary">Cancel</Button>
+                <Button variant="primary">Save</Button>
               </ButtonGroup>
               <div dir="rtl">
                 <ButtonGroup aria-label="RTL document actions">
@@ -190,7 +185,7 @@ export default function Page() {
                   Save
                 </Button>
               </ButtonGroup>
-              <ButtonGroup aria-label="Publishing actions" orientation="vertical">
+              <ButtonGroup aria-label="Publishing actions">
                 <Button loading variant="secondary">
                   Publish
                 </Button>

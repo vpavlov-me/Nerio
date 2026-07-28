@@ -31,7 +31,7 @@ const stateRows = [
     "Selected",
     "Uses accent fill and border, aria-selected on the gridcell, and a localized selected label on the focused day.",
   ],
-  ["Today", "Uses aria-current=date, weight, and underline without changing selection."],
+  ["Today", "Uses aria-current=date and weight without changing selection."],
   ["Outside month", "Remains available with muted text and moves the visible month when selected."],
   ["Unavailable", "Min, max, or isDateDisabled prevents selection and adds aria-disabled."],
   ["Read-only", "Keeps navigation and focus available while preventing value changes."],
@@ -45,7 +45,11 @@ const apiRows = [
   ["onMonthChange", "(month) => void", "Receives the visible month as YYYY-MM-01."],
   ["min / max", "CalendarDate", "Inclusive ISO date boundaries."],
   ["isDateDisabled", "(date) => boolean", "Consumer policy hook for unavailable dates."],
-  ["locale", "string | string[]", "Intl locale for month, weekday, and date labels."],
+  [
+    "locale",
+    "string | string[]",
+    "Intl locale for month, weekday, and date labels; defaults to en-US for deterministic SSR.",
+  ],
   ["firstDayOfWeek", "0–6", "Explicit Sunday-through-Saturday week start; defaults to Sunday."],
   ["today", "CalendarDate", "Current date; supply a stable value for deterministic SSR."],
   ["labels", "CalendarLabels", "Localized month-action names and selected-date context."],
@@ -63,7 +67,7 @@ const tokenRows = [
   ["Grid", "--n-calendar-grid-gap / cell-gap / cell-size", "Month spacing and density."],
   ["Type", "--n-calendar-heading-* / weekday-* / day-font-size", "Localized hierarchy."],
   ["Days", "--n-calendar-day-*", "Default, hover, outside, unavailable, and selected states."],
-  ["Today", "--n-calendar-today-*", "Non-color current-date distinction."],
+  ["Today", "--n-calendar-today-font-weight", "Non-color current-date distinction."],
   ["Motion", "--n-calendar-duration / easing", "Immediate tokenized feedback with reduced motion."],
 ] as const;
 

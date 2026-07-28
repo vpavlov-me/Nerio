@@ -77,7 +77,6 @@ import {
   Sidebar,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
   Slider,
   Switch,
   Tabs,
@@ -304,7 +303,7 @@ describe("Core accessibility contracts", () => {
           </Button>
           <Button icon={Bell} aria-label="More document actions" variant="secondary" />
         </ButtonGroup>
-        <ButtonGroup aria-label="Publishing actions" orientation="vertical">
+        <ButtonGroup aria-label="Publishing actions">
           <Button loading variant="secondary">
             Publish
           </Button>
@@ -626,16 +625,15 @@ describe("Core accessibility contracts", () => {
           <SidebarRail label="Collapse workspace sidebar" />
         </Sidebar>
         <SidebarInset>
-          <SidebarTrigger label="Toggle workspace sidebar" />
           <button type="button">Create project</button>
         </SidebarInset>
       </SidebarProvider>,
     );
 
     expect((await axe(container)).violations).toEqual([]);
-    const trigger = screen.getByRole("button", { name: "Toggle workspace sidebar" });
-    await user.click(trigger);
-    expect(trigger).toHaveFocus();
+    const rail = screen.getByRole("button", { name: "Collapse workspace sidebar" });
+    await user.click(rail);
+    expect(rail).toHaveFocus();
     expect(screen.getByRole("complementary", { name: "Workspace sidebar" })).toHaveAttribute(
       "data-state",
       "collapsed",

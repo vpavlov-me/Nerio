@@ -3,7 +3,7 @@
 import * as React from "react";
 import { LayoutDashboard, ListTree, Settings } from "@nerio-ui/adapters/icons";
 import { Icon, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
-import { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from "@nerio-ui/ui/client";
+import { Sidebar, SidebarProvider, SidebarRail } from "@nerio-ui/ui/client";
 
 const items = [
   ["Overview", LayoutDashboard],
@@ -47,7 +47,6 @@ export function SidebarExample() {
             <SidebarRail label="Toggle preview sidebar" />
           </Sidebar>
           <SidebarInset as="div">
-            <SidebarTrigger label="Toggle preview sidebar" />
             <div>
               <strong>Product content</strong>
               <p>Routes and navigation behavior stay in the consuming application.</p>

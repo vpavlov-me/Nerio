@@ -1,11 +1,7 @@
 export * from "./lib/cn";
 export { composeRefs } from "./lib/compose-refs";
 export { motionClasses, type MotionClassName } from "./lib/motion";
-export {
-  ButtonGroup,
-  type ButtonGroupOrientation,
-  type ButtonGroupProps,
-} from "./components/button-group";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export {
   Code,
   Heading,

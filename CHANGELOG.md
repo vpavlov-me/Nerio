@@ -55,6 +55,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Refined the Core component presentation contracts from Playground review: ButtonGroup is now
+  horizontal-only with short decorative dividers; FileInput uses a compact upload icon; Checkbox,
+  Slider, Calendar, DatePicker, Badge, FormGroup, Pagination, Sidebar, and Command states have
+  corrected visual treatment; Dropdown Menu items support leading and trailing icons plus hotkeys;
+  List supports dot, number, dash, and icon markers; Separator supports both orientations; and docs
+  avatar previews use a shared representative image set.
 - Gated Blocks, Templates, their full-screen Views, and the visual Playground behind
   `NERIO_SHOW_PREVIEW_SURFACES`. They remain available by default in local and preview deployments
   while public production hides their navigation, search entries, sitemap and `llms.txt` discovery,

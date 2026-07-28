@@ -13,6 +13,8 @@ export type ListItem = {
   render?: React.ReactElement<ListRenderProps>;
   leading?: React.ReactNode;
   trailing?: React.ReactNode;
+  /** Custom marker content used when the List marker is `icon`. */
+  marker?: React.ReactNode;
 };
 
 export type ListLinkProps = Omit<
@@ -31,7 +33,9 @@ export interface ListProps extends Omit<
   "children"
 > {
   items: ListItem[];
+  /** @deprecated Use `marker="decimal"`. */
   ordered?: boolean;
+  marker?: "none" | "disc" | "decimal" | "dash" | "icon";
 }
 
 const listSurfaceClasses =
@@ -41,23 +45,22 @@ const listInteractiveClasses =
   "transition-[background-color,border-color,box-shadow] duration-(--n-motion-hover-duration) ease-(--n-motion-hover-easing) hover:border-(--n-list-item-border-hover) hover:bg-(--n-list-item-background-hover) focus-visible:duration-(--n-motion-focus-duration) focus-visible:ease-(--n-motion-focus-easing) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) motion-reduce:duration-(--n-duration-instant) forced-colors:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:focus-visible:outline-[Highlight]";
 
 export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListProps>(function List(
-  { className, items, ordered = false, ...props },
+  { className, items, marker, ordered = false, ...props },
   ref,
 ) {
-  const Root = ordered ? "ol" : "ul";
+  const resolvedMarker = marker ?? (ordered ? "decimal" : "disc");
+  const Root = resolvedMarker === "decimal" ? "ol" : "ul";
   const composedRef = React.useMemo(() => composeRefs(ref), [ref]);
 
   return (
     <Root
       ref={composedRef}
       {...props}
-      className={cn(
-        "n-list m-0 grid list-none gap-(--n-list-gap) p-0 [counter-reset:n-list] [&:is(ol)>[data-slot=item]]:grid [&:is(ol)>[data-slot=item]]:grid-cols-[auto_minmax(0,1fr)] [&:is(ol)>[data-slot=item]]:items-start [&:is(ol)>[data-slot=item]]:gap-(--n-list-item-gap) [&:is(ol)>[data-slot=item]]:[counter-increment:n-list] [&:is(ol)>[data-slot=item]::before]:py-(--n-list-item-padding) [&:is(ol)>[data-slot=item]::before]:text-(length:--n-font-size-sm) [&:is(ol)>[data-slot=item]::before]:font-(--n-font-weight-medium) [&:is(ol)>[data-slot=item]::before]:text-(--n-color-text-tertiary) [&:is(ol)>[data-slot=item]::before]:content-[counter(n-list)'.']",
-        className,
-      )}
+      className={cn("n-list m-0 grid list-none gap-(--n-list-gap) p-0", className)}
+      data-marker={resolvedMarker}
       data-slot="root"
     >
-      {items.map((item) => {
+      {items.map((item, index) => {
         const {
           className: linkClassName,
           href: _linkHref,
@@ -109,45 +112,67 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
         );
 
         return (
-          <li className="n-list__item min-w-0" data-slot="item" key={item.id}>
-            {item.href ? (
-              item.render ? (
-                React.cloneElement(
-                  item.render,
-                  {
-                    ...linkProps,
-                    className: cn(
+          <li
+            className="n-list__item grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-(--n-list-marker-gap) data-[marker=none]:grid-cols-1"
+            data-marker={resolvedMarker}
+            data-slot="item"
+            key={item.id}
+          >
+            {resolvedMarker !== "none" ? (
+              <span
+                aria-hidden
+                className="n-list__marker inline-flex min-w-(--n-list-marker-width) items-center justify-center pt-(--n-list-item-padding) text-(length:--n-font-size-sm) font-(--n-font-weight-medium) text-(--n-color-text-tertiary)"
+                data-slot="marker"
+              >
+                {resolvedMarker === "decimal"
+                  ? `${index + 1}.`
+                  : resolvedMarker === "dash"
+                    ? "–"
+                    : resolvedMarker === "icon"
+                      ? item.marker
+                      : "•"}
+              </span>
+            ) : null}
+            <div className="min-w-0" data-slot="item-content">
+              {item.href ? (
+                item.render ? (
+                  React.cloneElement(
+                    item.render,
+                    {
+                      ...linkProps,
+                      className: cn(
+                        "n-list__link",
+                        listSurfaceClasses,
+                        listInteractiveClasses,
+                        item.render.props.className,
+                        linkClassName,
+                      ),
+                      "data-slot": "link",
+                      href: item.href,
+                    },
+                    body,
+                  )
+                ) : (
+                  <a
+                    {...linkProps}
+                    className={cn(
                       "n-list__link",
                       listSurfaceClasses,
                       listInteractiveClasses,
-                      item.render.props.className,
                       linkClassName,
-                    ),
-                    "data-slot": "link",
-                    href: item.href,
-                  },
-                  body,
+                    )}
+                    data-slot="link"
+                    href={item.href}
+                  >
+                    {body}
+                  </a>
                 )
               ) : (
-                <a
-                  {...linkProps}
-                  className={cn(
-                    "n-list__link",
-                    listSurfaceClasses,
-                    listInteractiveClasses,
-                    linkClassName,
-                  )}
-                  data-slot="link"
-                  href={item.href}
-                >
+                <div className={cn("n-list__body", listSurfaceClasses)} data-slot="body">
                   {body}
-                </a>
-              )
-            ) : (
-              <div className={cn("n-list__body", listSurfaceClasses)} data-slot="body">
-                {body}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </li>
         );
       })}

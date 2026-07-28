@@ -4124,27 +4124,26 @@ pre {
   overflow-x: auto;
 }
 
-.component-api-matrix table {
+.component-api-matrix > table {
   border-collapse: collapse;
   inline-size: 100%;
   min-inline-size: 42rem;
 }
 
-.component-api-matrix th,
-.component-api-matrix td {
+.component-api-matrix > table > :is(thead, tbody) > tr > :is(th, td) {
   border-block-end: var(--n-border-subtle);
   padding: var(--n-space-3);
   text-align: start;
   vertical-align: middle;
 }
 
-.component-api-matrix thead th {
+.component-api-matrix > table > thead > tr > th {
   color: var(--n-color-text-tertiary);
   font-size: var(--n-font-size-xs);
   font-weight: var(--n-font-weight-medium);
 }
 
-.component-api-matrix tbody th {
+.component-api-matrix > table > tbody > tr > th {
   color: var(--n-color-text-secondary);
   font-family: var(--n-font-mono);
   font-size: var(--n-font-size-xs);
@@ -4152,8 +4151,21 @@ pre {
   min-inline-size: 7rem;
 }
 
-.component-api-matrix td {
+.component-api-matrix > table > tbody > tr > td {
   min-inline-size: 8.5rem;
+}
+
+.component-api-matrix--calendar > table {
+  min-inline-size: calc(
+    7rem + var(--n-calendar-width) + var(--n-calendar-width) + var(--n-calendar-width) +
+      var(--n-space-3) + var(--n-space-3) + var(--n-space-3) + var(--n-space-3) + var(--n-space-3) +
+      var(--n-space-3)
+  );
+}
+
+.component-api-matrix--calendar > table > tbody > tr > td {
+  inline-size: var(--n-calendar-width);
+  min-inline-size: var(--n-calendar-width);
 }
 
 .component-lab-inline,
@@ -4173,6 +4185,10 @@ pre {
 }
 .component-lab-form-row > * {
   flex: 1 1 14rem;
+}
+
+.component-lab-form-row {
+  align-items: flex-start;
 }
 .component-lab-sheet-grid > * {
   flex: 0 0 auto;

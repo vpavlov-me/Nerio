@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Popover as BasePopover } from "@base-ui/react/popover";
-import { ChevronDown } from "@nerio-ui/adapters/icons";
+import { CalendarDays } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 import { Button, type ButtonSize } from "./button";
@@ -70,7 +70,7 @@ export interface DatePickerProps extends DatePickerTriggerProps {
 }
 
 const triggerClasses =
-  "n-date-picker-trigger w-full justify-between rounded-(--n-input-radius) border-(--n-input-border) bg-(--n-input-background) text-start text-(--n-input-foreground) [&:hover:not(:disabled):not([data-disabled]):not([data-readonly])]:border-(--n-input-border-hover) [&:hover:not(:disabled):not([data-disabled]):not([data-readonly])]:bg-(--n-input-background-hover) [&:active:not(:disabled):not([data-disabled]):not([data-readonly])]:bg-(--n-color-surface-control-active) aria-invalid:border-(--n-input-border-danger) data-placeholder:text-(--n-input-placeholder) data-readonly:cursor-default data-readonly:border-(--n-input-readonly-border) data-readonly:bg-(--n-input-readonly-background) data-popup-open:[&_[data-slot=button-icon]]:rotate-180";
+  "n-date-picker-trigger w-full justify-between rounded-(--n-input-radius) border-(--n-input-border) bg-(--n-input-background) text-start text-(--n-input-foreground) [&:hover:not(:disabled):not([data-disabled]):not([data-readonly])]:border-(--n-input-border-hover) [&:hover:not(:disabled):not([data-disabled]):not([data-readonly])]:bg-(--n-input-background-hover) [&:active:not(:disabled):not([data-disabled]):not([data-readonly])]:bg-(--n-color-surface-control-active) aria-invalid:border-(--n-input-border-danger) data-placeholder:text-(--n-input-placeholder) data-readonly:cursor-default data-readonly:border-(--n-input-readonly-border) data-readonly:bg-(--n-input-readonly-background)";
 
 function defaultFormatValue(value: CalendarDate, locale?: string | string[]) {
   return new Intl.DateTimeFormat(locale, {
@@ -191,7 +191,7 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
               data-slot="trigger"
               id={triggerId}
               size={size}
-              trailingIcon={ChevronDown}
+              trailingIcon={CalendarDays}
               type="button"
               variant="secondary"
             >

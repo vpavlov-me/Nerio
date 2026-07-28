@@ -714,7 +714,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Basic dropdown menu component with disabled and destructive item contracts."
+      "description": "Dropdown menu with disabled and destructive states plus optional leading icons, trailing icons, and hotkey metadata."
     },
     {
       "name": "Card",
@@ -762,7 +762,7 @@
       "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
-      "description": "Structured ordered or unordered list with stable IDs, protected native links, package-agnostic router rendering, nested content, and verified browser behavior."
+      "description": "Structured list with dot, number, dash, icon, or hidden markers, stable IDs, protected native links, package-agnostic router rendering, nested content, and verified browser behavior."
     },
     {
       "name": "Separator",
@@ -770,7 +770,7 @@
       "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
-      "description": "Layout divider component."
+      "description": "Semantic horizontal or vertical layout divider."
     },
     {
       "name": "Key Value",
@@ -858,7 +858,7 @@
       "package": "@nerio-ui/ui",
       "category": "navigation",
       "status": "stable-core",
-      "description": "Consumer-owned link, button, and static pagination with outline defaults, secondary current-state parity, boundaries, ellipsis, package-agnostic router rendering, wrapping, density, RTL, and accessible labels."
+      "description": "Consumer-owned link, button, and static pagination with secondary controls, current-state parity, boundaries, ellipsis, package-agnostic router rendering, wrapping, density, RTL, and accessible labels."
     },
     {
       "name": "Sidebar Primitive",
@@ -866,7 +866,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "navigation",
       "status": "stable-core",
-      "description": "Composable layout primitive with controlled or uncontrolled collapse state, physical left and right placement, a bounded centered rail, inert collapsed content, accessible toggles, stable native refs, tokenized widths, and server-safe static regions."
+      "description": "Composable layout primitive with controlled or uncontrolled collapse state, physical left and right placement, a bounded bottom-right rail, inert collapsed content, accessible toggles, stable native refs, tokenized widths, and server-safe static regions."
     },
     {
       "name": "Command Primitive",
@@ -874,7 +874,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "navigation",
       "status": "stable-core",
-      "description": "Accessible Base UI autocomplete primitive with label-only selected queries, separate value and keyword matching, sound flat or grouped leaf data, explicit item layout, semantic leading content, disabled navigation, and deliberate empty and loading announcements."
+      "description": "Accessible Base UI autocomplete primitive with a globally token-dependent radius capped at 24px, label-only selected queries, separate value and keyword matching, sound flat or grouped leaf data, explicit item layout, semantic leading content, disabled navigation, and deliberate empty and loading announcements."
     },
     {
       "name": "DataGrid",

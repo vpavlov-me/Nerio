@@ -479,6 +479,7 @@ async function verify() {
     const fileInputUsage = JSON.parse(fileInputUsageResult.content[0].text);
     assertRegistryParity("file-input", fileInputUsage, [
       "components/file-input.tsx",
+      "components/icon.tsx",
       "lib/cn.ts",
       "lib/motion.ts",
       "lib/tailwind-cn.ts",
@@ -488,8 +489,12 @@ async function verify() {
     ]);
     if (
       fileInputUsage.baseUiPrimitives.length !== 0 ||
+      !fileInputUsage.dependencies.includes("@nerio-ui/adapters") ||
+      !fileInputUsage.slots.includes("file-input-root") ||
       !fileInputUsage.slots.includes("file-input") ||
+      !fileInputUsage.slots.includes("file-input-icon") ||
       !fileInputUsage.variants.includes("multiple") ||
+      !fileInputUsage.requiredTokens.includes("--n-file-input-button-size") ||
       !fileInputUsage.requiredTokens.includes("--n-file-input-button-background") ||
       !fileInputUsage.accessibility.some((item) => item.includes("FileList")) ||
       !fileInputUsage.accessibility.some((item) => item.includes("rejects controlled value"))
@@ -746,13 +751,13 @@ async function verify() {
     });
     const buttonGroupUsage = JSON.parse(buttonGroupUsageResult.content[0].text);
     if (
-      !buttonGroupUsage.variants.includes("orientation: horizontal | vertical") ||
+      buttonGroupUsage.variants.includes("orientation: horizontal | vertical") ||
       !buttonGroupUsage.accessibility.some((item) => item.includes("independent Tab order")) ||
       !buttonGroupUsage.files.some((file) => file.target === "lib/tailwind-cn.ts") ||
       !buttonGroupUsage.files.some((file) => file.target === "styles/tailwind.css")
     ) {
       throw new Error(
-        "MCP ButtonGroup usage is missing stable orientation or accessibility metadata.",
+        "MCP ButtonGroup usage is missing the horizontal-only or accessibility metadata.",
       );
     }
 

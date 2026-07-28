@@ -55,7 +55,10 @@ export const FormGroup = React.forwardRef<HTMLFieldSetElement, FormGroupProps>(f
           {description}
         </p>
       ) : null}
-      <div className="n-form-group__content grid gap-(--n-field-gap)" data-slot="content">
+      <div
+        className="n-form-group__content grid items-start gap-(--n-field-gap)"
+        data-slot="content"
+      >
         {children}
       </div>
       {message ? (

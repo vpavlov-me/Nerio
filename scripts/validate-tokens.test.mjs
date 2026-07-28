@@ -143,6 +143,21 @@ test("token validator calculates load-bearing semantic contrast", () => {
   );
 });
 
+test("token validator protects strong Badge contrast across themes and modes", () => {
+  withTokenFixture(
+    (source) =>
+      source.replace(
+        "--n-badge-background-strong-primary: var(--n-purple-400);",
+        "--n-badge-background-strong-primary: var(--n-purple-500);",
+      ),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /purple\/dark contrast is 3\.54:1 for --n-badge-foreground-strong on --n-badge-background-strong-primary/,
+      ),
+  );
+});
+
 test("token validator reports unresolved aliases", () => {
   withTokenFixture(
     (source) => `${source}\n:root { --n-test-unresolved: var(--n-does-not-exist); }\n`,

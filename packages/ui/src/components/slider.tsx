@@ -75,7 +75,7 @@ export type SliderProps = BaseSliderRootProps &
   };
 
 const sliderClasses =
-  "n-slider group/slider grid w-full gap-(--n-slider-gap) text-(--n-color-text-primary) data-[orientation=vertical]:w-max data-disabled:cursor-not-allowed data-disabled:opacity-(--n-slider-disabled-opacity) data-readonly:cursor-default";
+  "n-slider group/slider grid w-full gap-(--n-slider-gap) text-(--n-color-text-primary) data-[orientation=vertical]:w-max data-disabled:cursor-not-allowed data-disabled:text-(--n-color-text-disabled) data-readonly:cursor-default";
 
 const sliderControlClasses =
   "n-slider__control relative flex h-(--n-slider-control-size) w-full touch-none select-none items-center data-[orientation=vertical]:h-(--n-slider-length) data-[orientation=vertical]:w-(--n-slider-control-size) data-[orientation=vertical]:justify-center data-readonly:touch-auto";

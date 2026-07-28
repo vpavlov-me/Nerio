@@ -233,7 +233,7 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
     <div
       ref={ref}
       className={cn(
-        "n-command w-[min(100%,var(--n-command-width))] overflow-hidden rounded-(--n-command-radius) border-(length:--n-command-border-width) border-(--n-command-border) bg-(--n-command-background) text-(--n-command-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)] [--n-input-foreground:var(--n-input-foreground-on-overlay)] [--n-input-placeholder:var(--n-input-placeholder-on-overlay)] has-[[data-slot=command-input]:focus-visible]:shadow-(--n-focus-ring) data-disabled:opacity-(--n-opacity-disabled) forced-colors:border-[CanvasText]",
+        "n-command w-[min(100%,var(--n-command-width))] overflow-hidden rounded-(--n-command-radius) border-(length:--n-command-border-width) border-(--n-command-border) bg-(--n-command-background) text-(--n-command-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)] [--n-command-radius:min(var(--n-radius-overlay),1.5rem)] [--n-input-foreground:var(--n-input-foreground-on-overlay)] [--n-input-placeholder:var(--n-input-placeholder-on-overlay)] has-[[data-slot=command-input]:focus-visible]:shadow-(--n-focus-ring) data-disabled:opacity-(--n-opacity-disabled) forced-colors:border-[CanvasText]",
         className,
       )}
       {...props}

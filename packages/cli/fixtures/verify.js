@@ -181,6 +181,7 @@ const expectedDatePickerFiles = [
 ];
 const expectedFileInputFiles = [
   "components/file-input.tsx",
+  "components/icon.tsx",
   "lib/cn.ts",
   "lib/motion.ts",
   "lib/tailwind-cn.ts",
@@ -977,13 +978,13 @@ async function verify() {
     }
     const buttonGroupInfoOutput = await run(localTarget, "info", "button-group");
     if (
-      !buttonGroupInfoOutput.includes("orientation: horizontal | vertical") ||
+      buttonGroupInfoOutput.includes("orientation: horizontal | vertical") ||
       !buttonGroupInfoOutput.includes("independent Tab order") ||
       !buttonGroupInfoOutput.includes("lib/tailwind-cn.ts") ||
       !buttonGroupInfoOutput.includes("styles/tailwind.css")
     ) {
       throw new Error(
-        "ButtonGroup registry metadata did not include the stable orientation contract.",
+        "ButtonGroup registry metadata did not include the horizontal-only contract.",
       );
     }
     await run(localTarget, "add", "button");
@@ -1120,7 +1121,9 @@ async function verify() {
       !sidebarLayoutSource.includes("React.forwardRef<HTMLDivElement, SidebarContentProps>") ||
       !sidebarLayoutSource.includes("React.useMemo(() => composeRefs(ref), [ref])") ||
       !sidebarSource.includes("size-(--n-sidebar-rail-hit-area)") ||
-      !sidebarSource.includes("top-1/2") ||
+      !sidebarSource.includes("right-(--n-sidebar-rail-inset)") ||
+      !sidebarSource.includes("bottom-(--n-sidebar-rail-inset)") ||
+      sidebarSource.includes("top-1/2") ||
       !sidebarSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
@@ -1275,7 +1278,10 @@ async function verify() {
     );
     if (
       !fileInputSource.includes('type="file"') ||
+      !fileInputSource.includes('data-slot="file-input-root"') ||
       !fileInputSource.includes('data-slot="file-input"') ||
+      !fileInputSource.includes('data-slot="file-input-icon"') ||
+      !fileInputSource.includes("icon={Upload}") ||
       !fileInputSource.includes(
         '"children" | "defaultValue" | "readOnly" | "size" | "type" | "value"',
       ) ||
@@ -1350,7 +1356,10 @@ async function verify() {
       );
     }
     if (
-      !listSource.includes('const Root = ordered ? "ol" : "ul"') ||
+      !listSource.includes('const resolvedMarker = marker ?? (ordered ? "decimal" : "disc")') ||
+      !listSource.includes('const Root = resolvedMarker === "decimal" ? "ol" : "ul"') ||
+      !listSource.includes('data-slot="marker"') ||
+      !listSource.includes('data-slot="item-content"') ||
       !listSource.includes('"n-list__link"') ||
       !listSource.includes("listSurfaceClasses") ||
       !listSource.includes('data-slot="link"') ||

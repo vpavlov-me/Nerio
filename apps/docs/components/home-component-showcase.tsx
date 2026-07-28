@@ -47,14 +47,13 @@ import {
   UserPlus,
   X,
 } from "@nerio-ui/adapters/icons";
-
-const avatars = ["Ava Cole", "Noah Lee", "Maya Chen", "Owen Hart", "Iris Park"];
+import { avatarPreviewAssets } from "../lib/avatar-preview-assets";
 
 function AvatarStack() {
   return (
     <div className="home-avatar-stack" aria-label="Project collaborators">
-      {avatars.map((name) => (
-        <Avatar key={name} name={name} size="lg" />
+      {avatarPreviewAssets.slice(0, 5).map(({ name, src }) => (
+        <Avatar key={name} name={name} size="lg" src={src} />
       ))}
       <Avatar fallback="+5" name="5 more collaborators" size="lg" />
     </div>

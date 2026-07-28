@@ -61,7 +61,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Component   | Status                   | Package               | Notes                                                                                                                                       |
 | ----------- | ------------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | Button      | stable-core              | `@nerio-ui/ui/client` | Variants, including link, sizes, loading, icon-only mode, directional icon slots, Kbd, tooltip, and prop/ref-safe custom render composition |
-| ButtonGroup | stable-core              | `@nerio-ui/ui`        | Server-safe attached group for related Buttons; supports horizontal and vertical layouts                                                    |
+| ButtonGroup | stable-core              | `@nerio-ui/ui`        | Server-safe horizontal attached group for related Buttons with short decorative dividers                                                    |
 | IconButton  | deprecated-compatibility | `@nerio-ui/ui/client` | Deprecated wrapper for Button icon-only mode; retained until the next major release                                                         |
 
 ### Forms
@@ -109,7 +109,7 @@ consumer or Pro responsibility.
 | Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral close composition, safe-area layout, four sides, sizes, and shared overlay motion |
 | Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                         |
 | Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                       |
-| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Basic menu with disabled and destructive items                                                                            |
+| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states plus optional leading icons, trailing icons, and hotkeys                        |
 
 ### Data display
 
@@ -119,9 +119,9 @@ consumer or Pro responsibility.
 | Badge     | stable-core | `@nerio-ui/ui` | Status and metadata                                                                                                                                       |
 | Avatar    | stable-core | `@nerio-ui/ui` | User/entity avatar with verified image transitions, aspect-ratio cropping, accessible naming, and fallback behavior                                       |
 | Table     | stable-core | `@nerio-ui/ui` | Native table anatomy with runtime-safe named keyboard-scroll opt-in, tbody-only row states, responsive and RTL overflow, and consumer-owned data behavior |
-| List      | stable-core | `@nerio-ui/ui` | Structured list with stable IDs, visible ordered markers, native links, and package-agnostic router rendering                                             |
+| List      | stable-core | `@nerio-ui/ui` | Structured list with dot, number, dash, icon, or hidden markers, stable IDs, native links, and package-agnostic router rendering                          |
 | Item      | stable-core | `@nerio-ui/ui` | Generic composition primitive with composed render/forwarded refs, responsive content/media/actions, and consumer-owned interaction                       |
-| Separator | stable-core | `@nerio-ui/ui` | Layout divider                                                                                                                                            |
+| Separator | stable-core | `@nerio-ui/ui` | Semantic horizontal or vertical layout divider                                                                                                            |
 | KeyValue  | stable-core | `@nerio-ui/ui` | Simple definition-list value display                                                                                                                      |
 | Stat      | stable-core | `@nerio-ui/ui` | Basic metric display. Advanced KPI cards belong to Pro.                                                                                                   |
 
@@ -138,13 +138,13 @@ consumer or Pro responsibility.
 
 ### Navigation and layout
 
-| Component         | Status      | Package               | Notes                                                                                                                                                         |
-| ----------------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Tabs              | stable-core | `@nerio-ui/ui/client` | Compound tabs with verified controlled state, disabled skipping, variants, overflow, RTL indicator, focus, hydration, and motion                              |
-| Breadcrumbs       | stable-core | `@nerio-ui/ui`        | Hierarchy navigation with ordered list semantics and explicit current-page support                                                                            |
-| Pagination        | stable-core | `@nerio-ui/ui`        | Link, button, and static pagination with outline defaults, secondary current-state parity, boundaries, ellipsis, router rendering, density, wrapping, and RTL |
-| Sidebar Primitive | stable-core | `@nerio-ui/ui/client` | Stateful layout primitive with a bounded rail, stable native refs, server-safe regions, accessible collapse, physical sides, and consumer-owned data          |
-| Command Primitive | stable-core | `@nerio-ui/ui/client` | Label-only selected queries, separate keyword matching, sound groups, explicit row layout, semantic leading content, and accessible states                    |
+| Component         | Status      | Package               | Notes                                                                                                                                                                                      |
+| ----------------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Tabs              | stable-core | `@nerio-ui/ui/client` | Compound tabs with verified controlled state, disabled skipping, variants, overflow, RTL indicator, focus, hydration, and motion                                                           |
+| Breadcrumbs       | stable-core | `@nerio-ui/ui`        | Hierarchy navigation with ordered list semantics and explicit current-page support                                                                                                         |
+| Pagination        | stable-core | `@nerio-ui/ui`        | Link, button, and static pagination with secondary controls, current-state parity, boundaries, ellipsis, router rendering, density, wrapping, and RTL                                      |
+| Sidebar Primitive | stable-core | `@nerio-ui/ui/client` | Stateful layout primitive with a bounded bottom-right rail, stable native refs, server-safe regions, accessible collapse, physical sides, and consumer-owned data                          |
+| Command Primitive | stable-core | `@nerio-ui/ui/client` | Globally token-dependent radius capped at 24px, label-only selected queries, separate keyword matching, sound groups, explicit row layout, semantic leading content, and accessible states |
 
 ---
 
