@@ -286,7 +286,7 @@ export function HomeComponentShowcase() {
               <h3 id="group-chat-title">Start a group chat</h3>
               <p>Bring project collaborators into one conversation.</p>
             </div>
-            <Button leadingIcon={MessageCircle} size="sm">
+            <Button leadingIcon={MessageCircle} size="sm" variant="outline">
               Start chat
             </Button>
           </section>

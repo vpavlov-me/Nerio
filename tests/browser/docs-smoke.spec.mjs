@@ -152,7 +152,10 @@ test("keeps the homepage concise while local tooling remains accessible", async 
   });
   expect(overlayColors.menuBackground).toBe(overlayColors.tokenBackground);
   await expect(page.getByRole("heading", { name: "Start a group chat" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Start chat" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start chat" })).toHaveAttribute(
+    "data-variant",
+    "outline",
+  );
   await expect(page.getByLabel("Chat participants")).toBeVisible();
   await expect(page.locator('img[src="/brand/google-g.svg"]')).toBeAttached();
   await expect(page.locator('img[src="/brand/apple-logo.svg"]')).toBeAttached();
