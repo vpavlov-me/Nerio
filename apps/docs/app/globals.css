@@ -1965,7 +1965,7 @@ pre {
   gap: var(--n-space-1);
 }
 
-.home-gallery__team-header p {
+.home-gallery__team-header h3 + p {
   color: var(--n-color-text-secondary);
   font-size: var(--n-font-size-sm);
   margin: 0;

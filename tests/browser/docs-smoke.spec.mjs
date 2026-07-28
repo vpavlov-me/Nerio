@@ -137,6 +137,15 @@ test("keeps the homepage concise while local tooling remains accessible", async 
   await expect(actionMenu).toBeVisible();
   await expect(page.getByRole("heading", { name: "Team members" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Actions for Maya Chen" })).toBeVisible();
+  const teamHeaderSpacing = await page.locator(".home-gallery__team-header").evaluate((element) => {
+    const title = element.querySelector("h3");
+    const description = element.querySelector("p");
+    return {
+      gap: description.getBoundingClientRect().top - title.getBoundingClientRect().bottom,
+      marginTop: getComputedStyle(description).marginTop,
+    };
+  });
+  expect(teamHeaderSpacing).toEqual({ gap: 4, marginTop: "0px" });
   await expect(page.getByRole("menuitem", { name: "View profile" })).toBeVisible();
   await expect(page.getByText("Member", { exact: true })).toBeVisible();
   await expect(page.getByText("Access", { exact: true })).toBeVisible();
