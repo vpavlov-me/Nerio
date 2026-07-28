@@ -1938,50 +1938,27 @@ pre {
 }
 
 .home-gallery__menu {
+  align-content: start;
+  background: transparent !important;
+  border: 0 !important;
   display: grid;
-  gap: 0;
-  grid-area: menu;
-  padding: var(--n-space-2);
-}
-
-.home-gallery__menu > p {
-  color: var(--n-color-text-tertiary);
-  font-size: var(--n-font-size-sm);
-  margin: 0;
-  padding: var(--n-space-1) var(--n-space-2);
-}
-
-.home-gallery__menu .n-button {
-  block-size: auto;
   gap: var(--n-space-2);
-  justify-content: start;
-  padding: var(--n-space-1-5) var(--n-space-2);
-  white-space: normal;
+  grid-area: menu;
+  min-block-size: 14rem;
+  padding: 0 !important;
 }
 
-.home-gallery__menu .n-button [data-slot="button-label"] {
+.home-gallery__menu-trigger {
+  inline-size: 100%;
+}
+
+.home-gallery__menu-trigger [data-slot="button-label"] {
   flex: 1;
-  min-inline-size: 0;
-}
-
-.home-gallery__menu .n-button [data-slot="button-kbd"] {
-  flex: none;
-  margin-inline-start: auto;
-}
-
-.home-gallery__menu-label {
-  display: grid;
-  gap: 0;
   text-align: start;
 }
 
-.home-gallery__menu-label strong {
-  color: var(--n-color-text-primary);
-  font: inherit;
-}
-
-.home-gallery__menu .n-separator {
-  margin-block: var(--n-space-1);
+.home-gallery__action-dropdown {
+  inline-size: var(--anchor-width);
 }
 
 .home-gallery__profile {

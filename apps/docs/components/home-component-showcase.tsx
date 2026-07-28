@@ -28,6 +28,7 @@ import {
 import {
   Button,
   Checkbox,
+  DropdownMenu,
   Kbd,
   Switch,
   Tabs,
@@ -36,8 +37,11 @@ import {
   TabsList,
   TabsPanels,
   TabsTrigger,
+  Toggle,
 } from "@nerio-ui/ui/client";
 import {
+  Bell,
+  ChevronDown,
   CircleAlert,
   Mail,
   MessageCircle,
@@ -87,6 +91,7 @@ export function HomeComponentShowcase() {
             <div className="home-gallery__control-row" aria-label="Control states">
               <Checkbox aria-label="Selected" defaultChecked />
               <Switch aria-label="Enabled" defaultChecked />
+              <Toggle icon={Bell} aria-label="Follow updates" defaultPressed />
               <RadioGroup
                 className="home-gallery__radio"
                 defaultValue="selected"
@@ -219,24 +224,30 @@ export function HomeComponentShowcase() {
             </div>
           </section>
 
-          <section className="home-gallery__menu" aria-label="Action menu">
-            <p>Actions</p>
-            <Button kbd={<Kbd>⌘N</Kbd>} leadingIcon={Plus} variant="ghost">
-              <span className="home-gallery__menu-label">
-                <strong>New component</strong>
-              </span>
-            </Button>
-            <Button kbd={<Kbd>⌘,</Kbd>} leadingIcon={Settings} variant="ghost">
-              <span className="home-gallery__menu-label">
-                <strong>Edit theme</strong>
-              </span>
-            </Button>
-            <Separator />
-            <Button kbd={<Kbd>⌘⌫</Kbd>} leadingIcon={X} variant="ghost">
-              <span className="home-gallery__menu-label">
-                <strong>Archive project</strong>
-              </span>
-            </Button>
+          <section className="home-gallery__menu" aria-label="Action menu example">
+            <DropdownMenu
+              className="home-gallery__action-dropdown"
+              defaultOpen
+              trigger={
+                <Button
+                  className="home-gallery__menu-trigger"
+                  trailingIcon={ChevronDown}
+                  variant="secondary"
+                >
+                  Actions
+                </Button>
+              }
+              items={[
+                { label: "New component", leadingIcon: Plus, hotkey: <Kbd>⌘N</Kbd> },
+                { label: "Edit theme", leadingIcon: Settings, hotkey: <Kbd>⌘,</Kbd> },
+                {
+                  label: "Archive project",
+                  leadingIcon: X,
+                  hotkey: <Kbd>⌘⌫</Kbd>,
+                  destructive: true,
+                },
+              ]}
+            />
           </section>
         </div>
 
@@ -310,7 +321,7 @@ export function HomeComponentShowcase() {
               <strong>Accessible building blocks for adaptable product teams.</strong>
               <div className="home-gallery__profile-stats">
                 <span>
-                  <b>37</b> Components
+                  <b>38</b> Components
                 </span>
                 <span>
                   <b>587</b> Tokens

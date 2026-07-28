@@ -128,6 +128,24 @@ test("keeps the homepage concise while local tooling remains accessible", async 
     "href",
     "/templates",
   );
+  const homepageToggle = page.getByRole("button", { name: "Follow updates" });
+  await expect(homepageToggle).toHaveClass(/n-toggle/);
+  await expect(homepageToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText("38 Components", { exact: true })).toBeVisible();
+
+  const actionMenu = page.locator(".home-gallery__action-dropdown");
+  await expect(actionMenu).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "New component" })).toBeVisible();
+  const overlayColors = await actionMenu.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const probe = document.createElement("div");
+    probe.style.background = "var(--n-overlay-background)";
+    document.body.append(probe);
+    const tokenBackground = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return { menuBackground: style.backgroundColor, tokenBackground };
+  });
+  expect(overlayColors.menuBackground).toBe(overlayColors.tokenBackground);
   await expect(page.locator('img[src="/brand/google-g.svg"]')).toBeAttached();
   await expect(page.locator('img[src="/brand/apple-logo.svg"]')).toBeAttached();
 
