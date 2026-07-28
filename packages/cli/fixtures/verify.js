@@ -1121,8 +1121,12 @@ async function verify() {
       !sidebarLayoutSource.includes("React.forwardRef<HTMLDivElement, SidebarContentProps>") ||
       !sidebarLayoutSource.includes("React.useMemo(() => composeRefs(ref), [ref])") ||
       !sidebarSource.includes("size-(--n-sidebar-rail-hit-area)") ||
-      !sidebarSource.includes("right-(--n-sidebar-rail-inset)") ||
-      !sidebarSource.includes("bottom-(--n-sidebar-rail-inset)") ||
+      !sidebarSource.includes(
+        "right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))]",
+      ) ||
+      !sidebarSource.includes(
+        "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
+      ) ||
       sidebarSource.includes("top-1/2") ||
       !sidebarSource.includes('from "../lib/tailwind-cn"')
     ) {
