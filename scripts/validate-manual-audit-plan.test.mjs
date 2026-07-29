@@ -481,9 +481,9 @@ test("manual audit validator rejects negated accessibility preferences", () => {
     (source) => {
       const plan = JSON.parse(completedPlan(source));
       plan.completion.environments.find(({ id }) => id === "reduced-motion").notes =
-        "Reduce Motion was not enabled, but active checks completed successfully.";
+        "Reduce Motion was not currently enabled, but active checks completed successfully.";
       plan.completion.environments.find(({ id }) => id === "high-contrast").notes =
-        "Windows High Contrast was not active, but all required checks completed.";
+        "Windows High Contrast was not currently active, but all required checks completed.";
       return JSON.stringify(plan, null, 2);
     },
     completedReport,
@@ -492,6 +492,23 @@ test("manual audit validator rejects negated accessibility preferences", () => {
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, /reduced-motion notes must match the required environment/);
       assert.match(result.stderr, /high-contrast notes must match the required environment/);
+    },
+  );
+});
+
+test("manual audit validator rejects negated zoom evidence", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "zoom-reflow").zoom =
+        "200% and 400% were not tested";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /zoom-reflow zoom must match the required environment/);
     },
   );
 });
@@ -785,6 +802,24 @@ test("manual audit validator only accepts completion status in the report header
   );
 });
 
+test("manual audit validator only accepts candidate metadata in the report header", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source)
+        .replace(`- Candidate commit: **${currentCommit}**`, "Candidate commit: **Pending**")
+        .replace(
+          "## Final decision",
+          `## Completion note\n\n- Candidate commit: **${currentCommit}**\n\n## Final decision`,
+        ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must record a 40-character candidate commit/);
+    },
+  );
+});
+
 test("manual audit validator rejects multiple decisions in the final section", () => {
   withPlanAndReportFixtures(
     completedPlan,
@@ -945,6 +980,18 @@ test("manual audit validator validates closed finding traceability", () => {
       assert.match(result.stderr, /must identify a required environment/);
       assert.match(result.stderr, /must link a focused Nerio GitHub issue/);
       assert.match(result.stderr, /must include a substantive retest record/);
+    },
+  );
+});
+
+test("manual audit validator keeps current failed findings open", () => {
+  withPlanAndReportFixtures(
+    trackedFailurePlan,
+    (source) => trackedFailureReport(source).replace("| Open |", "| Closed |"),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /tied to a failed or blocked completion result must remain Open/);
     },
   );
 });

@@ -720,14 +720,14 @@ if (plan?.status === "complete") {
     errors.push("Completed audit report must declare Status: **Complete**.");
   }
   const reportCommitMatches = [
-    ...report.matchAll(/^- Candidate commit: \*\*([0-9a-f]{40})\*\*$/gm),
+    ...reportHeader.matchAll(/^- Candidate commit: \*\*([0-9a-f]{40})\*\*$/gm),
   ];
   const reportCommit = reportCommitMatches.length === 1 ? reportCommitMatches[0][1] : undefined;
   if (!reportCommit) {
     errors.push("Completed audit report must record a 40-character candidate commit.");
   }
   const finalDecisionMatches = [
-    ...report.matchAll(
+    ...reportHeader.matchAll(
       /^- Final decision: \*\*(Pass for real consumer pilots|Blocked before pilots)\*\*$/gm,
     ),
   ];
@@ -956,11 +956,15 @@ if (plan?.status === "complete") {
     }
     if (
       ["reduced-motion", "high-contrast"].includes(environment?.id) &&
-      /\b(?:not|never)\s+(?:enabled|active|on)\b|\b(?:disabled|off)\b/i.test(
-        environment?.notes ?? "",
-      )
+      /\b(?:not|never|disabled|off)\b/i.test(environment?.notes ?? "")
     ) {
       errors.push(`${label} notes must match the required environment.`);
+    }
+    if (
+      environment?.id === "zoom-reflow" &&
+      /\b(?:not|never|untested|skipped)\b/i.test(environment?.zoom ?? "")
+    ) {
+      errors.push(`${label} zoom must match the required environment.`);
     }
     if (environment?.packageMode !== candidate?.packageMode) {
       errors.push(`${label} packageMode must match the locked candidate packageMode.`);
@@ -1110,8 +1114,6 @@ if (plan?.status === "complete") {
         `Finding "${findingTitle}" resolution must use exactly Open, Resolved, or Closed.`,
       );
     }
-    if (["resolved", "closed"].includes(normalizedResolution)) continue;
-
     const matchingResult = completedResults.find(
       (result) =>
         result.issue === findingIssue &&
@@ -1119,6 +1121,14 @@ if (plan?.status === "complete") {
         result.environmentId === normalizedEnvironment &&
         ["Fail", "Blocked"].includes(result.result),
     );
+    if (["resolved", "closed"].includes(normalizedResolution)) {
+      if (matchingResult) {
+        errors.push(
+          `Finding "${findingTitle}" tied to a failed or blocked completion result must remain Open.`,
+        );
+      }
+      continue;
+    }
     if (!matchingResult) {
       errors.push(
         `Open finding "${findingTitle}" must match a failed or blocked completion result.`,
