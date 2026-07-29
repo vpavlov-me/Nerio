@@ -289,6 +289,24 @@ export default function ItemPage() {
                 <ItemSeparator />
                 <ItemAvatarExample />
               </ItemGroup>
+              <ItemGroup
+                aria-label="Workspace resources"
+                className="m-0 list-none p-0"
+                render={<ul />}
+              >
+                <Item render={<li />}>
+                  <ItemContent>
+                    <ItemTitle>Design system</ItemTitle>
+                    <ItemDescription>Shared components and usage guidance.</ItemDescription>
+                  </ItemContent>
+                </Item>
+                <Item render={<li />}>
+                  <ItemContent>
+                    <ItemTitle>Release checklist</ItemTitle>
+                    <ItemDescription>Verification steps for the next candidate.</ItemDescription>
+                  </ItemContent>
+                </Item>
+              </ItemGroup>
             </div>
           </section>
         ),

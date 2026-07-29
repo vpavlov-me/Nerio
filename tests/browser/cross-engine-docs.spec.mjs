@@ -306,6 +306,35 @@ test("preserves native FileInput selection, FileList, form reset, and reflow", a
   expect(problems).toEqual([]);
 });
 
+test("exposes the semantic Table, Item list, and disabled Pagination audit fixtures", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+
+  await page.goto("/docs/components/table");
+  const primaryTableExample = page.getByRole("region", { name: "Primary Table composition" });
+  const tableRegion = primaryTableExample.getByRole("region", {
+    name: "Team members, roles, statuses, and emails",
+  });
+  await expect(tableRegion).toHaveAttribute("tabindex", "0");
+  await expect(
+    primaryTableExample.getByText("Team members, roles, statuses, and email addresses", {
+      exact: true,
+    }),
+  ).toBeVisible();
+
+  await page.goto("/docs/components/item");
+  const itemList = page.getByRole("list", { name: "Workspace resources" });
+  await expect(itemList.getByRole("listitem")).toHaveCount(2);
+
+  await page.goto("/docs/components/pagination");
+  await expect(
+    page.getByRole("navigation", { name: "RTL pagination" }).getByLabel("Go to previous page"),
+  ).toHaveAttribute("aria-disabled", "true");
+  expect(problems).toEqual([]);
+});
+
 test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only behavior portable", async ({
   browserName,
   page,

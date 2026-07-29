@@ -406,11 +406,11 @@
       ]
     },
     {
-      "id": "breadcrumbs-pagination-current",
-      "title": "Breadcrumbs and Pagination current-page semantics",
-      "route": "/visual-test",
+      "id": "breadcrumbs-current",
+      "title": "Breadcrumbs structure and current-page semantics",
+      "route": "/docs/components/breadcrumbs",
       "surfaces": ["navigation-overlays"],
-      "components": ["breadcrumbs", "pagination"],
+      "components": ["breadcrumbs"],
       "environments": [
         "macos-safari-voiceover",
         "macos-chromium-keyboard",
@@ -420,14 +420,39 @@
         "zoom-reflow"
       ],
       "steps": [
-        "Navigate Breadcrumbs and Pagination with keyboard, touch, and screen-reader navigation.",
-        "Inspect names, landmarks, current-page semantics, disabled controls, and ellipsis.",
+        "Navigate Breadcrumbs with keyboard, touch, and screen-reader navigation.",
+        "Inspect the navigation name, link sequence, separators, and current-page semantics.",
         "Repeat with narrow width and increased zoom."
       ],
       "expected": [
-        "Only one breadcrumb or pagination item is current within each navigation model.",
-        "Disabled and unavailable navigation controls remain understandable.",
+        "Only the terminal breadcrumb is exposed as the current page.",
+        "Separators remain decorative and do not interrupt the link sequence.",
         "Navigation remains usable when wrapped or reflowed."
+      ]
+    },
+    {
+      "id": "pagination-current-disabled",
+      "title": "Pagination current page, disabled controls, ellipsis, and RTL",
+      "route": "/docs/components/pagination",
+      "surfaces": ["navigation-overlays"],
+      "components": ["pagination"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Navigate the default and RTL Pagination examples with keyboard, touch, and screen-reader navigation.",
+        "Inspect navigation names, current-page semantics, disabled previous and next controls, and ellipsis.",
+        "Repeat with narrow width and increased zoom."
+      ],
+      "expected": [
+        "Only one item is current within each Pagination example.",
+        "Disabled and unavailable navigation controls remain understandable.",
+        "Navigation remains usable when wrapped, reflowed, or rendered RTL."
       ]
     },
     {

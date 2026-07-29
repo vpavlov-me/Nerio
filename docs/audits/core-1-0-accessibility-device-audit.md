@@ -60,6 +60,20 @@ For every environment and scenario:
    contrast behavior. Do not treat an image alone as screen-reader evidence.
 7. Never replace missing human evidence with an automated test result.
 
+Before changing the plan status to `complete`, add a machine-readable `completion` record to
+`quality/manual-audit-plan.json`. It must contain:
+
+- `candidate`: the exact commit plus HTTPS links for GitHub verification, CI, and Vercel, along
+  with the audit owner and start timestamp;
+- `environments`: one record for every required environment with the operating system, browser,
+  assistive technology, device, viewport, zoom, and package mode actually used;
+- `results`: one unique record for every scenario/environment pair required by the plan, with an
+  allowed result, substantive notes, and at least one HTTPS evidence link.
+
+The completion validator rejects missing pairs, duplicate or unexpected records, placeholder
+values, non-evidence URLs, candidate drift between the plan and report, and any remaining pending
+table cells.
+
 ## Required environments
 
 | Environment ID            | Required environment                              | OS / browser / AT / device | Status  | Evidence |
@@ -92,29 +106,30 @@ Use `not applicable` rather than an empty value when a field does not apply.
 The JSON plan owns the executable steps and expected results. This table is the human progress and
 evidence index.
 
-| Scenario ID                      | Primary route                            | Focus                                                      | Status  | Evidence |
-| -------------------------------- | ---------------------------------------- | ---------------------------------------------------------- | ------- | -------- |
-| `global-docs-navigation`         | `/docs`                                  | Docs landmarks, search, appearance, page actions           | Not run | Pending  |
-| `global-demo-responsive`         | `/views/operations-workspace`            | Product composition, responsive navigation, safe areas     | Not run | Pending  |
-| `actions-buttons-toggle`         | `/visual-test`                           | Button, icon actions, loading, disabled, Toggle            | Not run | Pending  |
-| `forms-labels-validation`        | `/visual-test#field`                     | Labels, errors, grouped controls, Select                   | Not run | Pending  |
-| `native-temporal-inputs`         | `/docs/components/input`                 | Native date, month, week, time, datetime-local             | Not run | Pending  |
-| `slider-input`                   | `/docs/components/slider`                | Keyboard, touch, pointer, orientation, RTL                 | Not run | Pending  |
-| `file-input-picker`              | `/docs/components/file-input`            | Native picker, filename announcement, reset                | Not run | Pending  |
-| `calendar-grid`                  | `/docs/components/calendar#preview`      | Grid navigation, constraints, locale, RTL                  | Not run | Pending  |
-| `date-picker-composition`        | `/docs/components/date-picker`           | Focus transfer, Calendar, clear, form value                | Not run | Pending  |
-| `table-semantics-overflow`       | `/docs/components/table`                 | Table structure, selection, sorting, overflow              | Not run | Pending  |
-| `item-semantics-states`          | `/docs/components/item`                  | Item links, selection, disabled, loading, long content     | Not run | Pending  |
-| `feedback-status-states`         | `/visual-test`                           | Alert, progress, loading, empty, error                     | Not run | Pending  |
-| `toast-announcements`            | `/docs/components/toast`                 | Priority, stacking, actions, persistence, dismissal        | Not run | Pending  |
-| `tabs-orientation-rtl`           | `/docs/components/tabs`                  | Orientations, disabled items, overflow, RTL                | Not run | Pending  |
-| `breadcrumbs-pagination-current` | `/visual-test`                           | Breadcrumbs and Pagination current-page semantics          | Not run | Pending  |
-| `command-live-states`            | `/docs/components/command-primitive`     | Command active descendant, loading, empty, result count    | Not run | Pending  |
-| `sidebar-collapse`               | `/visual-test#sidebar-primitive`         | Sidebar collapse, hidden content, focus retention          | Not run | Pending  |
-| `sidebar-mobile-sheet`           | `/docs/components/sheet#preview`         | Consumer-owned mobile Sidebar path through Sheet           | Not run | Pending  |
-| `overlay-focus-dismissal`        | `/visual-test/blocks/overlay-playground` | Dialog, Sheet, Popover, Tooltip, Dropdown Menu             | Not run | Pending  |
-| `motion-adapter-reduced-motion`  | `/docs/foundations/motion`               | Optional Motion adapter and live reduced-motion preference | Not run | Pending  |
-| `runtime-axes-motion-contrast`   | `/visual-test`                           | Themes, modes, density, RTL, motion, contrast              | Not run | Pending  |
+| Scenario ID                     | Primary route                            | Focus                                                      | Status  | Evidence |
+| ------------------------------- | ---------------------------------------- | ---------------------------------------------------------- | ------- | -------- |
+| `global-docs-navigation`        | `/docs`                                  | Docs landmarks, search, appearance, page actions           | Not run | Pending  |
+| `global-demo-responsive`        | `/views/operations-workspace`            | Product composition, responsive navigation, safe areas     | Not run | Pending  |
+| `actions-buttons-toggle`        | `/visual-test`                           | Button, icon actions, loading, disabled, Toggle            | Not run | Pending  |
+| `forms-labels-validation`       | `/visual-test#field`                     | Labels, errors, grouped controls, Select                   | Not run | Pending  |
+| `native-temporal-inputs`        | `/docs/components/input`                 | Native date, month, week, time, datetime-local             | Not run | Pending  |
+| `slider-input`                  | `/docs/components/slider`                | Keyboard, touch, pointer, orientation, RTL                 | Not run | Pending  |
+| `file-input-picker`             | `/docs/components/file-input`            | Native picker, filename announcement, reset                | Not run | Pending  |
+| `calendar-grid`                 | `/docs/components/calendar#preview`      | Grid navigation, constraints, locale, RTL                  | Not run | Pending  |
+| `date-picker-composition`       | `/docs/components/date-picker`           | Focus transfer, Calendar, clear, form value                | Not run | Pending  |
+| `table-semantics-overflow`      | `/docs/components/table`                 | Table structure, selection, sorting, overflow              | Not run | Pending  |
+| `item-semantics-states`         | `/docs/components/item`                  | Item links, selection, disabled, loading, long content     | Not run | Pending  |
+| `feedback-status-states`        | `/visual-test`                           | Alert, progress, loading, empty, error                     | Not run | Pending  |
+| `toast-announcements`           | `/docs/components/toast`                 | Priority, stacking, actions, persistence, dismissal        | Not run | Pending  |
+| `tabs-orientation-rtl`          | `/docs/components/tabs`                  | Orientations, disabled items, overflow, RTL                | Not run | Pending  |
+| `breadcrumbs-current`           | `/docs/components/breadcrumbs`           | Breadcrumbs structure and current-page semantics           | Not run | Pending  |
+| `pagination-current-disabled`   | `/docs/components/pagination`            | Current page, disabled controls, ellipsis, RTL             | Not run | Pending  |
+| `command-live-states`           | `/docs/components/command-primitive`     | Command active descendant, loading, empty, result count    | Not run | Pending  |
+| `sidebar-collapse`              | `/visual-test#sidebar-primitive`         | Sidebar collapse, hidden content, focus retention          | Not run | Pending  |
+| `sidebar-mobile-sheet`          | `/docs/components/sheet#preview`         | Consumer-owned mobile Sidebar path through Sheet           | Not run | Pending  |
+| `overlay-focus-dismissal`       | `/visual-test/blocks/overlay-playground` | Dialog, Sheet, Popover, Tooltip, Dropdown Menu             | Not run | Pending  |
+| `motion-adapter-reduced-motion` | `/docs/foundations/motion`               | Optional Motion adapter and live reduced-motion preference | Not run | Pending  |
+| `runtime-axes-motion-contrast`  | `/visual-test`                           | Themes, modes, density, RTL, motion, contrast              | Not run | Pending  |
 
 ## Finding log
 

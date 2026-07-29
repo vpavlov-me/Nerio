@@ -48,29 +48,69 @@ function withPlanAndReportFixtures(planUpdate, reportUpdate, callback) {
   }
 }
 
+function completedPlan(source) {
+  const plan = JSON.parse(source);
+  return JSON.stringify(
+    {
+      ...plan,
+      status: "complete",
+      completion: {
+        candidate: {
+          commit: "a".repeat(40),
+          githubVerification: "https://github.com/example/repository/commit/aaaaaaaa",
+          ciRun: "https://github.com/example/repository/actions/runs/1",
+          vercelDeployment: "https://audit-preview.example.test",
+          auditStartedAt: "2026-07-29T08:00:00.000Z",
+          auditOwner: "Accessibility audit team",
+        },
+        environments: plan.requiredEnvironments.map(({ id }, index) => ({
+          id,
+          operatingSystem: `Test operating system ${index + 1}`,
+          browser: `Test browser ${index + 1}`,
+          assistiveTechnology: `Test assistive technology ${index + 1}`,
+          device: `Test device ${index + 1}`,
+          viewport: "1280x800",
+          zoom: "100%",
+          packageMode: "Packed package",
+        })),
+        results: plan.scenarios.flatMap((scenario) =>
+          scenario.environments.map((environmentId) => ({
+            scenarioId: scenario.id,
+            environmentId,
+            result: "Pass",
+            notes: `Verified ${scenario.title} in ${environmentId}.`,
+            evidence: [`https://evidence.example.test/${scenario.id}/${environmentId}`],
+          })),
+        ),
+      },
+    },
+    null,
+    2,
+  );
+}
+
+function completedReport(source) {
+  return source
+    .replace("Status: **Prepared — manual evidence pending**", "Status: **Complete**")
+    .replace("Candidate commit: **Pending**", `Candidate commit: **${"a".repeat(40)}**`)
+    .replace("Final decision: **Pending**", "Final decision: **Pass for real consumer pilots**")
+    .replaceAll("Not run", "Pass")
+    .replaceAll("Pending", "Recorded");
+}
+
 test("manual audit validator accepts the prepared pending plan", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /21 scenarios, 8 required environments/);
+  assert.match(result.stdout, /22 scenarios, 8 required environments/);
   assert.match(result.stdout, /manual evidence still pending/);
 });
 
 test("manual audit validator accepts a completed evidence record", () => {
-  withPlanAndReportFixtures(
-    (source) => JSON.stringify({ ...JSON.parse(source), status: "complete" }, null, 2),
-    (source) =>
-      source
-        .replace("Status: **Prepared — manual evidence pending**", "Status: **Complete**")
-        .replace("Candidate commit: **Pending**", `Candidate commit: **${"a".repeat(40)}**`)
-        .replace("Final decision: **Pending**", "Final decision: **Pass for real consumer pilots**")
-        .replaceAll("Not run", "Pass")
-        .replaceAll("Pending", "Recorded"),
-    (planTarget, reportTarget) => {
-      const result = run(["--plan", planTarget, "--report", reportTarget]);
-      assert.equal(result.status, 0, result.stderr);
-      assert.match(result.stdout, /manual evidence complete/);
-    },
-  );
+  withPlanAndReportFixtures(completedPlan, completedReport, (planTarget, reportTarget) => {
+    const result = run(["--plan", planTarget, "--report", reportTarget]);
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /manual evidence complete/);
+  });
 });
 
 test("manual audit validator rejects incomplete completed-state evidence", () => {
@@ -84,6 +124,23 @@ test("manual audit validator rejects incomplete completed-state evidence", () =>
       assert.match(result.stderr, /40-character candidate commit/);
       assert.match(result.stderr, /must record one allowed final decision/);
       assert.match(result.stderr, /must not leave pending or not-run table evidence/);
+      assert.match(result.stderr, /completion.candidate evidence/);
+    },
+  );
+});
+
+test("manual audit validator rejects missing scenario-environment evidence", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.results.shift();
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /Completed scenario-environment evidence is missing/);
     },
   );
 });
@@ -127,6 +184,10 @@ test("manual audit validator rejects coverage and report drift", () => {
     (target) => {
       const result = run(["--plan", target]);
       assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Required audit scenarios is missing: motion-adapter-reduced-motion/,
+      );
       assert.match(result.stderr, /Scenario component coverage is missing: motion-adapter/);
     },
   );
