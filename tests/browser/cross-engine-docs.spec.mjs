@@ -318,8 +318,12 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
     }),
   );
   const problems = monitorPage(page, browserName);
+  const gotoFixture = async (url) => {
+    await page.goto(url);
+    await page.waitForLoadState("networkidle");
+  };
 
-  await page.goto("/visual-test#checkbox");
+  await gotoFixture("/visual-test#checkbox");
   const projectUpdates = page.getByRole("checkbox", { name: "Project updates" });
   await expect(projectUpdates).toBeVisible();
   await projectUpdates.click();
@@ -332,7 +336,7 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
   await expect(emailNotifications).toBeChecked();
   await expect(page.getByRole("switch", { name: "Push notifications" })).toBeChecked();
 
-  await page.goto("/docs/components/table");
+  await gotoFixture("/docs/components/table");
   const primaryTableExample = page.getByRole("region", { name: "Primary Table composition" });
   const tableRegion = primaryTableExample.getByRole("region", {
     name: "Team members, roles, statuses, and emails",
@@ -344,22 +348,22 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
     }),
   ).toBeVisible();
 
-  await page.goto("/docs/components/item");
+  await gotoFixture("/docs/components/item");
   const itemList = page.getByRole("list", { name: "Workspace resources" });
   await expect(itemList.getByRole("listitem")).toHaveCount(2);
 
-  await page.goto("/docs/components/pagination");
+  await gotoFixture("/docs/components/pagination");
   await expect(
     page.getByRole("navigation", { name: "RTL pagination" }).getByLabel("Go to previous page"),
   ).toHaveAttribute("aria-disabled", "true");
 
-  await page.goto("/visual-test#field");
+  await gotoFixture("/visual-test#field");
   await expect(page.getByRole("textbox", { name: "Project name" })).toHaveAttribute("required", "");
   await expect(page.getByRole("textbox", { name: "md default input" })).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Email address with icon" })).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Default note" })).toBeVisible();
 
-  await page.goto("/docs/components/tabs");
+  await gotoFixture("/docs/components/tabs");
   await expect(page.getByRole("tab", { name: "Project members and permissions" })).toBeVisible();
   expect(problems).toEqual([]);
 });
