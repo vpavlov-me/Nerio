@@ -103,8 +103,8 @@ Each environment record must include:
 - `viewport`
 - `zoom`
 - `packageMode`
-- `result`
-- `notes`
+- `result` — the aggregate outcome for the environment;
+- `notes` — substantive environment-level context in addition to per-scenario notes.
 
 Use `not applicable` only for `assistiveTechnology` in the keyboard-only, zoom/reflow,
 reduced-motion, and high-contrast environment records. Every other metadata field requires the

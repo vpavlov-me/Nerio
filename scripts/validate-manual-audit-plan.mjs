@@ -272,9 +272,7 @@ const allowedPostCandidateChanges = new Set([
   "docs/audits/core-1-0-accessibility-device-audit.md",
   "quality/manual-audit-plan.json",
 ]);
-const environmentEvidenceFields = requiredEvidenceFields.filter(
-  (field) => field !== "result" && field !== "notes",
-);
+const environmentEvidenceFields = requiredEvidenceFields;
 
 const paths = parsePathOptions(process.argv.slice(2), {
   "--plan": resolve(root, "quality/manual-audit-plan.json"),
@@ -561,6 +559,10 @@ if (plan?.status === "complete") {
   for (const environment of completedEnvironments) {
     const label = `Completed environment ${environment?.id ?? "without an id"}`;
     for (const field of environmentEvidenceFields) {
+      if (field === "result" && !allowedEvidenceResults.includes(environment?.result)) {
+        errors.push(`${label} result must use one of: ${allowedEvidenceResults.join(", ")}.`);
+        continue;
+      }
       if (
         !isSubstantiveString(environment?.[field]) &&
         !isAllowedNotApplicable(environment?.id, field, environment?.[field])
@@ -601,10 +603,11 @@ if (plan?.status === "complete") {
   }
   if (
     finalDecision === "Pass for real consumer pilots" &&
-    completedResults.some(({ result }) => result !== "Pass")
+    (completedEnvironments.some(({ result }) => result !== "Pass") ||
+      completedResults.some(({ result }) => result !== "Pass"))
   ) {
     errors.push(
-      "Pass for real consumer pilots requires Pass evidence for every required scenario-environment pair.",
+      "Pass for real consumer pilots requires Pass evidence for every required environment and scenario-environment pair.",
     );
   }
 }

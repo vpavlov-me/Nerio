@@ -76,6 +76,8 @@ function completedPlan(source) {
           viewport: "1280x800",
           zoom: "100%",
           packageMode: "Packed package",
+          result: "Pass",
+          notes: `Completed the required checks in ${id}.`,
         })),
         results: plan.scenarios.flatMap((scenario) =>
           scenario.environments.map((environmentId) => ({
@@ -162,7 +164,7 @@ test("manual audit validator rejects a pilot pass with blocked evidence", () => 
       assert.notEqual(result.status, 0);
       assert.match(
         result.stderr,
-        /requires Pass evidence for every required scenario-environment pair/,
+        /requires Pass evidence for every required environment and scenario-environment pair/,
       );
     },
   );
@@ -181,7 +183,7 @@ test("manual audit validator rejects an evidence-free pilot pass", () => {
       assert.notEqual(result.status, 0);
       assert.match(
         result.stderr,
-        /requires Pass evidence for every required scenario-environment pair/,
+        /requires Pass evidence for every required environment and scenario-environment pair/,
       );
     },
   );
@@ -218,6 +220,30 @@ test("manual audit validator accepts not-applicable assistive technology only wh
       assert.match(
         result.stderr,
         /Completed environment macos-safari-voiceover must include substantive assistiveTechnology/,
+      );
+    },
+  );
+});
+
+test("manual audit validator requires environment outcomes and notes", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      delete plan.completion.environments[0].result;
+      delete plan.completion.environments[0].notes;
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed environment macos-safari-voiceover result must use one of/,
+      );
+      assert.match(
+        result.stderr,
+        /Completed environment macos-safari-voiceover must include substantive notes evidence/,
       );
     },
   );
