@@ -714,7 +714,8 @@ if (plan?.status === "manual-evidence-pending") {
 }
 
 if (plan?.status === "complete") {
-  const reportStatusMatches = [...report.matchAll(/^- Status: \*\*(.+)\*\*$/gm)];
+  const reportHeader = report.split(/^## /m, 1)[0];
+  const reportStatusMatches = [...reportHeader.matchAll(/^- Status: \*\*(.+)\*\*$/gm)];
   if (reportStatusMatches.length !== 1 || reportStatusMatches[0][1] !== "Complete") {
     errors.push("Completed audit report must declare Status: **Complete**.");
   }
@@ -952,6 +953,17 @@ if (plan?.status === "complete") {
       if (!pattern.test(environment?.[field] ?? "")) {
         errors.push(`${label} ${field} must match the required environment.`);
       }
+    }
+    if (
+      ["reduced-motion", "high-contrast"].includes(environment?.id) &&
+      /\b(?:not|never)\s+(?:enabled|active|on)\b|\b(?:disabled|off)\b/i.test(
+        environment?.notes ?? "",
+      )
+    ) {
+      errors.push(`${label} notes must match the required environment.`);
+    }
+    if (environment?.packageMode !== candidate?.packageMode) {
+      errors.push(`${label} packageMode must match the locked candidate packageMode.`);
     }
     if (
       ["ios-safari-voiceover", "android-chrome-talkback"].includes(environment?.id) &&

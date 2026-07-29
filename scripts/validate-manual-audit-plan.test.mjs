@@ -476,6 +476,46 @@ test("manual audit validator requires physical mobile hardware and enabled prefe
   );
 });
 
+test("manual audit validator rejects negated accessibility preferences", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "reduced-motion").notes =
+        "Reduce Motion was not enabled, but active checks completed successfully.";
+      plan.completion.environments.find(({ id }) => id === "high-contrast").notes =
+        "Windows High Contrast was not active, but all required checks completed.";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /reduced-motion notes must match the required environment/);
+      assert.match(result.stderr, /high-contrast notes must match the required environment/);
+    },
+  );
+});
+
+test("manual audit validator binds environment package mode to the candidate", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "windows-nvda").packageMode =
+        "Source install";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /windows-nvda packageMode must match the locked candidate packageMode/,
+      );
+    },
+  );
+});
+
 test("manual audit validator requires concrete physical mobile device models", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -719,6 +759,24 @@ test("manual audit validator rejects contradictory status metadata", () => {
         "- Status: **Complete**",
         "- Status: **Prepared — manual evidence pending**\n- Status: **Complete**",
       ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must declare Status: \*\*Complete\*\*/);
+    },
+  );
+});
+
+test("manual audit validator only accepts completion status in the report header", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source)
+        .replace("- Status: **Complete**", "Status: **Prepared — manual evidence pending**")
+        .replace(
+          "## Final decision",
+          "## Completion note\n\n- Status: **Complete**\n\n## Final decision",
+        ),
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
