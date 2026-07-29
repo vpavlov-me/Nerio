@@ -294,6 +294,33 @@ test("manual audit validator accepts the prepared pending plan", () => {
   assert.match(result.stdout, /manual evidence still pending/);
 });
 
+test("manual audit validator parses pending metadata only from canonical locations", () => {
+  withFixture(
+    "docs/audits/core-1-0-accessibility-device-audit.md",
+    (source) =>
+      source
+        .replace("- Status: **Prepared — manual evidence pending**", "- Status: **Complete**")
+        .replace("- Candidate commit: **Pending**", `- Candidate commit: **${currentCommit}**`)
+        .replaceAll(
+          "Final decision: **Pending**",
+          "Final decision: **Pass for real consumer pilots**",
+        )
+        .replace(
+          "## Final decision\n\n**Pending**",
+          "## Final decision\n\n**Pass for real consumer pilots**",
+        )
+        .concat(
+          "\n\nStatus: **Prepared — manual evidence pending**\nCandidate commit: **Pending**\nFinal decision: **Pending**\n",
+        ),
+    (reportTarget) => {
+      const result = run(["--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /header must declare pending metadata/);
+      assert.match(result.stderr, /final-decision section must declare \*\*Pending\*\*/);
+    },
+  );
+});
+
 test("manual audit validator accepts a completed evidence record", () => {
   withPlanAndReportFixtures(completedPlan, completedReport, (planTarget, reportTarget) => {
     const result = run(["--plan", planTarget, "--report", reportTarget]);

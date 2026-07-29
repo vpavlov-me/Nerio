@@ -776,14 +776,21 @@ for (const requiredText of [
 }
 
 if (plan?.status === "manual-evidence-pending") {
-  for (const requiredText of [
-    "Status: **Prepared — manual evidence pending**",
-    "Candidate commit: **Pending**",
-    "Final decision: **Pending**",
+  const reportHeader = report.split(/^## /m, 1)[0];
+  for (const [label, pattern] of [
+    [
+      "Status: **Prepared — manual evidence pending**",
+      /^- Status: \*\*Prepared — manual evidence pending\*\*$/gm,
+    ],
+    ["Candidate commit: **Pending**", /^- Candidate commit: \*\*Pending\*\*$/gm],
+    ["Final decision: **Pending**", /^- Final decision: \*\*Pending\*\*$/gm],
   ]) {
-    if (!report.includes(requiredText)) {
-      errors.push(`Audit report is missing required pending-state text: ${requiredText}`);
+    if ([...reportHeader.matchAll(pattern)].length !== 1) {
+      errors.push(`Audit report header must declare pending metadata: ${label}`);
     }
+  }
+  if ([...reportSection("Final decision").matchAll(/^\*\*Pending\*\*$/gm)].length !== 1) {
+    errors.push("Pending audit report final-decision section must declare **Pending**.");
   }
 }
 
