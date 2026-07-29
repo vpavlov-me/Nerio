@@ -930,6 +930,15 @@ if (plan?.status === "complete") {
     if (!isDetailedEvidenceString(candidate.packageMode, "packageMode")) {
       errors.push("Completed audit candidate must record its package or source-install mode.");
     }
+    if (
+      /\b(?:not|never|unused|uninstalled)\b|\bwithout\s+(?:installing|using)\b/i.test(
+        candidate.packageMode ?? "",
+      )
+    ) {
+      errors.push(
+        "Completed audit candidate packageMode must describe a mode that was actually used.",
+      );
+    }
     let candidateCommittedAt = Number.NaN;
     const auditStartedAt = Date.parse(candidate.auditStartedAt);
     if (!isSubstantiveString(candidate.auditStartedAt) || Number.isNaN(auditStartedAt)) {
@@ -1063,6 +1072,13 @@ if (plan?.status === "complete") {
     }
     if (environment?.packageMode !== candidate?.packageMode) {
       errors.push(`${label} packageMode must match the locked candidate packageMode.`);
+    }
+    if (
+      /\b(?:not|never|unused|uninstalled)\b|\bwithout\s+(?:installing|using)\b/i.test(
+        environment?.packageMode ?? "",
+      )
+    ) {
+      errors.push(`${label} packageMode must describe a mode that was actually used.`);
     }
     if (environment?.result === "Pass" && claimsEvidenceNotPerformed(environment?.notes)) {
       errors.push(`${label} Pass notes must confirm that the required environment was performed.`);

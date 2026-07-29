@@ -750,6 +750,29 @@ test("manual audit validator binds environment package mode to the candidate", (
   );
 });
 
+test("manual audit validator rejects package modes that were not used", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.candidate.packageMode = "Packed package was not installed";
+      for (const environment of plan.completion.environments) {
+        environment.packageMode = "Packed package was not installed";
+      }
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /candidate packageMode must describe a mode that was actually used/,
+      );
+      assert.match(result.stderr, /packageMode must describe a mode that was actually used/);
+    },
+  );
+});
+
 test("manual audit validator requires concrete physical mobile device models", () => {
   withPlanAndReportFixtures(
     (source) => {
