@@ -953,6 +953,50 @@ test("manual audit validator rejects duplicate canonical report rows", () => {
   );
 });
 
+test("manual audit validator rejects duplicate canonical report sections", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) => {
+      const completed = completedReport(source);
+      const scenarioSection = completed.match(/## Scenario matrix[\s\S]*?(?=\n## Finding log)/)[0];
+      const contradictorySection = scenarioSection
+        .split("\n")
+        .map((line) =>
+          line.includes("`global-docs-navigation`") ? line.replace("| Pass |", "| Fail |") : line,
+        )
+        .join("\n");
+      return completed.replace("\n## Finding log", `\n${contradictorySection}\n\n## Finding log`);
+    },
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed scenario global-docs-navigation result must match the completed report status/,
+      );
+    },
+  );
+});
+
+test("manual audit validator rejects unexpected completed environments", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.push({
+        ...completedEnvironmentEvidence("macos-chromium-keyboard"),
+        id: "undeclared-environment",
+      });
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /unexpected environment evidence: undeclared-environment/);
+    },
+  );
+});
+
 test("manual audit validator requires evidence for every failed summary gate", () => {
   withPlanAndReportFixtures(
     completedPlan,

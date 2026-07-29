@@ -497,7 +497,11 @@ function reportStatus(id, sectionTitle) {
 }
 
 function reportSection(title) {
-  return report.match(new RegExp(`## ${title}\\s+([\\s\\S]*?)(?=\\n## )`))?.[1] ?? "";
+  const escapedTitle = title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  if ((report.match(new RegExp(`^## ${escapedTitle}$`, "gm")) ?? []).length !== 1) {
+    return "";
+  }
+  return report.match(new RegExp(`## ${title}\\s+([\\s\\S]*?)(?=\\n## |$)`))?.[1] ?? "";
 }
 
 function reportTableValue(section, label) {
@@ -510,6 +514,9 @@ function reportTableValue(section, label) {
 }
 
 function environmentNoteSection(id) {
+  if ((report.match(new RegExp(`^### \`${id}\`$`, "gm")) ?? []).length !== 1) {
+    return "";
+  }
   return (
     report.match(
       new RegExp(`### \`${id}\`\\s+([\\s\\S]*?)(?=\\n### |\\n## Completion summary)`),
@@ -517,7 +524,7 @@ function environmentNoteSection(id) {
   );
 }
 
-const findingLog = report.match(/## Finding log\s+([\s\S]*?)(?=\n## )/)?.[1] ?? "";
+const findingLog = reportSection("Finding log");
 const findingTableRows = findingLog
   .split(/\r?\n/)
   .filter((line) => line.trimStart().startsWith("|"))
@@ -712,8 +719,8 @@ if (plan?.status === "complete") {
   if (!finalDecision) {
     errors.push("Completed audit report must record one allowed final decision.");
   }
-  const sectionDecision = report.match(
-    /## Final decision\s+\*\*(Pass for real consumer pilots|Blocked before pilots)\*\*/,
+  const sectionDecision = reportSection("Final decision").match(
+    /\*\*(Pass for real consumer pilots|Blocked before pilots)\*\*/,
   )?.[1];
   if (!sectionDecision) {
     errors.push("Completed audit report final-decision section must record one allowed decision.");
@@ -896,6 +903,14 @@ if (plan?.status === "complete") {
   );
   if (new Set(completedEnvironmentIds).size !== completedEnvironmentIds.length) {
     errors.push("Completed audit environment evidence IDs must be unique.");
+  }
+  const unexpectedCompletedEnvironmentIds = completedEnvironmentIds.filter(
+    (id) => !requiredEnvironmentIds.includes(id),
+  );
+  if (unexpectedCompletedEnvironmentIds.length) {
+    errors.push(
+      `Completed audit has unexpected environment evidence: ${unexpectedCompletedEnvironmentIds.join(", ")}.`,
+    );
   }
   for (const environment of completedEnvironments) {
     const label = `Completed environment ${environment?.id ?? "without an id"}`;
