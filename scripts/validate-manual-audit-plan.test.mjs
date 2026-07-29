@@ -68,6 +68,31 @@ const completedEnvironmentMetadata = {
     device: "ThinkPad X1 Carbon",
   },
 };
+const auditPlanFixture = JSON.parse(
+  readFileSync(resolve(root, "quality/manual-audit-plan.json"), "utf8"),
+);
+
+function completedEnvironmentEvidence(id) {
+  return {
+    id,
+    ...completedEnvironmentMetadata[id],
+    viewport:
+      id === "ios-safari-voiceover"
+        ? "393x852"
+        : id === "android-chrome-talkback"
+          ? "412x915"
+          : "1280x800",
+    zoom: id === "zoom-reflow" ? "200% and 400%" : "100%",
+    packageMode: "Packed package",
+    result: "Pass",
+    notes:
+      id === "reduced-motion"
+        ? "Verified with macOS Reduce Motion enabled for the complete scenario set."
+        : id === "high-contrast"
+          ? "Verified with Windows High Contrast mode enabled for the complete scenario set."
+          : `Completed the required checks in ${id}.`,
+  };
+}
 
 function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], {
@@ -127,25 +152,7 @@ function completedPlan(source) {
           auditOwner: "Accessibility audit team",
           automatedPrepCompletedAt: currentCommitTimestamp,
         },
-        environments: plan.requiredEnvironments.map(({ id }) => ({
-          id,
-          ...completedEnvironmentMetadata[id],
-          viewport:
-            id === "ios-safari-voiceover"
-              ? "393x852"
-              : id === "android-chrome-talkback"
-                ? "412x915"
-                : "1280x800",
-          zoom: id === "zoom-reflow" ? "200% and 400%" : "100%",
-          packageMode: "Packed package",
-          result: "Pass",
-          notes:
-            id === "reduced-motion"
-              ? "Verified with macOS Reduce Motion enabled for the complete scenario set."
-              : id === "high-contrast"
-                ? "Verified with Windows High Contrast mode enabled for the complete scenario set."
-                : `Completed the required checks in ${id}.`,
-        })),
+        environments: plan.requiredEnvironments.map(({ id }) => completedEnvironmentEvidence(id)),
         results: plan.scenarios.flatMap((scenario, scenarioIndex) =>
           scenario.environments.map((environmentId, environmentIndex) => ({
             scenarioId: scenario.id,
@@ -178,7 +185,7 @@ function completedReport(source) {
     ["Automated prep completed", currentCommitTimestamp],
   ]);
 
-  return source
+  let completed = source
     .replace("Status: **Prepared — manual evidence pending**", "Status: **Complete**")
     .replace("Candidate commit: **Pending**", `Candidate commit: **${currentCommit}**`)
     .replace("Final decision: **Pending**", "Final decision: **Pass for real consumer pilots**")
@@ -196,9 +203,44 @@ function completedReport(source) {
     .join("\n")
     .replace(/## Completion summary[\s\S]*?(?=\n## Final decision)/, (section) =>
       section.replaceAll("Pending", "Pass"),
-    )
-    .replaceAll("Not run", "Pass")
-    .replaceAll("Pending", "Recorded");
+    );
+
+  for (const id of Object.keys(completedEnvironmentMetadata)) {
+    const environment = completedEnvironmentEvidence(id);
+    const scenarios = auditPlanFixture.scenarios
+      .filter((scenario) => scenario.environments.includes(id))
+      .map((scenario) => `\`${scenario.id}\``)
+      .join(", ");
+    const values = new Map([
+      ["Operating system", environment.operatingSystem],
+      ["Browser", environment.browser],
+      ["Assistive technology", environment.assistiveTechnology],
+      ["Device", environment.device],
+      ["Viewport", environment.viewport],
+      ["Zoom", environment.zoom],
+      ["Package/source mode", environment.packageMode],
+      ["Result", environment.result],
+      ["Notes", environment.notes],
+      ["Completed scenarios", scenarios],
+      ["Findings", "None recorded"],
+    ]);
+    completed = completed.replace(
+      new RegExp(`(### \`${id}\`\\s+)([\\s\\S]*?)(?=\\n### |\\n## Completion summary)`),
+      (_section, heading, body) =>
+        heading +
+        body
+          .split("\n")
+          .map((line) => {
+            const field = [...values.keys()].find((label) =>
+              line.trimStart().startsWith(`| ${label}`),
+            );
+            return field ? `| ${field} | ${values.get(field)} |` : line;
+          })
+          .join("\n"),
+    );
+  }
+
+  return completed.replaceAll("Not run", "Pass").replaceAll("Pending", "Recorded");
 }
 
 const trackedIssue = "https://github.com/vpavlov-me/Nerio/issues/123";
@@ -231,7 +273,12 @@ function trackedFailureReport(source, includeFinding = true) {
         ? line.replace(/\|\s*Pass\s*\|\s*Recorded\s*\|/, "| Fail | Recorded |")
         : line,
     )
-    .join("\n");
+    .join("\n")
+    .replace(/(### `macos-safari-voiceover`\s+[\s\S]*?)(?=\n### )/, (section) =>
+      section
+        .replace("| Result | Pass |", "| Result | Fail |")
+        .replace("| Findings | None recorded |", `| Findings | ${trackedIssue} |`),
+    );
   return includeFinding
     ? completed.replace(
         "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
@@ -334,7 +381,11 @@ test("manual audit validator accepts not-applicable assistive technology only wh
       ).assistiveTechnology = "not applicable";
       return JSON.stringify(plan, null, 2);
     },
-    completedReport,
+    (source) =>
+      completedReport(source).replace(
+        "| Assistive technology | Keyboard-only navigation |",
+        "| Assistive technology | not applicable |",
+      ),
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.equal(result.status, 0, result.stderr);
@@ -716,6 +767,22 @@ test("manual audit validator rejects Candidate lock drift", () => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, /Candidate lock "CI run" must match/);
+    },
+  );
+});
+
+test("manual audit validator rejects completed environment-note drift", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace("| Browser | Safari 18.5 |", "| Browser | Recorded |"),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed environment note macos-safari-voiceover "Browser" must match/,
+      );
     },
   );
 });

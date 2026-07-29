@@ -169,53 +169,136 @@ Severity:
 
 ## Environment notes
 
-### macOS Safari with VoiceOver
+Record every field exactly as it appears in `completion.environments`. The validator also derives
+the scenario list and finding issues from `completion.results`.
 
-- Versions: Pending
-- Package/source mode: Pending
-- Completed scenarios: None
-- Findings: None recorded
-- Notes: Pending
+### `macos-safari-voiceover`
 
-### macOS Chromium keyboard-only
+| Field                | Evidence      |
+| -------------------- | ------------- |
+| Operating system     | Pending       |
+| Browser              | Pending       |
+| Assistive technology | Pending       |
+| Device               | Pending       |
+| Viewport             | Pending       |
+| Zoom                 | Pending       |
+| Package/source mode  | Pending       |
+| Result               | Pending       |
+| Notes                | Pending       |
+| Completed scenarios  | None recorded |
+| Findings             | None recorded |
 
-- Versions: Pending
-- Package/source mode: Pending
-- Completed scenarios: None
-- Findings: None recorded
-- Notes: Pending
+### `macos-chromium-keyboard`
 
-### Windows with NVDA
+| Field                | Evidence      |
+| -------------------- | ------------- |
+| Operating system     | Pending       |
+| Browser              | Pending       |
+| Assistive technology | Pending       |
+| Device               | Pending       |
+| Viewport             | Pending       |
+| Zoom                 | Pending       |
+| Package/source mode  | Pending       |
+| Result               | Pending       |
+| Notes                | Pending       |
+| Completed scenarios  | None recorded |
+| Findings             | None recorded |
 
-- Versions: Pending
-- Package/source mode: Pending
-- Completed scenarios: None
-- Findings: None recorded
-- Notes: Pending
+### `windows-nvda`
 
-### Physical iOS Safari with VoiceOver
+| Field                | Evidence      |
+| -------------------- | ------------- |
+| Operating system     | Pending       |
+| Browser              | Pending       |
+| Assistive technology | Pending       |
+| Device               | Pending       |
+| Viewport             | Pending       |
+| Zoom                 | Pending       |
+| Package/source mode  | Pending       |
+| Result               | Pending       |
+| Notes                | Pending       |
+| Completed scenarios  | None recorded |
+| Findings             | None recorded |
 
-- Versions and device: Pending
-- Package/source mode: Pending
-- Completed scenarios: None
-- Findings: None recorded
-- Notes: Pending
+### `ios-safari-voiceover`
 
-### Physical Android Chrome with TalkBack
+| Field                | Evidence      |
+| -------------------- | ------------- |
+| Operating system     | Pending       |
+| Browser              | Pending       |
+| Assistive technology | Pending       |
+| Device               | Pending       |
+| Viewport             | Pending       |
+| Zoom                 | Pending       |
+| Package/source mode  | Pending       |
+| Result               | Pending       |
+| Notes                | Pending       |
+| Completed scenarios  | None recorded |
+| Findings             | None recorded |
 
-- Versions and device: Pending
-- Package/source mode: Pending
-- Completed scenarios: None
-- Findings: None recorded
-- Notes: Pending
+### `android-chrome-talkback`
 
-### Zoom, contrast, and reduced motion
+| Field                | Evidence      |
+| -------------------- | ------------- |
+| Operating system     | Pending       |
+| Browser              | Pending       |
+| Assistive technology | Pending       |
+| Device               | Pending       |
+| Viewport             | Pending       |
+| Zoom                 | Pending       |
+| Package/source mode  | Pending       |
+| Result               | Pending       |
+| Notes                | Pending       |
+| Completed scenarios  | None recorded |
+| Findings             | None recorded |
 
-- Environments and versions: Pending
-- Package/source mode: Pending
-- Completed scenarios: None
-- Findings: None recorded
-- Notes: Pending
+### `zoom-reflow`
+
+| Field                | Evidence      |
+| -------------------- | ------------- |
+| Operating system     | Pending       |
+| Browser              | Pending       |
+| Assistive technology | Pending       |
+| Device               | Pending       |
+| Viewport             | Pending       |
+| Zoom                 | Pending       |
+| Package/source mode  | Pending       |
+| Result               | Pending       |
+| Notes                | Pending       |
+| Completed scenarios  | None recorded |
+| Findings             | None recorded |
+
+### `reduced-motion`
+
+| Field                | Evidence      |
+| -------------------- | ------------- |
+| Operating system     | Pending       |
+| Browser              | Pending       |
+| Assistive technology | Pending       |
+| Device               | Pending       |
+| Viewport             | Pending       |
+| Zoom                 | Pending       |
+| Package/source mode  | Pending       |
+| Result               | Pending       |
+| Notes                | Pending       |
+| Completed scenarios  | None recorded |
+| Findings             | None recorded |
+
+### `high-contrast`
+
+| Field                | Evidence      |
+| -------------------- | ------------- |
+| Operating system     | Pending       |
+| Browser              | Pending       |
+| Assistive technology | Pending       |
+| Device               | Pending       |
+| Viewport             | Pending       |
+| Zoom                 | Pending       |
+| Package/source mode  | Pending       |
+| Result               | Pending       |
+| Notes                | Pending       |
+| Completed scenarios  | None recorded |
+| Findings             | None recorded |
 
 ## Completion summary
 

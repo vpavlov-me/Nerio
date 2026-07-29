@@ -505,6 +505,14 @@ function reportTableValue(section, label) {
     .map((cell) => cell.trim())[1];
 }
 
+function environmentNoteSection(id) {
+  return (
+    report.match(
+      new RegExp(`### \`${id}\`\\s+([\\s\\S]*?)(?=\\n### |\\n## Completion summary)`),
+    )?.[1] ?? ""
+  );
+}
+
 const findingLog = report.match(/## Finding log\s+([\s\S]*?)(?=\n## )/)?.[1] ?? "";
 const findingTableRows = findingLog
   .split(/\r?\n/)
@@ -1062,6 +1070,45 @@ if (plan?.status === "complete") {
       (["P0", "P1"].includes(findingSeverity) || findingGate === "pilots")
     ) {
       errors.push("Pass for real consumer pilots cannot include an open blocking finding.");
+    }
+  }
+  for (const environment of completedEnvironments) {
+    const section = environmentNoteSection(environment.id);
+    const expectedScenarios = (plan.scenarios ?? [])
+      .filter((scenario) => scenario.environments.includes(environment.id))
+      .map((scenario) => `\`${scenario.id}\``)
+      .join(", ");
+    const expectedFindings =
+      [
+        ...new Set(
+          completedResults
+            .filter(
+              (result) =>
+                result.environmentId === environment.id &&
+                ["Fail", "Blocked"].includes(result.result) &&
+                result.issue,
+            )
+            .map((result) => result.issue),
+        ),
+      ].join(", ") || "None recorded";
+    for (const [field, expected] of [
+      ["Operating system", environment.operatingSystem],
+      ["Browser", environment.browser],
+      ["Assistive technology", environment.assistiveTechnology],
+      ["Device", environment.device],
+      ["Viewport", environment.viewport],
+      ["Zoom", environment.zoom],
+      ["Package/source mode", environment.packageMode],
+      ["Result", environment.result],
+      ["Notes", environment.notes],
+      ["Completed scenarios", expectedScenarios],
+      ["Findings", expectedFindings],
+    ]) {
+      if (reportTableValue(section, field) !== expected) {
+        errors.push(
+          `Completed environment note ${environment.id} "${field}" must match completion evidence.`,
+        );
+      }
     }
   }
   for (const environment of completedEnvironments) {

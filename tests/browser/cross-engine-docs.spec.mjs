@@ -312,6 +312,19 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
 }) => {
   const problems = monitorPage(page, browserName);
 
+  await page.goto("/visual-test#checkbox");
+  const projectUpdates = page.getByRole("checkbox", { name: "Project updates" });
+  await expect(projectUpdates).toBeVisible();
+  await projectUpdates.click();
+  await expect(projectUpdates).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "Security alerts" })).toBeChecked();
+
+  const emailNotifications = page.getByRole("switch", { name: "Email notifications" });
+  await expect(emailNotifications).toBeVisible();
+  await emailNotifications.click();
+  await expect(emailNotifications).toBeChecked();
+  await expect(page.getByRole("switch", { name: "Push notifications" })).toBeChecked();
+
   await page.goto("/docs/components/table");
   const primaryTableExample = page.getByRole("region", { name: "Primary Table composition" });
   const tableRegion = primaryTableExample.getByRole("region", {

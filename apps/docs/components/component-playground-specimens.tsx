@@ -750,8 +750,8 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Checkbox aria-label="Unchecked option" key="off" />,
-                <Checkbox aria-label="Checked option" key="on" defaultChecked />,
+                <Checkbox aria-label="Project updates" key="off" />,
+                <Checkbox aria-label="Security alerts" key="on" defaultChecked />,
                 <Checkbox aria-label="Indeterminate option" key="mixed" indeterminate />,
                 <span key="disabled" className="component-lab-inline">
                   <Checkbox aria-label="Disabled unchecked option" disabled />
@@ -791,8 +791,8 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Switch aria-label="Notifications off" key="off" />,
-                <Switch aria-label="Notifications on" key="on" defaultChecked />,
+                <Switch aria-label="Email notifications" key="off" />,
+                <Switch aria-label="Push notifications" key="on" defaultChecked />,
                 <Switch aria-label="Disabled notifications off" key="doff" disabled />,
                 <Switch aria-label="Disabled notifications on" key="don" disabled defaultChecked />,
               ],
