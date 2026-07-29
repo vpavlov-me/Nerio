@@ -531,6 +531,17 @@ function findingCell(value) {
   return isSubstantiveString(value) && value !== "—";
 }
 
+function isDeviceConsistentMobileViewport(environment) {
+  const dimensions = environment?.viewport?.match(/^(\d{3,4})\s*[x×]\s*(\d{3,4})$/i);
+  if (!dimensions) return false;
+  const shortEdge = Math.min(Number(dimensions[1]), Number(dimensions[2]));
+  const longEdge = Math.max(Number(dimensions[1]), Number(dimensions[2]));
+  const isTablet = /\b(?:iPad|tablet)\b/i.test(environment?.device ?? "");
+  return isTablet
+    ? shortEdge >= 600 && shortEdge <= 1100 && longEdge >= 800 && longEdge <= 1400
+    : shortEdge >= 300 && shortEdge <= 600 && longEdge >= 500 && longEdge <= 1100;
+}
+
 function aggregateResults(results) {
   if (results.some(({ result }) => result === "Fail")) return "Fail";
   if (results.some(({ result }) => result === "Blocked")) return "Blocked";
@@ -906,6 +917,12 @@ if (plan?.status === "complete") {
     ) {
       errors.push(`${label} device must identify physical hardware, not a simulator or emulator.`);
     }
+    if (
+      ["ios-safari-voiceover", "android-chrome-talkback"].includes(environment?.id) &&
+      !isDeviceConsistentMobileViewport(environment)
+    ) {
+      errors.push(`${label} viewport must match the recorded physical mobile device.`);
+    }
     const recordedStatus = reportStatus(environment?.id);
     if (recordedStatus !== environment?.result) {
       errors.push(
@@ -1005,7 +1022,13 @@ if (plan?.status === "complete") {
       findingIssue,
       findingResolution,
     ] = finding;
-    if (!/^open$/i.test(findingResolution)) continue;
+    const normalizedResolution = findingResolution.toLowerCase();
+    if (!["open", "resolved", "closed"].includes(normalizedResolution)) {
+      errors.push(
+        `Finding "${findingTitle}" resolution must use exactly Open, Resolved, or Closed.`,
+      );
+    }
+    if (["resolved", "closed"].includes(normalizedResolution)) continue;
 
     const normalizedScenario = findingScenario.replaceAll("`", "");
     const normalizedEnvironment = findingEnvironment.replaceAll("`", "");

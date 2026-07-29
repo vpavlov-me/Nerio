@@ -153,6 +153,7 @@ Create a GitHub issue for each actionable defect, then link it here. Do not comb
 components or root causes into one finding. Completed `Fail` and `Blocked` evidence requires one
 structured row whose scenario, environment, severity, release impact, issue, resolution, and retest
 match the machine-readable result record.
+Use exactly `Open`, `Resolved`, or `Closed` for Resolution. Any other value is treated as unresolved.
 
 | Finding       | Scenario | Environment | Severity | Release impact | Issue | Resolution | Retest |
 | ------------- | -------- | ----------- | -------- | -------------- | ----- | ---------- | ------ |

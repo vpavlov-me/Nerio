@@ -130,7 +130,12 @@ function completedPlan(source) {
         environments: plan.requiredEnvironments.map(({ id }) => ({
           id,
           ...completedEnvironmentMetadata[id],
-          viewport: "1280x800",
+          viewport:
+            id === "ios-safari-voiceover"
+              ? "393x852"
+              : id === "android-chrome-talkback"
+                ? "412x915"
+                : "1280x800",
           zoom: id === "zoom-reflow" ? "200% and 400%" : "100%",
           packageMode: "Packed package",
           result: "Pass",
@@ -420,6 +425,32 @@ test("manual audit validator requires physical mobile hardware and enabled prefe
   );
 });
 
+test("manual audit validator requires device-consistent physical mobile viewports", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "ios-safari-voiceover").viewport =
+        "1280x800";
+      plan.completion.environments.find(({ id }) => id === "android-chrome-talkback").viewport =
+        "1280x800";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /ios-safari-voiceover viewport must match the recorded physical mobile device/,
+      );
+      assert.match(
+        result.stderr,
+        /android-chrome-talkback viewport must match the recorded physical mobile device/,
+      );
+    },
+  );
+});
+
 test("manual audit validator requires environment outcomes and notes", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -612,6 +643,27 @@ test("manual audit validator rejects a pilot pass with an untracked open blocker
         result.stderr,
         /Completion summary cannot pass while the finding log has an open P0 or P1/,
       );
+      assert.match(
+        result.stderr,
+        /Pass for real consumer pilots cannot include an open blocking finding/,
+      );
+    },
+  );
+});
+
+test("manual audit validator treats non-closed finding resolutions as unresolved", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
+        `| Pending navigation blocker | \`global-docs-navigation\` | \`macos-safari-voiceover\` | P1 | pilots | ${trackedIssue} | Fix pending | Required after fix |`,
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /resolution must use exactly Open, Resolved, or Closed/);
+      assert.match(result.stderr, /must match a failed or blocked completion result/);
       assert.match(
         result.stderr,
         /Pass for real consumer pilots cannot include an open blocking finding/,
