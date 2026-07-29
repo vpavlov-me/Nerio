@@ -117,8 +117,19 @@ function isSubstantiveString(value) {
   return (
     typeof value === "string" &&
     value.trim().length > 0 &&
-    !["pending", "not run", "recorded", "none recorded"].includes(value.trim().toLowerCase())
+    !["pending", "not run", "recorded", "none recorded", "not applicable"].includes(
+      value.trim().toLowerCase(),
+    )
   );
+}
+
+function auditScope(value) {
+  return {
+    issue: value?.issue,
+    requiredEnvironments: value?.requiredEnvironments,
+    requiredEvidenceFields: value?.requiredEvidenceFields,
+    scenarios: value?.scenarios,
+  };
 }
 
 function validateEvidenceLinks(label, evidence) {
@@ -273,6 +284,25 @@ if (plan?.status === "complete") {
           "Completed audit candidate must be an available ancestor of the current checkout.",
         );
       } else {
+        const candidatePlanSource = spawnSync(
+          "git",
+          ["show", `${candidate.commit}:quality/manual-audit-plan.json`],
+          { cwd: root, encoding: "utf8" },
+        );
+        if (candidatePlanSource.status !== 0) {
+          errors.push("Completed audit candidate must contain the manual audit plan.");
+        } else {
+          try {
+            const candidatePlan = JSON.parse(candidatePlanSource.stdout);
+            if (JSON.stringify(auditScope(candidatePlan)) !== JSON.stringify(auditScope(plan))) {
+              errors.push(
+                "Completed audit scope must match the routes, steps, expectations, and environment matrix locked by the candidate.",
+              );
+            }
+          } catch {
+            errors.push("Completed audit candidate manual audit plan must be valid JSON.");
+          }
+        }
         const diff = spawnSync("git", ["diff", "--name-only", `${candidate.commit}..HEAD`, "--"], {
           cwd: root,
           encoding: "utf8",
@@ -362,10 +392,10 @@ if (plan?.status === "complete") {
   }
   if (
     finalDecision === "Pass for real consumer pilots" &&
-    completedResults.some(({ result }) => result === "Fail" || result === "Blocked")
+    completedResults.some(({ result }) => result !== "Pass")
   ) {
     errors.push(
-      "Completed audit with failed or blocked results must use the Blocked before pilots final decision.",
+      "Pass for real consumer pilots requires Pass evidence for every required scenario-environment pair.",
     );
   }
 }

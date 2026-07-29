@@ -22,7 +22,9 @@ ARIA, keyboard interaction, focus, announcements, form behavior, value semantics
 or native picker behavior, relock the candidate and rerun the affected scenarios against the new
 commit. The completion gate permits only this report and the machine-readable audit plan to change
 after the recorded candidate; any other changed path invalidates the completed evidence until the
-candidate and applicable results are refreshed.
+candidate and applicable results are refreshed. The issue, required environments, evidence fields,
+routes, steps, expectations, and scenario-to-environment matrix must remain identical to the plan
+stored at that candidate.
 
 | Field                    | Evidence |
 | ------------------------ | -------- |
@@ -76,7 +78,8 @@ Before changing the plan status to `complete`, add a machine-readable `completio
 The completion validator rejects missing pairs, duplicate or unexpected records, placeholder
 values, non-evidence URLs, candidate drift between the plan and report, post-candidate source
 changes, a pilot-pass decision with failed or blocked results, and any remaining pending table
-cells.
+cells. `Pass for real consumer pilots` requires `Pass` evidence for every required
+scenario/environment pair; `Not applicable`, `Fail`, or `Blocked` keeps the final decision blocked.
 
 ## Required environments
 

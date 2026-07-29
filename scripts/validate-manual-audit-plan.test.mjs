@@ -162,8 +162,48 @@ test("manual audit validator rejects a pilot pass with blocked evidence", () => 
       assert.notEqual(result.status, 0);
       assert.match(
         result.stderr,
-        /failed or blocked results must use the Blocked before pilots final decision/,
+        /requires Pass evidence for every required scenario-environment pair/,
       );
+    },
+  );
+});
+
+test("manual audit validator rejects an evidence-free pilot pass", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      for (const result of plan.completion.results) result.result = "Not applicable";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /requires Pass evidence for every required scenario-environment pair/,
+      );
+    },
+  );
+});
+
+test("manual audit validator locks the candidate scenario matrix", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.scenarios[0].environments.pop();
+      plan.completion.results = plan.completion.results.filter(
+        ({ scenarioId, environmentId }) =>
+          scenarioId !== plan.scenarios[0].id ||
+          plan.scenarios[0].environments.includes(environmentId),
+      );
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /scope must match the routes, steps, expectations/);
     },
   );
 });
