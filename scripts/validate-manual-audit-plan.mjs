@@ -1054,7 +1054,31 @@ if (plan?.status === "complete") {
       findingGate,
       findingIssue,
       findingResolution,
+      findingRetest,
     ] = finding;
+    const normalizedScenario = findingScenario.replaceAll("`", "");
+    const normalizedEnvironment = findingEnvironment.replaceAll("`", "");
+    if (!findingCell(findingTitle)) {
+      errors.push("Every finding-log row must include a substantive finding title.");
+    }
+    if (!requiredScenarioIds.includes(normalizedScenario)) {
+      errors.push(`Finding "${findingTitle}" must identify a canonical scenario.`);
+    }
+    if (!requiredEnvironmentIds.includes(normalizedEnvironment)) {
+      errors.push(`Finding "${findingTitle}" must identify a required environment.`);
+    }
+    if (!allowedFindingSeverities.includes(findingSeverity)) {
+      errors.push(`Finding "${findingTitle}" must use an allowed severity.`);
+    }
+    if (!allowedBlockingGates.includes(findingGate)) {
+      errors.push(`Finding "${findingTitle}" must use an allowed release impact.`);
+    }
+    if (!/^https:\/\/github\.com\/vpavlov-me\/Nerio\/issues\/\d+$/.test(findingIssue)) {
+      errors.push(`Finding "${findingTitle}" must link a focused Nerio GitHub issue.`);
+    }
+    if (!findingCell(findingRetest)) {
+      errors.push(`Finding "${findingTitle}" must include a substantive retest record.`);
+    }
     const normalizedResolution = findingResolution.toLowerCase();
     if (!["open", "resolved", "closed"].includes(normalizedResolution)) {
       errors.push(
@@ -1063,8 +1087,6 @@ if (plan?.status === "complete") {
     }
     if (["resolved", "closed"].includes(normalizedResolution)) continue;
 
-    const normalizedScenario = findingScenario.replaceAll("`", "");
-    const normalizedEnvironment = findingEnvironment.replaceAll("`", "");
     const matchingResult = completedResults.find(
       (result) =>
         result.issue === findingIssue &&
@@ -1100,6 +1122,14 @@ if (plan?.status === "complete") {
   const blockingResults = completedResults.filter(({ result }) =>
     ["Fail", "Blocked"].includes(result),
   );
+  if (
+    finalDecision === "Blocked before pilots" &&
+    (blockingResults.length === 0 || summaryResults.every(({ result }) => result === "Pass"))
+  ) {
+    errors.push(
+      "Blocked before pilots requires failed or blocked completion evidence and a non-passing summary gate.",
+    );
+  }
   for (const { gate, result } of summaryResults.filter(
     ({ result }) => result === "Fail" || result === "Blocked",
   )) {

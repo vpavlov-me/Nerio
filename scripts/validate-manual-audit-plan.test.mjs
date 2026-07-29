@@ -676,6 +676,30 @@ test("manual audit validator rejects duplicate final-decision metadata", () => {
   );
 });
 
+test("manual audit validator rejects a blocked decision without blocker evidence", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source)
+        .replace(
+          "Final decision: **Pass for real consumer pilots**",
+          "Final decision: **Blocked before pilots**",
+        )
+        .replace(
+          "## Final decision\n\n**Pass for real consumer pilots**",
+          "## Final decision\n\n**Blocked before pilots**",
+        ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Blocked before pilots requires failed or blocked completion evidence/,
+      );
+    },
+  );
+});
+
 test("manual audit validator derives environment failures and requires finding records", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -777,6 +801,25 @@ test("manual audit validator rejects malformed finding-log rows", () => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, /finding-log rows must contain exactly eight table cells/);
+    },
+  );
+});
+
+test("manual audit validator validates closed finding traceability", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
+        "| Closed blocker | — | — | P0 | pilots | — | Closed | — |",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must identify a canonical scenario/);
+      assert.match(result.stderr, /must identify a required environment/);
+      assert.match(result.stderr, /must link a focused Nerio GitHub issue/);
+      assert.match(result.stderr, /must include a substantive retest record/);
     },
   );
 });
