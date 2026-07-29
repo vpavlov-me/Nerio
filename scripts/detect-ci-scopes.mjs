@@ -1,0 +1,184 @@
+import { execFileSync } from "node:child_process";
+import { appendFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+
+const scopeNames = [
+  "browser",
+  "visual",
+  "cli",
+  "mcp",
+  "adapters",
+  "packages",
+  "manual_audit",
+  "workflow",
+  "branch_policy",
+  "docs_only",
+];
+
+const codeExtension = /\.(?:[cm]?[jt]sx?|css|scss|json)$/;
+const markdownOnlyPath =
+  /^(?:.*\.md|CHANGELOG|CHANGELOG\.md|RELEASE\.md|AGENTS\.md|CODE_OF_CONDUCT\.md|CONTRIBUTING\.md)$/;
+
+function matchesAny(path, patterns) {
+  return patterns.some((pattern) =>
+    typeof pattern === "string" ? path === pattern : pattern.test(path),
+  );
+}
+
+function isBrowserSurface(path) {
+  return matchesAny(path, [
+    /^packages\/ui\/src\//,
+    /^packages\/tokens\/src\//,
+    /^packages\/adapters\/src\//,
+    /^packages\/registry\/src\//,
+    /^apps\/docs\/.*\.(?:[cm]?[jt]sx?|css|scss|json)$/,
+    /^tests\/browser\//,
+    /^packages\/config\//,
+    "playwright.config.mjs",
+    "pnpm-lock.yaml",
+  ]);
+}
+
+function isVisualSurface(path) {
+  return matchesAny(path, [
+    /^packages\/ui\/src\/(?:components|styles)\//,
+    "packages/ui/src/styles.css",
+    /^packages\/tokens\/src\/.*\.css$/,
+    /^packages\/adapters\/src\/(?:icons|motion)\./,
+    /^apps\/docs\/app\/(?:docs\/components|views|visual-test)\//,
+    /^apps\/docs\/app\/.*\.css$/,
+    /^apps\/docs\/components\//,
+    /^apps\/docs\/features\//,
+    /^tests\/visual\//,
+    "playwright.visual.config.mjs",
+  ]);
+}
+
+function isPackageBoundary(path) {
+  return matchesAny(path, [
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    /^packages\/[^/]+\/package\.json$/,
+    /^packages\/ui\/src\/(?:(?:index|client)\.ts|styles\.css)$/,
+    /^packages\/(?:tokens|adapters|registry|cli|mcp)\/src\/index\.[cm]?[jt]s$/,
+    "quality/package-budgets.json",
+    "scripts/adapter-consumer-smoke.mjs",
+    "scripts/pack-check.mjs",
+    "scripts/release-smoke.mjs",
+    "scripts/validate-motion-adapter.mjs",
+    "scripts/validate-package-budgets.mjs",
+  ]);
+}
+
+function isManualAuditContract(path) {
+  return matchesAny(path, [
+    "quality/manual-audit-plan.json",
+    "docs/audits/core-1-0-accessibility-device-audit.md",
+    "scripts/validate-manual-audit-plan.mjs",
+    "scripts/validate-manual-audit-plan.test.mjs",
+  ]);
+}
+
+export function detectCiScopes(inputPaths) {
+  const paths = [...new Set(inputPaths.map((path) => path.replaceAll("\\", "/")).filter(Boolean))];
+  const scopes = Object.fromEntries(scopeNames.map((scope) => [scope, false]));
+
+  for (const path of paths) {
+    scopes.browser ||= isBrowserSurface(path);
+    scopes.visual ||= isVisualSurface(path);
+    scopes.cli ||= matchesAny(path, [
+      /^packages\/cli\//,
+      /^packages\/registry\/src\//,
+      "scripts/release-smoke.mjs",
+    ]);
+    scopes.mcp ||= matchesAny(path, [
+      /^packages\/mcp\//,
+      /^packages\/registry\/src\//,
+      "scripts/release-smoke.mjs",
+    ]);
+    scopes.adapters ||= matchesAny(path, [
+      /^packages\/adapters\//,
+      "scripts/adapter-consumer-smoke.mjs",
+      "scripts/validate-motion-adapter.mjs",
+    ]);
+    scopes.packages ||= isPackageBoundary(path);
+    scopes.manual_audit ||= isManualAuditContract(path);
+    scopes.workflow ||= matchesAny(path, [
+      /^\.github\/workflows\//,
+      "scripts/detect-ci-scopes.mjs",
+      "scripts/detect-ci-scopes.test.mjs",
+    ]);
+    scopes.branch_policy ||= matchesAny(path, [
+      ".github/workflows/branch-policy.yml",
+      "scripts/check-branch-policy.mjs",
+      "scripts/check-branch-policy.test.mjs",
+    ]);
+  }
+
+  scopes.docs_only =
+    paths.length > 0 &&
+    paths.every(
+      (path) =>
+        markdownOnlyPath.test(path) &&
+        !isManualAuditContract(path) &&
+        !codeExtension.test(path.replace(/\.md$/, "")),
+    );
+
+  return { changedFiles: paths, scopes };
+}
+
+function parseArgs(args) {
+  const options = {};
+  for (let index = 0; index < args.length; index += 1) {
+    const name = args[index];
+    const value = args[index + 1];
+    if (!["--base", "--head", "--github-output"].includes(name) || !value) {
+      throw new Error(
+        "Usage: detect-ci-scopes.mjs --base <sha> --head <sha> [--github-output <path>]",
+      );
+    }
+    options[name.slice(2)] = value;
+    index += 1;
+  }
+  if (!options.base || !options.head) {
+    throw new Error(
+      "Usage: detect-ci-scopes.mjs --base <sha> --head <sha> [--github-output <path>]",
+    );
+  }
+  return options;
+}
+
+function changedFilesBetween(base, head) {
+  return execFileSync("git", ["diff", "--name-only", "--diff-filter=ACMRD", `${base}...${head}`], {
+    encoding: "utf8",
+  })
+    .split(/\r?\n/)
+    .filter(Boolean);
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  const options = parseArgs(process.argv.slice(2));
+  const result = detectCiScopes(changedFilesBetween(options.base, options.head));
+  const outputs = [
+    ...scopeNames.map((scope) => `${scope}=${result.scopes[scope]}`),
+    `changed_count=${result.changedFiles.length}`,
+  ];
+
+  if (options["github-output"]) {
+    appendFileSync(resolve(options["github-output"]), `${outputs.join("\n")}\n`);
+  }
+
+  console.log(
+    JSON.stringify(
+      {
+        changedFiles: result.changedFiles,
+        changedCount: result.changedFiles.length,
+        ...result.scopes,
+      },
+      null,
+      2,
+    ),
+  );
+}

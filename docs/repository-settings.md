@@ -15,7 +15,16 @@ Create a ruleset for `main` with these settings:
 - Require linear history.
 - Do not allow bypassing for maintainers, except for a documented emergency security fix.
 
-After CI exists, add the `quality` workflow check as required. Do not require a status check before the workflow is committed and verified.
+Require these stable status contexts:
+
+- `dev`: `branch-policy` and `PR gate`;
+- `main`: `branch-policy` and `Release gate`.
+
+Keep an existing required Vercel context on its current branch when it is already configured and
+reliable. `PR gate` aggregates always-on development quality and selected scope jobs;
+`Release gate` aggregates every release-quality, browser-engine, visual, tool, package, and
+manual-audit job. Internal job names are intentionally not required contexts. Do not require a new
+aggregate context until its workflow has been committed and verified on a pull request.
 
 ## Merge policy
 
