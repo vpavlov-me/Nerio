@@ -122,8 +122,10 @@ function completedPlan(source) {
           ciCommit: currentCommit,
           vercelDeployment: "https://nerio-audit-preview.vercel.app",
           vercelCommit: currentCommit,
+          packageMode: "Packed package",
           auditStartedAt: currentCommitTimestamp,
           auditOwner: "Accessibility audit team",
+          automatedPrepCompletedAt: currentCommitTimestamp,
         },
         environments: plan.requiredEnvironments.map(({ id }) => ({
           id,
@@ -155,6 +157,17 @@ function completedPlan(source) {
 }
 
 function completedReport(source) {
+  const candidateEvidence = new Map([
+    ["Commit", currentCommit],
+    ["GitHub verification", `https://github.com/vpavlov-me/Nerio/commit/${currentCommit}`],
+    ["CI run", "https://github.com/vpavlov-me/Nerio/actions/runs/123456789"],
+    ["Vercel deployment", "https://nerio-audit-preview.vercel.app"],
+    ["Package/source mode", "Packed package"],
+    ["Audit start", currentCommitTimestamp],
+    ["Audit owner", "Accessibility audit team"],
+    ["Automated prep completed", currentCommitTimestamp],
+  ]);
+
   return source
     .replace("Status: **Prepared — manual evidence pending**", "Status: **Complete**")
     .replace("Candidate commit: **Pending**", `Candidate commit: **${currentCommit}**`)
@@ -163,11 +176,22 @@ function completedReport(source) {
       "## Final decision\n\n**Pending**",
       "## Final decision\n\n**Pass for real consumer pilots**",
     )
+    .split("\n")
+    .map((line) => {
+      const field = [...candidateEvidence.keys()].find((label) =>
+        line.trimStart().startsWith(`| ${label}`),
+      );
+      return field ? `| ${field} | ${candidateEvidence.get(field)} |` : line;
+    })
+    .join("\n")
+    .replace(/## Completion summary[\s\S]*?(?=\n## Final decision)/, (section) =>
+      section.replaceAll("Pending", "Pass"),
+    )
     .replaceAll("Not run", "Pass")
     .replaceAll("Pending", "Recorded");
 }
 
-const trackedIssue = "https://github.com/example/repository/issues/123";
+const trackedIssue = "https://github.com/vpavlov-me/Nerio/issues/123";
 
 function trackedFailurePlan(source) {
   const plan = JSON.parse(completedPlan(source));
@@ -190,6 +214,7 @@ function trackedFailureReport(source, includeFinding = true) {
       "## Final decision\n\n**Pass for real consumer pilots**",
       "## Final decision\n\n**Blocked before pilots**",
     )
+    .replace(/(\| No open P0 or P1 accessibility defect\s+\|) Pass(\s+\|)/, "$1 Fail$2")
     .split("\n")
     .map((line) =>
       line.includes("`macos-safari-voiceover`") || line.includes("`global-docs-navigation`")
@@ -536,6 +561,55 @@ test("manual audit validator accepts a tracked blocked finding", () => {
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.equal(result.status, 0, result.stderr);
+    },
+  );
+});
+
+test("manual audit validator rejects a pilot pass with a failed completion-summary gate", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        /(\| No open P0 or P1 accessibility defect\s+\|) Pass(\s+\|)/,
+        "$1 Fail$2",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /requires every completion-summary gate to pass/);
+    },
+  );
+});
+
+test("manual audit validator rejects Candidate lock drift", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| CI run | https://github.com/vpavlov-me/Nerio/actions/runs/123456789 |",
+        "| CI run | Recorded |",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /Candidate lock "CI run" must match/);
+    },
+  );
+});
+
+test("manual audit validator rejects finding issues outside the Nerio repository", () => {
+  const foreignIssue = "https://github.com/example/repository/issues/123";
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(trackedFailurePlan(source));
+      plan.completion.results[0].issue = foreignIssue;
+      return JSON.stringify(plan, null, 2);
+    },
+    (source) => trackedFailureReport(source).replaceAll(trackedIssue, foreignIssue),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must link a focused GitHub issue/);
     },
   );
 });

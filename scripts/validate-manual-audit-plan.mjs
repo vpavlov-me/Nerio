@@ -302,6 +302,16 @@ const allowedPostCandidateChanges = new Set([
   "quality/manual-audit-plan.json",
 ]);
 const environmentEvidenceFields = requiredEvidenceFields;
+const completionSummaryGates = [
+  "No open P0 or P1 accessibility defect",
+  "Blocking P2 findings resolved",
+  "Every stable Core category covered with keyboard and VoiceOver",
+  "NVDA covers load-bearing interactive families",
+  "Mobile VoiceOver and TalkBack cover required controls and safe areas",
+  "Zoom/reflow, contrast, RTL, touch, and reduced motion verified",
+  "Motion adapter has manual reduced-motion evidence",
+  "Missing or stale evidence is explicitly listed",
+];
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b/i,
@@ -475,6 +485,19 @@ function reportStatus(id) {
     ?.split("|")
     .slice(1, -1)
     .map((cell) => cell.trim())[3];
+}
+
+function reportSection(title) {
+  return report.match(new RegExp(`## ${title}\\s+([\\s\\S]*?)(?=\\n## )`))?.[1] ?? "";
+}
+
+function reportTableValue(section, label) {
+  return section
+    .split(/\r?\n/)
+    .find((line) => line.trimStart().startsWith(`| ${label}`))
+    ?.split("|")
+    .slice(1, -1)
+    .map((cell) => cell.trim())[1];
 }
 
 const findingLog = report.match(/## Finding log\s+([\s\S]*?)(?=\n## )/)?.[1] ?? "";
@@ -663,6 +686,22 @@ if (plan?.status === "complete") {
   } else if (finalDecision && sectionDecision !== finalDecision) {
     errors.push("Completed audit report final-decision section must match its metadata decision.");
   }
+  const completionSummary = reportSection("Completion summary");
+  const summaryResults = completionSummaryGates.map((gate) => ({
+    gate,
+    result: reportTableValue(completionSummary, gate),
+  }));
+  for (const { gate, result } of summaryResults) {
+    if (!["Pass", "Fail", "Blocked"].includes(result)) {
+      errors.push(`Completed audit summary gate "${gate}" must record Pass, Fail, or Blocked.`);
+    }
+  }
+  if (
+    finalDecision === "Pass for real consumer pilots" &&
+    summaryResults.some(({ result }) => result !== "Pass")
+  ) {
+    errors.push("Pass for real consumer pilots requires every completion-summary gate to pass.");
+  }
   if (/^\|.*\|\s*(Not run|Pending)\s*\|/m.test(report) || /\|\s*Pending\s*\|/m.test(report)) {
     errors.push("Completed audit report must not leave pending or not-run table evidence.");
   }
@@ -753,6 +792,10 @@ if (plan?.status === "complete") {
     if (!isDetailedEvidenceString(candidate.auditOwner, "auditOwner")) {
       errors.push("Completed audit candidate must name the audit owner.");
     }
+    if (!isDetailedEvidenceString(candidate.packageMode, "packageMode")) {
+      errors.push("Completed audit candidate must record its package or source-install mode.");
+    }
+    let candidateCommittedAt = Number.NaN;
     const auditStartedAt = Date.parse(candidate.auditStartedAt);
     if (!isSubstantiveString(candidate.auditStartedAt) || Number.isNaN(auditStartedAt)) {
       errors.push("Completed audit candidate must include a valid auditStartedAt timestamp.");
@@ -765,7 +808,7 @@ if (plan?.status === "complete") {
           encoding: "utf8",
         },
       );
-      const candidateCommittedAt = Date.parse(candidateTimestamp.stdout.trim());
+      candidateCommittedAt = Date.parse(candidateTimestamp.stdout.trim());
       if (candidateTimestamp.status !== 0 || Number.isNaN(candidateCommittedAt)) {
         errors.push("Completed audit candidate commit timestamp could not be verified.");
       } else if (auditStartedAt < candidateCommittedAt) {
@@ -773,6 +816,35 @@ if (plan?.status === "complete") {
       }
       if (auditStartedAt > Date.now()) {
         errors.push("Completed audit auditStartedAt must not be in the future.");
+      }
+    }
+    const automatedPrepCompletedAt = Date.parse(candidate.automatedPrepCompletedAt);
+    if (Number.isNaN(automatedPrepCompletedAt)) {
+      errors.push("Completed audit candidate must record automatedPrepCompletedAt.");
+    } else if (
+      !Number.isNaN(candidateCommittedAt) &&
+      automatedPrepCompletedAt < candidateCommittedAt
+    ) {
+      errors.push("Completed audit automated prep must not predate the candidate commit.");
+    } else if (
+      !Number.isNaN(auditStartedAt) &&
+      (automatedPrepCompletedAt > auditStartedAt || automatedPrepCompletedAt > Date.now())
+    ) {
+      errors.push("Completed audit automated prep must finish no later than the audit start.");
+    }
+    const candidateLock = reportSection("Candidate lock");
+    for (const [field, expected] of [
+      ["Commit", candidate.commit],
+      ["GitHub verification", candidate.githubVerification],
+      ["CI run", candidate.ciRun],
+      ["Vercel deployment", candidate.vercelDeployment],
+      ["Package/source mode", candidate.packageMode],
+      ["Audit start", candidate.auditStartedAt],
+      ["Audit owner", candidate.auditOwner],
+      ["Automated prep completed", candidate.automatedPrepCompletedAt],
+    ]) {
+      if (reportTableValue(candidateLock, field) !== expected) {
+        errors.push(`Completed audit Candidate lock "${field}" must match completion.candidate.`);
       }
     }
   }
@@ -852,7 +924,7 @@ if (plan?.status === "complete") {
     if (result?.result === "Fail" || result?.result === "Blocked") {
       if (
         typeof result?.issue !== "string" ||
-        !/^https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/\d+$/.test(result.issue)
+        !/^https:\/\/github\.com\/vpavlov-me\/Nerio\/issues\/\d+$/.test(result.issue)
       ) {
         errors.push(`${label} must link a focused GitHub issue for failed or blocked evidence.`);
       } else {
