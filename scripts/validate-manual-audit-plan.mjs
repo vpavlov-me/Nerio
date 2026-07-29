@@ -444,6 +444,26 @@ function isAllowedNotApplicable(environmentId, field, value) {
   );
 }
 
+function hasEnabledPreferenceState(environmentId, notes) {
+  if (typeof notes !== "string") return false;
+  if (
+    environmentId === "reduced-motion" &&
+    /\bprefers-reduced-motion\s*:\s*reduce\b/i.test(notes)
+  ) {
+    return true;
+  }
+  const preferencePattern =
+    environmentId === "reduced-motion"
+      ? /\b(?:reduce|reduced) motion\b/i
+      : /\b(?:high contrast|forced colors|increase contrast)\b/i;
+  const preferenceMatch = preferencePattern.exec(notes);
+  if (!preferenceMatch) return false;
+  const stateSegment = notes
+    .slice(preferenceMatch.index + preferenceMatch[0].length)
+    .match(/^(.{0,80}?)\b(enabled|active|on)\b/i);
+  return Boolean(stateSegment && !/\b(?:not|never)\b/i.test(stateSegment[1]));
+}
+
 function auditScope(value) {
   return {
     issue: value?.issue,
@@ -496,7 +516,13 @@ function validateEvidenceLinks(label, evidence) {
 function reportStatus(id, sectionTitle) {
   const rows = reportSection(sectionTitle)
     .split(/\r?\n/)
-    .filter((line) => line.trimStart().startsWith(`| \`${id}\``));
+    .filter((line) => {
+      const cells = line
+        .split("|")
+        .slice(1, -1)
+        .map((cell) => cell.trim());
+      return cells[0] === `\`${id}\``;
+    });
   if (rows.length !== 1) return undefined;
   return rows[0]
     ?.split("|")
@@ -956,9 +982,22 @@ if (plan?.status === "complete") {
     }
     if (
       ["reduced-motion", "high-contrast"].includes(environment?.id) &&
-      /\b(?:not|never|disabled|off)\b/i.test(environment?.notes ?? "")
+      !hasEnabledPreferenceState(environment.id, environment?.notes)
     ) {
       errors.push(`${label} notes must match the required environment.`);
+    }
+    if (environment?.id === "high-contrast") {
+      const isCoherentMac =
+        /\bmacOS\b/i.test(environment.operatingSystem ?? "") &&
+        concreteMacDevicePattern.test(environment.device ?? "") &&
+        /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b/i.test(environment.browser ?? "");
+      const isCoherentWindows =
+        /\bWindows\b/i.test(environment.operatingSystem ?? "") &&
+        concreteWindowsDevicePattern.test(environment.device ?? "") &&
+        /\b(?:Chrome|Chromium|Firefox|Edge)\b/i.test(environment.browser ?? "");
+      if (!isCoherentMac && !isCoherentWindows) {
+        errors.push(`${label} platform metadata must describe one coherent desktop environment.`);
+      }
     }
     if (
       environment?.id === "zoom-reflow" &&

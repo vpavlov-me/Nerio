@@ -496,6 +496,52 @@ test("manual audit validator rejects negated accessibility preferences", () => {
   );
 });
 
+test("manual audit validator allows negative observations after an enabled preference", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "reduced-motion").notes =
+        "Reduce Motion enabled; overlays did not animate during the required checks.";
+      plan.completion.environments.find(({ id }) => id === "high-contrast").notes =
+        "High Contrast enabled; disabled controls remained distinguishable.";
+      return JSON.stringify(plan, null, 2);
+    },
+    (source) =>
+      completedReport(source)
+        .replace(
+          "Verified with macOS Reduce Motion enabled for the complete scenario set.",
+          "Reduce Motion enabled; overlays did not animate during the required checks.",
+        )
+        .replace(
+          "Verified with Windows High Contrast mode enabled for the complete scenario set.",
+          "High Contrast enabled; disabled controls remained distinguishable.",
+        ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.equal(result.status, 0, result.stderr);
+    },
+  );
+});
+
+test("manual audit validator requires coherent high-contrast platform metadata", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "high-contrast").browser = "Safari 18.5";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /platform metadata must describe one coherent desktop environment/,
+      );
+    },
+  );
+});
+
 test("manual audit validator rejects negated zoom evidence", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -1143,6 +1189,22 @@ test("manual audit validator reads scenario status only from the canonical matri
         "Status: **Complete**\n\n| `global-docs-navigation` | fake | fake | Pass | fake |",
       );
     },
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed scenario global-docs-navigation result must match the completed report status/,
+      );
+    },
+  );
+});
+
+test("manual audit validator matches canonical status-row IDs exactly", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace("`global-docs-navigation`", "`global-docs-navigation`-extra"),
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
