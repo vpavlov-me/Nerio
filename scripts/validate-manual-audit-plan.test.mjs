@@ -660,6 +660,22 @@ test("manual audit validator rejects generic platforms, reserved evidence URLs, 
   );
 });
 
+test("manual audit validator rejects duplicate final-decision metadata", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "- Final decision: **Pass for real consumer pilots**",
+        "- Final decision: **Pass for real consumer pilots**\n- Final decision: **Blocked before pilots**",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must record one allowed final decision/);
+    },
+  );
+});
+
 test("manual audit validator derives environment failures and requires finding records", () => {
   withPlanAndReportFixtures(
     (source) => {

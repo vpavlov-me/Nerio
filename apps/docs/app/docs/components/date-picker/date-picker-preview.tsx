@@ -6,7 +6,9 @@ import { Button, DatePicker, type CalendarDate } from "@nerio-ui/ui/client";
 
 export function DatePickerPreview() {
   const [date, setDate] = React.useState<CalendarDate | null>("2026-06-15");
+  const [requiredDate, setRequiredDate] = React.useState<CalendarDate | null>(null);
   const [submittedPayload, setSubmittedPayload] = React.useState<string | null>(null);
+  const requiredDateInvalid = requiredDate === null;
 
   return (
     <section id="preview" className="component-example" aria-label="DatePicker examples">
@@ -36,8 +38,19 @@ export function DatePickerPreview() {
             value={date}
           />
         </Field>
-        <Field label="Invalid required date" message="Choose a date before submitting." invalid>
-          <DatePicker name="invalidDate" required invalid today="2026-06-15" />
+        <Field
+          label="Invalid required date"
+          message={requiredDateInvalid ? "Choose a date before submitting." : undefined}
+          invalid={requiredDateInvalid}
+        >
+          <DatePicker
+            name="invalidDate"
+            onValueChange={setRequiredDate}
+            required
+            invalid={requiredDateInvalid}
+            today="2026-06-15"
+            value={requiredDate}
+          />
         </Field>
         <Field label="Read-only date">
           <DatePicker name="readOnlyDate" value="2026-06-22" readOnly />

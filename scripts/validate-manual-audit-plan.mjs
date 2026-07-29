@@ -709,13 +709,19 @@ if (plan?.status === "complete") {
   if (!report.includes("Status: **Complete**")) {
     errors.push("Completed audit report must declare Status: **Complete**.");
   }
-  const reportCommit = report.match(/^- Candidate commit: \*\*([0-9a-f]{40})\*\*$/m)?.[1];
+  const reportCommitMatches = [
+    ...report.matchAll(/^- Candidate commit: \*\*([0-9a-f]{40})\*\*$/gm),
+  ];
+  const reportCommit = reportCommitMatches.length === 1 ? reportCommitMatches[0][1] : undefined;
   if (!reportCommit) {
     errors.push("Completed audit report must record a 40-character candidate commit.");
   }
-  const finalDecision = report.match(
-    /^- Final decision: \*\*(Pass for real consumer pilots|Blocked before pilots)\*\*$/m,
-  )?.[1];
+  const finalDecisionMatches = [
+    ...report.matchAll(
+      /^- Final decision: \*\*(Pass for real consumer pilots|Blocked before pilots)\*\*$/gm,
+    ),
+  ];
+  const finalDecision = finalDecisionMatches.length === 1 ? finalDecisionMatches[0][1] : undefined;
   if (!finalDecision) {
     errors.push("Completed audit report must record one allowed final decision.");
   }

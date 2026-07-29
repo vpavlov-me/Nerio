@@ -584,11 +584,14 @@ test("keeps DatePicker focus, form value, constraints, dismissal, RTL, and reflo
     "2026-06-16",
   );
   const invalidTrigger = page.getByRole("button", { name: "Invalid required date" });
+  await expect(invalidTrigger).toHaveAttribute("aria-invalid", "true");
   await invalidTrigger.click();
   await page
     .getByRole("group", { name: "Choose date" })
     .getByRole("button", { name: "June 17, 2026" })
     .click();
+  await expect(invalidTrigger).not.toHaveAttribute("aria-invalid", "true");
+  await expect(page.getByText("Choose a date before submitting.")).toBeHidden();
   await page.getByRole("button", { name: "Submit dates" }).click();
   await expect(page.getByText(/Submitted form data:/)).toContainText(
     '{"releaseDate":"2026-06-16","invalidDate":"2026-06-17","readOnlyDate":"2026-06-22"}',
