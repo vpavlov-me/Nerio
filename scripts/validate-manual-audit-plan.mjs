@@ -725,9 +725,13 @@ if (plan?.status === "complete") {
   if (!finalDecision) {
     errors.push("Completed audit report must record one allowed final decision.");
   }
-  const sectionDecision = reportSection("Final decision").match(
-    /\*\*(Pass for real consumer pilots|Blocked before pilots)\*\*/,
-  )?.[1];
+  const sectionDecisionMatches = [
+    ...reportSection("Final decision").matchAll(
+      /^\*\*(Pass for real consumer pilots|Blocked before pilots)\*\*$/gm,
+    ),
+  ];
+  const sectionDecision =
+    sectionDecisionMatches.length === 1 ? sectionDecisionMatches[0][1] : undefined;
   if (!sectionDecision) {
     errors.push("Completed audit report final-decision section must record one allowed decision.");
   } else if (finalDecision && sectionDecision !== finalDecision) {
@@ -1133,12 +1137,28 @@ if (plan?.status === "complete") {
   for (const { gate, result } of summaryResults.filter(
     ({ result }) => result === "Fail" || result === "Blocked",
   )) {
-    const supported =
-      gate === "No open P0 or P1 accessibility defect"
-        ? blockingResults.some(({ severity }) => ["P0", "P1"].includes(severity))
-        : gate === "Blocking P2 findings resolved"
-          ? blockingResults.some(({ severity }) => severity === "P2")
-          : blockingResults.length > 0;
+    const supportPredicates = {
+      "No open P0 or P1 accessibility defect": ({ severity }) => ["P0", "P1"].includes(severity),
+      "Blocking P2 findings resolved": ({ severity }) => severity === "P2",
+      "Every stable Core category covered with keyboard and VoiceOver": ({ environmentId }) =>
+        ["macos-safari-voiceover", "macos-chromium-keyboard"].includes(environmentId),
+      "NVDA covers load-bearing interactive families": ({ environmentId }) =>
+        environmentId === "windows-nvda",
+      "Mobile VoiceOver and TalkBack cover required controls and safe areas": ({ environmentId }) =>
+        ["ios-safari-voiceover", "android-chrome-talkback"].includes(environmentId),
+      "Zoom/reflow, contrast, RTL, touch, and reduced motion verified": ({ environmentId }) =>
+        [
+          "ios-safari-voiceover",
+          "android-chrome-talkback",
+          "zoom-reflow",
+          "reduced-motion",
+          "high-contrast",
+        ].includes(environmentId),
+      "Motion adapter has manual reduced-motion evidence": ({ scenarioId }) =>
+        scenarioId === "motion-adapter-reduced-motion",
+      "Missing or stale evidence is explicitly listed": ({ result }) => result === "Blocked",
+    };
+    const supported = blockingResults.some(supportPredicates[gate] ?? (() => false));
     if (!supported) {
       errors.push(
         `Completed audit summary gate "${gate}" must be supported by failed or blocked completion evidence.`,

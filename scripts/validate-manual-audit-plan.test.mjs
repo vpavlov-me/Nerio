@@ -676,6 +676,22 @@ test("manual audit validator rejects duplicate final-decision metadata", () => {
   );
 });
 
+test("manual audit validator rejects multiple decisions in the final section", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "## Final decision\n\n**Pass for real consumer pilots**",
+        "## Final decision\n\n**Pass for real consumer pilots**\n\n**Blocked before pilots**",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /final-decision section must record one allowed decision/);
+    },
+  );
+});
+
 test("manual audit validator rejects a blocked decision without blocker evidence", () => {
   withPlanAndReportFixtures(
     completedPlan,
@@ -1076,6 +1092,33 @@ test("manual audit validator requires evidence for every failed summary gate", (
       assert.match(
         result.stderr,
         /summary gate "No open P0 or P1 accessibility defect" must be supported/,
+      );
+    },
+  );
+});
+
+test("manual audit validator requires gate-relevant blocker evidence", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(trackedFailurePlan(source));
+      plan.completion.results[0].severity = "P3";
+      plan.completion.results[0].blockingGate = "api-freeze";
+      return JSON.stringify(plan, null, 2);
+    },
+    (source) =>
+      trackedFailureReport(source)
+        .replace("| P1 | pilots |", "| P3 | api-freeze |")
+        .replace(/(\| No open P0 or P1 accessibility defect\s+\|) Fail(\s+\|)/, "$1 Pass$2")
+        .replace(
+          /(\| Motion adapter has manual reduced-motion evidence\s+\|) Pass(\s+\|)/,
+          "$1 Fail$2",
+        ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /summary gate "Motion adapter has manual reduced-motion evidence" must be supported/,
       );
     },
   );
