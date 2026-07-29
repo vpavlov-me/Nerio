@@ -464,6 +464,18 @@ function hasEnabledPreferenceState(environmentId, notes) {
   return Boolean(stateSegment && !/\b(?:not|never)\b/i.test(stateSegment[1]));
 }
 
+function isCoherentDesktopEnvironment(environment) {
+  const isCoherentMac =
+    /\bmacOS\b/i.test(environment?.operatingSystem ?? "") &&
+    concreteMacDevicePattern.test(environment?.device ?? "") &&
+    /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b/i.test(environment?.browser ?? "");
+  const isCoherentWindows =
+    /\bWindows\b/i.test(environment?.operatingSystem ?? "") &&
+    concreteWindowsDevicePattern.test(environment?.device ?? "") &&
+    /\b(?:Chrome|Chromium|Firefox|Edge)\b/i.test(environment?.browser ?? "");
+  return isCoherentMac || isCoherentWindows;
+}
+
 function auditScope(value) {
   return {
     issue: value?.issue,
@@ -986,18 +998,21 @@ if (plan?.status === "complete") {
     ) {
       errors.push(`${label} notes must match the required environment.`);
     }
-    if (environment?.id === "high-contrast") {
-      const isCoherentMac =
-        /\bmacOS\b/i.test(environment.operatingSystem ?? "") &&
-        concreteMacDevicePattern.test(environment.device ?? "") &&
-        /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b/i.test(environment.browser ?? "");
-      const isCoherentWindows =
-        /\bWindows\b/i.test(environment.operatingSystem ?? "") &&
-        concreteWindowsDevicePattern.test(environment.device ?? "") &&
-        /\b(?:Chrome|Chromium|Firefox|Edge)\b/i.test(environment.browser ?? "");
-      if (!isCoherentMac && !isCoherentWindows) {
-        errors.push(`${label} platform metadata must describe one coherent desktop environment.`);
-      }
+    if (
+      ["zoom-reflow", "reduced-motion", "high-contrast"].includes(environment?.id) &&
+      !isCoherentDesktopEnvironment(environment)
+    ) {
+      errors.push(`${label} platform metadata must describe one coherent desktop environment.`);
+    }
+    if (
+      !isAllowedNotApplicable(
+        environment?.id,
+        "assistiveTechnology",
+        environment?.assistiveTechnology,
+      ) &&
+      /\b(?:not|never|unused|disabled|off)\b/i.test(environment?.assistiveTechnology ?? "")
+    ) {
+      errors.push(`${label} assistiveTechnology must describe technology that was actually used.`);
     }
     if (
       environment?.id === "zoom-reflow" &&

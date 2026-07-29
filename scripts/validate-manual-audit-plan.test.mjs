@@ -542,6 +542,55 @@ test("manual audit validator requires coherent high-contrast platform metadata",
   );
 });
 
+test("manual audit validator requires coherent zoom and motion platform metadata", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      for (const id of ["zoom-reflow", "reduced-motion"]) {
+        const environment = plan.completion.environments.find(
+          ({ id: environmentId }) => environmentId === id,
+        );
+        environment.operatingSystem = "Android 15";
+        environment.browser = "Safari 18.5";
+      }
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /zoom-reflow platform metadata must describe one coherent desktop environment/,
+      );
+      assert.match(
+        result.stderr,
+        /reduced-motion platform metadata must describe one coherent desktop environment/,
+      );
+    },
+  );
+});
+
+test("manual audit validator rejects negated assistive-technology metadata", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "windows-nvda").assistiveTechnology =
+        "NVDA 2025.1 was not used";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /windows-nvda assistiveTechnology must describe technology that was actually used/,
+      );
+    },
+  );
+});
+
 test("manual audit validator rejects negated zoom evidence", () => {
   withPlanAndReportFixtures(
     (source) => {
