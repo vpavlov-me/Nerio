@@ -32,18 +32,18 @@ export function CalendarPreview() {
             today="2026-06-15"
           />
         </div>
-        <div className="component-lab-stack" dir="rtl" lang="ar">
-          <h3>للقراءة فقط</h3>
+        <div className="component-lab-stack" dir="rtl" lang="fr">
+          <h3>Lecture seule en français (RTL)</h3>
           <Calendar
-            aria-label="تقويم الإصدار للقراءة فقط"
+            aria-label="Calendrier de publication en lecture seule"
             defaultValue="2026-06-15"
-            firstDayOfWeek={6}
+            firstDayOfWeek={1}
             labels={{
-              previousMonth: "الشهر السابق",
-              nextMonth: "الشهر التالي",
-              selectedDate: "التاريخ المحدد",
+              previousMonth: "Mois précédent",
+              nextMonth: "Mois suivant",
+              selectedDate: "Date sélectionnée",
             }}
-            locale="ar"
+            locale="fr-FR"
             readOnly
             today="2026-06-15"
           />
