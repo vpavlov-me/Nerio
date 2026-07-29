@@ -659,7 +659,7 @@ export function ComponentPlayground() {
       >
         <div className="component-lab-form-row">
           <Field label="Project name" description="Visible to workspace members.">
-            <Input defaultValue="Atlas" />
+            <Input defaultValue="Atlas" required />
           </Field>
           <Field label="Email" message="Enter a work email." invalid>
             <Input defaultValue="maya@example" />

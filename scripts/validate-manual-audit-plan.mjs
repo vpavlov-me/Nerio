@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parsePathOptions } from "./validator-options.mjs";
@@ -260,6 +261,32 @@ const requiredScenarioEnvironments = {
     "high-contrast",
   ],
 };
+const requiredScenarioScopeHashes = {
+  "global-docs-navigation": "fb41d8ad9148a0ae674cb214b4747e086e4582cf58d0f5562431761f62352b8f",
+  "global-demo-responsive": "6b9dd5ac431243b2befadd1f5b58c4c92a75ce7df6ae4d6bc884b58d9b106c37",
+  "actions-buttons-toggle": "f2ca6d8e139c415259aaefab04746624e2fab1c08f7824ac37761c29e5c6f8f7",
+  "forms-labels-validation": "1983e5eef43e64152db8aaa6939199668187d1f5b293514a0efc33e8a944f0f5",
+  "native-temporal-inputs": "1739c0cb5bd49b06ee0a649aed71a04dae76e7a6c42a87e125af7fe3d67b9dca",
+  "slider-input": "3c61fa32660d41c275f68cfb8cf33a1eaeaa78234db50e8edfc175bcc3fbb34d",
+  "file-input-picker": "f9bca9fce54391b2432683463df77d1d649f7adf2e2b8ee02c77211b393afae4",
+  "calendar-grid": "2f1296f0e5ced77f7beae623aa2d46409052e1769c6d38a26c02127c799d851b",
+  "date-picker-composition": "c28d2a929eaadfeaec2645b422889e82e56d02a3970020e84f2763dcf2b12e5d",
+  "table-semantics-overflow": "2f51d2f5a8514e7933d10bb4eb6b5938f9a9ab1e2ebd78c56f92a32945d89569",
+  "item-semantics-states": "fc8b1a03949b2f6ab3903a97d6b10d1e3136298c62466cde8b3830ce93d9594f",
+  "feedback-status-states": "c8145dddef20c427ae386ddd99f8e792eef53333d06aec9022c9a2f9f1e5c119",
+  "toast-announcements": "53d8e777ac302bfeae7534bbd1f08241c9d85951adfd73ce8525307c5f7b8422",
+  "tabs-orientation-rtl": "b09d59d443e3c18a4e6c98a713c4aa588d496b57e8620e1f168d6717159e0ac2",
+  "breadcrumbs-current": "f80a5e31b60c50109eb702fc20c230dbcc9c5b32f0b72b7e1d42c1cdc570eb33",
+  "pagination-current-disabled": "a001fe613e303a9be01bc6de1a3b0bf2f5e074219dd7af47ad6ae5b6020fcf75",
+  "command-live-states": "b5b933f3810c9901563ce02e7e94ae3280757c6cbcac23c70c6a61da74b5caa1",
+  "sidebar-collapse": "de981faf11802f9f4582bf63d5ba94088d524dec7fa706a953818b9e8f656b9c",
+  "sheet-mobile-modal": "6a586dbba7f1f9f9d13f6976a5b20f759626049a6ab04a0a70de597d3898be61",
+  "overlay-focus-dismissal": "6b5317936ba831532921cd6d89037185cc747b7d20515e9c4b7d9942018090e7",
+  "motion-adapter-reduced-motion":
+    "e40354f31f6f5394b44d27df7c0686933cc51f6b439477672efb1ae8c9a0f9df",
+  "runtime-axes-motion-contrast":
+    "5ec005d4c94787f27ce85db0380e6c92a8f20d215d976d64dc3ebc64e97558a7",
+};
 const allowedStatuses = ["manual-evidence-pending", "complete"];
 const allowedEvidenceResults = ["Pass", "Fail", "Blocked", "Not applicable"];
 const notApplicableEnvironmentFields = {
@@ -324,6 +351,10 @@ function auditScope(value) {
     requiredEvidenceFields: value?.requiredEvidenceFields,
     scenarios: value?.scenarios,
   };
+}
+
+function scenarioScopeHash({ id: _id, ...scope }) {
+  return createHash("sha256").update(JSON.stringify(scope)).digest("hex");
 }
 
 function validateEvidenceLinks(label, evidence) {
@@ -411,6 +442,12 @@ if (plan) {
     ) {
       errors.push(
         `${prefix} environments must exactly match: ${canonicalEnvironments.join(", ")}.`,
+      );
+    }
+    const canonicalScopeHash = requiredScenarioScopeHashes[scenario?.id];
+    if (canonicalScopeHash && scenarioScopeHash(scenario) !== canonicalScopeHash) {
+      errors.push(
+        `${prefix} scope must match its canonical title, route, surfaces, components, environments, steps, and expectations.`,
       );
     }
 

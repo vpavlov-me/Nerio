@@ -341,6 +341,33 @@ test("manual audit validator pins every scenario environment matrix", () => {
   );
 });
 
+test("manual audit validator pins canonical scenario routes and instructions", () => {
+  withFixture(
+    "quality/manual-audit-plan.json",
+    (source) => {
+      const plan = JSON.parse(source);
+      for (const scenario of plan.scenarios) {
+        scenario.route = "/does-not-exist";
+        scenario.steps = [""];
+        scenario.expected = [""];
+      }
+      return JSON.stringify(plan, null, 2);
+    },
+    (target) => {
+      const result = run(["--plan", target]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Scenario global-docs-navigation scope must match its canonical title, route/,
+      );
+      assert.match(
+        result.stderr,
+        /Scenario runtime-axes-motion-contrast scope must match its canonical title, route/,
+      );
+    },
+  );
+});
+
 test("manual audit validator rejects coverage and report drift", () => {
   withFixture(
     "quality/manual-audit-plan.json",

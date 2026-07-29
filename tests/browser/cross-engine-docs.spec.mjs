@@ -306,7 +306,7 @@ test("preserves native FileInput selection, FileList, form reset, and reflow", a
   expect(problems).toEqual([]);
 });
 
-test("exposes the semantic Table, Item list, and disabled Pagination audit fixtures", async ({
+test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixtures", async ({
   browserName,
   page,
 }) => {
@@ -332,6 +332,12 @@ test("exposes the semantic Table, Item list, and disabled Pagination audit fixtu
   await expect(
     page.getByRole("navigation", { name: "RTL pagination" }).getByLabel("Go to previous page"),
   ).toHaveAttribute("aria-disabled", "true");
+
+  await page.goto("/visual-test#field");
+  await expect(page.getByRole("textbox", { name: "Project name" })).toHaveAttribute("required", "");
+
+  await page.goto("/docs/components/tabs");
+  await expect(page.getByRole("tab", { name: "Project members and permissions" })).toBeVisible();
   expect(problems).toEqual([]);
 });
 

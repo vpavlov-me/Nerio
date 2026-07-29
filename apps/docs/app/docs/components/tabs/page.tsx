@@ -112,10 +112,10 @@ function ScrollableExample() {
     <div style={{ maxInlineSize: "18rem" }}>
       <Tabs defaultValue="overview" variant="bordered">
         <TabsList aria-label="Narrow project sections" scrollable>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
-          <TabsTrigger value="members">Members</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsTrigger value="overview">Workspace overview</TabsTrigger>
+          <TabsTrigger value="activity">Recent project activity</TabsTrigger>
+          <TabsTrigger value="members">Project members and permissions</TabsTrigger>
+          <TabsTrigger value="settings">Workspace settings</TabsTrigger>
           <TabsIndicator />
         </TabsList>
       </Tabs>
