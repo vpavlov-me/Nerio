@@ -335,6 +335,9 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
 
   await page.goto("/visual-test#field");
   await expect(page.getByRole("textbox", { name: "Project name" })).toHaveAttribute("required", "");
+  await expect(page.getByRole("textbox", { name: "md default input" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Email address with icon" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Default note" })).toBeVisible();
 
   await page.goto("/docs/components/tabs");
   await expect(page.getByRole("tab", { name: "Project members and permissions" })).toBeVisible();

@@ -376,6 +376,14 @@ if (plan) {
   const environments = Array.isArray(plan.requiredEnvironments) ? plan.requiredEnvironments : [];
   const environmentIds = environments.map((environment) => environment?.id).filter(Boolean);
   addMissing("Required environments", requiredEnvironmentIds, environmentIds);
+  const unexpectedEnvironmentIds = environmentIds.filter(
+    (id) => !requiredEnvironmentIds.includes(id),
+  );
+  if (unexpectedEnvironmentIds.length) {
+    errors.push(
+      `Manual audit plan has unexpected required environments: ${unexpectedEnvironmentIds.join(", ")}`,
+    );
+  }
 
   if (new Set(environmentIds).size !== environmentIds.length) {
     errors.push("Required environment IDs must be unique.");
@@ -391,6 +399,17 @@ if (plan) {
     ? plan.requiredEvidenceFields
     : [];
   addMissing("Required evidence fields", requiredEvidenceFields, evidenceFields);
+  const unexpectedEvidenceFields = evidenceFields.filter(
+    (field) => !requiredEvidenceFields.includes(field),
+  );
+  if (unexpectedEvidenceFields.length) {
+    errors.push(
+      `Manual audit plan has unexpected required evidence fields: ${unexpectedEvidenceFields.join(", ")}`,
+    );
+  }
+  if (new Set(evidenceFields).size !== evidenceFields.length) {
+    errors.push("Required evidence fields must be unique.");
+  }
 
   const scenarios = Array.isArray(plan.scenarios) ? plan.scenarios : [];
   if (!scenarios.length) errors.push("Manual audit plan must include scenarios.");

@@ -316,6 +316,33 @@ test("manual audit validator rejects missing required environments", () => {
   );
 });
 
+test("manual audit validator rejects unexpected required environments and evidence fields", () => {
+  withFixture(
+    "quality/manual-audit-plan.json",
+    (source) => {
+      const plan = JSON.parse(source);
+      plan.requiredEnvironments.push({
+        id: "future-environment",
+        label: "Untracked future environment",
+      });
+      plan.requiredEvidenceFields.push("untrackedEvidence");
+      return JSON.stringify(plan, null, 2);
+    },
+    (target) => {
+      const result = run(["--plan", target]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Manual audit plan has unexpected required environments: future-environment/,
+      );
+      assert.match(
+        result.stderr,
+        /Manual audit plan has unexpected required evidence fields: untrackedEvidence/,
+      );
+    },
+  );
+});
+
 test("manual audit validator pins every scenario environment matrix", () => {
   withFixture(
     "quality/manual-audit-plan.json",

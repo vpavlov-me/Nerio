@@ -555,11 +555,39 @@ export function ComponentPlayground() {
           rows={(["sm", "md", "lg"] as const).map((size) => ({
             label: size,
             cells: [
-              <Input key="default" size={size} placeholder="Placeholder" />,
-              <Input key="filled" size={size} defaultValue="Value" />,
-              <Input key="readonly" size={size} defaultValue="Read only" readOnly />,
-              <Input key="invalid" size={size} defaultValue="Invalid" invalid />,
-              <Input key="disabled" size={size} defaultValue="Disabled" disabled />,
+              <Input
+                key="default"
+                aria-label={`${size} default input`}
+                size={size}
+                placeholder="Placeholder"
+              />,
+              <Input
+                key="filled"
+                aria-label={`${size} filled input`}
+                size={size}
+                defaultValue="Value"
+              />,
+              <Input
+                key="readonly"
+                aria-label={`${size} read-only input`}
+                size={size}
+                defaultValue="Read only"
+                readOnly
+              />,
+              <Input
+                key="invalid"
+                aria-label={`${size} invalid input`}
+                size={size}
+                defaultValue="Invalid"
+                invalid
+              />,
+              <Input
+                key="disabled"
+                aria-label={`${size} disabled input`}
+                size={size}
+                defaultValue="Disabled"
+                disabled
+              />,
             ],
           }))}
         />
@@ -602,15 +630,15 @@ export function ComponentPlayground() {
             <InputGroupAddon placement="start">
               <Icon icon={Mail} />
             </InputGroupAddon>
-            <Input placeholder="Email" />
+            <Input aria-label="Email address with icon" placeholder="Email" />
           </InputGroup>
           <InputGroup>
-            <Input placeholder="Amount" />
+            <Input aria-label="Amount in US dollars" placeholder="Amount" />
             <InputGroupAddon placement="end">USD</InputGroupAddon>
           </InputGroup>
           <InputGroup>
             <InputGroupAddon placement="start">https://</InputGroupAddon>
-            <Input placeholder="domain.com" />
+            <Input aria-label="Website domain" placeholder="domain.com" />
             <InputGroupAddon placement="end">↗</InputGroupAddon>
           </InputGroup>
         </div>
@@ -626,10 +654,25 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Textarea key="default" placeholder="Write a note…" />,
-                <Textarea key="invalid" defaultValue="Needs attention" aria-invalid />,
-                <Textarea key="readonly" defaultValue="Read-only content" readOnly />,
-                <Textarea key="disabled" defaultValue="Unavailable" disabled />,
+                <Textarea key="default" aria-label="Default note" placeholder="Write a note…" />,
+                <Textarea
+                  key="invalid"
+                  aria-label="Invalid note"
+                  defaultValue="Needs attention"
+                  aria-invalid
+                />,
+                <Textarea
+                  key="readonly"
+                  aria-label="Read-only note"
+                  defaultValue="Read-only content"
+                  readOnly
+                />,
+                <Textarea
+                  key="disabled"
+                  aria-label="Disabled note"
+                  defaultValue="Unavailable"
+                  disabled
+                />,
               ],
             },
           ]}
