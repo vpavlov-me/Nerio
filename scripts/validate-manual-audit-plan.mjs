@@ -377,6 +377,22 @@ function reportStatus(id) {
     .map((cell) => cell.trim())[3];
 }
 
+const findingLog = report.match(/## Finding log\s+([\s\S]*?)(?=\n## )/)?.[1] ?? "";
+
+function findingLogRow(issue) {
+  const row = findingLog
+    .split(/\r?\n/)
+    .find((line) => line.trimStart().startsWith("|") && line.includes(issue));
+  return row
+    ?.split("|")
+    .slice(1, -1)
+    .map((cell) => cell.trim());
+}
+
+function findingCell(value) {
+  return isSubstantiveString(value) && value !== "—";
+}
+
 function aggregateResults(results) {
   if (results.some(({ result }) => result === "Fail")) return "Fail";
   if (results.some(({ result }) => result === "Blocked")) return "Blocked";
@@ -697,8 +713,43 @@ if (plan?.status === "complete") {
         !/^https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/\d+$/.test(result.issue)
       ) {
         errors.push(`${label} must link a focused GitHub issue for failed or blocked evidence.`);
-      } else if (!report.includes(result.issue)) {
-        errors.push(`${label} GitHub issue must also appear in the report finding log.`);
+      } else {
+        const finding = findingLogRow(result.issue);
+        if (!finding) {
+          errors.push(`${label} GitHub issue must have a structured report finding-log row.`);
+        } else {
+          const [
+            findingTitle,
+            findingScenario,
+            findingEnvironment,
+            findingSeverity,
+            findingGate,
+            findingIssue,
+            findingResolution,
+            findingRetest,
+          ] = finding;
+          if (!findingCell(findingTitle)) {
+            errors.push(`${label} finding-log row must include a substantive finding title.`);
+          }
+          if (findingScenario.replaceAll("`", "") !== result.scenarioId) {
+            errors.push(`${label} finding-log row must identify its scenario.`);
+          }
+          if (findingEnvironment.replaceAll("`", "") !== result.environmentId) {
+            errors.push(`${label} finding-log row must identify its environment.`);
+          }
+          if (findingSeverity !== result.severity) {
+            errors.push(`${label} finding-log severity must match completion evidence.`);
+          }
+          if (findingGate !== result.blockingGate) {
+            errors.push(`${label} finding-log release impact must match blockingGate.`);
+          }
+          if (findingIssue !== result.issue) {
+            errors.push(`${label} finding-log issue must match completion evidence.`);
+          }
+          if (!findingCell(findingResolution) || !findingCell(findingRetest)) {
+            errors.push(`${label} finding-log row must include resolution and retest records.`);
+          }
+        }
       }
       if (!allowedFindingSeverities.includes(result?.severity)) {
         errors.push(`${label} severity must use one of: ${allowedFindingSeverities.join(", ")}.`);

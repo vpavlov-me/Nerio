@@ -150,7 +150,9 @@ evidence index.
 ## Finding log
 
 Create a GitHub issue for each actionable defect, then link it here. Do not combine unrelated
-components or root causes into one finding.
+components or root causes into one finding. Completed `Fail` and `Blocked` evidence requires one
+structured row whose scenario, environment, severity, release impact, issue, resolution, and retest
+match the machine-readable result record.
 
 | Finding       | Scenario | Environment | Severity | Release impact | Issue | Resolution | Retest |
 | ------------- | -------- | ----------- | -------- | -------------- | ----- | ---------- | ------ |

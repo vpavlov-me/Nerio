@@ -563,6 +563,16 @@ test("keeps DatePicker focus, form value, constraints, dismissal, RTL, and reflo
   expect(await page.locator("form").evaluate((form) => new FormData(form).get("releaseDate"))).toBe(
     "2026-06-16",
   );
+  const invalidTrigger = page.getByRole("button", { name: "Invalid required date" });
+  await invalidTrigger.click();
+  await page
+    .getByRole("group", { name: "Choose date" })
+    .getByRole("button", { name: "June 17, 2026" })
+    .click();
+  await page.getByRole("button", { name: "Submit dates" }).click();
+  await expect(page.getByText(/Submitted form data:/)).toContainText(
+    '{"releaseDate":"2026-06-16","invalidDate":"2026-06-17","readOnlyDate":"2026-06-22"}',
+  );
 
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
   await trigger.click();

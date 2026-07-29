@@ -106,6 +106,40 @@ function completedReport(source) {
     .replaceAll("Pending", "Recorded");
 }
 
+const trackedIssue = "https://github.com/example/repository/issues/123";
+
+function trackedFailurePlan(source) {
+  const plan = JSON.parse(completedPlan(source));
+  const failedResult = plan.completion.results[0];
+  failedResult.result = "Fail";
+  failedResult.issue = trackedIssue;
+  failedResult.severity = "P1";
+  failedResult.blockingGate = "pilots";
+  plan.completion.environments.find(({ id }) => id === failedResult.environmentId).result = "Fail";
+  return JSON.stringify(plan, null, 2);
+}
+
+function trackedFailureReport(source, includeFinding = true) {
+  const completed = completedReport(source)
+    .replace(
+      "Final decision: **Pass for real consumer pilots**",
+      "Final decision: **Blocked before pilots**",
+    )
+    .split("\n")
+    .map((line) =>
+      line.includes("`macos-safari-voiceover`") || line.includes("`global-docs-navigation`")
+        ? line.replace(/\|\s*Pass\s*\|\s*Recorded\s*\|/, "| Fail | Recorded |")
+        : line,
+    )
+    .join("\n");
+  return includeFinding
+    ? completed.replace(
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
+        `| Navigation audit failure | \`global-docs-navigation\` | \`macos-safari-voiceover\` | P1 | pilots | ${trackedIssue} | Open | Required after fix |`,
+      )
+    : completed;
+}
+
 test("manual audit validator accepts the prepared pending plan", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
@@ -301,6 +335,33 @@ test("manual audit validator derives environment failures and requires finding r
       assert.match(result.stderr, /must link a focused GitHub issue/);
       assert.match(result.stderr, /severity must use one of/);
       assert.match(result.stderr, /blockingGate must use one of/);
+    },
+  );
+});
+
+test("manual audit validator accepts a tracked blocked finding", () => {
+  withPlanAndReportFixtures(
+    trackedFailurePlan,
+    trackedFailureReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.equal(result.status, 0, result.stderr);
+    },
+  );
+});
+
+test("manual audit validator requires the issue inside a structured finding-log row", () => {
+  withPlanAndReportFixtures(
+    trackedFailurePlan,
+    (source) =>
+      trackedFailureReport(source, false).replace(
+        "Status: **Complete**",
+        `Status: **Complete**\n\nUnstructured issue mention: ${trackedIssue}`,
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must have a structured report finding-log row/);
     },
   );
 });
