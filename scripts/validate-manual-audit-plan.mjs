@@ -313,10 +313,11 @@ const completionSummaryGates = [
   "Missing or stale evidence is explicitly listed",
 ];
 const concreteMacDevicePattern =
-  /\b(?:MacBook\s+(?:Air|Pro)\b.*\d|Mac mini\b.*(?:M\d|\d{4})|iMac\b.*(?:M\d|\d{2,4}))/i;
-const concreteWindowsDevicePattern = /\b(?:ThinkPad|Surface|Dell|HP|Lenovo)\b.*\d/i;
+  /\b(?:MacBook\s+(?:Air|Pro)\b.*\d|Mac (?:mini|Studio|Pro)\b.*(?:M\d|\d{4})|iMac\b.*(?:M\d|\d{2,4}))/i;
+const concreteWindowsDevicePattern =
+  /\b(?!(?:Windows|desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4})\b/i;
 const concreteDesktopDevicePattern =
-  /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac mini|iMac)\b.*\d|(?:ThinkPad|Surface|Dell|HP|Lenovo)\b.*\d)/i;
+  /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac (?:mini|Studio|Pro)|iMac)\b.*\d|(?!(?:Windows|desktop|laptop|computer|hardware|machine|PC)\b)(?:[A-Za-z][A-Za-z0-9-]*\s+){1,5}(?:[A-Za-z]*\d[A-Za-z0-9-]*|\d{2,4}))/i;
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b/i,
@@ -468,7 +469,7 @@ function hasEnabledPreferenceState(environmentId, notes) {
 }
 
 function claimsEvidenceNotPerformed(notes) {
-  return /\b(?:untested|skipped)\b|\b(?:not|never)(?:\s+\w+){0,5}\s+(?:tested|verified|checked|performed|run)\b|\bno\s+(?:testing|verification|checks?)(?:\s+\w+){0,5}\s+(?:performed|run|completed)\b/i.test(
+  return /\b(?:untested|skipped)\b|\b(?:not|never)(?:\s+\w+){0,5}\s+(?:tested|retested|verified|checked|performed|run)\b|\bno\s+(?:testing|retesting|verification|checks?)(?:\s+\w+){0,5}\s+(?:performed|run|completed)\b/i.test(
     notes ?? "",
   );
 }
@@ -1238,6 +1239,12 @@ if (plan?.status === "complete") {
       errors.push(
         `Finding "${findingTitle}" resolution must use exactly Open, Resolved, or Closed.`,
       );
+    }
+    if (
+      ["resolved", "closed"].includes(normalizedResolution) &&
+      claimsEvidenceNotPerformed(findingRetest)
+    ) {
+      errors.push(`Finding "${findingTitle}" cannot be closed without a completed retest.`);
     }
     const matchingResult = completedResults.find(
       (result) =>

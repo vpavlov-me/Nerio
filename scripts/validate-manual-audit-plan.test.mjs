@@ -23,19 +23,19 @@ const completedEnvironmentMetadata = {
     operatingSystem: "macOS 15.5",
     browser: "Safari 18.5",
     assistiveTechnology: "VoiceOver 15.5",
-    device: "MacBook Pro 14-inch",
+    device: "Mac Studio M2 Max (2023)",
   },
   "macos-chromium-keyboard": {
     operatingSystem: "macOS 15.5",
     browser: "Chrome 138.0",
     assistiveTechnology: "Keyboard-only navigation",
-    device: "MacBook Pro 14-inch",
+    device: "Mac Studio M2 Max (2023)",
   },
   "windows-nvda": {
     operatingSystem: "Windows 11 24H2",
     browser: "Firefox 140.0",
     assistiveTechnology: "NVDA 2025.1",
-    device: "ThinkPad X1 Carbon",
+    device: "ASUS ROG Zephyrus G14",
   },
   "ios-safari-voiceover": {
     operatingSystem: "iOS 18.5",
@@ -53,19 +53,19 @@ const completedEnvironmentMetadata = {
     operatingSystem: "macOS 15.5",
     browser: "Chrome 138.0",
     assistiveTechnology: "not applicable",
-    device: "MacBook Pro 14-inch",
+    device: "Mac Studio M2 Max (2023)",
   },
   "reduced-motion": {
     operatingSystem: "macOS 15.5",
     browser: "Safari 18.5",
     assistiveTechnology: "not applicable",
-    device: "MacBook Pro 14-inch",
+    device: "Mac Studio M2 Max (2023)",
   },
   "high-contrast": {
     operatingSystem: "Windows 11 24H2",
     browser: "Edge 138.0",
     assistiveTechnology: "not applicable",
-    device: "ThinkPad X1 Carbon",
+    device: "ASUS ROG Zephyrus G14",
   },
 };
 const auditPlanFixture = JSON.parse(
@@ -1265,6 +1265,22 @@ test("manual audit validator keeps current failed findings open", () => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, /tied to a failed or blocked completion result must remain Open/);
+    },
+  );
+});
+
+test("manual audit validator rejects closed findings without a completed retest", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
+        `| Closed blocker | \`global-docs-navigation\` | \`macos-safari-voiceover\` | P1 | pilots | ${trackedIssue} | Closed | No retesting was performed after the fix |`,
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /cannot be closed without a completed retest/);
     },
   );
 });
