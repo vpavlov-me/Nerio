@@ -30,7 +30,7 @@ function withFixture(source, update, callback) {
 test("manual audit validator accepts the prepared pending plan", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /16 scenarios, 8 required environments/);
+  assert.match(result.stdout, /18 scenarios, 8 required environments/);
   assert.match(result.stdout, /manual evidence still pending/);
 });
 

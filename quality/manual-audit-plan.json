@@ -356,11 +356,11 @@
       ]
     },
     {
-      "id": "command-sidebar",
-      "title": "Command query, active descendant, live states, and Sidebar collapse",
-      "route": "/visual-test#command-primitive",
+      "id": "command-live-states",
+      "title": "Command query, active descendant, loading, empty, and result count",
+      "route": "/docs/components/command-primitive",
       "surfaces": ["navigation-overlays"],
-      "components": ["command", "sidebar"],
+      "components": ["command"],
       "environments": [
         "macos-safari-voiceover",
         "macos-chromium-keyboard",
@@ -371,13 +371,61 @@
       ],
       "steps": [
         "Search, navigate groups, select a result, and inspect loading and empty states.",
-        "Collapse and expand Sidebar, then inspect trigger naming, inert content, and focus retention.",
-        "Repeat the mobile Sidebar path through Sheet."
+        "Inspect the polite result count after consumer-filtered loading completes.",
+        "Repeat selection inside Popover, Dialog, and Sheet compositions."
       ],
       "expected": [
         "Command keeps DOM focus and active-descendant context predictable.",
         "Loading, empty, selection, and result counts are concise and non-duplicative.",
+        "Overlay composition preserves the same query and selection semantics."
+      ]
+    },
+    {
+      "id": "sidebar-collapse",
+      "title": "Sidebar collapse, trigger naming, inert content, and focus retention",
+      "route": "/visual-test#sidebar-primitive",
+      "surfaces": ["navigation-overlays"],
+      "components": ["sidebar"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "zoom-reflow",
+        "high-contrast"
+      ],
+      "steps": [
+        "Collapse and expand Sidebar using its trigger and rail controls.",
+        "Inspect trigger naming, expanded state, hidden content, and focus retention.",
+        "Repeat at narrow and zoomed layouts without treating Sidebar as a mobile navigation owner."
+      ],
+      "expected": [
+        "Sidebar toggles expose stable names and expanded state.",
         "Collapsed or hidden Sidebar content is not interactable."
+      ]
+    },
+    {
+      "id": "sidebar-mobile-sheet",
+      "title": "Consumer-owned mobile Sidebar path through Sheet",
+      "route": "/docs/components/sheet#preview",
+      "surfaces": ["navigation-overlays"],
+      "components": ["sidebar", "sheet"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Open the live mobile navigation Sheet from its named trigger.",
+        "Navigate the single Sheet-owned navigation tree and dismiss it.",
+        "Inspect modal naming, focus containment, scroll lock, and trigger restoration."
+      ],
+      "expected": [
+        "The mobile composition renders one interactive navigation tree.",
+        "The Sheet is named and dismissal restores focus to the mobile navigation trigger.",
+        "No duplicate hidden Sidebar tree remains interactive."
       ]
     },
     {

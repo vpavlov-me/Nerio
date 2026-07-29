@@ -39,7 +39,6 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandLoading,
   Dialog,
   DatePicker,
   DialogFooter,
@@ -343,44 +342,6 @@ const commandItems = [
   { value: "settings", label: "Settings" },
   { value: "disabled", label: "Unavailable", disabled: true },
 ] as const;
-
-function CommandAuditExample() {
-  const [query, setQuery] = React.useState("");
-  const normalizedQuery = query.trim().toLocaleLowerCase();
-  const resultCount = commandItems.filter((item) =>
-    [item.label, item.value, ...("keywords" in item ? item.keywords : [])]
-      .join(" ")
-      .toLocaleLowerCase()
-      .includes(normalizedQuery),
-  ).length;
-
-  return (
-    <div className="component-lab-stack">
-      <Command
-        items={commandItems}
-        query={query}
-        onQueryChange={(nextQuery) => setQuery(nextQuery)}
-      >
-        <CommandInput aria-label="Search commands" placeholder="Search commands…" />
-        <CommandList>
-          {(item) => (
-            <CommandItem
-              value={item.value}
-              leading={<Icon icon={item.value === "settings" ? Settings : LayoutDashboard} />}
-              shortcut={item.value === "dashboard" ? <Kbd>G D</Kbd> : undefined}
-            >
-              {item.label}
-            </CommandItem>
-          )}
-        </CommandList>
-        <CommandEmpty>No commands found.</CommandEmpty>
-      </Command>
-      <p aria-live="polite" role="status">
-        {resultCount} {resultCount === 1 ? "command" : "commands"} available.
-      </p>
-    </div>
-  );
-}
 
 function SheetExample({
   side,
@@ -1500,7 +1461,21 @@ export function ComponentPlayground() {
         api="flat or grouped items · search · custom filter · disabled · empty · loading · selection"
       >
         <div className="component-lab-card-grid">
-          <CommandAuditExample />
+          <Command items={commandItems}>
+            <CommandInput aria-label="Search commands" placeholder="Search commands…" />
+            <CommandList>
+              {(item) => (
+                <CommandItem
+                  value={item.value}
+                  leading={<Icon icon={item.value === "settings" ? Settings : LayoutDashboard} />}
+                  shortcut={item.value === "dashboard" ? <Kbd>G D</Kbd> : undefined}
+                >
+                  {item.label}
+                </CommandItem>
+              )}
+            </CommandList>
+            <CommandEmpty>No commands found.</CommandEmpty>
+          </Command>
           <Command items={[]}>
             <CommandInput aria-label="Search empty commands" placeholder="Empty command…" />
             <CommandList>
@@ -1508,31 +1483,6 @@ export function ComponentPlayground() {
             </CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
           </Command>
-          <Command items={[]}>
-            <CommandInput aria-label="Search loading commands" placeholder="Loading command…" />
-            <CommandLoading>Loading commands…</CommandLoading>
-          </Command>
-        </div>
-        <div className="component-lab-stack">
-          <Heading as="h3">Mobile Sidebar composition</Heading>
-          <Sheet>
-            <SheetTrigger render={<Button variant="secondary">Open mobile navigation</Button>} />
-            <SheetContent side="left" size="sm">
-              <SheetHeader>
-                <SheetTitle>Workspace navigation</SheetTitle>
-                <SheetDescription>
-                  Mobile Sidebar content uses one Sheet-owned tree.
-                </SheetDescription>
-              </SheetHeader>
-              <SheetBody>
-                <nav aria-label="Mobile workspace">
-                  <Button variant="ghost">Overview</Button>
-                  <Button variant="ghost">Projects</Button>
-                  <Button variant="ghost">Settings</Button>
-                </nav>
-              </SheetBody>
-            </SheetContent>
-          </Sheet>
         </div>
       </SpecimenSection>
     </>

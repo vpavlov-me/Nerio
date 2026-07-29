@@ -92,24 +92,26 @@ Use `not applicable` rather than an empty value when a field does not apply.
 The JSON plan owns the executable steps and expected results. This table is the human progress and
 evidence index.
 
-| Scenario ID                     | Primary route                       | Focus                                                      | Status  | Evidence |
-| ------------------------------- | ----------------------------------- | ---------------------------------------------------------- | ------- | -------- |
-| `global-docs-navigation`        | `/docs`                             | Docs landmarks, search, appearance, page actions           | Not run | Pending  |
-| `global-demo-responsive`        | `/views/operations-workspace`       | Product composition, responsive navigation, safe areas     | Not run | Pending  |
-| `actions-buttons-toggle`        | `/visual-test`                      | Button, icon actions, loading, disabled, Toggle            | Not run | Pending  |
-| `forms-labels-validation`       | `/visual-test#field`                | Labels, errors, grouped controls, Select                   | Not run | Pending  |
-| `native-temporal-inputs`        | `/docs/components/input`            | Native date, month, week, time, datetime-local             | Not run | Pending  |
-| `slider-input`                  | `/docs/components/slider`           | Keyboard, touch, pointer, orientation, RTL                 | Not run | Pending  |
-| `file-input-picker`             | `/docs/components/file-input`       | Native picker, filename announcement, reset                | Not run | Pending  |
-| `calendar-grid`                 | `/docs/components/calendar#preview` | Grid navigation, constraints, locale, RTL                  | Not run | Pending  |
-| `date-picker-composition`       | `/docs/components/date-picker`      | Focus transfer, Calendar, clear, form value                | Not run | Pending  |
-| `data-semantics-overflow`       | `/visual-test`                      | Headings, lists, Items, Table overflow                     | Not run | Pending  |
-| `feedback-announcements`        | `/visual-test`                      | Alert, Toast, progress, loading, empty, error              | Not run | Pending  |
-| `tabs-pagination-breadcrumbs`   | `/visual-test`                      | Tabs model, current navigation, reflow                     | Not run | Pending  |
-| `command-sidebar`               | `/visual-test#command-primitive`    | Command active descendant, live states, Sidebar collapse   | Not run | Pending  |
-| `overlay-focus-dismissal`       | `/visual-test`                      | Dialog, Sheet, Popover, Tooltip, Dropdown Menu             | Not run | Pending  |
-| `motion-adapter-reduced-motion` | `/docs/foundations/motion`          | Optional Motion adapter and live reduced-motion preference | Not run | Pending  |
-| `runtime-axes-motion-contrast`  | `/visual-test`                      | Themes, modes, density, RTL, motion, contrast              | Not run | Pending  |
+| Scenario ID                     | Primary route                        | Focus                                                      | Status  | Evidence |
+| ------------------------------- | ------------------------------------ | ---------------------------------------------------------- | ------- | -------- |
+| `global-docs-navigation`        | `/docs`                              | Docs landmarks, search, appearance, page actions           | Not run | Pending  |
+| `global-demo-responsive`        | `/views/operations-workspace`        | Product composition, responsive navigation, safe areas     | Not run | Pending  |
+| `actions-buttons-toggle`        | `/visual-test`                       | Button, icon actions, loading, disabled, Toggle            | Not run | Pending  |
+| `forms-labels-validation`       | `/visual-test#field`                 | Labels, errors, grouped controls, Select                   | Not run | Pending  |
+| `native-temporal-inputs`        | `/docs/components/input`             | Native date, month, week, time, datetime-local             | Not run | Pending  |
+| `slider-input`                  | `/docs/components/slider`            | Keyboard, touch, pointer, orientation, RTL                 | Not run | Pending  |
+| `file-input-picker`             | `/docs/components/file-input`        | Native picker, filename announcement, reset                | Not run | Pending  |
+| `calendar-grid`                 | `/docs/components/calendar#preview`  | Grid navigation, constraints, locale, RTL                  | Not run | Pending  |
+| `date-picker-composition`       | `/docs/components/date-picker`       | Focus transfer, Calendar, clear, form value                | Not run | Pending  |
+| `data-semantics-overflow`       | `/visual-test`                       | Headings, lists, Items, Table overflow                     | Not run | Pending  |
+| `feedback-announcements`        | `/visual-test`                       | Alert, Toast, progress, loading, empty, error              | Not run | Pending  |
+| `tabs-pagination-breadcrumbs`   | `/visual-test`                       | Tabs model, current navigation, reflow                     | Not run | Pending  |
+| `command-live-states`           | `/docs/components/command-primitive` | Command active descendant, loading, empty, result count    | Not run | Pending  |
+| `sidebar-collapse`              | `/visual-test#sidebar-primitive`     | Sidebar collapse, hidden content, focus retention          | Not run | Pending  |
+| `sidebar-mobile-sheet`          | `/docs/components/sheet#preview`     | Consumer-owned mobile Sidebar path through Sheet           | Not run | Pending  |
+| `overlay-focus-dismissal`       | `/visual-test`                       | Dialog, Sheet, Popover, Tooltip, Dropdown Menu             | Not run | Pending  |
+| `motion-adapter-reduced-motion` | `/docs/foundations/motion`           | Optional Motion adapter and live reduced-motion preference | Not run | Pending  |
+| `runtime-axes-motion-contrast`  | `/visual-test`                       | Themes, modes, density, RTL, motion, contrast              | Not run | Pending  |
 
 ## Finding log
 
