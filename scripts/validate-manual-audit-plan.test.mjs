@@ -476,6 +476,32 @@ test("manual audit validator requires physical mobile hardware and enabled prefe
   );
 });
 
+test("manual audit validator requires concrete physical mobile device models", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "ios-safari-voiceover").device =
+        "iPhone physical hardware";
+      plan.completion.environments.find(({ id }) => id === "android-chrome-talkback").device =
+        "Android phone physical hardware";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /ios-safari-voiceover device must match the required environment/,
+      );
+      assert.match(
+        result.stderr,
+        /android-chrome-talkback device must match the required environment/,
+      );
+    },
+  );
+});
+
 test("manual audit validator requires device-consistent physical mobile viewports", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -889,6 +915,36 @@ test("manual audit validator reads scenario status only from the canonical matri
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed scenario global-docs-navigation result must match the completed report status/,
+      );
+    },
+  );
+});
+
+test("manual audit validator rejects duplicate canonical report rows", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) => {
+      const completed = completedReport(source);
+      const scenarioRow = completed
+        .split("\n")
+        .find((line) => line.includes("`global-docs-navigation`") && line.includes("| Pass |"));
+      const summaryRow = completed
+        .split("\n")
+        .find((line) => line.includes("No open P0 or P1 accessibility defect"));
+      return completed
+        .replace(scenarioRow, `${scenarioRow}\n${scenarioRow.replace("| Pass |", "| Fail |")}`)
+        .replace(summaryRow, `${summaryRow}\n${summaryRow.replace("Pass", "Fail")}`);
+    },
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /summary gate "No open P0 or P1 accessibility defect" must record/,
+      );
       assert.match(
         result.stderr,
         /Completed scenario global-docs-navigation result must match the completed report status/,

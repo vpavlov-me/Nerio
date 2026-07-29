@@ -335,13 +335,14 @@ const environmentMetadataRequirements = {
     operatingSystem: /\b(?:iOS|iPadOS)\b/i,
     browser: /\bSafari\b/i,
     assistiveTechnology: /\bVoiceOver\b/i,
-    device: /\b(?:iPhone|iPad)\b/i,
+    device: /\b(?:iPhone|iPad)\s+(?:\d{1,2}|SE\b|Air\b|Pro\b|mini\b)/i,
   },
   "android-chrome-talkback": {
     operatingSystem: /\bAndroid\b/i,
     browser: /\bChrome\b/i,
     assistiveTechnology: /\bTalkBack\b/i,
-    device: /\b(?:Pixel|Galaxy|Android (?:phone|tablet))\b/i,
+    device:
+      /\b(?:Pixel\s+\d|Galaxy\s+(?:[A-Z]+\s*)?\d|OnePlus\s+\d|Xperia\s+\d|Moto(?:rola)?\s+\S*\d|Nothing Phone\s+\d|(?:Redmi|Xiaomi|Huawei|Honor)\s+\S*\d)\b/i,
   },
   "zoom-reflow": {
     zoom: /(?=.*\b200%)(?=.*\b400%)/,
@@ -485,10 +486,11 @@ function validateEvidenceLinks(label, evidence) {
 }
 
 function reportStatus(id, sectionTitle) {
-  const row = reportSection(sectionTitle)
+  const rows = reportSection(sectionTitle)
     .split(/\r?\n/)
-    .find((line) => line.trimStart().startsWith(`| \`${id}\``));
-  return row
+    .filter((line) => line.trimStart().startsWith(`| \`${id}\``));
+  if (rows.length !== 1) return undefined;
+  return rows[0]
     ?.split("|")
     .slice(1, -1)
     .map((cell) => cell.trim())[3];
@@ -499,10 +501,10 @@ function reportSection(title) {
 }
 
 function reportTableValue(section, label) {
-  return section
-    .split(/\r?\n/)
-    .find((line) => line.trimStart().startsWith(`| ${label}`))
-    ?.split("|")
+  const rows = section.split(/\r?\n/).filter((line) => line.trimStart().startsWith(`| ${label}`));
+  if (rows.length !== 1) return undefined;
+  return rows[0]
+    .split("|")
     .slice(1, -1)
     .map((cell) => cell.trim())[1];
 }
