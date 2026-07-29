@@ -461,7 +461,10 @@ test("keeps Calendar touch selection portable", async ({ browser, browserName },
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
     await page.goto("/docs/components/calendar");
-    await page.getByRole("button", { name: "June 17, 2026" }).tap();
+    await page
+      .getByRole("group", { name: "Release date" })
+      .getByRole("button", { name: "June 17, 2026" })
+      .tap();
     await expect(page.getByText("Selected date: 2026-06-17")).toBeVisible();
     expect(problems).toEqual([]);
   } finally {
