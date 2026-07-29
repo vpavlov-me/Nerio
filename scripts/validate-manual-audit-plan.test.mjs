@@ -596,6 +596,30 @@ test("manual audit validator accepts a tracked blocked finding", () => {
   );
 });
 
+test("manual audit validator rejects a pilot pass with an untracked open blocker", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
+        `| Untracked navigation blocker | \`global-docs-navigation\` | \`macos-safari-voiceover\` | P1 | pilots | ${trackedIssue} | Open | Required after fix |`,
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must match a failed or blocked completion result/);
+      assert.match(
+        result.stderr,
+        /Completion summary cannot pass while the finding log has an open P0 or P1/,
+      );
+      assert.match(
+        result.stderr,
+        /Pass for real consumer pilots cannot include an open blocking finding/,
+      );
+    },
+  );
+});
+
 test("manual audit validator rejects a pilot pass with a failed completion-summary gate", () => {
   withPlanAndReportFixtures(
     completedPlan,

@@ -506,15 +506,25 @@ function reportTableValue(section, label) {
 }
 
 const findingLog = report.match(/## Finding log\s+([\s\S]*?)(?=\n## )/)?.[1] ?? "";
+const findingLogRows = findingLog
+  .split(/\r?\n/)
+  .filter((line) => line.trimStart().startsWith("|"))
+  .map((line) =>
+    line
+      .split("|")
+      .slice(1, -1)
+      .map((cell) => cell.trim()),
+  )
+  .filter(
+    (cells) =>
+      cells.length === 8 &&
+      cells[0] !== "Finding" &&
+      cells[0] !== "None recorded" &&
+      !cells[0].startsWith("---"),
+  );
 
 function findingLogRow(issue) {
-  const row = findingLog
-    .split(/\r?\n/)
-    .find((line) => line.trimStart().startsWith("|") && line.includes(issue));
-  return row
-    ?.split("|")
-    .slice(1, -1)
-    .map((cell) => cell.trim());
+  return findingLogRows.find((cells) => cells[5] === issue);
 }
 
 function findingCell(value) {
@@ -982,6 +992,53 @@ if (plan?.status === "complete") {
       if (!allowedBlockingGates.includes(result?.blockingGate)) {
         errors.push(`${label} blockingGate must use one of: ${allowedBlockingGates.join(", ")}.`);
       }
+    }
+  }
+  const summaryResultByGate = new Map(summaryResults.map(({ gate, result }) => [gate, result]));
+  for (const finding of findingLogRows) {
+    const [
+      findingTitle,
+      findingScenario,
+      findingEnvironment,
+      findingSeverity,
+      findingGate,
+      findingIssue,
+      findingResolution,
+    ] = finding;
+    if (!/^open$/i.test(findingResolution)) continue;
+
+    const normalizedScenario = findingScenario.replaceAll("`", "");
+    const normalizedEnvironment = findingEnvironment.replaceAll("`", "");
+    const matchingResult = completedResults.find(
+      (result) =>
+        result.issue === findingIssue &&
+        result.scenarioId === normalizedScenario &&
+        result.environmentId === normalizedEnvironment &&
+        ["Fail", "Blocked"].includes(result.result),
+    );
+    if (!matchingResult) {
+      errors.push(
+        `Open finding "${findingTitle}" must match a failed or blocked completion result.`,
+      );
+    }
+    if (
+      ["P0", "P1"].includes(findingSeverity) &&
+      summaryResultByGate.get("No open P0 or P1 accessibility defect") === "Pass"
+    ) {
+      errors.push("Completion summary cannot pass while the finding log has an open P0 or P1.");
+    }
+    if (
+      findingSeverity === "P2" &&
+      findingGate === "pilots" &&
+      summaryResultByGate.get("Blocking P2 findings resolved") === "Pass"
+    ) {
+      errors.push("Completion summary cannot pass while the finding log has an open blocking P2.");
+    }
+    if (
+      finalDecision === "Pass for real consumer pilots" &&
+      (["P0", "P1"].includes(findingSeverity) || findingGate === "pilots")
+    ) {
+      errors.push("Pass for real consumer pilots cannot include an open blocking finding.");
     }
   }
   for (const environment of completedEnvironments) {
