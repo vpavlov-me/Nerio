@@ -80,6 +80,8 @@ values, non-evidence URLs, candidate drift between the plan and report, post-can
 changes, a pilot-pass decision with failed or blocked results, and any remaining pending table
 cells. `Pass for real consumer pilots` requires `Pass` evidence for every required
 scenario/environment pair; `Not applicable`, `Fail`, or `Blocked` keeps the final decision blocked.
+The environment and scenario outcomes in this report must match the machine-readable completion
+records; contradictory human and JSON evidence fails validation.
 
 ## Required environments
 

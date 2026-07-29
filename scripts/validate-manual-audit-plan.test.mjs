@@ -249,6 +249,35 @@ test("manual audit validator requires environment outcomes and notes", () => {
   );
 });
 
+test("manual audit validator rejects report and completion outcome drift", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source)
+        .split("\n")
+        .map((line) =>
+          line.includes("`macos-safari-voiceover`")
+            ? line.replace(/\|\s*Pass\s*\|\s*Recorded\s*\|/, "| Fail | Recorded |")
+            : line.includes("`global-docs-navigation`")
+              ? line.replace(/\|\s*Pass\s*\|\s*Recorded\s*\|/, "| Fail | Recorded |")
+              : line,
+        )
+        .join("\n"),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed environment macos-safari-voiceover result must match the completed report status/,
+      );
+      assert.match(
+        result.stderr,
+        /Completed scenario global-docs-navigation result must match the completed report status/,
+      );
+    },
+  );
+});
+
 test("manual audit validator locks the candidate scenario matrix", () => {
   withPlanAndReportFixtures(
     (source) => {

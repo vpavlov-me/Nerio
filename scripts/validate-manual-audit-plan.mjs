@@ -367,6 +367,22 @@ function validateEvidenceLinks(label, evidence) {
   }
 }
 
+function reportStatus(id) {
+  const row = report.split(/\r?\n/).find((line) => line.trimStart().startsWith(`| \`${id}\``));
+  return row
+    ?.split("|")
+    .slice(1, -1)
+    .map((cell) => cell.trim())[3];
+}
+
+function aggregateResults(results) {
+  if (results.some(({ result }) => result === "Fail")) return "Fail";
+  if (results.some(({ result }) => result === "Blocked")) return "Blocked";
+  if (results.every(({ result }) => result === "Pass")) return "Pass";
+  if (results.every(({ result }) => result === "Not applicable")) return "Not applicable";
+  return "Blocked";
+}
+
 if (plan) {
   if (plan.issue !== 143) errors.push("Manual audit plan must target issue #143.");
   if (!allowedStatuses.includes(plan.status)) {
@@ -626,6 +642,12 @@ if (plan?.status === "complete") {
         errors.push(`${label} must include substantive ${field} evidence.`);
       }
     }
+    const recordedStatus = reportStatus(environment?.id);
+    if (recordedStatus !== environment?.result) {
+      errors.push(
+        `${label} result must match the completed report status (expected ${environment?.result ?? "missing"}, found ${recordedStatus ?? "missing"}).`,
+      );
+    }
   }
 
   const completedResults = Array.isArray(completion?.results) ? completion.results : [];
@@ -656,6 +678,16 @@ if (plan?.status === "complete") {
       errors.push(`${label} must include substantive notes.`);
     }
     validateEvidenceLinks(label, result?.evidence);
+  }
+  for (const scenario of plan.scenarios ?? []) {
+    const scenarioResults = completedResults.filter(({ scenarioId }) => scenarioId === scenario.id);
+    const expectedStatus = aggregateResults(scenarioResults);
+    const recordedStatus = reportStatus(scenario.id);
+    if (recordedStatus !== expectedStatus) {
+      errors.push(
+        `Completed scenario ${scenario.id} result must match the completed report status (expected ${expectedStatus}, found ${recordedStatus ?? "missing"}).`,
+      );
+    }
   }
   if (
     finalDecision === "Pass for real consumer pilots" &&
