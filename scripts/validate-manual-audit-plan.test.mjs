@@ -1285,6 +1285,37 @@ test("manual audit validator rejects closed findings without a completed retest"
   );
 });
 
+test("manual audit validator rejects closed findings with a failing retest", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
+        `| Closed blocker | \`global-docs-navigation\` | \`macos-safari-voiceover\` | P1 | pilots | ${trackedIssue} | Closed | Retest completed after the fix and the defect still fails consistently |`,
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /cannot be closed without a passing retest outcome/);
+    },
+  );
+});
+
+test("manual audit validator accepts a closed finding with a passing retest", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
+        `| Closed blocker | \`global-docs-navigation\` | \`macos-safari-voiceover\` | P1 | pilots | ${trackedIssue} | Closed | Pass — defect no longer reproducible after the fix |`,
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.equal(result.status, 0, result.stderr);
+    },
+  );
+});
+
 test("manual audit validator rejects a pilot pass with a failed completion-summary gate", () => {
   withPlanAndReportFixtures(
     completedPlan,

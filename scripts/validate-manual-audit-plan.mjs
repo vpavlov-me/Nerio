@@ -1246,6 +1246,13 @@ if (plan?.status === "complete") {
     ) {
       errors.push(`Finding "${findingTitle}" cannot be closed without a completed retest.`);
     }
+    if (
+      ["resolved", "closed"].includes(normalizedResolution) &&
+      (!/^(?:Pass|Passed)\b/i.test(findingRetest) ||
+        /\b(?:fail(?:ed|s|ing)?|blocked|persists?|still reproducible)\b/i.test(findingRetest))
+    ) {
+      errors.push(`Finding "${findingTitle}" cannot be closed without a passing retest outcome.`);
+    }
     const matchingResult = completedResults.find(
       (result) =>
         result.issue === findingIssue &&
