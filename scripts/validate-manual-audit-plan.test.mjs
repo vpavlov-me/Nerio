@@ -134,7 +134,12 @@ function completedPlan(source) {
           zoom: id === "zoom-reflow" ? "200% and 400%" : "100%",
           packageMode: "Packed package",
           result: "Pass",
-          notes: `Completed the required checks in ${id}.`,
+          notes:
+            id === "reduced-motion"
+              ? "Verified with macOS Reduce Motion enabled for the complete scenario set."
+              : id === "high-contrast"
+                ? "Verified with Windows High Contrast mode enabled for the complete scenario set."
+                : `Completed the required checks in ${id}.`,
         })),
         results: plan.scenarios.flatMap((scenario, scenarioIndex) =>
           scenario.environments.map((environmentId, environmentIndex) => ({
@@ -385,6 +390,32 @@ test("manual audit validator binds metadata to each required environment", () =>
         result.stderr,
         /Completed environment zoom-reflow zoom must match the required environment/,
       );
+    },
+  );
+});
+
+test("manual audit validator requires physical mobile hardware and enabled preferences", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "ios-safari-voiceover").device =
+        "iPhone Simulator";
+      plan.completion.environments.find(({ id }) => id === "android-chrome-talkback").device =
+        "Android phone emulator";
+      plan.completion.environments.find(({ id }) => id === "reduced-motion").notes =
+        "Completed the required checks in reduced-motion.";
+      plan.completion.environments.find(({ id }) => id === "high-contrast").notes =
+        "Completed the required checks in high-contrast.";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /ios-safari-voiceover device must identify physical hardware/);
+      assert.match(result.stderr, /android-chrome-talkback device must identify physical hardware/);
+      assert.match(result.stderr, /reduced-motion notes must match the required environment/);
+      assert.match(result.stderr, /high-contrast notes must match the required environment/);
     },
   );
 });

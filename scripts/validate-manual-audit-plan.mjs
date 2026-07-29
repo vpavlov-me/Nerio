@@ -346,8 +346,13 @@ const environmentMetadataRequirements = {
   "zoom-reflow": {
     zoom: /(?=.*\b200%)(?=.*\b400%)/,
   },
+  "reduced-motion": {
+    notes:
+      /(?:\b(?:reduce|reduced) motion\b.*\b(?:enabled|active|on)\b|\bprefers-reduced-motion\s*:\s*reduce\b)/i,
+  },
   "high-contrast": {
     operatingSystem: /\b(?:macOS|Windows)\b/i,
+    notes: /\b(?:high contrast|forced colors|increase contrast)\b.*\b(?:enabled|active|on)\b/i,
   },
 };
 
@@ -884,6 +889,12 @@ if (plan?.status === "complete") {
       if (!pattern.test(environment?.[field] ?? "")) {
         errors.push(`${label} ${field} must match the required environment.`);
       }
+    }
+    if (
+      ["ios-safari-voiceover", "android-chrome-talkback"].includes(environment?.id) &&
+      /\b(?:simulator|emulator|virtual)\b/i.test(environment?.device ?? "")
+    ) {
+      errors.push(`${label} device must identify physical hardware, not a simulator or emulator.`);
     }
     const recordedStatus = reportStatus(environment?.id);
     if (recordedStatus !== environment?.result) {
