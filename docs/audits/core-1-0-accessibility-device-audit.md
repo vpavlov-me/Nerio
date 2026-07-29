@@ -19,7 +19,10 @@ finding is resolved. The only closing decisions allowed by issue #143 are
 
 Record one exact candidate before manual testing starts. If a later change affects rendered DOM,
 ARIA, keyboard interaction, focus, announcements, form behavior, value semantics, motion, layout,
-or native picker behavior, mark the affected scenarios stale and rerun them against the new commit.
+or native picker behavior, relock the candidate and rerun the affected scenarios against the new
+commit. The completion gate permits only this report and the machine-readable audit plan to change
+after the recorded candidate; any other changed path invalidates the completed evidence until the
+candidate and applicable results are refreshed.
 
 | Field                    | Evidence |
 | ------------------------ | -------- |
@@ -71,8 +74,9 @@ Before changing the plan status to `complete`, add a machine-readable `completio
   allowed result, substantive notes, and at least one HTTPS evidence link.
 
 The completion validator rejects missing pairs, duplicate or unexpected records, placeholder
-values, non-evidence URLs, candidate drift between the plan and report, and any remaining pending
-table cells.
+values, non-evidence URLs, candidate drift between the plan and report, post-candidate source
+changes, a pilot-pass decision with failed or blocked results, and any remaining pending table
+cells.
 
 ## Required environments
 

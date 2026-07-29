@@ -8,6 +8,10 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const validator = resolve(root, "scripts/validate-manual-audit-plan.mjs");
+const currentCommit = spawnSync("git", ["rev-parse", "HEAD"], {
+  cwd: root,
+  encoding: "utf8",
+}).stdout.trim();
 
 function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], {
@@ -56,7 +60,7 @@ function completedPlan(source) {
       status: "complete",
       completion: {
         candidate: {
-          commit: "a".repeat(40),
+          commit: currentCommit,
           githubVerification: "https://github.com/example/repository/commit/aaaaaaaa",
           ciRun: "https://github.com/example/repository/actions/runs/1",
           vercelDeployment: "https://audit-preview.example.test",
@@ -92,7 +96,7 @@ function completedPlan(source) {
 function completedReport(source) {
   return source
     .replace("Status: **Prepared — manual evidence pending**", "Status: **Complete**")
-    .replace("Candidate commit: **Pending**", `Candidate commit: **${"a".repeat(40)}**`)
+    .replace("Candidate commit: **Pending**", `Candidate commit: **${currentCommit}**`)
     .replace("Final decision: **Pending**", "Final decision: **Pass for real consumer pilots**")
     .replaceAll("Not run", "Pass")
     .replaceAll("Pending", "Recorded");
@@ -141,6 +145,49 @@ test("manual audit validator rejects missing scenario-environment evidence", () 
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, /Completed scenario-environment evidence is missing/);
+    },
+  );
+});
+
+test("manual audit validator rejects a pilot pass with blocked evidence", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.results[0].result = "Blocked";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /failed or blocked results must use the Blocked before pilots final decision/,
+      );
+    },
+  );
+});
+
+test("manual audit validator rejects evidence after post-candidate source changes", () => {
+  const parentCommit = spawnSync("git", ["rev-parse", "HEAD^"], {
+    cwd: root,
+    encoding: "utf8",
+  }).stdout.trim();
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.candidate.commit = parentCommit;
+      return JSON.stringify(plan, null, 2);
+    },
+    (source) =>
+      completedReport(source).replace(
+        `Candidate commit: **${currentCommit}**`,
+        `Candidate commit: **${parentCommit}**`,
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /evidence is stale after post-candidate changes/);
     },
   );
 });

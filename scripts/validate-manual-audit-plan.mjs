@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parsePathOptions } from "./validator-options.mjs";
@@ -79,6 +80,10 @@ const requiredScenarioIds = [
 ];
 const allowedStatuses = ["manual-evidence-pending", "complete"];
 const allowedEvidenceResults = ["Pass", "Fail", "Blocked", "Not applicable"];
+const allowedPostCandidateChanges = new Set([
+  "docs/audits/core-1-0-accessibility-device-audit.md",
+  "quality/manual-audit-plan.json",
+]);
 const environmentEvidenceFields = requiredEvidenceFields.filter(
   (field) => field !== "result" && field !== "notes",
 );
@@ -239,11 +244,10 @@ if (plan?.status === "complete") {
   if (!reportCommit) {
     errors.push("Completed audit report must record a 40-character candidate commit.");
   }
-  if (
-    !/^- Final decision: \*\*(Pass for real consumer pilots|Blocked before pilots)\*\*$/m.test(
-      report,
-    )
-  ) {
+  const finalDecision = report.match(
+    /^- Final decision: \*\*(Pass for real consumer pilots|Blocked before pilots)\*\*$/m,
+  )?.[1];
+  if (!finalDecision) {
     errors.push("Completed audit report must record one allowed final decision.");
   }
   if (/^\|.*\|\s*(Not run|Pending)\s*\|/m.test(report) || /\|\s*Pending\s*\|/m.test(report)) {
@@ -259,6 +263,34 @@ if (plan?.status === "complete") {
       errors.push("Completed audit plan candidate must include a 40-character commit.");
     } else if (reportCommit && candidate.commit !== reportCommit) {
       errors.push("Completed audit plan and report candidate commits must match.");
+    } else {
+      const ancestry = spawnSync("git", ["merge-base", "--is-ancestor", candidate.commit, "HEAD"], {
+        cwd: root,
+        encoding: "utf8",
+      });
+      if (ancestry.status !== 0) {
+        errors.push(
+          "Completed audit candidate must be an available ancestor of the current checkout.",
+        );
+      } else {
+        const diff = spawnSync("git", ["diff", "--name-only", `${candidate.commit}..HEAD`, "--"], {
+          cwd: root,
+          encoding: "utf8",
+        });
+        if (diff.status !== 0) {
+          errors.push("Completed audit candidate drift could not be checked.");
+        } else {
+          const stalePaths = diff.stdout
+            .split(/\r?\n/)
+            .filter(Boolean)
+            .filter((path) => !allowedPostCandidateChanges.has(path));
+          if (stalePaths.length) {
+            errors.push(
+              `Completed audit evidence is stale after post-candidate changes: ${stalePaths.join(", ")}`,
+            );
+          }
+        }
+      }
     }
     for (const field of ["githubVerification", "ciRun", "vercelDeployment"]) {
       if (typeof candidate[field] !== "string" || !/^https:\/\//.test(candidate[field])) {
@@ -327,6 +359,14 @@ if (plan?.status === "complete") {
       errors.push(`${label} must include substantive notes.`);
     }
     validateEvidenceLinks(label, result?.evidence);
+  }
+  if (
+    finalDecision === "Pass for real consumer pilots" &&
+    completedResults.some(({ result }) => result === "Fail" || result === "Blocked")
+  ) {
+    errors.push(
+      "Completed audit with failed or blocked results must use the Blocked before pilots final decision.",
+    );
   }
 }
 
