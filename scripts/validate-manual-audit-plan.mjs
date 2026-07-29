@@ -73,7 +73,7 @@ const requiredScenarioIds = [
   "pagination-current-disabled",
   "command-live-states",
   "sidebar-collapse",
-  "sidebar-mobile-sheet",
+  "sheet-mobile-modal",
   "overlay-focus-dismissal",
   "motion-adapter-reduced-motion",
   "runtime-axes-motion-contrast",
@@ -223,7 +223,7 @@ const requiredScenarioEnvironments = {
     "zoom-reflow",
     "high-contrast",
   ],
-  "sidebar-mobile-sheet": [
+  "sheet-mobile-modal": [
     "macos-safari-voiceover",
     "macos-chromium-keyboard",
     "windows-nvda",
@@ -262,6 +262,12 @@ const requiredScenarioEnvironments = {
 };
 const allowedStatuses = ["manual-evidence-pending", "complete"];
 const allowedEvidenceResults = ["Pass", "Fail", "Blocked", "Not applicable"];
+const notApplicableEnvironmentFields = {
+  "macos-chromium-keyboard": new Set(["assistiveTechnology"]),
+  "zoom-reflow": new Set(["assistiveTechnology"]),
+  "reduced-motion": new Set(["assistiveTechnology"]),
+  "high-contrast": new Set(["assistiveTechnology"]),
+};
 const allowedPostCandidateChanges = new Set([
   "docs/audits/core-1-0-accessibility-device-audit.md",
   "quality/manual-audit-plan.json",
@@ -302,6 +308,14 @@ function isSubstantiveString(value) {
     !["pending", "not run", "recorded", "none recorded", "not applicable"].includes(
       value.trim().toLowerCase(),
     )
+  );
+}
+
+function isAllowedNotApplicable(environmentId, field, value) {
+  return (
+    typeof value === "string" &&
+    value.trim().toLowerCase() === "not applicable" &&
+    notApplicableEnvironmentFields[environmentId]?.has(field)
   );
 }
 
@@ -547,7 +561,10 @@ if (plan?.status === "complete") {
   for (const environment of completedEnvironments) {
     const label = `Completed environment ${environment?.id ?? "without an id"}`;
     for (const field of environmentEvidenceFields) {
-      if (!isSubstantiveString(environment?.[field])) {
+      if (
+        !isSubstantiveString(environment?.[field]) &&
+        !isAllowedNotApplicable(environment?.id, field, environment?.[field])
+      ) {
         errors.push(`${label} must include substantive ${field} evidence.`);
       }
     }

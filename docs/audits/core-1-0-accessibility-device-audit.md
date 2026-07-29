@@ -106,7 +106,9 @@ Each environment record must include:
 - `result`
 - `notes`
 
-Use `not applicable` rather than an empty value when a field does not apply.
+Use `not applicable` only for `assistiveTechnology` in the keyboard-only, zoom/reflow,
+reduced-motion, and high-contrast environment records. Every other metadata field requires the
+actual tested value.
 
 ## Scenario matrix
 
@@ -133,7 +135,7 @@ evidence index.
 | `pagination-current-disabled`   | `/docs/components/pagination`            | Current page, disabled controls, ellipsis, RTL             | Not run | Pending  |
 | `command-live-states`           | `/docs/components/command-primitive`     | Command active descendant, loading, empty, result count    | Not run | Pending  |
 | `sidebar-collapse`              | `/visual-test#sidebar-primitive`         | Sidebar collapse, hidden content, focus retention          | Not run | Pending  |
-| `sidebar-mobile-sheet`          | `/docs/components/sheet#preview`         | Mobile Sheet focus, dismissal, scroll lock, reduced motion | Not run | Pending  |
+| `sheet-mobile-modal`            | `/docs/components/sheet#preview`         | Mobile Sheet focus, dismissal, scroll lock, reduced motion | Not run | Pending  |
 | `overlay-focus-dismissal`       | `/visual-test/blocks/overlay-playground` | Dialog, Popover, Tooltip, Dropdown Menu                    | Not run | Pending  |
 | `motion-adapter-reduced-motion` | `/docs/foundations/motion`               | Optional Motion adapter and live reduced-motion preference | Not run | Pending  |
 | `runtime-axes-motion-contrast`  | `/visual-test`                           | Themes, modes, density, RTL, motion, contrast              | Not run | Pending  |

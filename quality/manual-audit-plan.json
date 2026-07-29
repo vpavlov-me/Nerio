@@ -504,11 +504,11 @@
       ]
     },
     {
-      "id": "sidebar-mobile-sheet",
-      "title": "Consumer-owned mobile Sidebar path through Sheet",
+      "id": "sheet-mobile-modal",
+      "title": "Mobile Sheet focus, dismissal, scroll lock, and reduced motion",
       "route": "/docs/components/sheet#preview",
       "surfaces": ["navigation-overlays"],
-      "components": ["sidebar", "sheet"],
+      "components": ["sheet"],
       "environments": [
         "macos-safari-voiceover",
         "macos-chromium-keyboard",
@@ -519,14 +519,14 @@
         "reduced-motion"
       ],
       "steps": [
-        "Open the live mobile navigation Sheet from its named trigger.",
-        "Navigate the single Sheet-owned navigation tree and dismiss it.",
+        "Open the live Sheet from its named trigger and move focus between its named actions.",
+        "Dismiss it through its close button, Escape, backdrop, and touch paths where available.",
         "Inspect modal naming, focus containment, scroll lock, reduced-motion behavior, and trigger restoration."
       ],
       "expected": [
-        "The mobile composition renders one interactive navigation tree.",
-        "The Sheet is named and dismissal restores focus to the mobile navigation trigger.",
-        "No duplicate hidden Sidebar tree remains interactive."
+        "The Sheet has an understandable name and focus remains contained while it is modal.",
+        "Every supported dismissal path restores focus to the Sheet trigger.",
+        "Body scroll remains locked and reduced motion preserves the final visible state."
       ]
     },
     {

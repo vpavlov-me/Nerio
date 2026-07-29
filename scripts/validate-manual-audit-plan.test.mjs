@@ -187,6 +187,42 @@ test("manual audit validator rejects an evidence-free pilot pass", () => {
   );
 });
 
+test("manual audit validator accepts not-applicable assistive technology only where valid", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(
+        ({ id }) => id === "macos-chromium-keyboard",
+      ).assistiveTechnology = "not applicable";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.equal(result.status, 0, result.stderr);
+    },
+  );
+
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(
+        ({ id }) => id === "macos-safari-voiceover",
+      ).assistiveTechnology = "not applicable";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed environment macos-safari-voiceover must include substantive assistiveTechnology/,
+      );
+    },
+  );
+});
+
 test("manual audit validator locks the candidate scenario matrix", () => {
   withPlanAndReportFixtures(
     (source) => {
