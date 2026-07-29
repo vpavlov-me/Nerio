@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { detectCiScopes } from "./detect-ci-scopes.mjs";
+import { detectCiScopes, parseNameStatusOutput } from "./detect-ci-scopes.mjs";
 
 function scopes(...paths) {
   return detectCiScopes(paths).scopes;
@@ -18,6 +18,17 @@ test("treats shared documentation CSS as browser and visual work", () => {
   const result = scopes("apps/docs/app/globals.css");
   assert.equal(result.browser, true);
   assert.equal(result.visual, true);
+});
+
+test("routes shared class helpers and visual fixture assets to visual regression", () => {
+  for (const path of [
+    "packages/ui/src/lib/cn.ts",
+    "packages/ui/src/lib/tailwind-cn.ts",
+    "apps/docs/lib/avatar-preview-assets.ts",
+    "apps/docs/public/avatars/maya-chen.png",
+  ]) {
+    assert.equal(scopes(path).visual, true, path);
+  }
 });
 
 test("keeps ordinary Markdown changes out of runtime scopes", () => {
@@ -87,4 +98,29 @@ test("normalizes Windows separators and removes duplicate paths", () => {
   ]);
   assert.deepEqual(result.changedFiles, ["packages/ui/src/components/button.tsx"]);
   assert.equal(result.scopes.browser, true);
+});
+
+test("preserves both paths from renamed and copied files", () => {
+  assert.deepEqual(
+    parseNameStatusOutput(
+      [
+        "R100",
+        "packages/ui/src/components/legacy.tsx",
+        "docs/legacy.md",
+        "C075",
+        "packages/registry/src/manifest.json",
+        "fixtures/manifest.json",
+        "M",
+        "README.md",
+        "",
+      ].join("\0"),
+    ),
+    [
+      "packages/ui/src/components/legacy.tsx",
+      "docs/legacy.md",
+      "packages/registry/src/manifest.json",
+      "fixtures/manifest.json",
+      "README.md",
+    ],
+  );
 });

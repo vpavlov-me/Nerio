@@ -43,6 +43,7 @@ function isBrowserSurface(path) {
 function isVisualSurface(path) {
   return matchesAny(path, [
     /^packages\/ui\/src\/(?:components|styles)\//,
+    /^packages\/ui\/src\/lib\/(?:cn|tailwind-cn)\.ts$/,
     "packages/ui/src/styles.css",
     /^packages\/tokens\/src\/.*\.css$/,
     /^packages\/adapters\/src\/(?:icons|motion)\./,
@@ -50,6 +51,8 @@ function isVisualSurface(path) {
     /^apps\/docs\/app\/.*\.css$/,
     /^apps\/docs\/components\//,
     /^apps\/docs\/features\//,
+    "apps/docs/lib/avatar-preview-assets.ts",
+    /^apps\/docs\/public\/avatars\//,
     /^tests\/visual\//,
     "playwright.visual.config.mjs",
   ]);
@@ -150,12 +153,36 @@ function parseArgs(args) {
   return options;
 }
 
+export function parseNameStatusOutput(output) {
+  const fields = output.split("\0");
+  const paths = [];
+
+  for (let index = 0; index < fields.length && fields[index];) {
+    const status = fields[index];
+    index += 1;
+
+    if (/^[CR]/.test(status)) {
+      paths.push(fields[index], fields[index + 1]);
+      index += 2;
+    } else {
+      paths.push(fields[index]);
+      index += 1;
+    }
+  }
+
+  return paths.filter(Boolean);
+}
+
 function changedFilesBetween(base, head) {
-  return execFileSync("git", ["diff", "--name-only", "--diff-filter=ACMRD", `${base}...${head}`], {
-    encoding: "utf8",
-  })
-    .split(/\r?\n/)
-    .filter(Boolean);
+  return parseNameStatusOutput(
+    execFileSync(
+      "git",
+      ["diff", "--name-status", "-z", "--diff-filter=ACMRD", `${base}...${head}`],
+      {
+        encoding: "utf8",
+      },
+    ),
+  );
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
