@@ -124,7 +124,7 @@
     {
       "id": "forms-labels-validation",
       "title": "Field relationships, validation, grouped controls, and native form behavior",
-      "route": "/visual-test",
+      "route": "/visual-test#field",
       "surfaces": ["actions-forms"],
       "components": [
         "input",
@@ -231,7 +231,7 @@
     {
       "id": "calendar-grid",
       "title": "Calendar grid navigation, constraints, locale, RTL, and announcements",
-      "route": "/docs/components/calendar",
+      "route": "/docs/components/calendar#preview",
       "surfaces": ["actions-forms", "runtime-axes"],
       "components": ["calendar"],
       "environments": [
@@ -358,7 +358,7 @@
     {
       "id": "command-sidebar",
       "title": "Command query, active descendant, live states, and Sidebar collapse",
-      "route": "/visual-test",
+      "route": "/visual-test#command-primitive",
       "surfaces": ["navigation-overlays"],
       "components": ["command", "sidebar"],
       "environments": [

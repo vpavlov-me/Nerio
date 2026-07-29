@@ -39,6 +39,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandLoading,
   Dialog,
   DatePicker,
   DialogFooter,
@@ -342,6 +343,44 @@ const commandItems = [
   { value: "settings", label: "Settings" },
   { value: "disabled", label: "Unavailable", disabled: true },
 ] as const;
+
+function CommandAuditExample() {
+  const [query, setQuery] = React.useState("");
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const resultCount = commandItems.filter((item) =>
+    [item.label, item.value, ...("keywords" in item ? item.keywords : [])]
+      .join(" ")
+      .toLocaleLowerCase()
+      .includes(normalizedQuery),
+  ).length;
+
+  return (
+    <div className="component-lab-stack">
+      <Command
+        items={commandItems}
+        query={query}
+        onQueryChange={(nextQuery) => setQuery(nextQuery)}
+      >
+        <CommandInput aria-label="Search commands" placeholder="Search commands…" />
+        <CommandList>
+          {(item) => (
+            <CommandItem
+              value={item.value}
+              leading={<Icon icon={item.value === "settings" ? Settings : LayoutDashboard} />}
+              shortcut={item.value === "dashboard" ? <Kbd>G D</Kbd> : undefined}
+            >
+              {item.label}
+            </CommandItem>
+          )}
+        </CommandList>
+        <CommandEmpty>No commands found.</CommandEmpty>
+      </Command>
+      <p aria-live="polite" role="status">
+        {resultCount} {resultCount === 1 ? "command" : "commands"} available.
+      </p>
+    </div>
+  );
+}
 
 function SheetExample({
   side,
@@ -682,10 +721,13 @@ export function ComponentPlayground() {
       <SpecimenSection id="form-group" title="Form Group" api="stack · inline · grid · invalid">
         <div className="component-lab-form-row">
           <FormGroup title="Stack" description="Default layout">
-            <Checkbox defaultChecked /> <Checkbox />
+            <Checkbox aria-label="Stack option one" defaultChecked />{" "}
+            <Checkbox aria-label="Stack option two" />
           </FormGroup>
           <FormGroup title="Inline" layout="inline">
-            <Checkbox defaultChecked /> <Checkbox /> <Checkbox />
+            <Checkbox aria-label="Inline option one" defaultChecked />{" "}
+            <Checkbox aria-label="Inline option two" />{" "}
+            <Checkbox aria-label="Inline option three" />
           </FormGroup>
           <FormGroup title="Grid" layout="grid" invalid message="Review both fields.">
             <Input defaultValue="One" />
@@ -704,12 +746,12 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Checkbox key="off" />,
-                <Checkbox key="on" defaultChecked />,
-                <Checkbox key="mixed" indeterminate />,
+                <Checkbox aria-label="Unchecked option" key="off" />,
+                <Checkbox aria-label="Checked option" key="on" defaultChecked />,
+                <Checkbox aria-label="Indeterminate option" key="mixed" indeterminate />,
                 <span key="disabled" className="component-lab-inline">
-                  <Checkbox disabled />
-                  <Checkbox disabled defaultChecked />
+                  <Checkbox aria-label="Disabled unchecked option" disabled />
+                  <Checkbox aria-label="Disabled checked option" disabled defaultChecked />
                 </span>,
               ],
             },
@@ -745,10 +787,10 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Switch key="off" />,
-                <Switch key="on" defaultChecked />,
-                <Switch key="doff" disabled />,
-                <Switch key="don" disabled defaultChecked />,
+                <Switch aria-label="Notifications off" key="off" />,
+                <Switch aria-label="Notifications on" key="on" defaultChecked />,
+                <Switch aria-label="Disabled notifications off" key="doff" disabled />,
+                <Switch aria-label="Disabled notifications on" key="don" disabled defaultChecked />,
               ],
             },
           ]}
@@ -1458,28 +1500,39 @@ export function ComponentPlayground() {
         api="flat or grouped items · search · custom filter · disabled · empty · loading · selection"
       >
         <div className="component-lab-card-grid">
-          <Command items={commandItems}>
-            <CommandInput placeholder="Search commands…" />
-            <CommandList>
-              {(item) => (
-                <CommandItem
-                  value={item.value}
-                  leading={<Icon icon={item.value === "settings" ? Settings : LayoutDashboard} />}
-                  shortcut={item.value === "dashboard" ? <Kbd>G D</Kbd> : undefined}
-                >
-                  {item.label}
-                </CommandItem>
-              )}
-            </CommandList>
-            <CommandEmpty>No commands found.</CommandEmpty>
-          </Command>
+          <CommandAuditExample />
           <Command items={[]}>
-            <CommandInput placeholder="Empty command…" />
+            <CommandInput aria-label="Search empty commands" placeholder="Empty command…" />
             <CommandList>
               {(item) => <CommandItem value={item.value}>{item.label}</CommandItem>}
             </CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
           </Command>
+          <Command items={[]}>
+            <CommandInput aria-label="Search loading commands" placeholder="Loading command…" />
+            <CommandLoading>Loading commands…</CommandLoading>
+          </Command>
+        </div>
+        <div className="component-lab-stack">
+          <Heading as="h3">Mobile Sidebar composition</Heading>
+          <Sheet>
+            <SheetTrigger render={<Button variant="secondary">Open mobile navigation</Button>} />
+            <SheetContent side="left" size="sm">
+              <SheetHeader>
+                <SheetTitle>Workspace navigation</SheetTitle>
+                <SheetDescription>
+                  Mobile Sidebar content uses one Sheet-owned tree.
+                </SheetDescription>
+              </SheetHeader>
+              <SheetBody>
+                <nav aria-label="Mobile workspace">
+                  <Button variant="ghost">Overview</Button>
+                  <Button variant="ghost">Projects</Button>
+                  <Button variant="ghost">Settings</Button>
+                </nav>
+              </SheetBody>
+            </SheetContent>
+          </Sheet>
         </div>
       </SpecimenSection>
     </>
