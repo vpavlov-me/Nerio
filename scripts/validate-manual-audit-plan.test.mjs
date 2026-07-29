@@ -254,6 +254,31 @@ test("manual audit validator rejects missing required environments", () => {
   );
 });
 
+test("manual audit validator pins every scenario environment matrix", () => {
+  withFixture(
+    "quality/manual-audit-plan.json",
+    (source) => {
+      const plan = JSON.parse(source);
+      for (const scenario of plan.scenarios) {
+        scenario.environments = ["macos-chromium-keyboard"];
+      }
+      return JSON.stringify(plan, null, 2);
+    },
+    (target) => {
+      const result = run(["--plan", target]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Scenario global-docs-navigation environments must exactly match/,
+      );
+      assert.match(
+        result.stderr,
+        /Scenario runtime-axes-motion-contrast environments must exactly match/,
+      );
+    },
+  );
+});
+
 test("manual audit validator rejects coverage and report drift", () => {
   withFixture(
     "quality/manual-audit-plan.json",

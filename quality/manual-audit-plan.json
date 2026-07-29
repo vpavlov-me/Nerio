@@ -515,12 +515,13 @@
         "windows-nvda",
         "ios-safari-voiceover",
         "android-chrome-talkback",
-        "zoom-reflow"
+        "zoom-reflow",
+        "reduced-motion"
       ],
       "steps": [
         "Open the live mobile navigation Sheet from its named trigger.",
         "Navigate the single Sheet-owned navigation tree and dismiss it.",
-        "Inspect modal naming, focus containment, scroll lock, and trigger restoration."
+        "Inspect modal naming, focus containment, scroll lock, reduced-motion behavior, and trigger restoration."
       ],
       "expected": [
         "The mobile composition renders one interactive navigation tree.",
@@ -530,10 +531,10 @@
     },
     {
       "id": "overlay-focus-dismissal",
-      "title": "Dialog, Sheet, Popover, Tooltip, and Dropdown Menu focus and dismissal",
+      "title": "Dialog, Popover, Tooltip, and Dropdown Menu focus and dismissal",
       "route": "/visual-test/blocks/overlay-playground",
       "surfaces": ["navigation-overlays"],
-      "components": ["dialog", "sheet", "popover", "tooltip", "dropdown-menu"],
+      "components": ["dialog", "popover", "tooltip", "dropdown-menu"],
       "environments": [
         "macos-safari-voiceover",
         "macos-chromium-keyboard",

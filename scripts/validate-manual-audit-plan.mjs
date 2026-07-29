@@ -78,6 +78,188 @@ const requiredScenarioIds = [
   "motion-adapter-reduced-motion",
   "runtime-axes-motion-contrast",
 ];
+const requiredScenarioEnvironments = {
+  "global-docs-navigation": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "global-demo-responsive": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "actions-buttons-toggle": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "high-contrast",
+  ],
+  "forms-labels-validation": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+    "high-contrast",
+  ],
+  "native-temporal-inputs": [
+    "macos-safari-voiceover",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "slider-input": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "high-contrast",
+  ],
+  "file-input-picker": [
+    "macos-safari-voiceover",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "calendar-grid": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+    "high-contrast",
+  ],
+  "date-picker-composition": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "table-semantics-overflow": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "item-semantics-states": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "feedback-status-states": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "reduced-motion",
+    "high-contrast",
+  ],
+  "toast-announcements": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "reduced-motion",
+    "high-contrast",
+  ],
+  "tabs-orientation-rtl": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "breadcrumbs-current": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "pagination-current-disabled": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "command-live-states": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+  ],
+  "sidebar-collapse": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "zoom-reflow",
+    "high-contrast",
+  ],
+  "sidebar-mobile-sheet": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+    "reduced-motion",
+  ],
+  "overlay-focus-dismissal": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+    "reduced-motion",
+  ],
+  "motion-adapter-reduced-motion": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "reduced-motion",
+  ],
+  "runtime-axes-motion-contrast": [
+    "macos-safari-voiceover",
+    "macos-chromium-keyboard",
+    "windows-nvda",
+    "ios-safari-voiceover",
+    "android-chrome-talkback",
+    "zoom-reflow",
+    "reduced-motion",
+    "high-contrast",
+  ],
+};
 const allowedStatuses = ["manual-evidence-pending", "complete"];
 const allowedEvidenceResults = ["Pass", "Fail", "Blocked", "Not applicable"];
 const allowedPostCandidateChanges = new Set([
@@ -208,6 +390,16 @@ if (plan) {
     }
     if (new Set(scenario?.environments ?? []).size !== (scenario?.environments ?? []).length) {
       errors.push(`${prefix} environment IDs must be unique.`);
+    }
+    const canonicalEnvironments = requiredScenarioEnvironments[scenario?.id];
+    if (
+      canonicalEnvironments &&
+      [...(scenario?.environments ?? [])].sort().join("\n") !==
+        [...canonicalEnvironments].sort().join("\n")
+    ) {
+      errors.push(
+        `${prefix} environments must exactly match: ${canonicalEnvironments.join(", ")}.`,
+      );
     }
 
     if (scenario?.id && !report.includes(`\`${scenario.id}\``)) {
