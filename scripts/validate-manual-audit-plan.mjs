@@ -289,6 +289,8 @@ const requiredScenarioScopeHashes = {
 };
 const allowedStatuses = ["manual-evidence-pending", "complete"];
 const allowedEvidenceResults = ["Pass", "Fail", "Blocked", "Not applicable"];
+const allowedFindingSeverities = ["P0", "P1", "P2", "P3"];
+const allowedBlockingGates = ["pilots", "api-freeze", "beta", "stable-1.0"];
 const notApplicableEnvironmentFields = {
   "macos-chromium-keyboard": new Set(["assistiveTechnology"]),
   "zoom-reflow": new Set(["assistiveTechnology"]),
@@ -603,6 +605,17 @@ if (plan?.status === "complete") {
         errors.push(`Completed audit candidate ${field} must be an https URL.`);
       }
     }
+    if (
+      /^[0-9a-f]{40}$/.test(candidate.commit ?? "") &&
+      !candidate.githubVerification?.includes(`/commit/${candidate.commit}`)
+    ) {
+      errors.push("Completed audit GitHub verification URL must identify the candidate commit.");
+    }
+    for (const field of ["ciCommit", "vercelCommit"]) {
+      if (candidate[field] !== candidate.commit) {
+        errors.push(`Completed audit candidate ${field} must match the candidate commit.`);
+      }
+    }
     if (!isSubstantiveString(candidate.auditOwner)) {
       errors.push("Completed audit candidate must name the audit owner.");
     }
@@ -678,6 +691,32 @@ if (plan?.status === "complete") {
       errors.push(`${label} must include substantive notes.`);
     }
     validateEvidenceLinks(label, result?.evidence);
+    if (result?.result === "Fail" || result?.result === "Blocked") {
+      if (
+        typeof result?.issue !== "string" ||
+        !/^https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/\d+$/.test(result.issue)
+      ) {
+        errors.push(`${label} must link a focused GitHub issue for failed or blocked evidence.`);
+      } else if (!report.includes(result.issue)) {
+        errors.push(`${label} GitHub issue must also appear in the report finding log.`);
+      }
+      if (!allowedFindingSeverities.includes(result?.severity)) {
+        errors.push(`${label} severity must use one of: ${allowedFindingSeverities.join(", ")}.`);
+      }
+      if (!allowedBlockingGates.includes(result?.blockingGate)) {
+        errors.push(`${label} blockingGate must use one of: ${allowedBlockingGates.join(", ")}.`);
+      }
+    }
+  }
+  for (const environment of completedEnvironments) {
+    const expectedStatus = aggregateResults(
+      completedResults.filter(({ environmentId }) => environmentId === environment.id),
+    );
+    if (environment.result !== expectedStatus) {
+      errors.push(
+        `Completed environment ${environment.id} aggregate result must match its scenario evidence (expected ${expectedStatus}, found ${environment.result ?? "missing"}).`,
+      );
+    }
   }
   for (const scenario of plan.scenarios ?? []) {
     const scenarioResults = completedResults.filter(({ scenarioId }) => scenarioId === scenario.id);

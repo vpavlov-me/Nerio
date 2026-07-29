@@ -68,12 +68,15 @@ For every environment and scenario:
 Before changing the plan status to `complete`, add a machine-readable `completion` record to
 `quality/manual-audit-plan.json`. It must contain:
 
-- `candidate`: the exact commit plus HTTPS links for GitHub verification, CI, and Vercel, along
-  with the audit owner and start timestamp;
+- `candidate`: the exact commit plus HTTPS links for GitHub verification, CI, and Vercel, explicit
+  `ciCommit` and `vercelCommit` identities matching that commit, and the audit owner/start timestamp;
 - `environments`: one record for every required environment with the operating system, browser,
   assistive technology, device, viewport, zoom, and package mode actually used;
 - `results`: one unique record for every scenario/environment pair required by the plan, with an
-  allowed result, substantive notes, and at least one HTTPS evidence link.
+  allowed result, substantive notes, and at least one HTTPS evidence link. Every `Fail` or
+  `Blocked` result must also include a focused GitHub `issue`, `severity` (`P0`–`P3`), and
+  `blockingGate` (`pilots`, `api-freeze`, `beta`, or `stable-1.0`); the issue must appear in the
+  finding log below.
 
 The completion validator rejects missing pairs, duplicate or unexpected records, placeholder
 values, non-evidence URLs, candidate drift between the plan and report, post-candidate source
@@ -82,6 +85,8 @@ cells. `Pass for real consumer pilots` requires `Pass` evidence for every requir
 scenario/environment pair; `Not applicable`, `Fail`, or `Blocked` keeps the final decision blocked.
 The environment and scenario outcomes in this report must match the machine-readable completion
 records; contradictory human and JSON evidence fails validation.
+Each aggregate environment outcome is derived from its applicable scenario results rather than
+accepted as an independent assertion.
 
 ## Required environments
 

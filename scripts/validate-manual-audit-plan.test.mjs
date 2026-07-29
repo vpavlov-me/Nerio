@@ -61,9 +61,11 @@ function completedPlan(source) {
       completion: {
         candidate: {
           commit: currentCommit,
-          githubVerification: "https://github.com/example/repository/commit/aaaaaaaa",
+          githubVerification: `https://github.com/example/repository/commit/${currentCommit}`,
           ciRun: "https://github.com/example/repository/actions/runs/1",
+          ciCommit: currentCommit,
           vercelDeployment: "https://audit-preview.example.test",
+          vercelCommit: currentCommit,
           auditStartedAt: "2026-07-29T08:00:00.000Z",
           auditOwner: "Accessibility audit team",
         },
@@ -245,6 +247,80 @@ test("manual audit validator requires environment outcomes and notes", () => {
         result.stderr,
         /Completed environment macos-safari-voiceover must include substantive notes evidence/,
       );
+    },
+  );
+});
+
+test("manual audit validator binds candidate provenance to the audited commit", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.candidate.githubVerification =
+        "https://github.com/example/repository/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+      plan.completion.candidate.ciCommit = "b".repeat(40);
+      plan.completion.candidate.vercelCommit = "c".repeat(40);
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /GitHub verification URL must identify the candidate commit/);
+      assert.match(result.stderr, /candidate ciCommit must match the candidate commit/);
+      assert.match(result.stderr, /candidate vercelCommit must match the candidate commit/);
+    },
+  );
+});
+
+test("manual audit validator derives environment failures and requires finding records", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      const failedResult = plan.completion.results[0];
+      failedResult.result = "Fail";
+      plan.completion.environments.find(({ id }) => id === failedResult.environmentId).result =
+        "Fail";
+      return JSON.stringify(plan, null, 2);
+    },
+    (source) =>
+      completedReport(source)
+        .replace(
+          "Final decision: **Pass for real consumer pilots**",
+          "Final decision: **Blocked before pilots**",
+        )
+        .split("\n")
+        .map((line) =>
+          line.includes("`macos-safari-voiceover`") || line.includes("`global-docs-navigation`")
+            ? line.replace(/\|\s*Pass\s*\|\s*Recorded\s*\|/, "| Fail | Recorded |")
+            : line,
+        )
+        .join("\n"),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must link a focused GitHub issue/);
+      assert.match(result.stderr, /severity must use one of/);
+      assert.match(result.stderr, /blockingGate must use one of/);
+    },
+  );
+});
+
+test("manual audit validator derives environment outcomes from scenario evidence", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.results[0].result = "Fail";
+      return JSON.stringify(plan, null, 2);
+    },
+    (source) =>
+      completedReport(source).replace(
+        "Final decision: **Pass for real consumer pilots**",
+        "Final decision: **Blocked before pilots**",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /aggregate result must match its scenario evidence/);
     },
   );
 });
