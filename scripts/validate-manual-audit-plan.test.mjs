@@ -481,9 +481,9 @@ test("manual audit validator rejects negated accessibility preferences", () => {
     (source) => {
       const plan = JSON.parse(completedPlan(source));
       plan.completion.environments.find(({ id }) => id === "reduced-motion").notes =
-        "Reduce Motion was not currently enabled, but active checks completed successfully.";
+        "Reduce Motion disabled; overlay controls enabled and verified manually.";
       plan.completion.environments.find(({ id }) => id === "high-contrast").notes =
-        "Windows High Contrast was not currently active, but all required checks completed.";
+        "Windows High Contrast was off; inspected controls remained active.";
       return JSON.stringify(plan, null, 2);
     },
     completedReport,
@@ -492,6 +492,46 @@ test("manual audit validator rejects negated accessibility preferences", () => {
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, /reduced-motion notes must match the required environment/);
       assert.match(result.stderr, /high-contrast notes must match the required environment/);
+    },
+  );
+});
+
+test("manual audit validator rejects explicitly untested passing results", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.results[0].notes =
+        "This required scenario was explicitly not tested in this environment.";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Pass notes must confirm that the required scenario was performed/,
+      );
+    },
+  );
+});
+
+test("manual audit validator rejects explicitly untested passing environments", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments[0].notes =
+        "The required environment scenarios were explicitly not tested.";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Pass notes must confirm that the required environment was performed/,
+      );
     },
   );
 });
@@ -649,6 +689,26 @@ test("manual audit validator requires concrete physical mobile device models", (
       assert.match(
         result.stderr,
         /android-chrome-talkback device must match the required environment/,
+      );
+    },
+  );
+});
+
+test("manual audit validator requires a concrete iPhone generation", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "ios-safari-voiceover").device =
+        "iPhone Pro hardware";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /ios-safari-voiceover device must match the required environment/,
       );
     },
   );
@@ -1326,6 +1386,25 @@ test("manual audit validator rejects duplicate canonical report rows", () => {
       assert.match(
         result.stderr,
         /Completed scenario global-docs-navigation result must match the completed report status/,
+      );
+    },
+  );
+});
+
+test("manual audit validator matches canonical table labels exactly", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| No open P0 or P1 accessibility defect ",
+        "| No open P0 or P1 accessibility defect was not checked ",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /summary gate "No open P0 or P1 accessibility defect" must record/,
       );
     },
   );

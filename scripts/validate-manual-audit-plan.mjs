@@ -340,7 +340,7 @@ const environmentMetadataRequirements = {
     operatingSystem: /\b(?:iOS|iPadOS)\b/i,
     browser: /\bSafari\b/i,
     assistiveTechnology: /\bVoiceOver\b/i,
-    device: /\b(?:iPhone|iPad)\s+(?:\d{1,2}|SE\b|Air\b|Pro\b|mini\b)/i,
+    device: /\b(?:iPhone\s+(?:\d{1,2}|SE\b)|iPad\s+(?:\d{1,2}|(?:Air|Pro|mini)\b.*\d))/i,
   },
   "android-chrome-talkback": {
     operatingSystem: /\bAndroid\b/i,
@@ -461,7 +461,13 @@ function hasEnabledPreferenceState(environmentId, notes) {
   const stateSegment = notes
     .slice(preferenceMatch.index + preferenceMatch[0].length)
     .match(/^(.{0,80}?)\b(enabled|active|on)\b/i);
-  return Boolean(stateSegment && !/\b(?:not|never)\b/i.test(stateSegment[1]));
+  return Boolean(stateSegment && !/\b(?:not|never|disabled|off)\b/i.test(stateSegment[1]));
+}
+
+function claimsEvidenceNotPerformed(notes) {
+  return /\b(?:untested|skipped)\b|\b(?:not|never)(?:\s+\w+){0,5}\s+(?:tested|verified|checked|performed|run)\b/i.test(
+    notes ?? "",
+  );
 }
 
 function isCoherentDesktopEnvironment(environment) {
@@ -551,7 +557,13 @@ function reportSection(title) {
 }
 
 function reportTableValue(section, label) {
-  const rows = section.split(/\r?\n/).filter((line) => line.trimStart().startsWith(`| ${label}`));
+  const rows = section.split(/\r?\n/).filter((line) => {
+    const cells = line
+      .split("|")
+      .slice(1, -1)
+      .map((cell) => cell.trim());
+    return cells[0] === label;
+  });
   if (rows.length !== 1) return undefined;
   return rows[0]
     .split("|")
@@ -1027,6 +1039,9 @@ if (plan?.status === "complete") {
     if (environment?.packageMode !== candidate?.packageMode) {
       errors.push(`${label} packageMode must match the locked candidate packageMode.`);
     }
+    if (environment?.result === "Pass" && claimsEvidenceNotPerformed(environment?.notes)) {
+      errors.push(`${label} Pass notes must confirm that the required environment was performed.`);
+    }
     if (
       ["ios-safari-voiceover", "android-chrome-talkback"].includes(environment?.id) &&
       /\b(?:simulator|emulator|virtual)\b/i.test(environment?.device ?? "")
@@ -1085,6 +1100,9 @@ if (plan?.status === "complete") {
     }
     if (!isDetailedEvidenceString(result?.notes, "notes")) {
       errors.push(`${label} must include substantive notes.`);
+    }
+    if (result?.result === "Pass" && claimsEvidenceNotPerformed(result?.notes)) {
+      errors.push(`${label} Pass notes must confirm that the required scenario was performed.`);
     }
     validateEvidenceLinks(label, result?.evidence);
     if (result?.result === "Fail" || result?.result === "Blocked") {
