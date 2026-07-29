@@ -312,24 +312,29 @@ const completionSummaryGates = [
   "Motion adapter has manual reduced-motion evidence",
   "Missing or stale evidence is explicitly listed",
 ];
+const concreteMacDevicePattern =
+  /\b(?:MacBook\s+(?:Air|Pro)\b.*\d|Mac mini\b.*(?:M\d|\d{4})|iMac\b.*(?:M\d|\d{2,4}))/i;
+const concreteWindowsDevicePattern = /\b(?:ThinkPad|Surface|Dell|HP|Lenovo)\b.*\d/i;
+const concreteDesktopDevicePattern =
+  /\b(?:(?:MacBook\s+(?:Air|Pro)|Mac mini|iMac)\b.*\d|(?:ThinkPad|Surface|Dell|HP|Lenovo)\b.*\d)/i;
 const environmentMetadataRequirements = {
   "macos-safari-voiceover": {
     operatingSystem: /\bmacOS\b/i,
     browser: /\bSafari\b/i,
     assistiveTechnology: /\bVoiceOver\b/i,
-    device: /\b(?:MacBook|Mac mini|iMac)\b/i,
+    device: concreteMacDevicePattern,
   },
   "macos-chromium-keyboard": {
     operatingSystem: /\bmacOS\b/i,
     browser: /\b(?:Chrome|Chromium|Edge)\b/i,
     assistiveTechnology: /keyboard[- ]only/i,
-    device: /\b(?:MacBook|Mac mini|iMac)\b/i,
+    device: concreteMacDevicePattern,
   },
   "windows-nvda": {
     operatingSystem: /\bWindows\b/i,
     browser: /\b(?:Firefox|Chrome|Chromium|Edge)\b/i,
     assistiveTechnology: /\bNVDA\b/i,
-    device: /\b(?:ThinkPad|Surface|Dell|HP|Lenovo|desktop|laptop|PC)\b/i,
+    device: concreteWindowsDevicePattern,
   },
   "ios-safari-voiceover": {
     operatingSystem: /\b(?:iOS|iPadOS)\b/i,
@@ -345,14 +350,17 @@ const environmentMetadataRequirements = {
       /\b(?:Pixel\s+\d|Galaxy\s+(?:[A-Z]+\s*)?\d|OnePlus\s+\d|Xperia\s+\d|Moto(?:rola)?\s+\S*\d|Nothing Phone\s+\d|(?:Redmi|Xiaomi|Huawei|Honor)\s+\S*\d)\b/i,
   },
   "zoom-reflow": {
+    device: concreteDesktopDevicePattern,
     zoom: /(?=.*\b200%)(?=.*\b400%)/,
   },
   "reduced-motion": {
+    device: concreteDesktopDevicePattern,
     notes:
       /(?:\b(?:reduce|reduced) motion\b.*\b(?:enabled|active|on)\b|\bprefers-reduced-motion\s*:\s*reduce\b)/i,
   },
   "high-contrast": {
     operatingSystem: /\b(?:macOS|Windows)\b/i,
+    device: concreteDesktopDevicePattern,
     notes: /\b(?:high contrast|forced colors|increase contrast)\b.*\b(?:enabled|active|on)\b/i,
   },
 };
@@ -706,7 +714,8 @@ if (plan?.status === "manual-evidence-pending") {
 }
 
 if (plan?.status === "complete") {
-  if (!report.includes("Status: **Complete**")) {
+  const reportStatusMatches = [...report.matchAll(/^- Status: \*\*(.+)\*\*$/gm)];
+  if (reportStatusMatches.length !== 1 || reportStatusMatches[0][1] !== "Complete") {
     errors.push("Completed audit report must declare Status: **Complete**.");
   }
   const reportCommitMatches = [

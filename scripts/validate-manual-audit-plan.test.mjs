@@ -502,6 +502,41 @@ test("manual audit validator requires concrete physical mobile device models", (
   );
 });
 
+test("manual audit validator requires concrete desktop device models", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      for (const id of [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "zoom-reflow",
+        "reduced-motion",
+      ]) {
+        plan.completion.environments.find(({ id: candidateId }) => candidateId === id).device =
+          "MacBook hardware";
+      }
+      for (const id of ["windows-nvda", "high-contrast"]) {
+        plan.completion.environments.find(({ id: candidateId }) => candidateId === id).device =
+          "Windows desktop";
+      }
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /macos-safari-voiceover device must match the required environment/,
+      );
+      assert.match(result.stderr, /windows-nvda device must match the required environment/);
+      assert.match(result.stderr, /zoom-reflow device must match the required environment/);
+      assert.match(result.stderr, /reduced-motion device must match the required environment/);
+      assert.match(result.stderr, /high-contrast device must match the required environment/);
+    },
+  );
+});
+
 test("manual audit validator requires device-consistent physical mobile viewports", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -672,6 +707,22 @@ test("manual audit validator rejects duplicate final-decision metadata", () => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, /must record one allowed final decision/);
+    },
+  );
+});
+
+test("manual audit validator rejects contradictory status metadata", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "- Status: **Complete**",
+        "- Status: **Prepared — manual evidence pending**\n- Status: **Complete**",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must declare Status: \*\*Complete\*\*/);
     },
   );
 });
