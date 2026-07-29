@@ -34,6 +34,10 @@ test("release documentation validator fails when focused tests disappear from RE
   invalidFixture("--release", "RELEASE.md", "pnpm test:catalog");
 });
 
-test("release documentation validator fails when focused tests disappear from CI", () => {
-  invalidFixture("--ci", ".github/workflows/ci.yml", "pnpm test:tokens");
+test("release documentation validator fails when focused tests disappear from the release gate", () => {
+  invalidFixture("--release-gate", ".github/workflows/release-gate.yml", "pnpm test:tokens");
+});
+
+test("release documentation validator fails when focused tests disappear from the development gate", () => {
+  invalidFixture("--pr-gate", ".github/workflows/pr-gate.yml", "pnpm test:ui");
 });

@@ -54,8 +54,10 @@ kept so maintainers can run the same command locally without accepting platform-
 Keep the baseline-only commit separate from implementation and documentation commits. Review every
 changed expected image, attach representative evidence to the pull request, and explain the visual
 rule that changed. A maintainer must apply the `visual-baseline-approved` pull-request label before
-CI accepts a baseline change. `CODEOWNERS` assigns the fixture, config, tests, and snapshots to the
-Nerio maintainer.
+the development visual job accepts a baseline change. Label changes do not trigger the development
+workflow. After approval, rerun only the failed `visual-regression` job from its existing run; lint,
+typecheck, unit tests, and build are not restarted. `CODEOWNERS` assigns the fixture, config, tests,
+and snapshots to the Nerio maintainer.
 
 Do not update baselines for unexplained diffs, platform churn, failed font loading, animation
 midpoints, or volatile data. Fix determinism first and rerun the suite at least twice from a clean

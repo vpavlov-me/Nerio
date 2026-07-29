@@ -1,7 +1,45 @@
 # Browser, performance, and package quality gates
 
-Nerio's beta-quality evidence is split by the layer that owns each risk. CI fails when a supported
-engine, package budget, consumer contract, or deterministic performance check regresses.
+Nerio's beta-quality evidence is split by the layer that owns each risk. The release-candidate gate
+fails when a supported engine, package budget, consumer contract, or deterministic performance check
+regresses.
+
+## Tiered CI strategy
+
+Pull requests from working branches into `dev` run `.github/workflows/pr-gate.yml`. Its required
+`PR gate` aggregate is the short feedback loop. The always-on `development-quality` job covers
+formatting, lint, type checking, unit and accessibility tests, catalog/token/onboarding validators,
+documentation validation and examples, and the workspace build. A repository-owned scope detector
+compares the pull-request base and head SHAs, then selects additional contracts:
+
+- runtime UI, tokens, adapters, Registry source, interactive docs, browser tests, or browser config
+  run a focused seven-scenario Chromium smoke;
+- visual component, token CSS, docs preview, fixture, snapshot, or visual-config changes run
+  Chromium visual regression;
+- CLI, MCP, adapters, public package boundaries, and manual-audit files run only their matching
+  contract jobs;
+- branch-policy unit tests run only when the policy workflow, implementation, or tests change.
+
+Markdown-only, audit-only, workflow-only, and package-metadata-only changes do not acquire browser
+or visual work unless they also touch a matching runtime surface. Conditional jobs may be
+`success` or `skipped`; the `PR gate` fails on `failure` or `cancelled`. The independent
+`branch-policy` status always validates pull-request direction. Development pull requests install
+Chromium only, never run the full browser suite, and never run packed release-consumer smoke.
+
+Pull requests from `dev` into `main` run `.github/workflows/release-gate.yml`. The required
+`Release gate` aggregate succeeds only after release quality, separate Chromium, Firefox, and
+WebKit jobs, visual regression, CLI/MCP/adapter contracts, package contracts, and the manual-audit
+contract all pass. Browser engines run in parallel with `fail-fast: false`, and package work does
+not wait for browser completion. This preserves the full package, CLI, MCP, adapter, budget,
+cross-browser, visual, packed-consumer, and pack evidence at the release boundary.
+
+Baseline changes still require the `visual-baseline-approved` label. Label changes are not workflow
+events, so they never restart development quality. After a maintainer reviews and applies the
+label, rerun only the failed `visual-regression` job from the existing workflow run.
+
+Both workflows use read-only contents permission, cancel superseded runs for the same pull request,
+retain artifacts only on failure, and never publish packages, create tags, or create GitHub
+Releases.
 
 ## Browser strategy
 
@@ -12,7 +50,7 @@ The shared suite covers focus-visible and keyboard order, Dialog and Sheet focus
 Popover, Tooltip, Dropdown Menu, Select, and command positioning, Toast lifecycle, Table overflow,
 Sidebar collapse, native forms, dynamic viewport bounds, RTL, and reduced motion.
 
-CI allows one diagnostic retry, writes `test-results/browser/results.json`, and enables
+The release gate allows one diagnostic retry, writes `test-results/browser/results.json`, and enables
 `failOnFlakyTests`, so a pass on retry remains visible and still fails the job. Traces, screenshots,
 and videos are retained only on failure. Run `pnpm test:browser:repeat` before merging changes that
 affect browser behavior; two clean iterations are the minimum local flake check. Engine limitations are listed in
@@ -68,14 +106,48 @@ contrast, or lived interaction evidence.
 
 ## Local gate
 
+Focused development reproduction:
+
 ```bash
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm test:ci-scopes
+pnpm test:ui
+pnpm test:a11y
+pnpm test:catalog
+pnpm test:tokens
+pnpm test:onboarding
+pnpm validate:tokens
+pnpm validate:runtime-axes
+pnpm validate:typography
+pnpm validate:catalog
+pnpm validate:docs
+pnpm validate:onboarding
+pnpm test:docs-examples
+pnpm build
+pnpm test:browser:pr
+```
+
+Complete release-candidate reproduction:
+
+```bash
+pnpm test:branch-policy
+pnpm test:browser:chromium
+pnpm test:browser:firefox
+pnpm test:browser:webkit
+pnpm test:visual
+pnpm test:cli
+pnpm test:mcp
+pnpm test:adapters
 pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
 pnpm validate:platform-support
 pnpm validate:package-budgets
-pnpm exec playwright install chromium firefox webkit
-pnpm test:browser
-pnpm test:browser:repeat
+pnpm validate:release:metadata
+pnpm test:release-consumer
+pnpm pack:check
 ```
 
 Visual regression remains Chromium-only and follows [`visual-regression.md`](./visual-regression.md).
+It runs for visual-contract changes in development and always runs for a release candidate.

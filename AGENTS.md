@@ -158,3 +158,9 @@ Before moving any Core component toward `stable-core`, verify:
     started from its worktree, remove that worktree from the local machine, and run
     `git worktree prune`. Never remove a worktree that contains uncommitted changes or unmerged
     commits; report it as retained instead.
+
+Working-branch pull requests use the fast, scope-aware `PR gate`: Chromium smoke and visual,
+CLI/MCP/adapter, package, or manual-audit jobs run only for their matching surfaces. Firefox,
+WebKit, packed release-consumer smoke, and the complete package contract remain mandatory in the
+`Release gate` for `dev -> main`. Do not move release-only work back into every development pull
+request or weaken the public cross-browser and package guarantees.

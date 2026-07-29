@@ -1,0 +1,314 @@
+name: pr-gate
+
+on:
+  pull_request:
+    branches:
+      - dev
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  scopes:
+    name: detect-scopes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      browser: ${{ steps.detect.outputs.browser }}
+      visual: ${{ steps.detect.outputs.visual }}
+      cli: ${{ steps.detect.outputs.cli }}
+      mcp: ${{ steps.detect.outputs.mcp }}
+      adapters: ${{ steps.detect.outputs.adapters }}
+      packages: ${{ steps.detect.outputs.packages }}
+      manual_audit: ${{ steps.detect.outputs.manual_audit }}
+      workflow: ${{ steps.detect.outputs.workflow }}
+      branch_policy: ${{ steps.detect.outputs.branch_policy }}
+      docs_only: ${{ steps.detect.outputs.docs_only }}
+      changed_count: ${{ steps.detect.outputs.changed_count }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect affected CI scopes
+        id: detect
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/detect-ci-scopes.mjs --base "$BASE_SHA" --head "$HEAD_SHA" --github-output "$GITHUB_OUTPUT"
+
+  quality:
+    name: development-quality
+    needs: scopes
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test:ci-scopes
+      - run: pnpm test:ui
+      - run: pnpm test:a11y
+      - run: pnpm test:catalog
+      - run: pnpm test:tokens
+      - run: pnpm test:onboarding
+      - run: pnpm validate:tokens
+      - run: pnpm validate:runtime-axes
+      - run: pnpm validate:typography
+      - run: pnpm validate:catalog
+      - run: pnpm validate:docs
+      - run: pnpm validate:onboarding
+      - run: pnpm test:docs-examples
+      - run: pnpm build
+
+  branch_policy_contract:
+    name: branch-policy-contract
+    needs: scopes
+    if: needs.scopes.outputs.branch_policy == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:branch-policy
+
+  browser:
+    name: chromium-pr-smoke
+    needs: scopes
+    if: needs.scopes.outputs.browser == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:browser:pr
+      - name: Upload Chromium PR smoke artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chromium-pr-smoke-artifacts
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            test-results/browser/results.json
+            test-results/browser/artifacts/**
+
+  visual:
+    name: visual-regression
+    needs: scopes
+    if: needs.scopes.outputs.visual == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Require live maintainer approval for baseline changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          if git diff --quiet "$BASE_SHA...$HEAD_SHA" -- tests/visual/__screenshots__; then
+            exit 0
+          fi
+          node --input-type=module -e '
+            const response = await fetch(`https://api.github.com/repos/${process.env.REPOSITORY}/issues/${process.env.PR_NUMBER}/labels`);
+            if (!response.ok) throw new Error(`Could not read current pull-request labels: ${response.status}`);
+            const labels = await response.json();
+            if (!labels.some(({ name }) => name === "visual-baseline-approved")) {
+              throw new Error("Baseline changes require the visual-baseline-approved maintainer label. Apply it, then rerun failed jobs only.");
+            }
+          '
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:visual
+      - name: Upload visual regression artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-artifacts
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            test-results/visual/**/*-actual.png
+            test-results/visual/**/*-diff.png
+            test-results/visual/**/trace.zip
+            tests/visual/__screenshots__/linux/*.png
+
+  cli:
+    name: cli-contract
+    needs: scopes
+    if: needs.scopes.outputs.cli == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:cli
+
+  mcp:
+    name: mcp-contract
+    needs: scopes
+    if: needs.scopes.outputs.mcp == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:mcp
+
+  adapters:
+    name: adapter-contract
+    needs: scopes
+    if: needs.scopes.outputs.adapters == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:adapters
+
+  packages:
+    name: public-package-contract
+    needs: scopes
+    if: needs.scopes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate:package-budgets
+      - run: pnpm pack:check
+
+  manual_audit:
+    name: manual-audit-contract
+    needs: scopes
+    if: needs.scopes.outputs.manual_audit == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:manual-audit-plan
+      - run: pnpm validate:manual-audit-plan
+
+  pr_gate:
+    name: PR gate
+    if: always()
+    needs:
+      - scopes
+      - quality
+      - branch_policy_contract
+      - browser
+      - visual
+      - cli
+      - mcp
+      - adapters
+      - packages
+      - manual_audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require mandatory and selected development jobs
+        env:
+          SCOPES_RESULT: ${{ needs.scopes.result }}
+          QUALITY_RESULT: ${{ needs.quality.result }}
+          BRANCH_POLICY_RESULT: ${{ needs.branch_policy_contract.result }}
+          BROWSER_RESULT: ${{ needs.browser.result }}
+          VISUAL_RESULT: ${{ needs.visual.result }}
+          CLI_RESULT: ${{ needs.cli.result }}
+          MCP_RESULT: ${{ needs.mcp.result }}
+          ADAPTERS_RESULT: ${{ needs.adapters.result }}
+          PACKAGES_RESULT: ${{ needs.packages.result }}
+          MANUAL_AUDIT_RESULT: ${{ needs.manual_audit.result }}
+        run: |
+          if [[ "$SCOPES_RESULT" != "success" || "$QUALITY_RESULT" != "success" ]]; then
+            echo "Mandatory development jobs failed: scopes=$SCOPES_RESULT quality=$QUALITY_RESULT" >&2
+            exit 1
+          fi
+          for result in \
+            "$BRANCH_POLICY_RESULT" \
+            "$BROWSER_RESULT" \
+            "$VISUAL_RESULT" \
+            "$CLI_RESULT" \
+            "$MCP_RESULT" \
+            "$ADAPTERS_RESULT" \
+            "$PACKAGES_RESULT" \
+            "$MANUAL_AUDIT_RESULT"; do
+            if [[ "$result" != "success" && "$result" != "skipped" ]]; then
+              echo "A selected development job ended with $result." >&2
+              exit 1
+            fi
+          done

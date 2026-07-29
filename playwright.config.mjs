@@ -57,6 +57,7 @@ export default defineConfig({
         "docs-smoke.spec.mjs",
         "cross-engine-docs.spec.mjs",
         "docs-performance-smoke.spec.mjs",
+        "pr-smoke.spec.mjs",
       ],
       use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:3100" },
     },

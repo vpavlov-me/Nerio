@@ -70,6 +70,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Split pull-request automation into a fast, scope-aware development gate for working branches and
+  a parallel full release-candidate gate for `dev -> main`. Development runtime changes receive a
+  focused Chromium smoke while Firefox, WebKit, complete visual, tool, package, packed-consumer, and
+  manual-audit contracts remain mandatory at the release boundary.
 - Refined the Core component presentation contracts from Playground review: ButtonGroup is now
   horizontal-only with short decorative dividers; FileInput uses a compact upload icon; Checkbox,
   Slider, Calendar, DatePicker, Badge, FormGroup, Pagination, Sidebar, and Command states have

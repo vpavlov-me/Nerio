@@ -1,8 +1,14 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const paths = parsePathOptions(process.argv.slice(2), {
+  "--playwright": resolve(root, "playwright.config.mjs"),
+  "--pr-gate": resolve(root, ".github/workflows/pr-gate.yml"),
+  "--release-gate": resolve(root, ".github/workflows/release-gate.yml"),
+});
 const readJson = (path) => JSON.parse(readFileSync(resolve(root, path), "utf8"));
 const support = readJson("quality/platform-support.json");
 const rootPackage = readJson("package.json");
@@ -90,15 +96,31 @@ for (const value of [
   assert(policy.includes(`\`${value}\``), `Platform support docs must include ${value}.`);
 }
 
-const playwrightConfig = readFileSync(resolve(root, "playwright.config.mjs"), "utf8");
+const playwrightConfig = readFileSync(paths["--playwright"], "utf8");
 for (const engine of ["chromium", "firefox", "webkit"]) {
   assert(playwrightConfig.includes(`-${engine}`), `Playwright config must include ${engine}.`);
 }
 
-const ci = readFileSync(resolve(root, ".github/workflows/ci.yml"), "utf8");
+const prGate = readFileSync(paths["--pr-gate"], "utf8");
 assert(
-  ci.includes("playwright install --with-deps chromium firefox webkit"),
-  "CI must install every supported browser engine.",
+  prGate.includes("playwright install --with-deps chromium") &&
+    prGate.includes("pnpm test:browser:pr"),
+  "The development gate must run the focused Chromium PR smoke.",
+);
+assert(
+  !prGate.includes("command: test:browser:firefox") &&
+    !prGate.includes("command: test:browser:webkit"),
+  "The development gate must not run Firefox or WebKit.",
 );
 
-console.log("Platform support policy matches package metadata, apps, Playwright, CI, and docs.");
+const releaseGate = readFileSync(paths["--release-gate"], "utf8");
+for (const engine of ["chromium", "firefox", "webkit"]) {
+  assert(
+    releaseGate.includes(`engine: ${engine}`) &&
+      releaseGate.includes(`command: test:browser:${engine}`),
+    `The release gate must run the ${engine} browser contract.`,
+  );
+}
+console.log(
+  "Platform support policy matches package metadata, apps, Playwright, Chromium PR smoke, the cross-engine release gate, and docs.",
+);

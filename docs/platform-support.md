@@ -1,8 +1,8 @@
 # Platform support
 
 Nerio Core targets current evergreen product environments. The policy is enforced by
-`pnpm validate:platform-support`; changes to a support range require package metadata, CI, consumer
-fixtures, release documentation, and this policy to move together.
+`pnpm validate:platform-support`; changes to a support range require package metadata, the
+release-candidate gate, consumer fixtures, release documentation, and this policy to move together.
 
 ## Runtime and framework baseline
 
@@ -29,6 +29,12 @@ containment and restoration, popup positioning, native form behavior, table over
 Toast lifecycle, RTL, reduced motion, and mobile dynamic-viewport bounds. The larger appearance and
 component-family matrix remains on Chromium to avoid multiplying equivalent coverage.
 
+Working-branch pull requests into `dev` use `pnpm test:browser:pr` only for runtime or interactive
+documentation changes. That focused Chromium smoke covers page health, an overlay, a representative
+form, a responsive product composition, mobile navigation, RTL with reduced motion, and DatePicker.
+It is fast feedback, not cross-engine release evidence. Every `dev -> main` release candidate runs
+the complete Chromium suite plus the focused Firefox and WebKit projects in separate jobs.
+
 ## Known platform limitations
 
 - Synthetic safe-area inset values require Chromium DevTools Protocol. Chromium verifies exact
@@ -51,7 +57,8 @@ component-family matrix remains on Chromium to avoid multiplying equivalent cove
 
 ## Operating-system and assistive-technology scope
 
-CI runs Linux browser engines and the release workflow is also exercised locally on macOS. Windows
-and mobile operating systems are supported through evergreen browser behavior but do not yet have a
+The `dev -> main` release gate runs Linux browser engines and the release workflow is also exercised
+locally on macOS. Development pull requests do not claim cross-engine release evidence. Windows and
+mobile operating systems are supported through evergreen browser behavior but do not yet have a
 dedicated native CI runner. VoiceOver, NVDA, JAWS, TalkBack, real iOS safe areas, and platform zoom
 remain manual evidence; any confirmed blocker is release-blocking even when automated tests pass.

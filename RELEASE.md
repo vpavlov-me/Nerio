@@ -9,22 +9,42 @@ Every release action remains manual and requires explicit maintainer approval af
 tarball inspection pass. This document does not authorize publishing, changing dist-tags,
 creating a tag, or creating a GitHub Release.
 
-## Required checks
+## Release-candidate checks
 
-Run the complete gate from a clean checkout with Node 22 and the pinned pnpm version:
+The `release-gate` workflow runs the complete gate for the separately reviewed `dev -> main`
+release-candidate pull request. To reproduce it, use a clean checkout with Node 22 and the pinned
+pnpm version. First run the same always-on development commands and focused Chromium smoke:
 
 ```bash
 pnpm install --frozen-lockfile
 pnpm format:check
 pnpm lint
 pnpm typecheck
-pnpm test:branch-policy
-pnpm build
+pnpm test:ci-scopes
 pnpm test:ui
 pnpm test:a11y
 pnpm test:catalog
 pnpm test:tokens
 pnpm test:onboarding
+pnpm validate:tokens
+pnpm validate:runtime-axes
+pnpm validate:typography
+pnpm validate:catalog
+pnpm validate:docs
+pnpm validate:onboarding
+pnpm test:docs-examples
+pnpm build
+pnpm test:browser:pr
+```
+
+Then run every release-only contract:
+
+```bash
+pnpm test:branch-policy
+pnpm test:browser:chromium
+pnpm test:browser:firefox
+pnpm test:browser:webkit
+pnpm test:visual
 pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
@@ -32,36 +52,42 @@ pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
 pnpm validate:platform-support
 pnpm validate:package-budgets
-pnpm test:browser
-pnpm test:visual
-pnpm test:docs-examples
-pnpm validate:tokens
-pnpm validate:runtime-axes
-pnpm validate:typography
-pnpm validate:catalog
-pnpm validate:docs
-pnpm validate:onboarding
-pnpm validate:release
+pnpm validate:release:metadata
+pnpm test:release-consumer
 pnpm pack:check
 ```
 
 Install the pinned browser runtimes once before the browser gate with
-`pnpm exec playwright install --with-deps chromium firefox webkit`. `pnpm test:browser` starts the
-demo and public docs applications locally, keeps the broad appearance matrix on Chromium, and runs
-focused interaction coverage across Chromium, Firefox, and WebKit. Run `pnpm test:browser:repeat`
-for two clean iterations before merging browser-sensitive changes. `pnpm test:visual` separately compares
+`pnpm exec playwright install --with-deps chromium firefox webkit`. The release workflow runs the
+three engine scripts in parallel with independent failure artifacts and `fail-fast: false`.
+`pnpm test:browser` remains the convenient complete local compatibility command; run it after the
+engine-specific commands when reproducing the complete gate. Run `pnpm test:browser:repeat` for two
+clean iterations before merging browser-sensitive changes. `pnpm test:visual` separately compares
 the deterministic Core fixtures against maintainer-approved image baselines; review and update them
 through [`docs/visual-regression.md`](./docs/visual-regression.md). `pnpm test:docs-examples`
 typechecks published Sidebar examples in an isolated fixture.
 
-`validate:release` packs all intended packages, checks packed manifests, exports, dependencies, side
-effects, bins, file boundaries, and secret/Pro exclusions, installs the tarballs into an isolated
-Next.js consumer, runs the canonical local CLI workflow through `pnpm exec nerio`, verifies one-off
-CLI execution through the packed package, resolves the immutable packaged Registry without a
-checkout or moving branch URL, exercises installed-source metadata, `diff`, and update planning,
-starts the packaged MCP bin through `pnpm exec nerio-mcp`, verifies its read-only discovery and
-coordinated version metadata, source-installs representative components and a Foundation item with
-complete dependency chains, and builds without workspace aliases.
+`pnpm validate:release:metadata` checks release documentation and public onboarding without
+repeating catalog, token, or onboarding unit tests. `pnpm test:release-consumer` packs all intended
+packages, checks packed manifests, exports, dependencies, side effects, bins, file boundaries, and
+secret/Pro exclusions, installs the tarballs into an isolated Next.js consumer, runs the canonical
+local CLI workflow through `pnpm exec nerio`, verifies one-off CLI execution through the packed
+package, resolves the immutable packaged Registry without a checkout or moving branch URL,
+exercises installed-source metadata, `diff`, and update planning, starts the packaged MCP bin
+through `pnpm exec nerio-mcp`, verifies its read-only discovery and coordinated version metadata,
+source-installs representative components and a Foundation item with complete dependency chains,
+and builds without workspace aliases.
+
+`pnpm validate:release` remains the complete local wrapper:
+
+```bash
+pnpm validate:release
+NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release
+pnpm test:browser
+```
+
+The GitHub release workflow calls the focused unit, metadata, and consumer commands directly, so it
+does not rerun those tests through the wrapper or invoke `release-smoke.mjs` twice.
 `test:adapters` separately proves the packed `icons`, `table`, `charts`, `forms`, `schema`, and
 client-only `motion` exports, verifies that an icons/UI-only consumer does not install optional
 integration peers, and checks each optional subpath both without and with its required peer. The
@@ -94,12 +120,22 @@ supported path to the stable `main` branch is a separately reviewed release pull
 feat/*, fix/*, refactor/*, docs/*, test/*, chore/* -> dev -> main
 ```
 
-Both pull request stages require the full CI and `branch-policy` checks. Direct pushes, force pushes,
-and branch deletion are prohibited for `main` and `dev`. `main` remains the default stable branch,
-and `dev` remains the permanent integration branch after a release. Release pull requests and merges
-to `main` are manual maintainer actions; coding agents must not merge them without a separate, direct
-request from the maintainer. Dependabot's reserved `dependabot/*` branches are the only automated
-development-branch exception and target `dev`.
+Development pull requests into `dev` require the fast aggregate `PR gate` and the independent
+`branch-policy` check. The always-on job covers formatting, lint, type checking, focused
+unit/contract validators, documentation examples, and the workspace build. A base-to-head scope
+detector adds the seven-scenario Chromium smoke and matching visual, CLI, MCP, adapter, public
+package, manual-audit, or branch-policy jobs only when their surfaces change. Development never
+installs Firefox or WebKit and never runs packed release-consumer smoke.
+
+The separately reviewed `dev -> main` pull request requires the full `release-gate`. Its final
+`Release gate` check aggregates every command above, including separate Chromium, Firefox, and
+WebKit jobs, package consumers, visual regression, release smoke, and pack inspection. Direct
+pushes, force pushes, and branch deletion are
+prohibited for `main` and `dev`. `main` remains the default stable branch, and `dev` remains the
+permanent integration branch after a release. Release pull requests and merges to `main` are manual
+maintainer actions; coding agents must not merge them without a separate, direct request from the
+maintainer. Dependabot's reserved `dependabot/*` branches are the only automated development-branch
+exception and target `dev`.
 
 ## Versioning and package order
 

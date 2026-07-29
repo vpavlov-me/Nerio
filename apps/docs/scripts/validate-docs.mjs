@@ -1,6 +1,11 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  ciWorkflowContractFailures,
+  ciWorkflowPaths,
+  readCiWorkflowSources,
+} from "../../../scripts/ci-workflow-contract.mjs";
 
 /* global console, process */
 
@@ -242,57 +247,12 @@ function packageReadinessFailures() {
     failures.push("scripts/pack-check.mjs: missing package dry-run script");
   }
 
-  if (!existsSync(join(root, ".github/workflows/ci.yml"))) {
-    failures.push(".github/workflows/ci.yml: missing CI workflow");
+  const workflowPaths = Object.values(ciWorkflowPaths);
+  const missingWorkflows = workflowPaths.filter((path) => !existsSync(join(root, path)));
+  if (missingWorkflows.length) {
+    for (const path of missingWorkflows) failures.push(`${path}: missing CI workflow`);
   } else {
-    const ciWorkflow = read(".github/workflows/ci.yml");
-    const requiredCommands = [
-      "pnpm format:check",
-      "pnpm lint",
-      "pnpm typecheck",
-      "pnpm test:ui",
-      "pnpm test:a11y",
-      "pnpm test:visual",
-      "pnpm validate:docs",
-      "pnpm validate:release",
-      "pnpm test:cli",
-      "pnpm test:mcp",
-      "pnpm build",
-      "pnpm pack:check",
-    ];
-    const forbiddenWorkflowStrings = [
-      "npm publish",
-      "NPM_TOKEN",
-      "contents: write",
-      "id-token: write",
-      "release-please",
-      "semantic-release",
-      "git tag",
-    ];
-
-    for (const command of requiredCommands) {
-      if (!ciWorkflow.includes(command)) {
-        failures.push(`.github/workflows/ci.yml: missing ${command}`);
-      }
-    }
-
-    if (!ciWorkflow.includes("workflow_dispatch:")) {
-      failures.push(".github/workflows/ci.yml: missing workflow_dispatch trigger");
-    }
-
-    if (!ciWorkflow.includes("node-version: 22")) {
-      failures.push(".github/workflows/ci.yml: expected Node LTS baseline node-version: 22");
-    }
-
-    if (!ciWorkflow.includes("permissions:") || !ciWorkflow.includes("contents: read")) {
-      failures.push(".github/workflows/ci.yml: missing read-only contents permission");
-    }
-
-    for (const forbidden of forbiddenWorkflowStrings) {
-      if (ciWorkflow.includes(forbidden)) {
-        failures.push(`.github/workflows/ci.yml: forbidden publishing string ${forbidden}`);
-      }
-    }
+    failures.push(...ciWorkflowContractFailures(readCiWorkflowSources(root)));
   }
 
   return failures;

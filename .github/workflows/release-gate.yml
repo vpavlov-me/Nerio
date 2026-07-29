@@ -1,0 +1,209 @@
+name: release-gate
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  release_quality:
+    name: release-quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test:branch-policy
+      - run: pnpm test:ci-scopes
+      - run: pnpm test:ui
+      - run: pnpm test:a11y
+      - run: pnpm test:catalog
+      - run: pnpm test:tokens
+      - run: pnpm test:onboarding
+      - run: pnpm validate:tokens
+      - run: pnpm validate:runtime-axes
+      - run: pnpm validate:typography
+      - run: pnpm validate:catalog
+      - run: pnpm validate:docs
+      - run: pnpm validate:onboarding
+      - run: pnpm test:docs-examples
+      - run: pnpm build
+
+  release_browser:
+    name: release-browser-${{ matrix.engine }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - engine: chromium
+            command: test:browser:chromium
+          - engine: firefox
+            command: test:browser:firefox
+          - engine: webkit
+            command: test:browser:webkit
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps ${{ matrix.engine }}
+      - run: pnpm ${{ matrix.command }}
+      - name: Upload ${{ matrix.engine }} browser failure and retry evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-${{ matrix.engine }}-artifacts
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            test-results/browser/results.json
+            test-results/browser/artifacts/**
+
+  release_visual:
+    name: release-visual
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:visual
+      - name: Upload visual regression artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-visual-artifacts
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            test-results/visual/**/*-actual.png
+            test-results/visual/**/*-diff.png
+            test-results/visual/**/trace.zip
+            tests/visual/__screenshots__/linux/*.png
+
+  release_tool_contracts:
+    name: release-tool-contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:cli
+      - run: pnpm test:mcp
+      - run: pnpm test:adapters
+
+  release_package_contracts:
+    name: release-package-contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate:platform-support
+      - run: pnpm validate:package-budgets
+      - run: pnpm validate:release:metadata
+      - run: pnpm test:release-consumer
+        env:
+          NERIO_RELEASE_EXPECT_PUBLIC: "1"
+      - run: pnpm pack:check
+
+  release_manual_audit_contract:
+    name: release-manual-audit-contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:manual-audit-plan
+      - run: pnpm validate:manual-audit-plan
+
+  release_gate:
+    name: Release gate
+    if: always()
+    needs:
+      - release_quality
+      - release_browser
+      - release_visual
+      - release_tool_contracts
+      - release_package_contracts
+      - release_manual_audit_contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require every release-candidate job
+        env:
+          RELEASE_QUALITY_RESULT: ${{ needs.release_quality.result }}
+          RELEASE_BROWSER_RESULT: ${{ needs.release_browser.result }}
+          RELEASE_VISUAL_RESULT: ${{ needs.release_visual.result }}
+          RELEASE_TOOL_RESULT: ${{ needs.release_tool_contracts.result }}
+          RELEASE_PACKAGE_RESULT: ${{ needs.release_package_contracts.result }}
+          RELEASE_MANUAL_AUDIT_RESULT: ${{ needs.release_manual_audit_contract.result }}
+        run: |
+          for result in \
+            "$RELEASE_QUALITY_RESULT" \
+            "$RELEASE_BROWSER_RESULT" \
+            "$RELEASE_VISUAL_RESULT" \
+            "$RELEASE_TOOL_RESULT" \
+            "$RELEASE_PACKAGE_RESULT" \
+            "$RELEASE_MANUAL_AUDIT_RESULT"; do
+            if [[ "$result" != "success" ]]; then
+              echo "A release-candidate job ended with $result." >&2
+              exit 1
+            fi
+          done
