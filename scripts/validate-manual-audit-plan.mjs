@@ -338,6 +338,37 @@ function isSubstantiveString(value) {
   );
 }
 
+function isDetailedEvidenceString(value, field) {
+  if (!isSubstantiveString(value)) return false;
+  const normalized = value.trim();
+  if (/^(?:x+|test|todo|tbd|unknown|placeholder|sample|example|n\/a)$/i.test(normalized)) {
+    return false;
+  }
+  switch (field) {
+    case "operatingSystem":
+    case "browser":
+      return normalized.length >= 4 && /\d/.test(normalized);
+    case "assistiveTechnology":
+      return (
+        normalized.length >= 4 && (/\d/.test(normalized) || /keyboard[- ]only/i.test(normalized))
+      );
+    case "device":
+      return normalized.length >= 4 && normalized.split(/\s+/).length >= 2;
+    case "viewport":
+      return /\b\d{2,5}\s*[x×]\s*\d{2,5}\b/i.test(normalized);
+    case "zoom":
+      return /\b\d{2,3}%/.test(normalized);
+    case "packageMode":
+      return /\b(?:pack(?:age|ed)|source(?:[- ]install)?)\b/i.test(normalized);
+    case "notes":
+      return normalized.length >= 24 && normalized.split(/\s+/).length >= 4;
+    case "auditOwner":
+      return normalized.length >= 3;
+    default:
+      return normalized.length >= 3;
+  }
+}
+
 function isAllowedNotApplicable(environmentId, field, value) {
   return (
     typeof value === "string" &&
@@ -632,7 +663,7 @@ if (plan?.status === "complete") {
         errors.push(`Completed audit candidate ${field} must match the candidate commit.`);
       }
     }
-    if (!isSubstantiveString(candidate.auditOwner)) {
+    if (!isDetailedEvidenceString(candidate.auditOwner, "auditOwner")) {
       errors.push("Completed audit candidate must name the audit owner.");
     }
     const auditStartedAt = Date.parse(candidate.auditStartedAt);
@@ -681,7 +712,7 @@ if (plan?.status === "complete") {
         continue;
       }
       if (
-        !isSubstantiveString(environment?.[field]) &&
+        !isDetailedEvidenceString(environment?.[field], field) &&
         !isAllowedNotApplicable(environment?.id, field, environment?.[field])
       ) {
         errors.push(`${label} must include substantive ${field} evidence.`);
@@ -719,7 +750,7 @@ if (plan?.status === "complete") {
     if (!allowedEvidenceResults.includes(result?.result)) {
       errors.push(`${label} must use one of: ${allowedEvidenceResults.join(", ")}.`);
     }
-    if (!isSubstantiveString(result?.notes)) {
+    if (!isDetailedEvidenceString(result?.notes, "notes")) {
       errors.push(`${label} must include substantive notes.`);
     }
     validateEvidenceLinks(label, result?.evidence);

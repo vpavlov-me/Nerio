@@ -333,6 +333,40 @@ test("manual audit validator rejects audit starts before the candidate or in the
   }
 });
 
+test("manual audit validator rejects short generic placeholders in completed evidence", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.candidate.auditOwner = "x";
+      for (const environment of plan.completion.environments) {
+        for (const field of [
+          "operatingSystem",
+          "browser",
+          "assistiveTechnology",
+          "device",
+          "viewport",
+          "zoom",
+          "packageMode",
+          "notes",
+        ]) {
+          environment[field] = "x";
+        }
+      }
+      for (const result of plan.completion.results) result.notes = "x";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /must name the audit owner/);
+      assert.match(result.stderr, /substantive operatingSystem evidence/);
+      assert.match(result.stderr, /substantive viewport evidence/);
+      assert.match(result.stderr, /must include substantive notes/);
+    },
+  );
+});
+
 test("manual audit validator derives environment failures and requires finding records", () => {
   withPlanAndReportFixtures(
     (source) => {
