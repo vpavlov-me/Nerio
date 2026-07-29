@@ -506,7 +506,7 @@ function reportTableValue(section, label) {
 }
 
 const findingLog = report.match(/## Finding log\s+([\s\S]*?)(?=\n## )/)?.[1] ?? "";
-const findingLogRows = findingLog
+const findingTableRows = findingLog
   .split(/\r?\n/)
   .filter((line) => line.trimStart().startsWith("|"))
   .map((line) =>
@@ -514,17 +514,13 @@ const findingLogRows = findingLog
       .split("|")
       .slice(1, -1)
       .map((cell) => cell.trim()),
-  )
-  .filter(
-    (cells) =>
-      cells.length === 8 &&
-      cells[0] !== "Finding" &&
-      cells[0] !== "None recorded" &&
-      !cells[0].startsWith("---"),
   );
+const findingLogRows = findingTableRows.filter(
+  (cells) => cells[0] !== "Finding" && cells[0] !== "None recorded" && !cells[0].startsWith("---"),
+);
 
 function findingLogRow(issue) {
-  return findingLogRows.find((cells) => cells[5] === issue);
+  return findingLogRows.find((cells) => cells.length === 8 && cells[5] === issue);
 }
 
 function findingCell(value) {
@@ -1013,6 +1009,10 @@ if (plan?.status === "complete") {
   }
   const summaryResultByGate = new Map(summaryResults.map(({ gate, result }) => [gate, result]));
   for (const finding of findingLogRows) {
+    if (finding.length !== 8) {
+      errors.push("Completed audit finding-log rows must contain exactly eight table cells.");
+      continue;
+    }
     const [
       findingTitle,
       findingScenario,

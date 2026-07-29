@@ -672,6 +672,22 @@ test("manual audit validator treats non-closed finding resolutions as unresolved
   );
 });
 
+test("manual audit validator rejects malformed finding-log rows", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source).replace(
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |",
+        `| Navigation | blocker | \`global-docs-navigation\` | \`macos-safari-voiceover\` | P1 | pilots | ${trackedIssue} | Open | Required after fix |`,
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /finding-log rows must contain exactly eight table cells/);
+    },
+  );
+});
+
 test("manual audit validator rejects a pilot pass with a failed completion-summary gate", () => {
   withPlanAndReportFixtures(
     completedPlan,
