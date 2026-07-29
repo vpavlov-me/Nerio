@@ -583,6 +583,10 @@ const findingTableRows = findingLog
 const findingLogRows = findingTableRows.filter(
   (cells) => cells[0] !== "Finding" && cells[0] !== "None recorded" && !cells[0].startsWith("---"),
 );
+const noFindingsRows = findingTableRows.filter((cells) => cells[0] === "None recorded");
+if (noFindingsRows.length > 1 || (noFindingsRows.length === 1 && findingLogRows.length > 0)) {
+  errors.push('Finding log may use "None recorded" only as its sole data row.');
+}
 
 function findingLogRow(issue) {
   return findingLogRows.find((cells) => cells.length === 8 && cells[5] === issue);
@@ -1034,6 +1038,18 @@ if (plan?.status === "complete") {
       !isDeviceConsistentMobileViewport(environment)
     ) {
       errors.push(`${label} viewport must match the recorded physical mobile device.`);
+    }
+    if (environment?.id === "ios-safari-voiceover") {
+      const isIPhone =
+        /\biPhone\b/i.test(environment.device ?? "") &&
+        /\biOS\b/i.test(environment.operatingSystem ?? "") &&
+        !/\biPadOS\b/i.test(environment.operatingSystem ?? "");
+      const isIPad =
+        /\biPad\b/i.test(environment.device ?? "") &&
+        /\b(?:iPadOS|iOS)\b/i.test(environment.operatingSystem ?? "");
+      if (!isIPhone && !isIPad) {
+        errors.push(`${label} operatingSystem must match the recorded iPhone or iPad family.`);
+      }
     }
     const recordedStatus = reportStatus(environment?.id, "Required environments");
     if (recordedStatus !== environment?.result) {

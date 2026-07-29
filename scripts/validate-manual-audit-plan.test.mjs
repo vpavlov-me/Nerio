@@ -715,6 +715,26 @@ test("manual audit validator requires device-consistent physical mobile viewport
   );
 });
 
+test("manual audit validator binds the iOS family to physical hardware", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "ios-safari-voiceover").operatingSystem =
+        "iPadOS 18.5";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /ios-safari-voiceover operatingSystem must match the recorded iPhone or iPad family/,
+      );
+    },
+  );
+});
+
 test("manual audit validator requires environment outcomes and notes", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -995,6 +1015,22 @@ test("manual audit validator accepts a tracked blocked finding", () => {
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.equal(result.status, 0, result.stderr);
+    },
+  );
+});
+
+test("manual audit validator rejects the no-findings sentinel beside a finding", () => {
+  withPlanAndReportFixtures(
+    trackedFailurePlan,
+    (source) =>
+      trackedFailureReport(source).replace(
+        "| Navigation audit failure |",
+        "| None recorded | —        | —           | —        | —              | —     | —          | —      |\n| Navigation audit failure |",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /may use "None recorded" only as its sole data row/);
     },
   );
 });
