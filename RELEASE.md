@@ -28,6 +28,8 @@ pnpm test:onboarding
 pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
+pnpm test:manual-audit-plan
+pnpm validate:manual-audit-plan
 pnpm validate:platform-support
 pnpm validate:package-budgets
 pnpm test:browser
@@ -66,6 +68,12 @@ integration peers, and checks each optional subpath both without and with its re
 Motion gate additionally snapshot-protects the stable API, checks SSR/hydration and live preference
 changes, and measures Core, token-only, `domAnimation`, and `domMax` bundles. CI validates only; it
 never publishes, changes package privacy, creates tags, or creates a GitHub Release.
+
+`test:manual-audit-plan` and `validate:manual-audit-plan` protect the required environments,
+scenario coverage, routes, evidence fields, and pending-state language for the manual Core 1.0
+accessibility and real-device audit. Passing these checks means the audit is prepared; it never
+means VoiceOver, NVDA, TalkBack, native picker, physical-device, zoom, contrast, or lived
+interaction evidence exists.
 
 `validate:platform-support` keeps package engines, peer ranges, app baselines, Playwright projects,
 CI, and the documented policy aligned. `validate:package-budgets` enforces packed/unpacked package,

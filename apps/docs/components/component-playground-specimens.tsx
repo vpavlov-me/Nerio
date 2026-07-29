@@ -555,11 +555,39 @@ export function ComponentPlayground() {
           rows={(["sm", "md", "lg"] as const).map((size) => ({
             label: size,
             cells: [
-              <Input key="default" size={size} placeholder="Placeholder" />,
-              <Input key="filled" size={size} defaultValue="Value" />,
-              <Input key="readonly" size={size} defaultValue="Read only" readOnly />,
-              <Input key="invalid" size={size} defaultValue="Invalid" invalid />,
-              <Input key="disabled" size={size} defaultValue="Disabled" disabled />,
+              <Input
+                key="default"
+                aria-label={`${size} default input`}
+                size={size}
+                placeholder="Placeholder"
+              />,
+              <Input
+                key="filled"
+                aria-label={`${size} filled input`}
+                size={size}
+                defaultValue="Value"
+              />,
+              <Input
+                key="readonly"
+                aria-label={`${size} read-only input`}
+                size={size}
+                defaultValue="Read only"
+                readOnly
+              />,
+              <Input
+                key="invalid"
+                aria-label={`${size} invalid input`}
+                size={size}
+                defaultValue="Invalid"
+                invalid
+              />,
+              <Input
+                key="disabled"
+                aria-label={`${size} disabled input`}
+                size={size}
+                defaultValue="Disabled"
+                disabled
+              />,
             ],
           }))}
         />
@@ -602,15 +630,15 @@ export function ComponentPlayground() {
             <InputGroupAddon placement="start">
               <Icon icon={Mail} />
             </InputGroupAddon>
-            <Input placeholder="Email" />
+            <Input aria-label="Email address with icon" placeholder="Email" />
           </InputGroup>
           <InputGroup>
-            <Input placeholder="Amount" />
+            <Input aria-label="Amount in US dollars" placeholder="Amount" />
             <InputGroupAddon placement="end">USD</InputGroupAddon>
           </InputGroup>
           <InputGroup>
             <InputGroupAddon placement="start">https://</InputGroupAddon>
-            <Input placeholder="domain.com" />
+            <Input aria-label="Website domain" placeholder="domain.com" />
             <InputGroupAddon placement="end">↗</InputGroupAddon>
           </InputGroup>
         </div>
@@ -626,10 +654,25 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Textarea key="default" placeholder="Write a note…" />,
-                <Textarea key="invalid" defaultValue="Needs attention" aria-invalid />,
-                <Textarea key="readonly" defaultValue="Read-only content" readOnly />,
-                <Textarea key="disabled" defaultValue="Unavailable" disabled />,
+                <Textarea key="default" aria-label="Default note" placeholder="Write a note…" />,
+                <Textarea
+                  key="invalid"
+                  aria-label="Invalid note"
+                  defaultValue="Needs attention"
+                  aria-invalid
+                />,
+                <Textarea
+                  key="readonly"
+                  aria-label="Read-only note"
+                  defaultValue="Read-only content"
+                  readOnly
+                />,
+                <Textarea
+                  key="disabled"
+                  aria-label="Disabled note"
+                  defaultValue="Unavailable"
+                  disabled
+                />,
               ],
             },
           ]}
@@ -659,7 +702,7 @@ export function ComponentPlayground() {
       >
         <div className="component-lab-form-row">
           <Field label="Project name" description="Visible to workspace members.">
-            <Input defaultValue="Atlas" />
+            <Input defaultValue="Atlas" required />
           </Field>
           <Field label="Email" message="Enter a work email." invalid>
             <Input defaultValue="maya@example" />
@@ -682,14 +725,17 @@ export function ComponentPlayground() {
       <SpecimenSection id="form-group" title="Form Group" api="stack · inline · grid · invalid">
         <div className="component-lab-form-row">
           <FormGroup title="Stack" description="Default layout">
-            <Checkbox defaultChecked /> <Checkbox />
+            <Checkbox aria-label="Stack option one" defaultChecked />{" "}
+            <Checkbox aria-label="Stack option two" />
           </FormGroup>
           <FormGroup title="Inline" layout="inline">
-            <Checkbox defaultChecked /> <Checkbox /> <Checkbox />
+            <Checkbox aria-label="Inline option one" defaultChecked />{" "}
+            <Checkbox aria-label="Inline option two" />{" "}
+            <Checkbox aria-label="Inline option three" />
           </FormGroup>
           <FormGroup title="Grid" layout="grid" invalid message="Review both fields.">
-            <Input defaultValue="One" />
-            <Input invalid defaultValue="Two" />
+            <Input aria-label="Grid field one" defaultValue="One" />
+            <Input aria-label="Grid field two" invalid defaultValue="Two" />
           </FormGroup>
         </div>
       </SpecimenSection>
@@ -704,12 +750,12 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Checkbox key="off" />,
-                <Checkbox key="on" defaultChecked />,
-                <Checkbox key="mixed" indeterminate />,
+                <Checkbox aria-label="Project updates" key="off" />,
+                <Checkbox aria-label="Security alerts" key="on" defaultChecked />,
+                <Checkbox aria-label="Indeterminate option" key="mixed" indeterminate />,
                 <span key="disabled" className="component-lab-inline">
-                  <Checkbox disabled />
-                  <Checkbox disabled defaultChecked />
+                  <Checkbox aria-label="Disabled unchecked option" disabled />
+                  <Checkbox aria-label="Disabled checked option" disabled defaultChecked />
                 </span>,
               ],
             },
@@ -745,10 +791,10 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Switch key="off" />,
-                <Switch key="on" defaultChecked />,
-                <Switch key="doff" disabled />,
-                <Switch key="don" disabled defaultChecked />,
+                <Switch aria-label="Email notifications" key="off" />,
+                <Switch aria-label="Push notifications" key="on" defaultChecked />,
+                <Switch aria-label="Disabled notifications off" key="doff" disabled />,
+                <Switch aria-label="Disabled notifications on" key="don" disabled defaultChecked />,
               ],
             },
           ]}
@@ -1459,7 +1505,7 @@ export function ComponentPlayground() {
       >
         <div className="component-lab-card-grid">
           <Command items={commandItems}>
-            <CommandInput placeholder="Search commands…" />
+            <CommandInput aria-label="Search commands" placeholder="Search commands…" />
             <CommandList>
               {(item) => (
                 <CommandItem
@@ -1474,7 +1520,7 @@ export function ComponentPlayground() {
             <CommandEmpty>No commands found.</CommandEmpty>
           </Command>
           <Command items={[]}>
-            <CommandInput placeholder="Empty command…" />
+            <CommandInput aria-label="Search empty commands" placeholder="Empty command…" />
             <CommandList>
               {(item) => <CommandItem value={item.value}>{item.label}</CommandItem>}
             </CommandList>

@@ -140,12 +140,19 @@ function AsyncCommand() {
   }, [query]);
 
   return (
-    <Command items={results} query={query} onQueryChange={setQuery} filter={false}>
-      <CommandInput aria-label="Consumer-filtered commands" placeholder="Search async results" />
-      <CommandLoading loading={loading}>Loading consumer results…</CommandLoading>
-      <CommandEmpty>{loading ? null : "No consumer results."}</CommandEmpty>
-      <CommandList>{(item) => <ResultItem item={item} />}</CommandList>
-    </Command>
+    <div className="form-preview-stack">
+      <Command items={results} query={query} onQueryChange={setQuery} filter={false}>
+        <CommandInput aria-label="Consumer-filtered commands" placeholder="Search async results" />
+        <CommandLoading loading={loading}>Loading consumer results…</CommandLoading>
+        <CommandEmpty>{loading ? null : "No consumer results."}</CommandEmpty>
+        <CommandList>{(item) => <ResultItem item={item} />}</CommandList>
+      </Command>
+      <p aria-live="polite" role="status">
+        {loading
+          ? null
+          : `${results.length} ${results.length === 1 ? "command" : "commands"} available.`}
+      </p>
+    </div>
   );
 }
 

@@ -11,7 +11,7 @@ import {
   LabelContent,
   LabelRow,
 } from "@nerio-ui/ui";
-import { LabelHint } from "@nerio-ui/ui/client";
+import { Button, LabelHint } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -177,6 +177,12 @@ export default function Page() {
                   defaultValue="2026-07-22T17:30"
                   readOnly
                 />
+              </div>
+              <div className="component-lab-inline">
+                <Button type="submit">Submit temporal values</Button>
+                <Button type="reset" variant="outline">
+                  Reset temporal values
+                </Button>
               </div>
             </form>
             <CodeExample

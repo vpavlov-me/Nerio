@@ -238,18 +238,28 @@ test("preserves native FileInput selection, FileList, form reset, and reflow", a
   await page.goto("/docs/components/file-input");
 
   const form = page.getByRole("form", { name: "Native file input examples" });
-  const input = page.getByLabel("Attachments", { exact: true });
-  await expect(input).toHaveAttribute("type", "file");
-  await expect(input).toHaveAttribute("accept", ".pdf,image/*");
-  await expect(input).toHaveAttribute("capture", "environment");
-  await expect(input).toHaveAttribute("multiple", "");
-  await expect(input).toHaveAttribute("required", "");
+  const primaryInput = page.getByLabel("Primary attachment", { exact: true });
+  const capturedInput = page.getByLabel("Captured attachments", { exact: true });
+  await expect(primaryInput).toHaveAttribute("type", "file");
+  await expect(primaryInput).toHaveAttribute("accept", ".pdf,image/*");
+  await expect(primaryInput).not.toHaveAttribute("multiple", "");
+  await expect(primaryInput).toHaveAttribute("required", "");
+  await expect(capturedInput).toHaveAttribute("type", "file");
+  await expect(capturedInput).toHaveAttribute("accept", "image/*");
+  await expect(capturedInput).toHaveAttribute("capture", "environment");
+  await expect(capturedInput).toHaveAttribute("multiple", "");
+  await expect(capturedInput).not.toHaveAttribute("required", "");
 
-  await input.setInputFiles([
+  await primaryInput.setInputFiles({
+    name: "launch-brief-with-a-very-long-localized-name.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("brief"),
+  });
+  await capturedInput.setInputFiles([
     {
-      name: "launch-brief-with-a-very-long-localized-name.pdf",
-      mimeType: "application/pdf",
-      buffer: Buffer.from("brief"),
+      name: "launch-reference-with-a-very-long-localized-name.png",
+      mimeType: "image/png",
+      buffer: Buffer.from("reference"),
     },
     {
       name: "проекция.png",
@@ -258,27 +268,34 @@ test("preserves native FileInput selection, FileList, form reset, and reflow", a
     },
   ]);
   expect(
-    await input.evaluate((element) =>
+    await capturedInput.evaluate((element) =>
       Array.from(element.files ?? [], (file) => ({ name: file.name, type: file.type })),
     ),
   ).toEqual([
     {
-      name: "launch-brief-with-a-very-long-localized-name.pdf",
-      type: "application/pdf",
+      name: "launch-reference-with-a-very-long-localized-name.png",
+      type: "image/png",
     },
     { name: "проекция.png", type: "image/png" },
   ]);
   expect(
     await form.evaluate((element) => {
+      const value = new FormData(element).get("primaryAttachment");
+      return value instanceof File ? value.name : value;
+    }),
+  ).toBe("launch-brief-with-a-very-long-localized-name.pdf");
+  expect(
+    await form.evaluate((element) => {
       const values = new FormData(element).getAll("attachments");
       return values.map((value) => (value instanceof File ? value.name : value));
     }),
-  ).toEqual(["launch-brief-with-a-very-long-localized-name.pdf", "проекция.png"]);
+  ).toEqual(["launch-reference-with-a-very-long-localized-name.png", "проекция.png"]);
 
-  await form.evaluate((element) => element.reset());
-  expect(await input.evaluate((element) => element.files?.length)).toBe(0);
-  await input.focus();
-  await expect(input).toBeFocused();
+  await page.getByRole("button", { name: "Reset file inputs" }).click();
+  expect(await primaryInput.evaluate((element) => element.files?.length)).toBe(0);
+  expect(await capturedInput.evaluate((element) => element.files?.length)).toBe(0);
+  await capturedInput.focus();
+  await expect(capturedInput).toBeFocused();
   await expect(page.getByLabel("Unavailable attachment")).toBeDisabled();
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
   expect(
@@ -286,6 +303,68 @@ test("preserves native FileInput selection, FileList, form reset, and reflow", a
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     ),
   ).toBeLessThanOrEqual(1);
+  expect(problems).toEqual([]);
+});
+
+test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixtures", async ({
+  browserName,
+  page,
+}) => {
+  await page.route("https://mc.yandex.ru/metrika/tag.js", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/javascript",
+      body: "",
+    }),
+  );
+  const problems = monitorPage(page, browserName);
+  const gotoFixture = async (url) => {
+    await page.goto(url);
+    await page.waitForLoadState("networkidle");
+  };
+
+  await gotoFixture("/visual-test#checkbox");
+  const projectUpdates = page.getByRole("checkbox", { name: "Project updates" });
+  await expect(projectUpdates).toBeVisible();
+  await projectUpdates.click();
+  await expect(projectUpdates).toBeChecked();
+  await expect(page.getByRole("checkbox", { name: "Security alerts" })).toBeChecked();
+
+  const emailNotifications = page.getByRole("switch", { name: "Email notifications" });
+  await expect(emailNotifications).toBeVisible();
+  await emailNotifications.click();
+  await expect(emailNotifications).toBeChecked();
+  await expect(page.getByRole("switch", { name: "Push notifications" })).toBeChecked();
+
+  await gotoFixture("/docs/components/table");
+  const primaryTableExample = page.getByRole("region", { name: "Primary Table composition" });
+  const tableRegion = primaryTableExample.getByRole("region", {
+    name: "Team members, roles, statuses, and emails",
+  });
+  await expect(tableRegion).toHaveAttribute("tabindex", "0");
+  await expect(
+    primaryTableExample.getByText("Team members, roles, statuses, and email addresses", {
+      exact: true,
+    }),
+  ).toBeVisible();
+
+  await gotoFixture("/docs/components/item");
+  const itemList = page.getByRole("list", { name: "Workspace resources" });
+  await expect(itemList.getByRole("listitem")).toHaveCount(2);
+
+  await gotoFixture("/docs/components/pagination");
+  await expect(
+    page.getByRole("navigation", { name: "RTL pagination" }).getByLabel("Go to previous page"),
+  ).toHaveAttribute("aria-disabled", "true");
+
+  await gotoFixture("/visual-test#field");
+  await expect(page.getByRole("textbox", { name: "Project name" })).toHaveAttribute("required", "");
+  await expect(page.getByRole("textbox", { name: "md default input" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Email address with icon" })).toBeVisible();
+  await expect(page.getByRole("textbox", { name: "Default note" })).toBeVisible();
+
+  await gotoFixture("/docs/components/tabs");
+  await expect(page.getByRole("tab", { name: "Project members and permissions" })).toBeVisible();
   expect(problems).toEqual([]);
 });
 
@@ -339,6 +418,10 @@ test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only beha
 
   const vertical = page.getByRole("slider", { name: "Vertical volume" });
   await expect(vertical).toHaveAttribute("aria-orientation", "vertical");
+  const rtl = page.getByRole("slider", { name: "RTL volume" });
+  await rtl.focus();
+  await rtl.press("ArrowRight");
+  await expect(rtl).toHaveValue("36");
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
   await volume.focus();
   await volume.press("ArrowRight");
@@ -461,7 +544,10 @@ test("keeps Calendar touch selection portable", async ({ browser, browserName },
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
     await page.goto("/docs/components/calendar");
-    await page.getByRole("button", { name: "June 17, 2026" }).tap();
+    await page
+      .getByRole("group", { name: "Release date" })
+      .getByRole("button", { name: "June 17, 2026" })
+      .tap();
     await expect(page.getByText("Selected date: 2026-06-17")).toBeVisible();
     expect(problems).toEqual([]);
   } finally {
@@ -497,9 +583,22 @@ test("keeps DatePicker focus, form value, constraints, dismissal, RTL, and reflo
   await expect(trigger).toBeFocused();
   await expect(trigger).toContainText("Jun 16, 2026");
   await expect(page.getByText("Form value: 2026-06-16")).toBeVisible();
-  await expect(page.locator('[data-slot="form-control"]')).toHaveValue("2026-06-16");
+  await expect(page.locator('input[name="releaseDate"]')).toHaveValue("2026-06-16");
   expect(await page.locator("form").evaluate((form) => new FormData(form).get("releaseDate"))).toBe(
     "2026-06-16",
+  );
+  const invalidTrigger = page.getByRole("button", { name: "Invalid required date" });
+  await expect(invalidTrigger).toHaveAttribute("aria-invalid", "true");
+  await invalidTrigger.click();
+  await page
+    .getByRole("group", { name: "Choose date" })
+    .getByRole("button", { name: "June 17, 2026" })
+    .click();
+  await expect(invalidTrigger).not.toHaveAttribute("aria-invalid", "true");
+  await expect(page.getByText("Choose a date before submitting.")).toBeHidden();
+  await page.getByRole("button", { name: "Submit dates" }).click();
+  await expect(page.getByText(/Submitted form data:/)).toContainText(
+    '{"releaseDate":"2026-06-16","invalidDate":"2026-06-17","readOnlyDate":"2026-06-22"}',
   );
 
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));

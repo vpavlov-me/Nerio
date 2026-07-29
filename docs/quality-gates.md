@@ -53,9 +53,24 @@ and actionable doctor diagnostics. The previous 8,000-byte ceiling was raised to
 50,000-byte unpacked limit remains unchanged. This records the reviewed product value and retains
 roughly 15% compressed maintenance headroom without weakening runtime bundle budgets.
 
+## Manual accessibility and device evidence
+
+[`quality/manual-audit-plan.json`](../quality/manual-audit-plan.json) defines the required
+environments, evidence fields, stable routes, steps, and expected outcomes for issue #143.
+[`docs/audits/core-1-0-accessibility-device-audit.md`](./audits/core-1-0-accessibility-device-audit.md)
+is the human evidence record. `pnpm test:manual-audit-plan` and
+`pnpm validate:manual-audit-plan` prevent the plan and report from drifting or claiming a manual
+pass while evidence is still pending.
+
+These validators prepare the audit only. Automated accessibility, browser, visual, and package
+checks never substitute for VoiceOver, NVDA, TalkBack, native picker, physical-device, zoom,
+contrast, or lived interaction evidence.
+
 ## Local gate
 
 ```bash
+pnpm test:manual-audit-plan
+pnpm validate:manual-audit-plan
 pnpm validate:platform-support
 pnpm validate:package-budgets
 pnpm exec playwright install chromium firefox webkit

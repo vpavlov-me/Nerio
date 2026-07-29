@@ -24,6 +24,9 @@ export function SliderPreview() {
         <Slider aria-label="Read-only volume" defaultValue={72} readOnly />
         <Slider aria-label="Unavailable volume" defaultValue={24} disabled />
         <Slider aria-label="Vertical volume" defaultValue={60} orientation="vertical" />
+        <div dir="rtl">
+          <Slider aria-label="RTL volume" defaultValue={35} />
+        </div>
       </form>
     </section>
   );

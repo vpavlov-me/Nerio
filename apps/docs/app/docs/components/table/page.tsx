@@ -29,6 +29,7 @@ import {
   Skeleton,
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableContainer,
   TableHead,
@@ -230,8 +231,10 @@ function StableTablePreview({ presentation = "primary" }: { presentation?: Table
         <TableContainer
           aria-label="Team members, roles, statuses, and emails"
           className="table-doc-product-table"
+          focusable
         >
           <Table>
+            <TableCaption>Team members, roles, statuses, and email addresses</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead aria-label="Reorder rows" className="table-doc-control-column" />

@@ -48,6 +48,8 @@ const requiredReleaseCommands = [
   "pnpm test:cli",
   "pnpm test:mcp",
   "pnpm test:adapters",
+  "pnpm test:manual-audit-plan",
+  "pnpm validate:manual-audit-plan",
   "pnpm test:browser",
   "pnpm test:visual",
   "pnpm test:docs-examples",

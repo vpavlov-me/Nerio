@@ -59,6 +59,17 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   await expect(sheet).toBeHidden();
   await expect(sheetTrigger).toBeFocused();
 
+  const taskTrigger = page.getByRole("button", { name: "Open task details" });
+  await taskTrigger.click();
+  const taskDialog = page.getByRole("dialog", { name: "Review launch checklist" });
+  await expect(taskDialog).toBeVisible();
+  await expect
+    .poll(() => taskDialog.evaluate((element) => element.contains(document.activeElement)))
+    .toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(taskDialog).toBeHidden();
+  await expect(taskTrigger).toBeFocused();
+
   const table = page.getByRole("region", { name: "Workspace projects" });
   await table.focus();
   if (browserName === "webkit") {

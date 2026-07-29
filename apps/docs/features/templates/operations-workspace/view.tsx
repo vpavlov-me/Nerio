@@ -31,6 +31,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  Dialog,
+  DialogFooter,
   EmptyState,
   EmptyStateActions,
   EmptyStateDescription,
@@ -587,6 +589,31 @@ function OperationsWorkspace() {
                 <p>Recent workspace movement.</p>
               </div>
             </div>
+            <Dialog
+              trigger={<Button variant="secondary">Open task details</Button>}
+              title="Review launch checklist"
+              description="Inspect the selected task without losing your place in the workspace."
+            >
+              <div className={styles["task-detail"]}>
+                <Badge variant="info">In review</Badge>
+                <p>
+                  Confirm the launch owner, remaining approvals, and the next handoff before
+                  completing this task.
+                </p>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() =>
+                    toasts.add({
+                      title: "Task review recorded",
+                      description: "The launch checklist remains available in the task feed.",
+                    })
+                  }
+                >
+                  Record review
+                </Button>
+              </DialogFooter>
+            </Dialog>
             <div className={styles["activity-feed"]}>
               {activity.map(([title, scope, time]) => (
                 <div key={title} className={styles["activity-item"]}>
