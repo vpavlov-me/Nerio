@@ -302,6 +302,44 @@ const allowedPostCandidateChanges = new Set([
   "quality/manual-audit-plan.json",
 ]);
 const environmentEvidenceFields = requiredEvidenceFields;
+const environmentMetadataRequirements = {
+  "macos-safari-voiceover": {
+    operatingSystem: /\bmacOS\b/i,
+    browser: /\bSafari\b/i,
+    assistiveTechnology: /\bVoiceOver\b/i,
+    device: /\b(?:MacBook|Mac mini|iMac)\b/i,
+  },
+  "macos-chromium-keyboard": {
+    operatingSystem: /\bmacOS\b/i,
+    browser: /\b(?:Chrome|Chromium|Edge)\b/i,
+    assistiveTechnology: /keyboard[- ]only/i,
+    device: /\b(?:MacBook|Mac mini|iMac)\b/i,
+  },
+  "windows-nvda": {
+    operatingSystem: /\bWindows\b/i,
+    browser: /\b(?:Firefox|Chrome|Chromium|Edge)\b/i,
+    assistiveTechnology: /\bNVDA\b/i,
+    device: /\b(?:ThinkPad|Surface|Dell|HP|Lenovo|desktop|laptop|PC)\b/i,
+  },
+  "ios-safari-voiceover": {
+    operatingSystem: /\b(?:iOS|iPadOS)\b/i,
+    browser: /\bSafari\b/i,
+    assistiveTechnology: /\bVoiceOver\b/i,
+    device: /\b(?:iPhone|iPad)\b/i,
+  },
+  "android-chrome-talkback": {
+    operatingSystem: /\bAndroid\b/i,
+    browser: /\bChrome\b/i,
+    assistiveTechnology: /\bTalkBack\b/i,
+    device: /\b(?:Pixel|Galaxy|Android (?:phone|tablet))\b/i,
+  },
+  "zoom-reflow": {
+    zoom: /(?=.*\b200%)(?=.*\b400%)/,
+  },
+  "high-contrast": {
+    operatingSystem: /\b(?:macOS|Windows)\b/i,
+  },
+};
 
 const paths = parsePathOptions(process.argv.slice(2), {
   "--plan": resolve(root, "quality/manual-audit-plan.json"),
@@ -686,16 +724,26 @@ if (plan?.status === "complete") {
         }
       }
     }
-    for (const field of ["githubVerification", "ciRun", "vercelDeployment"]) {
-      if (typeof candidate[field] !== "string" || !/^https:\/\//.test(candidate[field])) {
-        errors.push(`Completed audit candidate ${field} must be an https URL.`);
-      }
+    const expectedCommitUrl = `https://github.com/vpavlov-me/Nerio/commit/${candidate.commit}`;
+    if (candidate.githubVerification !== expectedCommitUrl) {
+      errors.push("Completed audit GitHub verification URL must identify the exact Nerio commit.");
+    }
+    if (!/^https:\/\/github\.com\/vpavlov-me\/Nerio\/actions\/runs\/\d+$/.test(candidate.ciRun)) {
+      errors.push("Completed audit candidate ciRun must identify a Nerio Actions run.");
+    }
+    let deploymentUrl;
+    try {
+      deploymentUrl = new URL(candidate.vercelDeployment);
+    } catch {
+      deploymentUrl = null;
     }
     if (
-      /^[0-9a-f]{40}$/.test(candidate.commit ?? "") &&
-      !candidate.githubVerification?.includes(`/commit/${candidate.commit}`)
+      deploymentUrl?.protocol !== "https:" ||
+      !deploymentUrl.hostname.endsWith(".vercel.app") ||
+      deploymentUrl.username ||
+      deploymentUrl.password
     ) {
-      errors.push("Completed audit GitHub verification URL must identify the candidate commit.");
+      errors.push("Completed audit candidate vercelDeployment must identify a Vercel deployment.");
     }
     for (const field of ["ciCommit", "vercelCommit"]) {
       if (candidate[field] !== candidate.commit) {
@@ -755,6 +803,14 @@ if (plan?.status === "complete") {
         !isAllowedNotApplicable(environment?.id, field, environment?.[field])
       ) {
         errors.push(`${label} must include substantive ${field} evidence.`);
+      }
+    }
+    for (const [field, pattern] of Object.entries(
+      environmentMetadataRequirements[environment?.id] ?? {},
+    )) {
+      if (isAllowedNotApplicable(environment?.id, field, environment?.[field])) continue;
+      if (!pattern.test(environment?.[field] ?? "")) {
+        errors.push(`${label} ${field} must match the required environment.`);
       }
     }
     const recordedStatus = reportStatus(environment?.id);

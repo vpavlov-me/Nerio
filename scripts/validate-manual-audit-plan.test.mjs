@@ -117,10 +117,10 @@ function completedPlan(source) {
       completion: {
         candidate: {
           commit: currentCommit,
-          githubVerification: `https://github.com/example/repository/commit/${currentCommit}`,
-          ciRun: "https://github.com/example/repository/actions/runs/1",
+          githubVerification: `https://github.com/vpavlov-me/Nerio/commit/${currentCommit}`,
+          ciRun: "https://github.com/vpavlov-me/Nerio/actions/runs/123456789",
           ciCommit: currentCommit,
-          vercelDeployment: "https://audit-preview.example.test",
+          vercelDeployment: "https://nerio-audit-preview.vercel.app",
           vercelCommit: currentCommit,
           auditStartedAt: currentCommitTimestamp,
           auditOwner: "Accessibility audit team",
@@ -129,7 +129,7 @@ function completedPlan(source) {
           id,
           ...completedEnvironmentMetadata[id],
           viewport: "1280x800",
-          zoom: "100%",
+          zoom: id === "zoom-reflow" ? "200% and 400%" : "100%",
           packageMode: "Packed package",
           result: "Pass",
           notes: `Completed the required checks in ${id}.`,
@@ -326,6 +326,44 @@ test("manual audit validator accepts not-applicable assistive technology only wh
   );
 });
 
+test("manual audit validator binds metadata to each required environment", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      const macos = plan.completion.environments.find(({ id }) => id === "macos-safari-voiceover");
+      for (const id of ["windows-nvda", "ios-safari-voiceover", "android-chrome-talkback"]) {
+        const environment = plan.completion.environments.find((candidate) => candidate.id === id);
+        for (const field of ["operatingSystem", "browser", "assistiveTechnology", "device"]) {
+          environment[field] = macos[field];
+        }
+      }
+      plan.completion.environments.find(({ id }) => id === "zoom-reflow").zoom = "100%";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed environment windows-nvda operatingSystem must match the required environment/,
+      );
+      assert.match(
+        result.stderr,
+        /Completed environment ios-safari-voiceover device must match the required environment/,
+      );
+      assert.match(
+        result.stderr,
+        /Completed environment android-chrome-talkback assistiveTechnology must match the required environment/,
+      );
+      assert.match(
+        result.stderr,
+        /Completed environment zoom-reflow zoom must match the required environment/,
+      );
+    },
+  );
+});
+
 test("manual audit validator requires environment outcomes and notes", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -356,6 +394,8 @@ test("manual audit validator binds candidate provenance to the audited commit", 
       const plan = JSON.parse(completedPlan(source));
       plan.completion.candidate.githubVerification =
         "https://github.com/example/repository/commit/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+      plan.completion.candidate.ciRun = "https://github.com/example/repository/actions/runs/1";
+      plan.completion.candidate.vercelDeployment = "https://audit-preview.example.test";
       plan.completion.candidate.ciCommit = "b".repeat(40);
       plan.completion.candidate.vercelCommit = "c".repeat(40);
       return JSON.stringify(plan, null, 2);
@@ -364,7 +404,9 @@ test("manual audit validator binds candidate provenance to the audited commit", 
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);
-      assert.match(result.stderr, /GitHub verification URL must identify the candidate commit/);
+      assert.match(result.stderr, /GitHub verification URL must identify the exact Nerio commit/);
+      assert.match(result.stderr, /candidate ciRun must identify a Nerio Actions run/);
+      assert.match(result.stderr, /vercelDeployment must identify a Vercel deployment/);
       assert.match(result.stderr, /candidate ciCommit must match the candidate commit/);
       assert.match(result.stderr, /candidate vercelCommit must match the candidate commit/);
     },
