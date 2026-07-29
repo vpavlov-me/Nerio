@@ -635,11 +635,27 @@ if (plan?.status === "complete") {
     if (!isSubstantiveString(candidate.auditOwner)) {
       errors.push("Completed audit candidate must name the audit owner.");
     }
-    if (
-      !isSubstantiveString(candidate.auditStartedAt) ||
-      Number.isNaN(Date.parse(candidate.auditStartedAt))
-    ) {
+    const auditStartedAt = Date.parse(candidate.auditStartedAt);
+    if (!isSubstantiveString(candidate.auditStartedAt) || Number.isNaN(auditStartedAt)) {
       errors.push("Completed audit candidate must include a valid auditStartedAt timestamp.");
+    } else {
+      const candidateTimestamp = spawnSync(
+        "git",
+        ["show", "-s", "--format=%cI", candidate.commit],
+        {
+          cwd: root,
+          encoding: "utf8",
+        },
+      );
+      const candidateCommittedAt = Date.parse(candidateTimestamp.stdout.trim());
+      if (candidateTimestamp.status !== 0 || Number.isNaN(candidateCommittedAt)) {
+        errors.push("Completed audit candidate commit timestamp could not be verified.");
+      } else if (auditStartedAt < candidateCommittedAt) {
+        errors.push("Completed audit auditStartedAt must not predate the candidate commit.");
+      }
+      if (auditStartedAt > Date.now()) {
+        errors.push("Completed audit auditStartedAt must not be in the future.");
+      }
     }
   }
 

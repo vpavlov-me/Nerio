@@ -237,6 +237,20 @@
   gap: var(--n-space-3);
 }
 
+.task-detail {
+  display: grid;
+  gap: var(--n-space-3);
+}
+
+.task-detail :global(.n-badge) {
+  justify-self: start;
+}
+
+.task-detail p {
+  color: var(--n-color-text-secondary);
+  margin: 0;
+}
+
 .activity-item {
   align-items: start;
   display: grid;

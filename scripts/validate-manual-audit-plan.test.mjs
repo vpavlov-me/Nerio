@@ -12,6 +12,12 @@ const currentCommit = spawnSync("git", ["rev-parse", "HEAD"], {
   cwd: root,
   encoding: "utf8",
 }).stdout.trim();
+const currentCommitTimestamp = new Date(
+  spawnSync("git", ["show", "-s", "--format=%cI", currentCommit], {
+    cwd: root,
+    encoding: "utf8",
+  }).stdout.trim(),
+).toISOString();
 
 function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], {
@@ -66,7 +72,7 @@ function completedPlan(source) {
           ciCommit: currentCommit,
           vercelDeployment: "https://audit-preview.example.test",
           vercelCommit: currentCommit,
-          auditStartedAt: "2026-07-29T08:00:00.000Z",
+          auditStartedAt: currentCommitTimestamp,
           auditOwner: "Accessibility audit team",
         },
         environments: plan.requiredEnvironments.map(({ id }, index) => ({
@@ -304,6 +310,27 @@ test("manual audit validator binds candidate provenance to the audited commit", 
       assert.match(result.stderr, /candidate vercelCommit must match the candidate commit/);
     },
   );
+});
+
+test("manual audit validator rejects audit starts before the candidate or in the future", () => {
+  for (const [timestamp, expected] of [
+    ["1970-01-01T00:00:00.000Z", /must not predate the candidate commit/],
+    ["2999-01-01T00:00:00.000Z", /must not be in the future/],
+  ]) {
+    withPlanAndReportFixtures(
+      (source) => {
+        const plan = JSON.parse(completedPlan(source));
+        plan.completion.candidate.auditStartedAt = timestamp;
+        return JSON.stringify(plan, null, 2);
+      },
+      completedReport,
+      (planTarget, reportTarget) => {
+        const result = run(["--plan", planTarget, "--report", reportTarget]);
+        assert.notEqual(result.status, 0);
+        assert.match(result.stderr, expected);
+      },
+    );
+  }
 });
 
 test("manual audit validator derives environment failures and requires finding records", () => {
