@@ -484,8 +484,10 @@ function validateEvidenceLinks(label, evidence) {
   }
 }
 
-function reportStatus(id) {
-  const row = report.split(/\r?\n/).find((line) => line.trimStart().startsWith(`| \`${id}\``));
+function reportStatus(id, sectionTitle) {
+  const row = reportSection(sectionTitle)
+    .split(/\r?\n/)
+    .find((line) => line.trimStart().startsWith(`| \`${id}\``));
   return row
     ?.split("|")
     .slice(1, -1)
@@ -927,7 +929,7 @@ if (plan?.status === "complete") {
     ) {
       errors.push(`${label} viewport must match the recorded physical mobile device.`);
     }
-    const recordedStatus = reportStatus(environment?.id);
+    const recordedStatus = reportStatus(environment?.id, "Required environments");
     if (recordedStatus !== environment?.result) {
       errors.push(
         `${label} result must match the completed report status (expected ${environment?.result ?? "missing"}, found ${recordedStatus ?? "missing"}).`,
@@ -1072,6 +1074,24 @@ if (plan?.status === "complete") {
       errors.push("Pass for real consumer pilots cannot include an open blocking finding.");
     }
   }
+  const blockingResults = completedResults.filter(({ result }) =>
+    ["Fail", "Blocked"].includes(result),
+  );
+  for (const { gate, result } of summaryResults.filter(
+    ({ result }) => result === "Fail" || result === "Blocked",
+  )) {
+    const supported =
+      gate === "No open P0 or P1 accessibility defect"
+        ? blockingResults.some(({ severity }) => ["P0", "P1"].includes(severity))
+        : gate === "Blocking P2 findings resolved"
+          ? blockingResults.some(({ severity }) => severity === "P2")
+          : blockingResults.length > 0;
+    if (!supported) {
+      errors.push(
+        `Completed audit summary gate "${gate}" must be supported by failed or blocked completion evidence.`,
+      );
+    }
+  }
   for (const environment of completedEnvironments) {
     const section = environmentNoteSection(environment.id);
     const expectedScenarios = (plan.scenarios ?? [])
@@ -1124,7 +1144,7 @@ if (plan?.status === "complete") {
   for (const scenario of plan.scenarios ?? []) {
     const scenarioResults = completedResults.filter(({ scenarioId }) => scenarioId === scenario.id);
     const expectedStatus = aggregateResults(scenarioResults);
-    const recordedStatus = reportStatus(scenario.id);
+    const recordedStatus = reportStatus(scenario.id, "Scenario matrix");
     if (recordedStatus !== expectedStatus) {
       errors.push(
         `Completed scenario ${scenario.id} result must match the completed report status (expected ${expectedStatus}, found ${recordedStatus ?? "missing"}).`,

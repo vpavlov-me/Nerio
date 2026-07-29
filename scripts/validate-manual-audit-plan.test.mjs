@@ -869,6 +869,59 @@ test("manual audit validator rejects report and completion outcome drift", () =>
   );
 });
 
+test("manual audit validator reads scenario status only from the canonical matrix", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) => {
+      const completed = completedReport(source)
+        .split("\n")
+        .map((line) =>
+          line.includes("`global-docs-navigation`")
+            ? line.replace(/\|\s*Pass\s*\|\s*Recorded\s*\|/, "| Skipped | Recorded |")
+            : line,
+        )
+        .join("\n");
+      return completed.replace(
+        "Status: **Complete**",
+        "Status: **Complete**\n\n| `global-docs-navigation` | fake | fake | Pass | fake |",
+      );
+    },
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Completed scenario global-docs-navigation result must match the completed report status/,
+      );
+    },
+  );
+});
+
+test("manual audit validator requires evidence for every failed summary gate", () => {
+  withPlanAndReportFixtures(
+    completedPlan,
+    (source) =>
+      completedReport(source)
+        .replace(
+          "Final decision: **Pass for real consumer pilots**",
+          "Final decision: **Blocked before pilots**",
+        )
+        .replace(
+          "## Final decision\n\n**Pass for real consumer pilots**",
+          "## Final decision\n\n**Blocked before pilots**",
+        )
+        .replace(/(\| No open P0 or P1 accessibility defect\s+\|) Pass(\s+\|)/, "$1 Fail$2"),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /summary gate "No open P0 or P1 accessibility defect" must be supported/,
+      );
+    },
+  );
+});
+
 test("manual audit validator locks the candidate scenario matrix", () => {
   withPlanAndReportFixtures(
     (source) => {
