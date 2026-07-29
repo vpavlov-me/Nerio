@@ -18,6 +18,56 @@ const currentCommitTimestamp = new Date(
     encoding: "utf8",
   }).stdout.trim(),
 ).toISOString();
+const completedEnvironmentMetadata = {
+  "macos-safari-voiceover": {
+    operatingSystem: "macOS 15.5",
+    browser: "Safari 18.5",
+    assistiveTechnology: "VoiceOver 15.5",
+    device: "MacBook Pro 14-inch",
+  },
+  "macos-chromium-keyboard": {
+    operatingSystem: "macOS 15.5",
+    browser: "Chrome 138.0",
+    assistiveTechnology: "Keyboard-only navigation",
+    device: "MacBook Pro 14-inch",
+  },
+  "windows-nvda": {
+    operatingSystem: "Windows 11 24H2",
+    browser: "Firefox 140.0",
+    assistiveTechnology: "NVDA 2025.1",
+    device: "ThinkPad X1 Carbon",
+  },
+  "ios-safari-voiceover": {
+    operatingSystem: "iOS 18.5",
+    browser: "Safari 18.5",
+    assistiveTechnology: "VoiceOver 18.5",
+    device: "iPhone 15 Pro",
+  },
+  "android-chrome-talkback": {
+    operatingSystem: "Android 15",
+    browser: "Chrome 138.0",
+    assistiveTechnology: "TalkBack 15.1",
+    device: "Pixel 9 Pro",
+  },
+  "zoom-reflow": {
+    operatingSystem: "macOS 15.5",
+    browser: "Chrome 138.0",
+    assistiveTechnology: "not applicable",
+    device: "MacBook Pro 14-inch",
+  },
+  "reduced-motion": {
+    operatingSystem: "macOS 15.5",
+    browser: "Safari 18.5",
+    assistiveTechnology: "not applicable",
+    device: "MacBook Pro 14-inch",
+  },
+  "high-contrast": {
+    operatingSystem: "Windows 11 24H2",
+    browser: "Edge 138.0",
+    assistiveTechnology: "not applicable",
+    device: "ThinkPad X1 Carbon",
+  },
+};
 
 function run(args = []) {
   return spawnSync(process.execPath, [validator, ...args], {
@@ -75,25 +125,26 @@ function completedPlan(source) {
           auditStartedAt: currentCommitTimestamp,
           auditOwner: "Accessibility audit team",
         },
-        environments: plan.requiredEnvironments.map(({ id }, index) => ({
+        environments: plan.requiredEnvironments.map(({ id }) => ({
           id,
-          operatingSystem: `Test operating system ${index + 1}`,
-          browser: `Test browser ${index + 1}`,
-          assistiveTechnology: `Test assistive technology ${index + 1}`,
-          device: `Test device ${index + 1}`,
+          ...completedEnvironmentMetadata[id],
           viewport: "1280x800",
           zoom: "100%",
           packageMode: "Packed package",
           result: "Pass",
           notes: `Completed the required checks in ${id}.`,
         })),
-        results: plan.scenarios.flatMap((scenario) =>
-          scenario.environments.map((environmentId) => ({
+        results: plan.scenarios.flatMap((scenario, scenarioIndex) =>
+          scenario.environments.map((environmentId, environmentIndex) => ({
             scenarioId: scenario.id,
             environmentId,
             result: "Pass",
             notes: `Verified ${scenario.title} in ${environmentId}.`,
-            evidence: [`https://evidence.example.test/${scenario.id}/${environmentId}`],
+            evidence: [
+              `https://github.com/vpavlov-me/Nerio/issues/143#issuecomment-${
+                100000 + scenarioIndex * 10 + environmentIndex
+              }`,
+            ],
           })),
         ),
       },
@@ -108,6 +159,10 @@ function completedReport(source) {
     .replace("Status: **Prepared — manual evidence pending**", "Status: **Complete**")
     .replace("Candidate commit: **Pending**", `Candidate commit: **${currentCommit}**`)
     .replace("Final decision: **Pending**", "Final decision: **Pass for real consumer pilots**")
+    .replace(
+      "## Final decision\n\n**Pending**",
+      "## Final decision\n\n**Pass for real consumer pilots**",
+    )
     .replaceAll("Not run", "Pass")
     .replaceAll("Pending", "Recorded");
 }
@@ -130,6 +185,10 @@ function trackedFailureReport(source, includeFinding = true) {
     .replace(
       "Final decision: **Pass for real consumer pilots**",
       "Final decision: **Blocked before pilots**",
+    )
+    .replace(
+      "## Final decision\n\n**Pass for real consumer pilots**",
+      "## Final decision\n\n**Blocked before pilots**",
     )
     .split("\n")
     .map((line) =>
@@ -363,6 +422,34 @@ test("manual audit validator rejects short generic placeholders in completed evi
       assert.match(result.stderr, /substantive operatingSystem evidence/);
       assert.match(result.stderr, /substantive viewport evidence/);
       assert.match(result.stderr, /must include substantive notes/);
+    },
+  );
+});
+
+test("manual audit validator rejects generic platforms, reserved evidence URLs, and decision drift", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments[0].operatingSystem = "Test operating system 1";
+      plan.completion.environments[0].browser = "Test browser 1";
+      plan.completion.results[0].evidence = ["https://evidence.example.test/audit.png"];
+      return JSON.stringify(plan, null, 2);
+    },
+    (source) =>
+      completedReport(source).replace(
+        "## Final decision\n\n**Pass for real consumer pilots**",
+        "## Final decision\n\n**Blocked before pilots**",
+      ),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /substantive operatingSystem evidence/);
+      assert.match(result.stderr, /substantive browser evidence/);
+      assert.match(
+        result.stderr,
+        /Nerio GitHub issue comment, Actions artifact, or user attachment/,
+      );
+      assert.match(result.stderr, /final-decision section must match its metadata decision/);
     },
   );
 });

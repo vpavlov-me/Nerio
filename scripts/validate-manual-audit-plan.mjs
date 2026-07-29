@@ -341,16 +341,21 @@ function isSubstantiveString(value) {
 function isDetailedEvidenceString(value, field) {
   if (!isSubstantiveString(value)) return false;
   const normalized = value.trim();
-  if (/^(?:x+|test|todo|tbd|unknown|placeholder|sample|example|n\/a)$/i.test(normalized)) {
+  if (
+    /^x+$/i.test(normalized) ||
+    /\b(?:test|todo|tbd|unknown|placeholder|sample|example)\b/i.test(normalized)
+  ) {
     return false;
   }
   switch (field) {
     case "operatingSystem":
+      return /\b(?:macOS|iOS|iPadOS|Windows|Android|Linux)\b.*\d/i.test(normalized);
     case "browser":
-      return normalized.length >= 4 && /\d/.test(normalized);
+      return /\b(?:Safari|Chrome|Chromium|Firefox|Edge)\b.*\d/i.test(normalized);
     case "assistiveTechnology":
       return (
-        normalized.length >= 4 && (/\d/.test(normalized) || /keyboard[- ]only/i.test(normalized))
+        /keyboard[- ]only/i.test(normalized) ||
+        /\b(?:VoiceOver|NVDA|TalkBack|JAWS)\b.*\d/i.test(normalized)
       );
     case "device":
       return normalized.length >= 4 && normalized.split(/\s+/).length >= 2;
@@ -395,8 +400,34 @@ function validateEvidenceLinks(label, evidence) {
     errors.push(`${label} must include at least one evidence link.`);
     return;
   }
-  if (evidence.some((link) => typeof link !== "string" || !/^https:\/\//.test(link))) {
-    errors.push(`${label} evidence links must use https URLs.`);
+  for (const link of evidence) {
+    let url;
+    try {
+      url = new URL(link);
+    } catch {
+      errors.push(`${label} evidence links must use valid https URLs.`);
+      continue;
+    }
+    const isIssueComment =
+      url.hostname === "github.com" &&
+      /^\/vpavlov-me\/Nerio\/issues\/\d+$/.test(url.pathname) &&
+      /^#issuecomment-\d+$/.test(url.hash);
+    const isActionsArtifact =
+      url.hostname === "github.com" &&
+      /^\/vpavlov-me\/Nerio\/actions\/runs\/\d+\/artifacts\/\d+$/.test(url.pathname);
+    const isUserAttachment =
+      url.hostname === "github.com" &&
+      /^\/user-attachments\/assets\/[0-9a-f-]{36}$/i.test(url.pathname);
+    if (
+      url.protocol !== "https:" ||
+      url.username ||
+      url.password ||
+      (!isIssueComment && !isActionsArtifact && !isUserAttachment)
+    ) {
+      errors.push(
+        `${label} evidence links must identify a Nerio GitHub issue comment, Actions artifact, or user attachment.`,
+      );
+    }
   }
 }
 
@@ -585,6 +616,14 @@ if (plan?.status === "complete") {
   )?.[1];
   if (!finalDecision) {
     errors.push("Completed audit report must record one allowed final decision.");
+  }
+  const sectionDecision = report.match(
+    /## Final decision\s+\*\*(Pass for real consumer pilots|Blocked before pilots)\*\*/,
+  )?.[1];
+  if (!sectionDecision) {
+    errors.push("Completed audit report final-decision section must record one allowed decision.");
+  } else if (finalDecision && sectionDecision !== finalDecision) {
+    errors.push("Completed audit report final-decision section must match its metadata decision.");
   }
   if (/^\|.*\|\s*(Not run|Pending)\s*\|/m.test(report) || /\|\s*Pending\s*\|/m.test(report)) {
     errors.push("Completed audit report must not leave pending or not-run table evidence.");
