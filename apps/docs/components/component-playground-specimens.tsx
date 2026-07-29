@@ -691,8 +691,8 @@ export function ComponentPlayground() {
             <Checkbox aria-label="Inline option three" />
           </FormGroup>
           <FormGroup title="Grid" layout="grid" invalid message="Review both fields.">
-            <Input defaultValue="One" />
-            <Input invalid defaultValue="Two" />
+            <Input aria-label="Grid field one" defaultValue="One" />
+            <Input aria-label="Grid field two" invalid defaultValue="Two" />
           </FormGroup>
         </div>
       </SpecimenSection>

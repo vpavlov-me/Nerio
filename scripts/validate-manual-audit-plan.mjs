@@ -53,6 +53,7 @@ const requiredComponents = [
   "dropdown-menu",
   "motion-adapter",
 ];
+const allowedStatuses = ["manual-evidence-pending", "complete"];
 
 const paths = parsePathOptions(process.argv.slice(2), {
   "--plan": resolve(root, "quality/manual-audit-plan.json"),
@@ -81,10 +82,8 @@ function addMissing(label, required, actual) {
 
 if (plan) {
   if (plan.issue !== 143) errors.push("Manual audit plan must target issue #143.");
-  if (plan.status !== "manual-evidence-pending") {
-    errors.push(
-      "Manual audit plan must keep status manual-evidence-pending until human evidence exists.",
-    );
+  if (!allowedStatuses.includes(plan.status)) {
+    errors.push(`Manual audit plan status must be one of: ${allowedStatuses.join(", ")}.`);
   }
 
   const environments = Array.isArray(plan.requiredEnvironments) ? plan.requiredEnvironments : [];
@@ -140,6 +139,9 @@ if (plan) {
         errors.push(`${prefix} references unknown environment ${environmentId}.`);
       }
     }
+    if (new Set(scenario?.environments ?? []).size !== (scenario?.environments ?? []).length) {
+      errors.push(`${prefix} environment IDs must be unique.`);
+    }
 
     if (scenario?.id && !report.includes(`\`${scenario.id}\``)) {
       errors.push(`Audit report is missing scenario ${scenario.id}.`);
@@ -157,9 +159,6 @@ if (plan) {
 }
 
 for (const requiredText of [
-  "Status: **Prepared — manual evidence pending**",
-  "Candidate commit: **Pending**",
-  "Final decision: **Pending**",
   "**Pass for real consumer pilots**",
   "**Blocked before pilots**",
   "Never replace missing human evidence with an automated test result.",
@@ -169,11 +168,44 @@ for (const requiredText of [
   }
 }
 
+if (plan?.status === "manual-evidence-pending") {
+  for (const requiredText of [
+    "Status: **Prepared — manual evidence pending**",
+    "Candidate commit: **Pending**",
+    "Final decision: **Pending**",
+  ]) {
+    if (!report.includes(requiredText)) {
+      errors.push(`Audit report is missing required pending-state text: ${requiredText}`);
+    }
+  }
+}
+
+if (plan?.status === "complete") {
+  if (!report.includes("Status: **Complete**")) {
+    errors.push("Completed audit report must declare Status: **Complete**.");
+  }
+  if (!/^- Candidate commit: \*\*[0-9a-f]{40}\*\*$/m.test(report)) {
+    errors.push("Completed audit report must record a 40-character candidate commit.");
+  }
+  if (
+    !/^- Final decision: \*\*(Pass for real consumer pilots|Blocked before pilots)\*\*$/m.test(
+      report,
+    )
+  ) {
+    errors.push("Completed audit report must record one allowed final decision.");
+  }
+  if (/^\|.*\|\s*(Not run|Pending)\s*\|/m.test(report) || /\|\s*Pending\s*\|/m.test(report)) {
+    errors.push("Completed audit report must not leave pending or not-run table evidence.");
+  }
+}
+
 if (errors.length) {
   for (const error of errors) console.error(error);
   process.exitCode = 1;
 } else {
+  const state =
+    plan.status === "complete" ? "manual evidence complete" : "manual evidence still pending";
   console.log(
-    `Manual audit plan is ready: ${plan.scenarios.length} scenarios, ${plan.requiredEnvironments.length} required environments, manual evidence still pending.`,
+    `Manual audit plan is ready: ${plan.scenarios.length} scenarios, ${plan.requiredEnvironments.length} required environments, ${state}.`,
   );
 }

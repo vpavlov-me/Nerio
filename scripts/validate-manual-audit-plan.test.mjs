@@ -27,11 +27,65 @@ function withFixture(source, update, callback) {
   }
 }
 
+function withPlanAndReportFixtures(planUpdate, reportUpdate, callback) {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-manual-audit-"));
+  const planTarget = resolve(directory, "plan.json");
+  const reportTarget = resolve(directory, "report.md");
+  writeFileSync(
+    planTarget,
+    planUpdate(readFileSync(resolve(root, "quality/manual-audit-plan.json"), "utf8")),
+  );
+  writeFileSync(
+    reportTarget,
+    reportUpdate(
+      readFileSync(resolve(root, "docs/audits/core-1-0-accessibility-device-audit.md"), "utf8"),
+    ),
+  );
+  try {
+    callback(planTarget, reportTarget);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
 test("manual audit validator accepts the prepared pending plan", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /18 scenarios, 8 required environments/);
+  assert.match(result.stdout, /21 scenarios, 8 required environments/);
   assert.match(result.stdout, /manual evidence still pending/);
+});
+
+test("manual audit validator accepts a completed evidence record", () => {
+  withPlanAndReportFixtures(
+    (source) => JSON.stringify({ ...JSON.parse(source), status: "complete" }, null, 2),
+    (source) =>
+      source
+        .replace("Status: **Prepared — manual evidence pending**", "Status: **Complete**")
+        .replace("Candidate commit: **Pending**", `Candidate commit: **${"a".repeat(40)}**`)
+        .replace("Final decision: **Pending**", "Final decision: **Pass for real consumer pilots**")
+        .replaceAll("Not run", "Pass")
+        .replaceAll("Pending", "Recorded"),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.equal(result.status, 0, result.stderr);
+      assert.match(result.stdout, /manual evidence complete/);
+    },
+  );
+});
+
+test("manual audit validator rejects incomplete completed-state evidence", () => {
+  withPlanAndReportFixtures(
+    (source) => JSON.stringify({ ...JSON.parse(source), status: "complete" }, null, 2),
+    (source) =>
+      source.replace("Status: **Prepared — manual evidence pending**", "Status: **Complete**"),
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /40-character candidate commit/);
+      assert.match(result.stderr, /must record one allowed final decision/);
+      assert.match(result.stderr, /must not leave pending or not-run table evidence/);
+    },
+  );
 });
 
 test("manual audit validator rejects missing required environments", () => {

@@ -280,11 +280,11 @@
       ]
     },
     {
-      "id": "data-semantics-overflow",
-      "title": "Heading, list, table, item, and overflow semantics",
-      "route": "/visual-test",
+      "id": "table-semantics-overflow",
+      "title": "Table structure, selection, sorting, and overflow semantics",
+      "route": "/docs/components/table",
       "surfaces": ["data-feedback"],
-      "components": ["heading", "list", "table", "item"],
+      "components": ["table"],
       "environments": [
         "macos-safari-voiceover",
         "macos-chromium-keyboard",
@@ -294,22 +294,47 @@
         "zoom-reflow"
       ],
       "steps": [
-        "Navigate headings, lists, linked Items, table captions, headers, rows, and actions.",
-        "Focus and scroll the named table overflow region.",
-        "Inspect selected, current, disabled-looking, long, localized, and narrow content."
+        "Navigate the table caption, column headers, rows, selection controls, and row actions.",
+        "Change selection and sorting, then focus and scroll the named overflow region.",
+        "Repeat with narrow width, zoom, and touch scrolling where available."
       ],
       "expected": [
-        "Document, list, link, and table relationships remain understandable.",
+        "Caption, header, row, cell, selection, and sort relationships remain understandable.",
         "Overflow is keyboard reachable without trapping focus.",
-        "Selection, current state, and actions do not depend on row color alone."
+        "Selection, sorting, and actions do not depend on row color alone."
       ]
     },
     {
-      "id": "feedback-announcements",
-      "title": "Alert, Toast, progress, loading, empty, and error announcements",
+      "id": "item-semantics-states",
+      "title": "Item structure, links, selection, disabled, loading, and long content",
+      "route": "/docs/components/item",
+      "surfaces": ["data-feedback"],
+      "components": ["heading", "list", "item"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Navigate the Item examples as document content, list content, and links.",
+        "Inspect selected, disabled, loading, linked, rich, and long-content examples.",
+        "Repeat at narrow width and increased zoom."
+      ],
+      "expected": [
+        "Document, list, link, and Item relationships remain understandable.",
+        "Selected, disabled, loading, and link states remain distinct without color alone.",
+        "Long and rich content reflows without hiding names, descriptions, or actions."
+      ]
+    },
+    {
+      "id": "feedback-status-states",
+      "title": "Alert, progress, loading, empty, and error states",
       "route": "/visual-test",
       "surfaces": ["data-feedback"],
-      "components": ["alert", "toast", "progress", "spinner", "skeleton", "empty-state"],
+      "components": ["alert", "progress", "spinner", "skeleton", "empty-state"],
       "environments": [
         "macos-safari-voiceover",
         "macos-chromium-keyboard",
@@ -320,22 +345,47 @@
         "high-contrast"
       ],
       "steps": [
-        "Trigger low- and high-priority feedback, actions, dismissal, loading, and empty states.",
-        "Inspect announcement timing, repetition, urgency, and focus behavior.",
+        "Inspect alert, loading, progress, error, and empty states.",
+        "Inspect their names, descriptions, state semantics, and focus behavior.",
         "Repeat with reduced motion and increased or high contrast."
       ],
       "expected": [
-        "Feedback is announced with appropriate urgency without duplicate speech.",
-        "Actions and dismissal remain keyboard and touch operable.",
+        "Status and error meaning is exposed without duplicate or inappropriate announcements.",
         "Loading, progress, status, and empty meaning do not depend on animation or color."
       ]
     },
     {
-      "id": "tabs-pagination-breadcrumbs",
-      "title": "Tabs, Breadcrumbs, and Pagination navigation models",
-      "route": "/visual-test",
+      "id": "toast-announcements",
+      "title": "Toast priority, stacking, actions, persistence, and dismissal",
+      "route": "/docs/components/toast",
+      "surfaces": ["data-feedback"],
+      "components": ["toast"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "reduced-motion",
+        "high-contrast"
+      ],
+      "steps": [
+        "Trigger low-priority stacked and persistent Toast examples.",
+        "Trigger the high-priority urgent failure example, then use actions and dismissal.",
+        "Inspect announcement timing, repetition, urgency, focus behavior, motion, and contrast."
+      ],
+      "expected": [
+        "Low- and high-priority feedback is announced with appropriate urgency without duplicate speech.",
+        "Actions and dismissal remain keyboard and touch operable.",
+        "Persistence, stacking, and motion do not hide content or steal focus."
+      ]
+    },
+    {
+      "id": "tabs-orientation-rtl",
+      "title": "Tabs orientations, disabled items, overflow, and RTL",
+      "route": "/docs/components/tabs",
       "surfaces": ["navigation-overlays"],
-      "components": ["tabs", "breadcrumbs", "pagination"],
+      "components": ["tabs"],
       "environments": [
         "macos-safari-voiceover",
         "macos-chromium-keyboard",
@@ -345,13 +395,38 @@
         "zoom-reflow"
       ],
       "steps": [
-        "Navigate Tabs in both orientations, including disabled items.",
-        "Inspect Breadcrumbs and Pagination current-page semantics.",
-        "Repeat with long labels, narrow width, and RTL where applicable."
+        "Navigate horizontal and vertical Tabs, including disabled items.",
+        "Inspect selection, focus, orientation, scrollable overflow, and panel relationships.",
+        "Repeat with long labels, narrow width, increased zoom, and the live RTL example."
       ],
       "expected": [
         "Tabs expose orientation, selection, and the expected arrow-key model.",
-        "Only one breadcrumb or pagination item is current.",
+        "Disabled tabs are skipped and each selected tab controls the expected panel.",
+        "Navigation remains usable when scrolled, reflowed, or rendered RTL."
+      ]
+    },
+    {
+      "id": "breadcrumbs-pagination-current",
+      "title": "Breadcrumbs and Pagination current-page semantics",
+      "route": "/visual-test",
+      "surfaces": ["navigation-overlays"],
+      "components": ["breadcrumbs", "pagination"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Navigate Breadcrumbs and Pagination with keyboard, touch, and screen-reader navigation.",
+        "Inspect names, landmarks, current-page semantics, disabled controls, and ellipsis.",
+        "Repeat with narrow width and increased zoom."
+      ],
+      "expected": [
+        "Only one breadcrumb or pagination item is current within each navigation model.",
+        "Disabled and unavailable navigation controls remain understandable.",
         "Navigation remains usable when wrapped or reflowed."
       ]
     },
@@ -431,7 +506,7 @@
     {
       "id": "overlay-focus-dismissal",
       "title": "Dialog, Sheet, Popover, Tooltip, and Dropdown Menu focus and dismissal",
-      "route": "/visual-test",
+      "route": "/visual-test/blocks/overlay-playground",
       "surfaces": ["navigation-overlays"],
       "components": ["dialog", "sheet", "popover", "tooltip", "dropdown-menu"],
       "environments": [

@@ -238,18 +238,28 @@ test("preserves native FileInput selection, FileList, form reset, and reflow", a
   await page.goto("/docs/components/file-input");
 
   const form = page.getByRole("form", { name: "Native file input examples" });
-  const input = page.getByLabel("Attachments", { exact: true });
-  await expect(input).toHaveAttribute("type", "file");
-  await expect(input).toHaveAttribute("accept", ".pdf,image/*");
-  await expect(input).toHaveAttribute("capture", "environment");
-  await expect(input).toHaveAttribute("multiple", "");
-  await expect(input).toHaveAttribute("required", "");
+  const primaryInput = page.getByLabel("Primary attachment", { exact: true });
+  const capturedInput = page.getByLabel("Captured attachments", { exact: true });
+  await expect(primaryInput).toHaveAttribute("type", "file");
+  await expect(primaryInput).toHaveAttribute("accept", ".pdf,image/*");
+  await expect(primaryInput).not.toHaveAttribute("multiple", "");
+  await expect(primaryInput).toHaveAttribute("required", "");
+  await expect(capturedInput).toHaveAttribute("type", "file");
+  await expect(capturedInput).toHaveAttribute("accept", "image/*");
+  await expect(capturedInput).toHaveAttribute("capture", "environment");
+  await expect(capturedInput).toHaveAttribute("multiple", "");
+  await expect(capturedInput).not.toHaveAttribute("required", "");
 
-  await input.setInputFiles([
+  await primaryInput.setInputFiles({
+    name: "launch-brief-with-a-very-long-localized-name.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("brief"),
+  });
+  await capturedInput.setInputFiles([
     {
-      name: "launch-brief-with-a-very-long-localized-name.pdf",
-      mimeType: "application/pdf",
-      buffer: Buffer.from("brief"),
+      name: "launch-reference-with-a-very-long-localized-name.png",
+      mimeType: "image/png",
+      buffer: Buffer.from("reference"),
     },
     {
       name: "проекция.png",
@@ -258,27 +268,34 @@ test("preserves native FileInput selection, FileList, form reset, and reflow", a
     },
   ]);
   expect(
-    await input.evaluate((element) =>
+    await capturedInput.evaluate((element) =>
       Array.from(element.files ?? [], (file) => ({ name: file.name, type: file.type })),
     ),
   ).toEqual([
     {
-      name: "launch-brief-with-a-very-long-localized-name.pdf",
-      type: "application/pdf",
+      name: "launch-reference-with-a-very-long-localized-name.png",
+      type: "image/png",
     },
     { name: "проекция.png", type: "image/png" },
   ]);
   expect(
     await form.evaluate((element) => {
+      const value = new FormData(element).get("primaryAttachment");
+      return value instanceof File ? value.name : value;
+    }),
+  ).toBe("launch-brief-with-a-very-long-localized-name.pdf");
+  expect(
+    await form.evaluate((element) => {
       const values = new FormData(element).getAll("attachments");
       return values.map((value) => (value instanceof File ? value.name : value));
     }),
-  ).toEqual(["launch-brief-with-a-very-long-localized-name.pdf", "проекция.png"]);
+  ).toEqual(["launch-reference-with-a-very-long-localized-name.png", "проекция.png"]);
 
-  await form.evaluate((element) => element.reset());
-  expect(await input.evaluate((element) => element.files?.length)).toBe(0);
-  await input.focus();
-  await expect(input).toBeFocused();
+  await page.getByRole("button", { name: "Reset file inputs" }).click();
+  expect(await primaryInput.evaluate((element) => element.files?.length)).toBe(0);
+  expect(await capturedInput.evaluate((element) => element.files?.length)).toBe(0);
+  await capturedInput.focus();
+  await expect(capturedInput).toBeFocused();
   await expect(page.getByLabel("Unavailable attachment")).toBeDisabled();
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
   expect(
@@ -339,6 +356,10 @@ test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only beha
 
   const vertical = page.getByRole("slider", { name: "Vertical volume" });
   await expect(vertical).toHaveAttribute("aria-orientation", "vertical");
+  const rtl = page.getByRole("slider", { name: "RTL volume" });
+  await rtl.focus();
+  await rtl.press("ArrowRight");
+  await expect(rtl).toHaveValue("36");
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
   await volume.focus();
   await volume.press("ArrowRight");
@@ -500,7 +521,7 @@ test("keeps DatePicker focus, form value, constraints, dismissal, RTL, and reflo
   await expect(trigger).toBeFocused();
   await expect(trigger).toContainText("Jun 16, 2026");
   await expect(page.getByText("Form value: 2026-06-16")).toBeVisible();
-  await expect(page.locator('[data-slot="form-control"]')).toHaveValue("2026-06-16");
+  await expect(page.locator('input[name="releaseDate"]')).toHaveValue("2026-06-16");
   expect(await page.locator("form").evaluate((form) => new FormData(form).get("releaseDate"))).toBe(
     "2026-06-16",
   );
