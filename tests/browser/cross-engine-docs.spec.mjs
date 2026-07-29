@@ -310,6 +310,13 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
   browserName,
   page,
 }) => {
+  await page.route("https://mc.yandex.ru/metrika/tag.js", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/javascript",
+      body: "",
+    }),
+  );
   const problems = monitorPage(page, browserName);
 
   await page.goto("/visual-test#checkbox");
