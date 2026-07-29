@@ -1,0 +1,462 @@
+{
+  "issue": 143,
+  "status": "manual-evidence-pending",
+  "requiredEnvironments": [
+    {
+      "id": "macos-safari-voiceover",
+      "label": "macOS Safari with VoiceOver"
+    },
+    {
+      "id": "macos-chromium-keyboard",
+      "label": "macOS Chromium with keyboard-only navigation"
+    },
+    {
+      "id": "windows-nvda",
+      "label": "Windows Firefox or Chromium with NVDA"
+    },
+    {
+      "id": "ios-safari-voiceover",
+      "label": "Physical iPhone or iPad Safari with VoiceOver"
+    },
+    {
+      "id": "android-chrome-talkback",
+      "label": "Physical Android Chrome with TalkBack"
+    },
+    {
+      "id": "zoom-reflow",
+      "label": "Browser zoom and reflow at 200% and 400%"
+    },
+    {
+      "id": "reduced-motion",
+      "label": "Operating-system reduced-motion preference"
+    },
+    {
+      "id": "high-contrast",
+      "label": "macOS increased contrast or Windows high contrast"
+    }
+  ],
+  "requiredEvidenceFields": [
+    "operatingSystem",
+    "browser",
+    "assistiveTechnology",
+    "device",
+    "viewport",
+    "zoom",
+    "packageMode",
+    "result",
+    "notes"
+  ],
+  "scenarios": [
+    {
+      "id": "global-docs-navigation",
+      "title": "Docs landmarks, navigation, search, appearance controls, and page actions",
+      "route": "/docs",
+      "surfaces": ["global"],
+      "components": ["command", "sidebar", "tooltip"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Navigate landmarks, headings, sidebar, search, table of contents, links, and page actions.",
+        "Change theme, mode, and density, then move between documentation routes.",
+        "Confirm focus order, visible focus, names, announcements, and route-change context."
+      ],
+      "expected": [
+        "Navigation is understandable without visual position or color.",
+        "Focus order follows the reading order and remains visible.",
+        "Search, appearance controls, and page actions expose stable names and state."
+      ]
+    },
+    {
+      "id": "global-demo-responsive",
+      "title": "Representative product composition, responsive navigation, and safe areas",
+      "route": "/views/operations-workspace",
+      "surfaces": ["global", "navigation-overlays"],
+      "components": ["sidebar", "sheet", "dialog", "toast"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Navigate the desktop workspace and its mobile drill-in flow.",
+        "Open and dismiss responsive navigation and task overlays.",
+        "Inspect safe-area spacing, focus restoration, and reflow at narrow widths."
+      ],
+      "expected": [
+        "Responsive composition preserves content, controls, and logical focus.",
+        "Modal surfaces contain focus and restore it to the invoking control.",
+        "Safe areas and reflow do not hide actions or status."
+      ]
+    },
+    {
+      "id": "actions-buttons-toggle",
+      "title": "Button, icon action, loading, disabled, and Toggle pressed state",
+      "route": "/visual-test",
+      "surfaces": ["actions-forms"],
+      "components": ["button", "toggle", "button-group", "tooltip"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "high-contrast"
+      ],
+      "steps": [
+        "Activate text, icon-only, loading, disabled, grouped, and pressed controls.",
+        "Confirm stable names while loading and pressed state changes.",
+        "Verify Enter, Space, pointer, and touch behavior where available."
+      ],
+      "expected": [
+        "Momentary, loading, disabled, and retained pressed states remain distinct.",
+        "Icon-only actions have stable accessible names independent of Tooltip.",
+        "State and focus remain perceivable without color alone."
+      ]
+    },
+    {
+      "id": "forms-labels-validation",
+      "title": "Field relationships, validation, grouped controls, and native form behavior",
+      "route": "/visual-test",
+      "surfaces": ["actions-forms"],
+      "components": [
+        "input",
+        "input-group",
+        "textarea",
+        "checkbox",
+        "radio-group",
+        "switch",
+        "select"
+      ],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow",
+        "high-contrast"
+      ],
+      "steps": [
+        "Navigate labels, descriptions, required fields, invalid fields, and grouped controls.",
+        "Change Checkbox, RadioGroup, Switch, and Select values using native keyboard and touch models.",
+        "Confirm validation and help text are announced once and remain associated."
+      ],
+      "expected": [
+        "Every control has a stable name and applicable description or error relationship.",
+        "Required, invalid, checked, selected, disabled, and read-only states are announced.",
+        "Keyboard and touch interaction match the documented control semantics."
+      ]
+    },
+    {
+      "id": "native-temporal-inputs",
+      "title": "Native date, month, week, time, and datetime-local inputs",
+      "route": "/docs/components/input",
+      "surfaces": ["actions-forms"],
+      "components": ["temporal-input"],
+      "environments": [
+        "macos-safari-voiceover",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Focus each supported temporal input and use the platform picker.",
+        "Enter, change, clear, and submit representative values.",
+        "Inspect localized picker chrome, constraints, validity, and focus return."
+      ],
+      "expected": [
+        "The browser-owned picker remains operable and understandable.",
+        "Value, constraint, validity, reset, and submission behavior remain native.",
+        "Mobile picker dismissal restores usable focus and viewport state."
+      ]
+    },
+    {
+      "id": "slider-input",
+      "title": "Slider keyboard, touch, pointer, orientation, RTL, and value text",
+      "route": "/docs/components/slider",
+      "surfaces": ["actions-forms", "runtime-axes"],
+      "components": ["slider"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "high-contrast"
+      ],
+      "steps": [
+        "Change values with Arrow, Page, Home, End, pointer, and touch input.",
+        "Inspect horizontal, vertical, disabled, read-only, and RTL behavior.",
+        "Confirm value text and orientation are announced."
+      ],
+      "expected": [
+        "Value changes are predictable and bounded by the documented constraints.",
+        "Touch and keyboard interaction expose the same value contract.",
+        "Focus, value, orientation, and disabled state remain perceivable without color."
+      ]
+    },
+    {
+      "id": "file-input-picker",
+      "title": "FileInput selection, announcement, reset, and mobile picker",
+      "route": "/docs/components/file-input",
+      "surfaces": ["actions-forms"],
+      "components": ["file-input"],
+      "environments": [
+        "macos-safari-voiceover",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Open the native picker for single, multiple, and capture-capable inputs.",
+        "Select files, inspect filename announcement, and reset the form.",
+        "Cancel the picker and confirm focus and viewport restoration."
+      ],
+      "expected": [
+        "The native picker, selected filenames, constraints, and reset remain understandable.",
+        "Cancel and selection restore focus to the input.",
+        "No upload, validation workflow, or storage behavior is implied."
+      ]
+    },
+    {
+      "id": "calendar-grid",
+      "title": "Calendar grid navigation, constraints, locale, RTL, and announcements",
+      "route": "/docs/components/calendar",
+      "surfaces": ["actions-forms", "runtime-axes"],
+      "components": ["calendar"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow",
+        "high-contrast"
+      ],
+      "steps": [
+        "Navigate days, weeks, months, and years using the documented keyboard model.",
+        "Inspect today, selected, outside-month, unavailable, disabled, and read-only dates.",
+        "Repeat representative navigation with locale and RTL changes."
+      ],
+      "expected": [
+        "Roving focus and month changes remain predictable and announced.",
+        "Localized date names and selected state remain understandable.",
+        "Constraints prevent selection without removing navigation context."
+      ]
+    },
+    {
+      "id": "date-picker-composition",
+      "title": "DatePicker opening, Calendar interaction, clear, dismissal, and form value",
+      "route": "/docs/components/date-picker",
+      "surfaces": ["actions-forms", "navigation-overlays"],
+      "components": ["date-picker", "calendar", "popover"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Open the picker, navigate the Calendar, select and clear a date.",
+        "Dismiss with Escape, outside interaction, and the documented close path.",
+        "Inspect form value, validation, mobile viewport pressure, and focus restoration."
+      ],
+      "expected": [
+        "Opening transfers focus into the Calendar and dismissal restores it.",
+        "Display text and submitted YYYY-MM-DD value remain aligned.",
+        "Clear, constraints, required, invalid, and read-only behavior remain understandable."
+      ]
+    },
+    {
+      "id": "data-semantics-overflow",
+      "title": "Heading, list, table, item, and overflow semantics",
+      "route": "/visual-test",
+      "surfaces": ["data-feedback"],
+      "components": ["heading", "list", "table", "item"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Navigate headings, lists, linked Items, table captions, headers, rows, and actions.",
+        "Focus and scroll the named table overflow region.",
+        "Inspect selected, current, disabled-looking, long, localized, and narrow content."
+      ],
+      "expected": [
+        "Document, list, link, and table relationships remain understandable.",
+        "Overflow is keyboard reachable without trapping focus.",
+        "Selection, current state, and actions do not depend on row color alone."
+      ]
+    },
+    {
+      "id": "feedback-announcements",
+      "title": "Alert, Toast, progress, loading, empty, and error announcements",
+      "route": "/visual-test",
+      "surfaces": ["data-feedback"],
+      "components": ["alert", "toast", "progress", "spinner", "skeleton", "empty-state"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "reduced-motion",
+        "high-contrast"
+      ],
+      "steps": [
+        "Trigger low- and high-priority feedback, actions, dismissal, loading, and empty states.",
+        "Inspect announcement timing, repetition, urgency, and focus behavior.",
+        "Repeat with reduced motion and increased or high contrast."
+      ],
+      "expected": [
+        "Feedback is announced with appropriate urgency without duplicate speech.",
+        "Actions and dismissal remain keyboard and touch operable.",
+        "Loading, progress, status, and empty meaning do not depend on animation or color."
+      ]
+    },
+    {
+      "id": "tabs-pagination-breadcrumbs",
+      "title": "Tabs, Breadcrumbs, and Pagination navigation models",
+      "route": "/visual-test",
+      "surfaces": ["navigation-overlays"],
+      "components": ["tabs", "breadcrumbs", "pagination"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Navigate Tabs in both orientations, including disabled items.",
+        "Inspect Breadcrumbs and Pagination current-page semantics.",
+        "Repeat with long labels, narrow width, and RTL where applicable."
+      ],
+      "expected": [
+        "Tabs expose orientation, selection, and the expected arrow-key model.",
+        "Only one breadcrumb or pagination item is current.",
+        "Navigation remains usable when wrapped or reflowed."
+      ]
+    },
+    {
+      "id": "command-sidebar",
+      "title": "Command query, active descendant, live states, and Sidebar collapse",
+      "route": "/visual-test",
+      "surfaces": ["navigation-overlays"],
+      "components": ["command", "sidebar"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow"
+      ],
+      "steps": [
+        "Search, navigate groups, select a result, and inspect loading and empty states.",
+        "Collapse and expand Sidebar, then inspect trigger naming, inert content, and focus retention.",
+        "Repeat the mobile Sidebar path through Sheet."
+      ],
+      "expected": [
+        "Command keeps DOM focus and active-descendant context predictable.",
+        "Loading, empty, selection, and result counts are concise and non-duplicative.",
+        "Collapsed or hidden Sidebar content is not interactable."
+      ]
+    },
+    {
+      "id": "overlay-focus-dismissal",
+      "title": "Dialog, Sheet, Popover, Tooltip, and Dropdown Menu focus and dismissal",
+      "route": "/visual-test",
+      "surfaces": ["navigation-overlays"],
+      "components": ["dialog", "sheet", "popover", "tooltip", "dropdown-menu"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow",
+        "reduced-motion"
+      ],
+      "steps": [
+        "Open each overlay with keyboard and touch or pointer input.",
+        "Navigate content, exercise close paths, and inspect nested overlay behavior.",
+        "Confirm focus containment where modal, dismissal, scroll lock, and restoration."
+      ],
+      "expected": [
+        "Modal and non-modal overlay semantics remain distinct.",
+        "Every overlay has an understandable name and predictable dismissal path.",
+        "Focus, scroll, viewport, and trigger context are restored after dismissal."
+      ]
+    },
+    {
+      "id": "motion-adapter-reduced-motion",
+      "title": "Optional Motion adapter preference changes and static end states",
+      "route": "/docs/foundations/motion",
+      "surfaces": ["runtime-axes"],
+      "components": ["motion-adapter"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "reduced-motion"
+      ],
+      "steps": [
+        "Load the Motion adapter examples with reduced motion enabled before navigation.",
+        "Change the operating-system preference while the page remains open.",
+        "Trigger entry, exit, and visibility examples with and without the preference."
+      ],
+      "expected": [
+        "User-preference reduced motion removes animated transform and layout travel.",
+        "Static end states, content order, focus, and useful visibility feedback remain intact.",
+        "Live preference changes apply without reload, hydration error, or duplicate announcement."
+      ]
+    },
+    {
+      "id": "runtime-axes-motion-contrast",
+      "title": "Themes, modes, density, RTL, reduced motion, and contrast",
+      "route": "/visual-test",
+      "surfaces": ["runtime-axes"],
+      "components": ["runtime-axes"],
+      "environments": [
+        "macos-safari-voiceover",
+        "macos-chromium-keyboard",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+        "zoom-reflow",
+        "reduced-motion",
+        "high-contrast"
+      ],
+      "steps": [
+        "Inspect representative surfaces across six themes, light and dark, both densities, and RTL.",
+        "Enable reduced motion before load and while the app is open.",
+        "Inspect focus, selected, current, invalid, disabled, and destructive states at high contrast."
+      ],
+      "expected": [
+        "Runtime axes do not change component semantics or reading order.",
+        "Reduced-motion preference removes nonessential CSS motion.",
+        "Focus and state remain perceivable under increased or high contrast."
+      ]
+    }
+  ]
+}

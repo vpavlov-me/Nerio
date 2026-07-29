@@ -47,6 +47,8 @@ jobs:
       - run: pnpm test:mcp
       - run: pnpm test:adapters
       - run: pnpm test:docs-examples
+      - run: pnpm test:manual-audit-plan
+      - run: pnpm validate:manual-audit-plan
       - run: pnpm validate:platform-support
       - run: pnpm validate:package-budgets
       - run: pnpm exec playwright install --with-deps chromium firefox webkit

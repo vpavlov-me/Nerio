@@ -43,8 +43,9 @@ component-family matrix remains on Chromium to avoid multiplying equivalent cove
   engine-specific errors when an overlay closes. The gate ignores only exact cancellation signatures
   on `_rsc` requests. WebKit may also report the matching access-control page error; real resource
   failures, console errors, and page errors still fail.
-- Automated browser checks complement, but do not replace, the manual assistive-technology and
-  real-device audit tracked separately in #143.
+- Automated browser checks complement, but do not replace, the
+  [manual assistive-technology and real-device audit](./audits/core-1-0-accessibility-device-audit.md)
+  tracked in #143.
 - Native form chrome and font rasterization may differ by operating system. The contract is semantic
   behavior, focus visibility, usable geometry, and tokenized authored styling—not pixel identity.
 

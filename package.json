@@ -33,6 +33,8 @@
     "test:docs-examples": "tsc -p apps/docs/fixtures/docs-examples/tsconfig.json",
     "test:ui": "pnpm --filter @nerio-ui/ui test",
     "test:a11y": "pnpm --filter @nerio-ui/ui test:a11y",
+    "test:manual-audit-plan": "node --test scripts/validate-manual-audit-plan.test.mjs",
+    "validate:manual-audit-plan": "node scripts/validate-manual-audit-plan.mjs",
     "validate:package-budgets": "node scripts/validate-package-budgets.mjs",
     "validate:platform-support": "node scripts/validate-platform-support.mjs",
     "pack:check": "node scripts/pack-check.mjs"

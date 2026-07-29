@@ -8,6 +8,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added a machine-validated preparation plan and evidence record for the manual Core 1.0
+  accessibility and real-device audit. The plan fixes the required VoiceOver, NVDA, TalkBack,
+  physical-device, zoom/reflow, reduced-motion, contrast, native-control, component-family, and
+  runtime-axis scenarios without representing automated coverage as human evidence.
 - Added the client-only Base UI Toggle for one independent retained button state, with controlled
   and uncontrolled `pressed` state, stable accessible naming, icon-only and visible-label content,
   ghost and outline variants, three control sizes, render composition, tokens, Registry, CLI/MCP,
