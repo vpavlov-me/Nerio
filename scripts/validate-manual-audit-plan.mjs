@@ -450,7 +450,10 @@ function hasEnabledPreferenceState(environmentId, notes) {
     environmentId === "reduced-motion" &&
     /\bprefers-reduced-motion\s*:\s*reduce\b/i.test(notes)
   ) {
-    return true;
+    const cssStateSuffix =
+      notes.split(/\bprefers-reduced-motion\s*:\s*reduce\b/i, 2)[1]?.match(/^[^.;\n]{0,80}/)?.[0] ??
+      "";
+    return !/\b(?:not|never|disabled|off)\b/i.test(cssStateSuffix);
   }
   const preferencePattern =
     environmentId === "reduced-motion"
@@ -465,7 +468,7 @@ function hasEnabledPreferenceState(environmentId, notes) {
 }
 
 function claimsEvidenceNotPerformed(notes) {
-  return /\b(?:untested|skipped)\b|\b(?:not|never)(?:\s+\w+){0,5}\s+(?:tested|verified|checked|performed|run)\b/i.test(
+  return /\b(?:untested|skipped)\b|\b(?:not|never)(?:\s+\w+){0,5}\s+(?:tested|verified|checked|performed|run)\b|\bno\s+(?:testing|verification|checks?)(?:\s+\w+){0,5}\s+(?:performed|run|completed)\b/i.test(
     notes ?? "",
   );
 }
@@ -529,6 +532,22 @@ function validateEvidenceLinks(label, evidence) {
       );
     }
   }
+}
+
+function hasContextualEvidence(evidence) {
+  return (evidence ?? []).some((link) => {
+    try {
+      const url = new URL(link);
+      return (
+        url.hostname === "github.com" &&
+        (/^\/vpavlov-me\/Nerio\/issues\/\d+$/.test(url.pathname)
+          ? /^#issuecomment-\d+$/.test(url.hash)
+          : /^\/vpavlov-me\/Nerio\/actions\/runs\/\d+\/artifacts\/\d+$/.test(url.pathname))
+      );
+    } catch {
+      return false;
+    }
+  });
 }
 
 function reportStatus(id, sectionTitle) {
@@ -1030,6 +1049,11 @@ if (plan?.status === "complete") {
     ) {
       errors.push(`${label} assistiveTechnology must describe technology that was actually used.`);
     }
+    for (const field of ["operatingSystem", "browser", "device"]) {
+      if (/\b(?:not|never|unused|disabled|off)\b/i.test(environment?.[field] ?? "")) {
+        errors.push(`${label} ${field} must describe metadata that was actually used.`);
+      }
+    }
     if (
       environment?.id === "zoom-reflow" &&
       /\b(?:not|never|untested|skipped)\b/i.test(environment?.zoom ?? "")
@@ -1105,6 +1129,19 @@ if (plan?.status === "complete") {
       errors.push(`${label} Pass notes must confirm that the required scenario was performed.`);
     }
     validateEvidenceLinks(label, result?.evidence);
+    if (
+      [
+        "macos-safari-voiceover",
+        "windows-nvda",
+        "ios-safari-voiceover",
+        "android-chrome-talkback",
+      ].includes(result?.environmentId) &&
+      !hasContextualEvidence(result?.evidence)
+    ) {
+      errors.push(
+        `${label} assistive-technology evidence must include a contextual Nerio issue comment or Actions artifact.`,
+      );
+    }
     if (result?.result === "Fail" || result?.result === "Blocked") {
       if (
         typeof result?.issue !== "string" ||

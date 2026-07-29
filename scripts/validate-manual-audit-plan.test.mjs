@@ -516,6 +516,25 @@ test("manual audit validator rejects explicitly untested passing results", () =>
   );
 });
 
+test("manual audit validator rejects passive no-testing claims", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.results[0].notes = "No testing was performed for this required scenario.";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /Pass notes must confirm that the required scenario was performed/,
+      );
+    },
+  );
+});
+
 test("manual audit validator rejects explicitly untested passing environments", () => {
   withPlanAndReportFixtures(
     (source) => {
@@ -559,6 +578,23 @@ test("manual audit validator allows negative observations after an enabled prefe
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.equal(result.status, 0, result.stderr);
+    },
+  );
+});
+
+test("manual audit validator rejects negated CSS preference assertions", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "reduced-motion").notes =
+        "prefers-reduced-motion: reduce was not enabled during the audit";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /reduced-motion notes must match the required environment/);
     },
   );
 });
@@ -626,6 +662,52 @@ test("manual audit validator rejects negated assistive-technology metadata", () 
       assert.match(
         result.stderr,
         /windows-nvda assistiveTechnology must describe technology that was actually used/,
+      );
+    },
+  );
+});
+
+test("manual audit validator rejects negated browser metadata", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      plan.completion.environments.find(({ id }) => id === "macos-safari-voiceover").browser =
+        "Safari 18.5 was not used";
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /browser must describe metadata that was actually used/);
+    },
+  );
+});
+
+test("manual audit validator requires contextual assistive-technology evidence", () => {
+  withPlanAndReportFixtures(
+    (source) => {
+      const plan = JSON.parse(completedPlan(source));
+      const assistiveResult = plan.completion.results.find(({ environmentId }) =>
+        [
+          "macos-safari-voiceover",
+          "windows-nvda",
+          "ios-safari-voiceover",
+          "android-chrome-talkback",
+        ].includes(environmentId),
+      );
+      assistiveResult.evidence = [
+        "https://github.com/user-attachments/assets/11111111-1111-4111-8111-111111111111",
+      ];
+      return JSON.stringify(plan, null, 2);
+    },
+    completedReport,
+    (planTarget, reportTarget) => {
+      const result = run(["--plan", planTarget, "--report", reportTarget]);
+      assert.notEqual(result.status, 0);
+      assert.match(
+        result.stderr,
+        /assistive-technology evidence must include a contextual Nerio issue comment or Actions artifact/,
       );
     },
   );
