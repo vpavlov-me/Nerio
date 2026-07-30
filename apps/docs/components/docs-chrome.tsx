@@ -588,34 +588,6 @@ function PageActions({ pathname }: { pathname: string }) {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  const actionItem = (
-    icon: IconComponent,
-    title: string,
-    description: string,
-    external = false,
-    brand = false,
-  ) => {
-    const ActionIcon = icon;
-
-    return (
-      <span className="docs-action-item">
-        {brand ? (
-          <ActionIcon
-            aria-hidden="true"
-            className="n-icon docs-action-item__brand-icon"
-            focusable="false"
-          />
-        ) : (
-          <Icon icon={icon} />
-        )}
-        <span>
-          <span>{title}</span>
-          <small>{description}</small>
-        </span>
-        {external ? <Icon icon={ExternalLink} /> : null}
-      </span>
-    );
-  };
   const { previous, next } = getAdjacentDocs(pathname);
 
   return (
@@ -641,47 +613,35 @@ function PageActions({ pathname }: { pathname: string }) {
           }
           items={[
             {
-              label: actionItem(FileText, "View as Markdown", "View page as Markdown format"),
+              label: "View as Markdown",
+              description: "View page as Markdown format",
+              leadingIcon: FileText,
               onSelect: viewMarkdown,
             },
             {
-              label: actionItem(
-                SiCursor,
-                "Add to Cursor",
-                "Install MCP Server on Cursor",
-                false,
-                true,
-              ),
+              label: "Add to Cursor",
+              description: "Install MCP Server on Cursor",
+              leadingIcon: SiCursor,
               onSelect: () => void copyInstallHint("Cursor"),
             },
             {
-              label: actionItem(
-                VscVscode,
-                "Add to VS Code",
-                "Install MCP Server on VS Code",
-                false,
-                true,
-              ),
+              label: "Add to VS Code",
+              description: "Install MCP Server on VS Code",
+              leadingIcon: VscVscode,
               onSelect: () => void copyInstallHint("VS Code"),
             },
             {
-              label: actionItem(
-                RiOpenaiFill,
-                "Open in ChatGPT",
-                "Ask questions about this page",
-                true,
-                true,
-              ),
+              label: "Open in ChatGPT",
+              description: "Ask questions about this page",
+              leadingIcon: RiOpenaiFill,
+              trailingIcon: ExternalLink,
               onSelect: () => openAssistant("chatgpt"),
             },
             {
-              label: actionItem(
-                SiClaude,
-                "Open in Claude",
-                "Ask questions about this page",
-                true,
-                true,
-              ),
+              label: "Open in Claude",
+              description: "Ask questions about this page",
+              leadingIcon: SiClaude,
+              trailingIcon: ExternalLink,
               onSelect: () => openAssistant("claude"),
             },
           ]}

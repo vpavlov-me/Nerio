@@ -560,6 +560,7 @@ describe("Core static contracts", () => {
           <Button render={<a href="/preview" />} variant="secondary">
             Preview
           </Button>
+          <span aria-hidden data-base-ui-focus-guard />
           <Button variant="secondary">Save</Button>
         </ButtonGroup>
         <div data-density="compact" dir="rtl">
@@ -630,11 +631,12 @@ describe("Core static contracts", () => {
       resolve(process.cwd(), "src/components/button-group.tsx"),
       "utf8",
     );
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:border-s-0");
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button::before]:h-");
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button::before]:start-0");
-    expect(buttonGroupSource).not.toContain("[&>.n-button+.n-button]:ms-");
-    expect(buttonGroupSource).toContain("[&>.n-button:first-child]:rounded-s-");
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button]:border-s-0");
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button::before]:h-");
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button::before]:start-0");
+    expect(buttonGroupSource).not.toContain("[&>.n-button~.n-button]:ms-");
+    expect(buttonGroupSource).toContain("[&>.n-button:first-of-type]:rounded-s-");
+    expect(buttonGroupSource).toContain("[&>.n-button:last-of-type]:rounded-e-");
     expect(buttonGroupSource).toContain("[&>.n-button:focus-visible]:z-2");
     expect(buttonGroupSource).not.toContain("orientation");
     expect(buttonGroupSource).not.toContain("overflow-hidden");
@@ -3541,6 +3543,7 @@ describe("Core interactive action contracts", () => {
           {
             group: "Workspace",
             label: "Rename",
+            description: "Change the workspace name",
             leadingIcon: Bell,
             hotkey: "⌘R",
             onSelect,
@@ -3566,6 +3569,9 @@ describe("Core interactive action contracts", () => {
     );
     expect(screen.getByRole("menuitem", { name: "Rename" })).toContainElement(
       document.querySelector('[data-slot="leading-icon"]'),
+    );
+    expect(document.querySelector('[data-slot="description"]')).toHaveTextContent(
+      "Change the workspace name",
     );
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveClass("col-start-3");

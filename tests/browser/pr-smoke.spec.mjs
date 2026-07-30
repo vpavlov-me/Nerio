@@ -39,6 +39,34 @@ test("loads the homepage, docs, and a component page without runtime errors", as
   await expectHealthyPage(page, problems);
 });
 
+test("keeps documentation actions attached and inside DropdownMenu slots", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/kbd");
+  const group = page.getByRole("group", { name: "Documentation actions" });
+  const buttonRadii = await group.evaluate((element) =>
+    Array.from(element.querySelectorAll(":scope > .n-button")).map((button) => {
+      const styles = getComputedStyle(button);
+      return {
+        startStart: styles.borderStartStartRadius,
+        startEnd: styles.borderStartEndRadius,
+      };
+    }),
+  );
+  expect(buttonRadii).toHaveLength(2);
+  expect(buttonRadii[0]).toEqual({ startStart: "20px", startEnd: "0px" });
+  expect(buttonRadii[1]).toEqual({ startStart: "0px", startEnd: "20px" });
+
+  await group.getByRole("button", { name: "Open page actions" }).click();
+  const menu = page.getByRole("menu", { name: "Open page actions" });
+  await expect(menu).toBeVisible();
+  await expect(menu.locator('[data-slot="leading-icon"]')).toHaveCount(5);
+  await expect(menu.locator('[data-slot="description"]')).toHaveCount(5);
+  await expect(menu.locator('[data-slot="trailing-icon"]')).toHaveCount(2);
+  await expect(menu.locator(".docs-action-item")).toHaveCount(0);
+  await expect(menu.getByRole("menuitem", { name: "View as Markdown" })).toBeVisible();
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps a keyboard-opened Dialog contained and restores focus", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/visual-test/blocks/overlay-playground");

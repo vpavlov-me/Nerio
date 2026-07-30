@@ -10,6 +10,7 @@ import { motionClasses } from "../lib/motion";
 
 export interface DropdownMenuItem {
   label: React.ReactNode;
+  description?: React.ReactNode;
   group?: string;
   leadingIcon?: IconComponent;
   trailingIcon?: IconComponent;
@@ -102,8 +103,23 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
                             <Icon icon={item.leadingIcon} />
                           </span>
                         ) : null}
-                        <span className="col-start-2 min-w-0" data-slot="label">
-                          {item.label}
+                        <span
+                          className={cn(
+                            "col-start-2 min-w-0",
+                            item.description && "grid gap-(--n-space-0-5)",
+                          )}
+                          data-slot="label"
+                        >
+                          <span>{item.label}</span>
+                          {item.description ? (
+                            <span
+                              aria-hidden
+                              className="text-(length:--n-font-size-xs) font-(--n-font-weight-regular) text-(--n-color-text-tertiary)"
+                              data-slot="description"
+                            >
+                              {item.description}
+                            </span>
+                          ) : null}
                         </span>
                         {item.hotkey ? (
                           <span
