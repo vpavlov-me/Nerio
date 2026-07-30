@@ -4,6 +4,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Field,
   FormMessage,
   Icon,
   Input,
@@ -11,7 +12,7 @@ import {
   LabelContent,
   LabelRow,
 } from "@nerio-ui/ui";
-import { Button, LabelHint } from "@nerio-ui/ui/client";
+import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -65,32 +66,23 @@ export default function Page() {
         <section id="preview" className="component-example" aria-label="Input preview">
           <div className="component-example__preview form-component-preview form-component-preview--input">
             <div className="form-preview-stack form-component-preview__stack">
-              <div className="n-field">
-                <LabelRow>
-                  <LabelContent>
-                    <Label htmlFor="input-preview-project-name">Project name</Label>
-                  </LabelContent>
-                  <LabelHint
-                    key="project-name-hint"
-                    label="Choose a short name collaborators will recognize."
-                  />
-                </LabelRow>
+              <Field
+                label="Project name"
+                description="A label and description remain outside the native Input."
+              >
                 <Input
                   id="input-preview-project-name"
                   placeholder="Launch materials"
                   required
                   autoComplete="organization"
                 />
-                <p className="n-field__description">
-                  A label and description remain outside the native Input.
-                </p>
-              </div>
+              </Field>
             </div>
           </div>
           <CodeExample
             className="component-example__code"
             code={
-              'import { Input, Label } from "@nerio-ui/ui";\n\n<Label htmlFor="project-name">Project name</Label>\n<Input id="project-name" placeholder="Launch materials" autoComplete="organization" required />'
+              'import { Field, Input } from "@nerio-ui/ui";\n\n<Field label="Project name" description="A label and description remain outside the native Input.">\n  <Input id="project-name" placeholder="Launch materials" autoComplete="organization" required />\n</Field>'
             }
             label="Input live preview code"
           />
