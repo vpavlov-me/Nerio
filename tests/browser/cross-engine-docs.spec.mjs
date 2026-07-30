@@ -235,7 +235,7 @@ test("preserves native FileInput selection, FileList, form reset, and reflow", a
 }) => {
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/docs/components/file-input");
+  await page.goto("/visual-test/file-input");
 
   const form = page.getByRole("form", { name: "Native file input examples" });
   const primaryInput = page.getByLabel("Primary attachment", { exact: true });
@@ -352,7 +352,7 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
   const itemList = page.getByRole("list", { name: "Workspace resources" });
   await expect(itemList.getByRole("listitem")).toHaveCount(2);
 
-  await gotoFixture("/docs/components/pagination");
+  await gotoFixture("/visual-test/pagination");
   await expect(
     page.getByRole("navigation", { name: "RTL pagination" }).getByLabel("Go to previous page"),
   ).toHaveAttribute("aria-disabled", "true");
@@ -374,7 +374,7 @@ test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only beha
 }) => {
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/docs/components/slider");
+  await page.goto("/visual-test/slider");
 
   const volume = page.getByRole("slider", { name: "Volume", exact: true });
   await expect(volume).toHaveValue("40");
@@ -443,7 +443,7 @@ test("keeps Slider touch input portable", async ({ browser, browserName }, testI
   try {
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
-    await page.goto("/docs/components/slider");
+    await page.goto("/visual-test/slider");
 
     const volume = page.getByRole("slider", { name: "Volume", exact: true });
     const control = page.locator('[data-slot="control"]').first();
@@ -485,7 +485,7 @@ test("keeps Calendar keyboard, pointer, locale, constraints, RTL, and reflow por
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 320, height: 844 });
   await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
-  await page.goto("/docs/components/calendar");
+  await page.goto("/visual-test/calendar");
 
   const calendar = page.getByRole("group", { name: "Release date" });
   await expect(calendar).toBeVisible();
@@ -543,7 +543,7 @@ test("keeps Calendar touch selection portable", async ({ browser, browserName },
   try {
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
-    await page.goto("/docs/components/calendar");
+    await page.goto("/visual-test/calendar");
     await page
       .getByRole("group", { name: "Release date" })
       .getByRole("button", { name: "June 17, 2026" })
@@ -562,7 +562,7 @@ test("keeps DatePicker focus, form value, constraints, dismissal, RTL, and reflo
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 320, height: 844 });
   await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
-  await page.goto("/docs/components/date-picker");
+  await page.goto("/visual-test/date-picker");
 
   const trigger = page.getByRole("button", { name: "Release date" });
   await expect(trigger).toContainText("Jun 15, 2026");
@@ -621,7 +621,7 @@ test("keeps DatePicker touch selection portable", async ({ browser, browserName 
   try {
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
-    await page.goto("/docs/components/date-picker");
+    await page.goto("/visual-test/date-picker");
     const trigger = page.getByRole("button", { name: "Release date" });
     await trigger.tap();
     await page.getByRole("button", { name: "June 17, 2026" }).tap();

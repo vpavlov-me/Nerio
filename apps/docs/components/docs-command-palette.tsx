@@ -1,10 +1,21 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Search } from "@nerio-ui/adapters/icons";
-import { Button, Dialog, Icon, Input, Kbd, Tooltip } from "@nerio-ui/ui/client";
+import {
+  Button,
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  Dialog,
+  Icon,
+  Kbd,
+  Tooltip,
+  type CommandGroupData,
+} from "@nerio-ui/ui/client";
 
 export type DocsCommandEntry = {
   href: string;
@@ -36,8 +47,6 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
-  const [activeIndex, setActiveIndex] = React.useState(0);
-  const inputRef = React.useRef<HTMLInputElement | null>(null);
   const queryText = query.trim().toLowerCase();
   const results = React.useMemo(() => {
     const matches = queryText
@@ -59,16 +68,28 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
 
     return [...exactMatches, ...partialMatches].slice(0, 12);
   }, [entries, queryText]);
-  const groupedResults = React.useMemo(() => {
-    const groups = new Map<string, Array<{ entry: DocsCommandEntry; index: number }>>();
+  const entriesByHref = React.useMemo(
+    () => new Map(results.map((entry) => [entry.href, entry])),
+    [results],
+  );
+  const groupedResults = React.useMemo<readonly CommandGroupData[]>(() => {
+    const groups = new Map<string, DocsCommandEntry[]>();
 
-    results.forEach((entry, index) => {
+    results.forEach((entry) => {
       const group = groups.get(entry.group) ?? [];
-      group.push({ entry, index });
+      group.push(entry);
       groups.set(entry.group, group);
     });
 
-    return [...groups];
+    return [...groups].map(([group, groupEntries]) => ({
+      value: group,
+      label: group,
+      items: groupEntries.map((entry) => ({
+        value: entry.href,
+        label: entry.title,
+        keywords: [entry.group, entry.description],
+      })),
+    }));
   }, [results]);
 
   const close = React.useCallback(() => {
@@ -97,10 +118,8 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
   }, []);
 
   React.useEffect(() => {
-    if (!open) return;
-    setActiveIndex(0);
-    window.requestAnimationFrame(() => inputRef.current?.focus());
-  }, [open, queryText]);
+    if (!open) setQuery("");
+  }, [open]);
 
   return (
     <div className="docs-search-wrap">
@@ -112,72 +131,42 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
         title="Search documentation"
         trigger={<DocsSearchTrigger />}
       >
-        <div className="docs-command">
-          <div className="docs-command__input-wrap">
-            <Icon icon={Search} />
-            <Input
-              ref={inputRef}
-              aria-activedescendant={
-                results[activeIndex] ? `docs-command-option-${activeIndex}` : undefined
-              }
-              aria-controls="docs-command-results"
-              aria-expanded={open}
-              aria-label="Search documentation"
-              placeholder="Search documentation..."
-              role="combobox"
-              value={query}
-              onChange={(event) => setQuery(event.currentTarget.value)}
-              onKeyDown={(event) => {
-                if (event.key === "ArrowDown") {
-                  event.preventDefault();
-                  setActiveIndex((index) => (index + 1) % Math.max(results.length, 1));
-                }
-                if (event.key === "ArrowUp") {
-                  event.preventDefault();
-                  setActiveIndex(
-                    (index) => (index - 1 + results.length) % Math.max(results.length, 1),
-                  );
-                }
-                if (event.key === "Enter" && results[activeIndex]) {
-                  event.preventDefault();
-                  select(results[activeIndex]);
-                }
-                if (event.key === "Escape") close();
-              }}
-            />
-          </div>
-          <div id="docs-command-results" className="docs-command__results" role="listbox">
-            {groupedResults.length ? (
-              groupedResults.map(([group, groupEntries]) => (
-                <section className="docs-command__group" key={group} aria-label={group}>
-                  <h2>{group}</h2>
-                  {groupEntries.map(({ entry, index }) => (
-                    <Link
-                      aria-selected={activeIndex === index}
-                      className={activeIndex === index ? "is-active" : undefined}
-                      href={entry.href}
-                      id={`docs-command-option-${index}`}
-                      key={entry.href}
-                      role="option"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        select(entry);
-                      }}
-                      onMouseMove={() => setActiveIndex(index)}
-                    >
-                      <Icon icon={ArrowRight} />
-                      <span>
-                        <strong>{entry.title}</strong>
-                        <small>{entry.description}</small>
-                      </span>
-                    </Link>
-                  ))}
-                </section>
-              ))
-            ) : (
-              <p className="docs-command__empty">No matching documentation.</p>
-            )}
-          </div>
+        <Command
+          className="docs-command"
+          filter={false}
+          items={groupedResults}
+          query={query}
+          onQueryChange={setQuery}
+          onKeyDownCapture={(event) => {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              close();
+            }
+          }}
+        >
+          <CommandInput
+            aria-label="Search documentation"
+            autoFocus
+            placeholder="Search documentation..."
+          />
+          <CommandEmpty>No matching documentation.</CommandEmpty>
+          <CommandList renderGroupLabel={(group) => group.label}>
+            {(item) => {
+              const entry = entriesByHref.get(item.value);
+              return (
+                <CommandItem
+                  description={entry?.description}
+                  leading={<Icon icon={ArrowRight} />}
+                  value={item.value}
+                  onSelect={() => {
+                    if (entry) select(entry);
+                  }}
+                >
+                  {item.label}
+                </CommandItem>
+              );
+            }}
+          </CommandList>
           <footer className="docs-command__footer">
             <span>
               <Kbd aria-hidden>↑↓</Kbd> Navigate
@@ -189,7 +178,7 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
               <Kbd aria-hidden>Esc</Kbd> Close
             </span>
           </footer>
-        </div>
+        </Command>
       </Dialog>
     </div>
   );

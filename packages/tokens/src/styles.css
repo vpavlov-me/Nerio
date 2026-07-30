@@ -563,7 +563,6 @@
   --n-spinner-size-sm: var(--n-icon-size-sm);
   --n-spinner-size-md: var(--n-icon-size-md);
   --n-spinner-size-lg: var(--n-icon-size-xl);
-  --n-spinner-radius: var(--n-radius-pill);
   --n-spinner-border-width: 2px;
   --n-spinner-duration: 800ms;
   --n-skeleton-duration: 1.5s;
@@ -646,8 +645,8 @@
   --n-switch-border: var(--n-color-border-subtle);
   --n-switch-border-hover: var(--n-color-border-interactive);
   --n-switch-border-invalid: var(--n-input-border-danger);
-  --n-switch-thumb-background: var(--n-color-surface);
-  --n-switch-thumb-background-checked: var(--n-color-action-on-primary);
+  --n-switch-thumb-background: var(--n-gray-0);
+  --n-switch-thumb-background-checked: var(--n-gray-0);
   --n-switch-thumb-border: var(--n-color-border-subtle);
   --n-slider-control-size: var(--n-size-control-md);
   --n-slider-length: 10rem;
@@ -656,7 +655,7 @@
   --n-slider-thumb-size: var(--n-icon-size-md);
   --n-slider-thumb-radius: var(--n-radius-pill);
   --n-slider-thumb-border-width: var(--n-border-width-default);
-  --n-slider-gap: var(--n-space-1-5);
+  --n-slider-gap: var(--n-space-1);
   --n-slider-header-gap: var(--n-density-space-lg);
   --n-slider-header-width: 10rem;
   --n-slider-label-font-size: var(--n-label-font-size);
@@ -666,7 +665,7 @@
   --n-slider-value-color: var(--n-color-text-tertiary);
   --n-slider-track-background: var(--n-color-surface-control);
   --n-slider-indicator-background: var(--n-color-action-primary);
-  --n-slider-thumb-background: var(--n-color-surface-default);
+  --n-slider-thumb-background: var(--n-gray-0);
   --n-slider-thumb-border: var(--n-color-border-strong);
   --n-slider-thumb-border-hover: var(--n-color-border-interactive);
   --n-slider-thumb-shadow: var(--n-shadow-xs);
@@ -674,7 +673,7 @@
   --n-slider-disabled-opacity: var(--n-opacity-disabled);
   --n-slider-disabled-track-background: var(--n-color-surface-subtle);
   --n-slider-disabled-indicator-background: var(--n-color-text-disabled);
-  --n-slider-disabled-thumb-background: var(--n-color-surface-subtle);
+  --n-slider-disabled-thumb-background: var(--n-gray-0);
   --n-slider-disabled-thumb-border: var(--n-color-border-subtle);
   --n-slider-duration: var(--n-motion-hover-duration);
   --n-slider-easing: var(--n-motion-hover-easing);
@@ -845,7 +844,7 @@
   --n-card-padding: var(--n-card-padding-md);
   --n-card-padding-inline: var(--n-card-padding);
   --n-card-padding-block: var(--n-card-padding);
-  --n-card-gap: var(--n-density-space-md);
+  --n-card-gap: var(--n-density-space-lg);
   --n-card-section-gap: var(--n-space-2);
   --n-card-radius: var(--n-radius-container);
   --n-card-shadow: var(--n-shadow-surface-raised);
@@ -876,10 +875,10 @@
   --n-table-cell-padding: var(--n-table-cell-padding-y) var(--n-table-cell-padding-x);
   --n-table-cell-foreground-disabled: var(--n-color-text-disabled);
   --n-table-cell-foreground-danger: var(--n-color-status-danger);
-  --n-list-gap: var(--n-space-2);
+  --n-list-gap: var(--n-space-1);
   --n-list-marker-gap: var(--n-space-1);
   --n-list-marker-width: var(--n-space-2);
-  --n-list-item-padding: var(--n-density-space-md);
+  --n-list-item-padding: var(--n-space-2);
   --n-list-item-gap: var(--n-density-space-md);
   --n-list-item-radius: var(--n-radius-lg);
   --n-list-item-background: transparent;
@@ -1448,7 +1447,7 @@
   --n-toggle-padding-inline-md: var(--n-density-space-md);
   --n-alert-padding: var(--n-density-space-lg);
   --n-card-padding-md: var(--n-density-space-lg);
-  --n-card-gap: var(--n-density-space-md);
+  --n-card-gap: var(--n-density-space-lg);
   --n-badge-height: 1.375rem;
   --n-badge-height-sm: 1rem;
   --n-badge-height-lg: 1.5rem;
@@ -1486,7 +1485,7 @@
   --n-table-cell-padding-x: var(--n-density-space-md);
   --n-table-row-min-height: var(--n-size-control-lg);
   --n-pagination-item-size: 1.75rem;
-  --n-list-item-padding: var(--n-space-2);
+  --n-list-item-padding: var(--n-space-1-5);
   --n-tabs-trigger-padding-inline-md: var(--n-density-space-md);
   --n-dialog-padding: var(--n-density-space-xl);
   --n-sidebar-region-padding: var(--n-density-space-lg);

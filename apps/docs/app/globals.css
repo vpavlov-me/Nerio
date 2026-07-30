@@ -16,7 +16,6 @@
   --n-docs-sidebar-width: 15rem;
   --n-docs-toc-width: 14rem;
   --n-docs-search-max-width: 18.75rem;
-  --n-docs-command-results-max-height: 22rem;
   --n-docs-command-width: 44rem;
   --n-docs-command-inline-size: min(
     calc(100vw - (var(--n-space-4) * 2)),
@@ -32,8 +31,6 @@
   --n-docs-actions-menu-item-padding-block: var(--n-space-1-5);
   --n-docs-actions-menu-item-padding-inline: var(--n-space-2);
   --n-docs-actions-menu-icon-offset: var(--n-space-0-5);
-  --n-docs-page-navigation-padding: var(--n-space-4);
-  --n-docs-page-navigation-gap: var(--n-space-1);
   --n-docs-page-navigation-margin-block-start: var(--n-space-12);
   --n-docs-content-min-width: 20rem;
   --n-docs-preview-height: 14rem;
@@ -147,6 +144,7 @@ pre {
   display: flex;
   gap: var(--n-space-4);
   min-block-size: var(--n-docs-header-row-height);
+  position: relative;
 }
 
 .docs-brand-lockup {
@@ -200,9 +198,11 @@ pre {
 }
 
 .docs-command-dialog {
+  background: transparent;
+  border: 0;
   box-shadow: none;
   inline-size: var(--n-docs-command-inline-size);
-  padding: var(--n-space-2);
+  padding: 0;
 }
 
 .docs-command-dialog .n-dialog__header {
@@ -228,88 +228,7 @@ pre {
 }
 
 .docs-command {
-  display: grid;
-  min-inline-size: 0;
-}
-
-.docs-command__input-wrap {
-  align-items: center;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  padding-inline: var(--n-space-3);
-}
-
-.docs-command__input-wrap .n-icon {
-  color: var(--n-color-text-tertiary);
-  z-index: 1;
-}
-
-.docs-command__input-wrap .n-input {
-  background: var(--n-color-surface-control);
-  margin-inline-start: calc(var(--n-space-4) * -1);
-  padding-inline-start: calc(var(--n-space-4) + var(--n-space-3));
-}
-
-.docs-command__results {
-  display: grid;
-  gap: var(--n-space-4);
-  max-block-size: var(--n-docs-command-results-max-height);
-  min-inline-size: 0;
-  overflow: auto;
-  padding: var(--n-space-4) var(--n-space-2);
-}
-
-.docs-command__group {
-  display: grid;
-  gap: var(--n-space-1);
-}
-
-.docs-command__group h2 {
-  color: var(--n-color-text-tertiary);
-  font-size: var(--n-font-size-sm);
-  font-weight: var(--n-font-weight-medium);
-  margin: 0;
-  padding: 0 var(--n-space-2);
-}
-
-.docs-command__group a {
-  align-items: center;
-  border-radius: var(--n-radius-md);
-  color: var(--n-color-text-primary);
-  display: grid;
-  gap: var(--n-space-3);
-  grid-template-columns: auto minmax(0, 1fr);
-  padding: var(--n-space-2) var(--n-space-3);
-}
-
-.docs-command__group a:hover,
-.docs-command__group a.is-active {
-  background: var(--n-color-surface-muted);
-}
-
-.docs-command__group a .n-icon {
-  color: var(--n-color-text-tertiary);
-}
-
-.docs-command__group a span {
-  display: grid;
-  gap: var(--n-space-0-5);
-}
-
-.docs-command__group a strong {
-  font-size: var(--n-font-size-sm);
-  font-weight: var(--n-font-weight-medium);
-}
-
-.docs-command__group a small,
-.docs-command__empty {
-  color: var(--n-color-text-tertiary);
-  font-size: var(--n-font-size-xs);
-}
-
-.docs-command__empty {
-  margin: 0;
-  padding: var(--n-space-4) var(--n-space-2);
+  --n-command-width: 100%;
 }
 
 .docs-command__footer {
@@ -385,8 +304,11 @@ pre {
   align-items: center;
   display: flex;
   gap: var(--n-space-1);
+  inset-inline-start: 50%;
   justify-content: start;
   min-inline-size: max-content;
+  position: absolute;
+  transform: translateX(-50%);
 }
 
 .docs-primary-nav a {
@@ -1129,43 +1051,14 @@ pre {
 
 .docs-page-navigation {
   align-items: center;
-  display: grid;
-  gap: var(--n-docs-page-navigation-gap);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  gap: var(--n-space-2);
+  justify-content: space-between;
   margin-block-start: var(--n-docs-page-navigation-margin-block-start);
 }
 
-.docs-page-navigation a {
-  background: var(--n-color-surface-control);
-  border-radius: var(--n-radius-container);
-  color: var(--n-color-text-primary);
-  display: grid;
-  gap: var(--n-docs-page-navigation-gap);
-  padding: var(--n-docs-page-navigation-padding);
-}
-
-.docs-page-navigation a:hover {
-  background: var(--n-color-surface-control-hover);
-}
-
-.docs-page-navigation a:focus-visible {
-  box-shadow: var(--n-focus-ring);
-  outline: var(--n-border-width-0);
-}
-
-.docs-page-navigation span {
-  color: var(--n-color-text-tertiary);
-  font-size: var(--n-helper-font-size);
-}
-
-.docs-page-navigation strong {
-  font-size: var(--n-control-font-size);
-  font-weight: var(--n-font-weight-medium);
-}
-
 .docs-page-navigation__next {
-  justify-items: end;
-  text-align: end;
+  margin-inline-start: auto;
 }
 
 .docs-page-actions {
@@ -1269,42 +1162,22 @@ pre {
 }
 
 .docs-toc-feedback__choices {
-  align-items: center;
-  display: inline-flex;
-  gap: var(--n-space-1);
   justify-self: start;
 }
 
-.docs-toc-feedback__choices button {
-  align-items: center;
-  background: transparent;
-  border: 0;
-  border-radius: var(--n-radius-sm);
-  color: inherit;
-  cursor: pointer;
-  display: inline-flex;
+.docs-toc-feedback__choices .n-button {
   font-size: 1.25rem;
-  justify-content: center;
-  line-height: 1;
-  min-block-size: 2.5rem;
-  min-inline-size: 2.5rem;
-  padding: 0;
-}
-
-.docs-toc-feedback__choices button:hover {
-  background: var(--n-color-surface-muted);
-}
-
-.docs-toc-feedback__choices button:focus-visible {
-  box-shadow: var(--n-focus-ring);
-  outline: 0;
-  position: relative;
-  z-index: 1;
 }
 
 .docs-toc-feedback__thanks {
   color: var(--n-color-text-secondary);
+  display: grid;
   font-size: var(--n-font-size-sm);
+  gap: var(--n-space-2);
+  justify-items: start;
+}
+
+.docs-toc-feedback__thanks p {
   margin: 0;
 }
 
@@ -2918,13 +2791,19 @@ pre {
 
 .preview-card {
   display: grid;
-  gap: var(--n-space-2);
-  max-inline-size: 22rem;
+  max-inline-size: 24rem;
 }
 
 .preview-card p {
   color: var(--n-color-text-secondary);
   margin: 0;
+}
+
+.preview-card-image {
+  aspect-ratio: 16 / 9;
+  display: block;
+  inline-size: 100%;
+  object-fit: cover;
 }
 
 .preview-card-grid {
@@ -3614,6 +3493,12 @@ pre {
 
   .docs-header-top {
     flex-wrap: wrap;
+  }
+
+  .docs-primary-nav {
+    inset-inline-start: auto;
+    position: static;
+    transform: none;
   }
 
   .docs-controls {

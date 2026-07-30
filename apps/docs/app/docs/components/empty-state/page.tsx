@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Search, X } from "@nerio-ui/adapters/icons";
+import { Check, UserPlus, X } from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -20,7 +20,7 @@ import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
 
-const usageCode = `import { Search } from "@nerio-ui/adapters/icons";
+const usageCode = `import { UserPlus } from "@nerio-ui/adapters/icons";
 import {
   EmptyState,
   EmptyStateActions,
@@ -34,17 +34,16 @@ import { Button } from "@nerio-ui/ui/client";
 
 <EmptyState size="lg">
   <EmptyStateMedia aria-hidden="true">
-    <Icon icon={Search} />
+    <Icon icon={UserPlus} />
   </EmptyStateMedia>
   <EmptyStateHeader>
-    <EmptyStateTitle>No results found</EmptyStateTitle>
+    <EmptyStateTitle>No team members yet</EmptyStateTitle>
     <EmptyStateDescription>
-      Try a different search or clear the active filters.
+      Invite people to collaborate on projects and share updates with the team.
     </EmptyStateDescription>
   </EmptyStateHeader>
   <EmptyStateActions>
-    <Button leadingIcon={Search}>Search again</Button>
-    <Button variant="ghost">Clear filters</Button>
+    <Button leadingIcon={UserPlus} size="md">Invite team members</Button>
   </EmptyStateActions>
 </EmptyState>`;
 
@@ -170,18 +169,18 @@ function EmptyStatePreview() {
       <div className="component-example__preview">
         <EmptyState size="lg">
           <EmptyStateMedia aria-hidden="true">
-            <Icon icon={Search} />
+            <Icon icon={UserPlus} />
           </EmptyStateMedia>
           <EmptyStateHeader>
-            <EmptyStateTitle>No results found</EmptyStateTitle>
+            <EmptyStateTitle>No team members yet</EmptyStateTitle>
             <EmptyStateDescription>
-              We could not find anything matching “quarterly roadmap”. Try a broader search or clear
-              the active filters.
+              Invite people to collaborate on projects and share updates with the team.
             </EmptyStateDescription>
           </EmptyStateHeader>
           <EmptyStateActions>
-            <Button leadingIcon={Search}>Search again</Button>
-            <Button variant="ghost">Clear filters</Button>
+            <Button leadingIcon={UserPlus} size="md">
+              Invite team members
+            </Button>
           </EmptyStateActions>
         </EmptyState>
       </div>

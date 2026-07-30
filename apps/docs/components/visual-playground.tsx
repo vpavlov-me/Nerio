@@ -536,7 +536,6 @@ function toStyle(
     "--n-sidebar-control-radius": `${lg}px`,
     "--n-slider-track-radius": `${lg}px`,
     "--n-slider-thumb-radius": `${lg}px`,
-    "--n-spinner-radius": `${lg}px`,
     "--n-switch-radius": `${lg}px`,
     "--n-switch-thumb-radius": `${lg}px`,
     "--n-table-container-radius": `${lg}px`,

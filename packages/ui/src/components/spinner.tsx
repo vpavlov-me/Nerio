@@ -37,7 +37,7 @@ export const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(function 
     <span
       ref={ref}
       className={cn(
-        "n-spinner inline-block size-(--n-spinner-size-md) flex-none animate-[n-spin_var(--n-spinner-duration)_linear_infinite] rounded-(--n-spinner-radius) border-(length:--n-spinner-border-width) border-current border-t-transparent align-middle box-border data-[size=sm]:size-(--n-spinner-size-sm) data-[size=lg]:size-(--n-spinner-size-lg) motion-reduce:animate-none",
+        "n-spinner inline-block size-(--n-spinner-size-md) flex-none animate-[n-spin_var(--n-spinner-duration)_linear_infinite] rounded-(--n-radius-full) border-(length:--n-spinner-border-width) border-current border-t-transparent align-middle box-border data-[size=sm]:size-(--n-spinner-size-sm) data-[size=lg]:size-(--n-spinner-size-lg) motion-reduce:animate-none",
         className,
       )}
       {...props}

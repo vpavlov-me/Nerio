@@ -53,14 +53,14 @@ const tokenRows = [
   ],
   [
     "Thumb",
-    "--n-switch-thumb-size / --n-switch-thumb-offset / --n-switch-thumb-radius",
-    "Fixed 2px inset and circular thumb motion.",
+    "--n-switch-thumb-size / offset / radius / background",
+    "Fixed white thumb across modes with a 2px inset and circular motion.",
   ],
   ["Off track", "--n-switch-background / --n-switch-background-hover", "Neutral inactive state."],
   [
     "On track",
     "--n-switch-background-checked / --n-switch-background-checked-hover",
-    "Theme-aware enabled state with an on-primary thumb.",
+    "Theme-aware enabled track with an invariant white thumb.",
   ],
   ["Focus", "--n-focus-ring", "Visible keyboard focus treatment."],
 ] as const;

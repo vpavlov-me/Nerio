@@ -635,10 +635,9 @@
         "--n-spinner-size-sm",
         "--n-spinner-size-md",
         "--n-spinner-size-lg",
-        "--n-spinner-radius",
         "--n-spinner-border-width",
         "--n-spinner-duration",
-        "--n-radius-pill"
+        "--n-radius-full"
       ],
       "accessibility": [
         "Provide a localized label when Spinner is the loading announcement; use decorative when a parent already exposes loading state.",
@@ -881,6 +880,7 @@
         "--n-card-padding-inline",
         "--n-card-padding-block",
         "--n-card-gap",
+        "--n-card-section-gap",
         "--n-card-radius",
         "--n-card-background",
         "--n-card-background-interactive-hover",
