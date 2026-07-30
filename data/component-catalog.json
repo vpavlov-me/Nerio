@@ -734,7 +734,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Dropdown menu with disabled and destructive states plus optional leading icons, trailing icons, and hotkey metadata."
+      "description": "Dropdown menu with disabled and destructive states plus optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
     },
     {
       "name": "Card",
@@ -814,7 +814,7 @@
       "package": "@nerio-ui/ui",
       "category": "feedback",
       "status": "stable-core",
-      "description": "Inline feedback message."
+      "description": "Inline feedback message with actions below its description and an optional trailing close slot."
     },
     {
       "name": "Toast",
@@ -854,7 +854,7 @@
       "package": "@nerio-ui/ui",
       "category": "feedback",
       "status": "stable-core",
-      "description": "Loading indicator."
+      "description": "Loading indicator with a component radius alias that stays fully round across themes."
     },
     {
       "name": "Tabs",

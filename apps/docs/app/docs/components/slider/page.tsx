@@ -81,8 +81,9 @@ const tokenRows = [
   [
     "Thumb",
     "--n-slider-thumb-* / --n-slider-focus-ring",
-    "Handle surface, boundary, elevation, and focus.",
+    "Invariant white handle surface with tokenized boundary, elevation, and focus.",
   ],
+  ["Spacing", "--n-slider-gap", "Compact rhythm between header, control, and description."],
   ["Disabled", "--n-slider-disabled-*", "Muted track, indicator, thumb, and opacity."],
   [
     "Motion",

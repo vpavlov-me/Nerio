@@ -1299,7 +1299,11 @@ export function ComponentPlayground() {
         </div>
       </SpecimenSection>
 
-      <SpecimenSection id="alert" title="Alert" api="tone · title · icon · action · description">
+      <SpecimenSection
+        id="alert"
+        title="Alert"
+        api="tone · title · icon · action · closeAction · description"
+      >
         <div className="component-lab-stack">
           {(["neutral", "info", "success", "warning", "danger"] as const).map((tone) => (
             <Alert

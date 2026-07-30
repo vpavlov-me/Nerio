@@ -379,9 +379,9 @@ public token, and keep theme selectors limited to semantic accent overrides.
 The implemented foundation uses opaque cool grays for contrast-critical text and isolation, dark
 alpha-neutral primitives for adaptive light-mode layers, and white alpha-neutral primitives for
 adaptive dark-mode layers. The alpha scales are primitives and remain immutable across runtime
-selectors. The public implementation reference lives at
-`/docs/foundations/visual-language`; component-family issues own the later recipe-level adoption of
-these aliases.
+selectors. The maintainer implementation contract lives in
+[`docs/visual-language-1-0.md`](./docs/visual-language-1-0.md); component-family issues own the
+later recipe-level adoption of these aliases.
 
 ## Density
 

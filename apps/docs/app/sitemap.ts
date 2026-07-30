@@ -11,7 +11,6 @@ const staticRoutes = [
   "/docs/getting-started",
   "/docs/registry",
   "/docs/ai",
-  "/docs/foundations/visual-language",
   "/docs/foundations/tokens",
   "/docs/foundations/themes",
   "/docs/foundations/effects",

@@ -346,8 +346,8 @@ Issue #136 implements the shared visual foundation in `packages/tokens/src/style
   every preset theme in light and dark modes;
 - `scripts/validate-runtime-axes.mjs` protects alpha-neutral, radius, spacing, typography, icon, and
   motion primitives from runtime-axis mutation;
-- `/docs/foundations/visual-language` is the implementation reference for surfaces, color,
-  typography, geometry, spacing, focus, density, and motion.
+- This maintainer document is the implementation reference for surfaces, color, typography,
+  geometry, spacing, focus, density, and motion.
 
 No public component prop, variant, slot, entrypoint, or runtime appearance axis changes as part of
 this mapping. Registry and source-install consumers continue to receive the canonical token file;

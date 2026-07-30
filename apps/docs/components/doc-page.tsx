@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Check, Circle, X } from "@nerio-ui/adapters/icons";
+import { Check, Circle, Copy, UserPlus, X } from "@nerio-ui/adapters/icons";
 import { getRegistryItem } from "@nerio-ui/registry";
 import {
   Alert,
@@ -12,9 +12,9 @@ import {
   Button,
   ButtonGroup,
   Card,
-  CardAction,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
   CardVisual,
@@ -489,7 +489,6 @@ function Preview({ kind }: { kind: string }) {
 
   return (
     <section className="component-example" aria-label={`${kind} preview`}>
-      <h2 id="preview">Preview</h2>
       <div className="component-example__preview">
         <div className="preview-row">
           {kind === "button" ? (
@@ -582,20 +581,9 @@ function Preview({ kind }: { kind: string }) {
             </div>
           ) : null}
           {kind === "file-input" ? (
-            <form className="form-preview-stack" aria-label="Native file input examples">
-              <Field label="Primary attachment" description="Choose one PDF or image file.">
-                <FileInput name="primaryAttachment" accept=".pdf,image/*" required />
-              </Field>
-              <Field label="Captured attachments" description="Choose one or more images.">
-                <FileInput name="attachments" accept="image/*" capture="environment" multiple />
-              </Field>
-              <Field label="Unavailable attachment">
-                <FileInput disabled />
-              </Field>
-              <Button type="reset" variant="outline">
-                Reset file inputs
-              </Button>
-            </form>
+            <Field label="Attachment" description="Choose one PDF or image file.">
+              <FileInput name="attachment" accept=".pdf,image/*" />
+            </Field>
           ) : null}
           {kind === "textarea" ? (
             <Field
@@ -618,18 +606,9 @@ function Preview({ kind }: { kind: string }) {
             </div>
           ) : null}
           {kind === "field" ? (
-            <div className="form-preview-stack">
-              <Field
-                label="Project name"
-                description="Names appear in navigation, tables, and activity."
-                message="Use a clear internal name."
-              >
-                <Input placeholder="Launch workspace" />
-              </Field>
-              <Field label="Short code" message="Use at least 3 characters." invalid>
-                <Input placeholder="Q3" />
-              </Field>
-            </div>
+            <Field label="Project name">
+              <Input placeholder="Launch workspace" />
+            </Field>
           ) : null}
           {kind === "form-message" ? (
             <div className="form-preview-stack">
@@ -788,12 +767,6 @@ function Preview({ kind }: { kind: string }) {
                   { label: "Archived", value: "archived", disabled: true },
                 ]}
               />
-              <Select
-                label="Disabled select"
-                placeholder="Unavailable"
-                disabled
-                options={[{ label: "Active", value: "active" }]}
-              />
             </div>
           ) : null}
           {kind === "toast" ? (
@@ -854,52 +827,47 @@ function Preview({ kind }: { kind: string }) {
                 {
                   group: "Collaborate",
                   label: "Share workspace",
+                  leadingIcon: UserPlus,
                 },
                 {
                   group: "Collaborate",
                   label: "Duplicate workspace",
+                  leadingIcon: Copy,
                 },
                 {
                   group: "Manage",
                   label: "Archive",
+                  leadingIcon: X,
                   destructive: true,
                 },
               ]}
             />
           ) : null}
           {kind === "card" ? (
-            <div className="preview-card-grid">
-              <Card className="preview-card">
-                <CardVisual>
-                  <Icon icon={Circle} />
-                </CardVisual>
-                <CardHeader>
-                  <div>
-                    <CardTitle>Launch workspace</CardTitle>
-                    <CardDescription>Assets, owners, and milestones.</CardDescription>
-                  </div>
-                  <CardAction>
-                    <Badge variant="info">Active</Badge>
-                  </CardAction>
-                </CardHeader>
-                <CardContent>12 active tasks across three owners.</CardContent>
-              </Card>
-              <Card className="preview-card">
-                <CardVisual placement="bleed" className="preview-card-visual">
-                  Product update
-                </CardVisual>
-                <CardHeader>
-                  <CardTitle>Weekly report</CardTitle>
-                  <CardDescription>Shared with the workspace.</CardDescription>
-                </CardHeader>
-              </Card>
-              <Card href="/docs/components/card" className="preview-card" variant="secondary">
-                <CardHeader>
-                  <CardTitle>Card guidance</CardTitle>
-                  <CardDescription>One clear destination.</CardDescription>
-                </CardHeader>
-              </Card>
-            </div>
+            <Card as="article" className="preview-card">
+              <CardVisual placement="bleed">
+                <img
+                  className="preview-card-image"
+                  src="/card/abstract-architecture.jpg"
+                  alt="Curved architectural forms illuminated by soft light"
+                />
+              </CardVisual>
+              <CardHeader>
+                <CardTitle as="h2">Design system rollout</CardTitle>
+                <CardDescription>
+                  Bring components, owners, and release milestones into one shared workspace.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>
+                  Track implementation progress and keep the team aligned through every release
+                  stage.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button>Open workspace</Button>
+              </CardFooter>
+            </Card>
           ) : null}
           {kind === "separator" ? (
             <div className="form-preview-stack">
@@ -910,9 +878,8 @@ function Preview({ kind }: { kind: string }) {
           ) : null}
           {kind === "avatar" ? (
             <>
-              <AvatarImagePreview />
+              <Avatar name="Maya Chen" src="/avatars/maya-chen.png" />
               <Avatar name="Nerio Team" />
-              <Avatar name="Alex Rivera" src="/missing-avatar.png" />
             </>
           ) : null}
           {kind === "progress" ? (
@@ -960,31 +927,16 @@ function Preview({ kind }: { kind: string }) {
           ) : null}
           {kind === "list" ? (
             <div className="form-preview-stack">
+              <Heading as="h2" id="setup-steps-title" size="sm">
+                Setup steps
+              </Heading>
               <List
-                items={[
-                  {
-                    id: "tokens",
-                    title: "Tokens",
-                    description: "CSS variable foundation for themes, modes, and density.",
-                    href: "/docs/foundations/tokens",
-                    render: <Link href="#" />,
-                    meta: "Foundation",
-                  },
-                  {
-                    id: "components",
-                    title: "Components",
-                    description: "Composable Core primitives installed as source.",
-                    href: "/docs/components/button",
-                    meta: "Core",
-                  },
-                ]}
-              />
-              <List
-                aria-label="Setup order"
-                ordered
+                aria-labelledby="setup-steps-title"
+                marker="decimal"
                 items={[
                   { id: "install", title: "Install tokens" },
                   { id: "source", title: "Register Tailwind source" },
+                  { id: "components", title: "Add your first component" },
                 ]}
               />
             </div>
@@ -999,34 +951,21 @@ function Preview({ kind }: { kind: string }) {
             />
           ) : null}
           {kind === "pagination" ? (
-            <div className="form-preview-stack">
-              <Pagination
-                previousHref="/docs/components/breadcrumbs"
-                nextHref="/docs/components/list"
-                pages={[
-                  { key: "1", label: "1", href: "/docs/components/breadcrumbs" },
-                  {
-                    key: "2",
-                    label: "2",
-                    href: "/docs/components/pagination",
-                    current: true,
-                    render: <Link href="#" />,
-                  },
-                  { key: "3", label: "3", href: "/docs/components/list" },
-                ]}
-              />
-              <div dir="rtl">
-                <Pagination
-                  aria-label="RTL pagination"
-                  pages={[
-                    { key: "1", label: "1", href: "/docs/page/1", current: true },
-                    { key: "2", label: "2", href: "/docs/page/2" },
-                    { key: "ellipsis", type: "ellipsis" },
-                    { key: "12", label: "12", href: "/docs/page/12" },
-                  ]}
-                />
-              </div>
-            </div>
+            <Pagination
+              previousHref="/docs/components/breadcrumbs"
+              nextHref="/docs/components/list"
+              pages={[
+                { key: "1", label: "1", href: "/docs/components/breadcrumbs" },
+                {
+                  key: "2",
+                  label: "2",
+                  href: "/docs/components/pagination",
+                  current: true,
+                  render: <Link href="#" />,
+                },
+                { key: "3", label: "3", href: "/docs/components/list" },
+              ]}
+            />
           ) : null}
         </div>
       </div>
@@ -1036,22 +975,6 @@ function Preview({ kind }: { kind: string }) {
         label={`${kind} preview code`}
       />
     </section>
-  );
-}
-
-const avatarImageSrc =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='48' viewBox='0 0 96 48'%3E%3Crect width='96' height='48' fill='%236d5bd0'/%3E%3Ccircle cx='48' cy='24' r='14' fill='white'/%3E%3C/svg%3E";
-
-function AvatarImagePreview() {
-  const [src, setSrc] = React.useState("/missing-avatar.png");
-
-  return (
-    <div className="form-preview-stack">
-      <Avatar name="Maya Chen" src={src} />
-      <Button size="sm" variant="secondary" onClick={() => setSrc(avatarImageSrc)}>
-        Load replacement avatar
-      </Button>
-    </div>
   );
 }
 

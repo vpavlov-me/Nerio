@@ -88,7 +88,6 @@ const navGroups: NavGroup[] = [
   {
     title: "Foundations",
     items: [
-      { href: "/docs/foundations/visual-language", label: "Visual language", icon: Palette },
       { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
       { href: "/docs/foundations/typography", label: "Typography", icon: Type },
       { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
@@ -203,7 +202,6 @@ type TocItem = {
 
 const componentToc: TocItem[] = [
   { id: "overview", label: "Overview" },
-  { id: "preview", label: "Preview" },
   { id: "installation", label: "Installation" },
   { id: "usage", label: "Usage" },
   { id: "variants", label: "Variants" },
@@ -287,15 +285,6 @@ const badgeToc: TocItem[] = [
 ];
 
 const tocByPath: Record<string, TocItem[]> = {
-  "/docs/foundations/visual-language": [
-    { id: "surfaces", label: "Surfaces" },
-    { id: "color", label: "Color" },
-    { id: "typography", label: "Typography" },
-    { id: "geometry", label: "Geometry" },
-    { id: "interaction", label: "Interaction" },
-    { id: "density", label: "Density" },
-    { id: "motion", label: "Motion" },
-  ],
   "/docs/getting-started": [
     { id: "install", label: "Install" },
     { id: "project-shape", label: "Project shape" },
@@ -588,34 +577,6 @@ function PageActions({ pathname }: { pathname: string }) {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  const actionItem = (
-    icon: IconComponent,
-    title: string,
-    description: string,
-    external = false,
-    brand = false,
-  ) => {
-    const ActionIcon = icon;
-
-    return (
-      <span className="docs-action-item">
-        {brand ? (
-          <ActionIcon
-            aria-hidden="true"
-            className="n-icon docs-action-item__brand-icon"
-            focusable="false"
-          />
-        ) : (
-          <Icon icon={icon} />
-        )}
-        <span>
-          <span>{title}</span>
-          <small>{description}</small>
-        </span>
-        {external ? <Icon icon={ExternalLink} /> : null}
-      </span>
-    );
-  };
   const { previous, next } = getAdjacentDocs(pathname);
 
   return (
@@ -641,47 +602,35 @@ function PageActions({ pathname }: { pathname: string }) {
           }
           items={[
             {
-              label: actionItem(FileText, "View as Markdown", "View page as Markdown format"),
+              label: "View as Markdown",
+              description: "View page as Markdown format",
+              leadingIcon: FileText,
               onSelect: viewMarkdown,
             },
             {
-              label: actionItem(
-                SiCursor,
-                "Add to Cursor",
-                "Install MCP Server on Cursor",
-                false,
-                true,
-              ),
+              label: "Add to Cursor",
+              description: "Install MCP Server on Cursor",
+              leadingIcon: SiCursor,
               onSelect: () => void copyInstallHint("Cursor"),
             },
             {
-              label: actionItem(
-                VscVscode,
-                "Add to VS Code",
-                "Install MCP Server on VS Code",
-                false,
-                true,
-              ),
+              label: "Add to VS Code",
+              description: "Install MCP Server on VS Code",
+              leadingIcon: VscVscode,
               onSelect: () => void copyInstallHint("VS Code"),
             },
             {
-              label: actionItem(
-                RiOpenaiFill,
-                "Open in ChatGPT",
-                "Ask questions about this page",
-                true,
-                true,
-              ),
+              label: "Open in ChatGPT",
+              description: "Ask questions about this page",
+              leadingIcon: RiOpenaiFill,
+              trailingIcon: ExternalLink,
               onSelect: () => openAssistant("chatgpt"),
             },
             {
-              label: actionItem(
-                SiClaude,
-                "Open in Claude",
-                "Ask questions about this page",
-                true,
-                true,
-              ),
+              label: "Open in Claude",
+              description: "Ask questions about this page",
+              leadingIcon: SiClaude,
+              trailingIcon: ExternalLink,
               onSelect: () => openAssistant("claude"),
             },
           ]}
@@ -726,18 +675,28 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
   return (
     <nav className="docs-page-navigation" aria-label="Documentation pagination">
       {previous ? (
-        <Link className="docs-page-navigation__previous" href={previous.href}>
-          <span>Previous</span>
-          <strong>{previous.label}</strong>
-        </Link>
-      ) : (
-        <span />
-      )}
+        <Button
+          className="docs-page-navigation__previous"
+          leadingIcon={ArrowLeft}
+          nativeButton={false}
+          render={<Link href={previous.href} />}
+          size="sm"
+          variant="secondary"
+        >
+          {previous.label}
+        </Button>
+      ) : null}
       {next ? (
-        <Link className="docs-page-navigation__next" href={next.href}>
-          <span>Next</span>
-          <strong>{next.label}</strong>
-        </Link>
+        <Button
+          className="docs-page-navigation__next"
+          nativeButton={false}
+          render={<Link href={next.href} />}
+          size="sm"
+          trailingIcon={ArrowRight}
+          variant="secondary"
+        >
+          {next.label}
+        </Button>
       ) : null}
     </nav>
   );
@@ -783,7 +742,7 @@ export function DocsChrome({
   React.useEffect(() => {
     const headings = Array.from(
       document.querySelectorAll<HTMLElement>(".docs-main h2, .docs-main h3, .docs-main h4"),
-    );
+    ).filter((heading) => !heading.closest(".component-example"));
     const usedIds = new Set<string>();
     const nextToc = headings.map((heading) => {
       const label = heading.textContent?.trim() ?? "";
@@ -821,7 +780,7 @@ export function DocsChrome({
       document.querySelectorAll<HTMLElement>(
         ".docs-main h2[id], .docs-main h3[id], .docs-main h4[id]",
       ),
-    );
+    ).filter((heading) => !heading.closest(".component-example"));
     if (headings.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -1061,39 +1020,49 @@ export function DocsChrome({
             <section className="docs-toc-feedback" aria-labelledby="docs-feedback-title">
               <h2 id="docs-feedback-title">Was this helpful?</h2>
               {feedback ? (
-                <p className="docs-toc-feedback__thanks" role="status">
-                  Thanks for your feedback.
-                </p>
+                <div className="docs-toc-feedback__thanks">
+                  <p role="status">Thanks for your feedback.</p>
+                  <Button
+                    nativeButton={false}
+                    render={<a href={repoUrl} rel="noreferrer" target="_blank" />}
+                    variant="link"
+                  >
+                    Star Nerio on GitHub
+                  </Button>
+                </div>
               ) : (
-                <div className="docs-toc-feedback__choices" role="group" aria-label="Page feedback">
-                  <button
-                    type="button"
-                    aria-label="Helpful"
-                    data-feedback-value="helpful"
-                    data-metrika-goal="docs-feedback-helpful"
-                    onClick={() => setFeedback("helpful")}
-                  >
-                    <span aria-hidden="true">🙂</span>
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Neither helpful nor unhelpful"
-                    data-feedback-value="neutral"
-                    data-metrika-goal="docs-feedback-neutral"
-                    onClick={() => setFeedback("neutral")}
-                  >
-                    <span aria-hidden="true">😐</span>
-                  </button>
-                  <button
-                    type="button"
+                <ButtonGroup className="docs-toc-feedback__choices" aria-label="Page feedback">
+                  <Button
                     aria-label="Not helpful"
                     data-feedback-value="not-helpful"
                     data-metrika-goal="docs-feedback-not-helpful"
+                    size="sm"
+                    variant="secondary"
                     onClick={() => setFeedback("not-helpful")}
                   >
                     <span aria-hidden="true">☹️</span>
-                  </button>
-                </div>
+                  </Button>
+                  <Button
+                    aria-label="Neither helpful nor unhelpful"
+                    data-feedback-value="neutral"
+                    data-metrika-goal="docs-feedback-neutral"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setFeedback("neutral")}
+                  >
+                    <span aria-hidden="true">😐</span>
+                  </Button>
+                  <Button
+                    aria-label="Helpful"
+                    data-feedback-value="helpful"
+                    data-metrika-goal="docs-feedback-helpful"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setFeedback("helpful")}
+                  >
+                    <span aria-hidden="true">🙂</span>
+                  </Button>
+                </ButtonGroup>
               )}
             </section>
           </aside>

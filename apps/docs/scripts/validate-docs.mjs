@@ -261,7 +261,6 @@ function packageReadinessFailures() {
 function tailwindDocumentationFailures() {
   const motionPage = read("apps/docs/app/docs/foundations/motion/page.tsx");
   const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
-  const visualLanguagePage = read("apps/docs/app/docs/foundations/visual-language/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
   const deployment = read("apps/docs/lib/deployment.ts");
@@ -276,16 +275,6 @@ function tailwindDocumentationFailures() {
   const required = [
     [motionPage, "Tailwind motion recipes", "Motion Foundation must document Tailwind recipes"],
     [tokenPage, "Tailwind bridge", "Tokens Foundation must document the Tailwind bridge"],
-    [
-      visualLanguagePage,
-      "Surface hierarchy",
-      "Visual Language Foundation must expose the approved surface hierarchy",
-    ],
-    [
-      visualLanguagePage,
-      "--n-motion-hover-duration",
-      "Visual Language Foundation must expose the shared motion contract",
-    ],
     [componentPage, 'id="styling-contract"', "Component docs must expose a styling contract"],
     [
       componentPage,
@@ -298,18 +287,8 @@ function tailwindDocumentationFailures() {
       '{ href: "/docs/foundations/motion", label: "Motion"',
       "Foundation navigation must use the canonical Motion route and label",
     ],
-    [
-      docsChrome,
-      '{ href: "/docs/foundations/visual-language", label: "Visual language"',
-      "Foundation navigation must expose the Visual Language reference",
-    ],
     [docsChrome, 'href="/blocks"', "Primary navigation must expose the Blocks reference surface"],
     [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
-    [
-      sitemap,
-      '"/docs/foundations/visual-language"',
-      "The sitemap must expose the Visual Language reference",
-    ],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
     [playgroundPage, "indexable: false", "Playground metadata must remain private"],
     [playgroundPage, "arePreviewSurfacesEnabled()", "Playground must be unavailable in production"],
@@ -343,6 +322,14 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (
+    existsSync(join(root, "apps/docs/app/docs/foundations/visual-language/page.tsx")) ||
+    docsChrome.includes("/docs/foundations/visual-language") ||
+    sitemap.includes('"/docs/foundations/visual-language"')
+  ) {
+    failures.push("The maintainer-only visual language reference must not be publicly routed");
   }
 
   if (sitemap.includes('"/playground"')) {

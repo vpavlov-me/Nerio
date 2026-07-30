@@ -68,7 +68,6 @@ test("covers public docs routes, standardized component docs, and the restrained
 
   for (const heading of [
     "Overview and decision boundary",
-    "Preview",
     "Installation and imports",
     "Usage",
     "Accessibility",
@@ -335,15 +334,15 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
   await page.getByRole("button", { name: "Open documentation navigation" }).click();
   const navigation = page.getByRole("dialog", { name: "Documentation" });
   await expect(navigation).toBeVisible();
-  await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
-    "Visual language",
+  await expect(navigation.getByRole("link", { name: "Visual language", exact: true })).toHaveCount(
+    0,
   );
   await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
     "Blocks",
   );
   await expect(navigation.getByRole("link", { name: "Sign in" })).toBeVisible();
-  await navigation.getByRole("link", { name: "Visual language" }).click();
-  await expect(page).toHaveURL(/\/docs\/foundations\/visual-language$/);
+  await navigation.getByRole("link", { name: "Tokens", exact: true }).click();
+  await expect(page).toHaveURL(/\/docs\/foundations\/tokens$/);
 
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByRole("combobox", { name: "Search documentation" }).fill("Sign in");
@@ -354,7 +353,7 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
 
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByRole("combobox", { name: "Search documentation" }).fill("Playground");
-  await expect(page.getByRole("option").first()).toHaveAttribute("href", "/playground");
+  await expect(page.getByRole("option", { name: /Playground/ })).toBeVisible();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/playground$/);
   await expectHealthyPage(page, problems);

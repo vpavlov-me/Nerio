@@ -101,7 +101,7 @@ The Nerio 1.0 foundation uses pure white light foundations, pure black dark foun
 alpha-neutral adaptive layers, generous role-based radii, compact 14px typography, and tokenized
 motion. Use opaque neutrals for contrast-critical or overlap-isolated geometry such as Avatar
 boundaries. Use semantic surface and border aliases instead of consuming alpha primitives directly.
-The implementation reference is `/docs/foundations/visual-language`.
+The maintainer implementation reference is `docs/visual-language-1-0.md` in the source repository.
 
 Core motion remains CSS-first. Install `motion` and use the optional client-only
 `@nerio-ui/adapters/motion` entrypoint only for coordinated presence, interruption, layout

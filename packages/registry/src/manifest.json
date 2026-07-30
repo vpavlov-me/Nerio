@@ -635,10 +635,9 @@
         "--n-spinner-size-sm",
         "--n-spinner-size-md",
         "--n-spinner-size-lg",
-        "--n-spinner-radius",
         "--n-spinner-border-width",
         "--n-spinner-duration",
-        "--n-radius-pill"
+        "--n-spinner-radius"
       ],
       "accessibility": [
         "Provide a localized label when Spinner is the loading announcement; use decorative when a parent already exposes loading state.",
@@ -804,7 +803,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "icon", "content", "title", "description", "action"],
+      "slots": ["root", "icon", "content", "title", "description", "action", "close"],
       "variants": ["neutral", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-alert-gap",
@@ -881,6 +880,7 @@
         "--n-card-padding-inline",
         "--n-card-padding-block",
         "--n-card-gap",
+        "--n-card-section-gap",
         "--n-card-radius",
         "--n-card-background",
         "--n-card-background-interactive-hover",
@@ -3381,10 +3381,19 @@
         "item",
         "leading-icon",
         "label",
+        "description",
         "hotkey",
         "trailing-icon"
       ],
-      "variants": ["default", "grouped", "destructive", "leading icon", "trailing icon", "hotkey"],
+      "variants": [
+        "default",
+        "grouped",
+        "destructive",
+        "description",
+        "leading icon",
+        "trailing icon",
+        "hotkey"
+      ],
       "requiredTokens": [
         "--n-dropdown-min-width",
         "--n-dropdown-item-padding-inline",
@@ -3412,11 +3421,12 @@
         "Uses the Base UI Menu primitive.",
         "Items are keyboard reachable and can be disabled.",
         "Group labels and separators organize related commands without becoming menu items.",
+        "Optional descriptions are associated with their menu items through aria-describedby.",
         "Disabled items stay visible but cannot be selected.",
         "Use destructive tone only for irreversible or high-risk commands.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded menu popup ref."
       ],
-      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ group: 'Workspace', label: 'Share' }, { group: 'Workspace', label: 'Duplicate' }, { group: 'Manage', label: 'Delete', destructive: true }]} />"
+      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ group: 'Workspace', label: 'Share', description: 'Invite people and choose access' }, { group: 'Workspace', label: 'Duplicate' }, { group: 'Manage', label: 'Delete', destructive: true }]} />"
     },
     {
       "name": "tooltip",

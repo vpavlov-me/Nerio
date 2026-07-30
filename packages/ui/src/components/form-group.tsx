@@ -40,7 +40,7 @@ export const FormGroup = React.forwardRef<HTMLFieldSetElement, FormGroupProps>(f
     >
       {title ? (
         <legend
-          className="n-form-group__title m-0 block p-0 text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-form-group-title-color)"
+          className="n-form-group__title m-0 mb-(--n-form-group-gap) block p-0 text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-form-group-title-color)"
           data-slot="title"
         >
           {title}

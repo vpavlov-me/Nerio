@@ -826,6 +826,7 @@ describe("Core accessibility contracts", () => {
           {
             group: "Collaborate",
             label: "Share workspace",
+            description: "Invite people to this workspace",
           },
           {
             group: "Manage",
@@ -838,6 +839,9 @@ describe("Core accessibility contracts", () => {
 
     expect(await screen.findByRole("group", { name: "Collaborate" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "Manage" })).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: "Share workspace" })).toHaveAccessibleDescription(
+      "Invite people to this workspace",
+    );
     expect(
       (
         await axe(document.body, {

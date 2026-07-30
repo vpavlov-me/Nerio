@@ -560,6 +560,7 @@ describe("Core static contracts", () => {
           <Button render={<a href="/preview" />} variant="secondary">
             Preview
           </Button>
+          <span aria-hidden data-base-ui-focus-guard />
           <Button variant="secondary">Save</Button>
         </ButtonGroup>
         <div data-density="compact" dir="rtl">
@@ -630,11 +631,14 @@ describe("Core static contracts", () => {
       resolve(process.cwd(), "src/components/button-group.tsx"),
       "utf8",
     );
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:border-s-0");
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button::before]:h-");
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button::before]:start-0");
-    expect(buttonGroupSource).not.toContain("[&>.n-button+.n-button]:ms-");
-    expect(buttonGroupSource).toContain("[&>.n-button:first-child]:rounded-s-");
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button]:border-s-0");
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button::before]:h-");
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button::before]:start-0");
+    expect(buttonGroupSource).not.toContain("[&>.n-button~.n-button]:ms-");
+    expect(buttonGroupSource).toContain("[&>.n-button:nth-child(1_of_.n-button)]:rounded-s-");
+    expect(buttonGroupSource).toContain("[&>.n-button:nth-last-child(1_of_.n-button)]:rounded-e-");
+    expect(buttonGroupSource).not.toContain("first-of-type");
+    expect(buttonGroupSource).not.toContain("last-of-type");
     expect(buttonGroupSource).toContain("[&>.n-button:focus-visible]:z-2");
     expect(buttonGroupSource).not.toContain("orientation");
     expect(buttonGroupSource).not.toContain("overflow-hidden");
@@ -695,17 +699,27 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-slider-gap: var(--n-space-1);");
+    expect(tokens).toContain("--n-slider-thumb-background: var(--n-gray-0);");
+    expect(tokens).toContain("--n-slider-disabled-thumb-background: var(--n-gray-0);");
+    expect(tokens).toContain("--n-switch-thumb-background: var(--n-gray-0);");
+    expect(tokens).toContain("--n-switch-thumb-background-checked: var(--n-gray-0);");
+    expect(tokens).toContain("--n-list-gap: var(--n-space-1);");
+    expect(tokens).toContain("--n-list-item-padding: var(--n-space-2);");
+    expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
+    expect(tokens).toContain("--n-card-section-gap: var(--n-space-2);");
     expect(tokens).toContain("--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);");
     expect(tokens).toContain("--n-toggle-border-pressed: var(--n-color-action-primary);");
     expect(tokens).toContain(
       "--n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);",
     );
-    expect(tokens).toContain("--n-spinner-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-spinner-radius: var(--n-radius-full);");
     expect(componentSource("spinner")).toContain("rounded-(--n-spinner-radius)");
     expect(componentSource("badge")).toContain(
       "data-[emphasis=strong]:data-[tone=success]:[--n-badge-foreground:var(--n-badge-foreground-strong)]",
     );
     expect(componentSource("form-group")).toContain("items-start");
+    expect(componentSource("form-group")).toContain("mb-(--n-form-group-gap)");
     expect(componentSource("command")).not.toContain("[--n-command-radius:");
     expect(tokens).toContain("--n-command-radius: min(var(--n-radius-overlay), 1.5rem);");
     expect(tokens).toContain("--n-badge-background-strong-primary: var(--n-purple-400);");
@@ -1872,9 +1886,23 @@ describe("Core static contracts", () => {
     expect(source).toContain("forced-colors:data-[variant=icon]:border-[CanvasText]");
   });
 
-  it("renders Alert content and an optional trailing action slot", () => {
+  it("renders Alert actions below the description and an optional close slot", () => {
     render(
-      <Alert action={<button type="button">Retry</button>} icon={Check} title="Upload failed">
+      <Alert
+        action={
+          <>
+            <button type="button">Retry</button>
+            <button type="button">View details</button>
+          </>
+        }
+        closeAction={
+          <button type="button" aria-label="Close alert">
+            Close
+          </button>
+        }
+        icon={Check}
+        title="Upload failed"
+      >
         Try again after checking the connection.
       </Alert>,
     );
@@ -1884,9 +1912,13 @@ describe("Core static contracts", () => {
       "data-slot",
       "description",
     );
-    expect(screen.getByRole("button", { name: "Retry" }).parentElement).toHaveAttribute(
+    const action = screen.getByRole("button", { name: "Retry" }).parentElement;
+    expect(action).toHaveAttribute("data-slot", "action");
+    expect(action).toContainElement(screen.getByRole("button", { name: "View details" }));
+    expect(action?.parentElement).toHaveAttribute("data-slot", "content");
+    expect(screen.getByRole("button", { name: "Close alert" }).parentElement).toHaveAttribute(
       "data-slot",
-      "action",
+      "close",
     );
   });
 
@@ -3541,6 +3573,7 @@ describe("Core interactive action contracts", () => {
           {
             group: "Workspace",
             label: "Rename",
+            description: "Change the workspace name",
             leadingIcon: Bell,
             hotkey: "⌘R",
             onSelect,
@@ -3566,6 +3599,12 @@ describe("Core interactive action contracts", () => {
     );
     expect(screen.getByRole("menuitem", { name: "Rename" })).toContainElement(
       document.querySelector('[data-slot="leading-icon"]'),
+    );
+    expect(document.querySelector('[data-slot="description"]')).toHaveTextContent(
+      "Change the workspace name",
+    );
+    expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveAccessibleDescription(
+      "Change the workspace name",
     );
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveClass("col-start-3");
