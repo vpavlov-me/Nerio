@@ -3856,6 +3856,11 @@ pre {
   padding: var(--n-space-8);
 }
 
+.visual-test-fixture output {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
 .visual-test-fixture .component-lab-section {
   padding-block: var(--n-space-6);
 }
