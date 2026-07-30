@@ -1,16 +1,7 @@
 "use client";
 
-import { ArrowRight, ArrowUp, Check, Plus, Save, Settings, X } from "@nerio-ui/adapters/icons";
-import {
-  Badge,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Icon,
-  Kbd,
-} from "@nerio-ui/ui";
+import { ArrowUp, Check, X } from "@nerio-ui/adapters/icons";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
@@ -32,10 +23,6 @@ function ButtonPreview() {
       />
     </section>
   );
-}
-
-function ButtonSectionPreview({ children }: { children: React.ReactNode }) {
-  return <div className="button-section-preview">{children}</div>;
 }
 
 const apiRows = [
@@ -142,147 +129,6 @@ export default function Page() {
       lede="Buttons trigger explicit product actions. Choose a clear label and the least visual emphasis that still matches the decision."
       kind="button"
       preview={<ButtonPreview />}
-      sectionPreviews={{
-        usage: (
-          <ButtonSectionPreview>
-            <div className="preview-row">
-              <Button leadingIcon={Save} kbd={<Kbd>⌘S</Kbd>}>
-                Save changes
-              </Button>
-              <Button
-                badge={
-                  <Badge size="sm" tone="info">
-                    24
-                  </Badge>
-                }
-                variant="secondary"
-              >
-                Fork
-              </Button>
-              <Button variant="secondary" trailingIcon={ArrowRight}>
-                Review draft
-              </Button>
-            </div>
-          </ButtonSectionPreview>
-        ),
-        variants: (
-          <ButtonSectionPreview>
-            <div className="preview-row">
-              <Button>Primary</Button>
-              <Button variant="secondary">Secondary</Button>
-              <Button variant="outline">Outline</Button>
-              <Button variant="ghost">Ghost</Button>
-              <Button nativeButton={false} render={<a href="#usage" />} variant="link">
-                Link
-              </Button>
-              <Button variant="danger">Danger</Button>
-            </div>
-          </ButtonSectionPreview>
-        ),
-        anatomy: (
-          <ButtonSectionPreview>
-            <div className="button-anatomy-preview">
-              <span>leading icon</span>
-              <span>label</span>
-              <span>badge</span>
-              <span>kbd</span>
-              <span>trailing icon</span>
-            </div>
-            <Button
-              badge={
-                <Badge size="sm" tone="primary-soft">
-                  New
-                </Badge>
-              }
-              leadingIcon={Plus}
-              trailingIcon={ArrowRight}
-              kbd={<Kbd>⌘N</Kbd>}
-            >
-              Create project
-            </Button>
-            <p>
-              For an icon-only action, use <code>icon</code> and an <code>aria-label</code>. Button
-              uses that accessible name as the required Tooltip label unless an explicit tooltip is
-              provided; label, kbd, and directional icon slots are intentionally omitted.
-            </p>
-          </ButtonSectionPreview>
-        ),
-        states: (
-          <ButtonSectionPreview>
-            <div className="preview-row">
-              <Button>Default</Button>
-              <Button className="button-preview-focus">Focus-visible</Button>
-              <Button loading>Saving</Button>
-              <Button disabled>Unavailable</Button>
-            </div>
-          </ButtonSectionPreview>
-        ),
-        motion: (
-          <ButtonSectionPreview>
-            <div className="preview-row">
-              <Button>Hover and press me</Button>
-              <Button variant="secondary">Focus me with Tab</Button>
-            </div>
-            <p>
-              Hover, press, and focus use the shared motion tokens and respect reduced-motion
-              preferences.
-            </p>
-          </ButtonSectionPreview>
-        ),
-        accessibility: (
-          <ButtonSectionPreview>
-            <div className="preview-row">
-              <Button
-                badge={
-                  <Badge size="sm" tone="info">
-                    24
-                  </Badge>
-                }
-                variant="secondary"
-              >
-                Fork
-              </Button>
-              <Button
-                icon={Settings}
-                aria-label="Workspace settings"
-                tooltip="Workspace settings"
-              />
-              <Button
-                icon={Plus}
-                aria-label="Create project"
-                tooltip="Create project"
-                variant="secondary"
-              />
-            </div>
-            <p>
-              Hover or focus an icon-only button to see its Tooltip. The tooltip is supplementary:{" "}
-              <code>aria-label</code> still supplies the action name.
-            </p>
-            <p>
-              A Button Badge remains in the accessible name, so use a concise count or status that
-              refines the action.
-            </p>
-          </ButtonSectionPreview>
-        ),
-        api: (
-          <ButtonSectionPreview>
-            <div className="preview-row">
-              <Button leadingIcon={Save} kbd={<Kbd>⌘S</Kbd>}>
-                Save changes
-              </Button>
-              <Button badge={<Badge tone="info">24</Badge>} variant="secondary">
-                Fork
-              </Button>
-              <Button
-                icon={Settings}
-                aria-label="Workspace settings"
-                tooltip="Workspace settings"
-                variant="secondary"
-              />
-            </div>
-          </ButtonSectionPreview>
-        ),
-      }}
       sectionContent={{
         variants: (
           <DocumentationTable headers={["Variant", "Use"]} rows={variantRows} codeColumns={1} />

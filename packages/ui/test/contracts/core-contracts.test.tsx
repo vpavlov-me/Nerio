@@ -657,6 +657,13 @@ describe("Core static contracts", () => {
     expect(componentSource("slider")).toContain(
       "group-data-disabled/slider:opacity-(--n-slider-disabled-opacity)",
     );
+    expect(componentSource("slider")).toContain(
+      "n-slider__control relative flex h-(--n-slider-control-size)",
+    );
+    expect(componentSource("slider")).toContain(
+      "n-slider__track relative h-(--n-slider-track-size)",
+    );
+    expect(componentSource("slider")).not.toContain("before:h-(--n-slider-control-size)");
     expect(componentSource("calendar")).toContain("overflow-hidden");
     expect(componentSource("calendar")).not.toContain("<h2");
     expect(componentSource("calendar")).toContain('className="p-0 text-center align-middle"');
@@ -699,7 +706,7 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
-    expect(tokens).toContain("--n-slider-gap: var(--n-space-1);");
+    expect(tokens).toContain("--n-slider-gap: var(--n-space-2);");
     expect(tokens).toContain("--n-slider-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-slider-disabled-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-switch-thumb-background: var(--n-gray-0);");
@@ -709,10 +716,28 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
     expect(tokens).toContain("--n-card-section-gap: var(--n-space-2);");
     expect(tokens).toContain("--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);");
-    expect(tokens).toContain("--n-toggle-border-pressed: var(--n-color-action-primary);");
+    expect(tokens).toContain("--n-item-border-width: var(--n-border-width-default);");
+    expect(tokens).toContain("--n-toggle-background-pressed: var(--n-color-action-secondary);");
+    expect(tokens).toContain("--n-toggle-foreground-pressed: var(--n-color-action-primary);");
+    expect(tokens).toContain("--n-toggle-border-pressed: var(--n-color-border-default);");
+    expect(tokens).toContain("--n-toggle-border-pressed-hover: var(--n-color-border-default);");
+    expect(tokens).toContain("--n-toggle-border-pressed-active: var(--n-color-border-default);");
+    expect(componentSource("toggle")).toContain("data-pressed:border-(--n-toggle-border-pressed)");
+    expect(componentSource("toggle")).toContain(
+      "data-pressed:[&:hover:not(:disabled):not([data-disabled])]:border-(--n-toggle-border-pressed-hover)",
+    );
+    expect(componentSource("toggle")).toContain(
+      "data-pressed:[&:active:not(:disabled):not([data-disabled])]:border-(--n-toggle-border-pressed-active)",
+    );
+    expect(tokens).toContain("--n-toast-width: 25rem;");
+    expect(componentSource("toast")).toContain("max-w-(--n-toast-width)");
     expect(tokens).toContain(
       "--n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);",
     );
+    expect(componentSource("calendar")).toContain(
+      "data-unavailable:opacity-(--n-calendar-disabled-opacity)",
+    );
+    expect(componentSource("calendar")).toContain("forced-colors:data-unavailable:opacity-100");
     expect(tokens).toContain("--n-spinner-radius: var(--n-radius-full);");
     expect(componentSource("spinner")).toContain("rounded-(--n-spinner-radius)");
     expect(componentSource("badge")).toContain(
@@ -4074,7 +4099,8 @@ describe("Core interactive action contracts", () => {
     expect(docsExample).not.toMatch(/label="(?:Collapse|Expand) preview sidebar"/);
     expect(docsReference).not.toMatch(/SidebarRail, SidebarTrigger/);
     expect(docsReference).not.toMatch(/label="(?:Collapse|Expand) workspace sidebar"/);
-    expect(sidebarPage).toContain('import * as React from "react";');
+    expect(sidebarPage).not.toContain("sectionPreviews");
+    expect(sidebarPage).not.toContain('import * as React from "react";');
     expect(sidebarPage).not.toMatch(/SidebarInset, Icon|SidebarTrigger, useSidebar/);
     expect(docsExample).toMatch(
       /import\s*\{[\s\S]*SidebarProvider[\s\S]*SidebarRail[\s\S]*\}\s*from "@nerio-ui\/ui\/client";/,

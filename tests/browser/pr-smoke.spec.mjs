@@ -154,9 +154,18 @@ test("keeps Slider preview singular and product-focused", async ({ page }) => {
   await page.goto("/docs/components/slider");
 
   const preview = page.getByRole("region", { name: "Slider preview" });
+  const slider = preview.getByRole("slider", { name: "Tip amount", exact: true });
   await expect(preview.getByRole("slider")).toHaveCount(1);
-  await expect(preview.getByRole("slider", { name: "Tip amount", exact: true })).toHaveValue("15");
+  await expect(slider).toHaveValue("15");
   await expect(preview.getByText("$15", { exact: true })).toBeVisible();
+  const header = preview.locator('[data-slot="header"]');
+  const control = preview.locator('[data-slot="control"]');
+  const [headerBox, controlBox] = await Promise.all([header.boundingBox(), control.boundingBox()]);
+  expect(headerBox).not.toBeNull();
+  expect(controlBox).not.toBeNull();
+  expect(controlBox.y - (headerBox.y + headerBox.height)).toBeGreaterThanOrEqual(7.5);
+  await preview.getByText("Tip amount", { exact: true }).click({ position: { x: 20, y: 15 } });
+  await expect(slider).toHaveValue("15");
   await expect(page.getByRole("heading", { name: "Preview", exact: true })).toHaveCount(0);
   await expectHealthyPage(page, problems);
 });
@@ -171,6 +180,19 @@ test("keeps Calendar preview singular and unlabeled visually", async ({ page }) 
   await expect(preview.getByRole("heading")).toHaveCount(0);
   await expect(preview.getByText(/Selected date:/)).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Preview", exact: true })).toHaveCount(0);
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps Item preview on the visible outline variant", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/item");
+
+  const preview = page.getByRole("region", { name: "Item preview" });
+  const item = preview.locator(".n-item");
+  await expect(item).toHaveAttribute("data-variant", "outline");
+  expect(await item.evaluate((element) => getComputedStyle(element).borderTopWidth)).not.toBe(
+    "0px",
+  );
   await expectHealthyPage(page, problems);
 });
 
@@ -531,7 +553,7 @@ test("keeps Slider spacing compact and Slider and Switch thumbs white across mod
 
   const slider = page.getByRole("region", { name: "Slider preview" }).getByRole("group");
   const sliderThumb = slider.locator('[data-slot="thumb"]');
-  await expect(slider).toHaveCSS("row-gap", "4px");
+  await expect(slider).toHaveCSS("row-gap", "8px");
 
   const sliderColors = [];
   for (const mode of ["light", "dark"]) {

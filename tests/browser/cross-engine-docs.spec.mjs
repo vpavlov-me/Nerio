@@ -172,7 +172,7 @@ test("preserves native temporal Input values, constraints, form data, and reflow
 }) => {
   const problems = monitorPage(page, browserName);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/docs/components/input");
+  await page.goto("/visual-test/input");
 
   const form = page.getByRole("form", { name: "Native temporal input examples" });
   const date = page.getByLabel("Start date", { exact: true });
@@ -348,7 +348,7 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
     }),
   ).toBeVisible();
 
-  await gotoFixture("/docs/components/item");
+  await gotoFixture("/visual-test/item");
   const itemList = page.getByRole("list", { name: "Workspace resources" });
   await expect(itemList.getByRole("listitem")).toHaveCount(2);
 
@@ -363,7 +363,7 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
   await expect(page.getByRole("textbox", { name: "Email address with icon" })).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Default note" })).toBeVisible();
 
-  await gotoFixture("/docs/components/tabs");
+  await gotoFixture("/visual-test/tabs");
   await expect(page.getByRole("tab", { name: "Project members and permissions" })).toBeVisible();
   expect(problems).toEqual([]);
 });
@@ -398,6 +398,16 @@ test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only beha
   const control = page.locator('[data-slot="control"]').first();
   const controlBox = await control.boundingBox();
   expect(controlBox).not.toBeNull();
+  const hitAreaHeight = await control.evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element, "::before").height),
+  );
+  expect(hitAreaHeight).toBeGreaterThanOrEqual(32);
+  await page.mouse.click(
+    controlBox.x + controlBox.width * 0.25,
+    controlBox.y - (hitAreaHeight - controlBox.height) / 4,
+  );
+  expect(Number(await volume.inputValue())).toBeGreaterThanOrEqual(20);
+  expect(Number(await volume.inputValue())).toBeLessThanOrEqual(30);
   const thumbBox = await page.locator('[data-slot="thumb"]').first().boundingBox();
   expect(thumbBox).not.toBeNull();
   await page.mouse.move(thumbBox.x + thumbBox.width / 2, thumbBox.y + thumbBox.height / 2);

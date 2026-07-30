@@ -8,8 +8,6 @@ import {
   ChevronLeft,
   ChevronRight,
   GripVertical,
-  PackageOpen,
-  Plus,
   X,
 } from "@nerio-ui/adapters/icons";
 import {
@@ -18,15 +16,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  EmptyState,
-  EmptyStateActions,
-  EmptyStateDescription,
-  EmptyStateHeader,
-  EmptyStateMedia,
-  EmptyStateTitle,
   Icon,
   Pagination,
-  Skeleton,
   Table,
   TableBody,
   TableCaption,
@@ -385,101 +376,6 @@ export default function Page() {
           <StableTablePreview />
         </ComponentExample>
       }
-      sectionPreviews={{
-        variants: (
-          <ComponentExample
-            code={stableTableCode.replace(
-              'className="table-shell"',
-              'className="table-shell-secondary"',
-            )}
-            label="Secondary Table composition"
-          >
-            <StableTablePreview presentation="secondary" />
-          </ComponentExample>
-        ),
-        states: (
-          <>
-            <ComponentExample
-              code={
-                '<TableRow><TableCell colSpan={4}><EmptyState size="sm"><EmptyStateMedia>...</EmptyStateMedia><EmptyStateHeader>...</EmptyStateHeader><EmptyStateActions><Button variant="secondary">Create project</Button></EmptyStateActions></EmptyState></TableCell></TableRow>'
-              }
-              label="Empty Table row"
-            >
-              <TableContainer aria-label="Empty projects table">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Project</TableHead>
-                      <TableHead>Owner</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Updated</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow className="table-doc-empty-row">
-                      <TableCell colSpan={4}>
-                        <EmptyState className="table-doc-empty-state" size="sm">
-                          <EmptyStateMedia aria-hidden="true">
-                            <Icon icon={PackageOpen} />
-                          </EmptyStateMedia>
-                          <EmptyStateHeader>
-                            <EmptyStateTitle>No projects found</EmptyStateTitle>
-                            <EmptyStateDescription>
-                              Try adjusting the current filters.
-                            </EmptyStateDescription>
-                          </EmptyStateHeader>
-                          <EmptyStateActions>
-                            <Button leadingIcon={Plus} size="sm" variant="secondary">
-                              Create project
-                            </Button>
-                          </EmptyStateActions>
-                        </EmptyState>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </ComponentExample>
-            <ComponentExample
-              code={
-                '<TableHeader><TableRow>...</TableRow></TableHeader>\n<TableBody><TableRow aria-hidden="true"><TableCell><Skeleton /></TableCell>...</TableRow></TableBody>'
-              }
-              label="Loading Table rows"
-            >
-              <TableContainer aria-label="Projects loading" aria-busy="true">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Project</TableHead>
-                      <TableHead>Owner</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Updated</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {[0, 1, 2, 3].map((row) => (
-                      <TableRow key={row} aria-hidden="true">
-                        <TableCell>
-                          <Skeleton />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </ComponentExample>
-          </>
-        ),
-      }}
       sectionContent={{
         variants: (
           <DocumentationTable

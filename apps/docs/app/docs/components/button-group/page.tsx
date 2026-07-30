@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, ChevronDown, Copy, X } from "@nerio-ui/adapters/icons";
+import { Check, ChevronDown, X } from "@nerio-ui/adapters/icons";
 import {
   Badge,
   ButtonGroup,
@@ -67,10 +67,6 @@ const tokenRows = [
   ["Focus", "--n-focus-ring", "Keeps each child Button visibly focusable above adjacent borders."],
 ] as const;
 
-function Preview({ children }: { children: React.ReactNode }) {
-  return <div className="button-section-preview">{children}</div>;
-}
-
 function ButtonGroupPreview() {
   return (
     <section id="preview" className="button-showcase" aria-label="ButtonGroup preview">
@@ -107,149 +103,6 @@ export default function Page() {
       lede="ButtonGroup joins related actions with the same visual emphasis into one compact, attached control."
       kind="button-group"
       preview={<ButtonGroupPreview />}
-      sectionPreviews={{
-        usage: (
-          <Preview>
-            <div className="preview-row">
-              <ButtonGroup aria-label="Editor actions">
-                <Button
-                  badge={
-                    <Badge size="sm" tone="info">
-                      24
-                    </Badge>
-                  }
-                  variant="secondary"
-                >
-                  Fork
-                </Button>
-                <Button icon={ChevronDown} aria-label="More fork actions" variant="secondary" />
-              </ButtonGroup>
-              <ButtonGroup aria-label="Document navigation">
-                <Button icon={ArrowLeft} aria-label="Previous document" variant="secondary" />
-                <Button icon={ArrowRight} aria-label="Next document" variant="secondary" />
-              </ButtonGroup>
-            </div>
-          </Preview>
-        ),
-        anatomy: (
-          <Preview>
-            <div className="button-anatomy-preview">
-              <span>button-group</span>
-              <span>first button</span>
-              <span>last button</span>
-            </div>
-            <ButtonGroup aria-label="Document actions">
-              <Button variant="secondary">Cancel</Button>
-              <Button variant="secondary">Save</Button>
-            </ButtonGroup>
-          </Preview>
-        ),
-        variants: (
-          <Preview>
-            <div className="preview-row">
-              <ButtonGroup aria-label="Secondary document actions">
-                <Button variant="secondary">Cancel</Button>
-                <Button variant="secondary">Save</Button>
-              </ButtonGroup>
-              <ButtonGroup aria-label="Primary document actions">
-                <Button variant="primary">Cancel</Button>
-                <Button variant="primary">Save</Button>
-              </ButtonGroup>
-              <div dir="rtl">
-                <ButtonGroup aria-label="RTL document actions">
-                  <Button variant="secondary">Cancel</Button>
-                  <Button variant="secondary">Save</Button>
-                </ButtonGroup>
-              </div>
-            </div>
-          </Preview>
-        ),
-        states: (
-          <Preview>
-            <div className="preview-row">
-              <ButtonGroup aria-label="Default actions">
-                <Button variant="secondary">Cancel</Button>
-                <Button variant="secondary">Save</Button>
-              </ButtonGroup>
-              <ButtonGroup aria-label="Focused actions">
-                <Button className="button-preview-focus" variant="secondary">
-                  Focus-visible
-                </Button>
-                <Button variant="secondary">Continue</Button>
-              </ButtonGroup>
-              <ButtonGroup aria-label="Unavailable actions">
-                <Button disabled variant="secondary">
-                  Cancel
-                </Button>
-                <Button disabled variant="secondary">
-                  Save
-                </Button>
-              </ButtonGroup>
-              <ButtonGroup aria-label="Publishing actions">
-                <Button loading variant="secondary">
-                  Publish
-                </Button>
-                <Button disabled variant="secondary">
-                  Archive
-                </Button>
-              </ButtonGroup>
-            </div>
-          </Preview>
-        ),
-        motion: (
-          <Preview>
-            <div className="preview-row">
-              <ButtonGroup aria-label="Publish actions">
-                <Button variant="secondary">Preview</Button>
-                <Button variant="secondary">Publish</Button>
-              </ButtonGroup>
-              <ButtonGroup aria-label="Copy actions">
-                <Button leadingIcon={Copy} variant="secondary">
-                  Copy
-                </Button>
-                <Button variant="secondary">Done</Button>
-              </ButtonGroup>
-            </div>
-            <p>
-              ButtonGroup adds no motion of its own; every child uses the shared Button motion and
-              reduced-motion behavior.
-            </p>
-          </Preview>
-        ),
-        accessibility: (
-          <Preview>
-            <div className="preview-row">
-              <ButtonGroup aria-label="Document actions">
-                <Button variant="secondary">Cancel changes</Button>
-                <Button variant="secondary">Save document</Button>
-              </ButtonGroup>
-              <ButtonGroup aria-label="Document navigation">
-                <Button icon={ArrowLeft} aria-label="Previous document" variant="secondary" />
-                <Button icon={ArrowRight} aria-label="Next document" variant="secondary" />
-              </ButtonGroup>
-            </div>
-            <p>
-              Give the group a concise <code>aria-label</code>; every Button keeps its own visible
-              name and independent Tab stop. ButtonGroup does not add arrow-key navigation, so use a
-              keyboard-managed toolbar or selection control when that interaction is required.
-            </p>
-          </Preview>
-        ),
-        api: (
-          <Preview>
-            <div className="preview-row">
-              <ButtonGroup aria-label="Document actions">
-                <Button variant="secondary">Duplicate</Button>
-                <Button variant="secondary">Move</Button>
-              </ButtonGroup>
-              <ButtonGroup aria-label="Direction controls">
-                <Button icon={ArrowLeft} aria-label="Move left" variant="secondary" />
-                <Button icon={ArrowRight} aria-label="Move right" variant="secondary" />
-              </ButtonGroup>
-            </div>
-          </Preview>
-        ),
-      }}
       sectionContent={{
         anatomy: (
           <DocumentationTable headers={["Slot", "Purpose"]} rows={anatomyRows} codeColumns={1} />

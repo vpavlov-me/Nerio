@@ -27,7 +27,7 @@ const stateRows = [
   ["Unpressed", 'aria-pressed="false"; data-pressed is absent.'],
   [
     "Pressed",
-    'aria-pressed="true"; data-pressed adds a neutral selected fill plus persistent accent foreground and border.',
+    'aria-pressed="true"; data-pressed adds a secondary fill and primary foreground while preserving the variant border.',
   ],
   ["Hover / active", "Transient interaction remains distinct from the retained pressed state."],
   ["Focus-visible", "Shared focus ring remains visible in both pressed states."],
@@ -71,7 +71,7 @@ const tokenRows = [
   [
     "Pressed",
     "--n-toggle-background-pressed / --n-toggle-border-pressed / --n-toggle-foreground-pressed",
-    "Neutral retained-state fill with persistent accent foreground and border across variants.",
+    "Secondary retained-state fill with primary foreground and a neutral border.",
   ],
   ["Focus", "--n-focus-ring", "Visible keyboard focus in either pressed state."],
 ] as const;
