@@ -6,6 +6,10 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+No changes yet.
+
+## 0.1.0-alpha.2 — 2026-07-30
+
 ### Added
 
 - Added a machine-validated preparation plan and evidence record for the manual Core 1.0

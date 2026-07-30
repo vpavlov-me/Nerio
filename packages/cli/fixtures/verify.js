@@ -377,8 +377,8 @@ function startRegistryServer() {
 function writeLifecycleRegistry(
   registryRoot,
   {
-    version = "0.1.0-alpha.1",
-    sourceRevision = "fixture-alpha.1",
+    version = "0.1.0-alpha.2",
+    sourceRevision = "fixture-alpha.2",
     schemaVersion = "1.0.0",
     sharedSource = "export const shared = 'one';\n",
     buttonSource = "export const button = 'one';\n",
@@ -486,7 +486,7 @@ async function verifySourceLifecycle(tempRoot) {
   await run(target, "add", "button");
   writeSourceTailwindSetup(target);
   const initialDoctor = await run(target, "doctor");
-  if (!initialDoctor.includes("Registry nerio-fixture 0.1.0-alpha.1 (fixture-alpha.1)")) {
+  if (!initialDoctor.includes("Registry nerio-fixture 0.1.0-alpha.2 (fixture-alpha.2)")) {
     throw new Error("Doctor did not report the exact installed Registry contract.");
   }
 
@@ -494,8 +494,8 @@ async function verifySourceLifecycle(tempRoot) {
   const initialLock = JSON.parse(fs.readFileSync(lockPath, "utf8"));
   if (
     initialLock.schemaVersion !== "1.0.0" ||
-    initialLock.registry.version !== "0.1.0-alpha.1" ||
-    initialLock.registry.sourceRevision !== "fixture-alpha.1" ||
+    initialLock.registry.version !== "0.1.0-alpha.2" ||
+    initialLock.registry.sourceRevision !== "fixture-alpha.2" ||
     initialLock.registry.styleContractVersion !== "tailwind-v1" ||
     !initialLock.requestedItems.includes("button") ||
     !initialLock.items.shared ||
@@ -538,12 +538,12 @@ async function verifySourceLifecycle(tempRoot) {
   }
 
   writeLifecycleRegistry(registryRoot, {
-    version: "0.1.0-alpha.2",
+    version: "0.1.0-alpha.3",
     sourceRevision: "fixture-version-mismatch",
   });
   const versionMismatchDoctor = await runFailure(target, "doctor");
   if (
-    !versionMismatchDoctor.includes("CLI 0.1.0-alpha.1 and Registry 0.1.0-alpha.2 do not match")
+    !versionMismatchDoctor.includes("CLI 0.1.0-alpha.2 and Registry 0.1.0-alpha.3 do not match")
   ) {
     throw new Error("Doctor did not report an incompatible Registry and CLI version.");
   }
@@ -873,10 +873,10 @@ async function verify() {
       !helpOutput.includes("nerio list") ||
       !helpOutput.includes("nerio info") ||
       !helpOutput.includes(
-        "pnpm add -D @nerio-ui/registry@0.1.0-alpha.1 @nerio-ui/cli@0.1.0-alpha.1",
+        "pnpm add -D @nerio-ui/registry@0.1.0-alpha.2 @nerio-ui/cli@0.1.0-alpha.2",
       ) ||
       !helpOutput.includes("pnpm exec nerio <command>") ||
-      !helpOutput.includes("pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 init")
+      !helpOutput.includes("pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 init")
     ) {
       throw new Error(
         "Help output does not include the canonical local and one-off command model.",

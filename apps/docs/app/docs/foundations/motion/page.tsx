@@ -230,7 +230,7 @@ export default function Page() {
           not resolve the optional peer.
         </p>
         <CodeExample
-          code="pnpm add motion @nerio-ui/adapters@0.1.0-alpha.1"
+          code="pnpm add motion @nerio-ui/adapters@0.1.0-alpha.2"
           label="Package installation"
         />
         <CodeExample code={adapterUsage} label="LazyMotion package usage" />

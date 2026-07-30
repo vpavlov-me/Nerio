@@ -47,6 +47,8 @@ const commands = JSON.parse(read(commandsPath));
 const sources = Object.fromEntries(
   [...optionNames].map(([option, fallback]) => [fallback, read(optionPath(option, fallback))]),
 );
+const registryVersion = JSON.parse(sources["packages/registry/src/manifest.json"]).version;
+const escapedRegistryVersion = registryVersion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const failures = [];
 
 const expectedLocalCommands = [
@@ -62,22 +64,22 @@ const expectedLocalCommands = [
 if (
   JSON.stringify(commands.packageInstall) !==
     JSON.stringify([
-      "pnpm add @nerio-ui/tokens@0.1.0-alpha.1 @nerio-ui/adapters@0.1.0-alpha.1 @nerio-ui/ui@0.1.0-alpha.1 tailwindcss",
+      `pnpm add @nerio-ui/tokens@${registryVersion} @nerio-ui/adapters@${registryVersion} @nerio-ui/ui@${registryVersion} tailwindcss`,
       "pnpm add -D @tailwindcss/postcss postcss",
     ]) ||
   commands.cli.localInstall !==
-    "pnpm add -D @nerio-ui/registry@0.1.0-alpha.1 @nerio-ui/cli@0.1.0-alpha.1" ||
+    `pnpm add -D @nerio-ui/registry@${registryVersion} @nerio-ui/cli@${registryVersion}` ||
   JSON.stringify(commands.cli.localCommands) !== JSON.stringify(expectedLocalCommands) ||
   JSON.stringify(commands.cli.oneOffCommands) !==
     JSON.stringify([
-      "pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 init",
-      "pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 add button",
+      `pnpm dlx @nerio-ui/cli@${registryVersion} init`,
+      `pnpm dlx @nerio-ui/cli@${registryVersion} add button`,
     ]) ||
-  commands.mcp.localInstall !== "pnpm add -D @nerio-ui/mcp@0.1.0-alpha.1" ||
+  commands.mcp.localInstall !== `pnpm add -D @nerio-ui/mcp@${registryVersion}` ||
   JSON.stringify(commands.mcp.localConfiguration) !==
     JSON.stringify({ command: "pnpm", args: ["exec", "nerio-mcp"] }) ||
   JSON.stringify(commands.mcp.oneOffConfiguration) !==
-    JSON.stringify({ command: "pnpm", args: ["dlx", "@nerio-ui/mcp@0.1.0-alpha.1"] })
+    JSON.stringify({ command: "pnpm", args: ["dlx", `@nerio-ui/mcp@${registryVersion}`] })
 ) {
   failures.push(
     "packages/registry/src/public-commands.json: canonical package, CLI, or MCP command contract drifted",
@@ -140,8 +142,9 @@ requireText(
 );
 for (const fragment of [
   'run(pnpm, ["exec", "nerio"',
-  'tarballs["@nerio-ui/cli"]',
-  'tarballs["@nerio-ui/registry"]',
+  "Object.entries(tarballs).map",
+  "expectPublishedPackages",
+  "`@nerio-ui/cli@${expectedVersion}`",
   '"exec", "nerio-mcp"',
 ]) {
   requireText(sources["scripts/release-smoke.mjs"], fragment, "release smoke", failures);
@@ -150,7 +153,10 @@ for (const fragment of [
 const forbiddenPatterns = [
   [/pnpm dlx nerio\b/g, "unqualified one-off CLI package"],
   [
-    /pnpm (?:add(?: -D)?|dlx)[^\n`]*@nerio-ui\/(?:tokens|adapters|ui|registry|cli|mcp)(?!@0\.1\.0-alpha\.1)/g,
+    new RegExp(
+      String.raw`pnpm (?:add(?: -D)?|dlx)[^\n\`]*@nerio-ui\/(?:tokens|adapters|ui|registry|cli|mcp)(?!@${escapedRegistryVersion})`,
+      "g",
+    ),
     "unpinned prerelease package install",
   ],
   [/packages\/mcp\/src\/server\.js/g, "monorepo-only MCP path"],

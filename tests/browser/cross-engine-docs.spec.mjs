@@ -398,13 +398,13 @@ test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only beha
   const control = page.locator('[data-slot="control"]').first();
   const controlBox = await control.boundingBox();
   expect(controlBox).not.toBeNull();
-  const hitAreaHeight = await control.evaluate((element) =>
-    Number.parseFloat(getComputedStyle(element, "::before").height),
-  );
-  expect(hitAreaHeight).toBeGreaterThanOrEqual(32);
+  const trackBox = await control.locator('[data-slot="track"]').boundingBox();
+  expect(trackBox).not.toBeNull();
+  expect(controlBox.height).toBeGreaterThanOrEqual(32);
+  expect(trackBox.height).toBeLessThan(controlBox.height);
   await page.mouse.click(
     controlBox.x + controlBox.width * 0.25,
-    controlBox.y - (hitAreaHeight - controlBox.height) / 4,
+    controlBox.y + (controlBox.height - trackBox.height) / 4,
   );
   expect(Number(await volume.inputValue())).toBeGreaterThanOrEqual(20);
   expect(Number(await volume.inputValue())).toBeLessThanOrEqual(30);

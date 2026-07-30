@@ -1,9 +1,10 @@
 # Release Process
 
-Nerio Core `0.1.0-alpha.1` was published on 2026-07-18 under the npm `alpha` tag and is the current
-Tailwind CSS v4-first prerelease. The `latest` tag intentionally remains on `0.1.0-alpha.0` while the
-complete 1.0 surface is stabilized. The roadmap determines the next coordinated prerelease; no beta
-or stable compatibility is claimed yet.
+Nerio Core `0.1.0-alpha.2` is the coordinated release candidate. Until the manual publication
+sequence and post-publication verification complete, the npm `alpha` tag remains on
+`0.1.0-alpha.1`, `latest` remains on `0.1.0-alpha.0`, and no alpha.2 signed tag or GitHub
+prerelease is claimed. The roadmap determines the next coordinated prerelease; no beta or stable
+compatibility is claimed yet.
 
 Every release action remains manual and requires explicit maintainer approval after the gate and
 tarball inspection pass. This document does not authorize publishing, changing dist-tags,
@@ -71,12 +72,14 @@ typechecks published Sidebar examples in an isolated fixture.
 repeating catalog, token, or onboarding unit tests. `pnpm test:release-consumer` packs all intended
 packages, checks packed manifests, exports, dependencies, side effects, bins, file boundaries, and
 secret/Pro exclusions, installs the tarballs into an isolated Next.js consumer, runs the canonical
-local CLI workflow through `pnpm exec nerio`, verifies one-off CLI execution through the packed
-package, resolves the immutable packaged Registry without a checkout or moving branch URL,
-exercises installed-source metadata, `diff`, and update planning, starts the packaged MCP bin
-through `pnpm exec nerio-mcp`, verifies its read-only discovery and coordinated version metadata,
-source-installs representative components and a Foundation item with complete dependency chains,
-and builds without workspace aliases.
+local CLI workflow through `pnpm exec nerio` from the packed CLI tarball, resolves the immutable
+packaged Registry without a checkout or moving branch URL, exercises installed-source metadata,
+`diff`, and update planning, starts the packaged MCP bin through `pnpm exec nerio-mcp`, verifies its
+read-only discovery and coordinated version metadata, source-installs representative components
+and a Foundation item with complete dependency chains, and builds without workspace aliases.
+Package-qualified one-off execution through `pnpm dlx` is intentionally a post-publication check:
+run the same smoke with `NERIO_RELEASE_EXPECT_PUBLISHED=1` only after all six exact package versions
+exist on npm.
 
 `pnpm validate:release` remains the complete local wrapper:
 
@@ -199,6 +202,16 @@ browser verification, changelog review, and tarball inspection.
 ## Post-release verification
 
 - Confirm `npm view <package>@<approved-version> version dist-tags files` for every package.
+- Run the published-package smoke after all six packages exist:
+
+  ```bash
+  NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release-consumer
+  ```
+
+  This makes the documented package-qualified `pnpm dlx` path resolve the published coordinated
+  dependency graph. The candidate gate intentionally omits this network-only assertion because an
+  unpublished exact prerelease dependency cannot resolve from npm.
+
 - Install the six published packages into a new supported Next.js project and rerun the package and
   source-install smoke paths.
 - Run `pnpm exec nerio init`, `list`, `info`, `add`, `diff`, `update --dry-run`, and `doctor` from a
@@ -213,7 +226,7 @@ browser verification, changelog review, and tarball inspection.
 ## Rollback guidance
 
 If a package is wrong before later packages are published, stop the sequence and leave the release
-incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.2` and moving the
+incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.3` and moving the
 `alpha` dist-tag only after verification. If the registry permits and policy requires it, deprecate
 the faulty version with a concise install warning. Restore the previous dist-tag when one exists,
 document affected packages and consumers, and avoid npm unpublish except for a security incident or
