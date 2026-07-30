@@ -23,6 +23,7 @@ import {
   Breadcrumbs,
   Button,
   ButtonGroup,
+  Calendar,
   Card,
   CardAction,
   CardContent,
@@ -39,6 +40,7 @@ import {
   CommandItem,
   CommandList,
   Dialog,
+  DatePicker,
   DialogFooter,
   DropdownMenu,
   EmptyState,
@@ -48,6 +50,7 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Field,
+  FileInput,
   FormGroup,
   FormMessage,
   Heading,
@@ -95,11 +98,12 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
   Skeleton,
+  Slider,
   Spinner,
   Stat,
   Switch,
+  Toggle,
   Table,
   TableBody,
   TableCaption,
@@ -121,12 +125,14 @@ import {
   Tooltip,
   useToastManager,
 } from "@nerio-ui/ui/client";
+import { avatarPreviewAssets } from "../lib/avatar-preview-assets";
 
 const componentLinks = [
   [
     "Actions",
     [
       ["Button", "button"],
+      ["Toggle", "toggle"],
       ["Button Group", "button-group"],
     ],
   ],
@@ -134,6 +140,7 @@ const componentLinks = [
     "Forms",
     [
       ["Input", "input"],
+      ["FileInput", "file-input"],
       ["Input Group", "input-group"],
       ["Textarea", "textarea"],
       ["Label", "label"],
@@ -144,6 +151,9 @@ const componentLinks = [
       ["Radio Group", "radio-group"],
       ["Switch", "switch"],
       ["Select", "select"],
+      ["Slider", "slider"],
+      ["Calendar", "calendar"],
+      ["DatePicker", "date-picker"],
     ],
   ],
   [
@@ -228,14 +238,16 @@ function SpecimenSection({
 }
 
 function Matrix({
+  className,
   columns,
   rows,
 }: {
+  className?: string;
   columns: string[];
   rows: Array<{ label: string; cells: React.ReactNode[] }>;
 }) {
   return (
-    <div className="component-api-matrix">
+    <div className={["component-api-matrix", className].filter(Boolean).join(" ")}>
       <table>
         <thead>
           <tr>
@@ -429,7 +441,6 @@ export function ComponentPlayground() {
           <Code>const theme = "nerio"</Code>
         </div>
       </SpecimenSection>
-
       <SpecimenSection id="kbd" title="Kbd" api="Keyboard hint · single key · shortcut sequence">
         <div className="component-lab-inline">
           <Kbd>⌘</Kbd>
@@ -451,7 +462,6 @@ export function ComponentPlayground() {
           ))}
         </div>
       </SpecimenSection>
-
       <SpecimenSection
         id="button"
         title="Button"
@@ -497,17 +507,40 @@ export function ComponentPlayground() {
         </div>
       </SpecimenSection>
 
-      <SpecimenSection id="button-group" title="Button Group" api="orientation · grouped actions">
+      <SpecimenSection
+        id="toggle"
+        title="Toggle"
+        api="pressed · defaultPressed · variant · size · icon-only · disabled"
+      >
+        <Matrix
+          columns={["Ghost", "Selected", "Outline selected", "Icon only", "Disabled selected"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Toggle key="ghost">Save article</Toggle>,
+                <Toggle key="pressed" defaultPressed>
+                  Save article
+                </Toggle>,
+                <Toggle key="outline" defaultPressed variant="outline">
+                  Reading mode
+                </Toggle>,
+                <Toggle key="icon" icon={Bell} aria-label="Follow updates" />,
+                <Toggle key="disabled" defaultPressed disabled>
+                  Save article
+                </Toggle>,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+
+      <SpecimenSection id="button-group" title="Button Group" api="horizontal grouped actions">
         <div className="component-lab-inline">
           <ButtonGroup>
             <Button variant="secondary">Day</Button>
             <Button variant="secondary">Week</Button>
             <Button variant="secondary">Month</Button>
-          </ButtonGroup>
-          <ButtonGroup orientation="vertical">
-            <Button variant="secondary">Top</Button>
-            <Button variant="secondary">Middle</Button>
-            <Button variant="secondary">Bottom</Button>
           </ButtonGroup>
         </div>
       </SpecimenSection>
@@ -522,11 +555,67 @@ export function ComponentPlayground() {
           rows={(["sm", "md", "lg"] as const).map((size) => ({
             label: size,
             cells: [
-              <Input key="default" size={size} placeholder="Placeholder" />,
-              <Input key="filled" size={size} defaultValue="Value" />,
-              <Input key="readonly" size={size} defaultValue="Read only" readOnly />,
-              <Input key="invalid" size={size} defaultValue="Invalid" invalid />,
-              <Input key="disabled" size={size} defaultValue="Disabled" disabled />,
+              <Input
+                key="default"
+                aria-label={`${size} default input`}
+                size={size}
+                placeholder="Placeholder"
+              />,
+              <Input
+                key="filled"
+                aria-label={`${size} filled input`}
+                size={size}
+                defaultValue="Value"
+              />,
+              <Input
+                key="readonly"
+                aria-label={`${size} read-only input`}
+                size={size}
+                defaultValue="Read only"
+                readOnly
+              />,
+              <Input
+                key="invalid"
+                aria-label={`${size} invalid input`}
+                size={size}
+                defaultValue="Invalid"
+                invalid
+              />,
+              <Input
+                key="disabled"
+                aria-label={`${size} disabled input`}
+                size={size}
+                defaultValue="Disabled"
+                disabled
+              />,
+            ],
+          }))}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="file-input"
+        title="File Input"
+        api="size · accept · capture · multiple · required · invalid · disabled"
+      >
+        <Matrix
+          columns={["Single", "Multiple", "Invalid", "Disabled"]}
+          rows={(["sm", "md", "lg"] as const).map((size) => ({
+            label: size,
+            cells: [
+              <FileInput key="single" aria-label={`${size} single file`} size={size} />,
+              <FileInput
+                key="multiple"
+                aria-label={`${size} multiple files`}
+                size={size}
+                multiple
+              />,
+              <FileInput key="invalid" aria-label={`${size} invalid file`} size={size} invalid />,
+              <FileInput
+                key="disabled"
+                aria-label={`${size} disabled file`}
+                size={size}
+                disabled
+              />,
             ],
           }))}
         />
@@ -541,15 +630,15 @@ export function ComponentPlayground() {
             <InputGroupAddon placement="start">
               <Icon icon={Mail} />
             </InputGroupAddon>
-            <Input placeholder="Email" />
+            <Input aria-label="Email address with icon" placeholder="Email" />
           </InputGroup>
           <InputGroup>
-            <Input placeholder="Amount" />
+            <Input aria-label="Amount in US dollars" placeholder="Amount" />
             <InputGroupAddon placement="end">USD</InputGroupAddon>
           </InputGroup>
           <InputGroup>
             <InputGroupAddon placement="start">https://</InputGroupAddon>
-            <Input placeholder="domain.com" />
+            <Input aria-label="Website domain" placeholder="domain.com" />
             <InputGroupAddon placement="end">↗</InputGroupAddon>
           </InputGroup>
         </div>
@@ -565,10 +654,25 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Textarea key="default" placeholder="Write a note…" />,
-                <Textarea key="invalid" defaultValue="Needs attention" aria-invalid />,
-                <Textarea key="readonly" defaultValue="Read-only content" readOnly />,
-                <Textarea key="disabled" defaultValue="Unavailable" disabled />,
+                <Textarea key="default" aria-label="Default note" placeholder="Write a note…" />,
+                <Textarea
+                  key="invalid"
+                  aria-label="Invalid note"
+                  defaultValue="Needs attention"
+                  aria-invalid
+                />,
+                <Textarea
+                  key="readonly"
+                  aria-label="Read-only note"
+                  defaultValue="Read-only content"
+                  readOnly
+                />,
+                <Textarea
+                  key="disabled"
+                  aria-label="Disabled note"
+                  defaultValue="Unavailable"
+                  disabled
+                />,
               ],
             },
           ]}
@@ -598,7 +702,7 @@ export function ComponentPlayground() {
       >
         <div className="component-lab-form-row">
           <Field label="Project name" description="Visible to workspace members.">
-            <Input defaultValue="Atlas" />
+            <Input defaultValue="Atlas" required />
           </Field>
           <Field label="Email" message="Enter a work email." invalid>
             <Input defaultValue="maya@example" />
@@ -621,14 +725,17 @@ export function ComponentPlayground() {
       <SpecimenSection id="form-group" title="Form Group" api="stack · inline · grid · invalid">
         <div className="component-lab-form-row">
           <FormGroup title="Stack" description="Default layout">
-            <Checkbox defaultChecked /> <Checkbox />
+            <Checkbox aria-label="Stack option one" defaultChecked />{" "}
+            <Checkbox aria-label="Stack option two" />
           </FormGroup>
           <FormGroup title="Inline" layout="inline">
-            <Checkbox defaultChecked /> <Checkbox /> <Checkbox />
+            <Checkbox aria-label="Inline option one" defaultChecked />{" "}
+            <Checkbox aria-label="Inline option two" />{" "}
+            <Checkbox aria-label="Inline option three" />
           </FormGroup>
           <FormGroup title="Grid" layout="grid" invalid message="Review both fields.">
-            <Input defaultValue="One" />
-            <Input invalid defaultValue="Two" />
+            <Input aria-label="Grid field one" defaultValue="One" />
+            <Input aria-label="Grid field two" invalid defaultValue="Two" />
           </FormGroup>
         </div>
       </SpecimenSection>
@@ -643,12 +750,12 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Checkbox key="off" />,
-                <Checkbox key="on" defaultChecked />,
-                <Checkbox key="mixed" indeterminate />,
+                <Checkbox aria-label="Project updates" key="off" />,
+                <Checkbox aria-label="Security alerts" key="on" defaultChecked />,
+                <Checkbox aria-label="Indeterminate option" key="mixed" indeterminate />,
                 <span key="disabled" className="component-lab-inline">
-                  <Checkbox disabled />
-                  <Checkbox disabled defaultChecked />
+                  <Checkbox aria-label="Disabled unchecked option" disabled />
+                  <Checkbox aria-label="Disabled checked option" disabled defaultChecked />
                 </span>,
               ],
             },
@@ -684,10 +791,10 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Switch key="off" />,
-                <Switch key="on" defaultChecked />,
-                <Switch key="doff" disabled />,
-                <Switch key="don" disabled defaultChecked />,
+                <Switch aria-label="Email notifications" key="off" />,
+                <Switch aria-label="Push notifications" key="on" defaultChecked />,
+                <Switch aria-label="Disabled notifications off" key="doff" disabled />,
+                <Switch aria-label="Disabled notifications on" key="don" disabled defaultChecked />,
               ],
             },
           ]}
@@ -753,6 +860,103 @@ export function ComponentPlayground() {
                   placeholder="Unavailable"
                   options={[{ label: "Active", value: "active" }]}
                 />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="slider"
+        title="Slider"
+        api="single value · horizontal · vertical · disabled · readOnly"
+      >
+        <Matrix
+          columns={["Default", "Read only", "Disabled", "Vertical"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Slider key="default" aria-label="Default volume" defaultValue={40} />,
+                <Slider key="readonly" aria-label="Read-only volume" defaultValue={70} readOnly />,
+                <Slider key="disabled" aria-label="Disabled volume" defaultValue={25} disabled />,
+                <Slider
+                  key="vertical"
+                  aria-label="Vertical volume"
+                  defaultValue={60}
+                  orientation="vertical"
+                />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="calendar"
+        title="Calendar"
+        api="single date · ISO value · localized · constrained · readOnly"
+      >
+        <Matrix
+          className="component-api-matrix--calendar"
+          columns={["Selected", "Constrained", "Read only"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Calendar
+                  key="selected"
+                  aria-label="Selected release date"
+                  defaultValue="2026-06-15"
+                  firstDayOfWeek={1}
+                  today="2026-06-15"
+                />,
+                <Calendar
+                  key="constrained"
+                  aria-label="Constrained release date"
+                  defaultMonth="2026-06-01"
+                  min="2026-06-10"
+                  max="2026-06-20"
+                  isDateDisabled={(date) => date === "2026-06-18"}
+                  today="2026-06-15"
+                />,
+                <Calendar
+                  key="readonly"
+                  aria-label="Read-only release date"
+                  defaultValue="2026-06-15"
+                  readOnly
+                  today="2026-06-15"
+                />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="date-picker"
+        title="DatePicker"
+        api="single date · form value · clearable · readOnly · disabled"
+      >
+        <Matrix
+          columns={["Empty", "Selected", "Read only", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <DatePicker key="empty" aria-label="Empty release date" />,
+                <DatePicker
+                  key="selected"
+                  aria-label="Selected release date"
+                  clearable
+                  defaultValue="2026-06-15"
+                  today="2026-06-15"
+                />,
+                <DatePicker
+                  key="readonly"
+                  aria-label="Read-only release date"
+                  defaultValue="2026-06-15"
+                  readOnly
+                  today="2026-06-15"
+                />,
+                <DatePicker key="disabled" aria-label="Disabled release date" disabled />,
               ],
             },
           ]}
@@ -844,7 +1048,7 @@ export function ComponentPlayground() {
       <SpecimenSection
         id="dropdown-menu"
         title="Dropdown Menu"
-        api="trigger · items · disabled · destructive · onSelect"
+        api="trigger · leading and trailing icons · hotkey · disabled · destructive · onSelect"
       >
         <DropdownMenu
           trigger={
@@ -853,10 +1057,10 @@ export function ComponentPlayground() {
             </Button>
           }
           items={[
-            { label: "Rename" },
-            { label: "Duplicate" },
-            { label: "Archive", disabled: true },
-            { label: "Delete", destructive: true },
+            { label: "Rename", leadingIcon: FileText, hotkey: <Kbd>⌘ R</Kbd> },
+            { label: "Duplicate", leadingIcon: Copy, hotkey: <Kbd>⌘ D</Kbd> },
+            { label: "Archive", disabled: true, trailingIcon: ChevronDown },
+            { label: "Delete", destructive: true, leadingIcon: CircleAlert },
           ]}
         />
       </SpecimenSection>
@@ -944,20 +1148,26 @@ export function ComponentPlayground() {
         api="size · image · initials fallback · custom fallback · decorative"
       >
         <Matrix
-          columns={["sm", "md", "lg", "Initials", "Custom"]}
+          columns={["sm", "md", "lg", "Image", "Initials", "Custom"]}
           rows={[
             {
-              label: "Fallback",
+              label: "Preview",
               cells: [
-                <Avatar key="sm" name="Maya Chen" size="sm" />,
-                <Avatar key="md" name="Maya Chen" />,
-                <Avatar key="lg" name="Maya Chen" size="lg" />,
+                <Avatar key="sm" {...avatarPreviewAssets[0]} size="sm" />,
+                <Avatar key="md" {...avatarPreviewAssets[1]} />,
+                <Avatar key="lg" {...avatarPreviewAssets[2]} size="lg" />,
+                <Avatar key="image" {...avatarPreviewAssets[3]} />,
                 <Avatar key="fallback" name="Alex Reed" />,
                 <Avatar key="custom" name="Nerio Team" fallback={<Icon icon={Sparkles} />} />,
               ],
             },
           ]}
         />
+        <div className="component-lab-inline" aria-label="Avatar preview set">
+          {avatarPreviewAssets.map((avatar) => (
+            <Avatar key={avatar.name} {...avatar} size="lg" />
+          ))}
+        </div>
       </SpecimenSection>
       <SpecimenSection
         id="table"
@@ -1036,29 +1246,24 @@ export function ComponentPlayground() {
       <SpecimenSection
         id="list"
         title="List"
-        api="static · linked · ordered · leading · trailing · metadata"
+        api="disc · decimal · dash · icon · none · leading · trailing · metadata"
       >
         <div className="component-lab-card-grid">
           <List
             items={[
               {
                 id: "one",
-                title: "Static row",
-                description: "Description",
-                leading: <Icon icon={FileText} />,
-                meta: "Meta",
+                title: "Write the component contract",
               },
               {
                 id: "two",
-                title: "Linked row",
-                description: "One destination",
-                href: "#list",
-                trailing: <Icon icon={ChevronDown} />,
+                title: "Add accessible states",
               },
+              { id: "three", title: "Verify the public preview" },
             ]}
           />
           <List
-            ordered
+            marker="decimal"
             items={[
               { id: "install", title: "Install tokens" },
               { id: "source", title: "Register source" },
@@ -1067,10 +1272,15 @@ export function ComponentPlayground() {
           />
         </div>
       </SpecimenSection>
-      <SpecimenSection id="separator" title="Separator" api="semantic horizontal separator">
+      <SpecimenSection id="separator" title="Separator" api="horizontal · vertical">
         <div className="component-lab-stack">
           <span>Overview</span>
           <Separator />
+          <span>Activity</span>
+        </div>
+        <div className="component-lab-inline">
+          <span>Overview</span>
+          <Separator orientation="vertical" />
           <span>Activity</span>
         </div>
       </SpecimenSection>
@@ -1089,7 +1299,11 @@ export function ComponentPlayground() {
         </div>
       </SpecimenSection>
 
-      <SpecimenSection id="alert" title="Alert" api="tone · title · icon · action · description">
+      <SpecimenSection
+        id="alert"
+        title="Alert"
+        api="tone · title · icon · action · closeAction · description"
+      >
         <div className="component-lab-stack">
           {(["neutral", "info", "success", "warning", "danger"] as const).map((tone) => (
             <Alert
@@ -1099,7 +1313,7 @@ export function ComponentPlayground() {
               title={`${tone} alert`}
               action={
                 tone === "danger" ? (
-                  <Button size="sm" variant="ghost">
+                  <Button size="sm" variant="secondary">
                     Review
                   </Button>
                 ) : undefined
@@ -1283,7 +1497,6 @@ export function ComponentPlayground() {
             <SidebarRail label="Toggle specimen sidebar" />
           </Sidebar>
           <SidebarInset as="div">
-            <SidebarTrigger label="Toggle specimen sidebar" />
             <Heading as="h3">Product content</Heading>
             <Text tone="secondary">The consuming app owns routes and navigation.</Text>
           </SidebarInset>
@@ -1296,7 +1509,7 @@ export function ComponentPlayground() {
       >
         <div className="component-lab-card-grid">
           <Command items={commandItems}>
-            <CommandInput placeholder="Search commands…" />
+            <CommandInput aria-label="Search commands" placeholder="Search commands…" />
             <CommandList>
               {(item) => (
                 <CommandItem
@@ -1311,7 +1524,7 @@ export function ComponentPlayground() {
             <CommandEmpty>No commands found.</CommandEmpty>
           </Command>
           <Command items={[]}>
-            <CommandInput placeholder="Empty command…" />
+            <CommandInput aria-label="Search empty commands" placeholder="Empty command…" />
             <CommandList>
               {(item) => <CommandItem value={item.value}>{item.label}</CommandItem>}
             </CommandList>

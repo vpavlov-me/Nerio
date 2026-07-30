@@ -10,6 +10,7 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { MotionAdapterExamples } from "../../../../components/motion-adapter-examples";
+import { sourceInstallCommand } from "../../../../lib/public-commands";
 import { createPageMetadata } from "../../../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -151,7 +152,7 @@ export function Presence({ visible }: { visible: boolean }) {
 }`;
 
 const sourceInstall = `pnpm add motion
-pnpm nerio add motion-adapter
+${sourceInstallCommand("motion-adapter")}
 
 import {
   NerioMotionConfig,
@@ -228,7 +229,10 @@ export default function Page() {
           orchestration fragile. Nerio Core never imports Motion, and unrelated adapter subpaths do
           not resolve the optional peer.
         </p>
-        <CodeExample code="pnpm add motion @nerio-ui/adapters" label="Package installation" />
+        <CodeExample
+          code="pnpm add motion @nerio-ui/adapters@0.1.0-alpha.2"
+          label="Package installation"
+        />
         <CodeExample code={adapterUsage} label="LazyMotion package usage" />
         <p>
           The adapter entrypoint is client-only. Keep the <Code>use client</Code> boundary at the
@@ -239,10 +243,26 @@ export default function Page() {
           compositions when the operating-system preference changes.
         </p>
         <p>
+          The stable adapter exports <Code>NerioMotionConfig</Code>,{" "}
+          <Code>useNerioReducedMotion</Code>, <Code>motionTransitions</Code>, and{" "}
+          <Code>motionVariants</Code>. The config accepts only <Code>children</Code>, an optional
+          CSP <Code>nonce</Code>, and <Code>skipAnimations</Code> for deterministic tests. Apply
+          token-aligned transitions to individual animated elements instead of replacing the
+          adapter&apos;s global contract.
+        </p>
+        <p>
           <Code>domAnimation</Code> covers variants, presence, and tap, hover, and focus gestures.
           Load <Code>domMax</Code> only for layout, pan, or drag capabilities. Strict mode catches
           an accidental full <Code>motion</Code> component inside a <Code>LazyMotion</Code>{" "}
           boundary; use <Code>m</Code> from <Code>motion/react-m</Code> there.
+        </p>
+        <p>
+          Alpha consumers that passed <Code>transition</Code>, <Code>isValidProp</Code>,{" "}
+          <Code>isStatic</Code>, or <Code>transformPagePoint</Code> through{" "}
+          <Code>NerioMotionConfig</Code> should move transition choices to each animated element.
+          Compositions that require the other low-level Motion options own a direct Motion
+          integration and must preserve <Code>reducedMotion=&quot;user&quot;</Code>; those options
+          are outside the supported Nerio wrapper.
         </p>
       </section>
 

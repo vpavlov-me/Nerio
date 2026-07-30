@@ -1,6 +1,9 @@
 {
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "1.0.0",
   "name": "nerio",
+  "version": "0.1.0-alpha.2",
+  "sourceRevision": "v0.1.0-alpha.2",
+  "styleContractVersion": "tailwind-v1",
   "items": [
     {
       "name": "typography",
@@ -63,12 +66,12 @@
         "Use Code only for short inline code; use pre and code for larger code blocks.",
         "Typography presets are scoped CSS token recipes; load Geist or Inter in the consuming product before applying their preset class."
       ],
-      "usage": "@import './styles/tokens.css';\n\nimport { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>"
+      "usage": "@import './styles/tokens.css';\n\nimport { Code, Heading, Text } from '@/components/nerio/components/typography';\n\n<Heading as=\"h2\" size=\"lg\">Workspace settings</Heading>\n<Text tone=\"secondary\">Changes apply to every member.</Text>\n<Code>pnpm exec nerio add typography</Code>"
     },
     {
       "name": "motion-adapter",
       "title": "Motion Adapter",
-      "description": "Optional client-only Motion integration with token-aligned transitions, variants, user-preference reduced motion, and bounded LazyMotion loading.",
+      "description": "Stable optional client-only Motion integration with snapshot-protected token-aligned transitions and variants, locked user-preference reduced motion, bounded configuration, and LazyMotion loading.",
       "category": "foundation",
       "docsPath": "/docs/foundations/motion",
       "dependencies": ["motion", "react"],
@@ -97,7 +100,8 @@
         "--n-motion-translate-md"
       ],
       "accessibility": [
-        "NerioMotionConfig always uses reducedMotion=user so operating-system preference removes transform and layout movement while preserving useful opacity feedback.",
+        "NerioMotionConfig always uses reducedMotion=user so operating-system preference avoids animated transform and layout travel while preserving static end states and useful opacity feedback.",
+        "NerioMotionConfig accepts only children, a Content Security Policy nonce, and the deterministic skipAnimations test switch; set token-aligned transitions on individual animated elements.",
         "useNerioReducedMotion exposes a server-stable snapshot and updates mounted compositions when the operating-system preference changes.",
         "Animation must not carry information that is unavailable in the static end state.",
         "Keep the adapter inside the smallest Next.js client boundary; Nerio Core remains CSS-first and server-safe."
@@ -290,6 +294,115 @@
       "usage": "import { Settings } from '@nerio-ui/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
     },
     {
+      "name": "toggle",
+      "title": "Toggle",
+      "description": "Represents one independent button state that remains pressed or not pressed.",
+      "category": "actions",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/toggle.tsx",
+          "target": "components/toggle.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["toggle"],
+      "slots": ["toggle", "toggle-icon", "toggle-label"],
+      "variants": ["ghost", "outline", "sm", "md", "lg"],
+      "states": ["unpressed", "pressed", "disabled"],
+      "requiredTokens": [
+        "--n-toggle-height-sm",
+        "--n-toggle-height-md",
+        "--n-toggle-height-lg",
+        "--n-toggle-radius",
+        "--n-toggle-font-size",
+        "--n-toggle-font-weight",
+        "--n-toggle-gap",
+        "--n-toggle-padding-inline-sm",
+        "--n-toggle-padding-inline-md",
+        "--n-toggle-padding-inline-lg",
+        "--n-toggle-border-width",
+        "--n-toggle-disabled-opacity",
+        "--n-toggle-icon-size-sm",
+        "--n-toggle-icon-size-md",
+        "--n-toggle-icon-size-lg",
+        "--n-toggle-background-ghost",
+        "--n-toggle-background-ghost-hover",
+        "--n-toggle-background-ghost-active",
+        "--n-toggle-border-ghost",
+        "--n-toggle-foreground-ghost",
+        "--n-toggle-background-outline",
+        "--n-toggle-background-outline-hover",
+        "--n-toggle-background-outline-active",
+        "--n-toggle-border-outline",
+        "--n-toggle-foreground-outline",
+        "--n-toggle-shadow-outline",
+        "--n-toggle-background-pressed",
+        "--n-toggle-background-pressed-hover",
+        "--n-toggle-background-pressed-active",
+        "--n-toggle-border-pressed",
+        "--n-toggle-border-pressed-hover",
+        "--n-toggle-border-pressed-active",
+        "--n-toggle-foreground-pressed",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Toggle primitive and renders a native type=button by default.",
+        "Expose the persistent state through pressed, defaultPressed, onPressedChange, aria-pressed, and data-pressed.",
+        "Use a stable accessible name while the pressed state changes; do not alternate labels such as Mute and Unmute when aria-pressed is present.",
+        "Icon-only usage requires aria-label at the TypeScript level; visible-label usage derives its name from children unless an explicit ARIA name is supplied.",
+        "Enter, Space, pointer, and touch activation toggle exactly one state while focus remains on the control.",
+        "Disabled Toggle prevents state changes and preserves a visible pressed or unpressed state.",
+        "Use Toggle for an independent retained button state, Button for momentary actions, Switch for immediate settings, and Checkbox for selection.",
+        "ButtonGroup does not add grouped selection; use a future ToggleGroup for exclusive or multiple grouped values.",
+        "Pressed state uses a secondary surface with primary foreground while preserving the variant border; forced-colors mode adds a system highlight boundary, and the state does not depend on motion."
+      ],
+      "usage": "import { Bell } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@/components/nerio/components/toggle';\n\n<Toggle icon={Bell} aria-label=\"Follow updates\" defaultPressed />"
+    },
+    {
       "name": "icon-button",
       "title": "IconButton",
       "description": "Deprecated compatibility wrapper for Button icon-only mode.",
@@ -324,7 +437,7 @@
     {
       "name": "button-group",
       "title": "ButtonGroup",
-      "description": "Joins a small set of related Buttons into one attached horizontal or vertical control set.",
+      "description": "Joins a small set of related Buttons into one attached horizontal control set.",
       "category": "actions",
       "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": ["button"],
@@ -357,7 +470,7 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["button-group"],
-      "variants": ["orientation: horizontal | vertical"],
+      "variants": [],
       "requiredTokens": [
         "--n-button-radius",
         "--n-button-border-width",
@@ -370,7 +483,7 @@
         "Preserves the native semantics and independent Tab order of every child Button; it does not add roving focus or arrow-key navigation.",
         "Use direct Nerio Button children with the same Button variant so the actions remain visually equal."
       ],
-      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ButtonGroup } from '@/components/nerio/components/button-group';\n\n<ButtonGroup aria-label=\"Document actions\" orientation=\"vertical\"><Button variant=\"secondary\">Cancel</Button><Button variant=\"secondary\">Save</Button></ButtonGroup>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { ButtonGroup } from '@/components/nerio/components/button-group';\n\n<ButtonGroup aria-label=\"Document actions\"><Button variant=\"secondary\">Cancel</Button><Button variant=\"secondary\">Save</Button></ButtonGroup>"
     },
     {
       "name": "badge",
@@ -458,6 +571,7 @@
         "--n-badge-background-strong",
         "--n-badge-foreground-strong",
         "--n-badge-background-strong-primary",
+        "--n-badge-foreground-strong-primary",
         "--n-badge-background-strong-info",
         "--n-badge-background-strong-success",
         "--n-badge-background-strong-warning",
@@ -523,7 +637,7 @@
         "--n-spinner-size-lg",
         "--n-spinner-border-width",
         "--n-spinner-duration",
-        "--n-radius-full"
+        "--n-spinner-radius"
       ],
       "accessibility": [
         "Provide a localized label when Spinner is the loading announcement; use decorative when a parent already exposes loading state.",
@@ -689,7 +803,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["root", "icon", "content", "title", "description", "action"],
+      "slots": ["root", "icon", "content", "title", "description", "action", "close"],
       "variants": ["neutral", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-alert-gap",
@@ -766,6 +880,7 @@
         "--n-card-padding-inline",
         "--n-card-padding-block",
         "--n-card-gap",
+        "--n-card-section-gap",
         "--n-card-radius",
         "--n-card-background",
         "--n-card-background-interactive-hover",
@@ -827,14 +942,14 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["root"],
-      "variants": [],
+      "variants": ["orientation: horizontal | vertical"],
       "requiredTokens": ["--n-color-border-subtle"],
       "accessibility": [
         "Renders an hr element for semantic separation.",
         "Use for related sections, not as a replacement for spacing.",
         "Keep separators subtle across themes."
       ],
-      "usage": "import { Separator } from '@/components/nerio/components/separator';\n\n<Separator />"
+      "usage": "import { Separator } from '@/components/nerio/components/separator';\n\n<Separator />\n<Separator orientation=\"vertical\" />"
     },
     {
       "name": "avatar",
@@ -877,6 +992,7 @@
         "--n-avatar-size-sm",
         "--n-avatar-size-md",
         "--n-avatar-size-lg",
+        "--n-avatar-radius",
         "--n-avatar-border",
         "--n-avatar-background"
       ],
@@ -1245,6 +1361,8 @@
       "slots": [
         "root",
         "item",
+        "marker",
+        "item-content",
         "body",
         "link",
         "leading",
@@ -1254,9 +1372,11 @@
         "trailing",
         "meta"
       ],
-      "variants": ["unordered", "ordered"],
+      "variants": ["marker: disc | decimal | dash | icon | none"],
       "requiredTokens": [
         "--n-list-gap",
+        "--n-list-marker-gap",
+        "--n-list-marker-width",
         "--n-list-item-padding",
         "--n-list-item-gap",
         "--n-list-item-radius",
@@ -1267,7 +1387,7 @@
         "--n-focus-ring"
       ],
       "accessibility": [
-        "Uses semantic ul by default and semantic ol when ordered is true.",
+        "Uses semantic ul for disc, dash, icon, and none markers and semantic ol for decimal markers.",
         "Items with href render native anchors instead of fake interactive containers.",
         "Optional description and metadata remain in the natural reading order.",
         "linkProps can extend class, events, target, rel, aria, and data attributes; item.href and the internal data-slot remain protected.",
@@ -1480,7 +1600,7 @@
     {
       "name": "input",
       "title": "Input",
-      "description": "Thin native single-line control for supported short text-like values.",
+      "description": "Thin native single-line control for text-like, numeric, and platform temporal values.",
       "category": "forms",
       "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
@@ -1523,7 +1643,15 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["input"],
-      "variants": ["sm", "md", "lg", "invalid", "disabled", "read-only"],
+      "variants": [
+        "sm",
+        "md",
+        "lg",
+        "type: text | email | password | search | tel | url | number | date | month | week | time | datetime-local",
+        "invalid",
+        "disabled",
+        "read-only"
+      ],
       "requiredTokens": [
         "--n-input-height-md",
         "--n-input-height-sm",
@@ -1546,12 +1674,104 @@
       ],
       "accessibility": [
         "Use with Label or Field so the control has an accessible name.",
-        "Supports native input attributes including required, disabled, autocomplete, and aria-describedby.",
+        "Supports native input attributes including required, disabled, readOnly, min, max, step, autocomplete, and aria-describedby.",
+        "Temporal types preserve browser-owned pickers, localized chrome, native values, validity, and form submission.",
+        "Use the forwarded input ref for valueAsDate where supported and valueAsNumber; datetime-local does not have a standard valueAsDate representation.",
         "Invalid state normalizes to aria-invalid=true only for true validation errors.",
         "Disabled state uses the native disabled attribute; read-only stays focusable and selectable.",
-        "Supported types are text, email, password, search, tel, url, and number."
+        "Supported types are text, email, password, search, tel, url, number, date, month, week, time, and datetime-local."
       ],
-      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Use a short recognizable name.\"><Input placeholder=\"Launch materials\" required autoComplete=\"organization\" /></Field>"
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { Input } from '@/components/nerio/components/input';\n\n<Field label=\"Project name\" description=\"Use a short recognizable name.\"><Input placeholder=\"Launch materials\" required autoComplete=\"organization\" /></Field>\n\n<Field label=\"Start date\"><Input name=\"startDate\" type=\"date\" min=\"2026-01-01\" max=\"2026-12-31\" required /></Field>"
+    },
+    {
+      "name": "file-input",
+      "title": "FileInput",
+      "description": "Native file selection with FileList, picker security, form, and reset behavior.",
+      "category": "forms",
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/file-input.tsx",
+          "target": "components/file-input.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/styles/motion.css",
+          "target": "styles/motion.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": ["file-input-root", "file-input", "file-input-icon"],
+      "variants": ["sm", "md", "lg", "single", "multiple"],
+      "states": ["default", "selected", "required", "invalid", "disabled"],
+      "requiredTokens": [
+        "--n-input-height-md",
+        "--n-input-height-sm",
+        "--n-input-height-lg",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-background-hover",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
+        "--n-input-border-danger",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
+        "--n-file-input-button-gap",
+        "--n-file-input-button-size",
+        "--n-file-input-button-background",
+        "--n-file-input-button-background-hover",
+        "--n-file-input-button-border",
+        "--n-file-input-button-foreground",
+        "--n-file-input-button-disabled-background",
+        "--n-file-input-button-disabled-foreground",
+        "--n-motion-hover-duration",
+        "--n-motion-focus-duration",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Use with Label or Field, aria-label, or aria-labelledby so the native file input has an accessible name.",
+        "The native input remains visible, focusable, and available to assistive technology; browser picker and security behavior stay platform-owned.",
+        "Supports accept, capture, multiple, name, form, required, disabled, aria-describedby, and native form reset.",
+        "Read FileList from event.currentTarget.files or the forwarded HTMLInputElement ref.",
+        "The public API rejects controlled value, defaultValue, readOnly, and alternate input types because browsers prohibit populating file selection.",
+        "Accept and capture are native picker hints; consumers own file validation and localized messages.",
+        "Uploads, Dropzone, previews, queues, progress, retries, persistence, and storage remain consumer or Pro responsibilities."
+      ],
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { FileInput } from '@/components/nerio/components/file-input';\n\n<Field label=\"Attachments\" description=\"Choose PDF or image files.\"><FileInput name=\"attachments\" accept=\".pdf,image/*\" multiple /></Field>"
     },
     {
       "name": "input-group",
@@ -2047,7 +2267,9 @@
       "requiredTokens": [
         "--n-switch-height",
         "--n-switch-width",
+        "--n-switch-radius",
         "--n-switch-thumb-size",
+        "--n-switch-thumb-radius",
         "--n-switch-thumb-offset",
         "--n-switch-field-gap",
         "--n-switch-background",
@@ -2073,6 +2295,287 @@
         "Do not use Switch for long-running or destructive actions."
       ],
       "usage": "import { Switch } from '@/components/nerio/components/switch';\n\n<Switch defaultChecked label=\"Notify collaborators\" description=\"Collaborators receive updates as they happen.\" />"
+    },
+    {
+      "name": "calendar",
+      "title": "Calendar",
+      "description": "Selects one timezone-safe ISO calendar date in a localizable month grid.",
+      "category": "forms",
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["button"],
+      "files": [
+        {
+          "source": "../../ui/src/components/calendar.tsx",
+          "target": "components/calendar.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": [
+        "root",
+        "header",
+        "previous-month",
+        "heading",
+        "next-month",
+        "grid",
+        "weekday-header",
+        "weekday-row",
+        "weekday",
+        "body",
+        "row",
+        "cell",
+        "day"
+      ],
+      "variants": ["single-date", "localized week start"],
+      "states": [
+        "default",
+        "focused",
+        "selected",
+        "today",
+        "outside-month",
+        "unavailable",
+        "disabled",
+        "read-only"
+      ],
+      "requiredTokens": [
+        "--n-calendar-width",
+        "--n-calendar-padding",
+        "--n-calendar-radius",
+        "--n-calendar-border-width",
+        "--n-calendar-border",
+        "--n-calendar-background",
+        "--n-calendar-foreground",
+        "--n-calendar-header-gap",
+        "--n-calendar-grid-gap",
+        "--n-calendar-cell-gap",
+        "--n-calendar-cell-size",
+        "--n-calendar-heading-font-size",
+        "--n-calendar-heading-font-weight",
+        "--n-calendar-weekday-font-size",
+        "--n-calendar-weekday-font-weight",
+        "--n-calendar-weekday-foreground",
+        "--n-calendar-day-radius",
+        "--n-calendar-day-border-width",
+        "--n-calendar-day-font-size",
+        "--n-calendar-day-foreground",
+        "--n-calendar-day-foreground-outside",
+        "--n-calendar-day-foreground-unavailable",
+        "--n-calendar-day-background-hover",
+        "--n-calendar-day-background-active",
+        "--n-calendar-day-background-selected",
+        "--n-calendar-day-background-selected-hover",
+        "--n-calendar-day-background-selected-active",
+        "--n-calendar-day-foreground-selected",
+        "--n-calendar-day-border-selected",
+        "--n-calendar-today-font-weight",
+        "--n-calendar-disabled-opacity",
+        "--n-calendar-duration",
+        "--n-calendar-easing",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Requires exactly one accessible name through aria-label or aria-labelledby.",
+        "Uses a native table with grid semantics, full localized date labels, weekday abbreviations, and one roving day tab stop.",
+        "Arrow keys move by day or week, Home and End move within the week, Page keys move by month, and Shift plus Page keys move by year.",
+        "Enter and Space select the focused date; unavailable, disabled, and read-only states cannot change the value.",
+        "Controlled and uncontrolled selected-date and visible-month state use timezone-safe YYYY-MM-DD values.",
+        "Locale formats labels while firstDayOfWeek intentionally controls the visual week start; locale defaults to en-US for deterministic SSR.",
+        "The heading announces visible-month changes politely; the focused day includes localized selection context; unavailable days expose aria-disabled and use the disabled foreground token without text decoration.",
+        "DatePicker, ranges, multiple selection, events, availability, scheduling, recurrence, time, timezone conversion, fetching, and persistence remain outside Calendar."
+      ],
+      "usage": "import { Calendar } from '@/components/nerio/components/calendar';\n\n<Calendar aria-label=\"Release date\" defaultValue=\"2026-06-15\" min=\"2026-06-01\" max=\"2026-06-30\" firstDayOfWeek={1} />"
+    },
+    {
+      "name": "date-picker",
+      "title": "DatePicker",
+      "description": "Selects one timezone-safe ISO date through a form-backed trigger and Calendar popup.",
+      "category": "forms",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["calendar", "field", "popover"],
+      "files": [
+        {
+          "source": "../../ui/src/components/date-picker.tsx",
+          "target": "components/date-picker.tsx",
+          "role": "component"
+        }
+      ],
+      "baseUiPrimitives": ["popover"],
+      "slots": ["root", "trigger", "content", "clear", "form-control"],
+      "variants": ["single-date", "clearable"],
+      "states": ["empty", "selected", "open", "invalid", "required", "disabled", "read-only"],
+      "requiredTokens": [
+        "--n-input-radius",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-danger",
+        "--n-input-background",
+        "--n-input-background-hover",
+        "--n-input-readonly-border",
+        "--n-input-readonly-background",
+        "--n-input-foreground",
+        "--n-input-placeholder",
+        "--n-popover-radius",
+        "--n-popover-gap",
+        "--n-overlay-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border-width",
+        "--n-overlay-border",
+        "--n-overlay-foreground",
+        "--n-overlay-shadow",
+        "--n-calendar-width",
+        "--n-calendar-padding",
+        "--n-calendar-day-background-selected",
+        "--n-calendar-day-foreground-selected",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Name the trigger through Field, Label, aria-label, or aria-labelledby.",
+        "The trigger description includes the localized selected value or empty placeholder before the open/change action.",
+        "Opening moves focus to Calendar's selected or active roving day; selection, Escape, outside dismissal, and clear restore focus to the trigger.",
+        "The public value and single named form mirror use the timezone-independent YYYY-MM-DD CalendarDate contract; null is the explicit controlled empty value.",
+        "Required, disabled, read-only, invalid, form ownership, submission, and reset behavior remain truthful.",
+        "Locale and formatValue change display only; DatePicker does not parse localized or natural-language text.",
+        "Calendar preserves its complete keyboard, RTL, constraint, forced-colors, reduced-motion, and localization contract.",
+        "Ranges, presets, time, timezone conversion, availability, scheduling, recurrence, and product shortcuts remain outside DatePicker."
+      ],
+      "usage": "import { Field } from '@/components/nerio/components/field';\nimport { DatePicker } from '@/components/nerio/components/date-picker';\n\n<Field label=\"Release date\" description=\"Choose one calendar date.\"><DatePicker name=\"releaseDate\" defaultValue=\"2026-06-15\" clearable /></Field>"
+    },
+    {
+      "name": "slider",
+      "title": "Slider",
+      "description": "Chooses one numeric value within a known range with one thumb.",
+      "category": "forms",
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/slider.tsx",
+          "target": "components/slider.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style"
+        }
+      ],
+      "baseUiPrimitives": ["slider"],
+      "slots": [
+        "root",
+        "header",
+        "label",
+        "value",
+        "control",
+        "track",
+        "indicator",
+        "thumb",
+        "description"
+      ],
+      "variants": ["horizontal", "vertical"],
+      "states": ["default", "dragging", "disabled", "read-only", "invalid", "required"],
+      "requiredTokens": [
+        "--n-slider-control-size",
+        "--n-slider-length",
+        "--n-slider-track-size",
+        "--n-slider-track-radius",
+        "--n-slider-thumb-size",
+        "--n-slider-thumb-radius",
+        "--n-slider-thumb-border-width",
+        "--n-slider-gap",
+        "--n-slider-header-gap",
+        "--n-slider-header-width",
+        "--n-slider-label-font-size",
+        "--n-slider-label-font-weight",
+        "--n-slider-label-color",
+        "--n-slider-value-font-size",
+        "--n-slider-value-color",
+        "--n-slider-track-background",
+        "--n-slider-indicator-background",
+        "--n-slider-thumb-background",
+        "--n-slider-thumb-border",
+        "--n-slider-thumb-border-hover",
+        "--n-slider-thumb-shadow",
+        "--n-slider-focus-ring",
+        "--n-slider-disabled-opacity",
+        "--n-slider-disabled-track-background",
+        "--n-slider-disabled-indicator-background",
+        "--n-slider-disabled-thumb-background",
+        "--n-slider-disabled-thumb-border",
+        "--n-slider-duration",
+        "--n-slider-easing"
+      ],
+      "accessibility": [
+        "Uses the Base UI Slider primitive for keyboard, pointer, touch, form, and orientation behavior.",
+        "Requires exactly one accessible name through a visible label, aria-label, or aria-labelledby.",
+        "Supports Arrow keys, Home, End, Page Up, and Page Down through the nested native range input.",
+        "Supports value, defaultValue, onValueChange, onValueCommitted, min, max, step, largeStep, name, form, disabled, readOnly, and required while intentionally rejecting arrays and multiple thumbs.",
+        "Use format and locale for number formatting, and aria-valuetext or getAriaValueText for localized semantic value text.",
+        "Read-only Slider remains focusable and form-associated while canceling value changes.",
+        "Consumers own units, marks, thresholds, tooltips, charts, filters, media logic, and product-specific scales."
+      ],
+      "usage": "import { Slider } from '@/components/nerio/components/slider';\n\n<Slider label=\"Volume\" name=\"volume\" defaultValue={40} valueLabel=\"40%\" getAriaValueText={(_, value) => `${value} percent`} />"
     },
     {
       "name": "tabs",
@@ -2482,6 +2985,7 @@
         "--n-sidebar-inset-gap",
         "--n-sidebar-region-padding",
         "--n-sidebar-rail-hit-area",
+        "--n-sidebar-rail-inset",
         "--n-sidebar-transition-duration",
         "--n-sidebar-transition-easing",
         "--n-sidebar-background",
@@ -2497,19 +3001,19 @@
       "accessibility": [
         "Sidebar renders complementary aside semantics by default; place a labelled navigation landmark inside SidebarContent when the content is navigation.",
         "SidebarTrigger and SidebarRail require a localized label and expose aria-expanded plus a stable aria-controls relationship.",
-        "SidebarRail is vertically centered and occupies only --n-sidebar-rail-hit-area so adjacent Sidebar and SidebarInset content remains pointer reachable.",
+        "SidebarRail stays at the bottom-right inside the Sidebar and occupies only --n-sidebar-rail-hit-area while expanded or collapsed.",
         "SidebarContent forwards an HTMLDivElement ref, while SidebarInset preserves stable HTMLElement refs for its explicit div or main root.",
         "Collapsed Sidebar content is inert, hidden, and removed from pointer and keyboard interaction while SidebarRail remains reachable.",
         "State changes keep focus on the external trigger or rail and do not add roving focus or Arrow-key behavior to consumer navigation.",
         "Physical left and right placement, explicit text direction, reduced motion, forced colors, compact density, and safe-area padding are supported.",
         "Persistence and mobile behavior remain consumer-owned; compose Sheet explicitly for mobile navigation so only one interactive tree is rendered."
       ],
-      "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label=\"Toggle workspace sidebar\" />\n  </Sidebar>\n  <SidebarInset><SidebarTrigger label=\"Toggle workspace sidebar\" />...</SidebarInset>\n</SidebarProvider>"
+      "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label=\"Toggle workspace sidebar\" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>"
     },
     {
       "name": "command-primitive",
       "title": "Command Primitive",
-      "description": "Provides an accessible local or consumer-filtered action picker with separate label, stable-value, and keyword responsibilities.",
+      "description": "Provides an accessible local or consumer-filtered action picker with separate label, stable-value, and keyword responsibilities plus a globally dependent outer radius capped at 24px.",
       "category": "navigation",
       "dependencies": [
         "@base-ui/react",
@@ -2627,6 +3131,7 @@
         "CommandItem leading content owns its accessibility semantics; decorative Nerio Icons remain hidden through their own default contract.",
         "CommandEmpty and CommandLoading use dedicated polite Base UI status regions and are not arbitrary children of the listbox.",
         "RTL, long localized labels, compact density, reduced motion, and forced colors are supported through semantics and tokens.",
+        "The outer radius follows the global overlay radius and is capped at 24px.",
         "Fetching, ranking, routing, permissions, analytics, history, global shortcuts, and complete command-palette workflows remain consumer or Pro responsibilities."
       ],
       "usage": "import { Kbd } from '@/components/nerio/components/kbd';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/nerio/components/command';\n\nconst items = [\n  { value: 'settings', label: 'Workspace settings', keywords: ['preferences'] },\n  { value: 'archive', label: 'Archive project', disabled: true },\n];\n\n<Command items={items}>\n  <CommandInput aria-label=\"Workspace commands\" placeholder=\"Search commands\" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} disabled={item.disabled} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>\n\n// Selecting by the keyword \"preferences\" writes \"Workspace settings\" to the query; onSelect receives \"settings\"."
@@ -2740,7 +3245,14 @@
       "title": "Popover",
       "description": "Reveals contextual controls or details near a trigger.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": ["button"],
       "files": [
         {
@@ -2814,12 +3326,24 @@
       "title": "DropdownMenu",
       "description": "Groups secondary commands behind a compact trigger.",
       "category": "overlays",
-      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
       "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/dropdown-menu.tsx",
           "target": "components/dropdown-menu.tsx",
+          "role": "component"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
           "role": "component"
         },
         {
@@ -2849,11 +3373,31 @@
         }
       ],
       "baseUiPrimitives": ["menu"],
-      "slots": ["content", "item"],
-      "variants": ["default", "destructive"],
+      "slots": [
+        "content",
+        "group",
+        "group-label",
+        "separator",
+        "item",
+        "leading-icon",
+        "label",
+        "description",
+        "hotkey",
+        "trailing-icon"
+      ],
+      "variants": [
+        "default",
+        "grouped",
+        "destructive",
+        "description",
+        "leading icon",
+        "trailing icon",
+        "hotkey"
+      ],
       "requiredTokens": [
         "--n-dropdown-min-width",
         "--n-dropdown-item-padding-inline",
+        "--n-dropdown-item-gap",
         "--n-dropdown-radius",
         "--n-overlay-z-index",
         "--n-overlay-background",
@@ -2861,6 +3405,7 @@
         "--n-overlay-foreground",
         "--n-overlay-foreground-muted",
         "--n-overlay-control-background",
+        "--n-overlay-divider",
         "--n-overlay-surface-filter",
         "--n-overlay-danger",
         "--n-overlay-shadow",
@@ -2875,11 +3420,13 @@
       "accessibility": [
         "Uses the Base UI Menu primitive.",
         "Items are keyboard reachable and can be disabled.",
+        "Group labels and separators organize related commands without becoming menu items.",
+        "Optional descriptions are associated with their menu items through aria-describedby.",
         "Disabled items stay visible but cannot be selected.",
         "Use destructive tone only for irreversible or high-risk commands.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded menu popup ref."
       ],
-      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ label: 'Rename' }, { label: 'Duplicate', disabled: true }, { label: 'Archive', destructive: true }]} />"
+      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ group: 'Workspace', label: 'Share', description: 'Invite people and choose access' }, { group: 'Workspace', label: 'Duplicate' }, { group: 'Manage', label: 'Delete', destructive: true }]} />"
     },
     {
       "name": "tooltip",
@@ -2926,7 +3473,7 @@
         }
       ],
       "baseUiPrimitives": ["tooltip"],
-      "slots": ["content"],
+      "slots": ["content", "arrow"],
       "variants": [],
       "requiredTokens": [
         "--n-tooltip-radius",
@@ -2943,12 +3490,14 @@
       ],
       "accessibility": [
         "Uses the Base UI Tooltip primitive.",
+        "The arrow stays inside the popup and clips its bordered overlay surface toward the trigger.",
         "Do not put required information only inside a tooltip.",
         "Keep tooltip text short and specific.",
         "Requires an element trigger. Use a keyboard-focusable control when keyboard users need to discover the tooltip.",
-        "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed."
+        "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed.",
+        "Wrap adjacent tooltip triggers in TooltipProvider so their open and close delays are coordinated."
       ],
-      "usage": "import { Tooltip } from '@/components/nerio/components/tooltip';\n\n<Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>"
+      "usage": "import { Tooltip, TooltipProvider } from '@/components/nerio/components/tooltip';\n\n<TooltipProvider>\n  <Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>\n  <Tooltip label=\"Opens settings\"><button type=\"button\">Settings</button></Tooltip>\n</TooltipProvider>"
     },
     {
       "name": "toast",

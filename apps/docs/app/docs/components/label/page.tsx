@@ -88,10 +88,6 @@ const tokenRows = [
   ["Focus", "--n-focus-ring", "Visible keyboard focus for the hint."],
 ] as const;
 
-function LabelPreview({ children }: { children: React.ReactNode }) {
-  return <div className="label-section-preview">{children}</div>;
-}
-
 function LabelExample({
   id,
   label,
@@ -144,74 +140,6 @@ export default function Page() {
       lede="Labels name form controls. Keep required and supplementary hint context compact and beside the visible label."
       kind="label"
       preview={<Preview />}
-      sectionPreviews={{
-        usage: (
-          <LabelPreview>
-            <LabelExample
-              hint="Used in navigation, tables, and activity."
-              id="usage-project-name"
-              label="Project name"
-              required
-            />
-          </LabelPreview>
-        ),
-        variants: (
-          <LabelPreview>
-            <LabelExample id="default-project-name" label="Project name" />
-            <LabelExample id="required-project-name" label="Project name" required />
-          </LabelPreview>
-        ),
-        anatomy: (
-          <LabelPreview>
-            <div className="label-anatomy-preview">
-              <span>LabelRow</span>
-              <span>LabelContent</span>
-              <span>Label + required + hint</span>
-            </div>
-            <LabelExample
-              hint="Supplementary context lives in a Tooltip."
-              id="anatomy-project-name"
-              label="Project name"
-              required
-            />
-          </LabelPreview>
-        ),
-        states: (
-          <LabelPreview>
-            <LabelExample id="state-default" label="Workspace name" />
-            <LabelExample id="state-required" label="Notification email" required />
-          </LabelPreview>
-        ),
-        motion: (
-          <LabelPreview>
-            <LabelExample
-              hint="Focus this trigger with Tab or activate it to read the extra context."
-              id="motion-project-name"
-              label="Project name"
-            />
-          </LabelPreview>
-        ),
-        accessibility: (
-          <LabelPreview>
-            <LabelExample
-              hint="This tooltip clarifies the label but does not carry a required instruction."
-              id="accessibility-project-name"
-              label="Project name"
-              required
-            />
-          </LabelPreview>
-        ),
-        api: (
-          <LabelPreview>
-            <LabelExample
-              hint="Short supplementary guidance."
-              id="api-project-name"
-              label="Project name"
-              required
-            />
-          </LabelPreview>
-        ),
-      }}
       sectionContent={{
         variants: (
           <DocumentationTable

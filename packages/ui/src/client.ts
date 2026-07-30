@@ -1,11 +1,7 @@
 "use client";
 
 export * from "./index";
-export {
-  ButtonGroup,
-  type ButtonGroupOrientation,
-  type ButtonGroupProps,
-} from "./components/button-group";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { Button } from "./components/button";
 export type {
   ButtonBadge,
@@ -24,6 +20,33 @@ export {
   type RadioGroupProps,
 } from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
+export {
+  Toggle,
+  type ToggleChangeEventDetails,
+  type ToggleProps,
+  type ToggleSize,
+  type ToggleVariant,
+} from "./components/toggle";
+export {
+  Slider,
+  type SliderChangeEventDetails,
+  type SliderCommitEventDetails,
+  type SliderOrientation,
+  type SliderProps,
+} from "./components/slider";
+export {
+  Calendar,
+  type CalendarDate,
+  type CalendarFirstDayOfWeek,
+  type CalendarLabels,
+  type CalendarProps,
+} from "./components/calendar";
+export {
+  DatePicker,
+  type DatePickerLabels,
+  type DatePickerOpenChangeEventDetails,
+  type DatePickerProps,
+} from "./components/date-picker";
 export {
   Select,
   SelectGroup,
@@ -54,7 +77,12 @@ export {
   type TabsTriggerProps,
   type TabsVariant,
 } from "./components/tabs";
-export { Tooltip, type TooltipProps } from "./components/tooltip";
+export {
+  Tooltip,
+  TooltipProvider,
+  type TooltipProps,
+  type TooltipProviderProps,
+} from "./components/tooltip";
 export { LabelHint, type LabelHintProps } from "./components/label-hint";
 export { Dialog, DialogFooter, type DialogProps } from "./components/dialog";
 export {

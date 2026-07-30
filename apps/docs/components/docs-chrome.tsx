@@ -45,6 +45,7 @@ import {
   SheetTitle,
   SheetTrigger,
   Tooltip,
+  TooltipProvider,
 } from "@nerio-ui/ui/client";
 import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { modes } from "@nerio-ui/tokens";
@@ -56,6 +57,9 @@ import {
   type Appearance,
 } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
+import { mcpInstall, mcpLocalConfiguration } from "../lib/public-commands";
+import { blockCatalog } from "../features/blocks/catalog";
+import { templateCatalog } from "../features/templates/catalog";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
 type ColorMode = (typeof modes)[number];
@@ -84,7 +88,6 @@ const navGroups: NavGroup[] = [
   {
     title: "Foundations",
     items: [
-      { href: "/docs/foundations/visual-language", label: "Visual language", icon: Palette },
       { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
       { href: "/docs/foundations/typography", label: "Typography", icon: Type },
       { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
@@ -99,6 +102,7 @@ const navGroups: NavGroup[] = [
     items: [
       { href: "/docs/components/kbd", label: "Kbd", icon: Code2 },
       { href: "/docs/components/button", label: "Button", icon: Circle },
+      { href: "/docs/components/toggle", label: "Toggle", icon: Circle },
       { href: "/docs/components/button-group", label: "ButtonGroup", icon: Circle },
     ],
   },
@@ -117,6 +121,7 @@ const navGroups: NavGroup[] = [
     title: "Forms",
     items: [
       { href: "/docs/components/input", label: "Input", icon: Circle },
+      { href: "/docs/components/file-input", label: "FileInput", icon: FileText },
       { href: "/docs/components/input-group", label: "InputGroup", icon: Circle },
       { href: "/docs/components/textarea", label: "Textarea", icon: FileText },
       { href: "/docs/components/label", label: "Label", icon: Circle },
@@ -127,6 +132,9 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/radio-group", label: "RadioGroup", icon: Circle },
       { href: "/docs/components/switch", label: "Switch", icon: Circle },
       { href: "/docs/components/select", label: "Select", icon: Circle },
+      { href: "/docs/components/slider", label: "Slider", icon: Circle },
+      { href: "/docs/components/calendar", label: "Calendar", icon: Circle },
+      { href: "/docs/components/date-picker", label: "DatePicker", icon: Circle },
     ],
   },
   {
@@ -194,7 +202,6 @@ type TocItem = {
 
 const componentToc: TocItem[] = [
   { id: "overview", label: "Overview" },
-  { id: "preview", label: "Preview" },
   { id: "installation", label: "Installation" },
   { id: "usage", label: "Usage" },
   { id: "variants", label: "Variants" },
@@ -214,28 +221,29 @@ const componentToc: TocItem[] = [
 const compositionToc: TocItem[] = [
   { id: "overview", label: "Overview" },
   { id: "live-preview", label: "Live preview" },
+  { id: "intended-use", label: "Intended use" },
   { id: "code", label: "Code" },
-  { id: "components-used", label: "Components used" },
+  { id: "anatomy", label: "Anatomy" },
   { id: "accessibility", label: "Accessibility" },
   { id: "responsive-behaviour", label: "Responsive behaviour" },
-  { id: "notes", label: "Notes" },
+  { id: "boundaries", label: "Boundaries" },
+  { id: "related-surfaces", label: "Related surfaces" },
 ];
 
 const compositionGroup: NavGroup = {
-  title: "Composition previews",
-  items: [
-    { href: "/docs/blocks/login", label: "Login", icon: PanelLeft },
-    { href: "/docs/blocks/register", label: "Register", icon: PanelLeft },
-    { href: "/docs/blocks/forgot-password", label: "Forgot password", icon: PanelLeft },
-    { href: "/docs/blocks/settings-form", label: "Settings form", icon: Wrench },
-    { href: "/docs/blocks/table-toolbar", label: "Table toolbar", icon: ListTree },
-    { href: "/docs/blocks/user-profile", label: "User profile", icon: Circle },
-    { href: "/docs/blocks/empty-states", label: "Empty states", icon: FileText },
-    { href: "/docs/blocks/feedback", label: "Feedback", icon: Circle },
-    { href: "/docs/blocks/overlay-playground", label: "Overlay playground", icon: PanelLeft },
-    { href: "/docs/blocks/navigation-patterns", label: "Navigation patterns", icon: Layers },
-    { href: "/docs/blocks/dense-form", label: "Dense form", icon: Wrench },
-  ],
+  title: "Blocks",
+  items: blockCatalog.map((block) => ({
+    href: block.detailRoute,
+    label: block.title,
+    icon:
+      block.category === "Authentication"
+        ? PanelLeft
+        : block.category === "Settings and account"
+          ? Wrench
+          : block.category === "Team and operations"
+            ? ListTree
+            : FileText,
+  })),
 };
 
 const buttonToc: TocItem[] = [
@@ -277,15 +285,6 @@ const badgeToc: TocItem[] = [
 ];
 
 const tocByPath: Record<string, TocItem[]> = {
-  "/docs/foundations/visual-language": [
-    { id: "surfaces", label: "Surfaces" },
-    { id: "color", label: "Color" },
-    { id: "typography", label: "Typography" },
-    { id: "geometry", label: "Geometry" },
-    { id: "interaction", label: "Interaction" },
-    { id: "density", label: "Density" },
-    { id: "motion", label: "Motion" },
-  ],
   "/docs/getting-started": [
     { id: "install", label: "Install" },
     { id: "project-shape", label: "Project shape" },
@@ -362,7 +361,7 @@ function getDefaultToc(pathname: string): TocItem[] {
   if (pathname === "/docs/components/button") return buttonToc;
   if (pathname === "/docs/components/badge") return badgeToc;
   if (pathname.startsWith("/docs/components/")) return componentToc;
-  if (pathname.startsWith("/docs/blocks/") || pathname.startsWith("/docs/compositions/")) {
+  if (pathname.startsWith("/blocks/")) {
     return compositionToc;
   }
   return tocByPath[pathname] ?? [];
@@ -391,6 +390,12 @@ const searchEntries: DocsCommandEntry[] = [
     }),
   ),
   {
+    href: "/blocks",
+    title: "Blocks",
+    group: "Product compositions",
+    description: "Explore bounded, reusable Nerio compositions for one clear product task.",
+  },
+  {
     href: "/playground",
     title: "Playground",
     group: "Tools",
@@ -398,10 +403,16 @@ const searchEntries: DocsCommandEntry[] = [
   },
   {
     href: "/templates",
-    title: "Workspace demo",
-    group: "Tools",
-    description: "Test Core components together in a realistic universal product workspace.",
+    title: "Templates",
+    group: "Product scenarios",
+    description: "Explore complete app-like Nerio previews rendered inside the docs application.",
   },
+  ...templateCatalog.map((template) => ({
+    href: template.detailRoute,
+    title: template.title,
+    group: "Templates",
+    description: template.description,
+  })),
 ];
 
 const foundationGroups = navGroups.slice(0, 2);
@@ -412,7 +423,7 @@ const documentationItems: NavItem[] = [
 ];
 
 function getSidebarGroups(pathname: string): NavGroup[] {
-  if (pathname.startsWith("/docs/blocks") || pathname.startsWith("/docs/compositions")) {
+  if (pathname.startsWith("/blocks/")) {
     return [compositionGroup];
   }
   return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
@@ -428,8 +439,15 @@ function getAdjacentDocs(pathname: string) {
   };
 }
 
-function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
+function MobileDocumentationNavigation({
+  pathname,
+  showPreviewSurfaces,
+}: {
+  pathname: string;
+  showPreviewSurfaces: boolean;
+}) {
   const [open, setOpen] = React.useState(false);
+  const navigationGroups = showPreviewSurfaces ? publicNavigationGroups : navGroups;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -453,7 +471,7 @@ function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
         </SheetHeader>
         <SheetBody>
           <nav className="docs-mobile-navigation" aria-label="Mobile documentation">
-            {publicNavigationGroups.map((group) => (
+            {navigationGroups.map((group) => (
               <div className="docs-mobile-navigation__group" key={group.title}>
                 <h2>{group.title}</h2>
                 {group.items.map(({ href, label, icon }) => (
@@ -545,7 +563,7 @@ function PageActions({ pathname }: { pathname: string }) {
 
   const copyInstallHint = async (target: "Cursor" | "VS Code") => {
     await copyToClipboard(
-      `Install the Nerio MCP server in ${target}: pnpm --filter @nerio-ui/mcp start`,
+      `Install the Nerio MCP server in ${target}:\n\n${mcpInstall}\n\n${mcpLocalConfiguration}`,
       `${target} install command copied.`,
     );
   };
@@ -559,34 +577,6 @@ function PageActions({ pathname }: { pathname: string }) {
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  const actionItem = (
-    icon: IconComponent,
-    title: string,
-    description: string,
-    external = false,
-    brand = false,
-  ) => {
-    const ActionIcon = icon;
-
-    return (
-      <span className="docs-action-item">
-        {brand ? (
-          <ActionIcon
-            aria-hidden="true"
-            className="n-icon docs-action-item__brand-icon"
-            focusable="false"
-          />
-        ) : (
-          <Icon icon={icon} />
-        )}
-        <span>
-          <span>{title}</span>
-          <small>{description}</small>
-        </span>
-        {external ? <Icon icon={ExternalLink} /> : null}
-      </span>
-    );
-  };
   const { previous, next } = getAdjacentDocs(pathname);
 
   return (
@@ -612,47 +602,35 @@ function PageActions({ pathname }: { pathname: string }) {
           }
           items={[
             {
-              label: actionItem(FileText, "View as Markdown", "View page as Markdown format"),
+              label: "View as Markdown",
+              description: "View page as Markdown format",
+              leadingIcon: FileText,
               onSelect: viewMarkdown,
             },
             {
-              label: actionItem(
-                SiCursor,
-                "Add to Cursor",
-                "Install MCP Server on Cursor",
-                false,
-                true,
-              ),
+              label: "Add to Cursor",
+              description: "Install MCP Server on Cursor",
+              leadingIcon: SiCursor,
               onSelect: () => void copyInstallHint("Cursor"),
             },
             {
-              label: actionItem(
-                VscVscode,
-                "Add to VS Code",
-                "Install MCP Server on VS Code",
-                false,
-                true,
-              ),
+              label: "Add to VS Code",
+              description: "Install MCP Server on VS Code",
+              leadingIcon: VscVscode,
               onSelect: () => void copyInstallHint("VS Code"),
             },
             {
-              label: actionItem(
-                RiOpenaiFill,
-                "Open in ChatGPT",
-                "Ask questions about this page",
-                true,
-                true,
-              ),
+              label: "Open in ChatGPT",
+              description: "Ask questions about this page",
+              leadingIcon: RiOpenaiFill,
+              trailingIcon: ExternalLink,
               onSelect: () => openAssistant("chatgpt"),
             },
             {
-              label: actionItem(
-                SiClaude,
-                "Open in Claude",
-                "Ask questions about this page",
-                true,
-                true,
-              ),
+              label: "Open in Claude",
+              description: "Ask questions about this page",
+              leadingIcon: SiClaude,
+              trailingIcon: ExternalLink,
               onSelect: () => openAssistant("claude"),
             },
           ]}
@@ -697,18 +675,28 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
   return (
     <nav className="docs-page-navigation" aria-label="Documentation pagination">
       {previous ? (
-        <Link className="docs-page-navigation__previous" href={previous.href}>
-          <span>Previous</span>
-          <strong>{previous.label}</strong>
-        </Link>
-      ) : (
-        <span />
-      )}
+        <Button
+          className="docs-page-navigation__previous"
+          leadingIcon={ArrowLeft}
+          nativeButton={false}
+          render={<Link href={previous.href} />}
+          size="sm"
+          variant="secondary"
+        >
+          {previous.label}
+        </Button>
+      ) : null}
       {next ? (
-        <Link className="docs-page-navigation__next" href={next.href}>
-          <span>Next</span>
-          <strong>{next.label}</strong>
-        </Link>
+        <Button
+          className="docs-page-navigation__next"
+          nativeButton={false}
+          render={<Link href={next.href} />}
+          size="sm"
+          trailingIcon={ArrowRight}
+          variant="secondary"
+        >
+          {next.label}
+        </Button>
       ) : null}
     </nav>
   );
@@ -716,24 +704,31 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
 
 export function DocsChrome({
   children,
-  showPlayground,
+  showPreviewSurfaces,
 }: {
   children: React.ReactNode;
-  showPlayground: boolean;
+  showPreviewSurfaces: boolean;
 }) {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const isHomePage = pathname === "/";
-  const isTemplatesPage = pathname === "/templates";
+  const isBlocksPage = pathname === "/blocks";
+  const isTemplatesPage = pathname.startsWith("/templates");
+  const isTemplateView = pathname.startsWith("/views/");
   const isPlaygroundPage = pathname === "/playground";
   const fallbackToc = getDefaultToc(pathname);
   const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
-  const visibleSearchEntries = showPlayground
+  const visibleSearchEntries = showPreviewSurfaces
     ? searchEntries
-    : searchEntries.filter((entry) => !entry.href.startsWith("/playground"));
+    : searchEntries.filter(
+        (entry) =>
+          !entry.href.startsWith("/playground") &&
+          !entry.href.startsWith("/blocks") &&
+          !entry.href.startsWith("/templates"),
+      );
 
   React.useEffect(() => {
     setFeedback(null);
@@ -747,7 +742,7 @@ export function DocsChrome({
   React.useEffect(() => {
     const headings = Array.from(
       document.querySelectorAll<HTMLElement>(".docs-main h2, .docs-main h3, .docs-main h4"),
-    );
+    ).filter((heading) => !heading.closest(".component-example"));
     const usedIds = new Set<string>();
     const nextToc = headings.map((heading) => {
       const label = heading.textContent?.trim() ?? "";
@@ -785,7 +780,7 @@ export function DocsChrome({
       document.querySelectorAll<HTMLElement>(
         ".docs-main h2[id], .docs-main h3[id], .docs-main h4[id]",
       ),
-    );
+    ).filter((heading) => !heading.closest(".component-example"));
     if (headings.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -825,7 +820,7 @@ export function DocsChrome({
 
   const visibleToc = toc.length > 0 ? toc : fallbackToc;
 
-  if (pathname === "/visual-test") {
+  if (pathname.startsWith("/visual-test") || isTemplateView) {
     return <>{children}</>;
   }
 
@@ -840,7 +835,10 @@ export function DocsChrome({
             <Badge tone="neutral">{version}</Badge>
           </div>
 
-          <MobileDocumentationNavigation pathname={pathname} />
+          <MobileDocumentationNavigation
+            pathname={pathname}
+            showPreviewSurfaces={showPreviewSurfaces}
+          />
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
@@ -859,79 +857,83 @@ export function DocsChrome({
             >
               Components
             </Link>
-            <Link
-              href="/docs/blocks/login"
-              className={pathname.startsWith("/docs/blocks") ? "is-active" : undefined}
-            >
-              Blocks
-            </Link>
-            <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
-              Templates
-            </Link>
-            {showPlayground ? (
-              <Link
-                href="/playground"
-                className={isPlaygroundPage ? "is-active" : undefined}
-                aria-current={isPlaygroundPage ? "page" : undefined}
-              >
-                Playground
-              </Link>
+            {showPreviewSurfaces ? (
+              <>
+                <Link
+                  href="/blocks"
+                  className={pathname.startsWith("/blocks") ? "is-active" : undefined}
+                >
+                  Blocks
+                </Link>
+                <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
+                  Templates
+                </Link>
+                <Link
+                  href="/playground"
+                  className={isPlaygroundPage ? "is-active" : undefined}
+                  aria-current={isPlaygroundPage ? "page" : undefined}
+                >
+                  Playground
+                </Link>
+              </>
             ) : null}
           </nav>
 
-          <div className="docs-controls">
-            <DocsCommandPalette entries={visibleSearchEntries} />
-            <span className="docs-controls-divider" aria-hidden />
-            <DropdownMenu
-              className="docs-mode-menu"
-              trigger={
-                <Button
-                  aria-label={`Color mode: ${runtimeLabel(mode)}`}
-                  icon={modeIcons[mode]}
-                  tooltip={`Color mode: ${runtimeLabel(mode)}`}
-                  variant="ghost"
-                />
-              }
-              items={modeOptions.map((option) => ({
-                label: (
-                  <span className="runtime-menu-item">
-                    <Icon icon={option.icon} />
-                    <span>{option.label}</span>
-                    {mode === option.value ? <Icon icon={Check} /> : null}
-                  </span>
-                ),
-                onSelect: () => {
-                  if (isColorMode(option.value)) setMode(option.value);
-                },
-              }))}
-            />
-            <span className="docs-controls-divider" aria-hidden />
-            <Button
-              className="docs-github-link"
-              nativeButton={false}
-              render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
-              variant="secondary"
-            >
-              <span className="docs-github-mark" aria-hidden>
-                {mode === "system" ? (
-                  <picture>
-                    <source
-                      media="(prefers-color-scheme: dark)"
-                      srcSet="/brand/github-invertocat-white.svg"
-                    />
-                    <img src="/brand/github-invertocat-black.svg" alt="" width={14} />
-                  </picture>
-                ) : (
-                  <img
-                    src={`/brand/github-invertocat-${mode === "dark" ? "white" : "black"}.svg`}
-                    alt=""
-                    width={14}
+          <TooltipProvider closeDelay={0} delay={600}>
+            <div className="docs-controls">
+              <DocsCommandPalette entries={visibleSearchEntries} />
+              <span className="docs-controls-divider" aria-hidden />
+              <DropdownMenu
+                className="docs-mode-menu"
+                trigger={
+                  <Button
+                    aria-label={`Color mode: ${runtimeLabel(mode)}`}
+                    icon={modeIcons[mode]}
+                    tooltip={`Color mode: ${runtimeLabel(mode)}`}
+                    variant="ghost"
                   />
-                )}
-              </span>
-              GitHub
-            </Button>
-          </div>
+                }
+                items={modeOptions.map((option) => ({
+                  label: (
+                    <span className="runtime-menu-item">
+                      <Icon icon={option.icon} />
+                      <span>{option.label}</span>
+                      {mode === option.value ? <Icon icon={Check} /> : null}
+                    </span>
+                  ),
+                  onSelect: () => {
+                    if (isColorMode(option.value)) setMode(option.value);
+                  },
+                }))}
+              />
+              <span className="docs-controls-divider" aria-hidden />
+              <Button
+                className="docs-github-link"
+                nativeButton={false}
+                render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
+                variant="secondary"
+              >
+                <span className="docs-github-mark" aria-hidden>
+                  {mode === "system" ? (
+                    <picture>
+                      <source
+                        media="(prefers-color-scheme: dark)"
+                        srcSet="/brand/github-invertocat-white.svg"
+                      />
+                      <img src="/brand/github-invertocat-black.svg" alt="" width={14} />
+                    </picture>
+                  ) : (
+                    <img
+                      src={`/brand/github-invertocat-${mode === "dark" ? "white" : "black"}.svg`}
+                      alt=""
+                      width={14}
+                    />
+                  )}
+                </span>
+                GitHub
+              </Button>
+            </div>
+          </TooltipProvider>
         </div>
       </header>
 
@@ -939,12 +941,12 @@ export function DocsChrome({
         className={
           isHomePage
             ? "docs-layout docs-layout--landing"
-            : isTemplatesPage || isPlaygroundPage
+            : isBlocksPage || isTemplatesPage || isPlaygroundPage
               ? "docs-layout docs-layout--template"
               : "docs-layout"
         }
       >
-        {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+        {isHomePage || isBlocksPage || isTemplatesPage || isPlaygroundPage ? null : (
           <aside className="docs-sidebar">
             <nav aria-label="Documentation">
               {sidebarGroups.map((group) => (
@@ -978,21 +980,21 @@ export function DocsChrome({
               ? "docs-main docs-main--landing"
               : isPlaygroundPage
                 ? "docs-main docs-main--template docs-main--playground"
-                : isTemplatesPage
+                : isBlocksPage || isTemplatesPage
                   ? "docs-main docs-main--template"
                   : "docs-main"
           }
         >
-          {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+          {isHomePage || isBlocksPage || isTemplatesPage || isPlaygroundPage ? null : (
             <PageActions pathname={pathname} />
           )}
           {children}
-          {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+          {isHomePage || isBlocksPage || isTemplatesPage || isPlaygroundPage ? null : (
             <DocsPageNavigation pathname={pathname} />
           )}
         </main>
 
-        {isHomePage || isTemplatesPage || isPlaygroundPage ? null : (
+        {isHomePage || isBlocksPage || isTemplatesPage || isPlaygroundPage ? null : (
           <aside className="docs-toc" aria-label="On this page">
             <div className="docs-toc-card">
               <div className="docs-toc-title">On this page</div>
@@ -1018,39 +1020,49 @@ export function DocsChrome({
             <section className="docs-toc-feedback" aria-labelledby="docs-feedback-title">
               <h2 id="docs-feedback-title">Was this helpful?</h2>
               {feedback ? (
-                <p className="docs-toc-feedback__thanks" role="status">
-                  Thanks for your feedback.
-                </p>
+                <div className="docs-toc-feedback__thanks">
+                  <p role="status">Thanks for your feedback.</p>
+                  <Button
+                    nativeButton={false}
+                    render={<a href={repoUrl} rel="noreferrer" target="_blank" />}
+                    variant="link"
+                  >
+                    Star Nerio on GitHub
+                  </Button>
+                </div>
               ) : (
-                <div className="docs-toc-feedback__choices" role="group" aria-label="Page feedback">
-                  <button
-                    type="button"
-                    aria-label="Helpful"
-                    data-feedback-value="helpful"
-                    data-metrika-goal="docs-feedback-helpful"
-                    onClick={() => setFeedback("helpful")}
-                  >
-                    <span aria-hidden="true">🙂</span>
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Neither helpful nor unhelpful"
-                    data-feedback-value="neutral"
-                    data-metrika-goal="docs-feedback-neutral"
-                    onClick={() => setFeedback("neutral")}
-                  >
-                    <span aria-hidden="true">😐</span>
-                  </button>
-                  <button
-                    type="button"
+                <ButtonGroup className="docs-toc-feedback__choices" aria-label="Page feedback">
+                  <Button
                     aria-label="Not helpful"
                     data-feedback-value="not-helpful"
                     data-metrika-goal="docs-feedback-not-helpful"
+                    size="sm"
+                    variant="secondary"
                     onClick={() => setFeedback("not-helpful")}
                   >
                     <span aria-hidden="true">☹️</span>
-                  </button>
-                </div>
+                  </Button>
+                  <Button
+                    aria-label="Neither helpful nor unhelpful"
+                    data-feedback-value="neutral"
+                    data-metrika-goal="docs-feedback-neutral"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setFeedback("neutral")}
+                  >
+                    <span aria-hidden="true">😐</span>
+                  </Button>
+                  <Button
+                    aria-label="Helpful"
+                    data-feedback-value="helpful"
+                    data-metrika-goal="docs-feedback-helpful"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setFeedback("helpful")}
+                  >
+                    <span aria-hidden="true">🙂</span>
+                  </Button>
+                </ButtonGroup>
               )}
             </section>
           </aside>

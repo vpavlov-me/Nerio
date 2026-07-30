@@ -3,6 +3,23 @@ const { Client } = require("@modelcontextprotocol/sdk/client/index.js");
 const { StdioClientTransport } = require("@modelcontextprotocol/sdk/client/stdio.js");
 const manifest = require(path.resolve(__dirname, "../../registry/src/manifest.json"));
 
+function serverCommand() {
+  const commandIndex = process.argv.indexOf("--command");
+  if (commandIndex < 0) {
+    return {
+      command: process.execPath,
+      args: [path.resolve(__dirname, "../src/server.js")],
+    };
+  }
+
+  const separatorIndex = process.argv.indexOf("--", commandIndex + 2);
+  return {
+    command: process.argv[commandIndex + 1],
+    args: separatorIndex < 0 ? [] : process.argv.slice(separatorIndex + 1),
+    env: process.env,
+  };
+}
+
 function assertFileTargets(actual, expected, description) {
   const received = actual.map((file) => file.target).sort();
   const required = [...expected].sort();
@@ -28,18 +45,32 @@ function assertRegistryParity(name, usage, expectedFiles) {
 
 async function verify() {
   const client = new Client({ name: "nerio-mcp-fixture", version: "0.1.0" });
-  const transport = new StdioClientTransport({
-    command: process.execPath,
-    args: [path.resolve(__dirname, "../src/server.js")],
-  });
+  const transport = new StdioClientTransport(serverCommand());
 
   try {
     await client.connect(transport);
+    const serverVersion = client.getServerVersion();
+    if (serverVersion?.name !== "nerio-components" || serverVersion.version !== manifest.version) {
+      throw new Error(
+        `MCP server metadata drifted. Expected nerio-components ${manifest.version}; received ${serverVersion?.name ?? "unknown"} ${serverVersion?.version ?? "unknown"}.`,
+      );
+    }
     const listed = await client.listTools();
     const names = listed.tools.map((tool) => tool.name).sort();
-    const expected = ["get_component", "get_component_usage", "list_components"];
+    const expected = ["get_component", "get_component_usage", "get_registry", "list_components"];
     if (JSON.stringify(names) !== JSON.stringify(expected)) {
       throw new Error(`Unexpected MCP tools: ${names.join(", ")}`);
+    }
+
+    const registryResult = await client.callTool({ name: "get_registry", arguments: {} });
+    const registry = JSON.parse(registryResult.content[0].text);
+    if (
+      registry.schemaVersion !== manifest.schemaVersion ||
+      registry.version !== manifest.version ||
+      registry.sourceRevision !== manifest.sourceRevision ||
+      registry.styleContractVersion !== manifest.styleContractVersion
+    ) {
+      throw new Error("MCP Registry metadata drifted from the versioned manifest.");
     }
 
     const result = await client.callTool({ name: "get_component", arguments: { name: "button" } });
@@ -107,7 +138,8 @@ async function verify() {
       motionUsage.docsPath !== "/docs/foundations/motion" ||
       !motionUsage.optionalPeerDependencies.includes("motion") ||
       !motionUsage.files.some((file) => file.target === "lib/motion-adapter.tsx") ||
-      !motionUsage.requiredTokens.includes("--n-duration-normal")
+      !motionUsage.requiredTokens.includes("--n-duration-normal") ||
+      !motionUsage.accessibility.some((item) => item.includes("accepts only children"))
     ) {
       throw new Error("MCP Motion Adapter usage is missing its optional-peer or token contract.");
     }
@@ -154,6 +186,19 @@ async function verify() {
       throw new Error(
         "MCP InputGroup usage is missing composition, token, or accessibility metadata.",
       );
+    }
+
+    const inputUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "input" },
+    });
+    const inputUsage = JSON.parse(inputUsageResult.content[0].text);
+    if (
+      !inputUsage.variants.some((item) => item.includes("datetime-local")) ||
+      !inputUsage.accessibility.some((item) => item.includes("browser-owned pickers")) ||
+      !inputUsage.accessibility.some((item) => item.includes("valueAsDate"))
+    ) {
+      throw new Error("MCP Input usage is missing the native temporal contract.");
     }
 
     const selectUsageResult = await client.callTool({
@@ -399,6 +444,136 @@ async function verify() {
       throw new Error("MCP Switch usage is missing Base UI, dependency, or token metadata.");
     }
 
+    const toggleUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "toggle" },
+    });
+    const toggleUsage = JSON.parse(toggleUsageResult.content[0].text);
+    assertRegistryParity("toggle", toggleUsage, [
+      "components/icon.tsx",
+      "components/toggle.tsx",
+      "lib/cn.ts",
+      "lib/motion.ts",
+      "lib/resolve-class-name.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      !toggleUsage.baseUiPrimitives.includes("toggle") ||
+      !toggleUsage.dependencies.includes("@nerio-ui/adapters") ||
+      !toggleUsage.slots.includes("toggle-label") ||
+      !toggleUsage.states.includes("pressed") ||
+      !toggleUsage.requiredTokens.includes("--n-toggle-background-pressed") ||
+      !toggleUsage.accessibility.some((item) => item.includes("stable accessible name")) ||
+      !toggleUsage.accessibility.some((item) => item.includes("future ToggleGroup"))
+    ) {
+      throw new Error("MCP Toggle usage is missing Base UI, naming, state, or boundary metadata.");
+    }
+
+    const sliderUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "slider" },
+    });
+    const sliderUsage = JSON.parse(sliderUsageResult.content[0].text);
+    assertRegistryParity("slider", sliderUsage, [
+      "components/slider.tsx",
+      "lib/cn.ts",
+      "lib/compose-refs.ts",
+      "lib/motion.ts",
+      "lib/resolve-class-name.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      !sliderUsage.baseUiPrimitives.includes("slider") ||
+      !sliderUsage.slots.includes("thumb") ||
+      !sliderUsage.variants.includes("vertical") ||
+      !sliderUsage.requiredTokens.includes("--n-slider-focus-ring") ||
+      !sliderUsage.accessibility.some((item) => item.includes("exactly one accessible name")) ||
+      !sliderUsage.accessibility.some((item) => item.includes("intentionally rejecting arrays"))
+    ) {
+      throw new Error(
+        "MCP Slider usage is missing single-value, accessibility, or token metadata.",
+      );
+    }
+
+    const fileInputUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "file-input" },
+    });
+    const fileInputUsage = JSON.parse(fileInputUsageResult.content[0].text);
+    assertRegistryParity("file-input", fileInputUsage, [
+      "components/file-input.tsx",
+      "components/icon.tsx",
+      "lib/cn.ts",
+      "lib/motion.ts",
+      "lib/tailwind-cn.ts",
+      "styles/motion.css",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      fileInputUsage.baseUiPrimitives.length !== 0 ||
+      !fileInputUsage.dependencies.includes("@nerio-ui/adapters") ||
+      !fileInputUsage.slots.includes("file-input-root") ||
+      !fileInputUsage.slots.includes("file-input") ||
+      !fileInputUsage.slots.includes("file-input-icon") ||
+      !fileInputUsage.variants.includes("multiple") ||
+      !fileInputUsage.requiredTokens.includes("--n-file-input-button-size") ||
+      !fileInputUsage.requiredTokens.includes("--n-file-input-button-background") ||
+      !fileInputUsage.accessibility.some((item) => item.includes("FileList")) ||
+      !fileInputUsage.accessibility.some((item) => item.includes("rejects controlled value"))
+    ) {
+      throw new Error("MCP FileInput usage is missing native selection or token metadata.");
+    }
+
+    const calendarUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "calendar" },
+    });
+    const calendarUsage = JSON.parse(calendarUsageResult.content[0].text);
+    assertRegistryParity("calendar", calendarUsage, [
+      "components/calendar.tsx",
+      "lib/cn.ts",
+      "lib/compose-refs.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      calendarUsage.baseUiPrimitives.length !== 0 ||
+      !calendarUsage.registryDependencies.includes("button") ||
+      !calendarUsage.slots.includes("day") ||
+      !calendarUsage.states.includes("unavailable") ||
+      !calendarUsage.requiredTokens.includes("--n-calendar-day-background-selected") ||
+      !calendarUsage.accessibility.some((item) => item.includes("YYYY-MM-DD")) ||
+      !calendarUsage.accessibility.some((item) => item.includes("Shift plus Page"))
+    ) {
+      throw new Error("MCP Calendar usage is missing ISO, grid, keyboard, or token metadata.");
+    }
+
+    const datePickerUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "date-picker" },
+    });
+    const datePickerUsage = JSON.parse(datePickerUsageResult.content[0].text);
+    assertRegistryParity("date-picker", datePickerUsage, ["components/date-picker.tsx"]);
+    if (
+      !datePickerUsage.baseUiPrimitives.includes("popover") ||
+      !datePickerUsage.registryDependencies.includes("calendar") ||
+      !datePickerUsage.registryDependencies.includes("field") ||
+      !datePickerUsage.registryDependencies.includes("popover") ||
+      !datePickerUsage.slots.includes("form-control") ||
+      !datePickerUsage.states.includes("required") ||
+      !datePickerUsage.requiredTokens.includes("--n-calendar-day-background-selected") ||
+      !datePickerUsage.accessibility.some((item) => item.includes("YYYY-MM-DD")) ||
+      !datePickerUsage.accessibility.some((item) => item.includes("restore focus"))
+    ) {
+      throw new Error("MCP DatePicker usage is missing ISO, form, focus, or token metadata.");
+    }
+
     const itemUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "item" },
@@ -556,9 +731,11 @@ async function verify() {
     const tooltipUsage = JSON.parse(tooltipUsageResult.content[0].text);
     if (
       !tooltipUsage.requiredTokens.includes("--n-overlay-background") ||
-      !tooltipUsage.requiredTokens.includes("--n-overlay-foreground")
+      !tooltipUsage.requiredTokens.includes("--n-overlay-foreground") ||
+      !tooltipUsage.usage.includes("TooltipProvider") ||
+      !tooltipUsage.accessibility.some((item) => item.includes("adjacent tooltip triggers"))
     ) {
-      throw new Error("MCP Tooltip usage is missing overlay token metadata.");
+      throw new Error("MCP Tooltip usage is missing overlay token or provider metadata.");
     }
 
     const dropdownUsageResult = await client.callTool({
@@ -603,13 +780,13 @@ async function verify() {
     });
     const buttonGroupUsage = JSON.parse(buttonGroupUsageResult.content[0].text);
     if (
-      !buttonGroupUsage.variants.includes("orientation: horizontal | vertical") ||
+      buttonGroupUsage.variants.includes("orientation: horizontal | vertical") ||
       !buttonGroupUsage.accessibility.some((item) => item.includes("independent Tab order")) ||
       !buttonGroupUsage.files.some((file) => file.target === "lib/tailwind-cn.ts") ||
       !buttonGroupUsage.files.some((file) => file.target === "styles/tailwind.css")
     ) {
       throw new Error(
-        "MCP ButtonGroup usage is missing stable orientation or accessibility metadata.",
+        "MCP ButtonGroup usage is missing the horizontal-only or accessibility metadata.",
       );
     }
 

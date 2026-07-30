@@ -41,9 +41,17 @@ pnpm lint
 pnpm typecheck
 pnpm test:ui
 pnpm test:a11y
+pnpm validate:platform-support
+pnpm validate:package-budgets
+pnpm test:browser
 pnpm test:visual
 pnpm build
 ```
+
+Browser-sensitive changes should also pass `pnpm test:browser:repeat`. CI records browser retries
+in a JSON report and retains traces, screenshots, and videos only when a failure occurs. Supported
+engines and limitations are documented in `docs/platform-support.md`; package and performance
+thresholds and their override process are documented in `docs/quality-gates.md`.
 
 ## Commit messages
 

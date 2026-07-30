@@ -24,6 +24,7 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Field,
+  FileInput,
   Input,
   InputGroup,
   InputGroupAddon,
@@ -70,6 +71,8 @@ import {
 } from "../../src/index";
 import {
   Button,
+  Calendar,
+  type CalendarDate,
   Checkbox,
   Command,
   CommandEmpty,
@@ -79,6 +82,7 @@ import {
   CommandLoading,
   Dialog,
   DialogFooter,
+  DatePicker,
   DropdownMenu,
   LabelHint,
   Popover,
@@ -102,7 +106,9 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
+  Slider,
   Switch,
+  Toggle,
   Tabs,
   TabsContent,
   TabsIndicator,
@@ -110,6 +116,7 @@ import {
   TabsPanels,
   TabsTrigger,
   Tooltip,
+  TooltipProvider,
   Toast,
   ToastProvider,
   ToastViewport,
@@ -167,6 +174,12 @@ const invalidUnnamedIconButton = <Button icon={Bell} />;
 const invalidUnnamedMeaningfulIcon = <Icon decorative={false} icon={Bell} />;
 // @ts-expect-error Icon owns its non-focusable SVG contract.
 const invalidFocusableIcon = <Icon focusable icon={Bell} />;
+// @ts-expect-error FileInput always owns the native file type.
+const _invalidFileInputOverride = <FileInput type="text" />;
+// @ts-expect-error browsers prohibit populating a native file input value.
+const _invalidFileInputValue = <FileInput value="report.pdf" />;
+// @ts-expect-error ButtonGroup supports only its horizontal attached layout.
+const _invalidVerticalButtonGroup = <ButtonGroup orientation="vertical" />;
 // @ts-expect-error Icon never exposes the SVG in the tab order.
 const invalidTabIndexedIcon = <Icon icon={Bell} tabIndex={0} />;
 // @ts-expect-error icon-only Button cannot include visible children
@@ -185,10 +198,29 @@ const invalidButtonKbd = <Button kbd={<span>⌘K</span>}>Search</Button>;
 const invalidIconButtonBadge = (
   <Button icon={Bell} aria-label="Notifications" badge={<Badge>2</Badge>} />
 );
+// @ts-expect-error icon-only Toggle requires a stable accessible name
+const _invalidUnnamedIconToggle = <Toggle icon={Bell} />;
+// @ts-expect-error icon-only Toggle cannot include visible children
+const _invalidMixedIconToggle = (
+  <Toggle icon={Bell} aria-label="Favorite">
+    Favorite
+  </Toggle>
+);
+// @ts-expect-error visible-label Toggle uses leadingIcon rather than icon
+const _invalidVisibleToggleIcon = <Toggle icon={Bell}>Favorite</Toggle>;
+const _validIconToggle = <Toggle icon={Bell} aria-label="Favorite" />;
+const _validVisibleToggle = <Toggle leadingIcon={Bell}>Favorite</Toggle>;
 // @ts-expect-error linked Cards cannot also choose a surface root
 const invalidLinkedCard = <Card href="/docs" as="article" />;
-// @ts-expect-error Date inputs have a dedicated future component boundary.
-const invalidInputType = <Input type="date" />;
+const validTemporalInputTypes = [
+  <Input key="date" type="date" />,
+  <Input key="month" type="month" />,
+  <Input key="week" type="week" />,
+  <Input key="time" type="time" />,
+  <Input key="datetime-local" type="datetime-local" />,
+];
+// @ts-expect-error File selection has a separate FileInput component boundary.
+const invalidFileInputType = <Input type="file" />;
 // @ts-expect-error Native HTML size is exposed as htmlSize, not Input size.
 const invalidNativeInputSize = <Input size={24} />;
 // @ts-expect-error Input sizes are limited to the shared control scale.
@@ -222,6 +254,42 @@ const invalidProgressTone = <Progress aria-label="Upload progress" tone="success
 const validVisibleProgress = <Progress label="Upload" value={50} />;
 const validAriaLabelProgress = <Progress aria-label="Upload progress" value={50} />;
 const validAriaLabelledByProgress = <Progress aria-labelledby="upload-label" value={50} />;
+// @ts-expect-error Slider requires exactly one accessible naming strategy.
+const _invalidUnnamedSlider = <Slider defaultValue={50} />;
+// @ts-expect-error Slider does not accept both visible and ARIA labels.
+const _invalidConflictingSliderName = (
+  <Slider aria-label="Volume" label="Volume" defaultValue={50} />
+);
+// @ts-expect-error Slider intentionally rejects Base UI's multi-thumb range values.
+const _invalidRangeSlider = <Slider aria-label="Budget" value={[20, 80]} />;
+// @ts-expect-error Product-specific marks remain consumer-owned.
+const _invalidSliderMarks = <Slider aria-label="Volume" marks={[0, 50, 100]} />;
+const _validVisibleSlider = <Slider label="Volume" defaultValue={50} />;
+const _validAriaSlider = <Slider aria-label="Volume" defaultValue={50} />;
+// @ts-expect-error Calendar requires exactly one accessible naming strategy.
+const _invalidUnnamedCalendar = <Calendar />;
+// @ts-expect-error Calendar does not accept both accessible naming strategies.
+const _invalidConflictingCalendarName = (
+  <Calendar aria-label="Schedule" aria-labelledby="schedule-label" />
+);
+// @ts-expect-error Calendar values use the ISO YYYY-MM-DD date shape.
+const _invalidCalendarValue = <Calendar aria-label="Schedule" value="06/15/2026" />;
+// @ts-expect-error Calendar month and day segments must be zero-padded.
+const _invalidUnpaddedCalendarValue = <Calendar aria-label="Schedule" value="2026-6-1" />;
+// @ts-expect-error Calendar years require four numeric segments.
+const _invalidShortYearCalendarValue = <Calendar aria-label="Schedule" value="26-06-01" />;
+const _validCalendar = (
+  <Calendar aria-label="Schedule" value="2026-06-15" month="2026-06-01" firstDayOfWeek={1} />
+);
+// @ts-expect-error DatePicker values reuse the ISO YYYY-MM-DD date shape.
+const _invalidDatePickerValue = <DatePicker aria-label="Release date" value="06/15/2026" />;
+// @ts-expect-error DatePicker intentionally excludes range selection.
+const _invalidDatePickerRange = (
+  <DatePicker aria-label="Release dates" value={["2026-06-15", "2026-06-20"]} />
+);
+// @ts-expect-error Arbitrary localized parsing is outside the DatePicker contract.
+const _invalidDatePickerParser = <DatePicker aria-label="Release date" parseValue={() => null} />;
+const _validEmptyControlledDatePicker = <DatePicker aria-label="Release date" value={null} />;
 const validComposedRadioGroup = (
   <RadioGroup label="Visibility">
     <RadioGroupItem value="team">Team</RadioGroupItem>
@@ -248,8 +316,14 @@ void [
   invalidDirectionalIconButton,
   invalidButtonKbd,
   invalidIconButtonBadge,
+  _invalidUnnamedIconToggle,
+  _invalidMixedIconToggle,
+  _invalidVisibleToggleIcon,
+  _validIconToggle,
+  _validVisibleToggle,
   invalidLinkedCard,
-  invalidInputType,
+  validTemporalInputTypes,
+  invalidFileInputType,
   invalidNativeInputSize,
   invalidInputScale,
   invalidMixedRadioGroup,
@@ -265,6 +339,10 @@ void [
   validVisibleProgress,
   validAriaLabelProgress,
   validAriaLabelledByProgress,
+  _invalidDatePickerValue,
+  _invalidDatePickerRange,
+  _invalidDatePickerParser,
+  _validEmptyControlledDatePicker,
   validComposedRadioGroup,
   invalidMixedSelect,
   validComposedSelect,
@@ -473,7 +551,7 @@ describe("Core static contracts", () => {
     expect(groupForwardedRef).toHaveBeenLastCalledWith(screen.getByText("Group refs"));
   });
 
-  it("groups related Buttons with named horizontal and vertical layouts", async () => {
+  it("groups related Buttons in one named horizontal layout", async () => {
     const user = userEvent.setup();
     render(
       <>
@@ -482,10 +560,11 @@ describe("Core static contracts", () => {
           <Button render={<a href="/preview" />} variant="secondary">
             Preview
           </Button>
+          <span aria-hidden data-base-ui-focus-guard />
           <Button variant="secondary">Save</Button>
         </ButtonGroup>
         <div data-density="compact" dir="rtl">
-          <ButtonGroup aria-label="Publishing actions" orientation="vertical">
+          <ButtonGroup aria-label="Publishing actions">
             <Button loading variant="secondary">
               Publish
             </Button>
@@ -498,12 +577,11 @@ describe("Core static contracts", () => {
     );
     const group = screen.getByRole("group", { name: "Document actions" });
     expect(group).toHaveAttribute("data-slot", "button-group");
-    expect(group).toHaveAttribute("data-orientation", "horizontal");
     expect(screen.getByRole("link", { name: "Preview" })).toHaveAttribute("href", "/preview");
-    const verticalGroup = screen.getByRole("group", { name: "Publishing actions" });
-    expect(verticalGroup).toHaveAttribute("data-orientation", "vertical");
-    expect(verticalGroup.parentElement).toHaveAttribute("data-density", "compact");
-    expect(verticalGroup.parentElement).toHaveAttribute("dir", "rtl");
+    const publishingGroup = screen.getByRole("group", { name: "Publishing actions" });
+    expect(publishingGroup).not.toHaveAttribute("data-orientation");
+    expect(publishingGroup.parentElement).toHaveAttribute("data-density", "compact");
+    expect(publishingGroup.parentElement).toHaveAttribute("dir", "rtl");
     expect(screen.getByRole("button", { name: "Publish" })).toHaveAttribute("aria-busy", "true");
     expect(screen.getByRole("button", { name: "Archive" })).toBeDisabled();
 
@@ -548,25 +626,132 @@ describe("Core static contracts", () => {
     );
   });
 
-  it("keeps ButtonGroup attachment, focus layering, RTL, and density contracts in Tailwind", () => {
+  it("keeps ButtonGroup attachment, decorative dividers, and focus layering in Tailwind", () => {
     const buttonGroupSource = readFileSync(
       resolve(process.cwd(), "src/components/button-group.tsx"),
       "utf8",
     );
-    expect(buttonGroupSource).toContain("[&>.n-button+.n-button]:ms-");
-    expect(buttonGroupSource).toContain("data-[orientation=vertical]:[&>.n-button+.n-button]:mt-");
-    expect(buttonGroupSource).toContain(
-      "rtl:data-[orientation=vertical]:[&>.n-button+.n-button::before]:translate-x-1/2",
-    );
-    expect(buttonGroupSource).toContain("[&>.n-button:first-child]:rounded-s-");
-    expect(buttonGroupSource).toContain(
-      "data-[orientation=vertical]:[&>.n-button:first-child]:rounded-b-none",
-    );
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button]:border-s-0");
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button::before]:h-");
+    expect(buttonGroupSource).toContain("[&>.n-button~.n-button::before]:start-0");
+    expect(buttonGroupSource).not.toContain("[&>.n-button~.n-button]:ms-");
+    expect(buttonGroupSource).toContain("[&>.n-button:nth-child(1_of_.n-button)]:rounded-s-");
+    expect(buttonGroupSource).toContain("[&>.n-button:nth-last-child(1_of_.n-button)]:rounded-e-");
+    expect(buttonGroupSource).not.toContain("first-of-type");
+    expect(buttonGroupSource).not.toContain("last-of-type");
     expect(buttonGroupSource).toContain("[&>.n-button:focus-visible]:z-2");
-    expect(buttonGroupSource).toContain(
-      "data-[orientation=vertical]:[&>.n-button:only-child]:rounded-(--n-button-radius)",
-    );
+    expect(buttonGroupSource).not.toContain("orientation");
     expect(buttonGroupSource).not.toContain("overflow-hidden");
+  });
+
+  it("keeps the reviewed control-state refinements explicit in source and tokens", () => {
+    const componentSource = (name: string) =>
+      readFileSync(resolve(process.cwd(), `src/components/${name}.tsx`), "utf8");
+    const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
+
+    expect(componentSource("checkbox")).toContain("strokeWidth={2.2}");
+    expect(componentSource("slider")).not.toContain("data-disabled:opacity-(--n-opacity-disabled)");
+    expect(componentSource("slider")).toContain(
+      "group-data-disabled/slider:bg-(--n-slider-disabled-thumb-background)",
+    );
+    expect(componentSource("slider")).toContain(
+      "group-data-disabled/slider:opacity-(--n-slider-disabled-opacity)",
+    );
+    expect(componentSource("slider")).toContain(
+      "n-slider__control relative flex h-(--n-slider-control-size)",
+    );
+    expect(componentSource("slider")).toContain(
+      "n-slider__track relative h-(--n-slider-track-size)",
+    );
+    expect(componentSource("slider")).not.toContain("before:h-(--n-slider-control-size)");
+    expect(componentSource("calendar")).toContain("overflow-hidden");
+    expect(componentSource("calendar")).not.toContain("<h2");
+    expect(componentSource("calendar")).toContain('className="p-0 text-center align-middle"');
+    expect(componentSource("calendar")).toContain('locale = "en-US"');
+    expect(componentSource("calendar")).not.toContain("underline");
+    expect(componentSource("calendar")).not.toContain("line-through");
+    expect(componentSource("calendar")).toContain(
+      "data-selected:[&:hover:not(:disabled):not([aria-disabled=true])]",
+    );
+    expect(componentSource("date-picker")).toContain("trailingIcon={CalendarDays}");
+    expect(componentSource("tooltip")).toContain("<BaseTooltip.Arrow");
+    expect(componentSource("tooltip")).toContain("sideOffset={10}");
+    expect(componentSource("tooltip")).toContain("overflow-clip");
+    expect(componentSource("tooltip")).toContain(
+      "before:[transform:translate(-50%,50%)_rotate(45deg)]",
+    );
+    expect(componentSource("input")).toContain("focus:border-(--n-input-border-focus)");
+    expect(componentSource("input")).not.toContain("focus-visible:shadow-(--n-focus-ring)");
+    expect(componentSource("textarea")).toContain("focus:border-(--n-input-border-focus)");
+    expect(componentSource("textarea")).not.toContain("focus-visible:shadow-(--n-focus-ring)");
+    expect(componentSource("input-group")).not.toContain("focus-within:shadow-(--n-focus-ring)");
+    expect(componentSource("input-group")).not.toContain("overflow-hidden");
+    expect(componentSource("input-group")).not.toContain("!border-0");
+    expect(componentSource("input-group")).not.toContain("!bg-transparent");
+    expect(componentSource("input-group")).not.toContain("!shadow-none");
+    expect(componentSource("input-group")).toContain(
+      "[&:hover:not(:focus):not(:disabled):not([data-readonly])]:bg-transparent",
+    );
+    expect(componentSource("file-input")).toContain("[grid-area:1/1]");
+    expect(componentSource("file-input")).not.toContain("absolute inset-block-0");
+    expect(componentSource("switch")).toContain("rounded-(--n-switch-radius)");
+    expect(componentSource("switch")).toContain("rounded-(--n-switch-thumb-radius)");
+    expect(componentSource("switch")).toContain("translate-x-(--n-switch-thumb-offset)");
+    expect(tokens).toContain(
+      "--n-radius-pill: min(var(--n-radius-control), var(--n-radius-full));",
+    );
+    expect(tokens).toContain("--n-badge-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-avatar-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-progress-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
+    expect(tokens).toContain("--n-slider-gap: var(--n-space-2);");
+    expect(tokens).toContain("--n-slider-thumb-background: var(--n-gray-0);");
+    expect(tokens).toContain("--n-slider-disabled-thumb-background: var(--n-gray-0);");
+    expect(tokens).toContain("--n-switch-thumb-background: var(--n-gray-0);");
+    expect(tokens).toContain("--n-switch-thumb-background-checked: var(--n-gray-0);");
+    expect(tokens).toContain("--n-list-gap: var(--n-space-1);");
+    expect(tokens).toContain("--n-list-item-padding: var(--n-space-2);");
+    expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
+    expect(tokens).toContain("--n-card-section-gap: var(--n-space-2);");
+    expect(tokens).toContain("--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);");
+    expect(tokens).toContain("--n-item-border-width: var(--n-border-width-default);");
+    expect(tokens).toContain("--n-toggle-background-pressed: var(--n-color-action-secondary);");
+    expect(tokens).toContain("--n-toggle-foreground-pressed: var(--n-color-action-primary);");
+    expect(tokens).toContain("--n-toggle-border-pressed: var(--n-color-border-default);");
+    expect(tokens).toContain("--n-toggle-border-pressed-hover: var(--n-color-border-default);");
+    expect(tokens).toContain("--n-toggle-border-pressed-active: var(--n-color-border-default);");
+    expect(componentSource("toggle")).toContain("data-pressed:border-(--n-toggle-border-pressed)");
+    expect(componentSource("toggle")).toContain(
+      "data-pressed:[&:hover:not(:disabled):not([data-disabled])]:border-(--n-toggle-border-pressed-hover)",
+    );
+    expect(componentSource("toggle")).toContain(
+      "data-pressed:[&:active:not(:disabled):not([data-disabled])]:border-(--n-toggle-border-pressed-active)",
+    );
+    expect(tokens).toContain("--n-toast-width: 25rem;");
+    expect(componentSource("toast")).toContain("max-w-(--n-toast-width)");
+    expect(tokens).toContain(
+      "--n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);",
+    );
+    expect(componentSource("calendar")).toContain(
+      "data-unavailable:opacity-(--n-calendar-disabled-opacity)",
+    );
+    expect(componentSource("calendar")).toContain("forced-colors:data-unavailable:opacity-100");
+    expect(tokens).toContain("--n-spinner-radius: var(--n-radius-full);");
+    expect(componentSource("spinner")).toContain("rounded-(--n-spinner-radius)");
+    expect(componentSource("badge")).toContain(
+      "data-[emphasis=strong]:data-[tone=success]:[--n-badge-foreground:var(--n-badge-foreground-strong)]",
+    );
+    expect(componentSource("form-group")).toContain("items-start");
+    expect(componentSource("form-group")).toContain("mb-(--n-form-group-gap)");
+    expect(componentSource("command")).not.toContain("[--n-command-radius:");
+    expect(tokens).toContain("--n-command-radius: min(var(--n-radius-overlay), 1.5rem);");
+    expect(tokens).toContain("--n-badge-background-strong-primary: var(--n-purple-400);");
+    expect(tokens).toContain("--n-badge-foreground-strong: var(--n-gray-950);");
+    expect(tokens).toContain(
+      "--n-badge-foreground-strong-primary: var(--n-color-action-on-primary);",
+    );
   });
 
   it("renders decorative Badge icons on either side of its status label and supports loading", () => {
@@ -728,7 +913,12 @@ describe("Core static contracts", () => {
           data-testid="skeleton"
           {...({ ...unsafeSlot, "aria-hidden": false } as Record<string, string | boolean>)}
         />
-        <Separator data-testid="separator" />
+        <Separator
+          aria-orientation="horizontal"
+          className="h-6"
+          data-testid="separator"
+          orientation="vertical"
+        />
         <KeyValue data-testid="key-value" label="Owner" value="Product team" {...unsafeSlot} />
         <Alert data-testid="alert" title="Saved" tone="success" {...unsafeSlot} />
         <Toast data-testid="toast" title="Updated" tone="info" {...unsafeSlot} />
@@ -767,6 +957,10 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("skeleton")).toHaveAttribute("data-slot", "skeleton");
     expect(screen.getByTestId("skeleton")).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByTestId("separator")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("separator")).toHaveAttribute("data-orientation", "vertical");
+    expect(screen.getByTestId("separator")).toHaveAttribute("aria-orientation", "vertical");
+    expect(screen.getByTestId("separator")).toHaveClass("h-6");
+    expect(screen.getByTestId("separator")).not.toHaveClass("h-auto");
     expect(screen.getByTestId("key-value")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-tone", "success");
@@ -838,9 +1032,10 @@ describe("Core static contracts", () => {
     const motionSource = readFileSync(resolve(process.cwd(), "src/lib/motion.ts"), "utf8");
     const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
 
-    expect(alertSource).not.toContain(
+    expect(alertSource).toContain(
       "data-[tone=success]:[--n-alert-title-color:var(--n-color-status-success)]",
     );
+    expect(listSource).toContain("font-(--n-font-weight-regular)");
     expect(listSource).toContain("duration-(--n-motion-hover-duration)");
     expect(itemSource).toContain("duration-(--n-motion-press-duration)");
     expect(itemSource).toContain("ease-(--n-motion-press-easing)");
@@ -1166,6 +1361,30 @@ describe("Core static contracts", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
   });
 
+  it("supports the complete List marker contract and keeps disc as the default", () => {
+    const { rerender } = render(
+      <List data-testid="markers" items={[{ id: "one", title: "First" }]} />,
+    );
+    expect(screen.getByTestId("markers")).toHaveAttribute("data-marker", "disc");
+    expect(document.querySelector('[data-slot="marker"]')).toHaveTextContent("•");
+
+    rerender(<List data-testid="markers" marker="dash" items={[{ id: "one", title: "First" }]} />);
+    expect(screen.getByTestId("markers")).toHaveAttribute("data-marker", "dash");
+    expect(document.querySelector('[data-slot="marker"]')).toHaveTextContent("–");
+
+    rerender(
+      <List
+        data-testid="markers"
+        marker="icon"
+        items={[{ id: "one", title: "First", marker: <Icon icon={Check} /> }]}
+      />,
+    );
+    expect(document.querySelector('[data-slot="marker"] svg')).not.toBeNull();
+
+    rerender(<List data-testid="markers" marker="none" items={[{ id: "one", title: "First" }]} />);
+    expect(document.querySelector('[data-slot="marker"]')).toBeNull();
+  });
+
   it("protects List destinations and anatomy while preserving safe link props", () => {
     render(
       <List
@@ -1430,13 +1649,13 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-table-section-gap: var(--n-space-1);");
     expect(tokens).toContain("--n-table-row-selection-indicator: var(--n-color-border-default);");
     expect(tokens).toContain(
-      "--n-pagination-background-current: var(--n-button-background-secondary);",
+      "--n-pagination-background-current: var(--n-button-background-secondary-active);",
     );
     expect(tokens).toContain("--n-pagination-border-current: var(--n-button-border-secondary);");
     expect(tokens).toContain(
       "--n-pagination-foreground-current: var(--n-button-foreground-secondary);",
     );
-    expect(tokens).toContain("--n-pagination-shadow: var(--n-button-shadow-outline);");
+    expect(tokens).toContain("--n-pagination-shadow: var(--n-shadow-none);");
     expect(tokens).toContain("--n-pagination-shadow-current: var(--n-shadow-none);");
     expect(tokens).toMatch(
       /:root\[data-density="compact"\][\s\S]*--n-table-cell-padding-y:[^;]+;[\s\S]*--n-table-row-min-height:[^;]+;/,
@@ -1537,7 +1756,7 @@ describe("Core static contracts", () => {
     const disabled = screen.getByRole("textbox", { name: "Disabled notes" });
 
     expect(invalid).toHaveAttribute("data-invalid", "");
-    expect(invalid.className).toContain("focus-visible:border-(--n-input-border-focus)");
+    expect(invalid.className).toContain("focus:border-(--n-input-border-focus)");
     expect(readOnly).toHaveAttribute("data-readonly", "");
     expect(readOnly).toHaveAttribute("readonly");
     expect(readOnly.className).toContain("data-readonly:bg-(--n-input-readonly-background)");
@@ -1692,9 +1911,23 @@ describe("Core static contracts", () => {
     expect(source).toContain("forced-colors:data-[variant=icon]:border-[CanvasText]");
   });
 
-  it("renders Alert content and an optional trailing action slot", () => {
+  it("renders Alert actions below the description and an optional close slot", () => {
     render(
-      <Alert action={<button type="button">Retry</button>} icon={Check} title="Upload failed">
+      <Alert
+        action={
+          <>
+            <button type="button">Retry</button>
+            <button type="button">View details</button>
+          </>
+        }
+        closeAction={
+          <button type="button" aria-label="Close alert">
+            Close
+          </button>
+        }
+        icon={Check}
+        title="Upload failed"
+      >
         Try again after checking the connection.
       </Alert>,
     );
@@ -1704,9 +1937,13 @@ describe("Core static contracts", () => {
       "data-slot",
       "description",
     );
-    expect(screen.getByRole("button", { name: "Retry" }).parentElement).toHaveAttribute(
+    const action = screen.getByRole("button", { name: "Retry" }).parentElement;
+    expect(action).toHaveAttribute("data-slot", "action");
+    expect(action).toContainElement(screen.getByRole("button", { name: "View details" }));
+    expect(action?.parentElement).toHaveAttribute("data-slot", "content");
+    expect(screen.getByRole("button", { name: "Close alert" }).parentElement).toHaveAttribute(
       "data-slot",
-      "action",
+      "close",
     );
   });
 
@@ -2340,17 +2577,23 @@ describe("Core interactive action contracts", () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
     const { rerender } = render(
-      <Tooltip label="Copy link" onOpenChange={onOpenChange}>
-        <button>Copy</button>
-      </Tooltip>,
+      <TooltipProvider>
+        <Tooltip label="Copy link" onOpenChange={onOpenChange}>
+          <button>Copy</button>
+        </Tooltip>
+      </TooltipProvider>,
     );
     await user.tab();
-    expect(await screen.findByRole("tooltip")).toHaveTextContent("Copy link");
+    const tooltip = await screen.findByRole("tooltip");
+    expect(tooltip).toHaveTextContent("Copy link");
+    expect(tooltip.querySelector('[data-slot="arrow"]')?.parentElement).toBe(tooltip);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     rerender(
-      <Tooltip label="Copy link" open={false} disabled>
-        <button>Copy</button>
-      </Tooltip>,
+      <TooltipProvider>
+        <Tooltip label="Copy link" open={false} disabled>
+          <button>Copy</button>
+        </Tooltip>
+      </TooltipProvider>,
     );
     await user.hover(screen.getByRole("button", { name: "Copy" }));
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
@@ -2640,6 +2883,114 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("switch", { name: "Disabled notifications" })).toHaveAttribute(
       "aria-disabled",
       "true",
+    );
+  });
+
+  it("supports Toggle state, naming, keyboard, pointer, disabled, form, ref, and render contracts", async () => {
+    const user = userEvent.setup();
+    const onPressedChange = vi.fn();
+    const onDisabledPressedChange = vi.fn();
+    const onSubmit = vi.fn((event: React.FormEvent) => event.preventDefault());
+    const ref = React.createRef<HTMLElement>();
+    const customRootRef = React.createRef<HTMLElement>();
+    render(
+      <form onSubmit={onSubmit}>
+        <Toggle
+          ref={ref}
+          aria-label="Favorite"
+          icon={Bell}
+          onPressedChange={onPressedChange}
+          size="lg"
+          variant="outline"
+        />
+        <Toggle disabled onPressedChange={onDisabledPressedChange}>
+          Pin
+        </Toggle>
+        <Toggle defaultPressed render={<button data-render-target="toggle" />}>
+          Retain layout
+        </Toggle>
+        <Toggle
+          ref={customRootRef}
+          nativeButton={false}
+          render={<div role="button" tabIndex={0} data-render-target="custom-toggle" />}
+        >
+          Custom root
+        </Toggle>
+      </form>,
+    );
+
+    const favorite = screen.getByRole("button", { name: "Favorite" });
+    expect(ref.current).toBe(favorite);
+    expect(favorite).toHaveAttribute("type", "button");
+    expect(favorite).toHaveAttribute("aria-pressed", "false");
+    expect(favorite).toHaveAttribute("data-icon-only", "true");
+    expect(favorite).toHaveAttribute("data-size", "lg");
+    expect(favorite).toHaveAttribute("data-slot", "toggle");
+    expect(favorite).toHaveAttribute("data-variant", "outline");
+
+    favorite.focus();
+    await user.keyboard("{Enter}");
+    expect(favorite).toHaveAttribute("aria-pressed", "true");
+    expect(favorite).toHaveFocus();
+    await user.keyboard(" ");
+    expect(favorite).toHaveAttribute("aria-pressed", "false");
+    await user.click(favorite);
+    expect(favorite).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Favorite" })).toBe(favorite);
+    expect(onPressedChange).toHaveBeenCalledTimes(3);
+    expect(onPressedChange).toHaveBeenLastCalledWith(true, expect.anything());
+    expect(onSubmit).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: "Pin" }));
+    expect(onDisabledPressedChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Pin" })).toHaveAttribute("data-disabled");
+
+    const rendered = screen.getByRole("button", { name: "Retain layout" });
+    expect(rendered).toHaveAttribute("data-render-target", "toggle");
+    expect(rendered).toHaveAttribute("aria-pressed", "true");
+    expect(rendered).toHaveClass("n-toggle");
+    expect(customRootRef.current).toBe(screen.getByRole("button", { name: "Custom root" }));
+  });
+
+  it("keeps controlled and canceled Toggle state owned by the public contract", async () => {
+    const user = userEvent.setup();
+    const controlledChange = vi.fn();
+    const canceledChange = vi.fn((_pressed: boolean, details: { cancel: () => void }) => {
+      details.cancel();
+    });
+    const { rerender } = render(
+      <>
+        <Toggle pressed={false} onPressedChange={controlledChange}>
+          Show guides
+        </Toggle>
+        <Toggle onPressedChange={canceledChange}>Lock canvas</Toggle>
+      </>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Show guides" }));
+    expect(controlledChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(screen.getByRole("button", { name: "Show guides" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
+    );
+    rerender(
+      <>
+        <Toggle pressed onPressedChange={controlledChange}>
+          Show guides
+        </Toggle>
+        <Toggle onPressedChange={canceledChange}>Lock canvas</Toggle>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Show guides" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    await user.click(screen.getByRole("button", { name: "Lock canvas" }));
+    expect(canceledChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(screen.getByRole("button", { name: "Lock canvas" })).toHaveAttribute(
+      "aria-pressed",
+      "false",
     );
   });
 
@@ -3244,9 +3595,22 @@ describe("Core interactive action contracts", () => {
         trigger="Actions"
         onOpenChange={onOpenChange}
         items={[
-          { label: "Rename", onSelect },
-          { label: "Unavailable", disabled: true },
-          { label: "Archive", destructive: true, onSelect },
+          {
+            group: "Workspace",
+            label: "Rename",
+            description: "Change the workspace name",
+            leadingIcon: Bell,
+            hotkey: "⌘R",
+            onSelect,
+          },
+          { group: "Workspace", label: "Unavailable", disabled: true },
+          {
+            group: "Manage",
+            label: "Archive",
+            trailingIcon: ArrowRight,
+            destructive: true,
+            onSelect,
+          },
         ]}
       />,
     );
@@ -3258,6 +3622,32 @@ describe("Core interactive action contracts", () => {
       "aria-disabled",
       "true",
     );
+    expect(screen.getByRole("menuitem", { name: "Rename" })).toContainElement(
+      document.querySelector('[data-slot="leading-icon"]'),
+    );
+    expect(document.querySelector('[data-slot="description"]')).toHaveTextContent(
+      "Change the workspace name",
+    );
+    expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveAccessibleDescription(
+      "Change the workspace name",
+    );
+    expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");
+    expect(document.querySelector('[data-slot="hotkey"]')).toHaveClass("col-start-3");
+    expect(screen.getByText("Workspace", { selector: '[data-slot="group-label"]' })).toBeVisible();
+    expect(screen.getByText("Manage", { selector: '[data-slot="group-label"]' })).toBeVisible();
+    expect(document.querySelectorAll('[data-slot="group"]')).toHaveLength(2);
+    expect(document.querySelector('[data-slot="content"]')).toHaveClass("gap-0");
+    for (const group of document.querySelectorAll('[data-slot="group"]')) {
+      expect(group).toHaveClass("gap-0");
+    }
+    expect(document.querySelectorAll('[data-slot="separator"]')).toHaveLength(1);
+    expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveClass(
+      "grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)]",
+    );
+    expect(screen.getByRole("menuitem", { name: "Archive" })).toContainElement(
+      document.querySelector('[data-slot="trailing-icon"]'),
+    );
+    expect(document.querySelector('[data-slot="trailing-icon"]')).toHaveClass("col-start-4");
     await user.keyboard("{ArrowDown}{ArrowDown}{Enter}");
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
@@ -3306,13 +3696,65 @@ describe("Core interactive action contracts", () => {
     expect(screen.getAllByRole("textbox")[1]).toHaveAttribute("data-invalid", "");
   });
 
+  it("preserves native temporal values, constraints, events, and forwarded refs", () => {
+    const onChange = vi.fn();
+    const dateRef = React.createRef<HTMLInputElement>();
+    const { rerender } = render(
+      <form aria-label="Temporal values">
+        <Input
+          ref={dateRef}
+          aria-label="Start date"
+          type="date"
+          name="startDate"
+          min="2026-01-01"
+          max="2026-12-31"
+          step={1}
+          defaultValue="2026-07-22"
+          onChange={onChange}
+          required
+        />
+        <Input aria-label="Billing month" type="month" defaultValue="2026-07" />
+        <Input aria-label="Reporting week" type="week" defaultValue="2026-W30" />
+        <Input aria-label="Start time" type="time" defaultValue="09:30" step={900} />
+        <Input
+          aria-label="Local deadline"
+          type="datetime-local"
+          defaultValue="2026-07-22T17:30"
+          readOnly
+        />
+      </form>,
+    );
+
+    const form = screen.getByRole("form", { name: "Temporal values" });
+    const date = screen.getByLabelText("Start date");
+    expect(date).toHaveAttribute("type", "date");
+    expect(date).toHaveAttribute("min", "2026-01-01");
+    expect(date).toHaveAttribute("max", "2026-12-31");
+    expect(date).toHaveAttribute("step", "1");
+    expect(date).toBeRequired();
+    expect(dateRef.current).toBe(date);
+    expect(dateRef.current?.valueAsDate?.toISOString()).toBe("2026-07-22T00:00:00.000Z");
+    expect(Number.isFinite(dateRef.current?.valueAsNumber)).toBe(true);
+    fireEvent.change(date, { target: { value: "2026-08-03" } });
+    expect(onChange).toHaveBeenCalled();
+    expect(date).toHaveValue("2026-08-03");
+    expect(screen.getByLabelText("Local deadline")).toHaveAttribute("readonly");
+    form.reset();
+    expect(date).toHaveValue("2026-07-22");
+
+    rerender(
+      <Input aria-label="Controlled date" type="date" value="2026-09-15" onChange={onChange} />,
+    );
+    expect(screen.getByLabelText("Controlled date")).toHaveValue("2026-09-15");
+  });
+
   it("composes InputGroup without replacing the native input contract", () => {
     const ref = React.createRef<HTMLDivElement>();
     render(
       <Field label="Website" description="Use your public domain." message="Required" invalid>
         <InputGroup ref={ref} data-slot="consumer">
           <InputGroupAddon placement="start">https://</InputGroupAddon>
-          <Input aria-describedby="custom-description" />
+          <Input aria-describedby="custom-description" className="border-2 bg-current shadow-sm" />
           <InputGroupAddon placement="end">
             <Button aria-label="Validate website">Check</Button>
           </InputGroupAddon>
@@ -3330,6 +3772,7 @@ describe("Core interactive action contracts", () => {
       group.querySelector('[data-slot="input-group-addon"][data-placement="end"]'),
     ).toBeTruthy();
     expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveClass("border-2", "bg-current", "shadow-sm");
     expect(input.getAttribute("aria-describedby")).toContain("custom-description");
     expect(input.getAttribute("aria-describedby")).toContain("-description");
     expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();
@@ -3568,16 +4011,28 @@ describe("Core interactive action contracts", () => {
     expect(sidebar.querySelector('[data-slot="sidebar-footer"]')).toHaveTextContent("Account");
   });
 
-  it("keeps Sidebar rail geometry inside the declared hit area on both physical sides", () => {
+  it("keeps Sidebar rail geometry bottom-right inside the declared hit area", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sidebar.tsx"), "utf8");
     expect(source).toContain("size-(--n-sidebar-rail-hit-area)");
-    expect(source).toContain("top-1/2");
-    expect(source).toContain("-translate-y-1/2");
-    expect(source).not.toContain("inset-y-0");
-    expect(source).toContain("right-[calc(-0.5*var(--n-sidebar-rail-hit-area))]");
     expect(source).toContain(
-      "[[data-side=right]_&]:left-[calc(-0.5*var(--n-sidebar-rail-hit-area))]",
+      "right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))]",
     );
+    expect(source).toContain(
+      "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
+    );
+    expect(source).toContain('data-has-rail={rails.length > 0 ? "true" : undefined}');
+    expect(source).toContain('data-has-footer={hasFooter ? "true" : "false"}');
+    expect(source).toContain(
+      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+    );
+    expect(source).toContain(
+      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+    );
+    expect(source).toContain(
+      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-bottom))]",
+    );
+    expect(source).not.toContain("inset-y-0");
+    expect(source).not.toContain("top-1/2");
   });
 
   it("exposes an exact SidebarContent div ref and does not churn SidebarInset refs", () => {
@@ -3642,9 +4097,10 @@ describe("Core interactive action contracts", () => {
       /import\s*\{[\s\S]*SidebarContent[\s\S]*SidebarInset[\s\S]*\}\s*from "@nerio-ui\/ui";/,
     );
     expect(docsExample).not.toMatch(/label="(?:Collapse|Expand) preview sidebar"/);
-    expect(docsReference).not.toMatch(/SidebarRail, SidebarTrigger, useSidebar/);
+    expect(docsReference).not.toMatch(/SidebarRail, SidebarTrigger/);
     expect(docsReference).not.toMatch(/label="(?:Collapse|Expand) workspace sidebar"/);
-    expect(sidebarPage).toContain('import * as React from "react";');
+    expect(sidebarPage).not.toContain("sectionPreviews");
+    expect(sidebarPage).not.toContain('import * as React from "react";');
     expect(sidebarPage).not.toMatch(/SidebarInset, Icon|SidebarTrigger, useSidebar/);
     expect(docsExample).toMatch(
       /import\s*\{[\s\S]*SidebarProvider[\s\S]*SidebarRail[\s\S]*\}\s*from "@nerio-ui\/ui\/client";/,
@@ -4057,5 +4513,635 @@ describe("Core interactive action contracts", () => {
       expect(screen.queryByRole("combobox", { name: inputName })).not.toBeInTheDocument();
       expect(trigger).toHaveFocus();
     }
+  });
+
+  it("keeps Slider single-value keyboard, form, state, and ref contracts", async () => {
+    const user = userEvent.setup();
+    const inputRef = React.createRef<HTMLInputElement>();
+    const rootRef = React.createRef<HTMLDivElement>();
+    const onValueChange = vi.fn();
+    const onValueCommitted = vi.fn();
+
+    render(
+      <form data-testid="slider-form">
+        <Slider
+          ref={rootRef}
+          inputRef={inputRef}
+          label="Workspace volume"
+          description="Controls notification playback."
+          defaultValue={40}
+          id="workspace-volume"
+          min={0}
+          max={100}
+          step={5}
+          largeStep={20}
+          name="volume"
+          required
+          invalid
+          valueLabel="40%"
+          onValueChange={onValueChange}
+          onValueCommitted={onValueCommitted}
+        />
+      </form>,
+    );
+
+    const slider = screen.getByRole("slider", { name: "Workspace volume" });
+    expect(rootRef.current).toHaveAttribute("data-slot", "root");
+    expect(inputRef.current).toBe(slider);
+    expect(slider).toHaveAttribute("type", "range");
+    expect(slider).toHaveAttribute("id", "workspace-volume");
+    expect(slider).toHaveAttribute("required");
+    expect(slider).toHaveAttribute("aria-required", "true");
+    expect(slider).toHaveAttribute("aria-invalid", "true");
+    expect(slider).toHaveAccessibleDescription("Controls notification playback.");
+    expect(screen.getByText("40%")).toHaveAttribute("data-slot", "value");
+
+    await user.tab();
+    expect(slider).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(slider).toHaveValue("45");
+    await user.keyboard("{PageUp}");
+    expect(slider).toHaveValue("65");
+    await user.keyboard("{End}");
+    expect(slider).toHaveValue("100");
+    await user.keyboard("{Home}");
+    expect(slider).toHaveValue("0");
+    expect(onValueChange).toHaveBeenCalled();
+    expect(onValueCommitted).toHaveBeenCalled();
+
+    const form = screen.getByTestId("slider-form") as HTMLFormElement;
+    expect(new FormData(form).get("volume")).toBe("0");
+    expect(rootRef.current?.querySelector('[data-slot="track"]')).not.toBeNull();
+    expect(rootRef.current?.querySelector('[data-slot="indicator"]')).not.toBeNull();
+    expect(rootRef.current?.querySelector('[data-slot="thumb"]')).not.toBeNull();
+  });
+
+  it("keeps Calendar ISO dates, leap years, anatomy, selection, and refs explicit", async () => {
+    const user = userEvent.setup();
+    const rootRef = React.createRef<HTMLDivElement>();
+    const onValueChange = vi.fn();
+    render(
+      <Calendar
+        ref={rootRef}
+        aria-label="Release calendar"
+        defaultMonth="2024-02-01"
+        defaultValue="2024-02-29"
+        onValueChange={onValueChange}
+        today="2024-02-15"
+      />,
+    );
+
+    const calendar = screen.getByRole("group", { name: "Release calendar" });
+    expect(rootRef.current).toBe(calendar);
+    expect(within(calendar).getAllByRole("gridcell")).toHaveLength(42);
+    expect(within(calendar).getByText("February 2024")).toHaveAttribute("aria-live", "polite");
+    expect(within(calendar).getByRole("gridcell", { selected: true })).toContainElement(
+      within(calendar).getByRole("button", { name: "February 29, 2024, Selected" }),
+    );
+    expect(within(calendar).getByRole("button", { name: "February 15, 2024" })).toHaveAttribute(
+      "aria-current",
+      "date",
+    );
+    expect(calendar.querySelector('[data-slot="header"]')).not.toBeNull();
+    expect(calendar.querySelector('[data-slot="weekday-header"]')).not.toBeNull();
+    expect(calendar.querySelectorAll('[data-slot="row"]')).toHaveLength(6);
+
+    await user.click(within(calendar).getByRole("button", { name: "February 28, 2024" }));
+    expect(onValueChange).toHaveBeenLastCalledWith("2024-02-28");
+    expect(within(calendar).getByRole("gridcell", { selected: true })).toContainElement(
+      within(calendar).getByRole("button", { name: "February 28, 2024, Selected" }),
+    );
+  });
+
+  it("keeps Calendar roving focus, week, month, year, boundary, and RTL navigation coherent", async () => {
+    const user = userEvent.setup();
+    const onMonthChange = vi.fn();
+    const { rerender } = render(
+      <Calendar
+        aria-label="Keyboard calendar"
+        defaultMonth="2026-01-01"
+        defaultValue="2026-01-31"
+        onMonthChange={onMonthChange}
+        today="2026-01-15"
+      />,
+    );
+
+    let focused = screen.getByRole("button", { name: "January 31, 2026, Selected" });
+    focused.focus();
+    await user.keyboard("{ArrowRight}");
+    focused = screen.getByRole("button", { name: "February 1, 2026" });
+    expect(focused).toHaveFocus();
+    expect(onMonthChange).toHaveBeenLastCalledWith("2026-02-01");
+    expect(
+      screen
+        .getAllByRole("button")
+        .filter((button) => button.dataset.slot === "day" && button.tabIndex === 0),
+    ).toHaveLength(1);
+
+    await user.keyboard("{Home}");
+    expect(screen.getByRole("button", { name: "February 1, 2026" })).toHaveFocus();
+    await user.keyboard("{End}");
+    expect(screen.getByRole("button", { name: "February 7, 2026" })).toHaveFocus();
+    await user.keyboard("{PageDown}");
+    expect(screen.getByRole("button", { name: "March 7, 2026" })).toHaveFocus();
+    await user.keyboard("{Shift>}{PageDown}{/Shift}");
+    expect(screen.getByRole("button", { name: "March 7, 2027" })).toHaveFocus();
+
+    rerender(
+      <div dir="rtl">
+        <Calendar
+          aria-label="Keyboard calendar"
+          defaultMonth="2026-01-01"
+          defaultValue="2026-01-15"
+          today="2026-01-15"
+        />
+      </div>,
+    );
+    focused = screen.getByRole("button", { name: "January 15, 2026, Selected" });
+    focused.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("button", { name: "January 14, 2026" })).toHaveFocus();
+  });
+
+  it("keeps Calendar constraints, disabled dates, read-only selection, and controlled state explicit", async () => {
+    const user = userEvent.setup();
+    const onReadOnlyChange = vi.fn();
+
+    function ControlledCalendar() {
+      const [value, setValue] = React.useState<"2026-06-15" | "2026-06-16">("2026-06-15");
+      const [month, setMonth] = React.useState<CalendarDate>("2026-06-01");
+      return (
+        <Calendar
+          aria-label="Controlled calendar"
+          value={value}
+          month={month}
+          min="2026-06-10"
+          max="2026-06-20"
+          isDateDisabled={(date) => date === "2026-06-18"}
+          onMonthChange={setMonth}
+          onValueChange={(nextValue) => setValue(nextValue as "2026-06-15" | "2026-06-16")}
+          today="2026-06-15"
+        />
+      );
+    }
+
+    render(
+      <>
+        <ControlledCalendar />
+        <Calendar
+          aria-label="Read-only calendar"
+          defaultValue="2026-06-15"
+          onValueChange={onReadOnlyChange}
+          readOnly
+          today="2026-06-15"
+        />
+      </>,
+    );
+
+    const controlled = screen.getByRole("group", { name: "Controlled calendar" });
+    expect(within(controlled).getByRole("button", { name: "June 9, 2026" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    expect(within(controlled).getByRole("button", { name: "June 18, 2026" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await user.click(within(controlled).getByRole("button", { name: "June 18, 2026" }));
+    expect(
+      within(controlled).getByRole("button", { name: "June 15, 2026, Selected" }),
+    ).toHaveAttribute("data-selected");
+    await user.click(within(controlled).getByRole("button", { name: "June 16, 2026" }));
+    expect(
+      within(controlled).getByRole("button", { name: "June 16, 2026, Selected" }),
+    ).toHaveAttribute("data-selected");
+
+    const readOnly = screen.getByRole("group", { name: "Read-only calendar" });
+    expect(within(readOnly).getByRole("grid")).toHaveAttribute("aria-readonly", "true");
+    await user.click(within(readOnly).getByRole("button", { name: "June 16, 2026" }));
+    expect(onReadOnlyChange).not.toHaveBeenCalled();
+  });
+
+  it("keeps Calendar locale labels and week starts independent from ISO values", () => {
+    render(
+      <Calendar
+        aria-label="Lokalisierter Kalender"
+        defaultMonth="2026-06-01"
+        firstDayOfWeek={1}
+        locale="de-DE"
+        defaultValue="2026-06-15"
+        labels={{
+          nextMonth: "Nächster Monat",
+          previousMonth: "Vorheriger Monat",
+          selectedDate: "Ausgewählt",
+        }}
+        today="2026-06-15"
+      />,
+    );
+
+    expect(screen.getByText("Juni 2026")).toHaveAttribute("data-slot", "heading");
+    expect(screen.getByRole("columnheader", { name: "Mo" })).toHaveAttribute("abbr", "Montag");
+    expect(screen.getByRole("button", { name: "Vorheriger Monat" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Nächster Monat" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "15. Juni 2026, Ausgewählt" })).toBeInTheDocument();
+  });
+
+  it("keeps Calendar today updates reactive and month-button focus stable", async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <Calendar aria-label="Reactive calendar" defaultMonth="2026-06-01" today="2026-06-15" />,
+    );
+
+    expect(screen.getByRole("button", { name: "June 15, 2026" })).toHaveAttribute(
+      "aria-current",
+      "date",
+    );
+    rerender(
+      <Calendar aria-label="Reactive calendar" defaultMonth="2026-06-01" today="2026-06-16" />,
+    );
+    expect(screen.getByRole("button", { name: "June 15, 2026" })).not.toHaveAttribute(
+      "aria-current",
+    );
+    expect(screen.getByRole("button", { name: "June 16, 2026" })).toHaveAttribute(
+      "aria-current",
+      "date",
+    );
+
+    const nextMonth = screen.getByRole("button", { name: "Next month" });
+    nextMonth.focus();
+    await user.keyboard("{Enter}");
+    expect(nextMonth).toHaveFocus();
+    expect(screen.getByText("July 2026")).toHaveAttribute("data-slot", "heading");
+  });
+
+  it("rejects invalid Calendar dates and inverted constraints", () => {
+    expect(() => render(<Calendar aria-label="Invalid calendar" value="2026-02-30" />)).toThrow(
+      /valid calendar date/,
+    );
+    expect(() =>
+      render(
+        <Calendar
+          aria-label="Invalid range"
+          max="2026-06-01"
+          min="2026-06-02"
+          today="2026-06-01"
+        />,
+      ),
+    ).toThrow(/min must not be after max/);
+  });
+
+  it("keeps Calendar navigation inside the supported ISO year boundaries", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <Calendar aria-label="Earliest calendar" defaultValue="0001-01-01" today="0001-01-01" />,
+    );
+    const earliest = document.querySelector<HTMLButtonElement>('[data-value="0001-01-01"]');
+    earliest?.focus();
+    await user.keyboard("{PageUp}{Shift>}{PageUp}{/Shift}");
+    expect(earliest).toHaveFocus();
+    expect(screen.getByRole("group", { name: "Earliest calendar" })).toHaveAttribute(
+      "data-month",
+      "0001-01-01",
+    );
+
+    unmount();
+    render(<Calendar aria-label="Latest calendar" defaultValue="9999-12-31" today="9999-12-31" />);
+    const latest = document.querySelector<HTMLButtonElement>('[data-value="9999-12-31"]');
+    latest?.focus();
+    await user.keyboard("{PageDown}{Shift>}{PageDown}{/Shift}");
+    expect(latest).toHaveFocus();
+    expect(screen.getByRole("group", { name: "Latest calendar" })).toHaveAttribute(
+      "data-month",
+      "9999-12-01",
+    );
+  });
+
+  it("composes DatePicker selection, form value, reset, focus, and anatomy", async () => {
+    const user = userEvent.setup();
+    const triggerRef = React.createRef<HTMLElement>();
+    const onValueChange = vi.fn();
+    render(
+      <form aria-label="Release form">
+        <Field label="Release date">
+          <DatePicker
+            ref={triggerRef}
+            clearable
+            defaultValue="2026-06-15"
+            firstDayOfWeek={1}
+            locale="en-GB"
+            min="2026-06-10"
+            max="2026-06-20"
+            name="releaseDate"
+            onValueChange={onValueChange}
+            today="2026-06-15"
+          />
+        </Field>
+      </form>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Release date" });
+    expect(triggerRef.current).toBe(trigger);
+    expect(trigger).toHaveTextContent("15 Jun 2026");
+    expect(trigger.closest('[data-slot="root"]')).toHaveAttribute("data-slot", "root");
+    expect(trigger).toHaveAttribute("data-slot", "trigger");
+    expect(trigger).toHaveAttribute("aria-describedby", expect.stringContaining("-action"));
+    expect(trigger.querySelectorAll('[data-slot="button-icon"]')).toHaveLength(1);
+
+    await user.click(trigger);
+    const calendar = await screen.findByRole("group", { name: "Choose date" });
+    expect(calendar.closest('[data-slot="content"]')?.className).toContain(
+      "animate-[n-overlay-enter_",
+    );
+    await waitFor(() =>
+      expect(
+        within(calendar).getByRole("button", { name: "15 June 2026, Selected" }),
+      ).toHaveFocus(),
+    );
+    await user.click(within(calendar).getByRole("button", { name: "16 June 2026" }));
+    expect(onValueChange).toHaveBeenLastCalledWith("2026-06-16");
+    await waitFor(() => expect(screen.queryByRole("group", { name: "Choose date" })).toBeNull());
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveTextContent("16 Jun 2026");
+    expect(
+      new FormData(screen.getByRole("form", { name: "Release form" })).get("releaseDate"),
+    ).toBe("2026-06-16");
+
+    act(() => screen.getByRole("form", { name: "Release form" }).reset());
+    await waitFor(() => expect(trigger).toHaveTextContent("15 Jun 2026"));
+    expect(
+      new FormData(screen.getByRole("form", { name: "Release form" })).get("releaseDate"),
+    ).toBe("2026-06-15");
+  });
+
+  it("keeps DatePicker controlled value, open state, clear action, and localization explicit", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+
+    function ControlledDatePicker() {
+      const [value, setValue] = React.useState<CalendarDate | null>("2026-06-15");
+      const [open, setOpen] = React.useState(false);
+      return (
+        <DatePicker
+          aria-label="Veröffentlichungsdatum"
+          clearable
+          labels={{
+            calendar: "Datum auswählen",
+            change: "Datum ändern",
+            clear: "Datum löschen",
+            nextMonth: "Nächster Monat",
+            open: "Datumswahl öffnen",
+            previousMonth: "Vorheriger Monat",
+            selectedDate: "Ausgewählt",
+          }}
+          locale="de-DE"
+          onOpenChange={(nextOpen, details) => {
+            onOpenChange(nextOpen, details);
+            setOpen(nextOpen);
+          }}
+          onValueChange={setValue}
+          open={open}
+          value={value}
+        />
+      );
+    }
+
+    render(<ControlledDatePicker />);
+    const trigger = screen.getByRole("button", { name: "Veröffentlichungsdatum" });
+    expect(trigger).toHaveAccessibleDescription("15. Juni 2026 Datum ändern");
+    await user.click(trigger);
+    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
+    const calendar = await screen.findByRole("group", { name: "Datum auswählen" });
+    expect(
+      within(calendar).getByRole("button", { name: "15. Juni 2026, Ausgewählt" }),
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Datum löschen" }));
+    await waitFor(() => expect(trigger).toHaveTextContent("Choose a date"));
+    expect(trigger).toHaveAccessibleDescription("Choose a date Datumswahl öffnen");
+    expect(trigger).toHaveFocus();
+  });
+
+  it("keeps DatePicker required, invalid, disabled, and read-only contracts truthful", async () => {
+    const user = userEvent.setup();
+    const onInvalid = vi.fn();
+    const onReadOnlyChange = vi.fn();
+    render(
+      <>
+        <DatePicker
+          aria-label="Required date"
+          invalid
+          name="requiredDate"
+          onInvalid={onInvalid}
+          required
+        />
+        <DatePicker aria-label="Unavailable date" disabled />
+        <DatePicker
+          aria-label="Read-only date"
+          defaultValue="2026-06-15"
+          onValueChange={onReadOnlyChange}
+          readOnly
+        />
+      </>,
+    );
+
+    expect(screen.getByRole("button", { name: "Required date" })).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    const requiredInput = document.querySelector<HTMLInputElement>('[data-slot="form-control"]');
+    expect(requiredInput).toBeRequired();
+    expect(requiredInput?.checkValidity()).toBe(false);
+    expect(onInvalid).toHaveBeenCalledOnce();
+    expect(screen.getByRole("button", { name: "Required date" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "Unavailable date" })).toBeDisabled();
+    const readOnlyTrigger = screen.getByRole("button", { name: "Read-only date" });
+    await user.click(readOnlyTrigger);
+    await user.click(
+      within(await screen.findByRole("group", { name: "Choose date" })).getByRole("button", {
+        name: "June 16, 2026",
+      }),
+    );
+    expect(onReadOnlyChange).not.toHaveBeenCalled();
+    expect(screen.getByRole("group", { name: "Choose date" })).toBeInTheDocument();
+  });
+
+  it("does not expose a live clear action when a disabled DatePicker is forced open", () => {
+    render(
+      <DatePicker
+        aria-label="Unavailable date"
+        clearable
+        defaultOpen
+        defaultValue="2026-06-15"
+        disabled
+      />,
+    );
+
+    expect(screen.getByRole("group", { name: "Choose date" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Clear date" })).toBeNull();
+  });
+
+  it("keeps DatePicker focus and selection coherent inside a modal overlay", async () => {
+    const user = userEvent.setup();
+    render(
+      <Dialog trigger="Open release settings" title="Release settings">
+        <Field label="Release date">
+          <DatePicker defaultValue="2026-06-15" today="2026-06-15" />
+        </Field>
+      </Dialog>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Open release settings" }));
+    const dialog = await screen.findByRole("dialog", { name: "Release settings" });
+    const trigger = within(dialog).getByRole("button", { name: "Release date" });
+    await user.click(trigger);
+    const calendar = await screen.findByRole("group", { name: "Choose date" });
+    await user.click(within(calendar).getByRole("button", { name: "June 16, 2026" }));
+    expect(dialog).toBeVisible();
+    expect(trigger).toHaveFocus();
+    expect(trigger).toHaveTextContent("Jun 16, 2026");
+  });
+
+  it("keeps read-only Slider focusable without changing its value", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const onValueCommitted = vi.fn();
+    render(
+      <Slider
+        aria-label="Read-only score"
+        defaultValue={25}
+        readOnly
+        onValueChange={onValueChange}
+        onValueCommitted={onValueCommitted}
+      />,
+    );
+
+    const slider = screen.getByRole("slider", { name: "Read-only score" });
+    await user.tab();
+    expect(slider).toHaveFocus();
+    expect(slider).toHaveAttribute("aria-readonly", "true");
+    await user.keyboard("{ArrowRight}{End}");
+    expect(slider).toHaveValue("25");
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(onValueCommitted).not.toHaveBeenCalled();
+  });
+
+  it("keeps controlled Slider values and event details explicit", async () => {
+    const user = userEvent.setup();
+    function ControlledSlider() {
+      const [value, setValue] = React.useState(30);
+      return (
+        <Slider
+          aria-label="Controlled volume"
+          value={value}
+          valueLabel={`${value}%`}
+          onValueChange={(nextValue, details) => {
+            expect(details.reason).toBe("keyboard");
+            setValue(nextValue);
+          }}
+        />
+      );
+    }
+
+    render(<ControlledSlider />);
+    const slider = screen.getByRole("slider", { name: "Controlled volume" });
+    await user.tab();
+    await user.keyboard("{ArrowRight}");
+    expect(slider).toHaveValue("31");
+    expect(screen.getByText("31%")).toBeInTheDocument();
+  });
+
+  it("keeps FileInput native selection, form, event, reset, and ref contracts", async () => {
+    const user = userEvent.setup();
+    const inputRef = React.createRef<HTMLInputElement>();
+    let eventFiles: FileList | null = null;
+    const onChange = vi.fn((event: React.ChangeEvent<HTMLInputElement>) => {
+      eventFiles = event.currentTarget.files;
+    });
+    render(
+      <form data-testid="file-form">
+        <label htmlFor="attachments">Attachments</label>
+        <FileInput
+          ref={inputRef}
+          id="attachments"
+          name="attachments"
+          accept=".pdf,image/*"
+          capture="environment"
+          className="consumer-file-input-root"
+          dir="rtl"
+          multiple
+          required
+          invalid
+          onChange={onChange}
+          style={{ marginInlineStart: 2 }}
+        />
+        <FileInput aria-label="Hidden upload" hidden />
+      </form>,
+    );
+
+    const input = screen.getByLabelText("Attachments") as HTMLInputElement;
+    const files = [
+      new File(["brief"], "launch brief.pdf", { type: "application/pdf" }),
+      new File(["image"], "проекция.png", { type: "image/png" }),
+    ];
+
+    expect(inputRef.current).toBe(input);
+    expect(input).toHaveAttribute("type", "file");
+    expect(input).toHaveAttribute("accept", ".pdf,image/*");
+    expect(input).toHaveAttribute("capture", "environment");
+    expect(input).toHaveAttribute("multiple");
+    expect(input).toHaveAttribute("required");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("data-slot", "file-input");
+    expect(input).not.toHaveClass("consumer-file-input-root");
+    const root = input.closest('[data-slot="file-input-root"]');
+    expect(root).toHaveClass("consumer-file-input-root");
+    expect(root).toHaveAttribute("dir", "rtl");
+    expect(root).toHaveStyle({ marginInlineStart: "2px" });
+    expect(input).not.toHaveAttribute("dir");
+    expect(input).not.toHaveAttribute("style");
+    expect(root).toContainElement(document.querySelector('[data-slot="file-input-icon"]'));
+    const hiddenInput = document.querySelector('input[aria-label="Hidden upload"]');
+    expect(hiddenInput).not.toHaveAttribute("hidden");
+    expect(hiddenInput?.closest('[data-slot="file-input-root"]')).toHaveAttribute("hidden");
+
+    await user.upload(input, files);
+    expect(input.files).toHaveLength(2);
+    expect(input.files?.[0]).toBe(files[0]);
+    expect(input.files?.[1]?.name).toBe("проекция.png");
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(eventFiles).toHaveLength(2);
+
+    const form = screen.getByTestId("file-form") as HTMLFormElement;
+    const formData = new FormData(form);
+    expect(formData.get("attachments")).toBeInstanceOf(File);
+  });
+
+  it("keeps FileInput single selection and protected owned attributes", async () => {
+    const user = userEvent.setup();
+    const unsafeProtectedProps = {
+      children: "Consumer child",
+      defaultValue: "default.pdf",
+      readOnly: true,
+      type: "text",
+      value: "controlled.pdf",
+    };
+    render(
+      <>
+        <FileInput aria-label="Resume" data-slot="consumer-slot" {...unsafeProtectedProps} />
+        <FileInput aria-label="Unavailable files" disabled />
+      </>,
+    );
+
+    const input = screen.getByLabelText("Resume") as HTMLInputElement;
+    const first = new File(["first"], "first.txt", { type: "text/plain" });
+    const second = new File(["second"], "second.txt", { type: "text/plain" });
+    await user.upload(input, [first, second]);
+
+    expect(input.files).toHaveLength(1);
+    expect(input.files?.[0]).toBe(first);
+    expect(input).not.toHaveAttribute("readonly");
+    expect(input).not.toHaveAttribute("value");
+    expect(input).toHaveAttribute("type", "file");
+    expect(input).toHaveAttribute("data-slot", "file-input");
+    expect(screen.getByLabelText("Unavailable files")).toBeDisabled();
   });
 });

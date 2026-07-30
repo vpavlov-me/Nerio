@@ -36,7 +36,7 @@ export default defineConfig({
   },
   webServer: {
     command:
-      "pnpm --filter @nerio-ui/docs build && pnpm --filter @nerio-ui/docs exec next start --port 3100",
+      "VERCEL_ENV=development pnpm --filter @nerio-ui/docs build && VERCEL_ENV=development pnpm --filter @nerio-ui/docs exec next start --port 3100",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
     url: "http://localhost:3100/visual-test",

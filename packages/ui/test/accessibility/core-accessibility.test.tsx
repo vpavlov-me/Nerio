@@ -17,6 +17,7 @@ import {
   EmptyStateMedia,
   EmptyStateTitle,
   Field,
+  FileInput,
   FormGroup,
   Input,
   InputGroup,
@@ -47,6 +48,7 @@ import {
 } from "../../src/index";
 import {
   Button,
+  Calendar,
   Checkbox,
   Command,
   CommandEmpty,
@@ -55,7 +57,9 @@ import {
   CommandList,
   CommandLoading,
   Dialog,
+  DatePicker,
   LabelHint,
+  DropdownMenu,
   RadioGroup,
   RadioGroupItem,
   Select,
@@ -74,8 +78,9 @@ import {
   Sidebar,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
+  Slider,
   Switch,
+  Toggle,
   Tabs,
   TabsContent,
   TabsIndicator,
@@ -216,6 +221,30 @@ describe("Core accessibility contracts", () => {
     expect((await axe(container)).violations).toEqual([]);
   });
 
+  it("keeps every native temporal Input path explicitly labelled", async () => {
+    const { container } = render(
+      <form aria-label="Planning window">
+        <Field label="Start date">
+          <Input type="date" name="startDate" required />
+        </Field>
+        <Field label="Billing month">
+          <Input type="month" name="billingMonth" />
+        </Field>
+        <Field label="Reporting week">
+          <Input type="week" name="reportingWeek" />
+        </Field>
+        <Field label="Start time">
+          <Input type="time" name="startTime" />
+        </Field>
+        <Field label="Local deadline">
+          <Input type="datetime-local" name="localDeadline" readOnly />
+        </Field>
+      </form>,
+    );
+
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
   it("keeps focusable table overflow regions named and keyboard reachable", async () => {
     const user = userEvent.setup();
     const { container } = render(
@@ -276,7 +305,7 @@ describe("Core accessibility contracts", () => {
           </Button>
           <Button icon={Bell} aria-label="More document actions" variant="secondary" />
         </ButtonGroup>
-        <ButtonGroup aria-label="Publishing actions" orientation="vertical">
+        <ButtonGroup aria-label="Publishing actions">
           <Button loading variant="secondary">
             Publish
           </Button>
@@ -444,6 +473,31 @@ describe("Core accessibility contracts", () => {
     expect((await axe(container)).violations).toEqual([]);
   });
 
+  it("keeps icon-only and visible-label Toggle names stable across pressed states", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <>
+        <Toggle aria-label="Favorite" icon={Bell} />
+        <Toggle defaultPressed leadingIcon={Bell}>
+          Pin project
+        </Toggle>
+        <Toggle aria-label="Muted view" disabled icon={Bell} pressed />
+      </>,
+    );
+
+    const favorite = screen.getByRole("button", { name: "Favorite" });
+    const pin = screen.getByRole("button", { name: "Pin project" });
+    expect(favorite).toHaveAttribute("aria-pressed", "false");
+    expect(pin).toHaveAttribute("aria-pressed", "true");
+    await user.click(favorite);
+    expect(screen.getByRole("button", { name: "Favorite" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByRole("button", { name: "Muted view" })).toBeDisabled();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
   it("keeps closed, open, invalid, grouped, and alternative-name Select states accessible", async () => {
     const user = userEvent.setup();
     const { container } = render(
@@ -598,16 +652,15 @@ describe("Core accessibility contracts", () => {
           <SidebarRail label="Collapse workspace sidebar" />
         </Sidebar>
         <SidebarInset>
-          <SidebarTrigger label="Toggle workspace sidebar" />
           <button type="button">Create project</button>
         </SidebarInset>
       </SidebarProvider>,
     );
 
     expect((await axe(container)).violations).toEqual([]);
-    const trigger = screen.getByRole("button", { name: "Toggle workspace sidebar" });
-    await user.click(trigger);
-    expect(trigger).toHaveFocus();
+    const rail = screen.getByRole("button", { name: "Collapse workspace sidebar" });
+    await user.click(rail);
+    expect(rail).toHaveFocus();
     expect(screen.getByRole("complementary", { name: "Workspace sidebar" })).toHaveAttribute(
       "data-state",
       "collapsed",
@@ -647,5 +700,154 @@ describe("Core accessibility contracts", () => {
     expect(screen.getByRole("combobox", { name: "Workspace command" })).toBeInTheDocument();
     expect(screen.getByRole("group", { name: "Navigation" })).toBeInTheDocument();
     expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps horizontal, vertical, disabled, and read-only Sliders accessible", async () => {
+    const { container } = render(
+      <>
+        <Slider
+          label="Volume"
+          description="Notification playback level."
+          defaultValue={45}
+          valueLabel="45%"
+          getAriaValueText={(_, value) => `${value} percent`}
+        />
+        <Slider aria-label="Vertical volume" defaultValue={60} orientation="vertical" />
+        <Slider aria-label="Unavailable volume" defaultValue={20} disabled />
+        <Slider aria-labelledby="readonly-slider-label" defaultValue={80} readOnly />
+        <span id="readonly-slider-label">Read-only volume</span>
+      </>,
+    );
+
+    expect(screen.getByRole("slider", { name: "Volume" })).toHaveAttribute(
+      "aria-valuetext",
+      "45 percent",
+    );
+    expect(screen.getByRole("slider", { name: "Vertical volume" })).toHaveAttribute(
+      "aria-orientation",
+      "vertical",
+    );
+    expect(screen.getByRole("slider", { name: "Unavailable volume" })).toBeDisabled();
+    expect(screen.getByRole("slider", { name: "Read-only volume" })).toHaveAttribute(
+      "aria-readonly",
+      "true",
+    );
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps labelled, multiple, invalid, and disabled FileInputs accessible", async () => {
+    const { container } = render(
+      <>
+        <Field label="Attachments" description="PDF or image files." invalid>
+          <FileInput accept=".pdf,image/*" multiple required invalid />
+        </Field>
+        <FileInput aria-label="Unavailable attachment" disabled />
+      </>,
+    );
+
+    expect(screen.getByLabelText("Attachments")).toHaveAccessibleDescription("PDF or image files.");
+    expect(screen.getByLabelText("Attachments")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("Unavailable attachment")).toBeDisabled();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps localized, constrained, read-only, and disabled Calendars accessible", async () => {
+    const { container } = render(
+      <>
+        <Calendar
+          aria-label="Release calendar"
+          defaultMonth="2026-06-01"
+          defaultValue="2026-06-15"
+          firstDayOfWeek={1}
+          min="2026-06-10"
+          max="2026-06-20"
+          isDateDisabled={(date) => date === "2026-06-18"}
+          locale="en-GB"
+          today="2026-06-15"
+        />
+        <span id="readonly-calendar-label">Read-only calendar</span>
+        <Calendar
+          aria-labelledby="readonly-calendar-label"
+          defaultValue="2026-06-15"
+          readOnly
+          today="2026-06-15"
+        />
+        <Calendar aria-label="Unavailable calendar" disabled today="2026-06-15" />
+      </>,
+    );
+
+    expect(screen.getAllByRole("grid", { name: "June 2026" })).toHaveLength(3);
+    expect(
+      screen.getByRole("group", { name: "Read-only calendar" }).querySelector('[role="grid"]'),
+    ).toHaveAttribute("aria-readonly", "true");
+    expect(
+      screen
+        .getByRole("group", { name: "Unavailable calendar" })
+        .querySelectorAll("button:disabled"),
+    ).toHaveLength(44);
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps DatePicker naming, form state, popup focus, and constraints accessible", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <form>
+        <Field label="Release date" description="Choose one calendar date.">
+          <DatePicker
+            clearable
+            defaultValue="2026-06-15"
+            firstDayOfWeek={1}
+            min="2026-06-10"
+            max="2026-06-20"
+            name="releaseDate"
+            required
+            today="2026-06-15"
+          />
+        </Field>
+      </form>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Release date" });
+    expect(trigger).toHaveAccessibleDescription(
+      expect.stringContaining("Choose one calendar date."),
+    );
+    expect(trigger).toHaveAccessibleDescription(expect.stringContaining("Jun 15, 2026"));
+    await user.click(trigger);
+    expect(await screen.findByRole("group", { name: "Choose date" })).toBeInTheDocument();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("keeps grouped DropdownMenu labels accessible", async () => {
+    render(
+      <DropdownMenu
+        defaultOpen
+        trigger="Workspace actions"
+        items={[
+          {
+            group: "Collaborate",
+            label: "Share workspace",
+            description: "Invite people to this workspace",
+          },
+          {
+            group: "Manage",
+            label: "Delete workspace",
+            destructive: true,
+          },
+        ]}
+      />,
+    );
+
+    expect(await screen.findByRole("group", { name: "Collaborate" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Manage" })).toBeInTheDocument();
+    expect(screen.getByRole("menuitem", { name: "Share workspace" })).toHaveAccessibleDescription(
+      "Invite people to this workspace",
+    );
+    expect(
+      (
+        await axe(document.body, {
+          rules: { region: { enabled: false } },
+        })
+      ).violations,
+    ).toEqual([]);
   });
 });

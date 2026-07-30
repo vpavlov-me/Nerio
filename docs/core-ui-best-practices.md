@@ -75,6 +75,11 @@ Pro. Templates MAY combine Core, Pro, and template-local code.
 
 ## Primitive responsibility boundaries
 
+`core-platform-primitive-coverage.md` is the accepted Core 1.0 decision for native capability
+coverage. Apply that matrix before classifying a new platform wrapper or composite as a future Core
+candidate. Do not reopen a covered or deferred decision inside an implementation issue without an
+explicit synchronized product-decision change.
+
 Before extending Core, classify the capability in this order:
 
 1. **Existing Core primitive:** the capability preserves the primitive's semantic responsibility,

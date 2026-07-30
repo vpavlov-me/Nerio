@@ -104,23 +104,9 @@ const relatedComponents = [
 
 function ProgressPreview() {
   return (
-    <section id="preview" className="component-example" aria-label="Progress examples">
-      <div className="component-example__preview form-preview-stack">
-        <Progress label="Uploading files" value={68} />
+    <section className="component-example" aria-label="Progress preview">
+      <div className="component-example__preview">
         <Progress label="Uploading files" value={68} valueLabel="68%" />
-        <Progress
-          label="Importing records"
-          max={5}
-          value={3}
-          valueLabel="3 of 5"
-          valueText="3 of 5 records imported"
-        />
-        <Progress aria-label="Synchronizing workspace" value={null} valueText="Synchronizing" />
-        <Progress label="Exporting report" value={100} valueLabel="Complete" />
-        <div>
-          <span id="external-progress-label">Publishing release</span>
-          <Progress aria-labelledby="external-progress-label" value={40} valueLabel="40%" />
-        </div>
       </div>
     </section>
   );

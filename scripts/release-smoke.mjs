@@ -55,8 +55,8 @@ const packageContracts = {
   },
   "@nerio-ui/registry": {
     homepage: "https://nerio.vpavlov.com/docs/registry",
-    exports: [".", "./manifest.json"],
-    dependencies: [],
+    exports: [".", "./manifest.json", "./public-commands.json"],
+    dependencies: ["@nerio-ui/adapters", "@nerio-ui/tokens", "@nerio-ui/ui"],
     peers: [],
   },
   "@nerio-ui/cli": {
@@ -74,9 +74,11 @@ const packageContracts = {
     bin: ["nerio-mcp"],
   },
 };
-const expectedVersion = "0.1.0-alpha.1";
+const expectedVersion = "0.1.0-alpha.2";
 const expectPublicPackages = process.env.NERIO_RELEASE_EXPECT_PUBLIC === "1";
+const expectPublishedPackages = process.env.NERIO_RELEASE_EXPECT_PUBLISHED === "1";
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
+const publicCommands = readJson(join(root, "packages/registry/src/public-commands.json"));
 
 function run(command, args, options = {}) {
   return execFileSync(command, args, {
@@ -97,6 +99,15 @@ function readBuiltCss(directory) {
     .filter((entry) => typeof entry === "string" && entry.endsWith(".css"))
     .map((entry) => readFileSync(join(buildDirectory, entry), "utf8"))
     .join("\n");
+}
+
+function assertSingleTokenPayload(css, mode) {
+  const declarations = css.match(/--n-gray-0\s*:/g) ?? [];
+  if (declarations.length !== 1) {
+    throw new Error(
+      `${mode} consumer emitted ${declarations.length} token payloads; expected exactly one.`,
+    );
+  }
 }
 
 function sortedKeys(value) {
@@ -198,6 +209,20 @@ function validatePackedPackage(name, tarball) {
       }
     }
   }
+  if (name === "@nerio-ui/registry") {
+    const manifest = JSON.parse(run("tar", ["-xOf", tarball, "package/src/manifest.json"]));
+    if (
+      manifest.schemaVersion !== "1.0.0" ||
+      manifest.version !== expectedVersion ||
+      manifest.sourceRevision !== `v${expectedVersion}` ||
+      manifest.styleContractVersion !== "tailwind-v1" ||
+      !Array.isArray(manifest.items)
+    ) {
+      throw new Error(
+        "@nerio-ui/registry must pack coordinated immutable version, revision, style, and item metadata.",
+      );
+    }
+  }
 }
 
 const tempRoot = mkdtempSync(join(tmpdir(), "nerio-release-smoke-"));
@@ -286,10 +311,17 @@ try {
     }
   }
 
-  const cli = join(consumerDirectory, "node_modules/@nerio-ui/cli/src/index.js");
-  const manifest = join(consumerDirectory, "node_modules/@nerio-ui/registry/src/manifest.json");
-  run(process.execPath, [cli, "init", "--registry", manifest], { cwd: consumerDirectory });
-  run(process.execPath, [cli, "doctor"], { cwd: consumerDirectory });
+  const runLocalCli = (...args) =>
+    run(pnpm, ["exec", "nerio", ...args], { cwd: consumerDirectory });
+  runLocalCli("init");
+  const consumerConfig = readJson(join(consumerDirectory, "nerio.json"));
+  if (consumerConfig.registry !== "@nerio-ui/registry/manifest.json") {
+    throw new Error("Packed CLI did not default to its immutable packaged Registry.");
+  }
+  runLocalCli("list");
+  runLocalCli("info", "button");
+  runLocalCli("add", "button", "--dry-run");
+  runLocalCli("doctor");
   for (const component of [
     "typography",
     "button",
@@ -314,7 +346,37 @@ try {
     "item",
     "list",
   ]) {
-    run(process.execPath, [cli, "add", component], { cwd: consumerDirectory });
+    runLocalCli("add", component);
+  }
+  const installedState = readJson(join(consumerDirectory, "nerio.lock.json"));
+  if (
+    installedState.registry.version !== expectedVersion ||
+    installedState.registry.sourceRevision !== `v${expectedVersion}` ||
+    !installedState.requestedItems.includes("button") ||
+    JSON.stringify(installedState).includes(consumerDirectory)
+  ) {
+    throw new Error("Packed CLI did not record portable exact installed-source metadata.");
+  }
+  runLocalCli("diff", "button");
+  runLocalCli("update", "button", "--dry-run");
+
+  if (expectPublishedPackages) {
+    const oneOffDirectory = join(tempRoot, "one-off-consumer");
+    mkdirSync(oneOffDirectory, { recursive: true });
+    const runOneOffCli = (args) =>
+      run(pnpm, ["dlx", `@nerio-ui/cli@${expectedVersion}`, ...args], {
+        cwd: oneOffDirectory,
+      });
+    runOneOffCli(["init"]);
+    runOneOffCli(["add", "button"]);
+    const oneOffButton = join(oneOffDirectory, "components/nerio/components/button.tsx");
+    if (!existsSync(oneOffButton)) {
+      throw new Error("One-off public CLI did not install Button through the published bin.");
+    }
+    const oneOffConfig = readJson(join(oneOffDirectory, "nerio.json"));
+    if (oneOffConfig.registry !== "@nerio-ui/registry/manifest.json") {
+      throw new Error("One-off public CLI did not create the canonical Registry configuration.");
+    }
   }
 
   run(pnpm, ["build"], {
@@ -323,6 +385,7 @@ try {
   });
 
   const noPreflightCss = readBuiltCss(consumerDirectory);
+  assertSingleTokenPayload(noPreflightCss, "No-Preflight package");
   if (!/box-sizing\s*:\s*border-box/.test(noPreflightCss)) {
     throw new Error("No-Preflight package CSS is missing scoped Nerio box sizing.");
   }
@@ -341,10 +404,12 @@ try {
     ].join("\n"),
   );
   rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
+  runLocalCli("doctor");
   run(pnpm, ["build"], {
     cwd: consumerDirectory,
     env: { NEXT_TELEMETRY_DISABLED: "1" },
   });
+  assertSingleTokenPayload(readBuiltCss(consumerDirectory), "Preflight package");
 
   const installedStyles = readdirSync(join(consumerDirectory, "components/nerio/styles")).sort();
   writeFileSync(
@@ -363,43 +428,18 @@ try {
   );
   rmSync(join(consumerDirectory, ".next"), { recursive: true, force: true });
 
-  const mcpCheck = [
-    "const tools = require('@nerio-ui/mcp');",
-    "const items = tools.list_components();",
-    `const expected = ${JSON.stringify([
-      "typography",
-      "button",
-      "button-group",
-      "input",
-      "input-group",
-      "textarea",
-      "label",
-      "field",
-      "form-message",
-      "form-group",
-      "checkbox",
-      "radio-group",
-      "switch",
-      "select",
-      "sheet",
-      "toast",
-      "table",
-      "pagination",
-      "sidebar-primitive",
-      "command-primitive",
-      "item",
-      "list",
-    ])};`,
-    "if (!expected.every((name) => items.some((item) => item.name === name))) process.exit(1);",
-  ].join(" ");
-  run(process.execPath, ["-e", mcpCheck], { cwd: consumerDirectory });
+  const mcpFixture = join(root, "packages/mcp/fixtures/verify.js");
+  run(process.execPath, [mcpFixture, "--command", pnpm, "--", "exec", "nerio-mcp"], {
+    cwd: consumerDirectory,
+  });
   run(pnpm, ["build"], {
     cwd: consumerDirectory,
     env: { NEXT_TELEMETRY_DISABLED: "1" },
   });
+  assertSingleTokenPayload(readBuiltCss(consumerDirectory), "Source-install");
 
   console.log(
-    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, packed CLI/MCP discovery, representative source installs, and a clean Next.js consumer build.`,
+    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, documented ${publicCommands.cli.localCommands.length}-command local CLI workflow, ${expectPublishedPackages ? "published one-off CLI execution, " : ""}packaged MCP-bin discovery, representative source installs, and a clean Next.js consumer build.`,
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });

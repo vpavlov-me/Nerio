@@ -4,22 +4,11 @@ import * as React from "react";
 import { Check, FileText, LayoutDashboard, X } from "@nerio-ui/adapters/icons";
 import { Card, CardContent, CardHeader, CardTitle, Icon, Kbd } from "@nerio-ui/ui";
 import {
-  Button,
   Command,
   CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandLoading,
-  Dialog,
-  Popover,
-  Sheet,
-  SheetBody,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
   type CommandGroupData,
   type CommandItemData,
 } from "@nerio-ui/ui/client";
@@ -29,13 +18,6 @@ import { StandardDocPage } from "../../../../components/doc-page";
 import { getComponentDoc } from "../../../../lib/component-docs";
 
 const commandDoc = getComponentDoc("command-primitive")!;
-
-const flatItems: readonly CommandItemData[] = [
-  { value: "overview", label: "Open overview", keywords: ["dashboard"] },
-  { value: "settings", label: "Workspace settings", keywords: ["preferences"] },
-  { value: "invite", label: "Invite teammate", keywords: ["member", "collaborator"] },
-  { value: "archive", label: "Archive workspace", disabled: true },
-];
 
 const groupedItems: readonly CommandGroupData[] = [
   {
@@ -100,62 +82,17 @@ function ResultItem({
   );
 }
 
-function LocalCommand({ grouped = false }: { grouped?: boolean }) {
+function LocalCommand() {
   const [selected, setSelected] = React.useState("None");
-  const items = grouped ? groupedItems : flatItems;
   return (
     <div className="form-preview-stack">
-      <Command items={items}>
+      <Command items={groupedItems}>
         <CommandInput aria-label="Workspace commands" placeholder="Search commands" />
         <CommandEmpty>No matching commands.</CommandEmpty>
         <CommandList>{(item) => <ResultItem item={item} onSelect={setSelected} />}</CommandList>
       </Command>
       <p aria-live="polite">Selected value: {selected}</p>
     </div>
-  );
-}
-
-function AsyncCommand() {
-  const [query, setQuery] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-  const [results, setResults] = React.useState(flatItems);
-
-  React.useEffect(() => {
-    setLoading(true);
-    const timer = window.setTimeout(() => {
-      const normalized = query.trim().toLocaleLowerCase();
-      setResults(
-        normalized
-          ? flatItems.filter((item) =>
-              [item.label, item.value, ...(item.keywords ?? [])]
-                .join(" ")
-                .toLocaleLowerCase()
-                .includes(normalized),
-            )
-          : flatItems,
-      );
-      setLoading(false);
-    }, 300);
-    return () => window.clearTimeout(timer);
-  }, [query]);
-
-  return (
-    <Command items={results} query={query} onQueryChange={setQuery} filter={false}>
-      <CommandInput aria-label="Consumer-filtered commands" placeholder="Search async results" />
-      <CommandLoading loading={loading}>Loading consumer results…</CommandLoading>
-      <CommandEmpty>{loading ? null : "No consumer results."}</CommandEmpty>
-      <CommandList>{(item) => <ResultItem item={item} />}</CommandList>
-    </Command>
-  );
-}
-
-function OverlayCommand({ label }: { label: string }) {
-  return (
-    <Command items={groupedItems}>
-      <CommandInput aria-label={`${label} commands`} placeholder="Search commands" autoFocus />
-      <CommandEmpty>No matching commands.</CommandEmpty>
-      <CommandList>{(item) => <ResultItem item={item} />}</CommandList>
-    </Command>
   );
 }
 
@@ -210,84 +147,9 @@ export default function Page() {
       kind="command-primitive"
       preview={
         <Example code={usage} label="Inline Command with local filtering">
-          <LocalCommand grouped />
+          <LocalCommand />
         </Example>
       }
-      sectionPreviews={{
-        usage: (
-          <>
-            <Example
-              code={
-                "<Command items={items} filter={false} query={query} onQueryChange={setQuery}>...</Command>"
-              }
-              label="Consumer-filtered async Command"
-            >
-              <AsyncCommand />
-            </Example>
-            <Example
-              code={'<Popover trigger="Open commands">\n  <Command>...</Command>\n</Popover>'}
-              label="Command in Popover"
-            >
-              <Popover trigger="Open commands" title="Workspace commands">
-                <OverlayCommand label="Popover" />
-              </Popover>
-            </Example>
-            <Example
-              code={
-                '<Dialog trigger="Open dialog" title="Workspace commands">\n  <Command>...</Command>\n</Dialog>'
-              }
-              label="Command in Dialog"
-            >
-              <Dialog
-                trigger="Open dialog"
-                title="Workspace commands"
-                description="Choose a local action."
-              >
-                <OverlayCommand label="Dialog" />
-              </Dialog>
-            </Example>
-            <Example
-              code={
-                "<Sheet>\n  <SheetTrigger render={<Button>Open sheet</Button>} />\n  <SheetContent><Command>...</Command></SheetContent>\n</Sheet>"
-              }
-              label="Command in Sheet"
-            >
-              <Sheet>
-                <SheetTrigger render={<Button variant="secondary">Open sheet</Button>} />
-                <SheetContent size="md">
-                  <SheetHeader>
-                    <SheetTitle>Workspace commands</SheetTitle>
-                    <SheetDescription>Choose a local action.</SheetDescription>
-                  </SheetHeader>
-                  <SheetBody>
-                    <OverlayCommand label="Sheet" />
-                  </SheetBody>
-                </SheetContent>
-              </Sheet>
-            </Example>
-          </>
-        ),
-        variants: (
-          <Example
-            code={"<Command items={groupedItems}>...</Command>"}
-            label="Grouped Command results"
-          >
-            <LocalCommand grouped />
-          </Example>
-        ),
-        states: (
-          <Example
-            code={'<Command defaultQuery="no-match" items={items}>...</Command>'}
-            label="Command empty and disabled states"
-          >
-            <Command defaultQuery="no-match" items={flatItems}>
-              <CommandInput aria-label="Empty command example" />
-              <CommandEmpty>No matching commands.</CommandEmpty>
-              <CommandList>{(item) => <ResultItem item={item} />}</CommandList>
-            </Command>
-          </Example>
-        ),
-      }}
       sectionContent={{
         variants: (
           <DocumentationTable

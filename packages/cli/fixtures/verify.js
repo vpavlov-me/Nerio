@@ -144,6 +144,61 @@ const expectedProgressFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedSliderFiles = [
+  "components/slider.tsx",
+  "lib/cn.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
+const expectedToggleFiles = [
+  "components/icon.tsx",
+  "components/toggle.tsx",
+  "lib/cn.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
+const expectedCalendarFiles = [
+  "components/calendar.tsx",
+  "lib/cn.ts",
+  "lib/compose-refs.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
+const expectedDatePickerFiles = [
+  "components/button.tsx",
+  "components/calendar.tsx",
+  "components/date-picker.tsx",
+  "components/field.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/label.tsx",
+  "components/popover.tsx",
+  "lib/cn.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/motion.css",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
+const expectedFileInputFiles = [
+  "components/file-input.tsx",
+  "components/icon.tsx",
+  "lib/cn.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/motion.css",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedOverlayAndTabsFiles = [
   "components/dialog.tsx",
   "components/dropdown-menu.tsx",
@@ -319,6 +374,369 @@ function startRegistryServer() {
   });
 }
 
+function writeLifecycleRegistry(
+  registryRoot,
+  {
+    version = "0.1.0-alpha.2",
+    sourceRevision = "fixture-alpha.2",
+    schemaVersion = "1.0.0",
+    sharedSource = "export const shared = 'one';\n",
+    buttonSource = "export const button = 'one';\n",
+    tokenSource = ":root { --fixture: one; }\n",
+    includeExtra = false,
+  } = {},
+) {
+  const sourceRoot = path.join(registryRoot, "source");
+  fs.mkdirSync(sourceRoot, { recursive: true });
+  fs.writeFileSync(path.join(sourceRoot, "shared.ts"), sharedSource);
+  fs.writeFileSync(path.join(sourceRoot, "button.ts"), buttonSource);
+  fs.writeFileSync(path.join(sourceRoot, "tokens.css"), tokenSource);
+  fs.writeFileSync(path.join(sourceRoot, "tailwind.css"), "@theme inline {}\n");
+  if (includeExtra) {
+    fs.writeFileSync(path.join(sourceRoot, "extra.ts"), "export const extra = true;\n");
+  }
+
+  const items = [
+    {
+      name: "shared",
+      title: "Shared",
+      description: "Fixture shared source.",
+      category: "foundation",
+      dependencies: ["react"],
+      registryDependencies: [],
+      files: [
+        { source: "./source/shared.ts", target: "lib/shared.ts", role: "utility" },
+        { source: "./source/tokens.css", target: "styles/tokens.css", role: "style" },
+        { source: "./source/tailwind.css", target: "styles/tailwind.css", role: "style" },
+      ],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: "import { shared } from '@/components/nerio/lib/shared';",
+    },
+    {
+      name: "button",
+      title: "Button",
+      description: "Fixture button source.",
+      category: "actions",
+      dependencies: ["react"],
+      registryDependencies: includeExtra ? ["shared", "extra"] : ["shared"],
+      files: [{ source: "./source/button.ts", target: "components/button.ts", role: "component" }],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: "import { button } from '@/components/nerio/components/button';",
+    },
+  ];
+  if (includeExtra) {
+    items.splice(1, 0, {
+      name: "extra",
+      title: "Extra",
+      description: "Fixture dependency added by an upstream release.",
+      category: "foundation",
+      dependencies: [],
+      registryDependencies: [],
+      files: [{ source: "./source/extra.ts", target: "lib/extra.ts", role: "utility" }],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: "import { extra } from '@/components/nerio/lib/extra';",
+    });
+  }
+
+  const manifestPath = path.join(registryRoot, "manifest.json");
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(
+      {
+        schemaVersion,
+        name: "nerio-fixture",
+        version,
+        sourceRevision,
+        styleContractVersion: "tailwind-v1",
+        items,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  return manifestPath;
+}
+
+async function verifySourceLifecycle(tempRoot) {
+  const registryRoot = path.join(tempRoot, "lifecycle-registry");
+  const target = path.join(tempRoot, "lifecycle-consumer");
+  const legacyTarget = path.join(tempRoot, "legacy-consumer");
+  fs.mkdirSync(registryRoot);
+  fs.mkdirSync(target);
+  fs.mkdirSync(legacyTarget);
+  const fixtureManifest = writeLifecycleRegistry(registryRoot);
+
+  fs.writeFileSync(
+    path.join(target, "package.json"),
+    `${JSON.stringify({ name: "fixture", private: true, dependencies: { react: "19.0.0" } }, null, 2)}\n`,
+  );
+  await run(target, "init", "--registry", fixtureManifest);
+  await run(target, "add", "button");
+  writeSourceTailwindSetup(target);
+  const initialDoctor = await run(target, "doctor");
+  if (!initialDoctor.includes("Registry nerio-fixture 0.1.0-alpha.2 (fixture-alpha.2)")) {
+    throw new Error("Doctor did not report the exact installed Registry contract.");
+  }
+
+  const lockPath = path.join(target, "nerio.lock.json");
+  const initialLock = JSON.parse(fs.readFileSync(lockPath, "utf8"));
+  if (
+    initialLock.schemaVersion !== "1.0.0" ||
+    initialLock.registry.version !== "0.1.0-alpha.2" ||
+    initialLock.registry.sourceRevision !== "fixture-alpha.2" ||
+    initialLock.registry.styleContractVersion !== "tailwind-v1" ||
+    !initialLock.requestedItems.includes("button") ||
+    !initialLock.items.shared ||
+    !initialLock.files["components/nerio/components/button.ts"]?.hash ||
+    JSON.stringify(initialLock).includes(tempRoot)
+  ) {
+    throw new Error("Installed source metadata is incomplete or contains machine-specific paths.");
+  }
+  const legacyConfigTarget = path.join(tempRoot, "legacy-config");
+  fs.cpSync(target, legacyConfigTarget, { recursive: true });
+  const legacyConfigPath = path.join(legacyConfigTarget, "nerio.json");
+  const legacyConfig = JSON.parse(fs.readFileSync(legacyConfigPath, "utf8"));
+  legacyConfig.schemaVersion = "0.1.0";
+  fs.writeFileSync(legacyConfigPath, `${JSON.stringify(legacyConfig, null, 2)}\n`);
+  const legacyConfigDoctor = await run(legacyConfigTarget, "doctor");
+  if (!legacyConfigDoctor.includes("supported legacy 0.1.0 schema")) {
+    throw new Error("Doctor did not provide migration guidance for legacy nerio.json.");
+  }
+
+  const missingMetadataTarget = path.join(tempRoot, "missing-lifecycle-metadata");
+  fs.cpSync(target, missingMetadataTarget, { recursive: true });
+  fs.rmSync(path.join(missingMetadataTarget, "nerio.lock.json"));
+  const missingMetadataDoctor = await runFailure(missingMetadataTarget, "doctor");
+  if (!missingMetadataDoctor.includes("nerio.lock.json is missing for installed source")) {
+    throw new Error("Doctor did not report installed source with missing lifecycle metadata.");
+  }
+
+  const missingRegistryDependencyTarget = path.join(tempRoot, "missing-registry-dependency");
+  fs.cpSync(target, missingRegistryDependencyTarget, { recursive: true });
+  const incompleteLockPath = path.join(missingRegistryDependencyTarget, "nerio.lock.json");
+  const incompleteLock = JSON.parse(fs.readFileSync(incompleteLockPath, "utf8"));
+  delete incompleteLock.items.shared;
+  fs.writeFileSync(incompleteLockPath, `${JSON.stringify(incompleteLock, null, 2)}\n`);
+  const missingRegistryDependencyDoctor = await runFailure(
+    missingRegistryDependencyTarget,
+    "doctor",
+  );
+  if (!missingRegistryDependencyDoctor.includes("missing Registry dependency shared")) {
+    throw new Error("Doctor did not report an incomplete installed dependency closure.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    version: "0.1.0-alpha.3",
+    sourceRevision: "fixture-version-mismatch",
+  });
+  const versionMismatchDoctor = await runFailure(target, "doctor");
+  if (
+    !versionMismatchDoctor.includes("CLI 0.1.0-alpha.2 and Registry 0.1.0-alpha.3 do not match")
+  ) {
+    throw new Error("Doctor did not report an incompatible Registry and CLI version.");
+  }
+  writeLifecycleRegistry(registryRoot);
+
+  const unchangedDiff = await run(target, "diff", "button");
+  if (!unchangedDiff.includes("unchanged\tcomponents/nerio/components/button.ts")) {
+    throw new Error("Diff did not report an unchanged installed file.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-upstream-shared",
+    sharedSource: "export const shared = 'two';\n",
+  });
+  const upstreamDiff = await run(target, "diff", "button");
+  if (!upstreamDiff.includes("upstream changed\tcomponents/nerio/lib/shared.ts")) {
+    throw new Error("Diff did not report an upstream-only shared utility change.");
+  }
+  await run(target, "update", "button");
+  if (
+    fs.readFileSync(path.join(target, "components/nerio/lib/shared.ts"), "utf8") !==
+    "export const shared = 'two';\n"
+  ) {
+    throw new Error("Update did not apply a safe upstream-only shared utility change.");
+  }
+
+  const buttonPath = path.join(target, "components/nerio/components/button.ts");
+  fs.writeFileSync(buttonPath, "export const button = 'local';\n");
+  const localDiff = await run(target, "diff", "button");
+  if (!localDiff.includes("locally modified\tcomponents/nerio/components/button.ts")) {
+    throw new Error("Diff did not report a local-only modification.");
+  }
+  await run(target, "update", "button");
+  if (fs.readFileSync(buttonPath, "utf8") !== "export const button = 'local';\n") {
+    throw new Error("Update replaced a local-only modification.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-conflict",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+  });
+  const conflictPreview = await run(target, "update", "button", "--dry-run");
+  if (
+    !conflictPreview.includes(
+      "locally modified, upstream changed\tcomponents/nerio/components/button.ts",
+    ) ||
+    !conflictPreview.includes("require local resolution")
+  ) {
+    throw new Error("Dry-run did not report a deterministic source conflict.");
+  }
+  const conflictFailure = await runFailure(target, "update", "button");
+  if (
+    !conflictFailure.includes("Update stopped before writing") ||
+    fs.readFileSync(buttonPath, "utf8") !== "export const button = 'local';\n"
+  ) {
+    throw new Error("Update did not stop before overwriting a conflicting local change.");
+  }
+  await run(target, "update", "button", "--force");
+  if (fs.readFileSync(buttonPath, "utf8") !== "export const button = 'upstream';\n") {
+    throw new Error("Intentional force update did not apply upstream source.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-added-dependency",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+    includeExtra: true,
+  });
+  const addedDependency = await run(target, "update", "button", "--dry-run");
+  if (!addedDependency.includes("added\tcomponents/nerio/lib/extra.ts")) {
+    throw new Error("Update did not report a newly added Registry dependency file.");
+  }
+  await run(target, "update", "button");
+  const extraPath = path.join(target, "components/nerio/lib/extra.ts");
+  if (!fs.existsSync(extraPath)) {
+    throw new Error("Update did not install a newly added Registry dependency file.");
+  }
+
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-removed-dependency",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+  });
+  const removedDependency = await run(target, "update", "button", "--dry-run");
+  if (!removedDependency.includes("removed\tcomponents/nerio/lib/extra.ts")) {
+    throw new Error("Update did not report a removed Registry dependency file.");
+  }
+  await run(target, "update", "button");
+  if (fs.existsSync(extraPath)) {
+    throw new Error("Update did not remove an unchanged obsolete dependency file.");
+  }
+
+  fs.writeFileSync(extraPath, "export const extra = 'consumer';\n");
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-added-dependency-collision",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+    includeExtra: true,
+  });
+  const addedCollision = await runFailure(target, "update", "button");
+  if (
+    !addedCollision.includes("Update stopped before writing") ||
+    fs.readFileSync(extraPath, "utf8") !== "export const extra = 'consumer';\n"
+  ) {
+    throw new Error("Update overwrote an untracked local file added by a new dependency.");
+  }
+  await run(target, "update", "button", "--force");
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-removed-dependency-after-collision",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+  });
+  await run(target, "update", "button");
+
+  const tokensPath = path.join(target, "components/nerio/styles/tokens.css");
+  fs.writeFileSync(tokensPath, ":root { --fixture: local; }\n");
+  await run(target, "update", "button");
+  if (fs.readFileSync(tokensPath, "utf8") !== ":root { --fixture: local; }\n") {
+    throw new Error("Update replaced customized tokens without an upstream token change.");
+  }
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-token-conflict",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+    tokenSource: ":root { --fixture: upstream; }\n",
+  });
+  const tokenConflict = await runFailure(target, "update", "button");
+  if (
+    !tokenConflict.includes("Update stopped before writing") ||
+    fs.readFileSync(tokensPath, "utf8") !== ":root { --fixture: local; }\n"
+  ) {
+    throw new Error("Customized token conflict was not preserved for review.");
+  }
+
+  const incompatibleManifest = writeLifecycleRegistry(registryRoot, {
+    schemaVersion: "2.0.0",
+    sourceRevision: "fixture-future-schema",
+  });
+  const incompatibleOutput = await runFailure(target, "list", "--registry", incompatibleManifest);
+  if (!incompatibleOutput.includes("newer than this CLI supports")) {
+    throw new Error("CLI did not reject an unsupported future Registry schema.");
+  }
+
+  const restoredManifest = writeLifecycleRegistry(registryRoot, {
+    version: "1.0.0",
+    sourceRevision: "fixture-1.0.0",
+  });
+  await run(legacyTarget, "init", "--registry", restoredManifest);
+  const prereleaseConfigPath = path.join(legacyTarget, "nerio.json");
+  const prereleaseConfig = JSON.parse(fs.readFileSync(prereleaseConfigPath, "utf8"));
+  prereleaseConfig.schemaVersion = "0.1.0";
+  fs.writeFileSync(prereleaseConfigPath, `${JSON.stringify(prereleaseConfig, null, 2)}\n`);
+  for (const [source, installed] of [
+    ["shared.ts", "lib/shared.ts"],
+    ["tokens.css", "styles/tokens.css"],
+    ["tailwind.css", "styles/tailwind.css"],
+    ["button.ts", "components/button.ts"],
+  ]) {
+    const destination = path.join(legacyTarget, "components/nerio", installed);
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.copyFileSync(path.join(registryRoot, "source", source), destination);
+  }
+  await run(legacyTarget, "add", "button");
+  const migratedLock = JSON.parse(
+    fs.readFileSync(path.join(legacyTarget, "nerio.lock.json"), "utf8"),
+  );
+  if (
+    migratedLock.registry.version !== "1.0.0" ||
+    migratedLock.registry.sourceRevision !== "fixture-1.0.0"
+  ) {
+    throw new Error("Matching prerelease source could not be adopted into 1.0 metadata.");
+  }
+
+  const missingDependenciesPackage = JSON.parse(
+    fs.readFileSync(path.join(target, "package.json"), "utf8"),
+  );
+  missingDependenciesPackage.dependencies = {};
+  fs.writeFileSync(
+    path.join(target, "package.json"),
+    `${JSON.stringify(missingDependenciesPackage, null, 2)}\n`,
+  );
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-conflict",
+    sharedSource: "export const shared = 'two';\n",
+    buttonSource: "export const button = 'upstream';\n",
+  });
+  const missingDependencyDoctor = await runFailure(target, "doctor");
+  if (!missingDependencyDoctor.includes("Required source dependencies are not declared: react")) {
+    throw new Error("Doctor did not report a missing required npm dependency.");
+  }
+}
+
 async function verify() {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "nerio-cli-"));
   const localTarget = path.join(tempRoot, "local");
@@ -355,6 +773,7 @@ async function verify() {
 
   const { server, manifestUrl } = await startRegistryServer();
   try {
+    await verifySourceLifecycle(tempRoot);
     await run(localTarget, "init", "--registry", manifest);
     writePackageTailwindSetup(localTarget);
     await run(localTarget, "doctor");
@@ -450,8 +869,18 @@ async function verify() {
     }
 
     const helpOutput = await run(localTarget, "--help");
-    if (!helpOutput.includes("nerio list") || !helpOutput.includes("nerio info")) {
-      throw new Error("Help output does not include list and info commands.");
+    if (
+      !helpOutput.includes("nerio list") ||
+      !helpOutput.includes("nerio info") ||
+      !helpOutput.includes(
+        "pnpm add -D @nerio-ui/registry@0.1.0-alpha.2 @nerio-ui/cli@0.1.0-alpha.2",
+      ) ||
+      !helpOutput.includes("pnpm exec nerio <command>") ||
+      !helpOutput.includes("pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 init")
+    ) {
+      throw new Error(
+        "Help output does not include the canonical local and one-off command model.",
+      );
     }
     const addHelpOutput = await run(localTarget, "add", "--help");
     if (!addHelpOutput.includes("nerio add <component>") || !addHelpOutput.includes("--dry-run")) {
@@ -463,7 +892,11 @@ async function verify() {
       !listOutput.includes("icon-button\tIconButton\tactions") ||
       !listOutput.includes("motion-adapter\tMotion Adapter\tfoundation") ||
       !listOutput.includes("alert\tAlert\tfeedback") ||
-      !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation")
+      !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation") ||
+      !listOutput.includes("slider\tSlider\tforms") ||
+      !listOutput.includes("file-input\tFileInput\tforms") ||
+      !listOutput.includes("calendar\tCalendar\tforms") ||
+      !listOutput.includes("date-picker\tDatePicker\tforms")
     ) {
       throw new Error("List output did not include registry component name, title, and category.");
     }
@@ -483,6 +916,43 @@ async function verify() {
     if (!cardInfoOutput.includes("--n-card-padding-inline")) {
       throw new Error("Card registry metadata did not include the spacing contract.");
     }
+    const fileInputInfoOutput = await run(localTarget, "info", "file-input");
+    if (
+      !fileInputInfoOutput.includes("FileInput (file-input)") ||
+      !fileInputInfoOutput.includes("--n-file-input-button-background") ||
+      !fileInputInfoOutput.includes("FileList") ||
+      !fileInputInfoOutput.includes("components/file-input.tsx")
+    ) {
+      throw new Error("FileInput registry metadata did not include its native selection contract.");
+    }
+    const inputInfoOutput = await run(localTarget, "info", "input");
+    if (
+      !inputInfoOutput.includes("datetime-local") ||
+      !inputInfoOutput.includes("browser-owned pickers") ||
+      !inputInfoOutput.includes("valueAsDate")
+    ) {
+      throw new Error("Input registry metadata did not include the native temporal contract.");
+    }
+    const calendarInfoOutput = await run(localTarget, "info", "calendar");
+    if (
+      !calendarInfoOutput.includes("Calendar (calendar)") ||
+      !calendarInfoOutput.includes("Registry dependencies: button") ||
+      !calendarInfoOutput.includes("--n-calendar-day-background-selected") ||
+      !calendarInfoOutput.includes("YYYY-MM-DD") ||
+      !calendarInfoOutput.includes("components/calendar.tsx")
+    ) {
+      throw new Error("Calendar registry metadata did not include its ISO grid contract.");
+    }
+    const datePickerInfoOutput = await run(localTarget, "info", "date-picker");
+    if (
+      !datePickerInfoOutput.includes("DatePicker (date-picker)") ||
+      !datePickerInfoOutput.includes("Registry dependencies: calendar, field, popover") ||
+      !datePickerInfoOutput.includes("--n-calendar-day-background-selected") ||
+      !datePickerInfoOutput.includes("YYYY-MM-DD") ||
+      !datePickerInfoOutput.includes("components/date-picker.tsx")
+    ) {
+      throw new Error("DatePicker registry metadata did not include its ISO form contract.");
+    }
     const typographyInfoOutput = await run(localTarget, "info", "typography");
     if (
       !typographyInfoOutput.includes("--n-font-sans-system") ||
@@ -495,7 +965,8 @@ async function verify() {
     if (
       !motionInfoOutput.includes("Optional peer dependencies: motion") ||
       !motionInfoOutput.includes("Documentation: /docs/foundations/motion") ||
-      !motionInfoOutput.includes("lib/motion-adapter.tsx")
+      !motionInfoOutput.includes("lib/motion-adapter.tsx") ||
+      !motionInfoOutput.includes("accepts only children")
     ) {
       throw new Error(
         "Motion Adapter registry metadata did not include its optional-peer contract.",
@@ -517,13 +988,13 @@ async function verify() {
     }
     const buttonGroupInfoOutput = await run(localTarget, "info", "button-group");
     if (
-      !buttonGroupInfoOutput.includes("orientation: horizontal | vertical") ||
+      buttonGroupInfoOutput.includes("orientation: horizontal | vertical") ||
       !buttonGroupInfoOutput.includes("independent Tab order") ||
       !buttonGroupInfoOutput.includes("lib/tailwind-cn.ts") ||
       !buttonGroupInfoOutput.includes("styles/tailwind.css")
     ) {
       throw new Error(
-        "ButtonGroup registry metadata did not include the stable orientation contract.",
+        "ButtonGroup registry metadata did not include the horizontal-only contract.",
       );
     }
     await run(localTarget, "add", "button");
@@ -548,7 +1019,12 @@ async function verify() {
     await run(localTarget, "add", "form-group");
     await run(localTarget, "add", "checkbox");
     await run(localTarget, "add", "switch");
+    await run(localTarget, "add", "toggle");
     await run(localTarget, "add", "select");
+    await run(localTarget, "add", "slider");
+    await run(localTarget, "add", "calendar");
+    await run(localTarget, "add", "date-picker");
+    await run(localTarget, "add", "file-input");
     await run(localTarget, "add", "alert");
     await run(localTarget, "add", "radio-group");
     await run(localTarget, "add", "avatar");
@@ -600,7 +1076,9 @@ async function verify() {
     if (
       !installedMotionAdapter.includes('"use client"') ||
       !installedMotionAdapter.includes('reducedMotion="user"') ||
-      !installedMotionAdapter.includes("motionTransitions")
+      !installedMotionAdapter.includes("motionTransitions") ||
+      !installedMotionAdapter.includes("skipAnimations") ||
+      installedMotionAdapter.includes("<MotionConfig {...props}")
     ) {
       throw new Error("Installed Motion Adapter source is missing its client or motion contract.");
     }
@@ -654,7 +1132,13 @@ async function verify() {
       !sidebarLayoutSource.includes("React.forwardRef<HTMLDivElement, SidebarContentProps>") ||
       !sidebarLayoutSource.includes("React.useMemo(() => composeRefs(ref), [ref])") ||
       !sidebarSource.includes("size-(--n-sidebar-rail-hit-area)") ||
-      !sidebarSource.includes("top-1/2") ||
+      !sidebarSource.includes(
+        "right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))]",
+      ) ||
+      !sidebarSource.includes(
+        "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
+      ) ||
+      sidebarSource.includes("top-1/2") ||
       !sidebarSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
@@ -746,6 +1230,22 @@ async function verify() {
     ) {
       throw new Error("Installed Switch source is missing Base UI or ref support.");
     }
+    assertFiles(localTarget, expectedToggleFiles);
+    const toggleSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/toggle.tsx"),
+      "utf8",
+    );
+    if (
+      !toggleSource.includes("@base-ui/react/toggle") ||
+      !toggleSource.includes("ToggleChangeEventDetails") ||
+      !toggleSource.includes("data-slot={dataSlot}") ||
+      !toggleSource.includes('data-icon-only={iconOnly ? "true" : undefined}') ||
+      !toggleSource.includes('type={nativeButton !== false ? (type ?? "button") : undefined}')
+    ) {
+      throw new Error(
+        "Installed Toggle source did not preserve pressed state, naming, or non-submit behavior.",
+      );
+    }
     assertFiles(localTarget, expectedSelectFiles);
     const selectSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/select.tsx"),
@@ -757,6 +1257,68 @@ async function verify() {
       !selectSource.includes("autoComplete={autoComplete}")
     ) {
       throw new Error("Installed Select source did not preserve placeholder and form metadata.");
+    }
+    assertFiles(localTarget, expectedSliderFiles);
+    const sliderSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/slider.tsx"),
+      "utf8",
+    );
+    if (
+      !sliderSource.includes("@base-ui/react/slider") ||
+      !sliderSource.includes("BaseSlider.Root<number>") ||
+      !sliderSource.includes("eventDetails.cancel()") ||
+      !sliderSource.includes('data-slot="thumb"') ||
+      !sliderSource.includes("getAriaValueText")
+    ) {
+      throw new Error(
+        "Installed Slider source did not preserve its single-value accessibility contract.",
+      );
+    }
+    assertFiles(localTarget, expectedCalendarFiles);
+    const calendarSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/calendar.tsx"),
+      "utf8",
+    );
+    if (
+      !calendarSource.includes('role="grid"') ||
+      !calendarSource.includes('data-slot="day"') ||
+      !calendarSource.includes("firstDayOfWeek") ||
+      !calendarSource.includes("isDateDisabled") ||
+      !calendarSource.includes('case "PageUp"')
+    ) {
+      throw new Error("Installed Calendar source did not preserve its ISO grid contract.");
+    }
+    assertFiles(localTarget, expectedDatePickerFiles);
+    const datePickerSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/date-picker.tsx"),
+      "utf8",
+    );
+    if (
+      !datePickerSource.includes("BasePopover.Root") ||
+      !datePickerSource.includes('data-slot="form-control"') ||
+      !datePickerSource.includes("calendarDateToUtcDate") ||
+      !datePickerSource.includes("actionsRef.current?.close()") ||
+      !datePickerSource.includes("formatValue")
+    ) {
+      throw new Error("Installed DatePicker source did not preserve its ISO form contract.");
+    }
+    assertFiles(localTarget, expectedFileInputFiles);
+    const fileInputSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/file-input.tsx"),
+      "utf8",
+    );
+    if (
+      !fileInputSource.includes('type="file"') ||
+      !fileInputSource.includes('data-slot="file-input-root"') ||
+      !fileInputSource.includes('data-slot="file-input"') ||
+      !fileInputSource.includes('data-slot="file-input-icon"') ||
+      !fileInputSource.includes("icon={Upload}") ||
+      !fileInputSource.includes(
+        '"children" | "defaultValue" | "readOnly" | "size" | "type" | "value"',
+      ) ||
+      !fileInputSource.includes("file:bg-(--n-file-input-button-background)")
+    ) {
+      throw new Error("Installed FileInput source did not preserve its native file-only contract.");
     }
     assertFiles(localTarget, expectedPhase2BFiles);
     assertFiles(localTarget, expectedDisplayFiles);
@@ -825,7 +1387,10 @@ async function verify() {
       );
     }
     if (
-      !listSource.includes('const Root = ordered ? "ol" : "ul"') ||
+      !listSource.includes('const resolvedMarker = marker ?? (ordered ? "decimal" : "disc")') ||
+      !listSource.includes('const Root = resolvedMarker === "decimal" ? "ol" : "ul"') ||
+      !listSource.includes('data-slot="marker"') ||
+      !listSource.includes('data-slot="item-content"') ||
       !listSource.includes('"n-list__link"') ||
       !listSource.includes("listSurfaceClasses") ||
       !listSource.includes('data-slot="link"') ||
@@ -947,6 +1512,18 @@ async function verify() {
       !dropdownSource.includes("onOpenChange")
     ) {
       throw new Error("Installed DropdownMenu source is missing item state or open control.");
+    }
+
+    const tooltipSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/tooltip.tsx"),
+      "utf8",
+    );
+    if (
+      !tooltipSource.includes("TooltipProvider") ||
+      !tooltipSource.includes("<BaseTooltip.Provider {...props}>") ||
+      tooltipSource.includes("<BaseTooltip.Provider>\\n      <BaseTooltip.Root")
+    ) {
+      throw new Error("Installed Tooltip source is missing shared delay-group composition.");
     }
 
     const toastSource = fs.readFileSync(

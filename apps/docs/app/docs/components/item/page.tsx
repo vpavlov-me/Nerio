@@ -1,14 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import {
-  ArrowRight,
-  Check,
-  FileText,
-  LayoutDashboard,
-  Settings,
-  Sparkles,
-  X,
-} from "@nerio-ui/adapters/icons";
+import { Check, FileText, X } from "@nerio-ui/adapters/icons";
 import {
   Card,
   CardContent,
@@ -20,19 +12,13 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
-  ItemFooter,
-  ItemGroup,
-  ItemHeader,
   ItemMedia,
-  ItemSeparator,
   ItemTitle,
-  Skeleton,
 } from "@nerio-ui/ui";
 import { Button } from "@nerio-ui/ui/client";
 import { StandardDocPage } from "../../../../components/doc-page";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
-import { ItemAvatarExample } from "../../../../components/item-avatar-example";
 
 export const metadata: Metadata = {
   title: "Item component",
@@ -100,81 +86,6 @@ export default function ItemPage() {
       title="Item"
       preview={<ItemPreview />}
       sectionContent={{
-        anatomy: (
-          <section className="component-example" aria-label="Item anatomy preview">
-            <div className="component-example__preview">
-              <pre>{`ItemGroup
-└── Item
-    ├── ItemHeader
-    ├── ItemMedia
-    ├── ItemContent
-    │   ├── ItemTitle
-    │   └── ItemDescription
-    ├── ItemActions
-    └── ItemFooter`}</pre>
-            </div>
-          </section>
-        ),
-        variants: (
-          <section className="component-example" aria-label="Item variants preview">
-            <div className="component-example__preview item-doc-preview">
-              <ProductItem
-                action="Open"
-                description="Updated today · 12 collaborators have access."
-                title="Research brief"
-              >
-                <FileText aria-hidden />
-              </ProductItem>
-              <ProductItem
-                action="Manage"
-                description="Billing, access, and workspace preferences."
-                title="Team workspace"
-                variant="outline"
-              >
-                <LayoutDashboard aria-hidden />
-              </ProductItem>
-              <ProductItem
-                action="View"
-                description="Three suggestions are ready for review."
-                title="Product updates"
-                variant="soft"
-              >
-                <Sparkles aria-hidden />
-              </ProductItem>
-            </div>
-          </section>
-        ),
-        states: (
-          <section className="component-example" aria-label="Item states preview">
-            <div className="component-example__preview item-doc-preview">
-              <Item data-selected>
-                <ItemContent>
-                  <ItemTitle>Selected workspace</ItemTitle>
-                  <ItemDescription>
-                    Uses a neutral selected surface without owning selection state.
-                  </ItemDescription>
-                </ItemContent>
-              </Item>
-              <Item aria-disabled="true" variant="outline">
-                <ItemContent>
-                  <ItemTitle>Archived integration</ItemTitle>
-                  <ItemDescription>
-                    This static item communicates unavailable content.
-                  </ItemDescription>
-                </ItemContent>
-              </Item>
-              <Item data-loading variant="outline">
-                <ItemMedia>
-                  <Skeleton aria-label="Loading media" className="item-loading-media" />
-                </ItemMedia>
-                <ItemContent>
-                  <Skeleton aria-label="Loading title" className="item-loading-title" />
-                  <Skeleton aria-label="Loading description" className="item-loading-description" />
-                </ItemContent>
-              </Item>
-            </div>
-          </section>
-        ),
         api: (
           <DocumentationTable
             headers={["Part", "API", "Purpose"]}
@@ -267,57 +178,6 @@ export default function ItemPage() {
               </Card>
             ))}
           </div>
-        ),
-      }}
-      sectionPreviews={{
-        api: (
-          <section className="component-example" aria-label="Item composition preview">
-            <div className="component-example__preview">
-              <ItemGroup>
-                <Item render={<a href="#workspace" />}>
-                  <ItemMedia variant="icon">
-                    <Settings aria-hidden />
-                  </ItemMedia>
-                  <ItemContent>
-                    <ItemTitle>Workspace settings</ItemTitle>
-                    <ItemDescription>Members, billing, and security.</ItemDescription>
-                  </ItemContent>
-                  <ItemActions aria-hidden>
-                    <ArrowRight />
-                  </ItemActions>
-                </Item>
-                <ItemSeparator />
-                <ItemAvatarExample />
-              </ItemGroup>
-            </div>
-          </section>
-        ),
-        usage: (
-          <section className="component-example" aria-label="Rich Item usage preview">
-            <div className="component-example__preview">
-              <Item size="lg" variant="outline">
-                <ItemHeader>Shared resource</ItemHeader>
-                <ItemMedia variant="image">
-                  <FileText aria-hidden />
-                </ItemMedia>
-                <ItemContent>
-                  <ItemTitle>Q3 research brief</ItemTitle>
-                  <ItemDescription>
-                    Interview synthesis, customer themes, and decisions for the next planning cycle.
-                  </ItemDescription>
-                </ItemContent>
-                <ItemActions>
-                  <Button size="sm" variant="secondary">
-                    Configure
-                  </Button>
-                  <Button size="sm" variant="ghost">
-                    Remove
-                  </Button>
-                </ItemActions>
-                <ItemFooter>Last edited by Maya Chen · Shared with Product</ItemFooter>
-              </Item>
-            </div>
-          </section>
         ),
       }}
     />

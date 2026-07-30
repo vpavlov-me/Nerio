@@ -13,6 +13,8 @@ const componentLedes: Record<string, string> = {
   "button-group": "ButtonGroup joins related actions into a compact, accessible control set.",
   button:
     "Buttons trigger user actions with clear intent, accessible focus treatment, loading states, and icon support.",
+  toggle:
+    "Toggle represents one independent button state that remains pressed or not pressed with a stable accessible name.",
   badge: "Badges label status, category, or lightweight metadata without becoming primary actions.",
   alert: "Alerts communicate inline feedback with clear tone, text, and accessible semantics.",
   spinner:
@@ -23,7 +25,9 @@ const componentLedes: Record<string, string> = {
     "Empty states explain missing content and offer a clear next action when one is available.",
   textarea: "Textareas collect longer notes, descriptions, and collaborative product content.",
   input:
-    "Input is a thin native control for short text-like values; Field owns labels, descriptions, and validation messages.",
+    "Input is a thin native control for text-like, numeric, and platform temporal values; Field owns labels, descriptions, and validation messages.",
+  "file-input":
+    "FileInput preserves native file selection, FileList access, picker security, and form behavior without owning an upload workflow.",
   "input-group":
     "InputGroup composes an Input with explicit inline addons without changing native form semantics.",
   label: "Labels provide accessible names and stable form hierarchy.",
@@ -38,6 +42,12 @@ const componentLedes: Record<string, string> = {
     "Sheets present a focused modal panel from an explicit side while leaving product workflows to the consumer.",
   select:
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
+  slider:
+    "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
+  calendar:
+    "Calendar selects one timezone-safe ISO date in a localizable month grid with complete keyboard navigation and explicit constraints.",
+  "date-picker":
+    "DatePicker composes Calendar and an anchored overlay into one localizable, form-backed single-date control.",
   toast: "Toasts acknowledge short-lived product events without interrupting the current workflow.",
   field: "Fields compose labels, controls, descriptions, and validation messages.",
   "form-message":
@@ -76,6 +86,7 @@ const componentTitles: Record<string, string> = {
   "form-group": "FormGroup",
   "form-message": "FormMessage",
   "input-group": "InputGroup",
+  "file-input": "FileInput",
   "key-value": "KeyValue",
   "radio-group": "RadioGroup",
   "sidebar-primitive": "Sidebar",

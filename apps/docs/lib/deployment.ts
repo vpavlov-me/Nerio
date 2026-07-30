@@ -6,12 +6,11 @@ export function isPublicProductionDeployment() {
   return process.env.NODE_ENV === "production";
 }
 
-export function isHostedDeployment() {
-  const vercelEnvironment = process.env.VERCEL_ENV;
+export function arePreviewSurfacesEnabled() {
+  const override = process.env.NERIO_SHOW_PREVIEW_SURFACES;
 
-  if (vercelEnvironment) {
-    return vercelEnvironment === "preview" || vercelEnvironment === "production";
-  }
+  if (override === "true") return true;
+  if (override === "false") return false;
 
-  return process.env.NODE_ENV === "production";
+  return !isPublicProductionDeployment();
 }

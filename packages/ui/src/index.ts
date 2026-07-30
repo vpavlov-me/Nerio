@@ -1,11 +1,7 @@
 export * from "./lib/cn";
 export { composeRefs } from "./lib/compose-refs";
 export { motionClasses, type MotionClassName } from "./lib/motion";
-export {
-  ButtonGroup,
-  type ButtonGroupOrientation,
-  type ButtonGroupProps,
-} from "./components/button-group";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export {
   Code,
   Heading,
@@ -53,6 +49,7 @@ export {
 export { Alert, type AlertProps, type AlertTone } from "./components/alert";
 export { Breadcrumbs, type BreadcrumbsItem, type BreadcrumbsProps } from "./components/breadcrumbs";
 export { Input, type InputProps, type InputSize, type InputType } from "./components/input";
+export { FileInput, type FileInputProps, type FileInputSize } from "./components/file-input";
 export {
   InputGroup,
   InputGroupAddon,

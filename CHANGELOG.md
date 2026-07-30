@@ -6,12 +6,130 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+No changes yet.
+
+## 0.1.0-alpha.2 — 2026-07-30
+
 ### Added
 
+- Added a machine-validated preparation plan and evidence record for the manual Core 1.0
+  accessibility and real-device audit. The plan fixes the required VoiceOver, NVDA, TalkBack,
+  physical-device, zoom/reflow, reduced-motion, contrast, native-control, component-family, and
+  runtime-axis scenarios without representing automated coverage as human evidence.
+- Added the client-only Base UI Toggle for one independent retained button state, with controlled
+  and uncontrolled `pressed` state, stable accessible naming, icon-only and visible-label content,
+  ghost and outline variants, three control sizes, render composition, tokens, Registry, CLI/MCP,
+  docs, source-install, accessibility, and cross-browser coverage. ToggleGroup, Toolbar, grouped
+  selection, form-field semantics, persistence, and product policy remain outside this primitive.
+  Existing retained-state Buttons now reuse Toggle for balance visibility and deterministic loading
+  modes in the Finance & Assets, Content Library, and AI Research Workspace templates; grouped and
+  disclosure controls remain on their existing semantics.
+  The raw token CSS budget moves from 70,000 to 72,000 bytes for the component token contract; the
+  measured stylesheet grows by 2,149 bytes to 71,355 bytes while remaining below the existing
+  11,000-byte gzip budget.
+- Added a metadata-driven catalog of ten bounded product Blocks at `/blocks`, with same-origin
+  full-screen previews at `/views/blocks/[slug]`, canonical detail metadata, responsive and
+  accessible task-focused examples, and explicit product boundaries. The previous broad settings
+  composition was split into profile, security, and notification Blocks; profile, empty-state, and
+  feedback galleries were simplified around recognizable tasks; valuable overlay, navigation,
+  feedback-family, and dense-form stress coverage moved to unindexed internal fixtures.
+- Added an immutable, release-versioned Registry contract and a portable `nerio.lock.json` source
+  record with exact revision, style contract, dependency closure, installed paths, and original
+  hashes. Added `nerio diff`, deterministic `nerio update --dry-run`, safe source updates,
+  conflict-preserving normal updates, explicit force replacement, expanded doctor diagnostics,
+  MCP Registry metadata, migration fixtures, and packed-consumer verification. The CLI tarball
+  budget moves from 8,000 to 12,000 bytes for this lifecycle contract; the measured tarball is
+  10,224 bytes and the unpacked budget remains unchanged.
+- Added the client-only single-date DatePicker composed from Calendar and an anchored Base UI
+  Popover, with timezone-safe ISO values, controlled and uncontrolled value/open state, localized
+  display, min/max and disabled-date constraints, form submission/reset/required behavior, optional
+  clear, focus transfer/restoration, Registry, CLI/MCP, docs, source-install, accessibility, and
+  cross-browser coverage. Ranges, parsing, presets, time zones, scheduling, availability,
+  recurrence, and product shortcuts remain outside Core.
+- Added the client-only single-date Calendar with timezone-safe ISO values, controlled and
+  uncontrolled selection and visible-month state, roving grid focus, locale-aware labels,
+  localized selected-date context, configurable week starts, min/max and disabled-date constraints,
+  Registry, CLI/MCP, docs, package/source-install, accessibility, and cross-browser coverage.
+  DatePicker, date ranges, scheduling, availability, events, recurrence, time, and timezone
+  workflows remain outside this primitive.
+- Added the server-safe native FileInput with typed file-only props, forwarded ref and FileList
+  events, single or multiple selection, native form/reset behavior, tokenized file-button states,
+  Registry, CLI/MCP, docs, package/source-install, accessibility, and cross-browser coverage. Upload,
+  drop-zone, preview, validation-workflow, progress, retry, queue, and storage behavior remain outside
+  Core.
+- Added the client-only single-value Slider with Base UI keyboard, pointer, touch, form, orientation,
+  read-only, localized value-text, token, Registry, CLI/MCP, docs, source-install, and browser
+  contracts. Existing native range usage can migrate to `Slider` when a tokenized cross-browser
+  presentation adds value; multi-thumb ranges and product-specific scale behavior remain outside Core.
+- Added native `date`, `month`, `week`, `time`, and `datetime-local` coverage to the server-safe
+  Input contract while preserving browser-owned pickers, localized chrome, validity, value, and
+  form-submission behavior.
+- Added the canonical Core 1.0 platform-primitive coverage matrix, approved bounded follow-up
+  identities for Slider, FileInput, Calendar, and DatePicker, and catalog drift validation for the
+  native/component/deferred boundary.
 - Added deterministic Core visual-regression fixtures, cross-axis screenshot baselines, CI diff artifacts, and an explicit maintainer approval workflow.
+- Added Chromium, Firefox, and WebKit interaction gates for docs and demo, an explicit platform
+  support policy, deterministic route/search performance checks, retry/failure artifacts, and
+  enforced package, CSS, named-import, icon, and optional-adapter budgets.
 
 ### Changed
 
+- Split pull-request automation into a fast, scope-aware development gate for working branches and
+  a parallel full release-candidate gate for `dev -> main`. Development runtime changes receive a
+  focused Chromium smoke while Firefox, WebKit, complete visual, tool, package, packed-consumer, and
+  manual-audit contracts remain mandatory at the release boundary.
+- Refined the Core component presentation contracts from Playground review: ButtonGroup is now
+  horizontal-only with short decorative dividers; FileInput uses a compact upload icon; Checkbox,
+  Slider, Calendar, DatePicker, Badge, FormGroup, Pagination, Sidebar, and Command states have
+  corrected visual treatment; Dropdown Menu items support leading and trailing icons plus hotkeys;
+  List supports dot, number, dash, and icon markers; Separator supports both orientations; and docs
+  avatar previews use a shared representative image set.
+- Gated Blocks, Templates, their full-screen Views, and the visual Playground behind
+  `NERIO_SHOW_PREVIEW_SURFACES`. They remain available by default in local and preview deployments
+  while public production hides their navigation, search entries, sitemap and `llms.txt` discovery,
+  redirects, and direct routes until launch.
+- Added Support Desk as a docs-local Template with saved inbox views, dense ticket selection,
+  desktop split view, mobile drill-in, localized conversations, assignment and status controls,
+  customer context, reply validation and feedback, complete queue states, runtime-axis inspection,
+  and focused browser and visual evidence. It does not add a CRM backend, email delivery,
+  persistence, permissions, or Core API.
+- Added Developer Portal as a docs-local Template with a developer landing, deep navigation,
+  keyboard-accessible documentation search, quickstart examples, API request and response states,
+  versioned changelog, responsive navigation, runtime-axis inspection, and focused browser and
+  visual evidence. It remains distinct from the Nerio docs application and does not add a docs
+  backend, live API, SDK, persistence, or Core API.
+- Added AI Research Workspace as a docs-local Template with an evidence-grounded conversation,
+  inspectable citations, local attachments, deterministic running, completed, interrupted, failed,
+  and retry tool states, searchable saved threads, responsive navigation, runtime-axis inspection,
+  and focused browser and visual evidence. It does not add a model API, streaming backend, remote
+  files, persistence, or Core API.
+- Added Content Library as a docs-local Template with a media-first library overview, desktop grid
+  and mobile list, search and filters, bounded multi-selection, local preview and metadata editing,
+  complete import queue states, responsive navigation, runtime-axis inspection, and focused browser
+  and visual evidence. It uses deterministic CSS artwork and metadata without adding remote media,
+  uploads, persistence, a DAM backend, or Core API.
+- Added Finance & Assets as a second docs-local Template with a consolidated portfolio overview,
+  searchable holdings and asset detail, semantic transaction states, a validated local transfer
+  flow, responsive navigation, sensitive-value controls, runtime-axis inspection, and focused
+  browser and visual evidence. It uses deterministic data and the existing charts adapter without
+  adding a backend, remote market data, or Core API.
+- Moved the Operations Workspace showcase into a metadata-driven docs-local Template architecture.
+  `/templates`, `/templates/operations-workspace`, and `/views/operations-workspace` now share one
+  catalog and one docs deployment; the standalone demo application, external demo URL, port 3002,
+  duplicate appearance runtime, and separate browser build were retired. Existing runtime-axis,
+  responsive, accessibility, performance, and product-state coverage now runs against the
+  same-origin full-screen View.
+- Stabilized the optional `@nerio-ui/adapters/motion` Core 1.0 contract. Runtime exports,
+  transition and variant values, package/source parity, reduced-motion updates, SSR/hydration, and
+  bundle isolation are snapshot- or fixture-protected. `NerioMotionConfig` now accepts only
+  `children`, CSP `nonce`, and deterministic-test `skipAnimations`; alpha passthrough options such
+  as global `transition`, `isValidProp`, `isStatic`, and `transformPagePoint` move to consumer-owned
+  Motion composition.
+- Standardized public package, Registry CLI, and MCP onboarding around version-aligned local
+  installs, `pnpm exec` bins, and package-qualified `pnpm dlx` one-off execution. Active docs,
+  component install blocks, README, `llms.txt`, CLI help, and release guidance now share one
+  validated command contract. Clean-consumer release smoke executes the documented CLI lifecycle
+  and packaged MCP bin, while MCP server version metadata derives from the coordinated package.
 - Redesigned the public documentation, component Playground, and universal workspace demo around
   the approved Visual Language 1.0; added explicit Core/Pro and alpha boundaries, standardized
   component installation and decision guidance, compact mobile navigation, realistic Core states,
@@ -46,14 +164,21 @@ Items under `Unreleased` may change before the next public release.
   insertion cue, selection suppression, and concise `Reorder` tooltip. Documented faithful Primary (unified muted body)
   and Secondary (open page-level rows) presentation recipes without moving DataGrid behavior into
   the Core primitive.
-- Aligned Pagination with Button's presentation recipes: outline controls by default and a secondary
-  surface for the current page, while retaining stable geometry and `aria-current` state.
+- Aligned Pagination with Button's secondary presentation recipe: secondary controls by default and
+  a secondary-active surface for the current page, while retaining stable geometry and
+  `aria-current` state.
 - Added a localizable `Dialog.closeLabel` while preserving the existing "Close dialog" default.
 
 ### Fixed
 
 - Protected Navigation, Sidebar, Command, Dialog, and Sheet anatomy/state ownership from escaped
   consumer DOM props and synchronized their docs and Registry projections with the shipped APIs.
+
+### Migration
+
+- `ButtonGroup` no longer accepts `orientation="vertical"` and no longer exports
+  `ButtonGroupOrientation`. Replace a vertical ButtonGroup with application-owned stack layout and
+  independent Buttons; the attached ButtonGroup contract is horizontal-only.
 
 ## 0.1.0-alpha.1 — 2026-07-18
 

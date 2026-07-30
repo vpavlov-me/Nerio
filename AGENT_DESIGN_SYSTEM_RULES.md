@@ -16,6 +16,7 @@ Read it together with:
 - `COMPONENT_ARCHITECTURE.md` for responsibility and API boundaries;
 - `TIERING_AND_TEMPLATE_EVOLUTION.md` for Core, Pro, template, and consumer ownership;
 - `COMPONENTS.md` and `data/component-catalog.json` for the canonical inventory.
+- `docs/core-platform-primitive-coverage.md` for the accepted Core 1.0 native, dedicated-component, and deferred capability boundary.
 
 These sources have scoped authority. Existing canonical APIs remain authoritative until an explicit
 migration task approves a change. When authoritative sources conflict, agents MUST stop the affected
@@ -30,10 +31,11 @@ Before editing, an agent MUST:
 3. Identify applicable tokens, utilities, tests, docs patterns, catalog fields, registry metadata,
    and source-install fixtures.
 4. Classify ownership as existing Core, composition, future Core candidate, Pro, or consumer code.
-5. Apply the public API admission rule in `docs/core-ui-best-practices.md` before proposing a prop,
+5. Check the platform coverage matrix before proposing a native wrapper or Core 1.0 platform component.
+6. Apply the public API admission rule in `docs/core-ui-best-practices.md` before proposing a prop,
    variant, size, state, slot, event, or imperative handle.
-6. Classify styling decisions as system, family, or justified component exception.
-7. State the smallest complete slice and explicit out-of-scope items.
+7. Classify styling decisions as system, family, or justified component exception.
+8. State the smallest complete slice and explicit out-of-scope items.
 
 Prefer this implementation order:
 

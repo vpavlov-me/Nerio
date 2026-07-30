@@ -2,9 +2,10 @@ import { expect, test } from "@playwright/test";
 
 const categoryFixtures = {
   foundation: ["typography", "kbd", "icon"],
-  actions: ["button", "button-group"],
+  actions: ["button", "toggle", "button-group"],
   forms: [
     "input",
+    "file-input",
     "input-group",
     "textarea",
     "label",
@@ -15,6 +16,9 @@ const categoryFixtures = {
     "radio-group",
     "switch",
     "select",
+    "slider",
+    "calendar",
+    "date-picker",
   ],
   data: ["card", "badge", "avatar", "table", "item", "list", "separator", "key-value", "stat"],
   feedback: ["alert", "toast", "progress", "skeleton", "empty-state", "spinner"],
@@ -22,7 +26,19 @@ const categoryFixtures = {
   overlays: ["dialog", "sheet", "popover", "tooltip", "dropdown-menu"],
 };
 
-const matrixSections = ["typography", "button", "input", "card", "alert", "tabs"];
+const matrixSections = [
+  "typography",
+  "button",
+  "toggle",
+  "input",
+  "file-input",
+  "slider",
+  "calendar",
+  "date-picker",
+  "card",
+  "alert",
+  "tabs",
+];
 
 async function prepareFixture(page) {
   await page.route("https://mc.yandex.ru/**", (route) => route.abort());

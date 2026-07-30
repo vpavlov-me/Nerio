@@ -348,6 +348,12 @@ function validate() {
       for (const rule of [
         exactRule(rules, `:root[data-theme="${theme}"]`),
         exactRule(rules, `:root[data-mode="${mode}"]`),
+        ...rules.filter(
+          (rule) =>
+            rule.atRules.length === 0 &&
+            rule.selectors.length > 1 &&
+            rule.selectors.includes(`:root[data-theme="${theme}"][data-mode="${mode}"]`),
+        ),
         exactRule(rules, `:root[data-theme="${theme}"][data-mode="${mode}"]`),
       ]) {
         for (const [token, value] of rule?.declarations ?? []) declarations.set(token, value);
@@ -359,6 +365,12 @@ function validate() {
         ["--n-overlay-glass-foreground", "--n-overlay-glass-background", 4.5],
         ["--n-color-action-on-primary", "--n-color-action-primary", 4.5],
         ["--n-color-focus-ring", "--n-color-surface-canvas", 3],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong", 4.5],
+        ["--n-badge-foreground-strong-primary", "--n-badge-background-strong-primary", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-info", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-success", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-warning", 4.5],
+        ["--n-badge-foreground-strong", "--n-badge-background-strong-danger", 4.5],
       ]) {
         validateContrastPair({
           context,
@@ -390,13 +402,18 @@ function validate() {
   for (const cycle of findCycles(graph)) failures.push(`Token alias cycle: ${cycle}`);
 
   for (const [token, expected] of [
-    ["--n-checkbox-radius", "var(--n-radius-xs)"],
+    ["--n-checkbox-radius", "min(var(--n-radius-xs), 0.25rem)"],
     ["--n-overlay-background", "rgb(0 0 0 / 0.88)"],
     ["--n-overlay-border-width", "var(--n-border-width-0)"],
     ["--n-overlay-foreground", "var(--n-gray-0)"],
     ["--n-overlay-foreground-muted", "var(--n-gray-300)"],
     ["--n-overlay-surface-filter", "blur(24px) saturate(120%)"],
     ["--n-overlay-backdrop-filter", "blur(10px)"],
+    ["--n-kbd-background", "var(--n-color-surface-control)"],
+    ["--n-kbd-foreground", "var(--n-color-text-secondary)"],
+    ["--n-kbd-padding-block", "var(--n-space-1)"],
+    ["--n-kbd-padding-inline", "var(--n-space-1-5)"],
+    ["--n-toast-width", "25rem"],
   ]) {
     if (rootRule?.declarations.get(token) !== expected) {
       failures.push(`Approved component contract ${token} must resolve to ${expected}.`);

@@ -65,7 +65,12 @@ export const Checkbox = React.forwardRef<HTMLElement, CheckboxProps>(function Ch
       >
         {children ?? (
           <>
-            <Icon className="n-checkbox__check hidden" data-slot="check" icon={Check} />
+            <Icon
+              className="n-checkbox__check hidden"
+              data-slot="check"
+              icon={Check}
+              strokeWidth={2.2}
+            />
             <Icon className="n-checkbox__minus hidden" data-slot="minus" icon={Minus} />
           </>
         )}

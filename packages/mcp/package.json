@@ -1,6 +1,6 @@
 {
   "name": "@nerio-ui/mcp",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "Nerio Model Context Protocol server for component discovery.",
   "private": false,
   "license": "MIT",
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
-    "@types/node": "^24.10.2",
+    "@types/node": "^26.1.2",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   }

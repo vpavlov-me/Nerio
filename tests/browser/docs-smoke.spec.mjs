@@ -62,13 +62,14 @@ test("covers public docs routes, standardized component docs, and the restrained
   await expect(
     page.getByText('label="Toggle workspace sidebar"', { exact: false }).first(),
   ).toBeVisible();
-  await expect(page.getByText('import * as React from "react";', { exact: false })).toBeVisible();
+  await expect(page.locator("#usage").locator("..").locator(".sidebar-doc-examples")).toHaveCount(
+    0,
+  );
 
   await page.goto("/docs/components/stat");
 
   for (const heading of [
     "Overview and decision boundary",
-    "Preview",
     "Installation and imports",
     "Usage",
     "Accessibility",
@@ -78,16 +79,23 @@ test("covers public docs routes, standardized component docs, and the restrained
     await expect(page.getByRole("heading", { name: heading })).toBeAttached();
   }
 
-  await expect(page.getByText("v0.1.0-alpha.1", { exact: true })).toBeVisible();
+  await expect(page.getByText("v0.1.0-alpha.2", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Purple", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Comfortable", exact: true })).toHaveCount(0);
   const search = page.getByRole("button", { name: "Search documentation" });
   await search.hover();
   await expect(page.getByRole("tooltip", { name: "Search documentation (/ or ⌘K)" })).toBeVisible();
+  await expect(page.getByRole("tooltip")).toHaveCount(1);
+  const colorMode = page.getByRole("button", { name: "Color mode: System" });
+  await colorMode.hover();
+  await expect(page.getByRole("tooltip", { name: "Color mode: System" })).toBeVisible();
+  await expect(page.getByRole("tooltip")).toHaveCount(1);
   const github = page.getByRole("link", { name: "GitHub", exact: true }).first();
   await expect(github.locator('img[src="/brand/github-invertocat-black.svg"]')).toBeAttached();
+  await github.hover();
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Color mode: System" }).click();
+  await colorMode.click();
   await page.getByRole("menuitem", { name: /Dark/ }).click();
   await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
 
@@ -120,6 +128,68 @@ test("keeps the homepage concise while local tooling remains accessible", async 
     "href",
     "/playground",
   );
+  await expect(page.getByRole("link", { name: "Blocks", exact: true })).toHaveAttribute(
+    "href",
+    "/blocks",
+  );
+  await expect(page.getByRole("link", { name: "Templates", exact: true })).toHaveAttribute(
+    "href",
+    "/templates",
+  );
+  const homepageToggle = page.getByRole("button", { name: "Follow updates" });
+  await expect(homepageToggle).toHaveClass(/n-toggle/);
+  await expect(homepageToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText("38 Components", { exact: true })).toBeVisible();
+
+  const actionMenu = page.locator(".home-gallery__action-dropdown");
+  await expect(page.getByRole("heading", { name: "Team members" })).toBeVisible();
+  const memberActions = page.getByRole("button", { name: "Actions for Maya Chen" });
+  await expect(memberActions).toBeVisible();
+  await expect(actionMenu).toHaveCount(0);
+  await memberActions.click();
+  await expect(actionMenu).toBeVisible();
+  const teamHeaderSpacing = await page.locator(".home-gallery__team-header").evaluate((element) => {
+    const title = element.querySelector("h3");
+    const description = element.querySelector("p");
+    return {
+      gap: description.getBoundingClientRect().top - title.getBoundingClientRect().bottom,
+      marginTop: getComputedStyle(description).marginTop,
+    };
+  });
+  expect(teamHeaderSpacing).toEqual({ gap: 4, marginTop: "0px" });
+  await expect(page.getByRole("menuitem", { name: "View profile" })).toBeVisible();
+  await expect(page.getByText("Member", { exact: true })).toBeVisible();
+  await expect(page.getByText("Access", { exact: true })).toBeVisible();
+  await expect(page.locator('[data-slot="separator"]')).toHaveCount(1);
+  const actionMenuVisual = await actionMenu.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const firstGroup = element.querySelector('[data-slot="group"]');
+    const [firstItem, secondItem] = firstGroup.querySelectorAll('[data-slot="item"]');
+    const probe = document.createElement("div");
+    probe.style.background = "var(--n-overlay-background)";
+    document.body.append(probe);
+    const tokenBackground = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return {
+      groupGap: getComputedStyle(firstGroup).rowGap,
+      itemGap: secondItem.getBoundingClientRect().top - firstItem.getBoundingClientRect().bottom,
+      menuBackground: style.backgroundColor,
+      menuGap: style.rowGap,
+      tokenBackground,
+    };
+  });
+  expect(actionMenuVisual).toMatchObject({
+    groupGap: "0px",
+    itemGap: 0,
+    menuGap: "0px",
+  });
+  expect(actionMenuVisual.menuBackground).toBe(actionMenuVisual.tokenBackground);
+  await expect(page.getByRole("heading", { name: "Start a group chat" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start chat" })).toHaveAttribute(
+    "data-variant",
+    "outline",
+  );
+  await expect(page.getByLabel("Chat participants")).toBeVisible();
   await expect(page.locator('img[src="/brand/google-g.svg"]')).toBeAttached();
   await expect(page.locator('img[src="/brand/apple-logo.svg"]')).toBeAttached();
 
@@ -213,6 +283,62 @@ test("applies every Playground control to the component canvas", async ({ page }
   await expectHealthyPage(page, problems);
 });
 
+test("keeps Calendar, InputGroup, and Checkbox component states coherent", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/playground");
+
+  const checkbox = page.locator("#checkbox .n-checkbox").first();
+  await expect(checkbox).toBeVisible();
+  expect(
+    await checkbox.evaluate((element) => Number.parseFloat(getComputedStyle(element).borderRadius)),
+  ).toBeLessThanOrEqual(4);
+
+  const inputGroup = page.locator("#input-group .n-input-group").last();
+  const groupedInput = inputGroup.locator(".n-input");
+  const restingGroupBackground = await inputGroup.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  );
+  await groupedInput.hover();
+  const hoveredInputGroup = await inputGroup.evaluate((element) => {
+    const input = element.querySelector(".n-input");
+    return {
+      groupBackground: getComputedStyle(element).backgroundColor,
+      inputBackground: getComputedStyle(input).backgroundColor,
+    };
+  });
+  expect(hoveredInputGroup.groupBackground).not.toBe(restingGroupBackground);
+  expect(hoveredInputGroup.inputBackground).toBe("rgba(0, 0, 0, 0)");
+
+  const constrainedCalendar = page.getByRole("group", { name: "Constrained release date" });
+  const unavailableDate = constrainedCalendar.getByRole("button", { name: "June 4, 2026" });
+  await expect(unavailableDate).toHaveAttribute("aria-disabled", "true");
+  const unavailableVisual = await unavailableDate.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const probe = document.createElement("span");
+    probe.style.color = "var(--n-calendar-day-foreground-unavailable)";
+    element.parentElement?.append(probe);
+    const tokenColor = getComputedStyle(probe).color;
+    probe.remove();
+    return {
+      color: style.color,
+      decoration: style.textDecorationLine,
+      opacity: style.opacity,
+      tokenColor,
+      tokenOpacity: getComputedStyle(element)
+        .getPropertyValue("--n-calendar-disabled-opacity")
+        .trim(),
+    };
+  });
+  expect(unavailableVisual.color).toBe(unavailableVisual.tokenColor);
+  expect(Number(unavailableVisual.opacity)).toBe(Number(unavailableVisual.tokenOpacity));
+  expect(unavailableVisual.decoration).toBe("none");
+
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(unavailableDate).toHaveCSS("opacity", "1");
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps mobile navigation singular, searchable, and safe", async ({ page }) => {
   const problems = monitorPage(page);
   await page.setViewportSize({ width: 390, height: 844 });
@@ -222,24 +348,26 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
   await page.getByRole("button", { name: "Open documentation navigation" }).click();
   const navigation = page.getByRole("dialog", { name: "Documentation" });
   await expect(navigation).toBeVisible();
-  await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
-    "Visual language",
+  await expect(navigation.getByRole("link", { name: "Visual language", exact: true })).toHaveCount(
+    0,
   );
   await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
-    "Composition previews",
+    "Blocks",
   );
-  await expect(navigation.getByRole("link", { name: "Login" })).toBeVisible();
-  await navigation.getByRole("link", { name: "Visual language" }).click();
-  await expect(page).toHaveURL(/\/docs\/foundations\/visual-language$/);
+  await expect(navigation.getByRole("link", { name: "Sign in" })).toBeVisible();
+  await navigation.getByRole("link", { name: "Tokens", exact: true }).click();
+  await expect(page).toHaveURL(/\/docs\/foundations\/tokens$/);
 
   await page.getByRole("button", { name: "Search documentation" }).click();
-  await page.getByRole("combobox", { name: "Search documentation" }).fill("Login");
-  await expect(page.getByRole("option", { name: /^Login Login documentation and/ })).toBeVisible();
+  await page.getByRole("combobox", { name: "Search documentation" }).fill("Sign in");
+  await expect(
+    page.getByRole("option", { name: /^Sign in Sign in documentation and/ }),
+  ).toBeVisible();
   await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "Search documentation" }).click();
   await page.getByRole("combobox", { name: "Search documentation" }).fill("Playground");
-  await expect(page.getByRole("option").first()).toHaveAttribute("href", "/playground");
+  await expect(page.getByRole("option", { name: /Playground/ })).toBeVisible();
   await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/playground$/);
   await expectHealthyPage(page, problems);
@@ -258,14 +386,20 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   ]);
 
   expect(await sitemap.text()).not.toContain("/playground");
-  expect(await sitemap.text()).not.toContain("/docs/blocks/");
+  expect(await sitemap.text()).toContain("/blocks/sign-in");
+  expect(await sitemap.text()).not.toContain("/views/blocks/");
   expect(await robots.text()).toContain("Sitemap: https://nerio.vpavlov.com/sitemap.xml");
-  expect(await llms.text()).toContain("0.1.0-alpha.1");
-  expect(await llms.text()).not.toContain("/playground");
+  expect(await robots.text()).toContain("Disallow: /views/");
+  expect(await robots.text()).toContain("Disallow: /visual-test/");
+  const llmsText = await llms.text();
+  expect(llmsText).toContain("0.1.0-alpha.2");
+  expect(llmsText).toContain("The public Blocks catalog is available at `/blocks`");
+  expect(llmsText).not.toContain("/playground");
+  expect(llmsText).not.toContain("nerio-preview-surfaces");
   expect(legacy.status()).toBe(308);
-  expect(legacy.headers().location).toBe("/docs/blocks/login");
+  expect(legacy.headers().location).toBe("/blocks/sign-in");
 
-  await page.goto("/docs/blocks/login");
+  await page.goto("/views/blocks/sign-in");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   await expectHealthyPage(page, problems);
 });
@@ -317,6 +451,19 @@ test("keeps the optional Motion adapter deterministic and preference-aware", asy
   await page.emulateMedia({ reducedMotion: "reduce" });
   await expect(reducedProbe).toHaveAttribute("data-reduced-motion", "true");
   await page.getByRole("button", { name: "Toggle state" }).click();
+  await expect
+    .poll(() => reducedProbe.evaluate((element) => getComputedStyle(element).opacity))
+    .toBe("0");
+  await expect
+    .poll(() =>
+      reducedProbe.evaluate((element) => {
+        const style = getComputedStyle(element);
+        const rootFontSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const translateX = new DOMMatrixReadOnly(style.transform).m41;
+        return Math.abs(translateX - -0.375 * rootFontSize);
+      }),
+    )
+    .toBeLessThan(0.1);
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(reducedProbe).toHaveAttribute("data-reduced-motion", "false");
 
@@ -365,8 +512,8 @@ test("keeps Actions and Forms Tailwind recipes active across public docs", async
     }
   }
 
-  await page.goto("/docs/components/button");
-  const linkButton = page.getByRole("link", { name: "Link", exact: true });
+  await page.goto("/");
+  const linkButton = page.getByRole("button", { name: "Link", exact: true });
   const linkDecoration = await linkButton.evaluate((element) => {
     const style = getComputedStyle(element);
     return {
@@ -436,6 +583,7 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   await expect(alert.locator("[data-slot=title]")).toHaveCSS("font-weight", "500");
 
   await page.goto("/docs/components/toast");
+  await page.getByRole("button", { name: "Stack notifications" }).click();
   const toast = page.locator(".n-toast").first();
   await expect(toast).toBeVisible();
   await expect(toast).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
@@ -443,7 +591,6 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   expect(await toast.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
     "blur(24px)",
   );
-  await page.getByRole("button", { name: "Stack notifications" }).click();
   const toastClose = page.locator(".n-toast__close").first();
   await expect(toastClose).toBeVisible();
   await toastClose.hover();
@@ -620,7 +767,8 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
       };
     });
   expect(commandVisual.background).toBe("rgba(0, 0, 0, 0.88)");
-  expect(commandVisual.inputRadius).toBeGreaterThan(100);
+  expect(commandVisual.inputRadius).toBeGreaterThan(0);
+  expect(commandVisual.inputRadius).toBeLessThanOrEqual(24);
   expect(commandVisual.surfaceFilter).toContain("blur(24px)");
 
   await page.goto("/docs/components/popover");
@@ -648,9 +796,21 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
   const tooltip = page.getByRole("tooltip");
   await expect(tooltip).toBeVisible({ timeout: 10_000 });
   await expect(tooltip).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
-  expect(await tooltip.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
-    "blur(24px)",
-  );
+  const tooltipVisual = await tooltip.evaluate((element) => {
+    const arrow = element.querySelector('[data-slot="arrow"]');
+    const popupBounds = element.getBoundingClientRect();
+    const arrowBounds = arrow.getBoundingClientRect();
+    return {
+      arrowAttached: Math.abs(arrowBounds.top - popupBounds.bottom),
+      arrowParent: arrow.parentElement === element,
+      arrowSide: arrow.dataset.side,
+      surfaceFilter: getComputedStyle(element).backdropFilter,
+    };
+  });
+  expect(tooltipVisual.arrowParent).toBe(true);
+  expect(tooltipVisual.arrowSide).toBe("top");
+  expect(tooltipVisual.arrowAttached).toBeLessThanOrEqual(1);
+  expect(tooltipVisual.surfaceFilter).toContain("blur(24px)");
 
   await page.goto("/docs/components/dropdown-menu");
   await page.getByRole("button", { name: "Actions", exact: true }).click();
@@ -687,6 +847,9 @@ test("keeps the final Tailwind component families active across public docs", as
 
   for (const [route, selector] of routes) {
     await page.goto(`/docs/components/${route}`);
+    if (route === "toast") {
+      await page.getByRole("button", { name: "Stack notifications" }).click();
+    }
     const component = page.locator(selector).first();
     await expect(component, route).toBeVisible();
     const snapshot = await component.evaluate((element) => {
@@ -770,8 +933,8 @@ test("preserves segmented surfaces, control indicators, and the mobile showcase 
       checkboxOpacity: checkboxIndicatorStyle.opacity,
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       radioOpacity: radioIndicatorStyle.opacity,
-      switchOffset: switchThumbStyle.marginInlineStart,
-      switchOffsetToken: resolveToken("margin-inline-start", "--n-switch-thumb-offset"),
+      switchOffset: Number.parseFloat(switchThumbStyle.translate),
+      switchOffsetToken: Number.parseFloat(resolveToken("width", "--n-switch-thumb-offset")),
       tabsBackground: tabsListStyle.backgroundColor,
       tabsBackgroundToken: resolveToken("background-color", "--n-tabs-list-background"),
       tabsGap: tabsListStyle.gap,

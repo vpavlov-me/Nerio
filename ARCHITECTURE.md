@@ -149,14 +149,14 @@ Each released component should include:
 Core components should be installable through:
 
 ```bash
-npx nerio add button
+pnpm exec nerio add button
 ```
 
 Pro components should eventually be installable through:
 
 ```bash
-npx nerio login
-npx nerio add pro:data-grid
+pnpm exec nerio login
+pnpm exec nerio add pro:data-grid
 ```
 
 ## Tiering rule

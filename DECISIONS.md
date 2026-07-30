@@ -29,6 +29,26 @@ A component belongs in Core when it is a generic primitive, base component, or f
 
 A component belongs in Pro when it is an advanced composition, data-heavy workflow, SaaS/admin pattern, fintech/crypto pattern, AI interface pattern, premium theme, Figma asset, or template.
 
+## Platform primitive coverage
+
+Core covers universal web-platform capabilities, but it does not provide a React wrapper for every
+HTML element. A capability is covered by a dedicated Core component, supported native composition,
+or explicit native HTML guidance. Product workflows and advanced compositions remain consumer or
+Pro responsibilities.
+
+Native temporal controls, a single-value Slider, FileInput, Calendar, and a bounded single-date
+DatePicker are approved for the Core 1.0 delivery sequence. Calendar and DatePicker are intentional
+bounded exceptions because single-date selection is universal and has a durable accessibility
+contract. Date ranges, scheduling, recurrence, availability, upload workflows, multi-thumb ranges,
+and domain-specific controls remain outside Core 1.0.
+
+`docs/core-platform-primitive-coverage.md` is the canonical decision matrix.
+`data/component-catalog.json` is its machine-readable projection and validation boundary.
+
+Toggle is an approved Core 1.0 action primitive through issue #290. It owns one independent
+pressed/not-pressed button state with `aria-pressed`; it does not absorb Switch, Checkbox, Tabs,
+ButtonGroup, ToggleGroup, Toolbar, persistence, or product workflow responsibilities.
+
 ## Primitive layer
 
 Base UI is the only interactive primitive layer. Do not add shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive systems.
@@ -114,8 +134,26 @@ subpath; it does not add a provider, dependency, import, or runtime cost to `@ne
 
 Geist is the default typeface through semantic font tokens. Components consume `--n-font-sans` and `--n-font-mono` rather than depending on app-specific font class names.
 
-## Demo app
+## Templates and preview Views
 
-The showcase application is `apps/demo-app` and is called Nerio Workspace. It should demonstrate a credible universal product workspace, not a banking or finance-only dashboard.
+Templates and full-screen preview Views live inside `apps/docs`; they are not standalone
+applications, domains, repositories, or Vercel projects. `/templates` is the catalog,
+`/templates/[slug]` is the descriptive page, and `/views/[slug]` is the clean same-origin preview
+without documentation chrome.
 
-Future Pro templates may include SaaS, fintech, crypto, dashboard, billing, and AI assistant examples.
+Operations Workspace is the first Template and remains a credible universal product workspace rather
+than a banking or finance-only dashboard. Templates may compose Core and template-local code.
+Unproven product patterns remain local until the evidence in `TIERING_AND_TEMPLATE_EVOLUTION.md`
+supports promotion.
+
+## Preview-only documentation surfaces
+
+Blocks, Templates, their same-origin preview Views, and the visual Playground are available by
+default in local development and preview deployments, but remain hidden from the public production
+documentation until they are ready to launch. `NERIO_SHOW_PREVIEW_SURFACES=true|false` is the single
+deployment override. When it is unset, public production defaults to hidden while development and
+preview environments default to visible.
+
+The gate applies to primary and mobile navigation, documentation search, sitemap and `llms.txt`
+discovery, catalog and detail routes, legacy public redirects, and full-screen Views. Internal
+unindexed visual-test fixtures remain separate from the public Blocks and Templates contract.

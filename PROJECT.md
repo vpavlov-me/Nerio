@@ -13,10 +13,11 @@ Core = building blocks. Pro = product-ready solutions.
 
 ## Current release status
 
-Nerio Core `0.1.0-alpha.0` is published under the `@nerio-ui` npm namespace with a signed tag and
-GitHub prerelease. The Tailwind CSS v4-first implementation is complete and passes the release gate;
-`0.1.0-alpha.1` is the recommended next prerelease because `alpha.0` is already immutable on npm.
-The remaining manual publication sequence is documented in `RELEASE.md`.
+Nerio Core `0.1.0-alpha.2` is the coordinated Tailwind CSS v4-first release candidate. Until its
+manual publication and post-publication verification complete, the npm `alpha` tag remains on
+`0.1.0-alpha.1`, `latest` remains on `0.1.0-alpha.0`, and no alpha.2 signed tag or GitHub
+prerelease is claimed. Future prerelease, beta, and stable publication remain manual and are
+governed by the roadmap and `RELEASE.md`.
 
 ## Primary users
 
@@ -49,8 +50,7 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, data-ri
 
 ```text
 apps/
-  docs/          Public documentation, live previews, and playgrounds
-  demo-app/      A realistic universal product workspace used as the visual showcase
+  docs/          Public documentation, live previews, playgrounds, Templates, and full-screen Views
 
 packages/
   tokens/        Token source, generated CSS variables, themes, modes, density contracts
@@ -113,7 +113,7 @@ spacing, radius, typography, icon, or control-size scales.
 
 `@nerio-ui/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
 
-Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, IconButton, Checkbox, RadioGroup, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
+Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, IconButton, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
 
 `@nerio-ui/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
 
@@ -142,7 +142,16 @@ Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or 
 
 ## Core component scope
 
-Nerio Core includes foundation and base reusable components: Button, IconButton, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive. Button's link variant covers text-level navigation when it renders a native anchor.
+Nerio Core includes foundation and base reusable components: Button, Toggle, IconButton, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive. Button's link variant covers text-level navigation when it renders a native anchor.
+
+Core 1.0 includes Toggle for one independent retained `aria-pressed` button state. Input supports
+native date, month, week, time, and `datetime-local` values, Slider provides
+one Base UI-backed numeric value and thumb, and FileInput preserves native file selection and form
+behavior without owning uploads. Calendar and DatePicker provide the implemented bounded custom
+single-date path. The canonical coverage decision is `docs/core-platform-primitive-coverage.md`.
+Plain native HTML remains the preferred path where a wrapper adds no durable value; ranges,
+scheduling, upload workflows, multi-thumb sliders, parsing, time zones, and other product policy
+remain outside Core 1.0.
 
 Core should be strong enough to build real products without a paid license. It should not contain advanced product compositions that are better treated as Pro value.
 
@@ -164,7 +173,8 @@ Deliver a functional monorepo and a polished Core foundation suitable for public
 4. Base UI-backed core components: Button, IconButton, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
 6. Public docs application with navigation, theme/mode/density switcher, component preview, usage snippets, anatomy, variants, states, and accessibility notes.
-7. Nerio Workspace demo app that uses the published components rather than bespoke UI.
+7. Docs-local Operations Workspace Template that composes the published components and renders
+   through a same-origin full-screen View.
 8. Registry foundations and a minimal `nerio add button` vertical slice.
 9. `llms.txt` and a minimal MCP component-index endpoint or package.
 10. `COMPONENTS.md` and `data/component-catalog.json` kept aligned with implementation status.
@@ -185,4 +195,6 @@ Deliver a functional monorepo and a polished Core foundation suitable for public
 - WCAG 2.2 AA is the target for color contrast, focus, keyboard access, labels, semantics, and overlay behavior.
 - Mobile and desktop behavior must be intentional.
 - Components must remain visually calm, neutral-first, and suitable for both editorial product surfaces and dense operational interfaces.
-- The demo must make the system look credible in a real universal product workspace, not like a component catalog pasted onto a page.
+- Templates must make the system look credible in real product scenarios, not like component
+  catalogs pasted onto a page. They remain inside the docs application and keep unproven patterns
+  template-local.

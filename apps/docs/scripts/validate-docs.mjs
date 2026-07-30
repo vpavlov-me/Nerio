@@ -1,6 +1,11 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  ciWorkflowContractFailures,
+  ciWorkflowPaths,
+  readCiWorkflowSources,
+} from "../../../scripts/ci-workflow-contract.mjs";
 
 /* global console, process */
 
@@ -242,57 +247,12 @@ function packageReadinessFailures() {
     failures.push("scripts/pack-check.mjs: missing package dry-run script");
   }
 
-  if (!existsSync(join(root, ".github/workflows/ci.yml"))) {
-    failures.push(".github/workflows/ci.yml: missing CI workflow");
+  const workflowPaths = Object.values(ciWorkflowPaths);
+  const missingWorkflows = workflowPaths.filter((path) => !existsSync(join(root, path)));
+  if (missingWorkflows.length) {
+    for (const path of missingWorkflows) failures.push(`${path}: missing CI workflow`);
   } else {
-    const ciWorkflow = read(".github/workflows/ci.yml");
-    const requiredCommands = [
-      "pnpm format:check",
-      "pnpm lint",
-      "pnpm typecheck",
-      "pnpm test:ui",
-      "pnpm test:a11y",
-      "pnpm test:visual",
-      "pnpm validate:docs",
-      "pnpm validate:release",
-      "pnpm test:cli",
-      "pnpm test:mcp",
-      "pnpm build",
-      "pnpm pack:check",
-    ];
-    const forbiddenWorkflowStrings = [
-      "npm publish",
-      "NPM_TOKEN",
-      "contents: write",
-      "id-token: write",
-      "release-please",
-      "semantic-release",
-      "git tag",
-    ];
-
-    for (const command of requiredCommands) {
-      if (!ciWorkflow.includes(command)) {
-        failures.push(`.github/workflows/ci.yml: missing ${command}`);
-      }
-    }
-
-    if (!ciWorkflow.includes("workflow_dispatch:")) {
-      failures.push(".github/workflows/ci.yml: missing workflow_dispatch trigger");
-    }
-
-    if (!ciWorkflow.includes("node-version: 22")) {
-      failures.push(".github/workflows/ci.yml: expected Node LTS baseline node-version: 22");
-    }
-
-    if (!ciWorkflow.includes("permissions:") || !ciWorkflow.includes("contents: read")) {
-      failures.push(".github/workflows/ci.yml: missing read-only contents permission");
-    }
-
-    for (const forbidden of forbiddenWorkflowStrings) {
-      if (ciWorkflow.includes(forbidden)) {
-        failures.push(`.github/workflows/ci.yml: forbidden publishing string ${forbidden}`);
-      }
-    }
+    failures.push(...ciWorkflowContractFailures(readCiWorkflowSources(root)));
   }
 
   return failures;
@@ -301,7 +261,6 @@ function packageReadinessFailures() {
 function tailwindDocumentationFailures() {
   const motionPage = read("apps/docs/app/docs/foundations/motion/page.tsx");
   const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
-  const visualLanguagePage = read("apps/docs/app/docs/foundations/visual-language/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
   const deployment = read("apps/docs/lib/deployment.ts");
@@ -316,16 +275,6 @@ function tailwindDocumentationFailures() {
   const required = [
     [motionPage, "Tailwind motion recipes", "Motion Foundation must document Tailwind recipes"],
     [tokenPage, "Tailwind bridge", "Tokens Foundation must document the Tailwind bridge"],
-    [
-      visualLanguagePage,
-      "Surface hierarchy",
-      "Visual Language Foundation must expose the approved surface hierarchy",
-    ],
-    [
-      visualLanguagePage,
-      "--n-motion-hover-duration",
-      "Visual Language Foundation must expose the shared motion contract",
-    ],
     [componentPage, 'id="styling-contract"', "Component docs must expose a styling contract"],
     [
       componentPage,
@@ -338,42 +287,15 @@ function tailwindDocumentationFailures() {
       '{ href: "/docs/foundations/motion", label: "Motion"',
       "Foundation navigation must use the canonical Motion route and label",
     ],
-    [
-      docsChrome,
-      '{ href: "/docs/foundations/visual-language", label: "Visual language"',
-      "Foundation navigation must expose the Visual Language reference",
-    ],
-    [
-      docsChrome,
-      'href="/docs/blocks/login"',
-      "Primary navigation must expose the Blocks reference surface",
-    ],
-    [
-      docsChrome,
-      'href="/templates"',
-      "Primary navigation must expose the Templates workspace demo",
-    ],
-    [
-      sitemap,
-      '"/docs/foundations/visual-language"',
-      "The sitemap must expose the Visual Language reference",
-    ],
+    [docsChrome, 'href="/blocks"', "Primary navigation must expose the Blocks reference surface"],
+    [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
     [playgroundPage, "indexable: false", "Playground metadata must remain private"],
-    [
-      playgroundPage,
-      "isPublicProductionDeployment()",
-      "Playground must be unavailable in production",
-    ],
+    [playgroundPage, "arePreviewSurfacesEnabled()", "Playground must be unavailable in production"],
     [
       deployment,
       'return process.env.NODE_ENV === "production"',
       "Deployment detection must protect non-Vercel production builds",
-    ],
-    [
-      deployment,
-      'vercelEnvironment === "preview" || vercelEnvironment === "production"',
-      "Hosted demo detection must distinguish Vercel preview and production from development",
     ],
     [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
     [
@@ -402,6 +324,14 @@ function tailwindDocumentationFailures() {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
   }
 
+  if (
+    existsSync(join(root, "apps/docs/app/docs/foundations/visual-language/page.tsx")) ||
+    docsChrome.includes("/docs/foundations/visual-language") ||
+    sitemap.includes('"/docs/foundations/visual-language"')
+  ) {
+    failures.push("The maintainer-only visual language reference must not be publicly routed");
+  }
+
   if (sitemap.includes('"/playground"')) {
     failures.push("The sitemap must not expose the maintainer-only Playground");
   }
@@ -423,6 +353,278 @@ function tailwindDocumentationFailures() {
   }
   if (progressPage.includes("dedicated progress.css stylesheet")) {
     failures.push("Progress docs must not describe residual keyframes as component CSS");
+  }
+
+  return failures;
+}
+
+function templateArchitectureFailures() {
+  const catalog = read("apps/docs/features/templates/catalog.ts");
+  const gallery = read("apps/docs/app/templates/page.tsx");
+  const detail = read("apps/docs/app/templates/[slug]/page.tsx");
+  const viewRoute = read("apps/docs/app/views/[slug]/page.tsx");
+  const workspace = read("apps/docs/features/templates/operations-workspace/view.tsx");
+  const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const sitemap = read("apps/docs/app/sitemap.ts");
+  const playwright = read("playwright.config.mjs");
+  const failures = [];
+
+  const required = [
+    [
+      catalog,
+      'slug: "operations-workspace"',
+      "Template catalog must register Operations Workspace",
+    ],
+    [
+      catalog,
+      'previewRoute: "/views/operations-workspace"',
+      "Template catalog must own the same-origin Operations Workspace preview route",
+    ],
+    [gallery, "templateCatalog.map", "Templates gallery must derive from the canonical catalog"],
+    [detail, "getTemplate(slug)", "Template detail route must derive from the canonical catalog"],
+    [
+      detail,
+      "src={template.previewRoute}",
+      "Template detail iframe must use its catalog-owned same-origin preview route",
+    ],
+    [
+      viewRoute,
+      "templateSlugs.map",
+      "Template view route must generate catalog-owned static params",
+    ],
+    [viewRoute, "notFound()", "Template view route must reject unknown slugs"],
+    [
+      workspace,
+      "OperationsWorkspaceView",
+      "Operations Workspace implementation must remain template-local",
+    ],
+    [
+      docsChrome,
+      'pathname.startsWith("/views/")',
+      "Full-screen template Views must bypass documentation chrome",
+    ],
+    [
+      sitemap,
+      "templateCatalog",
+      "Indexable template detail routes must be derived into the sitemap",
+    ],
+    [
+      playwright,
+      'baseURL: "http://localhost:3100"',
+      "Template and docs browser checks must share the docs deployment",
+    ],
+  ];
+
+  for (const [source, expected, message] of required) {
+    if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (existsSync(join(root, "apps/demo-app"))) {
+    failures.push("The retired standalone apps/demo-app workspace must not exist.");
+  }
+
+  const forbiddenSource = [
+    catalog,
+    gallery,
+    detail,
+    viewRoute,
+    workspace,
+    docsChrome,
+    playwright,
+  ].join("\n");
+  for (const forbidden of [
+    "NEXT_PUBLIC_DEMO_APP_URL",
+    "nerio-demo.vercel.app",
+    "localhost:3002",
+    "@nerio-ui/demo-app",
+  ]) {
+    if (forbiddenSource.includes(forbidden)) {
+      failures.push(`Templates architecture still depends on ${forbidden}.`);
+    }
+  }
+
+  return failures;
+}
+
+function blockArchitectureFailures() {
+  const catalog = read("apps/docs/features/blocks/catalog.ts");
+  const gallery = read("apps/docs/app/blocks/page.tsx");
+  const detail = read("apps/docs/app/blocks/[slug]/page.tsx");
+  const viewRoute = read("apps/docs/app/views/blocks/[slug]/page.tsx");
+  const internalRoute = read("apps/docs/app/visual-test/blocks/[slug]/page.tsx");
+  const redirects = read("apps/docs/app/docs/blocks/[slug]/page.tsx");
+  const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const sitemap = read("apps/docs/app/sitemap.ts");
+  const robots = read("apps/docs/app/robots.ts");
+  const audit = read("docs/audits/blocks-catalog-audit.md");
+  const failures = [];
+
+  const required = [
+    [catalog, "export const blockCatalog", "Blocks must have one canonical metadata catalog"],
+    [catalog, 'previewRoute: "/views/blocks/', "Block previews must be same-origin Views"],
+    [catalog, "internalBlockFixtures", "Internal Block fixtures must be classified separately"],
+    [gallery, "blockCatalog", "Blocks gallery must derive from the canonical catalog"],
+    [detail, "blockSlugs.map", "Block detail routes must derive static params from the catalog"],
+    [detail, "getBlock(slug)", "Block detail routes must reject unknown slugs"],
+    [viewRoute, "blockSlugs.map", "Block View routes must derive static params from the catalog"],
+    [viewRoute, "indexable: false", "Block Views must remain unindexed"],
+    [internalRoute, "isInternalBlockFixture", "Internal fixtures must reject unknown slugs"],
+    [internalRoute, "index: false", "Internal fixtures must remain unindexed"],
+    [
+      redirects,
+      "legacyPublicBlockRedirects",
+      "Legacy public Block routes must redirect canonically",
+    ],
+    [docsChrome, 'href="/blocks"', "Primary navigation must use the canonical Blocks catalog"],
+    [sitemap, "blockCatalog", "Indexable Blocks must be derived into the sitemap"],
+    [robots, '"/views/"', "Robots must exclude full-screen Views from crawling"],
+    [robots, '"/visual-test/"', "Robots must exclude internal fixtures from crawling"],
+  ];
+
+  for (const [source, expected, message] of required) {
+    if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  const publicSlugs = [...catalog.matchAll(/slug: "([^"]+)"/g)].map((match) => match[1]);
+  if (publicSlugs.length < 8 || publicSlugs.length > 12) {
+    failures.push(
+      `Blocks catalog must remain compact at 8-12 entries; found ${publicSlugs.length}.`,
+    );
+  }
+
+  for (const legacySlug of [
+    "login",
+    "register",
+    "forgot-password",
+    "settings-form",
+    "table-toolbar",
+    "user-profile",
+    "empty-states",
+    "feedback",
+    "overlay-playground",
+    "navigation-patterns",
+    "dense-form",
+  ]) {
+    if (!audit.includes(`\`${legacySlug}\``)) {
+      failures.push(`Blocks audit is missing an explicit decision for ${legacySlug}.`);
+    }
+  }
+
+  for (const internalSlug of [
+    "overlay-playground",
+    "navigation-patterns",
+    "dense-form",
+    "feedback",
+  ]) {
+    if (
+      catalog.includes(`detailRoute: "/blocks/${internalSlug}"`) ||
+      docsChrome.includes(`href: "/blocks/${internalSlug}"`)
+    ) {
+      failures.push(`${internalSlug} must not be presented as a public Block.`);
+    }
+  }
+
+  return failures;
+}
+
+function previewSurfaceGateFailures() {
+  const deployment = read("apps/docs/lib/deployment.ts");
+  const layout = read("apps/docs/app/layout.tsx");
+  const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const sitemap = read("apps/docs/app/sitemap.ts");
+  const robots = read("apps/docs/app/robots.ts");
+  const browserConfig = read("playwright.config.mjs");
+  const visualConfig = read("playwright.visual.config.mjs");
+  const llmsRoute = read("apps/docs/app/llms.txt/route.ts");
+  const llmsSource = read("apps/docs/content/llms.txt");
+  const routeFiles = [
+    "apps/docs/app/playground/page.tsx",
+    "apps/docs/app/blocks/page.tsx",
+    "apps/docs/app/blocks/[slug]/page.tsx",
+    "apps/docs/app/templates/page.tsx",
+    "apps/docs/app/templates/[slug]/page.tsx",
+    "apps/docs/app/views/[slug]/page.tsx",
+    "apps/docs/app/views/blocks/[slug]/page.tsx",
+    "apps/docs/app/docs/blocks/[slug]/page.tsx",
+    "apps/docs/app/docs/compositions/[slug]/page.tsx",
+  ];
+  const failures = [];
+  const required = [
+    [
+      deployment,
+      "NERIO_SHOW_PREVIEW_SURFACES",
+      "Preview surfaces must expose one explicit environment override",
+    ],
+    [
+      deployment,
+      "return !isPublicProductionDeployment()",
+      "Preview surfaces must default off only in public production",
+    ],
+    [
+      layout,
+      "showPreviewSurfaces={showPreviewSurfaces}",
+      "The docs shell must receive the server-evaluated preview-surface flag",
+    ],
+    [
+      docsChrome,
+      '!entry.href.startsWith("/blocks")',
+      "Production search must exclude Block entries",
+    ],
+    [
+      docsChrome,
+      '!entry.href.startsWith("/templates")',
+      "Production search must exclude Template entries",
+    ],
+    [
+      sitemap,
+      "if (!arePreviewSurfacesEnabled()) return publicRoutes",
+      "Production sitemap generation must exclude preview surfaces",
+    ],
+    [
+      robots,
+      `["/blocks", "/templates", "/views/", "/visual-test/"]`,
+      "Production robots rules must exclude preview surfaces",
+    ],
+    [
+      browserConfig,
+      "VERCEL_ENV=development",
+      "Browser checks must explicitly enable preview surfaces",
+    ],
+    [
+      visualConfig,
+      "VERCEL_ENV=development",
+      "Visual checks must explicitly enable preview surfaces",
+    ],
+    [
+      llmsRoute,
+      "if (!arePreviewSurfacesEnabled())",
+      "Production llms.txt must use the preview-surface gate",
+    ],
+    [
+      llmsRoute,
+      'join(process.cwd(), "content", "llms.txt")',
+      "The llms.txt route must render the canonical source",
+    ],
+    [
+      llmsSource,
+      "<!-- nerio-preview-surfaces:start -->",
+      "The canonical llms.txt source must mark preview-only discovery sections",
+    ],
+  ];
+
+  for (const [source, expected, message] of required) {
+    if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  for (const routeFile of routeFiles) {
+    const source = read(routeFile);
+    if (!source.includes("arePreviewSurfacesEnabled()") || !source.includes("notFound()")) {
+      failures.push(`${routeFile}: preview surface route must return notFound when disabled`);
+    }
+  }
+
+  if (existsSync(join(root, "apps/docs/public/llms.txt"))) {
+    failures.push("Static public llms.txt must not bypass the deployment gate");
   }
 
   return failures;
@@ -496,6 +698,9 @@ const themeTokenMatrixIssues = themeTokenMatrixFailures(tokenStyles);
 const uiEntrypointIssues = uiEntrypointFailures();
 const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
+const templateArchitectureIssues = templateArchitectureFailures();
+const blockArchitectureIssues = blockArchitectureFailures();
+const previewSurfaceGateIssues = previewSurfaceGateFailures();
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -530,6 +735,9 @@ reportMissing("Theme token matrix issues", themeTokenMatrixIssues);
 reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
+reportMissing("Template architecture issues", templateArchitectureIssues);
+reportMissing("Block architecture issues", blockArchitectureIssues);
+reportMissing("Preview surface gate issues", previewSurfaceGateIssues);
 
 const failures = [
   missingNav,
@@ -553,6 +761,9 @@ const failures = [
   uiEntrypointIssues,
   packageReadinessIssues,
   tailwindDocumentationIssues,
+  templateArchitectureIssues,
+  blockArchitectureIssues,
+  previewSurfaceGateIssues,
 ].flat();
 
 if (failures.length > 0) {
@@ -560,5 +771,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Docs registry, Tailwind contract, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
+  `Docs registry, Tailwind contract, Blocks and Templates architecture, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
 );

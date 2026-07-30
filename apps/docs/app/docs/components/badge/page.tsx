@@ -1,4 +1,4 @@
-import { Check, Circle, CircleAlert, Info, X } from "@nerio-ui/adapters/icons";
+import { Check, X } from "@nerio-ui/adapters/icons";
 import { Badge, Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -19,34 +19,14 @@ function BadgePreview() {
     <section id="preview" className="component-example" aria-label="Badge preview">
       <div className="component-example__preview">
         <div className="preview-row">
-          <Badge>Neutral</Badge>
-          <Badge size="sm" tone="info">
-            24
-          </Badge>
-          <Badge size="lg" tone="success">
-            Featured
-          </Badge>
-          <Badge tone="success" leadingIcon={Check}>
-            Published
-          </Badge>
-          <Badge tone="warning" leadingIcon={CircleAlert}>
-            Review needed
-          </Badge>
-          <Badge tone="info" leadingIcon={Info} trailingIcon={Check}>
-            Shared
-          </Badge>
-          <Badge tone="primary-soft" loading>
-            Publishing
-          </Badge>
-          <Badge tone="danger" emphasis="strong" leadingIcon={CircleAlert}>
-            Deployment blocked
-          </Badge>
+          <Badge>Review needed</Badge>
+          <Badge tone="success">Published</Badge>
         </div>
       </div>
       <CodeExample
         className="component-example__code"
         code={
-          'import { Check, CircleAlert, Info } from "@nerio-ui/adapters/icons";\nimport { Badge } from "@nerio-ui/ui";\n\n<Badge>Neutral</Badge>\n<Badge size="sm" tone="info">24</Badge>\n<Badge size="lg" tone="success">Featured</Badge>\n<Badge tone="success" leadingIcon={Check}>Published</Badge>\n<Badge tone="warning" leadingIcon={CircleAlert}>Review needed</Badge>\n<Badge tone="info" leadingIcon={Info} trailingIcon={Check}>Shared</Badge>\n<Badge tone="primary-soft" loading>Publishing</Badge>\n<Badge tone="danger" emphasis="strong" leadingIcon={CircleAlert}>Deployment blocked</Badge>'
+          'import { Badge } from "@nerio-ui/ui";\n\n<Badge>Review needed</Badge>\n<Badge tone="success">Published</Badge>'
         }
         label="Badge live preview code"
       />
@@ -168,77 +148,6 @@ export default function Page() {
       lede={badgeDoc!.description}
       kind="badge"
       preview={<BadgePreview />}
-      sectionPreviews={{
-        usage: (
-          <BadgeSectionPreview>
-            <div className="preview-row">
-              <Badge tone="success" leadingIcon={Circle}>
-                Published
-              </Badge>
-              <Badge tone="info" leadingIcon={Info}>
-                Shared
-              </Badge>
-              <Badge tone="success" trailingIcon={Check}>
-                Deployment ready
-              </Badge>
-            </div>
-          </BadgeSectionPreview>
-        ),
-        variants: (
-          <BadgeSectionPreview>
-            <div className="preview-row">
-              <Badge tone="success">Published</Badge>
-              <Badge tone="warning">Review</Badge>
-              <Badge tone="danger">Blocked</Badge>
-              <Badge tone="warning" emphasis="strong">
-                Action needed
-              </Badge>
-              <Badge tone="danger" emphasis="strong">
-                Deployment blocked
-              </Badge>
-            </div>
-          </BadgeSectionPreview>
-        ),
-        anatomy: (
-          <BadgeSectionPreview>
-            <pre className="badge-anatomy-ascii" aria-label="Badge anatomy diagram">{`Badge
-┌───────────────────────────────────────────────┐
-│ leadingIcon │            label │ trailingIcon │
-└───────────────────────────────────────────────┘`}</pre>
-          </BadgeSectionPreview>
-        ),
-        states: (
-          <BadgeSectionPreview>
-            <div className="preview-row">
-              <Badge tone="success">Published</Badge>
-              <Badge tone="warning" leadingIcon={Circle}>
-                Needs review
-              </Badge>
-              <Badge tone="danger" leadingIcon={X}>
-                Blocked
-              </Badge>
-              <Badge tone="primary-soft" loading>
-                Publishing
-              </Badge>
-            </div>
-          </BadgeSectionPreview>
-        ),
-        api: (
-          <BadgeSectionPreview>
-            <div className="preview-row">
-              <Badge tone="info" leadingIcon={Info}>
-                Shared
-              </Badge>
-              <Badge tone="warning" trailingIcon={CircleAlert}>
-                Review needed
-              </Badge>
-              <Badge size="sm" tone="info">
-                24
-              </Badge>
-            </div>
-          </BadgeSectionPreview>
-        ),
-      }}
       sectionContent={{
         variants: (
           <>

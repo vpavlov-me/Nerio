@@ -11,6 +11,7 @@ This repository is the source of truth for Nerio. Read the following documents b
 - `COMPONENTS.md` before adding or moving components.
 - `COMPONENT_ARCHITECTURE.md` before adding props, variants, component modes, or new component responsibilities.
 - `TIERING_AND_TEMPLATE_EVOLUTION.md` before assigning a component to Core or Pro, promoting template-local code, or expanding Core to satisfy a template.
+- `docs/core-platform-primitive-coverage.md` before adding a web-platform wrapper, changing the Core 1.0 native-control boundary, or working on issues #258–#262.
 
 ## Product constraints
 
@@ -28,10 +29,13 @@ This repository is the source of truth for Nerio. Read the following documents b
 
 ## Current roadmap focus
 
-- Current work is in **Phase 2A: Core quality stabilization**.
-- Phase 2A cleanup tasks must harden existing Core foundations and components before expanding coverage.
-- Do not add new Core components while working on Phase 2A cleanup tasks unless the task explicitly asks for them.
-- Phase 2B component coverage expansion must wait until existing Core quality is stronger, or until the task explicitly asks for Phase 2B work.
+- Current work is closing the bounded Core 1.0 platform surface before beta quality and API freeze.
+- Follow issue #152 for the executable sequence and `docs/core-platform-primitive-coverage.md` for the accepted native/component boundary.
+- Native temporal input coverage, Slider, FileInput, Calendar, single-date DatePicker, and the
+  independent Toggle primitive are approved only through issues #258–#262 and #290. Do not expand
+  those slices into ranges, scheduling, uploads, parsing, ToggleGroup, Toolbar, persistence, or
+  other product workflows.
+- Do not add another Core component unless the coverage matrix identifies an objective 1.0 blocker and the roadmap contains a focused issue.
 - Do not mark a component `stable-core` until it passes the full Core quality checklist.
 
 ## Product positioning
@@ -154,3 +158,9 @@ Before moving any Core component toward `stable-core`, verify:
     started from its worktree, remove that worktree from the local machine, and run
     `git worktree prune`. Never remove a worktree that contains uncommitted changes or unmerged
     commits; report it as retained instead.
+
+Working-branch pull requests use the fast, scope-aware `PR gate`: Chromium smoke and visual,
+CLI/MCP/adapter, package, or manual-audit jobs run only for their matching surfaces. Firefox,
+WebKit, packed release-consumer smoke, and the complete package contract remain mandatory in the
+`Release gate` for `dev -> main`. Do not move release-only work back into every development pull
+request or weaken the public cross-browser and package guarantees.

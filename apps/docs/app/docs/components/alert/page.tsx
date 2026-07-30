@@ -29,6 +29,8 @@ const anatomyRows = [
   ["content", "Container for the title and descriptive content."],
   ["title", "Optional short summary that establishes the message hierarchy."],
   ["description", "Body content that explains the state or provides a next step."],
+  ["action", "Optional actions rendered below the description."],
+  ["close", "Optional consumer-owned icon button that dismisses the alert."],
 ] as const;
 
 const stateRows = [
@@ -45,7 +47,8 @@ const apiRows = [
   ],
   ["title", "ReactNode", "Adds a concise summary above the description."],
   ["icon", "IconComponent", "Renders a decorative icon through the Nerio icon adapter."],
-  ["action", "ReactNode", "Adds one trailing action for a focused recovery or update."],
+  ["action", "ReactNode", "Adds one or more actions below the description."],
+  ["closeAction", "ReactNode", "Adds a consumer-owned close control in the trailing slot."],
   ["role", "status | alert", "Opt into announcement semantics only for dynamic content."],
   ["children", "ReactNode", "Provides the descriptive message content."],
   ["className", "string", "Extends the root without replacing component tokens."],
@@ -88,7 +91,15 @@ function AlertPreview() {
       <div className="component-example__preview alert-showcase__preview">
         <Alert
           action={<Button size="sm">Refresh</Button>}
-          tone="info"
+          closeAction={
+            <Button
+              aria-label="Close alert"
+              icon={X}
+              size="sm"
+              tooltip={false}
+              variant="secondary"
+            />
+          }
           icon={Info}
           title="Update available"
         >
@@ -99,7 +110,7 @@ function AlertPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Info } from "@nerio-ui/adapters/icons";\nimport { Alert } from "@nerio-ui/ui";\nimport { Button } from "@nerio-ui/ui/client";\n\n<Alert\n  tone="info"\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>'
+          'import { Info, X } from "@nerio-ui/adapters/icons";\nimport { Alert } from "@nerio-ui/ui";\nimport { Button } from "@nerio-ui/ui/client";\n\n<Alert\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n  closeAction={\n    <Button\n      aria-label="Close alert"\n      icon={X}\n      size="sm"\n      tooltip={false}\n      variant="secondary"\n    />\n  }\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>'
         }
         label="Alert live preview code"
       />
@@ -141,7 +152,7 @@ export default function Page() {
               </CardHeader>
               <CardContent>
                 Use Alert for inline validation summaries, persistent notices, and contextual
-                feedback.
+                feedback. Keep actions below the description.
               </CardContent>
             </Card>
             <Card>
@@ -150,8 +161,8 @@ export default function Page() {
                 <CardTitle>Do not</CardTitle>
               </CardHeader>
               <CardContent>
-                Use Alert as a toast replacement or add dismiss behavior to this static feedback
-                pattern.
+                Use Alert as a toast replacement or make required information disappear without a
+                durable alternative.
               </CardContent>
             </Card>
           </div>

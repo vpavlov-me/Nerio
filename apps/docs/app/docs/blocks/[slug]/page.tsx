@@ -1,35 +1,41 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { CompositionPage } from "../../../../components/composition-page";
-import { compositionDocSlugs, getCompositionDoc } from "../../../../lib/composition-docs";
-import { createPageMetadata } from "../../../../lib/seo";
+import { notFound, permanentRedirect } from "next/navigation";
+import {
+  blockSlugs,
+  getLegacyPublicBlockRedirect,
+  isInternalBlockFixture,
+  legacyPublicBlockRedirects,
+} from "../../../../features/blocks/catalog";
+import { arePreviewSurfacesEnabled } from "../../../../lib/deployment";
+
+const legacySlugs = [
+  ...blockSlugs,
+  ...Object.keys(legacyPublicBlockRedirects),
+  "overlay-playground",
+  "navigation-patterns",
+  "dense-form",
+];
 
 export function generateStaticParams() {
-  return compositionDocSlugs.map((slug) => ({ slug }));
+  if (!arePreviewSurfacesEnabled()) return [];
+
+  return [...new Set(legacySlugs)].map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const doc = getCompositionDoc(slug);
+export default async function LegacyBlockPage({ params }: { params: Promise<{ slug: string }> }) {
+  if (!arePreviewSurfacesEnabled()) notFound();
 
-  if (!doc) notFound();
-
-  return createPageMetadata({
-    title: `${doc.title} composition`,
-    description: doc.description,
-    path: `/docs/blocks/${slug}`,
-    indexable: doc.indexable,
-  });
-}
-
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  if (!getCompositionDoc(slug)) notFound();
+  if (blockSlugs.includes(slug as (typeof blockSlugs)[number])) {
+    permanentRedirect(`/blocks/${slug}`);
+  }
 
-  return <CompositionPage slug={slug} />;
+  const replacement = getLegacyPublicBlockRedirect(slug);
+  if (replacement) permanentRedirect(`/blocks/${replacement}`);
+
+  if (isInternalBlockFixture(slug)) {
+    permanentRedirect(`/visual-test/blocks/${slug}`);
+  }
+
+  notFound();
 }

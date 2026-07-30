@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import type * as React from "react";
 import { ArrowRight, Check, LayoutDashboard, Settings, X } from "@nerio-ui/adapters/icons";
 import {
   Badge,
@@ -83,77 +83,6 @@ function TabsExample({
   );
 }
 
-function LayoutExample() {
-  return (
-    <Tabs defaultValue="one" variant="segmented">
-      <TabsList aria-label="Equal workspace views" layout="fill">
-        <TabsTrigger leadingIcon={LayoutDashboard} value="one">
-          Overview
-        </TabsTrigger>
-        <TabsTrigger trailingIcon={ArrowRight} value="two">
-          Activity
-        </TabsTrigger>
-        <TabsTrigger leadingIcon={Settings} value="three">
-          Files
-        </TabsTrigger>
-        <TabsIndicator />
-      </TabsList>
-      <TabsPanels>
-        <TabsContent value="one">Equal-width triggers use the available space.</TabsContent>
-        <TabsContent value="two">Activity content.</TabsContent>
-        <TabsContent value="three">Files content.</TabsContent>
-      </TabsPanels>
-    </Tabs>
-  );
-}
-
-function ScrollableExample() {
-  return (
-    <div style={{ maxInlineSize: "18rem" }}>
-      <Tabs defaultValue="overview" variant="bordered">
-        <TabsList aria-label="Narrow project sections" scrollable>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="activity">Activity</TabsTrigger>
-          <TabsTrigger value="members">Members</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-          <TabsIndicator />
-        </TabsList>
-      </Tabs>
-    </div>
-  );
-}
-
-function ControlledExample() {
-  const [value, setValue] = React.useState("overview");
-  const [direction, setDirection] = React.useState("none");
-  const [reason, setReason] = React.useState("none");
-
-  return (
-    <Tabs
-      onValueChange={(nextValue, eventDetails) => {
-        setValue(nextValue);
-        setDirection(eventDetails.activationDirection);
-        setReason(eventDetails.reason);
-      }}
-      value={value}
-    >
-      <TabsList aria-label="Controlled workspace sections">
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="activity">Activity</TabsTrigger>
-        <TabsIndicator />
-      </TabsList>
-      <TabsPanels>
-        <TabsContent value="overview">
-          Consumer value: {value}; direction: {direction}; reason: {reason}
-        </TabsContent>
-        <TabsContent value="activity">
-          Consumer value: {value}; direction: {direction}; reason: {reason}
-        </TabsContent>
-      </TabsPanels>
-    </Tabs>
-  );
-}
-
 const usage = `import { ArrowRight, LayoutDashboard } from "@nerio-ui/adapters/icons";
 import { Badge } from "@nerio-ui/ui";
 import { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";
@@ -181,115 +110,6 @@ export default function Page() {
           <Example showDisabled={false} variant="segmented" />
         </TabsExample>
       }
-      sectionPreviews={{
-        variants: (
-          <>
-            <TabsExample
-              code={'<Tabs defaultValue="overview" variant="bordered">...</Tabs>'}
-              label="Bordered Tabs preview"
-            >
-              <Example variant="bordered" />
-            </TabsExample>
-            <TabsExample
-              code={'<Tabs defaultValue="overview" variant="separate">...</Tabs>'}
-              label="Separate Tabs preview"
-            >
-              <Example variant="separate" />
-            </TabsExample>
-            <TabsExample
-              code={'<Tabs defaultValue="overview" variant="segmented">...</Tabs>'}
-              label="Segmented Tabs preview"
-            >
-              <Example variant="segmented" />
-            </TabsExample>
-            <TabsExample
-              code={
-                '<Tabs size="sm">...</Tabs>\n<Tabs size="md">...</Tabs>\n<Tabs size="lg">...</Tabs>'
-              }
-              label="Tabs sizes preview"
-            >
-              <div className="form-preview-stack">
-                <Example size="sm" />
-                <Example size="md" />
-                <Example size="lg" />
-              </div>
-            </TabsExample>
-            <TabsExample
-              code={'<TabsList layout="fill" aria-label="Equal workspace views">...</TabsList>'}
-              label="Tabs fill layout preview"
-            >
-              <LayoutExample />
-            </TabsExample>
-            <TabsExample
-              code={'<Tabs orientation="vertical">...</Tabs>'}
-              label="Vertical Tabs preview"
-            >
-              <Tabs defaultValue="overview" orientation="vertical" variant="bordered">
-                <TabsList aria-label="Vertical workspace sections">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="activity">Activity</TabsTrigger>
-                  <TabsIndicator />
-                </TabsList>
-                <TabsPanels>
-                  <TabsContent value="overview">
-                    Vertical tabs use orientation-aware arrow keys.
-                  </TabsContent>
-                  <TabsContent value="activity">Activity content.</TabsContent>
-                </TabsPanels>
-              </Tabs>
-            </TabsExample>
-            <TabsExample
-              code={'<TabsList scrollable aria-label="Narrow project sections">...</TabsList>'}
-              label="Scrollable Tabs preview"
-            >
-              <ScrollableExample />
-            </TabsExample>
-            <TabsExample
-              code={
-                "<Tabs value={value} onValueChange={(nextValue, details) => { setValue(nextValue); setDirection(details.activationDirection); setReason(details.reason); }}>...</Tabs>"
-              }
-              label="Controlled Tabs preview"
-            >
-              <ControlledExample />
-            </TabsExample>
-          </>
-        ),
-        anatomy: (
-          <TabsExample
-            code={
-              '<TabsTrigger leadingIcon={LayoutDashboard} badge={<Badge size="sm">12</Badge>} value="overview">Overview</TabsTrigger>'
-            }
-            label="Tabs trigger anatomy preview"
-          >
-            <Example showDisabled={false} variant="separate" />
-          </TabsExample>
-        ),
-        states: (
-          <>
-            <TabsExample
-              code={'<TabsList activateOnFocus aria-label="Immediate panels">...</TabsList>'}
-              label="Automatic activation preview"
-            >
-              <Tabs defaultValue="overview">
-                <TabsList activateOnFocus aria-label="Immediate panels">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="activity">Activity</TabsTrigger>
-                  <TabsIndicator />
-                </TabsList>
-                <TabsPanels>
-                  <TabsContent value="overview">Focus selects this immediate panel.</TabsContent>
-                  <TabsContent value="activity">Activity is immediately available.</TabsContent>
-                </TabsPanels>
-              </Tabs>
-            </TabsExample>
-            <TabsExample code={'<div dir="rtl"><Tabs>...</Tabs></div>'} label="RTL Tabs preview">
-              <div dir="rtl">
-                <Example showDisabled={false} variant="segmented" />
-              </div>
-            </TabsExample>
-          </>
-        ),
-      }}
       sectionContent={{
         variants: (
           <DocumentationTable

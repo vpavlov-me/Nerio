@@ -4,9 +4,9 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: `0.1.0-alpha.1` is published under the npm `alpha` tag and as a GitHub prerelease. The
-> `latest` tag intentionally remains on `0.1.0-alpha.0` while the Tailwind CSS v4-first line is
-> validated before 1.0.
+> Status: `0.1.0-alpha.2` is the coordinated release candidate. Until its manual publication is
+> complete, the npm `alpha` tag remains on `0.1.0-alpha.1` and `latest` remains on
+> `0.1.0-alpha.0`.
 
 ## Product model
 
@@ -50,13 +50,12 @@ Nerio Core remains universal and domain-agnostic. SaaS, fintech, crypto, dashboa
 
 ```text
 apps/
-  docs/          Public documentation and component playground
-  demo-app/      Universal showcase product built with Nerio Core
+  docs/          Public documentation, component playground, Templates, and full-screen Views
 
 packages/
   tokens/        Design tokens, themes, modes, and CSS variable contracts
   ui/            Core component source and public registry items
-  adapters/      Isolated icon, table, chart, form, and schema integration subpaths
+  adapters/      Isolated icon, table, chart, form, schema, and optional Motion integration subpaths
   cli/           `nerio` project and component commands
   mcp/           Public AI discovery and composition tools
   config/        Shared TypeScript, linting, and build configuration
@@ -103,11 +102,25 @@ in its use of brand color.
 
 Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows, finance/crypto widgets, AI chat shells, premium themes, Figma assets, and templates belong to Nerio Pro unless the component matrix says otherwise.
 
+Development and preview deployments of the documentation application include a focused Blocks
+catalog of bounded product compositions and a separate Templates catalog for complete app-like
+scenarios. These preview surfaces remain hidden from the public production documentation until
+launch. Blocks use same-origin full-screen previews, stay smaller than a product page or shell, and
+do not add Core APIs or backend behavior. Operations Workspace, Finance & Assets, Content Library,
+AI Research Workspace, Developer Portal, and Support Desk are deterministic docs-local previews
+rather than released Pro packages.
+
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
+See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
+the complete native-versus-component boundary. Input supports native date, month, week, time, and
+`datetime-local` values while preserving browser-owned picker, validity, and form behavior. Core
+1.0 includes Toggle for one retained button state, a single-value Slider, native FileInput,
+Calendar, and a bounded single-date DatePicker;
+their product-workflow extensions remain outside Core.
 
 ## Package entrypoints
 
-`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Select, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, and Switch are exported from `@nerio-ui/ui/client`. IconButton remains a deprecated alpha compatibility export; new work uses Button's icon-only mode. Styles remain available through `@nerio-ui/ui/styles.css`.
+`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Toggle, Select, Slider, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, and Switch are exported from `@nerio-ui/ui/client`. IconButton remains a deprecated alpha compatibility export; new work uses Button's icon-only mode. Styles remain available through `@nerio-ui/ui/styles.css`.
 
 `@nerio-ui/adapters` has no aggregating root entrypoint. Import icons and their public SVG types from
 `@nerio-ui/adapters/icons`. Optional integrations use `@nerio-ui/adapters/table`,
@@ -121,27 +134,55 @@ Source-installed registry components keep their local paths, such as `@/componen
 The Core packages ship TypeScript source. Next.js consumers must list the Nerio packages they use
 in `transpilePackages`; the complete configuration is documented in Getting started.
 
+Runtime, framework, browser-engine, operating-system, and assistive-technology expectations are
+defined in the [platform support policy](./docs/platform-support.md) and checked in CI.
+
 ```tsx
-import { Alert, Breadcrumbs, Card, List, Pagination, Table } from "@nerio-ui/ui";
+import { Alert, Breadcrumbs, Card, FileInput, List, Pagination, Table } from "@nerio-ui/ui";
 import { Settings } from "@nerio-ui/adapters/icons";
-import { Button, Dialog, Select, ToastProvider } from "@nerio-ui/ui/client";
+import { Button, Dialog, Select, Slider, ToastProvider, Toggle } from "@nerio-ui/ui/client";
 import "@nerio-ui/ui/styles.css";
 ```
 
 ## Registry CLI
 
-The `nerio` CLI installs editable source files into a consuming app:
+Install the version-aligned Registry and CLI in the consuming project. The `nerio` CLI then installs
+editable source files through the project-local bin:
 
 ```bash
-nerio init
-nerio list
-nerio info button
-nerio add button --dry-run
-nerio add button
-nerio doctor
+pnpm add -D @nerio-ui/registry@0.1.0-alpha.2 @nerio-ui/cli@0.1.0-alpha.2
+pnpm exec nerio init
+pnpm exec nerio list
+pnpm exec nerio info button
+pnpm exec nerio add button --dry-run
+pnpm exec nerio add button
+pnpm exec nerio diff button
+pnpm exec nerio update button --dry-run
+pnpm exec nerio doctor
 ```
 
-`nerio list` and `nerio info <component>` read the configured registry. `nerio add` writes component source and registry dependencies into the configured `components` directory. Run `nerio doctor` after configuring the consumer stylesheet: it reports missing Tailwind bridge imports, package `@source` registration, source-install bridge/token imports, no-Preflight compatibility, and imported legacy Nerio component CSS.
+For one-off initialization or installation, use the real package name:
+`pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 init` or
+`pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 add button`. Prefer the local installation for repeatable
+updates and explicit CLI/Registry version alignment.
+
+The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
+version; local-path and HTTP overrides remain available. `nerio add` writes the requested source
+closure and records its exact Registry version, revision, file paths, dependency closure, and
+original hashes in `nerio.lock.json`. `nerio diff` separates local and upstream drift. `nerio
+update --dry-run` previews a deterministic update, while `nerio update` applies only safe upstream
+changes and never overwrites locally modified source silently. Run `nerio doctor` after configuring
+the consumer stylesheet to validate versions, installed metadata, dependencies, source drift, the
+Tailwind bridge, package `@source`, token imports, no-Preflight compatibility, and stale legacy CSS.
+
+## MCP server
+
+Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@0.1.0-alpha.2`, then configure the
+client to run the published bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`. A
+package-qualified one-off configuration may use command `pnpm` and arguments
+`["dlx", "@nerio-ui/mcp@0.1.0-alpha.2"]`. The server version comes from coordinated package
+metadata, and its Registry tools report the exact Registry version, source revision, schema, and
+style contract.
 
 ## Pre-release status
 
@@ -149,11 +190,13 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
 `@nerio-ui/mcp`.
 
-The npm `alpha` tag points to the published Tailwind-first `0.1.0-alpha.1`; `latest` remains on
-`0.1.0-alpha.0`. The alpha.1 package, signed tag, and GitHub prerelease passed the packed-package
-audit, clean consumer build, and browser matrix. Its architecture and migration guidance are
-recorded in the [final migration report](./docs/tailwind-migration-report.md). Alpha APIs may still
-change before 1.0. See [RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
+The coordinated `0.1.0-alpha.2` release candidate has passed the local packed-package audit, clean
+consumer build, and supported local browser checks. Until the manual publication sequence and
+post-publication verification complete, the npm `alpha` tag remains on `0.1.0-alpha.1`, `latest`
+remains on `0.1.0-alpha.0`, and no alpha.2 signed tag or GitHub prerelease is claimed. Its
+architecture and migration guidance are recorded in the
+[final migration report](./docs/tailwind-migration-report.md). Alpha APIs may still change before
+1.0. See [RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
 ## Contributing
 

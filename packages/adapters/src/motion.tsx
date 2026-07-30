@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore, type PropsWithChildren } from "react";
-import { MotionConfig, type MotionConfigProps, type Transition, type Variants } from "motion/react";
+import { MotionConfig, type Transition, type Variants } from "motion/react";
 
 const motionDurations = {
   instant: 0.08,
@@ -101,11 +101,19 @@ export const motionVariants = {
   } satisfies Variants,
 } as const;
 
-export type NerioMotionConfigProps = PropsWithChildren<Omit<MotionConfigProps, "reducedMotion">>;
+export type NerioMotionConfigProps = PropsWithChildren<{
+  nonce?: string;
+  skipAnimations?: boolean;
+}>;
 
-export function NerioMotionConfig({ children, ...props }: NerioMotionConfigProps) {
+export function NerioMotionConfig({ children, nonce, skipAnimations }: NerioMotionConfigProps) {
+  const optionalConfig = {
+    ...(nonce === undefined ? {} : { nonce }),
+    ...(skipAnimations === undefined ? {} : { skipAnimations }),
+  };
+
   return (
-    <MotionConfig {...props} reducedMotion="user">
+    <MotionConfig {...optionalConfig} reducedMotion="user">
       {children}
     </MotionConfig>
   );

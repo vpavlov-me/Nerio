@@ -8,11 +8,7 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from "./components/button";
-export {
-  ButtonGroup,
-  type ButtonGroupOrientation,
-  type ButtonGroupProps,
-} from "./components/button-group";
+export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { motionClasses, type MotionClassName } from "./lib/motion";
 export { Icon } from "./components/icon";
 export type { IconComponent, IconProps, IconSvgProps, LucideIconProps } from "./components/icon";
@@ -85,6 +81,13 @@ export {
 } from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
 export {
+  Toggle,
+  type ToggleChangeEventDetails,
+  type ToggleProps,
+  type ToggleSize,
+  type ToggleVariant,
+} from "./components/toggle";
+export {
   Select,
   SelectGroup,
   SelectGroupLabel,
@@ -114,7 +117,12 @@ export {
   type TabsTriggerProps,
   type TabsVariant,
 } from "./components/tabs";
-export { Tooltip, type TooltipProps } from "./components/tooltip";
+export {
+  Tooltip,
+  TooltipProvider,
+  type TooltipProps,
+  type TooltipProviderProps,
+} from "./components/tooltip";
 export { Dialog, DialogFooter, type DialogProps } from "./components/dialog";
 export {
   Sheet,

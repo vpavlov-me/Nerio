@@ -5,6 +5,7 @@ import { PanelLeft } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 import { Icon } from "./icon";
+import { SidebarFooter } from "./sidebar-layout";
 
 export type SidebarSide = "left" | "right";
 export type SidebarDirection = "ltr" | "rtl";
@@ -95,9 +96,13 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
   const { direction, expanded, side, sidebarId } = useSidebar();
   const content: React.ReactNode[] = [];
   const rails: React.ReactNode[] = [];
+  let hasFooter = false;
   React.Children.forEach(children, (child) => {
     if (React.isValidElement(child) && child.type === SidebarRail) rails.push(child);
-    else content.push(child);
+    else {
+      if (React.isValidElement(child) && child.type === SidebarFooter) hasFooter = true;
+      content.push(child);
+    }
   });
 
   return (
@@ -115,7 +120,9 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
       data-state={expanded ? "expanded" : "collapsed"}
     >
       <div
-        className="n-sidebar__inner grid h-full w-(--n-sidebar-width) grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
+        className="n-sidebar__inner grid h-full w-(--n-sidebar-width) grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))] data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))] data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-bottom))] [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
+        data-has-footer={hasFooter ? "true" : "false"}
+        data-has-rail={rails.length > 0 ? "true" : undefined}
         data-slot="sidebar-inner"
         inert={!expanded || undefined}
       >
@@ -181,7 +188,7 @@ export const SidebarRail = React.forwardRef<HTMLButtonElement, SidebarToggleProp
         ref={ref}
         {...props}
         className={cn(
-          "n-sidebar-rail absolute top-1/2 right-[calc(-0.5*var(--n-sidebar-rail-hit-area))] z-1 inline-flex size-(--n-sidebar-rail-hit-area) -translate-y-1/2 cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) [[data-side=right]_&]:right-auto [[data-side=right]_&]:left-[calc(-0.5*var(--n-sidebar-rail-hit-area))] forced-colors:border forced-colors:border-[ButtonText]",
+          "n-sidebar-rail absolute right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))] bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))] z-1 inline-flex size-(--n-sidebar-rail-hit-area) cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) forced-colors:border forced-colors:border-[ButtonText]",
           motionClasses.hover,
           className,
         )}

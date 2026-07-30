@@ -40,9 +40,11 @@ export type ComponentMetadata = {
 
 export const snippets: Record<string, string> = {
   typography:
-    'import { Code, Heading, Text } from \'@nerio-ui/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>nerio add typography</Code>',
+    'import { Code, Heading, Text } from \'@nerio-ui/ui\';\n\n<Heading as="h2" size="lg">Workspace settings</Heading>\n<Text tone="secondary">Changes apply to every member.</Text>\n<Code>pnpm exec nerio add typography</Code>',
   button:
     'import { Save, Settings } from \'@nerio-ui/adapters/icons\';\nimport { Badge, Kbd } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
+  toggle:
+    "\"use client\";\n\nimport * as React from 'react';\nimport { Check, Save } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@nerio-ui/ui/client';\n\nexport function SaveToggle() {\n  const [saved, setSaved] = React.useState(false);\n\n  return (\n    <Toggle leadingIcon={saved ? Check : Save} pressed={saved} onPressedChange={setSaved}>\n      Save article\n    </Toggle>\n  );\n}",
   "button-group":
     'import { ButtonGroup } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio-ui/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
@@ -60,6 +62,8 @@ export const snippets: Record<string, string> = {
     "import { EmptyState, EmptyStateActions, EmptyStateDescription, EmptyStateHeader, EmptyStateTitle } from '@nerio-ui/ui';\nimport { Button } from '@nerio-ui/ui/client';\n\n<EmptyState>\n  <EmptyStateHeader>\n    <EmptyStateTitle>No collections</EmptyStateTitle>\n    <EmptyStateDescription>Create one to start organizing work.</EmptyStateDescription>\n  </EmptyStateHeader>\n  <EmptyStateActions>\n    <Button>Create collection</Button>\n    <Button variant=\"ghost\">Learn more</Button>\n  </EmptyStateActions>\n</EmptyState>",
   input:
     'import { Field, Input } from \'@nerio-ui/ui\';\n\n<Field label="Project name" description="Use a short recognizable name."><Input placeholder="Launch materials" required autoComplete="organization" /></Field>',
+  "file-input":
+    'import { Field, FileInput } from \'@nerio-ui/ui\';\n\n<Field label="Attachment" description="Choose one PDF or image file."><FileInput name="attachment" accept=".pdf,image/*" /></Field>',
   "input-group":
     'import { Input, InputGroup, InputGroupAddon } from \'@nerio-ui/ui\';\n\n<InputGroup><InputGroupAddon placement="start" aria-hidden="true">https://</InputGroupAddon><Input aria-label="Website" /><InputGroupAddon placement="end">.com</InputGroupAddon></InputGroup>',
   textarea:
@@ -67,7 +71,7 @@ export const snippets: Record<string, string> = {
   label:
     'import { Input, Label, LabelContent, LabelRequired, LabelRow } from \'@nerio-ui/ui\';\nimport { LabelHint } from \'@nerio-ui/ui/client\';\n\n<LabelRow>\n  <LabelContent>\n    <Label htmlFor="project-name">Project name</Label>\n    <LabelRequired />\n    <LabelHint label="Choose a recognizable name for collaborators." />\n  </LabelContent>\n</LabelRow>\n<Input id="project-name" required />',
   field:
-    'import { Field, Input } from \'@nerio-ui/ui\';\n\n<Field label="Project name" description="Shown in workspace navigation." message="Use at least 3 characters." invalid><Input /></Field>',
+    'import { Field, Input } from \'@nerio-ui/ui\';\n\n<Field label="Project name"><Input placeholder="Launch workspace" /></Field>',
   "form-message":
     "import { FormMessage } from '@nerio-ui/ui';\n\n<FormMessage>Use at least 3 characters.</FormMessage>",
   "form-group":
@@ -78,12 +82,18 @@ export const snippets: Record<string, string> = {
     'import { RadioGroup, RadioGroupItem } from \'@nerio-ui/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team">\n  <RadioGroupItem value="private" description="Only you can access it.">Private</RadioGroupItem>\n  <RadioGroupItem value="team">Team</RadioGroupItem>\n</RadioGroup>\n\n// Options API remains available for concise data-driven groups.\n<RadioGroup label="Visibility" options={[{ label: "Private", value: "private" }]} />',
   switch:
     'import { Switch } from "@nerio-ui/ui/client";\n\n<Switch\n  defaultChecked\n  name="notifyCollaborators"\n  label="Notify collaborators"\n  description="Collaborators receive updates as they happen."\n/>',
+  slider:
+    'import { Slider } from "@nerio-ui/ui/client";\n\n<Slider\n  label="Tip amount"\n  name="tipAmount"\n  min={0}\n  max={50}\n  defaultValue={15}\n  valueLabel="$15"\n  getAriaValueText={(_, value) => `${value} US dollars`}\n/>',
+  calendar:
+    'import { Calendar } from "@nerio-ui/ui/client";\n\n<Calendar\n  aria-label="Release date"\n  defaultValue="2026-06-15"\n  min="2026-06-01"\n  max="2026-06-30"\n  firstDayOfWeek={1}\n/>',
+  "date-picker":
+    'import { Field } from "@nerio-ui/ui";\nimport { DatePicker } from "@nerio-ui/ui/client";\n\n<Field label="Release date">\n  <DatePicker defaultValue="2026-06-15" clearable />\n</Field>',
   dialog:
     'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
-    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio-ui/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail, SidebarTrigger } from \'@nerio-ui/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>\n    <SidebarTrigger label="Toggle workspace sidebar" />\n    ...\n  </SidebarInset>\n</SidebarProvider>',
+    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio-ui/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail } from \'@nerio-ui/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>',
   "command-primitive":
     'import { Kbd } from \'@nerio-ui/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio-ui/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
@@ -92,22 +102,24 @@ export const snippets: Record<string, string> = {
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
   tooltip:
-    "import { Button, Tooltip } from '@nerio-ui/ui/client';\n\n<Tooltip label=\"Copies the share link\"><Button>Copy link</Button></Tooltip>",
+    'import { Button, Tooltip, TooltipProvider } from \'@nerio-ui/ui/client\';\n\n<TooltipProvider>\n  <Tooltip label="Copies the share link"><Button>Copy link</Button></Tooltip>\n  <Tooltip label="Opens settings"><Button>Settings</Button></Tooltip>\n</TooltipProvider>',
   popover:
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu trigger="Actions" items={[{ label: "Rename" }]} />',
-  card: 'import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\n\n<Card as="article">\n  <CardVisual>...</CardVisual>\n  <CardHeader>\n    <div>\n      <CardTitle as="h2">Launch workspace</CardTitle>\n      <CardDescription>Plan assets, owners, and milestones in one focused surface.</CardDescription>\n    </div>\n    <CardAction>...</CardAction>\n  </CardHeader>\n  <CardContent>12 active tasks</CardContent>\n</Card>',
-  separator: "import { Separator } from '@nerio-ui/ui';\n\n<Separator />",
-  avatar: "import { Avatar } from '@nerio-ui/ui';\n\n<Avatar name=\"Maya Chen\" />",
+    'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", description: "Invite people and choose access", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Archive", leadingIcon: X, destructive: true },\n  ]}\n/>',
+  card: 'import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Card as="article">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle as="h2">Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
+  separator:
+    "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
+  avatar:
+    'import { Avatar } from \'@nerio-ui/ui\';\n\n<Avatar name="Maya Chen" src="/avatars/maya-chen.png" />\n<Avatar name="Nerio Team" />',
   progress:
-    'import { Progress } from \'@nerio-ui/ui\';\n\n<Progress label="Uploading files" value={68} />\n\n<Progress aria-label="Synchronizing workspace" value={null} valueText="Synchronizing" />',
+    'import { Progress } from \'@nerio-ui/ui\';\n\n<Progress label="Uploading files" value={68} valueLabel="68%" />',
   stat: 'import { Stat } from \'@nerio-ui/ui\';\n\n<Stat label="Active projects" value="12" trend="+3 this week" />',
   "key-value":
     'import { KeyValue } from \'@nerio-ui/ui\';\n\n<KeyValue label="Owner" value="Product team" />',
   table:
     'import { Table, TableBody, TableCell, TableContainer, TableHead, TableHeader, TableRow } from \'@nerio-ui/ui\';\n\n<h2 id="projects-title">Projects</h2>\n<TableContainer focusable aria-labelledby="projects-title">\n  <Table>\n    <TableHeader><TableRow><TableHead>Name</TableHead></TableRow></TableHeader>\n    <TableBody><TableRow><TableCell>Roadmap</TableCell></TableRow></TableBody>\n  </Table>\n</TableContainer>',
-  list: "import * as React from 'react';\nimport { List } from '@nerio-ui/ui';\n\nconst AppLink = React.forwardRef<HTMLAnchorElement, React.AnchorHTMLAttributes<HTMLAnchorElement>>(function AppLink(props, ref) {\n  return <a ref={ref} data-router-link=\"\" {...props} />;\n});\n\n<List items={[{ id: 'tokens', title: 'Tokens', description: 'CSS variable foundation for themes, modes, and density.', href: '/docs/foundations/tokens', render: <AppLink href=\"#\" /> }, { id: 'components', title: 'Components', description: 'Composable Core primitives installed as source.', href: '/docs/components/button' }]} />",
+  list: 'import { Heading, List } from \'@nerio-ui/ui\';\n\n<Heading as="h2" id="setup-steps-title" size="sm">Setup steps</Heading>\n<List\n  aria-labelledby="setup-steps-title"\n  marker="decimal"\n  items={[\n    { id: "install", title: "Install tokens" },\n    { id: "source", title: "Register Tailwind source" },\n    { id: "components", title: "Add your first component" },\n  ]}\n/>',
   item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio-ui/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
 };
 
@@ -159,10 +171,28 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     motion: ["hover", "press", "focus"],
     accessibility: ["Base UI button primitive", "aria-busy while loading", "visible focus ring"],
   },
+  toggle: {
+    name: "Toggle",
+    description: "Represents one independent pressed or not-pressed button state.",
+    status: "stable",
+    layer: "core",
+    category: "Actions",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Button", "Switch", "Checkbox", "ButtonGroup"],
+    anatomy: ["toggle", "toggle-icon", "toggle-label"],
+    motion: ["hover", "press", "focus", "reduced motion"],
+    accessibility: [
+      "Base UI toggle primitive",
+      "stable accessible name",
+      "aria-pressed state",
+      "visible focus ring",
+    ],
+  },
   "button-group": {
     name: "ButtonGroup",
     description:
-      "Groups related Buttons with the same visual variant into one compact attached horizontal or vertical control.",
+      "Groups related Buttons with the same visual variant into one compact attached horizontal control.",
     status: "stable",
     layer: "core",
     category: "Actions",
@@ -266,7 +296,8 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
   },
   input: {
     name: "Input",
-    description: "A thin native single-line control for supported text-like values.",
+    description:
+      "A thin native single-line control for text-like, numeric, and platform temporal values.",
     status: "stable",
     layer: "core",
     category: "Forms",
@@ -277,8 +308,79 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     motion: ["hover", "focus"],
     accessibility: [
       "native input attributes",
+      "browser-owned temporal picker and localized chrome",
       "aria-invalid support",
       "label through Field or Label",
+    ],
+  },
+  "file-input": {
+    name: "FileInput",
+    description:
+      "A server-safe native file-selection control that preserves FileList, picker security, and form behavior.",
+    status: "stable",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui",
+    related: ["Input", "Field", "Label"],
+    anatomy: ["file-input-root", "file-input", "file-input-icon"],
+    motion: ["hover", "focus"],
+    accessibility: [
+      "native file input and picker",
+      "FileList events and forwarded ref",
+      "label through Field or Label",
+      "native form submission and reset",
+    ],
+  },
+  calendar: {
+    name: "Calendar",
+    description:
+      "Selects one timezone-safe ISO date in a localizable month grid with roving focus and explicit constraints.",
+    status: "stable",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "DatePicker", "Popover"],
+    anatomy: [
+      "root",
+      "header",
+      "previous-month",
+      "heading",
+      "next-month",
+      "grid",
+      "weekday-header",
+      "row",
+      "cell",
+      "day",
+    ],
+    motion: ["hover", "focus", "reduced-motion compatible"],
+    accessibility: [
+      "named ARIA grid",
+      "one roving day tab stop",
+      "Arrow, Home, End, Page, Enter, and Space keyboard model",
+      "localized full date labels and live month announcement",
+      "RTL, forced-colors, disabled, and read-only support",
+    ],
+  },
+  "date-picker": {
+    name: "DatePicker",
+    description:
+      "Composes Calendar and an anchored overlay into one localizable, form-backed single-date control.",
+    status: "stable",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Calendar", "Input", "Field", "Popover"],
+    anatomy: ["root", "trigger", "content", "clear", "form-control"],
+    motion: ["Popover enter and exit", "hover", "focus", "reduced-motion compatible"],
+    accessibility: [
+      "Field or explicit ARIA naming",
+      "Calendar keyboard model",
+      "focus transfer and restoration",
+      "Escape and outside dismissal",
+      "native form value, required, disabled, and reset behavior",
     ],
   },
   "input-group": {
@@ -358,7 +460,7 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     package: "@nerio-ui/ui",
     importPath: "@nerio-ui/ui",
     related: ["Card", "Table", "Button"],
-    anatomy: ["root", "item", "body", "link", "title", "description", "meta"],
+    anatomy: ["root", "item", "marker", "body", "link", "title", "description", "meta"],
     motion: ["hover", "focus"],
     accessibility: ["semantic ul or ol", "native anchors", "natural reading order"],
   },
@@ -635,17 +737,122 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-focus-ring",
     ],
   },
+  toggle: {
+    category: "Actions",
+    purpose:
+      "Use Toggle for one independent button state that remains pressed or not pressed, such as following, pinning, muting, or showing an optional layer.",
+    anatomy: [
+      {
+        title: "toggle",
+        description: "Native Base UI toggle button with controlled or uncontrolled pressed state.",
+      },
+      {
+        title: "toggle-icon",
+        description: "Optional leading icon rendered through the Nerio icon adapter.",
+      },
+      {
+        title: "toggle-label",
+        description: "Visible label that remains semantically stable while state changes.",
+      },
+    ],
+    variants: [
+      { title: "Ghost", description: "Restrained default for compact repeated controls." },
+      { title: "Outline", description: "Adds a stable boundary around the control." },
+      { title: "Small, medium, large", description: "Aligns with shared action control heights." },
+    ],
+    states: [
+      { title: "Unpressed", description: "aria-pressed is false and data-pressed is absent." },
+      {
+        title: "Pressed",
+        description:
+          "aria-pressed is true; a neutral selected fill and accent foreground replace the transient active treatment.",
+      },
+      {
+        title: "Hover and active",
+        description: "Transient interaction remains distinct from pressed.",
+      },
+      {
+        title: "Focus-visible",
+        description: "Uses the shared focus ring in either pressed state.",
+      },
+      { title: "Disabled", description: "Prevents activation while preserving the visible state." },
+    ],
+    motion: [
+      "Hover and press reuse shared CSS-first interaction motion.",
+      "The retained pressed state never depends on animation.",
+      "Reduced motion removes nonessential duration and scale.",
+    ],
+    accessibility: [
+      "Base UI synchronizes native activation, controlled or uncontrolled state, aria-pressed, and data-pressed.",
+      "Keep the accessible name stable while state changes; use Mute with aria-pressed rather than alternating Mute and Unmute.",
+      "Icon-only usage requires aria-label; Tooltip never replaces an accessible name.",
+      "Enter and Space activate the native button, and focus remains on the Toggle after activation.",
+      "The native root defaults to type=button so it does not submit a surrounding form.",
+      "Pressed state remains visible in forced-colors mode and does not rely on color alone.",
+    ],
+    api: [
+      {
+        title: "pressed / defaultPressed / onPressedChange",
+        description: "Controlled and uncontrolled Base UI state with cancellable event details.",
+      },
+      {
+        title: "icon / aria-label",
+        description: "Creates an icon-only Toggle with a required stable accessible name.",
+      },
+      {
+        title: "children / leadingIcon",
+        description: "Creates a visible-label Toggle with an optional leading icon.",
+      },
+      { title: "variant", description: "ghost or outline." },
+      { title: "size", description: "sm, md, or lg through shared control-height contracts." },
+      {
+        title: "value",
+        description: "Stable identifier reserved for future direct ToggleGroup composition.",
+      },
+      {
+        title: "render / nativeButton",
+        description: "Preserves Base UI render composition and native-button behavior.",
+      },
+    ],
+    designNotes: [
+      "Persistent public state is pressed; active remains the transient pointer or keyboard state.",
+      "Button performs momentary actions, Switch changes settings, and Checkbox represents selection.",
+      "ButtonGroup owns layout only; grouped values and roving focus require ToggleGroup.",
+    ],
+    related: ["Button", "Switch", "Checkbox", "ButtonGroup"],
+    guidance: {
+      do: [
+        "Use one stable label and let aria-pressed communicate state; a state-dependent icon may reinforce it visually.",
+      ],
+      dont: [
+        "Do not use Toggle for immediate settings, form selection, disclosure, grouped selection, or a momentary action.",
+      ],
+    },
+    tokens: [
+      "--n-toggle-height-sm",
+      "--n-toggle-height-md",
+      "--n-toggle-height-lg",
+      "--n-toggle-radius",
+      "--n-toggle-background-ghost",
+      "--n-toggle-background-ghost-hover",
+      "--n-toggle-background-outline",
+      "--n-toggle-background-outline-hover",
+      "--n-toggle-border-outline",
+      "--n-toggle-background-pressed",
+      "--n-toggle-background-pressed-hover",
+      "--n-toggle-border-pressed",
+      "--n-toggle-border-pressed-hover",
+      "--n-toggle-border-pressed-active",
+      "--n-toggle-foreground-pressed",
+      "--n-focus-ring",
+    ],
+  },
   "button-group": {
     category: "Actions",
     purpose:
       "Use ButtonGroup when adjacent actions form one compact, related set with the same visual variant.",
     anatomy: [{ title: "button-group", description: "Native group wrapper for adjacent Buttons." }],
-    variants: [
-      {
-        title: "Orientation",
-        description: "Horizontal is the default; vertical stacks the same direct Button children.",
-      },
-    ],
+    variants: [{ title: "Variant parity", description: "Every child uses one Button variant." }],
     states: [
       { title: "Focus", description: "Each child Button keeps its own visible focus ring." },
       { title: "Disabled and loading", description: "Each child Button keeps its own state." },
@@ -670,7 +877,13 @@ export const componentReference: Record<string, ComponentReference> = {
   kbd: {
     category: "Foundation",
     purpose: "Use Kbd to display a keyboard shortcut beside an action or command label.",
-    anatomy: [{ title: "kbd", description: "Native kbd element with quiet shortcut styling." }],
+    anatomy: [
+      {
+        title: "kbd",
+        description:
+          "Native kbd element with secondary text and an adaptive alpha-neutral surface.",
+      },
+    ],
     variants: [
       { title: "Default", description: "Neutral shortcut notation that adapts through tokens." },
     ],
@@ -685,7 +898,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     api: [{ title: "children", description: "Shortcut notation such as ⌘S, ⇧⌘P, or Esc." }],
     designNotes: [
-      "Keep shortcut notation quiet so it supports, rather than competes with, the action label.",
+      "Keep shortcut notation quiet with secondary text and an alpha-neutral surface that adapts to its background.",
     ],
     related: ["Button", "Tooltip", "Tokens"],
     guidance: {
@@ -902,6 +1115,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-badge-background-strong",
       "--n-badge-foreground-strong",
       "--n-badge-background-strong-primary",
+      "--n-badge-foreground-strong-primary",
       "--n-badge-background-strong-info",
       "--n-badge-background-strong-success",
       "--n-badge-background-strong-warning",
@@ -913,7 +1127,7 @@ export const componentReference: Record<string, ComponentReference> = {
   alert: {
     category: "Feedback",
     purpose:
-      "Use Alert for inline feedback that should stay in the page flow and remain visible until the content changes.",
+      "Use Alert for inline feedback that stays in the page flow until the content changes or the consumer dismisses it.",
     anatomy: [
       { title: "root", description: "Inline feedback region with tone and spacing tokens." },
       { title: "icon", description: "Optional decorative icon rendered through the icon adapter." },
@@ -922,7 +1136,11 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "description", description: "Body content that explains the state or recovery." },
       {
         title: "action",
-        description: "Optional trailing action for a focused recovery or update.",
+        description: "Optional actions rendered below the descriptive message.",
+      },
+      {
+        title: "close",
+        description: "Optional consumer-owned close control in the trailing slot.",
       },
     ],
     variants: [
@@ -932,14 +1150,26 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Warning", description: "Potential issue that needs attention." },
       { title: "Danger", description: "Blocking or error state that needs recovery." },
     ],
-    states: [{ title: "Visible", description: "Alerts are inline and persistent by default." }],
+    states: [
+      { title: "Visible", description: "Alerts are inline and persistent by default." },
+      {
+        title: "Dismissible",
+        description: "The consumer owns removal and supplies an accessible close control.",
+      },
+    ],
     accessibility: [
       'Static inline alerts are not live regions by default; pass role="status" or role="alert" only for dynamic updates that need announcement.',
       "Use clear text; tone and icon must not carry the only meaning.",
+      "Give the optional close control a localized accessible name.",
     ],
     guidance: {
-      do: ["Use for inline validation summaries, persistent notices, and contextual feedback."],
-      dont: ["Do not use Alert as a toast replacement or add dismiss behavior in this slice."],
+      do: [
+        "Use for inline validation summaries, persistent notices, and contextual feedback.",
+        "Place recovery actions below the description and reserve the trailing slot for close.",
+      ],
+      dont: [
+        "Do not use Alert as a toast replacement or dismiss required information without a durable alternative.",
+      ],
     },
     designNotes: [
       "Alert is a flat muted surface: semantic color stays on the icon while title and description remain neutral.",
@@ -1032,9 +1262,9 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-spinner-size-sm",
       "--n-spinner-size-md",
       "--n-spinner-size-lg",
+      "--n-spinner-radius",
       "--n-spinner-border-width",
       "--n-spinner-duration",
-      "--n-radius-full",
     ],
   },
   skeleton: {
@@ -1130,22 +1360,28 @@ export const componentReference: Record<string, ComponentReference> = {
   },
   input: {
     category: "Forms",
-    purpose: "Use Input for short text values such as names, filters, URLs, and settings.",
+    purpose:
+      "Use Input for native text-like, numeric, or temporal values when browser-owned entry and form behavior fit the product.",
     anatomy: [
       {
         title: "root",
         description: "Native input element with tokenized height, radius, border, and focus state.",
       },
-      { title: "value", description: "User-entered short text value." },
+      { title: "value", description: "Native text, number, date, month, week, or time value." },
       { title: "placeholder", description: "Optional hint that never replaces a visible label." },
     ],
     variants: [
       { title: "Default", description: "General text entry." },
+      {
+        title: "Temporal",
+        description: "Native date, month, week, time, or local date-time entry and picker.",
+      },
       { title: "Invalid", description: "Pair with Field and FormMessage for validation." },
     ],
     states: [
       { title: "Default and focus", description: "Focus uses the shared Nerio focus ring." },
       { title: "Disabled", description: "Prevents editing while preserving layout." },
+      { title: "Read-only", description: "Keeps supported native values focusable and submitted." },
       { title: "Required", description: "Use native required attributes and visible helper text." },
       { title: "Invalid", description: "Use semantic error color and nearby text." },
     ],
@@ -1159,6 +1395,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use aria-describedby for helper text and validation messages.",
       "Use aria-invalid only when the value is actually invalid.",
       "Use autocomplete and input type where appropriate.",
+      "Keep temporal picker chrome, localized display, validity, and value semantics browser-owned.",
     ],
     api: [
       {
@@ -1167,16 +1404,32 @@ export const componentReference: Record<string, ComponentReference> = {
           "Sets visual invalid state and aria-invalid when aria-invalid is not supplied.",
       },
       { title: "className", description: "Extends the root input without replacing defaults." },
-      { title: "native props", description: "Supports standard React input attributes." },
+      {
+        title: "type",
+        description:
+          "Supports the documented text-like, number, date, month, week, time, and datetime-local types.",
+      },
+      {
+        title: "native props and ref",
+        description:
+          "Forwards applicable input attributes and exposes native valueAsDate/valueAsNumber behavior.",
+      },
     ],
     designNotes: [
       "Use Input for short values; use Textarea for longer notes.",
+      "Use native temporal types for platform entry; use Calendar or DatePicker only when their bounded custom UI is required.",
       "Prefer Field when the control needs label, description, or validation message.",
     ],
     related: ["Field", "Label", "Textarea"],
     guidance: {
-      do: ["Use Field for production forms so labels and messages stay connected."],
-      dont: ["Do not use placeholder text as the only label."],
+      do: [
+        "Use Field for production forms so labels and messages stay connected.",
+        "Use min, max, and step without converting native temporal values to localized strings.",
+      ],
+      dont: [
+        "Do not use placeholder text as the only label.",
+        "Do not suppress native temporal pickers or add scheduling, timezone, or parsing policy to Input.",
+      ],
     },
     tokens: [
       "--n-input-height-md",
@@ -1186,6 +1439,92 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-placeholder",
       "--n-motion-hover-duration",
       "--n-motion-focus-duration",
+    ],
+  },
+  "file-input": {
+    category: "Forms",
+    purpose:
+      "Use FileInput for native single or multiple file selection when the product owns everything that happens after selection.",
+    anatomy: [
+      {
+        title: "file-input-root",
+        description: "Layout wrapper for the native input and decorative selector icon.",
+      },
+      {
+        title: "file-input",
+        description:
+          "Native file input with tokenized control geometry and browser-owned picker behavior.",
+      },
+      {
+        title: "file-input-icon",
+        description: "Decorative upload icon over the compact native selector button.",
+      },
+    ],
+    variants: [
+      { title: "Single", description: "Selects one file through the native picker." },
+      { title: "Multiple", description: "Uses the native multiple attribute and FileList." },
+      {
+        title: "Accept and capture",
+        description: "Forwards browser hints without validating files.",
+      },
+    ],
+    states: [
+      { title: "Default and focus", description: "Keeps the native input in the tab order." },
+      { title: "Selected", description: "Browser chrome displays the native file selection." },
+      { title: "Required", description: "Uses native form validity and submission behavior." },
+      { title: "Invalid", description: "Uses aria-invalid and the shared danger boundary." },
+      { title: "Disabled", description: "Uses the native disabled attribute." },
+    ],
+    motion: [
+      "Hover and focus transition through shared control motion tokens.",
+      "Reduced motion keeps every state visible without nonessential timing.",
+    ],
+    accessibility: [
+      "Pair FileInput with Field, Label, aria-label, or aria-labelledby.",
+      "Keep the native input visible, focusable, and available to assistive technology.",
+      "Use accept and capture only as picker hints; consumers own validation policy and messages.",
+      "Read files from event.currentTarget.files or the forwarded native input ref.",
+      "Reset through a native form reset or an intentional remount/ref strategy; file values cannot be populated programmatically.",
+    ],
+    api: [
+      { title: "accept", description: "Native file-type picker hint." },
+      { title: "multiple", description: "Allows one FileList to contain multiple selections." },
+      { title: "capture", description: "Native compatible-device capture hint." },
+      {
+        title: "name / form / required / disabled",
+        description: "Native form ownership, validity, availability, and submission behavior.",
+      },
+      {
+        title: "onChange / ref",
+        description: "Provides direct typed access to the native FileList and input element.",
+      },
+      { title: "size", description: "Uses the shared sm, md, or lg control geometry." },
+      { title: "invalid", description: "Normalizes the visual and aria-invalid state." },
+    ],
+    designNotes: [
+      "FileInput is server-safe and renders one native input without mirrored selection state.",
+      "Browser file-picker chrome and security restrictions remain platform-owned.",
+      "Consumers may render localized file summaries outside the primitive from the change event.",
+    ],
+    related: ["Field", "Label", "Input"],
+    guidance: {
+      do: [
+        "Use accept as a picker hint and validate selected files in consumer code.",
+        "Use native form reset or clear the ref value intentionally when the product needs reset outside a form.",
+      ],
+      dont: [
+        "Do not add upload requests, Dropzone behavior, previews, queues, progress, retry, storage, or product validation policy to FileInput.",
+      ],
+    },
+    tokens: [
+      "--n-input-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border-focus",
+      "--n-file-input-button-background",
+      "--n-file-input-button-foreground",
+      "--n-file-input-button-border",
+      "--n-focus-ring",
     ],
   },
   "input-group": {
@@ -1650,14 +1989,312 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: [
       "--n-switch-height",
       "--n-switch-width",
+      "--n-switch-radius",
       "--n-switch-thumb-size",
+      "--n-switch-thumb-radius",
       "--n-switch-thumb-offset",
       "--n-switch-background",
       "--n-switch-background-hover",
       "--n-switch-background-checked",
       "--n-switch-border",
       "--n-switch-border-hover",
+      "--n-switch-thumb-background",
       "--n-switch-thumb-background-checked",
+      "--n-focus-ring",
+    ],
+  },
+  slider: {
+    category: "Forms",
+    purpose: "Use Slider to choose one numeric value within a known bounded range.",
+    anatomy: [
+      { title: "root", description: "Single-value Base UI Slider state and form owner." },
+      { title: "header", description: "Optional row for a visible label and value label." },
+      { title: "label", description: "Visible accessible name associated with the thumb." },
+      { title: "value", description: "Optional consumer-formatted visible value." },
+      { title: "control", description: "Pointer and touch interaction surface." },
+      { title: "track", description: "Neutral full numeric range." },
+      { title: "indicator", description: "Accent fill from min to the current value." },
+      { title: "thumb", description: "One draggable handle containing a native range input." },
+      { title: "description", description: "Optional supporting text connected to the input." },
+    ],
+    variants: [
+      { title: "Horizontal", description: "Default fluid inline-axis control." },
+      { title: "Vertical", description: "Bounded block-axis control with the same value API." },
+    ],
+    states: [
+      { title: "Default", description: "Uncontrolled value defaults to min." },
+      { title: "Dragging", description: "Pointer or touch interaction updates one value." },
+      { title: "Focus", description: "Keyboard focus remains visible on the thumb." },
+      { title: "Disabled", description: "Removes interaction and native form contribution." },
+      {
+        title: "Read-only",
+        description: "Remains focusable and form-associated without changing.",
+      },
+      { title: "Invalid", description: "Exposes aria-invalid and a stable data-invalid hook." },
+      { title: "Required", description: "Preserves native range required semantics and metadata." },
+    ],
+    motion: [
+      "Track and thumb feedback use shared hover duration and easing tokens.",
+      "Value changes remain immediate; reduced motion removes nonessential transition duration.",
+    ],
+    accessibility: [
+      "Slider is interactive and imports from @nerio-ui/ui/client.",
+      "Provide exactly one visible label, aria-label, or aria-labelledby.",
+      "Base UI owns Arrow keys, Home, End, Page Up, Page Down, pointer, touch, RTL, and orientation behavior.",
+      "Use aria-valuetext or getAriaValueText when the numeric value alone does not communicate units or meaning.",
+      "Read-only remains keyboard focusable but cancels value changes; disabled removes interaction.",
+      "The nested native range input preserves name, form, min, max, step, required, and ref access.",
+    ],
+    api: [
+      { title: "value / defaultValue", description: "Controlled or uncontrolled single number." },
+      {
+        title: "onValueChange / onValueCommitted",
+        description: "Receives one number plus Base UI reason and native event details.",
+      },
+      { title: "min / max / step / largeStep", description: "Defines the bounded numeric scale." },
+      { title: "orientation", description: "horizontal or vertical." },
+      {
+        title: "name / form / required / disabled / readOnly",
+        description: "Form and availability metadata.",
+      },
+      {
+        title: "label / aria-label / aria-labelledby",
+        description: "Exactly one naming strategy.",
+      },
+      { title: "valueLabel", description: "Optional visible consumer-formatted value." },
+      {
+        title: "format / locale / aria-valuetext / getAriaValueText",
+        description: "Localized numeric presentation and accessible semantic value text.",
+      },
+      {
+        title: "ref / inputRef",
+        description: "Refs for the root div and nested native range input.",
+      },
+    ],
+    guidance: {
+      do: [
+        "Use for one approximate or continuously adjustable value with known bounds.",
+        "Show units outside Slider and provide accessible value text when the number is ambiguous.",
+      ],
+      dont: [
+        "Do not use Slider for exact text entry when Input is clearer.",
+        "Do not add multiple thumbs, marks, tooltips, charts, thresholds, filters, pricing, or media policy to Core Slider.",
+      ],
+    },
+    related: ["input", "progress", "field"],
+    tokens: [
+      "--n-slider-control-size",
+      "--n-slider-length",
+      "--n-slider-track-size",
+      "--n-slider-track-background",
+      "--n-slider-indicator-background",
+      "--n-slider-thumb-size",
+      "--n-slider-thumb-background",
+      "--n-slider-thumb-border",
+      "--n-slider-focus-ring",
+      "--n-slider-disabled-opacity",
+      "--n-slider-duration",
+      "--n-slider-easing",
+    ],
+  },
+  calendar: {
+    category: "Forms",
+    purpose:
+      "Use Calendar to select one ISO calendar date in a custom inline month grid when native Input type=date is not sufficient.",
+    anatomy: [
+      { title: "root", description: "Named Calendar group and state owner." },
+      { title: "header", description: "Month navigation and live localized heading." },
+      { title: "grid", description: "Six-week native table with ARIA grid semantics." },
+      { title: "weekday-header", description: "Localized abbreviated and full weekday names." },
+      { title: "row", description: "One calendar week." },
+      { title: "cell", description: "Gridcell carrying selected state." },
+      { title: "day", description: "Native date button in the roving-focus model." },
+    ],
+    variants: [
+      { title: "Uncontrolled", description: "Owns selected date and visible month from defaults." },
+      {
+        title: "Controlled",
+        description: "Consumer owns selected date and visible month independently.",
+      },
+      {
+        title: "Localized",
+        description: "Locale, week start, and navigation labels change presentation only.",
+      },
+    ],
+    states: [
+      {
+        title: "Selected",
+        description: "Accent fill, border, and aria-selected identify one date.",
+      },
+      {
+        title: "Today",
+        description: "aria-current and weight identify today without adding a competing underline.",
+      },
+      {
+        title: "Outside month",
+        description: "Muted but selectable dates preserve six complete weeks.",
+      },
+      {
+        title: "Unavailable",
+        description: "Constraints prevent selection and expose aria-disabled.",
+      },
+      {
+        title: "Read-only",
+        description: "Navigation and focus remain available without value changes.",
+      },
+      { title: "Disabled", description: "Navigation and all day buttons are disabled." },
+    ],
+    motion: [
+      "State feedback uses shared hover and focus duration and easing tokens.",
+      "Month changes are immediate; reduced motion removes nonessential transitions.",
+    ],
+    accessibility: [
+      "Calendar imports from @nerio-ui/ui/client and requires aria-label or aria-labelledby.",
+      "Only one available day participates in the page Tab sequence.",
+      "Arrow keys move by day or week; Home and End move within the week.",
+      "Page keys move by month and Shift plus Page keys move by year.",
+      "Enter and Space select; constraints, disabled, and read-only prevent value changes.",
+      "Month headings announce politely; day buttons use full localized date names and expose selection in the focused accessible name.",
+      "Unavailable days expose aria-disabled and use the disabled foreground color without a strike-through.",
+      "Horizontal Arrow behavior follows the computed text direction in RTL.",
+    ],
+    api: [
+      { title: "value / defaultValue", description: "Controlled or uncontrolled YYYY-MM-DD date." },
+      { title: "onValueChange", description: "Receives one valid, available CalendarDate." },
+      {
+        title: "month / defaultMonth / onMonthChange",
+        description: "Visible month using the same ISO date representation.",
+      },
+      {
+        title: "min / max / isDateDisabled",
+        description: "Inclusive boundaries and consumer disabled-date policy.",
+      },
+      {
+        title: "locale / firstDayOfWeek / labels",
+        description:
+          "Localized presentation with explicit week-start policy; locale defaults to en-US for deterministic SSR.",
+      },
+      {
+        title: "today",
+        description: "Current date for today styling; supply a stable value for deterministic SSR.",
+      },
+      { title: "disabled / readOnly", description: "Availability and value-change behavior." },
+      { title: "aria-label / aria-labelledby", description: "Exactly one naming strategy." },
+      { title: "ref", description: "HTMLDivElement root ref." },
+    ],
+    guidance: {
+      do: [
+        "Use native Input type=date when browser-owned picker UI is sufficient.",
+        "Use Calendar for one inline, localizable date grid with stable ISO values.",
+      ],
+      dont: [
+        "Do not add DatePicker popup ownership, ranges, multiple selection, events, availability data, scheduling, recurrence, time, or timezone conversion to Calendar.",
+      ],
+    },
+    related: ["input", "popover", "field"],
+    tokens: [
+      "--n-calendar-width",
+      "--n-calendar-padding",
+      "--n-calendar-cell-size",
+      "--n-calendar-background",
+      "--n-calendar-border",
+      "--n-calendar-day-background-hover",
+      "--n-calendar-day-background-active",
+      "--n-calendar-day-background-selected",
+      "--n-calendar-day-background-selected-hover",
+      "--n-calendar-day-foreground-selected",
+      "--n-calendar-day-foreground-unavailable",
+      "--n-calendar-duration",
+      "--n-calendar-easing",
+      "--n-focus-ring",
+    ],
+  },
+  "date-picker": {
+    category: "Forms",
+    purpose:
+      "Use DatePicker for one custom, localizable ISO calendar date when native Input type=date is not sufficient.",
+    anatomy: [
+      { title: "root", description: "State wrapper for trigger, popup, and form mirror." },
+      { title: "trigger", description: "Native button aligned with the form family." },
+      { title: "content", description: "Anchored Base UI Popover surface." },
+      { title: "Calendar", description: "The existing complete single-date grid." },
+      { title: "clear", description: "Optional explicit empty-value action." },
+      { title: "form-control", description: "Single hidden native form value mirror." },
+    ],
+    variants: [
+      { title: "Uncontrolled", description: "Owns selected value and popup state from defaults." },
+      { title: "Controlled", description: "Consumer owns value and open state independently." },
+      { title: "Clearable", description: "Adds an explicit optional clear action." },
+    ],
+    states: [
+      { title: "Empty", description: "Shows an explicit placeholder." },
+      { title: "Selected", description: "Formats one ISO date for display and form submission." },
+      { title: "Open", description: "Moves focus into Calendar and restores it on close." },
+      { title: "Invalid", description: "Uses form-family invalid presentation and aria-invalid." },
+      { title: "Read-only", description: "Allows inspection without value changes." },
+      { title: "Disabled", description: "Disables trigger and form value." },
+    ],
+    motion: [
+      "Popover uses the shared overlay enter and exit contract.",
+      "Reduced motion keeps dismissal and focus behavior immediate.",
+    ],
+    accessibility: [
+      "Name the trigger through Field, Label, aria-label, or aria-labelledby.",
+      "The trigger description includes the localized selected value or empty placeholder before the open/change action.",
+      "Opening moves focus to the selected or active Calendar day.",
+      "Selection, Escape, outside dismissal, and clear restore focus to the trigger.",
+      "Calendar retains Arrow, Home, End, Page, Enter, Space, RTL, and constraint behavior.",
+      "The single named form mirror preserves submission, reset, required, disabled, and read-only semantics.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled CalendarDate; null is the explicit empty value.",
+      },
+      {
+        title: "open / defaultOpen / onOpenChange",
+        description: "Controlled or uncontrolled Popover state with Base UI event details.",
+      },
+      {
+        title: "name / form / required / onInvalid",
+        description:
+          "Native form ownership, stable ISO submission, constraint validation, and validation observation.",
+      },
+      {
+        title: "min / max / isDateDisabled",
+        description: "Existing Calendar boundaries and disabled-date policy.",
+      },
+      {
+        title: "locale / firstDayOfWeek / formatValue",
+        description:
+          "Localized display and week order without localized parsing; locale defaults to en-US for deterministic SSR.",
+      },
+      {
+        title: "labels / placeholder / clearable",
+        description: "Localizable control copy and one optional explicit clear action.",
+      },
+      { title: "disabled / readOnly / invalid", description: "Interaction and form states." },
+      { title: "ref", description: "HTMLElement ref for the public trigger." },
+    ],
+    guidance: {
+      do: [
+        "Use native Input type=date when direct text entry or browser-owned picker UI is preferred.",
+        "Use DatePicker for one bounded custom date workflow and compose it with Field.",
+      ],
+      dont: [
+        "Do not add ranges, presets, localized parsing, time, timezone conversion, scheduling, availability, recurrence, or product shortcuts.",
+      ],
+    },
+    related: ["calendar", "input", "field", "popover"],
+    tokens: [
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-placeholder",
+      "--n-popover-radius",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-calendar-width",
+      "--n-calendar-day-background-selected",
       "--n-focus-ring",
     ],
   },
@@ -1915,6 +2552,7 @@ export const componentReference: Record<string, ComponentReference> = {
     designNotes: [
       "Toast is an inverted dark glass surface in every mode so transient feedback is clearly separated from flat page content.",
       "Semantic color is limited to the status icon; copy and controls use the toast foreground hierarchy.",
+      "Toast width is capped at 25rem (400px) before viewport insets reduce it on smaller screens.",
     ],
     tokens: [
       "--n-toast-width",
@@ -2028,6 +2666,7 @@ export const componentReference: Record<string, ComponentReference> = {
     designNotes: [
       "Use Card for truly related content, not as a default wrapper for every section.",
       "Use typography and spacing first; the default white or black surface carries only a soft elevation shadow, while secondary grouping stays flat and muted.",
+      "Keep the gap between visual, header, content, and footer larger than the internal title-description and action gaps.",
     ],
     related: ["Separator", "Stat", "KeyValue"],
     guidance: {
@@ -2039,6 +2678,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-card-padding-inline",
       "--n-card-padding-block",
       "--n-card-gap",
+      "--n-card-section-gap",
       "--n-card-radius",
       "--n-card-background",
       "--n-card-background-interactive-hover",
@@ -2054,10 +2694,11 @@ export const componentReference: Record<string, ComponentReference> = {
   separator: {
     category: "Data display",
     purpose: "Use Separator to divide related content sections without adding visual weight.",
-    anatomy: [
-      { title: "root", description: "Native horizontal rule using the subtle border token." },
+    anatomy: [{ title: "root", description: "Native rule using the subtle border token." }],
+    variants: [
+      { title: "Horizontal", description: "Separates stacked content." },
+      { title: "Vertical", description: "Separates adjacent inline content." },
     ],
-    variants: [{ title: "Default", description: "Separates stacked content." }],
     states: [
       {
         title: "Static",
@@ -2101,6 +2742,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-avatar-size-sm",
       "--n-avatar-size-md",
       "--n-avatar-size-lg",
+      "--n-avatar-radius",
       "--n-avatar-border",
       "--n-avatar-background",
     ],
@@ -2373,16 +3015,20 @@ export const componentReference: Record<string, ComponentReference> = {
     purpose:
       "Use List to present short structured items that are not tabular data and do not need selection behavior.",
     anatomy: [
-      { title: "root", description: "Semantic ul by default or ol when ordered is true." },
+      { title: "root", description: "Semantic ul or ol selected by the marker meaning." },
       { title: "item", description: "One structured list item." },
+      { title: "marker", description: "Disc, decimal, dash, or consumer-supplied icon marker." },
       { title: "link", description: "Native anchor wrapper when an item has href." },
       { title: "title", description: "Primary item label." },
       { title: "description", description: "Optional supporting item copy." },
       { title: "meta", description: "Optional compact metadata in the trailing slot." },
     ],
     variants: [
-      { title: "Unordered", description: "Default semantic list for peer items." },
-      { title: "Ordered", description: "Use ordered when sequence or rank matters." },
+      { title: "Disc", description: "Default semantic bullet list for peer items." },
+      { title: "Decimal", description: "Ordered numbering for sequence or rank." },
+      { title: "Dash", description: "Quiet unordered dash marker." },
+      { title: "Icon", description: "Uses each item's explicit marker content." },
+      { title: "None", description: "Retains list semantics without a visible marker." },
     ],
     states: [
       { title: "Static", description: "Items without href render as non-interactive content." },
@@ -2401,8 +3047,8 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Array of title, description, meta, href, leading, and trailing values.",
       },
       {
-        title: "ordered",
-        description: "Renders an ol when sequence matters; otherwise renders a ul.",
+        title: "marker",
+        description: "disc, decimal, dash, icon, or none; decimal renders an ol.",
       },
       {
         title: "linkProps",
@@ -2715,7 +3361,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "footer", description: "Stable trailing region for consumer content." },
       {
         title: "rail",
-        description: "Named, vertically centered toggle bounded to the declared hit-area token.",
+        description: "Named bottom-right toggle inside the Sidebar, available in both states.",
       },
       { title: "inset", description: "Primary page content adjacent to the sidebar." },
       { title: "trigger", description: "External named control for expansion and collapse." },
@@ -2752,11 +3398,11 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "Sidebar renders an aside landmark; add a labelled nav inside SidebarContent for navigation.",
-      "SidebarTrigger and SidebarRail require localized labels and expose aria-expanded and aria-controls.",
-      "Give the trigger and rail distinct labels when both render so each control is unambiguous.",
-      "The rail occupies only its declared hit area and does not create a full-height invisible click target.",
+      "SidebarRail and any optional external SidebarTrigger require localized labels and expose aria-expanded and aria-controls.",
+      "Use the rail as the persistent in-sidebar toggle; render an external trigger only when another product surface requires it.",
+      "The rail stays bottom-right and occupies only its declared hit area without creating a full-height invisible click target.",
       "Collapsed descendants are inert so invisible links and controls cannot receive focus.",
-      "Keep the trigger in SidebarInset or use SidebarRail so collapsing does not remove the focused control.",
+      "Keep the bottom-right SidebarRail mounted so collapsing does not remove the focused control.",
       "The primitive adds no roving focus or Arrow-key behavior to arbitrary consumer navigation.",
       "Render one interactive tree per viewport; use an explicit Sheet composition for mobile.",
     ],
@@ -2882,6 +3528,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     accessibility: [
       "CommandInput requires a visible label, aria-label, or aria-labelledby.",
+      "Keyboard focus is indicated on the search input group; the Command surface itself does not receive a focus ring.",
       "Arrow keys move the active option while DOM focus remains in the input; Home and End retain native text-editing behavior.",
       "Enter selects the active enabled item and emits its stable value with the Base UI event; Escape bubbles to enclosing overlays.",
       "Base UI suppresses Enter selection during IME composition and skips disabled items.",
@@ -2917,6 +3564,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     designNotes: [
       "Command is not GlobalSearch, EntitySearch, Documentation Search, or a complete Command Palette.",
+      "The outer radius follows the global overlay radius and is capped at 24px.",
       "Fetching, ranking, routing, permissions, analytics, history, recent items, and global shortcuts stay outside Core.",
       "Use consumer state to replace items and toggle CommandLoading for asynchronous results.",
       "Leading content is general React content and owns its semantics; use decorative Nerio Icons when no accessible meaning is needed.",
@@ -2942,6 +3590,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-command-group-spacing",
       "--n-command-background",
       "--n-command-border",
+      "--n-command-radius",
       "--n-command-item-background-active",
       "--n-overlay-surface-filter",
       "--n-overlay-control-background",
@@ -3115,6 +3764,10 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       { title: "trigger", description: "Element that receives hover or focus." },
       { title: "content", description: "Short non-interactive explanation." },
+      {
+        title: "arrow",
+        description: "Clipped continuation of the overlay surface pointing back to the trigger.",
+      },
     ],
     variants: [{ title: "Default", description: "Small text label in the overlay layer." }],
     states: [
@@ -3132,6 +3785,11 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Required trigger element; prefer a keyboard-focusable control.",
       },
       { title: "disabled", description: "Prevents tooltip display while preserving the trigger." },
+      {
+        title: "TooltipProvider",
+        description:
+          "Coordinates open and close delays across a group of adjacent tooltip triggers.",
+      },
     ],
     guidance: {
       do: ["Use to name icon-only actions or clarify dense metadata."],
@@ -3154,7 +3812,12 @@ export const componentReference: Record<string, ComponentReference> = {
     anatomy: [
       { title: "trigger", description: "Control that opens the command list." },
       { title: "content", description: "Layered menu surface." },
-      { title: "item", description: "Command row with optional destructive intent." },
+      {
+        title: "item",
+        description:
+          "Command row with optional description, group, leading icon, trailing icon, hotkey, and intent.",
+      },
+      { title: "group", description: "Labeled command cluster separated from adjacent groups." },
     ],
     variants: [
       { title: "Default", description: "Neutral command groups." },
@@ -3168,11 +3831,23 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Highlighted", description: "Current item is ready for selection." },
       { title: "Disabled", description: "Unavailable items stay in context without activation." },
     ],
-    accessibility: ["Keep labels action-oriented and support keyboard navigation through Base UI."],
+    accessibility: [
+      "Keep labels action-oriented and support keyboard navigation through Base UI.",
+      "Optional descriptions remain separate from the accessible name and are exposed through aria-describedby.",
+    ],
     api: [
       {
         title: "items",
-        description: "Small list of label, onSelect, disabled, and destructive flags.",
+        description:
+          "Ordered list of label, description, group, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+      },
+      {
+        title: "description",
+        description: "Adds visible supporting context and an accessible description to an item.",
+      },
+      {
+        title: "group",
+        description: "Creates labeled, separated command clusters without custom menu markup.",
       },
       { title: "disabled item", description: "Stays visible in context without activation." },
       {
@@ -3187,6 +3862,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: [
       "--n-dropdown-min-width",
       "--n-dropdown-item-padding-inline",
+      "--n-dropdown-item-gap",
       "--n-dropdown-radius",
       "--n-overlay-z-index",
       "--n-overlay-background",
@@ -3194,6 +3870,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-foreground",
       "--n-overlay-foreground-muted",
       "--n-overlay-control-background",
+      "--n-overlay-divider",
       "--n-overlay-danger",
       "--n-overlay-surface-filter",
       "--n-overlay-shadow",

@@ -101,20 +101,40 @@ test("token validator requires the approved visual foundation aliases", () => {
   );
 });
 
-test("token validator protects approved overlay and Checkbox component contracts", () => {
+test("token validator protects approved overlay, Checkbox, Kbd, and Toast component contracts", () => {
   withTokenFixture(
     (source) =>
       source
-        .replace("--n-checkbox-radius: var(--n-radius-xs);", "--n-checkbox-radius: 0.25rem;")
+        .replace(
+          "--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);",
+          "--n-checkbox-radius: 0.5rem;",
+        )
         .replace("--n-overlay-background: rgb(0 0 0 / 0.88);", "--n-overlay-background: black;")
         .replace(
           "--n-overlay-foreground: var(--n-gray-0);",
           "--n-overlay-foreground: var(--n-color-text-primary);",
-        ),
+        )
+        .replace(
+          "--n-kbd-background: var(--n-color-surface-control);",
+          "--n-kbd-background: var(--n-color-surface-muted);",
+        )
+        .replace(
+          "--n-kbd-foreground: var(--n-color-text-secondary);",
+          "--n-kbd-foreground: var(--n-color-text-primary);",
+        )
+        .replace(
+          "--n-kbd-padding-block: var(--n-space-1);",
+          "--n-kbd-padding-block: var(--n-space-0-5);",
+        )
+        .replace(
+          "--n-kbd-padding-inline: var(--n-space-1-5);",
+          "--n-kbd-padding-inline: var(--n-space-1);",
+        )
+        .replace("--n-toast-width: 25rem;", "--n-toast-width: 34rem;"),
     (stderr) => {
       assert.match(
         stderr,
-        /Approved component contract --n-checkbox-radius must resolve to var\(--n-radius-xs\)/,
+        /Approved component contract --n-checkbox-radius must resolve to min\(var\(--n-radius-xs\), 0\.25rem\)/,
       );
       assert.match(
         stderr,
@@ -124,6 +144,23 @@ test("token validator protects approved overlay and Checkbox component contracts
         stderr,
         /Approved component contract --n-overlay-foreground must resolve to var\(--n-gray-0\)/,
       );
+      assert.match(
+        stderr,
+        /Approved component contract --n-kbd-background must resolve to var\(--n-color-surface-control\)/,
+      );
+      assert.match(
+        stderr,
+        /Approved component contract --n-kbd-foreground must resolve to var\(--n-color-text-secondary\)/,
+      );
+      assert.match(
+        stderr,
+        /Approved component contract --n-kbd-padding-block must resolve to var\(--n-space-1\)/,
+      );
+      assert.match(
+        stderr,
+        /Approved component contract --n-kbd-padding-inline must resolve to var\(--n-space-1-5\)/,
+      );
+      assert.match(stderr, /Approved component contract --n-toast-width must resolve to 25rem/);
     },
   );
 });
@@ -140,6 +177,36 @@ test("token validator calculates load-bearing semantic contrast", () => {
         stderr,
         /purple\/light contrast is 1\.00:1 for --n-color-text-primary on --n-color-surface-default/,
       ),
+  );
+});
+
+test("token validator protects strong Badge contrast across themes and modes", () => {
+  withTokenFixture(
+    (source) =>
+      source.replace(
+        "--n-badge-background-strong-primary: var(--n-purple-400);",
+        "--n-badge-background-strong-primary: var(--n-purple-500);",
+      ),
+    (stderr) =>
+      assert.match(
+        stderr,
+        /purple\/dark contrast is 3\.54:1 for --n-badge-foreground-strong-primary on --n-badge-background-strong-primary/,
+      ),
+  );
+});
+
+test("dark Badge aliases preserve custom status semantics outside preset themes", () => {
+  const source = readFileSync(tokenSource, "utf8");
+  const explicitDark = source.match(/:root\[data-mode="dark"\]\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+  const systemDark = source.match(/:root\[data-mode="system"\]\s*\{([\s\S]*?)\n  \}/)?.[1] ?? "";
+
+  for (const modeSource of [explicitDark, systemDark]) {
+    assert.doesNotMatch(modeSource, /--n-badge-background-strong-(info|success|warning|danger):/);
+  }
+  assert.match(source, /--n-badge-background-strong-info: var\(--n-color-status-info-strong\);/);
+  assert.match(
+    source,
+    /:root\[data-theme="purple"\]\[data-mode="dark"\][\s\S]*?--n-badge-background-strong-info: var\(--n-blue-400\);/,
   );
 });
 

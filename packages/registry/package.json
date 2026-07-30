@@ -1,6 +1,6 @@
 {
   "name": "@nerio-ui/registry",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "Nerio Core source registry manifest and metadata helpers.",
   "private": false,
   "license": "MIT",
@@ -21,12 +21,18 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./manifest.json": "./src/manifest.json"
+    "./manifest.json": "./src/manifest.json",
+    "./public-commands.json": "./src/public-commands.json"
   },
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nerio-ui/adapters": "workspace:*",
+    "@nerio-ui/tokens": "workspace:*",
+    "@nerio-ui/ui": "workspace:*"
   },
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",

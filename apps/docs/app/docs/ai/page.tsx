@@ -1,5 +1,10 @@
 import { Badge } from "@nerio-ui/ui";
 import { CodeExample } from "../../../components/code-example";
+import {
+  mcpInstall,
+  mcpLocalConfiguration,
+  mcpOneOffConfiguration,
+} from "../../../lib/public-commands";
 import { createPageMetadata } from "../../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -8,15 +13,6 @@ export const metadata = createPageMetadata({
     "Use Nerio's llms.txt and read-only MCP server to give people and AI agents the same component registry contract.",
   path: "/docs/ai",
 });
-
-const mcpConfig = `{
-  "mcpServers": {
-    "nerio": {
-      "command": "node",
-      "args": ["packages/mcp/src/server.js"]
-    }
-  }
-}`;
 
 const packageImports = `import { Alert, Card, Table } from "@nerio-ui/ui";
 import { Button, Dialog, Select, ToastProvider } from "@nerio-ui/ui/client";
@@ -41,9 +37,16 @@ export default function Page() {
         </div>
         <p>
           The server uses the official MCP TypeScript SDK and reads component metadata directly from
-          the Nerio registry.
+          the version-aligned Nerio Registry. Install it in the consuming project and run its public
+          bin through pnpm; no monorepo checkout or internal source path is required.
         </p>
-        <CodeExample code={mcpConfig} label="MCP configuration" />
+        <CodeExample code={mcpInstall} label="Install the MCP server" />
+        <CodeExample code={mcpLocalConfiguration} label="Recommended MCP configuration" />
+        <p>
+          Clients that intentionally prefer one-off package execution may use the package-qualified
+          configuration below. A persistent local install is easier to pin and diagnose.
+        </p>
+        <CodeExample code={mcpOneOffConfiguration} label="One-off MCP configuration" />
       </section>
 
       <section className="doc-section">
@@ -63,6 +66,10 @@ export default function Page() {
               Read usage, source files, tokens, primitives, slots, variants, and accessibility
               guidance.
             </span>
+          </div>
+          <div>
+            <code>get_registry</code>
+            <span>Read the coordinated Registry and MCP release metadata.</span>
           </div>
         </div>
       </section>
