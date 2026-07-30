@@ -1,6 +1,8 @@
 packages:
   - "apps/*"
   - "packages/*"
+overrides:
+  "@napi-rs/wasm-runtime": "1.1.6"
 onlyBuiltDependencies:
   - sharp
   - unrs-resolver
