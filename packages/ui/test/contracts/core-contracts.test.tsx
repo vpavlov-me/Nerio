@@ -635,8 +635,10 @@ describe("Core static contracts", () => {
     expect(buttonGroupSource).toContain("[&>.n-button~.n-button::before]:h-");
     expect(buttonGroupSource).toContain("[&>.n-button~.n-button::before]:start-0");
     expect(buttonGroupSource).not.toContain("[&>.n-button~.n-button]:ms-");
-    expect(buttonGroupSource).toContain("[&>.n-button:first-of-type]:rounded-s-");
-    expect(buttonGroupSource).toContain("[&>.n-button:last-of-type]:rounded-e-");
+    expect(buttonGroupSource).toContain("[&>.n-button:nth-child(1_of_.n-button)]:rounded-s-");
+    expect(buttonGroupSource).toContain("[&>.n-button:nth-last-child(1_of_.n-button)]:rounded-e-");
+    expect(buttonGroupSource).not.toContain("first-of-type");
+    expect(buttonGroupSource).not.toContain("last-of-type");
     expect(buttonGroupSource).toContain("[&>.n-button:focus-visible]:z-2");
     expect(buttonGroupSource).not.toContain("orientation");
     expect(buttonGroupSource).not.toContain("overflow-hidden");
