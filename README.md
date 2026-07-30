@@ -4,9 +4,9 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: `0.1.0-alpha.2` is published under the npm `alpha` tag and as a GitHub prerelease. The
-> `latest` tag intentionally remains on `0.1.0-alpha.0` while the Tailwind CSS v4-first line is
-> validated before 1.0.
+> Status: `0.1.0-alpha.2` is the coordinated release candidate. Until its manual publication is
+> complete, the npm `alpha` tag remains on `0.1.0-alpha.1` and `latest` remains on
+> `0.1.0-alpha.0`.
 
 ## Product model
 
@@ -190,11 +190,13 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
 `@nerio-ui/mcp`.
 
-The npm `alpha` tag points to the published `0.1.0-alpha.2`; `latest` remains on
-`0.1.0-alpha.0`. The alpha.2 packages, signed tag, and GitHub prerelease passed the packed-package
-audit, clean consumer build, and browser matrix. Its architecture and migration guidance are
-recorded in the [final migration report](./docs/tailwind-migration-report.md). Alpha APIs may still
-change before 1.0. See [RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
+The coordinated `0.1.0-alpha.2` release candidate has passed the local packed-package audit, clean
+consumer build, and supported local browser checks. Until the manual publication sequence and
+post-publication verification complete, the npm `alpha` tag remains on `0.1.0-alpha.1`, `latest`
+remains on `0.1.0-alpha.0`, and no alpha.2 signed tag or GitHub prerelease is claimed. Its
+architecture and migration guidance are recorded in the
+[final migration report](./docs/tailwind-migration-report.md). Alpha APIs may still change before
+1.0. See [RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
 ## Contributing
 

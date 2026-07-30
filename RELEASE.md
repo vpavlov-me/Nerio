@@ -1,9 +1,10 @@
 # Release Process
 
-Nerio Core `0.1.0-alpha.2` was published on 2026-07-30 under the npm `alpha` tag and is the current
-public prerelease. The `latest` tag intentionally remains on `0.1.0-alpha.0` while the
-complete 1.0 surface is stabilized. The roadmap determines the next coordinated prerelease; no beta
-or stable compatibility is claimed yet.
+Nerio Core `0.1.0-alpha.2` is the coordinated release candidate. Until the manual publication
+sequence and post-publication verification complete, the npm `alpha` tag remains on
+`0.1.0-alpha.1`, `latest` remains on `0.1.0-alpha.0`, and no alpha.2 signed tag or GitHub
+prerelease is claimed. The roadmap determines the next coordinated prerelease; no beta or stable
+compatibility is claimed yet.
 
 Every release action remains manual and requires explicit maintainer approval after the gate and
 tarball inspection pass. This document does not authorize publishing, changing dist-tags,
@@ -71,12 +72,14 @@ typechecks published Sidebar examples in an isolated fixture.
 repeating catalog, token, or onboarding unit tests. `pnpm test:release-consumer` packs all intended
 packages, checks packed manifests, exports, dependencies, side effects, bins, file boundaries, and
 secret/Pro exclusions, installs the tarballs into an isolated Next.js consumer, runs the canonical
-local CLI workflow through `pnpm exec nerio`, verifies one-off CLI execution through the packed
-package, resolves the immutable packaged Registry without a checkout or moving branch URL,
-exercises installed-source metadata, `diff`, and update planning, starts the packaged MCP bin
-through `pnpm exec nerio-mcp`, verifies its read-only discovery and coordinated version metadata,
-source-installs representative components and a Foundation item with complete dependency chains,
-and builds without workspace aliases.
+local CLI workflow through `pnpm exec nerio` from the packed CLI tarball, resolves the immutable
+packaged Registry without a checkout or moving branch URL, exercises installed-source metadata,
+`diff`, and update planning, starts the packaged MCP bin through `pnpm exec nerio-mcp`, verifies its
+read-only discovery and coordinated version metadata, source-installs representative components
+and a Foundation item with complete dependency chains, and builds without workspace aliases.
+Package-qualified one-off execution through `pnpm dlx` is intentionally a post-publication check:
+run the same smoke with `NERIO_RELEASE_EXPECT_PUBLISHED=1` only after all six exact package versions
+exist on npm.
 
 `pnpm validate:release` remains the complete local wrapper:
 
