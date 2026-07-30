@@ -409,6 +409,11 @@ function validate() {
     ["--n-overlay-foreground-muted", "var(--n-gray-300)"],
     ["--n-overlay-surface-filter", "blur(24px) saturate(120%)"],
     ["--n-overlay-backdrop-filter", "blur(10px)"],
+    ["--n-kbd-background", "var(--n-color-surface-control)"],
+    ["--n-kbd-foreground", "var(--n-color-text-secondary)"],
+    ["--n-kbd-padding-block", "var(--n-space-1)"],
+    ["--n-kbd-padding-inline", "var(--n-space-1-5)"],
+    ["--n-toast-width", "25rem"],
   ]) {
     if (rootRule?.declarations.get(token) !== expected) {
       failures.push(`Approved component contract ${token} must resolve to ${expected}.`);

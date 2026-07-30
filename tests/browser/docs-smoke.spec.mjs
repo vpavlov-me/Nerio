@@ -62,7 +62,9 @@ test("covers public docs routes, standardized component docs, and the restrained
   await expect(
     page.getByText('label="Toggle workspace sidebar"', { exact: false }).first(),
   ).toBeVisible();
-  await expect(page.getByText('import * as React from "react";', { exact: false })).toBeVisible();
+  await expect(page.locator("#usage").locator("..").locator(".sidebar-doc-examples")).toHaveCount(
+    0,
+  );
 
   await page.goto("/docs/components/stat");
 
@@ -317,10 +319,22 @@ test("keeps Calendar, InputGroup, and Checkbox component states coherent", async
     element.parentElement?.append(probe);
     const tokenColor = getComputedStyle(probe).color;
     probe.remove();
-    return { color: style.color, decoration: style.textDecorationLine, tokenColor };
+    return {
+      color: style.color,
+      decoration: style.textDecorationLine,
+      opacity: style.opacity,
+      tokenColor,
+      tokenOpacity: getComputedStyle(element)
+        .getPropertyValue("--n-calendar-disabled-opacity")
+        .trim(),
+    };
   });
   expect(unavailableVisual.color).toBe(unavailableVisual.tokenColor);
+  expect(Number(unavailableVisual.opacity)).toBe(Number(unavailableVisual.tokenOpacity));
   expect(unavailableVisual.decoration).toBe("none");
+
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(unavailableDate).toHaveCSS("opacity", "1");
 
   await expectHealthyPage(page, problems);
 });
@@ -498,8 +512,8 @@ test("keeps Actions and Forms Tailwind recipes active across public docs", async
     }
   }
 
-  await page.goto("/docs/components/button");
-  const linkButton = page.getByRole("link", { name: "Link", exact: true });
+  await page.goto("/");
+  const linkButton = page.getByRole("button", { name: "Link", exact: true });
   const linkDecoration = await linkButton.evaluate((element) => {
     const style = getComputedStyle(element);
     return {
@@ -569,6 +583,7 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   await expect(alert.locator("[data-slot=title]")).toHaveCSS("font-weight", "500");
 
   await page.goto("/docs/components/toast");
+  await page.getByRole("button", { name: "Stack notifications" }).click();
   const toast = page.locator(".n-toast").first();
   await expect(toast).toBeVisible();
   await expect(toast).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
@@ -576,7 +591,6 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   expect(await toast.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
     "blur(24px)",
   );
-  await page.getByRole("button", { name: "Stack notifications" }).click();
   const toastClose = page.locator(".n-toast__close").first();
   await expect(toastClose).toBeVisible();
   await toastClose.hover();
@@ -833,6 +847,9 @@ test("keeps the final Tailwind component families active across public docs", as
 
   for (const [route, selector] of routes) {
     await page.goto(`/docs/components/${route}`);
+    if (route === "toast") {
+      await page.getByRole("button", { name: "Stack notifications" }).click();
+    }
     const component = page.locator(selector).first();
     await expect(component, route).toBeVisible();
     const snapshot = await component.evaluate((element) => {

@@ -100,7 +100,6 @@ function AlertPreview() {
               variant="secondary"
             />
           }
-          tone="info"
           icon={Info}
           title="Update available"
         >
@@ -111,7 +110,7 @@ function AlertPreview() {
       <CodeExample
         className="component-example__code"
         code={
-          'import { Info, X } from "@nerio-ui/adapters/icons";\nimport { Alert } from "@nerio-ui/ui";\nimport { Button } from "@nerio-ui/ui/client";\n\n<Alert\n  tone="info"\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n  closeAction={\n    <Button\n      aria-label="Close alert"\n      icon={X}\n      size="sm"\n      tooltip={false}\n      variant="secondary"\n    />\n  }\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>'
+          'import { Info, X } from "@nerio-ui/adapters/icons";\nimport { Alert } from "@nerio-ui/ui";\nimport { Button } from "@nerio-ui/ui/client";\n\n<Alert\n  icon={Info}\n  title="Update available"\n  action={<Button size="sm">Refresh</Button>}\n  closeAction={\n    <Button\n      aria-label="Close alert"\n      icon={X}\n      size="sm"\n      tooltip={false}\n      variant="secondary"\n    />\n  }\n>\n  A new version of the application is available. Refresh to get the latest features and fixes.\n</Alert>'
         }
         label="Alert live preview code"
       />

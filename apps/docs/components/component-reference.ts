@@ -841,6 +841,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toggle-background-pressed",
       "--n-toggle-background-pressed-hover",
       "--n-toggle-border-pressed",
+      "--n-toggle-border-pressed-hover",
+      "--n-toggle-border-pressed-active",
       "--n-toggle-foreground-pressed",
       "--n-focus-ring",
     ],
@@ -875,7 +877,13 @@ export const componentReference: Record<string, ComponentReference> = {
   kbd: {
     category: "Foundation",
     purpose: "Use Kbd to display a keyboard shortcut beside an action or command label.",
-    anatomy: [{ title: "kbd", description: "Native kbd element with quiet shortcut styling." }],
+    anatomy: [
+      {
+        title: "kbd",
+        description:
+          "Native kbd element with secondary text and an adaptive alpha-neutral surface.",
+      },
+    ],
     variants: [
       { title: "Default", description: "Neutral shortcut notation that adapts through tokens." },
     ],
@@ -890,7 +898,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     api: [{ title: "children", description: "Shortcut notation such as ⌘S, ⇧⌘P, or Esc." }],
     designNotes: [
-      "Keep shortcut notation quiet so it supports, rather than competes with, the action label.",
+      "Keep shortcut notation quiet with secondary text and an alpha-neutral surface that adapts to its background.",
     ],
     related: ["Button", "Tooltip", "Tokens"],
     guidance: {
@@ -2544,6 +2552,7 @@ export const componentReference: Record<string, ComponentReference> = {
     designNotes: [
       "Toast is an inverted dark glass surface in every mode so transient feedback is clearly separated from flat page content.",
       "Semantic color is limited to the status icon; copy and controls use the toast foreground hierarchy.",
+      "Toast width is capped at 25rem (400px) before viewport insets reduce it on smaller screens.",
     ],
     tokens: [
       "--n-toast-width",

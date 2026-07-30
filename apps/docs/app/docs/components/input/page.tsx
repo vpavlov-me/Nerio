@@ -1,18 +1,5 @@
 import { Check, X } from "@nerio-ui/adapters/icons";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Field,
-  FormMessage,
-  Icon,
-  Input,
-  Label,
-  LabelContent,
-  LabelRow,
-} from "@nerio-ui/ui";
-import { Button } from "@nerio-ui/ui/client";
+import { Card, CardContent, CardHeader, CardTitle, Field, Icon, Input } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
@@ -88,104 +75,6 @@ export default function Page() {
           />
         </section>
       }
-      sectionPreviews={{
-        variants: (
-          <div className="doc-section-preview" aria-label="Input size preview">
-            <div className="docs-input-grid">
-              <Input aria-label="Small input" size="sm" placeholder="Small" />
-              <Input aria-label="Medium input" defaultValue="Medium" />
-              <Input aria-label="Large input" size="lg" placeholder="Large" />
-            </div>
-          </div>
-        ),
-        states: (
-          <div className="doc-section-preview" aria-label="Input state preview">
-            <div className="form-preview-stack">
-              <div className="n-field" data-invalid="">
-                <LabelRow>
-                  <LabelContent>
-                    <Label htmlFor="input-preview-workspace-slug">Workspace slug</Label>
-                  </LabelContent>
-                </LabelRow>
-                <Input
-                  id="input-preview-workspace-slug"
-                  aria-describedby="input-preview-workspace-slug-message"
-                  defaultValue="Nerio Workspace"
-                  invalid
-                />
-                <FormMessage id="input-preview-workspace-slug-message" role="alert" tone="danger">
-                  Use lowercase letters, numbers, and hyphens.
-                </FormMessage>
-              </div>
-              <div className="docs-input-grid">
-                <Input aria-label="Read-only project key" readOnly defaultValue="NERIO-2026" />
-                <Input aria-label="Unavailable input" disabled placeholder="Unavailable" />
-              </div>
-            </div>
-          </div>
-        ),
-        api: (
-          <div className="doc-section-preview" aria-label="Input type preview">
-            <form className="form-preview-stack" aria-label="Native temporal input examples">
-              <div className="docs-input-grid">
-                <Label htmlFor="input-preview-start-date">Start date</Label>
-                <Input
-                  id="input-preview-start-date"
-                  name="startDate"
-                  type="date"
-                  min="2026-01-01"
-                  max="2026-12-31"
-                  step={1}
-                  defaultValue="2026-07-22"
-                  required
-                />
-                <Label htmlFor="input-preview-billing-month">Billing month</Label>
-                <Input
-                  id="input-preview-billing-month"
-                  name="billingMonth"
-                  type="month"
-                  defaultValue="2026-07"
-                />
-                <Label htmlFor="input-preview-reporting-week">Reporting week</Label>
-                <Input
-                  id="input-preview-reporting-week"
-                  name="reportingWeek"
-                  type="week"
-                  defaultValue="2026-W30"
-                />
-                <Label htmlFor="input-preview-start-time">Start time</Label>
-                <Input
-                  id="input-preview-start-time"
-                  name="startTime"
-                  type="time"
-                  step={900}
-                  defaultValue="09:30"
-                />
-                <Label htmlFor="input-preview-local-deadline">Local deadline</Label>
-                <Input
-                  id="input-preview-local-deadline"
-                  name="localDeadline"
-                  type="datetime-local"
-                  defaultValue="2026-07-22T17:30"
-                  readOnly
-                />
-              </div>
-              <div className="component-lab-inline">
-                <Button type="submit">Submit temporal values</Button>
-                <Button type="reset" variant="outline">
-                  Reset temporal values
-                </Button>
-              </div>
-            </form>
-            <CodeExample
-              code={
-                '<Label htmlFor="start-date">Start date</Label>\n<Input id="start-date" name="startDate" type="date" min="2026-01-01" max="2026-12-31" required />'
-              }
-              label="Native temporal Input example code"
-            />
-          </div>
-        ),
-      }}
       sectionContent={{
         variants: (
           <DocumentationTable headers={["Variant", "Purpose"]} rows={variantRows} codeColumns={1} />

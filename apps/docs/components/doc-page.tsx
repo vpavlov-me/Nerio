@@ -79,7 +79,6 @@ import {
   TableRow,
   Text,
   Textarea,
-  Toast,
   ToastProvider,
   ToastViewport,
   Tooltip,
@@ -102,14 +101,12 @@ export function StandardDocPage({
   lede,
   kind,
   preview,
-  sectionPreviews,
   sectionContent,
 }: {
   title: string;
   lede: string;
   kind?: string;
   preview?: React.ReactNode;
-  sectionPreviews?: Partial<Record<string, React.ReactNode>>;
   sectionContent?: Partial<
     Record<
       | "variants"
@@ -179,22 +176,18 @@ export function StandardDocPage({
       ) : null}
       <section className="doc-section">
         <h2 id="usage">Usage</h2>
-        {sectionPreviews?.usage}
         {usage ? <CodeExample code={usage} label={`${title} usage`} /> : null}
       </section>
       <section className="doc-section">
         <h2 id="variants">Variants</h2>
-        {sectionPreviews?.variants}
         {sectionContent?.variants ?? <ReferenceTable firstColumn="Variant" items={variants} />}
       </section>
       <section className="doc-section">
         <h2 id="anatomy">Anatomy</h2>
-        {sectionPreviews?.anatomy}
         {sectionContent?.anatomy ?? <ReferenceTable firstColumn="Slot" items={anatomy} />}
       </section>
       <section className="doc-section">
         <h2 id="states">States</h2>
-        {sectionPreviews?.states}
         {sectionContent?.states ?? (
           <ReferenceTable
             firstColumn="State"
@@ -212,7 +205,6 @@ export function StandardDocPage({
       </section>
       <section className="doc-section">
         <h2 id="motion">Motion</h2>
-        {sectionPreviews?.motion}
         <ul className="doc-list">
           {(
             reference?.motion ??
@@ -226,7 +218,6 @@ export function StandardDocPage({
       </section>
       <section className="doc-section">
         <h2 id="accessibility">Accessibility</h2>
-        {sectionPreviews?.accessibility}
         <ul className="doc-list">
           {(
             accessibility ?? [
@@ -239,7 +230,6 @@ export function StandardDocPage({
       </section>
       <section className="doc-section">
         <h2 id="api">API</h2>
-        {sectionPreviews?.api}
         {sectionContent?.api ?? (
           <ReferenceTable
             firstColumn="Prop"
@@ -771,10 +761,6 @@ function Preview({ kind }: { kind: string }) {
           ) : null}
           {kind === "toast" ? (
             <ToastProvider>
-              <Toast
-                title="Static toast presentation"
-                description="Standalone feedback without managed positioning."
-              />
               <ToastDemoButton />
               <ToastViewport swipeDirection={["left", "right", "up", "down"]} />
             </ToastProvider>

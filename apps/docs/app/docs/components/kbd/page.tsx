@@ -24,7 +24,9 @@ const previewCode = `import { Kbd } from '@nerio-ui/ui';
 
 const variantRows = [["Default", "Neutral shortcut notation that adapts through tokens."]] as const;
 
-const anatomyRows = [["kbd", "Native kbd element with quiet shortcut styling."]] as const;
+const anatomyRows = [
+  ["kbd", "Native kbd element with secondary text and an adaptive alpha-neutral surface."],
+] as const;
 
 const stateRows = [
   ["Default", "Static supplementary notation with no interactive state."],
@@ -44,12 +46,16 @@ const implementationRows = [
 ] as const;
 
 const tokenRows = [
-  ["Surface", "--n-kbd-background / --n-kbd-border-color", "Quiet key surface and boundary."],
+  [
+    "Surface",
+    "--n-kbd-background / --n-kbd-border-color",
+    "Adaptive alpha-neutral key surface and quiet boundary.",
+  ],
   ["Shape", "--n-kbd-border-width / --n-kbd-radius", "Border weight and corner radius."],
   [
     "Typography",
     "--n-kbd-foreground / --n-kbd-font-family / --n-kbd-font-size / --n-kbd-font-weight",
-    "Shortcut legibility and tone.",
+    "Secondary shortcut text, legibility, and tone.",
   ],
   ["Spacing", "--n-kbd-padding-block / --n-kbd-padding-inline", "Inner key spacing."],
 ] as const;
@@ -75,10 +81,6 @@ function KbdPreview() {
   );
 }
 
-function KbdSectionPreview({ children }: { children: React.ReactNode }) {
-  return <div className="kbd-section-preview">{children}</div>;
-}
-
 export default function Page() {
   return (
     <StandardDocPage
@@ -86,18 +88,6 @@ export default function Page() {
       lede="Kbd displays quiet, native keyboard shortcut notation beside actions and commands."
       kind="kbd"
       preview={<KbdPreview />}
-      sectionPreviews={{
-        anatomy: (
-          <KbdSectionPreview>
-            <Kbd>⌘K</Kbd>
-          </KbdSectionPreview>
-        ),
-        states: (
-          <KbdSectionPreview>
-            <Kbd>Esc</Kbd>
-          </KbdSectionPreview>
-        ),
-      }}
       sectionContent={{
         variants: (
           <DocumentationTable headers={["Variant", "Use"]} rows={variantRows} codeColumns={1} />

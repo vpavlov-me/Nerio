@@ -101,7 +101,7 @@ test("token validator requires the approved visual foundation aliases", () => {
   );
 });
 
-test("token validator protects approved overlay and Checkbox component contracts", () => {
+test("token validator protects approved overlay, Checkbox, Kbd, and Toast component contracts", () => {
   withTokenFixture(
     (source) =>
       source
@@ -113,7 +113,24 @@ test("token validator protects approved overlay and Checkbox component contracts
         .replace(
           "--n-overlay-foreground: var(--n-gray-0);",
           "--n-overlay-foreground: var(--n-color-text-primary);",
-        ),
+        )
+        .replace(
+          "--n-kbd-background: var(--n-color-surface-control);",
+          "--n-kbd-background: var(--n-color-surface-muted);",
+        )
+        .replace(
+          "--n-kbd-foreground: var(--n-color-text-secondary);",
+          "--n-kbd-foreground: var(--n-color-text-primary);",
+        )
+        .replace(
+          "--n-kbd-padding-block: var(--n-space-1);",
+          "--n-kbd-padding-block: var(--n-space-0-5);",
+        )
+        .replace(
+          "--n-kbd-padding-inline: var(--n-space-1-5);",
+          "--n-kbd-padding-inline: var(--n-space-1);",
+        )
+        .replace("--n-toast-width: 25rem;", "--n-toast-width: 34rem;"),
     (stderr) => {
       assert.match(
         stderr,
@@ -127,6 +144,23 @@ test("token validator protects approved overlay and Checkbox component contracts
         stderr,
         /Approved component contract --n-overlay-foreground must resolve to var\(--n-gray-0\)/,
       );
+      assert.match(
+        stderr,
+        /Approved component contract --n-kbd-background must resolve to var\(--n-color-surface-control\)/,
+      );
+      assert.match(
+        stderr,
+        /Approved component contract --n-kbd-foreground must resolve to var\(--n-color-text-secondary\)/,
+      );
+      assert.match(
+        stderr,
+        /Approved component contract --n-kbd-padding-block must resolve to var\(--n-space-1\)/,
+      );
+      assert.match(
+        stderr,
+        /Approved component contract --n-kbd-padding-inline must resolve to var\(--n-space-1-5\)/,
+      );
+      assert.match(stderr, /Approved component contract --n-toast-width must resolve to 25rem/);
     },
   );
 });
