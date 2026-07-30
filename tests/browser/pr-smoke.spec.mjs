@@ -338,19 +338,25 @@ test("centers the desktop primary navigation over the home hero", async ({ page 
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
 
-  const alignment = await page.evaluate(() => {
-    const navigation = document.querySelector(".docs-primary-nav")?.getBoundingClientRect();
-    const hero = document.querySelector(".home-hero")?.getBoundingClientRect();
-    if (!navigation || !hero) return null;
+  for (const direction of ["ltr", "rtl"]) {
+    await page.locator("html").evaluate((element, value) => {
+      element.dir = value;
+    }, direction);
 
-    return {
-      heroCenter: hero.left + hero.width / 2,
-      navigationCenter: navigation.left + navigation.width / 2,
-    };
-  });
+    const alignment = await page.evaluate(() => {
+      const navigation = document.querySelector(".docs-primary-nav")?.getBoundingClientRect();
+      const hero = document.querySelector(".home-hero")?.getBoundingClientRect();
+      if (!navigation || !hero) return null;
 
-  expect(alignment).not.toBeNull();
-  expect(Math.abs(alignment.navigationCenter - alignment.heroCenter)).toBeLessThanOrEqual(1);
+      return {
+        heroCenter: hero.left + hero.width / 2,
+        navigationCenter: navigation.left + navigation.width / 2,
+      };
+    });
+
+    expect(alignment).not.toBeNull();
+    expect(Math.abs(alignment.navigationCenter - alignment.heroCenter)).toBeLessThanOrEqual(1);
+  }
   await expectHealthyPage(page, problems);
 });
 
