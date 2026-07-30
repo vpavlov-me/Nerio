@@ -1,10 +1,10 @@
 # Release Process
 
-Nerio Core `0.1.0-alpha.2` is the coordinated release candidate. Until the manual publication
-sequence and post-publication verification complete, the npm `alpha` tag remains on
-`0.1.0-alpha.1`, `latest` remains on `0.1.0-alpha.0`, and no alpha.2 signed tag or GitHub
-prerelease is claimed. The roadmap determines the next coordinated prerelease; no beta or stable
-compatibility is claimed yet.
+Nerio Core `0.1.0-alpha.2` was published on 2026-07-30 under the npm `alpha` tag and is the current
+public prerelease. Its six coordinated packages, post-publication consumer smoke, signed tag, and
+GitHub prerelease are verified. The `latest` tag intentionally remains on `0.1.0-alpha.0` while the
+complete 1.0 surface is stabilized. The roadmap determines the next coordinated prerelease; no beta
+or stable compatibility is claimed yet.
 
 Every release action remains manual and requires explicit maintainer approval after the gate and
 tarball inspection pass. This document does not authorize publishing, changing dist-tags,
