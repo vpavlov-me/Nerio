@@ -48,7 +48,7 @@ export default function Page() {
       <section className="doc-section" id="install">
         <h2>Install</h2>
         <p>
-          Nerio Core <code>0.1.0-alpha.1</code> is published under the npm <code>alpha</code> tag.
+          Nerio Core <code>0.1.0-alpha.2</code> is published under the npm <code>alpha</code> tag.
           Install only the packages and peers used by your application; the stable 1.0 release is
           not published yet.
         </p>

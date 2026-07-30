@@ -4,7 +4,7 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: `0.1.0-alpha.1` is published under the npm `alpha` tag and as a GitHub prerelease. The
+> Status: `0.1.0-alpha.2` is published under the npm `alpha` tag and as a GitHub prerelease. The
 > `latest` tag intentionally remains on `0.1.0-alpha.0` while the Tailwind CSS v4-first line is
 > validated before 1.0.
 
@@ -150,7 +150,7 @@ Install the version-aligned Registry and CLI in the consuming project. The `neri
 editable source files through the project-local bin:
 
 ```bash
-pnpm add -D @nerio-ui/registry@0.1.0-alpha.1 @nerio-ui/cli@0.1.0-alpha.1
+pnpm add -D @nerio-ui/registry@0.1.0-alpha.2 @nerio-ui/cli@0.1.0-alpha.2
 pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
@@ -162,8 +162,8 @@ pnpm exec nerio doctor
 ```
 
 For one-off initialization or installation, use the real package name:
-`pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 init` or
-`pnpm dlx @nerio-ui/cli@0.1.0-alpha.1 add button`. Prefer the local installation for repeatable
+`pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 init` or
+`pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 add button`. Prefer the local installation for repeatable
 updates and explicit CLI/Registry version alignment.
 
 The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
@@ -177,10 +177,10 @@ Tailwind bridge, package `@source`, token imports, no-Preflight compatibility, a
 
 ## MCP server
 
-Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@0.1.0-alpha.1`, then configure the
+Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@0.1.0-alpha.2`, then configure the
 client to run the published bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`. A
 package-qualified one-off configuration may use command `pnpm` and arguments
-`["dlx", "@nerio-ui/mcp@0.1.0-alpha.1"]`. The server version comes from coordinated package
+`["dlx", "@nerio-ui/mcp@0.1.0-alpha.2"]`. The server version comes from coordinated package
 metadata, and its Registry tools report the exact Registry version, source revision, schema, and
 style contract.
 
@@ -190,8 +190,8 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
 `@nerio-ui/mcp`.
 
-The npm `alpha` tag points to the published Tailwind-first `0.1.0-alpha.1`; `latest` remains on
-`0.1.0-alpha.0`. The alpha.1 package, signed tag, and GitHub prerelease passed the packed-package
+The npm `alpha` tag points to the published `0.1.0-alpha.2`; `latest` remains on
+`0.1.0-alpha.0`. The alpha.2 packages, signed tag, and GitHub prerelease passed the packed-package
 audit, clean consumer build, and browser matrix. Its architecture and migration guidance are
 recorded in the [final migration report](./docs/tailwind-migration-report.md). Alpha APIs may still
 change before 1.0. See [RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).

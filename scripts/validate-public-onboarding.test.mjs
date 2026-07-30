@@ -67,7 +67,7 @@ test("public onboarding validator rejects the obsolete package scope", () => {
 test("public onboarding validator rejects unpinned prerelease installs", () => {
   const stderr = invalidFixture("--readme", "README.md", (source) =>
     source.replace(
-      "@nerio-ui/registry@0.1.0-alpha.1 @nerio-ui/cli@0.1.0-alpha.1",
+      "@nerio-ui/registry@0.1.0-alpha.2 @nerio-ui/cli@0.1.0-alpha.2",
       "@nerio-ui/registry @nerio-ui/cli",
     ),
   );

@@ -74,8 +74,9 @@ const packageContracts = {
     bin: ["nerio-mcp"],
   },
 };
-const expectedVersion = "0.1.0-alpha.1";
+const expectedVersion = "0.1.0-alpha.2";
 const expectPublicPackages = process.env.NERIO_RELEASE_EXPECT_PUBLIC === "1";
+const expectPublishedPackages = process.env.NERIO_RELEASE_EXPECT_PUBLISHED === "1";
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 const publicCommands = readJson(join(root, "packages/registry/src/public-commands.json"));
 
@@ -359,35 +360,23 @@ try {
   runLocalCli("diff", "button");
   runLocalCli("update", "button", "--dry-run");
 
-  const oneOffDirectory = join(tempRoot, "one-off-consumer");
-  mkdirSync(oneOffDirectory, { recursive: true });
-  const runOneOffCli = (args, options = {}) =>
-    run(
-      pnpm,
-      [
-        "dlx",
-        "--package",
-        tarballs["@nerio-ui/cli"],
-        "--package",
-        tarballs["@nerio-ui/registry"],
-        "nerio",
-        ...args,
-      ],
-      { cwd: oneOffDirectory, ...options },
-    );
-  runOneOffCli(["init"]);
-  runOneOffCli(["add", "button"], {
-    env: {
-      NERIO_REGISTRY: join(consumerDirectory, "node_modules/@nerio-ui/registry/src/manifest.json"),
-    },
-  });
-  const oneOffButton = join(oneOffDirectory, "components/nerio/components/button.tsx");
-  if (!existsSync(oneOffButton)) {
-    throw new Error("One-off packed CLI did not install Button through the public bin.");
-  }
-  const oneOffConfig = readJson(join(oneOffDirectory, "nerio.json"));
-  if (oneOffConfig.registry !== "@nerio-ui/registry/manifest.json") {
-    throw new Error("One-off packed CLI did not create the canonical Registry configuration.");
+  if (expectPublishedPackages) {
+    const oneOffDirectory = join(tempRoot, "one-off-consumer");
+    mkdirSync(oneOffDirectory, { recursive: true });
+    const runOneOffCli = (args) =>
+      run(pnpm, ["dlx", `@nerio-ui/cli@${expectedVersion}`, ...args], {
+        cwd: oneOffDirectory,
+      });
+    runOneOffCli(["init"]);
+    runOneOffCli(["add", "button"]);
+    const oneOffButton = join(oneOffDirectory, "components/nerio/components/button.tsx");
+    if (!existsSync(oneOffButton)) {
+      throw new Error("One-off public CLI did not install Button through the published bin.");
+    }
+    const oneOffConfig = readJson(join(oneOffDirectory, "nerio.json"));
+    if (oneOffConfig.registry !== "@nerio-ui/registry/manifest.json") {
+      throw new Error("One-off public CLI did not create the canonical Registry configuration.");
+    }
   }
 
   run(pnpm, ["build"], {
@@ -450,7 +439,7 @@ try {
   assertSingleTokenPayload(readBuiltCss(consumerDirectory), "Source-install");
 
   console.log(
-    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, documented ${publicCommands.cli.localCommands.length}-command local CLI workflow, one-off CLI execution, packaged MCP-bin discovery, representative source installs, and a clean Next.js consumer build.`,
+    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, documented ${publicCommands.cli.localCommands.length}-command local CLI workflow, ${expectPublishedPackages ? "published one-off CLI execution, " : ""}packaged MCP-bin discovery, representative source installs, and a clean Next.js consumer build.`,
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });

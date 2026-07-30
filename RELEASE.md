@@ -1,7 +1,7 @@
 # Release Process
 
-Nerio Core `0.1.0-alpha.1` was published on 2026-07-18 under the npm `alpha` tag and is the current
-Tailwind CSS v4-first prerelease. The `latest` tag intentionally remains on `0.1.0-alpha.0` while the
+Nerio Core `0.1.0-alpha.2` was published on 2026-07-30 under the npm `alpha` tag and is the current
+public prerelease. The `latest` tag intentionally remains on `0.1.0-alpha.0` while the
 complete 1.0 surface is stabilized. The roadmap determines the next coordinated prerelease; no beta
 or stable compatibility is claimed yet.
 
@@ -199,6 +199,16 @@ browser verification, changelog review, and tarball inspection.
 ## Post-release verification
 
 - Confirm `npm view <package>@<approved-version> version dist-tags files` for every package.
+- Run the published-package smoke after all six packages exist:
+
+  ```bash
+  NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release-consumer
+  ```
+
+  This makes the documented package-qualified `pnpm dlx` path resolve the published coordinated
+  dependency graph. The candidate gate intentionally omits this network-only assertion because an
+  unpublished exact prerelease dependency cannot resolve from npm.
+
 - Install the six published packages into a new supported Next.js project and rerun the package and
   source-install smoke paths.
 - Run `pnpm exec nerio init`, `list`, `info`, `add`, `diff`, `update --dry-run`, and `doctor` from a
@@ -213,7 +223,7 @@ browser verification, changelog review, and tarball inspection.
 ## Rollback guidance
 
 If a package is wrong before later packages are published, stop the sequence and leave the release
-incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.2` and moving the
+incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.3` and moving the
 `alpha` dist-tag only after verification. If the registry permits and policy requires it, deprecate
 the faulty version with a concise install warning. Restore the previous dist-tag when one exists,
 document affected packages and consumers, and avoid npm unpublish except for a security incident or
