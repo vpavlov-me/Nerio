@@ -48,9 +48,8 @@ export default function Page() {
       <section className="doc-section" id="install">
         <h2>Install</h2>
         <p>
-          Nerio Core <code>0.1.0-alpha.2</code> is the coordinated release candidate. Until its
-          manual publication completes, npm <code>alpha</code> remains on <code>0.1.0-alpha.1</code>
-          . Install only the packages and peers used by your application; the stable 1.0 release is
+          Nerio Core <code>0.1.0-alpha.2</code> is published under the npm <code>alpha</code> tag.
+          Install only the packages and peers used by your application; the stable 1.0 release is
           not published yet.
         </p>
         <CodeExample code={packageInstall} label="Package installation" />
