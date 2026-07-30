@@ -563,6 +563,7 @@
   --n-spinner-size-sm: var(--n-icon-size-sm);
   --n-spinner-size-md: var(--n-icon-size-md);
   --n-spinner-size-lg: var(--n-icon-size-xl);
+  --n-spinner-radius: var(--n-radius-full);
   --n-spinner-border-width: 2px;
   --n-spinner-duration: 800ms;
   --n-skeleton-duration: 1.5s;

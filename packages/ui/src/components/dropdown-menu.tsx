@@ -46,6 +46,7 @@ function groupMenuItems(items: DropdownMenuItem[]) {
 export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
   function DropdownMenu({ trigger, items, className, open, defaultOpen, onOpenChange }, ref) {
     const groups = groupMenuItems(items);
+    const descriptionIdPrefix = React.useId();
 
     return (
       <BaseMenu.Root open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
@@ -82,65 +83,74 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
                         {group.label}
                       </BaseMenu.GroupLabel>
                     ) : null}
-                    {group.items.map(({ item, index }) => (
-                      <BaseMenu.Item
-                        key={`${item.label}-${index}`}
-                        className={cn(
-                          "n-dropdown__item grid cursor-pointer grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)] items-center gap-(--n-dropdown-item-gap) rounded-(--n-radius-md) border-0 bg-(--n-button-background-ghost) px-(--n-dropdown-item-padding-inline) py-(--n-space-2) text-start text-(length:--n-font-size-sm) text-(--n-color-text-secondary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) data-highlighted:bg-(--n-color-surface-muted) data-highlighted:text-(--n-color-text-primary) data-[variant=destructive]:text-(--n-color-danger) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-opacity-disabled) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)",
-                          motionClasses.hover,
-                        )}
-                        data-slot="item"
-                        data-variant={item.destructive ? "destructive" : undefined}
-                        disabled={item.disabled}
-                        onClick={item.onSelect}
-                      >
-                        {item.leadingIcon ? (
-                          <span
-                            aria-hidden
-                            className="col-start-1 inline-flex"
-                            data-slot="leading-icon"
-                          >
-                            <Icon icon={item.leadingIcon} />
-                          </span>
-                        ) : null}
-                        <span
+                    {group.items.map(({ item, index }) => {
+                      const labelId = `${descriptionIdPrefix}-label-${index}`;
+                      const descriptionId = item.description
+                        ? `${descriptionIdPrefix}-description-${index}`
+                        : undefined;
+
+                      return (
+                        <BaseMenu.Item
+                          key={`${item.label}-${index}`}
+                          aria-describedby={descriptionId}
+                          aria-labelledby={labelId}
                           className={cn(
-                            "col-start-2 min-w-0",
-                            item.description && "grid gap-(--n-space-0-5)",
+                            "n-dropdown__item grid cursor-pointer grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)] items-center gap-(--n-dropdown-item-gap) rounded-(--n-radius-md) border-0 bg-(--n-button-background-ghost) px-(--n-dropdown-item-padding-inline) py-(--n-space-2) text-start text-(length:--n-font-size-sm) text-(--n-color-text-secondary) hover:bg-(--n-color-surface-muted) hover:text-(--n-color-text-primary) data-highlighted:bg-(--n-color-surface-muted) data-highlighted:text-(--n-color-text-primary) data-[variant=destructive]:text-(--n-color-danger) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-opacity-disabled) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring)",
+                            motionClasses.hover,
                           )}
-                          data-slot="label"
+                          data-slot="item"
+                          data-variant={item.destructive ? "destructive" : undefined}
+                          disabled={item.disabled}
+                          onClick={item.onSelect}
                         >
-                          <span>{item.label}</span>
-                          {item.description ? (
+                          {item.leadingIcon ? (
                             <span
                               aria-hidden
-                              className="text-(length:--n-font-size-xs) font-(--n-font-weight-regular) text-(--n-color-text-tertiary)"
-                              data-slot="description"
+                              className="col-start-1 inline-flex"
+                              data-slot="leading-icon"
                             >
-                              {item.description}
+                              <Icon icon={item.leadingIcon} />
                             </span>
                           ) : null}
-                        </span>
-                        {item.hotkey ? (
                           <span
-                            aria-hidden
-                            className="col-start-3 justify-self-end text-(length:--n-font-size-xs) text-(--n-color-text-tertiary)"
-                            data-slot="hotkey"
+                            className={cn(
+                              "col-start-2 min-w-0",
+                              item.description && "grid gap-(--n-space-0-5)",
+                            )}
+                            data-slot="label"
                           >
-                            {item.hotkey}
+                            <span id={labelId}>{item.label}</span>
+                            {item.description ? (
+                              <span
+                                id={descriptionId}
+                                className="text-(length:--n-font-size-xs) font-(--n-font-weight-regular) text-(--n-color-text-tertiary)"
+                                data-slot="description"
+                              >
+                                {item.description}
+                              </span>
+                            ) : null}
                           </span>
-                        ) : null}
-                        {item.trailingIcon ? (
-                          <span
-                            aria-hidden
-                            className="col-start-4 inline-flex"
-                            data-slot="trailing-icon"
-                          >
-                            <Icon icon={item.trailingIcon} />
-                          </span>
-                        ) : null}
-                      </BaseMenu.Item>
-                    ))}
+                          {item.hotkey ? (
+                            <span
+                              aria-hidden
+                              className="col-start-3 justify-self-end text-(length:--n-font-size-xs) text-(--n-color-text-tertiary)"
+                              data-slot="hotkey"
+                            >
+                              {item.hotkey}
+                            </span>
+                          ) : null}
+                          {item.trailingIcon ? (
+                            <span
+                              aria-hidden
+                              className="col-start-4 inline-flex"
+                              data-slot="trailing-icon"
+                            >
+                              <Icon icon={item.trailingIcon} />
+                            </span>
+                          ) : null}
+                        </BaseMenu.Item>
+                      );
+                    })}
                   </BaseMenu.Group>
                 </React.Fragment>
               ))}

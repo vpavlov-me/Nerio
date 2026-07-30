@@ -106,7 +106,7 @@ export const snippets: Record<string, string> = {
   popover:
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Archive", leadingIcon: X, destructive: true },\n  ]}\n/>',
+    'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", description: "Invite people and choose access", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Archive", leadingIcon: X, destructive: true },\n  ]}\n/>',
   card: 'import { Button, Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\n\n<Card as="article">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle as="h2">Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
   separator:
     "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
@@ -1254,9 +1254,9 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-spinner-size-sm",
       "--n-spinner-size-md",
       "--n-spinner-size-lg",
+      "--n-spinner-radius",
       "--n-spinner-border-width",
       "--n-spinner-duration",
-      "--n-radius-full",
     ],
   },
   skeleton: {
@@ -3806,7 +3806,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "item",
         description:
-          "Command row with optional group, leading icon, trailing icon, hotkey, and intent.",
+          "Command row with optional description, group, leading icon, trailing icon, hotkey, and intent.",
       },
       { title: "group", description: "Labeled command cluster separated from adjacent groups." },
     ],
@@ -3822,12 +3822,19 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Highlighted", description: "Current item is ready for selection." },
       { title: "Disabled", description: "Unavailable items stay in context without activation." },
     ],
-    accessibility: ["Keep labels action-oriented and support keyboard navigation through Base UI."],
+    accessibility: [
+      "Keep labels action-oriented and support keyboard navigation through Base UI.",
+      "Optional descriptions remain separate from the accessible name and are exposed through aria-describedby.",
+    ],
     api: [
       {
         title: "items",
         description:
-          "Ordered list of label, group, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+          "Ordered list of label, description, group, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+      },
+      {
+        title: "description",
+        description: "Adds visible supporting context and an accessible description to an item.",
       },
       {
         title: "group",

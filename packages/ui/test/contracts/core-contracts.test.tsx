@@ -711,8 +711,8 @@ describe("Core static contracts", () => {
     expect(tokens).toContain(
       "--n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);",
     );
-    expect(tokens).not.toContain("--n-spinner-radius:");
-    expect(componentSource("spinner")).toContain("rounded-(--n-radius-full)");
+    expect(tokens).toContain("--n-spinner-radius: var(--n-radius-full);");
+    expect(componentSource("spinner")).toContain("rounded-(--n-spinner-radius)");
     expect(componentSource("badge")).toContain(
       "data-[emphasis=strong]:data-[tone=success]:[--n-badge-foreground:var(--n-badge-foreground-strong)]",
     );
@@ -3599,6 +3599,9 @@ describe("Core interactive action contracts", () => {
       document.querySelector('[data-slot="leading-icon"]'),
     );
     expect(document.querySelector('[data-slot="description"]')).toHaveTextContent(
+      "Change the workspace name",
+    );
+    expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveAccessibleDescription(
       "Change the workspace name",
     );
     expect(document.querySelector('[data-slot="hotkey"]')).toHaveTextContent("⌘R");

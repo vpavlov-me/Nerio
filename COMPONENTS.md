@@ -104,13 +104,13 @@ consumer or Pro responsibility.
 
 ### Overlays
 
-| Component     | Status      | Package               | Notes                                                                                                                     |
-| ------------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Dialog        | stable-core | `@nerio-ui/ui/client` | Modal primitive with title, description, localizable close, controlled state, ref, and Base UI focus behavior             |
-| Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral close composition, safe-area layout, four sides, sizes, and shared overlay motion |
-| Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                         |
-| Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                       |
-| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states plus optional leading icons, trailing icons, and hotkeys                        |
+| Component     | Status      | Package               | Notes                                                                                                                       |
+| ------------- | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Dialog        | stable-core | `@nerio-ui/ui/client` | Modal primitive with title, description, localizable close, controlled state, ref, and Base UI focus behavior               |
+| Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral close composition, safe-area layout, four sides, sizes, and shared overlay motion   |
+| Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                           |
+| Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                         |
+| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states plus optional accessible descriptions, leading icons, trailing icons, and hotkeys |
 
 ### Data display
 
@@ -130,12 +130,12 @@ consumer or Pro responsibility.
 
 | Component   | Status      | Package               | Notes                                                                                                                                                                                                                                               |
 | ----------- | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Alert       | stable-core | `@nerio-ui/ui`        | Inline feedback with persistent semantic context                                                                                                                                                                                                    |
+| Alert       | stable-core | `@nerio-ui/ui`        | Inline feedback with persistent semantic context, actions below the description, and an optional trailing close slot                                                                                                                                |
 | Toast       | stable-core | `@nerio-ui/ui/client` | Bottom-centered stack with smaller cards stepping upward, standard Button actions and icon dismissal, reset copy margins, floating elevation, unified enter/expand/swipe/dismiss transforms, inherited RTL, lifecycle, priority, and clean installs |
 | Progress    | stable-core | `@nerio-ui/ui`        | Task-completion progress with required accessible naming, normalized ranges, and tokenized motion                                                                                                                                                   |
 | Skeleton    | stable-core | `@nerio-ui/ui`        | Loading placeholder                                                                                                                                                                                                                                 |
 | Empty State | stable-core | `@nerio-ui/ui`        | Composable media, header, actions, size, alignment, role guidance, and responsive stacking                                                                                                                                                          |
-| Spinner     | stable-core | `@nerio-ui/ui`        | Loading indicator                                                                                                                                                                                                                                   |
+| Spinner     | stable-core | `@nerio-ui/ui`        | Loading indicator with a component radius alias that remains fully round across themes                                                                                                                                                              |
 
 ### Navigation and layout
 
