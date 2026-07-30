@@ -15,7 +15,7 @@
     "@nerio-ui/tokens": "workspace:*",
     "@nerio-ui/ui": "workspace:*",
     "motion": "12.42.2",
-    "next": "^16.2.10",
+    "next": "^16.2.12",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-icons": "5.7.0",
