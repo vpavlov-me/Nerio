@@ -304,8 +304,8 @@ pre {
   align-items: center;
   display: flex;
   gap: var(--n-space-1);
-  inset-inline-start: 50%;
   justify-content: start;
+  left: 50%;
   min-inline-size: max-content;
   position: absolute;
   transform: translateX(-50%);
@@ -3496,7 +3496,7 @@ pre {
   }
 
   .docs-primary-nav {
-    inset-inline-start: auto;
+    left: auto;
     position: static;
     transform: none;
   }
