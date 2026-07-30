@@ -87,6 +87,31 @@ test("keeps FileInput preview singular and pagination button-based", async ({ pa
   await expectHealthyPage(page, problems);
 });
 
+test("keeps Input label and description separated by the Field gap", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/input");
+
+  const field = page.getByRole("region", { name: "Input preview" }).locator(".n-field");
+  const spacing = await field.evaluate((element) => {
+    const label = element.querySelector('[data-slot="label"]')?.getBoundingClientRect();
+    const input = element.querySelector("input")?.getBoundingClientRect();
+    const description = element.querySelector('[data-slot="description"]')?.getBoundingClientRect();
+    if (!label || !input || !description) return null;
+
+    return {
+      fieldGap: Number.parseFloat(getComputedStyle(element).rowGap),
+      labelToInput: input.top - label.bottom,
+      inputToDescription: description.top - input.bottom,
+    };
+  });
+
+  expect(spacing).not.toBeNull();
+  expect(spacing.fieldGap).toBeGreaterThan(0);
+  expect(spacing.labelToInput).toBeCloseTo(spacing.fieldGap, 1);
+  expect(spacing.inputToDescription).toBeCloseTo(spacing.fieldGap, 1);
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Field preview singular and feedback directional", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/field");
