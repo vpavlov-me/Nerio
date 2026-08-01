@@ -175,13 +175,37 @@ function resolveSource(registry, source) {
   return path.resolve(path.dirname(path.resolve(cwd, resolved)), source);
 }
 
+function canonicalPath(target) {
+  let existing = target;
+  while (!fs.existsSync(existing)) {
+    const parent = path.dirname(existing);
+    if (parent === existing) break;
+    existing = parent;
+  }
+  return path.resolve(fs.realpathSync(existing), path.relative(existing, target));
+}
+
 function resolveTarget(componentsRoot, target) {
   const root = path.resolve(cwd, componentsRoot);
   const resolved = path.resolve(root, target);
-  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
+  if (!isWithin(root, resolved) || !isWithin(canonicalPath(root), canonicalPath(resolved))) {
     throw new Error(`Registry target escapes the components directory: ${target}`);
   }
   return resolved;
+}
+
+function writeFileAtomic(target, content) {
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const temporary = path.join(
+    path.dirname(target),
+    `.${path.basename(target)}.${process.pid}.${crypto.randomUUID()}.tmp`,
+  );
+  try {
+    fs.writeFileSync(temporary, content, { flag: "wx" });
+    fs.renameSync(temporary, target);
+  } finally {
+    fs.rmSync(temporary, { force: true });
+  }
 }
 
 function collectItems(manifest, name, collected = new Map()) {
@@ -270,9 +294,7 @@ function registryMetadata(manifest) {
 
 function writeState(state) {
   const target = statePath();
-  const temporary = `${target}.tmp`;
-  fs.writeFileSync(temporary, `${JSON.stringify(state, null, 2)}\n`);
-  fs.renameSync(temporary, target);
+  writeFileAtomic(target, `${JSON.stringify(state, null, 2)}\n`);
 }
 
 function relativeTarget(componentsRoot, target) {
@@ -287,7 +309,7 @@ function isTokenStylesTarget(target) {
 function resolveInstalledTarget(componentsRoot, storedTarget) {
   const root = path.resolve(cwd, componentsRoot);
   const resolved = path.resolve(cwd, storedTarget);
-  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
+  if (!isWithin(root, resolved) || !isWithin(canonicalPath(root), canonicalPath(resolved))) {
     throw new Error(
       `${STATE_FILENAME} path escapes the configured components directory: ${storedTarget}`,
     );
@@ -432,8 +454,7 @@ async function add(name) {
     }
   }
   for (const write of writes) {
-    fs.mkdirSync(path.dirname(write.target), { recursive: true });
-    fs.writeFileSync(write.target, write.content);
+    writeFileAtomic(write.target, write.content);
   }
 
   const item = items.get(name);
@@ -621,8 +642,7 @@ async function update(name) {
       (["added", "upstream changed"].includes(entry.status) ||
         (conflictStatus(entry.status) && hasFlag("--force")));
     if (shouldWrite) {
-      fs.mkdirSync(path.dirname(absolute), { recursive: true });
-      fs.writeFileSync(absolute, entry.upstream.content);
+      writeFileAtomic(absolute, entry.upstream.content);
     }
 
     const preserveBaseline = ["locally modified", "locally removed"].includes(entry.status);

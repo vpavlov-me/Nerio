@@ -965,6 +965,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/components/avatar-image.tsx",
+          "target": "components/avatar-image.tsx",
+          "role": "component"
+        },
+        {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
           "role": "utility"

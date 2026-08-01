@@ -378,13 +378,20 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   request,
 }) => {
   const problems = monitorPage(page);
-  const [sitemap, robots, llms, legacy] = await Promise.all([
+  const [homepage, sitemap, robots, llms, legacy] = await Promise.all([
+    request.get("/"),
     request.get("/sitemap.xml"),
     request.get("/robots.txt"),
     request.get("/llms.txt"),
     request.get("/docs/compositions/login", { maxRedirects: 0 }),
   ]);
 
+  expect(homepage.headers()["x-powered-by"]).toBeUndefined();
+  expect(homepage.headers()["x-content-type-options"]).toBe("nosniff");
+  expect(homepage.headers()["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+  expect(homepage.headers()["permissions-policy"]).toContain("camera=()");
+  expect(homepage.headers()["strict-transport-security"]).toContain("max-age=31536000");
+  expect(homepage.headers()["content-security-policy"]).toContain("object-src 'none'");
   expect(await sitemap.text()).not.toContain("/playground");
   expect(await sitemap.text()).toContain("/blocks/sign-in");
   expect(await sitemap.text()).not.toContain("/views/blocks/");

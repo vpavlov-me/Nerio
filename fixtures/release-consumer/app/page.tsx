@@ -5,6 +5,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Avatar,
   Table,
   TableBody,
   TableCell,
@@ -22,6 +23,7 @@ export default function Page() {
       <p>
         {themes.length} themes and {registry.length} registry items loaded from package entrypoints.
       </p>
+      <Avatar name="Nerio Team" src="/avatar-smoke.png" />
       <Card>
         <CardHeader>
           <CardTitle>Server-safe package entrypoint</CardTitle>
