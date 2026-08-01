@@ -12,6 +12,9 @@ Items under `Unreleased` may change before the next public release.
   TypeScript signatures, tokens, Registry, CLI/MCP contracts, support ranges, and public docs
   routes.
 - Added the public compatibility policy and alpha-to-frozen migration guide.
+- Added the preparation plan for a structured 14-day external feedback program covering package
+  mode, source installation, Calendar/DatePicker, Registry update, accessibility, and API-freeze
+  evaluation.
 
 ### Changed
 

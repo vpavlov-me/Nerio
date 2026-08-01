@@ -5,8 +5,8 @@
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
 > Status: `0.1.0-alpha.2` is published under the npm `alpha` tag and as a signed GitHub prerelease.
-> The `latest` tag intentionally remains on `0.1.0-alpha.0` while the Tailwind CSS v4-first line is
-> validated before 1.0.
+> The `latest` tag intentionally remains on `0.1.0-alpha.0` while the frozen Core 1.0 API is
+> prepared for beta.
 
 ## Product model
 
@@ -201,11 +201,11 @@ The npm `alpha` tag points to the published `0.1.0-alpha.2`; `latest` remains on
 `0.1.0-alpha.0`. The alpha.2 packages, signed tag, and GitHub prerelease passed the packed-package
 audit, post-publication one-off CLI and MCP checks, clean consumer build, and supported browser
 matrix. Its architecture and migration guidance are recorded in the
-[final migration report](./docs/tailwind-migration-report.md). Alpha APIs may still change before
-1.0. The frozen contract is defined by the
+[final migration report](./docs/tailwind-migration-report.md). The frozen contract is defined by the
 [public API stability policy](./docs/public-api-stability.md); alpha consumers should use the
 [Core 1.0 migration guide](./docs/migrations/alpha-to-beta.md). See
-[RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
+[RELEASE.md](./RELEASE.md), [CHANGELOG.md](./CHANGELOG.md), and the
+[beta feedback cycle](./docs/beta-feedback-cycle.md).
 
 ## Contributing
 
