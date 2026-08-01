@@ -18,8 +18,6 @@ export type LucideIconProps = IconSvgProps & {
   absoluteStrokeWidth?: boolean;
 };
 
-/** @deprecated Use IconComponent. Kept as a compatible Lucide-specific alias. */
-export type { LucideIcon } from "lucide-react";
 export {
   ArrowLeft,
   ArrowRight,

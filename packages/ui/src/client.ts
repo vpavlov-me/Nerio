@@ -10,7 +10,6 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from "./components/button";
-export { IconButton, type IconButtonProps } from "./components/icon-button";
 export { Checkbox, type CheckboxProps } from "./components/checkbox";
 export {
   RadioGroup,

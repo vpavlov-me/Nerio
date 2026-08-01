@@ -770,7 +770,7 @@ function AssetCard({
           <span>{asset.collection}</span>
         </div>
         <div className={styles.tags}>
-          <Badge size="sm" variant={statusTone(asset.status)}>
+          <Badge size="sm" tone={statusTone(asset.status)}>
             {asset.status}
           </Badge>
           <Badge size="sm">{asset.kind}</Badge>
@@ -881,7 +881,7 @@ function ImportsSection({
                   <Progress value={item.progress} aria-label={`${item.name}, ${item.progress}%`} />
                 ) : null}
               </div>
-              <Badge variant={statusTone(item.status)}>{item.status}</Badge>
+              <Badge tone={statusTone(item.status)}>{item.status}</Badge>
               {item.status === "Queued" ? (
                 <Button variant="secondary" onClick={() => onUpdate(item.id, "Importing")}>
                   Start

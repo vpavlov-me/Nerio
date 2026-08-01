@@ -9,7 +9,7 @@ release-candidate gate, consumer fixtures, release documentation, and this polic
 | Surface           | Supported baseline | Notes                                                                                  |
 | ----------------- | ------------------ | -------------------------------------------------------------------------------------- |
 | Node.js           | `>=20.9.0`         | Node 22 is the clean CI and release-gate runtime.                                      |
-| React             | `>=19`             | `react` and `react-dom` must use the same supported major.                             |
+| React             | `>=19 <20`         | `react` and `react-dom` use tested React 19; future majors require release evidence.   |
 | Next.js consumers | `>=16.2.0 <17`     | Packages ship TypeScript source; list every used Nerio package in `transpilePackages`. |
 | TypeScript        | `>=5.9 <6`         | Published source and declarations are checked with strict TypeScript 5.9.              |
 | Tailwind CSS      | `>=4.0.0 <5`       | Required for source installs and the package-mode `@source` contract.                  |

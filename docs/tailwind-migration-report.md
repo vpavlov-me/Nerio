@@ -108,7 +108,8 @@ Fresh clean-worktree verification on 2026-07-18 passed:
   `@source` directive.
 - Preflight ownership is intentionally consumer-controlled; no-Preflight consumers need the Nerio
   compatibility styles.
-- IconButton and documented Button aliases remain temporary alpha migration compatibility.
+- This report predates the Core 1.0 freeze; its temporary IconButton and Button alpha aliases were
+  removed by the freeze.
 - Full cross-browser expansion and visual-regression infrastructure remain owned by later roadmap
   tasks.
 

@@ -706,7 +706,7 @@ function Overview({
               <h2>Portfolio movement</h2>
               <p>{period} closing values in USD</p>
             </div>
-            <Badge variant="success">Up 3.8%</Badge>
+            <Badge tone="success">Up 3.8%</Badge>
           </div>
           <div
             className={styles.chart}
@@ -850,7 +850,7 @@ function Holdings({
         <Select
           label="Asset type"
           value={assetType}
-          onChange={onAssetTypeChange}
+          onValueChange={onAssetTypeChange}
           options={[
             { label: "All asset types", value: "all" },
             { label: "Cash", value: "Cash" },
@@ -978,7 +978,7 @@ function Transactions({
         <Select
           label="Transaction status"
           value={status}
-          onChange={onStatusChange}
+          onValueChange={onStatusChange}
           options={[
             { label: "All statuses", value: "all" },
             { label: "Completed", value: "Completed" },
@@ -1037,7 +1037,7 @@ function SettingsPanel({
           <p>Security and display</p>
           <h2>Workspace settings</h2>
         </div>
-        <Badge variant="success">Verified</Badge>
+        <Badge tone="success">Verified</Badge>
       </div>
       <div className={styles["settings-grid"]}>
         <Card className={styles.panel}>
@@ -1077,7 +1077,7 @@ function SettingsPanel({
             <Select
               label="Mode"
               value={mode}
-              onChange={onModeChange}
+              onValueChange={onModeChange}
               options={modes.map((value) => ({
                 label: runtimeLabel(value),
                 value,
@@ -1086,7 +1086,7 @@ function SettingsPanel({
             <Select
               label="Density"
               value={density}
-              onChange={onDensityChange}
+              onValueChange={onDensityChange}
               options={densities.map((value) => ({
                 label: runtimeLabel(value),
                 value,
@@ -1095,7 +1095,7 @@ function SettingsPanel({
             <Select
               label="Direction"
               value={direction}
-              onChange={onDirectionChange}
+              onValueChange={onDirectionChange}
               options={[
                 { label: "Left to right", value: "ltr" },
                 { label: "Right to left", value: "rtl" },
@@ -1172,7 +1172,7 @@ function TransactionList({
             <span className={styles["transaction-amount"]}>
               <strong>{displayMoney(transaction.amount, balancesVisible)}</strong>
               <Badge
-                variant={
+                tone={
                   transaction.status === "Completed"
                     ? "success"
                     : transaction.status === "Failed"

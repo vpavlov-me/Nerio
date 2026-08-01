@@ -14,7 +14,7 @@
 ## Core quality stabilization
 
 - [ ] Token foundation and token validation
-- [ ] Button and IconButton quality pass
+- [x] Button quality pass and IconButton alpha migration removal
 - [ ] Forms quality pass, including Field invalid behavior and Select placeholder/form behavior
 - [ ] Overlay quality pass
 - [ ] Basic table and data-display quality pass

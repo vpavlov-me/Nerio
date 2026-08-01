@@ -883,7 +883,7 @@ function Preview({ kind }: { kind: string }) {
             <dl className="preview-key-values">
               <KeyValue label="Owner" value="Product team" />
               <KeyValue label="Updated" value="Today" />
-              <KeyValue label="Status" value={<Badge variant="success">Ready</Badge>} />
+              <KeyValue label="Status" value={<Badge tone="success">Ready</Badge>} />
             </dl>
           ) : null}
           {kind === "table" ? (

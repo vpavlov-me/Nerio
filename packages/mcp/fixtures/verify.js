@@ -797,7 +797,6 @@ async function verify() {
       "button",
       "motion-adapter",
       "button-group",
-      "icon-button",
       "dialog",
       "sheet",
       "select",

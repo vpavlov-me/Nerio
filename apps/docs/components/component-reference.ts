@@ -644,7 +644,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Renders native button behavior through Base UI unless a custom render element is supplied.",
       "Use concise visible text or provide an accessible name.",
-      "Loading preserves the action name, sets aria-busy, and disables repeat activation; loadingLabel is deprecated.",
+      "Loading preserves the action name, sets aria-busy, and disables repeat activation.",
       "Icons are decorative by default; the button label carries the action meaning.",
       "Do not rely on color alone to communicate destructive or disabled meaning.",
     ],

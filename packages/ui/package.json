@@ -56,8 +56,8 @@
     "vitest-axe": "^0.1.0"
   },
   "peerDependencies": {
-    "react": ">=19",
-    "react-dom": ">=19",
+    "react": ">=19 <20",
+    "react-dom": ">=19 <20",
     "tailwindcss": ">=4.0.0 <5"
   }
 }
