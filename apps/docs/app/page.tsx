@@ -63,7 +63,7 @@ export default function HomePage() {
         </div>
         <p className="home-hero__note">
           <Icon icon={Check} aria-hidden /> {siteConfig.version} is a public beta. Frozen Core APIs
-          follow the 1.0 stability policy.
+          follow the public API stability policy.
         </p>
       </section>
 
