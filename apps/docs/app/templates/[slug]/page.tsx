@@ -54,7 +54,7 @@ export default async function TemplateDetailPage({
             <h1>{template.title}</h1>
             <p className="doc-lede">{template.description}</p>
           </div>
-          <Badge variant="info">{template.status}</Badge>
+          <Badge tone="info">{template.status}</Badge>
         </div>
         <p>{template.audience}</p>
         <div className="template-detail-actions">

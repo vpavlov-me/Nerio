@@ -16,8 +16,6 @@ export type PaginationPage = {
   current?: boolean;
   disabled?: boolean;
   ariaLabel?: string;
-  /** @deprecated Use ariaLabel. Removed in the next major version. */
-  "aria-label"?: string;
 };
 
 export type PaginationEllipsis = {
@@ -109,7 +107,7 @@ export const Pagination = React.forwardRef<HTMLElement, PaginationProps>(functio
             <li data-slot="item" key={page.key}>
               <PaginationControl
                 aria-current={page.current ? "page" : undefined}
-                aria-label={page.ariaLabel ?? page["aria-label"]}
+                aria-label={page.ariaLabel}
                 current={page.current}
                 disabled={page.disabled}
                 href={page.href}

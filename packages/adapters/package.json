@@ -74,7 +74,7 @@
   "peerDependencies": {
     "@tanstack/react-table": "^8.21.3",
     "motion": "^12.42.2",
-    "react": ">=19",
+    "react": ">=19 <20",
     "react-hook-form": "^7.68.0",
     "recharts": "^3.6.0",
     "zod": "^4.2.1"

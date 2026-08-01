@@ -33,7 +33,7 @@ export default function Page() {
       <section className="doc-section">
         <div className="section-heading">
           <h2>MCP server</h2>
-          <Badge variant="success">stdio</Badge>
+          <Badge tone="success">stdio</Badge>
         </div>
         <p>
           The server uses the official MCP TypeScript SDK and reads component metadata directly from

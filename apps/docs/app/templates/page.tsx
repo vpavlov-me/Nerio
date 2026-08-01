@@ -34,7 +34,7 @@ export default function TemplatesPage() {
             <CardHeader>
               <div className="template-card__eyebrow">
                 <span>{template.category}</span>
-                <Badge variant="info">{template.status}</Badge>
+                <Badge tone="info">{template.status}</Badge>
               </div>
               <CardTitle>{template.title}</CardTitle>
             </CardHeader>

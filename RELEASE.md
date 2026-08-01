@@ -25,12 +25,14 @@ pnpm test:ci-scopes
 pnpm test:ui
 pnpm test:a11y
 pnpm test:catalog
+pnpm test:api
 pnpm test:tokens
 pnpm test:onboarding
 pnpm validate:tokens
 pnpm validate:runtime-axes
 pnpm validate:typography
 pnpm validate:catalog
+pnpm validate:api
 pnpm validate:docs
 pnpm validate:onboarding
 pnpm test:docs-examples
@@ -69,8 +71,11 @@ the deterministic Core fixtures against maintainer-approved image baselines; rev
 through [`docs/visual-regression.md`](./docs/visual-regression.md). `pnpm test:docs-examples`
 typechecks published Sidebar examples in an isolated fixture.
 
+`pnpm test:api` protects the Core 1.0 public contract and the reviewed SemVer approval workflow.
+`pnpm validate:api` compares package exports, TypeScript signatures, tokens, Registry data,
+CLI/MCP contracts, package support ranges, and public docs routes with the checked-in snapshot.
 `pnpm validate:release:metadata` checks release documentation and public onboarding without
-repeating catalog, token, or onboarding unit tests. `pnpm test:release-consumer` packs all intended
+repeating catalog, API, token, or onboarding unit tests. `pnpm test:release-consumer` packs all intended
 packages, checks packed manifests, exports, dependencies, side effects, bins, file boundaries, and
 secret/Pro exclusions, installs the tarballs into an isolated Next.js consumer, runs the canonical
 local CLI workflow through `pnpm exec nerio` from the packed CLI tarball, resolves the immutable

@@ -12,8 +12,6 @@ type IconBaseProps = Omit<
   className?: string;
   /** Enables Lucide's fixed-stroke behavior without adding it to generic SVG props. */
   lucideAbsoluteStrokeWidth?: boolean;
-  /** @deprecated Use lucideAbsoluteStrokeWidth. Removed in the next major version. */
-  absoluteStrokeWidth?: boolean;
 };
 
 type DecorativeIconProps = {
@@ -40,7 +38,6 @@ type ProtectedRuntimeIconProps = {
 
 export function Icon(inputProps: IconProps) {
   const {
-    absoluteStrokeWidth,
     decorative = true,
     icon: IconGraphic,
     className,
@@ -59,14 +56,13 @@ export function Icon(inputProps: IconProps) {
     throw new Error("Meaningful Icon requires a non-empty label.");
   }
 
-  const resolvedAbsoluteStrokeWidth = lucideAbsoluteStrokeWidth ?? absoluteStrokeWidth;
   const svgProps: LucideIconProps = {
     ...props,
     strokeWidth,
   };
 
-  if (resolvedAbsoluteStrokeWidth !== undefined) {
-    svgProps.absoluteStrokeWidth = resolvedAbsoluteStrokeWidth;
+  if (lucideAbsoluteStrokeWidth !== undefined) {
+    svgProps.absoluteStrokeWidth = lucideAbsoluteStrokeWidth;
   }
 
   return (

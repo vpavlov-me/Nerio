@@ -63,6 +63,8 @@ jobs:
       - run: pnpm test:ui
       - run: pnpm test:a11y
       - run: pnpm test:catalog
+      - run: pnpm test:api
+      - run: pnpm validate:api
       - run: pnpm test:tokens
       - run: pnpm test:onboarding
       - run: pnpm validate:tokens

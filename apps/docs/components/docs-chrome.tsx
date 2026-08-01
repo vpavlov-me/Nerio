@@ -81,6 +81,7 @@ const navGroups: NavGroup[] = [
     title: "Overview",
     items: [
       { href: "/docs/getting-started", label: "Getting started", icon: BookOpen },
+      { href: "/docs/migration", label: "Migration", icon: ArrowRight },
       { href: "/docs/registry", label: "Registry and CLI", icon: Boxes },
       { href: "/docs/ai", label: "AI tooling", icon: Sparkles },
     ],

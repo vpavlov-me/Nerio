@@ -327,7 +327,7 @@ function OperationsWorkspace() {
                 <SidebarTrigger label="Toggle workspace sidebar" />
               )}
             </div>
-            <Badge variant="info">Overview</Badge>
+            <Badge tone="info">Overview</Badge>
             <h1>Product operations without a vertical bias</h1>
             <p>
               Track projects, collections, collaborators, activity, loading states, and recovery
@@ -403,19 +403,24 @@ function OperationsWorkspace() {
               placeholder="Search by project name"
             />
           </Field>
-          <Select label="Status" value={status} onChange={setStatus} options={statusOptions} />
-          <Select label="Theme" value={theme} onChange={setTheme} options={themeOptions} />
+          <Select label="Status" value={status} onValueChange={setStatus} options={statusOptions} />
+          <Select label="Theme" value={theme} onValueChange={setTheme} options={themeOptions} />
           <Select
             label="Direction"
             value={direction}
-            onChange={setDirection}
+            onValueChange={setDirection}
             options={[
               { label: "Left to right", value: "ltr" },
               { label: "Right to left", value: "rtl" },
             ]}
           />
-          <Select label="Mode" value={mode} onChange={setMode} options={modeOptions} />
-          <Select label="Density" value={density} onChange={setDensity} options={densityOptions} />
+          <Select label="Mode" value={mode} onValueChange={setMode} options={modeOptions} />
+          <Select
+            label="Density"
+            value={density}
+            onValueChange={setDensity}
+            options={densityOptions}
+          />
         </section>
 
         <section className={styles["workspace-grid"]}>
@@ -435,7 +440,7 @@ function OperationsWorkspace() {
                 <h2>Delivery signals</h2>
                 <p>Progress across active product work without a domain-specific dashboard.</p>
               </div>
-              <Badge variant="success">On track</Badge>
+              <Badge tone="success">On track</Badge>
             </div>
             <div className={styles["delivery-signals"]}>
               {deliverySignals.map(([label, description, value]) => (
@@ -537,7 +542,7 @@ function OperationsWorkspace() {
                         <TableCell>{project.owner}</TableCell>
                         <TableCell>
                           <Badge
-                            variant={
+                            tone={
                               project.status === "Active"
                                 ? "success"
                                 : project.status === "Review"
@@ -595,7 +600,7 @@ function OperationsWorkspace() {
               description="Inspect the selected task without losing your place in the workspace."
             >
               <div className={styles["task-detail"]}>
-                <Badge variant="info">In review</Badge>
+                <Badge tone="info">In review</Badge>
                 <p>
                   Confirm the launch owner, remaining approvals, and the next handoff before
                   completing this task.

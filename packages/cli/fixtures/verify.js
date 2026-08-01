@@ -929,7 +929,6 @@ async function verify() {
     const listOutput = await run(localTarget, "list");
     if (
       !listOutput.includes("button\tButton\tactions") ||
-      !listOutput.includes("icon-button\tIconButton\tactions") ||
       !listOutput.includes("motion-adapter\tMotion Adapter\tfoundation") ||
       !listOutput.includes("alert\tAlert\tfeedback") ||
       !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation") ||
@@ -1048,7 +1047,6 @@ async function verify() {
     await run(localTarget, "add", "typography");
     await run(localTarget, "add", "motion-adapter");
     await run(localTarget, "add", "button-group");
-    await run(localTarget, "add", "icon-button");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
     await run(localTarget, "add", "sheet");
@@ -1427,8 +1425,8 @@ async function verify() {
       );
     }
     if (
-      !listSource.includes('const resolvedMarker = marker ?? (ordered ? "decimal" : "disc")') ||
-      !listSource.includes('const Root = resolvedMarker === "decimal" ? "ol" : "ul"') ||
+      !listSource.includes('marker = "disc"') ||
+      !listSource.includes('const Root = marker === "decimal" ? "ol" : "ul"') ||
       !listSource.includes('data-slot="marker"') ||
       !listSource.includes('data-slot="item-content"') ||
       !listSource.includes('"n-list__link"') ||

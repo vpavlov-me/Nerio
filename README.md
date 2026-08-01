@@ -120,7 +120,11 @@ their product-workflow extensions remain outside Core.
 
 ## Package entrypoints
 
-`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities. Interactive Base UI-backed components such as Button, Toggle, Select, Slider, Dialog, Tabs, Toast, Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, and Switch are exported from `@nerio-ui/ui/client`. IconButton remains a deprecated alpha compatibility export; new work uses Button's icon-only mode. Styles remain available through `@nerio-ui/ui/styles.css`.
+`@nerio-ui/ui` is the server-safe default entrypoint for static Core components and utilities.
+Interactive Base UI-backed components such as Button, Toggle, Select, Slider, Dialog, Tabs, Toast,
+Tooltip, Popover, DropdownMenu, Checkbox, RadioGroup, and Switch are exported from
+`@nerio-ui/ui/client`. Icon-only actions use Button's `icon` plus `aria-label` contract. Styles
+remain available through `@nerio-ui/ui/styles.css`.
 
 `@nerio-ui/adapters` has no aggregating root entrypoint. Import icons and their public SVG types from
 `@nerio-ui/adapters/icons`. Optional integrations use `@nerio-ui/adapters/table`,
@@ -198,7 +202,10 @@ The npm `alpha` tag points to the published `0.1.0-alpha.2`; `latest` remains on
 audit, post-publication one-off CLI and MCP checks, clean consumer build, and supported browser
 matrix. Its architecture and migration guidance are recorded in the
 [final migration report](./docs/tailwind-migration-report.md). Alpha APIs may still change before
-1.0. See [RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
+1.0. The frozen contract is defined by the
+[public API stability policy](./docs/public-api-stability.md); alpha consumers should use the
+[Core 1.0 migration guide](./docs/migrations/alpha-to-beta.md). See
+[RELEASE.md](./RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
 ## Contributing
 

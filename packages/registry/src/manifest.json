@@ -282,13 +282,12 @@
         "For navigation, set nativeButton={false} and render Button as a native anchor with variant link; it has no control padding and underlines on hover or focus-visible.",
         "Custom render elements receive Button-owned content, state hooks, caller props, event handlers, classes, and refs without losing their chosen native semantics; function renders retain the Base UI button interaction contract.",
         "Provide concise visible text or an accessible name.",
-        "Loading preserves the action name, disables repeat activation, and exposes aria-busy; loadingLabel is deprecated.",
+        "Loading preserves the action name, disables repeat activation, and exposes aria-busy.",
         "Disabled and loading states prevent repeat activation.",
         "Icons render through the Nerio icon adapter and remain decorative by default.",
         "For an icon-only Button, provide icon and an aria-label; Button uses that accessible name as the Tooltip label unless an explicit tooltip is provided.",
         "Shortcut display is supplemental; add aria-keyshortcuts yourself when a keyboard shortcut is functional.",
         "Badge content remains part of the Button accessible name; use a concise count or status that refines the action.",
-        "Deprecated subtle and destructive variants normalize to secondary and danger; use the canonical variants in new code.",
         "Keep the visible focus treatment enabled."
       ],
       "usage": "import { Settings } from '@nerio-ui/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n<Button icon={Settings} aria-label=\"Workspace settings\" tooltip=\"Workspace settings\" />"
@@ -401,38 +400,6 @@
         "Pressed state uses a secondary surface with primary foreground while preserving the variant border; forced-colors mode adds a system highlight boundary, and the state does not depend on motion."
       ],
       "usage": "import { Bell } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@/components/nerio/components/toggle';\n\n<Toggle icon={Bell} aria-label=\"Follow updates\" defaultPressed />"
-    },
-    {
-      "name": "icon-button",
-      "title": "IconButton",
-      "description": "Deprecated compatibility wrapper for Button icon-only mode.",
-      "category": "actions",
-      "deprecated": true,
-      "replacement": "button",
-      "dependencies": ["react"],
-      "registryDependencies": ["button"],
-      "files": [
-        {
-          "source": "../../ui/src/components/icon-button.tsx",
-          "target": "components/icon-button.tsx",
-          "role": "component"
-        }
-      ],
-      "baseUiPrimitives": ["button"],
-      "slots": ["button"],
-      "variants": ["inherits Button variants"],
-      "requiredTokens": [
-        "--n-button-height-sm",
-        "--n-button-height-md",
-        "--n-button-height-lg",
-        "--n-focus-ring"
-      ],
-      "accessibility": [
-        "Requires a label and forwards it as the accessible name for Button icon-only mode.",
-        "Deprecated compatibility wrapper: use Button with icon and aria-label in new code.",
-        "This registry item remains installable until the next major release."
-      ],
-      "usage": "import { Settings } from '@nerio-ui/adapters/icons';\nimport { Button } from '@/components/nerio/components/button';\n\n// Preferred replacement\n<Button icon={Settings} aria-label=\"Workspace settings\" />"
     },
     {
       "name": "button-group",
@@ -581,7 +548,7 @@
       "accessibility": [
         "Use concise text that does not rely on color alone.",
         "Avoid using Badge as a button or link.",
-        "Use tone for semantic color; variant remains a deprecated compatibility alias.",
+        "Use tone for semantic color.",
         "Optional icons are decorative, so text must carry the status meaning.",
         "Use leadingIcon or trailingIcon for visual context; the label remains the accessible status name.",
         "Use sm when the Badge is embedded inside a compact control such as Button.",
