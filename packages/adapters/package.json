@@ -1,6 +1,6 @@
 {
   "name": "@nerio-ui/adapters",
-  "version": "1.0.0-beta.0",
+  "version": "0.1.0-alpha.2",
   "description": "Responsibility-scoped Nerio Core adapters for icons, tables, charts, forms, schemas, and optional advanced motion.",
   "private": false,
   "license": "MIT",
