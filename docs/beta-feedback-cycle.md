@@ -44,8 +44,8 @@ npm access and 2FA checks, migration review, and blocker review passed before pu
 
 ## Public verification record
 
-Fill every row after publication. A package is not verified merely because `npm publish` returned
-success.
+Every row records post-publication evidence. A package is not verified merely because `npm publish`
+returned success.
 
 | Artifact             | Exact version or reference | Provenance                | Public metadata | Clean install | Result |
 | -------------------- | -------------------------- | ------------------------- | --------------- | ------------- | ------ |
