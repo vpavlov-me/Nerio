@@ -10,8 +10,8 @@ covered by `docs/tailwind-migration-report.md`.
 
 ## Scope and status
 
-- The catalog contains 50 `stable-core` Core entries and one `deprecated-compatibility` entry
-  (IconButton).
+- The historical alpha catalog contained 50 `stable-core` entries plus an IconButton compatibility
+  entry. The compatibility entry was removed by the Core 1.0 API freeze.
 - All 44 planned Pro entries remain outside the Core 0.1 release scope.
 - `data/component-catalog.json`, `COMPONENTS.md`, the registry, package entrypoints, docs navigation,
   CLI/MCP discovery, README, project brief, and `llms.txt` describe the same Core boundary.
@@ -100,7 +100,7 @@ pnpm pack:check
 
 - `0.1.0-alpha.0` is a public pre-Tailwind alpha; consumers must follow the migration report before
   adopting the Tailwind-first candidate.
-- IconButton and documented Button aliases remain only for alpha migration compatibility.
+- The Core 1.0 API freeze removes IconButton and the documented Button alpha aliases.
 - Package distribution is source-first TypeScript; Next.js consumers configure
   `transpilePackages`.
 - App-local composition stress tests remain available as unindexed internal preview routes, not as

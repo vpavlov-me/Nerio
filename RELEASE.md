@@ -1,10 +1,10 @@
 # Release Process
 
-Nerio Core `0.1.0-alpha.2` was published on 2026-07-30 under the npm `alpha` tag and is the current
-public prerelease. Its six coordinated packages, post-publication consumer smoke, signed tag, and
-GitHub prerelease are verified. The `latest` tag intentionally remains on `0.1.0-alpha.0` while the
-complete 1.0 surface is stabilized. The roadmap determines the next coordinated prerelease; no beta
-or stable compatibility is claimed yet.
+Nerio Core `1.0.0-beta.0` is the maintainer-approved release candidate for the frozen Core 1.0 API.
+The reviewed frozen baseline is `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`; the exact publish
+candidate is the later reviewed `main` commit that contains this coordinated version preparation.
+The beta is not published yet. The current public prerelease remains `0.1.0-alpha.2` under npm
+`alpha`, and `latest` intentionally remains on `0.1.0-alpha.0`.
 
 Every release action remains manual and requires explicit maintainer approval after the gate and
 tarball inspection pass. This document does not authorize publishing, changing dist-tags,
@@ -25,12 +25,14 @@ pnpm test:ci-scopes
 pnpm test:ui
 pnpm test:a11y
 pnpm test:catalog
+pnpm test:api
 pnpm test:tokens
 pnpm test:onboarding
 pnpm validate:tokens
 pnpm validate:runtime-axes
 pnpm validate:typography
 pnpm validate:catalog
+pnpm validate:api
 pnpm validate:docs
 pnpm validate:onboarding
 pnpm test:docs-examples
@@ -52,6 +54,7 @@ pnpm test:adapters
 pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
 pnpm validate:platform-support
+pnpm audit:prod
 pnpm validate:package-budgets
 pnpm validate:release:metadata
 pnpm test:release-consumer
@@ -68,8 +71,11 @@ the deterministic Core fixtures against maintainer-approved image baselines; rev
 through [`docs/visual-regression.md`](./docs/visual-regression.md). `pnpm test:docs-examples`
 typechecks published Sidebar examples in an isolated fixture.
 
+`pnpm test:api` protects the Core 1.0 public contract and the reviewed SemVer approval workflow.
+`pnpm validate:api` compares package exports, TypeScript signatures, tokens, Registry data,
+CLI/MCP contracts, package support ranges, and public docs routes with the checked-in snapshot.
 `pnpm validate:release:metadata` checks release documentation and public onboarding without
-repeating catalog, token, or onboarding unit tests. `pnpm test:release-consumer` packs all intended
+repeating catalog, API, token, or onboarding unit tests. `pnpm test:release-consumer` packs all intended
 packages, checks packed manifests, exports, dependencies, side effects, bins, file boundaries, and
 secret/Pro exclusions, installs the tarballs into an isolated Next.js consumer, runs the canonical
 local CLI workflow through `pnpm exec nerio` from the packed CLI tarball, resolves the immutable
@@ -105,9 +111,10 @@ means VoiceOver, NVDA, TalkBack, native picker, physical-device, zoom, contrast,
 interaction evidence exists.
 
 `validate:platform-support` keeps package engines, peer ranges, app baselines, Playwright projects,
-CI, and the documented policy aligned. `validate:package-budgets` enforces packed/unpacked package,
-CSS, named component/icon import, and optional adapter budgets. Threshold changes follow the
-reviewed override policy in `docs/quality-gates.md`.
+CI, and the documented policy aligned. `audit:prod` blocks known production dependency
+vulnerabilities before a release candidate can pass. `validate:package-budgets` enforces
+packed/unpacked package, CSS, named component/icon import, and optional adapter budgets. Threshold
+changes follow the reviewed override policy in `docs/quality-gates.md`.
 
 Package and source-install builds cover Tailwind with and without Preflight. The UI stylesheet may
 contain only named shared keyframes and the documented scoped no-Preflight box-sizing and
@@ -193,8 +200,9 @@ browser verification, changelog review, and tarball inspection.
    smoke expectation, rerun the complete gate with
    `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, then obtain a second approval. The override
    does not weaken version, metadata, contents, runtime, source-install, or consumer-build checks.
-4. Publish one package at a time in the documented dependency order with the `alpha` dist-tag, for
-   example `pnpm --filter @nerio-ui/tokens publish --access public --tag alpha --no-git-checks`.
+4. Publish one package at a time in the documented dependency order with the `beta` dist-tag, for
+   example `pnpm --filter @nerio-ui/tokens publish --access public --tag beta --no-git-checks`.
+   Do not move `latest` or `alpha`.
 5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
    provenance, ownership, or install mismatch.
 6. Create a signed Git tag and GitHub Release only after all six packages and consumer checks pass.
@@ -222,12 +230,15 @@ browser verification, changelog review, and tarball inspection.
   including exact package/Registry version, revision, schema, and style contract metadata.
 - Verify public docs links, `llms.txt`, canonical metadata, sitemap, robots behavior, and the live
   demo with no console or hydration errors.
+- Open the structured external evaluation window in
+  [`docs/beta-feedback-cycle.md`](./docs/beta-feedback-cycle.md). Keep it open for at least 14
+  calendar days and until three independent consumers have completed meaningful evaluations.
 
 ## Rollback guidance
 
 If a package is wrong before later packages are published, stop the sequence and leave the release
-incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.3` and moving the
-`alpha` dist-tag only after verification. If the registry permits and policy requires it, deprecate
+incomplete. Do not reuse the version. Prefer publishing a corrected `1.0.0-beta.1` and moving the
+`beta` dist-tag only after verification. If the registry permits and policy requires it, deprecate
 the faulty version with a concise install warning. Restore the previous dist-tag when one exists,
 document affected packages and consumers, and avoid npm unpublish except for a security incident or
 an explicit maintainer/legal decision.

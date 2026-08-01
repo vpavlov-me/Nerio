@@ -48,9 +48,8 @@ export default function Page() {
       <section className="doc-section" id="install">
         <h2>Install</h2>
         <p>
-          Nerio Core <code>0.1.0-alpha.2</code> is published under the npm <code>alpha</code> tag.
-          Install only the packages and peers used by your application; the stable 1.0 release is
-          not published yet.
+          Nerio Core <code>1.0.0-beta.0</code> is the maintainer-approved candidate for the npm{" "}
+          <code>beta</code> tag. It is not published yet.
         </p>
         <CodeExample code={packageInstall} label="Package installation" />
         <CodeExample code={tailwindSetup} label="Tailwind CSS v4 package setup" />
@@ -108,9 +107,14 @@ export default function Page() {
           and <code>doctor</code> to validate configuration. The default Registry is version-aligned
           with the installed CLI instead of a moving branch. Successful installs record portable
           file hashes and dependency closure in <code>nerio.lock.json</code>; locally modified files
-          are never overwritten by a normal update. Tailwind-first source installs include{" "}
-          <code>styles/tailwind.css</code>; import it from a Tailwind-processed global stylesheet
-          alongside the installed token and residual styles.
+          are never overwritten by a normal update. <code>nerio init</code> detects the conventional{" "}
+          <code>src/app</code> or <code>src/pages</code> project shape and defaults to{" "}
+          <code>src/components/nerio</code>, so the documented <code>@/components/nerio/...</code>{" "}
+          imports work with the standard Next.js <code>@/*</code> alias. Projects without a{" "}
+          <code>src</code> application directory keep the <code>components/nerio</code> default; use{" "}
+          <code>--components</code> to choose another location. Tailwind-first source installs
+          include <code>styles/tailwind.css</code>; import it from a Tailwind-processed global
+          stylesheet alongside the installed token and residual styles.
         </p>
         <h3>One-off CLI execution</h3>
         <p>

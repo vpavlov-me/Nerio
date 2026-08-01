@@ -349,7 +349,7 @@ function TableToolbarPreview() {
                   </TableCell>
                   <TableCell>{row}</TableCell>
                   <TableCell>
-                    <Badge variant="success">Active</Badge>
+                    <Badge tone="success">Active</Badge>
                   </TableCell>
                   <TableCell>Alex Morgan</TableCell>
                 </TableRow>
@@ -393,7 +393,7 @@ function AccountSummaryPreview() {
             <h3>Alex Morgan</h3>
             <p>Product designer · Northstar</p>
           </div>
-          <Badge variant="success">Active</Badge>
+          <Badge tone="success">Active</Badge>
         </div>
         <dl className="composition-key-values">
           <KeyValue label="Email" value="alex@northstar.example" />

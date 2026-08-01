@@ -11,7 +11,6 @@ const compositionUsage = (
 const compatibilityCallbacks = (
   <RadioGroup
     label="Visibility"
-    onChange={(value) => value.toUpperCase()}
     onValueChange={(value) => value.toUpperCase()}
     options={[{ label: "Team", value: "team" }]}
   />

@@ -321,7 +321,7 @@ function ResearchWorkspaceApp() {
             </SidebarContent>
             <SidebarFooter>
               <div className={styles["workspace-note"]}>
-                <Badge variant="success">Local only</Badge>
+                <Badge tone="success">Local only</Badge>
                 <span>No prompt or source leaves this preview.</span>
               </div>
             </SidebarFooter>
@@ -417,7 +417,7 @@ function ResearchWorkspaceApp() {
         description={`${selectedSource.type} · ${selectedSource.publisher}`}
       >
         <div className={styles["source-detail"]}>
-          <Badge variant="info">Cited in synthesis</Badge>
+          <Badge tone="info">Cited in synthesis</Badge>
           <blockquote>{selectedSource.excerpt}</blockquote>
           <div>
             <strong>Why it matters</strong>
@@ -484,7 +484,7 @@ function ResearchSection({
               Build a recommendation from interviews, product events, and internal documentation.
             </p>
           </div>
-          <Badge variant={runState === "failed" ? "danger" : "success"}>
+          <Badge tone={runState === "failed" ? "danger" : "success"}>
             {runState === "running" ? "Researching" : "Evidence grounded"}
           </Badge>
         </header>

@@ -174,7 +174,6 @@ function uiEntrypointFailures() {
     "checkbox",
     "dialog",
     "dropdown-menu",
-    "icon-button",
     "popover",
     "radio-group",
     "select",
@@ -223,6 +222,7 @@ function packageReadinessFailures() {
     "test:docs-examples",
     "validate:docs",
     "validate:release",
+    "audit:prod",
     "test:cli",
     "test:mcp",
     "build",
@@ -337,7 +337,7 @@ function tailwindDocumentationFailures() {
   }
 
   if (/\bIconButton\b/.test(playgroundSpecimens)) {
-    failures.push("Playground must not present the deprecated IconButton compatibility export");
+    failures.push("Playground must not present the removed IconButton alpha export");
   }
   if (/id="chart"|>Chart</.test(playgroundSpecimens)) {
     failures.push("Playground must not present an app-local Chart as a Core component");

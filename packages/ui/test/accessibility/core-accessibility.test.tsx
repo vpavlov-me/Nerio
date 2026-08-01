@@ -189,10 +189,8 @@ describe("Core accessibility contracts", () => {
   it("keeps loading action names, field associations, and named scroll regions accessible", async () => {
     const { container } = render(
       <>
-        <Button loading loadingLabel="Saving">
-          Save changes
-        </Button>
-        <Button icon={Bell} aria-label="Open notifications" loading loadingLabel="Opening" />
+        <Button loading>Save changes</Button>
+        <Button icon={Bell} aria-label="Open notifications" loading />
         <Field label="Email" message="Required" invalid>
           <Input />
         </Field>

@@ -24,7 +24,6 @@ export {
   type BadgeProps,
   type BadgeSize,
   type BadgeTone,
-  type BadgeVariant,
 } from "./components/badge";
 export { Skeleton, type SkeletonProps } from "./components/skeleton";
 export {

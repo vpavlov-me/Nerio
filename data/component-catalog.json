@@ -36,8 +36,7 @@
     "polished": "Public API and presentation are implemented, but the complete stable-core verification evidence is not yet available.",
     "quality-pass-needed": "Component exists but still needs an API, accessibility, token, docs, and registry review before it can support Pro work.",
     "stable-core": "Component passed the Core quality checklist and can safely support future Pro components, templates, registry installs, and AI/MCP usage.",
-    "future": "Expected later, not part of the first Core milestone.",
-    "deprecated-compatibility": "Public compatibility wrapper retained only for migration; new work must use its documented replacement."
+    "future": "Expected later, not part of the first Core milestone."
   },
   "categoryValues": [
     "foundation",
@@ -77,7 +76,6 @@
     { "name": "kbd", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "toggle", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
-    { "name": "icon-button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "button-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "badge", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "spinner", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
@@ -557,16 +555,6 @@
       "category": "actions",
       "status": "stable-core",
       "description": "Client-only Base UI two-state button with one controlled or uncontrolled pressed state, stable accessible naming, icon-only or visible-label content, variants, sizes, and prop/ref-safe render composition."
-    },
-    {
-      "name": "IconButton",
-      "tier": "core",
-      "package": "@nerio-ui/ui/client",
-      "category": "actions",
-      "status": "deprecated-compatibility",
-      "deprecated": true,
-      "replacement": "Button",
-      "description": "Deprecated compatibility wrapper for Button icon-only mode; retained until the next major release."
     },
     {
       "name": "ButtonGroup",

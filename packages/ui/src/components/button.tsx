@@ -12,25 +12,13 @@ import { Kbd, type KbdProps } from "./kbd";
 import { Spinner } from "./spinner";
 import { Tooltip } from "./tooltip";
 
-export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "outline"
-  | "ghost"
-  | "link"
-  | "danger"
-  /** @deprecated Use secondary. */
-  | "subtle"
-  /** @deprecated Use danger. */
-  | "destructive";
+export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "link" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
-
-type CanonicalButtonVariant = Exclude<ButtonVariant, "subtle" | "destructive">;
 
 const buttonBaseClasses =
   "n-button box-border inline-flex h-(--n-button-height-md) cursor-pointer items-center justify-center gap-(--n-button-gap) whitespace-nowrap rounded-(--n-button-radius) border-(length:--n-button-border-width) border-(--n-button-border-transparent) px-(--n-button-padding-inline-md) text-(length:--n-button-font-size) font-(--n-button-font-weight) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) disabled:cursor-not-allowed disabled:opacity-(--n-button-disabled-opacity) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-button-disabled-opacity) [&_[data-slot=button-icon]]:inline-flex [&_[data-slot=button-icon]]:items-center [&_[data-slot=button-badge]]:inline-flex [&_[data-slot=button-badge]]:shrink-0 [&_.n-kbd]:bg-(--n-button-kbd-background) [&_.n-kbd]:border-(--n-button-kbd-border-color) [&_.n-kbd]:text-(--n-button-kbd-foreground) [&_.n-kbd]:opacity-(--n-button-kbd-opacity)";
 
-const buttonVariantClasses: Record<CanonicalButtonVariant, string> = {
+const buttonVariantClasses: Record<ButtonVariant, string> = {
   primary:
     "bg-(--n-button-background-primary) text-(--n-button-foreground-primary) [&:hover:not(:disabled):not([data-disabled])]:bg-(--n-button-background-primary-hover) [&:active:not(:disabled):not([data-disabled])]:bg-(--n-button-background-primary-active)",
   secondary:
@@ -63,7 +51,7 @@ type RenderElementProps = {
   "data-loading"?: string;
   "data-size"?: ButtonSize;
   "data-slot"?: string;
-  "data-variant"?: CanonicalButtonVariant;
+  "data-variant"?: ButtonVariant;
   onClick?: React.ComponentProps<typeof BaseButton>["onClick"];
   ref?: React.Ref<HTMLElement>;
   type?: "button" | "reset" | "submit";
@@ -82,8 +70,6 @@ type ButtonBaseProps = Omit<
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
-  /** @deprecated Loading preserves the action name and exposes aria-busy. */
-  loadingLabel?: string;
   /** Shows supplemental help on hover and keyboard focus. */
   tooltip?: React.ReactNode;
 };
@@ -116,19 +102,12 @@ type IconOnlyButtonProps = ButtonBaseProps & {
 
 export type ButtonProps = TextButtonProps | IconOnlyButtonProps;
 
-function normalizeButtonVariant(variant: ButtonVariant): CanonicalButtonVariant {
-  if (variant === "subtle") return "secondary";
-  if (variant === "destructive") return "danger";
-  return variant;
-}
-
 export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button(
   {
     className,
     variant = "primary",
     size = "md",
     loading = false,
-    loadingLabel: _loadingLabel,
     leadingIcon,
     trailingIcon,
     icon,
@@ -147,14 +126,13 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
   const iconOnly = Boolean(icon);
   const buttonLabelId = React.useId();
   const buttonBadgeId = React.useId();
-  const normalizedVariant = normalizeButtonVariant(variant);
   const hasCustomAccessibleName = "aria-label" in props || "aria-labelledby" in props;
   const labelledBy =
     badge && !hasCustomAccessibleName ? `${buttonLabelId} ${buttonBadgeId}` : undefined;
   const classNames = cn(
     buttonBaseClasses,
     buttonSizeClasses[size],
-    buttonVariantClasses[normalizedVariant],
+    buttonVariantClasses[variant],
     iconOnly &&
       "w-(--n-icon-button-size-md) rounded-(--n-icon-button-radius) p-(--n-space-0) [&_.n-icon]:size-(--n-icon-button-icon-size-md)",
     iconOnly &&
@@ -226,7 +204,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     "data-loading": loading ? "true" : undefined,
     "data-size": size,
     "data-slot": dataSlot,
-    "data-variant": normalizedVariant,
+    "data-variant": variant,
     "aria-labelledby":
       labelledBy ?? props["aria-labelledby"] ?? renderedElement?.props["aria-labelledby"],
     type:
@@ -256,7 +234,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       nativeButton={nativeButton}
       className={classNames}
       data-slot={dataSlot}
-      data-variant={normalizedVariant}
+      data-variant={variant}
       data-size={size}
       data-loading={loading ? "true" : undefined}
       data-icon-only={iconOnly ? "true" : undefined}
@@ -273,7 +251,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       nativeButton={nativeButton}
       className={classNames}
       data-slot={dataSlot}
-      data-variant={normalizedVariant}
+      data-variant={variant}
       data-size={size}
       data-loading={loading ? "true" : undefined}
       data-icon-only={iconOnly ? "true" : undefined}

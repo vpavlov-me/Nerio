@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+const metrikaRequestPattern = /^https:\/\/(?:mc\.yandex\.(?:ru|com(?:\.ge)?)|mc\.webvisor\.org)\//;
+
 function monitorPage(page, browserName) {
   const problems = [];
   page.on("console", (message) => {
@@ -152,6 +154,7 @@ test("keeps Toggle touch activation portable", async ({ browser, browserName }, 
     viewport: { width: 390, height: 844 },
   });
   try {
+    await context.route(metrikaRequestPattern, (route) => route.fulfill({ status: 204 }));
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
     await page.goto("/docs/components/toggle");
@@ -451,6 +454,7 @@ test("keeps Slider touch input portable", async ({ browser, browserName }, testI
     viewport: { width: 390, height: 844 },
   });
   try {
+    await context.route(metrikaRequestPattern, (route) => route.fulfill({ status: 204 }));
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
     await page.goto("/visual-test/slider");
@@ -551,6 +555,7 @@ test("keeps Calendar touch selection portable", async ({ browser, browserName },
     viewport: { width: 390, height: 844 },
   });
   try {
+    await context.route(metrikaRequestPattern, (route) => route.fulfill({ status: 204 }));
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
     await page.goto("/visual-test/calendar");
@@ -629,6 +634,7 @@ test("keeps DatePicker touch selection portable", async ({ browser, browserName 
     viewport: { width: 390, height: 844 },
   });
   try {
+    await context.route(metrikaRequestPattern, (route) => route.fulfill({ status: 204 }));
     const page = await context.newPage();
     const problems = monitorPage(page, browserName);
     await page.goto("/visual-test/date-picker");

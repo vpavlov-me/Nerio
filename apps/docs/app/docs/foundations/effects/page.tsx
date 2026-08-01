@@ -79,7 +79,7 @@ export default function Page() {
       <section className="doc-section">
         <div className="section-heading">
           <h2 id="elevation-scale">Elevation scale</h2>
-          <Badge variant="info">Tokenized</Badge>
+          <Badge tone="info">Tokenized</Badge>
         </div>
         <EffectTable label="Elevation primitive tokens" rows={effectTokens} />
       </section>

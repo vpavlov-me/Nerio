@@ -105,6 +105,7 @@ const expectedPhase2BFiles = [
 ];
 const expectedDisplayFiles = [
   "components/avatar.tsx",
+  "components/avatar-image.tsx",
   "components/card.tsx",
   "components/item.tsx",
   "components/key-value.tsx",
@@ -377,8 +378,8 @@ function startRegistryServer() {
 function writeLifecycleRegistry(
   registryRoot,
   {
-    version = "0.1.0-alpha.2",
-    sourceRevision = "fixture-alpha.2",
+    version = "1.0.0-beta.0",
+    sourceRevision = "fixture-beta.0",
     schemaVersion = "1.0.0",
     sharedSource = "export const shared = 'one';\n",
     buttonSource = "export const button = 'one';\n",
@@ -473,10 +474,27 @@ async function verifySourceLifecycle(tempRoot) {
   const registryRoot = path.join(tempRoot, "lifecycle-registry");
   const target = path.join(tempRoot, "lifecycle-consumer");
   const legacyTarget = path.join(tempRoot, "legacy-consumer");
+  const symlinkTarget = path.join(tempRoot, "symlink-consumer");
+  const outsideTarget = path.join(tempRoot, "outside-components");
   fs.mkdirSync(registryRoot);
   fs.mkdirSync(target);
   fs.mkdirSync(legacyTarget);
+  fs.mkdirSync(symlinkTarget);
+  fs.mkdirSync(outsideTarget);
   const fixtureManifest = writeLifecycleRegistry(registryRoot);
+
+  await run(symlinkTarget, "init", "--registry", fixtureManifest);
+  const symlinkComponentsRoot = path.join(symlinkTarget, "components/nerio");
+  fs.mkdirSync(symlinkComponentsRoot, { recursive: true });
+  fs.symlinkSync(outsideTarget, path.join(symlinkComponentsRoot, "lib"), "dir");
+  const symlinkFailure = await runFailure(symlinkTarget, "add", "button");
+  if (
+    !symlinkFailure.includes("Registry target escapes the components directory") ||
+    fs.existsSync(path.join(outsideTarget, "shared.ts")) ||
+    fs.existsSync(path.join(symlinkComponentsRoot, "components/button.ts"))
+  ) {
+    throw new Error("CLI did not stop a source install that escaped through a symlink.");
+  }
 
   fs.writeFileSync(
     path.join(target, "package.json"),
@@ -486,7 +504,7 @@ async function verifySourceLifecycle(tempRoot) {
   await run(target, "add", "button");
   writeSourceTailwindSetup(target);
   const initialDoctor = await run(target, "doctor");
-  if (!initialDoctor.includes("Registry nerio-fixture 0.1.0-alpha.2 (fixture-alpha.2)")) {
+  if (!initialDoctor.includes("Registry nerio-fixture 1.0.0-beta.0 (fixture-beta.0)")) {
     throw new Error("Doctor did not report the exact installed Registry contract.");
   }
 
@@ -494,8 +512,8 @@ async function verifySourceLifecycle(tempRoot) {
   const initialLock = JSON.parse(fs.readFileSync(lockPath, "utf8"));
   if (
     initialLock.schemaVersion !== "1.0.0" ||
-    initialLock.registry.version !== "0.1.0-alpha.2" ||
-    initialLock.registry.sourceRevision !== "fixture-alpha.2" ||
+    initialLock.registry.version !== "1.0.0-beta.0" ||
+    initialLock.registry.sourceRevision !== "fixture-beta.0" ||
     initialLock.registry.styleContractVersion !== "tailwind-v1" ||
     !initialLock.requestedItems.includes("button") ||
     !initialLock.items.shared ||
@@ -538,13 +556,11 @@ async function verifySourceLifecycle(tempRoot) {
   }
 
   writeLifecycleRegistry(registryRoot, {
-    version: "0.1.0-alpha.3",
+    version: "1.0.0-beta.1",
     sourceRevision: "fixture-version-mismatch",
   });
   const versionMismatchDoctor = await runFailure(target, "doctor");
-  if (
-    !versionMismatchDoctor.includes("CLI 0.1.0-alpha.2 and Registry 0.1.0-alpha.3 do not match")
-  ) {
+  if (!versionMismatchDoctor.includes("CLI 1.0.0-beta.0 and Registry 1.0.0-beta.1 do not match")) {
     throw new Error("Doctor did not report an incompatible Registry and CLI version.");
   }
   writeLifecycleRegistry(registryRoot);
@@ -756,6 +772,7 @@ async function verify() {
   const displayTarget = path.join(tempRoot, "display");
   const feedbackTarget = path.join(tempRoot, "feedback");
   const progressTarget = path.join(tempRoot, "progress");
+  const srcDirTarget = path.join(tempRoot, "src-dir");
   fs.mkdirSync(localTarget);
   fs.mkdirSync(urlTarget);
   fs.mkdirSync(invalidPackageTarget);
@@ -770,10 +787,24 @@ async function verify() {
   fs.mkdirSync(displayTarget);
   fs.mkdirSync(feedbackTarget);
   fs.mkdirSync(progressTarget);
+  fs.mkdirSync(path.join(srcDirTarget, "src", "app"), { recursive: true });
 
   const { server, manifestUrl } = await startRegistryServer();
   try {
     await verifySourceLifecycle(tempRoot);
+    await run(srcDirTarget, "init", "--registry", manifest);
+    const srcDirConfig = JSON.parse(fs.readFileSync(path.join(srcDirTarget, "nerio.json"), "utf8"));
+    if (srcDirConfig.components !== "src/components/nerio") {
+      throw new Error("Init did not choose the import-aligned default for a src-dir application.");
+    }
+    await run(srcDirTarget, "add", "command-primitive");
+    const srcDirCommand = fs.readFileSync(
+      path.join(srcDirTarget, "src/components/nerio/components/command.tsx"),
+      "utf8",
+    );
+    if (srcDirCommand.includes("children={renderItem}")) {
+      throw new Error("Source-installed Command does not satisfy the Next.js ESLint baseline.");
+    }
     await run(localTarget, "init", "--registry", manifest);
     writePackageTailwindSetup(localTarget);
     await run(localTarget, "doctor");
@@ -873,10 +904,10 @@ async function verify() {
       !helpOutput.includes("nerio list") ||
       !helpOutput.includes("nerio info") ||
       !helpOutput.includes(
-        "pnpm add -D @nerio-ui/registry@0.1.0-alpha.2 @nerio-ui/cli@0.1.0-alpha.2",
+        "pnpm add -D @nerio-ui/registry@1.0.0-beta.0 @nerio-ui/cli@1.0.0-beta.0",
       ) ||
       !helpOutput.includes("pnpm exec nerio <command>") ||
-      !helpOutput.includes("pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 init")
+      !helpOutput.includes("pnpm dlx @nerio-ui/cli@1.0.0-beta.0 init")
     ) {
       throw new Error(
         "Help output does not include the canonical local and one-off command model.",
@@ -886,10 +917,16 @@ async function verify() {
     if (!addHelpOutput.includes("nerio add <component>") || !addHelpOutput.includes("--dry-run")) {
       throw new Error("Add help output does not describe the source install options.");
     }
+    const initHelpOutput = await run(localTarget, "init", "--help");
+    if (
+      !initHelpOutput.includes("src/components/nerio") ||
+      !initHelpOutput.includes("components/nerio")
+    ) {
+      throw new Error("Init help output does not explain the source-directory-aware default.");
+    }
     const listOutput = await run(localTarget, "list");
     if (
       !listOutput.includes("button\tButton\tactions") ||
-      !listOutput.includes("icon-button\tIconButton\tactions") ||
       !listOutput.includes("motion-adapter\tMotion Adapter\tfoundation") ||
       !listOutput.includes("alert\tAlert\tfeedback") ||
       !listOutput.includes("breadcrumbs\tBreadcrumbs\tnavigation") ||
@@ -1008,7 +1045,6 @@ async function verify() {
     await run(localTarget, "add", "typography");
     await run(localTarget, "add", "motion-adapter");
     await run(localTarget, "add", "button-group");
-    await run(localTarget, "add", "icon-button");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
     await run(localTarget, "add", "sheet");
@@ -1387,8 +1423,8 @@ async function verify() {
       );
     }
     if (
-      !listSource.includes('const resolvedMarker = marker ?? (ordered ? "decimal" : "disc")') ||
-      !listSource.includes('const Root = resolvedMarker === "decimal" ? "ol" : "ul"') ||
+      !listSource.includes('marker = "disc"') ||
+      !listSource.includes('const Root = marker === "decimal" ? "ol" : "ul"') ||
       !listSource.includes('data-slot="marker"') ||
       !listSource.includes('data-slot="item-content"') ||
       !listSource.includes('"n-list__link"') ||

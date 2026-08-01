@@ -9,6 +9,7 @@ const staticRoutes = [
   "/",
   "/docs",
   "/docs/getting-started",
+  "/docs/migration",
   "/docs/registry",
   "/docs/ai",
   "/docs/foundations/tokens",

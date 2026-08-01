@@ -119,16 +119,17 @@ test("catalog validator reports invalid tier, category, package, status, runtime
   );
 });
 
-test("catalog validator reports deprecated components without a valid replacement", () => {
+test("catalog validator reports components with an undeclared status", () => {
   withFixture(
     catalog,
     (value) => {
-      value.components.find((component) => component.name === "IconButton").replacement =
-        "Missing Button";
+      value.components.find((component) => component.name === "Button").status =
+        "deprecated-compatibility";
       return value;
     },
     "--catalog",
-    (stderr) => assert.match(stderr, /IconButton is deprecated but has no valid replacement/),
+    (stderr) =>
+      assert.match(stderr, /Catalog component Button has invalid status: deprecated-compatibility/),
   );
 });
 

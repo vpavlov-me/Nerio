@@ -8,6 +8,43 @@ Items under `Unreleased` may change before the next public release.
 
 No changes yet.
 
+## 1.0.0-beta.0 — 2026-08-01
+
+### Added
+
+- Added the reviewed Core 1.0 public API snapshot and CI gate covering package manifests and
+  TypeScript signatures, tokens, Registry, CLI/MCP contracts, support ranges, and public docs
+  routes.
+- Added the public compatibility policy and alpha-to-frozen migration guide.
+- Added the preparation plan for a structured 14-day external feedback program covering package
+  mode, source installation, Calendar/DatePicker, Registry update, accessibility, and API-freeze
+  evaluation.
+
+### Changed
+
+- Narrowed the supported React peer range to React 19 for the Core 1.0 baseline.
+
+### Removed
+
+- Removed the pre-1.0 `IconButton` export and temporary Button, Badge, Select, RadioGroup,
+  Pagination, Icon, List, and adapters compatibility aliases. Canonical replacements are listed in
+  the migration guide.
+
+### Fixed
+
+- Restored same-origin Block and Template previews in the hardened documentation Content Security
+  Policy while continuing to reject unapproved frame sources.
+- Fixed `nerio init` to choose `src/components/nerio` for conventional Next.js src-dir projects,
+  keeping source-installed imports aligned with the standard `@/*` alias while preserving the
+  existing root default and explicit override.
+- Fixed source-installed Command collections to satisfy the supported Next.js ESLint baseline
+  without consumer edits.
+
+### Migration
+
+- Migrate all six coordinated packages together and follow
+  [`docs/migrations/alpha-to-beta.md`](./docs/migrations/alpha-to-beta.md).
+
 ## 0.1.0-alpha.2 — 2026-07-30
 
 ### Added

@@ -50,6 +50,7 @@ const releaseCommands = [
   "pnpm test:manual-audit-plan",
   "pnpm validate:manual-audit-plan",
   "pnpm validate:platform-support",
+  "pnpm audit:prod",
   "pnpm validate:package-budgets",
   "pnpm validate:release:metadata",
   "pnpm test:release-consumer",

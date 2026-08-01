@@ -52,7 +52,7 @@ export default function BlocksPage() {
                   <CardHeader>
                     <div className="template-card__eyebrow">
                       <span>{block.category}</span>
-                      <Badge variant={block.status === "Preview" ? "info" : "neutral"}>
+                      <Badge tone={block.status === "Preview" ? "info" : "neutral"}>
                         {block.status}
                       </Badge>
                     </div>

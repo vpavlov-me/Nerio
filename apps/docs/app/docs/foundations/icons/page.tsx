@@ -222,13 +222,11 @@ export default function Page() {
         <p>
           Import <Code>IconComponent</Code> and <Code>IconSvgProps</Code> from{" "}
           <Code>@nerio-ui/adapters/icons</Code> for icon props and custom SVG implementations. The
-          same type names remain re-exported from <Code>@nerio-ui/ui</Code> as compatible aliases,
-          but new component APIs should use the adapter boundary. Existing <Code>LucideIcon</Code>{" "}
-          imports remain compatible while Lucide is the default source. During the Core 0.1 alpha,
-          replace an explicit <Code>absoluteStrokeWidth</Code> Icon prop with{" "}
-          <Code>lucideAbsoluteStrokeWidth</Code>; the old name remains as a deprecated alias until
-          the next major version. Custom SVG components should accept and spread only{" "}
-          <Code>IconSvgProps</Code>.
+          same generic type names are re-exported from <Code>@nerio-ui/ui</Code> for component
+          consumers, while reusable component APIs should use the adapter boundary. Import Lucide
+          types directly from Lucide when an integration truly depends on Lucide. Use{" "}
+          <Code>lucideAbsoluteStrokeWidth</Code> on Nerio Icon for Lucide fixed-stroke behavior.
+          Custom SVG components should accept and spread only <Code>IconSvgProps</Code>.
         </p>
         <p>
           The previous <Code>@nerio-ui/adapters</Code> root import is intentionally unsupported

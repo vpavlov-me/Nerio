@@ -13,9 +13,9 @@ Core = building blocks. Pro = product-ready solutions.
 
 ## Current release status
 
-Nerio Core `0.1.0-alpha.2` is published under the `@nerio-ui` npm namespace and npm `alpha` tag with
-a signed tag and GitHub prerelease. It is the current Tailwind CSS v4-first prerelease; `latest`
-intentionally remains on `0.1.0-alpha.0` while the 1.0 surface is stabilized. Future beta and
+Nerio Core `1.0.0-beta.0` is the maintainer-approved release candidate for the frozen Core 1.0 API.
+It is not published yet. The current public prerelease remains `0.1.0-alpha.2` under npm `alpha`,
+and `latest` intentionally remains on `0.1.0-alpha.0`. Beta publication, external feedback, and
 stable publication remain manual and are governed by the roadmap and `RELEASE.md`.
 
 ## Primary users
@@ -112,7 +112,7 @@ spacing, radius, typography, icon, or control-size scales.
 
 `@nerio-ui/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
 
-Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, IconButton, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
+Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
 
 `@nerio-ui/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
 
@@ -141,7 +141,7 @@ Do not introduce `data-font`, `data-radius`, `data-motion`, `data-contrast`, or 
 
 ## Core component scope
 
-Nerio Core includes foundation and base reusable components: Button, Toggle, IconButton, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive. Button's link variant covers text-level navigation when it renders a native anchor.
+Nerio Core includes foundation and base reusable components: Button, Toggle, Badge, Input, Textarea, Label, Field, FormGroup, Checkbox, Radio Group, Switch, Select, Tabs, Tooltip, Dialog, Sheet, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, Spinner, Avatar, Table, List, Breadcrumbs, Pagination, Sidebar Primitive, and Command Primitive. Button's `icon` prop covers icon-only actions when paired with an accessible name, and its link variant covers text-level navigation when it renders a native anchor.
 
 Core 1.0 includes Toggle for one independent retained `aria-pressed` button state. Input supports
 native date, month, week, time, and `datetime-local` values, Slider provides
@@ -169,7 +169,7 @@ Deliver a functional monorepo and a polished Core foundation suitable for public
 1. Workspace tooling, linting, formatting, typechecking, build scripts, and CI.
 2. Token package with the initial preset themes, custom theme support, modes, density modes, and token-customizable font/radius/motion values.
 3. Shared utility package or exports where needed for `cn`, types, and style contracts.
-4. Base UI-backed core components: Button, IconButton, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
+4. Base UI-backed core components: Button, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
 6. Public docs application with navigation, theme/mode/density switcher, component preview, usage snippets, anatomy, variants, states, and accessibility notes.
 7. Docs-local Operations Workspace Template that composes the published components and renders

@@ -797,7 +797,7 @@ describe("Core static contracts", () => {
     );
 
     rerender(
-      <Badge icon={Bell} size="sm">
+      <Badge leadingIcon={Bell} size="sm">
         Notifications
       </Badge>,
     );
@@ -1350,7 +1350,7 @@ describe("Core static contracts", () => {
   it("keeps ordered lists visibly ordered and supports stable item IDs", () => {
     render(
       <List
-        ordered
+        marker="decimal"
         items={[
           { id: "one", title: "First" },
           { id: "two", title: "Second" },
@@ -1734,9 +1734,27 @@ describe("Core static contracts", () => {
     expect(screen.getByRole("textbox", { name: "Project" })).toHaveAttribute("id", "project-name");
     expect(() =>
       render(
+        // @ts-expect-error Field accepts one control element.
         <Field label="Invalid">
           <Input />
           <Input />
+        </Field>,
+      ),
+    ).toThrow("exactly one");
+    expect(() =>
+      render(
+        <Field label="Invalid">
+          {/* @ts-expect-error Runtime validation protects JavaScript consumers. */}
+          {"not a form control"}
+        </Field>,
+      ),
+    ).toThrow("exactly one");
+    expect(() =>
+      render(
+        <Field label="Invalid">
+          <>
+            <Input />
+          </>
         </Field>,
       ),
     ).toThrow("exactly one");
@@ -2273,11 +2291,7 @@ describe("Core static contracts", () => {
 
 describe("Core interactive action contracts", () => {
   it("disables loading buttons while preserving their action name", () => {
-    render(
-      <Button loading loadingLabel="Saving">
-        Save changes
-      </Button>,
-    );
+    render(<Button loading>Save changes</Button>);
     const button = screen.getByRole("button", { name: /save changes/i });
     expect(button).toBeDisabled();
     expect(button).toHaveAttribute("aria-busy", "true");
@@ -2517,23 +2531,23 @@ describe("Core interactive action contracts", () => {
     expect(forwardedCleanup).toHaveBeenCalledOnce();
   });
 
-  it("normalizes deprecated Button variants and protects Button-owned state attributes", () => {
+  it("keeps canonical Button variants and protects Button-owned state attributes", () => {
     render(
       <>
-        <Button variant="subtle" data-variant="consumer">
-          Subtle
+        <Button variant="secondary" data-variant="consumer">
+          Secondary
         </Button>
-        <Button variant="destructive">Destructive</Button>
+        <Button variant="danger">Danger</Button>
         <Button loading data-loading="consumer" aria-busy={false}>
           Save
         </Button>
       </>,
     );
-    expect(screen.getByRole("button", { name: "Subtle" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Secondary" })).toHaveAttribute(
       "data-variant",
       "secondary",
     );
-    expect(screen.getByRole("button", { name: "Destructive" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Danger" })).toHaveAttribute(
       "data-variant",
       "danger",
     );
@@ -2770,7 +2784,6 @@ describe("Core interactive action contracts", () => {
 
   it("keeps Select form, event, sizing, trigger ref, and controlled-open contracts", async () => {
     const user = userEvent.setup();
-    const onChange = vi.fn();
     const onValueChange = vi.fn();
     const onOpenChange = vi.fn();
     const triggerRef = React.createRef<HTMLButtonElement>();
@@ -2782,7 +2795,6 @@ describe("Core interactive action contracts", () => {
             defaultValue="draft"
             label="Status"
             name="status"
-            onChange={onChange}
             onOpenChange={(nextOpen, eventDetails) => {
               onOpenChange(nextOpen, eventDetails);
               setOpen(nextOpen);
@@ -2812,8 +2824,6 @@ describe("Core interactive action contracts", () => {
     await user.click(screen.getByRole("option", { name: "Published" }));
     expect(onValueChange).toHaveBeenCalledTimes(1);
     expect(onValueChange).toHaveBeenCalledWith("published", expect.anything());
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith("published");
     await user.click(trigger);
     await user.keyboard("{Escape}");
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
@@ -2997,7 +3007,7 @@ describe("Core interactive action contracts", () => {
   it("keeps Checkbox custom indicators and RadioGroup composition compatible", async () => {
     const user = userEvent.setup();
     const onCheckedChange = vi.fn();
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     render(
       <>
         <label>
@@ -3007,7 +3017,7 @@ describe("Core interactive action contracts", () => {
         <Checkbox aria-label="Custom indicator" defaultChecked>
           Custom
         </Checkbox>
-        <RadioGroup label="Audience" defaultValue="team" onChange={onChange}>
+        <RadioGroup label="Audience" defaultValue="team" onValueChange={onValueChange}>
           <RadioGroupItem value="private" description="Only you can view it.">
             Private
           </RadioGroupItem>
@@ -3027,7 +3037,7 @@ describe("Core interactive action contracts", () => {
     );
     expect(screen.getByText("Custom")).toBeInTheDocument();
     await user.click(screen.getByRole("radio", { name: /Private/ }));
-    expect(onChange).toHaveBeenCalledWith("private");
+    expect(onValueChange).toHaveBeenCalledWith("private", expect.anything());
     expect(screen.getByText("Only you can view it.")).toBeInTheDocument();
   });
 
@@ -3776,6 +3786,33 @@ describe("Core interactive action contracts", () => {
     expect(input.getAttribute("aria-describedby")).toContain("custom-description");
     expect(input.getAttribute("aria-describedby")).toContain("-description");
     expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();
+  });
+
+  it("requires exactly one direct Input in InputGroup", () => {
+    expect(() =>
+      render(
+        <InputGroup>
+          <InputGroupAddon placement="start">https://</InputGroupAddon>
+        </InputGroup>,
+      ),
+    ).toThrow("exactly one direct Input");
+    expect(() =>
+      render(
+        <InputGroup>
+          <Input />
+          <Input />
+        </InputGroup>,
+      ),
+    ).toThrow("exactly one direct Input");
+    expect(() =>
+      render(
+        <InputGroup>
+          <div>
+            <Input />
+          </div>
+        </InputGroup>,
+      ),
+    ).toThrow("exactly one direct Input");
   });
 
   it("keeps Dialog close anatomy truthful and its accessible name localizable", () => {

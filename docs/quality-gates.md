@@ -140,9 +140,11 @@ pnpm test:visual
 pnpm test:cli
 pnpm test:mcp
 pnpm test:adapters
+pnpm test:api
 pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
 pnpm validate:platform-support
+pnpm validate:api
 pnpm validate:package-budgets
 pnpm validate:release:metadata
 pnpm test:release-consumer

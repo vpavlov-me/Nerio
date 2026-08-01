@@ -179,7 +179,7 @@ export default function Page() {
               {tokenLayers.map((layer) => (
                 <tr key={layer.name}>
                   <td>
-                    <Badge variant="info">{layer.name}</Badge>
+                    <Badge tone="info">{layer.name}</Badge>
                   </td>
                   <td>{layer.purpose}</td>
                   <td>

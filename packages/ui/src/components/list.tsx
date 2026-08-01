@@ -33,8 +33,6 @@ export interface ListProps extends Omit<
   "children"
 > {
   items: ListItem[];
-  /** @deprecated Use `marker="decimal"`. */
-  ordered?: boolean;
   marker?: "none" | "disc" | "decimal" | "dash" | "icon";
 }
 
@@ -45,11 +43,10 @@ const listInteractiveClasses =
   "transition-[background-color,border-color,box-shadow] duration-(--n-motion-hover-duration) ease-(--n-motion-hover-easing) hover:border-(--n-list-item-border-hover) hover:bg-(--n-list-item-background-hover) focus-visible:duration-(--n-motion-focus-duration) focus-visible:ease-(--n-motion-focus-easing) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) motion-reduce:duration-(--n-duration-instant) forced-colors:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:focus-visible:outline-offset-(--n-focus-ring-inner-width) forced-colors:focus-visible:outline-[Highlight]";
 
 export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListProps>(function List(
-  { className, items, marker, ordered = false, ...props },
+  { className, items, marker = "disc", ...props },
   ref,
 ) {
-  const resolvedMarker = marker ?? (ordered ? "decimal" : "disc");
-  const Root = resolvedMarker === "decimal" ? "ol" : "ul";
+  const Root = marker === "decimal" ? "ol" : "ul";
   const composedRef = React.useMemo(() => composeRefs(ref), [ref]);
 
   return (
@@ -57,7 +54,7 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
       ref={composedRef}
       {...props}
       className={cn("n-list m-0 grid list-none gap-(--n-list-gap) p-0", className)}
-      data-marker={resolvedMarker}
+      data-marker={marker}
       data-slot="root"
     >
       {items.map((item, index) => {
@@ -114,21 +111,21 @@ export const List = React.forwardRef<HTMLUListElement | HTMLOListElement, ListPr
         return (
           <li
             className="n-list__item grid min-w-0 grid-cols-[auto_minmax(0,1fr)] items-start gap-(--n-list-marker-gap) data-[marker=none]:grid-cols-1"
-            data-marker={resolvedMarker}
+            data-marker={marker}
             data-slot="item"
             key={item.id}
           >
-            {resolvedMarker !== "none" ? (
+            {marker !== "none" ? (
               <span
                 aria-hidden
                 className="n-list__marker inline-flex min-w-(--n-list-marker-width) items-center justify-center pt-(--n-list-item-padding) text-(length:--n-font-size-sm) font-(--n-font-weight-regular) text-(--n-color-text-tertiary)"
                 data-slot="marker"
               >
-                {resolvedMarker === "decimal"
+                {marker === "decimal"
                   ? `${index + 1}.`
-                  : resolvedMarker === "dash"
+                  : marker === "dash"
                     ? "–"
-                    : resolvedMarker === "icon"
+                    : marker === "icon"
                       ? item.marker
                       : "•"}
               </span>

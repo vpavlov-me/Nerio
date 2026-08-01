@@ -45,8 +45,6 @@ type SharedSelectProps = BaseSelectRootProps &
     value?: string;
     defaultValue?: string;
     onValueChange?: (value: string, eventDetails: SelectChangeEventDetails) => void;
-    /** @deprecated Prefer onValueChange for Base UI event details. */
-    onChange?: (value: string) => void;
     open?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (open: boolean, eventDetails: SelectOpenChangeEventDetails) => void;
@@ -193,7 +191,6 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
     label,
     message,
     name,
-    onChange,
     onOpenChange,
     onValueChange,
     open,
@@ -256,7 +253,6 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
         onValueChange={(nextValue, eventDetails) => {
           if (typeof nextValue === "string") {
             onValueChange?.(nextValue, eventDetails);
-            onChange?.(nextValue);
           }
         }}
         open={open}

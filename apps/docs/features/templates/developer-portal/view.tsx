@@ -345,7 +345,7 @@ function DeveloperPortalApp() {
           <Sidebar className={styles.sidebar} aria-label="Developer portal sidebar">
             <SidebarHeader>
               <div className={styles["sidebar-context"]}>
-                <Badge variant="success">Stable</Badge>
+                <Badge tone="success">Stable</Badge>
                 <span>API version 2026-07</span>
               </div>
             </SidebarHeader>
@@ -502,7 +502,7 @@ function OverviewPage({
               <span>01</span>
               <h2>Make your first request</h2>
             </div>
-            <Badge variant="success">About 3 minutes</Badge>
+            <Badge tone="success">About 3 minutes</Badge>
           </div>
           <p>
             Create a server-side API key, install the SDK, and keep the credential outside your
@@ -595,7 +595,7 @@ function ApiReferencePage({ onCopy }: { onCopy: (value: string) => void }) {
 
         <div className={styles["endpoint-controls"]}>
           <div className={styles.endpoint}>
-            <Badge variant="success">POST</Badge>
+            <Badge tone="success">POST</Badge>
             <code>/v1/projects</code>
           </div>
           <div className={styles["state-actions"]}>
@@ -648,7 +648,7 @@ function ApiReferencePage({ onCopy }: { onCopy: (value: string) => void }) {
           <h2>Example response</h2>
           <div className={styles["response-example"]}>
             <div>
-              <Badge variant="success">201 Created</Badge>
+              <Badge tone="success">201 Created</Badge>
               <Button
                 size="sm"
                 variant="ghost"
@@ -717,7 +717,7 @@ function Parameter({
       <div>
         <code>{name}</code>
         <span>{type}</span>
-        {required ? <Badge variant="danger">Required</Badge> : <Badge>Optional</Badge>}
+        {required ? <Badge tone="danger">Required</Badge> : <Badge>Optional</Badge>}
       </div>
       <p>{children}</p>
     </div>
@@ -755,7 +755,7 @@ function ChangelogPage() {
       <div className={styles.timeline}>
         <article>
           <div>
-            <Badge variant="success">Current</Badge>
+            <Badge tone="success">Current</Badge>
             <time dateTime="2026-07-22">July 22, 2026</time>
           </div>
           <h2>Version {version}</h2>

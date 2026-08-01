@@ -26,12 +26,20 @@ function hasFlag(name) {
   return args.includes(name);
 }
 
+function defaultComponentsDirectory() {
+  const usesSourceDirectory =
+    fs.existsSync(path.join(cwd, "src", "app")) || fs.existsSync(path.join(cwd, "src", "pages"));
+
+  return usesSourceDirectory ? "src/components/nerio" : "components/nerio";
+}
+
 function help(commandName) {
   const sections = {
     init: [
       "Usage: nerio init [--registry <path-or-url>] [--components <directory>]",
       "",
       "Create nerio.json for source-installed components.",
+      "Defaults to src/components/nerio for src-dir applications and components/nerio otherwise.",
     ],
     add: [
       "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite]",
@@ -75,9 +83,9 @@ function help(commandName) {
       "  nerio info     Show metadata for one component",
       "  nerio doctor   Validate configuration and registry metadata",
       "",
-      "Recommended local install: pnpm add -D @nerio-ui/registry@0.1.0-alpha.2 @nerio-ui/cli@0.1.0-alpha.2",
+      "Recommended local install: pnpm add -D @nerio-ui/registry@1.0.0-beta.0 @nerio-ui/cli@1.0.0-beta.0",
       "Run local commands with: pnpm exec nerio <command> [options]",
-      "One-off example: pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 init",
+      "One-off example: pnpm dlx @nerio-ui/cli@1.0.0-beta.0 init",
       "",
       "Run nerio <command> --help for command options.",
     ],
@@ -175,13 +183,37 @@ function resolveSource(registry, source) {
   return path.resolve(path.dirname(path.resolve(cwd, resolved)), source);
 }
 
+function canonicalPath(target) {
+  let existing = target;
+  while (!fs.existsSync(existing)) {
+    const parent = path.dirname(existing);
+    if (parent === existing) break;
+    existing = parent;
+  }
+  return path.resolve(fs.realpathSync(existing), path.relative(existing, target));
+}
+
 function resolveTarget(componentsRoot, target) {
   const root = path.resolve(cwd, componentsRoot);
   const resolved = path.resolve(root, target);
-  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
+  if (!isWithin(root, resolved) || !isWithin(canonicalPath(root), canonicalPath(resolved))) {
     throw new Error(`Registry target escapes the components directory: ${target}`);
   }
   return resolved;
+}
+
+function writeFileAtomic(target, content) {
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  const temporary = path.join(
+    path.dirname(target),
+    `.${path.basename(target)}.${process.pid}.${crypto.randomUUID()}.tmp`,
+  );
+  try {
+    fs.writeFileSync(temporary, content, { flag: "wx" });
+    fs.renameSync(temporary, target);
+  } finally {
+    fs.rmSync(temporary, { force: true });
+  }
 }
 
 function collectItems(manifest, name, collected = new Map()) {
@@ -270,9 +302,7 @@ function registryMetadata(manifest) {
 
 function writeState(state) {
   const target = statePath();
-  const temporary = `${target}.tmp`;
-  fs.writeFileSync(temporary, `${JSON.stringify(state, null, 2)}\n`);
-  fs.renameSync(temporary, target);
+  writeFileAtomic(target, `${JSON.stringify(state, null, 2)}\n`);
 }
 
 function relativeTarget(componentsRoot, target) {
@@ -287,7 +317,7 @@ function isTokenStylesTarget(target) {
 function resolveInstalledTarget(componentsRoot, storedTarget) {
   const root = path.resolve(cwd, componentsRoot);
   const resolved = path.resolve(cwd, storedTarget);
-  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) {
+  if (!isWithin(root, resolved) || !isWithin(canonicalPath(root), canonicalPath(resolved))) {
     throw new Error(
       `${STATE_FILENAME} path escapes the configured components directory: ${storedTarget}`,
     );
@@ -380,7 +410,7 @@ async function init() {
   const config = {
     schemaVersion: "1.0.0",
     registry: option("--registry") || DEFAULT_REGISTRY,
-    components: option("--components") || "components/nerio",
+    components: option("--components") || defaultComponentsDirectory(),
   };
   fs.writeFileSync(target, `${JSON.stringify(config, null, 2)}\n`);
   console.log("Created nerio.json");
@@ -432,8 +462,7 @@ async function add(name) {
     }
   }
   for (const write of writes) {
-    fs.mkdirSync(path.dirname(write.target), { recursive: true });
-    fs.writeFileSync(write.target, write.content);
+    writeFileAtomic(write.target, write.content);
   }
 
   const item = items.get(name);
@@ -621,8 +650,7 @@ async function update(name) {
       (["added", "upstream changed"].includes(entry.status) ||
         (conflictStatus(entry.status) && hasFlag("--force")));
     if (shouldWrite) {
-      fs.mkdirSync(path.dirname(absolute), { recursive: true });
-      fs.writeFileSync(absolute, entry.upstream.content);
+      writeFileAtomic(absolute, entry.upstream.content);
     }
 
     const preserveBaseline = ["locally modified", "locally removed"].includes(entry.status);

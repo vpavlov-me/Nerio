@@ -276,6 +276,7 @@ async function verify() {
     const sourceInstallContracts = {
       avatar: [
         "components/avatar.tsx",
+        "components/avatar-image.tsx",
         "lib/cn.ts",
         "lib/tailwind-cn.ts",
         "styles/tailwind.css",
@@ -796,7 +797,6 @@ async function verify() {
       "button",
       "motion-adapter",
       "button-group",
-      "icon-button",
       "dialog",
       "sheet",
       "select",

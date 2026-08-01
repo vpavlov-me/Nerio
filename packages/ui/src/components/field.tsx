@@ -17,7 +17,7 @@ export interface FieldProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode;
   description?: React.ReactNode;
   message?: React.ReactNode;
-  children: React.ReactNode;
+  children: React.ReactElement<FieldControlProps>;
   invalid?: boolean;
 }
 
@@ -25,12 +25,12 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
   { label, description, message, children, invalid = false, className, ...props },
   ref,
 ) {
-  if (React.Children.count(children) !== 1) {
+  if (!React.isValidElement<FieldControlProps>(children) || children.type === React.Fragment) {
     throw new Error("Field expects exactly one form control child.");
   }
 
   const generatedId = React.useId();
-  const childId = React.isValidElement<FieldControlProps>(children) ? children.props.id : undefined;
+  const childId = children.props.id;
   const controlId = childId ?? generatedId;
   const descriptionId = description ? `${controlId}-description` : undefined;
   const messageId = message ? `${controlId}-message` : undefined;
@@ -47,16 +47,15 @@ export const Field = React.forwardRef<HTMLDivElement, FieldProps>(function Field
       <Label data-slot="label" htmlFor={controlId}>
         {label}
       </Label>
-      {React.isValidElement<FieldControlProps>(children)
-        ? React.cloneElement(children, {
-            id: controlId,
-            "aria-describedby":
-              [children.props["aria-describedby"], describedBy].filter(Boolean).join(" ") ||
-              undefined,
-            "aria-invalid": children.props["aria-invalid"] ?? (invalid ? true : undefined),
-            invalid: children.props.invalid ?? (invalid ? true : undefined),
-          })
-        : children}
+      {React.cloneElement(children, {
+        id: controlId,
+        "aria-describedby":
+          [children.props["aria-describedby"], describedBy].filter(Boolean).join(" ") || undefined,
+        "aria-invalid": children.props["aria-invalid"] ?? (invalid ? true : undefined),
+        ...(typeof children.type === "string"
+          ? {}
+          : { invalid: children.props.invalid ?? (invalid ? true : undefined) }),
+      })}
       {description ? (
         <p
           className="n-field__description m-0 text-(length:--n-helper-font-size) text-(--n-color-text-tertiary)"

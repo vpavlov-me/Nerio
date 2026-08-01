@@ -79,7 +79,7 @@ test("covers public docs routes, standardized component docs, and the restrained
     await expect(page.getByRole("heading", { name: heading })).toBeAttached();
   }
 
-  await expect(page.getByText("v0.1.0-alpha.2", { exact: true })).toBeVisible();
+  await expect(page.getByText("v1.0.0-beta.0", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Purple", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Comfortable", exact: true })).toHaveCount(0);
   const search = page.getByRole("button", { name: "Search documentation" });
@@ -378,13 +378,20 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   request,
 }) => {
   const problems = monitorPage(page);
-  const [sitemap, robots, llms, legacy] = await Promise.all([
+  const [homepage, sitemap, robots, llms, legacy] = await Promise.all([
+    request.get("/"),
     request.get("/sitemap.xml"),
     request.get("/robots.txt"),
     request.get("/llms.txt"),
     request.get("/docs/compositions/login", { maxRedirects: 0 }),
   ]);
 
+  expect(homepage.headers()["x-powered-by"]).toBeUndefined();
+  expect(homepage.headers()["x-content-type-options"]).toBe("nosniff");
+  expect(homepage.headers()["referrer-policy"]).toBe("strict-origin-when-cross-origin");
+  expect(homepage.headers()["permissions-policy"]).toContain("camera=()");
+  expect(homepage.headers()["strict-transport-security"]).toContain("max-age=31536000");
+  expect(homepage.headers()["content-security-policy"]).toContain("object-src 'none'");
   expect(await sitemap.text()).not.toContain("/playground");
   expect(await sitemap.text()).toContain("/blocks/sign-in");
   expect(await sitemap.text()).not.toContain("/views/blocks/");
@@ -392,7 +399,7 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   expect(await robots.text()).toContain("Disallow: /views/");
   expect(await robots.text()).toContain("Disallow: /visual-test/");
   const llmsText = await llms.text();
-  expect(llmsText).toContain("0.1.0-alpha.2");
+  expect(llmsText).toContain("1.0.0-beta.0");
   expect(llmsText).toContain("The public Blocks catalog is available at `/blocks`");
   expect(llmsText).not.toContain("/playground");
   expect(llmsText).not.toContain("nerio-preview-surfaces");

@@ -396,7 +396,7 @@ function SupportDeskApp() {
           </div>
         </div>
         <div className={styles["header-actions"]}>
-          <Badge variant="success">All systems normal</Badge>
+          <Badge tone="success">All systems normal</Badge>
           <Tooltip label="Notifications">
             <Button
               aria-label="Notifications"
@@ -675,7 +675,7 @@ function SupportDeskApp() {
                 label="Assignee"
                 value={selectedAssignee}
                 options={assigneeOptions}
-                onChange={(value) => {
+                onValueChange={(value) => {
                   setAssigneeById((current) => ({ ...current, [selectedTicket.id]: value }));
                   toasts.add({ title: `Assigned to ${value}` });
                 }}
@@ -684,7 +684,7 @@ function SupportDeskApp() {
                 label="Priority"
                 value={selectedPriority}
                 options={priorityOptions}
-                onChange={(value) =>
+                onValueChange={(value) =>
                   setPriorityById((current) => ({
                     ...current,
                     [selectedTicket.id]: value as Ticket["priority"],
@@ -695,7 +695,7 @@ function SupportDeskApp() {
                 label="Status"
                 value={selectedStatus}
                 options={statusOptions}
-                onChange={updateStatus}
+                onValueChange={updateStatus}
               />
             </div>
 
@@ -933,7 +933,7 @@ function CustomerContext({ ticket, onViewAccount }: { ticket: Ticket; onViewAcco
               <div>
                 <dt>Health</dt>
                 <dd>
-                  <Badge variant="success">Healthy</Badge>
+                  <Badge tone="success">Healthy</Badge>
                 </dd>
               </div>
             </dl>

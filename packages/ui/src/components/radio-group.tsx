@@ -31,8 +31,6 @@ type SharedRadioGroupProps = BaseRadioGroupProps & {
       NonNullable<React.ComponentProps<typeof BaseRadioGroup<string>>["onValueChange"]>
     >[1],
   ) => void;
-  /** @deprecated Prefer onValueChange for Base UI event details. */
-  onChange?: (value: string) => void;
 };
 
 type OptionsRadioGroupProps = {
@@ -119,7 +117,6 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
     invalid = false,
     label,
     message,
-    onChange,
     onValueChange,
     options,
     readOnly,
@@ -193,10 +190,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
         data-invalid={isInvalid ? "" : undefined}
         data-readonly={readOnly ? "" : undefined}
         data-slot="group"
-        onValueChange={(value, eventDetails) => {
-          onValueChange?.(value, eventDetails);
-          onChange?.(value);
-        }}
+        onValueChange={onValueChange}
       >
         {renderedItems}
       </BaseRadioGroup>
