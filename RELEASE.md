@@ -1,10 +1,10 @@
 # Release Process
 
-Nerio Core `0.1.0-alpha.2` was published on 2026-07-30 under the npm `alpha` tag and is the current
-public prerelease. The reviewed frozen Core 1.0 API baseline is
-`3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`. The planned `1.0.0-beta.0` release is not published
-yet; its exact publish candidate will be the separately reviewed `main` commit created only after
-explicit maintainer approval. The `latest` tag intentionally remains on `0.1.0-alpha.0`.
+Nerio Core `1.0.0-beta.0` is the maintainer-approved release candidate for the frozen Core 1.0 API.
+The reviewed frozen baseline is `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`; the exact publish
+candidate is the later reviewed `main` commit that contains this coordinated version preparation.
+The beta is not published yet. The current public prerelease remains `0.1.0-alpha.2` under npm
+`alpha`, and `latest` intentionally remains on `0.1.0-alpha.0`.
 
 Every release action remains manual and requires explicit maintainer approval after the gate and
 tarball inspection pass. This document does not authorize publishing, changing dist-tags,
