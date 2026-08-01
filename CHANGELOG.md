@@ -6,12 +6,18 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+No changes yet.
+
+## 1.0.0-beta.0 — 2026-08-01
+
 ### Added
 
 - Added the reviewed Core 1.0 public API snapshot and CI gate covering package manifests and
   TypeScript signatures, tokens, Registry, CLI/MCP contracts, support ranges, and public docs
   routes.
 - Added the public compatibility policy and alpha-to-frozen migration guide.
+- Added a structured 14-day external feedback program for package-mode, source-install,
+  Calendar/DatePicker, Registry update, accessibility, and API-freeze evaluation.
 
 ### Changed
 

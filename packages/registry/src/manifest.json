@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0.0",
   "name": "nerio",
-  "version": "0.1.0-alpha.2",
-  "sourceRevision": "v0.1.0-alpha.2",
+  "version": "1.0.0-beta.0",
+  "sourceRevision": "v1.0.0-beta.0",
   "styleContractVersion": "tailwind-v1",
   "items": [
     {

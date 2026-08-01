@@ -1,10 +1,10 @@
 # Release Process
 
-Nerio Core `0.1.0-alpha.2` was published on 2026-07-30 under the npm `alpha` tag and is the current
-public prerelease. Its six coordinated packages, post-publication consumer smoke, signed tag, and
-GitHub prerelease are verified. The `latest` tag intentionally remains on `0.1.0-alpha.0` while the
-complete 1.0 surface is stabilized. The roadmap determines the next coordinated prerelease; no beta
-or stable compatibility is claimed yet.
+Nerio Core `1.0.0-beta.0` is the coordinated release candidate for the frozen Core 1.0 API. The
+reviewed frozen baseline is `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`; the exact publish
+candidate is the later reviewed `main` commit that contains this version-only release preparation.
+The beta is not published yet. The current public prerelease remains `0.1.0-alpha.2` under npm
+`alpha`, and `latest` intentionally remains on `0.1.0-alpha.0`.
 
 Every release action remains manual and requires explicit maintainer approval after the gate and
 tarball inspection pass. This document does not authorize publishing, changing dist-tags,
@@ -200,8 +200,9 @@ browser verification, changelog review, and tarball inspection.
    smoke expectation, rerun the complete gate with
    `NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release`, then obtain a second approval. The override
    does not weaken version, metadata, contents, runtime, source-install, or consumer-build checks.
-4. Publish one package at a time in the documented dependency order with the `alpha` dist-tag, for
-   example `pnpm --filter @nerio-ui/tokens publish --access public --tag alpha --no-git-checks`.
+4. Publish one package at a time in the documented dependency order with the `beta` dist-tag, for
+   example `pnpm --filter @nerio-ui/tokens publish --access public --tag beta --no-git-checks`.
+   Do not move `latest` or `alpha`.
 5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
    provenance, ownership, or install mismatch.
 6. Create a signed Git tag and GitHub Release only after all six packages and consumer checks pass.
@@ -229,12 +230,15 @@ browser verification, changelog review, and tarball inspection.
   including exact package/Registry version, revision, schema, and style contract metadata.
 - Verify public docs links, `llms.txt`, canonical metadata, sitemap, robots behavior, and the live
   demo with no console or hydration errors.
+- Open the structured external evaluation window in
+  [`docs/beta-feedback-cycle.md`](./docs/beta-feedback-cycle.md). Keep it open for at least 14
+  calendar days and until three independent consumers have completed meaningful evaluations.
 
 ## Rollback guidance
 
 If a package is wrong before later packages are published, stop the sequence and leave the release
-incomplete. Do not reuse the version. Prefer publishing a corrected `0.1.0-alpha.3` and moving the
-`alpha` dist-tag only after verification. If the registry permits and policy requires it, deprecate
+incomplete. Do not reuse the version. Prefer publishing a corrected `1.0.0-beta.1` and moving the
+`beta` dist-tag only after verification. If the registry permits and policy requires it, deprecate
 the faulty version with a concise install warning. Restore the previous dist-tag when one exists,
 document affected packages and consumers, and avoid npm unpublish except for a security incident or
 an explicit maintainer/legal decision.
