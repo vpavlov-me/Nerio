@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { assertNoAlphaCompatibilityDebt, normalizeCliOutput } from "./public-api-snapshot.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const validator = join(root, "scripts/public-api-snapshot.mjs");
@@ -22,7 +23,15 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Public API snapshot verified/);
-  assert.doesNotMatch(readFileSync(snapshot, "utf8"), /node_modules\/\.pnpm/);
+  const reviewed = readFileSync(snapshot, "utf8");
+  assert.doesNotMatch(reviewed, /node_modules\/\.pnpm/);
+  const parsed = JSON.parse(reviewed);
+  const buttonProps = parsed.entrypoints["@nerio-ui/ui/client"].find(
+    (entry) => entry.name === "ButtonProps",
+  );
+  assert.match(buttonProps.definition.join("\n"), /type ButtonBaseProps/);
+  assert.match(buttonProps.definition.join("\n"), /type TextButtonProps/);
+  assert.match(buttonProps.definition.join("\n"), /type IconOnlyButtonProps/);
 });
 
 test("rejects unclassified public API drift", () => {
@@ -55,14 +64,38 @@ test("requires SemVer classification and approval metadata for updates", () => {
 });
 
 test("rejects restored alpha compatibility debt", () => {
-  const buttonPath = join(root, "packages/ui/src/components/button.tsx");
-  const original = readFileSync(buttonPath, "utf8");
+  const temporary = mkdtempSync(join(tmpdir(), "nerio-alpha-debt-test-"));
+  const componentDirectory = join(temporary, "packages/ui/src/components");
   try {
-    writeFileSync(buttonPath, `${original}\n/** @deprecated */\ntype AlphaAlias = string;\n`);
-    const result = run();
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /alpha compatibility debt/);
+    mkdirSync(componentDirectory, { recursive: true });
+    writeFileSync(
+      join(componentDirectory, "button.tsx"),
+      "export type ButtonProps = { loadingLabel?: string };",
+    );
+    assert.throws(() => assertNoAlphaCompatibilityDebt(temporary), /alpha compatibility debt/);
   } finally {
-    writeFileSync(buttonPath, original);
+    rmSync(temporary, { recursive: true, force: true });
   }
+});
+
+test("allows future deprecations while rejecting only removed alpha aliases", () => {
+  const temporary = mkdtempSync(join(tmpdir(), "nerio-deprecation-test-"));
+  const componentDirectory = join(temporary, "packages/ui/src/components");
+  try {
+    mkdirSync(componentDirectory, { recursive: true });
+    writeFileSync(
+      join(componentDirectory, "button.tsx"),
+      "/** @deprecated Use FutureButton instead. */ export type LegacyButton = string;",
+    );
+    assert.doesNotThrow(() => assertNoAlphaCompatibilityDebt(temporary));
+  } finally {
+    rmSync(temporary, { recursive: true, force: true });
+  }
+});
+
+test("normalizes stable and prerelease CLI package versions", () => {
+  assert.equal(
+    normalizeCliOutput("pnpm add @nerio-ui/registry@1.0.0 @nerio-ui/cli@1.1.0-beta.2+build.4"),
+    "pnpm add @nerio-ui/registry@<version> @nerio-ui/cli@<version>",
+  );
 });

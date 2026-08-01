@@ -94,7 +94,7 @@ export default function Page() {
         </p>
         <p>
           Read the complete{" "}
-          <a href="https://github.com/vpavlov-me/Nerio/blob/dev/docs/public-api-stability.md">
+          <a href="https://github.com/vpavlov-me/Nerio/blob/main/docs/public-api-stability.md">
             public API stability policy
           </a>
           .

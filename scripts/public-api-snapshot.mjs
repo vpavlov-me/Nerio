@@ -38,40 +38,39 @@ function stable(value) {
   return value;
 }
 
-function assertNoAlphaCompatibilityDebt() {
+export function assertNoAlphaCompatibilityDebt(sourceRoot = root) {
   const checks = [
-    ["packages/ui/src", /@deprecated|\bIconButton\b|variant\??:\s*BadgeVariant/],
-    ["packages/adapters/src", /@deprecated|\bLucideIcon\b/],
+    ["packages/ui/src/components/button.tsx", /\bloadingLabel\??:|["'](?:subtle|destructive)["']/],
+    ["packages/ui/src/components/badge.tsx", /\bBadgeVariant\b|\bvariant\??:|\bicon\??:/],
+    ["packages/ui/src/components/select.tsx", /\bonChange\??:/],
+    ["packages/ui/src/components/radio-group.tsx", /\bonChange\??:/],
+    [
+      "packages/ui/src/components/pagination.tsx",
+      /export type Pagination(?:Page|Ellipsis)\s*=\s*\{(?:(?!\n\};)[\s\S])*?["']aria-label["']\??:/,
+    ],
+    ["packages/ui/src/components/icon.tsx", /\babsoluteStrokeWidth\??:/],
+    ["packages/ui/src/components/list.tsx", /\bordered\??:/],
+    ["packages/ui/src/index.ts", /\bIconButton\b|\bBadgeVariant\b/],
+    ["packages/ui/src/client.ts", /\bIconButton\b/],
+    ["packages/adapters/src/icons.ts", /\bLucideIcon\b/],
     ["packages/registry/src/manifest.json", /"name":\s*"icon-button"|deprecated-compatibility/],
     ["data/component-catalog.json", /"name":\s*"IconButton"|deprecated-compatibility/],
   ];
-  const visit = (path) => {
-    if (!existsSync(path)) return [];
-    return readdirSync(path, { withFileTypes: true }).flatMap((entry) => {
-      const entryPath = join(path, entry.name);
-      return entry.isDirectory() ? visit(entryPath) : [entryPath];
-    });
-  };
-
   for (const [relativePath, pattern] of checks) {
-    const path = join(root, relativePath);
-    const files = relativePath.endsWith(".json") ? [path] : visit(path);
+    const path = join(sourceRoot, relativePath);
+    const files = existsSync(path) ? [path] : [];
     for (const file of files) {
       if (pattern.test(readFileSync(file, "utf8"))) {
         throw new Error(
-          `Core 1.0 public source still contains alpha compatibility debt in ${relative(root, file)}.`,
+          `Core 1.0 public source still contains alpha compatibility debt in ${relative(sourceRoot, file)}.`,
         );
       }
     }
   }
 
-  if (
-    /loadingLabel\??:/.test(
-      readFileSync(join(root, "packages/ui/src/components/button.tsx"), "utf8"),
-    )
-  ) {
+  if (existsSync(join(sourceRoot, "packages/ui/src/components/icon-button.tsx"))) {
     throw new Error(
-      "Core 1.0 public source still contains alpha compatibility debt in packages/ui/src/components/button.tsx.",
+      "Core 1.0 public source still contains alpha compatibility debt in packages/ui/src/components/icon-button.tsx.",
     );
   }
 }
@@ -124,6 +123,45 @@ function entrypointContracts() {
     ts.TypeFormatFlags.WriteArrowStyleSignature;
   const normalizeSignature = (signature) =>
     signature.replace(/(?:[A-Za-z]:)?[^"]*\/node_modules\/\.pnpm\/[^/]+\/node_modules\//g, "");
+  const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed, removeComments: true });
+  const typeDefinition = (symbol) => {
+    const definitions = new Set();
+    const visited = new Set();
+    const visit = (candidate) => {
+      const resolved =
+        candidate.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(candidate) : candidate;
+      if (visited.has(resolved)) return;
+      visited.add(resolved);
+
+      for (const declaration of resolved.declarations ?? []) {
+        if (
+          !declaration.getSourceFile().fileName.startsWith(join(root, "packages")) ||
+          (!ts.isInterfaceDeclaration(declaration) && !ts.isTypeAliasDeclaration(declaration))
+        ) {
+          continue;
+        }
+        definitions.add(
+          printer
+            .printNode(ts.EmitHint.Unspecified, declaration, declaration.getSourceFile())
+            .replace(/\s+/g, " ")
+            .trim(),
+        );
+        const inspect = (node) => {
+          if (ts.isTypeReferenceNode(node)) {
+            const referenced = checker.getSymbolAtLocation(node.typeName);
+            if (referenced) visit(referenced);
+          } else if (ts.isExpressionWithTypeArguments(node)) {
+            const referenced = checker.getSymbolAtLocation(node.expression);
+            if (referenced) visit(referenced);
+          }
+          ts.forEachChild(node, inspect);
+        };
+        inspect(declaration);
+      }
+    };
+    visit(symbol);
+    return [...definitions].sort();
+  };
 
   return Object.fromEntries(
     Object.entries(entrypoints).map(([entrypoint, path]) => {
@@ -145,6 +183,7 @@ function entrypointContracts() {
               ? checker.getTypeOfSymbolAtLocation(symbol, declaration)
               : checker.getDeclaredTypeOfSymbol(symbol);
           return {
+            definition: kind === "type" ? typeDefinition(symbol) : [],
             kind,
             name: exported.getName(),
             signature: normalizeSignature(checker.typeToString(type, declaration, flags)),
@@ -191,6 +230,15 @@ function registryContracts() {
   };
 }
 
+export function normalizeCliOutput(output) {
+  return output
+    .replace(
+      /(@nerio-ui\/[a-z0-9-]+)@\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?/g,
+      "$1@<version>",
+    )
+    .trim();
+}
+
 function runCli(...args) {
   const result = spawnSync(process.execPath, [join(root, "packages/cli/src/index.js"), ...args], {
     cwd: root,
@@ -199,12 +247,16 @@ function runCli(...args) {
   if (result.status !== 0) {
     throw new Error(`Could not inspect CLI ${args.join(" ")}:\n${result.stdout}${result.stderr}`);
   }
-  return result.stdout.replaceAll(/0\.1\.0-[a-z]+\.\d+/g, "<version>").trim();
+  return normalizeCliOutput(result.stdout);
 }
 
 function cliContracts() {
   const runtime = readFileSync(join(root, "packages/cli/src/index.js"), "utf8");
-  const constant = (name) => runtime.match(new RegExp(`const ${name} = ([^;]+);`))?.[1] ?? null;
+  const constant = (name) =>
+    runtime
+      .match(new RegExp(`const ${name} = ([^;]+);`))?.[1]
+      ?.replace(/\s+/g, " ")
+      .trim() ?? null;
   return {
     configSchemas: constant("SUPPORTED_CONFIG_SCHEMAS"),
     defaultRegistry: constant("DEFAULT_REGISTRY"),
