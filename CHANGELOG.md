@@ -6,6 +6,10 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+No changes yet.
+
+## 1.0.0-beta.0 — 2026-08-01
+
 ### Added
 
 - Added the reviewed Core 1.0 public API snapshot and CI gate covering package manifests and

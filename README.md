@@ -4,9 +4,9 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: `0.1.0-alpha.2` is published under the npm `alpha` tag and as a signed GitHub prerelease.
-> The `latest` tag intentionally remains on `0.1.0-alpha.0` while the frozen Core 1.0 API is
-> prepared for beta.
+> Status: `1.0.0-beta.0` is the maintainer-approved release candidate for the frozen Core 1.0 API.
+> It is not published yet. The current public prerelease remains `0.1.0-alpha.2` under npm `alpha`;
+> `latest` intentionally remains on `0.1.0-alpha.0`.
 
 ## Product model
 
@@ -157,7 +157,7 @@ Install the version-aligned Registry and CLI in the consuming project. The `neri
 editable source files through the project-local bin:
 
 ```bash
-pnpm add -D @nerio-ui/registry@0.1.0-alpha.2 @nerio-ui/cli@0.1.0-alpha.2
+pnpm add -D @nerio-ui/registry@1.0.0-beta.0 @nerio-ui/cli@1.0.0-beta.0
 pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
@@ -169,8 +169,8 @@ pnpm exec nerio doctor
 ```
 
 For one-off initialization or installation, use the real package name:
-`pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 init` or
-`pnpm dlx @nerio-ui/cli@0.1.0-alpha.2 add button`. Prefer the local installation for repeatable
+`pnpm dlx @nerio-ui/cli@1.0.0-beta.0 init` or
+`pnpm dlx @nerio-ui/cli@1.0.0-beta.0 add button`. Prefer the local installation for repeatable
 updates and explicit CLI/Registry version alignment.
 
 The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
@@ -184,10 +184,10 @@ Tailwind bridge, package `@source`, token imports, no-Preflight compatibility, a
 
 ## MCP server
 
-Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@0.1.0-alpha.2`, then configure the
+Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@1.0.0-beta.0`, then configure the
 client to run the published bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`. A
 package-qualified one-off configuration may use command `pnpm` and arguments
-`["dlx", "@nerio-ui/mcp@0.1.0-alpha.2"]`. The server version comes from coordinated package
+`["dlx", "@nerio-ui/mcp@1.0.0-beta.0"]`. The server version comes from coordinated package
 metadata, and its Registry tools report the exact Registry version, source revision, schema, and
 style contract.
 
@@ -197,11 +197,11 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
 `@nerio-ui/mcp`.
 
-The npm `alpha` tag points to the published `0.1.0-alpha.2`; `latest` remains on
-`0.1.0-alpha.0`. The alpha.2 packages, signed tag, and GitHub prerelease passed the packed-package
-audit, post-publication one-off CLI and MCP checks, clean consumer build, and supported browser
-matrix. Its architecture and migration guidance are recorded in the
-[final migration report](./docs/tailwind-migration-report.md). The frozen contract is defined by the
+The frozen `1.0.0-beta.0` candidate is approved for publication under the npm `beta` tag without
+moving `latest` or `alpha`. Until the manual publication sequence completes, npm `alpha` points to
+`0.1.0-alpha.2` and `latest` remains on `0.1.0-alpha.0`. The beta must pass public-package,
+Registry, CLI, MCP, provenance, clean-consumer, and external-feedback verification before stable
+documentation begins. The frozen contract is defined by the
 [public API stability policy](./docs/public-api-stability.md); alpha consumers should use the
 [Core 1.0 migration guide](./docs/migrations/alpha-to-beta.md). See
 [RELEASE.md](./RELEASE.md), [CHANGELOG.md](./CHANGELOG.md), and the
