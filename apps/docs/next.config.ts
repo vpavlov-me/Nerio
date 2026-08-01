@@ -7,7 +7,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""} https://mc.yandex.ru https://yastatic.net`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://mc.yandex.ru https://mc.webvisor.org",
+  "img-src 'self' data: blob: https://mc.yandex.ru https://mc.yandex.com https://mc.yandex.com.ge https://mc.webvisor.org",
   "font-src 'self' data:",
   `connect-src 'self'${isDevelopment ? " ws:" : ""} https://mc.yandex.ru https://mc.yandex.com https://mc.yandex.com.ge https://mc.webvisor.org wss://mc.yandex.ru wss://mc.webvisor.org`,
   "child-src 'self' blob: https://mc.yandex.ru https://mc.webvisor.org",
