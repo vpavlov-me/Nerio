@@ -4,6 +4,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "no
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { format, resolveConfig } from "prettier";
 import ts from "typescript";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -36,6 +37,75 @@ function stable(value) {
     );
   }
   return value;
+}
+
+function responseShape(value) {
+  if (Array.isArray(value)) {
+    const shapes = new Map(
+      value.map((item) => {
+        const shape = stable(responseShape(item));
+        return [JSON.stringify(shape), shape];
+      }),
+    );
+    return [...shapes.entries()]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([, shape]) => shape);
+  }
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, nested]) => [key, responseShape(nested)]),
+    );
+  }
+  return value === null ? "null" : typeof value;
+}
+
+function groupedResponseShapes(responses) {
+  const groups = new Map();
+  for (const [name, response] of Object.entries(responses)) {
+    const shape = stable(responseShape(response));
+    const key = JSON.stringify(shape);
+    const group = groups.get(key) ?? { components: [], shape };
+    group.components.push(name);
+    groups.set(key, group);
+  }
+  return [...groups.values()]
+    .map((group) => ({ ...group, components: group.components.sort() }))
+    .sort((left, right) => left.components[0].localeCompare(right.components[0]));
+}
+
+function jsDocComment(comment) {
+  if (typeof comment === "string") return comment.replace(/\s+/g, " ").trim();
+  if (!Array.isArray(comment)) return "";
+  return comment
+    .map((part) => (typeof part === "string" ? part : (part.text ?? "")))
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function declarationDeprecations(declaration) {
+  return ts
+    .getJSDocTags(declaration)
+    .filter((tag) => tag.tagName.text === "deprecated")
+    .map((tag) => jsDocComment(tag.comment));
+}
+
+export function collectDeprecationsFromSource(sourceText) {
+  const source = ts.createSourceFile(
+    "deprecation-contract.ts",
+    sourceText,
+    ts.ScriptTarget.Latest,
+    true,
+  );
+  const deprecations = [];
+  const visit = (node) => {
+    deprecations.push(...declarationDeprecations(node));
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  return [...new Set(deprecations)].sort();
 }
 
 export function assertNoAlphaCompatibilityDebt(sourceRoot = root) {
@@ -115,6 +185,34 @@ function entrypointContracts() {
   const normalizeSignature = (signature) =>
     signature.replace(/(?:[A-Za-z]:)?[^"]*\/node_modules\/\.pnpm\/[^/]+\/node_modules\//g, "");
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed, removeComments: true });
+  const symbolDeprecations = (...symbols) =>
+    [
+      ...new Set(
+        symbols.flatMap((symbol) => symbol.declarations ?? []).flatMap(declarationDeprecations),
+      ),
+    ].sort();
+  const nestedDeprecations = (declaration) => {
+    const source = declaration.getSourceFile();
+    const markers = [];
+    const visit = (node, parentPath) => {
+      const name =
+        "name" in node && node.name && typeof node.name.getText === "function"
+          ? node.name.getText(source)
+          : null;
+      const path = name && parentPath.at(-1) !== name ? [...parentPath, name] : parentPath;
+      for (const comment of declarationDeprecations(node)) {
+        markers.push({
+          comment,
+          target: path.join(".") || ts.SyntaxKind[node.kind],
+        });
+      }
+      ts.forEachChild(node, (child) => visit(child, path));
+    };
+    visit(declaration, []);
+    return markers
+      .map(({ comment, target }) => `/** @deprecated ${target}${comment ? ` — ${comment}` : ""} */`)
+      .sort();
+  };
   const typeDefinition = (symbol) => {
     const definitions = new Set();
     const visited = new Set();
@@ -131,12 +229,12 @@ function entrypointContracts() {
         ) {
           continue;
         }
-        definitions.add(
-          printer
-            .printNode(ts.EmitHint.Unspecified, declaration, declaration.getSourceFile())
-            .replace(/\s+/g, " ")
-            .trim(),
-        );
+        const deprecations = nestedDeprecations(declaration).join(" ");
+        const printed = printer
+          .printNode(ts.EmitHint.Unspecified, declaration, declaration.getSourceFile())
+          .replace(/\s+/g, " ")
+          .trim();
+        definitions.add(`${deprecations}${deprecations ? " " : ""}${printed}`);
         const inspect = (node) => {
           if (ts.isTypeReferenceNode(node)) {
             const referenced = checker.getSymbolAtLocation(node.typeName);
@@ -175,6 +273,7 @@ function entrypointContracts() {
               : checker.getDeclaredTypeOfSymbol(symbol);
           return {
             definition: kind === "type" ? typeDefinition(symbol) : [],
+            deprecations: symbolDeprecations(exported, symbol),
             kind,
             name: exported.getName(),
             signature: normalizeSignature(checker.typeToString(type, declaration, flags)),
@@ -247,6 +346,46 @@ function runCli(...args) {
   return normalizeCliOutput(result.stdout);
 }
 
+function generatedLockContract() {
+  const temporary = mkdtempSync(join(tmpdir(), "nerio-lock-contract-"));
+  const cliPath = join(root, "packages/cli/src/index.js");
+  const registryPath = join(root, "packages/registry/src/manifest.json");
+  const execute = (...args) => {
+    const result = spawnSync(process.execPath, [cliPath, ...args], {
+      cwd: temporary,
+      encoding: "utf8",
+      timeout: 15_000,
+    });
+    if (result.status !== 0) {
+      throw new Error(
+        `Could not generate representative nerio.lock.json:\n${result.stdout}${result.stderr}${result.error?.message ?? ""}`,
+      );
+    }
+  };
+
+  try {
+    execute("init", "--registry", registryPath, "--components", "components/nerio");
+    execute("add", "button", "--registry", registryPath);
+    const state = readJson(join(temporary, "nerio.lock.json"));
+    const stateShape = Object.fromEntries(
+      Object.entries(state)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, value]) => {
+          if (key !== "items" && key !== "files") return [key, responseShape(value)];
+          return [
+            key,
+            {
+              recordValues: responseShape(Object.values(value)),
+            },
+          ];
+        }),
+    );
+    return stateShape;
+  } finally {
+    rmSync(temporary, { recursive: true, force: true });
+  }
+}
+
 function cliContracts() {
   const runtime = readFileSync(join(root, "packages/cli/src/index.js"), "utf8");
   const constant = (name) =>
@@ -264,6 +403,7 @@ function cliContracts() {
       ]),
     ),
     lockSchema: constant("STATE_SCHEMA_VERSION"),
+    lockStateShape: generatedLockContract(),
   };
 }
 
@@ -271,20 +411,33 @@ function mcpContracts() {
   const runtimePath = join(root, "packages/mcp/src/tool-runtime.js");
   const script = `
     const runtime = require(${JSON.stringify(runtimePath)});
-    const usage = runtime.get_component_usage("button");
+    const names = runtime.list_components().map((component) => component.name).sort();
     process.stdout.write(JSON.stringify({
       tools: Object.keys(runtime).sort(),
-      registryKeys: Object.keys(runtime.get_registry()).sort(),
-      listItemKeys: Object.keys(runtime.list_components()[0]).sort(),
-      componentKeys: Object.keys(runtime.get_component("button")).sort(),
-      usageKeys: Object.keys(usage).sort()
+      registry: runtime.get_registry(),
+      list: runtime.list_components(),
+      components: Object.fromEntries(names.map((name) => [name, runtime.get_component(name)])),
+      usage: Object.fromEntries(names.map((name) => [name, runtime.get_component_usage(name)]))
     }));
   `;
-  const result = spawnSync(process.execPath, ["-e", script], { cwd: root, encoding: "utf8" });
+  const result = spawnSync(process.execPath, ["-e", script], {
+    cwd: root,
+    encoding: "utf8",
+    timeout: 15_000,
+  });
   if (result.status !== 0) {
-    throw new Error(`Could not inspect MCP contracts:\n${result.stdout}${result.stderr}`);
+    throw new Error(
+      `Could not inspect MCP contracts:\n${result.stdout}${result.stderr}${result.error?.message ?? ""}`,
+    );
   }
-  const helpers = JSON.parse(result.stdout);
+  const helperResponses = JSON.parse(result.stdout);
+  const helpers = {
+    tools: helperResponses.tools,
+    registryShape: responseShape(helperResponses.registry),
+    listShape: responseShape(helperResponses.list),
+    componentShapes: groupedResponseShapes(helperResponses.components),
+    usageShapes: groupedResponseShapes(helperResponses.usage),
+  };
   const serverPath = join(root, "packages/mcp/src/server.js");
   const wireScript = `
     const { Client } = require("@modelcontextprotocol/sdk/client/index.js");
@@ -424,6 +577,12 @@ function serialize(value) {
   return `${JSON.stringify(value, null, 2)}\n`;
 }
 
+async function writeFormattedJson(path, value) {
+  const config = (await resolveConfig(path)) ?? {};
+  const formatted = await format(serialize(value), { ...config, filepath: path, parser: "json" });
+  writeFileSync(path, formatted);
+}
+
 function hash(value) {
   return createHash("sha256").update(serialize(value)).digest("hex");
 }
@@ -433,7 +592,7 @@ function argument(name) {
   return index === -1 ? undefined : process.argv[index + 1];
 }
 
-function main() {
+async function main() {
   const snapshotPath = resolve(
     argument("--snapshot") ?? join(root, "quality/public-api-snapshot.json"),
   );
@@ -451,18 +610,15 @@ function main() {
         "Snapshot updates require --classification breaking|feature|fix, --approved-by, and --issue.",
       );
     }
-    writeFileSync(snapshotPath, serialize(current));
-    writeFileSync(
-      approvalPath,
-      serialize({
-        approvedBy,
-        baseline: current.baseline,
-        classification,
-        issue,
-        schemaVersion: 1,
-        snapshotSha256: hash(current),
-      }),
-    );
+    await writeFormattedJson(snapshotPath, current);
+    await writeFormattedJson(approvalPath, {
+      approvedBy,
+      baseline: current.baseline,
+      classification,
+      issue,
+      schemaVersion: 1,
+      snapshotSha256: hash(current),
+    });
     console.log(`Updated ${relative(root, snapshotPath)} with ${classification} approval.`);
     return;
   }
@@ -494,10 +650,8 @@ function main() {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  try {
-    main();
-  } catch (error) {
+  main().catch((error) => {
     console.error(error.message);
     process.exitCode = 1;
-  }
+  });
 }
