@@ -4,9 +4,9 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: `1.0.0-beta.0` is the maintainer-approved release candidate for the frozen Core 1.0 API.
-> It is not published yet. The current public prerelease remains `0.1.0-alpha.2` under npm `alpha`;
-> `latest` intentionally remains on `0.1.0-alpha.0`.
+> Status: `1.0.0-beta.0` is the published public beta for the frozen Core 1.0 API. Install it from
+> npm under the `beta` tag. The protected `alpha` and `latest` tags intentionally remain on
+> `0.1.0-alpha.2` and `0.1.0-alpha.0`.
 
 ## Product model
 
@@ -95,7 +95,7 @@ not a runtime axis.
 
 ## Core scope
 
-The current alpha establishes the token foundation and Core component categories: actions, forms,
+The current beta establishes the token foundation and Core component categories: actions, forms,
 overlays, navigation, feedback, data display, layout primitives, and common reusable building
 blocks. The approved visual language remains neutral-first, compact, alpha-neutral, and restrained
 in its use of brand color.
@@ -197,11 +197,10 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
 `@nerio-ui/mcp`.
 
-The frozen `1.0.0-beta.0` candidate is approved for publication under the npm `beta` tag without
-moving `latest` or `alpha`. Until the manual publication sequence completes, npm `alpha` points to
-`0.1.0-alpha.2` and `latest` remains on `0.1.0-alpha.0`. The beta must pass public-package,
-Registry, CLI, MCP, provenance, clean-consumer, and external-feedback verification before stable
-documentation begins. The frozen contract is defined by the
+The frozen `1.0.0-beta.0` release is published under the npm `beta` tag. npm `alpha` remains on
+`0.1.0-alpha.2`, and `latest` remains on `0.1.0-alpha.0`. Package, Registry, CLI, MCP, npm registry
+signature, and clean-consumer verification passed; the external-feedback gate remains open before
+stable documentation begins. The frozen contract is defined by the
 [public API stability policy](./docs/public-api-stability.md); alpha consumers should use the
 [Core 1.0 migration guide](./docs/migrations/alpha-to-beta.md). See
 [RELEASE.md](./RELEASE.md), [CHANGELOG.md](./CHANGELOG.md), and the

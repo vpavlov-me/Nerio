@@ -1,8 +1,8 @@
 # Core 1.0 beta feedback cycle
 
-This document prepares the manual publication and external evaluation required by issue #146. It
-does not authorize npm publication, dist-tag changes, Git tags, GitHub Releases, tester outreach,
-or a stable-release decision.
+This document records the completed manual beta publication and the external evaluation required
+by issue #146. It does not authorize another npm publication, dist-tag change, Git tag, GitHub
+Release, tester outreach, or a stable-release decision.
 
 ## Candidate record
 
@@ -10,13 +10,13 @@ or a stable-release decision.
 | ------------------- | ---------------------------------------------------------------------------- |
 | Version             | `1.0.0-beta.0`                                                               |
 | Frozen API baseline | `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`                                   |
-| Publish candidate   | Record the exact reviewed `main` SHA after the `dev -> main` release gate    |
+| Publish candidate   | `5ffbd44e208039c9007ae3397a74d279d4a22eff`                                   |
 | Registry revision   | `v1.0.0-beta.0`                                                              |
 | npm tag             | `beta`                                                                       |
 | Protected tags      | Do not move `latest` or `alpha`                                              |
 | Git tag and Release | `v1.0.0-beta.0`, GitHub prerelease, created from the exact publish candidate |
-| Window opens        | Record the UTC publication timestamp after all public verification passes    |
-| Earliest close      | Publication timestamp plus 14 full calendar days                             |
+| Window opens        | `2026-08-01T16:42:44Z`                                                       |
+| Earliest close      | `2026-08-15T16:42:44Z`                                                       |
 
 The publish candidate must contain the frozen API baseline plus only reviewed release preparation
 and approved blocker fixes. Record any frozen API change, its SemVer classification, migration
@@ -39,28 +39,38 @@ after all of the following are complete:
 - the alpha-to-beta migration guide and known limitations are reviewed;
 - there is no open P0/P1 or accepted beta-blocking P2 issue.
 
+Decision: **Approved to publish beta.0** on 2026-08-01. The exact-candidate gate, tarball review,
+npm access and 2FA checks, migration review, and blocker review passed before publication.
+
 ## Public verification record
 
 Fill every row after publication. A package is not verified merely because `npm publish` returned
 success.
 
-| Artifact             | Exact version or reference | Provenance         | Public metadata    | Clean install | Result  |
-| -------------------- | -------------------------- | ------------------ | ------------------ | ------------- | ------- |
-| `@nerio-ui/tokens`   | `1.0.0-beta.0`             | Pending            | Pending            | Pending       | Pending |
-| `@nerio-ui/adapters` | `1.0.0-beta.0`             | Pending            | Pending            | Pending       | Pending |
-| `@nerio-ui/registry` | `1.0.0-beta.0`             | Pending            | Pending            | Pending       | Pending |
-| `@nerio-ui/ui`       | `1.0.0-beta.0`             | Pending            | Pending            | Pending       | Pending |
-| `@nerio-ui/cli`      | `1.0.0-beta.0`             | Pending            | Pending            | Pending       | Pending |
-| `@nerio-ui/mcp`      | `1.0.0-beta.0`             | Pending            | Pending            | Pending       | Pending |
-| Immutable Registry   | `v1.0.0-beta.0`            | N/A                | Pending            | Pending       | Pending |
-| Git tag              | `v1.0.0-beta.0`            | Signed: Pending    | Exact SHA: Pending | N/A           | Pending |
-| GitHub Release       | `v1.0.0-beta.0` prerelease | Exact SHA: Pending | Links: Pending     | N/A           | Pending |
+| Artifact             | Exact version or reference | Provenance                | Public metadata | Clean install | Result |
+| -------------------- | -------------------------- | ------------------------- | --------------- | ------------- | ------ |
+| `@nerio-ui/tokens`   | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/adapters` | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/registry` | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/ui`       | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/cli`      | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/mcp`      | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| Immutable Registry   | `v1.0.0-beta.0`            | N/A                       | Verified        | Passed        | Passed |
+| Git tag              | `v1.0.0-beta.0`            | Signed: verified          | Exact SHA       | N/A           | Passed |
+| GitHub Release       | `v1.0.0-beta.0` prerelease | Exact SHA and tag match   | Links verified  | N/A           | Passed |
 
 After all six packages exist, run the published-artifact smoke:
 
 ```bash
 NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release-consumer
 ```
+
+The command passed against all six public packages after publication. It verified coordinated
+public metadata and dependencies, package and source installation, the documented eight-command
+local CLI workflow, package-qualified one-off CLI execution, MCP bin discovery, and a clean Next.js
+consumer build. npm `beta` points to `1.0.0-beta.0` for every package; `alpha` and `latest` were not
+moved. npm reports one registry signature per package. This release used interactive 2FA and npm
+registry signatures; it does not claim a separate provenance attestation.
 
 Also verify package mode and source mode in separate clean supported Next.js consumers, the
 documented local and package-qualified CLI commands, Registry `diff` and update dry run,
