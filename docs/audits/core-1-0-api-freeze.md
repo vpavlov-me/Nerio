@@ -108,7 +108,7 @@ No Pro component or product-workflow API was required.
 
 Focused evidence:
 
-- `pnpm test:api`: 4/4 passed;
+- `pnpm test:api`: 8/8 passed;
 - `pnpm validate:api`: reviewed snapshot passed;
 - `pnpm test:catalog`: 29/29 passed;
 - `pnpm validate:catalog`: 100 catalog entries, 46 installable identities, 46 Registry items;

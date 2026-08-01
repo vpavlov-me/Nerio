@@ -51,7 +51,7 @@ product-specific change onto it, and rerun `diff` and `doctor`.
 
 The conventional source root is `src/components/nerio` for applications with a `src/app` or
 `src/pages` directory, and `components/nerio` otherwise. Keep the root selected in
-`nerio.config.json`; moving installed files without updating configuration breaks dependency and
+`nerio.json`; moving installed files without updating configuration breaks dependency and
 hash tracking.
 
 ## CLI and MCP automation
