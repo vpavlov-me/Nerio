@@ -22,6 +22,7 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Public API snapshot verified/);
+  assert.doesNotMatch(readFileSync(snapshot, "utf8"), /node_modules\/\.pnpm/);
 });
 
 test("rejects unclassified public API drift", () => {

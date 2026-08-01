@@ -122,6 +122,8 @@ function entrypointContracts() {
     ts.TypeFormatFlags.NoTruncation |
     ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope |
     ts.TypeFormatFlags.WriteArrowStyleSignature;
+  const normalizeSignature = (signature) =>
+    signature.replace(/(?:[A-Za-z]:)?[^"]*\/node_modules\/\.pnpm\/[^/]+\/node_modules\//g, "");
 
   return Object.fromEntries(
     Object.entries(entrypoints).map(([entrypoint, path]) => {
@@ -145,7 +147,7 @@ function entrypointContracts() {
           return {
             kind,
             name: exported.getName(),
-            signature: checker.typeToString(type, declaration, flags),
+            signature: normalizeSignature(checker.typeToString(type, declaration, flags)),
           };
         })
         .sort((left, right) => left.name.localeCompare(right.name));

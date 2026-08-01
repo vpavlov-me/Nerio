@@ -417,7 +417,7 @@
       {
         "kind": "value",
         "name": "z",
-        "signature": "typeof import(\"/Users/vladimirpavlov/Documents/.codex-worktrees/nerio-145/node_modules/.pnpm/zod@4.4.3/node_modules/zod/v4/classic/external\")"
+        "signature": "typeof import(\"zod/v4/classic/external\")"
       }
     ],
     "@nerio-ui/adapters/table": [
