@@ -26,12 +26,20 @@ function hasFlag(name) {
   return args.includes(name);
 }
 
+function defaultComponentsDirectory() {
+  const usesSourceDirectory =
+    fs.existsSync(path.join(cwd, "src", "app")) || fs.existsSync(path.join(cwd, "src", "pages"));
+
+  return usesSourceDirectory ? "src/components/nerio" : "components/nerio";
+}
+
 function help(commandName) {
   const sections = {
     init: [
       "Usage: nerio init [--registry <path-or-url>] [--components <directory>]",
       "",
       "Create nerio.json for source-installed components.",
+      "Defaults to src/components/nerio for src-dir applications and components/nerio otherwise.",
     ],
     add: [
       "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite]",
@@ -402,7 +410,7 @@ async function init() {
   const config = {
     schemaVersion: "1.0.0",
     registry: option("--registry") || DEFAULT_REGISTRY,
-    components: option("--components") || "components/nerio",
+    components: option("--components") || defaultComponentsDirectory(),
   };
   fs.writeFileSync(target, `${JSON.stringify(config, null, 2)}\n`);
   console.log("Created nerio.json");

@@ -774,6 +774,7 @@ async function verify() {
   const displayTarget = path.join(tempRoot, "display");
   const feedbackTarget = path.join(tempRoot, "feedback");
   const progressTarget = path.join(tempRoot, "progress");
+  const srcDirTarget = path.join(tempRoot, "src-dir");
   fs.mkdirSync(localTarget);
   fs.mkdirSync(urlTarget);
   fs.mkdirSync(invalidPackageTarget);
@@ -788,10 +789,24 @@ async function verify() {
   fs.mkdirSync(displayTarget);
   fs.mkdirSync(feedbackTarget);
   fs.mkdirSync(progressTarget);
+  fs.mkdirSync(path.join(srcDirTarget, "src", "app"), { recursive: true });
 
   const { server, manifestUrl } = await startRegistryServer();
   try {
     await verifySourceLifecycle(tempRoot);
+    await run(srcDirTarget, "init", "--registry", manifest);
+    const srcDirConfig = JSON.parse(fs.readFileSync(path.join(srcDirTarget, "nerio.json"), "utf8"));
+    if (srcDirConfig.components !== "src/components/nerio") {
+      throw new Error("Init did not choose the import-aligned default for a src-dir application.");
+    }
+    await run(srcDirTarget, "add", "command-primitive");
+    const srcDirCommand = fs.readFileSync(
+      path.join(srcDirTarget, "src/components/nerio/components/command.tsx"),
+      "utf8",
+    );
+    if (srcDirCommand.includes("children={renderItem}")) {
+      throw new Error("Source-installed Command does not satisfy the Next.js ESLint baseline.");
+    }
     await run(localTarget, "init", "--registry", manifest);
     writePackageTailwindSetup(localTarget);
     await run(localTarget, "doctor");
@@ -903,6 +918,13 @@ async function verify() {
     const addHelpOutput = await run(localTarget, "add", "--help");
     if (!addHelpOutput.includes("nerio add <component>") || !addHelpOutput.includes("--dry-run")) {
       throw new Error("Add help output does not describe the source install options.");
+    }
+    const initHelpOutput = await run(localTarget, "init", "--help");
+    if (
+      !initHelpOutput.includes("src/components/nerio") ||
+      !initHelpOutput.includes("components/nerio")
+    ) {
+      throw new Error("Init help output does not explain the source-directory-aware default.");
     }
     const listOutput = await run(localTarget, "list");
     if (

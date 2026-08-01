@@ -129,7 +129,10 @@ client-only `@nerio-ui/adapters/motion`; install the matching TanStack Table, Re
 Form, Zod, or Motion peer only when that subpath is used. Core UI remains CSS-first and never
 imports Motion.
 
-Source-installed registry components keep their local paths, such as `@/components/nerio/components/button`.
+Source-installed registry components keep their local paths, such as
+`@/components/nerio/components/button`. `nerio init` defaults to `src/components/nerio` when it
+detects `src/app` or `src/pages`, matching the standard Next.js `@/*` alias; projects without a
+`src` application directory keep the `components/nerio` default. Use `--components` to override it.
 
 The Core packages ship TypeScript source. Next.js consumers must list the Nerio packages they use
 in `transpilePackages`; the complete configuration is documented in Getting started.
