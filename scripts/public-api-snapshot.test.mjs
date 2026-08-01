@@ -32,6 +32,26 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
   assert.match(buttonProps.definition.join("\n"), /type ButtonBaseProps/);
   assert.match(buttonProps.definition.join("\n"), /type TextButtonProps/);
   assert.match(buttonProps.definition.join("\n"), /type IconOnlyButtonProps/);
+  assert.deepEqual(
+    parsed.mcp.wireTools.map((tool) => tool.name),
+    ["get_component", "get_component_usage", "get_registry", "list_components"],
+  );
+  assert.deepEqual(
+    parsed.mcp.wireTools.find((tool) => tool.name === "get_component").inputSchema.required,
+    ["name"],
+  );
+  assert.equal(parsed.docsRoutes.includes("/docs/components/button"), true);
+  assert.equal(
+    parsed.docsRoutes.some(
+      (route) =>
+        route === "/blocks" ||
+        route === "/templates" ||
+        route === "/playground" ||
+        route.startsWith("/views/") ||
+        route.startsWith("/visual-test/"),
+    ),
+    false,
+  );
 });
 
 test("rejects unclassified public API drift", () => {
@@ -61,6 +81,20 @@ test("requires SemVer classification and approval metadata for updates", () => {
 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /require --classification/);
+});
+
+test("rejects incomplete approval metadata even when the snapshot hash matches", () => {
+  const temporary = mkdtempSync(join(tmpdir(), "nerio-api-approval-test-"));
+  const incompleteApproval = join(temporary, "approval.json");
+  const changed = JSON.parse(readFileSync(approval, "utf8"));
+  delete changed.approvedBy;
+  writeFileSync(incompleteApproval, `${JSON.stringify(changed, null, 2)}\n`);
+
+  const result = run("--snapshot", snapshot, "--approval", incompleteApproval);
+  rmSync(temporary, { recursive: true, force: true });
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /approval is invalid in: approvedBy/);
 });
 
 test("rejects restored alpha compatibility debt", () => {

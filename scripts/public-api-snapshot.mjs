@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -287,28 +287,125 @@ function mcpContracts() {
   if (result.status !== 0) {
     throw new Error(`Could not inspect MCP contracts:\n${result.stdout}${result.stderr}`);
   }
-  return JSON.parse(result.stdout);
+  const helpers = JSON.parse(result.stdout);
+  const serverPath = join(root, "packages/mcp/src/server.js");
+  const wireScript = `
+    const { Client } = require("@modelcontextprotocol/sdk/client/index.js");
+    const { StdioClientTransport } = require("@modelcontextprotocol/sdk/client/stdio.js");
+    (async () => {
+      const client = new Client({ name: "nerio-api-snapshot", version: "1.0.0" });
+      try {
+        await client.connect(new StdioClientTransport({
+          command: process.execPath,
+          args: [${JSON.stringify(serverPath)}]
+        }));
+        const listed = await client.listTools();
+        process.stdout.write(JSON.stringify(listed.tools.map((tool) => ({
+          annotations: tool.annotations ?? null,
+          description: tool.description ?? null,
+          inputSchema: tool.inputSchema ?? null,
+          name: tool.name,
+          outputSchema: tool.outputSchema ?? null,
+          title: tool.title ?? null
+        })).sort((left, right) => left.name.localeCompare(right.name))));
+      } finally {
+        await client.close();
+      }
+    })().catch((error) => {
+      console.error(error);
+      process.exitCode = 1;
+    });
+  `;
+  const wireResult = spawnSync(process.execPath, ["-e", wireScript], {
+    cwd: join(root, "packages/mcp"),
+    encoding: "utf8",
+    timeout: 15_000,
+  });
+  if (wireResult.status !== 0) {
+    throw new Error(
+      `Could not inspect MCP wire contracts:\n${wireResult.stdout}${wireResult.stderr}`,
+    );
+  }
+  return { helpers, wireTools: JSON.parse(wireResult.stdout) };
+}
+
+function stringCollection(path, variableName) {
+  const source = ts.createSourceFile(
+    path,
+    readFileSync(path, "utf8"),
+    ts.ScriptTarget.Latest,
+    true,
+  );
+  let values;
+  const visit = (node) => {
+    if (
+      ts.isVariableDeclaration(node) &&
+      ts.isIdentifier(node.name) &&
+      node.name.text === variableName
+    ) {
+      values = node.initializer;
+      return;
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  if (!values) throw new Error(`Could not inspect ${variableName} in ${relative(root, path)}.`);
+
+  if (ts.isArrayLiteralExpression(values)) {
+    return values.elements
+      .filter(ts.isStringLiteral)
+      .map((element) => element.text)
+      .sort();
+  }
+  if (ts.isObjectLiteralExpression(values)) {
+    return values.properties
+      .map((property) => {
+        if (!("name" in property) || !property.name) return null;
+        if (ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) {
+          return property.name.text;
+        }
+        return null;
+      })
+      .filter(Boolean)
+      .sort();
+  }
+  throw new Error(`${variableName} must remain a static array or object literal.`);
 }
 
 function docsRoutes() {
-  const appRoot = join(root, "apps/docs/app");
-  const routes = [];
-  const visit = (directory) => {
-    for (const entry of readdirSync(directory, { withFileTypes: true })) {
-      const path = join(directory, entry.name);
-      if (entry.isDirectory()) visit(path);
-      if (entry.isFile() && entry.name === "page.tsx") {
-        const route = `/${relative(appRoot, dirname(path)).replaceAll("\\", "/")}`.replace(
-          /\/$/,
-          "",
-        );
-        routes.push(route || "/");
-      }
-    }
-  };
-  visit(appRoot);
-  routes.push("/llms.txt");
-  return [...new Set(routes)].sort();
+  const staticRoutes = stringCollection(join(root, "apps/docs/app/sitemap.ts"), "staticRoutes");
+  const componentSlugs = stringCollection(
+    join(root, "apps/docs/lib/component-docs.ts"),
+    "componentLedes",
+  );
+  return [
+    ...staticRoutes,
+    ...componentSlugs.map((slug) => `/docs/components/${slug}`),
+    "/llms.txt",
+  ].sort();
+}
+
+function assertApproval(approval, expected) {
+  const missing = [
+    ["approvedBy", typeof approval.approvedBy === "string" && approval.approvedBy.trim()],
+    ["baseline", approval.baseline === expected.baseline],
+    ["classification", ["breaking", "feature", "fix"].includes(approval.classification)],
+    [
+      "issue",
+      (typeof approval.issue === "string" || typeof approval.issue === "number") &&
+        String(approval.issue).trim(),
+    ],
+    ["schemaVersion", approval.schemaVersion === 1],
+    ["snapshotSha256", typeof approval.snapshotSha256 === "string"],
+  ]
+    .filter(([, valid]) => !valid)
+    .map(([field]) => field);
+  if (missing.length) {
+    throw new Error(`Public API snapshot approval is invalid in: ${missing.join(", ")}.`);
+  }
+  if (expected.schemaVersion !== 1) {
+    throw new Error(`Unsupported public API snapshot schema ${expected.schemaVersion}.`);
+  }
 }
 
 export function createSnapshot() {
@@ -378,6 +475,7 @@ function main() {
   }
   const expected = readJson(snapshotPath);
   const approval = readJson(approvalPath);
+  assertApproval(approval, expected);
   if (serialize(expected) !== serialize(current)) {
     const temporary = mkdtempSync(join(tmpdir(), "nerio-api-snapshot-"));
     writeFileSync(join(temporary, "current.json"), serialize(current));

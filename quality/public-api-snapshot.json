@@ -17,41 +17,53 @@
   },
   "docsRoutes": [
     "/",
-    "/blocks",
-    "/blocks/[slug]",
     "/docs",
     "/docs/ai",
-    "/docs/blocks/[slug]",
-    "/docs/components/[slug]",
     "/docs/components/alert",
+    "/docs/components/avatar",
     "/docs/components/badge",
+    "/docs/components/breadcrumbs",
     "/docs/components/button",
     "/docs/components/button-group",
     "/docs/components/calendar",
+    "/docs/components/card",
     "/docs/components/checkbox",
     "/docs/components/command-primitive",
     "/docs/components/date-picker",
     "/docs/components/dialog",
+    "/docs/components/dropdown-menu",
     "/docs/components/empty-state",
+    "/docs/components/field",
     "/docs/components/file-input",
+    "/docs/components/form-group",
+    "/docs/components/form-message",
     "/docs/components/input",
     "/docs/components/input-group",
     "/docs/components/item",
     "/docs/components/kbd",
+    "/docs/components/key-value",
     "/docs/components/label",
+    "/docs/components/list",
+    "/docs/components/pagination",
+    "/docs/components/popover",
     "/docs/components/progress",
     "/docs/components/radio-group",
     "/docs/components/select",
+    "/docs/components/separator",
+    "/docs/components/sheet",
     "/docs/components/sidebar-primitive",
+    "/docs/components/skeleton",
     "/docs/components/slider",
     "/docs/components/spinner",
+    "/docs/components/stat",
     "/docs/components/switch",
     "/docs/components/table",
     "/docs/components/tabs",
+    "/docs/components/textarea",
     "/docs/components/toast",
     "/docs/components/toggle",
-    "/docs/compositions/[slug]",
-    "/docs/foundations/animations",
+    "/docs/components/tooltip",
+    "/docs/components/typography",
     "/docs/foundations/effects",
     "/docs/foundations/icons",
     "/docs/foundations/motion",
@@ -62,22 +74,7 @@
     "/docs/getting-started",
     "/docs/migration",
     "/docs/registry",
-    "/llms.txt",
-    "/playground",
-    "/templates",
-    "/templates/[slug]",
-    "/views/[slug]",
-    "/views/blocks/[slug]",
-    "/visual-test",
-    "/visual-test/blocks/[slug]",
-    "/visual-test/calendar",
-    "/visual-test/date-picker",
-    "/visual-test/file-input",
-    "/visual-test/input",
-    "/visual-test/item",
-    "/visual-test/pagination",
-    "/visual-test/slider",
-    "/visual-test/tabs"
+    "/llms.txt"
   ],
   "entrypoints": {
     "@nerio-ui/adapters/charts": [
@@ -4123,41 +4120,125 @@
     ]
   },
   "mcp": {
-    "componentKeys": [
-      "accessibility",
-      "baseUiPrimitives",
-      "category",
-      "dependencies",
-      "description",
-      "files",
-      "name",
-      "registryDependencies",
-      "requiredTokens",
-      "slots",
-      "title",
-      "usage",
-      "variants"
-    ],
-    "listItemKeys": ["category", "description", "name", "title"],
-    "registryKeys": ["name", "schemaVersion", "sourceRevision", "styleContractVersion", "version"],
-    "tools": ["get_component", "get_component_usage", "get_registry", "list_components"],
-    "usageKeys": [
-      "accessibility",
-      "baseUiPrimitives",
-      "category",
-      "dependencies",
-      "description",
-      "docsPath",
-      "files",
-      "name",
-      "optionalPeerDependencies",
-      "registryDependencies",
-      "requiredTokens",
-      "slots",
-      "states",
-      "title",
-      "usage",
-      "variants"
+    "helpers": {
+      "componentKeys": [
+        "accessibility",
+        "baseUiPrimitives",
+        "category",
+        "dependencies",
+        "description",
+        "files",
+        "name",
+        "registryDependencies",
+        "requiredTokens",
+        "slots",
+        "title",
+        "usage",
+        "variants"
+      ],
+      "listItemKeys": ["category", "description", "name", "title"],
+      "registryKeys": [
+        "name",
+        "schemaVersion",
+        "sourceRevision",
+        "styleContractVersion",
+        "version"
+      ],
+      "tools": ["get_component", "get_component_usage", "get_registry", "list_components"],
+      "usageKeys": [
+        "accessibility",
+        "baseUiPrimitives",
+        "category",
+        "dependencies",
+        "description",
+        "docsPath",
+        "files",
+        "name",
+        "optionalPeerDependencies",
+        "registryDependencies",
+        "requiredTokens",
+        "slots",
+        "states",
+        "title",
+        "usage",
+        "variants"
+      ]
+    },
+    "wireTools": [
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Read full registry metadata for one Nerio component.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "properties": {
+            "name": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": ["name"],
+          "type": "object"
+        },
+        "name": "get_component",
+        "outputSchema": null,
+        "title": "Get a Nerio component"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Read usage, install files, tokens, primitives, variants, slots, and accessibility guidance.",
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "properties": {
+            "name": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": ["name"],
+          "type": "object"
+        },
+        "name": "get_component_usage",
+        "outputSchema": null,
+        "title": "Get Nerio component usage"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "readOnlyHint": true
+        },
+        "description": "Read the Registry schema, release version, exact source revision, and style contract version.",
+        "inputSchema": {
+          "properties": {},
+          "type": "object"
+        },
+        "name": "get_registry",
+        "outputSchema": null,
+        "title": "Get the Nerio Registry version"
+      },
+      {
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "readOnlyHint": true
+        },
+        "description": "List components available in the Nerio source registry.",
+        "inputSchema": {
+          "properties": {},
+          "type": "object"
+        },
+        "name": "list_components",
+        "outputSchema": null,
+        "title": "List Nerio components"
+      }
     ]
   },
   "packages": {
