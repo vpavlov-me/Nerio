@@ -62,8 +62,8 @@ export default function HomePage() {
           </Button>
         </div>
         <p className="home-hero__note">
-          <Icon icon={Check} aria-hidden /> {siteConfig.version} is a public alpha. APIs may still
-          change before 1.0.
+          <Icon icon={Check} aria-hidden /> {siteConfig.version} is a public beta. Frozen Core APIs
+          follow the public API stability policy.
         </p>
       </section>
 

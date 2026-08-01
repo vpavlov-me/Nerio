@@ -48,8 +48,7 @@ export default function Page() {
       <section className="doc-section" id="install">
         <h2>Install</h2>
         <p>
-          Nerio Core <code>1.0.0-beta.0</code> is the maintainer-approved candidate for the npm{" "}
-          <code>beta</code> tag. It is not published yet.
+          Nerio Core <code>1.0.0-beta.0</code> is published under the npm <code>beta</code> tag.
         </p>
         <CodeExample code={packageInstall} label="Package installation" />
         <CodeExample code={tailwindSetup} label="Tailwind CSS v4 package setup" />
