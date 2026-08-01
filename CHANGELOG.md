@@ -6,7 +6,13 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
-No changes yet.
+### Fixed
+
+- Fixed `nerio init` to choose `src/components/nerio` for conventional Next.js src-dir projects,
+  keeping source-installed imports aligned with the standard `@/*` alias while preserving the
+  existing root default and explicit override.
+- Fixed source-installed Command collections to satisfy the supported Next.js ESLint baseline
+  without consumer edits.
 
 ## 0.1.0-alpha.2 — 2026-07-30
 

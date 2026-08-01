@@ -319,7 +319,7 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(fu
       const content = filteredItems.map((group) => (
         <CommandGroup key={group.value} items={group.items}>
           <CommandGroupLabel>{renderGroupLabel?.(group) ?? group.label}</CommandGroupLabel>
-          <BaseAutocomplete.Collection children={renderItem} />
+          <BaseAutocomplete.Collection>{renderItem}</BaseAutocomplete.Collection>
         </CommandGroup>
       ));
 
@@ -351,8 +351,9 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(fu
         )}
         {...props}
         data-slot="command-list"
-        children={renderItem}
-      />
+      >
+        {renderItem}
+      </BaseAutocomplete.List>
     );
   }
 
