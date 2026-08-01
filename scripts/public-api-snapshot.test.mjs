@@ -40,6 +40,12 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
     parsed.mcp.wireTools.find((tool) => tool.name === "get_component").inputSchema.required,
     ["name"],
   );
+  assert.equal(parsed.packages["@nerio-ui/ui"].dependencies["@nerio-ui/tokens"], "workspace:*");
+  assert.equal(
+    parsed.registry.publicCommands.cli.localCommands.includes("pnpm exec nerio doctor"),
+    true,
+  );
+  assert.match(parsed.registry.publicCommands.cli.localInstall, /@nerio-ui\/cli@<version>/);
   assert.equal(parsed.docsRoutes.includes("/docs/components/button"), true);
   assert.equal(
     parsed.docsRoutes.some(

@@ -75,15 +75,6 @@ export function assertNoAlphaCompatibilityDebt(sourceRoot = root) {
   }
 }
 
-function normalizedDependencies(dependencies = {}) {
-  return Object.fromEntries(
-    Object.entries(dependencies).map(([name, range]) => [
-      name,
-      range.startsWith("workspace:") ? "workspace" : range,
-    ]),
-  );
-}
-
 function packageContracts() {
   return Object.fromEntries(
     packageDirectories.map((directory) => {
@@ -92,7 +83,7 @@ function packageContracts() {
         packageJson.name,
         {
           bin: packageJson.bin ?? null,
-          dependencies: normalizedDependencies(packageJson.dependencies),
+          dependencies: packageJson.dependencies ?? {},
           engines: packageJson.engines ?? null,
           exports: packageJson.exports ?? null,
           files: packageJson.files ?? null,
@@ -203,6 +194,11 @@ function tokenContracts() {
 
 function registryContracts() {
   const manifest = readJson(join(root, "packages/registry/src/manifest.json"));
+  const publicCommands = JSON.parse(
+    normalizeCliOutput(
+      JSON.stringify(readJson(join(root, "packages/registry/src/public-commands.json"))),
+    ),
+  );
   return {
     items: manifest.items
       .map((item) => ({
@@ -225,6 +221,7 @@ function registryContracts() {
       }))
       .sort((left, right) => left.name.localeCompare(right.name)),
     name: manifest.name,
+    publicCommands,
     schemaVersion: manifest.schemaVersion,
     styleContractVersion: manifest.styleContractVersion,
   };

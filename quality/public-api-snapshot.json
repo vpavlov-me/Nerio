@@ -4309,7 +4309,7 @@
         "nerio": "./src/index.js"
       },
       "dependencies": {
-        "@nerio-ui/registry": "workspace"
+        "@nerio-ui/registry": "workspace:*"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -4326,7 +4326,7 @@
       },
       "dependencies": {
         "@modelcontextprotocol/sdk": "^1.30.0",
-        "@nerio-ui/registry": "workspace",
+        "@nerio-ui/registry": "workspace:*",
         "zod": "^4.4.3"
       },
       "engines": {
@@ -4346,9 +4346,9 @@
     "@nerio-ui/registry": {
       "bin": null,
       "dependencies": {
-        "@nerio-ui/adapters": "workspace",
-        "@nerio-ui/tokens": "workspace",
-        "@nerio-ui/ui": "workspace"
+        "@nerio-ui/adapters": "workspace:*",
+        "@nerio-ui/tokens": "workspace:*",
+        "@nerio-ui/ui": "workspace:*"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -4383,8 +4383,8 @@
       "bin": null,
       "dependencies": {
         "@base-ui/react": "^1.6.0",
-        "@nerio-ui/adapters": "workspace",
-        "@nerio-ui/tokens": "workspace",
+        "@nerio-ui/adapters": "workspace:*",
+        "@nerio-ui/tokens": "workspace:*",
         "clsx": "^2.1.1",
         "tailwind-merge": "^3.6.0"
       },
@@ -7626,6 +7626,40 @@
       }
     ],
     "name": "nerio",
+    "publicCommands": {
+      "cli": {
+        "localCommands": [
+          "pnpm exec nerio init",
+          "pnpm exec nerio list",
+          "pnpm exec nerio info button",
+          "pnpm exec nerio add button --dry-run",
+          "pnpm exec nerio add button",
+          "pnpm exec nerio diff button",
+          "pnpm exec nerio update button --dry-run",
+          "pnpm exec nerio doctor"
+        ],
+        "localInstall": "pnpm add -D @nerio-ui/registry@<version> @nerio-ui/cli@<version>",
+        "oneOffCommands": [
+          "pnpm dlx @nerio-ui/cli@<version> init",
+          "pnpm dlx @nerio-ui/cli@<version> add button"
+        ]
+      },
+      "mcp": {
+        "localConfiguration": {
+          "args": ["exec", "nerio-mcp"],
+          "command": "pnpm"
+        },
+        "localInstall": "pnpm add -D @nerio-ui/mcp@<version>",
+        "oneOffConfiguration": {
+          "args": ["dlx", "@nerio-ui/mcp@<version>"],
+          "command": "pnpm"
+        }
+      },
+      "packageInstall": [
+        "pnpm add @nerio-ui/tokens@<version> @nerio-ui/adapters@<version> @nerio-ui/ui@<version> tailwindcss",
+        "pnpm add -D @tailwindcss/postcss postcss"
+      ]
+    },
     "schemaVersion": "1.0.0",
     "styleContractVersion": "tailwind-v1"
   },
