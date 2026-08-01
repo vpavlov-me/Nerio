@@ -5,7 +5,11 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { assertNoAlphaCompatibilityDebt, normalizeCliOutput } from "./public-api-snapshot.mjs";
+import {
+  assertNoAlphaCompatibilityDebt,
+  collectDeprecationsFromSource,
+  normalizeCliOutput,
+} from "./public-api-snapshot.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const validator = join(root, "scripts/public-api-snapshot.mjs");
@@ -39,6 +43,50 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
   assert.deepEqual(
     parsed.mcp.wireTools.find((tool) => tool.name === "get_component").inputSchema.required,
     ["name"],
+  );
+  assert.deepEqual(
+    parsed.mcp.helpers.componentShapes.flatMap((group) => group.components).sort(),
+    parsed.registry.items.map((item) => item.name).sort(),
+  );
+  const motionShape = parsed.mcp.helpers.componentShapes.find((group) =>
+    group.components.includes("motion-adapter"),
+  );
+  assert.ok(motionShape, "MCP component shapes must include motion-adapter");
+  assert.deepEqual(motionShape.shape.optionalPeerDependencies, ["string"]);
+  assert.deepEqual(motionShape.shape.states, ["string"]);
+  assert.deepEqual(Object.keys(parsed.cli.lockStateShape), [
+    "files",
+    "items",
+    "nerioVersion",
+    "registry",
+    "requestedItems",
+    "schemaVersion",
+  ]);
+  const expectedItemKeys = [
+    "dependencies",
+    "files",
+    "registryDependencies",
+    "registryVersion",
+    "sourceRevision",
+  ];
+  const expectedFileKeys = ["hash", "owners", "role", "source"];
+  assert.ok(
+    parsed.cli.lockStateShape.items.recordValues.length > 0,
+    "generated lock contract must contain item record shapes",
+  );
+  assert.ok(
+    parsed.cli.lockStateShape.files.recordValues.length > 0,
+    "generated lock contract must contain file record shapes",
+  );
+  for (const shape of parsed.cli.lockStateShape.items.recordValues) {
+    assert.deepEqual(Object.keys(shape), expectedItemKeys);
+  }
+  for (const shape of parsed.cli.lockStateShape.files.recordValues) {
+    assert.deepEqual(Object.keys(shape), expectedFileKeys);
+  }
+  assert.equal(
+    parsed.entrypoints["@nerio-ui/ui"].every((entry) => Array.isArray(entry.deprecations)),
+    true,
   );
   assert.equal(parsed.packages["@nerio-ui/ui"].dependencies["@nerio-ui/tokens"], "workspace:*");
   assert.equal(
@@ -131,6 +179,22 @@ test("allows future deprecations while rejecting only removed alpha aliases", ()
   } finally {
     rmSync(temporary, { recursive: true, force: true });
   }
+});
+
+test("retains normalized deprecation markers for API comparison", () => {
+  assert.deepEqual(
+    collectDeprecationsFromSource(
+      [
+        "/** @deprecated  Use NewButton instead. */",
+        "export interface LegacyButton {",
+        "  /** @deprecated Use label instead. */",
+        "  legacyLabel?: string;",
+        "}",
+        "export { /** @deprecated Use LegacyButton directly. */ LegacyButton as OldButton };",
+      ].join("\n"),
+    ),
+    ["Use LegacyButton directly.", "Use NewButton instead.", "Use label instead."],
+  );
 });
 
 test("normalizes stable and prerelease CLI package versions", () => {
