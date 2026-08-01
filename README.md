@@ -95,7 +95,7 @@ not a runtime axis.
 
 ## Core scope
 
-The current alpha establishes the token foundation and Core component categories: actions, forms,
+The current beta establishes the token foundation and Core component categories: actions, forms,
 overlays, navigation, feedback, data display, layout primitives, and common reusable building
 blocks. The approved visual language remains neutral-first, compact, alpha-neutral, and restrained
 in its use of brand color.
@@ -198,7 +198,7 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 `@nerio-ui/mcp`.
 
 The frozen `1.0.0-beta.0` release is published under the npm `beta` tag. npm `alpha` remains on
-`0.1.0-alpha.2`, and `latest` remains on `0.1.0-alpha.0`. Package, Registry, CLI, MCP, registry
+`0.1.0-alpha.2`, and `latest` remains on `0.1.0-alpha.0`. Package, Registry, CLI, MCP, npm registry
 signature, and clean-consumer verification passed; the external-feedback gate remains open before
 stable documentation begins. The frozen contract is defined by the
 [public API stability policy](./docs/public-api-stability.md); alpha consumers should use the

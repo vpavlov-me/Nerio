@@ -47,17 +47,17 @@ npm access and 2FA checks, migration review, and blocker review passed before pu
 Fill every row after publication. A package is not verified merely because `npm publish` returned
 success.
 
-| Artifact             | Exact version or reference | Provenance              | Public metadata | Clean install | Result |
-| -------------------- | -------------------------- | ----------------------- | --------------- | ------------- | ------ |
-| `@nerio-ui/tokens`   | `1.0.0-beta.0`             | Registry signature: 1   | Verified        | Passed        | Passed |
-| `@nerio-ui/adapters` | `1.0.0-beta.0`             | Registry signature: 1   | Verified        | Passed        | Passed |
-| `@nerio-ui/registry` | `1.0.0-beta.0`             | Registry signature: 1   | Verified        | Passed        | Passed |
-| `@nerio-ui/ui`       | `1.0.0-beta.0`             | Registry signature: 1   | Verified        | Passed        | Passed |
-| `@nerio-ui/cli`      | `1.0.0-beta.0`             | Registry signature: 1   | Verified        | Passed        | Passed |
-| `@nerio-ui/mcp`      | `1.0.0-beta.0`             | Registry signature: 1   | Verified        | Passed        | Passed |
-| Immutable Registry   | `v1.0.0-beta.0`            | N/A                     | Verified        | Passed        | Passed |
-| Git tag              | `v1.0.0-beta.0`            | Signed: verified        | Exact SHA       | N/A           | Passed |
-| GitHub Release       | `v1.0.0-beta.0` prerelease | Exact SHA and tag match | Links verified  | N/A           | Passed |
+| Artifact             | Exact version or reference | Provenance                | Public metadata | Clean install | Result |
+| -------------------- | -------------------------- | ------------------------- | --------------- | ------------- | ------ |
+| `@nerio-ui/tokens`   | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/adapters` | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/registry` | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/ui`       | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/cli`      | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/mcp`      | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| Immutable Registry   | `v1.0.0-beta.0`            | N/A                       | Verified        | Passed        | Passed |
+| Git tag              | `v1.0.0-beta.0`            | Signed: verified          | Exact SHA       | N/A           | Passed |
+| GitHub Release       | `v1.0.0-beta.0` prerelease | Exact SHA and tag match   | Links verified  | N/A           | Passed |
 
 After all six packages exist, run the published-artifact smoke:
 
