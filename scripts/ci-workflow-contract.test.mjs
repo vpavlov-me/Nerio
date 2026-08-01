@@ -35,6 +35,16 @@ test("requires all supported release browser engines", () => {
   );
 });
 
+test("requires the production dependency audit in the release gate", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.releaseGate = sources.releaseGate.replace("      - run: pnpm audit:prod\n", "");
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.releaseGate}: missing pnpm audit:prod`,
+    ),
+  );
+});
+
 test("keeps each workflow on its intended pull-request base", () => {
   const sources = readCiWorkflowSources(root);
   sources.prGate = sources.prGate.replace("      - dev", "      - main");

@@ -1734,9 +1734,27 @@ describe("Core static contracts", () => {
     expect(screen.getByRole("textbox", { name: "Project" })).toHaveAttribute("id", "project-name");
     expect(() =>
       render(
+        // @ts-expect-error Field accepts one control element.
         <Field label="Invalid">
           <Input />
           <Input />
+        </Field>,
+      ),
+    ).toThrow("exactly one");
+    expect(() =>
+      render(
+        <Field label="Invalid">
+          {/* @ts-expect-error Runtime validation protects JavaScript consumers. */}
+          {"not a form control"}
+        </Field>,
+      ),
+    ).toThrow("exactly one");
+    expect(() =>
+      render(
+        <Field label="Invalid">
+          <>
+            <Input />
+          </>
         </Field>,
       ),
     ).toThrow("exactly one");
@@ -3776,6 +3794,33 @@ describe("Core interactive action contracts", () => {
     expect(input.getAttribute("aria-describedby")).toContain("custom-description");
     expect(input.getAttribute("aria-describedby")).toContain("-description");
     expect(screen.getByRole("button", { name: "Validate website" })).toBeEnabled();
+  });
+
+  it("requires exactly one direct Input in InputGroup", () => {
+    expect(() =>
+      render(
+        <InputGroup>
+          <InputGroupAddon placement="start">https://</InputGroupAddon>
+        </InputGroup>,
+      ),
+    ).toThrow("exactly one direct Input");
+    expect(() =>
+      render(
+        <InputGroup>
+          <Input />
+          <Input />
+        </InputGroup>,
+      ),
+    ).toThrow("exactly one direct Input");
+    expect(() =>
+      render(
+        <InputGroup>
+          <div>
+            <Input />
+          </div>
+        </InputGroup>,
+      ),
+    ).toThrow("exactly one direct Input");
   });
 
   it("keeps Dialog close anatomy truthful and its accessible name localizable", () => {

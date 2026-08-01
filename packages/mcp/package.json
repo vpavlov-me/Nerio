@@ -24,7 +24,7 @@
   },
   "exports": {
     ".": {
-      "types": "./src/tools.ts",
+      "types": "./src/tool-runtime.d.ts",
       "default": "./src/tool-runtime.js"
     }
   },
@@ -35,7 +35,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@nerio-ui/registry": "workspace:*",
     "zod": "^4.4.3"
   },

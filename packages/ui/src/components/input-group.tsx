@@ -34,6 +34,13 @@ export const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(func
   ref,
 ) {
   const normalizedInvalid = invalid === true || ariaInvalid === true || ariaInvalid === "true";
+  const directInputs = React.Children.toArray(children).filter(
+    (child) => React.isValidElement<InputProps>(child) && child.type === Input,
+  );
+  if (directInputs.length !== 1) {
+    throw new Error("InputGroup expects exactly one direct Input child.");
+  }
+
   const content = React.Children.map(children, (child) => {
     if (!React.isValidElement<InputProps>(child) || child.type !== Input) return child;
 

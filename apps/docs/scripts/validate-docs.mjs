@@ -223,6 +223,7 @@ function packageReadinessFailures() {
     "test:docs-examples",
     "validate:docs",
     "validate:release",
+    "audit:prod",
     "test:cli",
     "test:mcp",
     "build",

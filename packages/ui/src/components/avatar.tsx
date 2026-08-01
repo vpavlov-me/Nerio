@@ -1,5 +1,6 @@
 import * as React from "react";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
+import { AvatarImage } from "./avatar-image";
 
 export interface AvatarProps extends React.HTMLAttributes<HTMLSpanElement> {
   name: string;
@@ -39,49 +40,25 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(function Av
       data-slot="root"
       data-size={size}
     >
-      <AvatarContent
-        key={src ?? "fallback"}
-        accessibleName={accessibleName}
-        decorative={decorative}
-        fallback={fallback}
-        initials={initials}
-        src={src}
-      />
+      {src ? (
+        <AvatarImage
+          key={src}
+          accessibleName={accessibleName}
+          decorative={decorative}
+          fallback={fallback}
+          initials={initials}
+          src={src}
+        />
+      ) : (
+        <span
+          data-slot="fallback"
+          {...(decorative
+            ? { "aria-hidden": true }
+            : { role: "img", "aria-label": accessibleName })}
+        >
+          {fallback ?? initials}
+        </span>
+      )}
     </span>
   );
 });
-
-type AvatarContentProps = Pick<AvatarProps, "decorative" | "fallback" | "src"> & {
-  accessibleName: string;
-  initials: string;
-};
-
-function AvatarContent({
-  accessibleName,
-  decorative,
-  fallback,
-  initials,
-  src,
-}: AvatarContentProps) {
-  const [imageFailed, setImageFailed] = React.useState(false);
-
-  if (src && !imageFailed) {
-    return (
-      <img
-        src={src}
-        alt={decorative ? "" : accessibleName}
-        data-slot="image"
-        onError={() => setImageFailed(true)}
-      />
-    );
-  }
-
-  return (
-    <span
-      data-slot="fallback"
-      {...(decorative ? { "aria-hidden": true } : { role: "img", "aria-label": accessibleName })}
-    >
-      {fallback ?? initials}
-    </span>
-  );
-}

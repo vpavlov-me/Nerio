@@ -44,6 +44,7 @@
     "validate:manual-audit-plan": "node scripts/validate-manual-audit-plan.mjs",
     "validate:package-budgets": "node scripts/validate-package-budgets.mjs",
     "validate:platform-support": "node scripts/validate-platform-support.mjs",
+    "audit:prod": "pnpm audit --prod --audit-level low",
     "pack:check": "node scripts/pack-check.mjs"
   },
   "engines": {

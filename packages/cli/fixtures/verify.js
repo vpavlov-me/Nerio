@@ -105,6 +105,7 @@ const expectedPhase2BFiles = [
 ];
 const expectedDisplayFiles = [
   "components/avatar.tsx",
+  "components/avatar-image.tsx",
   "components/card.tsx",
   "components/item.tsx",
   "components/key-value.tsx",
@@ -473,10 +474,27 @@ async function verifySourceLifecycle(tempRoot) {
   const registryRoot = path.join(tempRoot, "lifecycle-registry");
   const target = path.join(tempRoot, "lifecycle-consumer");
   const legacyTarget = path.join(tempRoot, "legacy-consumer");
+  const symlinkTarget = path.join(tempRoot, "symlink-consumer");
+  const outsideTarget = path.join(tempRoot, "outside-components");
   fs.mkdirSync(registryRoot);
   fs.mkdirSync(target);
   fs.mkdirSync(legacyTarget);
+  fs.mkdirSync(symlinkTarget);
+  fs.mkdirSync(outsideTarget);
   const fixtureManifest = writeLifecycleRegistry(registryRoot);
+
+  await run(symlinkTarget, "init", "--registry", fixtureManifest);
+  const symlinkComponentsRoot = path.join(symlinkTarget, "components/nerio");
+  fs.mkdirSync(symlinkComponentsRoot, { recursive: true });
+  fs.symlinkSync(outsideTarget, path.join(symlinkComponentsRoot, "lib"), "dir");
+  const symlinkFailure = await runFailure(symlinkTarget, "add", "button");
+  if (
+    !symlinkFailure.includes("Registry target escapes the components directory") ||
+    fs.existsSync(path.join(outsideTarget, "shared.ts")) ||
+    fs.existsSync(path.join(symlinkComponentsRoot, "components/button.ts"))
+  ) {
+    throw new Error("CLI did not stop a source install that escaped through a symlink.");
+  }
 
   fs.writeFileSync(
     path.join(target, "package.json"),

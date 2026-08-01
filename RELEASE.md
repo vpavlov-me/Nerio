@@ -52,6 +52,7 @@ pnpm test:adapters
 pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
 pnpm validate:platform-support
+pnpm audit:prod
 pnpm validate:package-budgets
 pnpm validate:release:metadata
 pnpm test:release-consumer
@@ -105,9 +106,10 @@ means VoiceOver, NVDA, TalkBack, native picker, physical-device, zoom, contrast,
 interaction evidence exists.
 
 `validate:platform-support` keeps package engines, peer ranges, app baselines, Playwright projects,
-CI, and the documented policy aligned. `validate:package-budgets` enforces packed/unpacked package,
-CSS, named component/icon import, and optional adapter budgets. Threshold changes follow the
-reviewed override policy in `docs/quality-gates.md`.
+CI, and the documented policy aligned. `audit:prod` blocks known production dependency
+vulnerabilities before a release candidate can pass. `validate:package-budgets` enforces
+packed/unpacked package, CSS, named component/icon import, and optional adapter budgets. Threshold
+changes follow the reviewed override policy in `docs/quality-gates.md`.
 
 Package and source-install builds cover Tailwind with and without Preflight. The UI stylesheet may
 contain only named shared keyframes and the documented scoped no-Preflight box-sizing and
