@@ -2,13 +2,21 @@ import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-const botPattern = /(?:\[bot\]|dependabot|github-actions|renovate)/i;
+const exemptBotNames = new Set(["dependabot[bot]", "github-actions[bot]", "renovate[bot]"]);
+
+function isExemptBot(authorName, authorEmail) {
+  const name = authorName.trim().toLowerCase();
+  const email = authorEmail.trim().toLowerCase();
+  if (!exemptBotNames.has(name)) return false;
+  const emailName = name.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^(?:\\d+\\+)?${emailName}@users\\.noreply\\.github\\.com$`).test(email);
+}
 
 export function dcoFailures(commits) {
   const failures = [];
   for (const commit of commits) {
     const identity = `${commit.authorName} <${commit.authorEmail}>`;
-    if (botPattern.test(identity)) continue;
+    if (isExemptBot(commit.authorName, commit.authorEmail)) continue;
     const signoffs = [...commit.message.matchAll(/^Signed-off-by:\s*(.+?)\s*<([^>]+)>\s*$/gim)].map(
       (match) => `${match[1].trim().toLowerCase()} <${match[2].trim().toLowerCase()}>`,
     );

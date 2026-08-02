@@ -40,6 +40,43 @@ test("preserves bot and Dependabot behavior", () => {
     ]),
     [],
   );
+  assert.deepEqual(
+    dcoFailures([
+      {
+        sha: "d".repeat(40),
+        authorName: "github-actions[bot]",
+        authorEmail: "41898282+github-actions[bot]@users.noreply.github.com",
+        message: "chore: automated update",
+      },
+      {
+        sha: "e".repeat(40),
+        authorName: "renovate[bot]",
+        authorEmail: "29139614+renovate[bot]@users.noreply.github.com",
+        message: "chore: update dependency",
+      },
+    ]),
+    [],
+  );
+});
+
+test("does not exempt human identities containing bot account words", () => {
+  for (const [authorName, authorEmail] of [
+    ["Renovate Labs", "developer@example.com"],
+    ["Ada Lovelace", "ada+dependabot@example.com"],
+    ["dependabot[bot]", "developer@example.com"],
+  ]) {
+    assert.match(
+      dcoFailures([
+        {
+          sha: "f".repeat(40),
+          authorName,
+          authorEmail,
+          message: "feat: unsigned human change",
+        },
+      ])[0],
+      /missing matching Signed-off-by/,
+    );
+  }
 });
 
 test("parses NUL-separated git log records", () => {

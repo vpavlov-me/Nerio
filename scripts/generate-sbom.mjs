@@ -6,6 +6,17 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export const packageDirectories = ["tokens", "adapters", "registry", "ui", "cli", "mcp"];
 
+export function npmPurl(name, version) {
+  const separator = name.indexOf("/");
+  const encodedName =
+    name.startsWith("@") && separator > 1
+      ? `${encodeURIComponent(name.slice(0, separator))}/${encodeURIComponent(
+          name.slice(separator + 1),
+        )}`
+      : encodeURIComponent(name);
+  return `pkg:npm/${encodedName}@${encodeURIComponent(version)}`;
+}
+
 function parseArgs(args) {
   const options = {};
   for (let index = 0; index < args.length; index += 2) {
@@ -47,16 +58,18 @@ export function createSbom(candidateSha, base = root) {
   );
   const componentByName = new Map();
   for (const manifest of manifests) {
+    const purl = npmPurl(manifest.name, manifest.version);
     componentByName.set(manifest.name, {
       type: "library",
-      "bom-ref": `pkg:npm/${encodeURIComponent(manifest.name)}@${manifest.version}`,
+      "bom-ref": purl,
       name: manifest.name,
       version: manifest.version,
-      purl: `pkg:npm/${encodeURIComponent(manifest.name)}@${manifest.version}`,
+      purl,
       properties: [{ name: "nerio:candidate_sha", value: candidateSha }],
     });
   }
 
+  const dependencyEvidence = new Map();
   for (const [manifestIndex, manifest] of manifests.entries()) {
     const packageDirectory = packageDirectories[manifestIndex];
     for (const [dependencyKind, entries] of [
@@ -65,22 +78,38 @@ export function createSbom(candidateSha, base = root) {
       ["optional", manifest.optionalDependencies ?? {}],
     ]) {
       for (const [name, range] of Object.entries(entries)) {
-        if (componentByName.has(name)) continue;
+        if (manifests.some((workspaceManifest) => workspaceManifest.name === name)) continue;
         const version = resolvedVersion(name, range, manifests, packageDirectory, base);
-        componentByName.set(name, {
-          type: "library",
-          "bom-ref": `pkg:npm/${encodeURIComponent(name)}@${encodeURIComponent(version)}`,
-          name,
+        const evidence = dependencyEvidence.get(name) ?? {
           version,
-          purl: `pkg:npm/${encodeURIComponent(name)}@${encodeURIComponent(version)}`,
-          scope: dependencyKind === "runtime" ? "required" : "optional",
-          properties: [
-            { name: "nerio:declared_range", value: range },
-            { name: "nerio:dependency_kind", value: dependencyKind },
-          ],
-        });
+          ranges: new Set(),
+          kinds: new Set(),
+        };
+        if (evidence.version !== version) {
+          throw new Error(
+            `Dependency ${name} resolves to multiple versions (${evidence.version}, ${version}); split-component support is required.`,
+          );
+        }
+        evidence.ranges.add(range);
+        evidence.kinds.add(dependencyKind);
+        dependencyEvidence.set(name, evidence);
       }
     }
+  }
+  for (const [name, evidence] of dependencyEvidence) {
+    const purl = npmPurl(name, evidence.version);
+    componentByName.set(name, {
+      type: "library",
+      "bom-ref": purl,
+      name,
+      version: evidence.version,
+      purl,
+      scope: evidence.kinds.has("runtime") ? "required" : "optional",
+      properties: [
+        { name: "nerio:declared_range", value: [...evidence.ranges].sort().join(",") },
+        { name: "nerio:dependency_kind", value: [...evidence.kinds].sort().join(",") },
+      ],
+    });
   }
 
   const dependencies = manifests.map((manifest) => {

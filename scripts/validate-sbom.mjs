@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { packageDirectories } from "./generate-sbom.mjs";
+import { npmPurl, packageDirectories } from "./generate-sbom.mjs";
 
 function parseArgs(args) {
   const options = {};
@@ -38,6 +38,14 @@ export function sbomFailures(sbom, candidateSha) {
       /^(?:workspace:|[~^<>=*])/.test(component.version)
     ) {
       failures.push(`SBOM component ${component.name ?? "unknown"} must use a resolved version.`);
+    }
+    if (
+      typeof component.name === "string" &&
+      typeof component.version === "string" &&
+      (component.purl !== npmPurl(component.name, component.version) ||
+        component["bom-ref"] !== component.purl)
+    ) {
+      failures.push(`SBOM component ${component.name} must use its canonical npm purl as bom-ref.`);
     }
   }
   for (const directory of packageDirectories) {
