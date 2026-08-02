@@ -3,7 +3,7 @@ export const routeBudgetFields = ["jsBytes", "cssBytes", "transferBytes"];
 export function routeBudgetFailures(routes, budgets) {
   const failures = [];
   for (const route of routes) {
-    const budget = budgets.routes?.[route.route];
+    const budget = budgets?.routes?.[route.route];
     if (!budget) {
       failures.push(`${route.route}: missing route budget`);
       continue;

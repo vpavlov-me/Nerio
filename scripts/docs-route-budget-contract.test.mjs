@@ -14,6 +14,7 @@ test("accepts complete finite route allowances", () => {
 });
 
 test("rejects missing and misspelled route budget fields", () => {
+  assert.deepEqual(routeBudgetFailures([route], null), ["/docs/example: missing route budget"]);
   assert.deepEqual(
     routeBudgetFailures([route], {
       routes: { "/docs/example": { jsBytes: 100, cssByte: 50, transferBytes: 40 } },
