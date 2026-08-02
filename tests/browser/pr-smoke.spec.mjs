@@ -341,7 +341,7 @@ test("keeps DropdownMenu preview icon-complete and free of a redundant heading",
   page,
 }) => {
   const problems = monitorPage(page);
-  await page.goto("/docs/components/dropdown-menu");
+  await page.goto("/docs/components/dropdown-menu", { waitUntil: "networkidle" });
 
   const preview = page.getByRole("region", { name: "dropdown-menu preview" });
   await preview.getByRole("button", { name: "Actions" }).click();
