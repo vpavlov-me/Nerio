@@ -5,11 +5,26 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { Button } from "./button";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
+import type { NerioChangeEventDetails } from "../lib/component-props";
 
-export interface PopoverProps extends Pick<
-  React.ComponentProps<typeof BasePopover.Root>,
-  "defaultOpen" | "onOpenChange" | "open"
-> {
+export type PopoverOpenChangeEventReason =
+  | "trigger-hover"
+  | "trigger-focus"
+  | "trigger-press"
+  | "outside-press"
+  | "escape-key"
+  | "close-press"
+  | "focus-out"
+  | "imperative-action"
+  | "none";
+export type PopoverOpenChangeEventDetails =
+  NerioChangeEventDetails<PopoverOpenChangeEventReason> & {
+    preventUnmountOnClose: () => void;
+  };
+export interface PopoverProps {
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean, eventDetails: PopoverOpenChangeEventDetails) => void;
+  open?: boolean;
   trigger: React.ReactNode;
   children: React.ReactNode;
   title?: React.ReactNode;

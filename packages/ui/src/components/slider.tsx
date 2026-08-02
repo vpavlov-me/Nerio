@@ -6,30 +6,50 @@ import { composeRefs } from "../lib/compose-refs";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 import { resolveClassName } from "../lib/resolve-class-name";
+import type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioEventDetails,
+  NerioRenderProp,
+  NerioStyle,
+} from "../lib/component-props";
 
 export type SliderOrientation = "horizontal" | "vertical";
 
-export type SliderChangeEventDetails = Parameters<
-  NonNullable<React.ComponentProps<typeof BaseSlider.Root<number>>["onValueChange"]>
->[1];
+export type SliderChangeEventReason = "input-change" | "track-press" | "drag" | "keyboard" | "none";
+export type SliderChangeEventDetails = NerioChangeEventDetails<SliderChangeEventReason> & {
+  activeThumbIndex: number;
+};
+export type SliderCommitEventDetails = NerioEventDetails<SliderChangeEventReason>;
 
-export type SliderCommitEventDetails = Parameters<
-  NonNullable<React.ComponentProps<typeof BaseSlider.Root<number>>["onValueCommitted"]>
->[1];
-
-type BaseSliderRootProps = Omit<
-  React.ComponentProps<typeof BaseSlider.Root<number>>,
-  | "aria-label"
-  | "aria-labelledby"
-  | "children"
-  | "defaultValue"
-  | "minStepsBetweenValues"
-  | "onValueChange"
-  | "onValueCommitted"
-  | "thumbAlignment"
-  | "thumbCollisionBehavior"
-  | "value"
->;
+export interface SliderState {
+  activeThumbIndex: number;
+  disabled: boolean;
+  dragging: boolean;
+  max: number;
+  min: number;
+  minStepsBetweenValues: number;
+  orientation: SliderOrientation;
+  step: number;
+  values: readonly number[];
+}
+type SliderRootProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "aria-label" | "aria-labelledby" | "children" | "className" | "defaultValue" | "style"
+> & {
+  className?: NerioClassName<SliderState>;
+  disabled?: boolean;
+  form?: string;
+  format?: Intl.NumberFormatOptions;
+  largeStep?: number;
+  locale?: Intl.LocalesArgument;
+  max?: number;
+  min?: number;
+  name?: string;
+  render?: NerioRenderProp<SliderState>;
+  step?: number;
+  style?: NerioStyle<SliderState>;
+};
 
 type SliderVisibleLabel = Exclude<React.ReactNode, boolean | null | undefined>;
 
@@ -50,7 +70,7 @@ type SliderNamingProps =
       "aria-labelledby": string;
     };
 
-export type SliderProps = BaseSliderRootProps &
+export type SliderProps = SliderRootProps &
   SliderNamingProps & {
     /** Current controlled value. Slider intentionally accepts one value, not a range. */
     value?: number;

@@ -41,11 +41,11 @@ const apiRows = [
   ["children", "Curated SelectItem composition; cannot be mixed with options."],
   [
     "value / defaultValue / onValueChange",
-    "Controlled or uncontrolled single value with Base UI event details.",
+    "Controlled or uncontrolled single value with Nerio event details.",
   ],
   [
     "open / defaultOpen / onOpenChange",
-    "Controlled or uncontrolled popup state with Base UI event details.",
+    "Controlled or uncontrolled popup state with Nerio event details.",
   ],
   ["size / triggerRef", "Shared control size and access to the combobox trigger."],
   [

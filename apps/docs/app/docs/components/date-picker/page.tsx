@@ -42,11 +42,16 @@ const apiRows = [
   ],
   ["onValueChange", "(date | null) => void", "Receives selection or an explicit clear."],
   ["open / defaultOpen", "boolean", "Controlled or uncontrolled Popover state."],
-  ["onOpenChange", "(open, details) => void", "Forwards Base UI dismissal details."],
+  ["onOpenChange", "(open, details) => void", "Receives bounded Nerio dismissal details."],
   ["name / form", "string", "Native form ownership and submitted key."],
   ["onInvalid", "FormEventHandler<HTMLInputElement>", "Observes native constraint validation."],
   ["required / disabled / readOnly / invalid", "boolean", "Form and interaction states."],
   ["min / max / isDateDisabled", "Calendar contract", "Reused Calendar constraints."],
+  [
+    "today",
+    "CalendarDate",
+    "Consumer-owned current date for today styling and empty-state month selection.",
+  ],
   [
     "locale / firstDayOfWeek",
     "Intl locale / 0–6",

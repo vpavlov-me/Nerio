@@ -88,6 +88,7 @@ export type CalendarProps = CalendarRootProps &
 type DateParts = { year: number; month: number; day: number };
 
 const datePattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+const defaultCalendarMonth: CalendarDate = "1970-01-01";
 
 function isLeapYear(year: number) {
   return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
@@ -156,15 +157,6 @@ function addMonths(value: CalendarDate, amount: number): CalendarDate {
   });
 }
 
-function localToday(): CalendarDate {
-  const now = new Date();
-  return formatDate({
-    year: now.getFullYear(),
-    month: now.getMonth() + 1,
-    day: now.getDate(),
-  });
-}
-
 function getMonthDates(month: CalendarDate, firstDayOfWeek: CalendarFirstDayOfWeek) {
   const first = normalizeMonth(month, "month");
   const offset = (calendarDateToUtcDate(first).getUTCDay() - firstDayOfWeek + 7) % 7;
@@ -184,13 +176,13 @@ function findAvailableDate(
   start: CalendarDate,
   step: number,
   isUnavailable: (date: CalendarDate) => boolean,
-) {
+): CalendarDate | null {
   let candidate = start;
   for (let index = 0; index < 3660; index += 1) {
     if (!isUnavailable(candidate)) return candidate;
     candidate = addDays(candidate, step);
   }
-  return start;
+  return null;
 }
 
 const rootClasses =
@@ -244,10 +236,8 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
 
   const generatedId = React.useId();
   const headingId = `${generatedId}-heading`;
-  const [defaultToday] = React.useState(localToday);
-  const resolvedToday = todayProp ?? defaultToday;
   const initialMonth = normalizeMonth(
-    month ?? defaultMonth ?? value ?? defaultValue ?? resolvedToday,
+    month ?? defaultMonth ?? value ?? defaultValue ?? todayProp ?? defaultCalendarMonth,
     "month",
   );
   const [uncontrolledMonth, setUncontrolledMonth] = React.useState(initialMonth);
@@ -266,11 +256,11 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
     if (selectedValue && dates.includes(selectedValue) && !isUnavailable(selectedValue)) {
       return selectedValue;
     }
-    if (dates.includes(resolvedToday) && !isUnavailable(resolvedToday)) return resolvedToday;
+    if (todayProp && dates.includes(todayProp) && !isUnavailable(todayProp)) return todayProp;
     const inMonth = dates.find((date) => isSameMonth(date, visibleMonth) && !isUnavailable(date));
-    return inMonth ?? dates.find((date) => !isUnavailable(date)) ?? visibleMonth;
-  }, [dates, isUnavailable, resolvedToday, selectedValue, visibleMonth]);
-  const [focusedDate, setFocusedDate] = React.useState(initialFocus);
+    return inMonth ?? dates.find((date) => !isUnavailable(date)) ?? null;
+  }, [dates, isUnavailable, selectedValue, todayProp, visibleMonth]);
+  const [focusedDate, setFocusedDate] = React.useState<CalendarDate | null>(initialFocus);
   const rootRef = React.useRef<HTMLDivElement>(null);
   const dayRefs = React.useRef(new Map<CalendarDate, HTMLButtonElement>());
   const shouldRestoreGridFocus = React.useRef(false);
@@ -278,12 +268,15 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
   const mergedRootRef = React.useMemo(() => composeRefs(forwardedRef, rootRef), [forwardedRef]);
 
   React.useEffect(() => {
-    if (!dates.includes(focusedDate) || isUnavailable(focusedDate)) setFocusedDate(initialFocus);
+    if (!focusedDate || !dates.includes(focusedDate) || isUnavailable(focusedDate)) {
+      setFocusedDate(initialFocus);
+    }
   }, [dates, focusedDate, initialFocus, isUnavailable]);
 
   React.useLayoutEffect(() => {
     if (shouldRestoreGridFocus.current) {
-      dayRefs.current.get(focusedDate)?.focus();
+      if (focusedDate) dayRefs.current.get(focusedDate)?.focus();
+      else rootRef.current?.querySelector<HTMLElement>('[data-slot="grid"]')?.focus();
       shouldRestoreGridFocus.current = false;
     }
   }, [focusedDate, visibleMonth]);
@@ -325,6 +318,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
       const boundedDate = min && nextDate < min ? min : max && nextDate > max ? max : nextDate;
       const searchStep = boundedDate !== nextDate ? (boundedDate === min ? 1 : -1) : step;
       const available = findAvailableDate(boundedDate, searchStep, isUnavailable);
+      if (!available) return;
       shouldRestoreGridFocus.current = true;
       setFocusedDate(available);
       if (!isSameMonth(available, visibleMonth)) setVisibleMonth(available);
@@ -400,6 +394,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
         className={gridClasses}
         data-slot="grid"
         role="grid"
+        tabIndex={!disabled && focusedDate === null ? 0 : undefined}
       >
         <thead data-slot="weekday-header">
           <tr data-slot="weekday-row">
@@ -441,7 +436,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
                         if (node) dayRefs.current.set(date, node);
                         else dayRefs.current.delete(date);
                       }}
-                      aria-current={date === resolvedToday ? "date" : undefined}
+                      aria-current={todayProp === date ? "date" : undefined}
                       aria-disabled={unavailable || undefined}
                       aria-label={`${dateFormatter.format(calendarDateToUtcDate(date))}${
                         selected ? `, ${selectedDateLabel}` : ""
@@ -450,7 +445,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
                       data-outside-month={outsideMonth ? "" : undefined}
                       data-selected={selected ? "" : undefined}
                       data-slot="day"
-                      data-today={date === resolvedToday ? "" : undefined}
+                      data-today={todayProp === date ? "" : undefined}
                       data-unavailable={unavailable ? "" : undefined}
                       data-value={date}
                       disabled={disabled}
@@ -505,7 +500,7 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
                         event.preventDefault();
                         moveFocus(nextDate, step);
                       }}
-                      tabIndex={date === focusedDate && !disabled ? 0 : -1}
+                      tabIndex={date === focusedDate && !unavailable && !disabled ? 0 : -1}
                       type="button"
                     >
                       {day}

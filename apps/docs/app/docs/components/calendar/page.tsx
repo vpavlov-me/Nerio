@@ -51,7 +51,11 @@ const apiRows = [
     "Intl locale for month, weekday, and date labels; defaults to en-US for deterministic SSR.",
   ],
   ["firstDayOfWeek", "0–6", "Explicit Sunday-through-Saturday week start; defaults to Sunday."],
-  ["today", "CalendarDate", "Current date; supply a stable value for deterministic SSR."],
+  [
+    "today",
+    "CalendarDate",
+    "Consumer-owned current date for today styling and empty-state month selection.",
+  ],
   ["labels", "CalendarLabels", "Localized month-action names and selected-date context."],
   ["disabled / readOnly", "boolean", "Availability and selection behavior."],
   ["aria-label / aria-labelledby", "string", "Exactly one required Calendar naming strategy."],

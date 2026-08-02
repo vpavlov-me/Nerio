@@ -238,7 +238,7 @@ importers:
   packages/ui:
     dependencies:
       '@base-ui/react':
-        specifier: ^1.6.0
+        specifier: 1.6.0
         version: 1.6.0(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@nerio-ui/adapters':
         specifier: workspace:*

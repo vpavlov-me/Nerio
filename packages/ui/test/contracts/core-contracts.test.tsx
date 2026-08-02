@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import * as React from "react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
@@ -4811,6 +4813,48 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByText("July 2026")).toHaveAttribute("data-slot", "heading");
   });
 
+  it("keeps Calendar initial markup deterministic across server and client time zones", async () => {
+    const previousTimeZone = process.env.TZ;
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    process.env.TZ = "Pacific/Kiritimati";
+    const serverMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
+    process.env.TZ = "America/Adak";
+    const clientMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
+
+    expect(clientMarkup).toBe(serverMarkup);
+    expect(serverMarkup).toContain("January 1970");
+    expect(serverMarkup).not.toMatch(/\sdata-today(?:=|>)/);
+
+    const container = document.createElement("div");
+    container.innerHTML = serverMarkup;
+    document.body.append(container);
+    const root = hydrateRoot(container, <Calendar aria-label="Deterministic calendar" />);
+    await act(async () => undefined);
+    expect(consoleError).not.toHaveBeenCalled();
+    await act(async () => root.unmount());
+    container.remove();
+    consoleError.mockRestore();
+    process.env.TZ = previousTimeZone;
+  });
+
+  it("moves the roving stop to the grid when every visible date is unavailable", () => {
+    render(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        isDateDisabled={() => true}
+      />,
+    );
+
+    const calendar = screen.getByRole("group", { name: "Unavailable calendar" });
+    expect(within(calendar).getByRole("grid")).toHaveAttribute("tabindex", "0");
+    expect(
+      within(calendar)
+        .getAllByRole("button")
+        .filter((button) => button.dataset.slot === "day" && button.tabIndex === 0),
+    ).toHaveLength(0);
+  });
+
   it("rejects invalid Calendar dates and inverted constraints", () => {
     expect(() => render(<Calendar aria-label="Invalid calendar" value="2026-02-30" />)).toThrow(
       /valid calendar date/,
@@ -4944,7 +4988,7 @@ describe("Core interactive action contracts", () => {
 
     render(<ControlledDatePicker />);
     const trigger = screen.getByRole("button", { name: "Veröffentlichungsdatum" });
-    expect(trigger).toHaveAccessibleDescription("15. Juni 2026 Datum ändern");
+    expect(trigger).toHaveAccessibleDescription("Datum ändern");
     await user.click(trigger);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     const calendar = await screen.findByRole("group", { name: "Datum auswählen" });
@@ -4953,7 +4997,7 @@ describe("Core interactive action contracts", () => {
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Datum löschen" }));
     await waitFor(() => expect(trigger).toHaveTextContent("Choose a date"));
-    expect(trigger).toHaveAccessibleDescription("Choose a date Datumswahl öffnen");
+    expect(trigger).toHaveAccessibleDescription("Datumswahl öffnen");
     expect(trigger).toHaveFocus();
   });
 
@@ -5014,6 +5058,21 @@ describe("Core interactive action contracts", () => {
 
     expect(screen.getByRole("group", { name: "Choose date" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Clear date" })).toBeNull();
+  });
+
+  it("focuses the DatePicker grid when an empty month has no available day", async () => {
+    const user = userEvent.setup();
+    render(<DatePicker aria-label="Unavailable release date" isDateDisabled={() => true} />);
+
+    await user.click(screen.getByRole("button", { name: "Unavailable release date" }));
+    const calendar = await screen.findByRole("group", { name: "Choose date" });
+    expect(within(calendar).getByText("January 1970")).toBeInTheDocument();
+    await waitFor(() => expect(within(calendar).getByRole("grid")).toHaveFocus());
+    expect(
+      within(calendar)
+        .getAllByRole("button")
+        .filter((button) => button.dataset.slot === "day" && button.tabIndex === 0),
+    ).toHaveLength(0);
   });
 
   it("keeps DatePicker focus and selection coherent inside a modal overlay", async () => {

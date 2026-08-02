@@ -8,6 +8,12 @@ import { motionClasses } from "../lib/motion";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { FormMessage } from "./form-message";
 import { Icon } from "./icon";
+import type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioRenderProp,
+  NerioStyle,
+} from "../lib/component-props";
 
 export interface SelectOption {
   value: string;
@@ -19,37 +25,47 @@ export interface SelectOption {
 
 export type SelectSize = "sm" | "md" | "lg";
 
-export type SelectChangeEventDetails = Parameters<
-  NonNullable<React.ComponentProps<typeof BaseSelect.Root<string>>["onValueChange"]>
->[1];
+export type SelectChangeEventReason =
+  | "trigger-press"
+  | "outside-press"
+  | "escape-key"
+  | "window-resize"
+  | "item-press"
+  | "focus-out"
+  | "list-navigation"
+  | "cancel-open"
+  | "none";
+export type SelectChangeEventDetails = NerioChangeEventDetails<SelectChangeEventReason>;
+export type SelectOpenChangeEventDetails = SelectChangeEventDetails;
 
-export type SelectOpenChangeEventDetails = Parameters<
-  NonNullable<React.ComponentProps<typeof BaseSelect.Root<string>>["onOpenChange"]>
->[1];
-
-type BaseSelectRootProps = Omit<
-  React.ComponentProps<typeof BaseSelect.Root<string>>,
-  "children" | "defaultValue" | "items" | "onOpenChange" | "onValueChange" | "value"
->;
-
-type SharedSelectProps = BaseSelectRootProps &
-  Omit<React.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> & {
-    label: React.ReactNode;
-    description?: React.ReactNode;
-    emptyMessage?: React.ReactNode;
-    invalid?: boolean;
-    message?: React.ReactNode;
-    placeholder?: React.ReactNode;
-    size?: SelectSize;
-    triggerRef?: React.Ref<HTMLButtonElement>;
-    value?: string;
-    defaultValue?: string;
-    onValueChange?: (value: string, eventDetails: SelectChangeEventDetails) => void;
-    open?: boolean;
-    defaultOpen?: boolean;
-    onOpenChange?: (open: boolean, eventDetails: SelectOpenChangeEventDetails) => void;
-    "data-slot"?: string;
-  };
+type SharedSelectProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children" | "defaultValue" | "onChange"
+> & {
+  autoComplete?: string;
+  disabled?: boolean;
+  form?: string;
+  id?: string;
+  inputRef?: React.Ref<HTMLInputElement>;
+  label: React.ReactNode;
+  name?: string;
+  readOnly?: boolean;
+  required?: boolean;
+  description?: React.ReactNode;
+  emptyMessage?: React.ReactNode;
+  invalid?: boolean;
+  message?: React.ReactNode;
+  placeholder?: React.ReactNode;
+  size?: SelectSize;
+  triggerRef?: React.Ref<HTMLButtonElement>;
+  value?: string;
+  defaultValue?: string;
+  onValueChange?: (value: string, eventDetails: SelectChangeEventDetails) => void;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean, eventDetails: SelectOpenChangeEventDetails) => void;
+  "data-slot"?: string;
+};
 
 type OptionsSelectProps = {
   options: SelectOption[];
@@ -63,13 +79,22 @@ type ComposedSelectProps = {
 
 export type SelectProps = SharedSelectProps & (OptionsSelectProps | ComposedSelectProps);
 
+export interface SelectItemState {
+  disabled: boolean;
+  selected: boolean;
+  highlighted: boolean;
+}
 export interface SelectItemProps extends Omit<
-  React.ComponentProps<typeof BaseSelect.Item>,
-  "children" | "className" | "label" | "value"
+  React.HTMLAttributes<HTMLElement>,
+  "children" | "className" | "color" | "style"
 > {
   children: React.ReactNode;
-  className?: React.ComponentProps<typeof BaseSelect.Item>["className"];
+  className?: NerioClassName<SelectItemState>;
   description?: React.ReactNode;
+  disabled?: boolean;
+  nativeButton?: boolean;
+  render?: NerioRenderProp<SelectItemState>;
+  style?: NerioStyle<SelectItemState>;
   textValue?: string;
   value: string;
 }
@@ -124,47 +149,70 @@ export const SelectItem = React.forwardRef<HTMLElement, SelectItemProps>(functio
   );
 });
 
-export const SelectGroup = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<typeof BaseSelect.Group> & { "data-slot"?: string }
->(function SelectGroup({ "data-slot": _dataSlot, ...props }, ref) {
+export type SelectPartState = object;
+export interface SelectGroupProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className" | "style"
+> {
+  className?: NerioClassName<SelectPartState>;
+  render?: NerioRenderProp<SelectPartState>;
+  style?: NerioStyle<SelectPartState>;
+  "data-slot"?: string;
+}
+
+export const SelectGroup = React.forwardRef<HTMLDivElement, SelectGroupProps>(function SelectGroup(
+  { "data-slot": _dataSlot, className, ...props },
+  ref,
+) {
   return (
     <BaseSelect.Group
       ref={ref}
       {...props}
-      className="n-select-group grid gap-(--n-space-1)"
+      className={(state) =>
+        cn("n-select-group grid gap-(--n-space-1)", resolveClassName(className, state))
+      }
       data-slot="group"
     />
   );
 });
 
-export const SelectGroupLabel = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<typeof BaseSelect.GroupLabel> & { "data-slot"?: string }
->(function SelectGroupLabel({ "data-slot": _dataSlot, ...props }, ref) {
-  return (
-    <BaseSelect.GroupLabel
-      ref={ref}
-      {...props}
-      className="n-select-group-label px-(--n-select-group-label-padding-inline) pt-(--n-space-2) pb-(--n-space-1) text-(length:--n-font-size-xs) font-(--n-font-weight-medium) text-(--n-color-text-tertiary)"
-      data-slot="group-label"
-    />
-  );
-});
+export type SelectGroupLabelProps = SelectGroupProps;
+export const SelectGroupLabel = React.forwardRef<HTMLDivElement, SelectGroupLabelProps>(
+  function SelectGroupLabel({ "data-slot": _dataSlot, className, ...props }, ref) {
+    return (
+      <BaseSelect.GroupLabel
+        ref={ref}
+        {...props}
+        className={(state) =>
+          cn(
+            "n-select-group-label px-(--n-select-group-label-padding-inline) pt-(--n-space-2) pb-(--n-space-1) text-(length:--n-font-size-xs) font-(--n-font-weight-medium) text-(--n-color-text-tertiary)",
+            resolveClassName(className, state),
+          )
+        }
+        data-slot="group-label"
+      />
+    );
+  },
+);
 
-export const SelectSeparator = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<typeof BaseSelect.Separator> & { "data-slot"?: string }
->(function SelectSeparator({ "data-slot": _dataSlot, ...props }, ref) {
-  return (
-    <BaseSelect.Separator
-      ref={ref}
-      {...props}
-      className="n-select-separator mx-(--n-space-2) my-(--n-space-1) h-(--n-border-width-default) bg-(--n-color-border-subtle)"
-      data-slot="separator"
-    />
-  );
-});
+export type SelectSeparatorProps = SelectGroupProps;
+export const SelectSeparator = React.forwardRef<HTMLDivElement, SelectSeparatorProps>(
+  function SelectSeparator({ "data-slot": _dataSlot, className, ...props }, ref) {
+    return (
+      <BaseSelect.Separator
+        ref={ref}
+        {...props}
+        className={(state) =>
+          cn(
+            "n-select-separator mx-(--n-space-2) my-(--n-space-1) h-(--n-border-width-default) bg-(--n-color-border-subtle)",
+            resolveClassName(className, state),
+          )
+        }
+        data-slot="separator"
+      />
+    );
+  },
+);
 
 function mergeIds(...ids: Array<string | undefined>) {
   const merged = ids.flatMap((id) => id?.split(" ") ?? []).filter(Boolean);
@@ -200,6 +248,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
     required,
     size = "md",
     triggerRef,
+    inputRef,
     value,
     "data-slot": _dataSlot,
     ...props
@@ -247,6 +296,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
         disabled={disabled}
         form={form}
         id={controlId}
+        inputRef={inputRef}
         items={options}
         name={name}
         onOpenChange={onOpenChange}

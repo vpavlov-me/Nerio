@@ -38,12 +38,12 @@ const buttonSizeClasses: Record<ButtonSize, string> = {
   lg: "h-(--n-button-height-lg) px-(--n-button-padding-inline-lg)",
 };
 
-type RenderElementProps = {
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
-  "aria-busy"?: boolean;
-  "aria-disabled"?: boolean;
-  className?: string;
+export interface ButtonRenderState {
+  disabled: boolean;
+}
+
+export type ButtonRenderProps = React.HTMLAttributes<HTMLElement> & {
+  ref?: React.Ref<HTMLElement>;
   children?: React.ReactNode;
   disabled?: boolean;
   "data-icon-only"?: string;
@@ -52,21 +52,30 @@ type RenderElementProps = {
   "data-size"?: ButtonSize;
   "data-slot"?: string;
   "data-variant"?: ButtonVariant;
-  onClick?: React.ComponentProps<typeof BaseButton>["onClick"];
-  ref?: React.Ref<HTMLElement>;
+  onClick?: React.MouseEventHandler<HTMLElement>;
   type?: "button" | "reset" | "submit";
 };
 
-function isRenderElement(render: unknown): render is React.ReactElement<RenderElementProps> {
+export type ButtonRenderFunction = (
+  props: ButtonRenderProps,
+  state: ButtonRenderState,
+) => React.ReactElement;
+
+function isRenderElement(render: unknown): render is React.ReactElement<ButtonRenderProps> {
   return React.isValidElement(render);
 }
 type ButtonBaseProps = Omit<
-  React.ComponentProps<typeof BaseButton>,
-  "aria-label" | "children" | "className" | "disabled"
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "aria-label" | "children" | "className" | "color" | "disabled" | "onClick" | "style"
 > & {
   "data-slot"?: string;
   className?: string;
   disabled?: boolean;
+  focusableWhenDisabled?: boolean;
+  nativeButton?: boolean;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  render?: React.ReactElement | ButtonRenderFunction;
+  style?: React.CSSProperties;
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
@@ -191,7 +200,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     () => (renderRef && ref ? composeRefs(renderRef, ref) : (renderRef ?? ref ?? undefined)),
     [ref, renderRef],
   );
-  const customRenderProps: RenderElementProps = {
+  const customRenderProps: ButtonRenderProps = {
     ...props,
     ref: composedRef,
     className: renderedElement ? cn(renderedElement.props.className, classNames) : classNames,
@@ -216,7 +225,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
       }
       renderedElement?.props.onClick?.(event);
       if (!event.defaultPrevented) {
-        props.onClick?.(event);
+        props.onClick?.(event as unknown as React.MouseEvent<HTMLButtonElement>);
       }
     },
     children: contents,
@@ -230,7 +239,7 @@ export const Button = React.forwardRef<HTMLElement, ButtonProps>(function Button
     <BaseButton
       ref={ref}
       {...props}
-      render={render}
+      render={render as React.ComponentProps<typeof BaseButton>["render"]}
       nativeButton={nativeButton}
       className={classNames}
       data-slot={dataSlot}

@@ -4,11 +4,26 @@ import * as React from "react";
 import { Tooltip as BaseTooltip } from "@base-ui/react/tooltip";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
+import type { NerioChangeEventDetails } from "../lib/component-props";
 
-export interface TooltipProps extends Pick<
-  React.ComponentProps<typeof BaseTooltip.Root>,
-  "defaultOpen" | "disabled" | "onOpenChange" | "open"
-> {
+export type TooltipOpenChangeEventReason =
+  | "trigger-hover"
+  | "trigger-focus"
+  | "trigger-press"
+  | "outside-press"
+  | "escape-key"
+  | "disabled"
+  | "imperative-action"
+  | "none";
+export type TooltipOpenChangeEventDetails =
+  NerioChangeEventDetails<TooltipOpenChangeEventReason> & {
+    preventUnmountOnClose: () => void;
+  };
+export interface TooltipProps {
+  defaultOpen?: boolean;
+  disabled?: boolean;
+  onOpenChange?: (open: boolean, eventDetails: TooltipOpenChangeEventDetails) => void;
+  open?: boolean;
   label: React.ReactNode;
   /** A focusable element is recommended so keyboard users can discover the tooltip. */
   children: React.ReactElement;
@@ -16,10 +31,10 @@ export interface TooltipProps extends Pick<
   delay?: number;
 }
 
-export interface TooltipProviderProps extends Pick<
-  React.ComponentProps<typeof BaseTooltip.Provider>,
-  "closeDelay" | "delay" | "timeout"
-> {
+export interface TooltipProviderProps {
+  closeDelay?: number;
+  delay?: number;
+  timeout?: number;
   children: React.ReactNode;
 }
 
