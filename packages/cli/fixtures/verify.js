@@ -631,6 +631,30 @@ async function verifyConcurrentTransactions(tempRoot) {
   const fixtureManifest = writeConcurrencyRegistry(registryRoot);
   await run(target, "init", "--registry", fixtureManifest);
 
+  const heartbeatStartupTarget = path.join(tempRoot, "heartbeat-startup-consumer");
+  fs.mkdirSync(heartbeatStartupTarget);
+  await run(heartbeatStartupTarget, "init", "--registry", fixtureManifest);
+  const heartbeatStartupFailure = await runFailureWithEnv(
+    heartbeatStartupTarget,
+    {
+      NODE_OPTIONS: "--permission --allow-fs-read=* --allow-fs-write=*",
+    },
+    "doctor",
+  );
+  if (!heartbeatStartupFailure.includes("Use --allow-worker to manage permissions")) {
+    throw new Error(
+      `Worker-denied Registry command did not report its heartbeat startup failure.\n${heartbeatStartupFailure}`,
+    );
+  }
+  assertNoTransactionArtifacts(heartbeatStartupTarget, "Worker-denied Registry command");
+  const afterHeartbeatStartupFailure = await runResult(heartbeatStartupTarget, "doctor");
+  if (afterHeartbeatStartupFailure.includes("Registry lock wait exceeded")) {
+    throw new Error(
+      `Registry command waited on a lock left by heartbeat startup failure.\n${afterHeartbeatStartupFailure}`,
+    );
+  }
+  assertNoTransactionArtifacts(heartbeatStartupTarget, "Registry command after heartbeat failure");
+
   const alpha = runWithEnv(target, { NERIO_TEST_TRANSACTION_PAUSE_MS: "2500" }, "add", "alpha");
   await waitForFixture(
     () =>

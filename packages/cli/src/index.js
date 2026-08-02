@@ -698,7 +698,6 @@ async function reapRegistryLock(lockPath, token, observed) {
   const claimPath = path.join(cwd, `${REGISTRY_LOCK_REAP_PREFIX}${token}`);
   try {
     fs.writeFileSync(claimPath, `${token}\n`, { flag: "wx", mode: 0o600 });
-    // Let every contender observe the claims, then elect one reaper.
     await wait(REGISTRY_LOCK_POLL_MS * 2);
     if (registryReapClaims()[0] !== claimPath) return false;
     while (renewalActive()) await wait(REGISTRY_LOCK_POLL_MS);
@@ -756,14 +755,19 @@ function refreshActiveRegistryLockLease() {
 
 function startRegistryLockHeartbeat(lock) {
   lock.renewPath = `${lock.lockPath}.renew-${lock.token}`;
-  fs.linkSync(lock.lockPath, lock.renewPath);
-  lock.heartbeat = new Worker(
-    `const{workerData}=require("node:worker_threads"),fs=require("node:fs"),fd=fs.openSync(workerData.path,"r");setInterval(()=>{const now=new Date,a=fs.fstatSync(fd);fs.futimesSync(fd,now,now);const b=fs.lstatSync(workerData.path);if(a.dev!==b.dev||a.ino!==b.ino)throw 0},workerData.interval)`,
-    {
-      eval: true,
-      workerData: { path: lock.renewPath, interval: REGISTRY_LOCK_HEARTBEAT_MS },
-    },
-  );
+  try {
+    fs.linkSync(lock.lockPath, lock.renewPath);
+    lock.heartbeat = new Worker(
+      `const{workerData:w}=require("node:worker_threads"),f=require("node:fs"),d=f.openSync(w.path,"r");setInterval(()=>{const n=new Date,a=f.fstatSync(d);f.futimesSync(d,n,n);const b=f.lstatSync(w.path);if(a.dev!==b.dev||a.ino!==b.ino)throw 0},w.interval)`,
+      {
+        eval: true,
+        workerData: { path: lock.renewPath, interval: REGISTRY_LOCK_HEARTBEAT_MS },
+      },
+    );
+  } catch (error) {
+    releaseRegistryLock(lock);
+    throw error;
+  }
   lock.heartbeat.on("error", (error) => (lock.heartbeatError = error));
   lock.heartbeat.unref();
   return lock;
@@ -861,7 +865,7 @@ async function acquireRegistryLock() {
 }
 
 function releaseRegistryLock(lock) {
-  lock.heartbeat.terminate();
+  lock.heartbeat?.terminate();
   try {
     if (!fs.existsSync(lock.lockPath)) {
       if (lock.heartbeatError) throw lock.heartbeatError;
