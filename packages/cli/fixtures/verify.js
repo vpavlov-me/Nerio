@@ -633,6 +633,37 @@ async function verifyConcurrentTransactions(tempRoot) {
   }
   assertNoTransactionArtifacts(target, "Concurrent Registry installs");
 
+  for (const reservedTarget of [
+    ".nerio-registry-lock",
+    ".nerio-registry-lock.candidate-registry-item",
+  ]) {
+    const reservedManifest = path.join(
+      registryRoot,
+      `manifest-${reservedTarget.replaceAll(".", "-")}.json`,
+    );
+    const manifest = JSON.parse(fs.readFileSync(fixtureManifest, "utf8"));
+    manifest.items[0].files[0].target = reservedTarget;
+    fs.writeFileSync(reservedManifest, `${JSON.stringify(manifest, null, 2)}\n`);
+    const reservedConsumer = path.join(
+      tempRoot,
+      `reserved-lock-target-${reservedTarget.replaceAll(".", "-")}`,
+    );
+    fs.mkdirSync(reservedConsumer);
+    await run(reservedConsumer, "init", "--registry", fixtureManifest, "--components", ".");
+    const failure = await runFailure(
+      reservedConsumer,
+      "add",
+      "alpha",
+      "--registry",
+      reservedManifest,
+      "--overwrite",
+    );
+    if (!failure.includes("Registry target uses a reserved Nerio path")) {
+      throw new Error(`Registry lock target was not rejected: ${reservedTarget}\n${failure}`);
+    }
+    assertNoTransactionArtifacts(reservedConsumer, `Reserved Registry target ${reservedTarget}`);
+  }
+
   const invalidOwnerTarget = path.join(tempRoot, "invalid-lock-owner-consumer");
   fs.mkdirSync(invalidOwnerTarget);
   await run(invalidOwnerTarget, "init", "--registry", fixtureManifest);

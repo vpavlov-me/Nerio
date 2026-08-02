@@ -1169,6 +1169,8 @@ function relativeTarget(componentsRoot, target) {
   if (
     relative === STATE_FILENAME ||
     relative === "nerio.json" ||
+    relative === REGISTRY_LOCK_DIRECTORY ||
+    relative.startsWith(`${REGISTRY_LOCK_DIRECTORY}.`) ||
     relative.split(path.sep).some((segment) => segment.startsWith(".nerio-transaction-"))
   ) {
     throw new Error(`Registry target uses a reserved Nerio path: ${target}`);
