@@ -75,3 +75,32 @@ function handleValue(value: string, details: SelectChangeEventDetails) {
 
 Run TypeScript before updating the reviewed API snapshot so removed upstream-only props are found at
 the consumer boundary rather than at runtime.
+
+## Registry integrity and atomic CLI operations
+
+Registry schema 1.1 adds `sha256-<hex>` integrity to every source file. Remote Registry access now
+requires HTTPS by default and enforces bounded timeouts, response sizes, redirects, content types,
+manifest shape, paths, duplicate targets, dependency closure, and file integrity. Use
+`--allow-insecure-http` only for a trusted local HTTP Registry; existing production mirror URLs
+should move to HTTPS. The reviewed limits are 10 seconds for request/body reads, 2 MiB for a
+manifest, 4 MiB for each source response, and three redirects.
+
+`nerio add` and `nerio update` now validate and stage the complete operation before touching
+consumer-owned source. Source files commit as one recoverable transaction, and
+`nerio.lock.json` commits only after source succeeds. Any failure restores the prior source and lock
+state and removes transaction artifacts. Dry-run output, local-change preservation,
+`--overwrite`, and intentional `--force` behavior remain unchanged.
+
+Before applying the next Registry:
+
+```bash
+pnpm exec nerio doctor
+pnpm exec nerio diff
+pnpm exec nerio update --dry-run
+pnpm exec nerio update
+pnpm exec nerio diff
+```
+
+Custom local Registry authors must add the declared SHA-256 integrity for every source file. Lock
+files created by beta.0 remain readable and acquire integrity metadata on the next successful add or
+update.

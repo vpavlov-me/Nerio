@@ -308,7 +308,12 @@ function registryContracts() {
         files: item.files.map((file) =>
           typeof file === "string"
             ? file
-            : { role: file.role, source: file.source, target: file.target },
+            : {
+                integrity: file.integrity,
+                role: file.role,
+                source: file.source,
+                target: file.target,
+              },
         ),
         name: item.name,
         optionalPeerDependencies: item.optionalPeerDependencies ?? [],

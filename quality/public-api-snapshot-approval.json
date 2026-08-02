@@ -1,8 +1,8 @@
 {
   "approvedBy": "Vladimir Pavlov",
   "baseline": "core-1.0",
-  "classification": "breaking",
-  "issue": "332",
+  "classification": "feature",
+  "issue": "333",
   "schemaVersion": 1,
-  "snapshotSha256": "4b0569392b7edffdb96350b24c52b66b35563e3a31ee5c6cade79aab0220a7ba"
+  "snapshotSha256": "0049ec7f9ec9bcb6b73043b5352d2074f7dc15acd3eaec819285d7ebbff28109"
 }

@@ -94,7 +94,7 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
     "registryVersion",
     "sourceRevision",
   ];
-  const expectedFileKeys = ["hash", "owners", "role", "source"];
+  const expectedFileKeys = ["hash", "integrity", "owners", "role", "source"];
   assert.ok(
     parsed.cli.lockStateShape.items.recordValues.length > 0,
     "generated lock contract must contain item record shapes",

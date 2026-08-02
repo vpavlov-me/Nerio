@@ -13,6 +13,7 @@ export interface RegistryItem {
     source: string;
     target: string;
     role: "component" | "style" | "utility";
+    integrity: `sha256-${string}`;
   }>;
   baseUiPrimitives: string[];
   slots: string[];

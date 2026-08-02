@@ -1,4 +1,5 @@
 const fs = require("node:fs");
+const crypto = require("node:crypto");
 const http = require("node:http");
 const os = require("node:os");
 const path = require("node:path");
@@ -227,9 +228,13 @@ const expectedOverlayAndTabsFiles = [
   "styles/tailwind.css",
 ];
 
-function run(cwd, ...args) {
+function execute(cwd, args, env = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [cli, ...args], { cwd, stdio: "pipe" });
+    const child = spawn(process.execPath, [cli, ...args], {
+      cwd,
+      stdio: "pipe",
+      env: { ...process.env, ...env },
+    });
     let output = "";
     child.stdout.on("data", (chunk) => (output += chunk));
     child.stderr.on("data", (chunk) => (output += chunk));
@@ -240,9 +245,26 @@ function run(cwd, ...args) {
   });
 }
 
+function run(cwd, ...args) {
+  return execute(cwd, args);
+}
+
+function runWithEnv(cwd, env, ...args) {
+  return execute(cwd, args, env);
+}
+
 async function runFailure(cwd, ...args) {
   try {
     await run(cwd, ...args);
+  } catch (error) {
+    return error.message;
+  }
+  throw new Error(`nerio ${args.join(" ")} unexpectedly succeeded.`);
+}
+
+async function runFailureWithEnv(cwd, env, ...args) {
+  try {
+    await runWithEnv(cwd, env, ...args);
   } catch (error) {
     return error.message;
   }
@@ -461,6 +483,12 @@ function writeLifecycleRegistry(
       usage: "import { extra } from '@/components/nerio/lib/extra';",
     });
   }
+  for (const item of items) {
+    for (const file of item.files) {
+      const content = fs.readFileSync(path.resolve(registryRoot, file.source));
+      file.integrity = `sha256-${crypto.createHash("sha256").update(content).digest("hex")}`;
+    }
+  }
 
   const manifestPath = path.join(registryRoot, "manifest.json");
   fs.writeFileSync(
@@ -479,6 +507,96 @@ function writeLifecycleRegistry(
     )}\n`,
   );
   return manifestPath;
+}
+
+function managedSnapshot(target) {
+  const snapshot = {};
+  const visit = (entry) => {
+    if (!fs.existsSync(entry)) return;
+    const stats = fs.statSync(entry);
+    if (stats.isDirectory()) {
+      for (const child of fs.readdirSync(entry)) visit(path.join(entry, child));
+      return;
+    }
+    snapshot[path.relative(target, entry)] = fs.readFileSync(entry).toString("base64");
+  };
+  visit(path.join(target, "components"));
+  visit(path.join(target, "nerio.lock.json"));
+  return snapshot;
+}
+
+function assertNoTransactionArtifacts(target, description) {
+  const artifacts = fs
+    .readdirSync(target)
+    .filter((entry) => entry.startsWith(".nerio-transaction-") || entry.endsWith(".tmp"));
+  if (artifacts.length) {
+    throw new Error(`${description} left temporary artifacts: ${artifacts.join(", ")}`);
+  }
+}
+
+async function verifyAtomicTransactions(tempRoot) {
+  const registryRoot = path.join(tempRoot, "transaction-registry");
+  const baselineTarget = path.join(tempRoot, "transaction-baseline");
+  fs.mkdirSync(registryRoot);
+  fs.mkdirSync(baselineTarget);
+  const fixtureManifest = writeLifecycleRegistry(registryRoot);
+
+  for (const point of [
+    "after-staging",
+    "after-commit:1",
+    "after-commit:3",
+    "before-lock-write",
+    "during-lock-write",
+  ]) {
+    const target = path.join(tempRoot, `transaction-add-${point.replace(":", "-")}`);
+    fs.mkdirSync(target);
+    await run(target, "init", "--registry", fixtureManifest);
+    const failure = await runFailureWithEnv(target, { NERIO_TEST_FAILURE: point }, "add", "button");
+    if (
+      !failure.includes(`Injected Registry transaction failure: ${point}`) ||
+      !failure.includes("rolled back without source or lock changes") ||
+      Object.keys(managedSnapshot(target)).length
+    ) {
+      throw new Error(`Atomic add did not fully roll back the ${point} failure.`);
+    }
+    assertNoTransactionArtifacts(target, `Atomic add ${point}`);
+  }
+
+  await run(baselineTarget, "init", "--registry", fixtureManifest);
+  await run(baselineTarget, "add", "button");
+  const baseline = managedSnapshot(baselineTarget);
+  writeLifecycleRegistry(registryRoot, {
+    sourceRevision: "fixture-transaction-update",
+    sharedSource: "export const shared = 'transaction-update';\n",
+    buttonSource: "export const button = 'transaction-update';\n",
+    tokenSource: ":root { --fixture: transaction-update; }\n",
+    includeExtra: true,
+  });
+
+  for (const point of [
+    "after-staging",
+    "after-commit:1",
+    "after-commit:3",
+    "before-lock-write",
+    "during-lock-write",
+  ]) {
+    const target = path.join(tempRoot, `transaction-update-${point.replace(":", "-")}`);
+    fs.cpSync(baselineTarget, target, { recursive: true });
+    const failure = await runFailureWithEnv(
+      target,
+      { NERIO_TEST_FAILURE: point },
+      "update",
+      "button",
+      "--force",
+    );
+    if (
+      !failure.includes(`Injected Registry transaction failure: ${point}`) ||
+      JSON.stringify(managedSnapshot(target)) !== JSON.stringify(baseline)
+    ) {
+      throw new Error(`Atomic update did not restore source and lock after ${point}.`);
+    }
+    assertNoTransactionArtifacts(target, `Atomic update ${point}`);
+  }
 }
 
 async function verifySourceLifecycle(tempRoot) {
@@ -532,6 +650,22 @@ async function verifySourceLifecycle(tempRoot) {
     JSON.stringify(initialLock).includes(tempRoot)
   ) {
     throw new Error("Installed source metadata is incomplete or contains machine-specific paths.");
+  }
+  const betaZeroLockTarget = path.join(tempRoot, "beta-zero-lock-consumer");
+  fs.cpSync(target, betaZeroLockTarget, { recursive: true });
+  const betaZeroLockPath = path.join(betaZeroLockTarget, "nerio.lock.json");
+  const betaZeroLock = JSON.parse(fs.readFileSync(betaZeroLockPath, "utf8"));
+  for (const file of Object.values(betaZeroLock.files)) delete file.integrity;
+  fs.writeFileSync(betaZeroLockPath, `${JSON.stringify(betaZeroLock, null, 2)}\n`);
+  await run(betaZeroLockTarget, "doctor");
+  await run(betaZeroLockTarget, "update", "button");
+  const migratedIntegrityLock = JSON.parse(fs.readFileSync(betaZeroLockPath, "utf8"));
+  if (
+    Object.values(migratedIntegrityLock.files).some(
+      (file) => !/^sha256-[a-f0-9]{64}$/.test(file.integrity || ""),
+    )
+  ) {
+    throw new Error("A beta.0 lock did not acquire Registry integrity after a safe update.");
   }
   const legacyConfigTarget = path.join(tempRoot, "legacy-config");
   fs.cpSync(target, legacyConfigTarget, { recursive: true });
@@ -807,6 +941,7 @@ async function verify() {
   const { server, manifestUrl } = await startRegistryServer();
   try {
     await verifySourceLifecycle(tempRoot);
+    await verifyAtomicTransactions(tempRoot);
     await run(srcDirTarget, "init", "--registry", manifest);
     const srcDirConfig = JSON.parse(fs.readFileSync(path.join(srcDirTarget, "nerio.json"), "utf8"));
     if (srcDirConfig.components !== "src/components/nerio") {
@@ -1618,18 +1753,26 @@ async function verify() {
       throw new Error("Installed Alert source still defaults static alerts to live regions.");
     }
 
-    await run(urlTarget, "init", "--registry", manifestUrl);
-    const urlListOutput = await run(urlTarget, "list", "--registry", manifestUrl);
+    const insecure = ["--allow-insecure-http"];
+    await run(urlTarget, "init", "--registry", manifestUrl, ...insecure);
+    const urlListOutput = await run(urlTarget, "list", "--registry", manifestUrl, ...insecure);
     if (!urlListOutput.includes("button\tButton\tactions")) {
       throw new Error("List output did not work with an HTTP registry override.");
     }
-    const urlInfoOutput = await run(urlTarget, "info", "button", "--registry", manifestUrl);
+    const urlInfoOutput = await run(
+      urlTarget,
+      "info",
+      "button",
+      "--registry",
+      manifestUrl,
+      ...insecure,
+    );
     if (!urlInfoOutput.includes("Button (button)") || !urlInfoOutput.includes("Files:")) {
       throw new Error("Info output did not work with an HTTP registry override.");
     }
-    await run(urlTarget, "add", "button");
+    await run(urlTarget, "add", "button", ...insecure);
     writePackageTailwindSetup(urlTarget);
-    await run(urlTarget, "doctor");
+    await run(urlTarget, "doctor", ...insecure);
     assertInstall(urlTarget);
   } finally {
     server.close();
