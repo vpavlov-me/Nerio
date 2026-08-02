@@ -64,9 +64,17 @@ async function verify() {
     if (JSON.stringify(names) !== JSON.stringify(expected)) {
       throw new Error(`Unexpected MCP tools: ${names.join(", ")}`);
     }
+    if (listed.tools.some((tool) => !tool.outputSchema)) {
+      throw new Error("Every MCP tool must expose a machine-readable output schema.");
+    }
 
     const registryResult = await client.callTool({ name: "get_registry", arguments: {} });
     const registry = JSON.parse(registryResult.content[0].text);
+    if (registryResult.structuredContent?.registry?.version !== registry.version) {
+      throw new Error(
+        "MCP get_registry structured content drifted from its preserved text payload.",
+      );
+    }
     if (
       registry.schemaVersion !== manifest.schemaVersion ||
       registry.version !== manifest.version ||
@@ -78,8 +86,26 @@ async function verify() {
 
     const result = await client.callTool({ name: "get_component", arguments: { name: "button" } });
     const payload = JSON.parse(result.content[0].text);
+    if (result.structuredContent?.component?.name !== payload.name) {
+      throw new Error("MCP get_component structured content drifted from its text payload.");
+    }
     if (payload.name !== "button" || payload.baseUiPrimitives[0] !== "button") {
       throw new Error("MCP get_component returned invalid Button metadata.");
+    }
+
+    const missingResult = await client.callTool({
+      name: "get_component",
+      arguments: { name: "not-a-nerio-component" },
+    });
+    const missingPayload = JSON.parse(missingResult.content[0].text);
+    if (
+      missingResult.isError !== true ||
+      missingPayload.error?.code !== "COMPONENT_NOT_FOUND" ||
+      missingResult.structuredContent?.error?.code !== "COMPONENT_NOT_FOUND"
+    ) {
+      throw new Error(
+        "MCP missing-component failures must use the stable structured error contract.",
+      );
     }
 
     const usageResult = await client.callTool({
@@ -87,6 +113,9 @@ async function verify() {
       arguments: { name: "button" },
     });
     const usage = JSON.parse(usageResult.content[0].text);
+    if (usageResult.structuredContent?.usage?.name !== usage.name) {
+      throw new Error("MCP get_component_usage structured content drifted from its text payload.");
+    }
     if (!usage.requiredTokens.includes("--n-button-height-md") || !usage.files.length) {
       throw new Error("MCP get_component_usage did not include install and token metadata.");
     }
@@ -801,6 +830,9 @@ async function verify() {
 
     const listResult = await client.callTool({ name: "list_components", arguments: {} });
     const components = JSON.parse(listResult.content[0].text);
+    if (listResult.structuredContent?.components?.length !== components.length) {
+      throw new Error("MCP list_components structured content drifted from its text payload.");
+    }
     for (const required of [
       "button",
       "motion-adapter",

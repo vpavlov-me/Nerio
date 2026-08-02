@@ -56,6 +56,9 @@ pnpm test:mcp
 pnpm test:adapters
 pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
+pnpm test:beta-feedback
+pnpm validate:stable-readiness
+pnpm test:sbom
 pnpm validate:platform-support
 pnpm test:release-metadata
 pnpm validate:release-metadata

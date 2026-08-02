@@ -8,6 +8,14 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added scope-aware PR contracts, exact-SHA release candidate validation, immutable GitHub Action
+  pins, DCO enforcement, and a deterministic candidate-bound CycloneDX SBOM for all six public
+  packages. Current workflows prepare and retain evidence without publishing or requesting npm
+  credentials.
+- Added strict stable-only validators for the real accessibility/device audit and the external beta
+  feedback cycle. Stable readiness requires affirmative audit and beta decisions and rejects
+  future-dated completion evidence. Beta records remain explicitly pending; automation cannot
+  convert prepared templates into completion evidence.
 - Added one machine-readable coordinated release metadata source, a dry-run-first version
   preparation command, and validators for all six public packages, the Registry revision, CLI,
   documentation, and installation examples.
@@ -21,6 +29,8 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Added MCP output schemas and structured content for all four discovery tools while preserving the
+  existing JSON text payload, plus stable machine-readable missing-component errors.
 - Split standard documentation into server-rendered reference content and typed, statically
   registered client preview islands. Added a packed Vite + React + TypeScript + Tailwind CSS v4
   consumer and replaced the former 8 MiB transfer tripwire with measured per-route JavaScript, CSS,

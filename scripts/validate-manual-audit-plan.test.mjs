@@ -294,6 +294,12 @@ test("manual audit validator accepts the prepared pending plan", () => {
   assert.match(result.stdout, /manual evidence still pending/);
 });
 
+test("strict manual completion rejects pending evidence", () => {
+  const result = run(["--expect-complete"]);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Strict manual audit completion requires status complete/);
+});
+
 test("manual audit validator parses pending metadata only from canonical locations", () => {
   withFixture(
     "docs/audits/core-1-0-accessibility-device-audit.md",
@@ -326,6 +332,28 @@ test("manual audit validator accepts a completed evidence record", () => {
     const result = run(["--plan", planTarget, "--report", reportTarget]);
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /manual evidence complete/);
+  });
+});
+
+test("strict manual completion accepts a completed evidence record", () => {
+  withPlanAndReportFixtures(completedPlan, completedReport, (planTarget, reportTarget) => {
+    const result = run(["--expect-complete", "--plan", planTarget, "--report", reportTarget]);
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /manual evidence complete/);
+  });
+});
+
+test("stable readiness accepts an affirmative completed audit", () => {
+  withPlanAndReportFixtures(completedPlan, completedReport, (planTarget, reportTarget) => {
+    const result = run([
+      "--expect-complete",
+      "--expect-pass",
+      "--plan",
+      planTarget,
+      "--report",
+      reportTarget,
+    ]);
+    assert.equal(result.status, 0, result.stderr);
   });
 });
 
@@ -1207,6 +1235,25 @@ test("manual audit validator accepts a tracked blocked finding", () => {
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.equal(result.status, 0, result.stderr);
+    },
+  );
+});
+
+test("stable readiness rejects a completed blocked audit", () => {
+  withPlanAndReportFixtures(
+    trackedFailurePlan,
+    trackedFailureReport,
+    (planTarget, reportTarget) => {
+      const result = run([
+        "--expect-complete",
+        "--expect-pass",
+        "--plan",
+        planTarget,
+        "--report",
+        reportTarget,
+      ]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /requires final decision "Pass for real consumer pilots"/);
     },
   );
 });

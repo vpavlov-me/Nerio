@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "status": "evidence-pending",
+  "trackingIssue": 146,
+  "candidate": {
+    "version": "1.0.0-beta.0",
+    "commit": "5ffbd44e208039c9007ae3397a74d279d4a22eff",
+    "windowOpenedAt": "2026-08-01T16:42:44Z",
+    "earliestCloseAt": "2026-08-15T16:42:44Z",
+    "closedAt": null
+  },
+  "consumers": [],
+  "findings": [],
+  "decision": {
+    "recommendation": "pending",
+    "recordedAt": null,
+    "summary": "External beta evaluations are still pending. Issue #146 remains open."
+  }
+}

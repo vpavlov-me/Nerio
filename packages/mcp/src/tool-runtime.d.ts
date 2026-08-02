@@ -26,6 +26,10 @@ export type RegistryComponentUsage = Pick<
   states: string[];
 };
 
+export class NerioMcpError extends Error {
+  readonly code: "COMPONENT_NOT_FOUND";
+}
+
 export function get_registry(): RegistryMetadata;
 export function list_components(): RegistryComponentSummary[];
 export function get_component(name: string): RegistryItem;

@@ -1,5 +1,13 @@
 const manifest = require("@nerio-ui/registry/manifest.json");
 
+class NerioMcpError extends Error {
+  constructor(code, message) {
+    super(message);
+    this.name = "NerioMcpError";
+    this.code = code;
+  }
+}
+
 function get_registry() {
   return {
     schemaVersion: manifest.schemaVersion,
@@ -13,7 +21,7 @@ function get_registry() {
 function findComponent(name) {
   const item = manifest.items.find((entry) => entry.name === name);
   if (!item) {
-    throw new Error(`Component not found: ${name}`);
+    throw new NerioMcpError("COMPONENT_NOT_FOUND", `Component not found: ${name}`);
   }
   return item;
 }
@@ -53,4 +61,10 @@ function get_component_usage(name) {
   };
 }
 
-module.exports = { get_component, get_component_usage, get_registry, list_components };
+module.exports = {
+  NerioMcpError,
+  get_component,
+  get_component_usage,
+  get_registry,
+  list_components,
+};

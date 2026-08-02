@@ -662,6 +662,13 @@
         "signature": "() => RegistryComponentSummary[]"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "NerioMcpError",
+        "signature": "typeof NerioMcpError"
+      },
+      {
         "definition": [
           "export interface RegistryItem { name: string; title: string; description: string; category: string; docsPath?: string; dependencies: string[]; optionalPeerDependencies?: string[]; registryDependencies: string[]; files: Array<{ source: string; target: string; role: \"component\" | \"style\" | \"utility\"; integrity: `sha256-${string}`; }>; baseUiPrimitives: string[]; slots: string[]; variants: string[]; states?: string[]; requiredTokens: string[]; accessibility: string[]; usage: string; }",
           "export type RegistryComponentSummary = Pick<RegistryItem, \"name\" | \"title\" | \"description\" | \"category\">;"
@@ -5878,7 +5885,13 @@
         "styleContractVersion": "string",
         "version": "string"
       },
-      "tools": ["get_component", "get_component_usage", "get_registry", "list_components"],
+      "tools": [
+        "NerioMcpError",
+        "get_component",
+        "get_component_usage",
+        "get_registry",
+        "list_components"
+      ],
       "usageShapes": [
         {
           "components": [
@@ -6301,7 +6314,142 @@
           "type": "object"
         },
         "name": "get_component",
-        "outputSchema": null,
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "additionalProperties": false,
+          "properties": {
+            "component": {
+              "additionalProperties": false,
+              "properties": {
+                "accessibility": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "baseUiPrimitives": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "dependencies": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "docsPath": {
+                  "type": "string"
+                },
+                "files": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "integrity": {
+                        "type": "string"
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "source": {
+                        "type": "string"
+                      },
+                      "target": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["source", "target", "role", "integrity"],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "optionalPeerDependencies": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "registryDependencies": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "requiredTokens": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "slots": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "states": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "usage": {
+                  "type": "string"
+                },
+                "variants": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "name",
+                "title",
+                "description",
+                "category",
+                "usage",
+                "dependencies",
+                "registryDependencies",
+                "files",
+                "baseUiPrimitives",
+                "slots",
+                "variants",
+                "requiredTokens",
+                "accessibility"
+              ],
+              "type": "object"
+            },
+            "error": {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": ["COMPONENT_NOT_FOUND", "INTERNAL_ERROR"],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": ["code", "message"],
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
         "title": "Get a Nerio component"
       },
       {
@@ -6323,7 +6471,142 @@
           "type": "object"
         },
         "name": "get_component_usage",
-        "outputSchema": null,
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "additionalProperties": false,
+          "properties": {
+            "error": {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": ["COMPONENT_NOT_FOUND", "INTERNAL_ERROR"],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": ["code", "message"],
+              "type": "object"
+            },
+            "usage": {
+              "additionalProperties": false,
+              "properties": {
+                "accessibility": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "baseUiPrimitives": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "dependencies": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "docsPath": {
+                  "type": "string"
+                },
+                "files": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "integrity": {
+                        "type": "string"
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "source": {
+                        "type": "string"
+                      },
+                      "target": {
+                        "type": "string"
+                      }
+                    },
+                    "required": ["source", "target", "role", "integrity"],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "optionalPeerDependencies": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "registryDependencies": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "requiredTokens": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "slots": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "states": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "usage": {
+                  "type": "string"
+                },
+                "variants": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "required": [
+                "name",
+                "title",
+                "description",
+                "category",
+                "usage",
+                "dependencies",
+                "registryDependencies",
+                "files",
+                "baseUiPrimitives",
+                "slots",
+                "variants",
+                "requiredTokens",
+                "accessibility"
+              ],
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
         "title": "Get Nerio component usage"
       },
       {
@@ -6338,7 +6621,55 @@
           "type": "object"
         },
         "name": "get_registry",
-        "outputSchema": null,
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "additionalProperties": false,
+          "properties": {
+            "error": {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": ["COMPONENT_NOT_FOUND", "INTERNAL_ERROR"],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": ["code", "message"],
+              "type": "object"
+            },
+            "registry": {
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "schemaVersion": {
+                  "type": "string"
+                },
+                "sourceRevision": {
+                  "type": "string"
+                },
+                "styleContractVersion": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "name",
+                "version",
+                "sourceRevision",
+                "styleContractVersion"
+              ],
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
         "title": "Get the Nerio Registry version"
       },
       {
@@ -6353,7 +6684,49 @@
           "type": "object"
         },
         "name": "list_components",
-        "outputSchema": null,
+        "outputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "additionalProperties": false,
+          "properties": {
+            "components": {
+              "items": {
+                "additionalProperties": false,
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "required": ["name", "title", "description", "category"],
+                "type": "object"
+              },
+              "type": "array"
+            },
+            "error": {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "enum": ["COMPONENT_NOT_FOUND", "INTERNAL_ERROR"],
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": ["code", "message"],
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
         "title": "List Nerio components"
       }
     ]
