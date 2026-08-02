@@ -159,6 +159,7 @@ export function ciWorkflowContractFailures({
       "pnpm test:release-consumer",
       "continue-on-error",
       "secrets.",
+      "${{ inputs.",
       "@v",
       ...forbiddenPublicationStrings,
     ],
@@ -181,6 +182,7 @@ export function ciWorkflowContractFailures({
       "permissions:",
       "contents: read",
       "name: exact-release-candidate",
+      "DISPATCH_CANDIDATE: ${{ github.event.inputs.candidate_sha }}",
       "node scripts/validate-release-candidate.mjs",
       "ref: ${{ needs.candidate.outputs.candidate_sha }}",
       "release-candidate-${{ steps.candidate.outputs.candidate_sha }}",
@@ -207,7 +209,14 @@ export function ciWorkflowContractFailures({
   forbidStrings(
     releaseGate,
     ciWorkflowPaths.releaseGate,
-    ["pull_request_target", "continue-on-error", "secrets.", "@v", ...forbiddenPublicationStrings],
+    [
+      "pull_request_target",
+      "continue-on-error",
+      "secrets.",
+      "${{ inputs.",
+      "@v",
+      ...forbiddenPublicationStrings,
+    ],
     failures,
   );
   const releaseCheckoutCount = (

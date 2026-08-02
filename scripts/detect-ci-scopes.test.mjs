@@ -97,7 +97,7 @@ test("routes narrow public entrypoints and broad root package policy safely", ()
 });
 
 test("fails safe for unknown paths", () => {
-  const result = scopes("unclassified/new-contract.xyz");
+  const result = scopes("unclassified/new-contract.json");
   assert.equal(result.unknown, true);
   assert.equal(result.docs_only, false);
   assert.equal(result.ui, true);

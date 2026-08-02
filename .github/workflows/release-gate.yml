@@ -37,7 +37,7 @@ jobs:
       - name: Resolve and validate exact candidate
         id: candidate
         env:
-          DISPATCH_CANDIDATE: ${{ inputs.candidate_sha }}
+          DISPATCH_CANDIDATE: ${{ github.event.inputs.candidate_sha }}
           PULL_REQUEST_CANDIDATE: ${{ github.event.pull_request.head.sha }}
         run: |
           CANDIDATE_SHA="${DISPATCH_CANDIDATE:-$PULL_REQUEST_CANDIDATE}"
