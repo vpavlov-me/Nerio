@@ -154,10 +154,35 @@ jobs:
       - run: pnpm audit:prod
       - run: pnpm validate:package-budgets
       - run: pnpm validate:release:metadata
-      - run: pnpm test:release-consumer
+      - run: pnpm pack:check
+
+  release_consumer_matrix:
+    name: release-consumer-${{ matrix.profile }}-node-${{ matrix.node }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: minimum
+            node: 22
+          - profile: current
+            node: 22
+          - profile: current
+            node: 24
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:consumer:${{ matrix.profile }}
         env:
           NERIO_RELEASE_EXPECT_PUBLIC: "1"
-      - run: pnpm pack:check
 
   release_manual_audit_contract:
     name: release-manual-audit-contract
@@ -187,6 +212,7 @@ jobs:
       - release_visual
       - release_tool_contracts
       - release_package_contracts
+      - release_consumer_matrix
       - release_manual_audit_contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -198,6 +224,7 @@ jobs:
           RELEASE_VISUAL_RESULT: ${{ needs.release_visual.result }}
           RELEASE_TOOL_RESULT: ${{ needs.release_tool_contracts.result }}
           RELEASE_PACKAGE_RESULT: ${{ needs.release_package_contracts.result }}
+          RELEASE_CONSUMER_RESULT: ${{ needs.release_consumer_matrix.result }}
           RELEASE_MANUAL_AUDIT_RESULT: ${{ needs.release_manual_audit_contract.result }}
         run: |
           for result in \
@@ -206,6 +233,7 @@ jobs:
             "$RELEASE_VISUAL_RESULT" \
             "$RELEASE_TOOL_RESULT" \
             "$RELEASE_PACKAGE_RESULT" \
+            "$RELEASE_CONSUMER_RESULT" \
             "$RELEASE_MANUAL_AUDIT_RESULT"; do
             if [[ "$result" != "success" ]]; then
               echo "A release-candidate job ended with $result." >&2

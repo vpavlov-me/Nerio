@@ -63,6 +63,8 @@ type Section = "research" | "threads" | "sources" | "settings";
 type RunState = "idle" | "running" | "completed" | "interrupted" | "failed";
 type AttachmentStatus = "Processing" | "Ready" | "Failed";
 
+const simulatedResearchRunDurationMs = 2_500;
+
 type Source = {
   id: string;
   title: string;
@@ -241,7 +243,7 @@ function ResearchWorkspaceApp() {
       runTimerRef.current = null;
       setRunState("completed");
       setPrompt("");
-    }, 900);
+    }, simulatedResearchRunDurationMs);
   }
 
   function interruptRun() {

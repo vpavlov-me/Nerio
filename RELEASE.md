@@ -55,10 +55,15 @@ pnpm test:adapters
 pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
 pnpm validate:platform-support
+pnpm test:release-metadata
+pnpm validate:release-metadata
+pnpm prepare:release-version 1.0.0-beta.1
+pnpm test:consumer:minimum
+pnpm test:consumer:current
+pnpm test:consumer-matrix
 pnpm audit:prod
 pnpm validate:package-budgets
 pnpm validate:release:metadata
-pnpm test:release-consumer
 pnpm pack:check
 ```
 
@@ -76,14 +81,17 @@ typechecks published Sidebar examples in an isolated fixture.
 `pnpm validate:api` compares package exports, TypeScript signatures, tokens, Registry data,
 CLI/MCP contracts, package support ranges, and public docs routes with the checked-in snapshot.
 `pnpm validate:release:metadata` checks release documentation and public onboarding without
-repeating catalog, API, token, or onboarding unit tests. `pnpm test:release-consumer` packs all intended
-packages, checks packed manifests, exports, dependencies, side effects, bins, file boundaries, and
-secret/Pro exclusions, installs the tarballs into an isolated Next.js consumer, runs the canonical
-local CLI workflow through `pnpm exec nerio` from the packed CLI tarball, resolves the immutable
-packaged Registry without a checkout or moving branch URL, exercises installed-source metadata,
-`diff`, and update planning, starts the packaged MCP bin through `pnpm exec nerio-mcp`, verifies its
-read-only discovery and coordinated version metadata, source-installs representative components
-and a Foundation item with complete dependency chains, and builds without workspace aliases.
+repeating catalog, API, token, or onboarding unit tests. `pnpm test:consumer:minimum` and
+`pnpm test:consumer:current` pack all intended packages, check packed manifests, exports,
+dependencies, side effects, bins, file boundaries, and secret/Pro exclusions, install the tarballs
+into isolated Next.js consumers, run the canonical local CLI workflow through `pnpm exec nerio` from
+the packed CLI tarball, resolve the immutable packaged Registry without a checkout or moving branch
+URL, exercise installed-source metadata, `diff`, and update planning, start the packaged MCP bin
+through `pnpm exec nerio-mcp`, verify its read-only discovery and coordinated version metadata,
+source-install representative components and a Foundation item with complete dependency chains,
+and build without workspace aliases. `pnpm test:release-consumer` remains a compatibility alias for
+the current profile; the complete local wrapper and release workflow require the minimum/current
+matrix.
 Package-qualified one-off execution through `pnpm dlx` is intentionally a post-publication check:
 run the same smoke with `NERIO_RELEASE_EXPECT_PUBLISHED=1` only after all six exact package versions
 exist on npm.

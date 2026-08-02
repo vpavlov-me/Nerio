@@ -7,6 +7,9 @@ const { spawn } = require("node:child_process");
 const repoRoot = path.resolve(__dirname, "../../..");
 const cli = path.resolve(__dirname, "../src/index.js");
 const manifest = path.resolve(repoRoot, "packages/registry/src/manifest.json");
+const cliVersion = require("../package.json").version;
+const publicCommands = require("../../registry/src/public-commands.json");
+const incompatibleRegistryVersion = cliVersion.replace(/(\d+)$/, (value) => `${Number(value) + 1}`);
 const expectedFiles = [
   "components/button.tsx",
   "components/icon.tsx",
@@ -378,7 +381,7 @@ function startRegistryServer() {
 function writeLifecycleRegistry(
   registryRoot,
   {
-    version = "1.0.0-beta.0",
+    version = cliVersion,
     sourceRevision = "fixture-beta.0",
     schemaVersion = "1.0.0",
     sharedSource = "export const shared = 'one';\n",
@@ -504,7 +507,7 @@ async function verifySourceLifecycle(tempRoot) {
   await run(target, "add", "button");
   writeSourceTailwindSetup(target);
   const initialDoctor = await run(target, "doctor");
-  if (!initialDoctor.includes("Registry nerio-fixture 1.0.0-beta.0 (fixture-beta.0)")) {
+  if (!initialDoctor.includes(`Registry nerio-fixture ${cliVersion} (fixture-beta.0)`)) {
     throw new Error("Doctor did not report the exact installed Registry contract.");
   }
 
@@ -512,7 +515,7 @@ async function verifySourceLifecycle(tempRoot) {
   const initialLock = JSON.parse(fs.readFileSync(lockPath, "utf8"));
   if (
     initialLock.schemaVersion !== "1.0.0" ||
-    initialLock.registry.version !== "1.0.0-beta.0" ||
+    initialLock.registry.version !== cliVersion ||
     initialLock.registry.sourceRevision !== "fixture-beta.0" ||
     initialLock.registry.styleContractVersion !== "tailwind-v1" ||
     !initialLock.requestedItems.includes("button") ||
@@ -556,11 +559,15 @@ async function verifySourceLifecycle(tempRoot) {
   }
 
   writeLifecycleRegistry(registryRoot, {
-    version: "1.0.0-beta.1",
+    version: incompatibleRegistryVersion,
     sourceRevision: "fixture-version-mismatch",
   });
   const versionMismatchDoctor = await runFailure(target, "doctor");
-  if (!versionMismatchDoctor.includes("CLI 1.0.0-beta.0 and Registry 1.0.0-beta.1 do not match")) {
+  if (
+    !versionMismatchDoctor.includes(
+      `CLI ${cliVersion} and Registry ${incompatibleRegistryVersion} do not match`,
+    )
+  ) {
     throw new Error("Doctor did not report an incompatible Registry and CLI version.");
   }
   writeLifecycleRegistry(registryRoot);
@@ -903,11 +910,9 @@ async function verify() {
     if (
       !helpOutput.includes("nerio list") ||
       !helpOutput.includes("nerio info") ||
-      !helpOutput.includes(
-        "pnpm add -D @nerio-ui/registry@1.0.0-beta.0 @nerio-ui/cli@1.0.0-beta.0",
-      ) ||
+      !helpOutput.includes(publicCommands.cli.localInstall) ||
       !helpOutput.includes("pnpm exec nerio <command>") ||
-      !helpOutput.includes("pnpm dlx @nerio-ui/cli@1.0.0-beta.0 init")
+      !helpOutput.includes(publicCommands.cli.oneOffCommands[0])
     ) {
       throw new Error(
         "Help output does not include the canonical local and one-off command model.",

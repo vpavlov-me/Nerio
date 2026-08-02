@@ -81,9 +81,9 @@ export default function Page() {
         </p>
         <CodeExample code={nextConfig} label="next.config.ts" />
         <p>
-          The supported baseline is Node.js 20.9 or newer, React 19, Next.js 16.2, TypeScript 5.9,
-          and Tailwind CSS v4. Automated browser evidence covers current Chromium, Firefox, and
-          WebKit engine lines. See the repository&apos;s{" "}
+          The supported baseline is Node.js 22 or newer, React 19, Next.js 16.2, TypeScript 5.9, and
+          Tailwind CSS 4.1 or newer within the v4 line. Automated browser evidence covers current
+          Chromium, Firefox, and WebKit engine lines. See the repository&apos;s{" "}
           <a href="https://github.com/vpavlov-me/Nerio/blob/main/docs/platform-support.md">
             platform support policy
           </a>{" "}

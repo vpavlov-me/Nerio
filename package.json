@@ -23,9 +23,15 @@
     "validate:docs": "pnpm --filter @nerio-ui/docs validate:docs",
     "validate:onboarding": "node scripts/validate-public-onboarding.mjs",
     "validate:typography": "node scripts/validate-typography.mjs",
-    "validate:release:metadata": "node scripts/validate-release-docs.mjs && pnpm validate:onboarding",
-    "test:release-consumer": "node scripts/release-smoke.mjs",
-    "validate:release": "pnpm test:catalog && pnpm test:api && pnpm validate:api && pnpm test:tokens && pnpm test:onboarding && pnpm validate:release:metadata && pnpm test:release-consumer",
+    "validate:release:metadata": "pnpm validate:release-metadata && node scripts/validate-release-docs.mjs && pnpm validate:onboarding",
+    "validate:release-metadata": "node scripts/release-metadata.mjs validate",
+    "test:release-metadata": "node --test scripts/release-metadata.test.mjs",
+    "prepare:release-version": "node scripts/release-metadata.mjs prepare",
+    "test:release-consumer": "pnpm test:consumer:current",
+    "test:consumer:minimum": "NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_STACK_PROFILE=minimum node scripts/release-smoke.mjs && NERIO_STACK_PROFILE=minimum node scripts/adapter-consumer-smoke.mjs",
+    "test:consumer:current": "NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_STACK_PROFILE=current node scripts/release-smoke.mjs && NERIO_STACK_PROFILE=current node scripts/adapter-consumer-smoke.mjs",
+    "test:consumer-matrix": "pnpm test:consumer:minimum && pnpm test:consumer:current",
+    "validate:release": "pnpm test:catalog && pnpm test:api && pnpm validate:api && pnpm test:tokens && pnpm test:onboarding && pnpm validate:release:metadata && pnpm test:consumer-matrix",
     "test:cli": "pnpm --filter @nerio-ui/cli test:fixture",
     "test:mcp": "pnpm --filter @nerio-ui/mcp test:fixture",
     "test:adapters": "node scripts/adapter-consumer-smoke.mjs && pnpm test:motion-adapter",
@@ -50,11 +56,11 @@
     "pack:check": "node scripts/pack-check.mjs"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22"
   },
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
-    "@playwright/test": "1.55.1",
+    "@playwright/test": "1.62.1",
     "esbuild": "0.28.1",
     "prettier": "^3.9.6",
     "turbo": "^2.10.7",

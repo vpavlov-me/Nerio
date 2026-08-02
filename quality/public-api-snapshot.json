@@ -5582,7 +5582,7 @@
         "lucide-react": "^0.561.0"
       },
       "engines": {
-        "node": ">=20.9.0"
+        "node": ">=22"
       },
       "exports": {
         "./charts": {
@@ -5646,7 +5646,7 @@
         "@nerio-ui/registry": "workspace:*"
       },
       "engines": {
-        "node": ">=20.9.0"
+        "node": ">=22"
       },
       "exports": null,
       "files": ["src"],
@@ -5664,7 +5664,7 @@
         "zod": "^4.4.3"
       },
       "engines": {
-        "node": ">=20.9.0"
+        "node": ">=22"
       },
       "exports": {
         ".": {
@@ -5685,7 +5685,7 @@
         "@nerio-ui/ui": "workspace:*"
       },
       "engines": {
-        "node": ">=20.9.0"
+        "node": ">=22"
       },
       "exports": {
         ".": "./src/index.ts",
@@ -5701,7 +5701,7 @@
       "bin": null,
       "dependencies": {},
       "engines": {
-        "node": ">=20.9.0"
+        "node": ">=22"
       },
       "exports": {
         ".": "./src/index.ts",
@@ -5723,7 +5723,7 @@
         "tailwind-merge": "^3.6.0"
       },
       "engines": {
-        "node": ">=20.9.0"
+        "node": ">=22"
       },
       "exports": {
         ".": "./src/index.ts",
@@ -5734,7 +5734,7 @@
       "peerDependencies": {
         "react": ">=19 <20",
         "react-dom": ">=19 <20",
-        "tailwindcss": ">=4.0.0 <5"
+        "tailwindcss": ">=4.1.0 <5"
       },
       "peerDependenciesMeta": null,
       "sideEffects": ["./src/styles.css"]

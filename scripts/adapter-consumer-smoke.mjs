@@ -127,7 +127,20 @@ function assertPackedAdapterContract(tarball) {
 
 const docsPackage = readJson(join(root, "apps/docs/package.json"));
 const uiPackage = readJson(join(root, "packages/ui/package.json"));
+const dependencySupport = readJson(join(root, "quality/dependency-support.json"));
+const stackProfile = process.env.NERIO_STACK_PROFILE || "current";
+const stack = dependencySupport.profiles[stackProfile];
+if (!stack) throw new Error(`Unknown NERIO_STACK_PROFILE: ${stackProfile}`);
 const lockedPeerVersions = lockedAdapterPeerVersions();
+const peerVersions = stack.optionalPeers;
+for (const peer of Object.values(optionalAdapters)) {
+  if (!peerVersions[peer]) throw new Error(`${stackProfile} profile is missing ${peer}.`);
+  if (stackProfile === "current" && peerVersions[peer] !== lockedPeerVersions[peer]) {
+    throw new Error(
+      `Current profile ${peer} must match the exact lockfile version ${lockedPeerVersions[peer]}.`,
+    );
+  }
+}
 const tempRoot = mkdtempSync(join(tmpdir(), "nerio-adapter-consumers-"));
 const tarballDirectory = join(tempRoot, "packages");
 
@@ -155,15 +168,15 @@ try {
         ),
         "@base-ui/react": uiPackage.dependencies["@base-ui/react"],
         clsx: uiPackage.dependencies.clsx,
-        next: docsPackage.dependencies.next,
-        react: docsPackage.dependencies.react,
-        "react-dom": docsPackage.dependencies["react-dom"],
+        next: stack.next,
+        react: stack.react,
+        "react-dom": stack.reactDom,
       },
       devDependencies: {
         "@types/node": docsPackage.devDependencies["@types/node"],
         "@types/react": docsPackage.devDependencies["@types/react"],
         "@types/react-dom": docsPackage.devDependencies["@types/react-dom"],
-        typescript: docsPackage.devDependencies.typescript,
+        typescript: stack.typescript,
       },
     },
     tarballs,
@@ -190,12 +203,12 @@ try {
     private: true,
     dependencies: {
       "@nerio-ui/adapters": `file:${tarballs["@nerio-ui/adapters"]}`,
-      react: docsPackage.dependencies.react,
-      "react-dom": docsPackage.dependencies["react-dom"],
+      react: stack.react,
+      "react-dom": stack.reactDom,
     },
     devDependencies: {
       "@types/react": docsPackage.devDependencies["@types/react"],
-      typescript: docsPackage.devDependencies.typescript,
+      typescript: stack.typescript,
     },
   });
   run(pnpm, ["install", "--prefer-offline", "--ignore-scripts"], { cwd: optionalConsumer });
@@ -222,7 +235,7 @@ try {
         "--save-exact",
         "--prefer-offline",
         "--ignore-workspace-root-check",
-        `${peer}@${lockedPeerVersions[peer]}`,
+        `${peer}@${peerVersions[peer]}`,
       ],
       { cwd: optionalConsumer },
     );
@@ -246,7 +259,7 @@ try {
   });
 
   console.log(
-    "Adapter consumer smoke passed for the packed subpath contract, icons/UI-only isolation, source-installed Motion, and optional table, charts, forms, schema, and Motion peers.",
+    `Adapter consumer smoke passed for the ${stackProfile} dependency profile, packed subpath contract, icons/UI-only isolation, source-installed Motion, and optional table, charts, forms, schema, and Motion peers.`,
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
