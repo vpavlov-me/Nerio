@@ -187,8 +187,9 @@ next Registry command recover an operation interrupted by process exit or machin
 committed source-and-lock transaction is retained and only its orphaned journal is removed. Registry
 commands share one project-local process lock, so concurrent readers, installs, updates, and recovery
 cannot race source state against `nerio.lock.json`; a dead owner's lock is reclaimed before journal
-recovery. The lock records exact Registry version, revision, file paths, dependency closure, original
-hashes, integrity metadata, and owners.
+recovery, and an expired heartbeat distinguishes a restarted or PID-reused owner. The lock records
+exact Registry version, revision, file paths, dependency closure, original hashes, integrity
+metadata, and owners.
 `nerio diff` separates local and upstream drift. `nerio update --dry-run` previews a deterministic
 update, while `nerio update` applies only safe upstream changes and never overwrites locally modified
 source silently. Run `nerio doctor` after configuring the consumer stylesheet to validate versions,

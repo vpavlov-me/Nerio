@@ -665,6 +665,21 @@ async function verifyConcurrentTransactions(tempRoot) {
       fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
     }
   }
+
+  const reusedPidLock = {
+    schemaVersion: "1.0.0",
+    pid: process.pid,
+    token: crypto.randomUUID(),
+    createdAt: new Date(Date.now() - 120_000).toISOString(),
+  };
+  fs.writeFileSync(invalidLockPath, `${JSON.stringify(reusedPidLock)}\n`);
+  const staleTime = new Date(Date.now() - 120_000);
+  fs.utimesSync(invalidLockPath, staleTime, staleTime);
+  const reclaimed = await run(invalidOwnerTarget, "list");
+  if (!reclaimed.includes("alpha\tAlpha\tfoundation")) {
+    throw new Error("A stale Registry lock with a reused live PID was not reclaimed.");
+  }
+  assertNoTransactionArtifacts(invalidOwnerTarget, "Reused-PID Registry lock recovery");
 }
 
 async function verifyAtomicTransactions(tempRoot) {

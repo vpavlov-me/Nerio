@@ -3,7 +3,7 @@ const fs = require("node:fs");
 const crypto = require("node:crypto");
 const path = require("node:path");
 const { Buffer } = require("node:buffer");
-const { clearTimeout, setTimeout } = require("node:timers");
+const { clearInterval, clearTimeout, setInterval, setTimeout } = require("node:timers");
 
 const cliPackage = require("../package.json");
 const DEFAULT_REGISTRY = "@nerio-ui/registry/manifest.json";
@@ -23,8 +23,11 @@ const TRANSACTION_PREFIX = ".nerio-transaction-";
 const TRANSACTION_SCHEMA_VERSION = "1.0.0";
 const REGISTRY_LOCK_DIRECTORY = ".nerio-registry-lock";
 const REGISTRY_LOCK_SCHEMA_VERSION = "1.0.0";
-const REGISTRY_LOCK_WAIT_MS = 30_000;
+const REGISTRY_LOCK_WAIT_MS = 60_000;
 const REGISTRY_LOCK_POLL_MS = 25;
+const REGISTRY_LOCK_HEARTBEAT_MS = 1_000;
+const REGISTRY_LOCK_STALE_MS = 30_000;
+const REGISTRY_LOCK_RECLAIM_CONFIRM_MS = 5_000;
 const cwd = process.cwd();
 const args = process.argv.slice(2);
 const command = args[0];
@@ -583,27 +586,38 @@ function wait(milliseconds) {
 }
 
 function readRegistryLock(lockPath) {
-  const stats = fs.lstatSync(lockPath);
-  if (!stats.isFile() || stats.isSymbolicLink()) {
+  const pathStats = fs.lstatSync(lockPath);
+  if (!pathStats.isFile() || pathStats.isSymbolicLink()) {
     throw new Error(`Reserved Registry lock path is not a regular file: ${lockPath}`);
   }
+  const descriptor = fs.openSync(lockPath, "r");
   let owner;
   try {
-    owner = JSON.parse(fs.readFileSync(lockPath, "utf8"));
-  } catch {
-    return { owner: null, stats };
+    const stats = fs.fstatSync(descriptor);
+    if (!sameFile(pathStats, stats)) {
+      throw Object.assign(new Error(`Registry lock changed while its owner was being read.`), {
+        code: "EAGAIN",
+      });
+    }
+    try {
+      owner = JSON.parse(fs.readFileSync(descriptor, "utf8"));
+    } catch {
+      return { owner: null, stats };
+    }
+    if (
+      owner?.schemaVersion !== REGISTRY_LOCK_SCHEMA_VERSION ||
+      !Number.isSafeInteger(owner.pid) ||
+      owner.pid <= 0 ||
+      typeof owner.token !== "string" ||
+      !owner.token ||
+      typeof owner.createdAt !== "string"
+    ) {
+      return { owner: null, stats };
+    }
+    return { owner, stats };
+  } finally {
+    fs.closeSync(descriptor);
   }
-  if (
-    owner?.schemaVersion !== REGISTRY_LOCK_SCHEMA_VERSION ||
-    !Number.isSafeInteger(owner.pid) ||
-    owner.pid <= 0 ||
-    typeof owner.token !== "string" ||
-    !owner.token ||
-    typeof owner.createdAt !== "string"
-  ) {
-    return { owner: null, stats };
-  }
-  return { owner, stats };
 }
 
 function processIsAlive(pid) {
@@ -641,6 +655,38 @@ function reapRegistryLock(lockPath, observed) {
   return true;
 }
 
+function startRegistryLockHeartbeat(lock) {
+  lock.heartbeat = setInterval(() => {
+    try {
+      const observed = readRegistryLock(lock.lockPath);
+      if (observed.owner?.token !== lock.token) {
+        throw new Error(`Registry transaction lock ownership changed during the command.`);
+      }
+      const descriptor = fs.openSync(lock.lockPath, "r");
+      const now = new Date();
+      try {
+        if (!sameFile(observed.stats, fs.fstatSync(descriptor))) {
+          throw new Error(`Registry transaction lock changed before its heartbeat.`);
+        }
+        fs.futimesSync(descriptor, now, now);
+      } finally {
+        fs.closeSync(descriptor);
+      }
+    } catch (error) {
+      lock.heartbeatError = error;
+      clearInterval(lock.heartbeat);
+      console.error(
+        `Registry transaction lock heartbeat failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+      process.exit(1);
+    }
+  }, REGISTRY_LOCK_HEARTBEAT_MS);
+  lock.heartbeat.unref();
+  return lock;
+}
+
 async function acquireRegistryLock() {
   const lockPath = path.join(cwd, REGISTRY_LOCK_DIRECTORY);
   const token = crypto.randomUUID();
@@ -660,11 +706,12 @@ async function acquireRegistryLock() {
     )}\n`,
   );
   fs.chmodSync(candidatePath, 0o600);
+  let staleOwner;
   try {
     while (true) {
       try {
         fs.linkSync(candidatePath, lockPath);
-        return { lockPath, token };
+        return startRegistryLockHeartbeat({ lockPath, token });
       } catch (error) {
         if (error?.code !== "EEXIST") throw error;
       }
@@ -673,11 +720,25 @@ async function acquireRegistryLock() {
       try {
         observed = readRegistryLock(lockPath);
       } catch (error) {
-        if (error?.code === "ENOENT") continue;
+        if (["EAGAIN", "ENOENT"].includes(error?.code)) continue;
         throw error;
       }
-      if (observed.owner && !processIsAlive(observed.owner.pid)) {
-        if (reapRegistryLock(lockPath, observed)) continue;
+      if (observed.owner) {
+        const ownerAlive = processIsAlive(observed.owner.pid);
+        const leaseAge = Date.now() - observed.stats.mtimeMs;
+        const leaseStale =
+          leaseAge >= REGISTRY_LOCK_STALE_MS || leaseAge <= -REGISTRY_LOCK_STALE_MS;
+        if (!ownerAlive) {
+          if (reapRegistryLock(lockPath, observed)) continue;
+        } else if (leaseStale) {
+          if (staleOwner?.token !== observed.owner.token) {
+            staleOwner = { token: observed.owner.token, observedAt: Date.now() };
+          } else if (Date.now() - staleOwner.observedAt >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+            if (reapRegistryLock(lockPath, observed)) continue;
+          }
+        } else {
+          staleOwner = null;
+        }
       }
       if (Date.now() >= deadline) {
         const owner = observed.owner ? ` held by process ${observed.owner.pid}` : "";
@@ -693,12 +754,17 @@ async function acquireRegistryLock() {
 }
 
 function releaseRegistryLock(lock) {
-  if (!fs.existsSync(lock.lockPath)) return;
+  clearInterval(lock.heartbeat);
+  if (!fs.existsSync(lock.lockPath)) {
+    if (lock.heartbeatError) throw lock.heartbeatError;
+    return;
+  }
   const observed = readRegistryLock(lock.lockPath);
   if (observed.owner?.token !== lock.token) {
     throw new Error(`Registry transaction lock ownership changed before release.`);
   }
   fs.rmSync(lock.lockPath, { force: true });
+  if (lock.heartbeatError) throw lock.heartbeatError;
 }
 
 function writeTransactionJournal(transactionRoot, journal) {

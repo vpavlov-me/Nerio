@@ -94,7 +94,8 @@ both source and lock had committed, it retains them and removes only the orphane
 output, local-change preservation, `--overwrite`, and intentional `--force` behavior remain
 unchanged. Registry commands now serialize through a project-local process lock before recovery or
 validation; a command waits for a live owner and reclaims a dead owner's lock before applying the
-durable journal.
+durable journal. A heartbeat lease prevents a stale lock from remaining live only because its PID
+was reused after a restart.
 
 Before applying the next Registry:
 

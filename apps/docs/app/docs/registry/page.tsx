@@ -98,7 +98,8 @@ export default function Page() {
             handled failure. A durable local journal recovers an interrupted process on the next
             Registry command; already-committed source and lock state is retained. A project-local
             process lock serializes Registry reads, writes, and recovery so parallel commands cannot
-            lose source ownership or lock metadata.
+            lose source ownership or lock metadata; an owner heartbeat also makes locks reclaimable
+            after process death, restart, or PID reuse.
           </li>
         </ul>
         <p>

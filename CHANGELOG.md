@@ -51,9 +51,10 @@ Items under `Unreleased` may change before the next public release.
   on the next Registry command without rolling back a source-and-lock transaction that had fully
   committed. A project-local process lock serializes reads, writes, and recovery, preventing
   simultaneous commands from losing source ownership or lock metadata and reclaiming dead owners
-  before journal recovery. The CLI tarball grows from 10,559 to 17,536 bytes and unpacked content
-  from 40,917 to 73,062 bytes; reviewed budgets remain 18,000 compressed bytes and 75,000 unpacked
-  bytes for this bounded transport, recovery, and transaction contract.
+  before journal recovery. A heartbeat lease makes stale locks reclaimable after restart or PID
+  reuse. The CLI tarball grows from 10,559 to 18,103 bytes and unpacked content from 40,917 to
+  75,467 bytes; reviewed budgets move from 18,000 to 19,000 compressed bytes and from 75,000 to
+  80,000 unpacked bytes for this bounded lease and transaction contract.
 
 ### Migration
 
