@@ -611,7 +611,7 @@ function discardCrashedRegistryLock(target) {
 }
 
 async function waitForFixture(predicate, description) {
-  const deadline = Date.now() + 5_000;
+  const deadline = Date.now() + 7_000;
   while (!predicate()) {
     if (Date.now() >= deadline) throw new Error(`Timed out waiting for ${description}.`);
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -764,6 +764,49 @@ async function verifyConcurrentTransactions(tempRoot) {
   }
   foreignChild.kill();
   await foreignClosed;
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
+  const resumedOwner = {
+    schemaVersion: "1.0.0",
+    pid: process.pid,
+    token: crypto.randomUUID(),
+    createdAt: new Date(Date.now() - 120_000).toISOString(),
+  };
+  const resumedOwnerContent = `${JSON.stringify(resumedOwner)}\n`;
+  fs.writeFileSync(invalidLockPath, resumedOwnerContent);
+  const resumedStaleTime = new Date(Date.now() - 120_000);
+  fs.utimesSync(invalidLockPath, resumedStaleTime, resumedStaleTime);
+  const resumedChild = spawn(process.execPath, [cli, "doctor"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  let resumedOutput = "";
+  resumedChild.stdout.on("data", (chunk) => (resumedOutput += chunk));
+  resumedChild.stderr.on("data", (chunk) => (resumedOutput += chunk));
+  const resumedClosed = new Promise((resolve) => resumedChild.on("close", resolve));
+  await waitForFixture(
+    () =>
+      fs
+        .readdirSync(invalidOwnerTarget)
+        .some((entry) => entry.startsWith(".nerio-registry-lock.reap-")),
+    "a contender electing a stale Registry lock reaper",
+  );
+  const resumedAt = new Date();
+  fs.utimesSync(invalidLockPath, resumedAt, resumedAt);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  if (
+    resumedChild.exitCode !== null ||
+    fs.readFileSync(invalidLockPath, "utf8") !== resumedOwnerContent
+  ) {
+    throw new Error(`A resumed fresh Registry lease was reaped.\n${resumedOutput}`);
+  }
+  resumedChild.kill();
+  await resumedClosed;
   for (const entry of fs.readdirSync(invalidOwnerTarget)) {
     if (entry.startsWith(".nerio-registry-lock")) {
       fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });

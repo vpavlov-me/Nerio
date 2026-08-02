@@ -708,6 +708,10 @@ async function reapRegistryLock(lockPath, token, observed) {
     ) {
       return false;
     }
+    const currentLeaseAge = Date.now() - current.stats.mtimeMs;
+    if (currentLeaseAge < REGISTRY_LOCK_STALE_MS && currentLeaseAge > -REGISTRY_LOCK_STALE_MS) {
+      return false;
+    }
     try {
       fs.rmSync(lockPath);
     } catch (error) {
