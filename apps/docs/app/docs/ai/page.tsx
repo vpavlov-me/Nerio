@@ -40,6 +40,11 @@ export default function Page() {
           the version-aligned Nerio Registry. Install it in the consuming project and run its public
           bin through pnpm; no monorepo checkout or internal source path is required.
         </p>
+        <p>
+          Every tool publishes an output schema and returns the same payload as structured content
+          and formatted JSON text. Tool failures use stable error codes so clients do not need to
+          parse prose.
+        </p>
         <CodeExample code={mcpInstall} label="Install the MCP server" />
         <CodeExample code={mcpLocalConfiguration} label="Recommended MCP configuration" />
         <p>

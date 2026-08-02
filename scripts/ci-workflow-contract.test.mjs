@@ -55,13 +55,30 @@ test("keeps each workflow on its intended pull-request base", () => {
 });
 
 test("keeps publication and write permissions out of pull-request workflows", () => {
-  const sources = {
-    prGate: readFileSync(resolve(root, ciWorkflowPaths.prGate), "utf8") + "\ncontents: write\n",
-    releaseGate: readFileSync(resolve(root, ciWorkflowPaths.releaseGate), "utf8"),
-  };
+  const sources = readCiWorkflowSources(root);
+  sources.prGate += "\ncontents: write\n";
   assert.ok(
     ciWorkflowContractFailures(sources).includes(
       `${ciWorkflowPaths.prGate}: forbidden contents: write`,
     ),
   );
+});
+
+test("rejects floating third-party Action references", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.playwrightCanary = sources.playwrightCanary.replace(
+    "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7",
+    "actions/checkout@v7",
+  );
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.playwrightCanary}: forbidden @v`,
+    ),
+  );
+});
+
+test("retains reviewed Dependabot updates for pinned GitHub Actions", () => {
+  const dependabot = readFileSync(resolve(root, ".github/dependabot.yml"), "utf8");
+  assert.match(dependabot, /package-ecosystem: ["']?github-actions["']?/);
+  assert.match(dependabot, /interval: ["']?monthly["']?/);
 });

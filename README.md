@@ -205,7 +205,8 @@ client to run the published bin with command `pnpm` and arguments `["exec", "ner
 package-qualified one-off configuration may use command `pnpm` and arguments
 `["dlx", "@nerio-ui/mcp@1.0.0-beta.0"]`. The server version comes from coordinated package
 metadata, and its Registry tools report the exact Registry version, source revision, schema, and
-style contract.
+style contract. Every tool declares an output schema and returns equivalent structured content and
+JSON text; missing components use the stable `COMPONENT_NOT_FOUND` error code.
 
 ## Pre-release status
 

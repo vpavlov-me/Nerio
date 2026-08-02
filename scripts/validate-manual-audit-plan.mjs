@@ -366,10 +366,14 @@ const environmentMetadataRequirements = {
   },
 };
 
-const paths = parsePathOptions(process.argv.slice(2), {
-  "--plan": resolve(root, "quality/manual-audit-plan.json"),
-  "--report": resolve(root, "docs/audits/core-1-0-accessibility-device-audit.md"),
-});
+const expectComplete = process.argv.includes("--expect-complete");
+const paths = parsePathOptions(
+  process.argv.slice(2).filter((argument) => argument !== "--expect-complete"),
+  {
+    "--plan": resolve(root, "quality/manual-audit-plan.json"),
+    "--report": resolve(root, "docs/audits/core-1-0-accessibility-device-audit.md"),
+  },
+);
 
 const [planSource, report] = await Promise.all([
   readFile(paths["--plan"], "utf8"),
@@ -383,6 +387,12 @@ try {
   plan = JSON.parse(planSource);
 } catch (error) {
   errors.push(`Manual audit plan is not valid JSON: ${error.message}`);
+}
+
+if (expectComplete && plan?.status !== "complete") {
+  errors.push(
+    "Strict manual audit completion requires status complete with real candidate, environment, scenario, evidence, issue, report, and decision records.",
+  );
 }
 
 function addMissing(label, required, actual) {

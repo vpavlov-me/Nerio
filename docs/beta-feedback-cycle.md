@@ -146,6 +146,13 @@ Do not add speculative product components or reopen the frozen Core boundary for
 
 ## Progress ledger
 
+`quality/beta-feedback.json` is the canonical machine-readable status record. Keep it
+`evidence-pending` while this ledger is incomplete; do not add invented participants, links, dates,
+or findings. `pnpm validate:beta-feedback` accepts that truthful prerelease state.
+`pnpm validate:beta-feedback-complete` is reserved for the stable gate and requires the real
+three-person cohort, both package and source modes, Calendar/DatePicker and Registry update
+coverage, a 14-day window, issue-linked findings, and a blocker-consistent closing decision.
+
 | Participant | Role    | Package mode | Source mode | Calendar/DatePicker | Registry update | Completed | Findings |
 | ----------- | ------- | ------------ | ----------- | ------------------- | --------------- | --------- | -------- |
 | External-01 | Pending | Pending      | Pending     | Pending             | Pending         | Pending   | Pending  |

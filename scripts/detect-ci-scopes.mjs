@@ -4,6 +4,8 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const scopeNames = [
+  "docs",
+  "ui",
   "browser",
   "visual",
   "cli",
@@ -14,6 +16,8 @@ const scopeNames = [
   "workflow",
   "branch_policy",
   "docs_only",
+  "broad",
+  "unknown",
 ];
 
 const codeExtension = /\.(?:[cm]?[jt]sx?|css|scss|json)$/;
@@ -84,11 +88,55 @@ function isManualAuditContract(path) {
   ]);
 }
 
+function isKnownPath(path) {
+  return matchesAny(path, [
+    /^\.github\//,
+    /^apps\//,
+    /^docs\//,
+    /^packages\//,
+    /^quality\//,
+    /^scripts\//,
+    /^tests\//,
+    /^tooling\//,
+    /^\.changeset\//,
+    /^.*\.md$/,
+    /^.*\.json$/,
+    /^.*\.ya?ml$/,
+    /^.*\.config\.[cm]?[jt]s$/,
+    /^tsconfig(?:\.[^.]+)?\.json$/,
+    "AGENTS.md",
+    "CHANGELOG",
+    "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "README.md",
+    "RELEASE.md",
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+  ]);
+}
+
 export function detectCiScopes(inputPaths) {
   const paths = [...new Set(inputPaths.map((path) => path.replaceAll("\\", "/")).filter(Boolean))];
   const scopes = Object.fromEntries(scopeNames.map((scope) => [scope, false]));
 
   for (const path of paths) {
+    scopes.docs ||= matchesAny(path, [
+      /^apps\/docs\//,
+      /^docs\//,
+      /^.*\.md$/,
+      /^scripts\/(?:validate-(?:catalog|docs|onboarding|typography)|docs-route-bundle-report)\.mjs$/,
+      /^quality\/docs-route-/,
+    ]);
+    scopes.ui ||= matchesAny(path, [
+      /^packages\/(?:ui|tokens|registry)\/src\//,
+      /^packages\/ui\/tests?\//,
+      /^tests\/browser\//,
+      /^apps\/docs\/.*\.(?:[cm]?[jt]sx?|css|scss|json)$/,
+      "playwright.config.mjs",
+    ]);
     scopes.browser ||= isBrowserSurface(path);
     scopes.visual ||= isVisualSurface(path);
     scopes.cli ||= matchesAny(path, [
@@ -117,7 +165,17 @@ export function detectCiScopes(inputPaths) {
       ".github/workflows/branch-policy.yml",
       "scripts/check-branch-policy.mjs",
       "scripts/check-branch-policy.test.mjs",
+      "scripts/check-dco.mjs",
+      "scripts/check-dco.test.mjs",
     ]);
+    scopes.broad ||= matchesAny(path, [
+      "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
+      /^packages\/config\//,
+      /^tsconfig(?:\.[^.]+)?\.json$/,
+    ]);
+    scopes.unknown ||= !isKnownPath(path);
   }
 
   scopes.docs_only =
@@ -128,6 +186,25 @@ export function detectCiScopes(inputPaths) {
         !isManualAuditContract(path) &&
         !codeExtension.test(path.replace(/\.md$/, "")),
     );
+
+  if (scopes.broad || scopes.unknown) {
+    for (const scope of [
+      "docs",
+      "ui",
+      "browser",
+      "visual",
+      "cli",
+      "mcp",
+      "adapters",
+      "packages",
+      "manual_audit",
+      "workflow",
+      "branch_policy",
+    ]) {
+      scopes[scope] = true;
+    }
+    scopes.docs_only = false;
+  }
 
   return { changedFiles: paths, scopes };
 }

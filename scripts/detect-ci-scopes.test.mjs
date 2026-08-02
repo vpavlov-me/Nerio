@@ -34,6 +34,8 @@ test("routes shared class helpers and visual fixture assets to visual regression
 test("keeps ordinary Markdown changes out of runtime scopes", () => {
   const result = scopes("docs/quality-gates.md", "RELEASE.md");
   assert.equal(result.docs_only, true);
+  assert.equal(result.docs, true);
+  assert.equal(result.ui, false);
   assert.equal(result.browser, false);
   assert.equal(result.visual, false);
   assert.equal(result.packages, false);
@@ -80,15 +82,27 @@ test("isolates workflow metadata and the focused branch-policy contract", () => 
   assert.equal(branchPolicy.branch_policy, true);
 });
 
-test("routes public entrypoints and package policy to package checks", () => {
+test("routes narrow public entrypoints and broad root package policy safely", () => {
   for (const path of [
-    "package.json",
     "packages/ui/src/client.ts",
     "quality/package-budgets.json",
     "scripts/pack-check.mjs",
   ]) {
     assert.equal(scopes(path).packages, true, path);
   }
+  const rootManifest = scopes("package.json");
+  assert.equal(rootManifest.broad, true);
+  assert.equal(rootManifest.browser, true);
+  assert.equal(rootManifest.manual_audit, true);
+});
+
+test("fails safe for unknown paths", () => {
+  const result = scopes("unclassified/new-contract.xyz");
+  assert.equal(result.unknown, true);
+  assert.equal(result.docs_only, false);
+  assert.equal(result.ui, true);
+  assert.equal(result.packages, true);
+  assert.equal(result.workflow, true);
 });
 
 test("normalizes Windows separators and removes duplicate paths", () => {

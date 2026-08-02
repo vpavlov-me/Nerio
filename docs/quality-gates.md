@@ -7,42 +7,49 @@ regresses.
 ## Tiered CI strategy
 
 Pull requests from working branches into `dev` run `.github/workflows/pr-gate.yml`. Its required
-`PR gate` aggregate is the short feedback loop. The always-on `development-quality` job covers
-formatting, lint, type checking, unit and accessibility tests, catalog/token/onboarding validators,
-documentation validation and examples, the packed Vite consumer, the workspace build, and measured
-documentation route budgets. A repository-owned scope detector
-compares the pull-request base and head SHAs, then selects additional contracts:
+`PR gate` aggregate is the short feedback loop. `always-fast` owns formatting, lint, type checking,
+scope-detector tests, branch-policy tests, DCO tests, and exact-candidate tests. Detector outputs then
+select independent docs, UI/Chromium, visual, package, CLI, MCP, adapter, manual-release, and
+workflow contracts.
 
-- runtime UI, tokens, adapters, Registry source, interactive docs, browser tests, or browser config
-  run a focused seven-scenario Chromium smoke;
-- visual component, token CSS, docs preview, fixture, snapshot, or visual-config changes run
-  Chromium visual regression;
-- CLI, MCP, adapters, public package boundaries, and manual-audit files run only their matching
-  contract jobs;
-- branch-policy unit tests run only when the policy workflow, implementation, or tests change.
+Markdown-only changes materially use `docs_only`: their documentation validators run inside
+`always-fast`, while the separate docs build job and every runtime job stay skipped. UI changes do
+not inherit docs builds, packed Vite work, CLI, MCP, adapters, or manual contracts unless their
+paths also select those scopes. Unknown paths and broad root dependency/configuration changes fail
+safe by selecting every contract. Conditional jobs may be `success` or `skipped`; the single
+`PR gate` aggregate fails on any selected `failure` or `cancelled`.
 
-Markdown-only, audit-only, workflow-only, and package-metadata-only changes do not acquire browser
-or visual work unless they also touch a matching runtime surface. Conditional jobs may be
-`success` or `skipped`; the `PR gate` fails on `failure` or `cancelled`. The independent
-`branch-policy` status always validates pull-request direction. Development pull requests install
-Chromium only, never run the full browser suite, and never run the supported-version Next.js
-release-consumer matrix. The focused Vite fixture stays independent and runs on every pull request
-because it proves public tarballs without workspace aliases or hidden dependencies.
+The workflow-topology measurement below excludes the independent `branch-policy` status, counts
+expanded matrix legs as jobs, and counts one frozen-lockfile install per selected contract job:
+
+| Representative change | Before jobs / installs | After jobs / installs | Material difference                                                                         |
+| --------------------- | ---------------------- | --------------------- | ------------------------------------------------------------------------------------------- |
+| Markdown-only docs    | 3 / 1                  | 3 / 1                 | The install count stays flat; runtime, build, package, and browser commands no longer run.  |
+| UI runtime + visual   | 5 / 3                  | 5 / 3                 | UI, Chromium, and visual evidence remain; unrelated docs/package/tool commands are removed. |
+| `dev -> main` release | 12 / 11                | 13 / 11               | Exact-candidate validation adds one no-install job; the complete release boundary remains.  |
+
+The independent `branch-policy` status validates direction and DCO for every pull request. A DCO
+match is required for each human commit; Dependabot and recognized bot authors remain exempt.
+Development pull requests install Chromium only when selected, never run the full browser suite,
+and never run the supported-version Next.js release-consumer matrix.
 
 Pull requests from `dev` into `main` run `.github/workflows/release-gate.yml`. The required
-`Release gate` aggregate succeeds only after release quality, separate Chromium, Firefox, and
-WebKit jobs, visual regression, CLI/MCP/adapter contracts, package contracts, and the manual-audit
-contract all pass. Browser engines run in parallel with `fail-fast: false`, and package work does
-not wait for browser completion. This preserves the full package, CLI, MCP, adapter, budget,
-cross-browser, visual, packed-consumer, and pack evidence at the release boundary.
+`Release gate` aggregate succeeds only after an exact candidate job proves that the requested
+40-character SHA is a repository commit contained by `origin/dev`. Every downstream checkout uses
+that immutable SHA. The gate then requires release quality, separate Chromium, Firefox, and WebKit
+jobs, visual regression, CLI/MCP/adapter contracts, package contracts, the consumer matrix, and the
+manual/beta contract. Candidate identity and the all-package SBOM are retained as SHA-named
+artifacts. Browser engines run in parallel with `fail-fast: false`, and package work does not wait
+for browser completion.
 
 Baseline changes still require the `visual-baseline-approved` label. Label changes are not workflow
 events, so they never restart development quality. After a maintainer reviews and applies the
 label, rerun only the failed `visual-regression` job from the existing workflow run.
 
-Both workflows use read-only contents permission, cancel superseded runs for the same pull request,
-retain artifacts only on failure, and never publish packages, create tags, or create GitHub
-Releases.
+Actions are pinned to immutable commit SHAs with readable version comments; Dependabot continues to
+propose reviewed GitHub Actions updates. Workflows use read-only contents permission (plus
+read-only pull-request metadata for the authenticated visual label lookup), cancel superseded runs,
+and never publish packages, create tags, move dist-tags, or create GitHub Releases.
 
 ## Browser strategy
 
@@ -120,6 +127,12 @@ These validators prepare the audit only. Automated accessibility, browser, visua
 checks never substitute for VoiceOver, NVDA, TalkBack, native picker, physical-device, zoom,
 contrast, or lived interaction evidence.
 
+`pnpm validate:stable-readiness` reads the release channel. Beta candidates accept the truthful
+pending manual and external-feedback records. A stable channel automatically switches to
+`pnpm validate:manual-audit-complete` and `pnpm validate:beta-feedback-complete`; those commands
+reject missing evidence. `quality/beta-feedback.json` is the machine-readable record for issue
+#146 and remains `evidence-pending` until real external consumers complete the documented cycle.
+
 ## Local gate
 
 Focused development reproduction:
@@ -160,7 +173,8 @@ pnpm test:mcp
 pnpm test:adapters
 pnpm test:api
 pnpm test:manual-audit-plan
-pnpm validate:manual-audit-plan
+pnpm test:beta-feedback
+pnpm validate:stable-readiness
 pnpm validate:platform-support
 pnpm validate:api
 pnpm validate:package-budgets
@@ -169,6 +183,7 @@ pnpm test:consumer:vite
 pnpm validate:route-budgets
 pnpm test:release-consumer
 pnpm pack:check
+pnpm test:sbom
 ```
 
 Visual regression remains Chromium-only and follows [`visual-regression.md`](./visual-regression.md).
