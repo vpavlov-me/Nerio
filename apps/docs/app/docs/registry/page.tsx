@@ -96,7 +96,12 @@ export default function Page() {
             Add and update fetch and validate the complete plan before writing, stage every change,
             commit source before lock metadata, and restore both source and lock state after any
             handled failure. A durable local journal recovers an interrupted process on the next
-            Registry command; already-committed source and lock state is retained.
+            state-sensitive command (<code>add</code>, <code>diff</code>, <code>update</code>, or{" "}
+            <code>doctor</code>); already-committed source and lock state is retained. A
+            project-local process lock serializes installs, updates, validation, and recovery so
+            parallel commands cannot lose source ownership or lock metadata; <code>list</code> and{" "}
+            <code>info</code> remain read-only inspection commands. An owner heartbeat also makes
+            locks reclaimable after process death, restart, or PID reuse.
           </li>
         </ul>
         <p>

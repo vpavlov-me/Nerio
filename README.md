@@ -183,9 +183,14 @@ integrity checks.
 `nerio add` resolves and fetches the complete requested source closure before writing. It stages the
 full operation, commits source, and writes `nerio.lock.json` last; any source or lock failure restores
 the previous source and lock state and removes temporary artifacts. A durable local journal lets the
-next Registry command recover an operation interrupted by process exit or machine failure; a fully
-committed source-and-lock transaction is retained and only its orphaned journal is removed. The lock
-records exact Registry version, revision, file paths, dependency closure, original hashes, integrity
+next state-sensitive command (`add`, `diff`, `update`, or `doctor`) recover an operation interrupted
+by process exit or machine failure; a fully committed source-and-lock transaction is retained and
+only its orphaned journal is removed. State-sensitive Registry commands share one project-local
+process lock, so installs, updates, validation, and recovery cannot race source state against
+`nerio.lock.json`; `list` and `info` remain read-only inspection commands. A dead owner's lock is
+reclaimed before journal recovery, and an expired heartbeat distinguishes a restarted or PID-reused
+owner. The lock records
+exact Registry version, revision, file paths, dependency closure, original hashes, integrity
 metadata, and owners.
 `nerio diff` separates local and upstream drift. `nerio update --dry-run` previews a deterministic
 update, while `nerio update` applies only safe upstream changes and never overwrites locally modified

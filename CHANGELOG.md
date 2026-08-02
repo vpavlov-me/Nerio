@@ -48,10 +48,14 @@ Items under `Unreleased` may change before the next public release.
 - Made `nerio add` and `nerio update` operation-atomic: the CLI fetches and validates the complete
   closure, stages and backs up affected files, writes lock metadata last, and restores source and
   lock state after injected source or lock failures. Durable journals recover abrupt process exits
-  on the next Registry command without rolling back a source-and-lock transaction that had fully
-  committed. The CLI tarball grows from 10,559 to 16,367 bytes and unpacked content from 40,917 to
-  68,442 bytes; reviewed budgets move from 12,000 to 18,000 compressed bytes and from 50,000 to
-  75,000 unpacked bytes for this bounded transport, recovery, and transaction contract.
+  on the next state-sensitive command (`add`, `diff`, `update`, or `doctor`) without rolling back a
+  source-and-lock transaction that had fully committed. A project-local process lock serializes
+  installs, updates, validation, and recovery, preventing simultaneous commands from losing source
+  ownership or lock metadata and reclaiming dead owners before journal recovery; `list` and `info`
+  remain read-only inspection commands. A heartbeat lease makes stale locks reclaimable after
+  restart or PID reuse. The CLI tarball grows from 10,559 to 18,994 bytes and unpacked content from
+  40,917 to 79,835 bytes; reviewed budgets move from 18,000 to 19,000 compressed bytes and from
+  75,000 to 80,000 unpacked bytes for this bounded lease and transaction contract.
 
 ### Migration
 

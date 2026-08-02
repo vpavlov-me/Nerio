@@ -4,6 +4,7 @@ const http = require("node:http");
 const os = require("node:os");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
+const { clearInterval, setInterval, setTimeout } = require("node:timers");
 
 const repoRoot = path.resolve(__dirname, "../../..");
 const cli = path.resolve(__dirname, "../src/index.js");
@@ -262,6 +263,14 @@ async function runFailure(cwd, ...args) {
   throw new Error(`nerio ${args.join(" ")} unexpectedly succeeded.`);
 }
 
+async function runResult(cwd, ...args) {
+  try {
+    return await run(cwd, ...args);
+  } catch (error) {
+    return error.message;
+  }
+}
+
 async function runFailureWithEnv(cwd, env, ...args) {
   try {
     await runWithEnv(cwd, env, ...args);
@@ -509,6 +518,54 @@ function writeLifecycleRegistry(
   return manifestPath;
 }
 
+function writeConcurrencyRegistry(registryRoot) {
+  const sourceRoot = path.join(registryRoot, "source");
+  fs.mkdirSync(sourceRoot, { recursive: true });
+  const items = ["alpha", "beta"].map((name) => {
+    const source = `export const ${name} = true;\n`;
+    fs.writeFileSync(path.join(sourceRoot, `${name}.ts`), source);
+    return {
+      name,
+      title: name[0].toUpperCase() + name.slice(1),
+      description: `Fixture ${name} source.`,
+      category: "foundation",
+      dependencies: [],
+      registryDependencies: [],
+      files: [
+        {
+          source: `./source/${name}.ts`,
+          target: `components/${name}.ts`,
+          role: "component",
+          integrity: `sha256-${crypto.createHash("sha256").update(source).digest("hex")}`,
+        },
+      ],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: `import { ${name} } from '@/components/nerio/components/${name}';`,
+    };
+  });
+  const manifestPath = path.join(registryRoot, "manifest.json");
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(
+      {
+        schemaVersion: "1.1.0",
+        name: "nerio-concurrency-fixture",
+        version: cliVersion,
+        sourceRevision: "fixture-concurrency",
+        styleContractVersion: "tailwind-v1",
+        items,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  return manifestPath;
+}
+
 function managedSnapshot(target) {
   const snapshot = {};
   const visit = (entry) => {
@@ -528,7 +585,12 @@ function managedSnapshot(target) {
 function assertNoTransactionArtifacts(target, description) {
   const artifacts = fs
     .readdirSync(target)
-    .filter((entry) => entry.startsWith(".nerio-transaction-") || entry.endsWith(".tmp"));
+    .filter(
+      (entry) =>
+        entry.startsWith(".nerio-transaction-") ||
+        entry.startsWith(".nerio-registry-lock") ||
+        entry.endsWith(".tmp"),
+    );
   if (artifacts.length) {
     throw new Error(`${description} left temporary artifacts: ${artifacts.join(", ")}`);
   }
@@ -538,6 +600,372 @@ function assertInterruptedTransaction(target, description) {
   if (!fs.readdirSync(target).some((entry) => entry.startsWith(".nerio-transaction-"))) {
     throw new Error(`${description} did not preserve a recovery journal.`);
   }
+}
+
+function discardCrashedRegistryLock(target) {
+  const lockPath = path.join(target, ".nerio-registry-lock");
+  if (!fs.existsSync(lockPath)) {
+    throw new Error("A crashed Registry command did not preserve its process lock.");
+  }
+  fs.rmSync(lockPath);
+  for (const entry of fs.readdirSync(target)) {
+    if (entry.startsWith(".nerio-registry-lock.renew-")) {
+      fs.rmSync(path.join(target, entry));
+    }
+  }
+}
+
+async function waitForFixture(predicate, description) {
+  const deadline = Date.now() + 7_000;
+  while (!predicate()) {
+    if (Date.now() >= deadline) throw new Error(`Timed out waiting for ${description}.`);
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+}
+
+async function verifyConcurrentTransactions(tempRoot) {
+  const registryRoot = path.join(tempRoot, "concurrency-registry");
+  const target = path.join(tempRoot, "concurrency-consumer");
+  fs.mkdirSync(registryRoot);
+  fs.mkdirSync(target);
+  const fixtureManifest = writeConcurrencyRegistry(registryRoot);
+  await run(target, "init", "--registry", fixtureManifest);
+
+  const alpha = runWithEnv(target, { NERIO_TEST_TRANSACTION_PAUSE_MS: "2500" }, "add", "alpha");
+  await waitForFixture(
+    () =>
+      fs.existsSync(path.join(target, ".nerio-registry-lock")) &&
+      fs.readdirSync(target).some((entry) => entry.startsWith(".nerio-transaction-")),
+    "the first concurrent Registry transaction",
+  );
+  const leaseBeforeBlockedCall = fs.statSync(path.join(target, ".nerio-registry-lock")).mtimeMs;
+  await new Promise((resolve) => setTimeout(resolve, 1_500));
+  if (fs.statSync(path.join(target, ".nerio-registry-lock")).mtimeMs <= leaseBeforeBlockedCall) {
+    throw new Error("Registry lease stopped while the command thread was blocked.");
+  }
+  const beta = run(target, "add", "beta");
+  await Promise.all([alpha, beta]);
+
+  const lock = JSON.parse(fs.readFileSync(path.join(target, "nerio.lock.json"), "utf8"));
+  if (
+    !lock.items.alpha ||
+    !lock.items.beta ||
+    !lock.requestedItems.includes("alpha") ||
+    !lock.requestedItems.includes("beta") ||
+    !fs.existsSync(path.join(target, "components/nerio/components/alpha.ts")) ||
+    !fs.existsSync(path.join(target, "components/nerio/components/beta.ts"))
+  ) {
+    throw new Error("Concurrent Registry installs lost source or lock metadata.");
+  }
+  assertNoTransactionArtifacts(target, "Concurrent Registry installs");
+
+  const fencedTarget = path.join(tempRoot, "fenced-registry-consumer");
+  fs.mkdirSync(fencedTarget);
+  await run(fencedTarget, "init", "--registry", fixtureManifest);
+  const fencedFailure = runFailureWithEnv(
+    fencedTarget,
+    { NERIO_TEST_TRANSACTION_PAUSE_MS: "2500" },
+    "add",
+    "alpha",
+  );
+  await waitForFixture(
+    () =>
+      fs.readdirSync(fencedTarget).some((entry) => entry.startsWith(".nerio-transaction-")) &&
+      fs.readdirSync(fencedTarget).some((entry) => entry.startsWith(".nerio-registry-lock.renew-")),
+    "a blocked Registry command with its renewal guard",
+  );
+  const renewal = fs
+    .readdirSync(fencedTarget)
+    .find((entry) => entry.startsWith(".nerio-registry-lock.renew-"));
+  fs.rmSync(path.join(fencedTarget, renewal));
+  const fencedOutput = await fencedFailure;
+  if (
+    !fencedOutput.includes("Recovery data remains") ||
+    fs.existsSync(path.join(fencedTarget, "components/nerio/components/alpha.ts"))
+  ) {
+    throw new Error(`A Registry owner continued after losing its renewal guard.\n${fencedOutput}`);
+  }
+  await runResult(fencedTarget, "doctor");
+  assertNoTransactionArtifacts(fencedTarget, "Fenced Registry transaction");
+
+  for (const [reservedIndex, reservedTarget] of [
+    ".nerio-registry-lock",
+    ".NERIO-REGISTRY-LOCK",
+    ".nerio-registry-lock.candidate-registry-item",
+  ].entries()) {
+    const reservedManifest = path.join(
+      registryRoot,
+      `manifest-${reservedIndex}-${reservedTarget.replaceAll(".", "-")}.json`,
+    );
+    const manifest = JSON.parse(fs.readFileSync(fixtureManifest, "utf8"));
+    manifest.items[0].files[0].target = reservedTarget;
+    fs.writeFileSync(reservedManifest, `${JSON.stringify(manifest, null, 2)}\n`);
+    const reservedConsumer = path.join(
+      tempRoot,
+      `reserved-lock-target-${reservedIndex}-${reservedTarget.replaceAll(".", "-")}`,
+    );
+    fs.mkdirSync(reservedConsumer);
+    await run(reservedConsumer, "init", "--registry", fixtureManifest, "--components", ".");
+    const failure = await runFailure(
+      reservedConsumer,
+      "add",
+      "alpha",
+      "--registry",
+      reservedManifest,
+      "--overwrite",
+    );
+    if (!failure.includes("Registry target uses a reserved Nerio path")) {
+      throw new Error(`Registry lock target was not rejected: ${reservedTarget}\n${failure}`);
+    }
+    assertNoTransactionArtifacts(reservedConsumer, `Reserved Registry target ${reservedTarget}`);
+  }
+
+  const readOnlyTarget = path.join(tempRoot, "read-only-registry-consumer");
+  fs.mkdirSync(readOnlyTarget);
+  await run(readOnlyTarget, "init", "--registry", fixtureManifest);
+  fs.chmodSync(readOnlyTarget, 0o555);
+  try {
+    const listed = await run(readOnlyTarget, "list");
+    const inspected = await run(readOnlyTarget, "info", "alpha");
+    if (
+      !listed.includes("alpha\tAlpha\tfoundation") ||
+      !inspected.includes("alpha") ||
+      fs.readdirSync(readOnlyTarget).some((entry) => entry.startsWith(".nerio-registry-lock"))
+    ) {
+      throw new Error("Read-only Registry inspection required project-root lock state.");
+    }
+  } finally {
+    fs.chmodSync(readOnlyTarget, 0o755);
+  }
+
+  const invalidOwnerTarget = path.join(tempRoot, "invalid-lock-owner-consumer");
+  fs.mkdirSync(invalidOwnerTarget);
+  await run(invalidOwnerTarget, "init", "--registry", fixtureManifest);
+  const invalidLockPath = path.join(invalidOwnerTarget, ".nerio-registry-lock");
+  fs.writeFileSync(invalidLockPath, "invalid-owner\n");
+  const child = spawn(process.execPath, [cli, "doctor"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  let output = "";
+  child.stdout.on("data", (chunk) => (output += chunk));
+  child.stderr.on("data", (chunk) => (output += chunk));
+  const closed = new Promise((resolve) => child.on("close", resolve));
+  await waitForFixture(
+    () =>
+      fs
+        .readdirSync(invalidOwnerTarget)
+        .some((entry) => entry.startsWith(".nerio-registry-lock.candidate-")),
+    "a command waiting on the invalid lock owner",
+  );
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  if (child.exitCode !== null || fs.readFileSync(invalidLockPath, "utf8") !== "invalid-owner\n") {
+    throw new Error(`A missing or invalid Registry lock owner was reaped.\n${output}`);
+  }
+  child.kill();
+  await closed;
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
+  fs.writeFileSync(invalidLockPath, "invalid-owner\n");
+  const progressingCandidate = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.candidate-${crypto.randomUUID()}`,
+  );
+  fs.writeFileSync(progressingCandidate, "live-candidate\n");
+  let candidateBeat = 0;
+  const candidateHeartbeat = setInterval(() => {
+    const skewed = new Date(Date.now() - 120_000 + candidateBeat++);
+    fs.utimesSync(progressingCandidate, skewed, skewed);
+  }, 250);
+  const candidateChild = spawn(process.execPath, [cli, "doctor"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  await new Promise((resolve) => setTimeout(resolve, 5_500));
+  clearInterval(candidateHeartbeat);
+  if (candidateChild.exitCode !== null || !fs.existsSync(progressingCandidate)) {
+    throw new Error("A progressing clock-skewed Registry lock candidate was removed.");
+  }
+  await new Promise((resolve) => {
+    candidateChild.once("close", resolve);
+    candidateChild.kill();
+  });
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
+  const progressingOwner = {
+    schemaVersion: "1.0.0",
+    pid: process.pid,
+    token: crypto.randomUUID(),
+    createdAt: new Date(Date.now() - 120_000).toISOString(),
+  };
+  fs.writeFileSync(invalidLockPath, `${JSON.stringify(progressingOwner)}\n`);
+  let ownerBeat = 0;
+  const ownerHeartbeat = setInterval(() => {
+    const skewed = new Date(Date.now() - 120_000 + ownerBeat++);
+    fs.utimesSync(invalidLockPath, skewed, skewed);
+  }, 250);
+  const progressingOwnerChild = spawn(process.execPath, [cli, "doctor"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  await new Promise((resolve) => setTimeout(resolve, 5_500));
+  clearInterval(ownerHeartbeat);
+  if (progressingOwnerChild.exitCode !== null || !fs.existsSync(invalidLockPath)) {
+    throw new Error("A progressing clock-skewed Registry lock owner was reaped.");
+  }
+  await new Promise((resolve) => {
+    progressingOwnerChild.once("close", resolve);
+    progressingOwnerChild.kill();
+  });
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
+  const foreignNamespaceLock = {
+    schemaVersion: "1.0.0",
+    pid: Number.MAX_SAFE_INTEGER,
+    token: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+  };
+  const foreignNamespaceContent = `${JSON.stringify(foreignNamespaceLock)}\n`;
+  fs.writeFileSync(invalidLockPath, foreignNamespaceContent);
+  const futureLeaseTime = new Date(Date.now() + 120_000);
+  fs.utimesSync(invalidLockPath, futureLeaseTime, futureLeaseTime);
+  const foreignChild = spawn(process.execPath, [cli, "doctor"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  let foreignOutput = "";
+  foreignChild.stdout.on("data", (chunk) => (foreignOutput += chunk));
+  foreignChild.stderr.on("data", (chunk) => (foreignOutput += chunk));
+  const foreignClosed = new Promise((resolve) => foreignChild.on("close", resolve));
+  await waitForFixture(
+    () =>
+      fs
+        .readdirSync(invalidOwnerTarget)
+        .some((entry) => entry.startsWith(".nerio-registry-lock.candidate-")),
+    "a command waiting on a fresh foreign-namespace lock",
+  );
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  if (
+    foreignChild.exitCode !== null ||
+    fs.readFileSync(invalidLockPath, "utf8") !== foreignNamespaceContent
+  ) {
+    throw new Error(`A fresh lock with a locally missing PID was reaped.\n${foreignOutput}`);
+  }
+  foreignChild.kill();
+  await foreignClosed;
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
+  const resumedOwner = {
+    schemaVersion: "1.0.0",
+    pid: process.pid,
+    token: crypto.randomUUID(),
+    createdAt: new Date(Date.now() - 120_000).toISOString(),
+  };
+  const resumedOwnerContent = `${JSON.stringify(resumedOwner)}\n`;
+  fs.writeFileSync(invalidLockPath, resumedOwnerContent);
+  const resumedStaleTime = new Date(Date.now() - 120_000);
+  fs.utimesSync(invalidLockPath, resumedStaleTime, resumedStaleTime);
+  const resumedRenewal = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.renew-${resumedOwner.token}`,
+  );
+  fs.linkSync(invalidLockPath, resumedRenewal);
+  const resumedChild = spawn(process.execPath, [cli, "doctor"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  let resumedOutput = "";
+  resumedChild.stdout.on("data", (chunk) => (resumedOutput += chunk));
+  resumedChild.stderr.on("data", (chunk) => (resumedOutput += chunk));
+  const resumedClosed = new Promise((resolve) => resumedChild.on("close", resolve));
+  await waitForFixture(
+    () =>
+      fs
+        .readdirSync(invalidOwnerTarget)
+        .some((entry) => entry.startsWith(".nerio-registry-lock.reap-")),
+    "a contender electing a stale Registry lock reaper",
+  );
+  const resumedAt = new Date();
+  fs.utimesSync(invalidLockPath, resumedAt, resumedAt);
+  fs.rmSync(resumedRenewal);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  if (
+    resumedChild.exitCode !== null ||
+    fs.readFileSync(invalidLockPath, "utf8") !== resumedOwnerContent
+  ) {
+    throw new Error(`A resumed fresh Registry lease was reaped.\n${resumedOutput}`);
+  }
+  resumedChild.kill();
+  await resumedClosed;
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
+  const reusedPidLock = {
+    schemaVersion: "1.0.0",
+    pid: process.pid,
+    token: crypto.randomUUID(),
+    createdAt: new Date(Date.now() - 120_000).toISOString(),
+  };
+  fs.writeFileSync(invalidLockPath, `${JSON.stringify(reusedPidLock)}\n`);
+  const staleTime = new Date(Date.now() - 120_000);
+  fs.utimesSync(invalidLockPath, staleTime, staleTime);
+  const abandonedReapClaim = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.reap-${crypto.randomUUID()}`,
+  );
+  fs.writeFileSync(abandonedReapClaim, "abandoned\n");
+  fs.utimesSync(abandonedReapClaim, staleTime, staleTime);
+  const abandonedCandidate = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.candidate-${crypto.randomUUID()}`,
+  );
+  fs.writeFileSync(abandonedCandidate, "abandoned\n");
+  fs.utimesSync(abandonedCandidate, staleTime, staleTime);
+  const abandonedRenewal = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.renew-${crypto.randomUUID()}`,
+  );
+  fs.linkSync(invalidLockPath, abandonedRenewal);
+  await Promise.all([
+    run(invalidOwnerTarget, "add", "alpha"),
+    run(invalidOwnerTarget, "add", "beta"),
+  ]);
+  const reclaimedLock = JSON.parse(
+    fs.readFileSync(path.join(invalidOwnerTarget, "nerio.lock.json"), "utf8"),
+  );
+  if (
+    !reclaimedLock.items.alpha ||
+    !reclaimedLock.items.beta ||
+    !fs.existsSync(path.join(invalidOwnerTarget, "components/nerio/components/alpha.ts")) ||
+    !fs.existsSync(path.join(invalidOwnerTarget, "components/nerio/components/beta.ts"))
+  ) {
+    throw new Error("Multi-contender stale Registry lock recovery lost source or lock metadata.");
+  }
+  assertNoTransactionArtifacts(invalidOwnerTarget, "Multi-contender stale Registry lock recovery");
 }
 
 async function verifyAtomicTransactions(tempRoot) {
@@ -574,7 +1002,8 @@ async function verifyAtomicTransactions(tempRoot) {
     await run(target, "init", "--registry", fixtureManifest);
     await runFailureWithEnv(target, { NERIO_TEST_CRASH: point }, "add", "button");
     assertInterruptedTransaction(target, `Interrupted add ${point}`);
-    const recovery = await run(target, "list");
+    discardCrashedRegistryLock(target);
+    const recovery = await runResult(target, "doctor");
     if (
       !recovery.includes("Recovered interrupted Registry transaction") ||
       Object.keys(managedSnapshot(target)).length
@@ -625,7 +1054,8 @@ async function verifyAtomicTransactions(tempRoot) {
     fs.cpSync(baselineTarget, target, { recursive: true });
     await runFailureWithEnv(target, { NERIO_TEST_CRASH: point }, "update", "button", "--force");
     assertInterruptedTransaction(target, `Interrupted update ${point}`);
-    const recovery = await run(target, "list");
+    discardCrashedRegistryLock(target);
+    const recovery = await runResult(target, "doctor");
     if (
       !recovery.includes("Recovered interrupted Registry transaction") ||
       JSON.stringify(managedSnapshot(target)) !== JSON.stringify(baseline)
@@ -645,8 +1075,9 @@ async function verifyAtomicTransactions(tempRoot) {
     "button",
   );
   assertInterruptedTransaction(committedTarget, "Committed interrupted add");
+  discardCrashedRegistryLock(committedTarget);
   const committedBeforeRecovery = managedSnapshot(committedTarget);
-  await run(committedTarget, "list");
+  await runResult(committedTarget, "doctor");
   if (
     JSON.stringify(managedSnapshot(committedTarget)) !== JSON.stringify(committedBeforeRecovery)
   ) {
@@ -687,7 +1118,7 @@ async function verifyAtomicTransactions(tempRoot) {
       2,
     )}\n`,
   );
-  const invalidRecovery = await runFailure(invalidJournalTarget, "list");
+  const invalidRecovery = await runFailure(invalidJournalTarget, "doctor");
   if (
     !invalidRecovery.includes("outside the configured components directory") ||
     fs.readFileSync(outsideTarget, "utf8") !== "consumer-owned\n" ||
@@ -1040,6 +1471,7 @@ async function verify() {
   try {
     await verifySourceLifecycle(tempRoot);
     await verifyAtomicTransactions(tempRoot);
+    await verifyConcurrentTransactions(tempRoot);
     await run(srcDirTarget, "init", "--registry", manifest);
     const srcDirConfig = JSON.parse(fs.readFileSync(path.join(srcDirTarget, "nerio.json"), "utf8"));
     if (srcDirConfig.components !== "src/components/nerio") {

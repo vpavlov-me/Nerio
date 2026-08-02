@@ -4,6 +4,7 @@ const crypto = require("node:crypto");
 const path = require("node:path");
 const { Buffer } = require("node:buffer");
 const { clearTimeout, setTimeout } = require("node:timers");
+const { Worker } = require("node:worker_threads");
 
 const cliPackage = require("../package.json");
 const DEFAULT_REGISTRY = "@nerio-ui/registry/manifest.json";
@@ -21,6 +22,16 @@ const SCHEMA_VERSION_PATTERN = /^\d+\.\d+\.\d+$/;
 const LOCK_CONTENT_HASH = Symbol("lock-content-hash");
 const TRANSACTION_PREFIX = ".nerio-transaction-";
 const TRANSACTION_SCHEMA_VERSION = "1.0.0";
+const REGISTRY_LOCK_DIRECTORY = ".nerio-registry-lock";
+const REGISTRY_LOCK_SCHEMA_VERSION = "1.0.0";
+const REGISTRY_LOCK_WAIT_MS = 60_000;
+const REGISTRY_LOCK_POLL_MS = 25;
+const REGISTRY_LOCK_HEARTBEAT_MS = 1_000;
+const REGISTRY_LOCK_STALE_MS = 30_000;
+const REGISTRY_LOCK_RECLAIM_CONFIRM_MS = 5_000;
+const REGISTRY_LOCK_CANDIDATE_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.candidate-`;
+const REGISTRY_LOCK_REAP_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.reap-`;
+const LOCK_RENEW_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.renew-`;
 const cwd = process.cwd();
 const args = process.argv.slice(2);
 const command = args[0];
@@ -28,6 +39,7 @@ const itemName =
   ["add", "diff", "info", "update"].includes(command) && !args[1]?.startsWith("--")
     ? args[1]
     : undefined;
+let activeRegistryLock = null;
 
 function option(name) {
   const index = args.indexOf(name);
@@ -518,6 +530,7 @@ function assertNoSymlinks(root, target, message) {
 }
 
 function writeFileAtomic(target, content) {
+  refreshActiveRegistryLockLease();
   fs.mkdirSync(path.dirname(target), { recursive: true });
   const temporary = path.join(
     path.dirname(target),
@@ -526,6 +539,7 @@ function writeFileAtomic(target, content) {
   try {
     fs.writeFileSync(temporary, content, { flag: "wx" });
     fs.renameSync(temporary, target);
+    refreshActiveRegistryLockLease();
   } finally {
     fs.rmSync(temporary, { force: true });
   }
@@ -551,6 +565,15 @@ function injectCrash(point, committed = 0) {
   }
 }
 
+function pauseTransactionForFixture() {
+  const milliseconds = Number(process.env.NERIO_TEST_TRANSACTION_PAUSE_MS);
+  if (Number.isSafeInteger(milliseconds) && milliseconds > 0) {
+    const clock = new Int32Array(new SharedArrayBuffer(4));
+    Atomics.wait(clock, 0, 0, milliseconds);
+    refreshActiveRegistryLockLease();
+  }
+}
+
 function removeEmptyParents(target, boundary) {
   let directory = path.dirname(target);
   while (directory !== boundary && isWithin(boundary, directory)) {
@@ -565,6 +588,294 @@ function removeEmptyParents(target, boundary) {
 
 function transactionJournalPath(transactionRoot) {
   return path.join(transactionRoot, "journal.json");
+}
+
+function wait(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+function readRegistryLock(lockPath) {
+  const pathStats = fs.lstatSync(lockPath);
+  if (!pathStats.isFile() || pathStats.isSymbolicLink()) {
+    throw new Error(`Invalid Registry lock path: ${lockPath}`);
+  }
+  const descriptor = fs.openSync(lockPath, "r");
+  let owner;
+  try {
+    const stats = fs.fstatSync(descriptor);
+    if (!sameFile(pathStats, stats)) {
+      throw Object.assign(new Error(`Lock changed while reading its owner.`), {
+        code: "EAGAIN",
+      });
+    }
+    try {
+      owner = JSON.parse(fs.readFileSync(descriptor, "utf8"));
+    } catch {
+      return { owner: null, stats };
+    }
+    if (
+      owner?.schemaVersion !== REGISTRY_LOCK_SCHEMA_VERSION ||
+      !Number.isSafeInteger(owner.pid) ||
+      owner.pid <= 0 ||
+      typeof owner.token !== "string" ||
+      !owner.token ||
+      typeof owner.createdAt !== "string"
+    ) {
+      return { owner: null, stats };
+    }
+    return { owner, stats };
+  } finally {
+    fs.closeSync(descriptor);
+  }
+}
+
+function sameFile(left, right) {
+  return left.dev === right.dev && left.ino === right.ino;
+}
+
+function registryReapClaims() {
+  const now = Date.now();
+  const claims = [];
+  for (const entry of fs.readdirSync(cwd)) {
+    if (!entry.startsWith(REGISTRY_LOCK_REAP_PREFIX)) continue;
+    const claimPath = path.join(cwd, entry);
+    let stats;
+    try {
+      stats = fs.lstatSync(claimPath);
+    } catch (error) {
+      if (error?.code === "ENOENT") continue;
+      throw error;
+    }
+    const claimAge = now - stats.mtimeMs;
+    if (stats.isFile() && !stats.isSymbolicLink() && claimAge >= REGISTRY_LOCK_STALE_MS) {
+      // Claim UUID paths are never reused, so this cannot remove a replacement.
+      fs.rmSync(claimPath, { force: true });
+      continue;
+    }
+    claims.push(claimPath);
+  }
+  return claims.sort();
+}
+
+function activeLockArtifact(target) {
+  let stats;
+  try {
+    stats = fs.lstatSync(target);
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+  if (!stats.isFile() || stats.isSymbolicLink()) {
+    throw new Error(`Invalid Registry lock artifact: ${target}`);
+  }
+  const now = Date.now();
+  if (now - stats.mtimeMs < REGISTRY_LOCK_STALE_MS) return true;
+  if (stats.atimeMs === stats.mtimeMs) fs.utimesSync(target, new Date(now), stats.mtime);
+  else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+    fs.rmSync(target);
+    return false;
+  }
+  return true;
+}
+
+function renewalActive() {
+  return fs
+    .readdirSync(cwd)
+    .filter((entry) => entry.startsWith(LOCK_RENEW_PREFIX))
+    .some((entry) => activeLockArtifact(path.join(cwd, entry)));
+}
+
+function cleanupRegistryLockCandidates(currentCandidate) {
+  for (const entry of fs.readdirSync(cwd)) {
+    if (!entry.startsWith(REGISTRY_LOCK_CANDIDATE_PREFIX)) continue;
+    const candidatePath = path.join(cwd, entry);
+    if (candidatePath === currentCandidate) continue;
+    activeLockArtifact(candidatePath);
+  }
+}
+
+async function reapRegistryLock(lockPath, token, observed) {
+  const claimPath = path.join(cwd, `${REGISTRY_LOCK_REAP_PREFIX}${token}`);
+  try {
+    fs.writeFileSync(claimPath, `${token}\n`, { flag: "wx", mode: 0o600 });
+    // Let every contender observe the claims, then elect one reaper.
+    await wait(REGISTRY_LOCK_POLL_MS * 2);
+    if (registryReapClaims()[0] !== claimPath) return false;
+    while (renewalActive()) await wait(REGISTRY_LOCK_POLL_MS);
+    let current;
+    try {
+      current = readRegistryLock(lockPath);
+    } catch (error) {
+      if (["EAGAIN", "ENOENT"].includes(error?.code)) return false;
+      throw error;
+    }
+    if (
+      !sameFile(observed.stats, current.stats) ||
+      current.owner?.token !== observed.owner?.token ||
+      current.stats.mtimeMs !== observed.stats.mtimeMs
+    ) {
+      return false;
+    }
+    if (Date.now() - current.stats.mtimeMs < REGISTRY_LOCK_STALE_MS) return false;
+    try {
+      fs.rmSync(lockPath);
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
+    return true;
+  } finally {
+    fs.rmSync(claimPath, { force: true });
+  }
+}
+
+function refreshRegistryLockLease(lock) {
+  const observed = readRegistryLock(lock.lockPath);
+  const guard = readRegistryLock(lock.renewPath);
+  if (
+    observed.owner?.token !== lock.token ||
+    guard.owner?.token !== lock.token ||
+    !sameFile(observed.stats, guard.stats)
+  ) {
+    throw new Error(`Registry lock ownership changed.`);
+  }
+  const descriptor = fs.openSync(lock.lockPath, "r");
+  const now = new Date();
+  try {
+    if (!sameFile(observed.stats, fs.fstatSync(descriptor))) {
+      throw new Error(`Registry lock changed before its heartbeat.`);
+    }
+    fs.futimesSync(descriptor, now, now);
+  } finally {
+    fs.closeSync(descriptor);
+  }
+}
+
+function refreshActiveRegistryLockLease() {
+  if (activeRegistryLock) refreshRegistryLockLease(activeRegistryLock);
+}
+
+function startRegistryLockHeartbeat(lock) {
+  lock.renewPath = `${lock.lockPath}.renew-${lock.token}`;
+  fs.linkSync(lock.lockPath, lock.renewPath);
+  lock.heartbeat = new Worker(
+    `const{workerData}=require("node:worker_threads"),fs=require("node:fs"),fd=fs.openSync(workerData.path,"r");setInterval(()=>{const now=new Date,a=fs.fstatSync(fd);fs.futimesSync(fd,now,now);const b=fs.lstatSync(workerData.path);if(a.dev!==b.dev||a.ino!==b.ino)throw 0},workerData.interval)`,
+    {
+      eval: true,
+      workerData: { path: lock.renewPath, interval: REGISTRY_LOCK_HEARTBEAT_MS },
+    },
+  );
+  lock.heartbeat.on("error", (error) => (lock.heartbeatError = error));
+  lock.heartbeat.unref();
+  return lock;
+}
+
+async function acquireRegistryLock() {
+  const lockPath = path.join(cwd, REGISTRY_LOCK_DIRECTORY);
+  const token = crypto.randomUUID();
+  const candidatePath = `${lockPath}.candidate-${token}`;
+  const deadline = Date.now() + REGISTRY_LOCK_WAIT_MS;
+  writeFileAtomic(
+    candidatePath,
+    `${JSON.stringify(
+      {
+        schemaVersion: REGISTRY_LOCK_SCHEMA_VERSION,
+        pid: process.pid,
+        token,
+        createdAt: new Date().toISOString(),
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  fs.chmodSync(candidatePath, 0o600);
+  let candidateHeartbeatAt = Date.now();
+  let staleOwner;
+  try {
+    while (true) {
+      cleanupRegistryLockCandidates(candidatePath);
+      if (Date.now() - candidateHeartbeatAt >= REGISTRY_LOCK_HEARTBEAT_MS) {
+        const now = new Date();
+        fs.utimesSync(candidatePath, now, now);
+        candidateHeartbeatAt = now.getTime();
+      }
+      if (registryReapClaims().length) {
+        if (Date.now() >= deadline) {
+          throw new Error(`Registry lock wait exceeded ${REGISTRY_LOCK_WAIT_MS}ms.`);
+        }
+        await wait(REGISTRY_LOCK_POLL_MS);
+        continue;
+      }
+      try {
+        fs.linkSync(candidatePath, lockPath);
+        if (registryReapClaims().length) {
+          try {
+            const acquired = readRegistryLock(lockPath);
+            if (acquired.owner?.token === token) fs.rmSync(lockPath, { force: true });
+          } catch (error) {
+            if (!["EAGAIN", "ENOENT"].includes(error?.code)) throw error;
+          }
+          await wait(REGISTRY_LOCK_POLL_MS);
+          continue;
+        }
+        return startRegistryLockHeartbeat({ lockPath, token });
+      } catch (error) {
+        if (error?.code !== "EEXIST") throw error;
+      }
+
+      let observed;
+      try {
+        observed = readRegistryLock(lockPath);
+      } catch (error) {
+        if (["EAGAIN", "ENOENT"].includes(error?.code)) continue;
+        throw error;
+      }
+      if (observed.owner) {
+        const leaseAge = Date.now() - observed.stats.mtimeMs;
+        const leaseStale = leaseAge >= REGISTRY_LOCK_STALE_MS;
+        if (leaseStale) {
+          if (
+            staleOwner?.token !== observed.owner.token ||
+            staleOwner.mtimeMs !== observed.stats.mtimeMs
+          ) {
+            staleOwner = {
+              token: observed.owner.token,
+              mtimeMs: observed.stats.mtimeMs,
+              observedAt: Date.now(),
+            };
+          } else if (Date.now() - staleOwner.observedAt >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+            if (await reapRegistryLock(lockPath, token, observed)) continue;
+          }
+        } else {
+          staleOwner = null;
+        }
+      }
+      if (Date.now() >= deadline) {
+        const owner = observed.owner ? ` held by process ${observed.owner.pid}` : "";
+        throw new Error(`Registry lock wait exceeded ${REGISTRY_LOCK_WAIT_MS}ms${owner}.`);
+      }
+      await wait(REGISTRY_LOCK_POLL_MS);
+    }
+  } finally {
+    fs.rmSync(candidatePath, { force: true });
+  }
+}
+
+function releaseRegistryLock(lock) {
+  lock.heartbeat.terminate();
+  try {
+    if (!fs.existsSync(lock.lockPath)) {
+      if (lock.heartbeatError) throw lock.heartbeatError;
+      return;
+    }
+    const observed = readRegistryLock(lock.lockPath);
+    if (observed.owner?.token !== lock.token) {
+      throw new Error(`Lock ownership changed before release.`);
+    }
+    fs.rmSync(lock.lockPath, { force: true });
+    if (lock.heartbeatError) throw lock.heartbeatError;
+  } finally {
+    fs.rmSync(lock.renewPath, { force: true });
+  }
 }
 
 function writeTransactionJournal(transactionRoot, journal) {
@@ -652,6 +963,7 @@ function validateRecoveryJournal(transactionRoot, journal) {
 function restoreTransaction(transactionRoot, snapshots, lockSnapshot) {
   const errors = [];
   for (const snapshot of [...snapshots].reverse()) {
+    refreshActiveRegistryLockLease();
     try {
       if (snapshot.existed) {
         writeFileAtomic(snapshot.target, fs.readFileSync(backupPath(transactionRoot, snapshot)));
@@ -688,6 +1000,7 @@ function recoverInterruptedTransactions() {
     .filter((entry) => entry.name.startsWith(TRANSACTION_PREFIX))
     .sort((left, right) => left.name.localeCompare(right.name));
   for (const entry of entries) {
+    refreshActiveRegistryLockLease();
     const transactionRoot = path.join(cwd, entry.name);
     if (!entry.isDirectory() || fs.lstatSync(transactionRoot).isSymbolicLink()) {
       throw new Error(`Reserved Registry transaction path is not a directory: ${transactionRoot}`);
@@ -735,6 +1048,7 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
     uniqueTargets.add(operation.target);
   }
   for (const validation of validations) {
+    refreshActiveRegistryLockLease();
     if (validation.root) {
       if (
         !isWithin(validation.root, validation.target) ||
@@ -750,6 +1064,7 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
     }
     const exists = fs.existsSync(validation.target);
     const currentHash = exists ? hashContent(fs.readFileSync(validation.target)) : null;
+    refreshActiveRegistryLockLease();
     if (
       validation.expectedExists !== undefined &&
       (exists !== validation.expectedExists ||
@@ -778,6 +1093,7 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
 
   try {
     for (const [index, operation] of operations.entries()) {
+      refreshActiveRegistryLockLease();
       const existed = fs.existsSync(operation.target);
       const snapshot = {
         target: operation.target,
@@ -825,10 +1141,12 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
       lockSnapshot,
     };
     writeTransactionJournal(transactionRoot, journal);
+    pauseTransactionForFixture();
     injectFailure("after-staging");
     injectCrash("after-staging");
 
     for (const [index, operation] of operations.entries()) {
+      refreshActiveRegistryLockLease();
       if (operation.type === "write") {
         writeFileAtomic(operation.target, fs.readFileSync(path.join(stageRoot, String(index))));
       } else if (operation.type === "delete" && fs.existsSync(operation.target)) {
@@ -965,10 +1283,13 @@ function registryMetadata(manifest) {
 
 function relativeTarget(componentsRoot, target) {
   const relative = path.relative(cwd, resolveTarget(componentsRoot, target));
+  const normalized = relative.toLowerCase();
   if (
-    relative === STATE_FILENAME ||
-    relative === "nerio.json" ||
-    relative.split(path.sep).some((segment) => segment.startsWith(".nerio-transaction-"))
+    normalized === STATE_FILENAME ||
+    normalized === "nerio.json" ||
+    normalized === REGISTRY_LOCK_DIRECTORY ||
+    normalized.startsWith(`${REGISTRY_LOCK_DIRECTORY}.`) ||
+    normalized.split(path.sep).some((segment) => segment.startsWith(".nerio-transaction-"))
   ) {
     throw new Error(`Registry target uses a reserved Nerio path: ${target}`);
   }
@@ -1859,21 +2180,46 @@ async function main() {
     console.log(help(command));
     return;
   }
-  if (["add", "diff", "update", "list", "info", "doctor"].includes(command)) {
-    recoverInterruptedTransactions();
-  }
+  const guardedCommand = ["init", "add", "diff", "update", "doctor"].includes(command);
+  const recoveryCommand = ["add", "diff", "update", "doctor"].includes(command);
+  const lock = guardedCommand ? await acquireRegistryLock() : null;
+  activeRegistryLock = lock;
+  let commandError;
+  try {
+    if (recoveryCommand) recoverInterruptedTransactions();
 
-  if (command === "init") await init();
-  else if (command === "add") await add(itemName);
-  else if (command === "diff") await diff(itemName);
-  else if (command === "update") await update(itemName);
-  else if (command === "list") await list();
-  else if (command === "info") await info(itemName);
-  else if (command === "doctor") await doctor();
-  else {
-    console.log(help("root"));
-    process.exitCode = command ? 1 : 0;
+    if (command === "init") await init();
+    else if (command === "add") await add(itemName);
+    else if (command === "diff") await diff(itemName);
+    else if (command === "update") await update(itemName);
+    else if (command === "list") await list();
+    else if (command === "info") await info(itemName);
+    else if (command === "doctor") await doctor();
+    else {
+      console.log(help("root"));
+      process.exitCode = command ? 1 : 0;
+    }
+  } catch (error) {
+    commandError = error;
   }
+  let releaseError;
+  if (lock) {
+    try {
+      releaseRegistryLock(lock);
+    } catch (error) {
+      releaseError = error;
+    }
+  }
+  activeRegistryLock = null;
+  if (commandError && releaseError) {
+    console.error(
+      `Registry lock release also failed: ${
+        releaseError instanceof Error ? releaseError.message : String(releaseError)
+      }`,
+    );
+  }
+  if (commandError) throw commandError;
+  if (releaseError) throw releaseError;
 }
 
 main().catch((error) => {
