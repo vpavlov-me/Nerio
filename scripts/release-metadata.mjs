@@ -16,7 +16,9 @@ const packagePaths = {
 const activeVersionSurfaces = [
   "README.md",
   "apps/docs/app/docs/getting-started/page.tsx",
+  "apps/docs/app/docs/foundations/motion/page.tsx",
   "apps/docs/content/llms.txt",
+  "packages/registry/src/public-commands.json",
   "packages/cli/src/index.js",
   "packages/cli/fixtures/basic/README.md",
 ];

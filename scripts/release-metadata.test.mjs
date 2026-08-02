@@ -26,4 +26,10 @@ test("prints a deterministic dry-run without modifying files", () => {
   assert.equal(output.dryRun, true);
   assert.ok(output.changes.some(({ path }) => path === "quality/release-metadata.json"));
   assert.ok(output.changes.some(({ path }) => path === "packages/ui/package.json"));
+  assert.ok(
+    output.changes.some(({ path }) => path === "packages/registry/src/public-commands.json"),
+  );
+  assert.ok(
+    output.changes.some(({ path }) => path === "apps/docs/app/docs/foundations/motion/page.tsx"),
+  );
 });
