@@ -4,6 +4,7 @@ const http = require("node:http");
 const os = require("node:os");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
+const { setTimeout } = require("node:timers");
 
 const repoRoot = path.resolve(__dirname, "../../..");
 const cli = path.resolve(__dirname, "../src/index.js");
@@ -509,6 +510,54 @@ function writeLifecycleRegistry(
   return manifestPath;
 }
 
+function writeConcurrencyRegistry(registryRoot) {
+  const sourceRoot = path.join(registryRoot, "source");
+  fs.mkdirSync(sourceRoot, { recursive: true });
+  const items = ["alpha", "beta"].map((name) => {
+    const source = `export const ${name} = true;\n`;
+    fs.writeFileSync(path.join(sourceRoot, `${name}.ts`), source);
+    return {
+      name,
+      title: name[0].toUpperCase() + name.slice(1),
+      description: `Fixture ${name} source.`,
+      category: "foundation",
+      dependencies: [],
+      registryDependencies: [],
+      files: [
+        {
+          source: `./source/${name}.ts`,
+          target: `components/${name}.ts`,
+          role: "component",
+          integrity: `sha256-${crypto.createHash("sha256").update(source).digest("hex")}`,
+        },
+      ],
+      baseUiPrimitives: [],
+      slots: [],
+      variants: [],
+      requiredTokens: [],
+      accessibility: [],
+      usage: `import { ${name} } from '@/components/nerio/components/${name}';`,
+    };
+  });
+  const manifestPath = path.join(registryRoot, "manifest.json");
+  fs.writeFileSync(
+    manifestPath,
+    `${JSON.stringify(
+      {
+        schemaVersion: "1.1.0",
+        name: "nerio-concurrency-fixture",
+        version: cliVersion,
+        sourceRevision: "fixture-concurrency",
+        styleContractVersion: "tailwind-v1",
+        items,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  return manifestPath;
+}
+
 function managedSnapshot(target) {
   const snapshot = {};
   const visit = (entry) => {
@@ -528,7 +577,12 @@ function managedSnapshot(target) {
 function assertNoTransactionArtifacts(target, description) {
   const artifacts = fs
     .readdirSync(target)
-    .filter((entry) => entry.startsWith(".nerio-transaction-") || entry.endsWith(".tmp"));
+    .filter(
+      (entry) =>
+        entry.startsWith(".nerio-transaction-") ||
+        entry.startsWith(".nerio-registry-lock") ||
+        entry.endsWith(".tmp"),
+    );
   if (artifacts.length) {
     throw new Error(`${description} left temporary artifacts: ${artifacts.join(", ")}`);
   }
@@ -538,6 +592,46 @@ function assertInterruptedTransaction(target, description) {
   if (!fs.readdirSync(target).some((entry) => entry.startsWith(".nerio-transaction-"))) {
     throw new Error(`${description} did not preserve a recovery journal.`);
   }
+}
+
+async function waitForFixture(predicate, description) {
+  const deadline = Date.now() + 5_000;
+  while (!predicate()) {
+    if (Date.now() >= deadline) throw new Error(`Timed out waiting for ${description}.`);
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+}
+
+async function verifyConcurrentTransactions(tempRoot) {
+  const registryRoot = path.join(tempRoot, "concurrency-registry");
+  const target = path.join(tempRoot, "concurrency-consumer");
+  fs.mkdirSync(registryRoot);
+  fs.mkdirSync(target);
+  const fixtureManifest = writeConcurrencyRegistry(registryRoot);
+  await run(target, "init", "--registry", fixtureManifest);
+
+  const alpha = runWithEnv(target, { NERIO_TEST_TRANSACTION_PAUSE_MS: "500" }, "add", "alpha");
+  await waitForFixture(
+    () =>
+      fs.existsSync(path.join(target, ".nerio-registry-lock")) &&
+      fs.readdirSync(target).some((entry) => entry.startsWith(".nerio-transaction-")),
+    "the first concurrent Registry transaction",
+  );
+  const beta = run(target, "add", "beta");
+  await Promise.all([alpha, beta]);
+
+  const lock = JSON.parse(fs.readFileSync(path.join(target, "nerio.lock.json"), "utf8"));
+  if (
+    !lock.items.alpha ||
+    !lock.items.beta ||
+    !lock.requestedItems.includes("alpha") ||
+    !lock.requestedItems.includes("beta") ||
+    !fs.existsSync(path.join(target, "components/nerio/components/alpha.ts")) ||
+    !fs.existsSync(path.join(target, "components/nerio/components/beta.ts"))
+  ) {
+    throw new Error("Concurrent Registry installs lost source or lock metadata.");
+  }
+  assertNoTransactionArtifacts(target, "Concurrent Registry installs");
 }
 
 async function verifyAtomicTransactions(tempRoot) {
@@ -1040,6 +1134,7 @@ async function verify() {
   try {
     await verifySourceLifecycle(tempRoot);
     await verifyAtomicTransactions(tempRoot);
+    await verifyConcurrentTransactions(tempRoot);
     await run(srcDirTarget, "init", "--registry", manifest);
     const srcDirConfig = JSON.parse(fs.readFileSync(path.join(srcDirTarget, "nerio.json"), "utf8"));
     if (srcDirConfig.components !== "src/components/nerio") {

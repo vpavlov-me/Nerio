@@ -96,7 +96,9 @@ export default function Page() {
             Add and update fetch and validate the complete plan before writing, stage every change,
             commit source before lock metadata, and restore both source and lock state after any
             handled failure. A durable local journal recovers an interrupted process on the next
-            Registry command; already-committed source and lock state is retained.
+            Registry command; already-committed source and lock state is retained. A project-local
+            process lock serializes Registry reads, writes, and recovery so parallel commands cannot
+            lose source ownership or lock metadata.
           </li>
         </ul>
         <p>

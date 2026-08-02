@@ -92,7 +92,9 @@ state and removes transaction artifacts. If the process or machine stops between
 Registry command validates the durable local journal and restores the previous source and lock; if
 both source and lock had committed, it retains them and removes only the orphaned journal. Dry-run
 output, local-change preservation, `--overwrite`, and intentional `--force` behavior remain
-unchanged.
+unchanged. Registry commands now serialize through a project-local process lock before recovery or
+validation; a command waits for a live owner and reclaims a dead owner's lock before applying the
+durable journal.
 
 Before applying the next Registry:
 

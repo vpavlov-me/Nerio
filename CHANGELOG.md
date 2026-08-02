@@ -49,9 +49,11 @@ Items under `Unreleased` may change before the next public release.
   closure, stages and backs up affected files, writes lock metadata last, and restores source and
   lock state after injected source or lock failures. Durable journals recover abrupt process exits
   on the next Registry command without rolling back a source-and-lock transaction that had fully
-  committed. The CLI tarball grows from 10,559 to 16,367 bytes and unpacked content from 40,917 to
-  68,442 bytes; reviewed budgets move from 12,000 to 18,000 compressed bytes and from 50,000 to
-  75,000 unpacked bytes for this bounded transport, recovery, and transaction contract.
+  committed. A project-local process lock serializes reads, writes, and recovery, preventing
+  simultaneous commands from losing source ownership or lock metadata and reclaiming dead owners
+  before journal recovery. The CLI tarball grows from 10,559 to 17,536 bytes and unpacked content
+  from 40,917 to 73,068 bytes; reviewed budgets remain 18,000 compressed bytes and 75,000 unpacked
+  bytes for this bounded transport, recovery, and transaction contract.
 
 ### Migration
 
