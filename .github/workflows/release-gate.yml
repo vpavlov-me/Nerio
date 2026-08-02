@@ -50,7 +50,9 @@ jobs:
       - run: pnpm validate:docs
       - run: pnpm validate:onboarding
       - run: pnpm test:docs-examples
+      - run: pnpm test:consumer:vite
       - run: pnpm build
+      - run: pnpm validate:route-budgets
 
   release_browser:
     name: release-browser-${{ matrix.engine }}

@@ -6,6 +6,7 @@ import {
   ciWorkflowPaths,
   readCiWorkflowSources,
 } from "../../../scripts/ci-workflow-contract.mjs";
+import { docPageArchitectureFailures } from "../../../scripts/doc-page-architecture.mjs";
 
 /* global console, process */
 
@@ -220,7 +221,9 @@ function packageReadinessFailures() {
     "test:ui",
     "test:a11y",
     "test:docs-examples",
+    "test:consumer:vite",
     "validate:docs",
+    "validate:route-budgets",
     "validate:release",
     "audit:prod",
     "test:cli",
@@ -701,6 +704,7 @@ const tailwindDocumentationIssues = tailwindDocumentationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
 const blockArchitectureIssues = blockArchitectureFailures();
 const previewSurfaceGateIssues = previewSurfaceGateFailures();
+const docPageArchitectureIssues = docPageArchitectureFailures(root);
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -738,6 +742,7 @@ reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
 reportMissing("Preview surface gate issues", previewSurfaceGateIssues);
+reportMissing("Documentation server/client architecture issues", docPageArchitectureIssues);
 
 const failures = [
   missingNav,
@@ -764,6 +769,7 @@ const failures = [
   templateArchitectureIssues,
   blockArchitectureIssues,
   previewSurfaceGateIssues,
+  docPageArchitectureIssues,
 ].flat();
 
 if (failures.length > 0) {
@@ -771,5 +777,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Docs registry, Tailwind contract, Blocks and Templates architecture, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
+  `Docs registry, server/client islands, Tailwind contract, Blocks and Templates architecture, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
 );
