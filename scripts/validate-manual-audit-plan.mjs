@@ -367,8 +367,11 @@ const environmentMetadataRequirements = {
 };
 
 const expectComplete = process.argv.includes("--expect-complete");
+const expectPass = process.argv.includes("--expect-pass");
 const paths = parsePathOptions(
-  process.argv.slice(2).filter((argument) => argument !== "--expect-complete"),
+  process.argv
+    .slice(2)
+    .filter((argument) => !["--expect-complete", "--expect-pass"].includes(argument)),
   {
     "--plan": resolve(root, "quality/manual-audit-plan.json"),
     "--report": resolve(root, "docs/audits/core-1-0-accessibility-device-audit.md"),
@@ -825,6 +828,9 @@ if (plan?.status === "complete") {
   const finalDecision = finalDecisionMatches.length === 1 ? finalDecisionMatches[0][1] : undefined;
   if (!finalDecision) {
     errors.push("Completed audit report must record one allowed final decision.");
+  }
+  if (expectPass && finalDecision !== "Pass for real consumer pilots") {
+    errors.push('Stable readiness requires final decision "Pass for real consumer pilots".');
   }
   const sectionDecisionMatches = [
     ...reportSection("Final decision").matchAll(

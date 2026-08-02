@@ -52,6 +52,20 @@ test("isolates the manual audit contract", () => {
   assert.equal(result.docs_only, false);
 });
 
+test("routes beta feedback and stable readiness to the manual contract", () => {
+  for (const path of [
+    "quality/beta-feedback.json",
+    "scripts/validate-beta-feedback.mjs",
+    "scripts/validate-beta-feedback.test.mjs",
+    "scripts/validate-stable-readiness.mjs",
+    "scripts/validate-stable-readiness.test.mjs",
+  ]) {
+    const result = scopes(path);
+    assert.equal(result.manual_audit, true, path);
+    assert.equal(result.docs_only, false, path);
+  }
+});
+
 test("routes Registry runtime changes to browser, CLI, and MCP checks", () => {
   const result = scopes("packages/registry/src/manifest.json");
   assert.equal(result.browser, true);

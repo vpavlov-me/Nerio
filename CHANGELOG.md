@@ -13,8 +13,9 @@ Items under `Unreleased` may change before the next public release.
   packages. Current workflows prepare and retain evidence without publishing or requesting npm
   credentials.
 - Added strict stable-only validators for the real accessibility/device audit and the external beta
-  feedback cycle. Beta records remain explicitly pending; automation cannot convert prepared
-  templates into completion evidence.
+  feedback cycle. Stable readiness requires affirmative audit and beta decisions and rejects
+  future-dated completion evidence. Beta records remain explicitly pending; automation cannot
+  convert prepared templates into completion evidence.
 - Added one machine-readable coordinated release metadata source, a dry-run-first version
   preparation command, and validators for all six public packages, the Registry revision, CLI,
   documentation, and installation examples.

@@ -151,7 +151,10 @@ Do not add speculative product components or reopen the frozen Core boundary for
 or findings. `pnpm validate:beta-feedback` accepts that truthful prerelease state.
 `pnpm validate:beta-feedback-complete` is reserved for the stable gate and requires the real
 three-person cohort, both package and source modes, Calendar/DatePicker and Registry update
-coverage, a 14-day window, issue-linked findings, and a blocker-consistent closing decision.
+coverage, a 14-day window, timestamps that have already occurred, issue-linked findings, and a
+blocker-consistent closing decision. `pnpm validate:stable-readiness` additionally requires the
+affirmative `proceed-to-stable-docs` recommendation; a completed `blocked-before-stable` record
+remains truthful evidence but cannot pass the stable release gate.
 
 | Participant | Role    | Package mode | Source mode | Calendar/DatePicker | Registry update | Completed | Findings |
 | ----------- | ------- | ------------ | ----------- | ------------------- | --------------- | --------- | -------- |

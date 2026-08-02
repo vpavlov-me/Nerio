@@ -130,7 +130,9 @@ contrast, or lived interaction evidence.
 `pnpm validate:stable-readiness` reads the release channel. Beta candidates accept the truthful
 pending manual and external-feedback records. A stable channel automatically switches to
 `pnpm validate:manual-audit-complete` and `pnpm validate:beta-feedback-complete`; those commands
-reject missing evidence. `quality/beta-feedback.json` is the machine-readable record for issue
+reject missing evidence, future-dated completion timestamps, and blocking decisions. Stable
+readiness requires both **Pass for real consumer pilots** and
+`proceed-to-stable-docs`. `quality/beta-feedback.json` is the machine-readable record for issue
 #146 and remains `evidence-pending` until real external consumers complete the documented cycle.
 
 ## Local gate

@@ -8,8 +8,16 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 export function commandsForChannel(channel) {
   return channel === "stable"
     ? [
-        ["validate:manual-audit-complete", "manual accessibility and device evidence"],
-        ["validate:beta-feedback-complete", "external beta feedback evidence"],
+        [
+          "validate:manual-audit-complete",
+          "manual accessibility and device evidence",
+          ["--expect-pass"],
+        ],
+        [
+          "validate:beta-feedback-complete",
+          "external beta feedback evidence",
+          ["--expect-proceed"],
+        ],
       ]
     : [
         ["validate:manual-audit-plan", "manual accessibility and device plan"],
@@ -20,8 +28,8 @@ export function commandsForChannel(channel) {
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const metadata = JSON.parse(readFileSync(resolve(root, "quality/release-metadata.json"), "utf8"));
   const strict = metadata.channel === "stable";
-  for (const [script, label] of commandsForChannel(metadata.channel)) {
-    const result = spawnSync("pnpm", [script], {
+  for (const [script, label, args = []] of commandsForChannel(metadata.channel)) {
+    const result = spawnSync("pnpm", [script, ...args], {
       cwd: root,
       encoding: "utf8",
       stdio: "inherit",

@@ -6,7 +6,10 @@ import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const expectComplete = process.argv.includes("--expect-complete");
-const args = process.argv.slice(2).filter((argument) => argument !== "--expect-complete");
+const expectProceed = process.argv.includes("--expect-proceed");
+const args = process.argv
+  .slice(2)
+  .filter((argument) => !["--expect-complete", "--expect-proceed"].includes(argument));
 const { "--record": recordPath } = parsePathOptions(args, {
   "--record": resolve(root, "quality/beta-feedback.json"),
 });
@@ -24,6 +27,7 @@ const isIsoUtc = (value) =>
   typeof value === "string" &&
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(value) &&
   Number.isFinite(Date.parse(value));
+const isFutureTimestamp = (value) => isIsoUtc(value) && Date.parse(value) > Date.now();
 const nonEmpty = (value) => typeof value === "string" && value.trim().length > 0;
 const isEvidenceUrl = (value) => {
   try {
@@ -93,6 +97,8 @@ if (expectComplete && record.status !== "complete") {
 if (record.status === "complete") {
   if (!isIsoUtc(candidate.closedAt)) {
     errors.push("Completed feedback candidate.closedAt must be an ISO UTC timestamp.");
+  } else if (isFutureTimestamp(candidate.closedAt)) {
+    errors.push("Completed feedback candidate.closedAt cannot be in the future.");
   } else if (
     isIsoUtc(candidate.earliestCloseAt) &&
     Date.parse(candidate.closedAt) < Date.parse(candidate.earliestCloseAt)
@@ -133,6 +139,8 @@ if (record.status === "complete") {
     }
     if (!isIsoUtc(consumer.completedAt)) {
       errors.push(`${prefix}.completedAt must be ISO UTC.`);
+    } else if (isFutureTimestamp(consumer.completedAt)) {
+      errors.push(`${prefix}.completedAt cannot be in the future.`);
     } else if (
       isIsoUtc(candidate.windowOpenedAt) &&
       Date.parse(consumer.completedAt) < Date.parse(candidate.windowOpenedAt)
@@ -187,8 +195,13 @@ if (record.status === "complete") {
   if (!["proceed-to-stable-docs", "blocked-before-stable"].includes(recommendation)) {
     errors.push("Completed feedback requires an allowed decision.recommendation.");
   }
+  if (expectProceed && recommendation !== "proceed-to-stable-docs") {
+    errors.push('Stable readiness requires decision.recommendation "proceed-to-stable-docs".');
+  }
   if (!isIsoUtc(record.decision?.recordedAt)) {
     errors.push("Completed feedback decision.recordedAt must be an ISO UTC timestamp.");
+  } else if (isFutureTimestamp(record.decision.recordedAt)) {
+    errors.push("Completed feedback decision.recordedAt cannot be in the future.");
   } else if (
     isIsoUtc(candidate.closedAt) &&
     Date.parse(record.decision.recordedAt) < Date.parse(candidate.closedAt)

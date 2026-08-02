@@ -82,9 +82,14 @@ function isPackageBoundary(path) {
 function isManualAuditContract(path) {
   return matchesAny(path, [
     "quality/manual-audit-plan.json",
+    "quality/beta-feedback.json",
     "docs/audits/core-1-0-accessibility-device-audit.md",
     "scripts/validate-manual-audit-plan.mjs",
     "scripts/validate-manual-audit-plan.test.mjs",
+    "scripts/validate-beta-feedback.mjs",
+    "scripts/validate-beta-feedback.test.mjs",
+    "scripts/validate-stable-readiness.mjs",
+    "scripts/validate-stable-readiness.test.mjs",
   ]);
 }
 

@@ -343,6 +343,20 @@ test("strict manual completion accepts a completed evidence record", () => {
   });
 });
 
+test("stable readiness accepts an affirmative completed audit", () => {
+  withPlanAndReportFixtures(completedPlan, completedReport, (planTarget, reportTarget) => {
+    const result = run([
+      "--expect-complete",
+      "--expect-pass",
+      "--plan",
+      planTarget,
+      "--report",
+      reportTarget,
+    ]);
+    assert.equal(result.status, 0, result.stderr);
+  });
+});
+
 test("manual audit validator rejects incomplete completed-state evidence", () => {
   withPlanAndReportFixtures(
     (source) => JSON.stringify({ ...JSON.parse(source), status: "complete" }, null, 2),
@@ -1221,6 +1235,25 @@ test("manual audit validator accepts a tracked blocked finding", () => {
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.equal(result.status, 0, result.stderr);
+    },
+  );
+});
+
+test("stable readiness rejects a completed blocked audit", () => {
+  withPlanAndReportFixtures(
+    trackedFailurePlan,
+    trackedFailureReport,
+    (planTarget, reportTarget) => {
+      const result = run([
+        "--expect-complete",
+        "--expect-pass",
+        "--plan",
+        planTarget,
+        "--report",
+        reportTarget,
+      ]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, /requires final decision "Pass for real consumer pilots"/);
     },
   );
 });
