@@ -89,13 +89,14 @@ manifest, 4 MiB for each source response, and three redirects.
 consumer-owned source. Source files commit as one recoverable transaction, and
 `nerio.lock.json` commits only after source succeeds. Any failure restores the prior source and lock
 state and removes transaction artifacts. If the process or machine stops between commits, the next
-Registry command validates the durable local journal and restores the previous source and lock; if
-both source and lock had committed, it retains them and removes only the orphaned journal. Dry-run
-output, local-change preservation, `--overwrite`, and intentional `--force` behavior remain
-unchanged. Registry commands now serialize through a project-local process lock before recovery or
-validation; a command waits for a live owner and reclaims a dead owner's lock before applying the
-durable journal. A heartbeat lease prevents a stale lock from remaining live only because its PID
-was reused after a restart.
+state-sensitive command (`add`, `diff`, `update`, or `doctor`) validates the durable local journal
+and restores the previous source and lock; if both source and lock had committed, it retains them
+and removes only the orphaned journal. Dry-run output, local-change preservation, `--overwrite`, and
+intentional `--force` behavior remain unchanged. State-sensitive Registry commands now serialize
+through a project-local process lock before recovery or validation; `list` and `info` remain
+read-only inspection commands. A guarded command waits for a live owner and reclaims a dead owner's
+lock before applying the durable journal. A heartbeat lease prevents a stale lock from remaining
+live only because its PID was reused after a restart.
 
 Before applying the next Registry:
 
