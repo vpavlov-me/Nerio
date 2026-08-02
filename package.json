@@ -17,7 +17,7 @@
     "prepare:registry-integrity": "node scripts/validate-registry-integrity.mjs --write",
     "validate:api": "node scripts/public-api-snapshot.mjs",
     "test:api": "node --test scripts/public-api-snapshot.test.mjs",
-    "test:catalog": "node --test scripts/ci-workflow-contract.test.mjs scripts/doc-page-architecture.test.mjs scripts/validate-component-catalog.test.mjs scripts/validate-platform-support.test.mjs scripts/validate-registry-integrity.test.mjs scripts/validate-release-docs.test.mjs",
+    "test:catalog": "node --test scripts/ci-workflow-contract.test.mjs scripts/doc-page-architecture.test.mjs scripts/docs-route-budget-contract.test.mjs scripts/validate-component-catalog.test.mjs scripts/validate-platform-support.test.mjs scripts/validate-registry-integrity.test.mjs scripts/validate-release-docs.test.mjs",
     "test:onboarding": "node --test scripts/validate-public-onboarding.test.mjs",
     "validate:tokens": "node scripts/validate-tokens.mjs",
     "test:tokens": "node --test scripts/validate-tokens.test.mjs scripts/validate-runtime-axes.test.mjs",

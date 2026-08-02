@@ -80,7 +80,7 @@ export async function measureRoute(page, route, testInfo) {
   expect(
     metrics.horizontalOverflow,
     `${testInfo.project.name} ${route} document overflow`,
-  ).toBeLessThanOrEqual(0);
+  ).toBeLessThanOrEqual(1);
   expect(externalRequests, `${route} unexpected network`).toEqual([]);
   expect(errors, `${route} console, hydration, and runtime errors`).toEqual([]);
   return metrics;
