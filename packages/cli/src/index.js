@@ -30,6 +30,7 @@ const REGISTRY_LOCK_STALE_MS = 30_000;
 const REGISTRY_LOCK_RECLAIM_CONFIRM_MS = 5_000;
 const REGISTRY_LOCK_CANDIDATE_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.candidate-`;
 const REGISTRY_LOCK_REAP_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.reap-`;
+const REGISTRY_LOCK_RENEW_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.renew-`;
 const cwd = process.cwd();
 const args = process.argv.slice(2);
 const command = args[0];
@@ -659,6 +660,10 @@ function registryReapClaims() {
   return claims.sort();
 }
 
+function registryRenewalActive() {
+  return fs.readdirSync(cwd).some((entry) => entry.startsWith(REGISTRY_LOCK_RENEW_PREFIX));
+}
+
 function cleanupRegistryLockCandidates(currentCandidate) {
   const now = Date.now();
   for (const entry of fs.readdirSync(cwd)) {
@@ -672,10 +677,16 @@ function cleanupRegistryLockCandidates(currentCandidate) {
       if (error?.code === "ENOENT") continue;
       throw error;
     }
-    const candidateAge = now - stats.mtimeMs;
-    if (stats.isFile() && !stats.isSymbolicLink() && candidateAge >= REGISTRY_LOCK_STALE_MS) {
-      // Candidate UUID paths are never reused by another process.
-      fs.rmSync(candidatePath, { force: true });
+    if (
+      stats.isFile() &&
+      !stats.isSymbolicLink() &&
+      now - stats.mtimeMs >= REGISTRY_LOCK_STALE_MS
+    ) {
+      if (stats.atimeMs === stats.mtimeMs) {
+        fs.utimesSync(candidatePath, new Date(now), stats.mtime);
+      } else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+        fs.rmSync(candidatePath, { force: true });
+      }
     }
   }
 }
@@ -687,6 +698,7 @@ async function reapRegistryLock(lockPath, token, observed) {
     // Let every contender observe the claims, then elect one reaper.
     await wait(REGISTRY_LOCK_POLL_MS * 2);
     if (registryReapClaims()[0] !== claimPath) return false;
+    while (registryRenewalActive()) await wait(REGISTRY_LOCK_POLL_MS);
     let current;
     try {
       current = readRegistryLock(lockPath);
@@ -696,12 +708,12 @@ async function reapRegistryLock(lockPath, token, observed) {
     }
     if (
       !sameFile(observed.stats, current.stats) ||
-      current.owner?.token !== observed.owner?.token
+      current.owner?.token !== observed.owner?.token ||
+      current.stats.mtimeMs !== observed.stats.mtimeMs
     ) {
       return false;
     }
-    const currentLeaseAge = Date.now() - current.stats.mtimeMs;
-    if (currentLeaseAge < REGISTRY_LOCK_STALE_MS) return false;
+    if (Date.now() - current.stats.mtimeMs < REGISTRY_LOCK_STALE_MS) return false;
     try {
       fs.rmSync(lockPath);
     } catch (error) {
@@ -714,19 +726,33 @@ async function reapRegistryLock(lockPath, token, observed) {
 }
 
 function refreshRegistryLockLease(lock) {
-  const observed = readRegistryLock(lock.lockPath);
-  if (observed.owner?.token !== lock.token) {
-    throw new Error(`Registry transaction lock ownership changed during the command.`);
+  const renewPath = `${lock.lockPath}.renew-${lock.token}`;
+  const clock = new Int32Array(new SharedArrayBuffer(4));
+  while (registryReapClaims().length) {
+    Atomics.wait(clock, 0, 0, REGISTRY_LOCK_POLL_MS);
   }
-  const descriptor = fs.openSync(lock.lockPath, "r");
-  const now = new Date();
   try {
-    if (!sameFile(observed.stats, fs.fstatSync(descriptor))) {
-      throw new Error(`Registry transaction lock changed before its heartbeat.`);
+    fs.linkSync(lock.lockPath, renewPath);
+    if (registryReapClaims().length) {
+      fs.rmSync(renewPath, { force: true });
+      return refreshRegistryLockLease(lock);
     }
-    fs.futimesSync(descriptor, now, now);
+    const observed = readRegistryLock(lock.lockPath);
+    if (observed.owner?.token !== lock.token) {
+      throw new Error(`Registry lock ownership changed during the command.`);
+    }
+    const descriptor = fs.openSync(lock.lockPath, "r");
+    const now = new Date();
+    try {
+      if (!sameFile(observed.stats, fs.fstatSync(descriptor))) {
+        throw new Error(`Registry lock changed before its heartbeat.`);
+      }
+      fs.futimesSync(descriptor, now, now);
+    } finally {
+      fs.closeSync(descriptor);
+    }
   } finally {
-    fs.closeSync(descriptor);
+    fs.rmSync(renewPath, { force: true });
   }
 }
 
@@ -819,8 +845,15 @@ async function acquireRegistryLock() {
         const leaseAge = Date.now() - observed.stats.mtimeMs;
         const leaseStale = leaseAge >= REGISTRY_LOCK_STALE_MS;
         if (leaseStale) {
-          if (staleOwner?.token !== observed.owner.token) {
-            staleOwner = { token: observed.owner.token, observedAt: Date.now() };
+          if (
+            staleOwner?.token !== observed.owner.token ||
+            staleOwner.mtimeMs !== observed.stats.mtimeMs
+          ) {
+            staleOwner = {
+              token: observed.owner.token,
+              mtimeMs: observed.stats.mtimeMs,
+              observedAt: Date.now(),
+            };
           } else if (Date.now() - staleOwner.observedAt >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
             if (await reapRegistryLock(lockPath, token, observed)) continue;
           }
@@ -849,7 +882,7 @@ function releaseRegistryLock(lock) {
   }
   const observed = readRegistryLock(lock.lockPath);
   if (observed.owner?.token !== lock.token) {
-    throw new Error(`Registry transaction lock ownership changed before release.`);
+    throw new Error(`Registry lock ownership changed before release.`);
   }
   fs.rmSync(lock.lockPath, { force: true });
   if (lock.heartbeatError) throw lock.heartbeatError;
@@ -1025,6 +1058,7 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
     uniqueTargets.add(operation.target);
   }
   for (const validation of validations) {
+    refreshActiveRegistryLockLease();
     if (validation.root) {
       if (
         !isWithin(validation.root, validation.target) ||
@@ -1040,6 +1074,7 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
     }
     const exists = fs.existsSync(validation.target);
     const currentHash = exists ? hashContent(fs.readFileSync(validation.target)) : null;
+    refreshActiveRegistryLockLease();
     if (
       validation.expectedExists !== undefined &&
       (exists !== validation.expectedExists ||
@@ -2187,7 +2222,7 @@ async function main() {
   activeRegistryLock = null;
   if (commandError && releaseError) {
     console.error(
-      `Registry transaction lock release also failed: ${
+      `Registry lock release also failed: ${
         releaseError instanceof Error ? releaseError.message : String(releaseError)
       }`,
     );

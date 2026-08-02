@@ -4,7 +4,7 @@ const http = require("node:http");
 const os = require("node:os");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
-const { setTimeout } = require("node:timers");
+const { clearInterval, setInterval, setTimeout } = require("node:timers");
 
 const repoRoot = path.resolve(__dirname, "../../..");
 const cli = path.resolve(__dirname, "../src/index.js");
@@ -731,6 +731,69 @@ async function verifyConcurrentTransactions(tempRoot) {
     }
   }
 
+  fs.writeFileSync(invalidLockPath, "invalid-owner\n");
+  const progressingCandidate = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.candidate-${crypto.randomUUID()}`,
+  );
+  fs.writeFileSync(progressingCandidate, "live-candidate\n");
+  let candidateBeat = 0;
+  const candidateHeartbeat = setInterval(() => {
+    const skewed = new Date(Date.now() - 120_000 + candidateBeat++);
+    fs.utimesSync(progressingCandidate, skewed, skewed);
+  }, 250);
+  const candidateChild = spawn(process.execPath, [cli, "doctor"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  await new Promise((resolve) => setTimeout(resolve, 5_500));
+  clearInterval(candidateHeartbeat);
+  if (candidateChild.exitCode !== null || !fs.existsSync(progressingCandidate)) {
+    throw new Error("A progressing clock-skewed Registry lock candidate was removed.");
+  }
+  await new Promise((resolve) => {
+    candidateChild.once("close", resolve);
+    candidateChild.kill();
+  });
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
+  const progressingOwner = {
+    schemaVersion: "1.0.0",
+    pid: process.pid,
+    token: crypto.randomUUID(),
+    createdAt: new Date(Date.now() - 120_000).toISOString(),
+  };
+  fs.writeFileSync(invalidLockPath, `${JSON.stringify(progressingOwner)}\n`);
+  let ownerBeat = 0;
+  const ownerHeartbeat = setInterval(() => {
+    const skewed = new Date(Date.now() - 120_000 + ownerBeat++);
+    fs.utimesSync(invalidLockPath, skewed, skewed);
+  }, 250);
+  const progressingOwnerChild = spawn(process.execPath, [cli, "doctor"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  await new Promise((resolve) => setTimeout(resolve, 5_500));
+  clearInterval(ownerHeartbeat);
+  if (progressingOwnerChild.exitCode !== null || !fs.existsSync(invalidLockPath)) {
+    throw new Error("A progressing clock-skewed Registry lock owner was reaped.");
+  }
+  await new Promise((resolve) => {
+    progressingOwnerChild.once("close", resolve);
+    progressingOwnerChild.kill();
+  });
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
   const foreignNamespaceLock = {
     schemaVersion: "1.0.0",
     pid: Number.MAX_SAFE_INTEGER,
@@ -782,6 +845,11 @@ async function verifyConcurrentTransactions(tempRoot) {
   fs.writeFileSync(invalidLockPath, resumedOwnerContent);
   const resumedStaleTime = new Date(Date.now() - 120_000);
   fs.utimesSync(invalidLockPath, resumedStaleTime, resumedStaleTime);
+  const resumedRenewal = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.renew-${resumedOwner.token}`,
+  );
+  fs.linkSync(invalidLockPath, resumedRenewal);
   const resumedChild = spawn(process.execPath, [cli, "doctor"], {
     cwd: invalidOwnerTarget,
     stdio: "pipe",
@@ -800,6 +868,7 @@ async function verifyConcurrentTransactions(tempRoot) {
   );
   const resumedAt = new Date();
   fs.utimesSync(invalidLockPath, resumedAt, resumedAt);
+  fs.rmSync(resumedRenewal);
   await new Promise((resolve) => setTimeout(resolve, 100));
   if (
     resumedChild.exitCode !== null ||
