@@ -8,9 +8,11 @@ const paths = parsePathOptions(process.argv.slice(2), {
   "--playwright": resolve(root, "playwright.config.mjs"),
   "--pr-gate": resolve(root, ".github/workflows/pr-gate.yml"),
   "--release-gate": resolve(root, ".github/workflows/release-gate.yml"),
+  "--canary": resolve(root, ".github/workflows/playwright-canary.yml"),
 });
 const readJson = (path) => JSON.parse(readFileSync(resolve(root, path), "utf8"));
 const support = readJson("quality/platform-support.json");
+const dependencySupport = readJson("quality/dependency-support.json");
 const rootPackage = readJson("package.json");
 const publicPackagePaths = [
   "packages/tokens/package.json",
@@ -27,6 +29,13 @@ function assert(condition, message) {
 }
 
 assert(rootPackage.engines?.node === support.node, "Root Node engine must match platform support.");
+assert(
+  JSON.stringify(support.ciNodes) === JSON.stringify(["22", "24"]),
+  "Consumer CI must cover Node 22 and Node 24.",
+);
+for (const path of [".nvmrc", ".node-version"]) {
+  assert(readFileSync(resolve(root, path), "utf8").trim() === "22", `${path} must select Node 22.`);
+}
 assert(
   rootPackage.devDependencies?.typescript?.startsWith("^5.9."),
   "Workspace TypeScript must stay inside the documented 5.9 support line.",
@@ -50,6 +59,20 @@ assert(
 for (const path of publicPackagePaths) {
   const manifest = readJson(path);
   assert(manifest.engines?.node === support.node, `${manifest.name} Node engine is out of policy.`);
+}
+
+for (const profileName of ["minimum", "current"]) {
+  const profile = dependencySupport.profiles?.[profileName];
+  assert(profile, `Missing ${profileName} dependency profile.`);
+  assert(/^19\./.test(profile.react), `${profileName} React must stay on React 19.`);
+  assert(profile.reactDom === profile.react, `${profileName} React DOM must match React.`);
+  assert(/^16\./.test(profile.next), `${profileName} Next.js must stay on Next.js 16.`);
+  assert(/^5\.9\./.test(profile.typescript), `${profileName} TypeScript must stay on 5.9.`);
+  assert(/^4\./.test(profile.tailwindcss), `${profileName} Tailwind must stay on 4.x.`);
+  for (const peer of Object.keys(readJson("packages/adapters/package.json").peerDependencies)) {
+    if (peer === "react") continue;
+    assert(profile.optionalPeers?.[peer], `${profileName} profile is missing ${peer}.`);
+  }
 }
 
 const uiPackage = readJson("packages/ui/package.json");
@@ -121,6 +144,28 @@ for (const engine of ["chromium", "firefox", "webkit"]) {
     `The release gate must run the ${engine} browser contract.`,
   );
 }
+for (const value of [
+  "profile: minimum",
+  "profile: current",
+  "node: 22",
+  "node: 24",
+  "pnpm test:consumer:${{ matrix.profile }}",
+]) {
+  assert(releaseGate.includes(value), `Release consumer matrix must include ${value}.`);
+}
+
+const canary = readFileSync(paths["--canary"], "utf8");
+for (const value of [
+  "schedule:",
+  "workflow_dispatch:",
+  "@playwright/test@latest",
+  "pnpm test:browser:chromium",
+  "pnpm test:browser:firefox",
+  "pnpm test:browser:webkit",
+]) {
+  assert(canary.includes(value), `Playwright canary must include ${value}.`);
+}
+assert(!canary.includes("pull_request:"), "The Playwright canary must not gate pull requests.");
 console.log(
-  "Platform support policy matches package metadata, apps, Playwright, Chromium PR smoke, the cross-engine release gate, and docs.",
+  "Platform support policy matches runtime declarations, package metadata, bounded dependency profiles, Node 22/24 consumers, pinned Playwright, the weekly stable canary, the cross-engine release gate, and docs.",
 );

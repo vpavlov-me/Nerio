@@ -241,7 +241,7 @@ function ResearchWorkspaceApp() {
       runTimerRef.current = null;
       setRunState("completed");
       setPrompt("");
-    }, 900);
+    }, 2_500);
   }
 
   function interruptRun() {

@@ -55,6 +55,12 @@ pnpm test:adapters
 pnpm test:manual-audit-plan
 pnpm validate:manual-audit-plan
 pnpm validate:platform-support
+pnpm test:release-metadata
+pnpm validate:release-metadata
+pnpm prepare:release-version 1.0.0-beta.1
+pnpm test:consumer:minimum
+pnpm test:consumer:current
+pnpm test:consumer-matrix
 pnpm audit:prod
 pnpm validate:package-budgets
 pnpm validate:release:metadata

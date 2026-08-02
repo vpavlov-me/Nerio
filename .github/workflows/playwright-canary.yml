@@ -1,0 +1,31 @@
+name: playwright-canary
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  current_stable:
+    name: current-stable-browser-canary
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Replace the pinned test runner only in this disposable canary checkout
+        run: pnpm add --workspace-root --save-dev --lockfile=false @playwright/test@latest
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm test:browser:chromium
+      - run: pnpm test:browser:firefox
+      - run: pnpm test:browser:webkit

@@ -56,3 +56,12 @@ test("platform support validator protects every Playwright project", () => {
     /Playwright config must include firefox/,
   );
 });
+
+test("platform support validator protects the weekly Playwright canary", () => {
+  invalidFixture(
+    "--canary",
+    ".github/workflows/playwright-canary.yml",
+    "@playwright/test@latest",
+    /Playwright canary must include/,
+  );
+});

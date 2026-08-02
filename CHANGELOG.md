@@ -6,7 +6,29 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
-No changes yet.
+### Added
+
+- Added one machine-readable coordinated release metadata source, a dry-run-first version
+  preparation command, and validators for all six public packages, the Registry revision, CLI,
+  documentation, and installation examples.
+- Added packed minimum/current dependency consumers, independent optional-adapter peer evidence,
+  Node 22 and Node 24 release coverage, and a scheduled non-blocking current-stable Playwright
+  canary.
+
+### Changed
+
+- Raised the public Node.js minimum from 20.9 to 22 and aligned repository runtime declarations,
+  package engines, documentation, fixtures, snapshots, and CI evidence.
+- Raised the Tailwind CSS minimum from 4.0.0 to 4.1.0 after a clean Next.js 16.2 consumer proved
+  that Tailwind 4.0.0 fails the Turbopack/PostCSS scanner contract.
+- Updated the pinned browser gate to Playwright 1.62.1 with Chromium 151, Firefox 153, and WebKit
+  26.5.
+
+### Migration
+
+- Follow
+  [`docs/migrations/beta-0-to-beta-1.md`](./docs/migrations/beta-0-to-beta-1.md) for the Node and
+  Tailwind lower-bound changes. This work prepares but does not publish the next beta.
 
 ## 1.0.0-beta.0 — 2026-08-01
 

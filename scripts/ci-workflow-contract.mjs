@@ -53,7 +53,7 @@ const releaseCommands = [
   "pnpm audit:prod",
   "pnpm validate:package-budgets",
   "pnpm validate:release:metadata",
-  "pnpm test:release-consumer",
+  "pnpm test:consumer:${{ matrix.profile }}",
   "pnpm pack:check",
 ];
 
@@ -151,6 +151,10 @@ export function ciWorkflowContractFailures({ prGate, releaseGate }) {
       "command: test:browser:firefox",
       "engine: webkit",
       "command: test:browser:webkit",
+      "profile: minimum",
+      "profile: current",
+      "node: 24",
+      "name: release-consumer-${{ matrix.profile }}-node-${{ matrix.node }}",
       "name: Release gate",
       "if: always()",
       "timeout-minutes:",

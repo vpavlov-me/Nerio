@@ -1,15 +1,15 @@
 {
-  "node": ">=20.9.0",
-  "ciNode": "22",
+  "node": ">=22",
+  "ciNodes": ["22", "24"],
   "react": ">=19 <20",
   "reactDom": ">=19 <20",
   "next": ">=16.2.0 <17",
   "typescript": ">=5.9 <6",
-  "tailwindcss": ">=4.0.0 <5",
-  "playwright": "1.55.1",
+  "tailwindcss": ">=4.1.0 <5",
+  "playwright": "1.62.1",
   "browsers": {
-    "chromium": "140+",
-    "firefox": "141+",
-    "webkit": "26+"
+    "chromium": "151+",
+    "firefox": "153+",
+    "webkit": "26.5+"
   }
 }
