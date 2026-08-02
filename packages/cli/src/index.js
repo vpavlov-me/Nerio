@@ -28,6 +28,7 @@ const REGISTRY_LOCK_POLL_MS = 25;
 const REGISTRY_LOCK_HEARTBEAT_MS = 1_000;
 const REGISTRY_LOCK_STALE_MS = 30_000;
 const REGISTRY_LOCK_RECLAIM_CONFIRM_MS = 5_000;
+const REGISTRY_LOCK_CANDIDATE_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.candidate-`;
 const REGISTRY_LOCK_REAP_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.reap-`;
 const cwd = process.cwd();
 const args = process.argv.slice(2);
@@ -662,6 +663,31 @@ function registryReapClaims() {
   return claims.sort();
 }
 
+function cleanupRegistryLockCandidates(currentCandidate) {
+  const now = Date.now();
+  for (const entry of fs.readdirSync(cwd)) {
+    if (!entry.startsWith(REGISTRY_LOCK_CANDIDATE_PREFIX)) continue;
+    const candidatePath = path.join(cwd, entry);
+    if (candidatePath === currentCandidate) continue;
+    let stats;
+    try {
+      stats = fs.lstatSync(candidatePath);
+    } catch (error) {
+      if (error?.code === "ENOENT") continue;
+      throw error;
+    }
+    const candidateAge = now - stats.mtimeMs;
+    if (
+      stats.isFile() &&
+      !stats.isSymbolicLink() &&
+      (candidateAge >= REGISTRY_LOCK_STALE_MS || candidateAge <= -REGISTRY_LOCK_STALE_MS)
+    ) {
+      // Candidate UUID paths are never reused by another process.
+      fs.rmSync(candidatePath, { force: true });
+    }
+  }
+}
+
 async function reapRegistryLock(lockPath, token, observed) {
   const claimPath = path.join(cwd, `${REGISTRY_LOCK_REAP_PREFIX}${token}`);
   try {
@@ -752,9 +778,16 @@ async function acquireRegistryLock() {
     )}\n`,
   );
   fs.chmodSync(candidatePath, 0o600);
+  let candidateHeartbeatAt = Date.now();
   let staleOwner;
   try {
     while (true) {
+      cleanupRegistryLockCandidates(candidatePath);
+      if (Date.now() - candidateHeartbeatAt >= REGISTRY_LOCK_HEARTBEAT_MS) {
+        const now = new Date();
+        fs.utimesSync(candidatePath, now, now);
+        candidateHeartbeatAt = now.getTime();
+      }
       if (registryReapClaims().length) {
         if (Date.now() >= deadline) {
           throw new Error(
@@ -2128,10 +2161,8 @@ async function main() {
     console.log(help(command));
     return;
   }
-  const guardedCommand = ["init", "add", "diff", "update", "list", "info", "doctor"].includes(
-    command,
-  );
-  const recoveryCommand = ["add", "diff", "update", "list", "info", "doctor"].includes(command);
+  const guardedCommand = ["init", "add", "diff", "update", "doctor"].includes(command);
+  const recoveryCommand = ["add", "diff", "update", "doctor"].includes(command);
   const lock = guardedCommand ? await acquireRegistryLock() : null;
   activeRegistryLock = lock;
   let commandError;

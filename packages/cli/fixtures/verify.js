@@ -263,6 +263,14 @@ async function runFailure(cwd, ...args) {
   throw new Error(`nerio ${args.join(" ")} unexpectedly succeeded.`);
 }
 
+async function runResult(cwd, ...args) {
+  try {
+    return await run(cwd, ...args);
+  } catch (error) {
+    return error.message;
+  }
+}
+
 async function runFailureWithEnv(cwd, env, ...args) {
   try {
     await runWithEnv(cwd, env, ...args);
@@ -672,12 +680,30 @@ async function verifyConcurrentTransactions(tempRoot) {
     assertNoTransactionArtifacts(reservedConsumer, `Reserved Registry target ${reservedTarget}`);
   }
 
+  const readOnlyTarget = path.join(tempRoot, "read-only-registry-consumer");
+  fs.mkdirSync(readOnlyTarget);
+  await run(readOnlyTarget, "init", "--registry", fixtureManifest);
+  fs.chmodSync(readOnlyTarget, 0o555);
+  try {
+    const listed = await run(readOnlyTarget, "list");
+    const inspected = await run(readOnlyTarget, "info", "alpha");
+    if (
+      !listed.includes("alpha\tAlpha\tfoundation") ||
+      !inspected.includes("alpha") ||
+      fs.readdirSync(readOnlyTarget).some((entry) => entry.startsWith(".nerio-registry-lock"))
+    ) {
+      throw new Error("Read-only Registry inspection required project-root lock state.");
+    }
+  } finally {
+    fs.chmodSync(readOnlyTarget, 0o755);
+  }
+
   const invalidOwnerTarget = path.join(tempRoot, "invalid-lock-owner-consumer");
   fs.mkdirSync(invalidOwnerTarget);
   await run(invalidOwnerTarget, "init", "--registry", fixtureManifest);
   const invalidLockPath = path.join(invalidOwnerTarget, ".nerio-registry-lock");
   fs.writeFileSync(invalidLockPath, "invalid-owner\n");
-  const child = spawn(process.execPath, [cli, "list"], {
+  const child = spawn(process.execPath, [cli, "doctor"], {
     cwd: invalidOwnerTarget,
     stdio: "pipe",
     env: process.env,
@@ -713,7 +739,7 @@ async function verifyConcurrentTransactions(tempRoot) {
   };
   const foreignNamespaceContent = `${JSON.stringify(foreignNamespaceLock)}\n`;
   fs.writeFileSync(invalidLockPath, foreignNamespaceContent);
-  const foreignChild = spawn(process.execPath, [cli, "list"], {
+  const foreignChild = spawn(process.execPath, [cli, "doctor"], {
     cwd: invalidOwnerTarget,
     stdio: "pipe",
     env: process.env,
@@ -759,6 +785,12 @@ async function verifyConcurrentTransactions(tempRoot) {
   );
   fs.writeFileSync(abandonedReapClaim, "abandoned\n");
   fs.utimesSync(abandonedReapClaim, staleTime, staleTime);
+  const abandonedCandidate = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.candidate-${crypto.randomUUID()}`,
+  );
+  fs.writeFileSync(abandonedCandidate, "abandoned\n");
+  fs.utimesSync(abandonedCandidate, staleTime, staleTime);
   await Promise.all([
     run(invalidOwnerTarget, "add", "alpha"),
     run(invalidOwnerTarget, "add", "beta"),
@@ -812,7 +844,7 @@ async function verifyAtomicTransactions(tempRoot) {
     await runFailureWithEnv(target, { NERIO_TEST_CRASH: point }, "add", "button");
     assertInterruptedTransaction(target, `Interrupted add ${point}`);
     discardCrashedRegistryLock(target);
-    const recovery = await run(target, "list");
+    const recovery = await runResult(target, "doctor");
     if (
       !recovery.includes("Recovered interrupted Registry transaction") ||
       Object.keys(managedSnapshot(target)).length
@@ -864,7 +896,7 @@ async function verifyAtomicTransactions(tempRoot) {
     await runFailureWithEnv(target, { NERIO_TEST_CRASH: point }, "update", "button", "--force");
     assertInterruptedTransaction(target, `Interrupted update ${point}`);
     discardCrashedRegistryLock(target);
-    const recovery = await run(target, "list");
+    const recovery = await runResult(target, "doctor");
     if (
       !recovery.includes("Recovered interrupted Registry transaction") ||
       JSON.stringify(managedSnapshot(target)) !== JSON.stringify(baseline)
@@ -886,7 +918,7 @@ async function verifyAtomicTransactions(tempRoot) {
   assertInterruptedTransaction(committedTarget, "Committed interrupted add");
   discardCrashedRegistryLock(committedTarget);
   const committedBeforeRecovery = managedSnapshot(committedTarget);
-  await run(committedTarget, "list");
+  await runResult(committedTarget, "doctor");
   if (
     JSON.stringify(managedSnapshot(committedTarget)) !== JSON.stringify(committedBeforeRecovery)
   ) {
@@ -927,7 +959,7 @@ async function verifyAtomicTransactions(tempRoot) {
       2,
     )}\n`,
   );
-  const invalidRecovery = await runFailure(invalidJournalTarget, "list");
+  const invalidRecovery = await runFailure(invalidJournalTarget, "doctor");
   if (
     !invalidRecovery.includes("outside the configured components directory") ||
     fs.readFileSync(outsideTarget, "utf8") !== "consumer-owned\n" ||
