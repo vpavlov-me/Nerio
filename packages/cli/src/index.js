@@ -3,7 +3,8 @@ const fs = require("node:fs");
 const crypto = require("node:crypto");
 const path = require("node:path");
 const { Buffer } = require("node:buffer");
-const { clearInterval, clearTimeout, setInterval, setTimeout } = require("node:timers");
+const { clearTimeout, setTimeout } = require("node:timers");
+const { Worker } = require("node:worker_threads");
 
 const cliPackage = require("../package.json");
 const DEFAULT_REGISTRY = "@nerio-ui/registry/manifest.json";
@@ -568,11 +569,7 @@ function pauseTransactionForFixture() {
   const milliseconds = Number(process.env.NERIO_TEST_TRANSACTION_PAUSE_MS);
   if (Number.isSafeInteger(milliseconds) && milliseconds > 0) {
     const clock = new Int32Array(new SharedArrayBuffer(4));
-    const deadline = Date.now() + milliseconds;
-    while (Date.now() < deadline) {
-      refreshActiveRegistryLockLease();
-      Atomics.wait(clock, 0, 0, Math.min(REGISTRY_LOCK_HEARTBEAT_MS, deadline - Date.now()));
-    }
+    Atomics.wait(clock, 0, 0, milliseconds);
     refreshActiveRegistryLockLease();
   }
 }
@@ -732,33 +729,19 @@ async function reapRegistryLock(lockPath, token, observed) {
 }
 
 function refreshRegistryLockLease(lock) {
-  const renewPath = `${lock.lockPath}.renew-${lock.token}`;
-  const clock = new Int32Array(new SharedArrayBuffer(4));
-  while (registryReapClaims().length) {
-    Atomics.wait(clock, 0, 0, REGISTRY_LOCK_POLL_MS);
+  const observed = readRegistryLock(lock.lockPath);
+  if (observed.owner?.token !== lock.token) {
+    throw new Error(`Registry lock ownership changed.`);
   }
+  const descriptor = fs.openSync(lock.lockPath, "r");
+  const now = new Date();
   try {
-    fs.linkSync(lock.lockPath, renewPath);
-    if (registryReapClaims().length) {
-      fs.rmSync(renewPath, { force: true });
-      return refreshRegistryLockLease(lock);
+    if (!sameFile(observed.stats, fs.fstatSync(descriptor))) {
+      throw new Error(`Registry lock changed before its heartbeat.`);
     }
-    const observed = readRegistryLock(lock.lockPath);
-    if (observed.owner?.token !== lock.token) {
-      throw new Error(`Registry lock ownership changed.`);
-    }
-    const descriptor = fs.openSync(lock.lockPath, "r");
-    const now = new Date();
-    try {
-      if (!sameFile(observed.stats, fs.fstatSync(descriptor))) {
-        throw new Error(`Registry lock changed before its heartbeat.`);
-      }
-      fs.futimesSync(descriptor, now, now);
-    } finally {
-      fs.closeSync(descriptor);
-    }
+    fs.futimesSync(descriptor, now, now);
   } finally {
-    fs.rmSync(renewPath, { force: true });
+    fs.closeSync(descriptor);
   }
 }
 
@@ -767,18 +750,16 @@ function refreshActiveRegistryLockLease() {
 }
 
 function startRegistryLockHeartbeat(lock) {
-  lock.heartbeat = setInterval(() => {
-    try {
-      refreshRegistryLockLease(lock);
-    } catch (error) {
-      lock.heartbeatError = error;
-      clearInterval(lock.heartbeat);
-      console.error(
-        `Registry lock heartbeat failed: ${error instanceof Error ? error.message : String(error)}`,
-      );
-      process.exit(1);
-    }
-  }, REGISTRY_LOCK_HEARTBEAT_MS);
+  lock.renewPath = `${lock.lockPath}.renew-${lock.token}`;
+  fs.linkSync(lock.lockPath, lock.renewPath);
+  lock.heartbeat = new Worker(
+    `const{workerData}=require("node:worker_threads"),fs=require("node:fs"),fd=fs.openSync(workerData.path,"r");setInterval(()=>{const now=new Date;fs.futimesSync(fd,now,now)},workerData.interval)`,
+    {
+      eval: true,
+      workerData: { path: lock.renewPath, interval: REGISTRY_LOCK_HEARTBEAT_MS },
+    },
+  );
+  lock.heartbeat.on("error", (error) => (lock.heartbeatError = error));
   lock.heartbeat.unref();
   return lock;
 }
@@ -875,17 +856,21 @@ async function acquireRegistryLock() {
 }
 
 function releaseRegistryLock(lock) {
-  clearInterval(lock.heartbeat);
-  if (!fs.existsSync(lock.lockPath)) {
+  lock.heartbeat.terminate();
+  try {
+    if (!fs.existsSync(lock.lockPath)) {
+      if (lock.heartbeatError) throw lock.heartbeatError;
+      return;
+    }
+    const observed = readRegistryLock(lock.lockPath);
+    if (observed.owner?.token !== lock.token) {
+      throw new Error(`Lock ownership changed before release.`);
+    }
+    fs.rmSync(lock.lockPath, { force: true });
     if (lock.heartbeatError) throw lock.heartbeatError;
-    return;
+  } finally {
+    fs.rmSync(lock.renewPath, { force: true });
   }
-  const observed = readRegistryLock(lock.lockPath);
-  if (observed.owner?.token !== lock.token) {
-    throw new Error(`Lock ownership changed before release.`);
-  }
-  fs.rmSync(lock.lockPath, { force: true });
-  if (lock.heartbeatError) throw lock.heartbeatError;
 }
 
 function writeTransactionJournal(transactionRoot, journal) {

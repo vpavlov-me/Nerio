@@ -608,6 +608,11 @@ function discardCrashedRegistryLock(target) {
     throw new Error("A crashed Registry command did not preserve its process lock.");
   }
   fs.rmSync(lockPath);
+  for (const entry of fs.readdirSync(target)) {
+    if (entry.startsWith(".nerio-registry-lock.renew-")) {
+      fs.rmSync(path.join(target, entry));
+    }
+  }
 }
 
 async function waitForFixture(predicate, description) {
@@ -626,13 +631,18 @@ async function verifyConcurrentTransactions(tempRoot) {
   const fixtureManifest = writeConcurrencyRegistry(registryRoot);
   await run(target, "init", "--registry", fixtureManifest);
 
-  const alpha = runWithEnv(target, { NERIO_TEST_TRANSACTION_PAUSE_MS: "500" }, "add", "alpha");
+  const alpha = runWithEnv(target, { NERIO_TEST_TRANSACTION_PAUSE_MS: "2500" }, "add", "alpha");
   await waitForFixture(
     () =>
       fs.existsSync(path.join(target, ".nerio-registry-lock")) &&
       fs.readdirSync(target).some((entry) => entry.startsWith(".nerio-transaction-")),
     "the first concurrent Registry transaction",
   );
+  const leaseBeforeBlockedCall = fs.statSync(path.join(target, ".nerio-registry-lock")).mtimeMs;
+  await new Promise((resolve) => setTimeout(resolve, 1_500));
+  if (fs.statSync(path.join(target, ".nerio-registry-lock")).mtimeMs <= leaseBeforeBlockedCall) {
+    throw new Error("Registry lease stopped while the command thread was blocked.");
+  }
   const beta = run(target, "add", "beta");
   await Promise.all([alpha, beta]);
 
