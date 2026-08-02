@@ -3,6 +3,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { gzipSync } from "node:zlib";
+import { routeBudgetFailures } from "./docs-route-budget-contract.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const nextDirectory = resolve(
@@ -174,19 +175,7 @@ if (!reportOnly) {
     );
   }
   const budgets = JSON.parse(readFileSync(budgetPath, "utf8"));
-  const failures = [];
-  for (const route of report.routes) {
-    const budget = budgets.routes[route.route];
-    if (!budget) {
-      failures.push(`${route.route}: missing route budget`);
-      continue;
-    }
-    for (const field of ["jsBytes", "cssBytes", "transferBytes"]) {
-      if (route[field] > budget[field]) {
-        failures.push(`${route.route}: ${field} ${route[field]}/${budget[field]} bytes`);
-      }
-    }
-  }
+  const failures = routeBudgetFailures(report.routes, budgets);
   if (failures.length) {
     throw new Error(`Documentation route budgets failed:\n- ${failures.join("\n- ")}`);
   }
