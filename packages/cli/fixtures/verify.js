@@ -594,6 +594,14 @@ function assertInterruptedTransaction(target, description) {
   }
 }
 
+function discardCrashedRegistryLock(target) {
+  const lockPath = path.join(target, ".nerio-registry-lock");
+  if (!fs.existsSync(lockPath)) {
+    throw new Error("A crashed Registry command did not preserve its process lock.");
+  }
+  fs.rmSync(lockPath);
+}
+
 async function waitForFixture(predicate, description) {
   const deadline = Date.now() + 5_000;
   while (!predicate()) {
@@ -697,6 +705,45 @@ async function verifyConcurrentTransactions(tempRoot) {
     }
   }
 
+  const foreignNamespaceLock = {
+    schemaVersion: "1.0.0",
+    pid: Number.MAX_SAFE_INTEGER,
+    token: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+  };
+  const foreignNamespaceContent = `${JSON.stringify(foreignNamespaceLock)}\n`;
+  fs.writeFileSync(invalidLockPath, foreignNamespaceContent);
+  const foreignChild = spawn(process.execPath, [cli, "list"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  let foreignOutput = "";
+  foreignChild.stdout.on("data", (chunk) => (foreignOutput += chunk));
+  foreignChild.stderr.on("data", (chunk) => (foreignOutput += chunk));
+  const foreignClosed = new Promise((resolve) => foreignChild.on("close", resolve));
+  await waitForFixture(
+    () =>
+      fs
+        .readdirSync(invalidOwnerTarget)
+        .some((entry) => entry.startsWith(".nerio-registry-lock.candidate-")),
+    "a command waiting on a fresh foreign-namespace lock",
+  );
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  if (
+    foreignChild.exitCode !== null ||
+    fs.readFileSync(invalidLockPath, "utf8") !== foreignNamespaceContent
+  ) {
+    throw new Error(`A fresh lock with a locally missing PID was reaped.\n${foreignOutput}`);
+  }
+  foreignChild.kill();
+  await foreignClosed;
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
+
   const reusedPidLock = {
     schemaVersion: "1.0.0",
     pid: process.pid,
@@ -706,11 +753,28 @@ async function verifyConcurrentTransactions(tempRoot) {
   fs.writeFileSync(invalidLockPath, `${JSON.stringify(reusedPidLock)}\n`);
   const staleTime = new Date(Date.now() - 120_000);
   fs.utimesSync(invalidLockPath, staleTime, staleTime);
-  const reclaimed = await run(invalidOwnerTarget, "list");
-  if (!reclaimed.includes("alpha\tAlpha\tfoundation")) {
-    throw new Error("A stale Registry lock with a reused live PID was not reclaimed.");
+  const abandonedReapClaim = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.reap-${crypto.randomUUID()}`,
+  );
+  fs.writeFileSync(abandonedReapClaim, "abandoned\n");
+  fs.utimesSync(abandonedReapClaim, staleTime, staleTime);
+  await Promise.all([
+    run(invalidOwnerTarget, "add", "alpha"),
+    run(invalidOwnerTarget, "add", "beta"),
+  ]);
+  const reclaimedLock = JSON.parse(
+    fs.readFileSync(path.join(invalidOwnerTarget, "nerio.lock.json"), "utf8"),
+  );
+  if (
+    !reclaimedLock.items.alpha ||
+    !reclaimedLock.items.beta ||
+    !fs.existsSync(path.join(invalidOwnerTarget, "components/nerio/components/alpha.ts")) ||
+    !fs.existsSync(path.join(invalidOwnerTarget, "components/nerio/components/beta.ts"))
+  ) {
+    throw new Error("Multi-contender stale Registry lock recovery lost source or lock metadata.");
   }
-  assertNoTransactionArtifacts(invalidOwnerTarget, "Reused-PID Registry lock recovery");
+  assertNoTransactionArtifacts(invalidOwnerTarget, "Multi-contender stale Registry lock recovery");
 }
 
 async function verifyAtomicTransactions(tempRoot) {
@@ -747,6 +811,7 @@ async function verifyAtomicTransactions(tempRoot) {
     await run(target, "init", "--registry", fixtureManifest);
     await runFailureWithEnv(target, { NERIO_TEST_CRASH: point }, "add", "button");
     assertInterruptedTransaction(target, `Interrupted add ${point}`);
+    discardCrashedRegistryLock(target);
     const recovery = await run(target, "list");
     if (
       !recovery.includes("Recovered interrupted Registry transaction") ||
@@ -798,6 +863,7 @@ async function verifyAtomicTransactions(tempRoot) {
     fs.cpSync(baselineTarget, target, { recursive: true });
     await runFailureWithEnv(target, { NERIO_TEST_CRASH: point }, "update", "button", "--force");
     assertInterruptedTransaction(target, `Interrupted update ${point}`);
+    discardCrashedRegistryLock(target);
     const recovery = await run(target, "list");
     if (
       !recovery.includes("Recovered interrupted Registry transaction") ||
@@ -818,6 +884,7 @@ async function verifyAtomicTransactions(tempRoot) {
     "button",
   );
   assertInterruptedTransaction(committedTarget, "Committed interrupted add");
+  discardCrashedRegistryLock(committedTarget);
   const committedBeforeRecovery = managedSnapshot(committedTarget);
   await run(committedTarget, "list");
   if (
