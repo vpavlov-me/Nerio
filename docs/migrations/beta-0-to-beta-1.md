@@ -1,7 +1,8 @@
-# Migrate from Core 1.0.0-beta.0 to the next beta
+# Migrate from Core 1.0.0-beta.0 to 1.0.0-beta.1
 
 This guide records only consumer-visible changes accepted after the `1.0.0-beta.0` publication. It
-will be finalized with the coordinated next-beta preparation; no package is published by this work.
+describes the coordinated, unpublished `1.0.0-beta.1` candidate; no package is published by this
+work.
 
 ## Runtime and dependency support
 
@@ -111,3 +112,14 @@ pnpm exec nerio diff
 Custom local Registry authors must add the declared SHA-256 integrity for every source file. Lock
 files created by beta.0 remain readable and acquire integrity metadata on the next successful add or
 update.
+
+## MCP response contract
+
+All four MCP discovery tools now declare output schemas and return `structuredContent` equivalent
+to the preserved formatted JSON text payload. Missing component lookups use the stable
+`COMPONENT_NOT_FOUND` code. Consumers that parse the text response remain compatible; consumers
+that support structured output can migrate to `structuredContent` and validate against each tool's
+declared schema.
+
+The coordinated MCP and Registry version is `1.0.0-beta.1` with source revision
+`v1.0.0-beta.1`. Do not infer npm availability from this prepared metadata.

@@ -15,8 +15,9 @@ Core = building blocks. Pro = product-ready solutions.
 
 Nerio Core `1.0.0-beta.0` is the published public beta for the frozen Core 1.0 API under npm
 `beta`. The protected `alpha` and `latest` tags intentionally remain on `0.1.0-alpha.2` and
-`0.1.0-alpha.0`. The external feedback cycle and stable publication remain manual and are governed
-by the roadmap and `RELEASE.md`.
+`0.1.0-alpha.0`. Coordinated `1.0.0-beta.1` metadata is prepared but unpublished. The external
+feedback cycle, accessibility/device evidence, and every future publication remain manual and are
+governed by the roadmap and `RELEASE.md`.
 
 ## Primary users
 

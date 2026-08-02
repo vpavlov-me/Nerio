@@ -53,9 +53,15 @@ async function prepareFinanceTemplate(page, viewport) {
         caret-color: transparent !important;
         transition: none !important;
       }
+      .recharts-area [clip-path] {
+        clip-path: none !important;
+      }
     `,
   });
   await expect(page.getByRole("heading", { level: 2, name: "Portfolio movement" })).toBeVisible();
+  const chart = page.getByRole("img", { name: /Portfolio value chart/ });
+  const curve = chart.locator(".recharts-area-curve");
+  await expect(curve).toBeVisible();
 }
 
 test("protects the Finance & Assets desktop preview", async ({ page }) => {
