@@ -19,6 +19,8 @@ const REMOTE_REDIRECT_LIMIT = 3;
 const INTEGRITY_PATTERN = /^sha256-([a-f0-9]{64})$/;
 const SCHEMA_VERSION_PATTERN = /^\d+\.\d+\.\d+$/;
 const LOCK_CONTENT_HASH = Symbol("lock-content-hash");
+const TRANSACTION_PREFIX = ".nerio-transaction-";
+const TRANSACTION_SCHEMA_VERSION = "1.0.0";
 const cwd = process.cwd();
 const args = process.argv.slice(2);
 const command = args[0];
@@ -539,6 +541,16 @@ function injectFailure(point, committed = 0) {
   }
 }
 
+function injectCrash(point, committed = 0) {
+  const requested = process.env.NERIO_TEST_CRASH;
+  if (
+    requested === point ||
+    (point === "after-commit" && requested === `after-commit:${committed}`)
+  ) {
+    process.exit(86);
+  }
+}
+
 function removeEmptyParents(target, boundary) {
   let directory = path.dirname(target);
   while (directory !== boundary && isWithin(boundary, directory)) {
@@ -548,6 +560,161 @@ function removeEmptyParents(target, boundary) {
       break;
     }
     directory = path.dirname(directory);
+  }
+}
+
+function transactionJournalPath(transactionRoot) {
+  return path.join(transactionRoot, "journal.json");
+}
+
+function writeTransactionJournal(transactionRoot, journal) {
+  writeFileAtomic(transactionJournalPath(transactionRoot), `${JSON.stringify(journal, null, 2)}\n`);
+}
+
+function backupPath(transactionRoot, snapshot) {
+  if (!snapshot.backup || path.isAbsolute(snapshot.backup)) {
+    throw new Error("Registry transaction journal contains an invalid backup path.");
+  }
+  const target = path.resolve(transactionRoot, snapshot.backup);
+  if (!isWithin(transactionRoot, target)) {
+    throw new Error("Registry transaction journal backup escapes its transaction directory.");
+  }
+  const stats = fs.lstatSync(target);
+  if (!stats.isFile() || stats.isSymbolicLink()) {
+    throw new Error("Registry transaction journal backup must be a regular file.");
+  }
+  return target;
+}
+
+function validateRecoveryJournal(transactionRoot, journal) {
+  const config = readConfig(true);
+  if (typeof config.components !== "string" || !config.components) {
+    throw new Error("nerio.json must define a components directory before recovery.");
+  }
+  const expectedRoot = path.resolve(cwd, config.components);
+  if (
+    journal?.schemaVersion !== TRANSACTION_SCHEMA_VERSION ||
+    !["committing", "committed"].includes(journal.phase) ||
+    !Array.isArray(journal.snapshots) ||
+    !journal.lockSnapshot
+  ) {
+    throw new Error(`Interrupted Registry transaction has an invalid journal: ${transactionRoot}`);
+  }
+  const targets = new Set();
+  for (const snapshot of journal.snapshots) {
+    if (
+      snapshot.root !== expectedRoot ||
+      typeof snapshot.target !== "string" ||
+      !path.isAbsolute(snapshot.target) ||
+      !isWithin(expectedRoot, snapshot.target) ||
+      typeof snapshot.existed !== "boolean" ||
+      (snapshot.mode !== null && typeof snapshot.mode !== "number") ||
+      targets.has(snapshot.target)
+    ) {
+      throw new Error(
+        `Interrupted Registry transaction target is outside the configured components directory: ${transactionRoot}`,
+      );
+    }
+    targets.add(snapshot.target);
+    if (
+      !isWithin(canonicalPath(expectedRoot), canonicalPath(snapshot.target)) ||
+      snapshot.target === statePath()
+    ) {
+      throw new Error(`Interrupted Registry transaction target is unsafe: ${snapshot.target}`);
+    }
+    assertNoSymlinks(
+      expectedRoot,
+      snapshot.target,
+      `Interrupted Registry transaction target contains a symlink: ${snapshot.target}`,
+    );
+    if (snapshot.existed) {
+      backupPath(transactionRoot, snapshot);
+    } else if (snapshot.backup !== null) {
+      throw new Error(`Interrupted Registry transaction has an invalid backup marker.`);
+    }
+  }
+  if (
+    journal.lockSnapshot.target !== statePath() ||
+    typeof journal.lockSnapshot.existed !== "boolean" ||
+    (journal.lockSnapshot.mode !== null && typeof journal.lockSnapshot.mode !== "number")
+  ) {
+    throw new Error(
+      `Interrupted Registry transaction lock snapshot is invalid: ${transactionRoot}`,
+    );
+  }
+  if (journal.lockSnapshot.existed) {
+    backupPath(transactionRoot, journal.lockSnapshot);
+  } else if (journal.lockSnapshot.backup !== null) {
+    throw new Error(`Interrupted Registry transaction has an invalid lock backup marker.`);
+  }
+}
+
+function restoreTransaction(transactionRoot, snapshots, lockSnapshot) {
+  const errors = [];
+  for (const snapshot of [...snapshots].reverse()) {
+    try {
+      if (snapshot.existed) {
+        writeFileAtomic(snapshot.target, fs.readFileSync(backupPath(transactionRoot, snapshot)));
+        if (snapshot.mode !== null) fs.chmodSync(snapshot.target, snapshot.mode);
+      } else {
+        fs.rmSync(snapshot.target, { force: true });
+        removeEmptyParents(snapshot.target, snapshot.root);
+      }
+    } catch (error) {
+      errors.push(`${snapshot.target}: ${error.message}`);
+    }
+  }
+  try {
+    if (lockSnapshot.existed) {
+      writeFileAtomic(
+        lockSnapshot.target,
+        fs.readFileSync(backupPath(transactionRoot, lockSnapshot)),
+      );
+      if (lockSnapshot.mode !== null) fs.chmodSync(lockSnapshot.target, lockSnapshot.mode);
+    } else {
+      fs.rmSync(lockSnapshot.target, { force: true });
+    }
+  } catch (error) {
+    errors.push(`${lockSnapshot.target}: ${error.message}`);
+  }
+  if (errors.length) {
+    throw new Error(`Registry transaction rollback failed:\n- ${errors.join("\n- ")}`);
+  }
+}
+
+function recoverInterruptedTransactions() {
+  const entries = fs
+    .readdirSync(cwd, { withFileTypes: true })
+    .filter((entry) => entry.name.startsWith(TRANSACTION_PREFIX))
+    .sort((left, right) => left.name.localeCompare(right.name));
+  for (const entry of entries) {
+    const transactionRoot = path.join(cwd, entry.name);
+    if (!entry.isDirectory() || fs.lstatSync(transactionRoot).isSymbolicLink()) {
+      throw new Error(`Reserved Registry transaction path is not a directory: ${transactionRoot}`);
+    }
+    const journalPath = transactionJournalPath(transactionRoot);
+    if (!fs.existsSync(journalPath)) {
+      fs.rmSync(transactionRoot, { recursive: true, force: true });
+      continue;
+    }
+    const journalStats = fs.lstatSync(journalPath);
+    if (!journalStats.isFile() || journalStats.isSymbolicLink()) {
+      throw new Error(
+        `Interrupted Registry transaction journal must be a regular file: ${journalPath}`,
+      );
+    }
+    let journal;
+    try {
+      journal = JSON.parse(fs.readFileSync(journalPath, "utf8"));
+    } catch {
+      throw new Error(`Interrupted Registry transaction journal is not valid JSON: ${journalPath}`);
+    }
+    validateRecoveryJournal(transactionRoot, journal);
+    if (journal.phase === "committing") {
+      restoreTransaction(transactionRoot, journal.snapshots, journal.lockSnapshot);
+      console.log(`Recovered interrupted Registry transaction ${entry.name}.`);
+    }
+    fs.rmSync(transactionRoot, { recursive: true, force: true });
   }
 }
 
@@ -599,7 +766,7 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
     throw new Error(`${STATE_FILENAME} changed after planning; no source files were written.`);
   }
 
-  const transactionRoot = fs.mkdtempSync(path.join(cwd, ".nerio-transaction-"));
+  const transactionRoot = fs.mkdtempSync(path.join(cwd, TRANSACTION_PREFIX));
   const stageRoot = path.join(transactionRoot, "stage");
   const backupRoot = path.join(transactionRoot, "backup");
   fs.mkdirSync(stageRoot);
@@ -607,21 +774,27 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
   const snapshots = [];
   let lockSnapshot;
   let committed = 0;
+  let preserveTransaction = false;
 
   try {
     for (const [index, operation] of operations.entries()) {
       const existed = fs.existsSync(operation.target);
       const snapshot = {
         target: operation.target,
+        root: operation.root,
         existed,
-        content: existed ? fs.readFileSync(operation.target) : null,
+        backup: existed ? path.join("backup", String(index)) : null,
         mode: existed ? fs.statSync(operation.target).mode : null,
       };
       snapshots.push(snapshot);
       if (existed) {
-        fs.writeFileSync(path.join(backupRoot, String(index)), snapshot.content, {
-          mode: snapshot.mode,
-        });
+        fs.writeFileSync(
+          path.join(transactionRoot, snapshot.backup),
+          fs.readFileSync(operation.target),
+          {
+            mode: snapshot.mode,
+          },
+        );
       }
       if (operation.type === "write") {
         fs.writeFileSync(path.join(stageRoot, String(index)), operation.content, { flag: "wx" });
@@ -631,17 +804,29 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
     lockSnapshot = {
       target: lockTarget,
       existed: lockExists,
-      content: lockExists ? fs.readFileSync(lockTarget) : null,
+      backup: lockExists ? path.join("backup", "lock") : null,
       mode: lockExists ? fs.statSync(lockTarget).mode : null,
     };
     if (lockExists) {
-      fs.writeFileSync(path.join(backupRoot, "lock"), lockSnapshot.content, {
-        mode: lockSnapshot.mode,
-      });
+      fs.writeFileSync(
+        path.join(transactionRoot, lockSnapshot.backup),
+        fs.readFileSync(lockTarget),
+        {
+          mode: lockSnapshot.mode,
+        },
+      );
     }
     const nextLock = `${JSON.stringify(nextState, null, 2)}\n`;
     fs.writeFileSync(path.join(stageRoot, "lock"), nextLock, { flag: "wx" });
+    const journal = {
+      schemaVersion: TRANSACTION_SCHEMA_VERSION,
+      phase: "committing",
+      snapshots,
+      lockSnapshot,
+    };
+    writeTransactionJournal(transactionRoot, journal);
     injectFailure("after-staging");
+    injectCrash("after-staging");
 
     for (const [index, operation] of operations.entries()) {
       if (operation.type === "write") {
@@ -651,52 +836,33 @@ function applyTransaction(operations, nextState, expectedLockHash, validations =
       }
       committed += 1;
       injectFailure("after-commit", committed);
+      injectCrash("after-commit", committed);
     }
 
     injectFailure("before-lock-write");
+    injectCrash("before-lock-write");
     if (process.env.NERIO_TEST_FAILURE === "during-lock-write") {
       const partial = path.join(transactionRoot, "partial-lock");
       fs.writeFileSync(partial, nextLock.slice(0, Math.max(1, Math.floor(nextLock.length / 2))));
       injectFailure("during-lock-write");
     }
     writeFileAtomic(lockTarget, fs.readFileSync(path.join(stageRoot, "lock")));
+    writeTransactionJournal(transactionRoot, { ...journal, phase: "committed" });
+    injectCrash("after-lock-write");
   } catch (error) {
-    const rollbackErrors = [];
-    for (const snapshot of [...snapshots].reverse()) {
-      try {
-        if (snapshot.existed) {
-          writeFileAtomic(snapshot.target, snapshot.content);
-          if (snapshot.mode !== null) fs.chmodSync(snapshot.target, snapshot.mode);
-        } else {
-          fs.rmSync(snapshot.target, { force: true });
-          removeEmptyParents(snapshot.target, cwd);
-        }
-      } catch (rollbackError) {
-        rollbackErrors.push(`${snapshot.target}: ${rollbackError.message}`);
-      }
-    }
-    if (lockSnapshot) {
-      try {
-        if (lockSnapshot.existed) {
-          writeFileAtomic(lockTarget, lockSnapshot.content);
-          if (lockSnapshot.mode !== null) fs.chmodSync(lockTarget, lockSnapshot.mode);
-        } else {
-          fs.rmSync(lockTarget, { force: true });
-        }
-      } catch (rollbackError) {
-        rollbackErrors.push(`${lockTarget}: ${rollbackError.message}`);
-      }
-    }
-    if (rollbackErrors.length) {
+    try {
+      if (lockSnapshot) restoreTransaction(transactionRoot, snapshots, lockSnapshot);
+    } catch (rollbackError) {
+      preserveTransaction = true;
       throw new Error(
-        `${error.message}\nRegistry transaction rollback also failed:\n- ${rollbackErrors.join("\n- ")}`,
+        `${error.message}\n${rollbackError.message}\nRecovery data remains in ${transactionRoot}.`,
       );
     }
     throw new Error(
       `${error.message}\nRegistry transaction rolled back without source or lock changes.`,
     );
   } finally {
-    fs.rmSync(transactionRoot, { recursive: true, force: true });
+    if (!preserveTransaction) fs.rmSync(transactionRoot, { recursive: true, force: true });
   }
 }
 
@@ -1692,6 +1858,9 @@ async function main() {
   if (hasFlag("--help") || hasFlag("-h")) {
     console.log(help(command));
     return;
+  }
+  if (["add", "diff", "update", "list", "info", "doctor"].includes(command)) {
+    recoverInterruptedTransactions();
   }
 
   if (command === "init") await init();

@@ -88,8 +88,11 @@ manifest, 4 MiB for each source response, and three redirects.
 `nerio add` and `nerio update` now validate and stage the complete operation before touching
 consumer-owned source. Source files commit as one recoverable transaction, and
 `nerio.lock.json` commits only after source succeeds. Any failure restores the prior source and lock
-state and removes transaction artifacts. Dry-run output, local-change preservation,
-`--overwrite`, and intentional `--force` behavior remain unchanged.
+state and removes transaction artifacts. If the process or machine stops between commits, the next
+Registry command validates the durable local journal and restores the previous source and lock; if
+both source and lock had committed, it retains them and removes only the orphaned journal. Dry-run
+output, local-change preservation, `--overwrite`, and intentional `--force` behavior remain
+unchanged.
 
 Before applying the next Registry:
 

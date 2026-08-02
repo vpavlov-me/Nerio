@@ -57,12 +57,12 @@ for (const item of manifest.items) {
   }
 }
 
-if (write) {
+if (failures.length) {
+  throw new Error(`Registry integrity validation failed:\n- ${failures.join("\n- ")}`);
+} else if (write) {
   manifest.schemaVersion = "1.1.0";
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   console.log(`Updated Registry SHA-256 integrity for ${manifest.items.length} items.`);
-} else if (failures.length) {
-  throw new Error(`Registry integrity validation failed:\n- ${failures.join("\n- ")}`);
 } else {
   console.log(`Registry integrity is valid for ${manifest.items.length} items.`);
 }

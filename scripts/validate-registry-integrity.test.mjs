@@ -42,10 +42,10 @@ function fixture() {
   return { directory, manifest, manifestPath, sourcePath };
 }
 
-function validate(manifestPath, sourceRoot) {
+function validate(manifestPath, sourceRoot, ...args) {
   return spawnSync(
     process.execPath,
-    [validator, "--manifest", manifestPath, "--source-root", sourceRoot],
+    [validator, "--manifest", manifestPath, "--source-root", sourceRoot, ...args],
     { encoding: "utf8" },
   );
 }
@@ -72,6 +72,40 @@ test("rejects source drift and missing integrity", () => {
     const missing = validate(data.manifestPath, data.directory);
     assert.notEqual(missing.status, 0);
     assert.match(missing.stderr, /integrity is missing/);
+  } finally {
+    rmSync(data.directory, { recursive: true, force: true });
+  }
+});
+
+test("write mode refuses to rewrite a manifest with validation failures", () => {
+  const data = fixture();
+  try {
+    data.manifest.items[0].files[0].source = "./source/missing.ts";
+    data.manifest.items[0].files.push({ ...data.manifest.items[0].files[0] });
+    const before = `${JSON.stringify(data.manifest, null, 2)}\n`;
+    writeFileSync(data.manifestPath, before);
+    const result = validate(data.manifestPath, data.directory, "--write");
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /source is missing|duplicated/);
+    assert.equal(readFileSync(data.manifestPath, "utf8"), before);
+  } finally {
+    rmSync(data.directory, { recursive: true, force: true });
+  }
+});
+
+test("write mode repairs valid source drift and upgrades the schema", () => {
+  const data = fixture();
+  try {
+    const nextSource = "export const button = false;\n";
+    writeFileSync(data.sourcePath, nextSource);
+    const result = validate(data.manifestPath, data.directory, "--write");
+    assert.equal(result.status, 0);
+    const updated = JSON.parse(readFileSync(data.manifestPath, "utf8"));
+    assert.equal(updated.schemaVersion, "1.1.0");
+    assert.equal(
+      updated.items[0].files[0].integrity,
+      `sha256-${createHash("sha256").update(nextSource).digest("hex")}`,
+    );
   } finally {
     rmSync(data.directory, { recursive: true, force: true });
   }

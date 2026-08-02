@@ -95,7 +95,8 @@ export default function Page() {
           <li>
             Add and update fetch and validate the complete plan before writing, stage every change,
             commit source before lock metadata, and restore both source and lock state after any
-            failure.
+            handled failure. A durable local journal recovers an interrupted process on the next
+            Registry command; already-committed source and lock state is retained.
           </li>
         </ul>
         <p>

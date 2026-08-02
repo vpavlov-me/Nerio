@@ -534,6 +534,12 @@ function assertNoTransactionArtifacts(target, description) {
   }
 }
 
+function assertInterruptedTransaction(target, description) {
+  if (!fs.readdirSync(target).some((entry) => entry.startsWith(".nerio-transaction-"))) {
+    throw new Error(`${description} did not preserve a recovery journal.`);
+  }
+}
+
 async function verifyAtomicTransactions(tempRoot) {
   const registryRoot = path.join(tempRoot, "transaction-registry");
   const baselineTarget = path.join(tempRoot, "transaction-baseline");
@@ -560,6 +566,22 @@ async function verifyAtomicTransactions(tempRoot) {
       throw new Error(`Atomic add did not fully roll back the ${point} failure.`);
     }
     assertNoTransactionArtifacts(target, `Atomic add ${point}`);
+  }
+
+  for (const point of ["after-commit:1", "after-commit:3", "before-lock-write"]) {
+    const target = path.join(tempRoot, `transaction-add-crash-${point.replace(":", "-")}`);
+    fs.mkdirSync(target);
+    await run(target, "init", "--registry", fixtureManifest);
+    await runFailureWithEnv(target, { NERIO_TEST_CRASH: point }, "add", "button");
+    assertInterruptedTransaction(target, `Interrupted add ${point}`);
+    const recovery = await run(target, "list");
+    if (
+      !recovery.includes("Recovered interrupted Registry transaction") ||
+      Object.keys(managedSnapshot(target)).length
+    ) {
+      throw new Error(`Interrupted add did not recover the ${point} journal.`);
+    }
+    assertNoTransactionArtifacts(target, `Interrupted add ${point}`);
   }
 
   await run(baselineTarget, "init", "--registry", fixtureManifest);
@@ -596,6 +618,82 @@ async function verifyAtomicTransactions(tempRoot) {
       throw new Error(`Atomic update did not restore source and lock after ${point}.`);
     }
     assertNoTransactionArtifacts(target, `Atomic update ${point}`);
+  }
+
+  for (const point of ["after-commit:1", "after-commit:3", "before-lock-write"]) {
+    const target = path.join(tempRoot, `transaction-update-crash-${point.replace(":", "-")}`);
+    fs.cpSync(baselineTarget, target, { recursive: true });
+    await runFailureWithEnv(target, { NERIO_TEST_CRASH: point }, "update", "button", "--force");
+    assertInterruptedTransaction(target, `Interrupted update ${point}`);
+    const recovery = await run(target, "list");
+    if (
+      !recovery.includes("Recovered interrupted Registry transaction") ||
+      JSON.stringify(managedSnapshot(target)) !== JSON.stringify(baseline)
+    ) {
+      throw new Error(`Interrupted update did not recover the ${point} journal.`);
+    }
+    assertNoTransactionArtifacts(target, `Interrupted update ${point}`);
+  }
+
+  const committedTarget = path.join(tempRoot, "transaction-add-crash-after-lock");
+  fs.mkdirSync(committedTarget);
+  await run(committedTarget, "init", "--registry", fixtureManifest);
+  await runFailureWithEnv(
+    committedTarget,
+    { NERIO_TEST_CRASH: "after-lock-write" },
+    "add",
+    "button",
+  );
+  assertInterruptedTransaction(committedTarget, "Committed interrupted add");
+  const committedBeforeRecovery = managedSnapshot(committedTarget);
+  await run(committedTarget, "list");
+  if (
+    JSON.stringify(managedSnapshot(committedTarget)) !== JSON.stringify(committedBeforeRecovery)
+  ) {
+    throw new Error("Recovery rolled back a transaction whose source and lock had committed.");
+  }
+  assertNoTransactionArtifacts(committedTarget, "Committed interrupted add");
+
+  const invalidJournalTarget = path.join(tempRoot, "transaction-invalid-journal");
+  const outsideTarget = path.join(tempRoot, "transaction-invalid-journal-outside.ts");
+  fs.mkdirSync(invalidJournalTarget);
+  await run(invalidJournalTarget, "init", "--registry", fixtureManifest);
+  fs.writeFileSync(outsideTarget, "consumer-owned\n");
+  const invalidTransaction = path.join(invalidJournalTarget, ".nerio-transaction-invalid");
+  fs.mkdirSync(invalidTransaction);
+  fs.writeFileSync(
+    path.join(invalidTransaction, "journal.json"),
+    `${JSON.stringify(
+      {
+        schemaVersion: "1.0.0",
+        phase: "committing",
+        snapshots: [
+          {
+            target: outsideTarget,
+            root: path.join(invalidJournalTarget, "components/nerio"),
+            existed: false,
+            backup: null,
+            mode: null,
+          },
+        ],
+        lockSnapshot: {
+          target: path.join(invalidJournalTarget, "nerio.lock.json"),
+          existed: false,
+          backup: null,
+          mode: null,
+        },
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  const invalidRecovery = await runFailure(invalidJournalTarget, "list");
+  if (
+    !invalidRecovery.includes("outside the configured components directory") ||
+    fs.readFileSync(outsideTarget, "utf8") !== "consumer-owned\n" ||
+    !fs.existsSync(invalidTransaction)
+  ) {
+    throw new Error("Recovery accepted an unsafe journal or removed its evidence.");
   }
 }
 
