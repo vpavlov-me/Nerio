@@ -30,7 +30,7 @@ const REGISTRY_LOCK_STALE_MS = 30_000;
 const REGISTRY_LOCK_RECLAIM_CONFIRM_MS = 5_000;
 const REGISTRY_LOCK_CANDIDATE_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.candidate-`;
 const REGISTRY_LOCK_REAP_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.reap-`;
-const REGISTRY_LOCK_RENEW_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.renew-`;
+const LOCK_RENEW_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.renew-`;
 const cwd = process.cwd();
 const args = process.argv.slice(2);
 const command = args[0];
@@ -600,14 +600,14 @@ function wait(milliseconds) {
 function readRegistryLock(lockPath) {
   const pathStats = fs.lstatSync(lockPath);
   if (!pathStats.isFile() || pathStats.isSymbolicLink()) {
-    throw new Error(`Reserved Registry lock path is not a regular file: ${lockPath}`);
+    throw new Error(`Invalid Registry lock path: ${lockPath}`);
   }
   const descriptor = fs.openSync(lockPath, "r");
   let owner;
   try {
     const stats = fs.fstatSync(descriptor);
     if (!sameFile(pathStats, stats)) {
-      throw Object.assign(new Error(`Registry lock changed while its owner was being read.`), {
+      throw Object.assign(new Error(`Lock changed while reading its owner.`), {
         code: "EAGAIN",
       });
     }
@@ -660,34 +660,40 @@ function registryReapClaims() {
   return claims.sort();
 }
 
-function registryRenewalActive() {
-  return fs.readdirSync(cwd).some((entry) => entry.startsWith(REGISTRY_LOCK_RENEW_PREFIX));
+function activeLockArtifact(target) {
+  let stats;
+  try {
+    stats = fs.lstatSync(target);
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+  if (!stats.isFile() || stats.isSymbolicLink()) {
+    throw new Error(`Invalid Registry lock artifact: ${target}`);
+  }
+  const now = Date.now();
+  if (now - stats.mtimeMs < REGISTRY_LOCK_STALE_MS) return true;
+  if (stats.atimeMs === stats.mtimeMs) fs.utimesSync(target, new Date(now), stats.mtime);
+  else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+    fs.rmSync(target);
+    return false;
+  }
+  return true;
+}
+
+function renewalActive() {
+  return fs
+    .readdirSync(cwd)
+    .filter((entry) => entry.startsWith(LOCK_RENEW_PREFIX))
+    .some((entry) => activeLockArtifact(path.join(cwd, entry)));
 }
 
 function cleanupRegistryLockCandidates(currentCandidate) {
-  const now = Date.now();
   for (const entry of fs.readdirSync(cwd)) {
     if (!entry.startsWith(REGISTRY_LOCK_CANDIDATE_PREFIX)) continue;
     const candidatePath = path.join(cwd, entry);
     if (candidatePath === currentCandidate) continue;
-    let stats;
-    try {
-      stats = fs.lstatSync(candidatePath);
-    } catch (error) {
-      if (error?.code === "ENOENT") continue;
-      throw error;
-    }
-    if (
-      stats.isFile() &&
-      !stats.isSymbolicLink() &&
-      now - stats.mtimeMs >= REGISTRY_LOCK_STALE_MS
-    ) {
-      if (stats.atimeMs === stats.mtimeMs) {
-        fs.utimesSync(candidatePath, new Date(now), stats.mtime);
-      } else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
-        fs.rmSync(candidatePath, { force: true });
-      }
-    }
+    activeLockArtifact(candidatePath);
   }
 }
 
@@ -698,7 +704,7 @@ async function reapRegistryLock(lockPath, token, observed) {
     // Let every contender observe the claims, then elect one reaper.
     await wait(REGISTRY_LOCK_POLL_MS * 2);
     if (registryReapClaims()[0] !== claimPath) return false;
-    while (registryRenewalActive()) await wait(REGISTRY_LOCK_POLL_MS);
+    while (renewalActive()) await wait(REGISTRY_LOCK_POLL_MS);
     let current;
     try {
       current = readRegistryLock(lockPath);
@@ -739,7 +745,7 @@ function refreshRegistryLockLease(lock) {
     }
     const observed = readRegistryLock(lock.lockPath);
     if (observed.owner?.token !== lock.token) {
-      throw new Error(`Registry lock ownership changed during the command.`);
+      throw new Error(`Registry lock ownership changed.`);
     }
     const descriptor = fs.openSync(lock.lockPath, "r");
     const now = new Date();
@@ -768,9 +774,7 @@ function startRegistryLockHeartbeat(lock) {
       lock.heartbeatError = error;
       clearInterval(lock.heartbeat);
       console.error(
-        `Registry transaction lock heartbeat failed: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        `Registry lock heartbeat failed: ${error instanceof Error ? error.message : String(error)}`,
       );
       process.exit(1);
     }
@@ -810,9 +814,7 @@ async function acquireRegistryLock() {
       }
       if (registryReapClaims().length) {
         if (Date.now() >= deadline) {
-          throw new Error(
-            `Timed out waiting ${REGISTRY_LOCK_WAIT_MS}ms for Registry transaction lock.`,
-          );
+          throw new Error(`Registry lock wait exceeded ${REGISTRY_LOCK_WAIT_MS}ms.`);
         }
         await wait(REGISTRY_LOCK_POLL_MS);
         continue;
@@ -863,9 +865,7 @@ async function acquireRegistryLock() {
       }
       if (Date.now() >= deadline) {
         const owner = observed.owner ? ` held by process ${observed.owner.pid}` : "";
-        throw new Error(
-          `Timed out waiting ${REGISTRY_LOCK_WAIT_MS}ms for Registry transaction lock${owner}.`,
-        );
+        throw new Error(`Registry lock wait exceeded ${REGISTRY_LOCK_WAIT_MS}ms${owner}.`);
       }
       await wait(REGISTRY_LOCK_POLL_MS);
     }
@@ -882,7 +882,7 @@ function releaseRegistryLock(lock) {
   }
   const observed = readRegistryLock(lock.lockPath);
   if (observed.owner?.token !== lock.token) {
-    throw new Error(`Registry lock ownership changed before release.`);
+    throw new Error(`Lock ownership changed before release.`);
   }
   fs.rmSync(lock.lockPath, { force: true });
   if (lock.heartbeatError) throw lock.heartbeatError;
@@ -1293,12 +1293,13 @@ function registryMetadata(manifest) {
 
 function relativeTarget(componentsRoot, target) {
   const relative = path.relative(cwd, resolveTarget(componentsRoot, target));
+  const normalized = relative.toLowerCase();
   if (
-    relative === STATE_FILENAME ||
-    relative === "nerio.json" ||
-    relative === REGISTRY_LOCK_DIRECTORY ||
-    relative.startsWith(`${REGISTRY_LOCK_DIRECTORY}.`) ||
-    relative.split(path.sep).some((segment) => segment.startsWith(".nerio-transaction-"))
+    normalized === STATE_FILENAME ||
+    normalized === "nerio.json" ||
+    normalized === REGISTRY_LOCK_DIRECTORY ||
+    normalized.startsWith(`${REGISTRY_LOCK_DIRECTORY}.`) ||
+    normalized.split(path.sep).some((segment) => segment.startsWith(".nerio-transaction-"))
   ) {
     throw new Error(`Registry target uses a reserved Nerio path: ${target}`);
   }

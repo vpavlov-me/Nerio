@@ -649,20 +649,21 @@ async function verifyConcurrentTransactions(tempRoot) {
   }
   assertNoTransactionArtifacts(target, "Concurrent Registry installs");
 
-  for (const reservedTarget of [
+  for (const [reservedIndex, reservedTarget] of [
     ".nerio-registry-lock",
+    ".NERIO-REGISTRY-LOCK",
     ".nerio-registry-lock.candidate-registry-item",
-  ]) {
+  ].entries()) {
     const reservedManifest = path.join(
       registryRoot,
-      `manifest-${reservedTarget.replaceAll(".", "-")}.json`,
+      `manifest-${reservedIndex}-${reservedTarget.replaceAll(".", "-")}.json`,
     );
     const manifest = JSON.parse(fs.readFileSync(fixtureManifest, "utf8"));
     manifest.items[0].files[0].target = reservedTarget;
     fs.writeFileSync(reservedManifest, `${JSON.stringify(manifest, null, 2)}\n`);
     const reservedConsumer = path.join(
       tempRoot,
-      `reserved-lock-target-${reservedTarget.replaceAll(".", "-")}`,
+      `reserved-lock-target-${reservedIndex}-${reservedTarget.replaceAll(".", "-")}`,
     );
     fs.mkdirSync(reservedConsumer);
     await run(reservedConsumer, "init", "--registry", fixtureManifest, "--components", ".");
@@ -905,6 +906,11 @@ async function verifyConcurrentTransactions(tempRoot) {
   );
   fs.writeFileSync(abandonedCandidate, "abandoned\n");
   fs.utimesSync(abandonedCandidate, staleTime, staleTime);
+  const abandonedRenewal = path.join(
+    invalidOwnerTarget,
+    `.nerio-registry-lock.renew-${crypto.randomUUID()}`,
+  );
+  fs.linkSync(invalidLockPath, abandonedRenewal);
   await Promise.all([
     run(invalidOwnerTarget, "add", "alpha"),
     run(invalidOwnerTarget, "add", "beta"),

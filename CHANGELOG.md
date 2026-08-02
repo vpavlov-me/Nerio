@@ -53,8 +53,8 @@ Items under `Unreleased` may change before the next public release.
   installs, updates, validation, and recovery, preventing simultaneous commands from losing source
   ownership or lock metadata and reclaiming dead owners before journal recovery; `list` and `info`
   remain read-only inspection commands. A heartbeat lease makes stale locks reclaimable after
-  restart or PID reuse. The CLI tarball grows from 10,559 to 18,884 bytes and unpacked content from
-  40,917 to 79,996 bytes; reviewed budgets move from 18,000 to 19,000 compressed bytes and from
+  restart or PID reuse. The CLI tarball grows from 10,559 to 18,937 bytes and unpacked content from
+  40,917 to 79,999 bytes; reviewed budgets move from 18,000 to 19,000 compressed bytes and from
   75,000 to 80,000 unpacked bytes for this bounded lease and transaction contract.
 
 ### Migration
