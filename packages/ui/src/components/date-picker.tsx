@@ -5,6 +5,7 @@ import { Popover as BasePopover } from "@base-ui/react/popover";
 import { CalendarDays } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
+import type { NerioChangeEventDetails } from "../lib/component-props";
 import { Button, type ButtonSize } from "./button";
 import {
   Calendar,
@@ -24,9 +25,20 @@ export interface DatePickerLabels {
   selectedDate: string;
 }
 
-export type DatePickerOpenChangeEventDetails = Parameters<
-  NonNullable<React.ComponentProps<typeof BasePopover.Root>["onOpenChange"]>
->[1];
+export type DatePickerOpenChangeEventReason =
+  | "trigger-hover"
+  | "trigger-focus"
+  | "trigger-press"
+  | "outside-press"
+  | "escape-key"
+  | "close-press"
+  | "focus-out"
+  | "imperative-action"
+  | "none";
+export type DatePickerOpenChangeEventDetails =
+  NerioChangeEventDetails<DatePickerOpenChangeEventReason> & {
+    preventUnmountOnClose: () => void;
+  };
 
 type DatePickerTriggerProps = Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -90,6 +102,8 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
   {
     "aria-describedby": ariaDescribedBy,
     "aria-invalid": ariaInvalid,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
     className,
     clearable = false,
     defaultOpen,
@@ -131,6 +145,9 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
   const [uncontrolledValue, setUncontrolledValue] = React.useState<CalendarDate | null>(
     defaultValue,
   );
+  const [hasExternalName, setHasExternalName] = React.useState(
+    Boolean(ariaLabel || ariaLabelledBy),
+  );
   const selectedValue = value === undefined ? uncontrolledValue : value;
   const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
   const openLabel = labels?.open ?? "Open date picker";
@@ -141,6 +158,12 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
   const displayValue = selectedValue ? formatValue(selectedValue, locale) : placeholder;
 
   React.useImperativeHandle(forwardedRef, () => triggerRef.current as HTMLElement);
+
+  React.useLayoutEffect(() => {
+    const trigger = triggerRef.current;
+    const hasNativeLabel = trigger instanceof HTMLButtonElement && Boolean(trigger.labels?.length);
+    setHasExternalName(Boolean(ariaLabel || ariaLabelledBy || hasNativeLabel));
+  }, [ariaLabel, ariaLabelledBy, triggerId]);
 
   React.useEffect(() => {
     const input = inputRef.current;
@@ -183,8 +206,14 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
             <Button
               ref={triggerRef}
               {...triggerProps}
-              aria-describedby={mergeIds(ariaDescribedBy, valueDescriptionId, actionDescriptionId)}
+              aria-describedby={mergeIds(
+                ariaDescribedBy,
+                selectedValue && hasExternalName ? valueDescriptionId : undefined,
+                actionDescriptionId,
+              )}
               aria-invalid={isInvalid ? true : ariaInvalid}
+              aria-label={ariaLabel}
+              aria-labelledby={ariaLabelledBy}
               className={cn(triggerClasses, motionClasses.control, className)}
               data-placeholder={selectedValue ? undefined : ""}
               data-readonly={readOnly ? "" : undefined}
@@ -219,7 +248,11 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
               initialFocus={() =>
                 calendarRef.current?.querySelector<HTMLElement>(
                   '[data-slot="day"][tabindex="0"]',
-                ) ?? true
+                ) ??
+                calendarRef.current?.querySelector<HTMLElement>(
+                  '[data-slot="grid"][tabindex="0"]',
+                ) ??
+                true
               }
             >
               <Calendar
@@ -264,9 +297,11 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
           </BasePopover.Positioner>
         </BasePopover.Portal>
       </BasePopover.Root>
-      <span className="sr-only" id={valueDescriptionId}>
-        {displayValue}
-      </span>
+      {selectedValue && hasExternalName ? (
+        <span className="sr-only" id={valueDescriptionId}>
+          {displayValue}
+        </span>
+      ) : null}
       <span className="sr-only" id={actionDescriptionId}>
         {actionLabel}
       </span>

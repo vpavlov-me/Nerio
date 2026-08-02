@@ -313,6 +313,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
           "role": "component"
@@ -1389,6 +1394,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
           "role": "utility"
@@ -1501,6 +1511,11 @@
           "source": "../../ui/src/components/radio-group.tsx",
           "target": "components/radio-group.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
@@ -2129,6 +2144,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
           "role": "utility"
@@ -2401,6 +2421,11 @@
           "source": "../../ui/src/components/date-picker.tsx",
           "target": "components/date-picker.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
         }
       ],
       "baseUiPrimitives": ["popover"],
@@ -2434,7 +2459,7 @@
       ],
       "accessibility": [
         "Name the trigger through Field, Label, aria-label, or aria-labelledby.",
-        "The trigger description includes the localized selected value or empty placeholder before the open/change action.",
+        "A self-named trigger does not repeat its visible value; controls named by Field or explicit ARIA retain the localized selected value once before the open/change action.",
         "Opening moves focus to Calendar's selected or active roving day; selection, Escape, outside dismissal, and clear restore focus to the trigger.",
         "The public value and single named form mirror use the timezone-independent YYYY-MM-DD CalendarDate contract; null is the explicit controlled empty value.",
         "Required, disabled, read-only, invalid, form ownership, submission, and reset behavior remain truthful.",
@@ -2456,6 +2481,11 @@
           "source": "../../ui/src/components/slider.tsx",
           "target": "components/slider.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/lib/compose-refs.ts",
@@ -2568,6 +2598,11 @@
           "source": "../../ui/src/components/tabs.tsx",
           "target": "components/tabs.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
@@ -2806,6 +2841,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
           "role": "utility"
@@ -3003,6 +3043,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
           "role": "component"
@@ -3129,6 +3174,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
           "role": "utility"
@@ -3233,6 +3283,11 @@
           "role": "component"
         },
         {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
+        },
+        {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
           "role": "utility"
@@ -3312,6 +3367,11 @@
           "source": "../../ui/src/components/dropdown-menu.tsx",
           "target": "components/dropdown-menu.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
@@ -3412,6 +3472,11 @@
           "source": "../../ui/src/components/tooltip.tsx",
           "target": "components/tooltip.tsx",
           "role": "component"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility"
         },
         {
           "source": "../../ui/src/lib/cn.ts",

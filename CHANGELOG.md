@@ -26,12 +26,26 @@ Items under `Unreleased` may change before the next public release.
 - Refreshed the single affected Linux Finance & Assets mobile screenshot after Chromium 151 produced
   a deterministic selected-control rasterization delta; component geometry, content, and tokens are
   unchanged.
+- Replaced Base UI-derived public props and event aliases for the interactive Core components with
+  bounded Nerio-owned contracts, restricted Tabs values to stable strings, and exact-pinned
+  `@base-ui/react` to 1.6.0.
+
+### Fixed
+
+- Made Calendar and empty DatePicker initial markup independent of the server or browser clock and
+  timezone; consumer-owned `today` now exclusively controls current-day styling and month fallback.
+- Kept unavailable Calendar days out of the roving tab stop and moved the no-available-date focus
+  fallback to the grid.
+- Avoided repeating DatePicker's visible value for self-named triggers while retaining the selected
+  value once for controls named by Field or explicit ARIA, plus consumer descriptions and the
+  localized open/change instruction.
 
 ### Migration
 
 - Follow
-  [`docs/migrations/beta-0-to-beta-1.md`](./docs/migrations/beta-0-to-beta-1.md) for the Node and
-  Tailwind lower-bound changes. This work prepares but does not publish the next beta.
+  [`docs/migrations/beta-0-to-beta-1.md`](./docs/migrations/beta-0-to-beta-1.md) for the runtime
+  lower bounds, deterministic date initialization, Tabs string values, and Nerio-owned interactive
+  types. This work prepares but does not publish the next beta.
 
 ## 1.0.0-beta.0 — 2026-08-01
 

@@ -7,6 +7,12 @@ import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 import { resolveClassName } from "../lib/resolve-class-name";
 import { FormMessage } from "./form-message";
+import type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioRenderProp,
+  NerioStyle,
+} from "../lib/component-props";
 
 export interface RadioGroupOption {
   label: React.ReactNode;
@@ -15,22 +21,33 @@ export interface RadioGroupOption {
   description?: React.ReactNode;
 }
 
-type BaseRadioGroupProps = Omit<
-  React.ComponentProps<typeof BaseRadioGroup<string>>,
-  "children" | "onChange" | "onValueChange"
->;
+export type RadioGroupChangeEventDetails = NerioChangeEventDetails<"none">;
+export interface RadioGroupState {
+  disabled: boolean;
+  readOnly: boolean;
+  required: boolean;
+}
 
-type SharedRadioGroupProps = BaseRadioGroupProps & {
+type SharedRadioGroupProps = Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children" | "className" | "defaultValue" | "onChange" | "style"
+> & {
+  className?: NerioClassName<RadioGroupState>;
+  defaultValue?: string;
+  disabled?: boolean;
+  form?: string;
+  inputRef?: React.Ref<HTMLInputElement>;
   label: React.ReactNode;
+  name?: string;
+  readOnly?: boolean;
+  render?: NerioRenderProp<RadioGroupState>;
+  required?: boolean;
+  style?: NerioStyle<RadioGroupState>;
+  value?: string;
   description?: React.ReactNode;
   invalid?: boolean;
   message?: React.ReactNode;
-  onValueChange?: (
-    value: string,
-    eventDetails: Parameters<
-      NonNullable<React.ComponentProps<typeof BaseRadioGroup<string>>["onValueChange"]>
-    >[1],
-  ) => void;
+  onValueChange?: (value: string, eventDetails: RadioGroupChangeEventDetails) => void;
 };
 
 type OptionsRadioGroupProps = {
@@ -46,13 +63,31 @@ type ComposedRadioGroupProps = {
 export type RadioGroupProps = SharedRadioGroupProps &
   (OptionsRadioGroupProps | ComposedRadioGroupProps);
 
+export interface RadioGroupItemState {
+  checked: boolean;
+  disabled: boolean;
+  readOnly: boolean;
+  required: boolean;
+  touched: boolean;
+  dirty: boolean;
+  valid: boolean | null;
+  filled: boolean;
+  focused: boolean;
+}
 export interface RadioGroupItemProps extends Omit<
-  React.ComponentProps<typeof Radio.Root<string>>,
-  "children" | "className" | "value"
+  React.HTMLAttributes<HTMLElement>,
+  "children" | "className" | "color" | "style"
 > {
-  className?: React.ComponentProps<typeof Radio.Root<string>>["className"];
+  className?: NerioClassName<RadioGroupItemState>;
   children: React.ReactNode;
   description?: React.ReactNode;
+  disabled?: boolean;
+  inputRef?: React.Ref<HTMLInputElement>;
+  nativeButton?: boolean;
+  readOnly?: boolean;
+  render?: NerioRenderProp<RadioGroupItemState>;
+  required?: boolean;
+  style?: NerioStyle<RadioGroupItemState>;
   value: string;
 }
 

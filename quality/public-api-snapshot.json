@@ -2322,7 +2322,7 @@
         "deprecations": [],
         "kind": "value",
         "name": "Button",
-        "signature": "React.ForwardRefExoticComponent<(Omit<TextButtonProps, \"ref\"> | Omit<IconOnlyButtonProps, \"ref\">) & React.RefAttributes<HTMLElement>>"
+        "signature": "React.ForwardRefExoticComponent<ButtonProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
@@ -2366,18 +2366,21 @@
       {
         "definition": [
           "export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> { tone?: BadgeTone; emphasis?: BadgeEmphasis; size?: BadgeSize; leadingIcon?: IconComponent; trailingIcon?: IconComponent; loading?: boolean; }",
+          "export interface ButtonRenderState { disabled: boolean; }",
           "export type BadgeEmphasis = \"soft\" | \"strong\";",
           "export type BadgeSize = \"sm\" | \"md\" | \"lg\";",
           "export type BadgeTone = \"neutral\" | \"primary-soft\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\";",
           "export type ButtonBadge = React.ReactElement<BadgeProps, typeof Badge>;",
           "export type ButtonKbd = string | number | React.ReactElement<KbdProps, typeof Kbd>;",
           "export type ButtonProps = TextButtonProps | IconOnlyButtonProps;",
+          "export type ButtonRenderFunction = (props: ButtonRenderProps, state: ButtonRenderState) => React.ReactElement;",
+          "export type ButtonRenderProps = React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement>; children?: React.ReactNode; disabled?: boolean; \"data-icon-only\"?: string; \"data-disabled\"?: string; \"data-loading\"?: string; \"data-size\"?: ButtonSize; \"data-slot\"?: string; \"data-variant\"?: ButtonVariant; onClick?: React.MouseEventHandler<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
           "export type ButtonSize = \"sm\" | \"md\" | \"lg\";",
           "export type ButtonVariant = \"primary\" | \"secondary\" | \"outline\" | \"ghost\" | \"link\" | \"danger\";",
           "export type IconComponent = React.ElementType<IconSvgProps>;",
           "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
           "export type KbdProps = React.HTMLAttributes<HTMLElement> & { \"data-slot\"?: string; };",
-          "type ButtonBaseProps = Omit<React.ComponentProps<typeof BaseButton>, \"aria-label\" | \"children\" | \"className\" | \"disabled\"> & { \"data-slot\"?: string; className?: string; disabled?: boolean; variant?: ButtonVariant; size?: ButtonSize; loading?: boolean; tooltip?: React.ReactNode; };",
+          "type ButtonBaseProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"aria-label\" | \"children\" | \"className\" | \"color\" | \"disabled\" | \"onClick\" | \"style\"> & { \"data-slot\"?: string; className?: string; disabled?: boolean; focusableWhenDisabled?: boolean; nativeButton?: boolean; onClick?: React.MouseEventHandler<HTMLButtonElement>; render?: React.ReactElement | ButtonRenderFunction; style?: React.CSSProperties; variant?: ButtonVariant; size?: ButtonSize; loading?: boolean; tooltip?: React.ReactNode; };",
           "type IconOnlyButtonProps = ButtonBaseProps & { icon: IconComponent; children?: never; \"aria-label\": string; leadingIcon?: never; trailingIcon?: never; kbd?: never; badge?: never; };",
           "type TextButtonProps = ButtonBaseProps & { children: React.ReactNode; icon?: never; \"aria-label\"?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; kbd?: ButtonKbd; badge?: ButtonBadge; };"
         ],
@@ -2385,6 +2388,37 @@
         "kind": "type",
         "name": "ButtonProps",
         "signature": "ButtonProps"
+      },
+      {
+        "definition": [
+          "export interface ButtonRenderState { disabled: boolean; }",
+          "export type ButtonRenderFunction = (props: ButtonRenderProps, state: ButtonRenderState) => React.ReactElement;",
+          "export type ButtonRenderProps = React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement>; children?: React.ReactNode; disabled?: boolean; \"data-icon-only\"?: string; \"data-disabled\"?: string; \"data-loading\"?: string; \"data-size\"?: ButtonSize; \"data-slot\"?: string; \"data-variant\"?: ButtonVariant; onClick?: React.MouseEventHandler<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type ButtonSize = \"sm\" | \"md\" | \"lg\";",
+          "export type ButtonVariant = \"primary\" | \"secondary\" | \"outline\" | \"ghost\" | \"link\" | \"danger\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ButtonRenderFunction",
+        "signature": "ButtonRenderFunction"
+      },
+      {
+        "definition": [
+          "export type ButtonRenderProps = React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement>; children?: React.ReactNode; disabled?: boolean; \"data-icon-only\"?: string; \"data-disabled\"?: string; \"data-loading\"?: string; \"data-size\"?: ButtonSize; \"data-slot\"?: string; \"data-variant\"?: ButtonVariant; onClick?: React.MouseEventHandler<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type ButtonSize = \"sm\" | \"md\" | \"lg\";",
+          "export type ButtonVariant = \"primary\" | \"secondary\" | \"outline\" | \"ghost\" | \"link\" | \"danger\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ButtonRenderProps",
+        "signature": "ButtonRenderProps"
+      },
+      {
+        "definition": ["export interface ButtonRenderState { disabled: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ButtonRenderState",
+        "signature": "ButtonRenderState"
       },
       {
         "definition": ["export type ButtonSize = \"sm\" | \"md\" | \"lg\";"],
@@ -2605,16 +2639,42 @@
         "deprecations": [],
         "kind": "value",
         "name": "Checkbox",
-        "signature": "React.ForwardRefExoticComponent<Omit<CheckboxProps, \"ref\"> & React.RefAttributes<HTMLElement>>"
+        "signature": "React.ForwardRefExoticComponent<CheckboxProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
-          "export interface CheckboxProps extends React.ComponentProps<typeof BaseCheckbox.Root> { invalid?: boolean; label?: React.ReactNode; description?: React.ReactNode; }"
+          "export type CheckboxChangeEventDetails = NerioChangeEventDetails<\"none\">;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CheckboxChangeEventDetails",
+        "signature": "CheckboxChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLElement>, \"children\" | \"className\" | \"color\" | \"defaultChecked\" | \"onChange\" | \"style\"> { checked?: boolean; defaultChecked?: boolean; disabled?: boolean; form?: string; id?: string; indeterminate?: boolean; inputRef?: React.Ref<HTMLInputElement>; name?: string; nativeButton?: boolean; onCheckedChange?: (checked: boolean, eventDetails: CheckboxChangeEventDetails) => void; parent?: boolean; readOnly?: boolean; render?: NerioRenderProp<CheckboxState>; required?: boolean; uncheckedValue?: string; value?: string; className?: NerioClassName<CheckboxState>; style?: NerioStyle<CheckboxState>; children?: React.ReactNode; invalid?: boolean; label?: React.ReactNode; description?: React.ReactNode; }",
+          "export interface CheckboxState { checked: boolean; disabled: boolean; readOnly: boolean; required: boolean; indeterminate: boolean; }",
+          "export type CheckboxChangeEventDetails = NerioChangeEventDetails<\"none\">;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "CheckboxProps",
         "signature": "CheckboxProps"
+      },
+      {
+        "definition": [
+          "export interface CheckboxState { checked: boolean; disabled: boolean; readOnly: boolean; required: boolean; indeterminate: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CheckboxState",
+        "signature": "CheckboxState"
       },
       {
         "definition": [],
@@ -2646,19 +2706,27 @@
       },
       {
         "definition": [
-          "export type CommandActiveChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseAutocomplete.Root>[\"onItemHighlighted\"]>>[1];"
+          "export type CommandActiveChangeEventDetails = NerioEventDetails<\"keyboard\" | \"pointer\" | \"none\"> & { index: number; };",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "CommandActiveChangeEventDetails",
-        "signature": "AriaCombobox.HighlightEventDetails"
+        "signature": "CommandActiveChangeEventDetails"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "CommandEmpty",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<ComboboxEmptyProps, \"ref\"> & React.RefAttributes<HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<CommandEmptyProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": ["export type CommandEmptyProps = React.HTMLAttributes<HTMLDivElement>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CommandEmptyProps",
+        "signature": "CommandEmptyProps"
       },
       {
         "definition": [
@@ -2675,7 +2743,7 @@
         "deprecations": [],
         "kind": "value",
         "name": "CommandGroup",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<ComboboxGroupProps, \"ref\"> & React.RefAttributes<HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<CommandGroupProps & React.RefAttributes<HTMLDivElement>>"
       },
       {
         "definition": [
@@ -2692,7 +2760,32 @@
         "deprecations": [],
         "kind": "value",
         "name": "CommandGroupLabel",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<ComboboxGroupLabelProps, \"ref\"> & React.RefAttributes<HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<CommandGroupLabelProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface CommandGroupLabelProps extends React.HTMLAttributes<HTMLDivElement> { render?: NerioRenderProp<CommandPartState>; }",
+          "export type CommandPartState = object;",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CommandGroupLabelProps",
+        "signature": "CommandGroupLabelProps"
+      },
+      {
+        "definition": [
+          "export interface CommandGroupProps extends React.HTMLAttributes<HTMLDivElement> { items?: readonly CommandItemData[]; render?: NerioRenderProp<CommandPartState>; }",
+          "export interface CommandItemData { value: string; label: string; keywords?: readonly string[]; disabled?: boolean; }",
+          "export type CommandPartState = object;",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CommandGroupProps",
+        "signature": "CommandGroupProps"
       },
       {
         "definition": [],
@@ -2703,7 +2796,7 @@
       },
       {
         "definition": [
-          "export interface CommandInputProps extends Omit<React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Input>, \"className\"> { className?: string; }"
+          "export interface CommandInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, \"className\" | \"color\"> { className?: string; }"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2728,8 +2821,13 @@
       },
       {
         "definition": [
-          "export interface CommandItemProps extends Omit<React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Item>, \"children\" | \"className\" | \"onClick\" | \"onClickCapture\" | \"onSelect\" | \"value\"> { value: string; children: React.ReactNode; className?: React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Item>[\"className\"]; description?: React.ReactNode; leading?: React.ReactNode; metadata?: React.ReactNode; shortcut?: React.ReactNode; onSelect?: (value: string, event: CommandSelectEvent) => void; }",
-          "export type CommandSelectEvent = Parameters<NonNullable<React.ComponentProps<typeof BaseAutocomplete.Item>[\"onClick\"]>>[0];"
+          "export interface CommandItemProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"color\" | \"onClick\" | \"onClickCapture\" | \"onSelect\" | \"style\"> { value: string; children: React.ReactNode; className?: NerioClassName<CommandItemState>; description?: React.ReactNode; disabled?: boolean; index?: number; leading?: React.ReactNode; metadata?: React.ReactNode; nativeButton?: boolean; render?: NerioRenderProp<CommandItemState>; shortcut?: React.ReactNode; style?: NerioStyle<CommandItemState>; onSelect?: (value: string, event: CommandSelectEvent) => void; }",
+          "export interface CommandItemState { disabled: boolean; highlighted: boolean; }",
+          "export type CommandSelectEvent = React.MouseEvent<HTMLElement>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2748,6 +2846,15 @@
         "signature": "CommandItems"
       },
       {
+        "definition": [
+          "export interface CommandItemState { disabled: boolean; highlighted: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CommandItemState",
+        "signature": "CommandItemState"
+      },
+      {
         "definition": [],
         "deprecations": [],
         "kind": "value",
@@ -2758,7 +2865,7 @@
         "definition": [
           "export interface CommandGroupData { value: string; label: React.ReactNode; items: readonly CommandItemData[]; }",
           "export interface CommandItemData { value: string; label: string; keywords?: readonly string[]; disabled?: boolean; }",
-          "export interface CommandListProps extends Omit<React.ComponentPropsWithoutRef<typeof BaseAutocomplete.List>, \"children\"> { children: React.ReactNode | ((item: CommandItemData, index: number) => React.ReactNode); renderGroupLabel?: (group: CommandGroupData) => React.ReactNode; }"
+          "export interface CommandListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\"> { children: React.ReactNode | ((item: CommandItemData, index: number) => React.ReactNode); renderGroupLabel?: (group: CommandGroupData) => React.ReactNode; }"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2774,7 +2881,7 @@
       },
       {
         "definition": [
-          "export interface CommandLoadingProps extends Omit<React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Status>, \"children\"> { loading?: boolean; children?: React.ReactNode; }"
+          "export interface CommandLoadingProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\"> { loading?: boolean; children?: React.ReactNode; }"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2782,14 +2889,24 @@
         "signature": "CommandLoadingProps"
       },
       {
+        "definition": ["export type CommandPartState = object;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CommandPartState",
+        "signature": "object"
+      },
+      {
         "definition": [
           "export interface CommandGroupData { value: string; label: React.ReactNode; items: readonly CommandItemData[]; }",
           "export interface CommandItemData { value: string; label: string; keywords?: readonly string[]; disabled?: boolean; }",
           "export interface CommandProps extends BaseCommandRootProps, Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"defaultValue\" | \"onChange\"> { children: React.ReactNode; items: CommandItems; query?: string; defaultQuery?: string; filter?: CommandFilter | false; onQueryChange?: (query: string, eventDetails: CommandQueryChangeEventDetails) => void; onActiveValueChange?: (value: string | undefined, eventDetails: CommandActiveChangeEventDetails) => void; }",
-          "export type CommandActiveChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseAutocomplete.Root>[\"onItemHighlighted\"]>>[1];",
+          "export type CommandActiveChangeEventDetails = NerioEventDetails<\"keyboard\" | \"pointer\" | \"none\"> & { index: number; };",
           "export type CommandFilter = (item: CommandItemData, query: string) => boolean;",
           "export type CommandItems = readonly CommandItemData[] | readonly CommandGroupData[];",
-          "export type CommandQueryChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseAutocomplete.Root>[\"onValueChange\"]>>[1];",
+          "export type CommandQueryChangeEventDetails = NerioChangeEventDetails<CommandQueryChangeEventReason>;",
+          "export type CommandQueryChangeEventReason = \"trigger-press\" | \"outside-press\" | \"item-press\" | \"close-press\" | \"escape-key\" | \"list-navigation\" | \"focus-out\" | \"input-change\" | \"input-clear\" | \"clear-press\" | \"chip-remove-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
           "type BaseCommandRootProps = { disabled?: boolean; form?: string; id?: string; limit?: number; locale?: Intl.LocalesArgument; loopFocus?: boolean; name?: string; readOnly?: boolean; required?: boolean; };"
         ],
         "deprecations": [],
@@ -2799,28 +2916,44 @@
       },
       {
         "definition": [
-          "export type CommandQueryChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseAutocomplete.Root>[\"onValueChange\"]>>[1];"
+          "export type CommandQueryChangeEventDetails = NerioChangeEventDetails<CommandQueryChangeEventReason>;",
+          "export type CommandQueryChangeEventReason = \"trigger-press\" | \"outside-press\" | \"item-press\" | \"close-press\" | \"escape-key\" | \"list-navigation\" | \"focus-out\" | \"input-change\" | \"input-clear\" | \"clear-press\" | \"chip-remove-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "CommandQueryChangeEventDetails",
-        "signature": "AriaCombobox.ChangeEventDetails"
+        "signature": "CommandQueryChangeEventDetails"
       },
       {
         "definition": [
-          "export type CommandSelectEvent = Parameters<NonNullable<React.ComponentProps<typeof BaseAutocomplete.Item>[\"onClick\"]>>[0];"
+          "export type CommandQueryChangeEventReason = \"trigger-press\" | \"outside-press\" | \"item-press\" | \"close-press\" | \"escape-key\" | \"list-navigation\" | \"focus-out\" | \"input-change\" | \"input-clear\" | \"clear-press\" | \"chip-remove-press\" | \"none\";"
         ],
         "deprecations": [],
         "kind": "type",
+        "name": "CommandQueryChangeEventReason",
+        "signature": "CommandQueryChangeEventReason"
+      },
+      {
+        "definition": ["export type CommandSelectEvent = React.MouseEvent<HTMLElement>;"],
+        "deprecations": [],
+        "kind": "type",
         "name": "CommandSelectEvent",
-        "signature": "BaseUIEvent<React.MouseEvent<HTMLDivElement, MouseEvent>>"
+        "signature": "CommandSelectEvent"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "CommandSeparator",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<SeparatorProps, \"ref\"> & React.RefAttributes<HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<CommandSeparatorProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": ["export type CommandSeparatorProps = React.HTMLAttributes<HTMLDivElement>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CommandSeparatorProps",
+        "signature": "CommandSeparatorProps"
       },
       {
         "definition": [],
@@ -2834,7 +2967,7 @@
         "deprecations": [],
         "kind": "value",
         "name": "createToastManager",
-        "signature": "() => ToastManager<ToastData>"
+        "signature": "() => ToastManager"
       },
       {
         "definition": [],
@@ -2854,12 +2987,23 @@
       },
       {
         "definition": [
-          "export type DatePickerOpenChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BasePopover.Root>[\"onOpenChange\"]>>[1];"
+          "export type DatePickerOpenChangeEventDetails = NerioChangeEventDetails<DatePickerOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DatePickerOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "DatePickerOpenChangeEventDetails",
-        "signature": "PopoverRootChangeEventDetails"
+        "signature": "DatePickerOpenChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type DatePickerOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DatePickerOpenChangeEventReason",
+        "signature": "DatePickerOpenChangeEventReason"
       },
       {
         "definition": [
@@ -2868,7 +3012,9 @@
           "export type ButtonSize = \"sm\" | \"md\" | \"lg\";",
           "export type CalendarDate = `${CalendarYear}-${CalendarMonth}-${CalendarDay}`;",
           "export type CalendarFirstDayOfWeek = 0 | 1 | 2 | 3 | 4 | 5 | 6;",
-          "export type DatePickerOpenChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BasePopover.Root>[\"onOpenChange\"]>>[1];",
+          "export type DatePickerOpenChangeEventDetails = NerioChangeEventDetails<DatePickerOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DatePickerOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
           "type CalendarDay = \"01\" | \"02\" | \"03\" | \"04\" | \"05\" | \"06\" | \"07\" | \"08\" | \"09\" | \"10\" | \"11\" | \"12\" | \"13\" | \"14\" | \"15\" | \"16\" | \"17\" | \"18\" | \"19\" | \"20\" | \"21\" | \"22\" | \"23\" | \"24\" | \"25\" | \"26\" | \"27\" | \"28\" | \"29\" | \"30\" | \"31\";",
           "type CalendarMonth = \"01\" | \"02\" | \"03\" | \"04\" | \"05\" | \"06\" | \"07\" | \"08\" | \"09\" | \"10\" | \"11\" | \"12\";",
           "type CalendarYear = `${number}${number}${number}${number}`;",
@@ -2895,7 +3041,30 @@
       },
       {
         "definition": [
-          "export interface DialogProps extends Pick<React.ComponentProps<typeof BaseDialog.Root>, \"defaultOpen\" | \"onOpenChange\" | \"open\"> { trigger: React.ReactNode; title: React.ReactNode; description?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string; closeLabel?: string; }"
+          "export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogOpenChangeEventDetails",
+        "signature": "DialogOpenChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogOpenChangeEventReason",
+        "signature": "DialogOpenChangeEventReason"
+      },
+      {
+        "definition": [
+          "export interface DialogProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; title: React.ReactNode; description?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string; closeLabel?: string; }",
+          "export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2922,10 +3091,33 @@
       },
       {
         "definition": [
+          "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuOpenChangeEventDetails",
+        "signature": "DropdownMenuOpenChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuOpenChangeEventReason",
+        "signature": "DropdownMenuOpenChangeEventReason"
+      },
+      {
+        "definition": [
           "export interface DropdownMenuItem { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; disabled?: boolean; destructive?: boolean; }",
-          "export interface DropdownMenuProps extends Pick<React.ComponentProps<typeof BaseMenu.Root>, \"defaultOpen\" | \"onOpenChange\" | \"open\"> { trigger: React.ReactNode; items: DropdownMenuItem[]; className?: string; }",
+          "export interface DropdownMenuProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DropdownMenuOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; items: DropdownMenuItem[]; className?: string; }",
+          "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
           "export type IconComponent = React.ElementType<IconSvgProps>;",
-          "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };"
+          "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
         ],
         "deprecations": [],
         "kind": "type",
@@ -3631,6 +3823,61 @@
         "signature": "MotionClassName"
       },
       {
+        "definition": [
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NerioChangeEventDetails",
+        "signature": "NerioChangeEventDetails<Reason, CustomProperties>"
+      },
+      {
+        "definition": [
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NerioClassName",
+        "signature": "NerioClassName<State>"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NerioEventDetails",
+        "signature": "NerioEventDetails<Reason, CustomProperties>"
+      },
+      {
+        "definition": [
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NerioRenderProp",
+        "signature": "NerioRenderProp<State>"
+      },
+      {
+        "definition": [
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NerioRenderProps",
+        "signature": "NerioRenderProps"
+      },
+      {
+        "definition": [
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NerioStyle",
+        "signature": "NerioStyle<State>"
+      },
+      {
         "definition": [],
         "deprecations": [],
         "kind": "value",
@@ -3690,7 +3937,30 @@
       },
       {
         "definition": [
-          "export interface PopoverProps extends Pick<React.ComponentProps<typeof BasePopover.Root>, \"defaultOpen\" | \"onOpenChange\" | \"open\"> { trigger: React.ReactNode; children: React.ReactNode; title?: React.ReactNode; description?: React.ReactNode; className?: string; }"
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type PopoverOpenChangeEventDetails = NerioChangeEventDetails<PopoverOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type PopoverOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "PopoverOpenChangeEventDetails",
+        "signature": "PopoverOpenChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type PopoverOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "PopoverOpenChangeEventReason",
+        "signature": "PopoverOpenChangeEventReason"
+      },
+      {
+        "definition": [
+          "export interface PopoverProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: PopoverOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; children: React.ReactNode; title?: React.ReactNode; description?: React.ReactNode; className?: string; }",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type PopoverOpenChangeEventDetails = NerioChangeEventDetails<PopoverOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type PopoverOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -3730,23 +4000,47 @@
         "deprecations": [],
         "kind": "value",
         "name": "RadioGroup",
-        "signature": "React.ForwardRefExoticComponent<(Omit<BaseRadioGroupProps & { label: React.ReactNode; description?: React.ReactNode; invalid?: boolean; message?: React.ReactNode; onValueChange?: (value: string, eventDetails: Parameters<NonNullable<React.ComponentProps<typeof BaseRadioGroup<string>>[\"onValueChange\"]>>[1]) => void; } & OptionsRadioGroupProps, \"ref\"> | Omit<BaseRadioGroupProps & { label: React.ReactNode; description?: React.ReactNode; invalid?: boolean; message?: React.ReactNode; onValueChange?: (value: string, eventDetails: Parameters<NonNullable<React.ComponentProps<typeof BaseRadioGroup<string>>[\"onValueChange\"]>>[1]) => void; } & ComposedRadioGroupProps, \"ref\">) & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<RadioGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type RadioGroupChangeEventDetails = NerioChangeEventDetails<\"none\">;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "RadioGroupChangeEventDetails",
+        "signature": "RadioGroupChangeEventDetails"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "RadioGroupItem",
-        "signature": "React.ForwardRefExoticComponent<Omit<RadioGroupItemProps, \"ref\"> & React.RefAttributes<HTMLElement>>"
+        "signature": "React.ForwardRefExoticComponent<RadioGroupItemProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
-          "export interface RadioGroupItemProps extends Omit<React.ComponentProps<typeof Radio.Root<string>>, \"children\" | \"className\" | \"value\"> { className?: React.ComponentProps<typeof Radio.Root<string>>[\"className\"]; children: React.ReactNode; description?: React.ReactNode; value: string; }"
+          "export interface RadioGroupItemProps extends Omit<React.HTMLAttributes<HTMLElement>, \"children\" | \"className\" | \"color\" | \"style\"> { className?: NerioClassName<RadioGroupItemState>; children: React.ReactNode; description?: React.ReactNode; disabled?: boolean; inputRef?: React.Ref<HTMLInputElement>; nativeButton?: boolean; readOnly?: boolean; render?: NerioRenderProp<RadioGroupItemState>; required?: boolean; style?: NerioStyle<RadioGroupItemState>; value: string; }",
+          "export interface RadioGroupItemState { checked: boolean; disabled: boolean; readOnly: boolean; required: boolean; touched: boolean; dirty: boolean; valid: boolean | null; filled: boolean; focused: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "RadioGroupItemProps",
         "signature": "RadioGroupItemProps"
+      },
+      {
+        "definition": [
+          "export interface RadioGroupItemState { checked: boolean; disabled: boolean; readOnly: boolean; required: boolean; touched: boolean; dirty: boolean; valid: boolean | null; filled: boolean; focused: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "RadioGroupItemState",
+        "signature": "RadioGroupItemState"
       },
       {
         "definition": [
@@ -3760,16 +4054,31 @@
       {
         "definition": [
           "export interface RadioGroupOption { label: React.ReactNode; value: string; disabled?: boolean; description?: React.ReactNode; }",
+          "export interface RadioGroupState { disabled: boolean; readOnly: boolean; required: boolean; }",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type RadioGroupChangeEventDetails = NerioChangeEventDetails<\"none\">;",
           "export type RadioGroupProps = SharedRadioGroupProps & (OptionsRadioGroupProps | ComposedRadioGroupProps);",
-          "type BaseRadioGroupProps = Omit<React.ComponentProps<typeof BaseRadioGroup<string>>, \"children\" | \"onChange\" | \"onValueChange\">;",
           "type ComposedRadioGroupProps = { children: React.ReactNode; options?: never; };",
           "type OptionsRadioGroupProps = { options: RadioGroupOption[]; children?: never; };",
-          "type SharedRadioGroupProps = BaseRadioGroupProps & { label: React.ReactNode; description?: React.ReactNode; invalid?: boolean; message?: React.ReactNode; onValueChange?: (value: string, eventDetails: Parameters<NonNullable<React.ComponentProps<typeof BaseRadioGroup<string>>[\"onValueChange\"]>>[1]) => void; };"
+          "type SharedRadioGroupProps = Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"defaultValue\" | \"onChange\" | \"style\"> & { className?: NerioClassName<RadioGroupState>; defaultValue?: string; disabled?: boolean; form?: string; inputRef?: React.Ref<HTMLInputElement>; label: React.ReactNode; name?: string; readOnly?: boolean; render?: NerioRenderProp<RadioGroupState>; required?: boolean; style?: NerioStyle<RadioGroupState>; value?: string; description?: React.ReactNode; invalid?: boolean; message?: React.ReactNode; onValueChange?: (value: string, eventDetails: RadioGroupChangeEventDetails) => void; };"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "RadioGroupProps",
         "signature": "RadioGroupProps"
+      },
+      {
+        "definition": [
+          "export interface RadioGroupState { disabled: boolean; readOnly: boolean; required: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "RadioGroupState",
+        "signature": "RadioGroupState"
       },
       {
         "definition": [],
@@ -3780,37 +4089,82 @@
       },
       {
         "definition": [
-          "export type SelectChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseSelect.Root<string>>[\"onValueChange\"]>>[1];"
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type SelectChangeEventDetails = NerioChangeEventDetails<SelectChangeEventReason>;",
+          "export type SelectChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"window-resize\" | \"item-press\" | \"focus-out\" | \"list-navigation\" | \"cancel-open\" | \"none\";"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "SelectChangeEventDetails",
-        "signature": "SelectRootChangeEventDetails"
+        "signature": "SelectChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type SelectChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"window-resize\" | \"item-press\" | \"focus-out\" | \"list-navigation\" | \"cancel-open\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SelectChangeEventReason",
+        "signature": "SelectChangeEventReason"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "SelectGroup",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<SelectGroupProps, \"ref\"> & React.RefAttributes<HTMLDivElement> & { \"data-slot\"?: string; }, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<SelectGroupProps & React.RefAttributes<HTMLDivElement>>"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "SelectGroupLabel",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<SelectGroupLabelProps, \"ref\"> & React.RefAttributes<HTMLDivElement> & { \"data-slot\"?: string; }, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<SelectGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface SelectGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<SelectPartState>; render?: NerioRenderProp<SelectPartState>; style?: NerioStyle<SelectPartState>; \"data-slot\"?: string; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type SelectGroupLabelProps = SelectGroupProps;",
+          "export type SelectPartState = object;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SelectGroupLabelProps",
+        "signature": "SelectGroupProps"
+      },
+      {
+        "definition": [
+          "export interface SelectGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<SelectPartState>; render?: NerioRenderProp<SelectPartState>; style?: NerioStyle<SelectPartState>; \"data-slot\"?: string; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type SelectPartState = object;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SelectGroupProps",
+        "signature": "SelectGroupProps"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "SelectItem",
-        "signature": "React.ForwardRefExoticComponent<Omit<SelectItemProps, \"ref\"> & React.RefAttributes<HTMLElement>>"
+        "signature": "React.ForwardRefExoticComponent<SelectItemProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
-          "export interface SelectItemProps extends Omit<React.ComponentProps<typeof BaseSelect.Item>, \"children\" | \"className\" | \"label\" | \"value\"> { children: React.ReactNode; className?: React.ComponentProps<typeof BaseSelect.Item>[\"className\"]; description?: React.ReactNode; textValue?: string; value: string; }"
+          "export interface SelectItemProps extends Omit<React.HTMLAttributes<HTMLElement>, \"children\" | \"className\" | \"color\" | \"style\"> { children: React.ReactNode; className?: NerioClassName<SelectItemState>; description?: React.ReactNode; disabled?: boolean; nativeButton?: boolean; render?: NerioRenderProp<SelectItemState>; style?: NerioStyle<SelectItemState>; textValue?: string; value: string; }",
+          "export interface SelectItemState { disabled: boolean; selected: boolean; highlighted: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
         ],
         "deprecations": [],
         "kind": "type",
@@ -3819,12 +4173,24 @@
       },
       {
         "definition": [
-          "export type SelectOpenChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseSelect.Root<string>>[\"onOpenChange\"]>>[1];"
+          "export interface SelectItemState { disabled: boolean; selected: boolean; highlighted: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SelectItemState",
+        "signature": "SelectItemState"
+      },
+      {
+        "definition": [
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type SelectChangeEventDetails = NerioChangeEventDetails<SelectChangeEventReason>;",
+          "export type SelectChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"window-resize\" | \"item-press\" | \"focus-out\" | \"list-navigation\" | \"cancel-open\" | \"none\";",
+          "export type SelectOpenChangeEventDetails = SelectChangeEventDetails;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "SelectOpenChangeEventDetails",
-        "signature": "SelectRootChangeEventDetails"
+        "signature": "SelectChangeEventDetails"
       },
       {
         "definition": [
@@ -3836,16 +4202,24 @@
         "signature": "SelectOption"
       },
       {
+        "definition": ["export type SelectPartState = object;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SelectPartState",
+        "signature": "object"
+      },
+      {
         "definition": [
           "export interface SelectOption { value: string; label: React.ReactNode; textValue?: string; description?: React.ReactNode; disabled?: boolean; }",
-          "export type SelectChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseSelect.Root<string>>[\"onValueChange\"]>>[1];",
-          "export type SelectOpenChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseSelect.Root<string>>[\"onOpenChange\"]>>[1];",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type SelectChangeEventDetails = NerioChangeEventDetails<SelectChangeEventReason>;",
+          "export type SelectChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"window-resize\" | \"item-press\" | \"focus-out\" | \"list-navigation\" | \"cancel-open\" | \"none\";",
+          "export type SelectOpenChangeEventDetails = SelectChangeEventDetails;",
           "export type SelectProps = SharedSelectProps & (OptionsSelectProps | ComposedSelectProps);",
           "export type SelectSize = \"sm\" | \"md\" | \"lg\";",
-          "type BaseSelectRootProps = Omit<React.ComponentProps<typeof BaseSelect.Root<string>>, \"children\" | \"defaultValue\" | \"items\" | \"onOpenChange\" | \"onValueChange\" | \"value\">;",
           "type ComposedSelectProps = { children: React.ReactNode; options?: never; };",
           "type OptionsSelectProps = { options: SelectOption[]; children?: never; };",
-          "type SharedSelectProps = BaseSelectRootProps & Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"onChange\"> & { label: React.ReactNode; description?: React.ReactNode; emptyMessage?: React.ReactNode; invalid?: boolean; message?: React.ReactNode; placeholder?: React.ReactNode; size?: SelectSize; triggerRef?: React.Ref<HTMLButtonElement>; value?: string; defaultValue?: string; onValueChange?: (value: string, eventDetails: SelectChangeEventDetails) => void; open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: SelectOpenChangeEventDetails) => void; \"data-slot\"?: string; };"
+          "type SharedSelectProps = Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"defaultValue\" | \"onChange\"> & { autoComplete?: string; disabled?: boolean; form?: string; id?: string; inputRef?: React.Ref<HTMLInputElement>; label: React.ReactNode; name?: string; readOnly?: boolean; required?: boolean; description?: React.ReactNode; emptyMessage?: React.ReactNode; invalid?: boolean; message?: React.ReactNode; placeholder?: React.ReactNode; size?: SelectSize; triggerRef?: React.Ref<HTMLButtonElement>; value?: string; defaultValue?: string; onValueChange?: (value: string, eventDetails: SelectChangeEventDetails) => void; open?: boolean; defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: SelectOpenChangeEventDetails) => void; \"data-slot\"?: string; };"
         ],
         "deprecations": [],
         "kind": "type",
@@ -3857,7 +4231,22 @@
         "deprecations": [],
         "kind": "value",
         "name": "SelectSeparator",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<SeparatorProps, \"ref\"> & React.RefAttributes<HTMLDivElement> & { \"data-slot\"?: string; }, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<SelectGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface SelectGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<SelectPartState>; render?: NerioRenderProp<SelectPartState>; style?: NerioStyle<SelectPartState>; \"data-slot\"?: string; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type SelectPartState = object;",
+          "export type SelectSeparatorProps = SelectGroupProps;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SelectSeparatorProps",
+        "signature": "SelectGroupProps"
       },
       {
         "definition": ["export type SelectSize = \"sm\" | \"md\" | \"lg\";"],
@@ -3901,7 +4290,27 @@
         "deprecations": [],
         "kind": "value",
         "name": "SheetClose",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<DialogCloseProps, \"ref\"> & React.RefAttributes<HTMLButtonElement>, \"ref\"> & React.RefAttributes<HTMLButtonElement>>"
+        "signature": "React.ForwardRefExoticComponent<SheetCloseProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface SheetCloseProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: string; nativeButton?: boolean; render?: NerioRenderProp<SheetCloseState>; style?: NerioStyle<SheetCloseState>; }",
+          "export interface SheetCloseState { disabled: boolean; }",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetCloseProps",
+        "signature": "SheetCloseProps"
+      },
+      {
+        "definition": ["export interface SheetCloseState { disabled: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetCloseState",
+        "signature": "SheetCloseState"
       },
       {
         "definition": [],
@@ -3912,7 +4321,12 @@
       },
       {
         "definition": [
-          "export interface SheetContentProps extends Omit<React.ComponentPropsWithoutRef<typeof BaseDialog.Popup>, \"children\"> { children: React.ReactNode; side?: SheetSide; size?: SheetSize; showClose?: boolean; closeLabel?: string; }",
+          "export interface SheetContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"color\" | \"style\"> { children: React.ReactNode; finalFocus?: boolean | React.RefObject<HTMLElement | null> | ((closeType: SheetInteractionType) => boolean | HTMLElement | null | void); initialFocus?: boolean | React.RefObject<HTMLElement | null> | ((openType: SheetInteractionType) => boolean | HTMLElement | null | void); render?: NerioRenderProp<SheetContentState>; style?: NerioStyle<SheetContentState>; side?: SheetSide; size?: SheetSize; showClose?: boolean; closeLabel?: string; }",
+          "export interface SheetContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type SheetInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";",
           "export type SheetSide = \"left\" | \"right\" | \"top\" | \"bottom\";",
           "export type SheetSize = \"sm\" | \"md\" | \"lg\";"
         ],
@@ -3922,11 +4336,20 @@
         "signature": "SheetContentProps"
       },
       {
+        "definition": [
+          "export interface SheetContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetContentState",
+        "signature": "SheetContentState"
+      },
+      {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "SheetDescription",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<DialogDescriptionProps, \"ref\"> & React.RefAttributes<HTMLParagraphElement>, \"ref\"> & React.RefAttributes<HTMLParagraphElement>>"
+        "signature": "React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLParagraphElement> & React.RefAttributes<HTMLParagraphElement>>"
       },
       {
         "definition": [],
@@ -3944,8 +4367,39 @@
       },
       {
         "definition": [
-          "export interface SheetProps extends SheetRootProps { children: React.ReactNode; }",
-          "type SheetRootProps = Pick<React.ComponentProps<typeof BaseDialog.Root>, \"defaultOpen\" | \"onOpenChange\" | \"open\">;"
+          "export type SheetInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetInteractionType",
+        "signature": "SheetInteractionType"
+      },
+      {
+        "definition": [
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type SheetOpenChangeEventDetails = NerioChangeEventDetails<SheetOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type SheetOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetOpenChangeEventDetails",
+        "signature": "SheetOpenChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type SheetOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetOpenChangeEventReason",
+        "signature": "SheetOpenChangeEventReason"
+      },
+      {
+        "definition": [
+          "export interface SheetProps { children: React.ReactNode; defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: SheetOpenChangeEventDetails) => void; open?: boolean; }",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type SheetOpenChangeEventDetails = NerioChangeEventDetails<SheetOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type SheetOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -3971,14 +4425,34 @@
         "deprecations": [],
         "kind": "value",
         "name": "SheetTitle",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<DialogTitleProps, \"ref\"> & React.RefAttributes<HTMLHeadingElement>, \"ref\"> & React.RefAttributes<HTMLHeadingElement>>"
+        "signature": "React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLHeadingElement> & React.RefAttributes<HTMLHeadingElement>>"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "SheetTrigger",
-        "signature": "React.ForwardRefExoticComponent<Omit<DialogTriggerProps<unknown> & React.RefAttributes<HTMLElement>, \"ref\"> & React.RefAttributes<HTMLButtonElement>>"
+        "signature": "React.ForwardRefExoticComponent<SheetTriggerProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface SheetTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: string; nativeButton?: boolean; render?: NerioRenderProp<SheetTriggerState>; style?: NerioStyle<SheetTriggerState>; }",
+          "export interface SheetTriggerState { disabled: boolean; open: boolean; }",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetTriggerProps",
+        "signature": "SheetTriggerProps"
+      },
+      {
+        "definition": ["export interface SheetTriggerState { disabled: boolean; open: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetTriggerState",
+        "signature": "SheetTriggerState"
       },
       {
         "definition": [],
@@ -4119,25 +4593,38 @@
         "deprecations": [],
         "kind": "value",
         "name": "Slider",
-        "signature": "React.ForwardRefExoticComponent<(Omit<BaseSliderRootProps & { label: SliderVisibleLabel; \"aria-label\"?: never; \"aria-labelledby\"?: never; } & { value?: number; defaultValue?: number; onValueChange?: (value: number, eventDetails: SliderChangeEventDetails) => void; onValueCommitted?: (value: number, eventDetails: SliderCommitEventDetails) => void; orientation?: SliderOrientation; readOnly?: boolean; required?: boolean; invalid?: boolean; description?: React.ReactNode; valueLabel?: React.ReactNode; inputRef?: React.Ref<HTMLInputElement>; getAriaValueText?: (formattedValue: string, value: number) => string; \"aria-valuetext\"?: string; }, \"ref\"> | Omit<BaseSliderRootProps & { label?: never; \"aria-label\": string; \"aria-labelledby\"?: never; } & { value?: number; defaultValue?: number; onValueChange?: (value: number, eventDetails: SliderChangeEventDetails) => void; onValueCommitted?: (value: number, eventDetails: SliderCommitEventDetails) => void; orientation?: SliderOrientation; readOnly?: boolean; required?: boolean; invalid?: boolean; description?: React.ReactNode; valueLabel?: React.ReactNode; inputRef?: React.Ref<HTMLInputElement>; getAriaValueText?: (formattedValue: string, value: number) => string; \"aria-valuetext\"?: string; }, \"ref\"> | Omit<BaseSliderRootProps & { label?: never; \"aria-label\"?: never; \"aria-labelledby\": string; } & { value?: number; defaultValue?: number; onValueChange?: (value: number, eventDetails: SliderChangeEventDetails) => void; onValueCommitted?: (value: number, eventDetails: SliderCommitEventDetails) => void; orientation?: SliderOrientation; readOnly?: boolean; required?: boolean; invalid?: boolean; description?: React.ReactNode; valueLabel?: React.ReactNode; inputRef?: React.Ref<HTMLInputElement>; getAriaValueText?: (formattedValue: string, value: number) => string; \"aria-valuetext\"?: string; }, \"ref\">) & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<SliderProps & React.RefAttributes<HTMLDivElement>>"
       },
       {
         "definition": [
-          "export type SliderChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseSlider.Root<number>>[\"onValueChange\"]>>[1];"
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type SliderChangeEventDetails = NerioChangeEventDetails<SliderChangeEventReason> & { activeThumbIndex: number; };",
+          "export type SliderChangeEventReason = \"input-change\" | \"track-press\" | \"drag\" | \"keyboard\" | \"none\";"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "SliderChangeEventDetails",
-        "signature": "SliderRootChangeEventDetails"
+        "signature": "SliderChangeEventDetails"
       },
       {
         "definition": [
-          "export type SliderCommitEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseSlider.Root<number>>[\"onValueCommitted\"]>>[1];"
+          "export type SliderChangeEventReason = \"input-change\" | \"track-press\" | \"drag\" | \"keyboard\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SliderChangeEventReason",
+        "signature": "SliderChangeEventReason"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type SliderChangeEventReason = \"input-change\" | \"track-press\" | \"drag\" | \"keyboard\" | \"none\";",
+          "export type SliderCommitEventDetails = NerioEventDetails<SliderChangeEventReason>;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "SliderCommitEventDetails",
-        "signature": "SliderRootCommitEventDetails"
+        "signature": "SliderCommitEventDetails"
       },
       {
         "definition": ["export type SliderOrientation = \"horizontal\" | \"vertical\";"],
@@ -4148,18 +4635,36 @@
       },
       {
         "definition": [
-          "export type SliderChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseSlider.Root<number>>[\"onValueChange\"]>>[1];",
-          "export type SliderCommitEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseSlider.Root<number>>[\"onValueCommitted\"]>>[1];",
+          "export interface SliderState { activeThumbIndex: number; disabled: boolean; dragging: boolean; max: number; min: number; minStepsBetweenValues: number; orientation: SliderOrientation; step: number; values: readonly number[]; }",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type SliderChangeEventDetails = NerioChangeEventDetails<SliderChangeEventReason> & { activeThumbIndex: number; };",
+          "export type SliderChangeEventReason = \"input-change\" | \"track-press\" | \"drag\" | \"keyboard\" | \"none\";",
+          "export type SliderCommitEventDetails = NerioEventDetails<SliderChangeEventReason>;",
           "export type SliderOrientation = \"horizontal\" | \"vertical\";",
-          "export type SliderProps = BaseSliderRootProps & SliderNamingProps & { value?: number; defaultValue?: number; onValueChange?: (value: number, eventDetails: SliderChangeEventDetails) => void; onValueCommitted?: (value: number, eventDetails: SliderCommitEventDetails) => void; orientation?: SliderOrientation; readOnly?: boolean; required?: boolean; invalid?: boolean; description?: React.ReactNode; valueLabel?: React.ReactNode; inputRef?: React.Ref<HTMLInputElement>; getAriaValueText?: (formattedValue: string, value: number) => string; \"aria-valuetext\"?: string; };",
-          "type BaseSliderRootProps = Omit<React.ComponentProps<typeof BaseSlider.Root<number>>, \"aria-label\" | \"aria-labelledby\" | \"children\" | \"defaultValue\" | \"minStepsBetweenValues\" | \"onValueChange\" | \"onValueCommitted\" | \"thumbAlignment\" | \"thumbCollisionBehavior\" | \"value\">;",
+          "export type SliderProps = SliderRootProps & SliderNamingProps & { value?: number; defaultValue?: number; onValueChange?: (value: number, eventDetails: SliderChangeEventDetails) => void; onValueCommitted?: (value: number, eventDetails: SliderCommitEventDetails) => void; orientation?: SliderOrientation; readOnly?: boolean; required?: boolean; invalid?: boolean; description?: React.ReactNode; valueLabel?: React.ReactNode; inputRef?: React.Ref<HTMLInputElement>; getAriaValueText?: (formattedValue: string, value: number) => string; \"aria-valuetext\"?: string; };",
           "type SliderNamingProps = { label: SliderVisibleLabel; \"aria-label\"?: never; \"aria-labelledby\"?: never; } | { label?: never; \"aria-label\": string; \"aria-labelledby\"?: never; } | { label?: never; \"aria-label\"?: never; \"aria-labelledby\": string; };",
+          "type SliderRootProps = Omit<React.HTMLAttributes<HTMLDivElement>, \"aria-label\" | \"aria-labelledby\" | \"children\" | \"className\" | \"defaultValue\" | \"style\"> & { className?: NerioClassName<SliderState>; disabled?: boolean; form?: string; format?: Intl.NumberFormatOptions; largeStep?: number; locale?: Intl.LocalesArgument; max?: number; min?: number; name?: string; render?: NerioRenderProp<SliderState>; step?: number; style?: NerioStyle<SliderState>; };",
           "type SliderVisibleLabel = Exclude<React.ReactNode, boolean | null | undefined>;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "SliderProps",
         "signature": "SliderProps"
+      },
+      {
+        "definition": [
+          "export interface SliderState { activeThumbIndex: number; disabled: boolean; dragging: boolean; max: number; min: number; minStepsBetweenValues: number; orientation: SliderOrientation; step: number; values: readonly number[]; }",
+          "export type SliderOrientation = \"horizontal\" | \"vertical\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SliderState",
+        "signature": "SliderState"
       },
       {
         "definition": [],
@@ -4366,46 +4871,113 @@
         "deprecations": [],
         "kind": "value",
         "name": "Tabs",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<TabsRootProps, \"ref\"> & React.RefAttributes<HTMLDivElement>, \"ref\"> & { variant?: TabsVariant; size?: TabsSize; } & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<TabsProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TabsActivationDirection",
+        "signature": "TabsActivationDirection"
+      },
+      {
+        "definition": [
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";",
+          "export type TabsChangeEventDetails = NerioChangeEventDetails<TabsChangeEventReason> & { activationDirection: TabsActivationDirection; };",
+          "export type TabsChangeEventReason = \"none\" | \"disabled\" | \"missing\" | \"initial\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TabsChangeEventDetails",
+        "signature": "TabsChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type TabsChangeEventReason = \"none\" | \"disabled\" | \"missing\" | \"initial\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TabsChangeEventReason",
+        "signature": "TabsChangeEventReason"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "TabsContent",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<TabsPanelProps, \"ref\"> & React.RefAttributes<HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<TabsContentProps & React.RefAttributes<HTMLDivElement>>"
       },
       {
         "definition": [
-          "export type TabsContentProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Panel>;"
+          "export interface TabsContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<TabsContentState>; keepMounted?: boolean; render?: NerioRenderProp<TabsContentState>; style?: NerioStyle<TabsContentState>; value: TabsValue; }",
+          "export interface TabsContentState extends TabsRootState { hidden: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";",
+          "export type TabsValue = string;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "TabsContentProps",
-        "signature": "Omit<Omit<TabsPanelProps, \"ref\"> & React.RefAttributes<HTMLDivElement>, \"ref\">"
+        "signature": "TabsContentProps"
+      },
+      {
+        "definition": [
+          "export interface TabsContentState extends TabsRootState { hidden: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TabsContentState",
+        "signature": "TabsContentState"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "TabsIndicator",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<TabsIndicatorProps, \"ref\"> & React.RefAttributes<HTMLSpanElement>, \"ref\"> & React.RefAttributes<HTMLSpanElement>>"
+        "signature": "React.ForwardRefExoticComponent<TabsIndicatorProps & React.RefAttributes<HTMLSpanElement>>"
       },
       {
         "definition": [
-          "export type TabsIndicatorProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Indicator>;"
+          "export interface TabsIndicatorProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, \"className\" | \"style\"> { className?: NerioClassName<TabsIndicatorState>; render?: NerioRenderProp<TabsIndicatorState>; renderBeforeHydration?: boolean; style?: NerioStyle<TabsIndicatorState>; }",
+          "export interface TabsIndicatorState extends TabsRootState { activeTabPosition: { left: number; right: number; top: number; bottom: number; } | null; activeTabSize: { width: number; height: number; } | null; }",
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "TabsIndicatorProps",
-        "signature": "Omit<Omit<TabsIndicatorProps, \"ref\"> & React.RefAttributes<HTMLSpanElement>, \"ref\">"
+        "signature": "TabsIndicatorProps"
+      },
+      {
+        "definition": [
+          "export interface TabsIndicatorState extends TabsRootState { activeTabPosition: { left: number; right: number; top: number; bottom: number; } | null; activeTabSize: { width: number; height: number; } | null; }",
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TabsIndicatorState",
+        "signature": "TabsIndicatorState"
       },
       {
         "definition": [],
         "deprecations": [],
         "kind": "value",
         "name": "TabsList",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<TabsListProps, \"ref\"> & React.RefAttributes<HTMLDivElement>, \"ref\"> & { layout?: TabsListLayout; scrollable?: boolean; } & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<TabsListProps & React.RefAttributes<HTMLDivElement>>"
       },
       {
         "definition": ["export type TabsListLayout = \"content\" | \"fill\";"],
@@ -4416,8 +4988,14 @@
       },
       {
         "definition": [
-          "export type TabsListLayout = \"content\" | \"fill\";",
-          "export type TabsListProps = React.ComponentPropsWithoutRef<typeof BaseTabs.List> & { layout?: TabsListLayout; scrollable?: boolean; };"
+          "export interface TabsListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { activateOnFocus?: boolean; className?: NerioClassName<TabsRootState>; layout?: TabsListLayout; loopFocus?: boolean; render?: NerioRenderProp<TabsRootState>; scrollable?: boolean; style?: NerioStyle<TabsRootState>; }",
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";",
+          "export type TabsListLayout = \"content\" | \"fill\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -4440,14 +5018,34 @@
       },
       {
         "definition": [
-          "export type TabsProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Root> & { variant?: TabsVariant; size?: TabsSize; };",
+          "export interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"defaultValue\" | \"onChange\" | \"style\"> { className?: NerioClassName<TabsRootState>; defaultValue?: TabsValue | null; onValueChange?: (value: TabsValue | null, eventDetails: TabsChangeEventDetails) => void; orientation?: \"horizontal\" | \"vertical\"; render?: NerioRenderProp<TabsRootState>; style?: NerioStyle<TabsRootState>; value?: TabsValue | null; variant?: TabsVariant; size?: TabsSize; }",
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";",
+          "export type TabsChangeEventDetails = NerioChangeEventDetails<TabsChangeEventReason> & { activationDirection: TabsActivationDirection; };",
+          "export type TabsChangeEventReason = \"none\" | \"disabled\" | \"missing\" | \"initial\";",
           "export type TabsSize = \"sm\" | \"md\" | \"lg\";",
+          "export type TabsValue = string;",
           "export type TabsVariant = \"segmented\" | \"separate\" | \"bordered\";"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "TabsProps",
         "signature": "TabsProps"
+      },
+      {
+        "definition": [
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TabsRootState",
+        "signature": "TabsRootState"
       },
       {
         "definition": ["export type TabsSize = \"sm\" | \"md\" | \"lg\";"],
@@ -4461,18 +5059,44 @@
         "deprecations": [],
         "kind": "value",
         "name": "TabsTrigger",
-        "signature": "React.ForwardRefExoticComponent<Omit<Omit<TabsTabProps, \"ref\"> & React.RefAttributes<HTMLElement>, \"ref\"> & { leadingIcon?: IconComponent; trailingIcon?: IconComponent; badge?: React.ReactNode; children: React.ReactNode; } & React.RefAttributes<HTMLElement>>"
+        "signature": "React.ForwardRefExoticComponent<TabsTriggerProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export interface TabsTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"children\" | \"className\" | \"color\" | \"style\" | \"value\"> { className?: NerioClassName<TabsTriggerState>; disabled?: boolean; nativeButton?: boolean; render?: NerioRenderProp<TabsTriggerState>; style?: NerioStyle<TabsTriggerState>; value: TabsValue; leadingIcon?: IconComponent; trailingIcon?: IconComponent; badge?: React.ReactNode; children: React.ReactNode; }",
+          "export interface TabsTriggerState extends TabsRootState { disabled: boolean; active: boolean; }",
           "export type IconComponent = React.ElementType<IconSvgProps>;",
           "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
-          "export type TabsTriggerProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Tab> & { leadingIcon?: IconComponent; trailingIcon?: IconComponent; badge?: React.ReactNode; children: React.ReactNode; };"
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";",
+          "export type TabsValue = string;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "TabsTriggerProps",
         "signature": "TabsTriggerProps"
+      },
+      {
+        "definition": [
+          "export interface TabsRootState { orientation: \"horizontal\" | \"vertical\"; tabActivationDirection: TabsActivationDirection; }",
+          "export interface TabsTriggerState extends TabsRootState { disabled: boolean; active: boolean; }",
+          "export type TabsActivationDirection = \"left\" | \"right\" | \"up\" | \"down\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TabsTriggerState",
+        "signature": "TabsTriggerState"
+      },
+      {
+        "definition": ["export type TabsValue = string;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TabsValue",
+        "signature": "string"
       },
       {
         "definition": ["export type TabsVariant = \"segmented\" | \"separate\" | \"bordered\";"],
@@ -4553,14 +5177,67 @@
         "deprecations": [],
         "kind": "value",
         "name": "toastManager",
-        "signature": "ToastManager<ToastData>"
+        "signature": "ToastManager"
       },
       {
-        "definition": ["export type ToastManager = ReturnType<typeof createToastManager>;"],
+        "definition": [
+          "export interface ToastAction { label: string; onClick: () => void; altText?: string; disabled?: boolean; loading?: boolean; loadingLabel?: string; dismissOnClick?: boolean; }",
+          "export interface ToastData { tone?: ToastTone; action?: ToastAction; }",
+          "export interface ToastManager { add: (options: ToastManagerAddOptions) => string; close: (id?: string) => void; update: (id: string, updates: ToastManagerUpdateOptions) => void; promise: <Value>(promiseValue: Promise<Value>, options: ToastManagerPromiseOptions<Value>) => Promise<Value>; }",
+          "export interface ToastManagerAddOptions extends Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\"> { id?: string; }",
+          "export interface ToastManagerPromiseOptions<Value> { loading: string | ToastManagerUpdateOptions; success: string | ToastManagerUpdateOptions | ((result: Value) => string | ToastManagerUpdateOptions); error: string | ToastManagerUpdateOptions | ((error: unknown) => string | ToastManagerUpdateOptions); }",
+          "export interface ToastRecord { id: string; title?: React.ReactNode; type?: string; description?: React.ReactNode; timeout?: number; priority?: ToastPriority; transitionStatus?: \"starting\" | \"ending\"; limited?: boolean; onClose?: () => void; onRemove?: () => void; actionProps?: React.ButtonHTMLAttributes<HTMLButtonElement>; data?: ToastData; }",
+          "export type ToastManagerUpdateOptions = Partial<Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\">>;",
+          "export type ToastPriority = \"low\" | \"high\";",
+          "export type ToastTone = \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\";"
+        ],
         "deprecations": [],
         "kind": "type",
         "name": "ToastManager",
-        "signature": "ToastManager<ToastData>"
+        "signature": "ToastManager"
+      },
+      {
+        "definition": [
+          "export interface ToastAction { label: string; onClick: () => void; altText?: string; disabled?: boolean; loading?: boolean; loadingLabel?: string; dismissOnClick?: boolean; }",
+          "export interface ToastData { tone?: ToastTone; action?: ToastAction; }",
+          "export interface ToastManagerAddOptions extends Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\"> { id?: string; }",
+          "export interface ToastRecord { id: string; title?: React.ReactNode; type?: string; description?: React.ReactNode; timeout?: number; priority?: ToastPriority; transitionStatus?: \"starting\" | \"ending\"; limited?: boolean; onClose?: () => void; onRemove?: () => void; actionProps?: React.ButtonHTMLAttributes<HTMLButtonElement>; data?: ToastData; }",
+          "export type ToastPriority = \"low\" | \"high\";",
+          "export type ToastTone = \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToastManagerAddOptions",
+        "signature": "ToastManagerAddOptions"
+      },
+      {
+        "definition": [
+          "export interface ToastAction { label: string; onClick: () => void; altText?: string; disabled?: boolean; loading?: boolean; loadingLabel?: string; dismissOnClick?: boolean; }",
+          "export interface ToastData { tone?: ToastTone; action?: ToastAction; }",
+          "export interface ToastManagerPromiseOptions<Value> { loading: string | ToastManagerUpdateOptions; success: string | ToastManagerUpdateOptions | ((result: Value) => string | ToastManagerUpdateOptions); error: string | ToastManagerUpdateOptions | ((error: unknown) => string | ToastManagerUpdateOptions); }",
+          "export interface ToastRecord { id: string; title?: React.ReactNode; type?: string; description?: React.ReactNode; timeout?: number; priority?: ToastPriority; transitionStatus?: \"starting\" | \"ending\"; limited?: boolean; onClose?: () => void; onRemove?: () => void; actionProps?: React.ButtonHTMLAttributes<HTMLButtonElement>; data?: ToastData; }",
+          "export type ToastManagerUpdateOptions = Partial<Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\">>;",
+          "export type ToastPriority = \"low\" | \"high\";",
+          "export type ToastTone = \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToastManagerPromiseOptions",
+        "signature": "ToastManagerPromiseOptions<Value>"
+      },
+      {
+        "definition": [
+          "export interface ToastAction { label: string; onClick: () => void; altText?: string; disabled?: boolean; loading?: boolean; loadingLabel?: string; dismissOnClick?: boolean; }",
+          "export interface ToastData { tone?: ToastTone; action?: ToastAction; }",
+          "export interface ToastRecord { id: string; title?: React.ReactNode; type?: string; description?: React.ReactNode; timeout?: number; priority?: ToastPriority; transitionStatus?: \"starting\" | \"ending\"; limited?: boolean; onClose?: () => void; onRemove?: () => void; actionProps?: React.ButtonHTMLAttributes<HTMLButtonElement>; data?: ToastData; }",
+          "export type ToastManagerUpdateOptions = Partial<Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\">>;",
+          "export type ToastPriority = \"low\" | \"high\";",
+          "export type ToastTone = \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToastManagerUpdateOptions",
+        "signature": "Partial<Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\">>"
       },
       {
         "definition": ["export type ToastPriority = \"low\" | \"high\";"],
@@ -4589,13 +5266,34 @@
       },
       {
         "definition": [
+          "export interface ToastAction { label: string; onClick: () => void; altText?: string; disabled?: boolean; loading?: boolean; loadingLabel?: string; dismissOnClick?: boolean; }",
+          "export interface ToastData { tone?: ToastTone; action?: ToastAction; }",
+          "export interface ToastManager { add: (options: ToastManagerAddOptions) => string; close: (id?: string) => void; update: (id: string, updates: ToastManagerUpdateOptions) => void; promise: <Value>(promiseValue: Promise<Value>, options: ToastManagerPromiseOptions<Value>) => Promise<Value>; }",
+          "export interface ToastManagerAddOptions extends Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\"> { id?: string; }",
+          "export interface ToastManagerPromiseOptions<Value> { loading: string | ToastManagerUpdateOptions; success: string | ToastManagerUpdateOptions | ((result: Value) => string | ToastManagerUpdateOptions); error: string | ToastManagerUpdateOptions | ((error: unknown) => string | ToastManagerUpdateOptions); }",
           "export interface ToastProviderProps { children: React.ReactNode; limit?: number; manager?: ToastManager; timeout?: number; }",
-          "export type ToastManager = ReturnType<typeof createToastManager>;"
+          "export interface ToastRecord { id: string; title?: React.ReactNode; type?: string; description?: React.ReactNode; timeout?: number; priority?: ToastPriority; transitionStatus?: \"starting\" | \"ending\"; limited?: boolean; onClose?: () => void; onRemove?: () => void; actionProps?: React.ButtonHTMLAttributes<HTMLButtonElement>; data?: ToastData; }",
+          "export type ToastManagerUpdateOptions = Partial<Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\">>;",
+          "export type ToastPriority = \"low\" | \"high\";",
+          "export type ToastTone = \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\";"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "ToastProviderProps",
         "signature": "ToastProviderProps"
+      },
+      {
+        "definition": [
+          "export interface ToastAction { label: string; onClick: () => void; altText?: string; disabled?: boolean; loading?: boolean; loadingLabel?: string; dismissOnClick?: boolean; }",
+          "export interface ToastData { tone?: ToastTone; action?: ToastAction; }",
+          "export interface ToastRecord { id: string; title?: React.ReactNode; type?: string; description?: React.ReactNode; timeout?: number; priority?: ToastPriority; transitionStatus?: \"starting\" | \"ending\"; limited?: boolean; onClose?: () => void; onRemove?: () => void; actionProps?: React.ButtonHTMLAttributes<HTMLButtonElement>; data?: ToastData; }",
+          "export type ToastPriority = \"low\" | \"high\";",
+          "export type ToastTone = \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToastRecord",
+        "signature": "ToastRecord"
       },
       {
         "definition": [
@@ -4637,26 +5335,34 @@
         "deprecations": [],
         "kind": "value",
         "name": "Toggle",
-        "signature": "React.ForwardRefExoticComponent<(Omit<VisibleLabelToggleProps, \"ref\"> | Omit<IconOnlyToggleProps, \"ref\">) & React.RefAttributes<HTMLElement>>"
+        "signature": "React.ForwardRefExoticComponent<ToggleProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
-          "export type ToggleChangeEventDetails = Parameters<NonNullable<React.ComponentProps<typeof BaseToggle>[\"onPressedChange\"]>>[1];"
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type ToggleChangeEventDetails = NerioChangeEventDetails<\"none\">;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "ToggleChangeEventDetails",
-        "signature": "{ reason: \"none\"; event: Event; cancel: () => void; allowPropagation: () => void; isCanceled: boolean; isPropagationAllowed: boolean; trigger: Element | undefined; }"
+        "signature": "ToggleChangeEventDetails"
       },
       {
         "definition": [
+          "export interface ToggleState { pressed: boolean; disabled: boolean; }",
           "export type IconComponent = React.ElementType<IconSvgProps>;",
           "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type ToggleChangeEventDetails = NerioChangeEventDetails<\"none\">;",
           "export type ToggleProps = VisibleLabelToggleProps | IconOnlyToggleProps;",
           "export type ToggleSize = \"sm\" | \"md\" | \"lg\";",
           "export type ToggleVariant = \"ghost\" | \"outline\";",
           "type IconOnlyToggleProps = ToggleBaseProps & { icon: IconComponent; children?: never; leadingIcon?: never; \"aria-label\": string; };",
-          "type ToggleBaseProps = Omit<React.ComponentProps<typeof BaseToggle>, \"aria-label\" | \"children\" | \"className\"> & { \"data-slot\"?: string; className?: React.ComponentProps<typeof BaseToggle>[\"className\"]; variant?: ToggleVariant; size?: ToggleSize; };",
+          "type ToggleBaseProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"aria-label\" | \"children\" | \"className\" | \"color\" | \"defaultChecked\" | \"defaultValue\" | \"onChange\" | \"style\" | \"value\"> & { \"data-slot\"?: string; className?: NerioClassName<ToggleState>; defaultPressed?: boolean; nativeButton?: boolean; onPressedChange?: (pressed: boolean, eventDetails: ToggleChangeEventDetails) => void; pressed?: boolean; render?: NerioRenderProp<ToggleState>; style?: NerioStyle<ToggleState>; value?: string; variant?: ToggleVariant; size?: ToggleSize; };",
           "type VisibleLabelToggleProps = ToggleBaseProps & { children: React.ReactNode; icon?: never; leadingIcon?: IconComponent; \"aria-label\"?: string; };"
         ],
         "deprecations": [],
@@ -4670,6 +5376,13 @@
         "kind": "type",
         "name": "ToggleSize",
         "signature": "ToggleSize"
+      },
+      {
+        "definition": ["export interface ToggleState { pressed: boolean; disabled: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToggleState",
+        "signature": "ToggleState"
       },
       {
         "definition": ["export type ToggleVariant = \"ghost\" | \"outline\";"],
@@ -4687,7 +5400,30 @@
       },
       {
         "definition": [
-          "export interface TooltipProps extends Pick<React.ComponentProps<typeof BaseTooltip.Root>, \"defaultOpen\" | \"disabled\" | \"onOpenChange\" | \"open\"> { label: React.ReactNode; children: React.ReactElement; className?: string; delay?: number; }"
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type TooltipOpenChangeEventDetails = NerioChangeEventDetails<TooltipOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type TooltipOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"disabled\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TooltipOpenChangeEventDetails",
+        "signature": "TooltipOpenChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type TooltipOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"disabled\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "TooltipOpenChangeEventReason",
+        "signature": "TooltipOpenChangeEventReason"
+      },
+      {
+        "definition": [
+          "export interface TooltipProps { defaultOpen?: boolean; disabled?: boolean; onOpenChange?: (open: boolean, eventDetails: TooltipOpenChangeEventDetails) => void; open?: boolean; label: React.ReactNode; children: React.ReactElement; className?: string; delay?: number; }",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type TooltipOpenChangeEventDetails = NerioChangeEventDetails<TooltipOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type TooltipOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"disabled\" | \"imperative-action\" | \"none\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -4703,7 +5439,7 @@
       },
       {
         "definition": [
-          "export interface TooltipProviderProps extends Pick<React.ComponentProps<typeof BaseTooltip.Provider>, \"closeDelay\" | \"delay\" | \"timeout\"> { children: React.ReactNode; }"
+          "export interface TooltipProviderProps { closeDelay?: number; delay?: number; timeout?: number; children: React.ReactNode; }"
         ],
         "deprecations": [],
         "kind": "type",
@@ -4722,7 +5458,25 @@
         "deprecations": [],
         "kind": "value",
         "name": "useToastManager",
-        "signature": "() => UseToastManagerReturnValue<ToastData>"
+        "signature": "() => UseToastManagerResult"
+      },
+      {
+        "definition": [
+          "export interface ToastAction { label: string; onClick: () => void; altText?: string; disabled?: boolean; loading?: boolean; loadingLabel?: string; dismissOnClick?: boolean; }",
+          "export interface ToastData { tone?: ToastTone; action?: ToastAction; }",
+          "export interface ToastManager { add: (options: ToastManagerAddOptions) => string; close: (id?: string) => void; update: (id: string, updates: ToastManagerUpdateOptions) => void; promise: <Value>(promiseValue: Promise<Value>, options: ToastManagerPromiseOptions<Value>) => Promise<Value>; }",
+          "export interface ToastManagerAddOptions extends Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\"> { id?: string; }",
+          "export interface ToastManagerPromiseOptions<Value> { loading: string | ToastManagerUpdateOptions; success: string | ToastManagerUpdateOptions | ((result: Value) => string | ToastManagerUpdateOptions); error: string | ToastManagerUpdateOptions | ((error: unknown) => string | ToastManagerUpdateOptions); }",
+          "export interface ToastRecord { id: string; title?: React.ReactNode; type?: string; description?: React.ReactNode; timeout?: number; priority?: ToastPriority; transitionStatus?: \"starting\" | \"ending\"; limited?: boolean; onClose?: () => void; onRemove?: () => void; actionProps?: React.ButtonHTMLAttributes<HTMLButtonElement>; data?: ToastData; }",
+          "export interface UseToastManagerResult extends ToastManager { toasts: ToastRecord[]; }",
+          "export type ToastManagerUpdateOptions = Partial<Omit<ToastRecord, \"id\" | \"limited\" | \"transitionStatus\">>;",
+          "export type ToastPriority = \"low\" | \"high\";",
+          "export type ToastTone = \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "UseToastManagerResult",
+        "signature": "UseToastManagerResult"
       }
     ]
   },
@@ -5716,7 +6470,7 @@
     "@nerio-ui/ui": {
       "bin": null,
       "dependencies": {
-        "@base-ui/react": "^1.6.0",
+        "@base-ui/react": "1.6.0",
         "@nerio-ui/adapters": "workspace:*",
         "@nerio-ui/tokens": "workspace:*",
         "clsx": "^2.1.1",
@@ -6351,6 +7105,11 @@
           },
           {
             "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "role": "utility",
             "source": "../../ui/src/lib/motion.ts",
             "target": "lib/motion.ts"
           },
@@ -6419,6 +7178,11 @@
             "role": "component",
             "source": "../../ui/src/components/command.tsx",
             "target": "components/command.tsx"
+          },
+          {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
           },
           {
             "role": "component",
@@ -6531,6 +7295,11 @@
             "role": "component",
             "source": "../../ui/src/components/date-picker.tsx",
             "target": "components/date-picker.tsx"
+          },
+          {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
           }
         ],
         "name": "date-picker",
@@ -6582,6 +7351,11 @@
             "role": "component",
             "source": "../../ui/src/components/dialog.tsx",
             "target": "components/dialog.tsx"
+          },
+          {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
           },
           {
             "role": "utility",
@@ -6671,6 +7445,11 @@
             "role": "component",
             "source": "../../ui/src/components/dropdown-menu.tsx",
             "target": "components/dropdown-menu.tsx"
+          },
+          {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
           },
           {
             "role": "component",
@@ -7571,6 +8350,11 @@
           },
           {
             "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "role": "utility",
             "source": "../../ui/src/lib/motion.ts",
             "target": "lib/motion.ts"
           },
@@ -7704,6 +8488,11 @@
           },
           {
             "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "role": "utility",
             "source": "../../ui/src/lib/motion.ts",
             "target": "lib/motion.ts"
           },
@@ -7780,6 +8569,11 @@
             "role": "component",
             "source": "../../ui/src/components/select.tsx",
             "target": "components/select.tsx"
+          },
+          {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
           },
           {
             "role": "utility",
@@ -7931,6 +8725,11 @@
             "role": "component",
             "source": "../../ui/src/components/sheet.tsx",
             "target": "components/sheet.tsx"
+          },
+          {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
           },
           {
             "role": "utility",
@@ -8161,6 +8960,11 @@
             "role": "component",
             "source": "../../ui/src/components/slider.tsx",
             "target": "components/slider.tsx"
+          },
+          {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
           },
           {
             "role": "utility",
@@ -8499,6 +9303,11 @@
           },
           {
             "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "role": "utility",
             "source": "../../ui/src/lib/cn.ts",
             "target": "lib/cn.ts"
           },
@@ -8761,6 +9570,11 @@
             "target": "components/toggle.tsx"
           },
           {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
             "role": "component",
             "source": "../../ui/src/components/icon.tsx",
             "target": "components/icon.tsx"
@@ -8849,6 +9663,11 @@
             "role": "component",
             "source": "../../ui/src/components/tooltip.tsx",
             "target": "components/tooltip.tsx"
+          },
+          {
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
           },
           {
             "role": "utility",

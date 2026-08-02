@@ -6,21 +6,44 @@ import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 import { resolveClassName } from "../lib/resolve-class-name";
+import type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioRenderProp,
+  NerioStyle,
+} from "../lib/component-props";
 import { Icon } from "./icon";
 
 export type ToggleVariant = "ghost" | "outline";
 export type ToggleSize = "sm" | "md" | "lg";
 
-export type ToggleChangeEventDetails = Parameters<
-  NonNullable<React.ComponentProps<typeof BaseToggle>["onPressedChange"]>
->[1];
+export type ToggleChangeEventDetails = NerioChangeEventDetails<"none">;
+export interface ToggleState {
+  pressed: boolean;
+  disabled: boolean;
+}
 
 type ToggleBaseProps = Omit<
-  React.ComponentProps<typeof BaseToggle>,
-  "aria-label" | "children" | "className"
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  | "aria-label"
+  | "children"
+  | "className"
+  | "color"
+  | "defaultChecked"
+  | "defaultValue"
+  | "onChange"
+  | "style"
+  | "value"
 > & {
   "data-slot"?: string;
-  className?: React.ComponentProps<typeof BaseToggle>["className"];
+  className?: NerioClassName<ToggleState>;
+  defaultPressed?: boolean;
+  nativeButton?: boolean;
+  onPressedChange?: (pressed: boolean, eventDetails: ToggleChangeEventDetails) => void;
+  pressed?: boolean;
+  render?: NerioRenderProp<ToggleState>;
+  style?: NerioStyle<ToggleState>;
+  value?: string;
   variant?: ToggleVariant;
   size?: ToggleSize;
 };
@@ -102,6 +125,7 @@ export const Toggle = React.forwardRef<HTMLElement, ToggleProps>(function Toggle
       data-variant={variant}
       disabled={disabled}
       nativeButton={nativeButton}
+      render={props.render as React.ComponentProps<typeof BaseToggle>["render"]}
       type={nativeButton !== false ? (type ?? "button") : undefined}
     >
       {icon ? (

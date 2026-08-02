@@ -167,7 +167,7 @@ export default function Page() {
               ],
               [
                 "onValueChange",
-                "Receives Base UI value and complete event details including activation direction.",
+                "Receives a string value and Nerio event details including activation direction.",
               ],
             ]}
             codeColumns={1}

@@ -6,9 +6,45 @@ import { Check, Minus } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 import { resolveClassName } from "../lib/resolve-class-name";
+import type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioRenderProp,
+  NerioStyle,
+} from "../lib/component-props";
 import { Icon } from "./icon";
 
-export interface CheckboxProps extends React.ComponentProps<typeof BaseCheckbox.Root> {
+export type CheckboxChangeEventDetails = NerioChangeEventDetails<"none">;
+export interface CheckboxState {
+  checked: boolean;
+  disabled: boolean;
+  readOnly: boolean;
+  required: boolean;
+  indeterminate: boolean;
+}
+export interface CheckboxProps extends Omit<
+  React.HTMLAttributes<HTMLElement>,
+  "children" | "className" | "color" | "defaultChecked" | "onChange" | "style"
+> {
+  checked?: boolean;
+  defaultChecked?: boolean;
+  disabled?: boolean;
+  form?: string;
+  id?: string;
+  indeterminate?: boolean;
+  inputRef?: React.Ref<HTMLInputElement>;
+  name?: string;
+  nativeButton?: boolean;
+  onCheckedChange?: (checked: boolean, eventDetails: CheckboxChangeEventDetails) => void;
+  parent?: boolean;
+  readOnly?: boolean;
+  render?: NerioRenderProp<CheckboxState>;
+  required?: boolean;
+  uncheckedValue?: string;
+  value?: string;
+  className?: NerioClassName<CheckboxState>;
+  style?: NerioStyle<CheckboxState>;
+  children?: React.ReactNode;
   invalid?: boolean;
   label?: React.ReactNode;
   description?: React.ReactNode;

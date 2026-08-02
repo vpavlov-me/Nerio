@@ -454,6 +454,7 @@ async function verify() {
       "components/icon.tsx",
       "components/toggle.tsx",
       "lib/cn.ts",
+      "lib/component-props.ts",
       "lib/motion.ts",
       "lib/resolve-class-name.ts",
       "lib/tailwind-cn.ts",
@@ -480,6 +481,7 @@ async function verify() {
     assertRegistryParity("slider", sliderUsage, [
       "components/slider.tsx",
       "lib/cn.ts",
+      "lib/component-props.ts",
       "lib/compose-refs.ts",
       "lib/motion.ts",
       "lib/resolve-class-name.ts",
@@ -560,7 +562,10 @@ async function verify() {
       arguments: { name: "date-picker" },
     });
     const datePickerUsage = JSON.parse(datePickerUsageResult.content[0].text);
-    assertRegistryParity("date-picker", datePickerUsage, ["components/date-picker.tsx"]);
+    assertRegistryParity("date-picker", datePickerUsage, [
+      "components/date-picker.tsx",
+      "lib/component-props.ts",
+    ]);
     if (
       !datePickerUsage.baseUiPrimitives.includes("popover") ||
       !datePickerUsage.registryDependencies.includes("calendar") ||

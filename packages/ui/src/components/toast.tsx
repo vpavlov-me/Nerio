@@ -31,6 +31,54 @@ export interface ToastData {
   action?: ToastAction;
 }
 
+export interface ToastRecord {
+  id: string;
+  title?: React.ReactNode;
+  type?: string;
+  description?: React.ReactNode;
+  timeout?: number;
+  priority?: ToastPriority;
+  transitionStatus?: "starting" | "ending";
+  limited?: boolean;
+  onClose?: () => void;
+  onRemove?: () => void;
+  actionProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
+  data?: ToastData;
+}
+
+export interface ToastManagerAddOptions extends Omit<
+  ToastRecord,
+  "id" | "limited" | "transitionStatus"
+> {
+  id?: string;
+}
+
+export type ToastManagerUpdateOptions = Partial<
+  Omit<ToastRecord, "id" | "limited" | "transitionStatus">
+>;
+
+export interface ToastManagerPromiseOptions<Value> {
+  loading: string | ToastManagerUpdateOptions;
+  success:
+    string | ToastManagerUpdateOptions | ((result: Value) => string | ToastManagerUpdateOptions);
+  error:
+    string | ToastManagerUpdateOptions | ((error: unknown) => string | ToastManagerUpdateOptions);
+}
+
+export interface ToastManager {
+  add: (options: ToastManagerAddOptions) => string;
+  close: (id?: string) => void;
+  update: (id: string, updates: ToastManagerUpdateOptions) => void;
+  promise: <Value>(
+    promiseValue: Promise<Value>,
+    options: ToastManagerPromiseOptions<Value>,
+  ) => Promise<Value>;
+}
+
+export interface UseToastManagerResult extends ToastManager {
+  toasts: ToastRecord[];
+}
+
 export interface ToastProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   title: React.ReactNode;
   description?: React.ReactNode;
@@ -38,10 +86,11 @@ export interface ToastProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "
   priority?: ToastPriority;
 }
 
-export const createToastManager = () => BaseToast.createToastManager<ToastData>();
-export type ToastManager = ReturnType<typeof createToastManager>;
+export const createToastManager = (): ToastManager =>
+  BaseToast.createToastManager<ToastData>() as ToastManager;
 export const toastManager = createToastManager();
-export const useToastManager = BaseToast.useToastManager<ToastData>;
+export const useToastManager = (): UseToastManagerResult =>
+  BaseToast.useToastManager<ToastData>() as UseToastManagerResult;
 
 export interface ToastProviderProps {
   children: React.ReactNode;
@@ -57,7 +106,11 @@ export function ToastProvider({
   timeout = 5000,
 }: ToastProviderProps) {
   return (
-    <BaseToast.Provider limit={limit} timeout={timeout} toastManager={manager}>
+    <BaseToast.Provider
+      limit={limit}
+      timeout={timeout}
+      toastManager={manager as ReturnType<typeof BaseToast.createToastManager<ToastData>>}
+    >
       {children}
     </BaseToast.Provider>
   );

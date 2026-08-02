@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import * as React from "react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
@@ -4811,6 +4813,77 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByText("July 2026")).toHaveAttribute("data-slot", "heading");
   });
 
+  it("keeps Calendar initial markup deterministic across server and client time zones", async () => {
+    const previousTimeZone = process.env.TZ;
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const container = document.createElement("div");
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+
+    try {
+      process.env.TZ = "Pacific/Kiritimati";
+      const serverMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
+      process.env.TZ = "America/Adak";
+      const clientMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
+
+      expect(clientMarkup).toBe(serverMarkup);
+      expect(serverMarkup).toContain("January 1970");
+      expect(serverMarkup).not.toMatch(/\sdata-today(?:=|>)/);
+
+      container.innerHTML = serverMarkup;
+      document.body.append(container);
+      root = hydrateRoot(container, <Calendar aria-label="Deterministic calendar" />);
+      await act(async () => undefined);
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      if (root) await act(async () => root.unmount());
+      container.remove();
+      consoleError.mockRestore();
+      if (previousTimeZone === undefined) delete process.env.TZ;
+      else process.env.TZ = previousTimeZone;
+    }
+  });
+
+  it("moves focus when constraints invalidate the active day", async () => {
+    const { rerender } = render(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        defaultValue="2026-06-15"
+      />,
+    );
+
+    const calendar = screen.getByRole("group", { name: "Unavailable calendar" });
+    within(calendar).getByRole("button", { name: "June 15, 2026, Selected" }).focus();
+
+    rerender(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        defaultValue="2026-06-15"
+        isDateDisabled={(date) => date === "2026-06-15"}
+      />,
+    );
+    await waitFor(() =>
+      expect(within(calendar).getByRole("button", { name: "June 1, 2026" })).toHaveFocus(),
+    );
+
+    rerender(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        defaultValue="2026-06-15"
+        isDateDisabled={() => true}
+      />,
+    );
+    await waitFor(() => expect(within(calendar).getByRole("grid")).toHaveFocus());
+    expect(within(calendar).getByRole("grid")).toHaveAttribute("tabindex", "0");
+    expect(
+      within(calendar)
+        .getAllByRole("button")
+        .filter((button) => button.dataset.slot === "day" && button.tabIndex === 0),
+    ).toHaveLength(0);
+  });
+
   it("rejects invalid Calendar dates and inverted constraints", () => {
     expect(() => render(<Calendar aria-label="Invalid calendar" value="2026-02-30" />)).toThrow(
       /valid calendar date/,
@@ -4882,6 +4955,7 @@ describe("Core interactive action contracts", () => {
     expect(trigger.closest('[data-slot="root"]')).toHaveAttribute("data-slot", "root");
     expect(trigger).toHaveAttribute("data-slot", "trigger");
     expect(trigger).toHaveAttribute("aria-describedby", expect.stringContaining("-action"));
+    expect(trigger).toHaveAccessibleDescription(expect.stringContaining("15 Jun 2026"));
     expect(trigger.querySelectorAll('[data-slot="button-icon"]')).toHaveLength(1);
 
     await user.click(trigger);
@@ -4953,7 +5027,7 @@ describe("Core interactive action contracts", () => {
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Datum löschen" }));
     await waitFor(() => expect(trigger).toHaveTextContent("Choose a date"));
-    expect(trigger).toHaveAccessibleDescription("Choose a date Datumswahl öffnen");
+    expect(trigger).toHaveAccessibleDescription("Datumswahl öffnen");
     expect(trigger).toHaveFocus();
   });
 
@@ -5014,6 +5088,21 @@ describe("Core interactive action contracts", () => {
 
     expect(screen.getByRole("group", { name: "Choose date" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Clear date" })).toBeNull();
+  });
+
+  it("focuses the DatePicker grid when an empty month has no available day", async () => {
+    const user = userEvent.setup();
+    render(<DatePicker aria-label="Unavailable release date" isDateDisabled={() => true} />);
+
+    await user.click(screen.getByRole("button", { name: "Unavailable release date" }));
+    const calendar = await screen.findByRole("group", { name: "Choose date" });
+    expect(within(calendar).getByText("January 1970")).toBeInTheDocument();
+    await waitFor(() => expect(within(calendar).getByRole("grid")).toHaveFocus());
+    expect(
+      within(calendar)
+        .getAllByRole("button")
+        .filter((button) => button.dataset.slot === "day" && button.tabIndex === 0),
+    ).toHaveLength(0);
   });
 
   it("keeps DatePicker focus and selection coherent inside a modal overlay", async () => {

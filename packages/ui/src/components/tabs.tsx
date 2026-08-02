@@ -6,6 +6,12 @@ import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { Icon } from "./icon";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
+import type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioRenderProp,
+  NerioStyle,
+} from "../lib/component-props";
 
 const tabsClasses =
   "n-tabs grid gap-(--n-tabs-gap) data-[orientation=vertical]:grid-cols-[auto_minmax(0,1fr)] data-[orientation=vertical]:items-start data-[size=sm]:[--n-tabs-trigger-height:var(--n-tabs-trigger-height-sm)] data-[size=sm]:[--n-tabs-trigger-padding-inline:var(--n-tabs-trigger-padding-inline-sm)] data-[size=sm]:[--n-tabs-trigger-content-gap:var(--n-tabs-trigger-content-gap-sm)] data-[size=sm]:[--n-tabs-trigger-font-size:var(--n-tabs-trigger-font-size-sm)] data-[size=sm]:[--n-tabs-icon-size:var(--n-tabs-icon-size-sm)] data-[size=md]:[--n-tabs-trigger-height:var(--n-tabs-trigger-height-md)] data-[size=md]:[--n-tabs-trigger-padding-inline:var(--n-tabs-trigger-padding-inline-md)] data-[size=md]:[--n-tabs-trigger-content-gap:var(--n-tabs-trigger-content-gap-md)] data-[size=md]:[--n-tabs-trigger-font-size:var(--n-tabs-trigger-font-size-md)] data-[size=md]:[--n-tabs-icon-size:var(--n-tabs-icon-size-md)] data-[size=lg]:[--n-tabs-trigger-height:var(--n-tabs-trigger-height-lg)] data-[size=lg]:[--n-tabs-trigger-padding-inline:var(--n-tabs-trigger-padding-inline-lg)] data-[size=lg]:[--n-tabs-trigger-content-gap:var(--n-tabs-trigger-content-gap-lg)] data-[size=lg]:[--n-tabs-trigger-font-size:var(--n-tabs-trigger-font-size-lg)] data-[size=lg]:[--n-tabs-icon-size:var(--n-tabs-icon-size-lg)] data-[variant=bordered]:[&>[data-slot=list]]:border-b-(length:--n-border-width-default) data-[variant=bordered]:[&>[data-slot=list]]:border-(--n-tabs-divider-color) data-[orientation=vertical]:data-[variant=bordered]:[&>[data-slot=list]]:border-b-0 data-[orientation=vertical]:data-[variant=bordered]:[&>[data-slot=list]]:border-e-(length:--n-border-width-default) data-[variant=segmented]:[&>[data-slot=list]]:gap-0 data-[variant=segmented]:[&>[data-slot=list]]:rounded-(--n-tabs-list-radius) data-[variant=segmented]:[&>[data-slot=list]]:bg-(--n-tabs-list-background) data-[variant=segmented]:[&>[data-slot=list]]:p-(--n-tabs-list-padding)";
@@ -20,9 +26,7 @@ export type TabsVariant = "segmented" | "separate" | "bordered";
 export type TabsSize = "sm" | "md" | "lg";
 export type TabsListLayout = "content" | "fill";
 
-type BaseClassName<State> = string | ((state: State) => string | undefined) | undefined;
-
-function withClassName<State>(className: BaseClassName<State>, baseClassName: string) {
+function withClassName<State>(className: NerioClassName<State> | undefined, baseClassName: string) {
   return typeof className === "function"
     ? (state: State) => cn(baseClassName, className(state))
     : cn(baseClassName, className);
@@ -54,10 +58,30 @@ function getAccessibleText(node: React.ReactNode): string {
   return "";
 }
 
-export type TabsProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Root> & {
+export type TabsValue = string;
+export type TabsActivationDirection = "left" | "right" | "up" | "down" | "none";
+export interface TabsRootState {
+  orientation: "horizontal" | "vertical";
+  tabActivationDirection: TabsActivationDirection;
+}
+export type TabsChangeEventReason = "none" | "disabled" | "missing" | "initial";
+export type TabsChangeEventDetails = NerioChangeEventDetails<TabsChangeEventReason> & {
+  activationDirection: TabsActivationDirection;
+};
+export interface TabsProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className" | "defaultValue" | "onChange" | "style"
+> {
+  className?: NerioClassName<TabsRootState>;
+  defaultValue?: TabsValue | null;
+  onValueChange?: (value: TabsValue | null, eventDetails: TabsChangeEventDetails) => void;
+  orientation?: "horizontal" | "vertical";
+  render?: NerioRenderProp<TabsRootState>;
+  style?: NerioStyle<TabsRootState>;
+  value?: TabsValue | null;
   variant?: TabsVariant;
   size?: TabsSize;
-};
+}
 
 export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   { className, orientation = "horizontal", size = "md", variant = "bordered", ...props },
@@ -76,10 +100,18 @@ export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   );
 });
 
-export type TabsListProps = React.ComponentPropsWithoutRef<typeof BaseTabs.List> & {
+export interface TabsListProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className" | "style"
+> {
+  activateOnFocus?: boolean;
+  className?: NerioClassName<TabsRootState>;
   layout?: TabsListLayout;
+  loopFocus?: boolean;
+  render?: NerioRenderProp<TabsRootState>;
   scrollable?: boolean;
-};
+  style?: NerioStyle<TabsRootState>;
+}
 
 function moveFocusPastDisabledTab(event: React.KeyboardEvent<HTMLDivElement>, loopFocus: boolean) {
   const list = event.currentTarget;
@@ -173,12 +205,25 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(function
   );
 });
 
-export type TabsTriggerProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Tab> & {
+export interface TabsTriggerState extends TabsRootState {
+  disabled: boolean;
+  active: boolean;
+}
+export interface TabsTriggerProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "children" | "className" | "color" | "style" | "value"
+> {
+  className?: NerioClassName<TabsTriggerState>;
+  disabled?: boolean;
+  nativeButton?: boolean;
+  render?: NerioRenderProp<TabsTriggerState>;
+  style?: NerioStyle<TabsTriggerState>;
+  value: TabsValue;
   leadingIcon?: IconComponent;
   trailingIcon?: IconComponent;
   badge?: React.ReactNode;
   children: React.ReactNode;
-};
+}
 
 export const TabsTrigger = React.forwardRef<HTMLElement, TabsTriggerProps>(function TabsTrigger(
   {
@@ -223,7 +268,24 @@ export const TabsTrigger = React.forwardRef<HTMLElement, TabsTriggerProps>(funct
   );
 });
 
-export type TabsIndicatorProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Indicator>;
+export interface TabsIndicatorState extends TabsRootState {
+  activeTabPosition: {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+  } | null;
+  activeTabSize: { width: number; height: number } | null;
+}
+export interface TabsIndicatorProps extends Omit<
+  React.HTMLAttributes<HTMLSpanElement>,
+  "className" | "style"
+> {
+  className?: NerioClassName<TabsIndicatorState>;
+  render?: NerioRenderProp<TabsIndicatorState>;
+  renderBeforeHydration?: boolean;
+  style?: NerioStyle<TabsIndicatorState>;
+}
 
 export const TabsIndicator = React.forwardRef<HTMLSpanElement, TabsIndicatorProps>(
   function TabsIndicator({ className, renderBeforeHydration = true, ...props }, ref) {
@@ -256,7 +318,20 @@ export const TabsPanels = React.forwardRef<HTMLDivElement, TabsPanelsProps>(func
   );
 });
 
-export type TabsContentProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Panel>;
+export interface TabsContentState extends TabsRootState {
+  hidden: boolean;
+  transitionStatus: "starting" | "ending" | "idle" | undefined;
+}
+export interface TabsContentProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className" | "style"
+> {
+  className?: NerioClassName<TabsContentState>;
+  keepMounted?: boolean;
+  render?: NerioRenderProp<TabsContentState>;
+  style?: NerioStyle<TabsContentState>;
+  value: TabsValue;
+}
 
 export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(function TabsContent(
   { className, ...props },

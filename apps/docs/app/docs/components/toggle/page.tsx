@@ -36,7 +36,7 @@ const stateRows = [
 const apiRows = [
   [
     "pressed / defaultPressed / onPressedChange",
-    "Controlled and uncontrolled state with Base UI event details and cancellation.",
+    "Controlled and uncontrolled state with Nerio event details and cancellation.",
   ],
   ["icon / aria-label", "Icon-only mode with a required stable accessible name."],
   ["children / leadingIcon", "Visible-label mode with an optional leading Nerio icon."],
@@ -45,11 +45,11 @@ const apiRows = [
   ["value", "Stable identifier reserved for future direct ToggleGroup composition."],
   [
     "disabled / className / style / render / nativeButton",
-    "Preserves Base UI disabled and render-composition contracts.",
+    "Preserves Nerio disabled and render-composition contracts.",
   ],
 ] as const;
 const implementationRows = [
-  ["Registry item", "toggle installs 8 Tailwind-first source, utility, bridge, and token files."],
+  ["Registry item", "toggle installs 9 Tailwind-first source, utility, bridge, and token files."],
   ["Base UI", "toggle"],
   ["Registry dependencies", "None."],
   [

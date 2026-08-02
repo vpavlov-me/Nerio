@@ -42,7 +42,7 @@ const apiRows = [
   [
     "onValueChange / onValueCommitted",
     "(value, details) => void",
-    "Continuous and committed updates with Base UI reason and native event details.",
+    "Continuous and committed updates with Nerio reason and native event details.",
   ],
   ["min / max / step / largeStep", "number", "Bounds, Arrow-key step, and Page-key step."],
   ["orientation", "horizontal | vertical", "Changes layout and native aria-orientation."],

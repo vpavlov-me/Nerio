@@ -12,6 +12,13 @@ const commandStateClasses =
 import { resolveClassName } from "../lib/resolve-class-name";
 import { Icon } from "./icon";
 import { Spinner } from "./spinner";
+import type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioEventDetails,
+  NerioRenderProp,
+  NerioStyle,
+} from "../lib/component-props";
 
 export interface CommandItemData {
   value: string;
@@ -29,17 +36,24 @@ export interface CommandGroupData {
 export type CommandItems = readonly CommandItemData[] | readonly CommandGroupData[];
 export type CommandFilter = (item: CommandItemData, query: string) => boolean;
 
-export type CommandQueryChangeEventDetails = Parameters<
-  NonNullable<React.ComponentProps<typeof BaseAutocomplete.Root>["onValueChange"]>
->[1];
-
-export type CommandActiveChangeEventDetails = Parameters<
-  NonNullable<React.ComponentProps<typeof BaseAutocomplete.Root>["onItemHighlighted"]>
->[1];
-
-export type CommandSelectEvent = Parameters<
-  NonNullable<React.ComponentProps<typeof BaseAutocomplete.Item>["onClick"]>
->[0];
+export type CommandQueryChangeEventReason =
+  | "trigger-press"
+  | "outside-press"
+  | "item-press"
+  | "close-press"
+  | "escape-key"
+  | "list-navigation"
+  | "focus-out"
+  | "input-change"
+  | "input-clear"
+  | "clear-press"
+  | "chip-remove-press"
+  | "none";
+export type CommandQueryChangeEventDetails = NerioChangeEventDetails<CommandQueryChangeEventReason>;
+export type CommandActiveChangeEventDetails = NerioEventDetails<"keyboard" | "pointer" | "none"> & {
+  index: number;
+};
+export type CommandSelectEvent = React.MouseEvent<HTMLElement>;
 
 type CommandContextValue = {
   disabled: boolean;
@@ -255,8 +269,8 @@ export const Command = React.forwardRef<HTMLDivElement, CommandProps>(function C
 });
 
 export interface CommandInputProps extends Omit<
-  React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Input>,
-  "className"
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "className" | "color"
 > {
   className?: string;
 }
@@ -290,10 +304,7 @@ export const CommandInput = React.forwardRef<HTMLInputElement, CommandInputProps
   },
 );
 
-export interface CommandListProps extends Omit<
-  React.ComponentPropsWithoutRef<typeof BaseAutocomplete.List>,
-  "children"
-> {
+export interface CommandListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
   children: React.ReactNode | ((item: CommandItemData, index: number) => React.ReactNode);
   renderGroupLabel?: (group: CommandGroupData) => React.ReactNode;
 }
@@ -372,51 +383,66 @@ export const CommandList = React.forwardRef<HTMLDivElement, CommandListProps>(fu
   );
 });
 
-export const CommandGroup = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Group>
->(function CommandGroup({ className, ...props }, ref) {
-  return (
-    <BaseAutocomplete.Group
-      ref={ref}
-      className={cn(
-        "n-command__group grid gap-(--n-command-group-gap) [&+[data-slot=command-group]]:mt-(--n-command-group-spacing)",
-        className,
-      )}
-      {...props}
-      data-slot="command-group"
-    />
-  );
-});
+export type CommandPartState = object;
+export interface CommandGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  items?: readonly CommandItemData[];
+  render?: NerioRenderProp<CommandPartState>;
+}
+export const CommandGroup = React.forwardRef<HTMLDivElement, CommandGroupProps>(
+  function CommandGroup({ className, ...props }, ref) {
+    return (
+      <BaseAutocomplete.Group
+        ref={ref}
+        className={cn(
+          "n-command__group grid gap-(--n-command-group-gap) [&+[data-slot=command-group]]:mt-(--n-command-group-spacing)",
+          className,
+        )}
+        {...props}
+        data-slot="command-group"
+      />
+    );
+  },
+);
 
-export const CommandGroupLabel = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseAutocomplete.GroupLabel>
->(function CommandGroupLabel({ className, ...props }, ref) {
-  return (
-    <BaseAutocomplete.GroupLabel
-      ref={ref}
-      className={cn(
-        "n-command__group-label px-(--n-command-item-padding-inline) pt-(--n-space-2) pb-(--n-space-1) text-(length:--n-font-size-xs) font-(--n-font-weight-medium) text-(--n-color-text-tertiary)",
-        className,
-      )}
-      {...props}
-      data-slot="command-group-label"
-    />
-  );
-});
+export interface CommandGroupLabelProps extends React.HTMLAttributes<HTMLDivElement> {
+  render?: NerioRenderProp<CommandPartState>;
+}
+export const CommandGroupLabel = React.forwardRef<HTMLDivElement, CommandGroupLabelProps>(
+  function CommandGroupLabel({ className, ...props }, ref) {
+    return (
+      <BaseAutocomplete.GroupLabel
+        ref={ref}
+        className={cn(
+          "n-command__group-label px-(--n-command-item-padding-inline) pt-(--n-space-2) pb-(--n-space-1) text-(length:--n-font-size-xs) font-(--n-font-weight-medium) text-(--n-color-text-tertiary)",
+          className,
+        )}
+        {...props}
+        data-slot="command-group-label"
+      />
+    );
+  },
+);
 
+export interface CommandItemState {
+  disabled: boolean;
+  highlighted: boolean;
+}
 export interface CommandItemProps extends Omit<
-  React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Item>,
-  "children" | "className" | "onClick" | "onClickCapture" | "onSelect" | "value"
+  React.HTMLAttributes<HTMLDivElement>,
+  "children" | "className" | "color" | "onClick" | "onClickCapture" | "onSelect" | "style"
 > {
   value: string;
   children: React.ReactNode;
-  className?: React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Item>["className"];
+  className?: NerioClassName<CommandItemState>;
   description?: React.ReactNode;
+  disabled?: boolean;
+  index?: number;
   leading?: React.ReactNode;
   metadata?: React.ReactNode;
+  nativeButton?: boolean;
+  render?: NerioRenderProp<CommandItemState>;
   shortcut?: React.ReactNode;
+  style?: NerioStyle<CommandItemState>;
   onSelect?: (value: string, event: CommandSelectEvent) => void;
 }
 
@@ -505,41 +531,41 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
   );
 });
 
-export const CommandSeparator = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Separator>
->(function CommandSeparator({ className, ...props }, ref) {
-  return (
-    <BaseAutocomplete.Separator
-      ref={ref}
-      className={cn(
-        "n-command__separator mx-(--n-command-item-padding-inline) my-(--n-space-1) h-(--n-command-border-width) bg-(--n-command-border) forced-colors:border-[CanvasText]",
-        className,
-      )}
-      {...props}
-      data-slot="command-separator"
-    />
-  );
-});
+export type CommandSeparatorProps = React.HTMLAttributes<HTMLDivElement>;
+export const CommandSeparator = React.forwardRef<HTMLDivElement, CommandSeparatorProps>(
+  function CommandSeparator({ className, ...props }, ref) {
+    return (
+      <BaseAutocomplete.Separator
+        ref={ref}
+        className={cn(
+          "n-command__separator mx-(--n-command-item-padding-inline) my-(--n-space-1) h-(--n-command-border-width) bg-(--n-command-border) forced-colors:border-[CanvasText]",
+          className,
+        )}
+        {...props}
+        data-slot="command-separator"
+      />
+    );
+  },
+);
 
-export const CommandEmpty = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Empty>
->(function CommandEmpty({ children = "No results found.", className, ...props }, ref) {
-  return (
-    <BaseAutocomplete.Empty
-      ref={ref}
-      className={cn("n-command__empty", commandStateClasses, className)}
-      {...props}
-      data-slot="command-empty"
-    >
-      {children}
-    </BaseAutocomplete.Empty>
-  );
-});
+export type CommandEmptyProps = React.HTMLAttributes<HTMLDivElement>;
+export const CommandEmpty = React.forwardRef<HTMLDivElement, CommandEmptyProps>(
+  function CommandEmpty({ children = "No results found.", className, ...props }, ref) {
+    return (
+      <BaseAutocomplete.Empty
+        ref={ref}
+        className={cn("n-command__empty", commandStateClasses, className)}
+        {...props}
+        data-slot="command-empty"
+      >
+        {children}
+      </BaseAutocomplete.Empty>
+    );
+  },
+);
 
 export interface CommandLoadingProps extends Omit<
-  React.ComponentPropsWithoutRef<typeof BaseAutocomplete.Status>,
+  React.HTMLAttributes<HTMLDivElement>,
   "children"
 > {
   loading?: boolean;
