@@ -13,9 +13,12 @@ test("requires an exact lowercase candidate SHA", () => {
   assert.equal(candidateSyntaxFailure("a".repeat(40)), undefined);
 });
 
-test("accepts the checked-out repository release candidate", () => {
-  const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
-  assert.deepEqual(validateReleaseCandidate(head, "origin/dev", root), []);
+test("accepts an exact commit owned by the repository release branch", () => {
+  const candidate = execFileSync("git", ["rev-parse", "origin/dev"], {
+    cwd: root,
+    encoding: "utf8",
+  }).trim();
+  assert.deepEqual(validateReleaseCandidate(candidate, "origin/dev", root), []);
 });
 
 test("rejects a syntactically valid commit absent from the repository", () => {
