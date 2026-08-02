@@ -4054,7 +4054,7 @@
       {
         "definition": [
           "export interface RadioGroupOption { label: React.ReactNode; value: string; disabled?: boolean; description?: React.ReactNode; }",
-          "export interface RadioGroupState { readOnly: boolean; required: boolean; }",
+          "export interface RadioGroupState { disabled: boolean; readOnly: boolean; required: boolean; }",
           "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
           "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
           "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
@@ -4073,7 +4073,7 @@
       },
       {
         "definition": [
-          "export interface RadioGroupState { readOnly: boolean; required: boolean; }"
+          "export interface RadioGroupState { disabled: boolean; readOnly: boolean; required: boolean; }"
         ],
         "deprecations": [],
         "kind": "type",

@@ -34,8 +34,9 @@ in this order: controlled `month`, `defaultMonth`, controlled `value`, `defaultV
 - Without `today`, no day receives `aria-current="date"` or `data-today`.
 - When every rendered date is unavailable, the grid receives the fallback tab stop; an unavailable
   day is never the roving tab stop.
-- DatePicker keeps its visible value in the trigger name/content and no longer repeats that value in
-  `aria-describedby`. Consumer descriptions and the localized open/change instruction remain.
+- DatePicker keeps its visible value in the trigger name/content without repeating it for self-named
+  triggers. Controls named by Field or explicit ARIA retain the selected value once in
+  `aria-describedby`; consumer descriptions and the localized open/change instruction remain.
 
 ```tsx
 <Calendar aria-label="Billing date" today={requestCalendarDate} />

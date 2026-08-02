@@ -4955,6 +4955,7 @@ describe("Core interactive action contracts", () => {
     expect(trigger.closest('[data-slot="root"]')).toHaveAttribute("data-slot", "root");
     expect(trigger).toHaveAttribute("data-slot", "trigger");
     expect(trigger).toHaveAttribute("aria-describedby", expect.stringContaining("-action"));
+    expect(trigger).toHaveAccessibleDescription(expect.stringContaining("15 Jun 2026"));
     expect(trigger.querySelectorAll('[data-slot="button-icon"]')).toHaveLength(1);
 
     await user.click(trigger);
@@ -5017,7 +5018,7 @@ describe("Core interactive action contracts", () => {
 
     render(<ControlledDatePicker />);
     const trigger = screen.getByRole("button", { name: "Veröffentlichungsdatum" });
-    expect(trigger).toHaveAccessibleDescription("Datum ändern");
+    expect(trigger).toHaveAccessibleDescription("15. Juni 2026 Datum ändern");
     await user.click(trigger);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     const calendar = await screen.findByRole("group", { name: "Datum auswählen" });

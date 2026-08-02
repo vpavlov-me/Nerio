@@ -102,6 +102,8 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
   {
     "aria-describedby": ariaDescribedBy,
     "aria-invalid": ariaInvalid,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
     className,
     clearable = false,
     defaultOpen,
@@ -134,6 +136,7 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
 ) {
   const generatedId = React.useId();
   const triggerId = id ?? generatedId;
+  const valueDescriptionId = `${triggerId}-value`;
   const actionDescriptionId = `${triggerId}-action`;
   const inputRef = React.useRef<HTMLInputElement>(null);
   const triggerRef = React.useRef<HTMLElement>(null);
@@ -141,6 +144,9 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
   const actionsRef = React.useRef<BasePopover.Root.Actions>(null);
   const [uncontrolledValue, setUncontrolledValue] = React.useState<CalendarDate | null>(
     defaultValue,
+  );
+  const [hasExternalName, setHasExternalName] = React.useState(
+    Boolean(ariaLabel || ariaLabelledBy),
   );
   const selectedValue = value === undefined ? uncontrolledValue : value;
   const isInvalid = invalid || ariaInvalid === true || ariaInvalid === "true";
@@ -152,6 +158,12 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
   const displayValue = selectedValue ? formatValue(selectedValue, locale) : placeholder;
 
   React.useImperativeHandle(forwardedRef, () => triggerRef.current as HTMLElement);
+
+  React.useLayoutEffect(() => {
+    const trigger = triggerRef.current;
+    const hasNativeLabel = trigger instanceof HTMLButtonElement && Boolean(trigger.labels?.length);
+    setHasExternalName(Boolean(ariaLabel || ariaLabelledBy || hasNativeLabel));
+  }, [ariaLabel, ariaLabelledBy, triggerId]);
 
   React.useEffect(() => {
     const input = inputRef.current;
@@ -194,8 +206,14 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
             <Button
               ref={triggerRef}
               {...triggerProps}
-              aria-describedby={mergeIds(ariaDescribedBy, actionDescriptionId)}
+              aria-describedby={mergeIds(
+                ariaDescribedBy,
+                selectedValue && hasExternalName ? valueDescriptionId : undefined,
+                actionDescriptionId,
+              )}
               aria-invalid={isInvalid ? true : ariaInvalid}
+              aria-label={ariaLabel}
+              aria-labelledby={ariaLabelledBy}
               className={cn(triggerClasses, motionClasses.control, className)}
               data-placeholder={selectedValue ? undefined : ""}
               data-readonly={readOnly ? "" : undefined}
@@ -279,6 +297,11 @@ export const DatePicker = React.forwardRef<HTMLElement, DatePickerProps>(functio
           </BasePopover.Positioner>
         </BasePopover.Portal>
       </BasePopover.Root>
+      {selectedValue && hasExternalName ? (
+        <span className="sr-only" id={valueDescriptionId}>
+          {displayValue}
+        </span>
+      ) : null}
       <span className="sr-only" id={actionDescriptionId}>
         {actionLabel}
       </span>

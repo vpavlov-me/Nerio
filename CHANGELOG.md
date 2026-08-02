@@ -36,8 +36,9 @@ Items under `Unreleased` may change before the next public release.
   timezone; consumer-owned `today` now exclusively controls current-day styling and month fallback.
 - Kept unavailable Calendar days out of the roving tab stop and moved the no-available-date focus
   fallback to the grid.
-- Removed DatePicker's duplicate hidden value description while retaining consumer descriptions and
-  the localized open/change instruction.
+- Avoided repeating DatePicker's visible value for self-named triggers while retaining the selected
+  value once for controls named by Field or explicit ARIA, plus consumer descriptions and the
+  localized open/change instruction.
 
 ### Migration
 

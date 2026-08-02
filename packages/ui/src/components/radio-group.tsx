@@ -23,6 +23,7 @@ export interface RadioGroupOption {
 
 export type RadioGroupChangeEventDetails = NerioChangeEventDetails<"none">;
 export interface RadioGroupState {
+  disabled: boolean;
   readOnly: boolean;
   required: boolean;
 }
