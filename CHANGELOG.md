@@ -23,6 +23,9 @@ Items under `Unreleased` may change before the next public release.
   that Tailwind 4.0.0 fails the Turbopack/PostCSS scanner contract.
 - Updated the pinned browser gate to Playwright 1.62.1 with Chromium 151, Firefox 153, and WebKit
   26.5.
+- Refreshed the single affected Linux Finance & Assets mobile screenshot after Chromium 151 produced
+  a deterministic selected-control rasterization delta; component geometry, content, and tokens are
+  unchanged.
 
 ### Migration
 
