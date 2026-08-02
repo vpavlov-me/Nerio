@@ -6,6 +6,9 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+This section is the prepared `1.0.0-beta.1` candidate. It is not an npm publication, dist-tag
+change, Git tag, GitHub Release, or stable-readiness claim.
+
 ### Added
 
 - Added scope-aware PR contracts, exact-SHA release candidate validation, immutable GitHub Action

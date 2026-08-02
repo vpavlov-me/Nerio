@@ -13,11 +13,11 @@ test("validates the coordinated release metadata source", () => {
     encoding: "utf8",
   });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /1\.0\.0-beta\.0 \(beta\)/);
+  assert.match(result.stdout, /1\.0\.0-beta\.1 \(beta\)/);
 });
 
 test("prints a deterministic dry-run without modifying files", () => {
-  const result = spawnSync(process.execPath, [script, "prepare", "1.0.0-beta.1"], {
+  const result = spawnSync(process.execPath, [script, "prepare", "1.0.0-beta.2"], {
     cwd: root,
     encoding: "utf8",
   });

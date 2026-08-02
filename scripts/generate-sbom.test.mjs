@@ -15,7 +15,7 @@ test("generates a deterministic candidate-bound SBOM for all public packages", (
     packageDirectories.length,
   );
   const ui = first.components.find(({ name }) => name === "@nerio-ui/ui");
-  assert.equal(ui.purl, "pkg:npm/%40nerio-ui/ui@1.0.0-beta.0");
+  assert.equal(ui.purl, "pkg:npm/%40nerio-ui/ui@1.0.0-beta.1");
   assert.equal(ui["bom-ref"], ui.purl);
   const zod = first.components.find(({ name }) => name === "zod");
   assert.equal(zod.scope, "required");

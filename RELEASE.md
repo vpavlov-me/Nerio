@@ -6,6 +6,9 @@ is `5ffbd44e208039c9007ae3397a74d279d4a22eff`. All six packages are available un
 The protected `alpha` and `latest` tags intentionally remain on `0.1.0-alpha.2` and
 `0.1.0-alpha.0`.
 
+Coordinated `1.0.0-beta.1` package and Registry metadata is prepared on `dev` but is not published,
+tagged, released, or merged to `main`. The current npm `beta` tag remains on `1.0.0-beta.0`.
+
 The beta publication completed after explicit maintainer approval, the exact-candidate gate, and
 tarball inspection. Every future release action remains manual and requires separate explicit
 maintainer approval. This document does not authorize another publication, dist-tag change, tag,
