@@ -632,6 +632,39 @@ async function verifyConcurrentTransactions(tempRoot) {
     throw new Error("Concurrent Registry installs lost source or lock metadata.");
   }
   assertNoTransactionArtifacts(target, "Concurrent Registry installs");
+
+  const invalidOwnerTarget = path.join(tempRoot, "invalid-lock-owner-consumer");
+  fs.mkdirSync(invalidOwnerTarget);
+  await run(invalidOwnerTarget, "init", "--registry", fixtureManifest);
+  const invalidLockPath = path.join(invalidOwnerTarget, ".nerio-registry-lock");
+  fs.writeFileSync(invalidLockPath, "invalid-owner\n");
+  const child = spawn(process.execPath, [cli, "list"], {
+    cwd: invalidOwnerTarget,
+    stdio: "pipe",
+    env: process.env,
+  });
+  let output = "";
+  child.stdout.on("data", (chunk) => (output += chunk));
+  child.stderr.on("data", (chunk) => (output += chunk));
+  const closed = new Promise((resolve) => child.on("close", resolve));
+  await waitForFixture(
+    () =>
+      fs
+        .readdirSync(invalidOwnerTarget)
+        .some((entry) => entry.startsWith(".nerio-registry-lock.candidate-")),
+    "a command waiting on the invalid lock owner",
+  );
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  if (child.exitCode !== null || fs.readFileSync(invalidLockPath, "utf8") !== "invalid-owner\n") {
+    throw new Error(`A missing or invalid Registry lock owner was reaped.\n${output}`);
+  }
+  child.kill();
+  await closed;
+  for (const entry of fs.readdirSync(invalidOwnerTarget)) {
+    if (entry.startsWith(".nerio-registry-lock")) {
+      fs.rmSync(path.join(invalidOwnerTarget, entry), { recursive: true, force: true });
+    }
+  }
 }
 
 async function verifyAtomicTransactions(tempRoot) {

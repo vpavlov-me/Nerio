@@ -25,7 +25,6 @@ const REGISTRY_LOCK_DIRECTORY = ".nerio-registry-lock";
 const REGISTRY_LOCK_SCHEMA_VERSION = "1.0.0";
 const REGISTRY_LOCK_WAIT_MS = 30_000;
 const REGISTRY_LOCK_POLL_MS = 25;
-const REGISTRY_LOCK_INCOMPLETE_GRACE_MS = 1_000;
 const cwd = process.cwd();
 const args = process.argv.slice(2);
 const command = args[0];
@@ -583,20 +582,14 @@ function wait(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-function readRegistryLock(lockRoot) {
-  const stats = fs.lstatSync(lockRoot);
-  if (!stats.isDirectory() || stats.isSymbolicLink()) {
-    throw new Error(`Reserved Registry lock path is not a directory: ${lockRoot}`);
-  }
-  const ownerPath = path.join(lockRoot, "owner.json");
-  if (!fs.existsSync(ownerPath)) return { owner: null, stats };
-  const ownerStats = fs.lstatSync(ownerPath);
-  if (!ownerStats.isFile() || ownerStats.isSymbolicLink()) {
-    throw new Error(`Registry lock owner must be a regular file: ${ownerPath}`);
+function readRegistryLock(lockPath) {
+  const stats = fs.lstatSync(lockPath);
+  if (!stats.isFile() || stats.isSymbolicLink()) {
+    throw new Error(`Reserved Registry lock path is not a regular file: ${lockPath}`);
   }
   let owner;
   try {
-    owner = JSON.parse(fs.readFileSync(ownerPath, "utf8"));
+    owner = JSON.parse(fs.readFileSync(lockPath, "utf8"));
   } catch {
     return { owner: null, stats };
   }
@@ -626,84 +619,86 @@ function sameFile(left, right) {
   return left.dev === right.dev && left.ino === right.ino;
 }
 
-function reapRegistryLock(lockRoot, observed) {
-  const quarantine = `${lockRoot}.stale-${crypto.randomUUID()}`;
+function reapRegistryLock(lockPath, observed) {
+  const quarantine = `${lockPath}.stale-${crypto.randomUUID()}`;
   try {
-    fs.renameSync(lockRoot, quarantine);
+    fs.renameSync(lockPath, quarantine);
   } catch (error) {
     if (error?.code === "ENOENT") return false;
     throw error;
   }
   const movedStats = fs.lstatSync(quarantine);
   if (!sameFile(observed.stats, movedStats)) {
-    if (fs.existsSync(lockRoot)) {
+    if (fs.existsSync(lockPath)) {
       throw new Error(
         `Registry lock changed while stale ownership was being checked; preserved ${quarantine}.`,
       );
     }
-    fs.renameSync(quarantine, lockRoot);
+    fs.renameSync(quarantine, lockPath);
     return false;
   }
-  fs.rmSync(quarantine, { recursive: true, force: true });
+  fs.rmSync(quarantine, { force: true });
   return true;
 }
 
 async function acquireRegistryLock() {
-  const lockRoot = path.join(cwd, REGISTRY_LOCK_DIRECTORY);
+  const lockPath = path.join(cwd, REGISTRY_LOCK_DIRECTORY);
   const token = crypto.randomUUID();
+  const candidatePath = `${lockPath}.candidate-${token}`;
   const deadline = Date.now() + REGISTRY_LOCK_WAIT_MS;
-  while (true) {
-    let created = false;
-    try {
-      fs.mkdirSync(lockRoot, { mode: 0o700 });
-      created = true;
-      writeFileAtomic(
-        path.join(lockRoot, "owner.json"),
-        `${JSON.stringify(
-          {
-            schemaVersion: REGISTRY_LOCK_SCHEMA_VERSION,
-            pid: process.pid,
-            token,
-            createdAt: new Date().toISOString(),
-          },
-          null,
-          2,
-        )}\n`,
-      );
-      return { lockRoot, token };
-    } catch (error) {
-      if (created) {
-        fs.rmSync(lockRoot, { recursive: true, force: true });
-        throw error;
+  writeFileAtomic(
+    candidatePath,
+    `${JSON.stringify(
+      {
+        schemaVersion: REGISTRY_LOCK_SCHEMA_VERSION,
+        pid: process.pid,
+        token,
+        createdAt: new Date().toISOString(),
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  fs.chmodSync(candidatePath, 0o600);
+  try {
+    while (true) {
+      try {
+        fs.linkSync(candidatePath, lockPath);
+        return { lockPath, token };
+      } catch (error) {
+        if (error?.code !== "EEXIST") throw error;
       }
-      if (error?.code !== "EEXIST") {
-        throw error;
-      }
-    }
 
-    const observed = readRegistryLock(lockRoot);
-    const incomplete =
-      !observed.owner && Date.now() - observed.stats.mtimeMs < REGISTRY_LOCK_INCOMPLETE_GRACE_MS;
-    if (!incomplete && (!observed.owner || !processIsAlive(observed.owner.pid))) {
-      if (reapRegistryLock(lockRoot, observed)) continue;
+      let observed;
+      try {
+        observed = readRegistryLock(lockPath);
+      } catch (error) {
+        if (error?.code === "ENOENT") continue;
+        throw error;
+      }
+      if (observed.owner && !processIsAlive(observed.owner.pid)) {
+        if (reapRegistryLock(lockPath, observed)) continue;
+      }
+      if (Date.now() >= deadline) {
+        const owner = observed.owner ? ` held by process ${observed.owner.pid}` : "";
+        throw new Error(
+          `Timed out waiting ${REGISTRY_LOCK_WAIT_MS}ms for Registry transaction lock${owner}.`,
+        );
+      }
+      await wait(REGISTRY_LOCK_POLL_MS);
     }
-    if (Date.now() >= deadline) {
-      const owner = observed.owner ? ` held by process ${observed.owner.pid}` : "";
-      throw new Error(
-        `Timed out waiting ${REGISTRY_LOCK_WAIT_MS}ms for Registry transaction lock${owner}.`,
-      );
-    }
-    await wait(REGISTRY_LOCK_POLL_MS);
+  } finally {
+    fs.rmSync(candidatePath, { force: true });
   }
 }
 
 function releaseRegistryLock(lock) {
-  if (!fs.existsSync(lock.lockRoot)) return;
-  const observed = readRegistryLock(lock.lockRoot);
+  if (!fs.existsSync(lock.lockPath)) return;
+  const observed = readRegistryLock(lock.lockPath);
   if (observed.owner?.token !== lock.token) {
     throw new Error(`Registry transaction lock ownership changed before release.`);
   }
-  fs.rmSync(lock.lockRoot, { recursive: true, force: true });
+  fs.rmSync(lock.lockPath, { force: true });
 }
 
 function writeTransactionJournal(transactionRoot, journal) {
@@ -2004,6 +1999,7 @@ async function main() {
   );
   const recoveryCommand = ["add", "diff", "update", "list", "info", "doctor"].includes(command);
   const lock = guardedCommand ? await acquireRegistryLock() : null;
+  let commandError;
   try {
     if (recoveryCommand) recoverInterruptedTransactions();
 
@@ -2018,9 +2014,26 @@ async function main() {
       console.log(help("root"));
       process.exitCode = command ? 1 : 0;
     }
-  } finally {
-    if (lock) releaseRegistryLock(lock);
+  } catch (error) {
+    commandError = error;
   }
+  let releaseError;
+  if (lock) {
+    try {
+      releaseRegistryLock(lock);
+    } catch (error) {
+      releaseError = error;
+    }
+  }
+  if (commandError && releaseError) {
+    console.error(
+      `Registry transaction lock release also failed: ${
+        releaseError instanceof Error ? releaseError.message : String(releaseError)
+      }`,
+    );
+  }
+  if (commandError) throw commandError;
+  if (releaseError) throw releaseError;
 }
 
 main().catch((error) => {
