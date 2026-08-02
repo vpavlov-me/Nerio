@@ -269,6 +269,10 @@ export const Calendar = React.forwardRef<HTMLDivElement, CalendarProps>(function
 
   React.useEffect(() => {
     if (!focusedDate || !dates.includes(focusedDate) || isUnavailable(focusedDate)) {
+      const focusedDay = focusedDate ? dayRefs.current.get(focusedDate) : undefined;
+      if (focusedDay && focusedDay === document.activeElement) {
+        shouldRestoreGridFocus.current = true;
+      }
       setFocusedDate(initialFocus);
     }
   }, [dates, focusedDate, initialFocus, isUnavailable]);

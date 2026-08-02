@@ -2760,13 +2760,11 @@
         "deprecations": [],
         "kind": "value",
         "name": "CommandGroupLabel",
-        "signature": "React.ForwardRefExoticComponent<CommandGroupProps & React.RefAttributes<HTMLDivElement>>"
+        "signature": "React.ForwardRefExoticComponent<CommandGroupLabelProps & React.RefAttributes<HTMLDivElement>>"
       },
       {
         "definition": [
-          "export interface CommandGroupProps extends React.HTMLAttributes<HTMLDivElement> { items?: readonly CommandItemData[]; render?: NerioRenderProp<CommandPartState>; }",
-          "export interface CommandItemData { value: string; label: string; keywords?: readonly string[]; disabled?: boolean; }",
-          "export type CommandGroupLabelProps = CommandGroupProps;",
+          "export interface CommandGroupLabelProps extends React.HTMLAttributes<HTMLDivElement> { render?: NerioRenderProp<CommandPartState>; }",
           "export type CommandPartState = object;",
           "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
           "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };"
@@ -2774,7 +2772,7 @@
         "deprecations": [],
         "kind": "type",
         "name": "CommandGroupLabelProps",
-        "signature": "CommandGroupProps"
+        "signature": "CommandGroupLabelProps"
       },
       {
         "definition": [

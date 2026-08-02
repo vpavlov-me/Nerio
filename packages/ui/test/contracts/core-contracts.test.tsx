@@ -4816,37 +4816,66 @@ describe("Core interactive action contracts", () => {
   it("keeps Calendar initial markup deterministic across server and client time zones", async () => {
     const previousTimeZone = process.env.TZ;
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
-    process.env.TZ = "Pacific/Kiritimati";
-    const serverMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
-    process.env.TZ = "America/Adak";
-    const clientMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
-
-    expect(clientMarkup).toBe(serverMarkup);
-    expect(serverMarkup).toContain("January 1970");
-    expect(serverMarkup).not.toMatch(/\sdata-today(?:=|>)/);
-
     const container = document.createElement("div");
-    container.innerHTML = serverMarkup;
-    document.body.append(container);
-    const root = hydrateRoot(container, <Calendar aria-label="Deterministic calendar" />);
-    await act(async () => undefined);
-    expect(consoleError).not.toHaveBeenCalled();
-    await act(async () => root.unmount());
-    container.remove();
-    consoleError.mockRestore();
-    process.env.TZ = previousTimeZone;
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+
+    try {
+      process.env.TZ = "Pacific/Kiritimati";
+      const serverMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
+      process.env.TZ = "America/Adak";
+      const clientMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
+
+      expect(clientMarkup).toBe(serverMarkup);
+      expect(serverMarkup).toContain("January 1970");
+      expect(serverMarkup).not.toMatch(/\sdata-today(?:=|>)/);
+
+      container.innerHTML = serverMarkup;
+      document.body.append(container);
+      root = hydrateRoot(container, <Calendar aria-label="Deterministic calendar" />);
+      await act(async () => undefined);
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      if (root) await act(async () => root.unmount());
+      container.remove();
+      consoleError.mockRestore();
+      if (previousTimeZone === undefined) delete process.env.TZ;
+      else process.env.TZ = previousTimeZone;
+    }
   });
 
-  it("moves the roving stop to the grid when every visible date is unavailable", () => {
-    render(
+  it("moves focus when constraints invalidate the active day", async () => {
+    const { rerender } = render(
       <Calendar
         aria-label="Unavailable calendar"
         defaultMonth="2026-06-01"
-        isDateDisabled={() => true}
+        defaultValue="2026-06-15"
       />,
     );
 
     const calendar = screen.getByRole("group", { name: "Unavailable calendar" });
+    within(calendar).getByRole("button", { name: "June 15, 2026, Selected" }).focus();
+
+    rerender(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        defaultValue="2026-06-15"
+        isDateDisabled={(date) => date === "2026-06-15"}
+      />,
+    );
+    await waitFor(() =>
+      expect(within(calendar).getByRole("button", { name: "June 1, 2026" })).toHaveFocus(),
+    );
+
+    rerender(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        defaultValue="2026-06-15"
+        isDateDisabled={() => true}
+      />,
+    );
+    await waitFor(() => expect(within(calendar).getByRole("grid")).toHaveFocus());
     expect(within(calendar).getByRole("grid")).toHaveAttribute("tabindex", "0");
     expect(
       within(calendar)

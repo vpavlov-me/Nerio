@@ -404,7 +404,9 @@ export const CommandGroup = React.forwardRef<HTMLDivElement, CommandGroupProps>(
   },
 );
 
-export type CommandGroupLabelProps = CommandGroupProps;
+export interface CommandGroupLabelProps extends React.HTMLAttributes<HTMLDivElement> {
+  render?: NerioRenderProp<CommandPartState>;
+}
 export const CommandGroupLabel = React.forwardRef<HTMLDivElement, CommandGroupLabelProps>(
   function CommandGroupLabel({ className, ...props }, ref) {
     return (
