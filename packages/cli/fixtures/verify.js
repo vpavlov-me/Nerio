@@ -659,6 +659,35 @@ async function verifyConcurrentTransactions(tempRoot) {
   }
   assertNoTransactionArtifacts(target, "Concurrent Registry installs");
 
+  const fencedTarget = path.join(tempRoot, "fenced-registry-consumer");
+  fs.mkdirSync(fencedTarget);
+  await run(fencedTarget, "init", "--registry", fixtureManifest);
+  const fencedFailure = runFailureWithEnv(
+    fencedTarget,
+    { NERIO_TEST_TRANSACTION_PAUSE_MS: "2500" },
+    "add",
+    "alpha",
+  );
+  await waitForFixture(
+    () =>
+      fs.readdirSync(fencedTarget).some((entry) => entry.startsWith(".nerio-transaction-")) &&
+      fs.readdirSync(fencedTarget).some((entry) => entry.startsWith(".nerio-registry-lock.renew-")),
+    "a blocked Registry command with its renewal guard",
+  );
+  const renewal = fs
+    .readdirSync(fencedTarget)
+    .find((entry) => entry.startsWith(".nerio-registry-lock.renew-"));
+  fs.rmSync(path.join(fencedTarget, renewal));
+  const fencedOutput = await fencedFailure;
+  if (
+    !fencedOutput.includes("Recovery data remains") ||
+    fs.existsSync(path.join(fencedTarget, "components/nerio/components/alpha.ts"))
+  ) {
+    throw new Error(`A Registry owner continued after losing its renewal guard.\n${fencedOutput}`);
+  }
+  await runResult(fencedTarget, "doctor");
+  assertNoTransactionArtifacts(fencedTarget, "Fenced Registry transaction");
+
   for (const [reservedIndex, reservedTarget] of [
     ".nerio-registry-lock",
     ".NERIO-REGISTRY-LOCK",

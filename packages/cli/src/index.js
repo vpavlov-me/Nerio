@@ -730,7 +730,12 @@ async function reapRegistryLock(lockPath, token, observed) {
 
 function refreshRegistryLockLease(lock) {
   const observed = readRegistryLock(lock.lockPath);
-  if (observed.owner?.token !== lock.token) {
+  const guard = readRegistryLock(lock.renewPath);
+  if (
+    observed.owner?.token !== lock.token ||
+    guard.owner?.token !== lock.token ||
+    !sameFile(observed.stats, guard.stats)
+  ) {
     throw new Error(`Registry lock ownership changed.`);
   }
   const descriptor = fs.openSync(lock.lockPath, "r");
@@ -753,7 +758,7 @@ function startRegistryLockHeartbeat(lock) {
   lock.renewPath = `${lock.lockPath}.renew-${lock.token}`;
   fs.linkSync(lock.lockPath, lock.renewPath);
   lock.heartbeat = new Worker(
-    `const{workerData}=require("node:worker_threads"),fs=require("node:fs"),fd=fs.openSync(workerData.path,"r");setInterval(()=>{const now=new Date;fs.futimesSync(fd,now,now)},workerData.interval)`,
+    `const{workerData}=require("node:worker_threads"),fs=require("node:fs"),fd=fs.openSync(workerData.path,"r");setInterval(()=>{const now=new Date,a=fs.fstatSync(fd);fs.futimesSync(fd,now,now);const b=fs.lstatSync(workerData.path);if(a.dev!==b.dev||a.ino!==b.ino)throw 0},workerData.interval)`,
     {
       eval: true,
       workerData: { path: lock.renewPath, interval: REGISTRY_LOCK_HEARTBEAT_MS },
