@@ -739,6 +739,8 @@ async function verifyConcurrentTransactions(tempRoot) {
   };
   const foreignNamespaceContent = `${JSON.stringify(foreignNamespaceLock)}\n`;
   fs.writeFileSync(invalidLockPath, foreignNamespaceContent);
+  const futureLeaseTime = new Date(Date.now() + 120_000);
+  fs.utimesSync(invalidLockPath, futureLeaseTime, futureLeaseTime);
   const foreignChild = spawn(process.execPath, [cli, "doctor"], {
     cwd: invalidOwnerTarget,
     stdio: "pipe",

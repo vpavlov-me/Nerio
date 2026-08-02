@@ -649,11 +649,7 @@ function registryReapClaims() {
       throw error;
     }
     const claimAge = now - stats.mtimeMs;
-    if (
-      stats.isFile() &&
-      !stats.isSymbolicLink() &&
-      (claimAge >= REGISTRY_LOCK_STALE_MS || claimAge <= -REGISTRY_LOCK_STALE_MS)
-    ) {
+    if (stats.isFile() && !stats.isSymbolicLink() && claimAge >= REGISTRY_LOCK_STALE_MS) {
       // Claim UUID paths are never reused, so this cannot remove a replacement.
       fs.rmSync(claimPath, { force: true });
       continue;
@@ -677,11 +673,7 @@ function cleanupRegistryLockCandidates(currentCandidate) {
       throw error;
     }
     const candidateAge = now - stats.mtimeMs;
-    if (
-      stats.isFile() &&
-      !stats.isSymbolicLink() &&
-      (candidateAge >= REGISTRY_LOCK_STALE_MS || candidateAge <= -REGISTRY_LOCK_STALE_MS)
-    ) {
+    if (stats.isFile() && !stats.isSymbolicLink() && candidateAge >= REGISTRY_LOCK_STALE_MS) {
       // Candidate UUID paths are never reused by another process.
       fs.rmSync(candidatePath, { force: true });
     }
@@ -709,9 +701,7 @@ async function reapRegistryLock(lockPath, token, observed) {
       return false;
     }
     const currentLeaseAge = Date.now() - current.stats.mtimeMs;
-    if (currentLeaseAge < REGISTRY_LOCK_STALE_MS && currentLeaseAge > -REGISTRY_LOCK_STALE_MS) {
-      return false;
-    }
+    if (currentLeaseAge < REGISTRY_LOCK_STALE_MS) return false;
     try {
       fs.rmSync(lockPath);
     } catch (error) {
@@ -827,8 +817,7 @@ async function acquireRegistryLock() {
       }
       if (observed.owner) {
         const leaseAge = Date.now() - observed.stats.mtimeMs;
-        const leaseStale =
-          leaseAge >= REGISTRY_LOCK_STALE_MS || leaseAge <= -REGISTRY_LOCK_STALE_MS;
+        const leaseStale = leaseAge >= REGISTRY_LOCK_STALE_MS;
         if (leaseStale) {
           if (staleOwner?.token !== observed.owner.token) {
             staleOwner = { token: observed.owner.token, observedAt: Date.now() };
