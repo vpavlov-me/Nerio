@@ -1,10 +1,25 @@
 import { expect, test } from "@playwright/test";
+import { measureRoute } from "./performance-helpers.mjs";
 
 const searchResponseBudgetMs = 1_000;
+const documentationRoutes = [
+  "/",
+  "/docs/getting-started",
+  "/docs/components/button",
+  "/docs/components/select",
+  "/docs/components/calendar",
+  "/docs/components/date-picker",
+  "/docs/components/command-primitive",
+  "/templates/operations-workspace",
+];
 
-test.beforeEach(async ({ page }) => {
-  await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
-});
+for (const route of documentationRoutes) {
+  test(`${route} stays within measured performance and resilience budgets`, async ({
+    page,
+  }, testInfo) => {
+    await measureRoute(page, route, testInfo);
+  });
+}
 
 test("keeps documentation search responsive", async ({ page }) => {
   const externalRequests = [];
@@ -27,7 +42,7 @@ test("keeps documentation search responsive", async ({ page }) => {
   });
   page.on("pageerror", (error) => errors.push(error.message));
 
-  await page.goto("/docs/getting-started");
+  await page.goto("/docs/getting-started", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Search documentation" }).click();
   const input = page.getByRole("combobox", { name: "Search documentation" });
   const started = Date.now();

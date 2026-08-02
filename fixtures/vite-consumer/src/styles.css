@@ -1,0 +1,11 @@
+@import "tailwindcss";
+@import "@nerio-ui/tokens/tailwind.css";
+@import "@nerio-ui/ui/styles.css";
+@source "../node_modules/@nerio-ui/ui/src";
+
+body {
+  margin: 0;
+  background: var(--n-color-background);
+  color: var(--n-color-text-primary);
+  font-family: var(--n-font-family-sans);
+}

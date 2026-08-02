@@ -24,7 +24,9 @@ const developmentCommands = [
   "pnpm validate:docs",
   "pnpm validate:onboarding",
   "pnpm test:docs-examples",
+  "pnpm test:consumer:vite",
   "pnpm build",
+  "pnpm validate:route-budgets",
 ];
 
 const developmentScopedCommands = [

@@ -74,7 +74,9 @@ jobs:
       - run: pnpm validate:docs
       - run: pnpm validate:onboarding
       - run: pnpm test:docs-examples
+      - run: pnpm test:consumer:vite
       - run: pnpm build
+      - run: pnpm validate:route-budgets
 
   branch_policy_contract:
     name: branch-policy-contract

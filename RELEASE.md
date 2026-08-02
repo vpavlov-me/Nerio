@@ -37,7 +37,9 @@ pnpm validate:api
 pnpm validate:docs
 pnpm validate:onboarding
 pnpm test:docs-examples
+pnpm test:consumer:vite
 pnpm build
+pnpm validate:route-budgets
 pnpm test:browser:pr
 ```
 
@@ -60,7 +62,9 @@ pnpm validate:release-metadata
 pnpm prepare:release-version 1.0.0-beta.1
 pnpm test:consumer:minimum
 pnpm test:consumer:current
+pnpm test:consumer:vite
 pnpm test:consumer-matrix
+pnpm validate:route-budgets
 pnpm audit:prod
 pnpm validate:package-budgets
 pnpm validate:release:metadata

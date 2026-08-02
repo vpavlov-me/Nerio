@@ -21,6 +21,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Split standard documentation into server-rendered reference content and typed, statically
+  registered client preview islands. Added a packed Vite + React + TypeScript + Tailwind CSS v4
+  consumer and replaced the former 8 MiB transfer tripwire with measured per-route JavaScript, CSS,
+  deterministic transfer, runtime, CLS, LCP, network, hydration, and overflow checks. This records
+  fixture evidence and does not add a blanket framework support claim.
 - Raised the public Node.js minimum from 20.9 to 22 and aligned repository runtime declarations,
   package engines, documentation, fixtures, snapshots, and CI evidence.
 - Raised the Tailwind CSS minimum from 4.0.0 to 4.1.0 after a clean Next.js 16.2 consumer proved

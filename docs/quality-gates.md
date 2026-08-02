@@ -9,7 +9,8 @@ regresses.
 Pull requests from working branches into `dev` run `.github/workflows/pr-gate.yml`. Its required
 `PR gate` aggregate is the short feedback loop. The always-on `development-quality` job covers
 formatting, lint, type checking, unit and accessibility tests, catalog/token/onboarding validators,
-documentation validation and examples, and the workspace build. A repository-owned scope detector
+documentation validation and examples, the packed Vite consumer, the workspace build, and measured
+documentation route budgets. A repository-owned scope detector
 compares the pull-request base and head SHAs, then selects additional contracts:
 
 - runtime UI, tokens, adapters, Registry source, interactive docs, browser tests, or browser config
@@ -24,7 +25,9 @@ Markdown-only, audit-only, workflow-only, and package-metadata-only changes do n
 or visual work unless they also touch a matching runtime surface. Conditional jobs may be
 `success` or `skipped`; the `PR gate` fails on `failure` or `cancelled`. The independent
 `branch-policy` status always validates pull-request direction. Development pull requests install
-Chromium only, never run the full browser suite, and never run packed release-consumer smoke.
+Chromium only, never run the full browser suite, and never run the supported-version Next.js
+release-consumer matrix. The focused Vite fixture stays independent and runs on every pull request
+because it proves public tarballs without workspace aliases or hidden dependencies.
 
 Pull requests from `dev` into `main` run `.github/workflows/release-gate.yml`. The required
 `Release gate` aggregate succeeds only after release quality, separate Chromium, Firefox, and
@@ -60,11 +63,12 @@ documented limitation.
 ## Deterministic performance checks
 
 The Chromium Template project runs `tests/browser/performance-smoke.spec.mjs`; the docs project runs
-`tests/browser/docs-performance-smoke.spec.mjs`. Together they block every third-party
-request, reject console, page, and hydration errors, cap primary-route transferred resources at 8
-MiB, limit cumulative layout shift to 0.1 after local fonts settle, and require a documentation
-search result within one second. These are regression tripwires, not public speed claims or a
-substitute for production observability.
+`tests/browser/docs-performance-smoke.spec.mjs`. Together they block every third-party request,
+reject console, page, and hydration errors, enforce the per-route runtime transfer allowances in
+`quality/docs-route-budgets.json`, limit cumulative layout shift to 0.1, require Largest Contentful
+Paint within 2.5 seconds after local fonts settle, reject document-level horizontal overflow, and
+require a documentation search result within one second. These are regression tripwires, not public
+speed claims or a substitute for production observability.
 
 ## Package and bundle budgets
 
@@ -76,6 +80,18 @@ substitute for production observability.
 - named server-safe Card and client Button imports;
 - a named Lucide icon import, with Lucide included so accidental full-bundle retention is visible;
 - each optional adapter subpath with its peer externalized.
+
+`pnpm validate:route-budgets` reads production Next.js client-reference manifests and enforces raw
+JavaScript, raw CSS, and deterministic gzip transfer allowances per reviewed route. The checked-in
+report covers the home page, Getting Started, Button, Select, Calendar, DatePicker, Command
+Primitive, one template detail, and one full-screen view, including major chunks, duplicated package
+ownership, and the measured delta from the pre-split baseline.
+
+`pnpm test:consumer:vite` packs the public artifacts and builds a clean Vite + React + TypeScript +
+Tailwind CSS v4 fixture with explicit dependencies, representative server-safe and client imports,
+and no workspace aliases. It also proves that Table, Motion, React Hook Form, Recharts, and Zod
+optional peers are not installed by an unrelated consumer. This is compatibility evidence for the
+tested fixture, not a new blanket support claim.
 
 The validator compares public barrel imports with direct implementation controls to prove
 representative named component and icon imports do not retain unrelated code. Release smoke separately proves optional-peer isolation, exact
@@ -125,7 +141,9 @@ pnpm validate:catalog
 pnpm validate:docs
 pnpm validate:onboarding
 pnpm test:docs-examples
+pnpm test:consumer:vite
 pnpm build
+pnpm validate:route-budgets
 pnpm test:browser:pr
 ```
 
@@ -147,6 +165,8 @@ pnpm validate:platform-support
 pnpm validate:api
 pnpm validate:package-budgets
 pnpm validate:release:metadata
+pnpm test:consumer:vite
+pnpm validate:route-budgets
 pnpm test:release-consumer
 pnpm pack:check
 ```

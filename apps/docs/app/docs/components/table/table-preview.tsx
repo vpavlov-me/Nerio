@@ -1,0 +1,365 @@
+"use client";
+
+import * as React from "react";
+import {
+  ArrowUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  GripVertical,
+} from "@nerio-ui/adapters/icons";
+import {
+  Icon,
+  Pagination,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
+import { Button, Checkbox } from "@nerio-ui/ui/client";
+import { CodeExample } from "../../../../components/code-example";
+
+const teamMembers = [
+  { id: "ethan", name: "Ethan Lee", role: "VP Sales", status: "Active", email: "ethan@acme.com" },
+  { id: "john", name: "John Smith", role: "CTO", status: "Active", email: "john@acme.com" },
+  { id: "kate", name: "Kate Moore", role: "CEO", status: "Active", email: "kate@acme.com" },
+  { id: "lena", name: "Lena Ortiz", role: "COO", status: "Active", email: "lena@acme.com" },
+  { id: "sara", name: "Sara Johnson", role: "CMO", status: "On leave", email: "sara@acme.com" },
+  {
+    id: "michael",
+    name: "Michael Brown",
+    role: "CFO",
+    status: "Active",
+    email: "michael@acme.com",
+  },
+  { id: "nina", name: "Nina Patel", role: "VP Product", status: "Active", email: "nina@acme.com" },
+  { id: "omar", name: "Omar Haddad", role: "VP Design", status: "Active", email: "omar@acme.com" },
+] as const;
+
+type TeamMember = (typeof teamMembers)[number];
+type TeamSortKey = "name" | "role" | "status" | "email";
+type TeamSort = { key: TeamSortKey; direction: "ascending" | "descending" };
+type TablePresentation = "primary" | "secondary";
+
+function sortMembers(items: readonly TeamMember[], activeSort?: TeamSort) {
+  if (!activeSort) return [...items];
+  return [...items].sort((left, right) => {
+    const comparison = left[activeSort.key].localeCompare(right[activeSort.key]);
+    return activeSort.direction === "ascending" ? comparison : -comparison;
+  });
+}
+
+const stableTableCode = `import { ArrowUp, ChevronDown } from "@nerio-ui/adapters/icons";
+import { Pagination, Table, TableBody, TableCell,
+  TableContainer, TableHead, TableHeader, TableRow } from "@nerio-ui/ui";
+import { Button, Checkbox } from "@nerio-ui/ui/client";
+
+<div className="table-shell">
+  <TableContainer aria-label="Team members">
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead aria-label="Select rows">
+            <Checkbox aria-label="Select all rows on this page" />
+          </TableHead>
+          <TableHead aria-sort="ascending">
+            <Button trailingIcon={ArrowUp} variant="ghost">Name</Button>
+          </TableHead>
+          <TableHead aria-sort="none">
+            <Button trailingIcon={ChevronDown} variant="ghost">Role</Button>
+          </TableHead>
+          <TableHead aria-sort="none">
+            <Button trailingIcon={ChevronDown} variant="ghost">Status</Button>
+          </TableHead>
+          <TableHead aria-sort="none">
+            <Button trailingIcon={ChevronDown} variant="ghost">Email</Button>
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>...</TableBody>
+    </Table>
+  </TableContainer>
+  <div className="table-footer">
+    <span>1 to 4 of 8 results</span>
+    <Pagination pages={pages} />
+  </div>
+</div>`;
+
+function ComponentExample({
+  children,
+  code,
+  label,
+}: {
+  children: React.ReactNode;
+  code: string;
+  label: string;
+}) {
+  return (
+    <section className="component-example" aria-label={label}>
+      <div className="component-example__preview table-doc-preview">{children}</div>
+      <CodeExample className="component-example__code" code={code} label={`${label} code`} />
+    </section>
+  );
+}
+
+function StableTablePreview({ presentation = "primary" }: { presentation?: TablePresentation }) {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [members, setMembers] = React.useState<TeamMember[]>(() => [...teamMembers]);
+  const [selected, setSelected] = React.useState<Set<string>>(() => new Set());
+  const [sort, setSort] = React.useState<TeamSort>();
+  const [draggedId, setDraggedId] = React.useState<string>();
+  const [dragTargetId, setDragTargetId] = React.useState<string>();
+  const dragPreviewRef = React.useRef<HTMLTableElement | null>(null);
+
+  const orderedMembers = React.useMemo(() => sortMembers(members, sort), [members, sort]);
+
+  const pageSize = 4;
+  const pageStart = (currentPage - 1) * pageSize;
+  const visibleMembers = orderedMembers.slice(pageStart, pageStart + pageSize);
+  const visibleIds = visibleMembers.map((member) => member.id);
+  const allVisibleSelected = visibleIds.every((id) => selected.has(id));
+  const someVisibleSelected = visibleIds.some((id) => selected.has(id));
+
+  const reorderMember = (sourceId: string, targetId: string) => {
+    if (sourceId === targetId) return;
+    const activeSort = sort;
+    setMembers((current) => {
+      const next = sortMembers(current, activeSort);
+      const sourceIndex = next.findIndex((member) => member.id === sourceId);
+      const targetIndex = next.findIndex((member) => member.id === targetId);
+      if (sourceIndex === -1 || targetIndex === -1) return current;
+      const [moved] = next.splice(sourceIndex, 1);
+      if (!moved) return current;
+      next.splice(targetIndex, 0, moved);
+      return next;
+    });
+    setSort(undefined);
+  };
+
+  const moveMember = (id: string, offset: -1 | 1) => {
+    const currentIndex = orderedMembers.findIndex((member) => member.id === id);
+    const target = orderedMembers[currentIndex + offset];
+    if (target) reorderMember(id, target.id);
+  };
+
+  const toggleVisibleRows = (checked: boolean) => {
+    setSelected((current) => {
+      const next = new Set(current);
+      visibleIds.forEach((id) => (checked === true ? next.add(id) : next.delete(id)));
+      return next;
+    });
+  };
+
+  const toggleRow = (id: string, checked: boolean) => {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (checked === true) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
+  const toggleSort = (key: TeamSortKey) => {
+    setSort((current) => ({
+      key,
+      direction:
+        current?.key === key && current.direction === "ascending" ? "descending" : "ascending",
+    }));
+  };
+
+  const clearDragPreview = React.useCallback(() => {
+    dragPreviewRef.current?.remove();
+    dragPreviewRef.current = null;
+  }, []);
+
+  React.useEffect(() => clearDragPreview, [clearDragPreview]);
+
+  const createDragPreview = (row: HTMLTableRowElement) => {
+    clearDragPreview();
+    const preview = document.createElement("table");
+    const body = document.createElement("tbody");
+    const rowClone = row.cloneNode(true) as HTMLTableRowElement;
+    const rowBounds = row.getBoundingClientRect();
+
+    preview.className = "table-doc-drag-preview";
+    preview.setAttribute("aria-hidden", "true");
+    preview.style.inlineSize = `${rowBounds.width}px`;
+    rowClone.removeAttribute("data-dragging");
+    rowClone.removeAttribute("data-drag-target");
+    rowClone.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+    Array.from(row.cells).forEach((cell, index) => {
+      const clonedCell = rowClone.cells.item(index);
+      if (clonedCell) clonedCell.style.inlineSize = `${cell.getBoundingClientRect().width}px`;
+    });
+
+    body.append(rowClone);
+    preview.append(body);
+    document.body.append(preview);
+    dragPreviewRef.current = preview;
+    return preview;
+  };
+
+  return (
+    <div
+      className="table-doc-product-surface"
+      data-drag-active={draggedId ? "" : undefined}
+      data-table-presentation={presentation}
+    >
+      <div className="table-doc-product-shell">
+        <TableContainer
+          aria-label="Team members, roles, statuses, and emails"
+          className="table-doc-product-table"
+          focusable
+        >
+          <Table>
+            <TableCaption>Team members, roles, statuses, and email addresses</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead aria-label="Reorder rows" className="table-doc-control-column" />
+                <TableHead
+                  aria-label="Select rows"
+                  className="table-doc-control-column table-doc-checkbox-column"
+                >
+                  <Checkbox
+                    aria-label="Select all rows on this page"
+                    checked={allVisibleSelected}
+                    indeterminate={someVisibleSelected && !allVisibleSelected}
+                    onCheckedChange={toggleVisibleRows}
+                  />
+                </TableHead>
+                {(
+                  [
+                    ["name", "Name"],
+                    ["role", "Role"],
+                    ["status", "Status"],
+                    ["email", "Email"],
+                  ] as const
+                ).map(([key, label]) => (
+                  <TableHead key={key} aria-sort={sort?.key === key ? sort.direction : "none"}>
+                    <Button
+                      className="table-doc-sort-button"
+                      size="sm"
+                      trailingIcon={
+                        sort?.key === key && sort.direction === "ascending" ? ArrowUp : ChevronDown
+                      }
+                      variant="ghost"
+                      onClick={() => toggleSort(key)}
+                    >
+                      {label}
+                    </Button>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {visibleMembers.map((member) => (
+                <TableRow
+                  key={member.id}
+                  data-checked-row={selected.has(member.id) ? "" : undefined}
+                  data-dragging={draggedId === member.id ? "" : undefined}
+                  data-drag-target={
+                    draggedId && draggedId !== member.id && dragTargetId === member.id
+                      ? ""
+                      : undefined
+                  }
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "move";
+                    setDragTargetId(member.id);
+                  }}
+                  onDrop={(event) => {
+                    reorderMember(event.dataTransfer.getData("text/plain"), member.id);
+                    setDraggedId(undefined);
+                    setDragTargetId(undefined);
+                    clearDragPreview();
+                  }}
+                >
+                  <TableCell className="table-doc-control-column">
+                    <Button
+                      draggable
+                      aria-label={`Reorder ${member.name}. Use Arrow Up or Arrow Down.`}
+                      className="table-doc-drag-handle"
+                      data-drag-handle=""
+                      icon={GripVertical}
+                      size="sm"
+                      tooltip="Reorder"
+                      variant="ghost"
+                      onDragEnd={() => {
+                        setDraggedId(undefined);
+                        setDragTargetId(undefined);
+                        clearDragPreview();
+                      }}
+                      onDragStart={(event) => {
+                        const row = event.currentTarget.closest("tr");
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", member.id);
+                        if (row) {
+                          const preview = createDragPreview(row);
+                          const bounds = row.getBoundingClientRect();
+                          event.dataTransfer.setDragImage(
+                            preview,
+                            Math.max(0, event.clientX - bounds.left),
+                            Math.max(0, event.clientY - bounds.top),
+                          );
+                        }
+                        setDraggedId(member.id);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+                          event.preventDefault();
+                          moveMember(member.id, event.key === "ArrowUp" ? -1 : 1);
+                        }
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell className="table-doc-control-column">
+                    <Checkbox
+                      aria-label={`Select ${member.name}`}
+                      checked={selected.has(member.id)}
+                      onCheckedChange={(checked) => toggleRow(member.id, checked)}
+                    />
+                  </TableCell>
+                  <TableHead scope="row">{member.name}</TableHead>
+                  <TableCell>{member.role}</TableCell>
+                  <TableCell>{member.status}</TableCell>
+                  <TableCell>{member.email}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <div className="table-doc-pagination">
+          <span>
+            {pageStart + 1} to {Math.min(pageStart + pageSize, orderedMembers.length)} of{" "}
+            {orderedMembers.length} results
+          </span>
+          <Pagination
+            aria-label="Team members pages"
+            nextAriaLabel="Go to next team members page"
+            nextLabel={<Icon icon={ChevronRight} />}
+            nextOnSelect={currentPage < 2 ? () => setCurrentPage(currentPage + 1) : undefined}
+            pages={[
+              { key: 1, label: 1, current: currentPage === 1, onSelect: () => setCurrentPage(1) },
+              { key: 2, label: 2, current: currentPage === 2, onSelect: () => setCurrentPage(2) },
+            ]}
+            previousAriaLabel="Go to previous team members page"
+            previousLabel={<Icon icon={ChevronLeft} />}
+            previousOnSelect={currentPage > 1 ? () => setCurrentPage(currentPage - 1) : undefined}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function TablePreview() {
+  return (
+    <ComponentExample code={stableTableCode} label="Primary Table composition">
+      <StableTablePreview />
+    </ComponentExample>
+  );
+}
