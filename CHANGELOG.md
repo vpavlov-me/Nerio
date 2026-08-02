@@ -81,7 +81,8 @@ change, Git tag, GitHub Release, or stable-readiness claim.
   [`docs/migrations/beta-0-to-beta-1.md`](./docs/migrations/beta-0-to-beta-1.md) for the runtime
   lower bounds, deterministic date initialization, Tabs string values, Nerio-owned interactive
   types, Registry integrity, HTTPS policy, and atomic CLI lifecycle. This work prepares but does not
-  publish the next beta.
+  publish the next beta. Exact technical closure evidence is recorded in
+  [`docs/core-1-0-beta-gap-closure.md`](./docs/core-1-0-beta-gap-closure.md).
 
 ## 1.0.0-beta.0 — 2026-08-01
 

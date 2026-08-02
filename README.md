@@ -223,7 +223,8 @@ accessibility/device gates remain open before stable documentation begins. The f
 defined by the
 [public API stability policy](./docs/public-api-stability.md); alpha consumers should use the
 [Core 1.0 migration guide](./docs/migrations/alpha-to-beta.md). See
-[RELEASE.md](./RELEASE.md), [CHANGELOG.md](./CHANGELOG.md), and the
+[RELEASE.md](./RELEASE.md), [CHANGELOG.md](./CHANGELOG.md), the
+[beta technical gap-closure report](./docs/core-1-0-beta-gap-closure.md), and the
 [beta feedback cycle](./docs/beta-feedback-cycle.md).
 
 ## Contributing
