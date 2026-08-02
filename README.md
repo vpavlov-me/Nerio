@@ -174,13 +174,24 @@ For one-off initialization or installation, use the real package name:
 updates and explicit CLI/Registry version alignment.
 
 The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
-version; local-path and HTTP overrides remain available. `nerio add` writes the requested source
-closure and records its exact Registry version, revision, file paths, dependency closure, and
-original hashes in `nerio.lock.json`. `nerio diff` separates local and upstream drift. `nerio
-update --dry-run` previews a deterministic update, while `nerio update` applies only safe upstream
-changes and never overwrites locally modified source silently. Run `nerio doctor` after configuring
-the consumer stylesheet to validate versions, installed metadata, dependencies, source drift, the
-Tailwind bridge, package `@source`, token imports, no-Preflight compatibility, and stale legacy CSS.
+version; local-path and HTTPS overrides remain available. Plain HTTP is rejected unless a trusted
+local Registry is selected with the explicit `--allow-insecure-http` flag. Remote manifests and
+source are bounded by a 10-second request/body timeout, a 2 MiB manifest limit, a 4 MiB per-source
+limit, at most three redirects, content-type handling, schema/path validation, and SHA-256
+integrity checks.
+
+`nerio add` resolves and fetches the complete requested source closure before writing. It stages the
+full operation, commits source, and writes `nerio.lock.json` last; any source or lock failure restores
+the previous source and lock state and removes temporary artifacts. A durable local journal lets the
+next Registry command recover an operation interrupted by process exit or machine failure; a fully
+committed source-and-lock transaction is retained and only its orphaned journal is removed. The lock
+records exact Registry version, revision, file paths, dependency closure, original hashes, integrity
+metadata, and owners.
+`nerio diff` separates local and upstream drift. `nerio update --dry-run` previews a deterministic
+update, while `nerio update` applies only safe upstream changes and never overwrites locally modified
+source silently. Run `nerio doctor` after configuring the consumer stylesheet to validate versions,
+installed metadata, dependencies, source drift, the Tailwind bridge, package `@source`, token
+imports, no-Preflight compatibility, and stale legacy CSS.
 
 ## MCP server
 

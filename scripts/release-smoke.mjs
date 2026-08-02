@@ -218,7 +218,7 @@ function validatePackedPackage(name, tarball) {
   if (name === "@nerio-ui/registry") {
     const manifest = JSON.parse(run("tar", ["-xOf", tarball, "package/src/manifest.json"]));
     if (
-      manifest.schemaVersion !== "1.0.0" ||
+      manifest.schemaVersion !== "1.1.0" ||
       manifest.version !== expectedVersion ||
       manifest.sourceRevision !== `v${expectedVersion}` ||
       manifest.styleContractVersion !== "tailwind-v1" ||
@@ -227,6 +227,15 @@ function validatePackedPackage(name, tarball) {
       throw new Error(
         "@nerio-ui/registry must pack coordinated immutable version, revision, style, and item metadata.",
       );
+    }
+    for (const item of manifest.items) {
+      for (const file of item.files) {
+        if (!/^sha256-[a-f0-9]{64}$/.test(file.integrity || "")) {
+          throw new Error(
+            `@nerio-ui/registry packed manifest is missing SHA-256 integrity for ${item.name}:${file.target}.`,
+          );
+        }
+      }
     }
   }
 }

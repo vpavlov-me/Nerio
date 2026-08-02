@@ -25,7 +25,7 @@
   "scripts": {
     "build": "tsc --noEmit",
     "lint": "eslint .",
-    "test:fixture": "node fixtures/verify.js",
+    "test:fixture": "node fixtures/verify.js && node fixtures/remote-verify.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

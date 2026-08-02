@@ -20,7 +20,8 @@ covers:
 - package exports, bins, engines, peer ranges, dependencies, files, and side effects;
 - TypeScript exports and signatures for every public subpath;
 - semantic and component CSS custom properties;
-- Registry item names, dependency closure, files, slots, states, variants, and required tokens;
+- Registry item names, dependency closure, files, source integrity, slots, states, variants, and
+  required tokens;
 - CLI commands, help, configuration schemas, lock schema, and default Registry behavior;
 - MCP tool names and response object shapes;
 - public documentation routes.
@@ -92,3 +93,6 @@ Registry source installs are consumer-owned after installation. Use `nerio diff`
 `nerio update --dry-run` to inspect the plan. A normal update may replace an unchanged installed
 file, but it must not overwrite a locally modified file. Consumers resolve those conflicts by
 porting their local intent onto the new upstream source and then recording the updated state.
+Registry add/update operations validate and stage the complete closure before writing, commit lock
+metadata last, and restore both source and lock state on failure. Remote Registry access requires
+HTTPS unless a trusted local HTTP endpoint is explicitly opted into.

@@ -28,6 +28,9 @@ function assertFileTargets(actual, expected, description) {
       `${description} file targets drifted. Expected: ${required.join(", ")}. Received: ${received.join(", ")}.`,
     );
   }
+  if (actual.some((file) => !/^sha256-[a-f0-9]{64}$/.test(file.integrity || ""))) {
+    throw new Error(`${description} files are missing Registry SHA-256 integrity metadata.`);
+  }
 }
 
 function assertRegistryParity(name, usage, expectedFiles) {

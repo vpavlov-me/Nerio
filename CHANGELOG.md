@@ -14,6 +14,10 @@ Items under `Unreleased` may change before the next public release.
 - Added packed minimum/current dependency consumers, independent optional-adapter peer evidence,
   Node 22 and Node 24 release coverage, and a scheduled non-blocking current-stable Playwright
   canary.
+- Added SHA-256 integrity metadata for every Registry source file plus CLI, Registry, MCP, packed
+  consumer, and public-contract validation. The Registry tarball grows from 25,279 to 29,812 bytes
+  and unpacked content from 148,383 to 176,740 bytes; its reviewed tarball budget moves from 28,000
+  to 31,000 bytes while the existing 250,000-byte unpacked ceiling remains.
 
 ### Changed
 
@@ -29,6 +33,8 @@ Items under `Unreleased` may change before the next public release.
 - Replaced Base UI-derived public props and event aliases for the interactive Core components with
   bounded Nerio-owned contracts, restricted Tabs values to stable strings, and exact-pinned
   `@base-ui/react` to 1.6.0.
+- Made HTTPS the default remote Registry policy with explicit trusted-local HTTP opt-in and bounded
+  request timeout, response size, redirects, content types, paths, schema, and secret-safe errors.
 
 ### Fixed
 
@@ -39,13 +45,21 @@ Items under `Unreleased` may change before the next public release.
 - Avoided repeating DatePicker's visible value for self-named triggers while retaining the selected
   value once for controls named by Field or explicit ARIA, plus consumer descriptions and the
   localized open/change instruction.
+- Made `nerio add` and `nerio update` operation-atomic: the CLI fetches and validates the complete
+  closure, stages and backs up affected files, writes lock metadata last, and restores source and
+  lock state after injected source or lock failures. Durable journals recover abrupt process exits
+  on the next Registry command without rolling back a source-and-lock transaction that had fully
+  committed. The CLI tarball grows from 10,559 to 16,367 bytes and unpacked content from 40,917 to
+  68,442 bytes; reviewed budgets move from 12,000 to 18,000 compressed bytes and from 50,000 to
+  75,000 unpacked bytes for this bounded transport, recovery, and transaction contract.
 
 ### Migration
 
 - Follow
   [`docs/migrations/beta-0-to-beta-1.md`](./docs/migrations/beta-0-to-beta-1.md) for the runtime
-  lower bounds, deterministic date initialization, Tabs string values, and Nerio-owned interactive
-  types. This work prepares but does not publish the next beta.
+  lower bounds, deterministic date initialization, Tabs string values, Nerio-owned interactive
+  types, Registry integrity, HTTPS policy, and atomic CLI lifecycle. This work prepares but does not
+  publish the next beta.
 
 ## 1.0.0-beta.0 — 2026-08-01
 
