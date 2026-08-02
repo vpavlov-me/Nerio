@@ -299,6 +299,9 @@ test("keeps Calendar, InputGroup, and Checkbox component states coherent", async
     (element) => getComputedStyle(element).backgroundColor,
   );
   await groupedInput.hover();
+  await expect
+    .poll(() => inputGroup.evaluate((element) => getComputedStyle(element).backgroundColor))
+    .not.toBe(restingGroupBackground);
   const hoveredInputGroup = await inputGroup.evaluate((element) => {
     const input = element.querySelector(".n-input");
     return {
