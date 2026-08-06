@@ -74,6 +74,87 @@ Scope:
 - Navigation and layout: Breadcrumbs, Pagination, Sidebar Primitive, Command Primitive
 - Registry metadata, docs pages, CLI fixtures, and MCP fixtures for newly released components
 
+## Core 1.0 stable sequence
+
+The frozen Core 1.0 surface and beta.1 technical candidate are complete. Stable 1.0 remains blocked
+by the manual accessibility/device gate #143 and the public beta.1/external-feedback gate #146,
+followed by #148, #150, and the manual publication issue #151.
+
+<!-- parity-track:manual-stable-gates -->
+
+Do not start post-1.0 runtime, package, Registry, token, export, or component implementation on the
+release line before #151 unless issue #152 accepts a focused blocker from real manual or beta
+evidence.
+
+## Phase 2C — Core 1.x capability parity
+
+The canonical decision and complete evidence-backed classification live in
+[`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md) and
+`quality/core-1-x-capability-parity.json`. That decision supersedes component-count comparison as a
+roadmap method.
+
+### Core 1.1 shared contract
+
+<!-- parity-track:shared-direction-contract -->
+
+- #342 establishes the minimum inherited direction, RTL, locale, and localization contract after
+  stable 1.0.
+- The full #342 audit continues as a parallel shared track. A direction-sensitive component API
+  waits only for the relevant accepted contract, not for the complete cross-repository audit.
+
+### Core 1.1 primitive parity
+
+<!-- parity-track:primitive-parity-a -->
+
+After the relevant #342 foundation, these may proceed in parallel:
+
+- #343 — Accordion and Collapsible;
+- #344 — additive compound Dialog anatomy and AlertDialog;
+- #345 — bounded single-select Combobox;
+- #346 — SearchField;
+- #347 — OTPField;
+- #370 — NumberField, split from #346.
+
+<!-- parity-track:primitive-parity-b -->
+
+These are independent parallel slices:
+
+- #348 — separate ToggleGroup and CheckboxGroup responsibilities;
+- #350 — complete bounded DropdownMenu anatomy.
+
+<!-- parity-track:multi-select-decision -->
+
+#349 moves to a Core 1.2 decision spike after #345 and #348. No MultiSelect implementation is
+approved until real composition and accessibility evidence proves a dedicated Core responsibility.
+
+### Adoption
+
+<!-- parity-track:adoption -->
+
+After stable 1.0, the first #356 recipe tranche and the repository-native Agent Skill #369 may
+proceed without waiting for new Core 1.1 components. Later recipes depend only on the exact
+components they use.
+
+### Core 1.2 developer platform
+
+<!-- parity-track:developer-platform -->
+
+- #351 remains a measured package-output decision, not a predetermined compiled-output rewrite.
+- #352 starts with CLI modularization; source lifecycle work is independent, while project
+  bootstrap waits for #351.
+- #353 waits only for the CLI modularization slice and reuses the existing Registry engine.
+- #354 owns bounded read-only MCP expansion; Agent Skill work is separate in #369.
+- #355 remains a measured build/expand/defer Component Lab decision; current docs and visual
+  fixtures remain the default.
+
+### Ecosystem
+
+<!-- parity-track:ecosystem -->
+
+#357 owns code-to-Figma export and drift tooling after stable 1.0. Its component tranche waits for
+the first accepted Core 1.1 subset, and completion still requires a real file and maintainer visual
+approval.
+
 ## Phase 3 — Pro alpha
 
 Goal: build the first commercially useful Pro package.

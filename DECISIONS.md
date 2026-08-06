@@ -45,6 +45,22 @@ and domain-specific controls remain outside Core 1.0.
 `docs/core-platform-primitive-coverage.md` is the canonical decision matrix.
 `data/component-catalog.json` is its machine-readable projection and validation boundary.
 
+## Post-1.0 capability parity
+
+[`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md) and
+`quality/core-1-x-capability-parity.json` are the accepted decision and machine-readable projection
+for post-1.0 capability classification and sequencing.
+
+Nerio does not use component-count parity as a product criterion. Every relevant capability is
+classified as existing Core, native guidance, Core 1.1 primitive, later Core candidate, Core
+recipe, adapter, Pro, consumer-owned, or explicitly rejected.
+
+The accepted Core 1.1 component set is additive and begins only after stable 1.0. #342 supplies the
+shared direction/localization foundation without forcing the complete audit to serialize all
+component work. SearchField remains #346 and NumberField is split into #370. MultiSelect #349 is a
+Core 1.2 decision spike with no implementation approval. MCP expansion stays in #354 while the
+repository-native Agent Skill is tracked separately in #369.
+
 Toggle is an approved Core 1.0 action primitive through issue #290. It owns one independent
 pressed/not-pressed button state with `aria-pressed`; it does not absorb Switch, Checkbox, Tabs,
 ButtonGroup, ToggleGroup, Toolbar, persistence, or product workflow responsibilities.

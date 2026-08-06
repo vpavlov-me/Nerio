@@ -11,6 +11,10 @@ change, Git tag, GitHub Release, or stable-readiness claim.
 
 ### Added
 
+- Added the canonical post-1.0 capability parity decision, machine-readable projection, and drift
+  validator. The decision classifies the complete current catalog, reviewed Base UI 1.6.0
+  primitives, platform coverage, and issues #342–#357 without changing the frozen Core 1.0 public
+  contract.
 - Added scope-aware PR contracts, exact-SHA release candidate validation, immutable GitHub Action
   pins, DCO enforcement, and a deterministic candidate-bound CycloneDX SBOM for all six public
   packages. Current workflows prepare and retain evidence without publishing or requesting npm

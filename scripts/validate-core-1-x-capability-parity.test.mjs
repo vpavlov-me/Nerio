@@ -1,0 +1,76 @@
+import assert from "node:assert/strict";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
+import { resolve } from "node:path";
+import test from "node:test";
+import { fileURLToPath } from "node:url";
+
+const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const validator = resolve(root, "scripts/validate-core-1-x-capability-parity.mjs");
+const matrixPath = resolve(root, "quality/core-1-x-capability-parity.json");
+
+function run(...args) {
+  return spawnSync(process.execPath, [validator, ...args], {
+    cwd: root,
+    encoding: "utf8",
+  });
+}
+
+function invalidMatrix(update, expected) {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-capability-parity-"));
+  const target = resolve(directory, "matrix.json");
+  const matrix = JSON.parse(readFileSync(matrixPath, "utf8"));
+  update(matrix);
+  writeFileSync(target, `${JSON.stringify(matrix, null, 2)}\n`);
+  try {
+    const result = run("--matrix", target);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, expected);
+    assert.doesNotMatch(result.stderr, /TypeError|ERR_INVALID_ARG_TYPE/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+test("capability parity validator accepts the repository decision", () => {
+  const result = run();
+  assert.equal(result.status, 0, result.stderr);
+});
+
+test("capability parity validator reports a missing option value", () => {
+  const result = run("--matrix");
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Usage error: --matrix requires a path value/);
+});
+
+test("capability parity validator protects the complete Core inventory", () => {
+  invalidMatrix((matrix) => {
+    matrix.capabilities.find((capability) => capability.id === "actions").nerioComponents = [
+      "Button",
+      "Toggle",
+    ];
+  }, /Capability coverage of catalog components is missing: ButtonGroup/);
+});
+
+test("capability parity validator protects the reviewed Base UI set", () => {
+  invalidMatrix((matrix) => {
+    matrix.reviewedBaseUiPrimitives = matrix.reviewedBaseUiPrimitives.filter(
+      (primitive) => primitive !== "accordion",
+    );
+  }, /Reviewed Base UI 1\.6\.0 primitive set is missing: accordion/);
+});
+
+test("capability parity validator requires every child issue disposition", () => {
+  invalidMatrix((matrix) => {
+    matrix.issueDispositions = matrix.issueDispositions.filter(
+      (disposition) => disposition.issue !== 349,
+    );
+  }, /Parity matrix is missing issue #349/);
+});
+
+test("capability parity validator detects stale baseline metadata", () => {
+  invalidMatrix((matrix) => {
+    matrix.baseline.baseUiVersion = "1.5.0";
+  }, /Parity baseline Base UI version must match/);
+});
