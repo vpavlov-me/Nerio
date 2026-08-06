@@ -41,6 +41,11 @@ function compareSets(label, actualValues, expectedValues) {
   assert(!unknown.length, `${label} contains unknown values: ${unknown.join(", ")}`);
 }
 
+function assertUniqueOwnership(label, values) {
+  const repeated = duplicates(values);
+  assert(!repeated.length, `${label} contains duplicate ownership: ${repeated.join(", ")}`);
+}
+
 for (const path of Object.values(paths)) {
   assert(existsSync(path), `Required parity projection is missing: ${path}`);
 }
@@ -225,6 +230,10 @@ for (const capability of capabilities) {
 const classifiedBaseUiPrimitives = capabilities.flatMap(
   (capability) => capability.baseUiPrimitives,
 );
+assertUniqueOwnership(
+  "Capability coverage of reviewed Base UI primitives",
+  classifiedBaseUiPrimitives,
+);
 compareSets(
   "Capability coverage of reviewed Base UI primitives",
   classifiedBaseUiPrimitives,
@@ -232,6 +241,7 @@ compareSets(
 );
 
 const classifiedComponents = capabilities.flatMap((capability) => capability.nerioComponents);
+assertUniqueOwnership("Capability coverage of catalog components", classifiedComponents);
 compareSets(
   "Capability coverage of catalog components",
   classifiedComponents,
@@ -241,6 +251,7 @@ compareSets(
 const classifiedPlatformCoverage = capabilities.flatMap(
   (capability) => capability.platformCoverageIds,
 );
+assertUniqueOwnership("Capability coverage of platform decisions", classifiedPlatformCoverage);
 compareSets(
   "Capability coverage of platform decisions",
   classifiedPlatformCoverage,
@@ -274,6 +285,17 @@ for (const disposition of dispositions) {
   );
   assert(docs.includes(`[#${disposition.issue}]`), `Human parity decision is missing ${label}.`);
 }
+for (const capability of capabilities.filter((entry) => Number.isInteger(entry.issue))) {
+  const disposition = dispositionByIssue.get(capability.issue);
+  const label = `Parity capability ${capability.id}`;
+  assert(disposition, `${label} links missing issue disposition #${capability.issue}.`);
+  for (const field of ["classification", "priority", "target"]) {
+    assert(
+      capability[field] === disposition[field],
+      `${label} ${field} must match issue #${capability.issue}.`,
+    );
+  }
+}
 assert(
   dispositionByIssue.get(346)?.decision.includes("#370"),
   "SearchField disposition must link the NumberField split.",
@@ -295,10 +317,10 @@ for (const sequence of sequences) {
       sequence.rule,
     `Parity sequence ${sequence.id ?? "<missing>"} is incomplete.`,
   );
-  assert(
-    roadmap.includes(`parity-track:${sequence.id}`),
-    `ROADMAP.md is missing parity track ${sequence.id}.`,
-  );
+  const issueList = sequence.issues.map((issue) => `#${issue}`).join(",");
+  const dependencyList = sequence.dependsOn.map((issue) => `#${issue}`).join(",");
+  const marker = `parity-track:${sequence.id} issues:${issueList} depends-on:${dependencyList}`;
+  assert(roadmap.includes(marker), `ROADMAP.md is stale for parity track ${sequence.id}.`);
 }
 
 for (const capability of capabilities) {

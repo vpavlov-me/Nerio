@@ -80,7 +80,7 @@ The frozen Core 1.0 surface and beta.1 technical candidate are complete. Stable 
 by the manual accessibility/device gate #143 and the public beta.1/external-feedback gate #146,
 followed by #148, #150, and the manual publication issue #151.
 
-<!-- parity-track:manual-stable-gates -->
+<!-- parity-track:manual-stable-gates issues:#143,#146,#148,#150,#151 depends-on: -->
 
 Do not start post-1.0 runtime, package, Registry, token, export, or component implementation on the
 release line before #151 unless issue #152 accepts a focused blocker from real manual or beta
@@ -95,7 +95,7 @@ roadmap method.
 
 ### Core 1.1 shared contract
 
-<!-- parity-track:shared-direction-contract -->
+<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341,#151 -->
 
 - #342 establishes the minimum inherited direction, RTL, locale, and localization contract after
   stable 1.0.
@@ -104,7 +104,7 @@ roadmap method.
 
 ### Core 1.1 primitive parity
 
-<!-- parity-track:primitive-parity-a -->
+<!-- parity-track:primitive-parity-a issues:#343,#344,#345,#346,#347,#370 depends-on:#151,#341,#342 -->
 
 After the relevant #342 foundation, these may proceed in parallel:
 
@@ -115,21 +115,21 @@ After the relevant #342 foundation, these may proceed in parallel:
 - #347 — OTPField;
 - #370 — NumberField, split from #346.
 
-<!-- parity-track:primitive-parity-b -->
+<!-- parity-track:primitive-parity-b issues:#348,#350 depends-on:#151,#341,#342 -->
 
 These are independent parallel slices:
 
 - #348 — separate ToggleGroup and CheckboxGroup responsibilities;
 - #350 — complete bounded DropdownMenu anatomy.
 
-<!-- parity-track:multi-select-decision -->
+<!-- parity-track:multi-select-decision issues:#349 depends-on:#151,#341,#342,#345,#348 -->
 
 #349 moves to a Core 1.2 decision spike after #345 and #348. No MultiSelect implementation is
 approved until real composition and accessibility evidence proves a dedicated Core responsibility.
 
 ### Adoption
 
-<!-- parity-track:adoption -->
+<!-- parity-track:adoption issues:#356,#369 depends-on:#151,#341 -->
 
 After stable 1.0, the first #356 recipe tranche and the repository-native Agent Skill #369 may
 proceed without waiting for new Core 1.1 components. Later recipes depend only on the exact
@@ -137,7 +137,7 @@ components they use.
 
 ### Core 1.2 developer platform
 
-<!-- parity-track:developer-platform -->
+<!-- parity-track:developer-platform issues:#351,#352,#353,#354,#355 depends-on:#151,#341 -->
 
 - #351 remains a measured package-output decision, not a predetermined compiled-output rewrite.
 - #352 starts with CLI modularization; source lifecycle work is independent, while project
@@ -149,7 +149,7 @@ components they use.
 
 ### Ecosystem
 
-<!-- parity-track:ecosystem -->
+<!-- parity-track:ecosystem issues:#357 depends-on:#151,#341,#342 -->
 
 #357 owns code-to-Figma export and drift tooling after stable 1.0. Its component tranche waits for
 the first accepted Core 1.1 subset, and completion still requires a real file and maintainer visual

@@ -53,6 +53,14 @@ test("capability parity validator protects the complete Core inventory", () => {
   }, /Capability coverage of catalog components is missing: ButtonGroup/);
 });
 
+test("capability parity validator rejects duplicate capability ownership", () => {
+  invalidMatrix((matrix) => {
+    matrix.capabilities
+      .find((capability) => capability.id === "form-foundations")
+      .nerioComponents.push("Button");
+  }, /Capability coverage of catalog components contains duplicate ownership: Button/);
+});
+
 test("capability parity validator protects the reviewed Base UI set", () => {
   invalidMatrix((matrix) => {
     matrix.reviewedBaseUiPrimitives = matrix.reviewedBaseUiPrimitives.filter(
@@ -61,12 +69,25 @@ test("capability parity validator protects the reviewed Base UI set", () => {
   }, /Reviewed Base UI 1\.6\.0 primitive set is missing: accordion/);
 });
 
+test("capability parity validator cross-checks linked issue dispositions", () => {
+  invalidMatrix((matrix) => {
+    matrix.capabilities.find((capability) => capability.id === "direction-localization").target =
+      "Core 1.2";
+  }, /Parity capability direction-localization target must match issue #342/);
+});
+
 test("capability parity validator requires every child issue disposition", () => {
   invalidMatrix((matrix) => {
     matrix.issueDispositions = matrix.issueDispositions.filter(
       (disposition) => disposition.issue !== 349,
     );
   }, /Parity matrix is missing issue #349/);
+});
+
+test("capability parity validator cross-checks roadmap track contents", () => {
+  invalidMatrix((matrix) => {
+    matrix.sequence.find((sequence) => sequence.id === "primitive-parity-a").issues = [];
+  }, /ROADMAP\.md is stale for parity track primitive-parity-a/);
 });
 
 test("capability parity validator detects stale baseline metadata", () => {
