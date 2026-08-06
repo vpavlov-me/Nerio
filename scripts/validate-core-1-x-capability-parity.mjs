@@ -108,6 +108,16 @@ compareSets(
   Object.keys(matrix.classificationValues ?? {}),
   requiredClassifications,
 );
+const requiredPriorities = ["P1", "P2", "P3", "none"];
+const requiredTargets = ["current", "Core 1.1", "Core 1.2", "Ecosystem", "Pro", "consumer", "none"];
+for (const value of duplicates(matrix.priorityValues ?? [])) {
+  throw new Error(`Duplicate parity priority value: ${value}`);
+}
+for (const value of duplicates(matrix.targetValues ?? [])) {
+  throw new Error(`Duplicate parity target value: ${value}`);
+}
+compareSets("Parity priorityValues", matrix.priorityValues ?? [], requiredPriorities);
+compareSets("Parity targetValues", matrix.targetValues ?? [], requiredTargets);
 
 assert(
   Array.isArray(matrix.sources) && matrix.sources.length >= 7,
@@ -306,7 +316,24 @@ assert(
 );
 
 const sequences = Array.isArray(matrix.sequence) ? matrix.sequence : [];
-assert(sequences.length >= 7, "Parity sequence is incomplete.");
+const requiredSequenceIds = [
+  "manual-stable-gates",
+  "shared-direction-contract",
+  "primitive-parity-a",
+  "primitive-parity-b",
+  "multi-select-decision",
+  "adoption",
+  "developer-platform",
+  "ecosystem",
+];
+for (const id of duplicates(sequences.map((sequence) => sequence.id))) {
+  throw new Error(`Duplicate parity sequence id: ${id}`);
+}
+compareSets(
+  "Parity sequence ids",
+  sequences.map((sequence) => sequence.id),
+  requiredSequenceIds,
+);
 for (const sequence of sequences) {
   assert(
     sequence.id &&
@@ -324,10 +351,8 @@ for (const sequence of sequences) {
 }
 
 for (const capability of capabilities) {
-  assert(
-    docs.includes(`capability:${capability.id}`),
-    `Human parity decision is missing capability ${capability.id}.`,
-  );
+  const marker = `capability:${capability.id} classification:${capability.classification} priority:${capability.priority} target:${capability.target}`;
+  assert(docs.includes(marker), `Human parity decision is stale for capability ${capability.id}.`);
 }
 for (const source of matrix.sources) {
   assert(docs.includes(source.url), `Human parity decision is missing source ${source.id}.`);

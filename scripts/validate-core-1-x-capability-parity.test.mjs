@@ -33,6 +33,21 @@ function invalidMatrix(update, expected) {
   }
 }
 
+function invalidDocs(update, expected) {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-capability-parity-docs-"));
+  const target = resolve(directory, "parity.md");
+  const docs = readFileSync(resolve(root, "docs/core-1-x-capability-parity.md"), "utf8");
+  writeFileSync(target, update(docs));
+  try {
+    const result = run("--docs", target);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, expected);
+    assert.doesNotMatch(result.stderr, /TypeError|ERR_INVALID_ARG_TYPE/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
 test("capability parity validator accepts the repository decision", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
@@ -76,6 +91,12 @@ test("capability parity validator cross-checks linked issue dispositions", () =>
   }, /Parity capability direction-localization target must match issue #342/);
 });
 
+test("capability parity validator pins priority and target values", () => {
+  invalidMatrix((matrix) => {
+    matrix.priorityValues.push("TYPO");
+  }, /Parity priorityValues contains unknown values: TYPO/);
+});
+
 test("capability parity validator requires every child issue disposition", () => {
   invalidMatrix((matrix) => {
     matrix.issueDispositions = matrix.issueDispositions.filter(
@@ -88,6 +109,23 @@ test("capability parity validator cross-checks roadmap track contents", () => {
   invalidMatrix((matrix) => {
     matrix.sequence.find((sequence) => sequence.id === "primitive-parity-a").issues = [];
   }, /ROADMAP\.md is stale for parity track primitive-parity-a/);
+});
+
+test("capability parity validator requires every named sequence", () => {
+  invalidMatrix((matrix) => {
+    matrix.sequence = matrix.sequence.filter((sequence) => sequence.id !== "ecosystem");
+  }, /Parity sequence ids is missing: ecosystem/);
+});
+
+test("capability parity validator cross-checks human capability fields", () => {
+  invalidDocs(
+    (docs) =>
+      docs.replace(
+        "capability:direction-localization classification:core-1.1-primitive priority:P1 target:Core 1.1",
+        "capability:direction-localization classification:core-1.1-primitive priority:P1 target:Core 1.2",
+      ),
+    /Human parity decision is stale for capability direction-localization/,
+  );
 });
 
 test("capability parity validator detects stale baseline metadata", () => {
