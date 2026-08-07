@@ -1934,6 +1934,10 @@ describe("Core static contracts", () => {
       "data-slot",
       "empty-state-title",
     );
+    expect(screen.getByRole("heading", { name: "No results" })).toHaveClass(
+      "text-(length:--n-font-size-lg)",
+      "[[data-size=lg]_&]:text-(length:--n-font-size-xl)",
+    );
     expect(screen.getByText("Try a different query.")).toHaveAttribute(
       "data-slot",
       "empty-state-description",

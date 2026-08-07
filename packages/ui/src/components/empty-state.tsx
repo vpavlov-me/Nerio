@@ -87,7 +87,7 @@ export const EmptyStateTitle = React.forwardRef<HTMLHeadingElement, EmptyStateTi
         ref={ref as React.Ref<never>}
         {...props}
         className={cn(
-          "n-empty-state__title m-0 text-(length:--n-font-size-md) leading-(--n-line-height-tight) font-(--n-font-weight-medium) text-(--n-color-text-primary) [[data-size=sm]_&]:text-(length:--n-font-size-sm) [[data-size=lg]_&]:text-(length:--n-font-size-lg)",
+          "n-empty-state__title m-0 text-(length:--n-font-size-lg) leading-(--n-line-height-tight) font-(--n-font-weight-medium) text-(--n-color-text-primary) [[data-size=sm]_&]:text-(length:--n-font-size-md) [[data-size=lg]_&]:text-(length:--n-font-size-xl)",
           className,
         )}
         data-slot="empty-state-title"

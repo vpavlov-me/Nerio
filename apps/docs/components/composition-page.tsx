@@ -7,7 +7,9 @@ import {
   Box,
   EllipsisVertical,
   ExternalLink,
+  Layers,
   PackageOpen,
+  Plus,
   Settings,
   Type,
   UserPlus,
@@ -30,6 +32,7 @@ import {
   EmptyStateActions,
   EmptyStateDescription,
   EmptyStateHeader,
+  EmptyStateMedia,
   EmptyStateTitle,
   Field,
   FileInput,
@@ -945,22 +948,22 @@ function AccountSummaryPreview() {
 
 function EmptyProjectPreview() {
   return (
-    <EmptyState size="sm">
+    <EmptyState size="lg">
+      <EmptyStateMedia aria-hidden="true">
+        <Icon icon={Layers} />
+      </EmptyStateMedia>
       <EmptyStateHeader>
-        <EmptyStateTitle>Create your first project</EmptyStateTitle>
+        <EmptyStateTitle as="h2">Create your first project</EmptyStateTitle>
         <EmptyStateDescription>
-          Organize a delivery goal, invite collaborators, and keep progress visible in one place.
+          Organize goals, files, and team updates in one shared workspace.
         </EmptyStateDescription>
       </EmptyStateHeader>
       <EmptyStateActions>
-        <Button size="sm">Create project</Button>
-        <Button
-          nativeButton={false}
-          size="sm"
-          variant="ghost"
-          render={<a href="/views/operations-workspace" />}
-        >
-          See a project workspace
+        <Button leadingIcon={Plus} size="md" type="button">
+          Create project
+        </Button>
+        <Button size="md" type="button" variant="secondary">
+          View workspace
         </Button>
       </EmptyStateActions>
     </EmptyState>
@@ -1342,13 +1345,13 @@ const blocks: Record<string, Composition> = {
   "empty-project": {
     purpose:
       "Gives a genuinely empty collection one clear creation path and restrained supporting context.",
-    components: ["EmptyState", "Button"],
+    components: ["EmptyState", "Icon", "Button"],
     accessibility:
-      "The state has an explicit heading, descriptive text, a primary action, and a separate navigation link.",
+      "The state has an explicit heading, descriptive text, clearly distinguished actions, and decorative media hidden from assistive technology.",
     responsive: "Actions wrap without reducing target size or changing their reading order.",
     notes:
       "Search, permission, offline, and failure cases need separate product-specific recovery language.",
-    code: "<EmptyState><EmptyStateHeader><EmptyStateTitle>Create your first project</EmptyStateTitle></EmptyStateHeader><EmptyStateActions><Button>Create project</Button></EmptyStateActions></EmptyState>",
+    code: '<EmptyState size="lg"><EmptyStateMedia aria-hidden="true"><Icon icon={Layers} /></EmptyStateMedia><EmptyStateHeader><EmptyStateTitle as="h2">Create your first project</EmptyStateTitle></EmptyStateHeader><EmptyStateActions><Button leadingIcon={Plus}>Create project</Button><Button variant="secondary">View workspace</Button></EmptyStateActions></EmptyState>',
     Preview: EmptyProjectPreview,
   },
   "file-upload-state": {

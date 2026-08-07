@@ -214,7 +214,7 @@ export const blockCatalog = [
     category: "Content and feedback",
     status: "Preview",
     previewRoute: "/views/blocks/empty-project",
-    componentsUsed: ["Button", "EmptyState"],
+    componentsUsed: ["Button", "EmptyState", "Icon"],
     intendedUse:
       "Use this block when a collection is genuinely empty and creation is the next task.",
     boundaries: [
