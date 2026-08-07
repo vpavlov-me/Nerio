@@ -54,6 +54,7 @@ export {
   PanelLeft,
   PackageOpen,
   Plus,
+  RefreshCw,
   Rocket,
   Rows2,
   Rows3,

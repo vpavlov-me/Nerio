@@ -5,13 +5,19 @@ import Link from "next/link";
 import {
   ArrowLeft,
   Box,
+  Check,
+  CircleAlert,
   EllipsisVertical,
   ExternalLink,
+  FileText,
   Layers,
   PackageOpen,
   Plus,
+  RefreshCw,
+  Save,
   Settings,
   Type,
+  Upload,
   UserPlus,
   X,
 } from "@nerio-ui/adapters/icons";
@@ -22,7 +28,9 @@ import {
   Breadcrumbs,
   Button,
   Card,
+  CardAction,
   CardContent,
+  CardFooter,
   CardHeader,
   Checkbox,
   Dialog,
@@ -44,6 +52,7 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
+  ItemGroup,
   ItemMedia,
   ItemTitle,
   KeyValue,
@@ -970,60 +979,154 @@ function EmptyProjectPreview() {
   );
 }
 
-type UploadState = "uploading" | "complete" | "failed" | "cancelled";
-
 function FileUploadStatePreview() {
-  const [state, setState] = React.useState<UploadState>("uploading");
-  const progress = state === "complete" ? 100 : state === "uploading" ? 64 : 0;
   return (
-    <div className="composition-feedback">
-      <div>
-        <div className="composition-inline-status">
-          <span>
-            <strong>research-notes.pdf</strong>
-            <small>{state === "uploading" ? "4.8 MB of 7.5 MB" : "7.5 MB"}</small>
-          </span>
-          {state === "uploading" ? <Spinner label="Uploading research-notes.pdf" /> : null}
+    <Card className="composition-upload-card">
+      <CardHeader>
+        <div>
+          <Heading as="h2" size="lg">
+            Upload files
+          </Heading>
+          <Text tone="secondary">Review files being added to the Northstar workspace.</Text>
         </div>
-        {state === "uploading" || state === "complete" ? (
-          <Progress value={progress} aria-label="File upload progress" />
-        ) : null}
-      </div>
-      {state === "complete" ? (
-        <Alert role="status" tone="success" title="Upload complete">
-          research-notes.pdf is ready to use.
-        </Alert>
-      ) : null}
-      {state === "failed" ? (
-        <Alert role="alert" tone="danger" title="Upload failed">
-          The connection was interrupted. Retry when you are ready.
-        </Alert>
-      ) : null}
-      {state === "cancelled" ? (
-        <Alert role="status" title="Upload cancelled">
-          The file was not added to this project.
-        </Alert>
-      ) : null}
-      <div className="composition-actions">
-        {state === "uploading" ? (
-          <>
-            <Button variant="secondary" onClick={() => setState("complete")}>
-              Complete upload
-            </Button>
-            <Button variant="ghost" onClick={() => setState("cancelled")}>
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <Button variant="secondary" onClick={() => setState("uploading")}>
-            {state === "failed" ? "Retry upload" : "Upload again"}
+        <CardAction>
+          <Button leadingIcon={Upload} type="button" variant="secondary">
+            Upload
           </Button>
-        )}
-        <Button variant="ghost" onClick={() => setState("failed")}>
-          Show failure
-        </Button>
-      </div>
-    </div>
+        </CardAction>
+      </CardHeader>
+
+      <CardContent>
+        <ItemGroup aria-label="Upload queue" className="composition-upload-list">
+          <Item size="lg" variant="outline">
+            <ItemMedia variant="icon">
+              <Icon icon={Upload} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>project-brief.pdf</ItemTitle>
+              <ItemDescription>Ready to upload · 2.4 MB</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete project-brief.pdf"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+
+          <Item size="lg" variant="outline">
+            <ItemMedia variant="icon">
+              <Spinner decorative size="sm" />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>design-system.zip</ItemTitle>
+              <ItemDescription>Uploading · 64%</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete design-system.zip"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+
+          <Item size="lg" variant="outline">
+            <ItemMedia variant="icon">
+              <Icon icon={FileText} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>market-research.pdf</ItemTitle>
+              <ItemDescription>Processing document</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete market-research.pdf"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+
+          <Item className="composition-upload-item--failed" size="lg" variant="outline">
+            <ItemMedia className="composition-upload-item__media--danger" variant="icon">
+              <Icon icon={CircleAlert} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>financial-model.xlsx</ItemTitle>
+              <ItemDescription className="composition-upload-item__description--danger">
+                Upload failed. Try again.
+              </ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Retry file">
+                <Button
+                  aria-label="Retry financial-model.xlsx"
+                  icon={RefreshCw}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete financial-model.xlsx"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+
+          <Item size="lg" variant="outline">
+            <ItemMedia variant="icon">
+              <Icon icon={Check} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>uploaded-report.pdf</ItemTitle>
+              <ItemDescription>Uploaded · 1.8 MB</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete uploaded-report.pdf"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+        </ItemGroup>
+      </CardContent>
+
+      <CardFooter className="composition-upload-footer">
+        <div className="composition-upload-footer__actions">
+          <Button type="button" variant="secondary">
+            Cancel
+          </Button>
+          <Button disabled leadingIcon={Save} type="button">
+            Save
+          </Button>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
 
@@ -1355,14 +1458,16 @@ const blocks: Record<string, Composition> = {
     Preview: EmptyProjectPreview,
   },
   "file-upload-state": {
-    purpose: "Frames progress and outcome feedback around one recognizable file-upload operation.",
-    components: ["Alert", "Progress", "Spinner", "Button"],
+    purpose:
+      "Frames queued, uploading, processing, failed, and completed files as one bounded batch operation.",
+    components: ["Card", "Item", "Icon", "Spinner", "Button", "Tooltip"],
     accessibility:
-      "Progress has a file-specific accessible name, failure is urgent, routine outcomes are polite, and every transition has text.",
-    responsive: "Status, progress, and actions stack and wrap while preserving reading order.",
+      "Every file has a visible text status, progress has a file-specific accessible name, and icon-only actions name both the operation and file.",
+    responsive:
+      "File metadata and item actions reflow inside Item while the batch footer wraps without changing action order.",
     notes:
-      "File selection, transfer, retry policy, persistence, and server errors remain application responsibilities.",
-    code: '<Progress aria-label="File upload progress" value={64} />\n<Alert tone="success" title="Upload complete" />',
+      "Selection, transport, retries, file persistence, and server error semantics remain application concerns.",
+    code: '<Card><CardHeader>Upload files<CardAction><Button leadingIcon={Upload}>Upload</Button></CardAction></CardHeader><CardContent><ItemGroup><Item><ItemMedia><Spinner /></ItemMedia><ItemContent>design-system.zip</ItemContent><ItemActions><Tooltip label="Delete file"><Button icon={X} variant="secondary" /></Tooltip></ItemActions></Item>...</ItemGroup></CardContent><CardFooter><Button variant="secondary">Cancel</Button><Button disabled>Save</Button></CardFooter></Card>',
     Preview: FileUploadStatePreview,
   },
 };

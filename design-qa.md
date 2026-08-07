@@ -44,6 +44,44 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 
+## File upload state block QA — 2026-08-07
+
+### Source truth
+
+- User-provided layout reference: a grouped five-file upload queue showing ready, uploading, processing, failed, and uploaded states.
+- Latest browser annotation: keep the five-file queue, remove the Progress bar, add an Upload action to CardHeader, use secondary icon actions with tooltips, and simplify CardFooter to Cancel plus disabled Save without a separator.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/file-upload-state`
+- Desktop viewport and implementation pixels: 1117 × 837 at device scale factor 1.
+- Desktop screenshot: `/tmp/nerio-file-upload-revision-desktop.png`
+- Mobile viewport: 390 × 844.
+- Mobile implementation pixels: 390 × 844 at device scale factor 1.
+- Mobile screenshot: `/tmp/nerio-file-upload-revision-mobile.png`
+- Full-view comparison: the desktop capture verifies the Card hierarchy, all five queue states, header action, row actions, and footer state together.
+- Focused comparison: the live `Delete file` tooltip was opened on the first row and verified through the rendered accessibility tree; a separate crop was unnecessary because the label and control are readable in the desktop capture.
+- Browser console: no errors.
+
+### Findings and fixes
+
+1. P1 — The original preview demonstrated only one upload and did not communicate the complete state model. Replaced it with a five-item batch queue covering ready, uploading, processing, failed, and uploaded states.
+2. P1 — The upload content floated without a clear container or batch-level hierarchy. Composed it inside Card header, content, and footer regions with a concise queue summary and shared actions.
+3. P1 — The first implementation added Progress beneath the uploading Item, but the approved revision keeps this state compact. Removed Progress while retaining the visible `Uploading · 64%` status.
+4. P2 — The first mobile pass placed the tall Card beneath the fixed back control without enough clearance. Added responsive block-view spacing and verified the corrected mobile composition.
+5. P2 — The footer's summary, separator, and retry-oriented actions did not reflect the final save workflow. Removed the separator and summary, then replaced the actions with Cancel and a disabled Save control.
+6. P2 — File actions were low-affordance ghost buttons without supplementary labels, and retry used an upload glyph. Switched them to secondary icon buttons, added `Delete file` and `Retry file` tooltips, and exposed the semantic RefreshCw icon through the Nerio adapter.
+7. P2 — The Card did not expose the batch's entry action. Added a secondary Upload action through CardAction in the header.
+
+### Comparison history
+
+- Pass 1: five queue states and responsive Card composition passed, but the later annotation superseded the Progress, footer, and row-action treatment.
+- Pass 2: the 1117 × 837 desktop capture verifies the revised action hierarchy and the 390 × 844 capture verifies that rows remain legible and scroll naturally on mobile.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
 ## Sign in Block structure and Block View navigation QA — 2026-08-07
 
 ### Source truth

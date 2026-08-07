@@ -3263,13 +3263,64 @@ pre {
   gap: var(--n-density-space-lg);
 }
 
+.composition-upload-card {
+  margin-inline: auto;
+  max-inline-size: 42rem;
+}
+
+.composition-upload-list {
+  gap: var(--n-space-3);
+}
+
+.composition-upload-item--failed {
+  border-color: var(--n-color-status-danger);
+}
+
+.composition-upload-item__media--danger {
+  background: var(--n-color-status-danger-soft);
+  color: var(--n-color-status-danger);
+}
+
+.composition-upload-item__description--danger {
+  color: var(--n-color-status-danger);
+}
+
+.composition-upload-footer {
+  justify-content: flex-end;
+}
+
+.composition-upload-footer__actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-2);
+}
+
 @media (max-width: 36rem) {
+  .block-view__content:has(.composition-upload-card) {
+    align-self: start;
+    padding-block-start: calc(var(--n-size-control-sm) + var(--n-space-8));
+  }
+
   .composition-account-summary__metadata {
     grid-template-columns: 1fr;
   }
 
   .composition-account-summary__badges {
     justify-content: flex-start;
+  }
+
+  .composition-upload-footer,
+  .composition-upload-footer__actions {
+    align-items: stretch;
+  }
+
+  .composition-upload-footer__actions {
+    inline-size: 100%;
+  }
+
+  .composition-upload-footer__actions > .n-button {
+    flex: 1 1 9rem;
   }
 }
 
