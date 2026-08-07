@@ -309,6 +309,7 @@ function ProfileSettingsPreview() {
           <Separator />
 
           <Switch
+            data-preview-interaction="allowed"
             defaultChecked
             label="Show profile in workspace"
             description="Let workspace members view your name, photo, and bio."
@@ -387,6 +388,7 @@ function NotificationPreferencesPreview() {
                 <Switch
                   aria-label="Mentions and assignments"
                   checked={preferences.mentions}
+                  data-preview-interaction="allowed"
                   onCheckedChange={(checked) => updatePreference("mentions", checked)}
                 />
               </ItemActions>
@@ -403,6 +405,7 @@ function NotificationPreferencesPreview() {
                 <Switch
                   aria-label="Project updates"
                   checked={preferences.projectUpdates}
+                  data-preview-interaction="allowed"
                   onCheckedChange={(checked) => updatePreference("projectUpdates", checked)}
                 />
               </ItemActions>
@@ -419,6 +422,7 @@ function NotificationPreferencesPreview() {
                 <Switch
                   aria-label="Workspace activity"
                   checked={preferences.workspaceActivity}
+                  data-preview-interaction="allowed"
                   onCheckedChange={(checked) => updatePreference("workspaceActivity", checked)}
                 />
               </ItemActions>
@@ -440,6 +444,7 @@ function NotificationPreferencesPreview() {
                 <Switch
                   aria-label="Product announcements"
                   checked={preferences.productAnnouncements}
+                  data-preview-interaction="allowed"
                   onCheckedChange={(checked) => updatePreference("productAnnouncements", checked)}
                 />
               </ItemActions>
@@ -747,6 +752,7 @@ function TableToolbarPreview() {
                       <Checkbox
                         aria-label="Select all projects"
                         checked={allVisibleSelected}
+                        data-preview-interaction="allowed"
                         indeterminate={someVisibleSelected}
                         onCheckedChange={toggleAllVisible}
                         parent
@@ -769,6 +775,7 @@ function TableToolbarPreview() {
                           <Checkbox
                             aria-label={`Select ${project.name}`}
                             checked={isSelected}
+                            data-preview-interaction="allowed"
                             onCheckedChange={(checked) =>
                               setSelected((current) =>
                                 checked

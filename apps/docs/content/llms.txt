@@ -146,7 +146,7 @@ AI agents should select the smallest component set that matches the workflow, av
 The public Blocks catalog is available at `/blocks`. Its ten docs-local compositions cover sign in,
 account creation, password recovery, profile settings, security settings, notification preferences,
 a basic table toolbar, an account summary, an empty project, and deterministic file-upload states.
-Each catalog card opens its same-origin `/views/blocks/[slug]` preview in a new tab. Blocks solve
-one bounded task; they are not Templates, Core component APIs, complete application shells, or
-backend workflows.
+Each catalog card navigates in the same tab to its same-origin `/views/blocks/[slug]` preview, which
+provides a `Back to Blocks` action for returning to the catalog. Blocks solve one bounded task; they
+are not Templates, Core component APIs, complete application shells, or backend workflows.
 <!-- nerio-preview-surfaces:end -->

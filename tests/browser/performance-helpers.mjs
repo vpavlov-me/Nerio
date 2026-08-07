@@ -58,6 +58,24 @@ export async function measureRoute(page, route, testInfo) {
         document.documentElement.scrollWidth - document.documentElement.clientWidth,
     };
   });
+  const childFrameTransferBytes = await Promise.all(
+    page
+      .frames()
+      .filter((frame) => frame !== page.mainFrame())
+      .map((frame) =>
+        frame
+          .evaluate(() =>
+            performance
+              .getEntriesByType("resource")
+              .reduce(
+                (total, entry) => total + (entry.transferSize || entry.encodedBodySize || 0),
+                0,
+              ),
+          )
+          .catch(() => 0),
+      ),
+  );
+  metrics.transferBytes += childFrameTransferBytes.reduce((total, bytes) => total + bytes, 0);
   const budget = routeBudgets[route];
   testInfo.annotations.push({
     type: "performance-metrics",

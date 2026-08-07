@@ -48,7 +48,7 @@
       "jsBytes": 738304,
       "cssBytes": 346112,
       "transferBytes": 275456,
-      "runtimeTransferBytes": 836608
+      "runtimeTransferBytes": 4456448
     },
     "/views/operations-workspace": {
       "jsBytes": 1133568,

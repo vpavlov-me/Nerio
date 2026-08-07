@@ -83,7 +83,7 @@ test("renders the complete Sign in structure and interactions", async ({ page })
 
   await expect(page.getByRole("heading", { name: "Login to your account" })).toBeVisible();
   await expect(page.getByLabel("Email")).toHaveAttribute("placeholder", "m@example.com");
-  await expect(page.getByLabel("Password")).toBeVisible();
+  await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
   await expect(page.getByText("Forgot your password?")).toBeVisible();
   await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
   await expect(page.getByText("Don't have an account?")).toBeVisible();
@@ -107,7 +107,7 @@ test("renders the complete Create account structure as a static preview", async 
   await expect(page.getByText("Enter your email below to create your account.")).toBeVisible();
   await expect(page.getByLabel("Full name")).toHaveAttribute("placeholder", "Vladimir Pavlov");
   await expect(page.getByLabel("Email")).toHaveAttribute("placeholder", "nerio@vpavlov.com");
-  await expect(page.getByLabel("Password")).toBeVisible();
+  await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Confirm password")).toBeVisible();
   await expect(page.getByText("Must be at least 8 characters long.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Create account" })).toBeVisible();
@@ -164,7 +164,10 @@ test("renders the complete Profile settings structure as a static preview", asyn
   await expect(page.getByLabel("Bio")).toHaveValue(
     "Designing and maintaining Nerio for product teams.",
   );
-  await expect(page.getByRole("switch", { name: "Show profile in workspace" })).toBeChecked();
+  const profileVisibility = page.getByRole("switch", { name: "Show profile in workspace" });
+  await expect(profileVisibility).toBeChecked();
+  await profileVisibility.click();
+  await expect(profileVisibility).not.toBeChecked();
   await expect(page.getByText("All changes saved")).toBeVisible();
   await expect(page.getByRole("button", { name: "Save changes" })).toBeDisabled();
   await expect(page.getByText("Profile saved")).toHaveCount(0);
@@ -230,11 +233,11 @@ test("supports responsive, dark, compact, RTL, and keyboard Block behavior", asy
   await search.focus();
   await expect(search).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: "Status filter" })).toBeFocused();
+  await expect(page.getByRole("tab", { name: /All/ })).toBeFocused();
   await expect(page.locator("body")).not.toHaveCSS("overflow-x", "scroll");
 
   const firstSelection = page.getByRole("checkbox", { name: "Select Aster" });
   await firstSelection.check();
-  await expect(page.getByText("1 selected")).toBeVisible();
+  await expect(page.getByText("1 project selected")).toBeVisible();
   expect(problems).toEqual([]);
 });
