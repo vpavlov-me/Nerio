@@ -8,9 +8,9 @@
   "routes": [
     {
       "route": "/",
-      "jsBytes": 732988,
-      "cssBytes": 338015,
-      "transferBytes": 271436,
+      "jsBytes": 733032,
+      "cssBytes": 338231,
+      "transferBytes": 271738,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3gleegmi_j_6e.js",
@@ -18,9 +18,9 @@
           "transferBytes": 36549
         },
         {
-          "asset": "static/chunks/25pw4jpxqzbbz.js",
-          "rawBytes": 64322,
-          "transferBytes": 17155
+          "asset": "static/chunks/0zxeb14jw9n-1.js",
+          "rawBytes": 74085,
+          "transferBytes": 19229
         },
         {
           "asset": "static/chunks/1c4k5kibcaz5y.js",
@@ -43,14 +43,14 @@
           "transferBytes": 15824
         },
         {
-          "asset": "static/chunks/09n2ht7gkabpl.js",
-          "rawBytes": 47605,
-          "transferBytes": 13183
-        },
-        {
           "asset": "static/chunks/03nx-5mizu0d6.js",
           "rawBytes": 45382,
           "transferBytes": 14552
+        },
+        {
+          "asset": "static/chunks/03pb_r4_qks9j.js",
+          "rawBytes": 42783,
+          "transferBytes": 14252
         }
       ],
       "duplicatedPackages": [
@@ -60,18 +60,18 @@
             "static/chunks/00wqusrpe16hh.js",
             "static/chunks/03nx-5mizu0d6.js",
             "static/chunks/03pb_r4_qks9j.js",
-            "static/chunks/09n2ht7gkabpl.js",
-            "static/chunks/0jds-nn7p6xwj.js",
             "static/chunks/0mwtp0tgzkokj.js",
             "static/chunks/0nf13gsf-aydg.js",
             "static/chunks/0s5tx8gw_u3jj.js",
+            "static/chunks/0zxeb14jw9n-1.js",
             "static/chunks/1-gfmngef2gxy.js",
             "static/chunks/12qo1x37heyrc.js",
-            "static/chunks/25pw4jpxqzbbz.js",
             "static/chunks/2eucd-pxr2aw7.js",
             "static/chunks/32c6tlxwv-c69.js",
             "static/chunks/36va31-_u2ad3.js",
-            "static/chunks/3gleegmi_j_6e.js"
+            "static/chunks/3gleegmi_j_6e.js",
+            "static/chunks/3pwbl6-v7hm7-.js",
+            "static/chunks/433eb93xoo2_u.js"
           ]
         },
         {
@@ -80,20 +80,20 @@
             "static/chunks/00wqusrpe16hh.js",
             "static/chunks/03nx-5mizu0d6.js",
             "static/chunks/03pb_r4_qks9j.js",
-            "static/chunks/09n2ht7gkabpl.js",
             "static/chunks/0j2olg48wgoaf.js",
-            "static/chunks/0jds-nn7p6xwj.js",
             "static/chunks/0mwtp0tgzkokj.js",
             "static/chunks/0nf13gsf-aydg.js",
             "static/chunks/0s5tx8gw_u3jj.js",
+            "static/chunks/0zxeb14jw9n-1.js",
             "static/chunks/1-gfmngef2gxy.js",
             "static/chunks/12qo1x37heyrc.js",
             "static/chunks/1c4k5kibcaz5y.js",
-            "static/chunks/25pw4jpxqzbbz.js",
             "static/chunks/2eucd-pxr2aw7.js",
             "static/chunks/32c6tlxwv-c69.js",
             "static/chunks/36va31-_u2ad3.js",
-            "static/chunks/3gleegmi_j_6e.js"
+            "static/chunks/3gleegmi_j_6e.js",
+            "static/chunks/3pwbl6-v7hm7-.js",
+            "static/chunks/433eb93xoo2_u.js"
           ]
         }
       ]
@@ -101,8 +101,8 @@
     {
       "route": "/docs/getting-started",
       "jsBytes": 459611,
-      "cssBytes": 338015,
-      "transferBytes": 190772,
+      "cssBytes": 338231,
+      "transferBytes": 190806,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3gleegmi_j_6e.js",
@@ -166,8 +166,8 @@
     {
       "route": "/docs/components/button",
       "jsBytes": 464634,
-      "cssBytes": 338015,
-      "transferBytes": 192636,
+      "cssBytes": 338231,
+      "transferBytes": 192669,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3gleegmi_j_6e.js",
@@ -231,8 +231,8 @@
     {
       "route": "/docs/components/select",
       "jsBytes": 463751,
-      "cssBytes": 338015,
-      "transferBytes": 192306,
+      "cssBytes": 338231,
+      "transferBytes": 192338,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3gleegmi_j_6e.js",
@@ -296,8 +296,8 @@
     {
       "route": "/docs/components/calendar",
       "jsBytes": 473750,
-      "cssBytes": 338015,
-      "transferBytes": 195741,
+      "cssBytes": 338231,
+      "transferBytes": 195774,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3gleegmi_j_6e.js",
@@ -361,8 +361,8 @@
     {
       "route": "/docs/components/date-picker",
       "jsBytes": 498666,
-      "cssBytes": 338015,
-      "transferBytes": 203781,
+      "cssBytes": 338231,
+      "transferBytes": 203814,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3gleegmi_j_6e.js",
@@ -426,8 +426,8 @@
     {
       "route": "/docs/components/command-primitive",
       "jsBytes": 466894,
-      "cssBytes": 338015,
-      "transferBytes": 193391,
+      "cssBytes": 338231,
+      "transferBytes": 193426,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3gleegmi_j_6e.js",
@@ -491,8 +491,8 @@
     {
       "route": "/templates",
       "jsBytes": 457485,
-      "cssBytes": 338015,
-      "transferBytes": 190072,
+      "cssBytes": 338231,
+      "transferBytes": 190106,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3gleegmi_j_6e.js",
@@ -557,8 +557,8 @@
     {
       "route": "/views/operations-workspace",
       "jsBytes": 1113094,
-      "cssBytes": 411813,
-      "transferBytes": 383419,
+      "cssBytes": 412029,
+      "transferBytes": 383453,
       "majorClientChunks": [
         {
           "asset": "static/chunks/3_6p62udwqj7d.js",

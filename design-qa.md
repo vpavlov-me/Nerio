@@ -746,6 +746,192 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
 
 final result: passed
 
+## Profile settings identity Item refinement QA — 2026-08-07
+
+### Source truth
+
+- Approved pre-refinement capture:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-compact.jpg`
+- Approved direction: show a real avatar image, present avatar/name/email as a bordered Item that
+  previews the public profile, align Profile photo with the other editable fields, and remove the
+  Display name description.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/profile-settings`
+- Browser: Codex in-app browser.
+- Final compact-density screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-item-avatar-compact.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-item-avatar-comparison.jpg`
+- Source and implementation captures are both normalized to 1117 × 837 pixels at the same
+  1117 × 837 CSS viewport. The implementation was captured at device scale factor 2 and
+  downsampled from 2234 × 1674 to the CSS-pixel target before comparison.
+- State: light appearance, compact density, initial static preview.
+- Full-view evidence: the 512px Card retains its centered geometry while the bordered Item creates a
+  clear preview region above the aligned settings fields.
+- A focused crop was unnecessary because the 1:1 combined comparison keeps the avatar image, Item
+  border, field alignment, and Display name copy legible.
+- Static-preview behavior remains unchanged: Save changes is disabled.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. ItemTitle and ItemDescription provide a clearer identity hierarchy
+  without introducing custom text styling.
+- Spacing and layout rhythm: passed. The Item occupies the full settings column; Profile photo,
+  Display name, and Bio now share one vertical field alignment.
+- Colors and visual tokens: passed. The Item outline, Card, controls, and disabled action inherit
+  released Nerio theme tokens.
+- Image quality and asset fidelity: passed. Avatar uses the existing 128px raster portrait at its
+  native square crop through the released Avatar component.
+- Copy and content: passed. Name, e-mail, and portrait form one profile preview; the redundant
+  `Shown across Nerio.` helper is removed.
+
+### Findings and comparison history
+
+1. P1 — The initials-only identity row did not demonstrate Avatar image rendering. Added a real
+   existing portrait asset with the accessible name `Vladimir Pavlov profile photo`.
+2. P1 — Avatar identity and Profile photo appeared as one loosely assembled control group, obscuring
+   the distinction between preview and settings. Moved identity into a released outlined Item and
+   aligned FileInput with Display name and Bio.
+3. P2 — The Display name description repeated context already established by the Card header.
+   Removed it to reduce visual noise.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Profile settings product-coherence QA — 2026-08-07
+
+### Source truth
+
+- Approved refinement source:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-profile-settings-current.jpg`
+- Approved product direction: keep Profile settings focused on personal identity, group the Avatar
+  and FileInput into one photo region, replace duplicated security controls with profile visibility,
+  and show a truthful saved state.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/profile-settings`
+- Browser: Codex in-app browser.
+- Final compact-density screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-compact.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-coherent-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison preserves both captures at 1:1 scale.
+- State: light appearance, compact density, initial static preview.
+- Full-view evidence: the centered 512px Card preserves the established geometry while presenting
+  one coherent personal-profile workflow.
+- A focused crop was unnecessary because the 1:1 comparison keeps the photo, fields, visibility
+  control, saved state, and disabled action legible.
+- Static-preview behavior: Save changes is disabled and the preview does not expose a false
+  successful action.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Heading, identity, field, helper, Switch, status, and Button copy
+  use released Nerio components and typography.
+- Spacing and layout rhythm: passed. Avatar and FileInput now read as one photo region; fields,
+  visibility, and save state retain token-driven grouping and separation.
+- Colors and visual tokens: passed. Card, Avatar, fields, Switch, Separator, and disabled Button
+  inherit the active Nerio theme without hard-coded visual values.
+- Image quality and asset fidelity: passed. The released Avatar renders the accessible `VP`
+  fallback; no placeholder bitmap, custom SVG, CSS drawing, or generated asset was introduced.
+- Copy and content: passed. `Vladimir Pavlov`, `nerio@vpavlov.com`, the Nerio-specific bio, upload
+  limits, workspace visibility, and saved state form one internally consistent demo.
+
+### Findings and comparison history
+
+1. P1 — The source mixed personal profile, workspace administration, and account security in one
+   Card. Narrowed the Block to a clear personal-profile scope.
+2. P1 — Two-factor authentication duplicated the dedicated Security settings Block and suggested a
+   security workflow this static preview cannot represent. Replaced it with a profile-visibility
+   Switch that belongs to the current scope.
+3. P2 — Avatar identity and FileInput were visually disconnected. Grouped them into one responsive
+   photo region.
+4. P2 — Workspace name and workspace description conflicted with the person shown above them.
+   Replaced them with Display name and Bio using coherent Nerio demo content.
+5. P2 — `Unsaved changes` made the untouched initial state appear dirty. Replaced it with `All
+changes saved` and disabled Save changes.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Profile settings Block and Blocks navigation QA — 2026-08-07
+
+### Source truth
+
+- Current-state Profile settings capture:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-source.jpg`
+- Approved structure: place Profile settings inside a bounded Card, add a descriptive header,
+  identity and avatar-upload controls, preserve workspace fields, expose a 2FA Switch, and repair the
+  primary action contrast.
+- Approved Blocks behavior: gallery cards navigate internally in the same tab now that every public
+  Block View exposes Back to Blocks. Templates retain their new-tab behavior.
+
+### Implementation evidence
+
+- URLs: `http://localhost:3000/views/blocks/profile-settings` and
+  `http://localhost:3000/blocks`.
+- Browser: Codex in-app browser.
+- Final compact-density screenshot for this iteration:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-profile-settings-current.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison preserves both captures at 1:1 scale, so no
+  density normalization was required.
+- State: light appearance, compact density, initial static preview.
+- Full-view comparison evidence: the prior full-width form is replaced by a centered 512px Card with
+  20px token-resolved compact padding and a 649px rendered height.
+- A separate focused crop was unnecessary because the combined 1:1 comparison keeps the avatar,
+  FileInput, field labels, Switch, and action copy legible.
+- Save profile computed colors: foreground `rgb(255, 255, 255)` on background
+  `rgb(109, 40, 217)`. Its child text resolves to the same white foreground.
+- Static-preview behavior: Save profile does not change the URL or expose success feedback.
+- Blocks navigation: selecting Profile settings changed the same tab from `/blocks` to
+  `/views/blocks/profile-settings`; Back to Blocks returned that tab to `/blocks`.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Profile, identity, security, field, helper, and action copy use
+  released Heading, Text, Field, Switch, and Button typography.
+- Spacing and layout rhythm: passed. The Card creates one bounded reading column; token-driven gaps
+  separate identity, upload, workspace, security, and save regions while Separators mark major
+  changes in meaning.
+- Colors and visual tokens: passed. Card, avatar, fields, Switch, Separator, and Button inherit the
+  active Nerio theme. Narrowing the save-bar selector to its direct status child stops secondary
+  text color from leaking into the primary Button.
+- Image quality and asset fidelity: passed. The released Avatar component renders the accessible
+  `VP` fallback; no placeholder image, custom SVG, CSS drawing, or generated asset was introduced.
+- Copy and content: passed. The Card explains its scope, shows `Vladimir Pavlov` and
+  `nerio@vpavlov.com`, documents upload limits, retains workspace details, and names the 2FA
+  requirement.
+
+### Findings and comparison history
+
+1. P1 — The original profile form expanded across nearly the full canvas and had no surface
+   boundary. Wrapped the content in the released Card and constrained it to a centered 32rem maximum.
+2. P1 — Save profile inherited secondary text color from the broad `.composition-save-bar span`
+   selector, producing insufficient text/background separation. Scoped the rule to the direct status
+   child and verified white text on the purple primary surface.
+3. P2 — The original form lacked identity, avatar upload, security context, and descriptive Card
+   copy. Added Avatar, FileInput, a Security section, and a labelled 2FA Switch using released
+   components.
+4. P2 — Blocks cards opened duplicate tabs despite every public preview now providing a return path.
+   Removed only the Blocks `target` and `rel` attributes, updated the accessible name, and verified
+   same-tab forward and return navigation. Templates remain unchanged.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
 ## Reset password Block refinement QA — 2026-08-07
 
 ### Source truth

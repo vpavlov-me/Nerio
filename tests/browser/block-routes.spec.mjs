@@ -44,10 +44,10 @@ test("derives the public screenshot gallery and same-origin Views from one catal
 
   for (const [slug, title] of publicBlocks) {
     await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
-    const link = page.getByRole("link", { name: `Open ${title} preview in a new tab` });
+    const link = page.getByRole("link", { name: `Open ${title} preview` });
     const card = page.locator(".catalog-card").filter({ has: link });
     await expect(link).toHaveAttribute("href", `/views/blocks/${slug}`);
-    await expect(link).toHaveAttribute("target", "_blank");
+    await expect(link).not.toHaveAttribute("target", "_blank");
     await card.scrollIntoViewIfNeeded();
     const thumbnail = card.locator("iframe");
     await expect(thumbnail).toHaveAttribute("src", `/views/blocks/${slug}`);
@@ -143,6 +143,31 @@ test("renders the complete Reset password structure as a static preview", async 
   await expect(page).toHaveURL(url);
   await expect(page.getByText("Enter a valid email address.")).toHaveCount(0);
   await expect(page.getByText("Check your inbox")).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
+test("renders the complete Profile settings structure as a static preview", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/profile-settings");
+
+  await expect(page.getByRole("heading", { name: "Profile settings", exact: true })).toBeVisible();
+  await expect(page.getByText("Manage how you appear across Nerio.")).toBeVisible();
+  await expect(page.getByText("Vladimir Pavlov")).toBeVisible();
+  await expect(page.getByText("nerio@vpavlov.com")).toBeVisible();
+  await expect(page.getByRole("img", { name: "Vladimir Pavlov profile photo" })).toHaveAttribute(
+    "src",
+    "/avatars/lucas-moreau.png",
+  );
+  await expect(page.getByLabel("Profile photo")).toHaveAttribute("accept", "image/jpeg,image/png");
+  await expect(page.getByLabel("Display name")).toHaveValue("Vladimir Pavlov");
+  await expect(page.getByText("Shown across Nerio.")).toHaveCount(0);
+  await expect(page.getByLabel("Bio")).toHaveValue(
+    "Designing and maintaining Nerio for product teams.",
+  );
+  await expect(page.getByRole("switch", { name: "Show profile in workspace" })).toBeChecked();
+  await expect(page.getByText("All changes saved")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Save changes" })).toBeDisabled();
+  await expect(page.getByText("Profile saved")).toHaveCount(0);
   expect(problems).toEqual([]);
 });
 

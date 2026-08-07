@@ -21,10 +21,16 @@ import {
   EmptyStateHeader,
   EmptyStateTitle,
   Field,
+  FileInput,
   FormGroup,
   Heading,
   Icon,
   Input,
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle,
   KeyValue,
   Label,
   LabelContent,
@@ -241,36 +247,58 @@ function CreateAccountPreview() {
 }
 
 function ProfileSettingsPreview() {
-  const [saved, setSaved] = React.useState(false);
   return (
-    <form
-      className="composition-settings"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setSaved(true);
-      }}
-    >
-      <section>
-        <h3>Profile</h3>
-        <Field label="Workspace name" description="Shown in shared areas.">
-          <Input defaultValue="Northstar" />
-        </Field>
-        <Field label="About this workspace">
-          <Textarea defaultValue="A focused product team." />
-        </Field>
-      </section>
-      {saved ? (
-        <Alert role="status" tone="success" title="Profile saved">
-          Workspace details are up to date.
-        </Alert>
-      ) : null}
-      <div className="composition-save-bar">
-        <span>{saved ? "Changes saved." : "Unsaved changes"}</span>
-        <Button type="submit" loading={false}>
-          Save profile
-        </Button>
-      </div>
-    </form>
+    <Card className="composition-profile-settings-card">
+      <CardHeader>
+        <Heading as="h2" size="lg">
+          Profile settings
+        </Heading>
+        <Text tone="secondary">Manage how you appear across Nerio.</Text>
+      </CardHeader>
+      <CardContent>
+        <form className="composition-profile-settings">
+          <Item size="lg" variant="outline">
+            <ItemMedia>
+              <Avatar
+                alt="Vladimir Pavlov profile photo"
+                name="Vladimir Pavlov"
+                size="lg"
+                src="/avatars/lucas-moreau.png"
+              />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>Vladimir Pavlov</ItemTitle>
+              <ItemDescription>nerio@vpavlov.com</ItemDescription>
+            </ItemContent>
+          </Item>
+
+          <Field label="Profile photo" description="PNG or JPG up to 2 MB.">
+            <FileInput accept="image/jpeg,image/png" />
+          </Field>
+          <Field label="Display name">
+            <Input defaultValue="Vladimir Pavlov" />
+          </Field>
+          <Field label="Bio">
+            <Textarea defaultValue="Designing and maintaining Nerio for product teams." />
+          </Field>
+
+          <Separator />
+
+          <Switch
+            defaultChecked
+            label="Show profile in workspace"
+            description="Let workspace members view your name, photo, and bio."
+          />
+
+          <div className="composition-save-bar">
+            <span>All changes saved</span>
+            <Button disabled type="button" variant="primary">
+              Save changes
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -787,15 +815,26 @@ const blocks: Record<string, Composition> = {
   },
   "profile-settings": {
     purpose:
-      "Keeps profile editing to one recognizable task rather than presenting a complete settings page.",
-    components: ["Field", "Input", "Textarea", "Button", "Alert"],
+      "Keeps avatar upload, personal details, and profile visibility in one bounded settings card.",
+    components: [
+      "Card",
+      "Avatar",
+      "FileInput",
+      "Field",
+      "Input",
+      "Item",
+      "Textarea",
+      "Switch",
+      "Separator",
+      "Button",
+    ],
     accessibility:
-      "Every control has a visible label, native form submission supports Enter, and saved feedback uses a status message.",
+      "Every editable control has a visible label, the avatar exposes the account name, and the visibility switch includes its own description.",
     responsive:
-      "The fields remain one column and the save row wraps instead of compressing its action.",
+      "The photo group, fields, preference, and actions remain one readable column while the save row wraps on narrow screens.",
     notes:
       "The application still owns the settings route, persistence, navigation, and permission model.",
-    code: '<form><Field label="Workspace name"><Input /></Field><Field label="About"><Textarea /></Field><Button type="submit">Save profile</Button></form>',
+    code: '<Card><Item variant="outline"><ItemMedia><Avatar name="Vladimir Pavlov" src="/avatars/lucas-moreau.png" /></ItemMedia><ItemContent>...</ItemContent></Item><Field label="Profile photo"><FileInput /></Field><Field label="Display name"><Input /></Field><Field label="Bio"><Textarea /></Field><Switch label="Show profile in workspace" /><Button disabled>Save changes</Button></Card>',
     Preview: ProfileSettingsPreview,
   },
   "security-settings": {

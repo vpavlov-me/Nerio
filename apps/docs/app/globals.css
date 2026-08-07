@@ -2889,6 +2889,20 @@ pre {
   max-inline-size: 26rem;
 }
 
+.composition-profile-settings-card {
+  margin-inline: auto;
+  max-inline-size: 32rem;
+}
+
+.composition-profile-settings {
+  display: grid;
+  gap: var(--n-density-space-xl);
+}
+
+.composition-profile-settings .composition-save-bar {
+  background: transparent;
+}
+
 .composition-create-account {
   display: grid;
   gap: var(--n-space-8);
@@ -3058,8 +3072,8 @@ pre {
   padding-block-start: var(--n-space-4);
 }
 
-.composition-save-bar span,
-.composition-bulk span {
+.composition-save-bar > span,
+.composition-bulk > span {
   color: var(--n-color-text-secondary);
   font-size: var(--n-font-size-sm);
 }

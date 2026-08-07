@@ -39,9 +39,7 @@ export default function BlocksPage() {
             <Link
               className="catalog-card__link"
               href={block.previewRoute}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`Open ${block.title} preview in a new tab`}
+              aria-label={`Open ${block.title} preview`}
             />
           </article>
         ))}
