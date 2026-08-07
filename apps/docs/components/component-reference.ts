@@ -3294,8 +3294,14 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "content", description: "Modal surface rendered through a portal." },
       { title: "header", description: "Title, optional description, and close boundary." },
       { title: "heading", description: "Grouped title and optional description." },
-      { title: "title", description: "Required accessible dialog heading." },
-      { title: "description", description: "Optional supporting context." },
+      {
+        title: "title",
+        description: "Required accessible dialog name; renders as a neutral 16 px div by default.",
+      },
+      {
+        title: "description",
+        description: "Optional supporting context using the standard 14 px body size.",
+      },
       {
         title: "body",
         description:
@@ -3328,7 +3334,8 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "trigger", description: "React node or text that opens the dialog." },
       {
         title: "title / description",
-        description: "Accessible dialog heading and optional context.",
+        description:
+          "Accessible dialog name and optional context. titleAs opts into h2-h6 only when the title belongs in the document outline.",
       },
       { title: "bodyClassName", description: "Optional class hook for the body slot." },
       {
@@ -3680,7 +3687,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "SheetHeader / SheetTitle / SheetDescription",
-        description: "Named accessible context slots.",
+        description:
+          "Named accessible context slots. SheetTitle defaults to a neutral 16 px div with explicit heading opt-in through as; SheetDescription uses the standard 14 px body size.",
       },
       {
         title: "SheetBody / SheetFooter / SheetClose",

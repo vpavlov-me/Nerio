@@ -23,12 +23,14 @@ export type DialogOpenChangeEventReason =
 export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & {
   preventUnmountOnClose: () => void;
 };
+export type DialogTitleElement = "div" | "h2" | "h3" | "h4" | "h5" | "h6";
 export interface DialogProps {
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void;
   open?: boolean;
   trigger: React.ReactNode;
   title: React.ReactNode;
+  titleAs?: DialogTitleElement;
   description?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
@@ -40,6 +42,7 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(function Dia
   {
     trigger,
     title,
+    titleAs: TitleComponent = "div",
     description,
     children,
     className,
@@ -65,14 +68,15 @@ export const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(function Dia
           >
             <div className="n-dialog__heading grid gap-(--n-space-1)" data-slot="heading">
               <BaseDialog.Title
-                className="n-dialog__title m-0 text-(length:--n-font-size-xl) font-(--n-font-weight-medium) leading-(--n-line-height-tight) text-(--n-color-text-primary)"
+                className="n-dialog__title m-0 text-(length:--n-font-size-lg) font-(--n-font-weight-medium) leading-(--n-line-height-tight) text-(--n-color-text-primary)"
                 data-slot="title"
+                render={<TitleComponent />}
               >
                 {title}
               </BaseDialog.Title>
               {description ? (
                 <BaseDialog.Description
-                  className="n-dialog__description m-0 text-(length:--n-font-size-sm) text-(--n-color-text-secondary)"
+                  className="n-dialog__description m-0 text-(length:--n-font-size-md) leading-(--n-line-height-normal) text-(--n-color-text-secondary)"
                   data-slot="description"
                 >
                   {description}

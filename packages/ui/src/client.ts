@@ -128,6 +128,7 @@ export {
   type DialogOpenChangeEventDetails,
   type DialogOpenChangeEventReason,
   type DialogProps,
+  type DialogTitleElement,
 } from "./components/dialog";
 export {
   Sheet,
@@ -151,6 +152,8 @@ export {
   type SheetSize,
   type SheetTriggerProps,
   type SheetTriggerState,
+  type SheetTitleElement,
+  type SheetTitleProps,
 } from "./components/sheet";
 export {
   Sidebar,

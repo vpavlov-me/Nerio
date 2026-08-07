@@ -3076,15 +3076,25 @@
       },
       {
         "definition": [
-          "export interface DialogProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; title: React.ReactNode; description?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string; closeLabel?: string; }",
+          "export interface DialogProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; title: React.ReactNode; titleAs?: DialogTitleElement; description?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string; closeLabel?: string; }",
           "export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
           "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";",
           "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "DialogProps",
         "signature": "DialogProps"
+      },
+      {
+        "definition": [
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogTitleElement",
+        "signature": "DialogTitleElement"
       },
       {
         "definition": [],
@@ -4440,7 +4450,26 @@
         "deprecations": [],
         "kind": "value",
         "name": "SheetTitle",
-        "signature": "React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLHeadingElement> & React.RefAttributes<HTMLHeadingElement>>"
+        "signature": "React.ForwardRefExoticComponent<SheetTitleProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export type SheetTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetTitleElement",
+        "signature": "SheetTitleElement"
+      },
+      {
+        "definition": [
+          "export interface SheetTitleProps extends React.HTMLAttributes<HTMLElement> { as?: SheetTitleElement; }",
+          "export type SheetTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetTitleProps",
+        "signature": "SheetTitleProps"
       },
       {
         "definition": [],
@@ -7827,7 +7856,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-f8ddfde0ff9f69395f95d0e09d6fdf719dc8760e5fa363e8fef926459cf7f35b",
+            "integrity": "sha256-1f9ecc5a46447512b6e7e123ec86993755b93ceafc4ac89f460b62e2c3ef9cac",
             "role": "component",
             "source": "../../ui/src/components/dialog.tsx",
             "target": "components/dialog.tsx"
@@ -9334,7 +9363,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-26fd463b5dbd4f358fad70c67d6b83001207aebe48a90ae3497f245a80f50abd",
+            "integrity": "sha256-ae78ebf261f90e172fe8b195a6dd6e9356a8119cd9f682960d7d809f0bc51a3f",
             "role": "component",
             "source": "../../ui/src/components/sheet.tsx",
             "target": "components/sheet.tsx"

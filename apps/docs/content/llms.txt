@@ -71,9 +71,10 @@ shadow, and hover feedback resolves through shared motion tokens. Tooltip, Popov
 Command, Dialog, and Sheet use the approved inverted dark-glass surface with white hierarchy and
 blur; compact popups use smaller radii than Dialog and Sheet. Modal backdrops blur, Dialog settles
 with restrained scale and opacity, and Sheet preserves the physical direction of its side. Dialog
-and Sheet close controls are secondary icon Buttons, while their action footers align to the inline
-end. Sidebar and Command remain low-level primitives without routing, persistence, or product search
-policy.
+and Sheet titles render neutral 16 px `div` elements by default with explicit heading opt-in, while
+their descriptions use the standard 14 px body size. Their close controls are secondary icon
+Buttons, while their action footers align to the inline end. Sidebar and Command remain low-level
+primitives without routing, persistence, or product search policy.
 
 Use `COMPONENTS.md` and `data/component-catalog.json` as the source of truth for Core/Pro component tiering.
 

@@ -3888,7 +3888,13 @@ describe("Core interactive action contracts", () => {
 
   it("keeps Dialog close anatomy truthful and its accessible name localizable", () => {
     render(
-      <Dialog defaultOpen closeLabel="Close workspace dialog" title="Workspace" trigger="Open">
+      <Dialog
+        defaultOpen
+        closeLabel="Close workspace dialog"
+        description="Configure workspace defaults."
+        title="Workspace"
+        trigger="Open"
+      >
         Dialog content
         <DialogFooter>
           <Button variant="secondary">Cancel</Button>
@@ -3901,6 +3907,12 @@ describe("Core interactive action contracts", () => {
     expect(close).toHaveAttribute("data-slot", "close");
     expect(close).toHaveAttribute("data-variant", "secondary");
     expect(close).toHaveAttribute("data-size", "sm");
+    const title = screen.getByText("Workspace");
+    expect(title.tagName).toBe("DIV");
+    expect(title).toHaveClass("text-(length:--n-font-size-lg)");
+    expect(screen.getByText("Configure workspace defaults.")).toHaveClass(
+      "text-(length:--n-font-size-md)",
+    );
     expect(document.querySelector('[data-slot="footer"]')).toHaveClass(
       "flex",
       "flex-wrap",
@@ -3954,10 +3966,13 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-size", "sm");
     expect(screen.getByTestId("sheet-header")).toHaveAttribute("data-slot", "sheet-header");
     expect(screen.getByTestId("sheet-title")).toHaveAttribute("data-slot", "sheet-title");
+    expect(screen.getByTestId("sheet-title").tagName).toBe("DIV");
+    expect(screen.getByTestId("sheet-title")).toHaveClass("text-(length:--n-font-size-lg)");
     expect(screen.getByTestId("sheet-description")).toHaveAttribute(
       "data-slot",
       "sheet-description",
     );
+    expect(screen.getByTestId("sheet-description")).toHaveClass("text-(length:--n-font-size-md)");
     expect(screen.getByTestId("sheet-body")).toHaveAttribute("data-slot", "sheet-body");
     expect(screen.getByTestId("sheet-footer")).toHaveAttribute("data-slot", "sheet-footer");
   });

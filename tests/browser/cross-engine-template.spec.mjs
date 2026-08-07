@@ -75,6 +75,10 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   await taskTrigger.click();
   const taskDialog = page.getByRole("dialog", { name: "Review launch checklist" });
   await expect(taskDialog).toBeVisible();
+  const taskTitle = taskDialog.locator('[data-slot="title"]');
+  await expect(taskTitle).toHaveJSProperty("tagName", "DIV");
+  await expect(taskTitle).toHaveCSS("font-size", "16px");
+  await expect(taskDialog.locator('[data-slot="description"]')).toHaveCSS("font-size", "14px");
   await expect
     .poll(() => taskDialog.evaluate((element) => element.contains(document.activeElement)))
     .toBe(true);
@@ -112,6 +116,13 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   await page.goto(workspaceRoute);
 
   const previewSettings = await openMobilePreviewSettings(page);
+  const sheetTitle = previewSettings.locator('[data-slot="sheet-title"]');
+  await expect(sheetTitle).toHaveJSProperty("tagName", "DIV");
+  await expect(sheetTitle).toHaveCSS("font-size", "16px");
+  await expect(previewSettings.locator('[data-slot="sheet-description"]')).toHaveCSS(
+    "font-size",
+    "14px",
+  );
   await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
   await page.keyboard.press("Escape");

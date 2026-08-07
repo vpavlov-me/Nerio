@@ -3074,7 +3074,7 @@
           "source": "../../ui/src/components/dialog.tsx",
           "target": "components/dialog.tsx",
           "role": "component",
-          "integrity": "sha256-f8ddfde0ff9f69395f95d0e09d6fdf719dc8760e5fa363e8fef926459cf7f35b"
+          "integrity": "sha256-1f9ecc5a46447512b6e7e123ec86993755b93ceafc4ac89f460b62e2c3ef9cac"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
@@ -3157,7 +3157,7 @@
       ],
       "accessibility": [
         "Uses the Base UI Dialog primitive.",
-        "Includes a title and optional description.",
+        "The title renders as a neutral 16px div by default; titleAs opts into h2-h6 only when the title belongs in the document outline. The optional description uses the standard 14px body size.",
         "Focus is trapped while the dialog is open and returns to the trigger on close.",
         "Defaults closeLabel to \"Close dialog\" for the secondary icon Button; provide a localized accessible name when needed.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded popup ref."
@@ -3431,7 +3431,7 @@
           "source": "../../ui/src/components/sheet.tsx",
           "target": "components/sheet.tsx",
           "role": "component",
-          "integrity": "sha256-26fd463b5dbd4f358fad70c67d6b83001207aebe48a90ae3497f245a80f50abd"
+          "integrity": "sha256-ae78ebf261f90e172fe8b195a6dd6e9356a8119cd9f682960d7d809f0bc51a3f"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
@@ -3522,7 +3522,7 @@
       ],
       "accessibility": [
         "Uses the Base UI Dialog primitive for modal focus management, Escape and backdrop dismissal, focus restoration, and scroll locking.",
-        "Provide SheetTitle or an explicit accessible name on SheetContent.",
+        "Provide SheetTitle or an explicit accessible name on SheetContent. SheetTitle renders as a neutral 16px div by default with explicit h2-h6 opt-in through as; SheetDescription uses the standard 14px body size.",
         "Includes a localized aria-label=\"Close sheet\" secondary icon Button by default; when showClose is false, consumers must provide another clear close path.",
         "SheetBody scrolls internally for long content; with viewport-fit=cover, safe-area insets protect panel padding and the default close; physical left and right sides remain explicit in RTL.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and forwarded refs on meaningful slots."

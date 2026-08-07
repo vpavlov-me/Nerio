@@ -148,19 +148,25 @@ export const SheetHeader = React.forwardRef<HTMLElement, React.ComponentPropsWit
   },
 );
 
-export const SheetTitle = React.forwardRef<
-  HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement>
->(function SheetTitle({ className, ...props }, ref) {
+export type SheetTitleElement = "div" | "h2" | "h3" | "h4" | "h5" | "h6";
+export interface SheetTitleProps extends React.HTMLAttributes<HTMLElement> {
+  as?: SheetTitleElement;
+}
+
+export const SheetTitle = React.forwardRef<HTMLElement, SheetTitleProps>(function SheetTitle(
+  { as: Component = "div", className, ...props },
+  ref,
+) {
   return (
     <BaseDialog.Title
-      ref={ref}
+      ref={ref as React.Ref<HTMLHeadingElement>}
       {...props}
       className={cn(
-        "n-sheet__title m-0 pe-(--n-size-control-sm) text-(length:--n-font-size-xl) font-(--n-font-weight-medium) leading-(--n-line-height-tight) text-(--n-color-text-primary)",
+        "n-sheet__title m-0 pe-(--n-size-control-sm) text-(length:--n-font-size-lg) font-(--n-font-weight-medium) leading-(--n-line-height-tight) text-(--n-color-text-primary)",
         className,
       )}
       data-slot="sheet-title"
+      render={<Component />}
     />
   );
 });
@@ -174,7 +180,7 @@ export const SheetDescription = React.forwardRef<
       ref={ref}
       {...props}
       className={cn(
-        "n-sheet__description m-0 text-(length:--n-font-size-sm) text-(--n-color-text-secondary)",
+        "n-sheet__description m-0 text-(length:--n-font-size-md) leading-(--n-line-height-normal) text-(--n-color-text-secondary)",
         className,
       )}
       data-slot="sheet-description"
