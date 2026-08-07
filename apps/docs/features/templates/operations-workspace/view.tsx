@@ -42,6 +42,7 @@ import {
   Avatar,
   Badge,
   Button,
+  ButtonGroup,
   Card,
   Command,
   CommandEmpty,
@@ -76,10 +77,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Tabs,
-  TabsIndicator,
-  TabsList,
-  TabsTrigger,
   ToastProvider,
   ToastViewport,
   Tooltip,
@@ -316,6 +313,14 @@ const statusTone = (status: string) =>
       : status === "In review"
         ? "info"
         : "neutral";
+
+const initiativeStatusFilters = [
+  { label: "All", value: "all", count: 4 },
+  { label: "On track", value: "On track", count: 1 },
+  { label: "At risk", value: "At risk", count: 1 },
+  { label: "In review", value: "In review", count: 1 },
+  { label: "Planned", value: "Planned", count: 1 },
+] as const;
 
 const navigationItems = [
   { label: "Overview", icon: LayoutDashboard, active: true },
@@ -936,34 +941,23 @@ function OperationsWorkspace() {
                 </CardDescription>
               </div>
               <CardAction>
-                <Tabs
-                  className={styles["status-tabs"]}
-                  onValueChange={(value) => {
-                    if (value) setStatus(value);
-                  }}
-                  size="sm"
-                  value={status}
-                  variant="segmented"
+                <ButtonGroup
+                  aria-label="Initiative status filters"
+                  className={styles["status-filters"]}
                 >
-                  <TabsList aria-label="Initiative status" scrollable>
-                    <TabsTrigger badge={<Badge size="sm">4</Badge>} value="all">
-                      All
-                    </TabsTrigger>
-                    <TabsTrigger badge={<Badge size="sm">1</Badge>} value="On track">
-                      On track
-                    </TabsTrigger>
-                    <TabsTrigger badge={<Badge size="sm">1</Badge>} value="At risk">
-                      At risk
-                    </TabsTrigger>
-                    <TabsTrigger badge={<Badge size="sm">1</Badge>} value="In review">
-                      In review
-                    </TabsTrigger>
-                    <TabsTrigger badge={<Badge size="sm">1</Badge>} value="Planned">
-                      Planned
-                    </TabsTrigger>
-                    <TabsIndicator />
-                  </TabsList>
-                </Tabs>
+                  {initiativeStatusFilters.map((filter) => (
+                    <Button
+                      key={filter.value}
+                      aria-pressed={status === filter.value}
+                      badge={<Badge size="sm">{filter.count}</Badge>}
+                      onClick={() => setStatus(filter.value)}
+                      size="sm"
+                      variant="ghost"
+                    >
+                      {filter.label}
+                    </Button>
+                  ))}
+                </ButtonGroup>
               </CardAction>
             </CardHeader>
 

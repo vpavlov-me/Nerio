@@ -342,8 +342,8 @@ test("uses current Core primitives with the chart adapter and no deprecated Icon
   const sidebar = page.getByRole("complementary", { name: "Workspace sidebar" });
   await expect(sidebar.getByText("Active initiatives", { exact: true })).toHaveCount(0);
 
-  const statusTabs = await page.getByRole("tablist", { name: "Initiative status" }).boundingBox();
-  expect(statusTabs?.width).toBeLessThan(600);
+  const statusFilters = page.getByRole("group", { name: "Initiative status filters" });
+  expect((await statusFilters.boundingBox())?.width).toBeLessThan(600);
   const expectedStatusCounts = new Map([
     ["All", "4"],
     ["On track", "1"],
@@ -353,9 +353,13 @@ test("uses current Core primitives with the chart adapter and no deprecated Icon
   ]);
   for (const [label, count] of expectedStatusCounts) {
     await expect(
-      page.getByRole("tab", { name: new RegExp(`^${label} ${count}$`, "i") }),
+      statusFilters.getByRole("button", { name: new RegExp(`^${label} ${count}$`, "i") }),
     ).toBeVisible();
   }
+  await expect(statusFilters.getByRole("button", { name: /^All 4$/i })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
   const firstActivity = page.locator('[class*="activity-item"]').first();
   await expect(firstActivity.locator("strong")).toHaveCSS("font-size", "14px");
   await expect(firstActivity.locator("span")).toHaveCSS("font-size", "14px");
