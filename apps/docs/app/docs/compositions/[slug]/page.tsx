@@ -29,7 +29,7 @@ export default async function LegacyCompositionPage({
   const { slug } = await params;
   const replacement = getLegacyPublicBlockRedirect(slug);
 
-  if (replacement) permanentRedirect(`/blocks/${replacement}`);
+  if (replacement) permanentRedirect(`/views/blocks/${replacement}`);
   if (isInternalBlockFixture(slug)) permanentRedirect(`/visual-test/blocks/${slug}`);
 
   notFound();

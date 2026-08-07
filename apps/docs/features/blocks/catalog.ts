@@ -7,7 +7,6 @@ export type BlockDefinition = {
   category:
     "Authentication" | "Settings and account" | "Team and operations" | "Content and feedback";
   status: BlockStatus;
-  detailRoute: `/blocks/${string}`;
   previewRoute: `/views/blocks/${string}`;
   componentsUsed: readonly string[];
   intendedUse: string;
@@ -25,7 +24,6 @@ export const blockCatalog = [
       "A focused workspace sign-in form with validation, loading feedback, and recovery navigation.",
     category: "Authentication",
     status: "Preview",
-    detailRoute: "/blocks/sign-in",
     previewRoute: "/views/blocks/sign-in",
     componentsUsed: ["Alert", "Button", "Card", "Field", "Input"],
     intendedUse: "Adapt this block for a conventional email and password entry point.",
@@ -44,7 +42,6 @@ export const blockCatalog = [
       "A compact registration form with realistic account copy, inline validation, and verification guidance.",
     category: "Authentication",
     status: "Preview",
-    detailRoute: "/blocks/create-account",
     previewRoute: "/views/blocks/create-account",
     componentsUsed: ["Alert", "Button", "Card", "Field", "Input"],
     intendedUse: "Use this block for a small self-serve account creation flow.",
@@ -63,7 +60,6 @@ export const blockCatalog = [
       "A single-task recovery form that transitions from email entry to clear success feedback.",
     category: "Authentication",
     status: "Preview",
-    detailRoute: "/blocks/reset-password",
     previewRoute: "/views/blocks/reset-password",
     componentsUsed: ["Alert", "Button", "Card", "Field", "Input"],
     intendedUse: "Use this block to begin a conventional password recovery flow.",
@@ -81,7 +77,6 @@ export const blockCatalog = [
     description: "A bounded profile section for a workspace name and short public description.",
     category: "Settings and account",
     status: "Preview",
-    detailRoute: "/blocks/profile-settings",
     previewRoute: "/views/blocks/profile-settings",
     componentsUsed: ["Alert", "Button", "Field", "Input", "Textarea"],
     intendedUse: "Place this block inside an application-owned settings route.",
@@ -100,7 +95,6 @@ export const blockCatalog = [
       "A focused security section with an immediate two-factor setting and destructive confirmation.",
     category: "Settings and account",
     status: "Preview",
-    detailRoute: "/blocks/security-settings",
     previewRoute: "/views/blocks/security-settings",
     componentsUsed: ["Button", "Dialog", "Field", "Input", "Separator", "Switch"],
     intendedUse: "Adapt this block for account-level security controls and confirmations.",
@@ -118,7 +112,6 @@ export const blockCatalog = [
     description: "A concise preference group for channel selection and digest frequency.",
     category: "Settings and account",
     status: "Preview",
-    detailRoute: "/blocks/notification-preferences",
     previewRoute: "/views/blocks/notification-preferences",
     componentsUsed: ["Alert", "Button", "Checkbox", "FormGroup", "Select"],
     intendedUse: "Use this block for a small, save-based notification preference section.",
@@ -137,7 +130,6 @@ export const blockCatalog = [
       "A basic operational table with search, status filtering, explicit row selection, bulk actions, and pagination.",
     category: "Team and operations",
     status: "Preview",
-    detailRoute: "/blocks/table-toolbar",
     previewRoute: "/views/blocks/table-toolbar",
     componentsUsed: [
       "Badge",
@@ -164,7 +156,6 @@ export const blockCatalog = [
     description: "A bounded identity and account-details composition with one focused edit action.",
     category: "Settings and account",
     status: "Preview",
-    detailRoute: "/blocks/account-summary",
     previewRoute: "/views/blocks/account-summary",
     componentsUsed: [
       "Avatar",
@@ -192,7 +183,6 @@ export const blockCatalog = [
       "A practical first-project empty state with one primary next step and restrained secondary guidance.",
     category: "Content and feedback",
     status: "Preview",
-    detailRoute: "/blocks/empty-project",
     previewRoute: "/views/blocks/empty-project",
     componentsUsed: ["Button", "EmptyState"],
     intendedUse:
@@ -212,7 +202,6 @@ export const blockCatalog = [
       "A deterministic upload-status composition with progress, completion, failure, retry, and cancellation feedback.",
     category: "Content and feedback",
     status: "Experimental",
-    detailRoute: "/blocks/file-upload-state",
     previewRoute: "/views/blocks/file-upload-state",
     componentsUsed: ["Alert", "Button", "Progress", "Spinner"],
     intendedUse: "Adapt this block around an application-owned upload operation.",

@@ -7,7 +7,6 @@ export type TemplateDefinition = {
   category: string;
   status: TemplateStatus;
   previewRoute: `/views/${string}`;
-  detailRoute: `/templates/${string}`;
   audience: string;
   scenarios: readonly string[];
   runtimeCoverage: readonly string[];
@@ -25,7 +24,6 @@ export const templateCatalog = [
     category: "SaaS and operations",
     status: "Preview",
     previewRoute: "/views/operations-workspace",
-    detailRoute: "/templates/operations-workspace",
     audience: "SaaS products, internal tools, admin systems, and operations teams.",
     scenarios: [
       "Workspace overview and local navigation",
@@ -77,7 +75,6 @@ export const templateCatalog = [
     category: "Finance and assets",
     status: "Preview",
     previewRoute: "/views/finance-assets",
-    detailRoute: "/templates/finance-assets",
     audience:
       "Treasury, wealth, fintech, and crypto-adjacent products that need one neutral asset workspace.",
     scenarios: [
@@ -130,7 +127,6 @@ export const templateCatalog = [
     category: "Content and media",
     status: "Preview",
     previewRoute: "/views/content-library",
-    detailRoute: "/templates/content-library",
     audience: "Creator tools, media products, marketplaces, design tools, and content platforms.",
     scenarios: [
       "Searchable media library with grid and mobile list presentations",
@@ -180,7 +176,6 @@ export const templateCatalog = [
     category: "AI and research",
     status: "Preview",
     previewRoute: "/views/ai-research-workspace",
-    detailRoute: "/templates/ai-research-workspace",
     audience:
       "AI assistants, research tools, agent products, knowledge work, and developer AI products.",
     scenarios: [
@@ -231,7 +226,6 @@ export const templateCatalog = [
     category: "Developer tools",
     status: "Preview",
     previewRoute: "/views/developer-portal",
-    detailRoute: "/templates/developer-portal",
     audience:
       "Open-source projects, API companies, infrastructure tools, SDK products, and developer platforms.",
     scenarios: [
@@ -280,7 +274,6 @@ export const templateCatalog = [
     category: "Support and operations",
     status: "Preview",
     previewRoute: "/views/support-desk",
-    detailRoute: "/templates/support-desk",
     audience: "Customer support, CRM, operations, moderation, inbox, and case-management products.",
     scenarios: [
       "Saved inbox views, search, filters, and dense ticket selection",

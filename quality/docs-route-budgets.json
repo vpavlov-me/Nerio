@@ -44,7 +44,7 @@
       "transferBytes": 201216,
       "runtimeTransferBytes": 814080
     },
-    "/templates/operations-workspace": {
+    "/templates": {
       "jsBytes": 738304,
       "cssBytes": 336896,
       "transferBytes": 275456,

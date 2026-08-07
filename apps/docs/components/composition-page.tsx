@@ -51,8 +51,7 @@ import {
   Tooltip,
   useToastManager,
 } from "@nerio-ui/ui/client";
-import { CodeExample } from "./code-example";
-import { getBlock, internalBlockFixtures } from "../features/blocks/catalog";
+import { internalBlockFixtures } from "../features/blocks/catalog";
 
 type Composition = {
   purpose: string;
@@ -151,7 +150,7 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
           {kind === "login" ? (
             <Button
               nativeButton={false}
-              render={<a href="/blocks/reset-password" />}
+              render={<a href="/views/blocks/reset-password" />}
               variant="link"
             >
               Forgot your password?
@@ -432,7 +431,7 @@ function EmptyProjectPreview() {
           nativeButton={false}
           size="sm"
           variant="ghost"
-          render={<a href="/templates/operations-workspace" />}
+          render={<a href="/views/operations-workspace" />}
         >
           See a project workspace
         </Button>
@@ -884,92 +883,5 @@ export function InternalBlockFixture({ slug }: { slug: keyof typeof internalBloc
         <Preview />
       </div>
     </main>
-  );
-}
-
-export function BlockDetail({ slug }: { slug: string }) {
-  const composition = blocks[slug];
-  const block = getBlock(slug);
-  if (!composition || !block) return null;
-  return (
-    <article className="doc-page composition-page">
-      <header>
-        <p className="doc-kicker">
-          {block.category} · {block.status}
-        </p>
-        <h1>{block.title}</h1>
-        <p className="doc-lede">{block.description}</p>
-      </header>
-      <section className="doc-section">
-        <h2 id="overview">Overview</h2>
-        <p>{composition.purpose}</p>
-      </section>
-      <section className="doc-section">
-        <h2 id="live-preview">Live Preview</h2>
-        <iframe
-          className="block-preview-frame"
-          src={block.previewRoute}
-          title={`${block.title} preview`}
-        />
-      </section>
-      <section className="doc-section">
-        <h2 id="intended-use">Intended Use</h2>
-        <p>{block.intendedUse}</p>
-      </section>
-      <section className="doc-section">
-        <h2 id="code">Code</h2>
-        <CodeExample code={composition.code} label={`${block.title} block`} />
-      </section>
-      <section className="doc-section">
-        <h2 id="anatomy">Anatomy</h2>
-        <p>This Block composes the following Nerio Core parts with block-local layout.</p>
-        <div className="token-chip-row">
-          {composition.components.map((component) => (
-            <code key={component}>{component}</code>
-          ))}
-        </div>
-      </section>
-      <section className="doc-section">
-        <h2 id="accessibility">Accessibility</h2>
-        <p>{composition.accessibility}</p>
-      </section>
-      <section className="doc-section">
-        <h2 id="responsive-behaviour">Responsive Behaviour</h2>
-        <p>{composition.responsive}</p>
-      </section>
-      <section className="doc-section">
-        <h2 id="boundaries">Boundaries</h2>
-        <p>{composition.notes}</p>
-        <ul>
-          {block.boundaries.map((boundary) => (
-            <li key={boundary}>{boundary}</li>
-          ))}
-        </ul>
-      </section>
-      <section className="doc-section">
-        <h2 id="related-surfaces">Related Surfaces</h2>
-        <ul>
-          {block.relatedBlocks.map((relatedSlug) => {
-            const related = getBlock(relatedSlug);
-            return related ? (
-              <li key={related.slug}>
-                <a href={related.detailRoute}>{related.title} Block</a>
-              </li>
-            ) : null;
-          })}
-          {block.relatedTemplates.map((templateSlug) => (
-            <li key={templateSlug}>
-              <a href={`/templates/${templateSlug}`}>
-                {templateSlug
-                  .split("-")
-                  .map((word) => word[0]?.toUpperCase() + word.slice(1))
-                  .join(" ")}{" "}
-                Template
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </article>
   );
 }

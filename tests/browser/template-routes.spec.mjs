@@ -19,9 +19,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
 });
 
-test("derives the gallery, detail, and same-origin preview from one route model", async ({
-  page,
-}) => {
+test("derives screenshot cards and same-origin previews from one route model", async ({ page }) => {
   const problems = monitorPage(page);
   const requestedHosts = new Set();
   page.on("request", (request) => requestedHosts.add(new URL(request.url()).host));
@@ -33,98 +31,42 @@ test("derives the gallery, detail, and same-origin preview from one route model"
       name: "See Nerio working in complete product interfaces.",
     }),
   ).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Operations Workspace" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Finance & Assets" })).toBeVisible();
-
-  await page
-    .locator(".template-card")
-    .filter({ hasText: "Operations Workspace" })
-    .getByRole("link", { name: "View details" })
-    .click();
-  await expect(page).toHaveURL(/\/templates\/operations-workspace$/);
-  const frame = page.locator('iframe[title="Operations Workspace preview"]');
-  await expect(frame).toHaveAttribute("src", workspaceRoute);
-  await expect(
-    frame.contentFrame().getByRole("heading", {
-      level: 1,
-      name: "Product operations without a vertical bias",
-    }),
-  ).toBeVisible();
-
+  const templates = [
+    ["operations-workspace", "Operations Workspace"],
+    ["finance-assets", "Finance & Assets"],
+    ["content-library", "Content Library"],
+    ["ai-research-workspace", "AI Research Workspace"],
+    ["developer-portal", "Developer Portal"],
+    ["support-desk", "Support Desk"],
+  ];
+  for (const [slug, title] of templates) {
+    await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+    const link = page.getByRole("link", { name: `Open ${title} preview in a new tab` });
+    const card = page.locator(".catalog-card").filter({ has: link });
+    await expect(link).toHaveAttribute("href", `/views/${slug}`);
+    await expect(link).toHaveAttribute("target", "_blank");
+    await card.scrollIntoViewIfNeeded();
+    const thumbnail = card.locator("iframe");
+    await expect(thumbnail).toHaveAttribute("src", `/views/${slug}`);
+    await expect(thumbnail).toHaveAttribute("tabindex", "-1");
+    await expect(thumbnail).toHaveAttribute("aria-hidden", "true");
+  }
+  await expect(page.locator(".catalog-card img")).toHaveCount(0);
+  await expect(page.getByText("View details")).toHaveCount(0);
+  expect(problems).toEqual([]);
   expect([...requestedHosts]).not.toContain("nerio-demo.vercel.app");
-  expect(problems).toEqual([]);
 });
 
-test("renders the Finance & Assets detail and same-origin preview from catalog metadata", async ({
-  page,
-}) => {
-  const problems = monitorPage(page);
-  await page.goto("/templates/finance-assets");
-  await expect(page.getByRole("heading", { level: 1, name: "Finance & Assets" })).toBeVisible();
-  const frame = page.locator('iframe[title="Finance & Assets preview"]');
-  await expect(frame).toHaveAttribute("src", "/views/finance-assets");
-  await expect(
-    frame.contentFrame().getByRole("heading", { level: 2, name: "Portfolio movement" }),
-  ).toBeVisible();
-  expect(problems).toEqual([]);
-});
+test("keeps live preview thumbnails synchronized with appearance tokens", async ({ page }) => {
+  await page.goto("/templates");
+  const thumbnail = page.locator(".catalog-card iframe").first();
+  await expect(thumbnail).toBeAttached();
 
-test("renders the Content Library detail and same-origin preview from catalog metadata", async ({
-  page,
-}) => {
-  const problems = monitorPage(page);
-  await page.goto("/templates/content-library");
-  await expect(page.getByRole("heading", { level: 1, name: "Content Library" })).toBeVisible();
-  const frame = page.locator('iframe[title="Content Library preview"]');
-  await expect(frame).toHaveAttribute("src", "/views/content-library");
-  await expect(
-    frame.contentFrame().getByRole("heading", { name: "Everything your team can publish" }),
-  ).toBeVisible();
-  expect(problems).toEqual([]);
-});
+  await page.locator("html").evaluate((root) => root.setAttribute("data-mode", "dark"));
+  await expect(thumbnail.contentFrame().locator("html")).toHaveAttribute("data-mode", "dark");
 
-test("renders the AI Research Workspace detail and same-origin preview from catalog metadata", async ({
-  page,
-}) => {
-  const problems = monitorPage(page);
-  await page.goto("/templates/ai-research-workspace");
-  await expect(
-    page.getByRole("heading", { level: 1, name: "AI Research Workspace" }),
-  ).toBeVisible();
-  const frame = page.locator('iframe[title="AI Research Workspace preview"]');
-  await expect(frame).toHaveAttribute("src", "/views/ai-research-workspace");
-  await expect(
-    frame.contentFrame().getByRole("heading", { name: "Activation opportunity brief" }),
-  ).toBeVisible();
-  expect(problems).toEqual([]);
-});
-
-test("renders the Developer Portal detail and same-origin preview from catalog metadata", async ({
-  page,
-}) => {
-  const problems = monitorPage(page);
-  await page.goto("/templates/developer-portal");
-  await expect(page.getByRole("heading", { level: 1, name: "Developer Portal" })).toBeVisible();
-  const frame = page.locator('iframe[title="Developer Portal preview"]');
-  await expect(frame).toHaveAttribute("src", "/views/developer-portal");
-  await expect(
-    frame.contentFrame().getByRole("heading", { name: "Build a connected workspace in minutes" }),
-  ).toBeVisible();
-  expect(problems).toEqual([]);
-});
-
-test("renders the Support Desk detail and same-origin preview from catalog metadata", async ({
-  page,
-}) => {
-  const problems = monitorPage(page);
-  await page.goto("/templates/support-desk");
-  await expect(page.getByRole("heading", { level: 1, name: "Support Desk" })).toBeVisible();
-  const frame = page.locator('iframe[title="Support Desk preview"]');
-  await expect(frame).toHaveAttribute("src", "/views/support-desk");
-  await expect(
-    frame.contentFrame().getByRole("heading", { name: "My open tickets" }),
-  ).toBeVisible();
-  expect(problems).toEqual([]);
+  await page.locator("html").evaluate((root) => root.setAttribute("data-mode", "light"));
+  await expect(thumbnail.contentFrame().locator("html")).toHaveAttribute("data-mode", "light");
 });
 
 test("supports direct navigation and refresh without documentation chrome", async ({ page }) => {
@@ -151,6 +93,9 @@ test("supports direct navigation and refresh without documentation chrome", asyn
 });
 
 test("returns not found for unknown template and View slugs", async ({ page }) => {
+  await page.goto("/templates/operations-workspace");
+  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+
   await page.goto("/templates/not-a-template");
   await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
 

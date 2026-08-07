@@ -34,24 +34,24 @@ stress fixtures live under unindexed `/visual-test/blocks/[slug]` routes and are
 Operations Workspace proves complete product composition but is not a released Pro package or
 stable distribution surface. Finance & Assets adds a deterministic consolidated portfolio,
 holdings, transaction, transfer-review, and security/display scenario at
-`/templates/finance-assets` with a same-origin `/views/finance-assets` preview. It uses the optional
+`/views/finance-assets`. It uses the optional
 charts adapter and local mock data only; it is not a released financial product, backend, or Pro
 package. Content Library adds a deterministic media catalog, grid/mobile-list switching,
 multi-selection, local preview and metadata editing, and a complete import-state queue at
-`/templates/content-library` with a same-origin `/views/content-library` preview. Its CSS artwork,
+`/views/content-library`. Its CSS artwork,
 metadata, and workflow state are local fixtures; it is not a DAM backend, upload service, or
 released Pro package. AI Research Workspace adds an evidence-grounded conversation, inspectable
 citations, attachments, deterministic tool states, and saved-thread navigation at
-`/templates/ai-research-workspace` with a same-origin `/views/ai-research-workspace` preview. Its
+`/views/ai-research-workspace`. Its
 prompts, responses, sources, and runtime state are local fixtures; it is not a model API, agent
 backend, vector database, or released Pro package. Developer Portal adds a developer landing, deep
 navigation, keyboard-accessible search, quickstart examples, API reference states, and a versioned
-changelog at `/templates/developer-portal` with a same-origin `/views/developer-portal` preview. Its
+changelog at `/views/developer-portal`. Its
 documentation, endpoints, responses, search, and release data are local fixtures; it is not a docs
 backend, remote API, live SDK, or released Pro package. Support Desk adds saved inbox views, dense
 ticket selection, localized conversations, assignment and status controls, customer context, and a
-validated local reply flow at `/templates/support-desk` with a same-origin `/views/support-desk`
-preview. Its tickets, customers, replies, and workflow state are local fixtures; it is not a CRM
+validated local reply flow at `/views/support-desk`. Its tickets, customers, replies, and workflow
+state are local fixtures; it is not a CRM
 backend, email service, persistence layer, or released Pro package.
 <!-- nerio-preview-surfaces:end -->
 
@@ -146,7 +146,7 @@ AI agents should select the smallest component set that matches the workflow, av
 The public Blocks catalog is available at `/blocks`. Its ten docs-local compositions cover sign in,
 account creation, password recovery, profile settings, security settings, notification preferences,
 a basic table toolbar, an account summary, an empty project, and deterministic file-upload states.
-Each `/blocks/[slug]` detail page explains intended use and product boundaries and embeds a
-same-origin `/views/blocks/[slug]` preview. Blocks solve one bounded task; they are not Templates,
-Core component APIs, complete application shells, or backend workflows.
+Each catalog card opens its same-origin `/views/blocks/[slug]` preview in a new tab. Blocks solve
+one bounded task; they are not Templates, Core component APIs, complete application shells, or
+backend workflows.
 <!-- nerio-preview-surfaces:end -->

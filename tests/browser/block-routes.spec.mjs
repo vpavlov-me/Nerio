@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
 });
 
-test("derives the public gallery, detail pages, and same-origin Views from one catalog", async ({
+test("derives the public screenshot gallery and same-origin Views from one catalog", async ({
   page,
 }) => {
   const problems = monitorPage(page);
@@ -42,15 +42,20 @@ test("derives the public gallery, detail pages, and same-origin Views from one c
     page.getByRole("heading", { level: 1, name: "Start from one clear product task." }),
   ).toBeVisible();
 
-  for (const [, title] of publicBlocks) {
+  for (const [slug, title] of publicBlocks) {
     await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+    const link = page.getByRole("link", { name: `Open ${title} preview in a new tab` });
+    const card = page.locator(".catalog-card").filter({ has: link });
+    await expect(link).toHaveAttribute("href", `/views/blocks/${slug}`);
+    await expect(link).toHaveAttribute("target", "_blank");
+    await card.scrollIntoViewIfNeeded();
+    const thumbnail = card.locator("iframe");
+    await expect(thumbnail).toHaveAttribute("src", `/views/blocks/${slug}`);
+    await expect(thumbnail).toHaveAttribute("tabindex", "-1");
+    await expect(thumbnail).toHaveAttribute("aria-hidden", "true");
   }
-
-  await page.getByRole("link", { name: "View details" }).first().click();
-  await expect(page).toHaveURL(/\/blocks\/sign-in$/);
-  const frame = page.locator('iframe[title="Sign in preview"]');
-  await expect(frame).toHaveAttribute("src", "/views/blocks/sign-in");
-  await expect(frame.contentFrame().getByRole("heading", { name: "Welcome back" })).toBeVisible();
+  await expect(page.locator(".catalog-card img")).toHaveCount(0);
+  await expect(page.getByText("View details")).toHaveCount(0);
 
   expect([...requestedHosts]).not.toContain("nerio-demo.vercel.app");
   expect(problems).toEqual([]);
@@ -87,9 +92,9 @@ test("keeps internal fixtures unindexed and outside the public catalog", async (
 
 test("redirects legacy public and internal composition routes", async ({ request }) => {
   const cases = [
-    ["/docs/blocks/login", "/blocks/sign-in"],
-    ["/docs/blocks/settings-form", "/blocks/profile-settings"],
-    ["/docs/compositions/user-profile", "/blocks/account-summary"],
+    ["/docs/blocks/login", "/views/blocks/sign-in"],
+    ["/docs/blocks/settings-form", "/views/blocks/profile-settings"],
+    ["/docs/compositions/user-profile", "/views/blocks/account-summary"],
     ["/docs/blocks/overlay-playground", "/visual-test/blocks/overlay-playground"],
     ["/docs/compositions/dense-form", "/visual-test/blocks/dense-form"],
   ];
@@ -101,6 +106,7 @@ test("redirects legacy public and internal composition routes", async ({ request
   }
 
   for (const route of [
+    "/blocks/sign-in",
     "/blocks/toString",
     "/views/blocks/toString",
     "/visual-test/blocks/toString",

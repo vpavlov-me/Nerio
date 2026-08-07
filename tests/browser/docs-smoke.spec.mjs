@@ -427,7 +427,8 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   expect(homepage.headers()["strict-transport-security"]).toContain("max-age=31536000");
   expect(homepage.headers()["content-security-policy"]).toContain("object-src 'none'");
   expect(await sitemap.text()).not.toContain("/playground");
-  expect(await sitemap.text()).toContain("/blocks/sign-in");
+  expect(await sitemap.text()).toContain("/blocks");
+  expect(await sitemap.text()).not.toContain("/blocks/sign-in");
   expect(await sitemap.text()).not.toContain("/views/blocks/");
   expect(await robots.text()).toContain("Sitemap: https://nerio.vpavlov.com/sitemap.xml");
   expect(await robots.text()).toContain("Disallow: /views/");
@@ -438,7 +439,7 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   expect(llmsText).not.toContain("/playground");
   expect(llmsText).not.toContain("nerio-preview-surfaces");
   expect(legacy.status()).toBe(308);
-  expect(legacy.headers().location).toBe("/blocks/sign-in");
+  expect(legacy.headers().location).toBe("/views/blocks/sign-in");
 
   await page.goto("/views/blocks/sign-in");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
