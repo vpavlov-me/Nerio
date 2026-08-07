@@ -3088,7 +3088,7 @@
       },
       {
         "definition": [
-          "export interface DropdownMenuItem { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; disabled?: boolean; destructive?: boolean; items?: DropdownMenuItem[]; }",
+          "export interface DropdownMenuItem { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; disabled?: boolean; destructive?: boolean; }",
           "export type IconComponent = React.ElementType<IconSvgProps>;",
           "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };"
         ],
@@ -3119,7 +3119,7 @@
       },
       {
         "definition": [
-          "export interface DropdownMenuItem { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; disabled?: boolean; destructive?: boolean; items?: DropdownMenuItem[]; }",
+          "export interface DropdownMenuItem { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; disabled?: boolean; destructive?: boolean; }",
           "export interface DropdownMenuProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DropdownMenuOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; items: DropdownMenuItem[]; className?: string; }",
           "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
           "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
@@ -6929,7 +6929,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -6996,7 +6996,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7054,7 +7054,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7149,7 +7149,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7233,7 +7233,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7326,7 +7326,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7383,7 +7383,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7486,7 +7486,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7593,7 +7593,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7672,7 +7672,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7790,6 +7790,7 @@
           "--n-popover-radius",
           "--n-popover-gap",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border-width",
           "--n-overlay-border",
@@ -7849,7 +7850,7 @@
             "target": "styles/overlays.css"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7872,6 +7873,7 @@
           "--n-dialog-header-margin",
           "--n-dialog-body-gap",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-backdrop",
@@ -7920,7 +7922,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-b5dc5cca44be4279106d5c3f90a6441065196bcbb04beb552badc9cd4046138c",
+            "integrity": "sha256-c4d91010c0aed6668e6da344fd4c62c16d582a596d3fb40ae8d58c16019336df",
             "role": "component",
             "source": "../../ui/src/components/dropdown-menu.tsx",
             "target": "components/dropdown-menu.tsx"
@@ -7956,7 +7958,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7977,6 +7979,7 @@
           "--n-dropdown-item-gap",
           "--n-dropdown-radius",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-foreground",
@@ -8042,7 +8045,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8103,7 +8106,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8135,7 +8138,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-3fcdfafe0d653e863b35534dae9f2b619d3a98479f937eb10b92c905e2cdab97",
+            "integrity": "sha256-ebf062fa5980bf2ee5c7131731f728ad14b5a92b87f62604b495cd26c0713226",
             "role": "component",
             "source": "../../ui/src/components/file-input.tsx",
             "target": "components/file-input.tsx"
@@ -8171,7 +8174,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8201,6 +8204,7 @@
           "--n-input-disabled-background",
           "--n-input-disabled-foreground",
           "--n-file-input-button-gap",
+          "--n-file-input-divider-length",
           "--n-file-input-button-size",
           "--n-file-input-button-background",
           "--n-file-input-button-background-hover",
@@ -8241,7 +8245,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8296,7 +8300,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8357,7 +8361,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8435,7 +8439,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8499,7 +8503,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8574,7 +8578,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8630,7 +8634,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8693,7 +8697,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8751,7 +8755,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8852,7 +8856,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8937,7 +8941,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8958,6 +8962,7 @@
           "--n-popover-gap",
           "--n-popover-radius",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-foreground",
@@ -9011,7 +9016,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9094,7 +9099,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9192,7 +9197,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9235,6 +9240,7 @@
           "--n-input-disabled-background",
           "--n-input-disabled-foreground",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-shadow",
@@ -9287,7 +9293,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9351,7 +9357,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9386,6 +9392,7 @@
           "--n-motion-overlay-exit-duration",
           "--n-motion-overlay-exit-easing",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border-width",
           "--n-overlay-border",
@@ -9459,7 +9466,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9545,7 +9552,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9619,7 +9626,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9710,7 +9717,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9762,7 +9769,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9819,7 +9826,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9884,7 +9891,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9979,7 +9986,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10092,7 +10099,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10166,7 +10173,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10279,7 +10286,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10377,7 +10384,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10395,6 +10402,7 @@
         "requiredTokens": [
           "--n-tooltip-radius",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-foreground",
@@ -10428,7 +10436,7 @@
             "target": "lib/cn.ts"
           },
           {
-            "integrity": "sha256-7cb4a6b6fd3f0d62f269d01288d1615e1aa4dd62f499d19dd62a14d2b5845f2f",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10851,6 +10859,7 @@
     "--n-file-input-button-foreground",
     "--n-file-input-button-gap",
     "--n-file-input-button-size",
+    "--n-file-input-divider-length",
     "--n-focus-ring",
     "--n-focus-ring-inner-width",
     "--n-focus-ring-outer-width",

@@ -1186,12 +1186,9 @@ export function ComponentPlayground() {
                 label: "Share",
                 group: "Collaboration",
                 leadingIcon: UserPlus,
-                trailingIcon: ChevronDown,
-                items: [
-                  { label: "Invite people", leadingIcon: UserPlus, hotkey: <Kbd>⌘ I</Kbd> },
-                  { label: "Copy public link", leadingIcon: Copy, hotkey: <Kbd>⌘ L</Kbd> },
-                ],
+                hotkey: <Kbd>⌘ I</Kbd>,
               },
+              { label: "Copy public link", group: "Collaboration", leadingIcon: Copy },
               { label: "Archive", group: "Manage", leadingIcon: Box },
               {
                 label: "Delete project",

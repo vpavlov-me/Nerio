@@ -602,6 +602,7 @@
   --n-input-addon-gap: var(--n-space-1-5);
   --n-input-addon-padding-inline: var(--n-density-space-md);
   --n-file-input-button-gap: var(--n-input-padding-inline);
+  --n-file-input-divider-length: var(--n-density-space-lg);
   --n-file-input-button-size: var(--n-size-control-md);
   --n-file-input-button-background: var(--n-color-action-secondary);
   --n-file-input-button-background-hover: var(--n-color-action-secondary-hover);

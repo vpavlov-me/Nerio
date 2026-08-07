@@ -696,7 +696,7 @@ describe("Core static contracts", () => {
     );
     expect(componentSource("file-input")).toContain("[grid-area:1/1]");
     expect(componentSource("file-input")).not.toContain("absolute inset-block-0");
-    expect(componentSource("file-input")).toContain("after:h-(--n-button-group-divider-length)");
+    expect(componentSource("file-input")).toContain("after:h-(--n-file-input-divider-length)");
     expect(componentSource("file-input")).not.toContain("file:border-e");
     expect(componentSource("switch")).toContain("rounded-(--n-switch-radius)");
     expect(componentSource("switch")).toContain("rounded-(--n-switch-thumb-radius)");
@@ -3708,31 +3708,6 @@ describe("Core interactive action contracts", () => {
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     expect(trigger).toHaveFocus();
-  });
-
-  it("opens one nested DropdownMenu level with keyboard navigation", async () => {
-    const user = userEvent.setup();
-    render(
-      <DropdownMenu
-        defaultOpen
-        trigger="Actions"
-        items={[
-          {
-            label: "Share",
-            trailingIcon: ArrowRight,
-            items: [{ label: "Invite people" }, { label: "Copy public link", hotkey: "⌘L" }],
-          },
-        ]}
-      />,
-    );
-
-    const submenuTrigger = await screen.findByRole("menuitem", { name: "Share" });
-    submenuTrigger.focus();
-    await user.keyboard("{ArrowRight}");
-
-    expect(await screen.findByRole("menuitem", { name: "Invite people" })).toBeVisible();
-    expect(screen.getByRole("menuitem", { name: "Copy public link" })).toBeVisible();
-    expect(document.querySelector('[data-slot="submenu-content"]')).toBeInTheDocument();
   });
 
   it("keeps Input native behavior while normalizing protected state attributes", () => {

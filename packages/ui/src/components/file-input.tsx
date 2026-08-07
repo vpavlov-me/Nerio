@@ -77,7 +77,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(func
       />
       <span
         aria-hidden
-        className="pointer-events-none relative z-1 inline-flex h-full w-(--n-file-input-button-size) items-center justify-center justify-self-start ps-(--n-space-0-5) text-(--n-file-input-button-foreground) [grid-area:1/1] after:absolute after:end-0 after:top-1/2 after:h-(--n-button-group-divider-length) after:w-(--n-input-border-width) after:-translate-y-1/2 after:bg-(--n-file-input-button-border) after:content-[''] [[data-disabled]_&]:text-(--n-file-input-button-disabled-foreground) forced-colors:text-[ButtonText] forced-colors:after:bg-[CanvasText]"
+        className="pointer-events-none relative z-1 inline-flex h-full w-(--n-file-input-button-size) items-center justify-center justify-self-start ps-(--n-space-0-5) text-(--n-file-input-button-foreground) [grid-area:1/1] after:absolute after:end-0 after:top-1/2 after:h-(--n-file-input-divider-length) after:w-(--n-input-border-width) after:-translate-y-1/2 after:bg-(--n-file-input-button-border) after:content-[''] [[data-disabled]_&]:text-(--n-file-input-button-disabled-foreground) forced-colors:text-[ButtonText] forced-colors:after:bg-[CanvasText]"
         data-slot="file-input-icon"
       >
         <Icon icon={Upload} />

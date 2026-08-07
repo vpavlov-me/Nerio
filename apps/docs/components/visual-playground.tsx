@@ -699,6 +699,7 @@ export function VisualPlayground() {
   const [lightColors, setLightColors] = React.useState(lightDefaults);
   const [darkColors, setDarkColors] = React.useState(darkDefaults);
   const [copyState, setCopyState] = React.useState("Copy theme");
+  const playgroundRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const query = window.matchMedia("(prefers-color-scheme: dark)");
@@ -711,45 +712,54 @@ export function VisualPlayground() {
   const resolvedMode = mode === "system" ? (systemDark ? "dark" : "light") : mode;
   const colors = resolvedMode === "dark" ? darkColors : lightColors;
   const style = toStyle(colors, scale, density, radius, motion, panel);
-  const previousDocumentTheme = React.useRef<{
-    attributes: Record<string, string | null>;
-    styles: Record<string, string>;
-  } | null>(null);
 
   React.useEffect(() => {
-    const root = document.documentElement;
-    const attributes = {
-      "data-theme": root.getAttribute("data-theme"),
-      "data-mode": root.getAttribute("data-mode"),
-      "data-density": root.getAttribute("data-density"),
+    const playground = playgroundRef.current;
+    if (!playground) return;
+
+    let portalIntentUntil = 0;
+    const registerPortalIntent = () => {
+      portalIntentUntil = Date.now() + 1_000;
     };
-    const styles = Object.fromEntries(
-      Object.keys(style).map((property) => [property, root.style.getPropertyValue(property)]),
-    );
-    previousDocumentTheme.current = { attributes, styles };
+    const applyPortalTheme = (portal: HTMLElement) => {
+      portal.dataset.playgroundPortal = "";
+      portal.dataset.theme = theme;
+      portal.dataset.mode = resolvedMode;
+      portal.dataset.density = density;
+      Object.entries(style).forEach(([property, value]) => {
+        portal.style.setProperty(property, String(value));
+      });
+    };
+    document.querySelectorAll<HTMLElement>("[data-playground-portal]").forEach(applyPortalTheme);
+
+    const observer = new MutationObserver((mutations) => {
+      if (Date.now() > portalIntentUntil) return;
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (!(node instanceof HTMLElement)) return;
+          const portal = node.parentElement === document.body ? node : node.closest("body > div");
+          if (portal instanceof HTMLElement) applyPortalTheme(portal);
+        });
+      });
+    });
+    observer.observe(document.body, { childList: true });
+    playground.addEventListener("pointerdown", registerPortalIntent, true);
+    playground.addEventListener("focusin", registerPortalIntent, true);
+    playground.addEventListener("keydown", registerPortalIntent, true);
 
     return () => {
-      const previous = previousDocumentTheme.current;
-      if (!previous) return;
-      Object.entries(previous.attributes).forEach(([attribute, value]) => {
-        if (value === null) root.removeAttribute(attribute);
-        else root.setAttribute(attribute, value);
-      });
-      Object.entries(previous.styles).forEach(([property, value]) => {
-        if (value) root.style.setProperty(property, value);
-        else root.style.removeProperty(property);
+      observer.disconnect();
+      playground.removeEventListener("pointerdown", registerPortalIntent, true);
+      playground.removeEventListener("focusin", registerPortalIntent, true);
+      playground.removeEventListener("keydown", registerPortalIntent, true);
+      document.querySelectorAll<HTMLElement>("[data-playground-portal]").forEach((portal) => {
+        delete portal.dataset.playgroundPortal;
+        delete portal.dataset.theme;
+        delete portal.dataset.mode;
+        delete portal.dataset.density;
+        Object.keys(style).forEach((property) => portal.style.removeProperty(property));
       });
     };
-  }, []);
-
-  React.useEffect(() => {
-    const root = document.documentElement;
-    root.setAttribute("data-theme", theme);
-    root.setAttribute("data-mode", resolvedMode);
-    root.setAttribute("data-density", density);
-    Object.entries(style).forEach(([property, value]) => {
-      root.style.setProperty(property, String(value));
-    });
   }, [density, resolvedMode, style, theme]);
 
   const updateColor = (key: ColorKey, value: string) => {
@@ -822,6 +832,7 @@ export function VisualPlayground() {
   return (
     <ToastProvider>
       <div
+        ref={playgroundRef}
         className="visual-playground visual-playground--lab"
         data-theme={theme}
         data-mode={resolvedMode}

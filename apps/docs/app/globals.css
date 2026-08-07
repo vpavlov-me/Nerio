@@ -4040,12 +4040,12 @@ pre {
   min-block-size: var(--n-space-3);
 }
 
-.component-playground-skeleton-card__visual {
-  min-block-size: 8rem !important;
+.component-playground-skeleton-card .component-playground-skeleton-card__visual {
+  min-block-size: 8rem;
 }
 
-.component-playground-skeleton-form__control {
-  min-block-size: var(--n-size-control-md) !important;
+.component-playground-skeleton-form .component-playground-skeleton-form__control {
+  min-block-size: var(--n-size-control-md);
 }
 
 .component-lab-inline,
