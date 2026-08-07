@@ -31,8 +31,8 @@ export type CardVisualPlacement = "inset" | "bleed";
 export interface CardVisualProps extends React.HTMLAttributes<HTMLDivElement> {
   placement?: CardVisualPlacement;
 }
-export type CardTitleElement = "h2" | "h3" | "h4" | "h5" | "h6";
-export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+export type CardTitleElement = "div" | "span" | "p" | "h2" | "h3" | "h4" | "h5" | "h6";
+export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> {
   as?: CardTitleElement;
 }
 export type CardDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
@@ -77,7 +77,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardSectionProps>(fun
       ref={ref}
       {...props}
       className={cn(
-        "n-card__header grid min-w-0 gap-(--n-card-section-gap) has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)_auto] has-[>[data-slot=card-action]]:items-start max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
+        "n-card__header grid min-w-0 gap-(--n-card-section-gap) has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)_auto] has-[>[data-slot=card-action]]:items-start [&>div:not([data-slot=card-action])]:grid [&>div:not([data-slot=card-action])]:min-w-0 [&>div:not([data-slot=card-action])]:gap-(--n-card-section-gap) max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
         className,
       )}
       data-slot="card-header"
@@ -103,8 +103,8 @@ export const CardVisual = React.forwardRef<HTMLDivElement, CardVisualProps>(func
   );
 });
 
-export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(function CardTitle(
-  { as: Component = "h3", className, ...props },
+export const CardTitle = React.forwardRef<HTMLElement, CardTitleProps>(function CardTitle(
+  { as: Component = "div", className, ...props },
   ref,
 ) {
   return (
@@ -112,7 +112,7 @@ export const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(fu
       ref={ref as React.Ref<never>}
       {...props}
       className={cn(
-        "n-card__title m-0 text-(length:--n-font-size-md) leading-(--n-line-height-tight) font-(--n-font-weight-medium) text-(--n-color-text-primary)",
+        "n-card__title m-0 text-(length:--n-font-size-lg) leading-(--n-line-height-tight) font-(--n-font-weight-medium) text-(--n-color-text-primary)",
         className,
       )}
       data-slot="card-title"

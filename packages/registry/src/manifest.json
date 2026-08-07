@@ -876,7 +876,7 @@
           "source": "../../ui/src/components/card.tsx",
           "target": "components/card.tsx",
           "role": "component",
-          "integrity": "sha256-afa158032a5603b28669e206db79320313f157977370b30cd85f170b9224ee34"
+          "integrity": "sha256-41bfa2d34a4aba4e418a029c22cee13cb3fa193eb4cc9e0822df573984c10798"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
@@ -940,7 +940,7 @@
       ],
       "accessibility": [
         "Use Card to group related content, not to decorate every section.",
-        "Provide semantic headings inside cards when the content needs structure.",
+        "CardTitle renders a neutral div by default. Choose an explicit h2-h6 only when the card participates in the document outline, and preserve heading order.",
         "Use CardVisual for icons, avatars, logos, previews, and media; only bleed placement reaches the card edge.",
         "Use CardAction only in a surface Card. Linked Cards cannot contain interactive descendants.",
         "Avoid nesting cards inside cards.",

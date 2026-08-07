@@ -612,6 +612,7 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   await expect(card).toBeVisible();
   await expect(card).toHaveCSS("border-top-width", "1px");
   await expect(card.locator("[data-slot=card-title]").first()).toHaveCSS("font-weight", "500");
+  await expect(card.locator("[data-slot=card-title]").first()).toHaveCSS("font-size", "16px");
   expect(await card.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe("none");
   const lightCardBorder = await card.evaluate(
     (element) => getComputedStyle(element).borderTopColor,

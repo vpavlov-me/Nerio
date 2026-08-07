@@ -107,7 +107,7 @@ export const snippets: Record<string, string> = {
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
     'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", description: "Invite people and choose access", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Archive", leadingIcon: X, destructive: true },\n  ]}\n/>',
-  card: 'import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Card as="article">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle as="h2">Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
+  card: 'import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Card as="div">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle>Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
   separator:
     "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
   avatar:
@@ -2596,8 +2596,12 @@ export const componentReference: Record<string, ComponentReference> = {
         description:
           "Optional generic visual slot for icons, avatars, logos, previews, or media; inset by default and edge-to-edge when placement is bleed.",
       },
-      { title: "card-header", description: "Optional heading area for title and supporting copy." },
-      { title: "card-title", description: "Semantic title slot for concise surface headings." },
+      { title: "card-header", description: "Optional title area for primary and supporting copy." },
+      {
+        title: "card-title",
+        description:
+          "Concise surface title that renders neutral text by default and supports an explicit heading element when document structure requires one.",
+      },
       { title: "card-description", description: "Secondary explanatory text." },
       {
         title: "card-action",
@@ -2636,7 +2640,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Linked Cards use a restrained surface transition and the shared focus ring.",
     ],
     accessibility: [
-      "Keep heading order and actions explicit inside the card.",
+      "CardTitle renders a div by default. Choose an explicit h2-h6 only when the card participates in the document outline, and preserve heading order.",
       "Use href when the full Card has one clear destination; it renders a native anchor. Do not nest interactive controls in a linked Card.",
       "Use CardAction only in a surface Card, never inside a linked Card.",
     ],
@@ -2662,7 +2666,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "CardTitle / CardDescription",
-        description: "Heading and secondary text slots for documentation and registry examples.",
+        description:
+          "Primary and secondary text slots. CardTitle defaults to div and accepts an explicit semantic element through as.",
       },
     ],
     designNotes: [

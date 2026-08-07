@@ -19,6 +19,13 @@ test.beforeEach(async ({ page }) => {
   await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
 });
 
+async function openMobilePreviewSettings(page) {
+  await page.getByRole("button", { name: "Open workspace navigation" }).click();
+  const navigation = page.getByRole("dialog", { name: "Workspace navigation" });
+  await navigation.getByRole("button", { name: "Open preview settings" }).click();
+  return page.getByRole("dialog", { name: "Preview settings" });
+}
+
 test("preserves keyboard focus, modal restoration, table overflow, and native form behavior", async ({
   browserName,
   page,
@@ -104,10 +111,11 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   await page.setViewportSize({ width: 390, height: 720 });
   await page.goto(workspaceRoute);
 
-  await page.getByRole("button", { name: "Open preview settings" }).click();
-  const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
+  const previewSettings = await openMobilePreviewSettings(page);
   await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
+  await expect(previewSettings).toBeHidden();
   await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(

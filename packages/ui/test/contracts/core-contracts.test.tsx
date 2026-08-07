@@ -15,6 +15,7 @@ import {
   Card,
   CardAction,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
   CardVisual,
@@ -1028,8 +1029,8 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("visual-card")).toHaveClass(
       "[&:is(a)]:duration-(--n-motion-hover-duration)",
     );
-    expect(screen.getByRole("heading", { name: "Projects" })).toHaveClass(
-      "text-(length:--n-font-size-md)",
+    expect(screen.getByText("Projects")).toHaveClass(
+      "text-(length:--n-font-size-lg)",
       "font-(--n-font-weight-medium)",
     );
     expect(screen.getByTestId("visual-avatar")).toHaveClass("border-(--n-avatar-border)");
@@ -1299,6 +1300,7 @@ describe("Core static contracts", () => {
         <CardHeader>
           <div>
             <CardTitle>Workspace</CardTitle>
+            <CardDescription>Current delivery context</CardDescription>
           </div>
           <CardAction>Active</CardAction>
         </CardHeader>
@@ -1308,7 +1310,9 @@ describe("Core static contracts", () => {
     expect(screen.getByText("Workspace icon")).toHaveAttribute("data-slot", "card-visual");
     expect(screen.getByText("Workspace icon")).toHaveAttribute("data-placement", "inset");
     expect(screen.getByText("Active")).toHaveAttribute("data-slot", "card-action");
-    expect(screen.getByText("Workspace")).toHaveAttribute("data-slot", "card-title");
+    const title = screen.getByText("Workspace");
+    expect(title).toHaveAttribute("data-slot", "card-title");
+    expect(title.tagName).toBe("DIV");
   });
 
   it("supports a bleed CardVisual while protecting Card-owned anatomy", () => {
@@ -1332,6 +1336,7 @@ describe("Core static contracts", () => {
     expect(source).toContain(
       "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
+    expect(source).toContain("[&>div:not([data-slot=card-action])]:gap-(--n-card-section-gap)");
     expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");
   });
 

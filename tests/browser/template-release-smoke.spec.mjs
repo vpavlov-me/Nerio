@@ -38,6 +38,13 @@ async function expectHealthyPage(
   expect(problems).toEqual([]);
 }
 
+async function openMobilePreviewSettings(page) {
+  await page.getByRole("button", { name: "Open workspace navigation" }).click();
+  const navigation = page.getByRole("dialog", { name: "Workspace navigation" });
+  await navigation.getByRole("button", { name: "Open preview settings" }).click();
+  return page.getByRole("dialog", { name: "Preview settings" });
+}
+
 test("health check observes failures during the stability window", async ({ page }) => {
   const problems = monitorPage(page);
   await page.setContent(`
@@ -180,10 +187,11 @@ test("keeps the template shell inside emulated safe areas without overflow", asy
   expect(shell.inlineEnd).toBe("4px");
   expect(shell.overflow).toBeLessThanOrEqual(1);
 
-  await page.getByRole("button", { name: "Open preview settings" }).click();
-  const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
+  const previewSettings = await openMobilePreviewSettings(page);
   await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
+  await expect(previewSettings).toBeHidden();
   await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
@@ -315,7 +323,9 @@ test("uses current Core primitives with the chart adapter and no deprecated Icon
 }) => {
   const problems = monitorPage(page);
   await page.goto(workspaceRoute);
-  await expect(page.getByRole("heading", { name: "Delivery health" })).toBeVisible();
+  await expect(
+    page.locator('[data-slot="card-title"]', { hasText: "Delivery health" }),
+  ).toBeVisible();
   await expect(page.getByRole("heading", { name: /Chart/ })).toHaveCount(0);
   await expect(page.locator(".n-icon-button")).toHaveCount(0);
   await expect(
@@ -324,9 +334,13 @@ test("uses current Core primitives with the chart adapter and no deprecated Icon
   await expect(page.getByRole("group", { name: "Six of nine contributors" })).toBeVisible();
   await expect(page.getByRole("group", { name: "Team capacity details" })).toBeVisible();
   await expect(page.getByText("Product and design", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Operational risks" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Upcoming milestones" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Cycle time" })).toBeVisible();
+  await expect(
+    page.locator('[data-slot="card-title"]', { hasText: "Operational risks" }),
+  ).toBeVisible();
+  await expect(
+    page.locator('[data-slot="card-title"]', { hasText: "Upcoming milestones" }),
+  ).toBeVisible();
+  await expect(page.locator('[data-slot="card-title"]', { hasText: "Cycle time" })).toBeVisible();
   await expect(
     page.getByRole("img", { name: /Median cycle time decreased from 6.4 days/ }),
   ).toBeVisible();

@@ -124,7 +124,7 @@ approved component.
 
 | Component | Status      | Package        | Notes                                                                                                                                                     |
 | --------- | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Card      | stable-core | `@nerio-ui/ui` | Composable surface with verified visual placement, header action, semantic root, narrow layout, focus, and heading contracts                              |
+| Card      | stable-core | `@nerio-ui/ui` | Composable surface with verified visual placement, header action, neutral default title semantics, narrow layout, focus, and deliberate heading opt-in    |
 | Badge     | stable-core | `@nerio-ui/ui` | Status and metadata                                                                                                                                       |
 | Avatar    | stable-core | `@nerio-ui/ui` | User/entity avatar with verified image transitions, aspect-ratio cropping, accessible naming, and fallback behavior                                       |
 | Table     | stable-core | `@nerio-ui/ui` | Native table anatomy with runtime-safe named keyboard-scroll opt-in, tbody-only row states, responsive and RTL overflow, and consumer-owned data behavior |

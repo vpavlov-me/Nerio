@@ -11,7 +11,17 @@ import {
   XAxis,
   YAxis,
 } from "@nerio-ui/adapters/charts";
-import { Icon, SidebarContent, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
+import {
+  CardAction,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Icon,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+} from "@nerio-ui/ui";
 import {
   ArrowRight,
   Bell,
@@ -357,6 +367,82 @@ function WorkspaceNavigation() {
   );
 }
 
+type PreviewSettingsProps = {
+  density: Appearance["density"];
+  direction: "ltr" | "rtl";
+  mode: Appearance["mode"];
+  theme: Appearance["theme"];
+  onDensityChange: (value: string) => void;
+  onDirectionChange: (value: "ltr" | "rtl") => void;
+  onModeChange: (value: string) => void;
+  onThemeChange: (value: string) => void;
+};
+
+function PreviewSettings({
+  density,
+  direction,
+  mode,
+  theme,
+  onDensityChange,
+  onDirectionChange,
+  onModeChange,
+  onThemeChange,
+}: PreviewSettingsProps) {
+  return (
+    <Sheet>
+      <SheetTrigger
+        render={
+          <Button
+            aria-label="Open preview settings"
+            className={styles["workspace-settings"]}
+            leadingIcon={Settings}
+            size="sm"
+            variant="ghost"
+          >
+            Settings
+          </Button>
+        }
+      />
+      <SheetContent side={direction === "rtl" ? "left" : "right"} size="sm">
+        <SheetHeader>
+          <SheetTitle>Preview settings</SheetTitle>
+          <SheetDescription>
+            Inspect the same static workspace across supported runtime axes.
+          </SheetDescription>
+        </SheetHeader>
+        <SheetBody>
+          <div className={styles["preview-settings"]}>
+            <Select
+              label="Theme"
+              value={theme}
+              onValueChange={onThemeChange}
+              options={themeOptions}
+            />
+            <Select label="Mode" value={mode} onValueChange={onModeChange} options={modeOptions} />
+            <Select
+              label="Density"
+              value={density}
+              onValueChange={onDensityChange}
+              options={densityOptions}
+            />
+            <Select
+              label="Direction"
+              value={direction}
+              onValueChange={(value) => {
+                if (value === "ltr" || value === "rtl") onDirectionChange(value);
+              }}
+              options={[
+                { label: "Left to right", value: "ltr" },
+                { label: "Right to left", value: "rtl" },
+              ]}
+            />
+          </div>
+        </SheetBody>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
 export function OperationsWorkspaceView() {
   return (
     <ToastProvider>
@@ -458,6 +544,18 @@ function OperationsWorkspace() {
           <SidebarContent>
             <WorkspaceNavigation />
           </SidebarContent>
+          <SidebarFooter>
+            <PreviewSettings
+              density={density}
+              direction={direction}
+              mode={mode}
+              theme={theme}
+              onDensityChange={setDensity}
+              onDirectionChange={setDirection}
+              onModeChange={setMode}
+              onThemeChange={setTheme}
+            />
+          </SidebarFooter>
           <SidebarRail label="Toggle workspace sidebar" />
         </Sidebar>
       ) : null}
@@ -485,8 +583,18 @@ function OperationsWorkspace() {
                       <SheetTitle>Workspace navigation</SheetTitle>
                       <SheetDescription>Choose a workspace destination.</SheetDescription>
                     </SheetHeader>
-                    <SheetBody>
+                    <SheetBody className={styles["mobile-navigation-body"]}>
                       <WorkspaceNavigation />
+                      <PreviewSettings
+                        density={density}
+                        direction={direction}
+                        mode={mode}
+                        theme={theme}
+                        onDensityChange={setDensity}
+                        onDirectionChange={setDirection}
+                        onModeChange={setMode}
+                        onThemeChange={setTheme}
+                      />
                     </SheetBody>
                   </SheetContent>
                 </Sheet>
@@ -569,61 +677,6 @@ function OperationsWorkspace() {
                 </footer>
               </Command>
             </Dialog>
-            <Sheet>
-              <Tooltip label="Open preview settings">
-                <SheetTrigger
-                  render={
-                    <Button
-                      aria-label="Open preview settings"
-                      icon={Settings}
-                      tooltip={false}
-                      variant="secondary"
-                    />
-                  }
-                />
-              </Tooltip>
-              <SheetContent side={direction === "rtl" ? "left" : "right"} size="sm">
-                <SheetHeader>
-                  <SheetTitle>Preview settings</SheetTitle>
-                  <SheetDescription>
-                    Inspect the same static workspace across supported runtime axes.
-                  </SheetDescription>
-                </SheetHeader>
-                <SheetBody>
-                  <div className={styles["preview-settings"]}>
-                    <Select
-                      label="Theme"
-                      value={theme}
-                      onValueChange={setTheme}
-                      options={themeOptions}
-                    />
-                    <Select
-                      label="Mode"
-                      value={mode}
-                      onValueChange={setMode}
-                      options={modeOptions}
-                    />
-                    <Select
-                      label="Density"
-                      value={density}
-                      onValueChange={setDensity}
-                      options={densityOptions}
-                    />
-                    <Select
-                      label="Direction"
-                      value={direction}
-                      onValueChange={(value) => {
-                        if (value === "ltr" || value === "rtl") setDirection(value);
-                      }}
-                      options={[
-                        { label: "Left to right", value: "ltr" },
-                        { label: "Right to left", value: "rtl" },
-                      ]}
-                    />
-                  </div>
-                </SheetBody>
-              </SheetContent>
-            </Sheet>
             <Button
               leadingIcon={Sparkles}
               onClick={() => {
@@ -656,13 +709,15 @@ function OperationsWorkspace() {
           <Stat label="Contributors" value="9" trend="4 teams" className={styles["span-3"]} />
 
           <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="delivery-health">
-            <div className={styles["panel-heading"]}>
+            <CardHeader>
               <div>
-                <h2>Delivery health</h2>
-                <p>Weekly completion rate across active initiatives.</p>
+                <CardTitle>Delivery health</CardTitle>
+                <CardDescription>Weekly completion rate across active initiatives.</CardDescription>
               </div>
-              <Badge tone="success">+8.4%</Badge>
-            </div>
+              <CardAction>
+                <Badge tone="success">+8.4%</Badge>
+              </CardAction>
+            </CardHeader>
             <div
               aria-label="Weekly completion rate rose from 62 percent on Monday to 86 percent on Sunday"
               className={styles["delivery-chart"]}
@@ -710,12 +765,12 @@ function OperationsWorkspace() {
           </Card>
 
           <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="team-capacity">
-            <div className={styles["panel-heading"]}>
+            <CardHeader>
               <div>
-                <h2>Team capacity</h2>
-                <p>Capacity by team across active delivery work.</p>
+                <CardTitle>Team capacity</CardTitle>
+                <CardDescription>Capacity by team across active delivery work.</CardDescription>
               </div>
-            </div>
+            </CardHeader>
             <div aria-label="Six of nine contributors" className={styles["team-list"]} role="group">
               {avatarPreviewAssets.map((avatar) => (
                 <Avatar key={avatar.name} {...avatar} />
@@ -744,15 +799,17 @@ function OperationsWorkspace() {
             className={`${styles["span-4"]} ${styles["workspace-panel"]}`}
             id="operational-risks"
           >
-            <div className={styles["panel-heading"]}>
+            <CardHeader>
               <div>
-                <h2>Operational risks</h2>
-                <p>Blockers that need an owner or decision.</p>
+                <CardTitle>Operational risks</CardTitle>
+                <CardDescription>Blockers that need an owner or decision.</CardDescription>
               </div>
-              <Badge leadingIcon={TriangleAlert} tone="warning">
-                3 open
-              </Badge>
-            </div>
+              <CardAction>
+                <Badge leadingIcon={TriangleAlert} tone="warning">
+                  3 open
+                </Badge>
+              </CardAction>
+            </CardHeader>
             <ItemGroup aria-label="Operational risks" className={styles["compact-list"]}>
               {operationalRisks.map((risk) => (
                 <Item key={risk.name} size="sm">
@@ -772,15 +829,17 @@ function OperationsWorkspace() {
             className={`${styles["span-4"]} ${styles["workspace-panel"]}`}
             id="upcoming-milestones"
           >
-            <div className={styles["panel-heading"]}>
+            <CardHeader>
               <div>
-                <h2>Upcoming milestones</h2>
-                <p>Next delivery moments across the portfolio.</p>
+                <CardTitle>Upcoming milestones</CardTitle>
+                <CardDescription>Next delivery moments across the portfolio.</CardDescription>
               </div>
-              <Badge leadingIcon={CalendarDays} tone="info">
-                10 days
-              </Badge>
-            </div>
+              <CardAction>
+                <Badge leadingIcon={CalendarDays} tone="info">
+                  10 days
+                </Badge>
+              </CardAction>
+            </CardHeader>
             <ItemGroup aria-label="Upcoming milestones" className={styles["compact-list"]}>
               {upcomingMilestones.map((milestone) => (
                 <Item key={milestone.name} size="sm">
@@ -797,13 +856,15 @@ function OperationsWorkspace() {
           </Card>
 
           <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="cycle-time">
-            <div className={styles["panel-heading"]}>
+            <CardHeader>
               <div>
-                <h2>Cycle time</h2>
-                <p>Median time from start to completion.</p>
+                <CardTitle>Cycle time</CardTitle>
+                <CardDescription>Median time from start to completion.</CardDescription>
               </div>
-              <Badge tone="success">-0.7d</Badge>
-            </div>
+              <CardAction>
+                <Badge tone="success">-0.7d</Badge>
+              </CardAction>
+            </CardHeader>
             <div className={styles["cycle-time-summary"]}>
               <div>
                 <strong>4.8 days</strong>
@@ -861,30 +922,34 @@ function OperationsWorkspace() {
           </Card>
 
           <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="initiatives">
-            <div className={`${styles["panel-heading"]} ${styles["initiatives-heading"]}`}>
+            <CardHeader>
               <div>
-                <h2>Initiatives</h2>
-                <p>Portfolio status, ownership, and delivery progress.</p>
+                <CardTitle>Initiatives</CardTitle>
+                <CardDescription>
+                  Portfolio status, ownership, and delivery progress.
+                </CardDescription>
               </div>
-              <Tabs
-                className={styles["status-tabs"]}
-                onValueChange={(value) => {
-                  if (value) setStatus(value);
-                }}
-                size="sm"
-                value={status}
-                variant="segmented"
-              >
-                <TabsList aria-label="Initiative status" scrollable>
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="On track">On track</TabsTrigger>
-                  <TabsTrigger value="At risk">At risk</TabsTrigger>
-                  <TabsTrigger value="In review">In review</TabsTrigger>
-                  <TabsTrigger value="Planned">Planned</TabsTrigger>
-                  <TabsIndicator />
-                </TabsList>
-              </Tabs>
-            </div>
+              <CardAction>
+                <Tabs
+                  className={styles["status-tabs"]}
+                  onValueChange={(value) => {
+                    if (value) setStatus(value);
+                  }}
+                  size="sm"
+                  value={status}
+                  variant="segmented"
+                >
+                  <TabsList aria-label="Initiative status" scrollable>
+                    <TabsTrigger value="all">All</TabsTrigger>
+                    <TabsTrigger value="On track">On track</TabsTrigger>
+                    <TabsTrigger value="At risk">At risk</TabsTrigger>
+                    <TabsTrigger value="In review">In review</TabsTrigger>
+                    <TabsTrigger value="Planned">Planned</TabsTrigger>
+                    <TabsIndicator />
+                  </TabsList>
+                </Tabs>
+              </CardAction>
+            </CardHeader>
 
             <TableContainer focusable aria-label="Workspace initiatives">
               <Table>
@@ -915,12 +980,12 @@ function OperationsWorkspace() {
           </Card>
 
           <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="activity">
-            <div className={styles["panel-heading"]}>
+            <CardHeader>
               <div>
-                <h2>Recent activity</h2>
-                <p>Latest delivery updates across teams.</p>
+                <CardTitle>Recent activity</CardTitle>
+                <CardDescription>Latest delivery updates across teams.</CardDescription>
               </div>
-            </div>
+            </CardHeader>
             <div className={styles["activity-feed"]}>
               {activity.map(([title, scope, time]) => (
                 <div key={title} className={styles["activity-item"]}>

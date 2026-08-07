@@ -11,8 +11,8 @@
     "componentCatalogSha256": "5b1a7d4ffda532bb772fa7ee1cbdc27dd39d7c562d230a20f2a6bb92853adab6",
     "registrySchemaVersion": "1.1.0",
     "registryItemCount": 46,
-    "registryManifestSha256": "00643d6e8039a2a1e31da24e66d9d94de5d864329cd7a6506181a7cae2641ec1",
-    "publicApiSnapshotSha256": "c4bb0b0193495ad5c4b7531eb199bc2c8fdd2af3cafbc892d54a03cdd7325d8c"
+    "registryManifestSha256": "8616de7e503c43eed95bb898501a09358e7b175da5758924bc6840bcb98fdf08",
+    "publicApiSnapshotSha256": "82cbe40385bf0aa96d83f280facaa0c63198e24eb11664211bd9c275fb8352aa"
   },
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",

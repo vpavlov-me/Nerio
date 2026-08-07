@@ -1070,11 +1070,11 @@
         "deprecations": [],
         "kind": "value",
         "name": "CardTitle",
-        "signature": "React.ForwardRefExoticComponent<CardTitleProps & React.RefAttributes<HTMLHeadingElement>>"
+        "signature": "React.ForwardRefExoticComponent<CardTitleProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
-          "export type CardTitleElement = \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export type CardTitleElement = \"div\" | \"span\" | \"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -1083,8 +1083,8 @@
       },
       {
         "definition": [
-          "export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> { as?: CardTitleElement; }",
-          "export type CardTitleElement = \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> { as?: CardTitleElement; }",
+          "export type CardTitleElement = \"div\" | \"span\" | \"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2597,11 +2597,11 @@
         "deprecations": [],
         "kind": "value",
         "name": "CardTitle",
-        "signature": "React.ForwardRefExoticComponent<CardTitleProps & React.RefAttributes<HTMLHeadingElement>>"
+        "signature": "React.ForwardRefExoticComponent<CardTitleProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
-          "export type CardTitleElement = \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export type CardTitleElement = \"div\" | \"span\" | \"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2610,8 +2610,8 @@
       },
       {
         "definition": [
-          "export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> { as?: CardTitleElement; }",
-          "export type CardTitleElement = \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> { as?: CardTitleElement; }",
+          "export type CardTitleElement = \"div\" | \"span\" | \"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -7475,7 +7475,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-afa158032a5603b28669e206db79320313f157977370b30cd85f170b9224ee34",
+            "integrity": "sha256-41bfa2d34a4aba4e418a029c22cee13cb3fa193eb4cc9e0822df573984c10798",
             "role": "component",
             "source": "../../ui/src/components/card.tsx",
             "target": "components/card.tsx"
