@@ -15,6 +15,7 @@ import { Icon, SidebarContent, SidebarHeader, SidebarInset } from "@nerio-ui/ui"
 import {
   ArrowRight,
   Bell,
+  CalendarDays,
   Check,
   Circle,
   FileText,
@@ -25,6 +26,7 @@ import {
   Search,
   Settings,
   Sparkles,
+  TriangleAlert,
 } from "@nerio-ui/adapters/icons";
 import {
   Avatar,
@@ -144,6 +146,41 @@ const teamCapacity = [
   { team: "Content operations", people: "2 contributors", capacity: "68%", tone: "success" },
 ] as const;
 
+const operationalRisks = [
+  {
+    name: "Data sync dependency",
+    context: "Reporting migration · 4 days open",
+    severity: "High",
+    tone: "danger",
+  },
+  {
+    name: "Legal review pending",
+    context: "Client portal launch · 2 days open",
+    severity: "Medium",
+    tone: "warning",
+  },
+  {
+    name: "Content handoff",
+    context: "Help center refresh · Due today",
+    severity: "Low",
+    tone: "neutral",
+  },
+] as const;
+
+const upcomingMilestones = [
+  { name: "Client portal launch", context: "Release readiness", date: "Aug 12" },
+  { name: "Mobile onboarding beta", context: "Pilot group handoff", date: "Aug 14" },
+  { name: "Help center cutover", context: "Content publication", date: "Aug 18" },
+] as const;
+
+const cycleTimeTrend = [
+  { week: "W1", days: 6.4 },
+  { week: "W2", days: 6.1 },
+  { week: "W3", days: 5.6 },
+  { week: "W4", days: 5.2 },
+  { week: "W5", days: 4.8 },
+] as const;
+
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
 const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
 const modeOptions = modes.map((value) => ({ label: runtimeLabel(value), value }));
@@ -173,7 +210,6 @@ const navigationItems = [
   { label: "My work", icon: Check },
   { label: "Inbox", icon: Bell },
   { label: "Initiatives", icon: ListTree },
-  { label: "Active initiatives", nested: true },
   { label: "Roadmap", icon: Rows3 },
   { label: "Goals", icon: Sparkles },
   { label: "Workload", icon: Circle },
@@ -205,7 +241,6 @@ function WorkspaceNavigation() {
             aria-current={active ? "page" : undefined}
             className={styles["workspace-nav__item"]}
             data-state={active ? "active" : "inactive"}
-            data-nested={"nested" in item && item.nested ? "true" : undefined}
             leadingIcon={"icon" in item ? item.icon : undefined}
             nativeButton={false}
             render={<span />}
@@ -644,6 +679,120 @@ function OperationsWorkspace() {
                 </Item>
               ))}
             </ItemGroup>
+          </Card>
+
+          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+            <div className={styles["panel-heading"]}>
+              <div>
+                <h2>Operational risks</h2>
+                <p>Blockers that need an owner or decision.</p>
+              </div>
+              <Badge leadingIcon={TriangleAlert} tone="warning">
+                3 open
+              </Badge>
+            </div>
+            <ItemGroup aria-label="Operational risks" className={styles["compact-list"]}>
+              {operationalRisks.map((risk) => (
+                <Item key={risk.name} size="sm">
+                  <ItemContent>
+                    <ItemTitle>{risk.name}</ItemTitle>
+                    <ItemDescription>{risk.context}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions>
+                    <Badge tone={risk.tone}>{risk.severity}</Badge>
+                  </ItemActions>
+                </Item>
+              ))}
+            </ItemGroup>
+          </Card>
+
+          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+            <div className={styles["panel-heading"]}>
+              <div>
+                <h2>Upcoming milestones</h2>
+                <p>Next delivery moments across the portfolio.</p>
+              </div>
+              <Badge leadingIcon={CalendarDays} tone="info">
+                10 days
+              </Badge>
+            </div>
+            <ItemGroup aria-label="Upcoming milestones" className={styles["compact-list"]}>
+              {upcomingMilestones.map((milestone) => (
+                <Item key={milestone.name} size="sm">
+                  <ItemContent>
+                    <ItemTitle>{milestone.name}</ItemTitle>
+                    <ItemDescription>{milestone.context}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions>
+                    <Badge>{milestone.date}</Badge>
+                  </ItemActions>
+                </Item>
+              ))}
+            </ItemGroup>
+          </Card>
+
+          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+            <div className={styles["panel-heading"]}>
+              <div>
+                <h2>Cycle time</h2>
+                <p>Median time from start to completion.</p>
+              </div>
+              <Badge tone="success">-0.7d</Badge>
+            </div>
+            <div className={styles["cycle-time-summary"]}>
+              <div>
+                <strong>4.8 days</strong>
+                <span>Current median</span>
+              </div>
+              <div>
+                <strong>24</strong>
+                <span>Completed this month</span>
+              </div>
+            </div>
+            <div
+              aria-label="Median cycle time decreased from 6.4 days to 4.8 days over five weeks"
+              className={styles["cycle-time-chart"]}
+              role="img"
+            >
+              <ResponsiveContainer height="100%" width="100%">
+                <AreaChart
+                  data={[...cycleTimeTrend]}
+                  margin={{ top: 8, right: 12, bottom: 0, left: 12 }}
+                >
+                  <defs>
+                    <linearGradient id="operations-cycle-fill" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="var(--n-chart-primary)" stopOpacity={0.22} />
+                      <stop offset="100%" stopColor="var(--n-chart-primary)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid vertical={false} stroke="var(--n-color-border-subtle)" />
+                  <XAxis
+                    axisLine={false}
+                    dataKey="week"
+                    tick={{ fill: "var(--n-color-text-tertiary)", fontSize: 11 }}
+                    tickLine={false}
+                  />
+                  <YAxis hide domain={[4, 7]} />
+                  <ChartTooltip
+                    formatter={(value) => [`${Number(value)} days`, "Median cycle time"]}
+                    contentStyle={{
+                      background: "var(--n-color-surface)",
+                      border: "1px solid var(--n-color-border-subtle)",
+                      borderRadius: "var(--n-radius-md)",
+                      color: "var(--n-color-text-primary)",
+                    }}
+                  />
+                  <Area
+                    dataKey="days"
+                    fill="url(#operations-cycle-fill)"
+                    isAnimationActive={false}
+                    stroke="var(--n-chart-primary)"
+                    strokeWidth={2}
+                    type="monotone"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </Card>
 
           <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="initiatives">

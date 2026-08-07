@@ -28,7 +28,7 @@ export const templateCatalog = [
     scenarios: [
       "Single-page workspace overview with a representative product navigation hierarchy",
       "Initiative search and segmented status filtering",
-      "Delivery trend, team capacity, and recent activity context",
+      "Delivery, capacity, operational risk, milestone, cycle-time, and activity context",
       "Empty filtering and transient feedback states",
     ],
     runtimeCoverage: [

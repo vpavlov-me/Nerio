@@ -53,12 +53,6 @@
   justify-content: start;
 }
 
-.workspace-nav .workspace-nav__item[data-nested="true"] {
-  color: var(--n-color-text-secondary);
-  font-size: var(--n-font-size-xs);
-  padding-inline-start: var(--n-space-9);
-}
-
 .workspace-nav :global(.n-icon) {
   block-size: var(--n-icon-size-md);
   color: var(--n-color-text-tertiary);
@@ -129,9 +123,14 @@
 
 .workspace-controls {
   align-items: center;
-  display: grid;
+  display: flex;
   gap: var(--n-space-3);
-  grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+  justify-content: space-between;
+}
+
+.workspace-controls > :first-child {
+  flex: 0 1 24rem;
+  inline-size: min(100%, 24rem);
 }
 
 .preview-settings {
@@ -191,13 +190,13 @@
   gap: var(--n-space-1);
 }
 
-.status-tabs,
-.status-tabs :global([data-slot="list"]) {
-  inline-size: 100%;
+.status-tabs {
+  flex: 0 0 auto;
+  min-inline-size: 0;
 }
 
-.status-tabs :global([data-slot="trigger"]) {
-  flex: 1 0 auto;
+.status-tabs :global([data-slot="list"]) {
+  inline-size: max-content;
 }
 
 .workspace-grid {
@@ -280,6 +279,50 @@
   grid-row: 1;
 }
 
+.compact-list {
+  gap: var(--n-space-1);
+}
+
+.compact-list :global([data-slot="item"]) {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-inline: 0;
+}
+
+.compact-list :global([data-slot="item-content"]) {
+  grid-column: 1;
+}
+
+.compact-list :global([data-slot="item-actions"]) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.cycle-time-summary {
+  display: grid;
+  gap: var(--n-space-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cycle-time-summary > div {
+  display: grid;
+  gap: var(--n-space-1);
+}
+
+.cycle-time-summary strong {
+  font-size: var(--n-font-size-xl);
+  font-weight: var(--n-font-weight-semibold);
+}
+
+.cycle-time-summary span {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-xs);
+}
+
+.cycle-time-chart {
+  block-size: 8rem;
+  min-inline-size: 0;
+}
+
 .activity-feed {
   display: grid;
   gap: var(--n-space-3);
@@ -360,7 +403,6 @@
   }
 
   .workspace-actions,
-  .workspace-controls,
   .panel-heading {
     align-items: stretch;
     display: grid;
@@ -374,6 +416,18 @@
 
   .workspace-actions > :last-child {
     grid-column: 1 / -1;
+    inline-size: 100%;
+  }
+
+  .workspace-controls {
+    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-controls > :first-child,
+  .status-tabs,
+  .status-tabs :global([data-slot="list"]) {
     inline-size: 100%;
   }
 

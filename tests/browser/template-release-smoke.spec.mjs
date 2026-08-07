@@ -328,5 +328,20 @@ test("uses current Core primitives with the chart adapter and no deprecated Icon
   await expect(page.getByRole("group", { name: "Six of nine contributors" })).toBeVisible();
   await expect(page.getByRole("group", { name: "Team capacity details" })).toBeVisible();
   await expect(page.getByText("Product and design", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Operational risks" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Upcoming milestones" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Cycle time" })).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: /Median cycle time decreased from 6.4 days/ }),
+  ).toBeVisible();
+
+  const sidebar = page.getByRole("complementary", { name: "Workspace sidebar" });
+  await expect(sidebar.getByText("Active initiatives", { exact: true })).toHaveCount(0);
+
+  const searchBox = await page.getByRole("searchbox", { name: "Search initiatives" }).boundingBox();
+  const statusTabs = await page.getByRole("tablist", { name: "Initiative status" }).boundingBox();
+  expect(searchBox?.width).toBeLessThan(500);
+  expect(statusTabs?.width).toBeLessThan(600);
+  expect(statusTabs?.x).toBeGreaterThan((searchBox?.x ?? 0) + (searchBox?.width ?? 0));
   await expectHealthyPage(page, problems);
 });
