@@ -40,14 +40,6 @@ import {
   CommandList,
   Dialog,
   DialogFooter,
-  EmptyState,
-  EmptyStateActions,
-  EmptyStateDescription,
-  EmptyStateHeader,
-  EmptyStateTitle,
-  Input,
-  InputGroup,
-  InputGroupAddon,
   Item,
   ItemActions,
   ItemContent,
@@ -188,22 +180,132 @@ const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), v
 
 const workspaceCommands = [
   {
-    value: "initiative-filters",
-    label: "Initiative filters",
+    value: "navigation",
+    label: "Navigation",
     items: [
-      { value: "show-all", label: "Show all initiatives", keywords: ["reset", "filter"] },
-      { value: "show-risk", label: "Show initiatives at risk", keywords: ["status", "filter"] },
+      { value: "nav-overview", label: "Overview", keywords: ["workspace", "dashboard"] },
+      { value: "nav-my-work", label: "My work", keywords: ["assigned", "tasks"] },
+      { value: "nav-inbox", label: "Inbox", keywords: ["updates", "notifications"] },
+      { value: "nav-initiatives", label: "Initiatives", keywords: ["projects", "portfolio"] },
+      { value: "nav-roadmap", label: "Roadmap", keywords: ["milestones", "planning"] },
+      { value: "nav-goals", label: "Goals", keywords: ["outcomes", "targets"] },
+      { value: "nav-workload", label: "Workload", keywords: ["capacity", "teams"] },
+      { value: "nav-reports", label: "Reports", keywords: ["delivery", "analytics"] },
     ],
   },
   {
-    value: "display",
-    label: "Display",
+    value: "initiatives",
+    label: "Initiatives",
     items: [
-      { value: "compact", label: "Use compact density", keywords: ["display", "density"] },
-      { value: "admin", label: "Open admin tools", disabled: true },
+      {
+        value: "initiative-client-portal",
+        label: "Client portal launch",
+        keywords: ["Mira Chen", "on track", "launch"],
+      },
+      {
+        value: "initiative-reporting",
+        label: "Reporting migration",
+        keywords: ["Alex Morgan", "at risk", "reporting"],
+      },
+      {
+        value: "initiative-onboarding",
+        label: "Mobile onboarding",
+        keywords: ["Sam Taylor", "in review", "mobile"],
+      },
+      {
+        value: "initiative-help-center",
+        label: "Help center refresh",
+        keywords: ["Jordan Lee", "planned", "content"],
+      },
     ],
   },
-];
+] as const;
+
+const commandDetails = {
+  "nav-overview": {
+    icon: LayoutDashboard,
+    description: "Workspace summary and current delivery health",
+    metadata: "Workspace",
+    targetId: "overview",
+  },
+  "nav-my-work": {
+    icon: Check,
+    description: "Assigned initiatives, reviews, and follow-ups",
+    metadata: "Workspace",
+    targetId: "operational-risks",
+  },
+  "nav-inbox": {
+    icon: Bell,
+    description: "Recent updates and team activity",
+    metadata: "Workspace",
+    targetId: "activity",
+  },
+  "nav-initiatives": {
+    icon: ListTree,
+    description: "Portfolio status, owners, and progress",
+    metadata: "Workspace",
+    targetId: "initiatives",
+  },
+  "nav-roadmap": {
+    icon: Rows3,
+    description: "Upcoming delivery milestones",
+    metadata: "Workspace",
+    targetId: "upcoming-milestones",
+  },
+  "nav-goals": {
+    icon: Sparkles,
+    description: "Operational outcomes and cycle-time trend",
+    metadata: "Workspace",
+    targetId: "cycle-time",
+  },
+  "nav-workload": {
+    icon: Circle,
+    description: "Team capacity across active work",
+    metadata: "Workspace",
+    targetId: "team-capacity",
+  },
+  "nav-reports": {
+    icon: FileText,
+    description: "Delivery health and completion trend",
+    metadata: "Workspace",
+    targetId: "delivery-health",
+  },
+  "initiative-client-portal": {
+    icon: ListTree,
+    description: "Mira Chen · Updated today",
+    status: "On track",
+    targetId: "initiatives",
+  },
+  "initiative-reporting": {
+    icon: ListTree,
+    description: "Alex Morgan · Updated tomorrow",
+    status: "At risk",
+    targetId: "initiatives",
+  },
+  "initiative-onboarding": {
+    icon: ListTree,
+    description: "Sam Taylor · Updated Aug 14",
+    status: "In review",
+    targetId: "initiatives",
+  },
+  "initiative-help-center": {
+    icon: ListTree,
+    description: "Jordan Lee · Updated Aug 18",
+    status: "Planned",
+    targetId: "initiatives",
+  },
+} as const;
+
+const getCommandDetails = (value: string) => commandDetails[value as keyof typeof commandDetails];
+
+const statusTone = (status: string) =>
+  status === "On track"
+    ? "success"
+    : status === "At risk"
+      ? "warning"
+      : status === "In review"
+        ? "info"
+        : "neutral";
 
 const navigationItems = [
   { label: "Overview", icon: LayoutDashboard, active: true },
@@ -265,7 +367,6 @@ export function OperationsWorkspaceView() {
 }
 
 function OperationsWorkspace() {
-  const [query, setQuery] = React.useState("");
   const [status, setStatus] = React.useState("all");
   const [commandOpen, setCommandOpen] = React.useState(false);
   const [theme, setThemeValue] = React.useState<Appearance["theme"]>(defaultAppearance.theme);
@@ -314,13 +415,8 @@ function OperationsWorkspace() {
   }, []);
 
   const filteredInitiatives = React.useMemo(
-    () =>
-      initiatives.filter((initiative) => {
-        const matchesQuery = initiative.name.toLowerCase().includes(query.toLowerCase());
-        const matchesStatus = status === "all" || initiative.status === status;
-        return matchesQuery && matchesStatus;
-      }),
-    [query, status],
+    () => initiatives.filter((initiative) => status === "all" || initiative.status === status),
+    [status],
   );
 
   const setTheme = (value: string) => {
@@ -407,7 +503,7 @@ function OperationsWorkspace() {
             <Dialog
               bodyClassName={styles["command-dialog__body"]}
               className={styles["command-dialog"]}
-              description="Jump to a workspace view or change how this preview is displayed."
+              description="Navigate workspace pages or find an initiative."
               onOpenChange={setCommandOpen}
               open={commandOpen}
               trigger={
@@ -424,35 +520,41 @@ function OperationsWorkspace() {
                 <CommandInput
                   aria-label="Workspace commands"
                   autoFocus
-                  placeholder="Search commands"
+                  placeholder="Search pages and initiatives"
                 />
-                <CommandEmpty>No matching commands.</CommandEmpty>
+                <CommandEmpty>No matching pages or initiatives.</CommandEmpty>
                 <CommandList renderGroupLabel={(group) => group.label}>
-                  {(item) => (
-                    <CommandItem
-                      key={item.value}
-                      value={item.value}
-                      disabled={item.disabled}
-                      description={
-                        item.value === "show-risk"
-                          ? "Limit this workspace view to initiatives that need attention"
-                          : undefined
-                      }
-                      leading={item.value === "show-risk" ? <Icon icon={Check} /> : undefined}
-                      metadata={item.value === "compact" ? "Display" : undefined}
-                      onSelect={(value) => {
-                        if (value === "show-all") {
-                          setQuery("");
-                          setStatus("all");
+                  {(item) => {
+                    const details = getCommandDetails(item.value);
+                    const itemStatus = "status" in details ? details.status : undefined;
+                    const isNavigation = item.value.startsWith("nav-");
+                    return (
+                      <CommandItem
+                        key={item.value}
+                        value={item.value}
+                        description={isNavigation ? undefined : details.description}
+                        leading={<Icon icon={details.icon} />}
+                        metadata={
+                          itemStatus ? (
+                            <Badge size="sm" tone={statusTone(itemStatus)}>
+                              {itemStatus}
+                            </Badge>
+                          ) : undefined
                         }
-                        if (value === "show-risk") setStatus("At risk");
-                        if (value === "compact") setDensity("compact");
-                        setCommandOpen(false);
-                      }}
-                    >
-                      {item.label}
-                    </CommandItem>
-                  )}
+                        onSelect={() => {
+                          if (itemStatus) setStatus(itemStatus);
+                          setCommandOpen(false);
+                          window.requestAnimationFrame(() => {
+                            document.getElementById(details.targetId)?.scrollIntoView({
+                              block: "start",
+                            });
+                          });
+                        }}
+                      >
+                        {item.label}
+                      </CommandItem>
+                    );
+                  }}
                 </CommandList>
                 <footer className={styles["command-footer"]}>
                   <span>
@@ -537,49 +639,6 @@ function OperationsWorkspace() {
           </div>
         </header>
 
-        <section className={styles["workspace-controls"]}>
-          <InputGroup>
-            <InputGroupAddon aria-hidden placement="start">
-              <Icon icon={Search} />
-            </InputGroupAddon>
-            <Input
-              aria-label="Search initiatives"
-              value={query}
-              onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder="Search initiatives"
-              type="search"
-            />
-          </InputGroup>
-          <Tabs
-            className={styles["status-tabs"]}
-            onValueChange={(value) => {
-              if (value) setStatus(value);
-            }}
-            size="sm"
-            value={status}
-            variant="segmented"
-          >
-            <TabsList aria-label="Initiative status" scrollable>
-              <TabsTrigger badge={<Badge size="sm">4</Badge>} value="all">
-                All
-              </TabsTrigger>
-              <TabsTrigger badge={<Badge size="sm">1</Badge>} value="On track">
-                On track
-              </TabsTrigger>
-              <TabsTrigger badge={<Badge size="sm">1</Badge>} value="At risk">
-                At risk
-              </TabsTrigger>
-              <TabsTrigger badge={<Badge size="sm">1</Badge>} value="In review">
-                In review
-              </TabsTrigger>
-              <TabsTrigger badge={<Badge size="sm">1</Badge>} value="Planned">
-                Planned
-              </TabsTrigger>
-              <TabsIndicator />
-            </TabsList>
-          </Tabs>
-        </section>
-
         <section className={styles["workspace-grid"]}>
           <Stat
             label="Active initiatives"
@@ -650,7 +709,7 @@ function OperationsWorkspace() {
             </div>
           </Card>
 
-          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="team-capacity">
             <div className={styles["panel-heading"]}>
               <div>
                 <h2>Team capacity</h2>
@@ -681,7 +740,10 @@ function OperationsWorkspace() {
             </ItemGroup>
           </Card>
 
-          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+          <Card
+            className={`${styles["span-4"]} ${styles["workspace-panel"]}`}
+            id="operational-risks"
+          >
             <div className={styles["panel-heading"]}>
               <div>
                 <h2>Operational risks</h2>
@@ -706,7 +768,10 @@ function OperationsWorkspace() {
             </ItemGroup>
           </Card>
 
-          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+          <Card
+            className={`${styles["span-4"]} ${styles["workspace-panel"]}`}
+            id="upcoming-milestones"
+          >
             <div className={styles["panel-heading"]}>
               <div>
                 <h2>Upcoming milestones</h2>
@@ -731,7 +796,7 @@ function OperationsWorkspace() {
             </ItemGroup>
           </Card>
 
-          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="cycle-time">
             <div className={styles["panel-heading"]}>
               <div>
                 <h2>Cycle time</h2>
@@ -796,76 +861,57 @@ function OperationsWorkspace() {
           </Card>
 
           <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="initiatives">
-            <div className={styles["panel-heading"]}>
+            <div className={`${styles["panel-heading"]} ${styles["initiatives-heading"]}`}>
               <div>
                 <h2>Initiatives</h2>
-                <p>Filtered by the search and status controls above.</p>
+                <p>Portfolio status, ownership, and delivery progress.</p>
               </div>
+              <Tabs
+                className={styles["status-tabs"]}
+                onValueChange={(value) => {
+                  if (value) setStatus(value);
+                }}
+                size="sm"
+                value={status}
+                variant="segmented"
+              >
+                <TabsList aria-label="Initiative status" scrollable>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="On track">On track</TabsTrigger>
+                  <TabsTrigger value="At risk">At risk</TabsTrigger>
+                  <TabsTrigger value="In review">In review</TabsTrigger>
+                  <TabsTrigger value="Planned">Planned</TabsTrigger>
+                  <TabsIndicator />
+                </TabsList>
+              </Tabs>
             </div>
 
-            {filteredInitiatives.length ? (
-              <TableContainer focusable aria-label="Workspace initiatives">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Owner</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead data-align="numeric">Progress</TableHead>
-                      <TableHead>Updated</TableHead>
+            <TableContainer focusable aria-label="Workspace initiatives">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Owner</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead data-align="numeric">Progress</TableHead>
+                    <TableHead>Updated</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredInitiatives.map((initiative) => (
+                    <TableRow key={initiative.name}>
+                      <TableHead scope="row">{initiative.name}</TableHead>
+                      <TableCell>{initiative.owner}</TableCell>
+                      <TableCell>
+                        <Badge tone={statusTone(initiative.status)}>{initiative.status}</Badge>
+                      </TableCell>
+                      <TableCell data-align="numeric">{initiative.progress}%</TableCell>
+                      <TableCell>{initiative.updated}</TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredInitiatives.map((initiative) => (
-                      <TableRow key={initiative.name}>
-                        <TableHead scope="row">{initiative.name}</TableHead>
-                        <TableCell>{initiative.owner}</TableCell>
-                        <TableCell>
-                          <Badge
-                            tone={
-                              initiative.status === "On track"
-                                ? "success"
-                                : initiative.status === "At risk"
-                                  ? "warning"
-                                  : initiative.status === "In review"
-                                    ? "info"
-                                    : "neutral"
-                            }
-                          >
-                            {initiative.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell data-align="numeric">{initiative.progress}%</TableCell>
-                        <TableCell>{initiative.updated}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            ) : null}
-
-            {!filteredInitiatives.length ? (
-              <EmptyState role="status" size="sm">
-                <EmptyStateHeader>
-                  <EmptyStateTitle>No matching initiatives</EmptyStateTitle>
-                  <EmptyStateDescription>
-                    Clear search or choose another status to bring items back.
-                  </EmptyStateDescription>
-                </EmptyStateHeader>
-                <EmptyStateActions>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => {
-                      setQuery("");
-                      setStatus("all");
-                    }}
-                  >
-                    Clear filters
-                  </Button>
-                </EmptyStateActions>
-              </EmptyState>
-            ) : null}
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Card>
 
           <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="activity">

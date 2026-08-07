@@ -27,9 +27,9 @@ export const templateCatalog = [
     audience: "SaaS products, internal tools, admin systems, and operations teams.",
     scenarios: [
       "Single-page workspace overview with a representative product navigation hierarchy",
-      "Initiative search and segmented status filtering",
+      "Command search across workspace pages and initiatives with segmented status filtering",
       "Delivery, capacity, operational risk, milestone, cycle-time, and activity context",
-      "Empty filtering and transient feedback states",
+      "Status filtering and transient feedback states",
     ],
     runtimeCoverage: [
       "Purple, blue, green, orange, red, and neutral themes",
@@ -46,9 +46,6 @@ export const templateCatalog = [
       "Card",
       "Command",
       "Dialog",
-      "EmptyState",
-      "Input",
-      "InputGroup",
       "Item",
       "Kbd",
       "Select",

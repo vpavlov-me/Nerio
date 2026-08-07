@@ -215,15 +215,15 @@ test("covers Command groups, IME safety, leading layout, and selection", async (
   await expect(page.getByRole("dialog", { name: "Workspace commands" })).toBeVisible();
   const input = page.getByRole("combobox", { name: "Workspace commands" });
 
-  await expect(page.getByText("Initiative filters", { exact: true })).toBeVisible();
+  await expect(page.getByText("Navigation", { exact: true })).toBeVisible();
   await expect(
-    page.locator('[data-slot="command-group-label"]').filter({ hasText: "Display" }),
+    page.locator('[data-slot="command-group-label"]').filter({ hasText: "Initiatives" }),
   ).toBeVisible();
-  await expect(page.getByRole("option", { name: /Show all initiatives/ })).not.toHaveAttribute(
+  await expect(page.getByRole("option", { name: /Overview/ })).toHaveAttribute(
     "data-leading",
     "true",
   );
-  await expect(page.getByRole("option", { name: /Show initiatives at risk/ })).toHaveAttribute(
+  await expect(page.getByRole("option", { name: /Client portal launch/ })).toHaveAttribute(
     "data-leading",
     "true",
   );
@@ -232,8 +232,8 @@ test("covers Command groups, IME safety, leading layout, and selection", async (
   await input.press("Enter");
   await expect(input).toBeVisible();
   await input.dispatchEvent("compositionend", { data: "活" });
-  await input.fill("risk");
-  await expect(page.getByRole("option", { name: /Show initiatives at risk/ })).toBeVisible();
+  await input.fill("reporting");
+  await expect(page.getByRole("option", { name: /Reporting migration/ })).toBeVisible();
   await input.press("Enter");
   await expect(page.getByRole("row", { name: /Client portal launch/ })).toHaveCount(0);
   await expect(page.getByRole("row", { name: /Reporting migration/ })).toBeVisible();
@@ -281,7 +281,7 @@ test("covers Toast stacking and logical swipe in LTR and RTL", async ({ page }) 
   await expectHealthyPage(page, problems);
 });
 
-test("covers status tabs, empty filtering, reduced motion, and forced colors", async ({ page }) => {
+test("covers status tabs, reduced motion, and forced colors", async ({ page }) => {
   const problems = monitorPage(page);
   await page.emulateMedia({ colorScheme: "dark", forcedColors: "active", reducedMotion: "reduce" });
   await page.goto(workspaceRoute);
@@ -302,10 +302,6 @@ test("covers status tabs, empty filtering, reduced motion, and forced colors", a
   await page.getByRole("tab", { name: /All/ }).click();
   await expect(page.getByRole("region", { name: "Workspace initiatives" })).toBeVisible();
 
-  await page.getByRole("searchbox", { name: "Search initiatives" }).fill("no-such-initiative");
-  await expect(
-    page.getByRole("status").filter({ hasText: "No matching initiatives" }),
-  ).toBeVisible();
   await page.getByRole("button", { name: "New initiative" }).click();
   await expect(
     page.locator(".n-toast--managed").filter({ hasText: "New initiative action" }),
@@ -338,10 +334,8 @@ test("uses current Core primitives with the chart adapter and no deprecated Icon
   const sidebar = page.getByRole("complementary", { name: "Workspace sidebar" });
   await expect(sidebar.getByText("Active initiatives", { exact: true })).toHaveCount(0);
 
-  const searchBox = await page.getByRole("searchbox", { name: "Search initiatives" }).boundingBox();
   const statusTabs = await page.getByRole("tablist", { name: "Initiative status" }).boundingBox();
-  expect(searchBox?.width).toBeLessThan(500);
   expect(statusTabs?.width).toBeLessThan(600);
-  expect(statusTabs?.x).toBeGreaterThan((searchBox?.x ?? 0) + (searchBox?.width ?? 0));
+  await expect(page.getByRole("searchbox", { name: "Search initiatives" })).toHaveCount(0);
   await expectHealthyPage(page, problems);
 });

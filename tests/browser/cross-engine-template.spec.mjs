@@ -37,10 +37,15 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   );
   await rail.press("Enter");
 
-  const search = page.getByRole("searchbox", { name: "Search initiatives" });
-  await search.fill("portal");
+  await page.keyboard.press("Control+K");
+  const command = page.getByRole("dialog", { name: "Workspace commands" });
+  await expect(command).toBeVisible();
+  const commandInput = command.getByRole("combobox", { name: "Workspace commands" });
+  await commandInput.fill("portal");
+  await expect(command.getByRole("option", { name: /Client portal launch/ })).toBeVisible();
+  await commandInput.press("Enter");
+  await expect(command).toBeHidden();
   await expect(page.getByRole("row", { name: /Client portal launch/ })).toBeVisible();
-  await search.fill("");
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();

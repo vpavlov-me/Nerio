@@ -121,18 +121,6 @@
   gap: var(--n-space-2);
 }
 
-.workspace-controls {
-  align-items: center;
-  display: flex;
-  gap: var(--n-space-3);
-  justify-content: space-between;
-}
-
-.workspace-controls > :first-child {
-  flex: 0 1 24rem;
-  inline-size: min(100%, 24rem);
-}
-
 .preview-settings {
   display: grid;
   gap: var(--n-space-4);
@@ -170,6 +158,7 @@
 }
 
 .workspace-command {
+  --n-command-list-max-height: min(28rem, calc(100dvh - 10rem));
   --n-command-width: 100%;
 }
 
@@ -197,6 +186,15 @@
 
 .status-tabs :global([data-slot="list"]) {
   inline-size: max-content;
+}
+
+.initiatives-heading {
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.initiatives-heading > div {
+  min-inline-size: 0;
 }
 
 .workspace-grid {
@@ -419,13 +417,6 @@
     inline-size: 100%;
   }
 
-  .workspace-controls {
-    align-items: stretch;
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  .workspace-controls > :first-child,
   .status-tabs,
   .status-tabs :global([data-slot="list"]) {
     inline-size: 100%;
