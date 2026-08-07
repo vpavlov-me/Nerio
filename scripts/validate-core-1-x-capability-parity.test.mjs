@@ -144,6 +144,14 @@ test("capability parity validator pins capability-specific dependencies", () => 
   }, /Parity capability autocomplete-suggestions dependencies is missing: 346/);
 });
 
+test("capability parity validator pins the complete capability inventory", () => {
+  invalidMatrix((matrix) => {
+    matrix.capabilities = matrix.capabilities.filter(
+      (capability) => capability.id !== "autocomplete-suggestions",
+    );
+  }, /Parity capability ids is missing: autocomplete-suggestions/);
+});
+
 test("capability parity validator pins priority and target values", () => {
   invalidMatrix((matrix) => {
     matrix.priorityValues.push("TYPO");
