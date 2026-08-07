@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import { ArrowLeft } from "@nerio-ui/adapters/icons";
 import {
   Alert,
   Avatar,
@@ -23,6 +25,9 @@ import {
   Heading,
   Input,
   KeyValue,
+  Label,
+  LabelContent,
+  LabelRow,
   Pagination,
   Popover,
   Progress,
@@ -72,7 +77,11 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
   const [email, setEmail] = React.useState("");
   const invalid = submitted && !email.includes("@");
   const copy = {
-    login: { title: "Welcome back", action: "Sign in", description: "Use your workspace email." },
+    login: {
+      title: "Login to your account",
+      action: "Login",
+      description: "Enter your email below to login to your account.",
+    },
     register: {
       title: "Create your account",
       action: "Create account",
@@ -134,27 +143,42 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.currentTarget.value)}
-              placeholder="you@company.com"
+              placeholder={kind === "login" ? "m@example.com" : "you@company.com"}
             />
           </Field>
           {kind !== "forgot" ? (
-            <Field label="Password">
-              <Input
-                autoComplete={kind === "login" ? "current-password" : "new-password"}
-                type="password"
-                placeholder="At least 8 characters"
-              />
-            </Field>
+            kind === "login" ? (
+              <div className="composition-auth-password">
+                <LabelRow className="composition-auth-password__label">
+                  <LabelContent>
+                    <Label htmlFor="sign-in-password">Password</Label>
+                  </LabelContent>
+                  <Button nativeButton={false} render={<span />} variant="link">
+                    Forgot your password?
+                  </Button>
+                </LabelRow>
+                <Input id="sign-in-password" autoComplete="current-password" type="password" />
+              </div>
+            ) : (
+              <Field label="Password">
+                <Input
+                  autoComplete="new-password"
+                  type="password"
+                  placeholder="At least 8 characters"
+                />
+              </Field>
+            )
           ) : null}
-          <Button loading={busy}>{copy.action}</Button>
+          <Button className="composition-auth-submit" loading={busy} type="submit">
+            {copy.action}
+          </Button>
           {kind === "login" ? (
-            <Button
-              nativeButton={false}
-              render={<a href="/views/blocks/reset-password" />}
-              variant="link"
-            >
-              Forgot your password?
-            </Button>
+            <Text className="composition-auth-switch" tone="secondary">
+              Don&apos;t have an account?{" "}
+              <Button nativeButton={false} render={<span />} variant="link">
+                Sign up
+              </Button>
+            </Text>
           ) : null}
           {kind === "register" ? (
             <Alert tone="info" title="Email verification">
@@ -854,13 +878,40 @@ const internalFixtures: Record<keyof typeof internalBlockFixtures, Composition> 
   },
 };
 
+function preventBlockPreviewAction(event: React.SyntheticEvent) {
+  const target = event.target;
+  if (!(target instanceof Element) || !target.closest("a, button")) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+}
+
 export function BlockPreview({ slug }: { slug: string }) {
   const block = blocks[slug];
   if (!block) return null;
   const { Preview } = block;
   return (
     <main className="block-view">
-      <div className="composition-preview">
+      <Button
+        className="block-view__back"
+        leadingIcon={ArrowLeft}
+        nativeButton={false}
+        render={<Link href="/blocks" />}
+        size="sm"
+        variant="secondary"
+      >
+        Back to Blocks
+      </Button>
+      <div
+        className="block-view__content"
+        data-preview-interactions="disabled"
+        onAuxClickCapture={preventBlockPreviewAction}
+        onClickCapture={preventBlockPreviewAction}
+        onSubmitCapture={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+      >
         <Preview />
       </div>
     </main>

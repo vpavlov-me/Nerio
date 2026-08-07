@@ -847,7 +847,7 @@
   --n-card-border-interactive: var(--n-color-border-default);
   --n-card-shadow-secondary: none;
   --n-card-padding-sm: var(--n-density-space-md);
-  --n-card-padding-md: var(--n-density-space-lg);
+  --n-card-padding-md: var(--n-space-6);
   --n-card-padding-lg: var(--n-density-space-xl);
   --n-card-padding: var(--n-card-padding-md);
   --n-card-padding-inline: var(--n-card-padding);
@@ -1458,7 +1458,7 @@
   --n-toggle-height-lg: var(--n-size-control-lg);
   --n-toggle-padding-inline-md: var(--n-density-space-md);
   --n-alert-padding: var(--n-density-space-lg);
-  --n-card-padding-md: var(--n-density-space-lg);
+  --n-card-padding-md: var(--n-space-5);
   --n-card-gap: var(--n-density-space-lg);
   --n-badge-height: 1.375rem;
   --n-badge-height-sm: 1rem;

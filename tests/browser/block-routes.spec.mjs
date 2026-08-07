@@ -66,10 +66,35 @@ test("renders every public Block View without documentation chrome", async ({ pa
 
   for (const [slug] of publicBlocks) {
     await page.goto(`/views/blocks/${slug}`);
-    await expect(page.locator(".composition-preview")).toBeVisible();
+    await expect(page.locator(".block-view__content")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Back to Blocks" })).toHaveAttribute(
+      "href",
+      "/blocks",
+    );
     await expect(page.locator(".docs-header")).toHaveCount(0);
   }
 
+  expect(problems).toEqual([]);
+});
+
+test("renders the complete Sign in structure and interactions", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/sign-in");
+
+  await expect(page.getByRole("heading", { name: "Login to your account" })).toBeVisible();
+  await expect(page.getByLabel("Email")).toHaveAttribute("placeholder", "m@example.com");
+  await expect(page.getByLabel("Password")).toBeVisible();
+  await expect(page.getByText("Forgot your password?")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
+  await expect(page.getByText("Don't have an account?")).toBeVisible();
+  await expect(page.getByText("Sign up")).toBeVisible();
+  await expect(page.getByText("Login with Google")).toHaveCount(0);
+  await expect(page.locator(".composition-preview")).toHaveCount(0);
+  await expect(page.locator(".block-view__content a")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Login" }).click();
+  await expect(page.getByText("Enter a valid email address.")).toHaveCount(0);
+  await expect(page.getByText("Ready to continue")).toHaveCount(0);
   expect(problems).toEqual([]);
 });
 

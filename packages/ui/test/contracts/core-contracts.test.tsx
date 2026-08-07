@@ -719,6 +719,10 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-switch-thumb-background-checked: var(--n-gray-0);");
     expect(tokens).toContain("--n-list-gap: var(--n-space-1);");
     expect(tokens).toContain("--n-list-item-padding: var(--n-space-2);");
+    expect(tokens).toContain("--n-card-padding-md: var(--n-space-6);");
+    expect(tokens).toMatch(
+      /:root\[data-density="compact"\][\s\S]*--n-card-padding-md: var\(--n-space-5\);/,
+    );
     expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
     expect(tokens).toContain("--n-card-section-gap: var(--n-space-2);");
     expect(tokens).toContain("--n-card-border-width: var(--n-border-width-default);");

@@ -44,6 +44,75 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 
+## Sign in Block structure and Block View navigation QA — 2026-08-07
+
+### Source truth
+
+- `browser://comments/sign-in-structure-1` — the maintainer-supplied structural reference attached
+  to Browser Comment 1. The source image is 1628 × 1302 pixels and defines the required hierarchy:
+  title and description, email, a password label row with recovery navigation, one Login action,
+  and a centered account-creation prompt. The maintainer explicitly scoped the image to structure,
+  not pixel-for-pixel styling.
+- The accompanying 1117 × 837 browser annotation identifies the outer preview frame, insufficient
+  Card padding, and missing gallery-return action in the pre-fix implementation.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3000/views/blocks/sign-in`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/sign-in-comfortable.jpg`
+- Implementation capture: 1280 × 720 pixels, matching the 1280 × 720 CSS viewport at device scale
+  factor 1.
+- The differently proportioned source was not geometrically normalized because it is an explicit
+  structure-only reference. The Card region was compared directly for hierarchy and proximity.
+- Focused measurements: comfortable Card padding 24px with a 20px form gap; compact Card padding
+  20px with a 16px form gap. The Card remains 416px wide in comfortable density.
+- Primary interactions tested: Login and Enter do not submit or change state, the visual Forgot
+  password and Sign up affordances do not navigate, and Back to Blocks remains the only working
+  action and returns to `/blocks`.
+- Catalog thumbnail evidence: `data-preview-thumbnail="true"` is present, the updated Sign in
+  heading renders in the iframe, and `.block-view__back` resolves to `display: none`.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. The implementation keeps Nerio Heading, Text, Label, and Button
+  typography and preserves the reference hierarchy without importing an external font treatment.
+- Spacing and layout rhythm: passed. The outer preview frame is removed, the Card is centered, and
+  density-aware outer padding remains larger than the internal form gap in both reviewed densities.
+- Colors and visual tokens: passed. All surfaces, borders, actions, focus states, and text roles use
+  existing Nerio semantic tokens and continue to support theme and mode switching.
+- Image quality and asset fidelity: not applicable. The reference contains no image assets; the Back
+  action uses the existing Nerio icon adapter rather than a custom drawing.
+- Copy and content: passed. The complete Login structure is present, Google login is intentionally
+  absent, and recovery/account-creation affordances remain visible without acting as navigation.
+
+### Findings and comparison history
+
+1. P1 — The pre-fix Sign in Block omitted the account-creation prompt and placed recovery navigation
+   below the primary action. Rebuilt the form hierarchy to match the supplied structure and verified
+   the revised Card region.
+2. P1 — The full Block View was wrapped in a large bordered preview container. Replaced it with a
+   width-only content wrapper; the final full-page capture has no preview border or nested canvas.
+3. P2 — Card padding was smaller than the distance between semantic form groups. Raised the Core
+   medium Card padding to 24px in comfortable density and 20px in compact density while making the
+   Sign in form gap density-aware at 20px and 16px respectively.
+4. P1 — The first revised Login action submitted the form and the visual recovery/account actions
+   navigated to other previews. The follow-up product decision makes every action inside a public
+   Block preview demonstrative only: click, auxiliary-click, keyboard activation, and form
+   submission are intercepted at the preview boundary without changing the enabled visual
+   treatment.
+5. P2 — Public Block Views had no direct return path to the gallery. Added a Nerio secondary Back to
+   Blocks action to every public View and suppressed it only inside non-interactive catalog
+   thumbnails.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states. A focused Card comparison
+was required because the structural reference targets label/action alignment and proximity rather
+than the surrounding desktop canvas.
+
+final result: passed
+
 ## Playground controls, Slider rhythm, and nested Tabs QA — 2026-08-07
 
 ### Source truth
