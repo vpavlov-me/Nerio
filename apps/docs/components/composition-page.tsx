@@ -2,7 +2,16 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowLeft, Box } from "@nerio-ui/adapters/icons";
+import {
+  ArrowLeft,
+  Box,
+  EllipsisVertical,
+  ExternalLink,
+  PackageOpen,
+  Type,
+  UserPlus,
+  X,
+} from "@nerio-ui/adapters/icons";
 import {
   Alert,
   Avatar,
@@ -598,101 +607,247 @@ function SecuritySettingsPreview() {
 }
 
 function TableToolbarPreview() {
+  const projects = [
+    { id: "aster", name: "Aster", status: "active", owner: "Alex Morgan" },
+    { id: "canvas", name: "Canvas", status: "active", owner: "Maya Chen" },
+    { id: "luma", name: "Luma", status: "archived", owner: "Jordan Lee" },
+    { id: "northstar", name: "Northstar", status: "active", owner: "Sam Rivera" },
+    { id: "orbit", name: "Orbit", status: "archived", owner: "Taylor Kim" },
+    { id: "atlas", name: "Atlas", status: "active", owner: "Rowan Patel" },
+  ] as const;
   const [query, setQuery] = React.useState("");
   const [selected, setSelected] = React.useState<string[]>([]);
-  const rows = ["Aster", "Canvas", "Luma"].filter((row) =>
-    row.toLowerCase().includes(query.toLowerCase()),
+  const [status, setStatus] = React.useState<"all" | "active" | "archived">("all");
+  const filteredProjects = projects.filter(
+    (project) =>
+      (status === "all" || project.status === status) &&
+      project.name.toLowerCase().includes(query.toLowerCase()),
   );
-  const visibleSelected = rows.filter((row) => selected.includes(row));
+  const visibleProjects = filteredProjects.slice(0, 4);
+  const visibleProjectIds = visibleProjects.map((project) => project.id);
+  const visibleSelected = visibleProjects.filter((project) => selected.includes(project.id));
+  const allVisibleSelected =
+    visibleProjects.length > 0 && visibleProjects.every((project) => selected.includes(project.id));
+  const someVisibleSelected = visibleSelected.length > 0 && !allVisibleSelected;
+  const totalPages = Math.max(1, Math.ceil(filteredProjects.length / 4));
+
+  function updateStatus(nextStatus: string | null) {
+    if (nextStatus !== "all" && nextStatus !== "active" && nextStatus !== "archived") {
+      return;
+    }
+    setStatus(nextStatus);
+    setSelected([]);
+  }
+
+  function updateQuery(nextQuery: string) {
+    setQuery(nextQuery);
+    setSelected([]);
+  }
+
+  function toggleAllVisible(checked: boolean) {
+    setSelected((current) => {
+      const next = new Set(current);
+      visibleProjectIds.forEach((id) => {
+        if (checked) {
+          next.add(id);
+        } else {
+          next.delete(id);
+        }
+      });
+      return [...next];
+    });
+  }
+
   return (
-    <div className="composition-table">
-      <div className="composition-toolbar">
-        <div>
-          <h3>Projects</h3>
-          <p>Simple scanning and lightweight actions.</p>
+    <Card className="composition-table-card">
+      <CardHeader>
+        <div className="composition-table-header">
+          <div>
+            <Heading as="h2" size="lg">
+              Projects
+            </Heading>
+            <Text tone="secondary">Manage active and archived workspace projects.</Text>
+          </div>
+          <Input
+            aria-label="Search projects"
+            placeholder="Search projects"
+            value={query}
+            onChange={(event) => updateQuery(event.currentTarget.value)}
+          />
         </div>
-        <Input
-          aria-label="Search projects"
-          placeholder="Search projects"
-          value={query}
-          onChange={(event) => setQuery(event.currentTarget.value)}
-        />
-        <DropdownMenu
-          trigger={<Button variant="secondary">Status filter</Button>}
-          items={[{ label: "All projects" }, { label: "Active" }, { label: "Archived" }]}
-        />
-      </div>
-      {visibleSelected.length ? (
-        <div className="composition-bulk" role="status">
-          <span>{visibleSelected.length} selected</span>
-          <Button size="sm" variant="ghost">
-            Archive
-          </Button>
-          <Button size="sm" variant="ghost">
-            Assign owner
-          </Button>
+      </CardHeader>
+      <CardContent className="composition-table">
+        <div className="composition-table-toolbar">
+          <Tabs
+            data-preview-interaction="allowed"
+            onValueChange={updateStatus}
+            size="sm"
+            value={status}
+            variant="segmented"
+          >
+            <TabsList aria-label="Project status">
+              <TabsTrigger badge={<Badge size="sm">6</Badge>} value="all">
+                All
+              </TabsTrigger>
+              <TabsTrigger badge={<Badge size="sm">4</Badge>} value="active">
+                Active
+              </TabsTrigger>
+              <TabsTrigger badge={<Badge size="sm">2</Badge>} value="archived">
+                Archived
+              </TabsTrigger>
+              <TabsIndicator />
+            </TabsList>
+          </Tabs>
+          {visibleSelected.length ? (
+            <div className="composition-table-actions">
+              <Button leadingIcon={PackageOpen} size="sm" type="button" variant="secondary">
+                Archive
+              </Button>
+              <Button leadingIcon={UserPlus} size="sm" type="button" variant="secondary">
+                Assign owner
+              </Button>
+              <Button
+                data-preview-interaction="allowed"
+                leadingIcon={X}
+                onClick={() => setSelected([])}
+                size="sm"
+                type="button"
+                variant="secondary"
+              >
+                Clear
+              </Button>
+            </div>
+          ) : null}
         </div>
-      ) : null}
-      {rows.length ? (
-        <TableContainer aria-label="Projects">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>
-                  <span className="sr-only">Select</span>
-                </TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Owner</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row}>
-                  <TableCell>
-                    <Checkbox
-                      aria-label={`Select ${row}`}
-                      checked={selected.includes(row)}
-                      onCheckedChange={(checked) =>
-                        setSelected((current) =>
-                          checked ? [...current, row] : current.filter((item) => item !== row),
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>{row}</TableCell>
-                  <TableCell>
-                    <Badge tone="success">Active</Badge>
-                  </TableCell>
-                  <TableCell>Alex Morgan</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <EmptyState role="status" size="sm">
-          <EmptyStateHeader>
-            <EmptyStateTitle>No projects found</EmptyStateTitle>
-            <EmptyStateDescription>
-              Try another search term or clear the filter.
-            </EmptyStateDescription>
-          </EmptyStateHeader>
-          <EmptyStateActions>
-            <Button variant="secondary" onClick={() => setQuery("")}>
-              Clear search
-            </Button>
-          </EmptyStateActions>
-        </EmptyState>
-      )}
-      <Pagination
-        pages={[
-          { key: "1", label: "1", href: "#projects", current: true },
-          { key: "2", label: "2", href: "#projects" },
-        ]}
-        nextHref="#projects"
-      />
-    </div>
+
+        <div className="composition-table-frame">
+          {filteredProjects.length ? (
+            <TableContainer
+              aria-label="Projects"
+              className="composition-table-frame__container"
+              focusable
+            >
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>
+                      <Checkbox
+                        aria-label="Select all projects"
+                        checked={allVisibleSelected}
+                        indeterminate={someVisibleSelected}
+                        onCheckedChange={toggleAllVisible}
+                        parent
+                      />
+                    </TableHead>
+                    <TableHead>Project</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Owner</TableHead>
+                    <TableHead>
+                      <span className="sr-only">Actions</span>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {visibleProjects.map((project) => {
+                    const isSelected = selected.includes(project.id);
+                    return (
+                      <TableRow data-selected={isSelected ? "" : undefined} key={project.id}>
+                        <TableCell>
+                          <Checkbox
+                            aria-label={`Select ${project.name}`}
+                            checked={isSelected}
+                            onCheckedChange={(checked) =>
+                              setSelected((current) =>
+                                checked
+                                  ? [...current, project.id]
+                                  : current.filter((item) => item !== project.id),
+                              )
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>{project.name}</TableCell>
+                        <TableCell>
+                          <Badge tone={project.status === "active" ? "success" : "neutral"}>
+                            {project.status === "active" ? "Active" : "Archived"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <span className="composition-table-owner">
+                            <Avatar name={project.owner} size="sm" />
+                            <span>{project.owner}</span>
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu
+                            trigger={
+                              <Button
+                                aria-label={`Actions for ${project.name}`}
+                                data-preview-interaction="allowed"
+                                icon={EllipsisVertical}
+                                size="sm"
+                                variant="ghost"
+                              />
+                            }
+                            items={[
+                              { label: "Open project", leadingIcon: ExternalLink },
+                              { label: "Rename", leadingIcon: Type },
+                              {
+                                destructive: project.status === "active",
+                                label: project.status === "active" ? "Archive" : "Delete",
+                                leadingIcon: project.status === "active" ? PackageOpen : X,
+                              },
+                            ]}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <EmptyState role="status" size="sm">
+              <EmptyStateHeader>
+                <EmptyStateTitle>No projects found</EmptyStateTitle>
+                <EmptyStateDescription>
+                  Try another search term or choose a different status.
+                </EmptyStateDescription>
+              </EmptyStateHeader>
+              <EmptyStateActions>
+                <Button
+                  data-preview-interaction="allowed"
+                  onClick={() => updateQuery("")}
+                  variant="secondary"
+                >
+                  Clear search
+                </Button>
+              </EmptyStateActions>
+            </EmptyState>
+          )}
+        </div>
+        {filteredProjects.length ? (
+          <div className="composition-table-footer" role="status">
+            <span>
+              {visibleSelected.length
+                ? `${visibleSelected.length} ${
+                    visibleSelected.length === 1 ? "project" : "projects"
+                  } selected`
+                : `1–${visibleProjects.length} of ${filteredProjects.length} projects`}
+            </span>
+            <Pagination
+              aria-label="Projects pagination"
+              nextHref={totalPages > 1 ? "#projects" : undefined}
+              pages={Array.from({ length: totalPages }, (_, index) => ({
+                current: index === 0,
+                href: "#projects",
+                key: String(index + 1),
+                label: String(index + 1),
+              }))}
+            />
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -1078,15 +1233,27 @@ const blocks: Record<string, Composition> = {
   },
   "table-toolbar": {
     purpose:
-      "Tests table density and simple operational actions while deliberately stopping before advanced data-grid features.",
-    components: ["Input", "DropdownMenu", "Button", "Table", "Badge", "EmptyState", "Pagination"],
+      "Demonstrates a bounded project table with status tabs, search, contextual bulk actions, row menus, selection state, and visual pagination.",
+    components: [
+      "Card",
+      "Tabs",
+      "Input",
+      "Checkbox",
+      "Avatar",
+      "DropdownMenu",
+      "Button",
+      "Table",
+      "Badge",
+      "EmptyState",
+      "Pagination",
+    ],
     accessibility:
-      "Search has an explicit accessible name, table headers use column scope, and the menu remains keyboard navigable.",
+      "Status filters use tabs, search has an explicit name, select-all exposes checked and indeterminate states, table headers use column scope, and row menus remain keyboard navigable.",
     responsive:
-      "Toolbar controls wrap before their target size changes; the basic table remains a scrollable data surface when necessary.",
+      "Tabs and search wrap before their target size changes, while the table remains a labelled, focusable horizontal scroll region.",
     notes:
       "Saved views, filter builders, column management, and virtualized grids are intentionally Pro territory.",
-    code: '<Input aria-label="Search projects" />\n<DropdownMenu items={filters} />\n<Table>...</Table>',
+    code: '<Card><Input aria-label="Search projects" /><Tabs variant="segmented">...</Tabs><Table><TableHeader><Checkbox aria-label="Select all projects" /></TableHeader>...</Table><Pagination /></Card>',
     Preview: TableToolbarPreview,
   },
   "account-summary": {

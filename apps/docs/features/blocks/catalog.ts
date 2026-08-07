@@ -149,19 +149,22 @@ export const blockCatalog = [
     slug: "table-toolbar",
     title: "Table toolbar",
     description:
-      "A basic operational table with search, status filtering, explicit row selection, bulk actions, and pagination.",
+      "A bounded project table with status tabs, search, contextual bulk actions, row menus, selection state, and pagination.",
     category: "Team and operations",
     status: "Preview",
     previewRoute: "/views/blocks/table-toolbar",
     componentsUsed: [
+      "Avatar",
       "Badge",
       "Button",
+      "Card",
       "Checkbox",
       "DropdownMenu",
       "EmptyState",
       "Input",
       "Pagination",
       "Table",
+      "Tabs",
     ],
     intendedUse: "Use this block around a small, non-virtualized table workflow.",
     boundaries: [

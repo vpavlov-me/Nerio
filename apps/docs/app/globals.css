@@ -2904,6 +2904,11 @@ pre {
   max-inline-size: 32rem;
 }
 
+.composition-table-card {
+  margin-inline: auto;
+  max-inline-size: 56rem;
+}
+
 .composition-profile-settings {
   display: grid;
   gap: var(--n-density-space-xl);
@@ -3096,8 +3101,6 @@ pre {
 }
 
 .composition-save-bar,
-.composition-toolbar,
-.composition-bulk,
 .composition-profile-head,
 .composition-actions,
 .composition-inline-status,
@@ -3116,29 +3119,95 @@ pre {
 }
 
 .composition-save-bar > span,
-.composition-bulk > span {
+.composition-table-footer > span {
   color: var(--n-color-text-secondary);
   font-size: var(--n-font-size-sm);
 }
 
+.composition-table-header,
 .composition-table {
   display: grid;
   gap: var(--n-space-4);
   min-inline-size: 0;
 }
 
-.composition-toolbar > :first-child {
-  flex: 1 1 10rem;
+.composition-table-header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-3);
+  justify-content: space-between;
 }
 
-.composition-toolbar > .n-input {
-  flex: 1 1 12rem;
+.composition-table-header > div {
+  display: grid;
+  gap: var(--n-space-1);
 }
 
-.composition-bulk {
-  background: var(--n-color-surface-muted);
-  border-radius: var(--n-radius-md);
-  padding: var(--n-space-2) var(--n-space-3);
+.composition-table-header > .n-input {
+  inline-size: min(100%, 16rem);
+}
+
+.composition-table-toolbar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-3);
+  justify-content: space-between;
+}
+
+.composition-table-toolbar > .n-tabs {
+  min-inline-size: 0;
+}
+
+.composition-table-actions,
+.composition-table-footer {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--n-space-2);
+}
+
+.composition-table-footer {
+  justify-content: space-between;
+  padding-inline: var(--n-space-1);
+}
+
+.composition-table-frame {
+  border: var(--n-border-subtle);
+  border-radius: var(--n-radius-lg);
+  overflow: hidden;
+}
+
+.composition-table-frame__container {
+  border: 0;
+  border-radius: var(--n-space-0);
+}
+
+.composition-table-owner {
+  align-items: center;
+  display: flex;
+  gap: var(--n-space-2);
+}
+
+.composition-table-owner {
+  white-space: nowrap;
+}
+
+.composition-table-frame :is(th, td):first-child,
+.composition-table-frame :is(th, td):last-child {
+  inline-size: var(--n-size-control-md);
+}
+
+@media (max-width: 40rem) {
+  .composition-table-header,
+  .composition-table-toolbar {
+    align-items: stretch;
+  }
+
+  .composition-table-header > .n-input {
+    inline-size: 100%;
+  }
 }
 
 .composition-profile-head {
