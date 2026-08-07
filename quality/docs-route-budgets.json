@@ -4,55 +4,55 @@
   "routes": {
     "/": {
       "jsBytes": 752640,
-      "cssBytes": 338944,
+      "cssBytes": 346112,
       "transferBytes": 278528,
       "runtimeTransferBytes": 852992
     },
     "/docs/getting-started": {
       "jsBytes": 480256,
-      "cssBytes": 338944,
+      "cssBytes": 346112,
       "transferBytes": 198656,
       "runtimeTransferBytes": 761856
     },
     "/docs/components/button": {
       "jsBytes": 484864,
-      "cssBytes": 338944,
+      "cssBytes": 346112,
       "transferBytes": 200704,
       "runtimeTransferBytes": 784384
     },
     "/docs/components/select": {
       "jsBytes": 484352,
-      "cssBytes": 338944,
+      "cssBytes": 346112,
       "transferBytes": 200704,
       "runtimeTransferBytes": 844800
     },
     "/docs/components/calendar": {
       "jsBytes": 494592,
-      "cssBytes": 338944,
+      "cssBytes": 346112,
       "transferBytes": 203776,
       "runtimeTransferBytes": 831488
     },
     "/docs/components/date-picker": {
       "jsBytes": 519168,
-      "cssBytes": 338944,
+      "cssBytes": 346112,
       "transferBytes": 211968,
       "runtimeTransferBytes": 825344
     },
     "/docs/components/command-primitive": {
       "jsBytes": 487424,
-      "cssBytes": 338944,
+      "cssBytes": 346112,
       "transferBytes": 201216,
       "runtimeTransferBytes": 814080
     },
     "/templates": {
       "jsBytes": 738304,
-      "cssBytes": 338944,
+      "cssBytes": 346112,
       "transferBytes": 275456,
       "runtimeTransferBytes": 836608
     },
     "/views/operations-workspace": {
       "jsBytes": 1133568,
-      "cssBytes": 412672,
+      "cssBytes": 419840,
       "transferBytes": 391168,
       "runtimeTransferBytes": 646144
     }
