@@ -136,7 +136,7 @@ async function prepareOverlayFixture(page) {
 test("protects reduced-motion dialog end state", async ({ page }) => {
   await prepareOverlayFixture(page);
   await page.getByRole("button", { name: "Open dialog" }).click();
-  const dialog = page.getByRole("dialog", { name: "Invite people" });
+  const dialog = page.getByRole("dialog", { name: "Sign in" });
   await expect(dialog).toBeVisible();
   await expect(page).toHaveScreenshot("overlay-dialog-reduced-motion.png");
   await page.keyboard.press("Escape");
@@ -145,8 +145,8 @@ test("protects reduced-motion dialog end state", async ({ page }) => {
 
 test("protects reduced-motion sheet end state", async ({ page }) => {
   await prepareOverlayFixture(page);
-  await page.getByRole("button", { name: "right · md" }).click();
-  const sheet = page.getByRole("dialog", { name: "right sheet" });
+  await page.getByRole("button", { name: "right", exact: true }).click();
+  const sheet = page.getByRole("dialog", { name: "Right sheet" });
   await expect(sheet).toBeVisible();
   await expect(page).toHaveScreenshot("overlay-sheet-reduced-motion.png");
   await page.keyboard.press("Escape");
