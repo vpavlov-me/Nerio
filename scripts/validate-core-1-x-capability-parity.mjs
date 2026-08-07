@@ -86,6 +86,10 @@ assert(
   "Parity baseline component catalog schema is stale.",
 );
 assert(
+  matrix.baseline?.componentCatalogSha256 === canonicalJsonSha256(catalog),
+  "Parity baseline component catalog hash is stale.",
+);
+assert(
   matrix.baseline?.registrySchemaVersion === manifest.schemaVersion,
   "Parity baseline Registry schema is stale.",
 );
@@ -293,6 +297,26 @@ for (const issue of duplicates(dispositions.map((disposition) => disposition.iss
 const dispositionByIssue = new Map(
   dispositions.map((disposition) => [disposition.issue, disposition]),
 );
+const requiredIssueDependencies = new Map([
+  [342, [341, 151]],
+  [343, [341, 342, 151]],
+  [344, [341, 342, 151]],
+  [345, [341, 342, 151]],
+  [346, [341, 342, 151]],
+  [347, [341, 342, 151]],
+  [348, [341, 342, 151]],
+  [349, [341, 342, 345, 348, 151]],
+  [350, [341, 342, 151]],
+  [351, [341, 151]],
+  [352, [341, 151]],
+  [353, [341, 352, 151]],
+  [354, [341, 151]],
+  [355, [341, 151]],
+  [356, [341, 151]],
+  [357, [341, 342, 151]],
+  [369, [341, 151]],
+  [370, [341, 342, 151]],
+]);
 for (let issue = 342; issue <= 357; issue += 1) {
   assert(dispositionByIssue.has(issue), `Parity matrix is missing issue #${issue}.`);
 }
@@ -311,6 +335,12 @@ for (const disposition of dispositions) {
       disposition.decision,
     `${label} has an incomplete disposition.`,
   );
+  assertUniqueOwnership(`${label} dependencies`, disposition.dependsOn);
+  compareSets(
+    `${label} dependencies`,
+    disposition.dependsOn,
+    requiredIssueDependencies.get(disposition.issue) ?? [],
+  );
   assert(docs.includes(`[#${disposition.issue}]`), `Human parity decision is missing ${label}.`);
 }
 for (const capability of capabilities.filter((entry) => Number.isInteger(entry.issue))) {
@@ -323,6 +353,13 @@ for (const capability of capabilities.filter((entry) => Number.isInteger(entry.i
       `${label} ${field} must match issue #${capability.issue}.`,
     );
   }
+  const missingDependencies = disposition.dependsOn
+    .filter((issue) => !capability.dependencies.includes(issue))
+    .sort((left, right) => left - right);
+  assert(
+    !missingDependencies.length,
+    `${label} dependencies must include issue #${capability.issue} dependencies: ${missingDependencies.join(", ")}`,
+  );
 }
 assert(
   dispositionByIssue.get(346)?.decision.includes("#370"),
