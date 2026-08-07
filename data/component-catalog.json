@@ -690,7 +690,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Accessible modal primitive with title, description, localizable close affordance, controlled state, and Base UI focus behavior."
+      "description": "Accessible viewport-bounded modal primitive with an internally scrolling body, title, description, localizable close affordance, controlled state, and Base UI focus behavior."
     },
     {
       "name": "Sheet",
@@ -722,7 +722,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Dropdown menu with disabled and destructive states plus optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
+      "description": "Dropdown menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
     },
     {
       "name": "Card",

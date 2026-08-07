@@ -1,12 +1,15 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import {
   Bell,
+  Box,
   Check,
   ChevronDown,
   CircleAlert,
   Copy,
+  ExternalLink,
   FileText,
   Info,
   LayoutDashboard,
@@ -33,7 +36,6 @@ import {
   CardTitle,
   CardVisual,
   Checkbox,
-  Code,
   Command,
   CommandEmpty,
   CommandInput,
@@ -66,7 +68,6 @@ import {
   ItemGroup,
   ItemHeader,
   ItemMedia,
-  ItemSeparator,
   ItemTitle,
   Kbd,
   KeyValue,
@@ -91,13 +92,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
-  SidebarProvider,
-  SidebarRail,
   Skeleton,
   Slider,
   Spinner,
@@ -106,7 +100,6 @@ import {
   Toggle,
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableContainer,
   TableFooter,
@@ -121,100 +114,16 @@ import {
   TabsTrigger,
   Text,
   Textarea,
-  Toast,
   Tooltip,
   useToastManager,
 } from "@nerio-ui/ui/client";
 import { avatarPreviewAssets } from "../lib/avatar-preview-assets";
 
-const componentLinks = [
-  [
-    "Actions",
-    [
-      ["Button", "button"],
-      ["Toggle", "toggle"],
-      ["Button Group", "button-group"],
-    ],
-  ],
-  [
-    "Forms",
-    [
-      ["Input", "input"],
-      ["FileInput", "file-input"],
-      ["Input Group", "input-group"],
-      ["Textarea", "textarea"],
-      ["Label", "label"],
-      ["Field", "field"],
-      ["Form Message", "form-message"],
-      ["Form Group", "form-group"],
-      ["Checkbox", "checkbox"],
-      ["Radio Group", "radio-group"],
-      ["Switch", "switch"],
-      ["Select", "select"],
-      ["Slider", "slider"],
-      ["Calendar", "calendar"],
-      ["DatePicker", "date-picker"],
-    ],
-  ],
-  [
-    "Overlays",
-    [
-      ["Dialog", "dialog"],
-      ["Sheet", "sheet"],
-      ["Popover", "popover"],
-      ["Tooltip", "tooltip"],
-      ["Dropdown Menu", "dropdown-menu"],
-    ],
-  ],
-  [
-    "Data display",
-    [
-      ["Card", "card"],
-      ["Badge", "badge"],
-      ["Avatar", "avatar"],
-      ["Table", "table"],
-      ["Item", "item"],
-      ["List", "list"],
-      ["Separator", "separator"],
-      ["Key Value", "key-value"],
-      ["Stat", "stat"],
-    ],
-  ],
-  [
-    "Feedback",
-    [
-      ["Alert", "alert"],
-      ["Toast", "toast"],
-      ["Progress", "progress"],
-      ["Skeleton", "skeleton"],
-      ["Empty State", "empty-state"],
-      ["Spinner", "spinner"],
-    ],
-  ],
-  [
-    "Navigation",
-    [
-      ["Tabs", "tabs"],
-      ["Breadcrumbs", "breadcrumbs"],
-      ["Pagination", "pagination"],
-      ["Sidebar", "sidebar-primitive"],
-      ["Command", "command-primitive"],
-    ],
-  ],
-  [
-    "Foundation",
-    [
-      ["Typography", "typography"],
-      ["Kbd", "kbd"],
-      ["Icon", "icon"],
-    ],
-  ],
-] as const;
+const SpecimenControlsContext = React.createContext<HTMLDivElement | null>(null);
 
 function SpecimenSection({
   id,
   title,
-  api,
   children,
 }: {
   id: string;
@@ -222,17 +131,26 @@ function SpecimenSection({
   api: string;
   children: React.ReactNode;
 }) {
+  const [controlsTarget, setControlsTarget] = React.useState<HTMLDivElement | null>(null);
+
   return (
     <section className="component-lab-section" id={id}>
       <header>
         <div>
-          <span>Core component</span>
           <h2>{title}</h2>
         </div>
-        <a href={`/docs/components/${id}`}>View docs</a>
+        <Button render={<a href={`/docs/components/${id}`} />} size="sm" variant="ghost">
+          View docs
+        </Button>
       </header>
-      <p className="component-lab-section__api">{api}</p>
-      {children}
+      <div className="component-playground-controls" ref={setControlsTarget} />
+      <SpecimenControlsContext.Provider value={controlsTarget}>
+        <div className="component-example component-playground-preview">
+          <div className="component-example__preview">
+            <div className="component-playground-preview__content">{children}</div>
+          </div>
+        </div>
+      </SpecimenControlsContext.Provider>
     </section>
   );
 }
@@ -240,49 +158,71 @@ function SpecimenSection({
 function Matrix({
   className,
   columns,
+  controlsVariant = "segmented",
   rows,
+  showRowLabels = true,
 }: {
   className?: string;
   columns: string[];
+  controlsVariant?: "segmented" | "separate" | "bordered";
   rows: Array<{ label: string; cells: React.ReactNode[] }>;
+  showRowLabels?: boolean;
 }) {
-  return (
-    <div className={["component-api-matrix", className].filter(Boolean).join(" ")}>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">API</th>
-            {columns.map((column) => (
-              <th scope="col" key={column}>
-                {column}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.label}>
-              <th scope="row">{row.label}</th>
-              {row.cells.map((cell, index) => (
-                <td key={`${row.label}-${columns[index]}`}>{cell}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  const controlsTarget = React.useContext(SpecimenControlsContext);
+  const defaultValue = columns[0];
+  const controls = (
+    <div
+      className="n-tabs component-playground-controls__tabs"
+      data-orientation="horizontal"
+      data-size="sm"
+      data-variant={controlsVariant}
+    >
+      <TabsList aria-label="Preview options">
+        {columns.map((column) => (
+          <TabsTrigger key={column} value={column}>
+            {column}
+          </TabsTrigger>
+        ))}
+        <TabsIndicator />
+      </TabsList>
     </div>
+  );
+
+  return (
+    <Tabs
+      className={["component-playground-options", className].filter(Boolean).join(" ")}
+      defaultValue={defaultValue}
+      size="sm"
+      variant={controlsVariant}
+    >
+      {controlsTarget ? createPortal(controls, controlsTarget) : controls}
+      <TabsPanels>
+        {columns.map((column, columnIndex) => (
+          <TabsContent key={column} value={column}>
+            {rows.length === 1 && rows[0] ? (
+              <div className="component-playground-options__specimen">
+                {rows[0].cells[columnIndex]}
+              </div>
+            ) : (
+              <div className="component-playground-showcase-grid">
+                {rows.map((row) => (
+                  <div className="component-playground-showcase-item" key={row.label}>
+                    {showRowLabels ? <Text tone="secondary">{row.label}</Text> : null}
+                    {row.cells[columnIndex]}
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        ))}
+      </TabsPanels>
+    </Tabs>
   );
 }
 
-function TabsExample({
-  variant,
-  size = "md",
-}: {
-  variant: "segmented" | "separate" | "bordered";
-  size?: "sm" | "md" | "lg";
-}) {
+function TabsExample({ variant }: { variant: "segmented" | "separate" | "bordered" }) {
   return (
-    <Tabs defaultValue="overview" variant={variant} size={size}>
+    <Tabs defaultValue="overview" variant={variant}>
       <TabsList aria-label={`${variant} tabs`}>
         <TabsTrigger value="overview">Overview</TabsTrigger>
         <TabsTrigger value="activity">Activity</TabsTrigger>
@@ -292,8 +232,22 @@ function TabsExample({
         <TabsIndicator />
       </TabsList>
       <TabsPanels>
-        <TabsContent value="overview">Overview panel</TabsContent>
-        <TabsContent value="activity">Activity panel</TabsContent>
+        <TabsContent value="overview">
+          <div className="component-playground-tab-panel">
+            <Heading as="h3">Workspace overview</Heading>
+            <Text tone="secondary">
+              Review current priorities, ownership, and delivery health across the workspace.
+            </Text>
+          </div>
+        </TabsContent>
+        <TabsContent value="activity">
+          <div className="component-playground-tab-panel">
+            <Heading as="h3">Recent activity</Heading>
+            <Text tone="secondary">
+              Maya updated project access and Alex completed the release checklist.
+            </Text>
+          </div>
+        </TabsContent>
         <TabsContent value="disabled">Unavailable</TabsContent>
       </TabsPanels>
     </Tabs>
@@ -302,21 +256,27 @@ function TabsExample({
 
 function ToastActions() {
   const toast = useToastManager();
+  const tones = ["neutral", "info", "success", "warning", "danger"] as const;
+
   return (
     <div className="component-lab-inline">
-      <Button
-        size="sm"
-        onClick={() =>
-          toast.add({
-            id: `saved-${Date.now()}`,
-            title: "Changes saved",
-            description: "The managed viewport announces this update.",
-            data: { tone: "success" },
-          })
-        }
-      >
-        Managed toast
-      </Button>
+      {tones.map((tone) => (
+        <Button
+          key={tone}
+          size="sm"
+          variant={tone === "neutral" ? "secondary" : tone === "danger" ? "danger" : "primary"}
+          onClick={() =>
+            toast.add({
+              id: `${tone}-${Date.now()}`,
+              title: `${tone} toast`,
+              description: "The managed viewport announces this update.",
+              data: { tone },
+            })
+          }
+        >
+          Open {tone} toast
+        </Button>
+      ))}
       <Button
         size="sm"
         variant="secondary"
@@ -350,22 +310,52 @@ function SheetExample({
   side: "left" | "right" | "top" | "bottom";
   size: "sm" | "md" | "lg";
 }) {
+  const sideLabel = `${side.charAt(0).toUpperCase()}${side.slice(1)}`;
+
   return (
     <Sheet>
       <SheetTrigger
         render={
           <Button size="sm" variant="secondary">
-            {side} · {size}
+            {side}
           </Button>
         }
       />
       <SheetContent side={side} size={size}>
         <SheetHeader>
-          <SheetTitle>{side} sheet</SheetTitle>
+          <SheetTitle>{sideLabel} sheet</SheetTitle>
           <SheetDescription>Side and size are public visual API.</SheetDescription>
         </SheetHeader>
         <SheetBody>
-          <Input aria-label="Workspace name" placeholder="Workspace name" defaultValue="Atlas" />
+          <div className="component-playground-sheet-form">
+            <Field label="Workspace name" description="Shown to everyone in the workspace.">
+              <Input defaultValue="Atlas" />
+            </Field>
+            <Select
+              defaultValue="editor"
+              description="Applied to newly invited members."
+              label="Default role"
+              options={[
+                { label: "Viewer", value: "viewer" },
+                { label: "Editor", value: "editor" },
+                { label: "Administrator", value: "admin" },
+              ]}
+            />
+            <Switch
+              defaultChecked
+              description="Require an administrator to approve invitations."
+              label="Invite approvals"
+            />
+            <Switch
+              description="Allow collaborators outside your organization."
+              label="External guests"
+            />
+            <Checkbox
+              defaultChecked
+              description="Send a summary when permissions change."
+              label="Notify workspace owners"
+            />
+          </div>
         </SheetBody>
         <SheetFooter>
           <SheetClose
@@ -385,62 +375,6 @@ function SheetExample({
 export function ComponentPlayground() {
   return (
     <>
-      <header className="component-lab-hero">
-        <div>
-          <span>Current Core API coverage</span>
-          <h1>Core visual API</h1>
-          <p>
-            Only implemented components are rendered. Foundation-only chart aliases remain editable
-            in Colors, but no chart specimen is shown because Core has no Chart component. Labels
-            are visually omitted in compact examples while accessible names remain explicit.
-          </p>
-        </div>
-        <Badge tone="success">Stable Core</Badge>
-      </header>
-      <nav className="component-lab-index" aria-label="Component index">
-        {componentLinks.map(([group, links]) => (
-          <div key={group}>
-            <strong>{group}</strong>
-            {links.map(([label, id]) => (
-              <a href={`#${id}`} key={id}>
-                {label}
-              </a>
-            ))}
-          </div>
-        ))}
-      </nav>
-
-      <SpecimenSection
-        id="typography"
-        title="Typography"
-        api="Heading: as, size · Text: tone · Code"
-      >
-        <Matrix
-          columns={["Default", "Secondary", "Tertiary"]}
-          rows={[
-            {
-              label: "Text tone",
-              cells: [
-                <Text key="d">Default text</Text>,
-                <Text key="s" tone="secondary">
-                  Secondary text
-                </Text>,
-                <Text key="t" tone="tertiary">
-                  Tertiary text
-                </Text>,
-              ],
-            },
-          ]}
-        />
-        <div className="component-lab-type-scale">
-          {(["2xl", "xl", "lg", "md", "sm", "xs"] as const).map((size) => (
-            <Heading as="h3" size={size} key={size}>
-              {size} · The quick brown fox
-            </Heading>
-          ))}
-          <Code>const theme = "nerio"</Code>
-        </div>
-      </SpecimenSection>
       <SpecimenSection id="kbd" title="Kbd" api="Keyboard hint · single key · shortcut sequence">
         <div className="component-lab-inline">
           <Kbd>⌘</Kbd>
@@ -452,41 +386,31 @@ export function ComponentPlayground() {
         </div>
       </SpecimenSection>
       <SpecimenSection
-        id="icon"
-        title="Icon"
-        api="Adapter-owned icon component · inherited size and stroke"
-      >
-        <div className="component-lab-icon-grid">
-          {[Search, Bell, Settings, FileText, Sparkles, UserPlus].map((icon, index) => (
-            <Icon icon={icon} key={index} />
-          ))}
-        </div>
-      </SpecimenSection>
-      <SpecimenSection
         id="button"
         title="Button"
         api="variant · size · loading · disabled · icons · badge · kbd · tooltip · render"
       >
         <Matrix
           columns={["sm", "md", "lg", "Disabled", "Loading"]}
+          showRowLabels={false}
           rows={(["primary", "secondary", "outline", "ghost", "link", "danger"] as const).map(
             (variant) => ({
               label: variant,
               cells: [
                 <Button key="sm" size="sm" variant={variant}>
-                  Action
+                  {variant}
                 </Button>,
                 <Button key="md" size="md" variant={variant}>
-                  Action
+                  {variant}
                 </Button>,
                 <Button key="lg" size="lg" variant={variant}>
-                  Action
+                  {variant}
                 </Button>,
                 <Button key="disabled" variant={variant} disabled>
-                  Action
+                  {variant}
                 </Button>,
                 <Button key="loading" variant={variant} loading>
-                  Action
+                  {variant}
                 </Button>,
               ],
             }),
@@ -552,6 +476,7 @@ export function ComponentPlayground() {
       >
         <Matrix
           columns={["Default", "Filled", "Read only", "Invalid", "Disabled"]}
+          showRowLabels={false}
           rows={(["sm", "md", "lg"] as const).map((size) => ({
             label: size,
             cells: [
@@ -559,33 +484,33 @@ export function ComponentPlayground() {
                 key="default"
                 aria-label={`${size} default input`}
                 size={size}
-                placeholder="Placeholder"
+                placeholder={`Size ${size}`}
               />,
               <Input
                 key="filled"
                 aria-label={`${size} filled input`}
                 size={size}
-                defaultValue="Value"
+                defaultValue={`Size ${size}`}
               />,
               <Input
                 key="readonly"
                 aria-label={`${size} read-only input`}
                 size={size}
-                defaultValue="Read only"
+                defaultValue={`Size ${size}`}
                 readOnly
               />,
               <Input
                 key="invalid"
                 aria-label={`${size} invalid input`}
                 size={size}
-                defaultValue="Invalid"
+                defaultValue={`Size ${size}`}
                 invalid
               />,
               <Input
                 key="disabled"
                 aria-label={`${size} disabled input`}
                 size={size}
-                defaultValue="Disabled"
+                defaultValue={`Size ${size}`}
                 disabled
               />,
             ],
@@ -599,6 +524,7 @@ export function ComponentPlayground() {
       >
         <Matrix
           columns={["Single", "Multiple", "Invalid", "Disabled"]}
+          showRowLabels={false}
           rows={(["sm", "md", "lg"] as const).map((size) => ({
             label: size,
             cells: [
@@ -684,7 +610,7 @@ export function ComponentPlayground() {
         api="Label · LabelRow · LabelContent · LabelRequired"
       >
         <div className="component-lab-form-row">
-          <Label htmlFor="label-demo">Standard label</Label>
+          <Label htmlFor="label-demo">Label</Label>
           <LabelRow>
             <LabelContent>
               Required field <LabelRequired />
@@ -723,21 +649,43 @@ export function ComponentPlayground() {
         </div>
       </SpecimenSection>
       <SpecimenSection id="form-group" title="Form Group" api="stack · inline · grid · invalid">
-        <div className="component-lab-form-row">
-          <FormGroup title="Stack" description="Default layout">
-            <Checkbox aria-label="Stack option one" defaultChecked />{" "}
-            <Checkbox aria-label="Stack option two" />
-          </FormGroup>
-          <FormGroup title="Inline" layout="inline">
-            <Checkbox aria-label="Inline option one" defaultChecked />{" "}
-            <Checkbox aria-label="Inline option two" />{" "}
-            <Checkbox aria-label="Inline option three" />
-          </FormGroup>
-          <FormGroup title="Grid" layout="grid" invalid message="Review both fields.">
-            <Input aria-label="Grid field one" defaultValue="One" />
-            <Input aria-label="Grid field two" invalid defaultValue="Two" />
-          </FormGroup>
-        </div>
+        <Matrix
+          columns={["Stack", "Inline", "Grid"]}
+          rows={[
+            {
+              label: "Layout",
+              cells: [
+                <FormGroup
+                  key="stack"
+                  title="Notification channels"
+                  description="Choose any that apply."
+                >
+                  <Checkbox
+                    label="Email updates"
+                    description="Receive important project changes by email."
+                    defaultChecked
+                  />
+                  <Checkbox
+                    label="Push notifications"
+                    description="Show time-sensitive alerts on this device."
+                  />
+                </FormGroup>,
+                <FormGroup key="inline" title="Visibility" layout="inline">
+                  <Checkbox
+                    label="Team members"
+                    description="Everyone in the workspace."
+                    defaultChecked
+                  />
+                  <Checkbox label="Guests" description="External collaborators with access." />
+                </FormGroup>,
+                <FormGroup key="grid" title="Project details" layout="grid">
+                  <Input aria-label="Project name" defaultValue="Atlas" />
+                  <Input aria-label="Project owner" defaultValue="Maya" />
+                </FormGroup>,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
       <SpecimenSection
         id="checkbox"
@@ -750,13 +698,29 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Checkbox aria-label="Project updates" key="off" />,
-                <Checkbox aria-label="Security alerts" key="on" defaultChecked />,
-                <Checkbox aria-label="Indeterminate option" key="mixed" indeterminate />,
-                <span key="disabled" className="component-lab-inline">
-                  <Checkbox aria-label="Disabled unchecked option" disabled />
-                  <Checkbox aria-label="Disabled checked option" disabled defaultChecked />
-                </span>,
+                <Checkbox
+                  key="off"
+                  label="Weekly summary"
+                  description="Receive a concise project digest every Monday."
+                />,
+                <Checkbox
+                  key="on"
+                  label="Weekly summary"
+                  description="Receive a concise project digest every Monday."
+                  defaultChecked
+                />,
+                <Checkbox
+                  key="mixed"
+                  label="Project notifications"
+                  description="Some notification channels are enabled."
+                  indeterminate
+                />,
+                <Checkbox
+                  key="disabled"
+                  label="Weekly summary"
+                  description="Unavailable for this workspace."
+                  disabled
+                />,
               ],
             },
           ]}
@@ -779,22 +743,30 @@ export function ComponentPlayground() {
           <RadioGroupItem value="team" description="Everyone in the workspace.">
             Team
           </RadioGroupItem>
-          <RadioGroupItem value="public" disabled>
+          <RadioGroupItem value="public" description="Anyone with the link can view." disabled>
             Public
           </RadioGroupItem>
         </RadioGroup>
       </SpecimenSection>
       <SpecimenSection id="switch" title="Switch" api="off · on · disabled · readOnly">
         <Matrix
-          columns={["Off", "On", "Disabled off", "Disabled on"]}
+          columns={["Default", "Disabled"]}
           rows={[
             {
               label: "State",
               cells: [
-                <Switch aria-label="Email notifications" key="off" />,
-                <Switch aria-label="Push notifications" key="on" defaultChecked />,
-                <Switch aria-label="Disabled notifications off" key="doff" disabled />,
-                <Switch aria-label="Disabled notifications on" key="don" disabled defaultChecked />,
+                <Switch
+                  key="default"
+                  label="Automatic updates"
+                  description="Install security updates as soon as they are available."
+                />,
+                <Switch
+                  key="disabled"
+                  label="Automatic updates"
+                  description="Managed by your organization."
+                  disabled
+                  defaultChecked
+                />,
               ],
             },
           ]}
@@ -807,6 +779,7 @@ export function ComponentPlayground() {
       >
         <Matrix
           columns={["sm", "md", "lg", "Invalid", "Disabled"]}
+          controlsVariant="segmented"
           rows={[
             {
               label: "Trigger",
@@ -876,12 +849,34 @@ export function ComponentPlayground() {
             {
               label: "State",
               cells: [
-                <Slider key="default" aria-label="Default volume" defaultValue={40} />,
-                <Slider key="readonly" aria-label="Read-only volume" defaultValue={70} readOnly />,
-                <Slider key="disabled" aria-label="Disabled volume" defaultValue={25} disabled />,
+                <Slider
+                  key="default"
+                  label="Monthly budget"
+                  valueLabel="$4,000"
+                  description="Set the spending limit for this workspace."
+                  defaultValue={40}
+                />,
+                <Slider
+                  key="readonly"
+                  label="Monthly budget"
+                  valueLabel="$7,000"
+                  description="This budget is managed by Finance."
+                  defaultValue={70}
+                  readOnly
+                />,
+                <Slider
+                  key="disabled"
+                  label="Monthly budget"
+                  valueLabel="$2,500"
+                  description="Enable billing to change this limit."
+                  defaultValue={25}
+                  disabled
+                />,
                 <Slider
                   key="vertical"
-                  aria-label="Vertical volume"
+                  label="Risk tolerance"
+                  valueLabel="60%"
+                  description="Choose the portfolio risk profile."
                   defaultValue={60}
                   orientation="vertical"
                 />,
@@ -895,40 +890,43 @@ export function ComponentPlayground() {
         title="Calendar"
         api="single date · ISO value · localized · constrained · readOnly"
       >
-        <Matrix
-          className="component-api-matrix--calendar"
-          columns={["Selected", "Constrained", "Read only"]}
-          rows={[
-            {
-              label: "State",
-              cells: [
-                <Calendar
-                  key="selected"
-                  aria-label="Selected release date"
-                  defaultValue="2026-06-15"
-                  firstDayOfWeek={1}
-                  today="2026-06-15"
-                />,
-                <Calendar
-                  key="constrained"
-                  aria-label="Constrained release date"
-                  defaultMonth="2026-06-01"
-                  min="2026-06-10"
-                  max="2026-06-20"
-                  isDateDisabled={(date) => date === "2026-06-18"}
-                  today="2026-06-15"
-                />,
-                <Calendar
-                  key="readonly"
-                  aria-label="Read-only release date"
-                  defaultValue="2026-06-15"
-                  readOnly
-                  today="2026-06-15"
-                />,
-              ],
-            },
-          ]}
-        />
+        <div className="component-lab-inline">
+          <Popover
+            className="component-playground-calendar-popover"
+            trigger={<Button variant="secondary">Open selected calendar</Button>}
+          >
+            <Calendar
+              aria-label="Selected release date"
+              defaultValue="2026-06-15"
+              firstDayOfWeek={1}
+              today="2026-06-15"
+            />
+          </Popover>
+          <Popover
+            className="component-playground-calendar-popover"
+            trigger={<Button variant="secondary">Open constrained calendar</Button>}
+          >
+            <Calendar
+              aria-label="Constrained release date"
+              defaultMonth="2026-06-01"
+              min="2026-06-10"
+              max="2026-06-20"
+              isDateDisabled={(date) => date === "2026-06-18"}
+              today="2026-06-15"
+            />
+          </Popover>
+          <Popover
+            className="component-playground-calendar-popover"
+            trigger={<Button variant="secondary">Open read-only calendar</Button>}
+          >
+            <Calendar
+              aria-label="Read-only release date"
+              defaultValue="2026-06-15"
+              readOnly
+              today="2026-06-15"
+            />
+          </Popover>
+        </div>
       </SpecimenSection>
       <SpecimenSection
         id="date-picker"
@@ -971,30 +969,99 @@ export function ComponentPlayground() {
         <div className="component-lab-inline">
           <Dialog
             trigger={<Button>Open dialog</Button>}
-            title="Invite people"
-            description="Share the workspace with your team."
+            title="Sign in"
+            description="Use your workspace credentials to continue."
           >
-            <Input aria-label="Email" placeholder="name@company.com" />
+            <div className="component-lab-stack">
+              <Field label="Email address">
+                <Input type="email" placeholder="name@company.com" />
+              </Field>
+              <Field label="Password">
+                <Input type="password" placeholder="Enter your password" />
+              </Field>
+              <Checkbox
+                description="Keep this browser signed in for 30 days."
+                label="Remember me"
+              />
+            </div>
             <DialogFooter>
               <Button variant="secondary">Cancel</Button>
-              <Button>Send invite</Button>
+              <Button>Sign in</Button>
             </DialogFooter>
           </Dialog>
           <Dialog
             trigger={<Button variant="secondary">Long content</Button>}
-            title="Review changes"
-            description="Dialog body supports structured content."
+            title="Privacy policy"
+            description="Last updated August 7, 2026."
           >
-            <div className="component-lab-stack">
-              <Text>Review permissions before publishing.</Text>
-              <Alert tone="warning" title="Two changes">
-                Owner and visibility will be updated.
-              </Alert>
-              <DialogFooter>
-                <Button variant="secondary">Cancel</Button>
-                <Button>Publish</Button>
-              </DialogFooter>
+            <div className="component-playground-dialog-scroll">
+              <Heading as="h3">Information we collect</Heading>
+              <Text tone="secondary">
+                We collect account details, workspace activity, device information, and technical
+                diagnostics required to provide and secure the service. This may include your name,
+                email address, organization, sign-in history, browser type, approximate location,
+                and the actions you take inside a workspace.
+              </Text>
+              <Text tone="secondary">
+                Content that you create, upload, or share is processed only to deliver the features
+                you request. Workspace administrators may also provide profile details and
+                permission settings on behalf of their members.
+              </Text>
+              <Heading as="h3">How information is used</Heading>
+              <Text tone="secondary">
+                Information is used to operate the product, support collaboration, prevent abuse,
+                diagnose incidents, and improve reliability. We also use limited account data to
+                communicate service updates and respond to support requests.
+              </Text>
+              <Text tone="secondary">
+                We do not use private workspace content to build advertising profiles. Product
+                analytics are aggregated where practical and retained only for as long as they
+                remain necessary.
+              </Text>
+              <Heading as="h3">Sharing and retention</Heading>
+              <Text tone="secondary">
+                We share information only with service providers and workspace members as needed to
+                operate the service. Providers are required to protect the information and may
+                process it only under our instructions.
+              </Text>
+              <Text tone="secondary">
+                Account data is retained while your workspace remains active and for a limited
+                period afterward to support recovery, security, and legal obligations. Retention
+                periods may differ when an administrator configures a shorter workspace policy.
+              </Text>
+              <Heading as="h3">International transfers</Heading>
+              <Text tone="secondary">
+                Your information may be processed in countries other than the one where you live.
+                When required, we use approved contractual safeguards and technical controls to
+                protect information during those transfers.
+              </Text>
+              <Heading as="h3">Security</Heading>
+              <Text tone="secondary">
+                We use access controls, encryption in transit and at rest, monitoring, and regular
+                security reviews. No system can guarantee absolute security, so we also provide
+                tools that help administrators manage sessions and permissions.
+              </Text>
+              <Heading as="h3">Your choices</Heading>
+              <Text tone="secondary">
+                You can request access, correction, export, or deletion of personal information
+                through workspace settings or by contacting support. Some requests may be managed by
+                your workspace administrator.
+              </Text>
+              <Heading as="h3">Changes to this policy</Heading>
+              <Text tone="secondary">
+                We may update this policy when the service, applicable law, or our data practices
+                change. Material updates are announced in the product or by email before they take
+                effect.
+              </Text>
+              <Heading as="h3">Contact</Heading>
+              <Text tone="secondary">
+                Questions about privacy or this policy can be sent to privacy@nerio.dev. We will
+                confirm receipt and respond within the period required by applicable law.
+              </Text>
             </div>
+            <DialogFooter>
+              <Button>I understand</Button>
+            </DialogFooter>
           </Dialog>
         </div>
       </SpecimenSection>
@@ -1003,13 +1070,17 @@ export function ComponentPlayground() {
         title="Sheet"
         api="side: left, right, top, bottom · size: sm, md, lg · header, body, footer, close"
       >
-        <div className="component-lab-sheet-grid">
-          {(["left", "right", "top", "bottom"] as const).flatMap((side) =>
-            (["sm", "md", "lg"] as const).map((size) => (
+        <Matrix
+          className="component-playground-sheet-options"
+          columns={["sm", "md", "lg"]}
+          rows={(["left", "right", "top", "bottom"] as const).map((side) => ({
+            label: side,
+            cells: (["sm", "md", "lg"] as const).map((size) => (
               <SheetExample side={side} size={size} key={`${side}-${size}`} />
             )),
-          )}
-        </div>
+          }))}
+          showRowLabels={false}
+        />
       </SpecimenSection>
       <SpecimenSection
         id="popover"
@@ -1022,12 +1093,52 @@ export function ComponentPlayground() {
             title="Quick filters"
             description="Refine without leaving context."
           >
-            <label className="component-lab-inline">
-              <Checkbox /> Active only
-            </label>
+            <div className="component-lab-stack">
+              <Field label="Status" description="Show projects in the selected state.">
+                <Select
+                  aria-label="Project status"
+                  defaultValue="active"
+                  label="Project status"
+                  options={[
+                    { label: "Active", value: "active" },
+                    { label: "Paused", value: "paused" },
+                  ]}
+                />
+              </Field>
+              <Field label="Owner" description="Limit results to one project owner.">
+                <Select
+                  aria-label="Project owner"
+                  label="Project owner"
+                  placeholder="Anyone"
+                  options={[
+                    { label: "Maya", value: "maya" },
+                    { label: "Alex", value: "alex" },
+                  ]}
+                />
+              </Field>
+              <Switch description="Hide healthy projects." label="Only with alerts" />
+            </div>
           </Popover>
           <Popover trigger={<Button variant="ghost">Content only</Button>}>
-            <Text tone="secondary">Compact contextual content.</Text>
+            <div className="component-lab-stack">
+              <Heading as="h3">Recovery point objective</Heading>
+              <Text tone="secondary">
+                The maximum acceptable amount of data loss measured in time after an incident.
+              </Text>
+              <Button
+                render={
+                  <a
+                    href="https://en.wikipedia.org/wiki/Recovery_point_objective"
+                    target="_blank"
+                    rel="noreferrer"
+                  />
+                }
+                trailingIcon={ExternalLink}
+                variant="link"
+              >
+                Learn more
+              </Button>
+            </div>
           </Popover>
         </div>
       </SpecimenSection>
@@ -1050,19 +1161,48 @@ export function ComponentPlayground() {
         title="Dropdown Menu"
         api="trigger · leading and trailing icons · hotkey · disabled · destructive · onSelect"
       >
-        <DropdownMenu
-          trigger={
-            <Button variant="secondary" trailingIcon={ChevronDown}>
-              Actions
-            </Button>
-          }
-          items={[
-            { label: "Rename", leadingIcon: FileText, hotkey: <Kbd>⌘ R</Kbd> },
-            { label: "Duplicate", leadingIcon: Copy, hotkey: <Kbd>⌘ D</Kbd> },
-            { label: "Archive", disabled: true, trailingIcon: ChevronDown },
-            { label: "Delete", destructive: true, leadingIcon: CircleAlert },
-          ]}
-        />
+        <div className="component-lab-inline">
+          <DropdownMenu
+            trigger={
+              <Button leadingIcon={FileText} variant="secondary" trailingIcon={ChevronDown}>
+                Actions
+              </Button>
+            }
+            items={[
+              {
+                label: "Edit project",
+                group: "Project",
+                leadingIcon: FileText,
+                hotkey: <Kbd>⌘ E</Kbd>,
+              },
+              { label: "Duplicate", group: "Project", leadingIcon: Copy, hotkey: <Kbd>⌘ D</Kbd> },
+              {
+                label: "Open full screen",
+                group: "Project",
+                leadingIcon: ExternalLink,
+                hotkey: <Kbd>F</Kbd>,
+              },
+              {
+                label: "Share",
+                group: "Collaboration",
+                leadingIcon: UserPlus,
+                trailingIcon: ChevronDown,
+                items: [
+                  { label: "Invite people", leadingIcon: UserPlus, hotkey: <Kbd>⌘ I</Kbd> },
+                  { label: "Copy public link", leadingIcon: Copy, hotkey: <Kbd>⌘ L</Kbd> },
+                ],
+              },
+              { label: "Archive", group: "Manage", leadingIcon: Box },
+              {
+                label: "Delete project",
+                group: "Manage",
+                destructive: true,
+                leadingIcon: CircleAlert,
+                hotkey: <Kbd>⌘ ⌫</Kbd>,
+              },
+            ]}
+          />
+        </div>
       </SpecimenSection>
 
       <SpecimenSection
@@ -1091,21 +1231,6 @@ export function ComponentPlayground() {
               </Button>
             </CardFooter>
           </Card>
-          <Card variant="secondary">
-            <CardVisual placement="bleed" className="component-lab-card-visual">
-              Bleed visual
-            </CardVisual>
-            <CardHeader>
-              <CardTitle>Secondary surface</CardTitle>
-              <CardDescription>Quiet grouping treatment.</CardDescription>
-            </CardHeader>
-          </Card>
-          <Card href="#card">
-            <CardHeader>
-              <CardTitle>Linked card</CardTitle>
-              <CardDescription>One clear destination.</CardDescription>
-            </CardHeader>
-          </Card>
         </div>
       </SpecimenSection>
       <SpecimenSection
@@ -1114,26 +1239,24 @@ export function ComponentPlayground() {
         api="tone · emphasis · size · loading · leading and trailing icons"
       >
         <Matrix
-          columns={["sm", "md", "lg", "Strong"]}
+          columns={["sm", "md", "lg"]}
           rows={(
             ["neutral", "primary-soft", "accent", "info", "success", "warning", "danger"] as const
           ).map((tone) => ({
             label: tone,
             cells: [
               <Badge key="sm" tone={tone} size="sm">
-                Label
+                {tone === "primary-soft" ? "primary soft" : tone}
               </Badge>,
               <Badge key="md" tone={tone}>
-                Label
+                {tone === "primary-soft" ? "primary soft" : tone}
               </Badge>,
               <Badge key="lg" tone={tone} size="lg">
-                Label
-              </Badge>,
-              <Badge key="strong" tone={tone} emphasis="strong">
-                Label
+                {tone === "primary-soft" ? "primary soft" : tone}
               </Badge>,
             ],
           }))}
+          showRowLabels={false}
         />
         <div className="component-lab-inline">
           <Badge leadingIcon={Check} tone="success">
@@ -1148,26 +1271,54 @@ export function ComponentPlayground() {
         api="size · image · initials fallback · custom fallback · decorative"
       >
         <Matrix
-          columns={["sm", "md", "lg", "Image", "Initials", "Custom"]}
+          columns={["sm", "md", "lg"]}
           rows={[
             {
-              label: "Preview",
+              label: "Image",
               cells: [
-                <Avatar key="sm" {...avatarPreviewAssets[0]} size="sm" />,
-                <Avatar key="md" {...avatarPreviewAssets[1]} />,
-                <Avatar key="lg" {...avatarPreviewAssets[2]} size="lg" />,
-                <Avatar key="image" {...avatarPreviewAssets[3]} />,
-                <Avatar key="fallback" name="Alex Reed" />,
-                <Avatar key="custom" name="Nerio Team" fallback={<Icon icon={Sparkles} />} />,
+                <Avatar key="i-sm" {...avatarPreviewAssets[0]} size="sm" />,
+                <Avatar key="i-md" {...avatarPreviewAssets[0]} />,
+                <Avatar key="i-lg" {...avatarPreviewAssets[0]} size="lg" />,
               ],
+            },
+            {
+              label: "Initials",
+              cells: [
+                <Avatar key="f-sm" name="Alex Reed" size="sm" />,
+                <Avatar key="f-md" name="Alex Reed" />,
+                <Avatar key="f-lg" name="Alex Reed" size="lg" />,
+              ],
+            },
+            {
+              label: "Custom",
+              cells: [
+                <Avatar
+                  key="c-sm"
+                  name="Nerio Team"
+                  fallback={<Icon icon={Sparkles} />}
+                  size="sm"
+                />,
+                <Avatar key="c-md" name="Nerio Team" fallback={<Icon icon={Sparkles} />} />,
+                <Avatar
+                  key="c-lg"
+                  name="Nerio Team"
+                  fallback={<Icon icon={Sparkles} />}
+                  size="lg"
+                />,
+              ],
+            },
+            {
+              label: "Group",
+              cells: (["sm", "md", "lg"] as const).map((size) => (
+                <div className="component-playground-avatar-group" key={size}>
+                  {avatarPreviewAssets.slice(0, 3).map((avatar) => (
+                    <Avatar key={avatar.name} {...avatar} size={size} />
+                  ))}
+                </div>
+              )),
             },
           ]}
         />
-        <div className="component-lab-inline" aria-label="Avatar preview set">
-          {avatarPreviewAssets.map((avatar) => (
-            <Avatar key={avatar.name} {...avatar} size="lg" />
-          ))}
-        </div>
       </SpecimenSection>
       <SpecimenSection
         id="table"
@@ -1176,7 +1327,6 @@ export function ComponentPlayground() {
       >
         <TableContainer aria-label="Project table">
           <Table>
-            <TableCaption>Active workspace projects</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead>Project</TableHead>
@@ -1215,19 +1365,21 @@ export function ComponentPlayground() {
         title="Item"
         api="variant · size · media · header · content · actions · footer · separators"
       >
-        <div className="component-lab-stack">
-          {(["plain", "outline", "soft"] as const).map((variant) => (
-            <ItemGroup key={variant}>
-              <ItemHeader>{variant} group</ItemHeader>
-              {(["sm", "md", "lg"] as const).map((size, index) => (
-                <React.Fragment key={size}>
-                  <Item variant={variant} size={size}>
+        <Matrix
+          columns={["Plain group", "Footer slot", "Soft group"]}
+          rows={[
+            {
+              label: "Variant",
+              cells: [
+                <ItemGroup key="plain">
+                  <ItemHeader>Recent files</ItemHeader>
+                  <Item>
                     <ItemMedia variant="icon">
                       <Icon icon={FileText} />
                     </ItemMedia>
                     <ItemContent>
-                      <ItemTitle>{size} item</ItemTitle>
-                      <ItemDescription>Supporting description</ItemDescription>
+                      <ItemTitle>Project brief</ItemTitle>
+                      <ItemDescription>Updated 10 minutes ago</ItemDescription>
                     </ItemContent>
                     <ItemActions>
                       <Button size="sm" variant="ghost">
@@ -1235,54 +1387,105 @@ export function ComponentPlayground() {
                       </Button>
                     </ItemActions>
                   </Item>
-                  {index < 2 ? <ItemSeparator /> : null}
-                </React.Fragment>
-              ))}
-              <ItemFooter>Footer slot</ItemFooter>
-            </ItemGroup>
-          ))}
-        </div>
+                </ItemGroup>,
+                <ItemGroup key="footer">
+                  <Item>
+                    <ItemMedia variant="icon">
+                      <Icon icon={FileText} />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>Release notes</ItemTitle>
+                      <ItemDescription>Ready for review</ItemDescription>
+                    </ItemContent>
+                  </Item>
+                  <ItemFooter>2 collaborators are viewing</ItemFooter>
+                </ItemGroup>,
+                <ItemGroup key="soft">
+                  <Item variant="soft">
+                    <ItemMedia variant="icon">
+                      <Icon icon={FileText} />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>Design tokens</ItemTitle>
+                      <ItemDescription>Synced with the latest theme</ItemDescription>
+                    </ItemContent>
+                    <ItemActions>
+                      <Badge tone="success">Ready</Badge>
+                    </ItemActions>
+                  </Item>
+                </ItemGroup>,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
       <SpecimenSection
         id="list"
         title="List"
         api="disc · decimal · dash · icon · none · leading · trailing · metadata"
       >
-        <div className="component-lab-card-grid">
-          <List
-            items={[
-              {
-                id: "one",
-                title: "Write the component contract",
-              },
-              {
-                id: "two",
-                title: "Add accessible states",
-              },
-              { id: "three", title: "Verify the public preview" },
-            ]}
-          />
-          <List
-            marker="decimal"
-            items={[
-              { id: "install", title: "Install tokens" },
-              { id: "source", title: "Register source" },
-              { id: "import", title: "Import components" },
-            ]}
-          />
-        </div>
+        <Matrix
+          columns={["Bulleted", "Numbered", "Icons"]}
+          rows={[
+            {
+              label: "Marker",
+              cells: [
+                <List
+                  key="disc"
+                  items={[
+                    { id: "one", title: "Write the component contract" },
+                    { id: "two", title: "Add accessible states" },
+                    { id: "three", title: "Verify the public preview" },
+                  ]}
+                />,
+                <List
+                  key="number"
+                  marker="decimal"
+                  items={[
+                    { id: "install", title: "Install tokens" },
+                    { id: "source", title: "Register source" },
+                    { id: "import", title: "Import components" },
+                  ]}
+                />,
+                <List
+                  key="icons"
+                  marker="icon"
+                  items={[
+                    { id: "contract", title: "Contract approved", marker: <Icon icon={Check} /> },
+                    {
+                      id: "states",
+                      title: "Accessible states verified",
+                      marker: <Icon icon={Check} />,
+                    },
+                    { id: "preview", title: "Preview ready", marker: <Icon icon={Sparkles} /> },
+                  ]}
+                />,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
       <SpecimenSection id="separator" title="Separator" api="horizontal · vertical">
-        <div className="component-lab-stack">
-          <span>Overview</span>
-          <Separator />
-          <span>Activity</span>
-        </div>
-        <div className="component-lab-inline">
-          <span>Overview</span>
-          <Separator orientation="vertical" />
-          <span>Activity</span>
-        </div>
+        <Matrix
+          columns={["Horizontal", "Vertical"]}
+          rows={[
+            {
+              label: "Orientation",
+              cells: [
+                <div className="component-lab-stack" key="h">
+                  <span>Overview</span>
+                  <Separator />
+                  <span>Activity</span>
+                </div>,
+                <div className="component-lab-inline" key="v">
+                  <span>Overview</span>
+                  <Separator orientation="vertical" />
+                  <span>Activity</span>
+                </div>,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
       <SpecimenSection id="key-value" title="Key Value" api="label · React node value">
         <div className="component-lab-key-values">
@@ -1329,77 +1532,125 @@ export function ComponentPlayground() {
         title="Toast"
         api="tone · priority · timeout · action · managed viewport · swipe direction"
       >
-        <div className="component-lab-stack">
-          {(["neutral", "info", "success", "warning", "danger"] as const).map((tone) => (
-            <Toast
-              key={tone}
-              title={`${tone} toast`}
-              description="Static presentation for visual comparison."
-              tone={tone}
-            />
-          ))}
-          <ToastActions />
-        </div>
+        <ToastActions />
       </SpecimenSection>
       <SpecimenSection
         id="progress"
         title="Progress"
         api="determinate · complete · indeterminate · value label · accessible name"
       >
-        <div className="component-lab-stack">
-          <Progress label="In progress" value={62} />
-          <Progress label="Complete" value={100} />
-          <Progress label="Indeterminate" />
-          <Progress label="Custom value" value={4} max={5} valueLabel="4 of 5" />
-        </div>
+        <Matrix
+          columns={["In progress", "Complete", "Indeterminate", "Custom value"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Progress key="active" label="Migration progress" value={62} />,
+                <Progress key="complete" label="Migration complete" value={100} />,
+                <Progress key="indeterminate" label="Preparing migration" />,
+                <Progress
+                  key="custom"
+                  label="Files uploaded"
+                  value={4}
+                  max={5}
+                  valueLabel="4 of 5"
+                />,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
       <SpecimenSection
         id="skeleton"
         title="Skeleton"
         api="token-driven shape · arbitrary layout composition"
       >
-        <div className="component-lab-skeleton-demo">
-          <Skeleton className="component-lab-skeleton-demo__avatar" />
-          <div>
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-          </div>
-        </div>
+        <Matrix
+          columns={["Table", "Card", "Form"]}
+          rows={[
+            {
+              label: "Layout",
+              cells: [
+                <div className="component-playground-skeleton-table" key="table">
+                  {Array.from({ length: 4 }, (_, index) => (
+                    <div key={index}>
+                      <Skeleton />
+                      <Skeleton />
+                      <Skeleton />
+                    </div>
+                  ))}
+                </div>,
+                <div className="component-playground-skeleton-card" key="card">
+                  <Skeleton className="component-playground-skeleton-card__visual" />
+                  <Skeleton />
+                  <Skeleton />
+                </div>,
+                <div className="component-playground-skeleton-form" key="form">
+                  <Skeleton />
+                  <Skeleton className="component-playground-skeleton-form__control" />
+                  <Skeleton />
+                  <Skeleton className="component-playground-skeleton-form__control" />
+                </div>,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
       <SpecimenSection
         id="empty-state"
         title="Empty State"
         api="size · align · media variant · action orientation"
       >
-        <div className="component-lab-card-grid">
-          {(["sm", "md", "lg"] as const).map((size) => (
-            <EmptyState key={size} size={size} align={size === "sm" ? "start" : "center"}>
-              <EmptyStateMedia>
-                <Icon icon={Search} />
-              </EmptyStateMedia>
-              <EmptyStateHeader>
-                <EmptyStateTitle>{size} empty state</EmptyStateTitle>
-                <EmptyStateDescription>No results match the current filters.</EmptyStateDescription>
-              </EmptyStateHeader>
-              <EmptyStateActions orientation={size === "lg" ? "vertical" : "horizontal"}>
-                <Button size="sm" variant="secondary">
-                  Clear filters
-                </Button>
-                {size === "lg" ? <Button size="sm">Create item</Button> : null}
-              </EmptyStateActions>
-            </EmptyState>
-          ))}
-        </div>
+        <Matrix
+          columns={["sm", "md", "lg"]}
+          rows={[
+            {
+              label: "Size",
+              cells: (["sm", "md", "lg"] as const).map((size) => (
+                <EmptyState key={size} size={size} align="center">
+                  <EmptyStateMedia>
+                    <Icon icon={Search} />
+                  </EmptyStateMedia>
+                  <EmptyStateHeader>
+                    <EmptyStateTitle>No results found</EmptyStateTitle>
+                    <EmptyStateDescription>
+                      No results match the current filters.
+                    </EmptyStateDescription>
+                  </EmptyStateHeader>
+                  <EmptyStateActions orientation={size === "lg" ? "vertical" : "horizontal"}>
+                    <Button size="sm" variant="secondary">
+                      Clear filters
+                    </Button>
+                    {size === "lg" ? <Button size="sm">Create item</Button> : null}
+                  </EmptyStateActions>
+                </EmptyState>
+              )),
+            },
+          ]}
+        />
       </SpecimenSection>
       <SpecimenSection id="spinner" title="Spinner" api="size · labelled or decorative">
-        <div className="component-lab-inline">
-          <Spinner size="sm" label="Loading small" />
-          <Spinner size="md" label="Loading medium" />
-          <Spinner size="lg" label="Loading large" />
-          <Button loading>Saving</Button>
-          <Badge loading>Syncing</Badge>
-        </div>
+        <Matrix
+          columns={["Sizes", "In context"]}
+          rows={[
+            {
+              label: "Preview",
+              cells: [
+                <div className="component-lab-inline" key="sizes">
+                  <Spinner size="sm" label="Loading small" />
+                  <Spinner size="md" label="Loading medium" />
+                  <Spinner size="lg" label="Loading large" />
+                </div>,
+                <div className="component-lab-inline" key="context">
+                  <Button loading>Saving</Button>
+                  <Button loading variant="secondary">
+                    Syncing
+                  </Button>
+                </div>,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
 
       <SpecimenSection
@@ -1408,15 +1659,15 @@ export function ComponentPlayground() {
         api="variant · size · layout · orientation · disabled · icons · badges"
       >
         <Matrix
-          columns={["sm", "md", "lg"]}
-          rows={(["segmented", "separate", "bordered"] as const).map((variant) => ({
-            label: variant,
-            cells: [
-              <TabsExample key="sm" variant={variant} size="sm" />,
-              <TabsExample key="md" variant={variant} />,
-              <TabsExample key="lg" variant={variant} size="lg" />,
-            ],
-          }))}
+          columns={["Segmented", "Separate", "Bordered"]}
+          rows={[
+            {
+              label: "Variant",
+              cells: (["segmented", "separate", "bordered"] as const).map((variant) => (
+                <TabsExample key={variant} variant={variant} />
+              )),
+            },
+          ]}
         />
       </SpecimenSection>
       <SpecimenSection
@@ -1424,23 +1675,14 @@ export function ComponentPlayground() {
         title="Breadcrumbs"
         api="linked and current items · custom separators through composition"
       >
-        <div className="component-lab-stack">
-          <Breadcrumbs
-            items={[
-              { label: "Docs", href: "#" },
-              { label: "Components", href: "#" },
-              { label: "Breadcrumbs" },
-            ]}
-          />
-          <Breadcrumbs
-            items={[
-              { label: "Workspace", href: "#" },
-              { label: "Projects", href: "#" },
-              { label: "Atlas", href: "#" },
-              { label: "Settings" },
-            ]}
-          />
-        </div>
+        <Breadcrumbs
+          items={[
+            { label: "Workspace", href: "#" },
+            { label: "Projects", href: "#" },
+            { label: "Atlas", href: "#" },
+            { label: "Settings" },
+          ]}
+        />
       </SpecimenSection>
       <SpecimenSection
         id="pagination"
@@ -1459,78 +1701,54 @@ export function ComponentPlayground() {
         />
       </SpecimenSection>
       <SpecimenSection
-        id="sidebar-primitive"
-        title="Sidebar Primitive"
-        api="controlled or uncontrolled expanded · side · direction · rail · trigger · layout regions"
-      >
-        <SidebarProvider
-          className="component-lab-sidebar"
-          defaultExpanded
-          sidebarId="component-lab-sidebar"
-        >
-          <Sidebar aria-label="Sidebar specimen">
-            <SidebarHeader>
-              <strong>Nerio</strong>
-            </SidebarHeader>
-            <SidebarContent>
-              <nav>
-                {(
-                  [
-                    ["Overview", LayoutDashboard],
-                    ["Projects", FileText],
-                    ["Settings", Settings],
-                  ] as const
-                ).map(([label, icon], index) => (
-                  <Button
-                    className="component-lab-sidebar__item"
-                    key={label}
-                    leadingIcon={icon}
-                    size="sm"
-                    variant={index === 0 ? "secondary" : "ghost"}
-                  >
-                    {label}
-                  </Button>
-                ))}
-              </nav>
-            </SidebarContent>
-            <SidebarFooter>Core layout</SidebarFooter>
-            <SidebarRail label="Toggle specimen sidebar" />
-          </Sidebar>
-          <SidebarInset as="div">
-            <Heading as="h3">Product content</Heading>
-            <Text tone="secondary">The consuming app owns routes and navigation.</Text>
-          </SidebarInset>
-        </SidebarProvider>
-      </SpecimenSection>
-      <SpecimenSection
         id="command-primitive"
         title="Command Primitive"
         api="flat or grouped items · search · custom filter · disabled · empty · loading · selection"
       >
-        <div className="component-lab-card-grid">
-          <Command items={commandItems}>
-            <CommandInput aria-label="Search commands" placeholder="Search commands…" />
-            <CommandList>
-              {(item) => (
-                <CommandItem
-                  value={item.value}
-                  leading={<Icon icon={item.value === "settings" ? Settings : LayoutDashboard} />}
-                  shortcut={item.value === "dashboard" ? <Kbd>G D</Kbd> : undefined}
+        <Matrix
+          columns={["Filled", "Empty"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Popover key="filled" trigger={<Button>Open command menu</Button>}>
+                  <Command items={commandItems}>
+                    <CommandInput aria-label="Search commands" placeholder="Search commands…" />
+                    <CommandList>
+                      {(item) => (
+                        <CommandItem
+                          value={item.value}
+                          leading={
+                            <Icon icon={item.value === "settings" ? Settings : LayoutDashboard} />
+                          }
+                          shortcut={item.value === "dashboard" ? <Kbd>G D</Kbd> : undefined}
+                        >
+                          {item.label}
+                        </CommandItem>
+                      )}
+                    </CommandList>
+                    <CommandEmpty>No commands found.</CommandEmpty>
+                  </Command>
+                </Popover>,
+                <Popover
+                  key="empty"
+                  trigger={<Button variant="secondary">Open empty command menu</Button>}
                 >
-                  {item.label}
-                </CommandItem>
-              )}
-            </CommandList>
-            <CommandEmpty>No commands found.</CommandEmpty>
-          </Command>
-          <Command items={[]}>
-            <CommandInput aria-label="Search empty commands" placeholder="Empty command…" />
-            <CommandList>
-              {(item) => <CommandItem value={item.value}>{item.label}</CommandItem>}
-            </CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-          </Command>
-        </div>
+                  <Command items={[]}>
+                    <CommandInput
+                      aria-label="Search empty commands"
+                      placeholder="Search commands…"
+                    />
+                    <CommandList>
+                      {(item) => <CommandItem value={item.value}>{item.label}</CommandItem>}
+                    </CommandList>
+                    <CommandEmpty>No results found.</CommandEmpty>
+                  </Command>
+                </Popover>,
+              ],
+            },
+          ]}
+        />
       </SpecimenSection>
     </>
   );

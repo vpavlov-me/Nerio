@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Check, Copy, Palette } from "@nerio-ui/adapters/icons";
 import { densities, modes, themes } from "@nerio-ui/tokens";
-import { Badge, Button, Icon, ToastProvider, ToastViewport } from "@nerio-ui/ui/client";
+import { Button, Icon, ToastProvider, ToastViewport } from "@nerio-ui/ui/client";
 import { ComponentPlayground } from "./component-playground-specimens";
 
 type Theme = (typeof themes)[number];
@@ -457,7 +457,9 @@ function toStyle(
     "--n-font-size-lg": scaled(16, scale),
     "--n-font-size-xl": scaled(18, scale),
     "--n-font-size-2xl": scaled(20, scale),
-    "--n-font-size-3xl": scaled(24, scale),
+    "--n-font-size-3xl": scaled(22.5, scale),
+    "--n-font-size-4xl": scaled(25.25, scale),
+    "--n-font-size-5xl": scaled(28.5, scale),
     "--n-size-control-sm": scaled(compact ? 24 : 28, scale),
     "--n-size-control-md": scaled(compact ? 28 : 32, scale),
     "--n-size-control-lg": scaled(compact ? 32 : 36, scale),
@@ -652,6 +654,37 @@ function Segmented<T extends string>({
   );
 }
 
+function SwatchPicker<T extends string>({
+  label,
+  value,
+  options,
+  getColor,
+  onChange,
+}: {
+  label: string;
+  value: T;
+  options: readonly T[];
+  getColor: (option: T) => string;
+  onChange: (value: T) => void;
+}) {
+  return (
+    <div className="playground-swatch-options" role="radiogroup" aria-label={label}>
+      {options.map((option) => (
+        <button
+          type="button"
+          role="radio"
+          aria-checked={value === option}
+          aria-label={option}
+          key={option}
+          data-active={value === option || undefined}
+          style={{ "--playground-swatch": getColor(option) } as PlaygroundStyle}
+          onClick={() => onChange(option)}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function VisualPlayground() {
   const [theme, setTheme] = React.useState<Theme>("purple");
   const [mode, setMode] = React.useState<Mode>("light");
@@ -678,6 +711,46 @@ export function VisualPlayground() {
   const resolvedMode = mode === "system" ? (systemDark ? "dark" : "light") : mode;
   const colors = resolvedMode === "dark" ? darkColors : lightColors;
   const style = toStyle(colors, scale, density, radius, motion, panel);
+  const previousDocumentTheme = React.useRef<{
+    attributes: Record<string, string | null>;
+    styles: Record<string, string>;
+  } | null>(null);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    const attributes = {
+      "data-theme": root.getAttribute("data-theme"),
+      "data-mode": root.getAttribute("data-mode"),
+      "data-density": root.getAttribute("data-density"),
+    };
+    const styles = Object.fromEntries(
+      Object.keys(style).map((property) => [property, root.style.getPropertyValue(property)]),
+    );
+    previousDocumentTheme.current = { attributes, styles };
+
+    return () => {
+      const previous = previousDocumentTheme.current;
+      if (!previous) return;
+      Object.entries(previous.attributes).forEach(([attribute, value]) => {
+        if (value === null) root.removeAttribute(attribute);
+        else root.setAttribute(attribute, value);
+      });
+      Object.entries(previous.styles).forEach(([property, value]) => {
+        if (value) root.style.setProperty(property, value);
+        else root.style.removeProperty(property);
+      });
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    root.setAttribute("data-mode", resolvedMode);
+    root.setAttribute("data-density", density);
+    Object.entries(style).forEach(([property, value]) => {
+      root.style.setProperty(property, String(value));
+    });
+  }, [density, resolvedMode, style, theme]);
 
   const updateColor = (key: ColorKey, value: string) => {
     const setter = resolvedMode === "dark" ? setDarkColors : setLightColors;
@@ -755,19 +828,11 @@ export function VisualPlayground() {
         data-density={density}
         style={style}
       >
-        <header className="visual-playground__intro">
-          <div>
-            <span className="visual-playground__kicker">Core component laboratory</span>
-            <h1>Nerio Playground</h1>
-            <p>
-              Every implemented Core component, organized by its public visual API. Tune the system
-              globally, then inspect variants, sizes, states, and interactive behavior in place.
-            </p>
-          </div>
-          <Badge tone="neutral">Core alpha workbench</Badge>
-        </header>
         <div className="visual-playground__workspace visual-playground__workspace--radix">
           <main className="playground-canvas playground-canvas--catalog">
+            <header className="visual-playground__intro">
+              <h1>Playground</h1>
+            </header>
             <ComponentPlayground />
           </main>
 
@@ -792,49 +857,23 @@ export function VisualPlayground() {
               <>
                 <div className="playground-settings__group">
                   <h3>Accent color</h3>
-                  <div
-                    className="playground-swatch-options"
-                    role="radiogroup"
-                    aria-label="Accent color"
-                  >
-                    {themes.map((name) => (
-                      <button
-                        type="button"
-                        role="radio"
-                        aria-checked={theme === name}
-                        aria-label={name}
-                        key={name}
-                        data-active={theme === name || undefined}
-                        style={{ "--playground-swatch": themeAccents[name][0] } as PlaygroundStyle}
-                        onClick={() => applyTheme(name)}
-                      />
-                    ))}
-                  </div>
+                  <SwatchPicker
+                    label="Accent color"
+                    value={theme}
+                    options={themes}
+                    getColor={(name) => themeAccents[name][0]}
+                    onChange={applyTheme}
+                  />
                 </div>
                 <div className="playground-settings__group">
                   <h3>Neutral recipe</h3>
-                  <div
-                    className="playground-swatch-options playground-swatch-options--neutral"
-                    role="radiogroup"
-                    aria-label="Neutral recipe"
-                  >
-                    {(Object.keys(neutralRecipes) as NeutralRecipe[]).map((name) => (
-                      <button
-                        type="button"
-                        role="radio"
-                        aria-checked={neutral === name}
-                        aria-label={name}
-                        key={name}
-                        data-active={neutral === name || undefined}
-                        style={
-                          {
-                            "--playground-swatch": neutralRecipes[name].textSecondary,
-                          } as PlaygroundStyle
-                        }
-                        onClick={() => applyNeutral(name)}
-                      />
-                    ))}
-                  </div>
+                  <SwatchPicker
+                    label="Neutral recipe"
+                    value={neutral}
+                    options={Object.keys(neutralRecipes) as NeutralRecipe[]}
+                    getColor={(name) => neutralRecipes[name].textSecondary}
+                    onChange={applyNeutral}
+                  />
                 </div>
                 <div className="playground-settings__group">
                   <h3>Appearance</h3>

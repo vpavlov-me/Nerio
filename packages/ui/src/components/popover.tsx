@@ -32,7 +32,7 @@ export interface PopoverProps {
   className?: string;
 }
 
-export const popoverPositionerClasses = "n-popover-positioner z-(--n-overlay-z-index)";
+export const popoverPositionerClasses = "n-popover-positioner z-(--n-overlay-floating-z-index)";
 
 export const popoverPopupClasses =
   "n-popover__content grid min-w-(--n-dropdown-min-width) max-w-(--n-popover-width-md) gap-(--n-popover-gap) rounded-(--n-popover-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-popover-padding) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [--n-button-background-ghost-hover:var(--n-overlay-control-background-hover)] [--n-button-background-secondary:var(--n-overlay-control-background)] [--n-button-background-secondary-hover:var(--n-overlay-control-background-hover)] [--n-button-foreground-ghost:var(--n-overlay-foreground-muted)] [--n-button-foreground-secondary:var(--n-overlay-foreground)] [--n-color-surface-muted:var(--n-overlay-control-background)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)] [--n-input-background:var(--n-input-background-on-overlay)] [--n-input-background-hover:var(--n-input-background-on-overlay-hover)] [--n-input-foreground:var(--n-input-foreground-on-overlay)] [--n-input-placeholder:var(--n-input-placeholder-on-overlay)]";

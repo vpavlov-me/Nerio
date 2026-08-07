@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const categoryFixtures = {
-  foundation: ["typography", "kbd", "icon"],
+  foundation: ["typography", "kbd"],
   actions: ["button", "toggle", "button-group"],
   forms: [
     "input",
@@ -52,9 +52,7 @@ async function prepareFixture(page) {
       .docs-header,
       .docs-footer,
       .nerio-orb,
-      nextjs-portal,
-      .component-lab-hero,
-      .component-lab-index { display: none !important; }
+      nextjs-portal { display: none !important; }
       .docs-content,
       .docs-main { display: block !important; inline-size: 100% !important; margin: 0 !important; padding: 0 !important; }
       *, *::before, *::after {

@@ -33,7 +33,14 @@ const requiredRecipes = [
   ".n-typography-space-grotesk",
 ];
 
-for (const contract of [...requiredTokens, ...requiredRecipes]) {
+const requiredScale = [
+  "--n-font-size-md: 0.875rem",
+  "--n-font-size-3xl: 1.40625rem",
+  "--n-font-size-4xl: 1.578125rem",
+  "--n-font-size-5xl: 1.78125rem",
+];
+
+for (const contract of [...requiredTokens, ...requiredRecipes, ...requiredScale]) {
   if (!tokenStyles.includes(contract)) {
     throw new Error(`Typography token contract is missing: ${contract}`);
   }

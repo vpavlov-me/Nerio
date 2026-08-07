@@ -285,8 +285,10 @@ function validate() {
   if (docsControls.includes("toggleMode")) {
     failures.push("Docs controls must not collapse System, Light, and Dark into a binary toggle.");
   }
+  const derivesPlaygroundThemes =
+    docsPlayground.includes("themes.map") || docsPlayground.includes("options={themes}");
   if (
-    !docsPlayground.includes("themes.map") ||
+    !derivesPlaygroundThemes ||
     !docsPlayground.includes("const playgroundModes = [modes[1], modes[2], modes[0]]") ||
     !docsPlayground.includes("options={playgroundModes}") ||
     !docsPlayground.includes("options={densities}")

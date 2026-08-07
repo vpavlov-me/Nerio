@@ -4,8 +4,8 @@ import { arePreviewSurfacesEnabled } from "../../lib/deployment";
 import { createPageMetadata } from "../../lib/seo";
 
 export const metadata = createPageMetadata({
-  title: "Visual Playground",
-  description: "Tune Nerio visual tokens and inspect Core components in one interactive canvas.",
+  title: "Playground",
+  description: "Tune Nerio tokens and inspect Core components in one interactive canvas.",
   path: "/playground",
   indexable: false,
 });

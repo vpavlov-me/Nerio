@@ -191,7 +191,7 @@ export const RadioGroup = React.forwardRef<HTMLDivElement, RadioGroupProps>(func
       data-slot="root"
     >
       <span
-        className="n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-secondary)"
+        className="n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-primary)"
         data-slot="label"
         id={labelId}
       >

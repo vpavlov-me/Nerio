@@ -272,6 +272,7 @@ function tailwindDocumentationFailures() {
   const playgroundSpecimens = read("apps/docs/components/component-playground-specimens.tsx");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
+  const migrationPage = read("apps/docs/app/docs/migration/page.tsx");
   const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
   const failures = [];
 
@@ -301,6 +302,7 @@ function tailwindDocumentationFailures() {
       "Deployment detection must protect non-Vercel production builds",
     ],
     [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
+    [playground, "<h1>Playground</h1>", "Playground must use its concise canonical title"],
     [
       playground,
       "there is no Chart component in Core",
@@ -308,13 +310,23 @@ function tailwindDocumentationFailures() {
     ],
     [
       playgroundSpecimens,
-      'aria-label="Component index"',
-      "Playground must expose a navigable Core component index",
+      "Open constrained calendar",
+      "Playground must keep Calendar specimens behind explicit triggers",
     ],
     [
       gettingStarted,
       "component visuals compile from their Tailwind recipes",
       "Getting Started must describe Tailwind-owned component visuals",
+    ],
+    [
+      migrationPage,
+      'aria-label="Beta.0 to beta.1 migration changes"',
+      "Migration must use the Nerio Table for the current beta changes",
+    ],
+    [
+      migrationPage,
+      "It is not a stable release",
+      "Migration must distinguish the prepared beta candidate from stable Core 1.0",
     ],
     [
       progressPage,
@@ -325,6 +337,10 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (migrationPage.includes("<table")) {
+    failures.push("Migration must not use a raw table element");
   }
 
   if (
@@ -344,6 +360,15 @@ function tailwindDocumentationFailures() {
   }
   if (/id="chart"|>Chart</.test(playgroundSpecimens)) {
     failures.push("Playground must not present an app-local Chart as a Core component");
+  }
+  if (/<table[\s>]/.test(playgroundSpecimens)) {
+    failures.push("Playground matrices must use the canonical Nerio Table components");
+  }
+  if (/component-lab-index|aria-label="Component index"/.test(playgroundSpecimens)) {
+    failures.push("Playground must not restore the removed component index");
+  }
+  if (/id="icon"/.test(playgroundSpecimens)) {
+    failures.push("Playground must not restore the removed static Icon specimen");
   }
 
   if (/['"]n-motion-[a-z]/.test(motionPage)) {
