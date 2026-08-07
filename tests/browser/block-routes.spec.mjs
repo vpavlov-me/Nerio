@@ -98,6 +98,32 @@ test("renders the complete Sign in structure and interactions", async ({ page })
   expect(problems).toEqual([]);
 });
 
+test("renders the complete Create account structure as a static preview", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/create-account");
+
+  await expect(page.getByText("Acme Inc.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
+  await expect(page.getByText("Enter your email below to create your account.")).toBeVisible();
+  await expect(page.getByLabel("Full name")).toHaveAttribute("placeholder", "Vladimir Pavlov");
+  await expect(page.getByLabel("Email")).toHaveAttribute("placeholder", "nerio@vpavlov.com");
+  await expect(page.getByLabel("Password")).toBeVisible();
+  await expect(page.getByLabel("Confirm password")).toBeVisible();
+  await expect(page.getByText("Must be at least 8 characters long.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Create account" })).toBeVisible();
+  await expect(page.getByText("Already have an account?")).toBeVisible();
+  await expect(page.getByText("Sign in")).toBeVisible();
+  await expect(page.getByText("Terms of Service")).toBeVisible();
+  await expect(page.getByText("Privacy Policy")).toBeVisible();
+  await expect(page.getByText("Email verification")).toHaveCount(0);
+  await expect(page.locator(".block-view__content a")).toHaveCount(0);
+
+  const url = page.url();
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page).toHaveURL(url);
+  expect(problems).toEqual([]);
+});
+
 test("keeps internal fixtures unindexed and outside the public catalog", async ({ page }) => {
   const problems = monitorPage(page);
 

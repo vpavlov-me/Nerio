@@ -746,6 +746,70 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
 
 final result: passed
 
+## Create account Block structure QA — 2026-08-07
+
+### Source truth
+
+- `browser://comments/create-account-structure-1` — the maintainer-supplied structural reference
+  attached to Browser Comment 1. It defines the company identity above the Card, centered account
+  heading, full name and email fields, side-by-side password confirmation, password guidance,
+  primary action, existing-account prompt, and legal agreement below the Card.
+- The maintainer explicitly scoped the screenshot to layout and required the implementation to use
+  Nerio components, icon adapters, and semantic tokens rather than copying its visual styling.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3000/views/blocks/create-account`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/create-account-comfortable.jpg`
+- Implementation capture: 1280 × 720 pixels, matching the 1280 × 720 CSS viewport at device scale
+  factor 1.
+- The source and implementation use different canvas proportions; no density normalization was
+  applied because the source is an explicit structure-only reference. The Card and surrounding
+  identity/legal regions were compared as focused layout regions.
+- Focused measurements: Card padding 24px, form gap 20px, and two equal 177px password columns in
+  comfortable density. The password grid collapses to one column below the local 30rem breakpoint.
+- Static-preview behavior: Create account does not submit or change the URL; Sign in, Terms of
+  Service, and Privacy Policy are visual affordances rather than anchors. Back to Blocks remains
+  outside the disabled preview boundary.
+- Catalog thumbnail evidence: the updated Create account heading renders in the second iframe and
+  Back to Blocks resolves to `display: none` after the thumbnail appearance contract initializes.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Company identity, title, description, labels, helper, account prompt,
+  and legal copy use Nerio Heading, Text, Label, Field, and Button typography.
+- Spacing and layout rhythm: passed. Brand, Card, and legal copy form three clear regions; full-width
+  fields precede the paired credential row, and the existing-account prompt closes the Card.
+- Colors and visual tokens: passed. The company mark, Card, inputs, text roles, borders, and action
+  use existing semantic tokens and remain theme-aware.
+- Image quality and asset fidelity: passed. The reference contains only a simple company mark; the
+  implementation uses the released Nerio Icon component with the adapter Box icon rather than a
+  generated asset, custom SVG, or CSS drawing.
+- Copy and content: passed. The English branded placeholders are `Vladimir Pavlov` and
+  `nerio@vpavlov.com`. Password, confirmation, minimum-length guidance, account action, Sign in
+  prompt, Terms of Service, and Privacy Policy are all present; the obsolete Email verification
+  alert is removed.
+
+### Findings and comparison history
+
+1. P1 — The prior Create account preview lacked company identity, confirm-password, account-switch,
+   and legal agreement regions. Added the complete structural sequence and verified it in the final
+   full-page capture.
+2. P2 — The prior form ended with an Email verification Alert that is absent from the selected
+   reference. Replaced it with password-length guidance and the existing-account prompt.
+3. P2 — The first revised primary action used submit semantics and appended an empty query string
+   despite the global static-preview boundary. Changed this visual action to `type="button"` and
+   reverified that the URL remains unchanged.
+4. P2 — Password and confirm-password needed a paired desktop relationship without creating mobile
+   overflow. Added a token-spaced two-column grid with a one-column narrow-screen fallback.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
+
+final result: passed
+
 ## Primary group radius and Secondary row radius clarification QA — 2026-07-21
 
 ### Source truth

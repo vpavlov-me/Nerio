@@ -2889,6 +2889,39 @@ pre {
   max-inline-size: 26rem;
 }
 
+.composition-create-account {
+  display: grid;
+  gap: var(--n-space-8);
+  inline-size: min(100%, 26rem);
+  margin-inline: auto;
+}
+
+.composition-auth-brand {
+  align-items: center;
+  display: flex;
+  gap: var(--n-space-3);
+  justify-content: center;
+}
+
+.composition-auth-brand__mark {
+  align-items: center;
+  background: var(--n-color-action-primary);
+  block-size: var(--n-size-control-lg);
+  border-radius: var(--n-radius-control);
+  color: var(--n-color-action-on-primary);
+  display: inline-flex;
+  inline-size: var(--n-size-control-lg);
+  justify-content: center;
+}
+
+.composition-create-account__card {
+  inline-size: 100%;
+}
+
+.composition-create-account__header {
+  text-align: center;
+}
+
 .composition-form,
 .composition-settings,
 .composition-feedback,
@@ -2929,6 +2962,26 @@ pre {
   flex-wrap: wrap;
   gap: var(--n-space-1);
   justify-content: center;
+}
+
+.composition-create-account__passwords {
+  display: grid;
+  gap: var(--n-density-space-md);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.composition-create-account__helper {
+  font-size: var(--n-helper-font-size);
+}
+
+.composition-create-account__legal {
+  text-align: center;
+}
+
+@media (max-width: 30rem) {
+  .composition-create-account__passwords {
+    grid-template-columns: 1fr;
+  }
 }
 
 .composition-settings > section {

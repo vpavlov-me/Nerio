@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ArrowLeft } from "@nerio-ui/adapters/icons";
+import { ArrowLeft, Box } from "@nerio-ui/adapters/icons";
 import {
   Alert,
   Avatar,
@@ -23,6 +23,7 @@ import {
   Field,
   FormGroup,
   Heading,
+  Icon,
   Input,
   KeyValue,
   Label,
@@ -70,7 +71,7 @@ type Composition = {
 
 const authComponents = ["Card", "Field", "Input", "Button", "Alert"];
 
-function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
+function AuthPreview({ kind }: { kind: "login" | "forgot" }) {
   const [submitted, setSubmitted] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [completed, setCompleted] = React.useState(false);
@@ -81,11 +82,6 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
       title: "Login to your account",
       action: "Login",
       description: "Enter your email below to login to your account.",
-    },
-    register: {
-      title: "Create your account",
-      action: "Create account",
-      description: "Start with a secure workspace.",
     },
     forgot: {
       title: "Reset your password",
@@ -128,11 +124,6 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
             }
           }}
         >
-          {kind === "register" ? (
-            <Field label="Full name">
-              <Input autoComplete="name" placeholder="Alex Morgan" />
-            </Field>
-          ) : null}
           <Field
             label="Email"
             invalid={invalid}
@@ -146,28 +137,18 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
               placeholder={kind === "login" ? "m@example.com" : "you@company.com"}
             />
           </Field>
-          {kind !== "forgot" ? (
-            kind === "login" ? (
-              <div className="composition-auth-password">
-                <LabelRow className="composition-auth-password__label">
-                  <LabelContent>
-                    <Label htmlFor="sign-in-password">Password</Label>
-                  </LabelContent>
-                  <Button nativeButton={false} render={<span />} variant="link">
-                    Forgot your password?
-                  </Button>
-                </LabelRow>
-                <Input id="sign-in-password" autoComplete="current-password" type="password" />
-              </div>
-            ) : (
-              <Field label="Password">
-                <Input
-                  autoComplete="new-password"
-                  type="password"
-                  placeholder="At least 8 characters"
-                />
-              </Field>
-            )
+          {kind === "login" ? (
+            <div className="composition-auth-password">
+              <LabelRow className="composition-auth-password__label">
+                <LabelContent>
+                  <Label htmlFor="sign-in-password">Password</Label>
+                </LabelContent>
+                <Button nativeButton={false} render={<span />} variant="link">
+                  Forgot your password?
+                </Button>
+              </LabelRow>
+              <Input id="sign-in-password" autoComplete="current-password" type="password" />
+            </div>
           ) : null}
           <Button className="composition-auth-submit" loading={busy} type="submit">
             {copy.action}
@@ -180,14 +161,75 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
               </Button>
             </Text>
           ) : null}
-          {kind === "register" ? (
-            <Alert tone="info" title="Email verification">
-              Use a work email to create a workspace.
-            </Alert>
-          ) : null}
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+function CreateAccountPreview() {
+  return (
+    <div className="composition-create-account">
+      <div className="composition-auth-brand">
+        <span className="composition-auth-brand__mark">
+          <Icon icon={Box} />
+        </span>
+        <Heading as="h2" size="lg">
+          Acme Inc.
+        </Heading>
+      </div>
+
+      <Card className="composition-auth-card composition-create-account__card">
+        <CardHeader className="composition-create-account__header">
+          <Heading as="h3" size="xl">
+            Create your account
+          </Heading>
+          <Text tone="secondary">Enter your email below to create your account.</Text>
+        </CardHeader>
+        <CardContent>
+          <form className="composition-form">
+            <Field label="Full name">
+              <Input autoComplete="name" placeholder="Vladimir Pavlov" />
+            </Field>
+            <Field label="Email">
+              <Input autoComplete="email" placeholder="nerio@vpavlov.com" type="email" />
+            </Field>
+            <div className="composition-create-account__passwords">
+              <Field label="Password">
+                <Input autoComplete="new-password" type="password" />
+              </Field>
+              <Field label="Confirm password">
+                <Input autoComplete="new-password" type="password" />
+              </Field>
+            </div>
+            <Text className="composition-create-account__helper" tone="secondary">
+              Must be at least 8 characters long.
+            </Text>
+            <Button className="composition-auth-submit" type="button">
+              Create account
+            </Button>
+            <Text className="composition-auth-switch" tone="secondary">
+              Already have an account?{" "}
+              <Button nativeButton={false} render={<span />} variant="link">
+                Sign in
+              </Button>
+            </Text>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Text className="composition-create-account__legal" tone="secondary">
+        By clicking continue, you agree to our{" "}
+        <Button nativeButton={false} render={<span />} variant="link">
+          Terms of Service
+        </Button>{" "}
+        and{" "}
+        <Button nativeButton={false} render={<span />} variant="link">
+          Privacy Policy
+        </Button>
+        .
+      </Text>
+    </div>
   );
 }
 
@@ -712,16 +754,16 @@ const blocks: Record<string, Composition> = {
   },
   "create-account": {
     purpose:
-      "Tests the relationship between a small account form, validation, and explanatory feedback.",
-    components: authComponents,
+      "Tests a complete account-creation layout with identity, credentials, confirmation, and policy context.",
+    components: ["Card", "Heading", "Text", "Field", "Input", "Button", "Icon"],
     accessibility:
-      "Each input is labelled through Field and inline feedback is associated with its control.",
+      "Every input keeps a visible label, password confirmation remains explicit, and visual links stay non-interactive in the preview.",
     responsive:
-      "The form remains one column on narrow widths so labels and validation copy stay readable.",
+      "Password fields share a row when space allows and stack into one column on narrow viewports.",
     notes:
       "Core covers the primitives only. Invitation systems, entitlement checks, and account provisioning remain outside this gallery.",
-    code: '<Field label="Full name"><Input /></Field><Field label="Email"><Input /></Field>',
-    Preview: () => <AuthPreview kind="register" />,
+    code: '<Field label="Full name"><Input /></Field><Field label="Email"><Input /></Field><Field label="Password"><Input /></Field><Field label="Confirm password"><Input /></Field>',
+    Preview: CreateAccountPreview,
   },
   "reset-password": {
     purpose:
