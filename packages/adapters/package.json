@@ -62,7 +62,7 @@
     "@types/react-dom": "19.2.3",
     "eslint": "^9.39.2",
     "jsdom": "29.1.1",
-    "motion": "12.42.2",
+    "motion": "12.43.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.7",
     "react-hook-form": "^7.83.0",
