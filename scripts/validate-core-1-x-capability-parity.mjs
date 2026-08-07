@@ -219,10 +219,55 @@ compareSets(
 );
 
 const capabilities = Array.isArray(matrix.capabilities) ? matrix.capabilities : [];
+const requiredCapabilityIds = [
+  "foundation-runtime-and-tokens",
+  "integration-foundations",
+  "actions",
+  "form-foundations",
+  "selection-and-range",
+  "single-date",
+  "overlay-foundations",
+  "menu-foundation",
+  "data-display",
+  "feedback",
+  "navigation-and-command",
+  "native-html-guidance",
+  "direction-localization",
+  "disclosure-family",
+  "compound-dialog-alert-dialog",
+  "single-select-combobox",
+  "search-field",
+  "number-field",
+  "otp-field",
+  "grouped-selection",
+  "multi-select",
+  "compound-menu-family",
+  "context-menu",
+  "menubar-toolbar-navigation-menu",
+  "preview-card",
+  "autocomplete-suggestions",
+  "advanced-platform-workflows",
+  "pro-data-and-dashboard",
+  "pro-product-surfaces",
+  "package-output",
+  "cli-lifecycle",
+  "registry-namespaces",
+  "mcp-discovery",
+  "agent-skill",
+  "component-lab",
+  "core-recipes",
+  "figma-interchange",
+  "library-plumbing",
+];
 assert(capabilities.length >= 30, "Parity matrix must define a broad capability set.");
 for (const id of duplicates(capabilities.map((capability) => capability.id))) {
   throw new Error(`Duplicate parity capability id: ${id}`);
 }
+compareSets(
+  "Parity capability ids",
+  capabilities.map((capability) => capability.id),
+  requiredCapabilityIds,
+);
 const classifications = new Set(requiredClassifications);
 const priorities = new Set(matrix.priorityValues ?? []);
 const targets = new Set(matrix.targetValues ?? []);
