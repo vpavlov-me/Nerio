@@ -211,7 +211,7 @@ test("keeps the template shell inside emulated safe areas without overflow", asy
 test("covers Command groups, IME safety, leading layout, and selection", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto(workspaceRoute);
-  await page.getByRole("button", { name: "Search workspace" }).click();
+  await page.keyboard.press("Control+K");
   await expect(page.getByRole("dialog", { name: "Workspace commands" })).toBeVisible();
   const input = page.getByRole("combobox", { name: "Workspace commands" });
 
@@ -326,6 +326,7 @@ test("uses current Core primitives with the chart adapter and no deprecated Icon
     page.getByRole("img", { name: /Weekly completion rate rose from 62 percent/ }),
   ).toBeVisible();
   await expect(page.getByRole("group", { name: "Six of nine contributors" })).toBeVisible();
-  await expect(page.getByRole("progressbar", { name: "Assigned capacity" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Team capacity details" })).toBeVisible();
+  await expect(page.getByText("Product and design", { exact: true })).toBeVisible();
   await expectHealthyPage(page, problems);
 });

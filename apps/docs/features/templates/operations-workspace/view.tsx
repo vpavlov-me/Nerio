@@ -44,7 +44,15 @@ import {
   EmptyStateHeader,
   EmptyStateTitle,
   Input,
-  Progress,
+  InputGroup,
+  InputGroupAddon,
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemTitle,
+  Kbd,
   Select,
   Sheet,
   SheetBody,
@@ -56,7 +64,6 @@ import {
   Sidebar,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
   Stat,
   Table,
   TableBody,
@@ -131,6 +138,12 @@ const deliveryTrend = [
   { day: "Sun", completion: 86 },
 ] as const;
 
+const teamCapacity = [
+  { team: "Product and design", people: "3 contributors", capacity: "92%", tone: "warning" },
+  { team: "Engineering", people: "4 contributors", capacity: "84%", tone: "info" },
+  { team: "Content operations", people: "2 contributors", capacity: "68%", tone: "success" },
+] as const;
+
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
 const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
 const modeOptions = modes.map((value) => ({ label: runtimeLabel(value), value }));
@@ -155,31 +168,16 @@ const workspaceCommands = [
   },
 ];
 
-const navGroups = [
-  {
-    label: "Workspace",
-    items: [
-      { label: "Overview", icon: LayoutDashboard, active: true },
-      { label: "My work", icon: Check },
-      { label: "Inbox", icon: Bell },
-    ],
-  },
-  {
-    label: "Planning",
-    items: [
-      { label: "Initiatives", icon: ListTree },
-      { label: "Active initiatives", nested: true },
-      { label: "Roadmap", icon: Rows3 },
-      { label: "Goals", icon: Sparkles },
-    ],
-  },
-  {
-    label: "Insights",
-    items: [
-      { label: "Workload", icon: Circle },
-      { label: "Reports", icon: FileText },
-    ],
-  },
+const navigationItems = [
+  { label: "Overview", icon: LayoutDashboard, active: true },
+  { label: "My work", icon: Check },
+  { label: "Inbox", icon: Bell },
+  { label: "Initiatives", icon: ListTree },
+  { label: "Active initiatives", nested: true },
+  { label: "Roadmap", icon: Rows3 },
+  { label: "Goals", icon: Sparkles },
+  { label: "Workload", icon: Circle },
+  { label: "Reports", icon: FileText },
 ] as const;
 
 function subscribeToMobileViewport(callback: () => void) {
@@ -199,30 +197,25 @@ function useMobileViewport() {
 function WorkspaceNavigation() {
   return (
     <nav className={styles["workspace-nav"]} aria-label="Workspace">
-      {navGroups.map((group) => (
-        <div className={styles["workspace-nav__group"]} key={group.label}>
-          <span>{group.label}</span>
-          {group.items.map((item) => {
-            const active = "active" in item && item.active;
-            return (
-              <Button
-                key={item.label}
-                aria-current={active ? "page" : undefined}
-                className={styles["workspace-nav__item"]}
-                data-state={active ? "active" : "inactive"}
-                data-nested={"nested" in item && item.nested ? "true" : undefined}
-                leadingIcon={"icon" in item ? item.icon : undefined}
-                nativeButton={false}
-                render={<span />}
-                size="sm"
-                variant={active ? "secondary" : "ghost"}
-              >
-                {item.label}
-              </Button>
-            );
-          })}
-        </div>
-      ))}
+      {navigationItems.map((item) => {
+        const active = "active" in item && item.active;
+        return (
+          <Button
+            key={item.label}
+            aria-current={active ? "page" : undefined}
+            className={styles["workspace-nav__item"]}
+            data-state={active ? "active" : "inactive"}
+            data-nested={"nested" in item && item.nested ? "true" : undefined}
+            leadingIcon={"icon" in item ? item.icon : undefined}
+            nativeButton={false}
+            render={<span />}
+            size="sm"
+            variant={active ? "secondary" : "ghost"}
+          >
+            {item.label}
+          </Button>
+        );
+      })}
     </nav>
   );
 }
@@ -267,6 +260,24 @@ function OperationsWorkspace() {
     document.documentElement.setAttribute("dir", direction);
   }, [direction]);
 
+  React.useEffect(() => {
+    const openCommandPalette = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (
+        !(event.metaKey || event.ctrlKey) ||
+        event.key.toLowerCase() !== "k" ||
+        target?.matches("input, textarea, [contenteditable='true']")
+      ) {
+        return;
+      }
+      event.preventDefault();
+      setCommandOpen(true);
+    };
+
+    window.addEventListener("keydown", openCommandPalette);
+    return () => window.removeEventListener("keydown", openCommandPalette);
+  }, []);
+
   const filteredInitiatives = React.useMemo(
     () =>
       initiatives.filter((initiative) => {
@@ -307,11 +318,10 @@ function OperationsWorkspace() {
         <Sidebar aria-label="Workspace sidebar">
           <SidebarHeader>
             <div className={styles["workspace-brand"]}>
-              <span aria-hidden />
-              <div>
-                <strong>Nerio Workspace</strong>
-                <small>Product operations</small>
-              </div>
+              <span aria-hidden>
+                <Icon icon={Sparkles} />
+              </span>
+              <strong>Nerio Workspace</strong>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -324,8 +334,8 @@ function OperationsWorkspace() {
       <SidebarInset className={styles["workspace-main"]} id="overview">
         <header className={styles["workspace-topbar"]}>
           <div className={styles["workspace-title"]}>
-            <div className={styles["workspace-navigation-trigger"]}>
-              {isMobile ? (
+            {isMobile ? (
+              <div className={styles["workspace-navigation-trigger"]}>
                 <Sheet>
                   <Tooltip label="Open workspace navigation">
                     <SheetTrigger
@@ -349,10 +359,8 @@ function OperationsWorkspace() {
                     </SheetBody>
                   </SheetContent>
                 </Sheet>
-              ) : (
-                <SidebarTrigger label="Toggle workspace sidebar" />
-              )}
-            </div>
+              </div>
+            ) : null}
             <Badge tone="info">Overview</Badge>
             <h1>Operations overview</h1>
             <p>
@@ -371,7 +379,7 @@ function OperationsWorkspace() {
                 <Button
                   aria-label="Search workspace"
                   icon={Search}
-                  tooltip="Search workspace"
+                  tooltip="Search workspace (⌘K)"
                   variant="secondary"
                 />
               }
@@ -411,6 +419,17 @@ function OperationsWorkspace() {
                     </CommandItem>
                   )}
                 </CommandList>
+                <footer className={styles["command-footer"]}>
+                  <span>
+                    <Kbd aria-hidden>↑↓</Kbd> Navigate
+                  </span>
+                  <span>
+                    <Kbd aria-hidden>↵</Kbd> Select
+                  </span>
+                  <span>
+                    <Kbd aria-hidden>Esc</Kbd> Close
+                  </span>
+                </footer>
               </Command>
             </Dialog>
             <Sheet>
@@ -484,13 +503,18 @@ function OperationsWorkspace() {
         </header>
 
         <section className={styles["workspace-controls"]}>
-          <Input
-            aria-label="Search initiatives"
-            value={query}
-            onChange={(event) => setQuery(event.currentTarget.value)}
-            placeholder="Search initiatives"
-            type="search"
-          />
+          <InputGroup>
+            <InputGroupAddon aria-hidden placement="start">
+              <Icon icon={Search} />
+            </InputGroupAddon>
+            <Input
+              aria-label="Search initiatives"
+              value={query}
+              onChange={(event) => setQuery(event.currentTarget.value)}
+              placeholder="Search initiatives"
+              type="search"
+            />
+          </InputGroup>
           <Tabs
             className={styles["status-tabs"]}
             onValueChange={(value) => {
@@ -595,15 +619,31 @@ function OperationsWorkspace() {
             <div className={styles["panel-heading"]}>
               <div>
                 <h2>Team capacity</h2>
-                <p>People assigned across active delivery work.</p>
+                <p>Capacity by team across active delivery work.</p>
               </div>
             </div>
             <div aria-label="Six of nine contributors" className={styles["team-list"]} role="group">
               {avatarPreviewAssets.map((avatar) => (
-                <Avatar key={avatar.name} {...avatar} size="sm" />
+                <Avatar key={avatar.name} {...avatar} />
               ))}
             </div>
-            <Progress label="Assigned capacity" value={82} valueLabel="82%" />
+            <ItemGroup
+              aria-label="Team capacity details"
+              className={styles["capacity-list"]}
+              role="group"
+            >
+              {teamCapacity.map((team) => (
+                <Item key={team.team} size="sm">
+                  <ItemContent>
+                    <ItemTitle>{team.team}</ItemTitle>
+                    <ItemDescription>{team.people}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions>
+                    <Badge tone={team.tone}>{team.capacity}</Badge>
+                  </ItemActions>
+                </Item>
+              ))}
+            </ItemGroup>
           </Card>
 
           <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="initiatives">
