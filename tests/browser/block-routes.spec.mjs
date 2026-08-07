@@ -64,6 +64,20 @@ test("derives the public screenshot gallery and same-origin Views from one catal
       }),
     )
     .toBe(1);
+  await page.getByRole("button", { name: "Open documentation navigation" }).click();
+  const mobileNavigation = page.getByRole("navigation", { name: "Mobile documentation" });
+  await expect(mobileNavigation.getByRole("link", { name: "Blocks" })).toHaveAttribute(
+    "href",
+    "/blocks",
+  );
+  await expect(mobileNavigation.getByRole("link", { name: "Templates" })).toHaveAttribute(
+    "href",
+    "/templates",
+  );
+  await expect(mobileNavigation.getByRole("link", { name: "Playground" })).toHaveAttribute(
+    "href",
+    "/playground",
+  );
 
   expect([...requestedHosts]).not.toContain("nerio-demo.vercel.app");
   expect(problems).toEqual([]);

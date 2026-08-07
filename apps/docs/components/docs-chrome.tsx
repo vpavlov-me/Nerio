@@ -396,9 +396,27 @@ function getAdjacentDocs(pathname: string) {
   };
 }
 
-function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
+function MobileDocumentationNavigation({
+  pathname,
+  showPreviewSurfaces,
+}: {
+  pathname: string;
+  showPreviewSurfaces: boolean;
+}) {
   const [open, setOpen] = React.useState(false);
-  const navigationGroups = navGroups;
+  const navigationGroups = showPreviewSurfaces
+    ? [
+        ...navGroups,
+        {
+          title: "Preview",
+          items: [
+            { href: "/blocks", label: "Blocks", icon: Boxes },
+            { href: "/templates", label: "Templates", icon: ListTree },
+            { href: "/playground", label: "Playground", icon: Wrench },
+          ],
+        },
+      ]
+    : navGroups;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -786,7 +804,10 @@ export function DocsChrome({
             <Badge tone="neutral">{version}</Badge>
           </div>
 
-          <MobileDocumentationNavigation pathname={pathname} />
+          <MobileDocumentationNavigation
+            pathname={pathname}
+            showPreviewSurfaces={showPreviewSurfaces}
+          />
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
