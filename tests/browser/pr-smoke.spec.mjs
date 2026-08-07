@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openMobilePreviewSettings } from "./helpers/template-preview-settings.mjs";
 
 const healthStabilityWindowMs = 250;
 const workspaceRoute = "/views/operations-workspace";
@@ -613,10 +614,13 @@ test("shows a rich Card example with stronger external than internal spacing", a
   const problems = monitorPage(page);
   await page.goto("/docs/components/card");
 
-  const card = page.getByRole("region", { name: "card preview" }).getByRole("article");
+  const card = page.getByRole("region", { name: "card preview" }).locator('[data-slot="card"]');
   await expect(card.locator('[data-slot="card-visual"] img')).toBeVisible();
-  await expect(card.getByRole("heading", { name: "Design system rollout" })).toBeVisible();
-  await expect(card.locator('[data-slot="card-description"]')).toBeVisible();
+  const title = card.locator('[data-slot="card-title"]');
+  await expect(title).toHaveText("Design system rollout");
+  await expect(title).toHaveJSProperty("tagName", "DIV");
+  await expect(title).toHaveCSS("font-size", "16px");
+  await expect(card.locator('[data-slot="card-description"]')).toHaveCSS("font-size", "14px");
   await expect(card.locator('[data-slot="card-content"]')).toBeVisible();
   await expect(card.getByRole("button", { name: "Open workspace" })).toHaveAttribute(
     "data-variant",
@@ -633,9 +637,17 @@ test("preserves RTL and reduced motion in a product composition", async ({ page 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 390, height: 720 });
   await page.goto(workspaceRoute);
-  await page.getByRole("combobox", { name: "Direction" }).click();
+  const previewSettings = await openMobilePreviewSettings(page);
+  await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
+  await expect(previewSettings).toBeHidden();
+  await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-direction",
+    "rtl",
+  );
   expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(
     true,
   );

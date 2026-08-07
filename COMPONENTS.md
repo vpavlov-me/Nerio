@@ -112,19 +112,19 @@ approved component.
 
 ### Overlays
 
-| Component     | Status      | Package               | Notes                                                                                                                                                     |
-| ------------- | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dialog        | stable-core | `@nerio-ui/ui/client` | Viewport-bounded modal primitive with internally scrolling body, title, description, localizable close, controlled state, ref, and Base UI focus behavior |
-| Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral close composition, safe-area layout, four sides, sizes, and shared overlay motion                                 |
-| Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                                                         |
-| Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                                                       |
-| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkeys         |
+| Component     | Status      | Package               | Notes                                                                                                                                                        |
+| ------------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Dialog        | stable-core | `@nerio-ui/ui/client` | Viewport-bounded modal primitive with a neutral accessible title, standard description, localizable close, controlled state, ref, and Base UI focus behavior |
+| Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral title and close composition, safe-area layout, four sides, sizes, and shared overlay motion                          |
+| Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                                                            |
+| Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                                                          |
+| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkeys            |
 
 ### Data display
 
 | Component | Status      | Package        | Notes                                                                                                                                                     |
 | --------- | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Card      | stable-core | `@nerio-ui/ui` | Composable surface with verified visual placement, header action, semantic root, narrow layout, focus, and heading contracts                              |
+| Card      | stable-core | `@nerio-ui/ui` | Composable surface with verified visual placement, header action, neutral default title semantics, narrow layout, focus, and deliberate heading opt-in    |
 | Badge     | stable-core | `@nerio-ui/ui` | Status and metadata                                                                                                                                       |
 | Avatar    | stable-core | `@nerio-ui/ui` | User/entity avatar with verified image transitions, aspect-ratio cropping, accessible naming, and fallback behavior                                       |
 | Table     | stable-core | `@nerio-ui/ui` | Native table anatomy with runtime-safe named keyboard-scroll opt-in, tbody-only row states, responsive and RTL overflow, and consumer-owned data behavior |

@@ -612,6 +612,8 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   await expect(card).toBeVisible();
   await expect(card).toHaveCSS("border-top-width", "1px");
   await expect(card.locator("[data-slot=card-title]").first()).toHaveCSS("font-weight", "500");
+  await expect(card.locator("[data-slot=card-title]").first()).toHaveCSS("font-size", "16px");
+  await expect(card.locator("[data-slot=card-description]").first()).toHaveCSS("font-size", "14px");
   expect(await card.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe("none");
   const lightCardBorder = await card.evaluate(
     (element) => getComputedStyle(element).borderTopColor,
@@ -938,7 +940,8 @@ test("keeps the final Tailwind component families active across public docs", as
 
   await page.goto("/docs/components/sheet");
   await page.getByRole("button", { name: "Open settings" }).click();
-  await expect(page.getByRole("heading", { name: "Workspace settings" })).toBeVisible();
+  const settingsSheet = page.getByRole("dialog", { name: "Workspace settings" });
+  await expect(settingsSheet.locator('[data-slot="sheet-title"]')).toHaveText("Workspace settings");
 
   await expectHealthyPage(page, problems);
 });

@@ -1070,11 +1070,11 @@
         "deprecations": [],
         "kind": "value",
         "name": "CardTitle",
-        "signature": "React.ForwardRefExoticComponent<CardTitleProps & React.RefAttributes<HTMLHeadingElement>>"
+        "signature": "React.ForwardRefExoticComponent<CardTitleProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
-          "export type CardTitleElement = \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export type CardTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -1083,8 +1083,8 @@
       },
       {
         "definition": [
-          "export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> { as?: CardTitleElement; }",
-          "export type CardTitleElement = \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> { as?: CardTitleElement; }",
+          "export type CardTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2597,11 +2597,11 @@
         "deprecations": [],
         "kind": "value",
         "name": "CardTitle",
-        "signature": "React.ForwardRefExoticComponent<CardTitleProps & React.RefAttributes<HTMLHeadingElement>>"
+        "signature": "React.ForwardRefExoticComponent<CardTitleProps & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
-          "export type CardTitleElement = \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export type CardTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2610,8 +2610,8 @@
       },
       {
         "definition": [
-          "export interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> { as?: CardTitleElement; }",
-          "export type CardTitleElement = \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> { as?: CardTitleElement; }",
+          "export type CardTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -3076,15 +3076,25 @@
       },
       {
         "definition": [
-          "export interface DialogProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; title: React.ReactNode; description?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string; closeLabel?: string; }",
+          "export interface DialogProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; title: React.ReactNode; titleAs?: DialogTitleElement; description?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string; closeLabel?: string; }",
           "export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
           "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";",
           "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
         ],
         "deprecations": [],
         "kind": "type",
         "name": "DialogProps",
         "signature": "DialogProps"
+      },
+      {
+        "definition": [
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogTitleElement",
+        "signature": "DialogTitleElement"
       },
       {
         "definition": [],
@@ -4440,7 +4450,26 @@
         "deprecations": [],
         "kind": "value",
         "name": "SheetTitle",
-        "signature": "React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLHeadingElement> & React.RefAttributes<HTMLHeadingElement>>"
+        "signature": "React.ForwardRefExoticComponent<SheetTitleProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export type SheetTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetTitleElement",
+        "signature": "SheetTitleElement"
+      },
+      {
+        "definition": [
+          "export interface SheetTitleProps extends React.HTMLAttributes<HTMLElement> { as?: SheetTitleElement; }",
+          "export type SheetTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SheetTitleProps",
+        "signature": "SheetTitleProps"
       },
       {
         "definition": [],
@@ -7475,7 +7504,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-afa158032a5603b28669e206db79320313f157977370b30cd85f170b9224ee34",
+            "integrity": "sha256-5e43bc647516c96b9a9e36179a955a5f1aa888d3076aac18738bbcb7e5356fe7",
             "role": "component",
             "source": "../../ui/src/components/card.tsx",
             "target": "components/card.tsx"
@@ -7827,7 +7856,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-f8ddfde0ff9f69395f95d0e09d6fdf719dc8760e5fa363e8fef926459cf7f35b",
+            "integrity": "sha256-1f9ecc5a46447512b6e7e123ec86993755b93ceafc4ac89f460b62e2c3ef9cac",
             "role": "component",
             "source": "../../ui/src/components/dialog.tsx",
             "target": "components/dialog.tsx"
@@ -9334,7 +9363,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-26fd463b5dbd4f358fad70c67d6b83001207aebe48a90ae3497f245a80f50abd",
+            "integrity": "sha256-5fb8555f04f1f9d88b1e03aa1f3654cf207467ad1bd54604bf3a503ed872abfc",
             "role": "component",
             "source": "../../ui/src/components/sheet.tsx",
             "target": "components/sheet.tsx"

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openMobilePreviewSettings } from "./helpers/template-preview-settings.mjs";
 
 const workspaceRoute = "/views/operations-workspace";
 
@@ -37,10 +38,15 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   );
   await rail.press("Enter");
 
-  const search = page.getByRole("textbox", { name: "Search projects" });
-  await search.fill("launch");
-  await expect(page.getByRole("row", { name: /Launch workspace/ })).toBeVisible();
-  await search.fill("");
+  await page.keyboard.press("Control+K");
+  const command = page.getByRole("dialog", { name: "Workspace commands" });
+  await expect(command).toBeVisible();
+  const commandInput = command.getByRole("combobox", { name: "Workspace commands" });
+  await commandInput.fill("portal");
+  await expect(command.getByRole("option", { name: /Client portal launch/ })).toBeVisible();
+  await commandInput.press("Enter");
+  await expect(command).toBeHidden();
+  await expect(page.getByRole("row", { name: /Client portal launch/ })).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.reload();
@@ -59,10 +65,14 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   await expect(sheet).toBeHidden();
   await expect(sheetTrigger).toBeFocused();
 
-  const taskTrigger = page.getByRole("button", { name: "Open task details" });
+  const taskTrigger = page.getByRole("button", { name: "View activity details" });
   await taskTrigger.click();
   const taskDialog = page.getByRole("dialog", { name: "Review launch checklist" });
   await expect(taskDialog).toBeVisible();
+  const taskTitle = taskDialog.locator('[data-slot="title"]');
+  await expect(taskTitle).toHaveJSProperty("tagName", "DIV");
+  await expect(taskTitle).toHaveCSS("font-size", "16px");
+  await expect(taskDialog.locator('[data-slot="description"]')).toHaveCSS("font-size", "14px");
   await expect
     .poll(() => taskDialog.evaluate((element) => element.contains(document.activeElement)))
     .toBe(true);
@@ -70,7 +80,7 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   await expect(taskDialog).toBeHidden();
   await expect(taskTrigger).toBeFocused();
 
-  const table = page.getByRole("region", { name: "Workspace projects" });
+  const table = page.getByRole("region", { name: "Workspace initiatives" });
   await table.focus();
   if (browserName === "webkit") {
     await table.evaluate((element) => {
@@ -99,9 +109,28 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   await page.setViewportSize({ width: 390, height: 720 });
   await page.goto(workspaceRoute);
 
-  await page.getByRole("combobox", { name: "Direction" }).click();
+  const previewSettings = await openMobilePreviewSettings(page);
+  const sheetTitle = previewSettings.locator('[data-slot="sheet-title"]');
+  await expect(sheetTitle).toHaveJSProperty("tagName", "DIV");
+  await expect(sheetTitle).toHaveCSS("font-size", "16px");
+  await expect(previewSettings.locator('[data-slot="sheet-description"]')).toHaveCSS(
+    "font-size",
+    "14px",
+  );
+  await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
+  await expect(previewSettings).toBeHidden();
+  await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-direction",
+    "rtl",
+  );
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-side",
+    "right",
+  );
 
   const trigger = page.getByRole("button", { name: "Open workspace navigation" });
   await trigger.click();
@@ -112,7 +141,7 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   expect(bounds.y + bounds.height).toBeLessThanOrEqual(721);
   await page.keyboard.press("Escape");
 
-  const create = page.getByRole("button", { name: "Create project" });
+  const create = page.getByRole("button", { name: "New initiative" });
   await create.click();
   const toast = page.locator(".n-toast--managed");
   await expect(toast).toHaveCount(1);

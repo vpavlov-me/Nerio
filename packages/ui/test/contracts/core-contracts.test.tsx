@@ -15,6 +15,7 @@ import {
   Card,
   CardAction,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
   CardVisual,
@@ -1028,8 +1029,8 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("visual-card")).toHaveClass(
       "[&:is(a)]:duration-(--n-motion-hover-duration)",
     );
-    expect(screen.getByRole("heading", { name: "Projects" })).toHaveClass(
-      "text-(length:--n-font-size-md)",
+    expect(screen.getByText("Projects")).toHaveClass(
+      "text-(length:--n-font-size-lg)",
       "font-(--n-font-weight-medium)",
     );
     expect(screen.getByTestId("visual-avatar")).toHaveClass("border-(--n-avatar-border)");
@@ -1299,6 +1300,7 @@ describe("Core static contracts", () => {
         <CardHeader>
           <div>
             <CardTitle>Workspace</CardTitle>
+            <CardDescription>Current delivery context</CardDescription>
           </div>
           <CardAction>Active</CardAction>
         </CardHeader>
@@ -1308,7 +1310,12 @@ describe("Core static contracts", () => {
     expect(screen.getByText("Workspace icon")).toHaveAttribute("data-slot", "card-visual");
     expect(screen.getByText("Workspace icon")).toHaveAttribute("data-placement", "inset");
     expect(screen.getByText("Active")).toHaveAttribute("data-slot", "card-action");
-    expect(screen.getByText("Workspace")).toHaveAttribute("data-slot", "card-title");
+    const title = screen.getByText("Workspace");
+    expect(title).toHaveAttribute("data-slot", "card-title");
+    expect(title.tagName).toBe("DIV");
+    expect(screen.getByText("Current delivery context")).toHaveClass(
+      "text-(length:--n-font-size-md)",
+    );
   });
 
   it("supports a bleed CardVisual while protecting Card-owned anatomy", () => {
@@ -1332,6 +1339,8 @@ describe("Core static contracts", () => {
     expect(source).toContain(
       "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
+    expect(source).not.toContain("[&>div:not([data-slot=card-action])]");
+    expect(source).toContain("[&>div:has(>[data-slot=card-title])]:gap-(--n-card-section-gap)");
     expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");
   });
 
@@ -3880,7 +3889,13 @@ describe("Core interactive action contracts", () => {
 
   it("keeps Dialog close anatomy truthful and its accessible name localizable", () => {
     render(
-      <Dialog defaultOpen closeLabel="Close workspace dialog" title="Workspace" trigger="Open">
+      <Dialog
+        defaultOpen
+        closeLabel="Close workspace dialog"
+        description="Configure workspace defaults."
+        title="Workspace"
+        trigger="Open"
+      >
         Dialog content
         <DialogFooter>
           <Button variant="secondary">Cancel</Button>
@@ -3893,6 +3908,12 @@ describe("Core interactive action contracts", () => {
     expect(close).toHaveAttribute("data-slot", "close");
     expect(close).toHaveAttribute("data-variant", "secondary");
     expect(close).toHaveAttribute("data-size", "sm");
+    const title = screen.getByText("Workspace");
+    expect(title.tagName).toBe("DIV");
+    expect(title).toHaveClass("text-(length:--n-font-size-lg)");
+    expect(screen.getByText("Configure workspace defaults.")).toHaveClass(
+      "text-(length:--n-font-size-md)",
+    );
     expect(document.querySelector('[data-slot="footer"]')).toHaveClass(
       "flex",
       "flex-wrap",
@@ -3946,10 +3967,13 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-size", "sm");
     expect(screen.getByTestId("sheet-header")).toHaveAttribute("data-slot", "sheet-header");
     expect(screen.getByTestId("sheet-title")).toHaveAttribute("data-slot", "sheet-title");
+    expect(screen.getByTestId("sheet-title").tagName).toBe("DIV");
+    expect(screen.getByTestId("sheet-title")).toHaveClass("text-(length:--n-font-size-lg)");
     expect(screen.getByTestId("sheet-description")).toHaveAttribute(
       "data-slot",
       "sheet-description",
     );
+    expect(screen.getByTestId("sheet-description")).toHaveClass("text-(length:--n-font-size-md)");
     expect(screen.getByTestId("sheet-body")).toHaveAttribute("data-slot", "sheet-body");
     expect(screen.getByTestId("sheet-footer")).toHaveAttribute("data-slot", "sheet-footer");
   });

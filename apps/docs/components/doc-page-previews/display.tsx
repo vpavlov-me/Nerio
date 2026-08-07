@@ -124,7 +124,7 @@ export function DisplayPreview({ kind, snippet }: PreviewProps) {
         </Alert>
       ) : null}
       {kind === "card" ? (
-        <Card as="article" className="preview-card">
+        <Card as="div" className="preview-card">
           <CardVisual placement="bleed">
             <img
               className="preview-card-image"
@@ -133,7 +133,7 @@ export function DisplayPreview({ kind, snippet }: PreviewProps) {
             />
           </CardVisual>
           <CardHeader>
-            <CardTitle as="h2">Design system rollout</CardTitle>
+            <CardTitle>Design system rollout</CardTitle>
             <CardDescription>
               Bring components, owners, and release milestones into one shared workspace.
             </CardDescription>

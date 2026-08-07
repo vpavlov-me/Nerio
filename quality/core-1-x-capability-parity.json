@@ -8,11 +8,11 @@
     "coreVersion": "1.0.0-beta.1",
     "baseUiVersion": "1.6.0",
     "componentCatalogSchemaVersion": 1,
-    "componentCatalogSha256": "5b1a7d4ffda532bb772fa7ee1cbdc27dd39d7c562d230a20f2a6bb92853adab6",
+    "componentCatalogSha256": "a955f4432b80b6a13e1d30591d591c26ee67eac3c91f4d649e6232f447fdffd6",
     "registrySchemaVersion": "1.1.0",
     "registryItemCount": 46,
-    "registryManifestSha256": "00643d6e8039a2a1e31da24e66d9d94de5d864329cd7a6506181a7cae2641ec1",
-    "publicApiSnapshotSha256": "c4bb0b0193495ad5c4b7531eb199bc2c8fdd2af3cafbc892d54a03cdd7325d8c"
+    "registryManifestSha256": "ef7d44ca6e431238c10de1c46309a5a3040e06a93ef0f50c30c414cf264f3d88",
+    "publicApiSnapshotSha256": "7f1b76d9a9e7f224fee83cff62e64a3aa7ed0d0420160eb7d8ba579e518870e9"
   },
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
