@@ -2,14 +2,7 @@
 
 import * as React from "react";
 import { densities, modes, themes } from "@nerio-ui/tokens";
-import {
-  Icon,
-  Kbd,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
-} from "@nerio-ui/ui";
+import { Icon, SidebarContent, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
 import {
   Bell,
   Check,
@@ -76,48 +69,48 @@ import {
 } from "../../../lib/appearance";
 import styles from "./view.module.css";
 
-const projects = [
+const initiatives = [
   {
-    name: "Launch workspace",
+    name: "Client portal launch",
     owner: "Mira Chen",
-    status: "Active",
+    status: "On track",
     progress: 78,
-    updated: "12 min ago",
+    updated: "Today",
   },
   {
-    name: "Content library",
+    name: "Reporting migration",
     owner: "Alex Morgan",
-    status: "Review",
+    status: "At risk",
     progress: 52,
-    updated: "38 min ago",
+    updated: "Tomorrow",
   },
   {
-    name: "Team rituals",
+    name: "Mobile onboarding",
     owner: "Sam Taylor",
-    status: "Draft",
+    status: "In review",
     progress: 34,
-    updated: "1 hr ago",
+    updated: "Aug 14",
   },
   {
-    name: "Research archive",
+    name: "Help center refresh",
     owner: "Jordan Lee",
-    status: "Active",
+    status: "Planned",
     progress: 91,
-    updated: "Yesterday",
+    updated: "Aug 18",
   },
 ];
 
 const activity = [
-  ["Mira updated the project brief", "Launch workspace", "12 minutes ago"],
-  ["Alex added three collection notes", "Content library", "38 minutes ago"],
-  ["Sam resolved a settings task", "Team rituals", "1 hour ago"],
-  ["Jordan shared an analytics snapshot", "Research archive", "Yesterday"],
+  ["Mira confirmed the launch checklist", "Client portal launch", "12 minutes ago"],
+  ["Alex flagged a reporting dependency", "Reporting migration", "38 minutes ago"],
+  ["Sam requested onboarding review", "Mobile onboarding", "1 hour ago"],
+  ["Jordan updated the content plan", "Help center refresh", "Yesterday"],
 ];
 
 const deliverySignals = [
-  ["Launch readiness", "14 of 18 tasks complete", 78],
-  ["Content review", "11 of 16 entries approved", 69],
-  ["Research synthesis", "9 of 10 notes categorized", 90],
+  ["Client portal launch", "14 of 18 milestones complete", 78],
+  ["Reporting migration", "11 of 16 dependencies cleared", 69],
+  ["Mobile onboarding", "9 of 10 flows approved", 90],
 ] as const;
 
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
@@ -127,18 +120,19 @@ const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), v
 
 const statusOptions = [
   { label: "All statuses", value: "all" },
-  { label: "Active", value: "Active" },
-  { label: "Review", value: "Review" },
-  { label: "Draft", value: "Draft" },
+  { label: "On track", value: "On track" },
+  { label: "At risk", value: "At risk" },
+  { label: "In review", value: "In review" },
+  { label: "Planned", value: "Planned" },
 ];
 
 const workspaceCommands = [
   {
-    value: "project-filters",
-    label: "Project filters",
+    value: "initiative-filters",
+    label: "Initiative filters",
     items: [
-      { value: "show-all", label: "Show all projects", keywords: ["reset", "filter"] },
-      { value: "show-active", label: "Show active projects", keywords: ["status", "filter"] },
+      { value: "show-all", label: "Show all initiatives", keywords: ["reset", "filter"] },
+      { value: "show-risk", label: "Show initiatives at risk", keywords: ["status", "filter"] },
     ],
   },
   {
@@ -151,11 +145,19 @@ const workspaceCommands = [
   },
 ];
 
-const navItems = [
-  ["Overview", LayoutDashboard],
-  ["Projects", ListTree],
-  ["Activity", Bell],
-  ["Settings", Settings],
+const navGroups = [
+  {
+    label: "Workspace",
+    items: [["Overview", LayoutDashboard, "#overview"]] as const,
+  },
+  {
+    label: "Operations",
+    items: [
+      ["Delivery health", Check, "#delivery-health"],
+      ["Initiatives", ListTree, "#initiatives"],
+      ["Activity", Bell, "#activity"],
+    ] as const,
+  },
 ] as const;
 
 function subscribeToMobileViewport(callback: () => void) {
@@ -175,18 +177,28 @@ function useMobileViewport() {
 function WorkspaceNavigation() {
   return (
     <nav className={styles["workspace-nav"]} aria-label="Workspace">
-      {navItems.map(([item, icon], index) => (
-        <Button
-          key={item}
-          aria-current={index === 0 ? "page" : undefined}
-          className={styles["workspace-nav__item"]}
-          data-state={index === 0 ? "active" : "inactive"}
-          leadingIcon={icon}
-          size="sm"
-          variant={index === 0 ? "secondary" : "ghost"}
-        >
-          {item}
-        </Button>
+      {navGroups.map((group, groupIndex) => (
+        <div className={styles["workspace-nav__group"]} key={group.label}>
+          <span>{group.label}</span>
+          {group.items.map(([item, icon, href], itemIndex) => {
+            const active = groupIndex === 0 && itemIndex === 0;
+            return (
+              <Button
+                key={item}
+                aria-current={active ? "page" : undefined}
+                className={styles["workspace-nav__item"]}
+                data-state={active ? "active" : "inactive"}
+                leadingIcon={icon}
+                nativeButton={false}
+                render={<a href={href} />}
+                size="sm"
+                variant={active ? "secondary" : "ghost"}
+              >
+                {item}
+              </Button>
+            );
+          })}
+        </div>
       ))}
     </nav>
   );
@@ -234,11 +246,11 @@ function OperationsWorkspace() {
     document.documentElement.setAttribute("dir", direction);
   }, [direction]);
 
-  const filteredProjects = React.useMemo(
+  const filteredInitiatives = React.useMemo(
     () =>
-      projects.filter((project) => {
-        const matchesQuery = project.name.toLowerCase().includes(query.toLowerCase());
-        const matchesStatus = status === "all" || project.status === status;
+      initiatives.filter((initiative) => {
+        const matchesQuery = initiative.name.toLowerCase().includes(query.toLowerCase());
+        const matchesStatus = status === "all" || initiative.status === status;
         return matchesQuery && matchesStatus;
       }),
     [query, status],
@@ -275,27 +287,18 @@ function OperationsWorkspace() {
               <span aria-hidden />
               <div>
                 <strong>Nerio Workspace</strong>
-                <small>Universal product workspace</small>
+                <small>Product operations</small>
               </div>
             </div>
           </SidebarHeader>
           <SidebarContent>
             <WorkspaceNavigation />
           </SidebarContent>
-          <SidebarFooter>
-            <Card className={styles["workspace-compact-preview"]}>
-              <Badge>Compact density</Badge>
-              <p>Switch density to preview how the same UI tightens for operational screens.</p>
-              <Button size="sm" variant="secondary" onClick={() => setDensity("compact")}>
-                Use compact
-              </Button>
-            </Card>
-          </SidebarFooter>
           <SidebarRail label="Toggle workspace sidebar" />
         </Sidebar>
       ) : null}
 
-      <SidebarInset className={styles["workspace-main"]}>
+      <SidebarInset className={styles["workspace-main"]} id="overview">
         <header className={styles["workspace-topbar"]}>
           <div className={styles["workspace-title"]}>
             <div className={styles["workspace-navigation-trigger"]}>
@@ -328,10 +331,10 @@ function OperationsWorkspace() {
               )}
             </div>
             <Badge tone="info">Overview</Badge>
-            <h1>Product operations without a vertical bias</h1>
+            <h1>Operations overview</h1>
             <p>
-              Track projects, collections, collaborators, activity, loading states, and recovery
-              states in one adaptable product surface.
+              Monitor delivery health, initiative owners, blockers, and upcoming milestones across
+              one focused workspace.
             </p>
           </div>
           <div className={styles["workspace-actions"]}>
@@ -357,19 +360,18 @@ function OperationsWorkspace() {
                       value={item.value}
                       disabled={item.disabled}
                       description={
-                        item.value === "show-active"
-                          ? "Limit this workspace view to active projects across every team"
+                        item.value === "show-risk"
+                          ? "Limit this workspace view to initiatives that need attention"
                           : undefined
                       }
-                      leading={item.value === "show-active" ? <Icon icon={Check} /> : undefined}
+                      leading={item.value === "show-risk" ? <Icon icon={Check} /> : undefined}
                       metadata={item.value === "compact" ? "Display" : undefined}
-                      shortcut={item.value === "show-all" ? <Kbd aria-hidden>G A</Kbd> : undefined}
                       onSelect={(value) => {
                         if (value === "show-all") {
                           setQuery("");
                           setStatus("all");
                         }
-                        if (value === "show-active") setStatus("Active");
+                        if (value === "show-risk") setStatus("At risk");
                         if (value === "compact") setDensity("compact");
                       }}
                     >
@@ -379,66 +381,126 @@ function OperationsWorkspace() {
                 </CommandList>
               </Command>
             </Popover>
+            <Sheet>
+              <Tooltip label="Open preview settings">
+                <SheetTrigger
+                  render={
+                    <Button
+                      aria-label="Open preview settings"
+                      icon={Settings}
+                      tooltip={false}
+                      variant="secondary"
+                    />
+                  }
+                />
+              </Tooltip>
+              <SheetContent side="right" size="sm">
+                <SheetHeader>
+                  <SheetTitle>Preview settings</SheetTitle>
+                  <SheetDescription>
+                    Inspect the same static workspace across supported runtime axes and data states.
+                  </SheetDescription>
+                </SheetHeader>
+                <SheetBody>
+                  <div className={styles["preview-settings"]}>
+                    <Select
+                      label="Theme"
+                      value={theme}
+                      onValueChange={setTheme}
+                      options={themeOptions}
+                    />
+                    <Select
+                      label="Mode"
+                      value={mode}
+                      onValueChange={setMode}
+                      options={modeOptions}
+                    />
+                    <Select
+                      label="Density"
+                      value={density}
+                      onValueChange={setDensity}
+                      options={densityOptions}
+                    />
+                    <Select
+                      label="Direction"
+                      value={direction}
+                      onValueChange={setDirection}
+                      options={[
+                        { label: "Left to right", value: "ltr" },
+                        { label: "Right to left", value: "rtl" },
+                      ]}
+                    />
+                    <fieldset className={styles["preview-state-control"]}>
+                      <legend>Initiative state</legend>
+                      <div>
+                        {(["ready", "loading", "error", "success"] as const).map((value) => (
+                          <Button
+                            key={value}
+                            aria-pressed={workspaceState === value}
+                            size="sm"
+                            variant={workspaceState === value ? "primary" : "secondary"}
+                            onClick={() => setWorkspaceState(value)}
+                          >
+                            {runtimeLabel(value)}
+                          </Button>
+                        ))}
+                      </div>
+                    </fieldset>
+                    <Alert tone="info" title="Static preview">
+                      Filters and state controls stay local and never change the sample data source.
+                    </Alert>
+                  </div>
+                </SheetBody>
+              </SheetContent>
+            </Sheet>
             <Button
               leadingIcon={Sparkles}
               onClick={() => {
                 setWorkspaceState("ready");
                 toasts.add({
-                  title: "Project draft created",
-                  description: "The new workspace item is ready to configure.",
+                  title: "New initiative action",
+                  description: "Connect this entry point to your product's creation flow.",
                   data: { tone: "success" },
                 });
               }}
             >
-              Create project
+              New initiative
             </Button>
           </div>
         </header>
 
         <section className={styles["workspace-controls"]}>
-          <Field label="Search projects">
+          <Field label="Search initiatives">
             <Input
               value={query}
               onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder="Search by project name"
+              placeholder="Search by initiative name"
             />
           </Field>
           <Select label="Status" value={status} onValueChange={setStatus} options={statusOptions} />
-          <Select label="Theme" value={theme} onValueChange={setTheme} options={themeOptions} />
-          <Select
-            label="Direction"
-            value={direction}
-            onValueChange={setDirection}
-            options={[
-              { label: "Left to right", value: "ltr" },
-              { label: "Right to left", value: "rtl" },
-            ]}
-          />
-          <Select label="Mode" value={mode} onValueChange={setMode} options={modeOptions} />
-          <Select
-            label="Density"
-            value={density}
-            onValueChange={setDensity}
-            options={densityOptions}
-          />
         </section>
 
         <section className={styles["workspace-grid"]}>
           <Stat
-            label="Active projects"
+            label="Active initiatives"
             value="12"
             trend="+3 this week"
             className={styles["span-3"]}
           />
-          <Stat label="Open tasks" value="48" trend="8 due today" className={styles["span-3"]} />
-          <Stat label="Collaborators" value="9" trend="4 teams" className={styles["span-3"]} />
-          <Stat label="Collections" value="27" trend="Updated daily" className={styles["span-3"]} />
+          <Stat
+            label="Open blockers"
+            value="5"
+            trend="2 need owners"
+            className={styles["span-3"]}
+          />
+          <Stat label="Due this week" value="8" trend="3 due today" className={styles["span-3"]} />
+          <Stat label="Contributors" value="9" trend="4 teams" className={styles["span-3"]} />
 
-          <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`}>
+          <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="delivery-health">
             <div className={styles["panel-heading"]}>
               <div>
-                <h2>Delivery signals</h2>
-                <p>Progress across active product work without a domain-specific dashboard.</p>
+                <h2>Delivery health</h2>
+                <p>Progress across the highest-priority initiatives.</p>
               </div>
               <Badge tone="success">On track</Badge>
             </div>
@@ -458,8 +520,8 @@ function OperationsWorkspace() {
           <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
             <div className={styles["panel-heading"]}>
               <div>
-                <h2>Collaborators</h2>
-                <p>Shared ownership across teams.</p>
+                <h2>Team capacity</h2>
+                <p>People assigned across active delivery work.</p>
               </div>
             </div>
             <div className={styles["team-list"]}>
@@ -467,33 +529,24 @@ function OperationsWorkspace() {
                 <Avatar key={name} name={name} />
               ))}
             </div>
-            <Progress label="Weekly collaboration health" value={82} />
+            <Progress label="Assigned capacity" value={82} valueLabel="82%" />
           </Card>
 
-          <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`}>
+          <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="initiatives">
             <div className={styles["panel-heading"]}>
               <div>
-                <h2>Recent items</h2>
-                <p>Filtered by search and status controls above.</p>
-              </div>
-              <div className={styles["state-controls"]} aria-label="Preview state controls">
-                <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("loading")}>
-                  Loading
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("error")}>
-                  Error
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("success")}>
-                  Success
-                </Button>
-                <Button size="sm" variant="secondary" onClick={() => setWorkspaceState("ready")}>
-                  Ready
-                </Button>
+                <h2>Initiatives</h2>
+                <p>Filtered by the search and status controls above.</p>
               </div>
             </div>
 
             {workspaceState === "loading" ? (
-              <div className={styles["loading-stack"]} aria-label="Loading recent items">
+              <div
+                className={styles["loading-stack"]}
+                aria-label="Loading initiatives"
+                aria-live="polite"
+                role="status"
+              >
                 <Skeleton />
                 <Skeleton />
                 <Skeleton />
@@ -503,9 +556,9 @@ function OperationsWorkspace() {
             {workspaceState === "error" ? (
               <EmptyState role="alert">
                 <EmptyStateHeader>
-                  <EmptyStateTitle>Activity source unavailable</EmptyStateTitle>
+                  <EmptyStateTitle>Initiative source unavailable</EmptyStateTitle>
                   <EmptyStateDescription>
-                    Reconnect the source or retry when the workspace service is available.
+                    Reconnect the source or retry when the operations service is available.
                   </EmptyStateDescription>
                 </EmptyStateHeader>
                 <EmptyStateActions>
@@ -517,14 +570,14 @@ function OperationsWorkspace() {
             ) : null}
 
             {workspaceState === "success" ? (
-              <Alert role="status" tone="success" title="Workspace synchronized">
-                Project data is current and ready for the next review.
+              <Alert role="status" tone="success" title="Initiatives synchronized">
+                Delivery data is current and ready for the next review.
               </Alert>
             ) : null}
 
             {(workspaceState === "ready" || workspaceState === "success") &&
-            filteredProjects.length ? (
-              <TableContainer focusable aria-label="Workspace projects">
+            filteredInitiatives.length ? (
+              <TableContainer focusable aria-label="Workspace initiatives">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -536,25 +589,27 @@ function OperationsWorkspace() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredProjects.map((project) => (
-                      <TableRow key={project.name}>
-                        <TableHead scope="row">{project.name}</TableHead>
-                        <TableCell>{project.owner}</TableCell>
+                    {filteredInitiatives.map((initiative) => (
+                      <TableRow key={initiative.name}>
+                        <TableHead scope="row">{initiative.name}</TableHead>
+                        <TableCell>{initiative.owner}</TableCell>
                         <TableCell>
                           <Badge
                             tone={
-                              project.status === "Active"
+                              initiative.status === "On track"
                                 ? "success"
-                                : project.status === "Review"
-                                  ? "info"
-                                  : "neutral"
+                                : initiative.status === "At risk"
+                                  ? "warning"
+                                  : initiative.status === "In review"
+                                    ? "info"
+                                    : "neutral"
                             }
                           >
-                            {project.status}
+                            {initiative.status}
                           </Badge>
                         </TableCell>
-                        <TableCell data-align="numeric">{project.progress}%</TableCell>
-                        <TableCell>{project.updated}</TableCell>
+                        <TableCell data-align="numeric">{initiative.progress}%</TableCell>
+                        <TableCell>{initiative.updated}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -563,10 +618,10 @@ function OperationsWorkspace() {
             ) : null}
 
             {(workspaceState === "ready" || workspaceState === "success") &&
-            !filteredProjects.length ? (
+            !filteredInitiatives.length ? (
               <EmptyState role="status" size="sm">
                 <EmptyStateHeader>
-                  <EmptyStateTitle>No matching projects</EmptyStateTitle>
+                  <EmptyStateTitle>No matching initiatives</EmptyStateTitle>
                   <EmptyStateDescription>
                     Clear search or choose another status to bring items back.
                   </EmptyStateDescription>
@@ -587,11 +642,11 @@ function OperationsWorkspace() {
             ) : null}
           </Card>
 
-          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`}>
+          <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="activity">
             <div className={styles["panel-heading"]}>
               <div>
-                <h2>Task feed</h2>
-                <p>Recent workspace movement.</p>
+                <h2>Recent activity</h2>
+                <p>Latest delivery updates across teams.</p>
               </div>
             </div>
             <Dialog

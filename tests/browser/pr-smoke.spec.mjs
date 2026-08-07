@@ -633,8 +633,11 @@ test("preserves RTL and reduced motion in a product composition", async ({ page 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 390, height: 720 });
   await page.goto(workspaceRoute);
-  await page.getByRole("combobox", { name: "Direction" }).click();
+  await page.getByRole("button", { name: "Open preview settings" }).click();
+  const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
+  await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(
     true,

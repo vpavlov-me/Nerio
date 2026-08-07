@@ -25,7 +25,7 @@ async function prepareTemplate(page, viewport) {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Product operations without a vertical bias",
+      name: "Operations overview",
     }),
   ).toBeVisible();
 }

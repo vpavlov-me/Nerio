@@ -37,9 +37,9 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   );
   await rail.press("Enter");
 
-  const search = page.getByRole("textbox", { name: "Search projects" });
-  await search.fill("launch");
-  await expect(page.getByRole("row", { name: /Launch workspace/ })).toBeVisible();
+  const search = page.getByRole("textbox", { name: "Search initiatives" });
+  await search.fill("portal");
+  await expect(page.getByRole("row", { name: /Client portal launch/ })).toBeVisible();
   await search.fill("");
 
   await page.setViewportSize({ width: 390, height: 844 });
@@ -70,7 +70,7 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   await expect(taskDialog).toBeHidden();
   await expect(taskTrigger).toBeFocused();
 
-  const table = page.getByRole("region", { name: "Workspace projects" });
+  const table = page.getByRole("region", { name: "Workspace initiatives" });
   await table.focus();
   if (browserName === "webkit") {
     await table.evaluate((element) => {
@@ -99,8 +99,11 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   await page.setViewportSize({ width: 390, height: 720 });
   await page.goto(workspaceRoute);
 
-  await page.getByRole("combobox", { name: "Direction" }).click();
+  await page.getByRole("button", { name: "Open preview settings" }).click();
+  const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
+  await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
 
   const trigger = page.getByRole("button", { name: "Open workspace navigation" });
@@ -112,7 +115,7 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   expect(bounds.y + bounds.height).toBeLessThanOrEqual(721);
   await page.keyboard.press("Escape");
 
-  const create = page.getByRole("button", { name: "Create project" });
+  const create = page.getByRole("button", { name: "New initiative" });
   await create.click();
   const toast = page.locator(".n-toast--managed");
   await expect(toast).toHaveCount(1);

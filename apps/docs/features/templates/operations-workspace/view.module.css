@@ -25,13 +25,13 @@
 .workspace-brand > span {
   background: var(--n-color-action-primary);
   border-radius: var(--n-radius-md);
-  block-size: 1.75rem;
-  inline-size: 1.75rem;
+  block-size: var(--n-space-8);
+  inline-size: var(--n-space-8);
 }
 
 .workspace-brand div {
   display: grid;
-  gap: 0.125rem;
+  gap: var(--n-space-0-5);
   min-inline-size: 0;
 }
 
@@ -47,7 +47,19 @@
 .workspace-nav {
   align-content: start;
   display: grid;
+  gap: var(--n-space-5);
+}
+
+.workspace-nav__group {
+  display: grid;
   gap: var(--n-space-1);
+}
+
+.workspace-nav__group > span {
+  color: var(--n-color-text-tertiary);
+  font-size: var(--n-font-size-xs);
+  font-weight: var(--n-font-weight-medium);
+  padding-inline: var(--n-space-2);
 }
 
 .workspace-nav .workspace-nav__item {
@@ -56,9 +68,9 @@
 }
 
 .workspace-nav :global(.n-icon) {
-  block-size: 1rem;
+  block-size: var(--n-icon-size-md);
   color: var(--n-color-text-tertiary);
-  inline-size: 1rem;
+  inline-size: var(--n-icon-size-md);
 }
 
 .workspace-nav .workspace-nav__item[data-state="active"] {
@@ -68,17 +80,6 @@
 
 .workspace-nav .workspace-nav__item[data-state="active"] :global(.n-icon) {
   color: var(--n-color-text-primary);
-}
-
-.workspace-compact-preview {
-  display: grid;
-  gap: var(--n-space-3);
-}
-
-.workspace-compact-preview p {
-  color: var(--n-color-text-secondary);
-  font-size: var(--n-font-size-sm);
-  margin: 0;
 }
 
 .workspace-main {
@@ -118,7 +119,7 @@
   letter-spacing: 0;
   line-height: var(--n-line-height-tight);
   margin: 0;
-  max-inline-size: 18ch;
+  max-inline-size: 22ch;
 }
 
 .workspace-title p,
@@ -128,7 +129,6 @@
 }
 
 .workspace-actions,
-.state-controls,
 .workspace-controls {
   align-items: end;
   display: flex;
@@ -137,8 +137,7 @@
 }
 
 .workspace-controls {
-  background: var(--n-color-surface);
-  border: 1px solid var(--n-color-border-subtle);
+  background: var(--n-color-surface-muted);
   border-radius: var(--n-radius-lg);
   padding: var(--n-space-3);
 }
@@ -148,7 +147,37 @@
 }
 
 .workspace-controls :global(.n-field) {
-  min-inline-size: 10rem;
+  min-inline-size: 12rem;
+}
+
+.preview-settings {
+  display: grid;
+  gap: var(--n-space-4);
+}
+
+.preview-state-control {
+  border: 0;
+  display: grid;
+  gap: var(--n-space-2);
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.preview-state-control legend {
+  font-size: var(--n-font-size-sm);
+  font-weight: var(--n-font-weight-medium);
+  padding: 0;
+}
+
+.preview-state-control > div {
+  display: grid;
+  gap: var(--n-space-2);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.preview-state-control :global(.n-button) {
+  inline-size: 100%;
 }
 
 .workspace-grid {
@@ -174,6 +203,7 @@
   display: grid;
   gap: var(--n-space-4);
   min-inline-size: 0;
+  scroll-margin-block-start: var(--n-space-6);
 }
 
 .panel-heading {
@@ -229,7 +259,7 @@
 }
 
 .loading-stack :global(.n-skeleton) {
-  block-size: 3rem;
+  block-size: var(--n-space-12);
 }
 
 .activity-feed {
@@ -262,15 +292,15 @@
   background: var(--n-color-surface-muted);
   border: 1px solid var(--n-color-border-subtle);
   border-radius: var(--n-radius-full);
-  block-size: 1.5rem;
+  block-size: var(--n-space-6);
   color: var(--n-color-success);
-  inline-size: 1.5rem;
-  padding: 0.25rem;
+  inline-size: var(--n-space-6);
+  padding: var(--n-space-1);
 }
 
 .activity-item div {
   display: grid;
-  gap: 0.125rem;
+  gap: var(--n-space-0-5);
   min-inline-size: 0;
 }
 
@@ -289,7 +319,10 @@
     display: none;
   }
 
-  .span-3,
+  .span-3 {
+    grid-column: span 6;
+  }
+
   .span-4,
   .span-8 {
     grid-column: span 12;
@@ -316,9 +349,14 @@
     grid-template-columns: 1fr;
   }
 
-  .state-controls {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .workspace-actions {
+    align-items: center;
+    grid-template-columns: auto auto minmax(0, 1fr);
+  }
+
+  .workspace-actions > :last-child {
+    grid-column: 1 / -1;
+    inline-size: 100%;
   }
 
   .workspace-controls :global(.n-field) {
@@ -330,8 +368,7 @@
   }
 
   .workspace-nav {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
   .workspace-nav .workspace-nav__item {

@@ -20,15 +20,15 @@ export const templateCatalog = [
     slug: "operations-workspace",
     title: "Operations Workspace",
     description:
-      "A realistic operational workspace for projects, collaborators, activity, and delivery signals.",
+      "A focused single-page operations dashboard for delivery health, initiatives, owners, and activity.",
     category: "SaaS and operations",
     status: "Preview",
     previewRoute: "/views/operations-workspace",
     audience: "SaaS products, internal tools, admin systems, and operations teams.",
     scenarios: [
-      "Workspace overview and local navigation",
-      "Project search and status filtering",
-      "Delivery progress and collaborator context",
+      "Single-page workspace overview and anchored sidebar navigation",
+      "Initiative search and status filtering",
+      "Delivery health and team-capacity context",
       "Loading, empty, error, success, and transient feedback states",
     ],
     runtimeCoverage: [

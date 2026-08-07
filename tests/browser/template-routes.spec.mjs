@@ -76,7 +76,7 @@ test("supports direct navigation and refresh without documentation chrome", asyn
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Product operations without a vertical bias",
+      name: "Operations overview",
     }),
   ).toBeVisible();
   await expect(page.locator(".docs-header")).toHaveCount(0);
@@ -85,7 +85,7 @@ test("supports direct navigation and refresh without documentation chrome", asyn
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Product operations without a vertical bias",
+      name: "Operations overview",
     }),
   ).toBeVisible();
   await expect(page.locator(".docs-header")).toHaveCount(0);
