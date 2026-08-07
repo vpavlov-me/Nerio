@@ -12,6 +12,8 @@ This repository is the source of truth for Nerio. Read the following documents b
 - `COMPONENT_ARCHITECTURE.md` before adding props, variants, component modes, or new component responsibilities.
 - `TIERING_AND_TEMPLATE_EVOLUTION.md` before assigning a component to Core or Pro, promoting template-local code, or expanding Core to satisfy a template.
 - `docs/core-platform-primitive-coverage.md` before adding a web-platform wrapper, changing the Core 1.0 native-control boundary, or working on issues #258–#262.
+- `docs/core-1-x-capability-parity.md` before accepting, sequencing, deferring, or rejecting a
+  post-1.0 component, recipe, adapter, tooling, ecosystem, or competitor-parity proposal.
 
 ## Product constraints
 
@@ -29,14 +31,23 @@ This repository is the source of truth for Nerio. Read the following documents b
 
 ## Current roadmap focus
 
-- Current work is closing the bounded Core 1.0 platform surface before beta quality and API freeze.
-- Follow issue #152 for the executable sequence and `docs/core-platform-primitive-coverage.md` for the accepted native/component boundary.
+- Current work is completing the manual accessibility/device and beta.1 evidence gates before the
+  stable Core 1.0 sequence.
+- Follow issue #152 for the executable sequence,
+  `docs/core-platform-primitive-coverage.md` for the frozen 1.0 native/component boundary, and
+  `docs/core-1-x-capability-parity.md` for post-1.0 classification and ordering.
 - Native temporal input coverage, Slider, FileInput, Calendar, single-date DatePicker, and the
   independent Toggle primitive are approved only through issues #258–#262 and #290. Do not expand
   those slices into ranges, scheduling, uploads, parsing, ToggleGroup, Toolbar, persistence, or
   other product workflows.
 - Do not add another Core component unless the coverage matrix identifies an objective 1.0 blocker and the roadmap contains a focused issue.
 - Do not mark a component `stable-core` until it passes the full Core quality checklist.
+- Do not start #342–#370 runtime, package, Registry, token, export, or component implementation
+  before stable 1.0 (#151) unless roadmap #152 explicitly accepts a focused blocker from real
+  manual or beta evidence.
+- After #151, use the parity decision's parallel tracks. The minimum #342
+  direction/localization contract precedes direction-sensitive API merges, but the full #342 audit
+  is not a global serialization barrier.
 
 ## Product positioning
 

@@ -19,6 +19,12 @@ Nerio Core `1.0.0-beta.0` is the published public beta for the frozen Core 1.0 A
 feedback cycle, accessibility/device evidence, and every future publication remain manual and are
 governed by the roadmap and `RELEASE.md`.
 
+Post-1.0 scope is governed by
+[`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md). That decision
+classifies current coverage, native guidance, accepted Core 1.1 primitives, later candidates,
+recipes, adapters, Pro, consumer ownership, and explicit rejections. It does not authorize
+post-1.0 implementation before the stable sequence completes.
+
 ## Primary users
 
 - Product designers and engineers building modern digital products.
@@ -154,6 +160,13 @@ scheduling, upload workflows, multi-thumb sliders, parsing, time zones, and othe
 remain outside Core 1.0.
 
 Core should be strong enough to build real products without a paid license. It should not contain advanced product compositions that are better treated as Pro value.
+
+After stable 1.0, the accepted Core 1.1 primitive sequence adds direction/localization foundations,
+Accordion and Collapsible, additive compound Dialog anatomy and AlertDialog, a bounded
+single-select Combobox, SearchField, NumberField, OTPField, separate ToggleGroup and CheckboxGroup
+contracts, and complete bounded DropdownMenu anatomy. MultiSelect remains a later decision spike,
+not an approved component. The capability parity decision is authoritative when this summary and
+the detailed sequence differ.
 
 ## Pro component scope
 

@@ -21,6 +21,11 @@ Pro should save time on complex SaaS, fintech, crypto, data-rich dashboard, and 
 
 Update the catalog first, then update this matrix and every affected registry, docs, CLI, and MCP projection. Run `pnpm validate:catalog` to detect drift.
 
+Post-1.0 candidates and non-component capability decisions live in
+[`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md) and
+`quality/core-1-x-capability-parity.json`. They do not become catalog components, Registry
+identities, exports, or stable APIs until their focused implementation issues land.
+
 ## Status values
 
 - `planned`: approved for the tier, not implemented yet.
@@ -99,6 +104,11 @@ consumer or Pro responsibility.
 | Combobox / NumberField / OTPInput                                                    | Core candidates | future | Candidates only; no public API is committed.                                                                                          |
 | DateRangePicker / DateTimePicker / DatePickerWithPresets / NaturalLanguageDatePicker | Pro             | future | Product-ready date workflows.                                                                                                         |
 | GlobalSearch / EntitySearch / AdvancedSearch / CommandPalette / FilterBar            | Pro             | future | Result fetching, workflow behavior, and product-level search/filter composition.                                                      |
+
+The accepted post-1.0 decision keeps SearchField in #346 and splits NumberField into #370 because
+their semantics, values, localization, and primitive contracts differ. Bounded single-select
+Combobox remains #345. MultiSelect #349 is deferred to a Core 1.2 decision spike and is not an
+approved component.
 
 ### Overlays
 
