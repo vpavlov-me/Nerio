@@ -56,13 +56,13 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
       <BaseTooltip.Trigger delay={delay} render={children} />
       <BaseTooltip.Portal>
         <BaseTooltip.Positioner
-          className="n-tooltip-positioner z-(--n-overlay-z-index)"
+          className="n-tooltip-positioner z-(--n-overlay-floating-z-index)"
           sideOffset={10}
         >
           <BaseTooltip.Popup
             ref={ref}
             className={cn(
-              "n-tooltip-popup z-(--n-overlay-z-index) max-w-(--n-size-tooltip-max) whitespace-normal rounded-(--n-tooltip-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) px-(--n-space-3) py-(--n-space-2) text-(length:--n-font-size-xs) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)]",
+              "n-tooltip-popup z-(--n-overlay-floating-z-index) max-w-(--n-size-tooltip-max) whitespace-normal rounded-(--n-tooltip-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) px-(--n-space-3) py-(--n-space-2) text-(length:--n-font-size-xs) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)]",
               motionClasses.overlayEnter,
               className,
             )}

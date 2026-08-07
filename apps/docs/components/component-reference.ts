@@ -2436,6 +2436,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-border-focus",
       "--n-input-placeholder",
       "--n-overlay-z-index",
+      "--n-overlay-floating-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-shadow",
@@ -2560,6 +2561,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toast-stack-gap",
       "--n-toast-stack-offset",
       "--n-toast-stack-scale-step",
+      "--n-toast-stack-opacity-step",
       "--n-toast-enter-offset",
       "--n-toast-swipe-dismiss-distance",
       "--n-toast-background",
@@ -2643,7 +2645,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "href", description: "Turns the entire Card into a native anchor destination." },
       {
         title: "variant",
-        description: "default or secondary; secondary is a muted borderless surface.",
+        description: "default or secondary; secondary is a muted, flat surface.",
       },
       {
         title: "CardVisual",
@@ -2665,7 +2667,7 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     designNotes: [
       "Use Card for truly related content, not as a default wrapper for every section.",
-      "Use typography and spacing first; the default white or black surface carries only a soft elevation shadow, while secondary grouping stays flat and muted.",
+      "Use typography and spacing first; every Card keeps a subtle mode-aware border, the default surface adds soft elevation, and secondary grouping stays flat and muted.",
       "Keep the gap between visual, header, content, and footer larger than the internal title-description and action gaps.",
     ],
     related: ["Separator", "Stat", "KeyValue"],
@@ -2681,6 +2683,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-card-section-gap",
       "--n-card-radius",
       "--n-card-background",
+      "--n-card-border-width",
+      "--n-card-border-color",
       "--n-card-background-interactive-hover",
       "--n-card-background-secondary",
       "--n-card-background-secondary-hover",
@@ -3287,7 +3291,11 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "heading", description: "Grouped title and optional description." },
       { title: "title", description: "Required accessible dialog heading." },
       { title: "description", description: "Optional supporting context." },
-      { title: "body", description: "Task, decision, and action content." },
+      {
+        title: "body",
+        description:
+          "Task, decision, and action content that scrolls within the viewport boundary.",
+      },
       {
         title: "footer",
         description: "Optional action row aligned to the inline end.",
@@ -3309,6 +3317,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use a clear title, keep focus contained, and avoid opening dialogs from dialogs.",
       "Base UI handles modal focus trapping, Escape dismissal, outside dismissal, and return focus.",
       "Use open/defaultOpen/onOpenChange when state must be coordinated by the parent.",
+      "Long body content scrolls inside the bounded dialog so the title and dismissal control remain visible.",
     ],
     api: [
       { title: "trigger", description: "React node or text that opens the dialog." },
@@ -3750,6 +3759,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-popover-gap",
       "--n-popover-radius",
       "--n-overlay-z-index",
+      "--n-overlay-floating-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",
@@ -3798,6 +3808,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: [
       "--n-tooltip-radius",
       "--n-overlay-z-index",
+      "--n-overlay-floating-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",
@@ -3865,6 +3876,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-dropdown-item-gap",
       "--n-dropdown-radius",
       "--n-overlay-z-index",
+      "--n-overlay-floating-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",

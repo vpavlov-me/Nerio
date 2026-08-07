@@ -75,7 +75,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
           }
         />
         <BaseMenu.Portal>
-          <BaseMenu.Positioner className="n-popover-positioner z-(--n-overlay-z-index)">
+          <BaseMenu.Positioner className="n-popover-positioner z-(--n-overlay-floating-z-index)">
             <BaseMenu.Popup
               ref={ref}
               className={cn(

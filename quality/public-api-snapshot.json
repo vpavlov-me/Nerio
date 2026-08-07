@@ -6929,7 +6929,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -6996,7 +6996,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7054,7 +7054,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7149,7 +7149,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7233,7 +7233,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7326,7 +7326,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7383,7 +7383,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7486,7 +7486,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7509,6 +7509,8 @@
           "--n-card-section-gap",
           "--n-card-radius",
           "--n-card-background",
+          "--n-card-border-width",
+          "--n-card-border-color",
           "--n-card-background-interactive-hover",
           "--n-card-background-secondary",
           "--n-card-background-secondary-hover",
@@ -7591,7 +7593,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7670,7 +7672,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7788,6 +7790,7 @@
           "--n-popover-radius",
           "--n-popover-gap",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border-width",
           "--n-overlay-border",
@@ -7817,7 +7820,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-54629a7491a3ae8085dc406365117b7d97f6d163c4d718889a364a1ff2f4d4f4",
+            "integrity": "sha256-f8ddfde0ff9f69395f95d0e09d6fdf719dc8760e5fa363e8fef926459cf7f35b",
             "role": "component",
             "source": "../../ui/src/components/dialog.tsx",
             "target": "components/dialog.tsx"
@@ -7847,7 +7850,7 @@
             "target": "styles/overlays.css"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7870,6 +7873,7 @@
           "--n-dialog-header-margin",
           "--n-dialog-body-gap",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-backdrop",
@@ -7918,7 +7922,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-f20508b957ad17c27cbce3728b07d19ab6c5a3176140a844e161aed57f7c4eb9",
+            "integrity": "sha256-c4d91010c0aed6668e6da344fd4c62c16d582a596d3fb40ae8d58c16019336df",
             "role": "component",
             "source": "../../ui/src/components/dropdown-menu.tsx",
             "target": "components/dropdown-menu.tsx"
@@ -7954,7 +7958,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7975,6 +7979,7 @@
           "--n-dropdown-item-gap",
           "--n-dropdown-radius",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-foreground",
@@ -8040,7 +8045,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8101,7 +8106,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8133,7 +8138,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-bd9ae7fb54d669ba1f1f4cafe4a87ec33274df7cedd0a5e3c84a83358c94484d",
+            "integrity": "sha256-ebf062fa5980bf2ee5c7131731f728ad14b5a92b87f62604b495cd26c0713226",
             "role": "component",
             "source": "../../ui/src/components/file-input.tsx",
             "target": "components/file-input.tsx"
@@ -8169,7 +8174,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8199,6 +8204,7 @@
           "--n-input-disabled-background",
           "--n-input-disabled-foreground",
           "--n-file-input-button-gap",
+          "--n-file-input-divider-length",
           "--n-file-input-button-size",
           "--n-file-input-button-background",
           "--n-file-input-button-background-hover",
@@ -8239,7 +8245,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8294,7 +8300,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8355,7 +8361,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8433,7 +8439,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8497,7 +8503,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8572,7 +8578,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8628,7 +8634,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8691,7 +8697,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8749,7 +8755,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8850,7 +8856,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8905,7 +8911,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-3cddbc64a8f104f5160729bf4be0f1987578d3a1d38d7bc7bdbd9d800362f5cd",
+            "integrity": "sha256-3de23ce4ffa6743776e421b21f44842c2c577dae12a1312ce2e1a5ad1087b4c1",
             "role": "component",
             "source": "../../ui/src/components/popover.tsx",
             "target": "components/popover.tsx"
@@ -8935,7 +8941,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8956,6 +8962,7 @@
           "--n-popover-gap",
           "--n-popover-radius",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-foreground",
@@ -9009,7 +9016,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9056,7 +9063,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-1457fda604af727b8cd1de87abb6835b82e8da8aea674574503c14a1ea2df25f",
+            "integrity": "sha256-4fce00440a95379995ec17f26d6579c56a1a4030dd196fd4647a130c74c57b0b",
             "role": "component",
             "source": "../../ui/src/components/radio-group.tsx",
             "target": "components/radio-group.tsx"
@@ -9092,7 +9099,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9148,7 +9155,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-f5b88ca195865f288bc8358ae81b795e1ab7c97da710fcde30d561cab1478410",
+            "integrity": "sha256-b6aa3851dadfa2cd14cd729961b4802ce8bc62e1a837bcd612d1fafbf1e5f097",
             "role": "component",
             "source": "../../ui/src/components/select.tsx",
             "target": "components/select.tsx"
@@ -9190,7 +9197,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9233,6 +9240,7 @@
           "--n-input-disabled-background",
           "--n-input-disabled-foreground",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-shadow",
@@ -9285,7 +9293,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9349,7 +9357,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9384,6 +9392,7 @@
           "--n-motion-overlay-exit-duration",
           "--n-motion-overlay-exit-easing",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border-width",
           "--n-overlay-border",
@@ -9457,7 +9466,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9543,7 +9552,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9617,7 +9626,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9708,7 +9717,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9760,7 +9769,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9787,7 +9796,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-e6846b1c52c034eea1b542260e4a1d63b6cd50b7e033f36e60e2732e847580ca",
+            "integrity": "sha256-3cebd63b6c022efa4fb6b799ed4faeef03db3b832c802c4adb28311a1ab07438",
             "role": "component",
             "source": "../../ui/src/components/switch.tsx",
             "target": "components/switch.tsx"
@@ -9817,7 +9826,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9882,7 +9891,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9947,7 +9956,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-b68daabf5bb21ba42856c660d613d0ab4fba1c8258c4e77b471f4395fb8b319c",
+            "integrity": "sha256-e5f228270084ed9bd40bde42bb46401fbea5450bf7719fbb7a7af4023e1c7697",
             "role": "component",
             "source": "../../ui/src/components/tabs.tsx",
             "target": "components/tabs.tsx"
@@ -9977,7 +9986,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10090,7 +10099,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10140,7 +10149,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-5bf9e2c57ef454940a0c8a0a5c8a3f1c96290d8552430fa52567e3f7a529a98d",
+            "integrity": "sha256-ddb5476081dd4105017c7f573912b7eb14a2d236d9fb015816a783405e7e4257",
             "role": "component",
             "source": "../../ui/src/components/toast.tsx",
             "target": "components/toast.tsx"
@@ -10164,7 +10173,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10185,6 +10194,7 @@
           "--n-toast-stack-gap",
           "--n-toast-stack-offset",
           "--n-toast-stack-scale-step",
+          "--n-toast-stack-opacity-step",
           "--n-toast-enter-offset",
           "--n-toast-swipe-dismiss-distance",
           "--n-overlay-z-index",
@@ -10276,7 +10286,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10338,7 +10348,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-d37fe9988bd5351160d784525d71ae9945eb4c26d41a6cd1595a2f65452a41b2",
+            "integrity": "sha256-4fb563f6020a2f168a3d33dd26aa27cc3a16d363246993563c8446ddbeb26360",
             "role": "component",
             "source": "../../ui/src/components/tooltip.tsx",
             "target": "components/tooltip.tsx"
@@ -10374,7 +10384,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10392,6 +10402,7 @@
         "requiredTokens": [
           "--n-tooltip-radius",
           "--n-overlay-z-index",
+          "--n-overlay-floating-z-index",
           "--n-overlay-background",
           "--n-overlay-border",
           "--n-overlay-foreground",
@@ -10425,7 +10436,7 @@
             "target": "lib/cn.ts"
           },
           {
-            "integrity": "sha256-1773af2d0a50e5d9e75da96f5bc057bf7009b84c499f514efabe3a2e93dd805d",
+            "integrity": "sha256-242d1552a81d7412ddba53012bb141aa49c5f715ee6761211be79a8aaf20d99f",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10848,6 +10859,7 @@
     "--n-file-input-button-foreground",
     "--n-file-input-button-gap",
     "--n-file-input-button-size",
+    "--n-file-input-divider-length",
     "--n-focus-ring",
     "--n-focus-ring-inner-width",
     "--n-focus-ring-outer-width",
@@ -10866,6 +10878,8 @@
     "--n-font-size-2xl",
     "--n-font-size-2xs",
     "--n-font-size-3xl",
+    "--n-font-size-4xl",
+    "--n-font-size-5xl",
     "--n-font-size-base",
     "--n-font-size-lg",
     "--n-font-size-md",
@@ -11088,6 +11102,7 @@
     "--n-overlay-divider",
     "--n-overlay-duration",
     "--n-overlay-easing",
+    "--n-overlay-floating-z-index",
     "--n-overlay-foreground",
     "--n-overlay-foreground-muted",
     "--n-overlay-glass-background",
@@ -11394,6 +11409,7 @@
     "--n-toast-shadow",
     "--n-toast-stack-gap",
     "--n-toast-stack-offset",
+    "--n-toast-stack-opacity-step",
     "--n-toast-stack-scale-step",
     "--n-toast-status-color",
     "--n-toast-status-danger",

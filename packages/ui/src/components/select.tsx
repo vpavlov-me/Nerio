@@ -345,7 +345,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
           <BaseSelect.Positioner
             align="start"
             alignItemWithTrigger={false}
-            className="n-select-positioner z-(--n-overlay-z-index) min-w-[min(var(--anchor-width),var(--available-width))] max-w-(--available-width)"
+            className="n-select-positioner z-(--n-overlay-floating-z-index) min-w-[min(var(--anchor-width),var(--available-width))] max-w-(--available-width)"
             side="bottom"
             sideOffset={4}
           >

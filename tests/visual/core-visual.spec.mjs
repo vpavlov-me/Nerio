@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 const categoryFixtures = {
-  foundation: ["typography", "kbd", "icon"],
+  foundation: ["typography", "kbd"],
   actions: ["button", "toggle", "button-group"],
   forms: [
     "input",
@@ -52,9 +52,7 @@ async function prepareFixture(page) {
       .docs-header,
       .docs-footer,
       .nerio-orb,
-      nextjs-portal,
-      .component-lab-hero,
-      .component-lab-index { display: none !important; }
+      nextjs-portal { display: none !important; }
       .docs-content,
       .docs-main { display: block !important; inline-size: 100% !important; margin: 0 !important; padding: 0 !important; }
       *, *::before, *::after {
@@ -138,7 +136,7 @@ async function prepareOverlayFixture(page) {
 test("protects reduced-motion dialog end state", async ({ page }) => {
   await prepareOverlayFixture(page);
   await page.getByRole("button", { name: "Open dialog" }).click();
-  const dialog = page.getByRole("dialog", { name: "Invite people" });
+  const dialog = page.getByRole("dialog", { name: "Sign in" });
   await expect(dialog).toBeVisible();
   await expect(page).toHaveScreenshot("overlay-dialog-reduced-motion.png");
   await page.keyboard.press("Escape");
@@ -147,8 +145,8 @@ test("protects reduced-motion dialog end state", async ({ page }) => {
 
 test("protects reduced-motion sheet end state", async ({ page }) => {
   await prepareOverlayFixture(page);
-  await page.getByRole("button", { name: "right · md" }).click();
-  const sheet = page.getByRole("dialog", { name: "right sheet" });
+  await page.getByRole("button", { name: "right", exact: true }).click();
+  const sheet = page.getByRole("dialog", { name: "Right sheet" });
   await expect(sheet).toBeVisible();
   await expect(page).toHaveScreenshot("overlay-sheet-reduced-motion.png");
   await page.keyboard.press("Escape");

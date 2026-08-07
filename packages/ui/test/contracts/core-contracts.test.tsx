@@ -696,9 +696,13 @@ describe("Core static contracts", () => {
     );
     expect(componentSource("file-input")).toContain("[grid-area:1/1]");
     expect(componentSource("file-input")).not.toContain("absolute inset-block-0");
+    expect(componentSource("file-input")).toContain("after:h-(--n-file-input-divider-length)");
+    expect(componentSource("file-input")).not.toContain("file:border-e");
     expect(componentSource("switch")).toContain("rounded-(--n-switch-radius)");
     expect(componentSource("switch")).toContain("rounded-(--n-switch-thumb-radius)");
     expect(componentSource("switch")).toContain("translate-x-(--n-switch-thumb-offset)");
+    expect(componentSource("switch")).toContain("min-w-(--n-switch-width)");
+    expect(componentSource("switch")).toContain("max-w-(--n-switch-width)");
     expect(tokens).toContain(
       "--n-radius-pill: min(var(--n-radius-control), var(--n-radius-full));",
     );
@@ -708,7 +712,7 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
-    expect(tokens).toContain("--n-slider-gap: var(--n-space-2);");
+    expect(tokens).toContain("--n-slider-gap: var(--n-space-1);");
     expect(tokens).toContain("--n-slider-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-slider-disabled-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-switch-thumb-background: var(--n-gray-0);");
@@ -717,6 +721,10 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-list-item-padding: var(--n-space-2);");
     expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
     expect(tokens).toContain("--n-card-section-gap: var(--n-space-2);");
+    expect(tokens).toContain("--n-card-border-width: var(--n-border-width-default);");
+    expect(tokens).toContain("--n-card-border-color: var(--n-color-border-subtle);");
+    expect(tokens).toContain("--n-card-border-secondary: var(--n-color-border-subtle);");
+    expect(tokens).toContain("--n-card-border-interactive: var(--n-color-border-default);");
     expect(tokens).toContain("--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);");
     expect(tokens).toContain("--n-item-border-width: var(--n-border-width-default);");
     expect(tokens).toContain("--n-toggle-background-pressed: var(--n-color-action-secondary);");
@@ -2124,6 +2132,9 @@ describe("Core static contracts", () => {
     expect(source).toContain("--toast-managed-enter-y");
     expect(source).toContain("--toast-managed-dismiss-x");
     expect(source).toContain("--toast-managed-dismiss-y");
+    expect(source).toContain("--toast-managed-opacity");
+    expect(source).toContain("var(--n-toast-stack-opacity-step)");
+    expect(source).toContain("data-expanded:[--toast-managed-opacity:1]");
     expect(source).toContain("safe-area-inset-left");
     expect(source).toContain("safe-area-inset-right");
     expect(source).toContain("translate3d(var(--toast-managed-x),var(--toast-managed-y),0)");
@@ -3371,8 +3382,10 @@ describe("Core interactive action contracts", () => {
     expect(rootRef.current).toHaveAttribute("data-size", "lg");
     expect(listRef.current).toHaveAttribute("data-slot", "list");
     expect(listRef.current).toHaveAttribute("data-layout", "fill");
+    expect(listRef.current).toHaveAttribute("data-variant", "segmented");
     expect(listRef.current).toHaveAttribute("data-scrollable");
     expect(triggerRef.current).toHaveAttribute("data-slot", "trigger");
+    expect(triggerRef.current).toHaveAttribute("data-variant", "segmented");
     expect(contentRef.current).toHaveAttribute("data-slot", "content");
     expect(panelsRef.current).toHaveAttribute("data-slot", "panels");
     expect(overview.querySelector('[data-slot="leading-icon"]')).toHaveAttribute("aria-hidden");
@@ -3549,12 +3562,42 @@ describe("Core interactive action contracts", () => {
   it("keeps vertical variants compact, horizontal fill-only, and RTL indicator geometry in the CSS contract", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/tabs.tsx"), "utf8");
     expect(source).toContain("data-[orientation=vertical]:items-start");
+    expect(source).toContain("data-[layout=content]:w-fit");
     expect(source).toContain("[[data-orientation=vertical]_&]:w-fit");
     expect(source).toContain("[&[data-layout=fill]>[data-slot=trigger]]:flex-1");
     expect(source).toContain("left-(--active-tab-left)");
     expect(source).toContain("w-(--active-tab-width)");
     expect(source).toContain(
       "[[data-orientation=vertical]_&]:right-[calc(var(--n-border-width-default)*-1)]",
+    );
+  });
+
+  it("scopes nested Tabs variant styling to each component instance", () => {
+    render(
+      <Tabs defaultValue="outer" variant="bordered">
+        <TabsList aria-label="Outer tabs">
+          <TabsTrigger value="outer">Outer</TabsTrigger>
+          <TabsIndicator />
+        </TabsList>
+        <TabsPanels>
+          <TabsContent value="outer">
+            <Tabs defaultValue="inner" variant="segmented">
+              <TabsList aria-label="Inner tabs">
+                <TabsTrigger value="inner">Inner</TabsTrigger>
+                <TabsIndicator />
+              </TabsList>
+            </Tabs>
+          </TabsContent>
+        </TabsPanels>
+      </Tabs>,
+    );
+
+    const innerTab = screen.getByRole("tab", { name: "Inner" });
+    const innerList = innerTab.closest('[data-slot="list"]');
+    expect(innerTab).toHaveAttribute("data-variant", "segmented");
+    expect(innerList?.querySelector('[data-slot="indicator"]')).toHaveAttribute(
+      "data-variant",
+      "segmented",
     );
   });
 
@@ -3594,6 +3637,7 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("tabpanel")).toHaveClass("content-state");
     const indicator = document.querySelector('[data-slot="indicator"]');
     expect(indicator).toHaveClass("indicator-state");
+    expect(indicator).toHaveAttribute("data-variant", "bordered");
     expect(indicator?.getAttribute("style")).toContain("--active-tab-left");
     expect(indicator?.getAttribute("style")).toContain("--active-tab-width");
   });
@@ -4474,7 +4518,12 @@ describe("Core interactive action contracts", () => {
     }
 
     expect(tokenSource).toContain("--n-overlay-background: rgb(0 0 0 / 0.88)");
+    expect(tokenSource).toContain(
+      "--n-overlay-floating-z-index: calc(var(--n-overlay-z-index) + 2)",
+    );
     expect(tokenSource).toContain("--n-overlay-border-width: var(--n-border-width-0)");
+    expect(tokenSource).toContain("--n-overlay-border-width: var(--n-border-width-default)");
+    expect(tokenSource).toContain("--n-overlay-border: var(--n-color-border-subtle)");
     expect(tokenSource).toContain("--n-overlay-foreground: var(--n-gray-0)");
     expect(tokenSource).toContain("--n-overlay-surface-filter: blur(24px) saturate(120%)");
     expect(tokenSource).toContain("--n-overlay-backdrop-filter: blur(10px)");
@@ -4487,6 +4536,17 @@ describe("Core interactive action contracts", () => {
       );
     }
     expect(componentSource("dialog")).toContain("n-dialog-backdrop-enter");
+    for (const name of ["select", "popover", "tooltip", "dropdown-menu"]) {
+      expect(componentSource(name), name).toContain("z-(--n-overlay-floating-z-index)");
+    }
+    expect(componentSource("dialog")).toContain(
+      "max-h-[calc(100dvh-(var(--n-dialog-viewport-inset)*2))]",
+    );
+    expect(componentSource("dialog")).toContain("overflow-y-auto");
+    expect(componentSource("dialog")).toContain("[scrollbar-width:thin]");
+    expect(componentSource("dialog")).toContain(
+      "[scrollbar-color:var(--n-overlay-foreground-muted)_var(--n-overlay-control-background)]",
+    );
     expect(overlayMotionSource).toContain("scale: var(--n-motion-scale-subtle)");
     expect(componentSource("sheet")).toContain("--n-sheet-viewport-inset");
     expect(componentSource("sheet")).toContain("n-sheet-enter-right");

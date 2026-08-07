@@ -1,9 +1,19 @@
+import {
+  Code,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@nerio-ui/ui";
 import { CodeExample } from "../../../components/code-example";
 import { createPageMetadata } from "../../../lib/seo";
 
 export const metadata = createPageMetadata({
   title: "Migration",
-  description: "Migrate Core alpha consumers to the frozen Nerio 1.0 API.",
+  description: "Prepare Nerio 1.0.0-beta.0 consumers for the coordinated 1.0.0-beta.1 candidate.",
   path: "/docs/migration",
 });
 
@@ -17,60 +27,89 @@ const packageChecks = `pnpm install
 pnpm typecheck
 pnpm build`;
 
-const replacements = [
-  ["IconButton", 'Button icon={Settings} aria-label="Settings"'],
-  ['Button variant="subtle"', 'Button variant="secondary"'],
-  ['Button variant="destructive"', 'Button variant="danger"'],
-  ["Button loadingLabel", "Remove it; keep the visible action name stable"],
-  ["Badge variant / icon", "Badge tone / leadingIcon"],
-  ["BadgeVariant", "BadgeTone"],
-  ["Select or RadioGroup onChange", "onValueChange"],
-  ['Pagination item "aria-label"', "ariaLabel"],
-  ["Icon absoluteStrokeWidth", "lucideAbsoluteStrokeWidth"],
-  ["LucideIcon adapter type", "IconComponent or a direct Lucide type"],
-  ["List ordered", 'marker="decimal"'],
+const betaChanges = [
+  [
+    "Runtime support",
+    "Node.js 22 or 24 and Tailwind CSS 4.1 or newer",
+    "Update the consumer toolchain before installing the coordinated packages.",
+  ],
+  [
+    "Calendar and DatePicker",
+    "Deterministic initial month and current-day behavior",
+    "Pass a consumer-owned today value when the product needs the current month or day marker.",
+  ],
+  [
+    "Interactive types",
+    "Nerio-owned event and state contracts",
+    "Replace Base UI type imports and use stable string values for Tabs.",
+  ],
+  [
+    "Registry",
+    "Source integrity and HTTPS-first remote access",
+    "Use HTTPS for production registries and declare SHA-256 integrity for custom sources.",
+  ],
+  [
+    "CLI updates",
+    "Atomic source and lock-file transactions",
+    "Run doctor, diff, and update --dry-run before applying an editable-source update.",
+  ],
+  [
+    "MCP",
+    "Declared output schemas and structuredContent",
+    "Prefer structured output when supported; existing JSON text consumers remain compatible.",
+  ],
 ] as const;
 
 export default function Page() {
   return (
     <article className="doc-page">
       <header>
-        <p className="doc-kicker">Core 1.0</p>
         <h1>Migration</h1>
         <p className="doc-lede">
-          Move alpha package and editable-source consumers onto the frozen Core 1.0 API before
-          adopting a beta candidate.
+          Prepare coordinated package and editable-source consumers for the next Nerio beta
+          candidate without treating it as a stable Core 1.0 release.
         </p>
       </header>
 
-      <section className="doc-section" id="package-api">
-        <h2>Package API replacements</h2>
-        <p>
-          Upgrade the six Nerio packages together, use React 19, and replace every temporary alpha
-          alias with its canonical API.
+      <section className="doc-section" id="status">
+        <h2>Current status</h2>
+        <p className="doc-decision-boundary">
+          <Code>1.0.0-beta.1</Code> is the prepared repository candidate. It is not a stable
+          release, and the checked-in version does not prove npm publication or dist-tag
+          availability.
         </p>
-        <div className="doc-table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Alpha API</th>
-                <th>Frozen API</th>
-              </tr>
-            </thead>
-            <tbody>
-              {replacements.map(([from, to]) => (
-                <tr key={from}>
-                  <td>
-                    <code>{from}</code>
-                  </td>
-                  <td>
-                    <code>{to}</code>
-                  </td>
-                </tr>
+        <p>
+          Keep all six public Nerio packages aligned. Check the package registry before upgrading an
+          external consumer; source-install consumers can review the checked-in candidate directly.
+        </p>
+      </section>
+
+      <section className="doc-section" id="beta-changes">
+        <h2>Beta.0 to beta.1 changes</h2>
+        <p>
+          Review the consumer-visible changes below, update the coordinated package set together,
+          and then run the package verification commands.
+        </p>
+        <TableContainer aria-label="Beta.0 to beta.1 migration changes">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Area</TableHead>
+                <TableHead>What changed</TableHead>
+                <TableHead>Required action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {betaChanges.map(([area, change, action]) => (
+                <TableRow key={area}>
+                  <TableHead scope="row">{area}</TableHead>
+                  <TableCell>{change}</TableCell>
+                  <TableCell>{action}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableBody>
+          </Table>
+        </TableContainer>
         <CodeExample code={packageChecks} label="Package verification" />
       </section>
 
@@ -82,6 +121,18 @@ export default function Page() {
           new upstream source.
         </p>
         <CodeExample code={sourceWorkflow} label="Safe source update" />
+      </section>
+
+      <section className="doc-section" id="alpha-consumers">
+        <h2>Consumers still on alpha</h2>
+        <p>
+          The temporary alpha aliases were removed when the beta baseline was established. If a
+          product still uses alpha packages, complete the{" "}
+          <a href="https://github.com/vpavlov-me/Nerio/blob/main/docs/migrations/alpha-to-beta.md">
+            alpha-to-beta migration
+          </a>{" "}
+          first, then return to the beta.0-to-beta.1 changes above.
+        </p>
       </section>
 
       <section className="doc-section" id="compatibility">

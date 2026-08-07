@@ -46,6 +46,20 @@ test("covers public docs routes, standardized component docs, and the restrained
 
   await page.goto("/docs/getting-started");
   await expect(page.getByRole("heading", { name: "Getting started" })).toBeVisible();
+  const documentationTypeScale = await page.evaluate(() => {
+    const readSize = (selector) =>
+      Number.parseFloat(getComputedStyle(document.querySelector(selector)).fontSize);
+    return {
+      body: readSize("body"),
+      h1: readSize(".doc-page h1"),
+      h2: readSize(".doc-section > h2"),
+      h3: readSize(".doc-section > h3"),
+    };
+  });
+  expect(documentationTypeScale.body).toBe(14);
+  expect(documentationTypeScale.h3).toBeCloseTo(22.5, 1);
+  expect(documentationTypeScale.h2).toBeCloseTo(25.25, 1);
+  expect(documentationTypeScale.h1).toBeGreaterThan(documentationTypeScale.h2);
 
   for (const route of ["button", "sidebar-primitive", "command-primitive"]) {
     await page.goto(`/docs/components/${route}`);
@@ -200,14 +214,30 @@ test("applies every Playground control to the component canvas", async ({ page }
   const problems = monitorPage(page);
   await page.goto("/playground");
   const playground = page.locator(".visual-playground");
-  await expect(page.getByRole("heading", { name: "Nerio Playground" })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Component index" })).toContainText("Button");
-  await expect(page.getByRole("navigation", { name: "Component index" })).not.toContainText(
-    "IconButton",
+  await expect(page.getByRole("heading", { name: "Playground", exact: true })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Component index" })).toHaveCount(0);
+  await expect(page.locator(".component-api-matrix")).toHaveCount(0);
+  expect(await page.locator(".component-lab-section").count()).toBe(
+    await page.locator(".component-lab-section > .component-playground-preview").count(),
   );
-  await expect(page.getByRole("navigation", { name: "Component index" })).not.toContainText(
-    "Chart",
-  );
+
+  const accentSwatch = page
+    .getByRole("radiogroup", { name: "Accent color" })
+    .getByRole("radio")
+    .first();
+  await expect(accentSwatch).toHaveCSS("width", "32px");
+  await expect(accentSwatch).toHaveCSS("height", "32px");
+
+  const buttonSection = page.locator("#button");
+  await buttonSection
+    .getByRole("tablist", { name: "Preview options" })
+    .getByRole("tab", { name: "lg" })
+    .click();
+  await expect(
+    buttonSection
+      .getByRole("tabpanel", { name: "lg" })
+      .getByRole("button", { name: "danger", exact: true }),
+  ).toBeVisible();
 
   await page.getByRole("radio", { name: "blue", exact: true }).click();
   await page
@@ -312,6 +342,7 @@ test("keeps Calendar, InputGroup, and Checkbox component states coherent", async
   expect(hoveredInputGroup.groupBackground).not.toBe(restingGroupBackground);
   expect(hoveredInputGroup.inputBackground).toBe("rgba(0, 0, 0, 0)");
 
+  await page.getByRole("button", { name: "Open constrained calendar" }).click();
   const constrainedCalendar = page.getByRole("group", { name: "Constrained release date" });
   const unavailableDate = constrainedCalendar.getByRole("button", { name: "June 4, 2026" });
   await expect(unavailableDate).toHaveAttribute("aria-disabled", "true");
@@ -578,11 +609,19 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   await page.goto("/docs/components/card");
   const card = page.locator(".n-card").first();
   await expect(card).toBeVisible();
-  await expect(card).toHaveCSS("border-top-width", "0px");
+  await expect(card).toHaveCSS("border-top-width", "1px");
   await expect(card.locator("[data-slot=card-title]").first()).toHaveCSS("font-weight", "500");
   expect(await card.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe("none");
+  const lightCardBorder = await card.evaluate(
+    (element) => getComputedStyle(element).borderTopColor,
+  );
+  expect(lightCardBorder).not.toBe("rgba(0, 0, 0, 0)");
   await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
   await expect(card).toHaveCSS("background-color", "rgb(0, 0, 0)");
+  await expect(card).toHaveCSS("border-top-width", "1px");
+  const darkCardBorder = await card.evaluate((element) => getComputedStyle(element).borderTopColor);
+  expect(darkCardBorder).not.toBe("rgba(0, 0, 0, 0)");
+  expect(darkCardBorder).not.toBe(lightCardBorder);
   await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "light"));
 
   await page.goto("/docs/components/alert");

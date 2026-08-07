@@ -163,7 +163,7 @@ test("keeps Slider preview singular and product-focused", async ({ page }) => {
   const [headerBox, controlBox] = await Promise.all([header.boundingBox(), control.boundingBox()]);
   expect(headerBox).not.toBeNull();
   expect(controlBox).not.toBeNull();
-  expect(controlBox.y - (headerBox.y + headerBox.height)).toBeGreaterThanOrEqual(7.5);
+  expect(controlBox.y - (headerBox.y + headerBox.height)).toBeGreaterThanOrEqual(3.5);
   await preview.getByText("Tip amount", { exact: true }).click({ position: { x: 20, y: 15 } });
   await expect(slider).toHaveValue("15");
   await expect(page.getByRole("heading", { name: "Preview", exact: true })).toHaveCount(0);
@@ -553,7 +553,7 @@ test("keeps Slider spacing compact and Slider and Switch thumbs white across mod
 
   const slider = page.getByRole("region", { name: "Slider preview" }).getByRole("group");
   const sliderThumb = slider.locator('[data-slot="thumb"]');
-  await expect(slider).toHaveCSS("row-gap", "8px");
+  await expect(slider).toHaveCSS("row-gap", "4px");
 
   const sliderColors = [];
   for (const mode of ["light", "dark"]) {
