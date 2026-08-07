@@ -31,7 +31,7 @@ export type CardVisualPlacement = "inset" | "bleed";
 export interface CardVisualProps extends React.HTMLAttributes<HTMLDivElement> {
   placement?: CardVisualPlacement;
 }
-export type CardTitleElement = "div" | "span" | "p" | "h2" | "h3" | "h4" | "h5" | "h6";
+export type CardTitleElement = "div" | "h2" | "h3" | "h4" | "h5" | "h6";
 export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> {
   as?: CardTitleElement;
 }

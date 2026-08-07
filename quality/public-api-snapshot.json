@@ -1074,7 +1074,7 @@
       },
       {
         "definition": [
-          "export type CardTitleElement = \"div\" | \"span\" | \"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export type CardTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -1084,7 +1084,7 @@
       {
         "definition": [
           "export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> { as?: CardTitleElement; }",
-          "export type CardTitleElement = \"div\" | \"span\" | \"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export type CardTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2601,7 +2601,7 @@
       },
       {
         "definition": [
-          "export type CardTitleElement = \"div\" | \"span\" | \"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export type CardTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -2611,7 +2611,7 @@
       {
         "definition": [
           "export interface CardTitleProps extends React.HTMLAttributes<HTMLElement> { as?: CardTitleElement; }",
-          "export type CardTitleElement = \"div\" | \"span\" | \"p\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+          "export type CardTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
         "deprecations": [],
         "kind": "type",
@@ -7504,7 +7504,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-a25e22454efc618521a5f8c40da2a0d8d602cc7ec170e5a25de44370c6c926a3",
+            "integrity": "sha256-5e43bc647516c96b9a9e36179a955a5f1aa888d3076aac18738bbcb7e5356fe7",
             "role": "component",
             "source": "../../ui/src/components/card.tsx",
             "target": "components/card.tsx"
