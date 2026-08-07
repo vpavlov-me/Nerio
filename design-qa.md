@@ -44,6 +44,113 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 
+## File upload state block QA — 2026-08-07
+
+### Source truth
+
+- User-provided layout reference: a grouped five-file upload queue showing ready, uploading, processing, failed, and uploaded states.
+- Latest browser annotation: keep the five-file queue, remove the Progress bar, add an Upload action to CardHeader, use secondary icon actions with tooltips, and simplify CardFooter to Cancel plus disabled Save without a separator.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/file-upload-state`
+- Desktop viewport and implementation pixels: 1117 × 837 at device scale factor 1.
+- Desktop screenshot: `/tmp/nerio-file-upload-revision-desktop.png`
+- Mobile viewport: 390 × 844.
+- Mobile implementation pixels: 390 × 844 at device scale factor 1.
+- Mobile screenshot: `/tmp/nerio-file-upload-revision-mobile.png`
+- Full-view comparison: the desktop capture verifies the Card hierarchy, all five queue states, header action, row actions, and footer state together.
+- Focused comparison: the live `Delete file` tooltip was opened on the first row and verified through the rendered accessibility tree; a separate crop was unnecessary because the label and control are readable in the desktop capture.
+- Browser console: no errors.
+
+### Findings and fixes
+
+1. P1 — The original preview demonstrated only one upload and did not communicate the complete state model. Replaced it with a five-item batch queue covering ready, uploading, processing, failed, and uploaded states.
+2. P1 — The upload content floated without a clear container or batch-level hierarchy. Composed it inside Card header, content, and footer regions with a concise queue summary and shared actions.
+3. P1 — The first implementation added Progress beneath the uploading Item, but the approved revision keeps this state compact. Removed Progress while retaining the visible `Uploading · 64%` status.
+4. P2 — The first mobile pass placed the tall Card beneath the fixed back control without enough clearance. Added responsive block-view spacing and verified the corrected mobile composition.
+5. P2 — The footer's summary, separator, and retry-oriented actions did not reflect the final save workflow. Removed the separator and summary, then replaced the actions with Cancel and a disabled Save control.
+6. P2 — File actions were low-affordance ghost buttons without supplementary labels, and retry used an upload glyph. Switched them to secondary icon buttons, added `Delete file` and `Retry file` tooltips, and exposed the semantic RefreshCw icon through the Nerio adapter.
+7. P2 — The Card did not expose the batch's entry action. Added a secondary Upload action through CardAction in the header.
+
+### Comparison history
+
+- Pass 1: five queue states and responsive Card composition passed, but the later annotation superseded the Progress, footer, and row-action treatment.
+- Pass 2: the 1117 × 837 desktop capture verifies the revised action hierarchy and the 390 × 844 capture verifies that rows remain legible and scroll naturally on mobile.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+## Sign in Block structure and Block View navigation QA — 2026-08-07
+
+### Source truth
+
+- `browser://comments/sign-in-structure-1` — the maintainer-supplied structural reference attached
+  to Browser Comment 1. The source image is 1628 × 1302 pixels and defines the required hierarchy:
+  title and description, email, a password label row with recovery navigation, one Login action,
+  and a centered account-creation prompt. The maintainer explicitly scoped the image to structure,
+  not pixel-for-pixel styling.
+- The accompanying 1117 × 837 browser annotation identifies the outer preview frame, insufficient
+  Card padding, and missing gallery-return action in the pre-fix implementation.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3000/views/blocks/sign-in`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/sign-in-comfortable.jpg`
+- Implementation capture: 1280 × 720 pixels, matching the 1280 × 720 CSS viewport at device scale
+  factor 1.
+- The differently proportioned source was not geometrically normalized because it is an explicit
+  structure-only reference. The Card region was compared directly for hierarchy and proximity.
+- Focused measurements: comfortable Card padding 24px with a 20px form gap; compact Card padding
+  20px with a 16px form gap. The Card remains 416px wide in comfortable density.
+- Primary interactions tested: Login and Enter do not submit or change state, the visual Forgot
+  password and Sign up affordances do not navigate, and Back to Blocks remains the only working
+  action and returns to `/blocks`.
+- Catalog thumbnail evidence: `data-preview-thumbnail="true"` is present, the updated Sign in
+  heading renders in the iframe, and `.block-view__back` resolves to `display: none`.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. The implementation keeps Nerio Heading, Text, Label, and Button
+  typography and preserves the reference hierarchy without importing an external font treatment.
+- Spacing and layout rhythm: passed. The outer preview frame is removed, the Card is centered, and
+  density-aware outer padding remains larger than the internal form gap in both reviewed densities.
+- Colors and visual tokens: passed. All surfaces, borders, actions, focus states, and text roles use
+  existing Nerio semantic tokens and continue to support theme and mode switching.
+- Image quality and asset fidelity: not applicable. The reference contains no image assets; the Back
+  action uses the existing Nerio icon adapter rather than a custom drawing.
+- Copy and content: passed. The complete Login structure is present, Google login is intentionally
+  absent, and recovery/account-creation affordances remain visible without acting as navigation.
+
+### Findings and comparison history
+
+1. P1 — The pre-fix Sign in Block omitted the account-creation prompt and placed recovery navigation
+   below the primary action. Rebuilt the form hierarchy to match the supplied structure and verified
+   the revised Card region.
+2. P1 — The full Block View was wrapped in a large bordered preview container. Replaced it with a
+   width-only content wrapper; the final full-page capture has no preview border or nested canvas.
+3. P2 — Card padding was smaller than the distance between semantic form groups. Raised the Core
+   medium Card padding to 24px in comfortable density and 20px in compact density while making the
+   Sign in form gap density-aware at 20px and 16px respectively.
+4. P1 — The first revised Login action submitted the form and the visual recovery/account actions
+   navigated to other previews. The follow-up product decision makes every action inside a public
+   Block preview demonstrative only: click, auxiliary-click, keyboard activation, and form
+   submission are intercepted at the preview boundary without changing the enabled visual
+   treatment.
+5. P2 — Public Block Views had no direct return path to the gallery. Added a Nerio secondary Back to
+   Blocks action to every public View and suppressed it only inside non-interactive catalog
+   thumbnails.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states. A focused Card comparison
+was required because the structural reference targets label/action alignment and proximity rather
+than the surrounding desktop canvas.
+
+final result: passed
+
 ## Playground controls, Slider rhythm, and nested Tabs QA — 2026-08-07
 
 ### Source truth
@@ -674,6 +781,314 @@ final result: passed
 2. P2 — The empty state had title and description only, with insufficient vertical separation. Added a decorative PackageOpen icon through Nerio's icon adapter and token-driven 24px block padding.
 
 No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+## Profile settings identity Item refinement QA — 2026-08-07
+
+### Source truth
+
+- Approved pre-refinement capture:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-compact.jpg`
+- Approved direction: show a real avatar image, present avatar/name/email as a bordered Item that
+  previews the public profile, align Profile photo with the other editable fields, and remove the
+  Display name description.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/profile-settings`
+- Browser: Codex in-app browser.
+- Final compact-density screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-item-avatar-compact.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-item-avatar-comparison.jpg`
+- Source and implementation captures are both normalized to 1117 × 837 pixels at the same
+  1117 × 837 CSS viewport. The implementation was captured at device scale factor 2 and
+  downsampled from 2234 × 1674 to the CSS-pixel target before comparison.
+- State: light appearance, compact density, initial static preview.
+- Full-view evidence: the 512px Card retains its centered geometry while the bordered Item creates a
+  clear preview region above the aligned settings fields.
+- A focused crop was unnecessary because the 1:1 combined comparison keeps the avatar image, Item
+  border, field alignment, and Display name copy legible.
+- Static-preview behavior remains unchanged: Save changes is disabled.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. ItemTitle and ItemDescription provide a clearer identity hierarchy
+  without introducing custom text styling.
+- Spacing and layout rhythm: passed. The Item occupies the full settings column; Profile photo,
+  Display name, and Bio now share one vertical field alignment.
+- Colors and visual tokens: passed. The Item outline, Card, controls, and disabled action inherit
+  released Nerio theme tokens.
+- Image quality and asset fidelity: passed. Avatar uses the existing 128px raster portrait at its
+  native square crop through the released Avatar component.
+- Copy and content: passed. Name, e-mail, and portrait form one profile preview; the redundant
+  `Shown across Nerio.` helper is removed.
+
+### Findings and comparison history
+
+1. P1 — The initials-only identity row did not demonstrate Avatar image rendering. Added a real
+   existing portrait asset with the accessible name `Vladimir Pavlov profile photo`.
+2. P1 — Avatar identity and Profile photo appeared as one loosely assembled control group, obscuring
+   the distinction between preview and settings. Moved identity into a released outlined Item and
+   aligned FileInput with Display name and Bio.
+3. P2 — The Display name description repeated context already established by the Card header.
+   Removed it to reduce visual noise.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Profile settings product-coherence QA — 2026-08-07
+
+### Source truth
+
+- Approved refinement source:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-profile-settings-current.jpg`
+- Approved product direction: keep Profile settings focused on personal identity, group the Avatar
+  and FileInput into one photo region, replace duplicated security controls with profile visibility,
+  and show a truthful saved state.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/profile-settings`
+- Browser: Codex in-app browser.
+- Final compact-density screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-compact.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-coherent-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison preserves both captures at 1:1 scale.
+- State: light appearance, compact density, initial static preview.
+- Full-view evidence: the centered 512px Card preserves the established geometry while presenting
+  one coherent personal-profile workflow.
+- A focused crop was unnecessary because the 1:1 comparison keeps the photo, fields, visibility
+  control, saved state, and disabled action legible.
+- Static-preview behavior: Save changes is disabled and the preview does not expose a false
+  successful action.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Heading, identity, field, helper, Switch, status, and Button copy
+  use released Nerio components and typography.
+- Spacing and layout rhythm: passed. Avatar and FileInput now read as one photo region; fields,
+  visibility, and save state retain token-driven grouping and separation.
+- Colors and visual tokens: passed. Card, Avatar, fields, Switch, Separator, and disabled Button
+  inherit the active Nerio theme without hard-coded visual values.
+- Image quality and asset fidelity: passed. The released Avatar renders the accessible `VP`
+  fallback; no placeholder bitmap, custom SVG, CSS drawing, or generated asset was introduced.
+- Copy and content: passed. `Vladimir Pavlov`, `nerio@vpavlov.com`, the Nerio-specific bio, upload
+  limits, workspace visibility, and saved state form one internally consistent demo.
+
+### Findings and comparison history
+
+1. P1 — The source mixed personal profile, workspace administration, and account security in one
+   Card. Narrowed the Block to a clear personal-profile scope.
+2. P1 — Two-factor authentication duplicated the dedicated Security settings Block and suggested a
+   security workflow this static preview cannot represent. Replaced it with a profile-visibility
+   Switch that belongs to the current scope.
+3. P2 — Avatar identity and FileInput were visually disconnected. Grouped them into one responsive
+   photo region.
+4. P2 — Workspace name and workspace description conflicted with the person shown above them.
+   Replaced them with Display name and Bio using coherent Nerio demo content.
+5. P2 — `Unsaved changes` made the untouched initial state appear dirty. Replaced it with `All
+changes saved` and disabled Save changes.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Profile settings Block and Blocks navigation QA — 2026-08-07
+
+### Source truth
+
+- Current-state Profile settings capture:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-source.jpg`
+- Approved structure: place Profile settings inside a bounded Card, add a descriptive header,
+  identity and avatar-upload controls, preserve workspace fields, expose a 2FA Switch, and repair the
+  primary action contrast.
+- Approved Blocks behavior: gallery cards navigate internally in the same tab now that every public
+  Block View exposes Back to Blocks. Templates retain their new-tab behavior.
+
+### Implementation evidence
+
+- URLs: `http://localhost:3000/views/blocks/profile-settings` and
+  `http://localhost:3000/blocks`.
+- Browser: Codex in-app browser.
+- Final compact-density screenshot for this iteration:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-profile-settings-current.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison preserves both captures at 1:1 scale, so no
+  density normalization was required.
+- State: light appearance, compact density, initial static preview.
+- Full-view comparison evidence: the prior full-width form is replaced by a centered 512px Card with
+  20px token-resolved compact padding and a 649px rendered height.
+- A separate focused crop was unnecessary because the combined 1:1 comparison keeps the avatar,
+  FileInput, field labels, Switch, and action copy legible.
+- Save profile computed colors: foreground `rgb(255, 255, 255)` on background
+  `rgb(109, 40, 217)`. Its child text resolves to the same white foreground.
+- Static-preview behavior: Save profile does not change the URL or expose success feedback.
+- Blocks navigation: selecting Profile settings changed the same tab from `/blocks` to
+  `/views/blocks/profile-settings`; Back to Blocks returned that tab to `/blocks`.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Profile, identity, security, field, helper, and action copy use
+  released Heading, Text, Field, Switch, and Button typography.
+- Spacing and layout rhythm: passed. The Card creates one bounded reading column; token-driven gaps
+  separate identity, upload, workspace, security, and save regions while Separators mark major
+  changes in meaning.
+- Colors and visual tokens: passed. Card, avatar, fields, Switch, Separator, and Button inherit the
+  active Nerio theme. Narrowing the save-bar selector to its direct status child stops secondary
+  text color from leaking into the primary Button.
+- Image quality and asset fidelity: passed. The released Avatar component renders the accessible
+  `VP` fallback; no placeholder image, custom SVG, CSS drawing, or generated asset was introduced.
+- Copy and content: passed. The Card explains its scope, shows `Vladimir Pavlov` and
+  `nerio@vpavlov.com`, documents upload limits, retains workspace details, and names the 2FA
+  requirement.
+
+### Findings and comparison history
+
+1. P1 — The original profile form expanded across nearly the full canvas and had no surface
+   boundary. Wrapped the content in the released Card and constrained it to a centered 32rem maximum.
+2. P1 — Save profile inherited secondary text color from the broad `.composition-save-bar span`
+   selector, producing insufficient text/background separation. Scoped the rule to the direct status
+   child and verified white text on the purple primary surface.
+3. P2 — The original form lacked identity, avatar upload, security context, and descriptive Card
+   copy. Added Avatar, FileInput, a Security section, and a labelled 2FA Switch using released
+   components.
+4. P2 — Blocks cards opened duplicate tabs despite every public preview now providing a return path.
+   Removed only the Blocks `target` and `rel` attributes, updated the accessible name, and verified
+   same-tab forward and return navigation. Templates remain unchanged.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Reset password Block refinement QA — 2026-08-07
+
+### Source truth
+
+- Current-state source capture:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-reset-password-current.png`
+- Approved change set: retain the compact Card and add clearer recovery guidance, the branded email
+  placeholder, and a visual-only route back to Sign in.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/reset-password`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/reset-password-comfortable.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/reset-password-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison places both unchanged captures side by side,
+  so no density normalization was required.
+- State: light appearance, comfortable density, initial static preview.
+- Full-view comparison evidence: Card width, canvas position, padding, field width, and primary action
+  geometry remain unchanged while the approved copy and account-return row expand the Card
+  vertically.
+- A separate focused crop was unnecessary because the 1:1 combined comparison keeps every form
+  label, placeholder, and action legible.
+- Static-preview behavior: Send reset link does not change the URL or reveal validation/success
+  feedback; Sign in is a visual affordance rather than an anchor.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. The longer descriptor wraps naturally within the existing Card and
+  the account-return row uses released Text and link Button typography.
+- Spacing and layout rhythm: passed. The existing token-driven form gap and Card padding preserve a
+  clear header, field, primary action, and return-path sequence.
+- Colors and visual tokens: passed. No color or visual literals were introduced; the field, action,
+  secondary copy, and link inherit the existing theme-aware Nerio tokens.
+- Image quality and asset fidelity: passed. The approved form contains no image or decorative asset,
+  and none was added.
+- Copy and content: passed. The recovery explanation is explicit, the email placeholder is
+  `nerio@vpavlov.com`, and `Remembered your password? Sign in` restores the expected return path.
+
+### Findings and comparison history
+
+1. P2 — The original descriptor did not explain which email to enter or the resulting action.
+   Replaced it with the approved account-specific recovery instruction and verified its wrapping at
+   the same viewport.
+2. P2 — The original form ended after the primary action, leaving no visible return path to
+   authentication. Added the centered Sign in prompt using the existing non-interactive link
+   treatment.
+3. P2 — The original generic email placeholder did not follow the branded auth examples. Replaced
+   it with `nerio@vpavlov.com`.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+## Create account Block structure QA — 2026-08-07
+
+### Source truth
+
+- `browser://comments/create-account-structure-1` — the maintainer-supplied structural reference
+  attached to Browser Comment 1. It defines the company identity above the Card, centered account
+  heading, full name and email fields, side-by-side password confirmation, password guidance,
+  primary action, existing-account prompt, and legal agreement below the Card.
+- The maintainer explicitly scoped the screenshot to layout and required the implementation to use
+  Nerio components, icon adapters, and semantic tokens rather than copying its visual styling.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3000/views/blocks/create-account`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/create-account-comfortable.jpg`
+- Implementation capture: 1280 × 720 pixels, matching the 1280 × 720 CSS viewport at device scale
+  factor 1.
+- The source and implementation use different canvas proportions; no density normalization was
+  applied because the source is an explicit structure-only reference. The Card and surrounding
+  identity/legal regions were compared as focused layout regions.
+- Focused measurements: Card padding 24px, form gap 20px, and two equal 177px password columns in
+  comfortable density. The password grid collapses to one column below the local 30rem breakpoint.
+- Static-preview behavior: Create account does not submit or change the URL; Sign in, Terms of
+  Service, and Privacy Policy are visual affordances rather than anchors. Back to Blocks remains
+  outside the disabled preview boundary.
+- Catalog thumbnail evidence: the updated Create account heading renders in the second iframe and
+  Back to Blocks resolves to `display: none` after the thumbnail appearance contract initializes.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Company identity, title, description, labels, helper, account prompt,
+  and legal copy use Nerio Heading, Text, Label, Field, and Button typography.
+- Spacing and layout rhythm: passed. Brand, Card, and legal copy form three clear regions; full-width
+  fields precede the paired credential row, and the existing-account prompt closes the Card.
+- Colors and visual tokens: passed. The company mark, Card, inputs, text roles, borders, and action
+  use existing semantic tokens and remain theme-aware.
+- Image quality and asset fidelity: passed. The reference contains only a simple company mark; the
+  implementation uses the released Nerio Icon component with the adapter Box icon rather than a
+  generated asset, custom SVG, or CSS drawing.
+- Copy and content: passed. The English branded placeholders are `Vladimir Pavlov` and
+  `nerio@vpavlov.com`. Password, confirmation, minimum-length guidance, account action, Sign in
+  prompt, Terms of Service, and Privacy Policy are all present; the obsolete Email verification
+  alert is removed.
+
+### Findings and comparison history
+
+1. P1 — The prior Create account preview lacked company identity, confirm-password, account-switch,
+   and legal agreement regions. Added the complete structural sequence and verified it in the final
+   full-page capture.
+2. P2 — The prior form ended with an Email verification Alert that is absent from the selected
+   reference. Replaced it with password-length guidance and the existing-account prompt.
+3. P2 — The first revised primary action used submit semantics and appended an empty query string
+   despite the global static-preview boundary. Changed this visual action to `type="button"` and
+   reverified that the URL remains unchanged.
+4. P2 — Password and confirm-password needed a paired desktop relationship without creating mobile
+   overflow. Added a token-spaced two-column grid with a one-column narrow-screen fallback.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 

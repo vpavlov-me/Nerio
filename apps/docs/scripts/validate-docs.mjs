@@ -389,7 +389,7 @@ function tailwindDocumentationFailures() {
 function templateArchitectureFailures() {
   const catalog = read("apps/docs/features/templates/catalog.ts");
   const gallery = read("apps/docs/app/templates/page.tsx");
-  const detail = read("apps/docs/app/templates/[slug]/page.tsx");
+  const thumbnail = read("apps/docs/components/preview-thumbnail.tsx");
   const viewRoute = read("apps/docs/app/views/[slug]/page.tsx");
   const workspace = read("apps/docs/features/templates/operations-workspace/view.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
@@ -409,11 +409,23 @@ function templateArchitectureFailures() {
       "Template catalog must own the same-origin Operations Workspace preview route",
     ],
     [gallery, "templateCatalog.map", "Templates gallery must derive from the canonical catalog"],
-    [detail, "getTemplate(slug)", "Template detail route must derive from the canonical catalog"],
     [
-      detail,
+      gallery,
+      "href={template.previewRoute}",
+      "Template cards must use their catalog-owned same-origin preview routes",
+    ],
+    [gallery, 'target="_blank"', "Template cards must open full-screen previews in a new tab"],
+    [
+      gallery,
       "src={template.previewRoute}",
-      "Template detail iframe must use its catalog-owned same-origin preview route",
+      "Template cards must render their live catalog previews",
+    ],
+    [thumbnail, 'loading="lazy"', "Live catalog previews must preserve lazy iframe loading"],
+    [thumbnail, "tabIndex={-1}", "Live catalog previews must remain outside the keyboard sequence"],
+    [
+      thumbnail,
+      "data-preview-thumbnail",
+      "Live catalog previews must use deterministic thumbnail mode",
     ],
     [
       viewRoute,
@@ -433,8 +445,8 @@ function templateArchitectureFailures() {
     ],
     [
       sitemap,
-      "templateCatalog",
-      "Indexable template detail routes must be derived into the sitemap",
+      'absoluteUrl("/templates")',
+      "The preview-surface sitemap must include the Templates catalog",
     ],
     [
       playwright,
@@ -454,7 +466,7 @@ function templateArchitectureFailures() {
   const forbiddenSource = [
     catalog,
     gallery,
-    detail,
+    thumbnail,
     viewRoute,
     workspace,
     docsChrome,
@@ -470,6 +482,9 @@ function templateArchitectureFailures() {
       failures.push(`Templates architecture still depends on ${forbidden}.`);
     }
   }
+  if (catalog.includes("detailRoute")) {
+    failures.push("Template catalog must not restore removed detail routes.");
+  }
 
   return failures;
 }
@@ -477,7 +492,7 @@ function templateArchitectureFailures() {
 function blockArchitectureFailures() {
   const catalog = read("apps/docs/features/blocks/catalog.ts");
   const gallery = read("apps/docs/app/blocks/page.tsx");
-  const detail = read("apps/docs/app/blocks/[slug]/page.tsx");
+  const thumbnail = read("apps/docs/components/preview-thumbnail.tsx");
   const viewRoute = read("apps/docs/app/views/blocks/[slug]/page.tsx");
   const internalRoute = read("apps/docs/app/visual-test/blocks/[slug]/page.tsx");
   const redirects = read("apps/docs/app/docs/blocks/[slug]/page.tsx");
@@ -492,8 +507,13 @@ function blockArchitectureFailures() {
     [catalog, 'previewRoute: "/views/blocks/', "Block previews must be same-origin Views"],
     [catalog, "internalBlockFixtures", "Internal Block fixtures must be classified separately"],
     [gallery, "blockCatalog", "Blocks gallery must derive from the canonical catalog"],
-    [detail, "blockSlugs.map", "Block detail routes must derive static params from the catalog"],
-    [detail, "getBlock(slug)", "Block detail routes must reject unknown slugs"],
+    [
+      gallery,
+      "href={block.previewRoute}",
+      "Block cards must use their catalog-owned same-origin preview routes",
+    ],
+    [gallery, "src={block.previewRoute}", "Block cards must render their live catalog previews"],
+    [thumbnail, 'loading="lazy"', "Live Block previews must preserve lazy iframe loading"],
     [viewRoute, "blockSlugs.map", "Block View routes must derive static params from the catalog"],
     [viewRoute, "indexable: false", "Block Views must remain unindexed"],
     [internalRoute, "isInternalBlockFixture", "Internal fixtures must reject unknown slugs"],
@@ -504,7 +524,7 @@ function blockArchitectureFailures() {
       "Legacy public Block routes must redirect canonically",
     ],
     [docsChrome, 'href="/blocks"', "Primary navigation must use the canonical Blocks catalog"],
-    [sitemap, "blockCatalog", "Indexable Blocks must be derived into the sitemap"],
+    [sitemap, 'absoluteUrl("/blocks")', "The preview-surface sitemap must include Blocks"],
     [robots, '"/views/"', "Robots must exclude full-screen Views from crawling"],
     [robots, '"/visual-test/"', "Robots must exclude internal fixtures from crawling"],
   ];
@@ -545,11 +565,17 @@ function blockArchitectureFailures() {
     "feedback",
   ]) {
     if (
-      catalog.includes(`detailRoute: "/blocks/${internalSlug}"`) ||
+      catalog.includes(`previewRoute: "/views/blocks/${internalSlug}"`) ||
       docsChrome.includes(`href: "/blocks/${internalSlug}"`)
     ) {
       failures.push(`${internalSlug} must not be presented as a public Block.`);
     }
+  }
+  if (catalog.includes("detailRoute")) {
+    failures.push("Block catalog must not restore removed detail routes.");
+  }
+  if (gallery.includes('target="_blank"')) {
+    failures.push("Block cards must preserve same-tab navigation to support Back to Blocks.");
   }
 
   return failures;
@@ -568,9 +594,7 @@ function previewSurfaceGateFailures() {
   const routeFiles = [
     "apps/docs/app/playground/page.tsx",
     "apps/docs/app/blocks/page.tsx",
-    "apps/docs/app/blocks/[slug]/page.tsx",
     "apps/docs/app/templates/page.tsx",
-    "apps/docs/app/templates/[slug]/page.tsx",
     "apps/docs/app/views/[slug]/page.tsx",
     "apps/docs/app/views/blocks/[slug]/page.tsx",
     "apps/docs/app/docs/blocks/[slug]/page.tsx",

@@ -7,7 +7,6 @@ export type BlockDefinition = {
   category:
     "Authentication" | "Settings and account" | "Team and operations" | "Content and feedback";
   status: BlockStatus;
-  detailRoute: `/blocks/${string}`;
   previewRoute: `/views/blocks/${string}`;
   componentsUsed: readonly string[];
   intendedUse: string;
@@ -21,17 +20,15 @@ export const blockCatalog = [
   {
     slug: "sign-in",
     title: "Sign in",
-    description:
-      "A focused workspace sign-in form with validation, loading feedback, and recovery navigation.",
+    description: "A focused workspace sign-in layout with email, password, and recovery context.",
     category: "Authentication",
     status: "Preview",
-    detailRoute: "/blocks/sign-in",
     previewRoute: "/views/blocks/sign-in",
     componentsUsed: ["Alert", "Button", "Card", "Field", "Input"],
     intendedUse: "Adapt this block for a conventional email and password entry point.",
     boundaries: [
       "Authentication, session, SSO, and workspace-routing policy remain application concerns.",
-      "The preview validates locally and does not send credentials.",
+      "The preview is intentionally static and does not validate or send credentials.",
     ],
     relatedBlocks: ["create-account", "reset-password"],
     relatedTemplates: [],
@@ -41,16 +38,15 @@ export const blockCatalog = [
     slug: "create-account",
     title: "Create account",
     description:
-      "A compact registration form with realistic account copy, inline validation, and verification guidance.",
+      "A complete registration layout with identity, credentials, confirmation, and policy context.",
     category: "Authentication",
     status: "Preview",
-    detailRoute: "/blocks/create-account",
     previewRoute: "/views/blocks/create-account",
     componentsUsed: ["Alert", "Button", "Card", "Field", "Input"],
     intendedUse: "Use this block for a small self-serve account creation flow.",
     boundaries: [
       "Invitations, entitlement checks, provisioning, and verification delivery stay product-local.",
-      "The preview does not create an account or persist entered data.",
+      "The preview is intentionally static and does not validate, create an account, or persist data.",
     ],
     relatedBlocks: ["sign-in", "reset-password"],
     relatedTemplates: [],
@@ -59,17 +55,15 @@ export const blockCatalog = [
   {
     slug: "reset-password",
     title: "Reset password",
-    description:
-      "A single-task recovery form that transitions from email entry to clear success feedback.",
+    description: "A single-task recovery layout with email entry and sign-in context.",
     category: "Authentication",
     status: "Preview",
-    detailRoute: "/blocks/reset-password",
     previewRoute: "/views/blocks/reset-password",
     componentsUsed: ["Alert", "Button", "Card", "Field", "Input"],
     intendedUse: "Use this block to begin a conventional password recovery flow.",
     boundaries: [
       "Secure tokens, rate limits, email delivery, and password policy remain application concerns.",
-      "The preview only demonstrates the local form-state transition.",
+      "The preview is intentionally static and does not send a recovery request.",
     ],
     relatedBlocks: ["sign-in", "create-account"],
     relatedTemplates: [],
@@ -78,16 +72,27 @@ export const blockCatalog = [
   {
     slug: "profile-settings",
     title: "Profile settings",
-    description: "A bounded profile section for a workspace name and short public description.",
+    description:
+      "A bounded personal profile card with avatar upload, a short bio, and workspace visibility.",
     category: "Settings and account",
     status: "Preview",
-    detailRoute: "/blocks/profile-settings",
     previewRoute: "/views/blocks/profile-settings",
-    componentsUsed: ["Alert", "Button", "Field", "Input", "Textarea"],
+    componentsUsed: [
+      "Avatar",
+      "Button",
+      "Card",
+      "Field",
+      "FileInput",
+      "Input",
+      "Item",
+      "Separator",
+      "Switch",
+      "Textarea",
+    ],
     intendedUse: "Place this block inside an application-owned settings route.",
     boundaries: [
       "Navigation, persistence, permissions, and a complete settings layout are not included.",
-      "Saving only updates deterministic local preview state.",
+      "Avatar upload, visibility, and saving actions are intentionally inert in the preview.",
     ],
     relatedBlocks: ["notification-preferences", "security-settings"],
     relatedTemplates: ["operations-workspace"],
@@ -97,16 +102,15 @@ export const blockCatalog = [
     slug: "security-settings",
     title: "Security settings",
     description:
-      "A focused security section with an immediate two-factor setting and destructive confirmation.",
+      "A bounded security card for credentials, two-factor protection, active sessions, and guarded deletion.",
     category: "Settings and account",
     status: "Preview",
-    detailRoute: "/blocks/security-settings",
     previewRoute: "/views/blocks/security-settings",
-    componentsUsed: ["Button", "Dialog", "Field", "Input", "Separator", "Switch"],
+    componentsUsed: ["Alert", "Button", "Card", "Dialog", "Field", "Input", "Item"],
     intendedUse: "Adapt this block for account-level security controls and confirmations.",
     boundaries: [
       "Authorization, reauthentication, audit history, and deletion policy stay product-local.",
-      "The destructive action is intentionally inert in the preview.",
+      "The confirmed destructive action only shows a preview status and never deletes data.",
     ],
     relatedBlocks: ["profile-settings", "notification-preferences"],
     relatedTemplates: ["operations-workspace"],
@@ -115,12 +119,21 @@ export const blockCatalog = [
   {
     slug: "notification-preferences",
     title: "Notification preferences",
-    description: "A concise preference group for channel selection and digest frequency.",
+    description:
+      "A structured notification card for workspace activity, product updates, and email digests.",
     category: "Settings and account",
     status: "Preview",
-    detailRoute: "/blocks/notification-preferences",
     previewRoute: "/views/blocks/notification-preferences",
-    componentsUsed: ["Alert", "Button", "Checkbox", "FormGroup", "Select"],
+    componentsUsed: [
+      "Alert",
+      "Button",
+      "Card",
+      "FormGroup",
+      "Item",
+      "Select",
+      "Separator",
+      "Switch",
+    ],
     intendedUse: "Use this block for a small, save-based notification preference section.",
     boundaries: [
       "Delivery infrastructure, consent policy, and channel availability remain application concerns.",
@@ -134,25 +147,27 @@ export const blockCatalog = [
     slug: "table-toolbar",
     title: "Table toolbar",
     description:
-      "A basic operational table with search, status filtering, explicit row selection, bulk actions, and pagination.",
+      "A bounded project table with status tabs, search, contextual bulk actions, row menus, selection state, and pagination.",
     category: "Team and operations",
     status: "Preview",
-    detailRoute: "/blocks/table-toolbar",
     previewRoute: "/views/blocks/table-toolbar",
     componentsUsed: [
+      "Avatar",
       "Badge",
       "Button",
+      "Card",
       "Checkbox",
       "DropdownMenu",
       "EmptyState",
       "Input",
       "Pagination",
       "Table",
+      "Tabs",
     ],
     intendedUse: "Use this block around a small, non-virtualized table workflow.",
     boundaries: [
       "Saved views, advanced filters, column settings, and virtualization belong to Pro or the app.",
-      "Filtering, selection, and pagination are deterministic local preview state.",
+      "Filtering and selection use local preview state; pagination is a static table control.",
     ],
     relatedBlocks: ["empty-project"],
     relatedTemplates: ["operations-workspace"],
@@ -164,7 +179,6 @@ export const blockCatalog = [
     description: "A bounded identity and account-details composition with one focused edit action.",
     category: "Settings and account",
     status: "Preview",
-    detailRoute: "/blocks/account-summary",
     previewRoute: "/views/blocks/account-summary",
     componentsUsed: [
       "Avatar",
@@ -173,7 +187,12 @@ export const blockCatalog = [
       "Card",
       "Dialog",
       "Field",
+      "Heading",
+      "Input",
+      "Item",
       "KeyValue",
+      "Separator",
+      "Text",
       "Textarea",
     ],
     intendedUse: "Use this block for a compact account overview inside a profile or settings area.",
@@ -192,9 +211,8 @@ export const blockCatalog = [
       "A practical first-project empty state with one primary next step and restrained secondary guidance.",
     category: "Content and feedback",
     status: "Preview",
-    detailRoute: "/blocks/empty-project",
     previewRoute: "/views/blocks/empty-project",
-    componentsUsed: ["Button", "EmptyState"],
+    componentsUsed: ["Button", "EmptyState", "Icon"],
     intendedUse:
       "Use this block when a collection is genuinely empty and creation is the next task.",
     boundaries: [
@@ -212,13 +230,12 @@ export const blockCatalog = [
       "A deterministic upload-status composition with progress, completion, failure, retry, and cancellation feedback.",
     category: "Content and feedback",
     status: "Experimental",
-    detailRoute: "/blocks/file-upload-state",
     previewRoute: "/views/blocks/file-upload-state",
-    componentsUsed: ["Alert", "Button", "Progress", "Spinner"],
-    intendedUse: "Adapt this block around an application-owned upload operation.",
+    componentsUsed: ["Button", "Card", "Icon", "Item", "Spinner", "Tooltip"],
+    intendedUse: "Adapt this block around an application-owned batch upload operation.",
     boundaries: [
       "File selection, transport, retries, persistence, and server errors remain application concerns.",
-      "Preview controls only switch between deterministic local states.",
+      "The preview represents deterministic local file states and does not perform uploads.",
     ],
     relatedBlocks: ["empty-project"],
     relatedTemplates: ["operations-workspace"],

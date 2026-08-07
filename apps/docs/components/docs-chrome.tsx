@@ -58,8 +58,6 @@ import {
 } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
 import { mcpInstall, mcpLocalConfiguration } from "../lib/public-commands";
-import { blockCatalog } from "../features/blocks/catalog";
-import { templateCatalog } from "../features/templates/catalog";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
 type ColorMode = (typeof modes)[number];
@@ -219,34 +217,6 @@ const componentToc: TocItem[] = [
   { id: "tokens", label: "Tokens" },
 ];
 
-const compositionToc: TocItem[] = [
-  { id: "overview", label: "Overview" },
-  { id: "live-preview", label: "Live preview" },
-  { id: "intended-use", label: "Intended use" },
-  { id: "code", label: "Code" },
-  { id: "anatomy", label: "Anatomy" },
-  { id: "accessibility", label: "Accessibility" },
-  { id: "responsive-behaviour", label: "Responsive behaviour" },
-  { id: "boundaries", label: "Boundaries" },
-  { id: "related-surfaces", label: "Related surfaces" },
-];
-
-const compositionGroup: NavGroup = {
-  title: "Blocks",
-  items: blockCatalog.map((block) => ({
-    href: block.detailRoute,
-    label: block.title,
-    icon:
-      block.category === "Authentication"
-        ? PanelLeft
-        : block.category === "Settings and account"
-          ? Wrench
-          : block.category === "Team and operations"
-            ? ListTree
-            : FileText,
-  })),
-};
-
 const buttonToc: TocItem[] = [
   { id: "overview", label: "Overview" },
   { id: "preview", label: "Preview" },
@@ -362,16 +332,11 @@ function getDefaultToc(pathname: string): TocItem[] {
   if (pathname === "/docs/components/button") return buttonToc;
   if (pathname === "/docs/components/badge") return badgeToc;
   if (pathname.startsWith("/docs/components/")) return componentToc;
-  if (pathname.startsWith("/blocks/")) {
-    return compositionToc;
-  }
   return tocByPath[pathname] ?? [];
 }
 
-const publicNavigationGroups = [...navGroups, compositionGroup];
-
 const searchEntries: DocsCommandEntry[] = [
-  ...publicNavigationGroups.flatMap((group) =>
+  ...navGroups.flatMap((group) =>
     group.items.flatMap((item) => {
       const pageSections = getDefaultToc(item.href);
       return [
@@ -408,12 +373,6 @@ const searchEntries: DocsCommandEntry[] = [
     group: "Product scenarios",
     description: "Explore complete app-like Nerio previews rendered inside the docs application.",
   },
-  ...templateCatalog.map((template) => ({
-    href: template.detailRoute,
-    title: template.title,
-    group: "Templates",
-    description: template.description,
-  })),
 ];
 
 const foundationGroups = navGroups.slice(0, 2);
@@ -424,9 +383,6 @@ const documentationItems: NavItem[] = [
 ];
 
 function getSidebarGroups(pathname: string): NavGroup[] {
-  if (pathname.startsWith("/blocks/")) {
-    return [compositionGroup];
-  }
   return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
 }
 
@@ -440,15 +396,9 @@ function getAdjacentDocs(pathname: string) {
   };
 }
 
-function MobileDocumentationNavigation({
-  pathname,
-  showPreviewSurfaces,
-}: {
-  pathname: string;
-  showPreviewSurfaces: boolean;
-}) {
+function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
   const [open, setOpen] = React.useState(false);
-  const navigationGroups = showPreviewSurfaces ? publicNavigationGroups : navGroups;
+  const navigationGroups = navGroups;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -836,10 +786,7 @@ export function DocsChrome({
             <Badge tone="neutral">{version}</Badge>
           </div>
 
-          <MobileDocumentationNavigation
-            pathname={pathname}
-            showPreviewSurfaces={showPreviewSurfaces}
-          />
+          <MobileDocumentationNavigation pathname={pathname} />
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link

@@ -27,11 +27,11 @@ export default async function LegacyBlockPage({ params }: { params: Promise<{ sl
   const { slug } = await params;
 
   if (blockSlugs.includes(slug as (typeof blockSlugs)[number])) {
-    permanentRedirect(`/blocks/${slug}`);
+    permanentRedirect(`/views/blocks/${slug}`);
   }
 
   const replacement = getLegacyPublicBlockRedirect(slug);
-  if (replacement) permanentRedirect(`/blocks/${replacement}`);
+  if (replacement) permanentRedirect(`/views/blocks/${replacement}`);
 
   if (isInternalBlockFixture(slug)) {
     permanentRedirect(`/visual-test/blocks/${slug}`);

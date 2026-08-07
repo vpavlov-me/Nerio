@@ -153,9 +153,9 @@ Geist is the default typeface through semantic font tokens. Components consume `
 ## Templates and preview Views
 
 Templates and full-screen preview Views live inside `apps/docs`; they are not standalone
-applications, domains, repositories, or Vercel projects. `/templates` is the catalog,
-`/templates/[slug]` is the descriptive page, and `/views/[slug]` is the clean same-origin preview
-without documentation chrome.
+applications, domains, repositories, or Vercel projects. `/templates` is the catalog, each catalog
+card links directly to `/views/[slug]` in a new tab, and the View is the clean same-origin preview
+without documentation chrome. Templates do not have separate descriptive detail routes.
 
 Operations Workspace is the first Template and remains a credible universal product workspace rather
 than a banking or finance-only dashboard. Templates may compose Core and template-local code.
@@ -171,5 +171,5 @@ deployment override. When it is unset, public production defaults to hidden whil
 preview environments default to visible.
 
 The gate applies to primary and mobile navigation, documentation search, sitemap and `llms.txt`
-discovery, catalog and detail routes, legacy public redirects, and full-screen Views. Internal
+discovery, catalog routes, legacy public redirects, and full-screen Views. Internal
 unindexed visual-test fixtures remain separate from the public Blocks and Templates contract.

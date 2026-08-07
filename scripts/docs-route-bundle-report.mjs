@@ -42,8 +42,8 @@ const routeDefinitions = [
     manifest: "app/docs/components/command-primitive/page_client-reference-manifest.js",
   },
   {
-    route: "/templates/operations-workspace",
-    manifest: "app/templates/[slug]/page_client-reference-manifest.js",
+    route: "/templates",
+    manifest: "app/templates/page_client-reference-manifest.js",
   },
   {
     route: "/views/operations-workspace",

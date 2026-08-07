@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Badge, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@nerio-ui/ui";
-import { Button } from "@nerio-ui/ui/client";
+import { PreviewThumbnail } from "../../components/preview-thumbnail";
 import { blockCatalog } from "../../features/blocks/catalog";
 import { arePreviewSurfacesEnabled } from "../../lib/deployment";
 import { createPageMetadata } from "../../lib/seo";
@@ -13,74 +12,38 @@ export const metadata = createPageMetadata({
   path: "/blocks",
 });
 
-const categories = [...new Set(blockCatalog.map((block) => block.category))];
-
-function getCategoryId(category: string) {
-  return `blocks-${category
-    .toLowerCase()
-    .replaceAll(/[^a-z0-9]+/g, "-")
-    .replaceAll(/^-|-$/g, "")}`;
-}
-
 export default function BlocksPage() {
   if (!arePreviewSurfacesEnabled()) notFound();
 
   return (
-    <article className="doc-page blocks-page">
-      <header className="templates-hero">
-        <p className="doc-kicker">Product compositions · Preview</p>
+    <article className="doc-page catalog-page blocks-catalog-page">
+      <header className="catalog-hero">
         <h1>Start from one clear product task.</h1>
-        <p className="doc-lede">
+        <p>
           Blocks are bounded, adaptable compositions built primarily from Nerio Core. They are
           smaller than Templates and deliberately exclude routing, persistence, backend behavior,
           and business policy.
         </p>
       </header>
 
-      {categories.map((category) => (
-        <section
-          key={category}
-          className="blocks-category"
-          aria-labelledby={getCategoryId(category)}
-        >
-          <h2 id={getCategoryId(category)}>{category}</h2>
-          <div className="templates-grid">
-            {blockCatalog
-              .filter((block) => block.category === category)
-              .map((block) => (
-                <Card key={block.slug} className="template-card">
-                  <CardHeader>
-                    <div className="template-card__eyebrow">
-                      <span>{block.category}</span>
-                      <Badge tone={block.status === "Preview" ? "info" : "neutral"}>
-                        {block.status}
-                      </Badge>
-                    </div>
-                    <CardTitle>{block.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{block.description}</p>
-                    <p className="template-card__coverage">
-                      {block.componentsUsed.length} Core components · one bounded task
-                    </p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button
-                      nativeButton={false}
-                      variant="secondary"
-                      render={<Link href={block.detailRoute} />}
-                    >
-                      View details
-                    </Button>
-                    <Button nativeButton={false} render={<Link href={block.previewRoute} />}>
-                      Open preview
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-          </div>
-        </section>
-      ))}
+      <section className="catalog-grid" aria-label="Block catalog">
+        {blockCatalog.map((block) => (
+          <article key={block.slug} className="catalog-card">
+            <div className="catalog-card__media">
+              <PreviewThumbnail src={block.previewRoute} title={block.title} />
+            </div>
+            <div className="catalog-card__content">
+              <h2>{block.title}</h2>
+              <p>{block.description}</p>
+            </div>
+            <Link
+              className="catalog-card__link"
+              href={block.previewRoute}
+              aria-label={`Open ${block.title} preview`}
+            />
+          </article>
+        ))}
+      </section>
     </article>
   );
 }

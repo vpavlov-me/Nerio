@@ -10,7 +10,7 @@ const documentationRoutes = [
   "/docs/components/calendar",
   "/docs/components/date-picker",
   "/docs/components/command-primitive",
-  "/templates/operations-workspace",
+  "/templates",
 ];
 
 for (const route of documentationRoutes) {

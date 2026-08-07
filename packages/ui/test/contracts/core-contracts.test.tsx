@@ -719,6 +719,19 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-switch-thumb-background-checked: var(--n-gray-0);");
     expect(tokens).toContain("--n-list-gap: var(--n-space-1);");
     expect(tokens).toContain("--n-list-item-padding: var(--n-space-2);");
+    expect(tokens).toContain("--n-card-padding-md: var(--n-space-6);");
+    expect(tokens).toMatch(
+      /:root\[data-density="compact"\][\s\S]*--n-card-padding-md: var\(--n-space-5\);/,
+    );
+    expect(tokens).toContain("--n-dialog-padding: var(--n-space-6);");
+    expect(tokens).toContain("--n-sheet-padding: var(--n-space-6);");
+    expect(tokens).toContain("--n-popover-padding: var(--n-density-space-xl);");
+    expect(tokens).toMatch(
+      /:root\[data-density="compact"\][\s\S]*--n-dialog-padding: var\(--n-space-5\);/,
+    );
+    expect(tokens).toMatch(
+      /:root\[data-density="compact"\][\s\S]*--n-sheet-padding: var\(--n-space-5\);/,
+    );
     expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
     expect(tokens).toContain("--n-card-section-gap: var(--n-space-2);");
     expect(tokens).toContain("--n-card-border-width: var(--n-border-width-default);");
@@ -1920,6 +1933,10 @@ describe("Core static contracts", () => {
     expect(screen.getByText("No results").closest("[data-slot]")).toHaveAttribute(
       "data-slot",
       "empty-state-title",
+    );
+    expect(screen.getByRole("heading", { name: "No results" })).toHaveClass(
+      "text-(length:--n-font-size-lg)",
+      "[[data-size=lg]_&]:text-(length:--n-font-size-xl)",
     );
     expect(screen.getByText("Try a different query.")).toHaveAttribute(
       "data-slot",

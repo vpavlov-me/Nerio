@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
 });
 
-test("derives the public gallery, detail pages, and same-origin Views from one catalog", async ({
+test("derives the public screenshot gallery and same-origin Views from one catalog", async ({
   page,
 }) => {
   const problems = monitorPage(page);
@@ -42,15 +42,28 @@ test("derives the public gallery, detail pages, and same-origin Views from one c
     page.getByRole("heading", { level: 1, name: "Start from one clear product task." }),
   ).toBeVisible();
 
-  for (const [, title] of publicBlocks) {
+  for (const [slug, title] of publicBlocks) {
     await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+    const link = page.getByRole("link", { name: `Open ${title} preview` });
+    const card = page.locator(".catalog-card").filter({ has: link });
+    await expect(link).toHaveAttribute("href", `/views/blocks/${slug}`);
+    await expect(link).not.toHaveAttribute("target", "_blank");
+    await card.scrollIntoViewIfNeeded();
+    const thumbnail = card.locator("iframe");
+    await expect(thumbnail).toHaveAttribute("src", `/views/blocks/${slug}`);
+    await expect(thumbnail).toHaveAttribute("tabindex", "-1");
+    await expect(thumbnail).toHaveAttribute("aria-hidden", "true");
   }
-
-  await page.getByRole("link", { name: "View details" }).first().click();
-  await expect(page).toHaveURL(/\/blocks\/sign-in$/);
-  const frame = page.locator('iframe[title="Sign in preview"]');
-  await expect(frame).toHaveAttribute("src", "/views/blocks/sign-in");
-  await expect(frame.contentFrame().getByRole("heading", { name: "Welcome back" })).toBeVisible();
+  await expect(page.locator(".catalog-card img")).toHaveCount(0);
+  await expect(page.getByText("View details")).toHaveCount(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(() =>
+      page.locator(".catalog-grid").evaluate((grid) => {
+        return getComputedStyle(grid).gridTemplateColumns.split(" ").length;
+      }),
+    )
+    .toBe(1);
 
   expect([...requestedHosts]).not.toContain("nerio-demo.vercel.app");
   expect(problems).toEqual([]);
@@ -61,10 +74,111 @@ test("renders every public Block View without documentation chrome", async ({ pa
 
   for (const [slug] of publicBlocks) {
     await page.goto(`/views/blocks/${slug}`);
-    await expect(page.locator(".composition-preview")).toBeVisible();
+    await expect(page.locator(".block-view__content")).toBeVisible();
+    await expect(page.getByRole("link", { name: "Back to Blocks" })).toHaveAttribute(
+      "href",
+      "/blocks",
+    );
     await expect(page.locator(".docs-header")).toHaveCount(0);
   }
 
+  expect(problems).toEqual([]);
+});
+
+test("renders the complete Sign in structure and interactions", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/sign-in");
+
+  await expect(page.getByRole("heading", { name: "Login to your account" })).toBeVisible();
+  await expect(page.getByLabel("Email")).toHaveAttribute("placeholder", "m@example.com");
+  await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
+  await expect(page.getByText("Forgot your password?")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Login" })).toBeVisible();
+  await expect(page.getByText("Don't have an account?")).toBeVisible();
+  await expect(page.getByText("Sign up")).toBeVisible();
+  await expect(page.getByText("Login with Google")).toHaveCount(0);
+  await expect(page.locator(".composition-preview")).toHaveCount(0);
+  await expect(page.locator(".block-view__content a")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Login" }).click();
+  await expect(page.getByText("Enter a valid email address.")).toHaveCount(0);
+  await expect(page.getByText("Ready to continue")).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
+test("renders the complete Create account structure as a static preview", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/create-account");
+
+  await expect(page.getByText("Acme Inc.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
+  await expect(page.getByText("Enter your email below to create your account.")).toBeVisible();
+  await expect(page.getByLabel("Full name")).toHaveAttribute("placeholder", "Vladimir Pavlov");
+  await expect(page.getByLabel("Email")).toHaveAttribute("placeholder", "nerio@vpavlov.com");
+  await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Confirm password")).toBeVisible();
+  await expect(page.getByText("Must be at least 8 characters long.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Create account" })).toBeVisible();
+  await expect(page.getByText("Already have an account?")).toBeVisible();
+  await expect(page.getByText("Sign in")).toBeVisible();
+  await expect(page.getByText("Terms of Service")).toBeVisible();
+  await expect(page.getByText("Privacy Policy")).toBeVisible();
+  await expect(page.getByText("Email verification")).toHaveCount(0);
+  await expect(page.locator(".block-view__content a")).toHaveCount(0);
+
+  const url = page.url();
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page).toHaveURL(url);
+  expect(problems).toEqual([]);
+});
+
+test("renders the complete Reset password structure as a static preview", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/reset-password");
+
+  await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+  await expect(
+    page.getByText("Enter the email associated with your account and we’ll send you a reset link."),
+  ).toBeVisible();
+  await expect(page.getByLabel("Email")).toHaveAttribute("placeholder", "nerio@vpavlov.com");
+  await expect(page.getByRole("button", { name: "Send reset link" })).toBeVisible();
+  await expect(page.getByText("Remembered your password?")).toBeVisible();
+  await expect(page.getByText("Sign in")).toBeVisible();
+  await expect(page.locator(".block-view__content a")).toHaveCount(0);
+
+  const url = page.url();
+  await page.getByRole("button", { name: "Send reset link" }).click();
+  await expect(page).toHaveURL(url);
+  await expect(page.getByText("Enter a valid email address.")).toHaveCount(0);
+  await expect(page.getByText("Check your inbox")).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
+test("renders the complete Profile settings structure as a static preview", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/profile-settings");
+
+  await expect(page.getByRole("heading", { name: "Profile settings", exact: true })).toBeVisible();
+  await expect(page.getByText("Manage how you appear across Nerio.")).toBeVisible();
+  await expect(page.getByText("Vladimir Pavlov")).toBeVisible();
+  await expect(page.getByText("nerio@vpavlov.com")).toBeVisible();
+  await expect(page.getByRole("img", { name: "Vladimir Pavlov profile photo" })).toHaveAttribute(
+    "src",
+    "/avatars/lucas-moreau.png",
+  );
+  await expect(page.getByLabel("Profile photo")).toHaveAttribute("accept", "image/jpeg,image/png");
+  await expect(page.getByLabel("Display name")).toHaveValue("Vladimir Pavlov");
+  await expect(page.getByText("Shown across Nerio.")).toHaveCount(0);
+  await expect(page.getByLabel("Bio")).toHaveValue(
+    "Designing and maintaining Nerio for product teams.",
+  );
+  const profileVisibility = page.getByRole("switch", { name: "Show profile in workspace" });
+  await expect(profileVisibility).toBeChecked();
+  await profileVisibility.click();
+  await expect(profileVisibility).not.toBeChecked();
+  await expect(page.getByText("All changes saved")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Save changes" })).toBeDisabled();
+  await expect(page.getByText("Profile saved")).toHaveCount(0);
   expect(problems).toEqual([]);
 });
 
@@ -87,9 +201,9 @@ test("keeps internal fixtures unindexed and outside the public catalog", async (
 
 test("redirects legacy public and internal composition routes", async ({ request }) => {
   const cases = [
-    ["/docs/blocks/login", "/blocks/sign-in"],
-    ["/docs/blocks/settings-form", "/blocks/profile-settings"],
-    ["/docs/compositions/user-profile", "/blocks/account-summary"],
+    ["/docs/blocks/login", "/views/blocks/sign-in"],
+    ["/docs/blocks/settings-form", "/views/blocks/profile-settings"],
+    ["/docs/compositions/user-profile", "/views/blocks/account-summary"],
     ["/docs/blocks/overlay-playground", "/visual-test/blocks/overlay-playground"],
     ["/docs/compositions/dense-form", "/visual-test/blocks/dense-form"],
   ];
@@ -101,6 +215,7 @@ test("redirects legacy public and internal composition routes", async ({ request
   }
 
   for (const route of [
+    "/blocks/sign-in",
     "/blocks/toString",
     "/views/blocks/toString",
     "/visual-test/blocks/toString",
@@ -126,11 +241,11 @@ test("supports responsive, dark, compact, RTL, and keyboard Block behavior", asy
   await search.focus();
   await expect(search).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: "Status filter" })).toBeFocused();
+  await expect(page.getByRole("tab", { name: /All/ })).toBeFocused();
   await expect(page.locator("body")).not.toHaveCSS("overflow-x", "scroll");
 
   const firstSelection = page.getByRole("checkbox", { name: "Select Aster" });
   await firstSelection.check();
-  await expect(page.getByText("1 selected")).toBeVisible();
+  await expect(page.getByText("1 project selected")).toBeVisible();
   expect(problems).toEqual([]);
 });
