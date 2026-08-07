@@ -127,7 +127,7 @@ export const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescri
         ref={ref}
         {...props}
         className={cn(
-          "n-card__description m-0 text-(length:--n-font-size-sm) leading-(--n-line-height-normal) text-(--n-color-text-secondary)",
+          "n-card__description m-0 text-(length:--n-font-size-md) leading-(--n-line-height-normal) text-(--n-color-text-secondary)",
           className,
         )}
         data-slot="card-description"

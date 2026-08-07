@@ -2667,7 +2667,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "CardTitle / CardDescription",
         description:
-          "Primary and secondary text slots. CardTitle defaults to div and accepts an explicit semantic element through as.",
+          "Primary and secondary text slots. CardTitle defaults to div and CardDescription uses the standard 14 px body size.",
       },
     ],
     designNotes: [

@@ -626,7 +626,7 @@ test("shows a rich Card example with stronger external than internal spacing", a
   await expect(title).toHaveText("Design system rollout");
   await expect(title).toHaveJSProperty("tagName", "DIV");
   await expect(title).toHaveCSS("font-size", "16px");
-  await expect(card.locator('[data-slot="card-description"]')).toBeVisible();
+  await expect(card.locator('[data-slot="card-description"]')).toHaveCSS("font-size", "14px");
   await expect(card.locator('[data-slot="card-content"]')).toBeVisible();
   await expect(card.getByRole("button", { name: "Open workspace" })).toHaveAttribute(
     "data-variant",

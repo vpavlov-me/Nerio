@@ -38,7 +38,7 @@ change, Git tag, GitHub Release, or stable-readiness claim.
 
 - Changed CardTitle to render a neutral 16px `div` by default while preserving explicit heading
   opt-in through `as`, and made CardHeader consistently own title-description spacing beside
-  CardAction.
+  CardAction. CardDescription now uses the standard 14px body size.
 - Added MCP output schemas and structured content for all four discovery tools while preserving the
   existing JSON text payload, plus stable machine-readable missing-component errors.
 - Split standard documentation into server-rendered reference content and typed, statically

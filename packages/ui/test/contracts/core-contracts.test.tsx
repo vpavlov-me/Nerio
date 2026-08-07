@@ -1313,6 +1313,9 @@ describe("Core static contracts", () => {
     const title = screen.getByText("Workspace");
     expect(title).toHaveAttribute("data-slot", "card-title");
     expect(title.tagName).toBe("DIV");
+    expect(screen.getByText("Current delivery context")).toHaveClass(
+      "text-(length:--n-font-size-md)",
+    );
   });
 
   it("supports a bleed CardVisual while protecting Card-owned anatomy", () => {

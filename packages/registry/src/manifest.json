@@ -876,7 +876,7 @@
           "source": "../../ui/src/components/card.tsx",
           "target": "components/card.tsx",
           "role": "component",
-          "integrity": "sha256-41bfa2d34a4aba4e418a029c22cee13cb3fa193eb4cc9e0822df573984c10798"
+          "integrity": "sha256-85ff80ec0ba91b5e46ddce3f3488ab380a1cd9000d262fb9bca7db909b8f8ac0"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
