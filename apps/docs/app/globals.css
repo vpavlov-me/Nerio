@@ -2987,7 +2987,6 @@ pre {
 .composition-form,
 .composition-settings,
 .composition-feedback,
-.composition-profile,
 .composition-navigation,
 .composition-overlays,
 .composition-dense-form {
@@ -3053,7 +3052,6 @@ pre {
 
 .composition-settings h3,
 .composition-table h3,
-.composition-profile h3,
 .composition-navigation h3 {
   font-size: var(--n-font-size-base);
   font-weight: var(--n-font-weight-semibold);
@@ -3062,7 +3060,6 @@ pre {
 
 .composition-settings p,
 .composition-table p,
-.composition-profile p,
 .composition-feedback p,
 .composition-navigation p,
 .composition-overlays p {
@@ -3101,7 +3098,6 @@ pre {
 }
 
 .composition-save-bar,
-.composition-profile-head,
 .composition-actions,
 .composition-inline-status,
 .composition-top-nav {
@@ -3210,24 +3206,71 @@ pre {
   }
 }
 
-.composition-profile-head {
-  align-items: start;
-}
-
-.composition-profile-head > div {
-  flex: 1 1 12rem;
-}
-
 .composition-stat-grid {
   display: grid;
   gap: var(--n-space-3);
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.composition-key-values {
+.composition-account-summary-card {
+  margin-inline: auto;
+  max-inline-size: 40rem;
+}
+
+.composition-account-summary {
   display: grid;
+  gap: var(--n-density-space-xl);
+}
+
+.composition-account-summary__identity {
+  min-inline-size: 0;
+}
+
+.composition-account-summary__badges,
+.composition-account-summary__footer {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--n-space-2);
+}
+
+.composition-account-summary__badges {
+  justify-content: flex-end;
+}
+
+.composition-account-summary__metadata {
+  display: grid;
+  gap: var(--n-density-space-lg) var(--n-density-space-xl);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 0;
+}
+
+.composition-account-summary__metadata dd {
+  overflow-wrap: anywhere;
+}
+
+.composition-account-summary__footer {
+  justify-content: space-between;
+}
+
+.composition-account-summary__footer > .n-text {
+  flex: 1 1 15rem;
+  font-size: var(--n-font-size-sm);
+}
+
+.composition-account-summary__form {
+  display: grid;
+  gap: var(--n-density-space-lg);
+}
+
+@media (max-width: 36rem) {
+  .composition-account-summary__metadata {
+    grid-template-columns: 1fr;
+  }
+
+  .composition-account-summary__badges {
+    justify-content: flex-start;
+  }
 }
 
 .composition-empty-grid {

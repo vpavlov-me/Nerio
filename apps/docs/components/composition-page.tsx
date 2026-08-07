@@ -8,6 +8,7 @@ import {
   EllipsisVertical,
   ExternalLink,
   PackageOpen,
+  Settings,
   Type,
   UserPlus,
   X,
@@ -852,32 +853,89 @@ function TableToolbarPreview() {
 }
 
 function AccountSummaryPreview() {
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
   return (
-    <Card className="composition-profile">
-      <CardContent>
-        <div className="composition-profile-head">
-          <Avatar name="Alex Morgan" />
-          <div>
-            <h3>Alex Morgan</h3>
-            <p>Product designer · Northstar</p>
-          </div>
-          <Badge tone="success">Active</Badge>
-        </div>
-        <dl className="composition-key-values">
-          <KeyValue label="Email" value="alex@northstar.example" />
+    <Card className="composition-account-summary-card">
+      <CardHeader>
+        <Heading as="h2" size="lg">
+          Account summary
+        </Heading>
+        <Text tone="secondary">Profile and workspace membership details.</Text>
+      </CardHeader>
+      <CardContent className="composition-account-summary">
+        <Item className="composition-account-summary__identity" size="lg" variant="outline">
+          <ItemMedia>
+            <Avatar
+              alt="Vladimir Pavlov profile photo"
+              name="Vladimir Pavlov"
+              size="lg"
+              src="/avatars/lucas-moreau.png"
+            />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>Vladimir Pavlov</ItemTitle>
+            <ItemDescription>Product designer at Northstar</ItemDescription>
+          </ItemContent>
+          <ItemActions className="composition-account-summary__badges">
+            <Badge tone="success">Active</Badge>
+            <Badge>Member</Badge>
+          </ItemActions>
+        </Item>
+
+        <Separator />
+
+        <dl className="composition-account-summary__metadata">
+          <KeyValue label="Email" value="nerio@vpavlov.com" />
           <KeyValue label="Location" value="Tbilisi, Georgia" />
+          <KeyValue label="Time zone" value="GMT+4" />
           <KeyValue label="Member since" value="May 2024" />
+          <KeyValue label="Workspace role" value="Member" />
+          <KeyValue label="Last active" value="Today at 10:42 AM" />
         </dl>
-        <div className="composition-actions">
+
+        <Separator />
+
+        <div className="composition-account-summary__footer">
+          <Text tone="secondary">Account details are visible to workspace members.</Text>
           <Dialog
-            trigger={<Button>Edit account</Button>}
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+            trigger={
+              <Button
+                data-preview-interaction="allowed"
+                leadingIcon={Settings}
+                type="button"
+                variant="secondary"
+              >
+                Edit account
+              </Button>
+            }
             title="Edit account"
-            description="Update the public account details shown to collaborators."
+            description="Update the profile details shown to workspace members."
           >
-            <Field label="About">
-              <Textarea defaultValue="Product designer at Northstar." />
-            </Field>
-            <Button>Save changes</Button>
+            <div className="composition-account-summary__form">
+              <Field label="Display name">
+                <Input defaultValue="Vladimir Pavlov" />
+              </Field>
+              <Field label="Job title">
+                <Input defaultValue="Product designer" />
+              </Field>
+              <Field label="Location">
+                <Input defaultValue="Tbilisi, Georgia" />
+              </Field>
+              <Field label="About">
+                <Textarea defaultValue="Designing product experiences for the Northstar workspace." />
+              </Field>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="secondary" onClick={() => setDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="button" onClick={() => setDialogOpen(false)}>
+                Save changes
+              </Button>
+            </DialogFooter>
           </Dialog>
         </div>
       </CardContent>
@@ -1258,14 +1316,27 @@ const blocks: Record<string, Composition> = {
   },
   "account-summary": {
     purpose:
-      "Combines identity and account metadata in a bounded summary rather than a full profile page.",
-    components: ["Card", "Avatar", "KeyValue", "Badge", "Button", "Dialog", "Field", "Textarea"],
+      "Combines identity, workspace membership, and account metadata in a bounded summary rather than a full profile page.",
+    components: [
+      "Card",
+      "Avatar",
+      "Item",
+      "KeyValue",
+      "Badge",
+      "Button",
+      "Dialog",
+      "Field",
+      "Input",
+      "Textarea",
+      "Separator",
+    ],
     accessibility:
-      "Avatar fallback is derived from the person’s name, metadata uses a definition list, and editing opens a labelled dialog.",
-    responsive: "Identity and actions wrap while the account name remains first in reading order.",
+      "The profile photo has a descriptive alternative, metadata uses a definition list, status is named in text, and editing opens a labelled dialog.",
+    responsive:
+      "Identity and actions wrap while the account name remains first in reading order, and the metadata grid collapses to one column on narrow screens.",
     notes:
       "Activity feeds, social metrics, profile permissions, and a dashboard layout are intentionally excluded.",
-    code: '<Avatar name="Alex Morgan" />\n<KeyValue label="Email" value="alex@northstar.example" />\n<Dialog title="Edit account">...</Dialog>',
+    code: '<Card><Item variant="outline"><Avatar name="Vladimir Pavlov" src="/avatars/lucas-moreau.png" />...</Item><KeyValue label="Email" value="nerio@vpavlov.com" /><Dialog title="Edit account">...</Dialog></Card>',
     Preview: AccountSummaryPreview,
   },
   "empty-project": {
