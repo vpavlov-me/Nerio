@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const validator = resolve(root, "scripts/validate-core-1-x-capability-parity.mjs");
 const matrixPath = resolve(root, "quality/core-1-x-capability-parity.json");
+const catalogPath = resolve(root, "data/component-catalog.json");
 const manifestPath = resolve(root, "packages/registry/src/manifest.json");
 
 function run(...args) {
@@ -65,6 +66,22 @@ function invalidManifest(update, expected) {
   }
 }
 
+function invalidCatalog(update, expected) {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-capability-parity-catalog-"));
+  const target = resolve(directory, "component-catalog.json");
+  const catalog = JSON.parse(readFileSync(catalogPath, "utf8"));
+  update(catalog);
+  writeFileSync(target, `${JSON.stringify(catalog, null, 2)}\n`);
+  try {
+    const result = run("--catalog", target);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, expected);
+    assert.doesNotMatch(result.stderr, /TypeError|ERR_INVALID_ARG_TYPE/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
 test("capability parity validator accepts the repository decision", () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
@@ -108,6 +125,15 @@ test("capability parity validator cross-checks linked issue dispositions", () =>
   }, /Parity capability direction-localization target must match issue #342/);
 });
 
+test("capability parity validator pins issue-specific dependencies", () => {
+  invalidMatrix((matrix) => {
+    matrix.capabilities.find((capability) => capability.id === "registry-namespaces").dependencies =
+      matrix.capabilities
+        .find((capability) => capability.id === "registry-namespaces")
+        .dependencies.filter((issue) => issue !== 352);
+  }, /Parity capability registry-namespaces dependencies must include issue #353 dependencies: 352/);
+});
+
 test("capability parity validator pins priority and target values", () => {
   invalidMatrix((matrix) => {
     matrix.priorityValues.push("TYPO");
@@ -149,6 +175,12 @@ test("capability parity validator detects stale baseline metadata", () => {
   invalidMatrix((matrix) => {
     matrix.baseline.baseUiVersion = "1.5.0";
   }, /Parity baseline Base UI version must match/);
+});
+
+test("capability parity validator protects the complete catalog baseline", () => {
+  invalidCatalog((catalog) => {
+    catalog.components[0].description = `${catalog.components[0].description} changed`;
+  }, /Parity baseline component catalog hash is stale/);
 });
 
 test("capability parity validator protects the complete Registry baseline", () => {
