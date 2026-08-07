@@ -227,6 +227,12 @@
   scroll-margin-block-start: var(--n-space-6);
 }
 
+.card-heading {
+  display: grid;
+  gap: var(--n-card-section-gap);
+  min-inline-size: 0;
+}
+
 .delivery-chart {
   block-size: 13rem;
   min-inline-size: 0;

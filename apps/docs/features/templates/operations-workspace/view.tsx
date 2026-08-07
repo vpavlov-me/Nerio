@@ -710,7 +710,7 @@ function OperationsWorkspace() {
 
           <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="delivery-health">
             <CardHeader>
-              <div>
+              <div className={styles["card-heading"]}>
                 <CardTitle>Delivery health</CardTitle>
                 <CardDescription>Weekly completion rate across active initiatives.</CardDescription>
               </div>
@@ -738,7 +738,10 @@ function OperationsWorkspace() {
                   <XAxis
                     axisLine={false}
                     dataKey="day"
-                    tick={{ fill: "var(--n-color-text-tertiary)", fontSize: 11 }}
+                    tick={{
+                      fill: "var(--n-color-text-tertiary)",
+                      fontSize: "var(--n-font-size-xs)",
+                    }}
                     tickLine={false}
                   />
                   <YAxis hide domain={[50, 100]} />
@@ -766,7 +769,7 @@ function OperationsWorkspace() {
 
           <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="team-capacity">
             <CardHeader>
-              <div>
+              <div className={styles["card-heading"]}>
                 <CardTitle>Team capacity</CardTitle>
                 <CardDescription>Capacity by team across active delivery work.</CardDescription>
               </div>
@@ -800,7 +803,7 @@ function OperationsWorkspace() {
             id="operational-risks"
           >
             <CardHeader>
-              <div>
+              <div className={styles["card-heading"]}>
                 <CardTitle>Operational risks</CardTitle>
                 <CardDescription>Blockers that need an owner or decision.</CardDescription>
               </div>
@@ -830,7 +833,7 @@ function OperationsWorkspace() {
             id="upcoming-milestones"
           >
             <CardHeader>
-              <div>
+              <div className={styles["card-heading"]}>
                 <CardTitle>Upcoming milestones</CardTitle>
                 <CardDescription>Next delivery moments across the portfolio.</CardDescription>
               </div>
@@ -857,7 +860,7 @@ function OperationsWorkspace() {
 
           <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="cycle-time">
             <CardHeader>
-              <div>
+              <div className={styles["card-heading"]}>
                 <CardTitle>Cycle time</CardTitle>
                 <CardDescription>Median time from start to completion.</CardDescription>
               </div>
@@ -895,7 +898,10 @@ function OperationsWorkspace() {
                   <XAxis
                     axisLine={false}
                     dataKey="week"
-                    tick={{ fill: "var(--n-color-text-tertiary)", fontSize: 11 }}
+                    tick={{
+                      fill: "var(--n-color-text-tertiary)",
+                      fontSize: "var(--n-font-size-xs)",
+                    }}
                     tickLine={false}
                   />
                   <YAxis hide domain={[4, 7]} />
@@ -923,7 +929,7 @@ function OperationsWorkspace() {
 
           <Card className={`${styles["span-8"]} ${styles["workspace-panel"]}`} id="initiatives">
             <CardHeader>
-              <div>
+              <div className={styles["card-heading"]}>
                 <CardTitle>Initiatives</CardTitle>
                 <CardDescription>
                   Portfolio status, ownership, and delivery progress.
@@ -991,7 +997,7 @@ function OperationsWorkspace() {
 
           <Card className={`${styles["span-4"]} ${styles["workspace-panel"]}`} id="activity">
             <CardHeader>
-              <div>
+              <div className={styles["card-heading"]}>
                 <CardTitle>Recent activity</CardTitle>
                 <CardDescription>Latest delivery updates across teams.</CardDescription>
               </div>

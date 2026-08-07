@@ -77,7 +77,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardSectionProps>(fun
       ref={ref}
       {...props}
       className={cn(
-        "n-card__header grid min-w-0 gap-(--n-card-section-gap) has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)_auto] has-[>[data-slot=card-action]]:items-start [&>div:not([data-slot=card-action])]:grid [&>div:not([data-slot=card-action])]:min-w-0 [&>div:not([data-slot=card-action])]:gap-(--n-card-section-gap) max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
+        "n-card__header grid min-w-0 gap-(--n-card-section-gap) has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)_auto] has-[>[data-slot=card-action]]:items-start max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
         className,
       )}
       data-slot="card-header"

@@ -1339,7 +1339,7 @@ describe("Core static contracts", () => {
     expect(source).toContain(
       "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
-    expect(source).toContain("[&>div:not([data-slot=card-action])]:gap-(--n-card-section-gap)");
+    expect(source).not.toContain("[&>div:not([data-slot=card-action])]");
     expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");
   });
 
