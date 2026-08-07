@@ -718,7 +718,7 @@
   --n-calendar-easing: var(--n-motion-hover-easing);
   --n-dialog-width-md: 34rem;
   --n-dialog-viewport-inset: var(--n-density-space-lg);
-  --n-dialog-padding: var(--n-density-space-xl);
+  --n-dialog-padding: var(--n-space-6);
   --n-dialog-header-gap: var(--n-density-space-lg);
   --n-dialog-header-margin: var(--n-density-space-lg);
   --n-dialog-body-gap: var(--n-density-space-lg);
@@ -728,7 +728,7 @@
   --n-sheet-height-sm: 18rem;
   --n-sheet-height-md: 28rem;
   --n-sheet-height-lg: 36rem;
-  --n-sheet-padding: var(--n-density-space-xl);
+  --n-sheet-padding: var(--n-space-6);
   --n-sheet-gap: var(--n-density-space-lg);
   --n-sheet-radius: var(--n-radius-overlay);
   --n-sheet-backdrop: var(--n-overlay-backdrop);
@@ -968,7 +968,7 @@
   --n-overlay-duration: var(--n-motion-overlay-enter-duration);
   --n-overlay-easing: var(--n-motion-overlay-enter-easing);
   --n-popover-width-md: 20rem;
-  --n-popover-padding: var(--n-space-3);
+  --n-popover-padding: var(--n-density-space-xl);
   --n-popover-gap: var(--n-space-2);
   --n-popover-radius: var(--n-radius-lg);
   --n-tooltip-radius: var(--n-radius-lg);
@@ -1499,7 +1499,8 @@
   --n-pagination-item-size: 1.75rem;
   --n-list-item-padding: var(--n-space-1-5);
   --n-tabs-trigger-padding-inline-md: var(--n-density-space-md);
-  --n-dialog-padding: var(--n-density-space-xl);
+  --n-dialog-padding: var(--n-space-5);
+  --n-sheet-padding: var(--n-space-5);
   --n-sidebar-region-padding: var(--n-density-space-lg);
   --n-sidebar-inset-gap: var(--n-density-space-lg);
   --n-sidebar-rail-hit-area: var(--n-size-control-md);

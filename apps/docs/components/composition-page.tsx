@@ -14,6 +14,7 @@ import {
   CardHeader,
   Checkbox,
   Dialog,
+  DialogFooter,
   DropdownMenu,
   EmptyState,
   EmptyStateActions,
@@ -27,6 +28,7 @@ import {
   Icon,
   Input,
   Item,
+  ItemActions,
   ItemContent,
   ItemDescription,
   ItemMedia,
@@ -353,34 +355,129 @@ function NotificationPreferencesPreview() {
 }
 
 function SecuritySettingsPreview() {
+  const accountName = "Vladimir Pavlov";
+  const [confirmation, setConfirmation] = React.useState("");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [confirmed, setConfirmed] = React.useState(false);
+  const canDelete = confirmation === accountName;
+
+  function handleDialogOpenChange(open: boolean) {
+    setDialogOpen(open);
+    if (!open) {
+      setConfirmation("");
+    }
+  }
+
   return (
-    <div className="composition-settings">
-      <section>
-        <h3>Account security</h3>
-        <label className="composition-switch">
-          <span>
-            Require two-factor authentication
-            <small>Add a second verification step when signing in.</small>
-          </span>
-          <Switch aria-label="Require two-factor authentication" />
-        </label>
-      </section>
-      <Separator />
-      <section className="composition-danger">
-        <h3>Delete account</h3>
-        <p>Permanently remove this account and its personal data.</p>
-        <Dialog
-          trigger={<Button variant="danger">Delete account</Button>}
-          title="Delete account"
-          description="This action cannot be undone."
-        >
-          <Field label="Type DELETE to confirm">
-            <Input autoComplete="off" />
-          </Field>
-          <Button variant="danger">Delete account</Button>
-        </Dialog>
-      </section>
-    </div>
+    <Card className="composition-security-settings-card">
+      <CardHeader>
+        <Heading as="h2" size="lg">
+          Security settings
+        </Heading>
+        <Text tone="secondary">Manage sign-in protection and sensitive account actions.</Text>
+      </CardHeader>
+      <CardContent className="composition-security-settings">
+        <Item className="composition-security-settings__item" size="lg">
+          <ItemContent>
+            <ItemTitle>Password</ItemTitle>
+            <ItemDescription>Last changed 3 months ago.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Button type="button" variant="secondary">
+              Change password
+            </Button>
+          </ItemActions>
+        </Item>
+
+        <Item className="composition-security-settings__item" size="lg">
+          <ItemContent>
+            <ItemTitle>Two-factor authentication</ItemTitle>
+            <ItemDescription>Add an extra verification step when signing in.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Button type="button" variant="secondary">
+              Set up
+            </Button>
+          </ItemActions>
+        </Item>
+
+        <Item className="composition-security-settings__item" size="lg">
+          <ItemContent>
+            <ItemTitle>Active sessions</ItemTitle>
+            <ItemDescription>You’re signed in on 2 devices.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Button type="button" variant="secondary">
+              Review sessions
+            </Button>
+          </ItemActions>
+        </Item>
+
+        <Item className="composition-security-settings__item" size="lg">
+          <ItemContent>
+            <ItemTitle className="composition-security-settings__danger-title">
+              Delete account
+            </ItemTitle>
+            <ItemDescription>
+              Permanently remove your account and personal data. This action cannot be undone.
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Dialog
+              open={dialogOpen}
+              onOpenChange={handleDialogOpenChange}
+              trigger={
+                <Button data-preview-interaction="allowed" type="button" variant="danger">
+                  Delete account
+                </Button>
+              }
+              title="Delete your account?"
+              description="This permanently removes your Nerio account, profile, and personal data. This action cannot be undone."
+            >
+              <Field
+                label={`Type ${accountName} to confirm`}
+                description="Enter the account name exactly as shown."
+              >
+                <Input
+                  autoFocus
+                  autoComplete="off"
+                  placeholder={accountName}
+                  value={confirmation}
+                  onChange={(event) => setConfirmation(event.currentTarget.value)}
+                />
+              </Field>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => handleDialogOpenChange(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  disabled={!canDelete}
+                  type="button"
+                  variant="danger"
+                  onClick={() => {
+                    if (!canDelete) return;
+                    setConfirmed(true);
+                    handleDialogOpenChange(false);
+                  }}
+                >
+                  Delete account
+                </Button>
+              </DialogFooter>
+            </Dialog>
+          </ItemActions>
+        </Item>
+
+        {confirmed ? (
+          <Alert role="status" title="Preview only" tone="info">
+            No account was deleted.
+          </Alert>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }
 
@@ -839,15 +936,15 @@ const blocks: Record<string, Composition> = {
   },
   "security-settings": {
     purpose:
-      "Pairs one immediate security preference with an appropriately separated destructive confirmation.",
-    components: ["Switch", "Separator", "Dialog", "Field", "Input", "Button"],
+      "Combines credential, two-factor, and session controls with a guarded, demo-safe destructive confirmation.",
+    components: ["Card", "Item", "Alert", "Dialog", "Field", "Input", "Button"],
     accessibility:
-      "The switch has an explicit accessible name and deletion opens a labelled modal with focus restoration.",
+      "The confirmation dialog is labelled, keeps consequences visible, and requires an exact account-name match before enabling deletion.",
     responsive:
-      "The setting row and destructive action wrap without changing source order or shrinking controls.",
+      "The bounded card remains one readable column while the status item and dialog actions wrap without changing source order.",
     notes:
-      "Authorization, reauthentication, audit history, and deletion policy remain product responsibilities.",
-    code: '<Switch aria-label="Require two-factor authentication" />\n<Dialog title="Delete account">...</Dialog>',
+      "Authorization, reauthentication, audit history, and deletion policy remain product responsibilities; the confirmed action only shows a preview status.",
+    code: '<Card><Item><ItemContent>Password</ItemContent><ItemActions><Button>Change password</Button></ItemActions></Item><Item><ItemContent>Two-factor authentication</ItemContent><ItemActions><Button>Set up</Button></ItemActions></Item><Item><ItemContent>Active sessions</ItemContent><ItemActions><Button>Review sessions</Button></ItemActions></Item><Item><ItemContent>Delete account</ItemContent><ItemActions><Dialog title="Delete your account?">...</Dialog></ItemActions></Item></Card>',
     Preview: SecuritySettingsPreview,
   },
   "notification-preferences": {
@@ -968,7 +1065,15 @@ const internalFixtures: Record<keyof typeof internalBlockFixtures, Composition> 
 
 function preventBlockPreviewAction(event: React.SyntheticEvent) {
   const target = event.target;
-  if (!(target instanceof Element) || !target.closest("a, button")) return;
+  if (!(target instanceof Element)) return;
+  const action = target.closest("a, button");
+  if (
+    !action ||
+    action.closest('[data-preview-interaction="allowed"]') ||
+    action.closest('[role="dialog"]')
+  ) {
+    return;
+  }
 
   event.preventDefault();
   event.stopPropagation();

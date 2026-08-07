@@ -2894,9 +2894,35 @@ pre {
   max-inline-size: 32rem;
 }
 
+.composition-security-settings-card {
+  margin-inline: auto;
+  max-inline-size: 32rem;
+}
+
 .composition-profile-settings {
   display: grid;
   gap: var(--n-density-space-xl);
+}
+
+.composition-security-settings {
+  gap: var(--n-density-space-md);
+}
+
+.composition-security-settings__item {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding-inline: var(--n-space-0);
+}
+
+.composition-security-settings__item > [data-slot="item-content"] {
+  grid-column-start: 1;
+}
+
+.composition-security-settings__item > [data-slot="item-actions"] {
+  grid-column-start: 2;
+}
+
+.composition-security-settings__danger-title {
+  color: var(--n-color-status-danger);
 }
 
 .composition-profile-settings .composition-save-bar {

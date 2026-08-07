@@ -104,15 +104,15 @@ export const blockCatalog = [
     slug: "security-settings",
     title: "Security settings",
     description:
-      "A focused security section with an immediate two-factor setting and destructive confirmation.",
+      "A bounded security card for credentials, two-factor protection, active sessions, and guarded deletion.",
     category: "Settings and account",
     status: "Preview",
     previewRoute: "/views/blocks/security-settings",
-    componentsUsed: ["Button", "Dialog", "Field", "Input", "Separator", "Switch"],
+    componentsUsed: ["Alert", "Button", "Card", "Dialog", "Field", "Input", "Item"],
     intendedUse: "Adapt this block for account-level security controls and confirmations.",
     boundaries: [
       "Authorization, reauthentication, audit history, and deletion policy stay product-local.",
-      "The destructive action is intentionally inert in the preview.",
+      "The confirmed destructive action only shows a preview status and never deletes data.",
     ],
     relatedBlocks: ["profile-settings", "notification-preferences"],
     relatedTemplates: ["operations-workspace"],
