@@ -1340,6 +1340,7 @@ describe("Core static contracts", () => {
       "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
     expect(source).not.toContain("[&>div:not([data-slot=card-action])]");
+    expect(source).toContain("[&>div:has(>[data-slot=card-title])]:gap-(--n-card-section-gap)");
     expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");
   });
 

@@ -876,7 +876,7 @@
           "source": "../../ui/src/components/card.tsx",
           "target": "components/card.tsx",
           "role": "component",
-          "integrity": "sha256-85ff80ec0ba91b5e46ddce3f3488ab380a1cd9000d262fb9bca7db909b8f8ac0"
+          "integrity": "sha256-a25e22454efc618521a5f8c40da2a0d8d602cc7ec170e5a25de44370c6c926a3"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
@@ -3431,7 +3431,7 @@
           "source": "../../ui/src/components/sheet.tsx",
           "target": "components/sheet.tsx",
           "role": "component",
-          "integrity": "sha256-ae78ebf261f90e172fe8b195a6dd6e9356a8119cd9f682960d7d809f0bc51a3f"
+          "integrity": "sha256-5fb8555f04f1f9d88b1e03aa1f3654cf207467ad1bd54604bf3a503ed872abfc"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
