@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openMobilePreviewSettings } from "./helpers/template-preview-settings.mjs";
 
 const themes = ["purple", "blue", "green", "orange", "red", "neutral"];
 const modes = ["system", "light", "dark"];
@@ -36,13 +37,6 @@ async function expectHealthyPage(
   await page.waitForTimeout(stabilityWindowMs);
   await expect(page.locator("nextjs-portal [data-nextjs-dialog-overlay]")).toHaveCount(0);
   expect(problems).toEqual([]);
-}
-
-async function openMobilePreviewSettings(page) {
-  await page.getByRole("button", { name: "Open workspace navigation" }).click();
-  const navigation = page.getByRole("dialog", { name: "Workspace navigation" });
-  await navigation.getByRole("button", { name: "Open preview settings" }).click();
-  return page.getByRole("dialog", { name: "Preview settings" });
 }
 
 test("health check observes failures during the stability window", async ({ page }) => {

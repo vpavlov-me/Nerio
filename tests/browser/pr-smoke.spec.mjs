@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openMobilePreviewSettings } from "./helpers/template-preview-settings.mjs";
 
 const healthStabilityWindowMs = 250;
 const workspaceRoute = "/views/operations-workspace";
@@ -26,13 +27,6 @@ async function expectHealthyPage(page, problems) {
   await expect(page.locator("nextjs-portal [data-nextjs-dialog-overlay]")).toHaveCount(0);
   await page.waitForTimeout(healthStabilityWindowMs);
   expect(problems).toEqual([]);
-}
-
-async function openMobilePreviewSettings(page) {
-  await page.getByRole("button", { name: "Open workspace navigation" }).click();
-  const navigation = page.getByRole("dialog", { name: "Workspace navigation" });
-  await navigation.getByRole("button", { name: "Open preview settings" }).click();
-  return page.getByRole("dialog", { name: "Preview settings" });
 }
 
 test("loads the homepage, docs, and a component page without runtime errors", async ({ page }) => {

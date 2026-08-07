@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openMobilePreviewSettings } from "./helpers/template-preview-settings.mjs";
 
 const workspaceRoute = "/views/operations-workspace";
 
@@ -18,13 +19,6 @@ function monitorPage(page) {
 test.beforeEach(async ({ page }) => {
   await page.route("https://mc.yandex.ru/**", (route) => route.fulfill({ status: 204 }));
 });
-
-async function openMobilePreviewSettings(page) {
-  await page.getByRole("button", { name: "Open workspace navigation" }).click();
-  const navigation = page.getByRole("dialog", { name: "Workspace navigation" });
-  await navigation.getByRole("button", { name: "Open preview settings" }).click();
-  return page.getByRole("dialog", { name: "Preview settings" });
-}
 
 test("preserves keyboard focus, modal restoration, table overflow, and native form behavior", async ({
   browserName,

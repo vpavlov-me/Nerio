@@ -159,14 +159,13 @@ export const SheetTitle = React.forwardRef<HTMLElement, SheetTitleProps>(functio
 ) {
   return (
     <BaseDialog.Title
-      ref={ref as React.Ref<HTMLHeadingElement>}
       {...props}
       className={cn(
         "n-sheet__title m-0 pe-(--n-size-control-sm) text-(length:--n-font-size-lg) font-(--n-font-weight-medium) leading-(--n-line-height-tight) text-(--n-color-text-primary)",
         className,
       )}
       data-slot="sheet-title"
-      render={<Component />}
+      render={<Component ref={ref as React.Ref<never>} />}
     />
   );
 });
