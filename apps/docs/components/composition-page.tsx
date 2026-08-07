@@ -305,52 +305,168 @@ function ProfileSettingsPreview() {
 }
 
 function NotificationPreferencesPreview() {
+  const initialPreferences = {
+    mentions: true,
+    projectUpdates: true,
+    workspaceActivity: false,
+    productAnnouncements: false,
+    digestFrequency: "weekly",
+  };
+  const [preferences, setPreferences] = React.useState(initialPreferences);
+  const [savedPreferences, setSavedPreferences] = React.useState(initialPreferences);
   const [saved, setSaved] = React.useState(false);
+  const hasUnsavedChanges = JSON.stringify(preferences) !== JSON.stringify(savedPreferences);
+  const digestDescription =
+    preferences.digestFrequency === "never"
+      ? "You won’t receive summary emails."
+      : preferences.digestFrequency === "daily"
+        ? "Daily digests arrive every morning at 9:00 AM."
+        : "Weekly digests arrive every Monday at 9:00 AM.";
+
+  function updatePreference<Key extends keyof typeof preferences>(
+    key: Key,
+    value: (typeof preferences)[Key],
+  ) {
+    setPreferences((current) => ({ ...current, [key]: value }));
+    setSaved(false);
+  }
+
+  function savePreferences() {
+    setSavedPreferences(preferences);
+    setSaved(true);
+  }
+
   return (
-    <form
-      className="composition-settings"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setSaved(true);
-      }}
-    >
-      <section>
-        <h3>Notification preferences</h3>
-        <p>Choose which workspace updates should reach your inbox.</p>
-        <FormGroup
-          title="Email notifications"
-          description="Select every update you want to receive."
+    <Card className="composition-notification-preferences-card">
+      <CardHeader>
+        <Heading as="h2" size="lg">
+          Notification preferences
+        </Heading>
+        <Text tone="secondary">Choose how Nerio keeps you informed about workspace activity.</Text>
+      </CardHeader>
+      <CardContent>
+        <form
+          className="composition-notification-preferences"
+          onSubmit={(event) => {
+            event.preventDefault();
+            savePreferences();
+          }}
         >
-          <label className="composition-choice">
-            <Checkbox defaultChecked /> Mentions and assignments
-          </label>
-          <label className="composition-choice">
-            <Checkbox defaultChecked /> Project status changes
-          </label>
-          <label className="composition-choice">
-            <Checkbox /> Product announcements
-          </label>
-        </FormGroup>
-        <Select
-          label="Digest frequency"
-          defaultValue="weekly"
-          options={[
-            { label: "Daily", value: "daily" },
-            { label: "Weekly", value: "weekly" },
-            { label: "Never", value: "never" },
-          ]}
-        />
-      </section>
-      {saved ? (
-        <Alert role="status" tone="success" title="Preferences saved">
-          Future workspace updates will use these choices.
-        </Alert>
-      ) : null}
-      <div className="composition-save-bar">
-        <span>{saved ? "Up to date" : "Review your notification choices"}</span>
-        <Button type="submit">Save preferences</Button>
-      </div>
-    </form>
+          <FormGroup
+            title="Activity notifications"
+            description="Stay informed about work that needs your attention."
+          >
+            <Item className="composition-notification-preferences__item" size="lg">
+              <ItemContent>
+                <ItemTitle>Mentions and assignments</ItemTitle>
+                <ItemDescription>When someone mentions you or assigns work to you.</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch
+                  aria-label="Mentions and assignments"
+                  checked={preferences.mentions}
+                  onCheckedChange={(checked) => updatePreference("mentions", checked)}
+                />
+              </ItemActions>
+            </Item>
+
+            <Item className="composition-notification-preferences__item" size="lg">
+              <ItemContent>
+                <ItemTitle>Project updates</ItemTitle>
+                <ItemDescription>
+                  Status changes and important activity in projects you follow.
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch
+                  aria-label="Project updates"
+                  checked={preferences.projectUpdates}
+                  onCheckedChange={(checked) => updatePreference("projectUpdates", checked)}
+                />
+              </ItemActions>
+            </Item>
+
+            <Item className="composition-notification-preferences__item" size="lg">
+              <ItemContent>
+                <ItemTitle>Workspace activity</ItemTitle>
+                <ItemDescription>
+                  New comments, approvals, and changes from your team.
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch
+                  aria-label="Workspace activity"
+                  checked={preferences.workspaceActivity}
+                  onCheckedChange={(checked) => updatePreference("workspaceActivity", checked)}
+                />
+              </ItemActions>
+            </Item>
+          </FormGroup>
+
+          <Separator />
+
+          <FormGroup
+            title="Nerio updates"
+            description="Occasional news about the product and its development."
+          >
+            <Item className="composition-notification-preferences__item" size="lg">
+              <ItemContent>
+                <ItemTitle>Product announcements</ItemTitle>
+                <ItemDescription>New features, improvements, and release notes.</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch
+                  aria-label="Product announcements"
+                  checked={preferences.productAnnouncements}
+                  onCheckedChange={(checked) => updatePreference("productAnnouncements", checked)}
+                />
+              </ItemActions>
+            </Item>
+          </FormGroup>
+
+          <Separator />
+
+          <Item className="composition-notification-preferences__item" size="lg">
+            <ItemContent>
+              <ItemTitle>Email digest</ItemTitle>
+              <ItemDescription>{digestDescription}</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Select
+                className="composition-notification-preferences__select"
+                data-preview-interaction="allowed"
+                label={<span className="sr-only">Email digest</span>}
+                value={preferences.digestFrequency}
+                onValueChange={(value) => updatePreference("digestFrequency", value)}
+                options={[
+                  { label: "Daily", value: "daily" },
+                  { label: "Weekly", value: "weekly" },
+                  { label: "Never", value: "never" },
+                ]}
+              />
+            </ItemActions>
+          </Item>
+
+          {saved ? (
+            <Alert role="status" tone="success" title="Preferences saved">
+              Future workspace updates will use these choices.
+            </Alert>
+          ) : null}
+
+          <div className="composition-save-bar">
+            <span>{hasUnsavedChanges ? "Unsaved changes" : "All changes saved"}</span>
+            <Button
+              data-preview-interaction="allowed"
+              disabled={!hasUnsavedChanges}
+              onClick={savePreferences}
+              type="button"
+            >
+              Save preferences
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -949,15 +1065,15 @@ const blocks: Record<string, Composition> = {
   },
   "notification-preferences": {
     purpose:
-      "Collects a small set of related notification choices without becoming a product-wide preferences system.",
-    components: ["FormGroup", "Checkbox", "Select", "Alert", "Button"],
+      "Presents workspace activity, product update, and digest preferences in a bounded settings card.",
+    components: ["Card", "FormGroup", "Item", "Switch", "Separator", "Select", "Alert", "Button"],
     accessibility:
-      "Related checkboxes use FormGroup semantics, the frequency control has a label, and save feedback is announced politely.",
+      "Related switches use FormGroup semantics and accessible names, the digest control includes contextual help, and save feedback is announced politely.",
     responsive:
-      "Choices stay in a readable vertical sequence and the save row wraps at narrow widths.",
+      "The bounded card stays in one readable column while item actions and the save row wrap at narrow widths.",
     notes:
-      "Consent rules, delivery infrastructure, and available channels remain application policy.",
-    code: '<FormGroup title="Email notifications"><Checkbox />...</FormGroup>\n<Select label="Digest frequency" />',
+      "Delivery infrastructure, consent rules, product-specific channels, and granular project subscriptions remain application policy.",
+    code: '<Card><FormGroup title="Activity notifications"><Item><ItemContent>Mentions and assignments</ItemContent><ItemActions><Switch /></ItemActions></Item></FormGroup><Select label="Email digest" /></Card>',
     Preview: NotificationPreferencesPreview,
   },
   "table-toolbar": {

@@ -121,11 +121,21 @@ export const blockCatalog = [
   {
     slug: "notification-preferences",
     title: "Notification preferences",
-    description: "A concise preference group for channel selection and digest frequency.",
+    description:
+      "A structured notification card for workspace activity, product updates, and email digests.",
     category: "Settings and account",
     status: "Preview",
     previewRoute: "/views/blocks/notification-preferences",
-    componentsUsed: ["Alert", "Button", "Checkbox", "FormGroup", "Select"],
+    componentsUsed: [
+      "Alert",
+      "Button",
+      "Card",
+      "FormGroup",
+      "Item",
+      "Select",
+      "Separator",
+      "Switch",
+    ],
     intendedUse: "Use this block for a small, save-based notification preference section.",
     boundaries: [
       "Delivery infrastructure, consent policy, and channel availability remain application concerns.",
