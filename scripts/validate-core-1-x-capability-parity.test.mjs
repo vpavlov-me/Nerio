@@ -131,7 +131,17 @@ test("capability parity validator pins issue-specific dependencies", () => {
       matrix.capabilities
         .find((capability) => capability.id === "registry-namespaces")
         .dependencies.filter((issue) => issue !== 352);
-  }, /Parity capability registry-namespaces dependencies must include issue #353 dependencies: 352/);
+  }, /Parity capability registry-namespaces dependencies is missing: 352/);
+});
+
+test("capability parity validator pins capability-specific dependencies", () => {
+  invalidMatrix((matrix) => {
+    matrix.capabilities.find(
+      (capability) => capability.id === "autocomplete-suggestions",
+    ).dependencies = matrix.capabilities
+      .find((capability) => capability.id === "autocomplete-suggestions")
+      .dependencies.filter((issue) => issue !== 346);
+  }, /Parity capability autocomplete-suggestions dependencies is missing: 346/);
 });
 
 test("capability parity validator pins priority and target values", () => {

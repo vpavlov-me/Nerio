@@ -226,6 +226,28 @@ for (const id of duplicates(capabilities.map((capability) => capability.id))) {
 const classifications = new Set(requiredClassifications);
 const priorities = new Set(matrix.priorityValues ?? []);
 const targets = new Set(matrix.targetValues ?? []);
+const requiredCapabilityDependencies = new Map([
+  ["direction-localization", [151, 341]],
+  ["disclosure-family", [151, 341, 342]],
+  ["compound-dialog-alert-dialog", [151, 341, 342]],
+  ["single-select-combobox", [151, 341, 342]],
+  ["search-field", [151, 341, 342]],
+  ["number-field", [151, 341, 342]],
+  ["otp-field", [151, 341, 342]],
+  ["grouped-selection", [151, 341, 342]],
+  ["multi-select", [151, 341, 342, 345, 348]],
+  ["compound-menu-family", [151, 341, 342]],
+  ["context-menu", [350]],
+  ["autocomplete-suggestions", [151, 341, 346]],
+  ["package-output", [151, 341]],
+  ["cli-lifecycle", [151, 341]],
+  ["registry-namespaces", [151, 341, 352]],
+  ["mcp-discovery", [151, 341]],
+  ["agent-skill", [151, 341]],
+  ["component-lab", [151, 341]],
+  ["core-recipes", [151, 341]],
+  ["figma-interchange", [151, 341, 342]],
+]);
 for (const capability of capabilities) {
   const label = `Parity capability ${capability.id ?? "<missing>"}`;
   assert(capability.id && capability.kind && capability.userProblem, `${label} is incomplete.`);
@@ -245,6 +267,12 @@ for (const capability of capabilities) {
   ]) {
     assert(Array.isArray(capability[field]), `${label} must define ${field}.`);
   }
+  assertUniqueOwnership(`${label} dependencies`, capability.dependencies);
+  compareSets(
+    `${label} dependencies`,
+    capability.dependencies,
+    requiredCapabilityDependencies.get(capability.id) ?? [],
+  );
   assert(capability.semverImpact, `${label} must define SemVer impact.`);
   assert(capability.acceptanceBoundary, `${label} must define an acceptance boundary.`);
   if (
