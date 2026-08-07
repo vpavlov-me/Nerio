@@ -10,6 +10,7 @@
     "componentCatalogSchemaVersion": 1,
     "registrySchemaVersion": "1.1.0",
     "registryItemCount": 46,
+    "registryManifestSha256": "c92f1c1db90bfeee6a4c665c6a074137a1938ddc2bc5ca4223681a7bef92d07f",
     "publicApiSnapshotSha256": "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3"
   },
   "classificationValues": {

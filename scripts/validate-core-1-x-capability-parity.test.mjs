@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const validator = resolve(root, "scripts/validate-core-1-x-capability-parity.mjs");
 const matrixPath = resolve(root, "quality/core-1-x-capability-parity.json");
+const manifestPath = resolve(root, "packages/registry/src/manifest.json");
 
 function run(...args) {
   return spawnSync(process.execPath, [validator, ...args], {
@@ -40,6 +41,22 @@ function invalidDocs(update, expected) {
   writeFileSync(target, update(docs));
   try {
     const result = run("--docs", target);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, expected);
+    assert.doesNotMatch(result.stderr, /TypeError|ERR_INVALID_ARG_TYPE/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
+
+function invalidManifest(update, expected) {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-capability-parity-manifest-"));
+  const target = resolve(directory, "manifest.json");
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+  update(manifest);
+  writeFileSync(target, `${JSON.stringify(manifest, null, 2)}\n`);
+  try {
+    const result = run("--manifest", target);
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, expected);
     assert.doesNotMatch(result.stderr, /TypeError|ERR_INVALID_ARG_TYPE/);
@@ -132,4 +149,10 @@ test("capability parity validator detects stale baseline metadata", () => {
   invalidMatrix((matrix) => {
     matrix.baseline.baseUiVersion = "1.5.0";
   }, /Parity baseline Base UI version must match/);
+});
+
+test("capability parity validator protects the complete Registry baseline", () => {
+  invalidManifest((manifest) => {
+    manifest.items[0].description = `${manifest.items[0].description} changed`;
+  }, /Parity baseline Registry manifest hash is stale/);
 });

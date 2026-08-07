@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -20,6 +21,19 @@ function assert(condition, message) {
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
+}
+
+function serializeCanonicalJson(value) {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(serializeCanonicalJson).join(",")}]`;
+  return `{${Object.keys(value)
+    .sort()
+    .map((key) => `${JSON.stringify(key)}:${serializeCanonicalJson(value[key])}`)
+    .join(",")}}`;
+}
+
+function canonicalJsonSha256(value) {
+  return createHash("sha256").update(serializeCanonicalJson(value)).digest("hex");
 }
 
 function duplicates(values) {
@@ -78,6 +92,10 @@ assert(
 assert(
   matrix.baseline?.registryItemCount === manifest.items?.length,
   "Parity baseline Registry item count is stale.",
+);
+assert(
+  matrix.baseline?.registryManifestSha256 === canonicalJsonSha256(manifest),
+  "Parity baseline Registry manifest hash is stale.",
 );
 assert(
   matrix.baseline?.coreVersion === manifest.version,
