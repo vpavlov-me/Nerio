@@ -12,7 +12,7 @@
     "registrySchemaVersion": "1.1.0",
     "registryItemCount": 46,
     "registryManifestSha256": "d6ffee5a0a90757f30379a5c91816b73c4f617546c5d2a84b35d689030997b6f",
-    "publicApiSnapshotSha256": "5353f4b0f9e412667a6610848edd855bb5d4ae16273be7ffbd4cb9ae76fdcd3f"
+    "publicApiSnapshotSha256": "764e6003dff2a128e04ca2c42a4598407d989e4bdbe23980ce3356a734ae2c4b"
   },
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
