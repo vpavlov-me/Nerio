@@ -512,7 +512,6 @@ function blockArchitectureFailures() {
       "href={block.previewRoute}",
       "Block cards must use their catalog-owned same-origin preview routes",
     ],
-    [gallery, 'target="_blank"', "Block cards must open full-screen previews in a new tab"],
     [gallery, "src={block.previewRoute}", "Block cards must render their live catalog previews"],
     [thumbnail, 'loading="lazy"', "Live Block previews must preserve lazy iframe loading"],
     [viewRoute, "blockSlugs.map", "Block View routes must derive static params from the catalog"],
@@ -574,6 +573,9 @@ function blockArchitectureFailures() {
   }
   if (catalog.includes("detailRoute")) {
     failures.push("Block catalog must not restore removed detail routes.");
+  }
+  if (gallery.includes('target="_blank"')) {
+    failures.push("Block cards must preserve same-tab navigation to support Back to Blocks.");
   }
 
   return failures;
