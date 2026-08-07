@@ -2,19 +2,31 @@
 
 import * as React from "react";
 import { densities, modes, themes } from "@nerio-ui/tokens";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip as ChartTooltip,
+  XAxis,
+  YAxis,
+} from "@nerio-ui/adapters/charts";
 import { Icon, SidebarContent, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
 import {
+  ArrowRight,
   Bell,
   Check,
+  Circle,
+  FileText,
   LayoutDashboard,
   ListTree,
   PanelLeft,
+  Rows3,
   Search,
   Settings,
   Sparkles,
 } from "@nerio-ui/adapters/icons";
 import {
-  Alert,
   Avatar,
   Badge,
   Button,
@@ -31,10 +43,8 @@ import {
   EmptyStateDescription,
   EmptyStateHeader,
   EmptyStateTitle,
-  Field,
   Input,
   Progress,
-  Popover,
   Select,
   Sheet,
   SheetBody,
@@ -47,7 +57,6 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-  Skeleton,
   Stat,
   Table,
   TableBody,
@@ -56,6 +65,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsTrigger,
   ToastProvider,
   ToastViewport,
   Tooltip,
@@ -67,6 +80,7 @@ import {
   readAppearanceFromRoot,
   type Appearance,
 } from "../../../lib/appearance";
+import { avatarPreviewAssets } from "../../../lib/avatar-preview-assets";
 import styles from "./view.module.css";
 
 const initiatives = [
@@ -107,24 +121,20 @@ const activity = [
   ["Jordan updated the content plan", "Help center refresh", "Yesterday"],
 ];
 
-const deliverySignals = [
-  ["Client portal launch", "14 of 18 milestones complete", 78],
-  ["Reporting migration", "11 of 16 dependencies cleared", 69],
-  ["Mobile onboarding", "9 of 10 flows approved", 90],
+const deliveryTrend = [
+  { day: "Mon", completion: 62 },
+  { day: "Tue", completion: 68 },
+  { day: "Wed", completion: 65 },
+  { day: "Thu", completion: 73 },
+  { day: "Fri", completion: 77 },
+  { day: "Sat", completion: 82 },
+  { day: "Sun", completion: 86 },
 ] as const;
 
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
 const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
 const modeOptions = modes.map((value) => ({ label: runtimeLabel(value), value }));
 const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), value }));
-
-const statusOptions = [
-  { label: "All statuses", value: "all" },
-  { label: "On track", value: "On track" },
-  { label: "At risk", value: "At risk" },
-  { label: "In review", value: "In review" },
-  { label: "Planned", value: "Planned" },
-];
 
 const workspaceCommands = [
   {
@@ -148,15 +158,27 @@ const workspaceCommands = [
 const navGroups = [
   {
     label: "Workspace",
-    items: [["Overview", LayoutDashboard, "#overview"]] as const,
+    items: [
+      { label: "Overview", icon: LayoutDashboard, active: true },
+      { label: "My work", icon: Check },
+      { label: "Inbox", icon: Bell },
+    ],
   },
   {
-    label: "Operations",
+    label: "Planning",
     items: [
-      ["Delivery health", Check, "#delivery-health"],
-      ["Initiatives", ListTree, "#initiatives"],
-      ["Activity", Bell, "#activity"],
-    ] as const,
+      { label: "Initiatives", icon: ListTree },
+      { label: "Active initiatives", nested: true },
+      { label: "Roadmap", icon: Rows3 },
+      { label: "Goals", icon: Sparkles },
+    ],
+  },
+  {
+    label: "Insights",
+    items: [
+      { label: "Workload", icon: Circle },
+      { label: "Reports", icon: FileText },
+    ],
   },
 ] as const;
 
@@ -177,24 +199,25 @@ function useMobileViewport() {
 function WorkspaceNavigation() {
   return (
     <nav className={styles["workspace-nav"]} aria-label="Workspace">
-      {navGroups.map((group, groupIndex) => (
+      {navGroups.map((group) => (
         <div className={styles["workspace-nav__group"]} key={group.label}>
           <span>{group.label}</span>
-          {group.items.map(([item, icon, href], itemIndex) => {
-            const active = groupIndex === 0 && itemIndex === 0;
+          {group.items.map((item) => {
+            const active = "active" in item && item.active;
             return (
               <Button
-                key={item}
+                key={item.label}
                 aria-current={active ? "page" : undefined}
                 className={styles["workspace-nav__item"]}
                 data-state={active ? "active" : "inactive"}
-                leadingIcon={icon}
+                data-nested={"nested" in item && item.nested ? "true" : undefined}
+                leadingIcon={"icon" in item ? item.icon : undefined}
                 nativeButton={false}
-                render={<a href={href} />}
+                render={<span />}
                 size="sm"
                 variant={active ? "secondary" : "ghost"}
               >
-                {item}
+                {item.label}
               </Button>
             );
           })}
@@ -216,15 +239,13 @@ export function OperationsWorkspaceView() {
 function OperationsWorkspace() {
   const [query, setQuery] = React.useState("");
   const [status, setStatus] = React.useState("all");
-  const [workspaceState, setWorkspaceState] = React.useState<
-    "ready" | "loading" | "error" | "success"
-  >("ready");
+  const [commandOpen, setCommandOpen] = React.useState(false);
   const [theme, setThemeValue] = React.useState<Appearance["theme"]>(defaultAppearance.theme);
   const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
   const [density, setDensityValue] = React.useState<Appearance["density"]>(
     defaultAppearance.density,
   );
-  const [direction, setDirection] = React.useState("ltr");
+  const [direction, setDirection] = React.useState<"ltr" | "rtl">("ltr");
   const isMobile = useMobileViewport();
   const toasts = useToastManager();
 
@@ -278,6 +299,8 @@ function OperationsWorkspace() {
   return (
     <SidebarProvider
       className={`${styles.workspace} n-typography-system`}
+      direction={direction}
+      side={direction === "rtl" ? "right" : "left"}
       sidebarId="workspace-sidebar"
     >
       {!isMobile ? (
@@ -316,7 +339,7 @@ function OperationsWorkspace() {
                       }
                     />
                   </Tooltip>
-                  <SheetContent side="left" size="sm">
+                  <SheetContent side={direction === "rtl" ? "right" : "left"} size="sm">
                     <SheetHeader>
                       <SheetTitle>Workspace navigation</SheetTitle>
                       <SheetDescription>Choose a workspace destination.</SheetDescription>
@@ -338,7 +361,12 @@ function OperationsWorkspace() {
             </p>
           </div>
           <div className={styles["workspace-actions"]}>
-            <Popover
+            <Dialog
+              bodyClassName={styles["command-dialog__body"]}
+              className={styles["command-dialog"]}
+              description="Jump to a workspace view or change how this preview is displayed."
+              onOpenChange={setCommandOpen}
+              open={commandOpen}
               trigger={
                 <Button
                   aria-label="Search workspace"
@@ -348,10 +376,13 @@ function OperationsWorkspace() {
                 />
               }
               title="Workspace commands"
-              description="Filter this app-local workspace view."
             >
-              <Command items={workspaceCommands}>
-                <CommandInput aria-label="Workspace commands" placeholder="Search commands" />
+              <Command className={styles["workspace-command"]} items={workspaceCommands}>
+                <CommandInput
+                  aria-label="Workspace commands"
+                  autoFocus
+                  placeholder="Search commands"
+                />
                 <CommandEmpty>No matching commands.</CommandEmpty>
                 <CommandList renderGroupLabel={(group) => group.label}>
                   {(item) => (
@@ -373,6 +404,7 @@ function OperationsWorkspace() {
                         }
                         if (value === "show-risk") setStatus("At risk");
                         if (value === "compact") setDensity("compact");
+                        setCommandOpen(false);
                       }}
                     >
                       {item.label}
@@ -380,7 +412,7 @@ function OperationsWorkspace() {
                   )}
                 </CommandList>
               </Command>
-            </Popover>
+            </Dialog>
             <Sheet>
               <Tooltip label="Open preview settings">
                 <SheetTrigger
@@ -394,11 +426,11 @@ function OperationsWorkspace() {
                   }
                 />
               </Tooltip>
-              <SheetContent side="right" size="sm">
+              <SheetContent side={direction === "rtl" ? "left" : "right"} size="sm">
                 <SheetHeader>
                   <SheetTitle>Preview settings</SheetTitle>
                   <SheetDescription>
-                    Inspect the same static workspace across supported runtime axes and data states.
+                    Inspect the same static workspace across supported runtime axes.
                   </SheetDescription>
                 </SheetHeader>
                 <SheetBody>
@@ -424,31 +456,14 @@ function OperationsWorkspace() {
                     <Select
                       label="Direction"
                       value={direction}
-                      onValueChange={setDirection}
+                      onValueChange={(value) => {
+                        if (value === "ltr" || value === "rtl") setDirection(value);
+                      }}
                       options={[
                         { label: "Left to right", value: "ltr" },
                         { label: "Right to left", value: "rtl" },
                       ]}
                     />
-                    <fieldset className={styles["preview-state-control"]}>
-                      <legend>Initiative state</legend>
-                      <div>
-                        {(["ready", "loading", "error", "success"] as const).map((value) => (
-                          <Button
-                            key={value}
-                            aria-pressed={workspaceState === value}
-                            size="sm"
-                            variant={workspaceState === value ? "primary" : "secondary"}
-                            onClick={() => setWorkspaceState(value)}
-                          >
-                            {runtimeLabel(value)}
-                          </Button>
-                        ))}
-                      </div>
-                    </fieldset>
-                    <Alert tone="info" title="Static preview">
-                      Filters and state controls stay local and never change the sample data source.
-                    </Alert>
                   </div>
                 </SheetBody>
               </SheetContent>
@@ -456,7 +471,6 @@ function OperationsWorkspace() {
             <Button
               leadingIcon={Sparkles}
               onClick={() => {
-                setWorkspaceState("ready");
                 toasts.add({
                   title: "New initiative action",
                   description: "Connect this entry point to your product's creation flow.",
@@ -470,14 +484,41 @@ function OperationsWorkspace() {
         </header>
 
         <section className={styles["workspace-controls"]}>
-          <Field label="Search initiatives">
-            <Input
-              value={query}
-              onChange={(event) => setQuery(event.currentTarget.value)}
-              placeholder="Search by initiative name"
-            />
-          </Field>
-          <Select label="Status" value={status} onValueChange={setStatus} options={statusOptions} />
+          <Input
+            aria-label="Search initiatives"
+            value={query}
+            onChange={(event) => setQuery(event.currentTarget.value)}
+            placeholder="Search initiatives"
+            type="search"
+          />
+          <Tabs
+            className={styles["status-tabs"]}
+            onValueChange={(value) => {
+              if (value) setStatus(value);
+            }}
+            size="sm"
+            value={status}
+            variant="segmented"
+          >
+            <TabsList aria-label="Initiative status" scrollable>
+              <TabsTrigger badge={<Badge size="sm">4</Badge>} value="all">
+                All
+              </TabsTrigger>
+              <TabsTrigger badge={<Badge size="sm">1</Badge>} value="On track">
+                On track
+              </TabsTrigger>
+              <TabsTrigger badge={<Badge size="sm">1</Badge>} value="At risk">
+                At risk
+              </TabsTrigger>
+              <TabsTrigger badge={<Badge size="sm">1</Badge>} value="In review">
+                In review
+              </TabsTrigger>
+              <TabsTrigger badge={<Badge size="sm">1</Badge>} value="Planned">
+                Planned
+              </TabsTrigger>
+              <TabsIndicator />
+            </TabsList>
+          </Tabs>
         </section>
 
         <section className={styles["workspace-grid"]}>
@@ -485,7 +526,7 @@ function OperationsWorkspace() {
             label="Active initiatives"
             value="12"
             trend="+3 this week"
-            className={styles["span-3"]}
+            className={`${styles["span-3"]} ${styles["positive-trend"]}`}
           />
           <Stat
             label="Open blockers"
@@ -500,20 +541,53 @@ function OperationsWorkspace() {
             <div className={styles["panel-heading"]}>
               <div>
                 <h2>Delivery health</h2>
-                <p>Progress across the highest-priority initiatives.</p>
+                <p>Weekly completion rate across active initiatives.</p>
               </div>
-              <Badge tone="success">On track</Badge>
+              <Badge tone="success">+8.4%</Badge>
             </div>
-            <div className={styles["delivery-signals"]}>
-              {deliverySignals.map(([label, description, value]) => (
-                <div className={styles["delivery-signal"]} key={label}>
-                  <div>
-                    <strong>{label}</strong>
-                    <span>{description}</span>
-                  </div>
-                  <Progress aria-label={label} value={value} valueLabel={`${value}%`} />
-                </div>
-              ))}
+            <div
+              aria-label="Weekly completion rate rose from 62 percent on Monday to 86 percent on Sunday"
+              className={styles["delivery-chart"]}
+              role="img"
+            >
+              <ResponsiveContainer height="100%" width="100%">
+                <AreaChart
+                  data={[...deliveryTrend]}
+                  margin={{ top: 12, right: 12, bottom: 0, left: 12 }}
+                >
+                  <defs>
+                    <linearGradient id="operations-delivery-fill" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="var(--n-chart-primary)" stopOpacity={0.28} />
+                      <stop offset="100%" stopColor="var(--n-chart-primary)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid vertical={false} stroke="var(--n-color-border-subtle)" />
+                  <XAxis
+                    axisLine={false}
+                    dataKey="day"
+                    tick={{ fill: "var(--n-color-text-tertiary)", fontSize: 11 }}
+                    tickLine={false}
+                  />
+                  <YAxis hide domain={[50, 100]} />
+                  <ChartTooltip
+                    formatter={(value) => [`${Number(value)}%`, "Completion"]}
+                    contentStyle={{
+                      background: "var(--n-color-surface)",
+                      border: "1px solid var(--n-color-border-subtle)",
+                      borderRadius: "var(--n-radius-md)",
+                      color: "var(--n-color-text-primary)",
+                    }}
+                  />
+                  <Area
+                    dataKey="completion"
+                    fill="url(#operations-delivery-fill)"
+                    isAnimationActive={false}
+                    stroke="var(--n-chart-primary)"
+                    strokeWidth={2}
+                    type="monotone"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </Card>
 
@@ -524,9 +598,9 @@ function OperationsWorkspace() {
                 <p>People assigned across active delivery work.</p>
               </div>
             </div>
-            <div className={styles["team-list"]}>
-              {["Mira Chen", "Alex Morgan", "Sam Taylor", "Jordan Lee"].map((name) => (
-                <Avatar key={name} name={name} />
+            <div aria-label="Six of nine contributors" className={styles["team-list"]} role="group">
+              {avatarPreviewAssets.map((avatar) => (
+                <Avatar key={avatar.name} {...avatar} size="sm" />
               ))}
             </div>
             <Progress label="Assigned capacity" value={82} valueLabel="82%" />
@@ -540,43 +614,7 @@ function OperationsWorkspace() {
               </div>
             </div>
 
-            {workspaceState === "loading" ? (
-              <div
-                className={styles["loading-stack"]}
-                aria-label="Loading initiatives"
-                aria-live="polite"
-                role="status"
-              >
-                <Skeleton />
-                <Skeleton />
-                <Skeleton />
-              </div>
-            ) : null}
-
-            {workspaceState === "error" ? (
-              <EmptyState role="alert">
-                <EmptyStateHeader>
-                  <EmptyStateTitle>Initiative source unavailable</EmptyStateTitle>
-                  <EmptyStateDescription>
-                    Reconnect the source or retry when the operations service is available.
-                  </EmptyStateDescription>
-                </EmptyStateHeader>
-                <EmptyStateActions>
-                  <Button size="sm" onClick={() => setWorkspaceState("ready")}>
-                    Retry
-                  </Button>
-                </EmptyStateActions>
-              </EmptyState>
-            ) : null}
-
-            {workspaceState === "success" ? (
-              <Alert role="status" tone="success" title="Initiatives synchronized">
-                Delivery data is current and ready for the next review.
-              </Alert>
-            ) : null}
-
-            {(workspaceState === "ready" || workspaceState === "success") &&
-            filteredInitiatives.length ? (
+            {filteredInitiatives.length ? (
               <TableContainer focusable aria-label="Workspace initiatives">
                 <Table>
                   <TableHeader>
@@ -617,8 +655,7 @@ function OperationsWorkspace() {
               </TableContainer>
             ) : null}
 
-            {(workspaceState === "ready" || workspaceState === "success") &&
-            !filteredInitiatives.length ? (
+            {!filteredInitiatives.length ? (
               <EmptyState role="status" size="sm">
                 <EmptyStateHeader>
                   <EmptyStateTitle>No matching initiatives</EmptyStateTitle>
@@ -649,8 +686,25 @@ function OperationsWorkspace() {
                 <p>Latest delivery updates across teams.</p>
               </div>
             </div>
+            <div className={styles["activity-feed"]}>
+              {activity.map(([title, scope, time]) => (
+                <div key={title} className={styles["activity-item"]}>
+                  <Icon icon={Check} />
+                  <div>
+                    <strong>{title}</strong>
+                    <span>
+                      {scope} - {time}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
             <Dialog
-              trigger={<Button variant="secondary">Open task details</Button>}
+              trigger={
+                <Button trailingIcon={ArrowRight} variant="secondary">
+                  View activity details
+                </Button>
+              }
               title="Review launch checklist"
               description="Inspect the selected task without losing your place in the workspace."
             >
@@ -674,19 +728,6 @@ function OperationsWorkspace() {
                 </Button>
               </DialogFooter>
             </Dialog>
-            <div className={styles["activity-feed"]}>
-              {activity.map(([title, scope, time]) => (
-                <div key={title} className={styles["activity-item"]}>
-                  <Icon icon={Check} />
-                  <div>
-                    <strong>{title}</strong>
-                    <span>
-                      {scope} - {time}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
           </Card>
         </section>
       </SidebarInset>

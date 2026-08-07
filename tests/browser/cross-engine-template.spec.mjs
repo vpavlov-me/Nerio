@@ -37,7 +37,7 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   );
   await rail.press("Enter");
 
-  const search = page.getByRole("textbox", { name: "Search initiatives" });
+  const search = page.getByRole("searchbox", { name: "Search initiatives" });
   await search.fill("portal");
   await expect(page.getByRole("row", { name: /Client portal launch/ })).toBeVisible();
   await search.fill("");
@@ -59,7 +59,7 @@ test("preserves keyboard focus, modal restoration, table overflow, and native fo
   await expect(sheet).toBeHidden();
   await expect(sheetTrigger).toBeFocused();
 
-  const taskTrigger = page.getByRole("button", { name: "Open task details" });
+  const taskTrigger = page.getByRole("button", { name: "View activity details" });
   await taskTrigger.click();
   const taskDialog = page.getByRole("dialog", { name: "Review launch checklist" });
   await expect(taskDialog).toBeVisible();
@@ -105,6 +105,14 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   await page.getByRole("option", { name: "Right to left" }).click();
   await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-direction",
+    "rtl",
+  );
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-side",
+    "right",
+  );
 
   const trigger = page.getByRole("button", { name: "Open workspace navigation" });
   await trigger.click();

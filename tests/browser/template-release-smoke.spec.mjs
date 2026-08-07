@@ -186,6 +186,14 @@ test("keeps the template shell inside emulated safe areas without overflow", asy
   await page.getByRole("option", { name: "Right to left" }).click();
   await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-direction",
+    "rtl",
+  );
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-side",
+    "right",
+  );
   const rtlInsets = await page.locator('[data-slot="sidebar-provider"]').evaluate((element) => {
     const rootStyle = getComputedStyle(element);
     return {
@@ -204,6 +212,7 @@ test("covers Command groups, IME safety, leading layout, and selection", async (
   const problems = monitorPage(page);
   await page.goto(workspaceRoute);
   await page.getByRole("button", { name: "Search workspace" }).click();
+  await expect(page.getByRole("dialog", { name: "Workspace commands" })).toBeVisible();
   const input = page.getByRole("combobox", { name: "Workspace commands" });
 
   await expect(page.getByText("Initiative filters", { exact: true })).toBeVisible();
@@ -225,7 +234,7 @@ test("covers Command groups, IME safety, leading layout, and selection", async (
   await input.dispatchEvent("compositionend", { data: "活" });
   await input.fill("risk");
   await expect(page.getByRole("option", { name: /Show initiatives at risk/ })).toBeVisible();
-  await page.getByRole("option", { name: /Show initiatives at risk/ }).click();
+  await input.press("Enter");
   await expect(page.getByRole("row", { name: /Client portal launch/ })).toHaveCount(0);
   await expect(page.getByRole("row", { name: /Reporting migration/ })).toBeVisible();
 
@@ -272,9 +281,7 @@ test("covers Toast stacking and logical swipe in LTR and RTL", async ({ page }) 
   await expectHealthyPage(page, problems);
 });
 
-test("covers loading, empty, error, success, reduced motion, and forced colors", async ({
-  page,
-}) => {
+test("covers status tabs, empty filtering, reduced motion, and forced colors", async ({ page }) => {
   const problems = monitorPage(page);
   await page.emulateMedia({ colorScheme: "dark", forcedColors: "active", reducedMotion: "reduce" });
   await page.goto(workspaceRoute);
@@ -283,28 +290,19 @@ test("covers loading, empty, error, success, reduced motion, and forced colors",
     true,
   );
 
-  const setInitiativeState = async (state) => {
-    await page.getByRole("button", { name: "Open preview settings" }).click();
-    const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
-    await previewSettings.getByRole("button", { name: state, exact: true }).click();
-    await page.keyboard.press("Escape");
-  };
+  await page.getByRole("button", { name: "Open preview settings" }).click();
+  const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
+  await expect(previewSettings.getByRole("combobox")).toHaveCount(4);
+  await expect(previewSettings.getByRole("group", { name: "Initiative state" })).toHaveCount(0);
+  await page.keyboard.press("Escape");
 
-  await setInitiativeState("Loading");
-  await expect(page.getByLabel("Loading initiatives")).toBeVisible();
-  await setInitiativeState("Error");
-  await expect(
-    page.getByRole("alert").filter({ hasText: "Initiative source unavailable" }),
-  ).toBeVisible();
-  await setInitiativeState("Ready");
-  await expect(page.getByRole("region", { name: "Workspace initiatives" })).toBeVisible();
-  await setInitiativeState("Success");
-  await expect(
-    page.getByRole("status").filter({ hasText: "Initiatives synchronized" }),
-  ).toBeVisible();
+  await page.getByRole("tab", { name: /At risk/ }).click();
+  await expect(page.getByRole("row", { name: /Reporting migration/ })).toBeVisible();
+  await expect(page.getByRole("row", { name: /Client portal launch/ })).toHaveCount(0);
+  await page.getByRole("tab", { name: /All/ }).click();
   await expect(page.getByRole("region", { name: "Workspace initiatives" })).toBeVisible();
 
-  await page.getByRole("textbox", { name: "Search initiatives" }).fill("no-such-initiative");
+  await page.getByRole("searchbox", { name: "Search initiatives" }).fill("no-such-initiative");
   await expect(
     page.getByRole("status").filter({ hasText: "No matching initiatives" }),
   ).toBeVisible();
@@ -316,7 +314,7 @@ test("covers loading, empty, error, success, reduced motion, and forced colors",
   await expectHealthyPage(page, problems);
 });
 
-test("uses current Core primitives without an app-local Chart or deprecated IconButton", async ({
+test("uses current Core primitives with the chart adapter and no deprecated IconButton", async ({
   page,
 }) => {
   const problems = monitorPage(page);
@@ -324,6 +322,10 @@ test("uses current Core primitives without an app-local Chart or deprecated Icon
   await expect(page.getByRole("heading", { name: "Delivery health" })).toBeVisible();
   await expect(page.getByRole("heading", { name: /Chart/ })).toHaveCount(0);
   await expect(page.locator(".n-icon-button")).toHaveCount(0);
-  await expect(page.getByRole("progressbar", { name: "Mobile onboarding" })).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: /Weekly completion rate rose from 62 percent/ }),
+  ).toBeVisible();
+  await expect(page.getByRole("group", { name: "Six of nine contributors" })).toBeVisible();
+  await expect(page.getByRole("progressbar", { name: "Assigned capacity" })).toBeVisible();
   await expectHealthyPage(page, problems);
 });

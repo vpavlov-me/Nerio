@@ -639,6 +639,10 @@ test("preserves RTL and reduced motion in a product composition", async ({ page 
   await page.getByRole("option", { name: "Right to left" }).click();
   await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-direction",
+    "rtl",
+  );
   expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(
     true,
   );
