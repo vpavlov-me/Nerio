@@ -1315,10 +1315,10 @@ function DenseFormPreview() {
 const blocks: Record<string, Composition> = {
   "sign-in": {
     purpose:
-      "Combines the smallest authentication flow from Core building blocks, including validation, loading, and recovery navigation.",
+      "Combines the smallest authentication layout from Core building blocks, including credentials and recovery context.",
     components: authComponents,
     accessibility:
-      "Fields retain visible labels and error messages; native form submission supports Enter and the link remains a separate navigation target.",
+      "Fields retain visible labels, while link-styled text and submission remain intentionally inert in the preview.",
     responsive:
       "The card stays single-column, keeps 32px controls, and uses page padding rather than shrinking touch targets.",
     notes:
@@ -1340,11 +1340,10 @@ const blocks: Record<string, Composition> = {
     Preview: CreateAccountPreview,
   },
   "reset-password": {
-    purpose:
-      "Validates how feedback changes a compact recovery action without changing page structure.",
+    purpose: "Tests a compact recovery layout without adding application-owned delivery behavior.",
     components: authComponents,
     accessibility:
-      "The success state is announced inline and the form has one clear labelled input and submit action.",
+      "The form has one clear labelled input and a visible submit action that remains inert.",
     responsive:
       "The narrow card uses readable copy and never creates a horizontal action row on small screens.",
     notes:

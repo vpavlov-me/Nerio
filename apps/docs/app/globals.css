@@ -2114,7 +2114,8 @@ pre {
     padding-block: var(--n-space-10) var(--n-space-4);
   }
 
-  .catalog-grid {
+  .catalog-grid,
+  .blocks-catalog-page .catalog-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -56,6 +56,14 @@ test("derives the public screenshot gallery and same-origin Views from one catal
   }
   await expect(page.locator(".catalog-card img")).toHaveCount(0);
   await expect(page.getByText("View details")).toHaveCount(0);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(() =>
+      page.locator(".catalog-grid").evaluate((grid) => {
+        return getComputedStyle(grid).gridTemplateColumns.split(" ").length;
+      }),
+    )
+    .toBe(1);
 
   expect([...requestedHosts]).not.toContain("nerio-demo.vercel.app");
   expect(problems).toEqual([]);

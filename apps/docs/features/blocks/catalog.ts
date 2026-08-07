@@ -20,8 +20,7 @@ export const blockCatalog = [
   {
     slug: "sign-in",
     title: "Sign in",
-    description:
-      "A focused workspace sign-in form with validation, loading feedback, and recovery navigation.",
+    description: "A focused workspace sign-in layout with email, password, and recovery context.",
     category: "Authentication",
     status: "Preview",
     previewRoute: "/views/blocks/sign-in",
@@ -29,7 +28,7 @@ export const blockCatalog = [
     intendedUse: "Adapt this block for a conventional email and password entry point.",
     boundaries: [
       "Authentication, session, SSO, and workspace-routing policy remain application concerns.",
-      "The preview validates locally and does not send credentials.",
+      "The preview is intentionally static and does not validate or send credentials.",
     ],
     relatedBlocks: ["create-account", "reset-password"],
     relatedTemplates: [],
@@ -39,7 +38,7 @@ export const blockCatalog = [
     slug: "create-account",
     title: "Create account",
     description:
-      "A compact registration form with realistic account copy, inline validation, and verification guidance.",
+      "A complete registration layout with identity, credentials, confirmation, and policy context.",
     category: "Authentication",
     status: "Preview",
     previewRoute: "/views/blocks/create-account",
@@ -47,7 +46,7 @@ export const blockCatalog = [
     intendedUse: "Use this block for a small self-serve account creation flow.",
     boundaries: [
       "Invitations, entitlement checks, provisioning, and verification delivery stay product-local.",
-      "The preview does not create an account or persist entered data.",
+      "The preview is intentionally static and does not validate, create an account, or persist data.",
     ],
     relatedBlocks: ["sign-in", "reset-password"],
     relatedTemplates: [],
@@ -56,8 +55,7 @@ export const blockCatalog = [
   {
     slug: "reset-password",
     title: "Reset password",
-    description:
-      "A single-task recovery form that transitions from email entry to clear success feedback.",
+    description: "A single-task recovery layout with email entry and sign-in context.",
     category: "Authentication",
     status: "Preview",
     previewRoute: "/views/blocks/reset-password",
@@ -65,7 +63,7 @@ export const blockCatalog = [
     intendedUse: "Use this block to begin a conventional password recovery flow.",
     boundaries: [
       "Secure tokens, rate limits, email delivery, and password policy remain application concerns.",
-      "The preview only demonstrates the local form-state transition.",
+      "The preview is intentionally static and does not send a recovery request.",
     ],
     relatedBlocks: ["sign-in", "create-account"],
     relatedTemplates: [],
@@ -169,7 +167,7 @@ export const blockCatalog = [
     intendedUse: "Use this block around a small, non-virtualized table workflow.",
     boundaries: [
       "Saved views, advanced filters, column settings, and virtualization belong to Pro or the app.",
-      "Filtering, selection, and pagination are deterministic local preview state.",
+      "Filtering and selection use local preview state; pagination is a static table control.",
     ],
     relatedBlocks: ["empty-project"],
     relatedTemplates: ["operations-workspace"],
