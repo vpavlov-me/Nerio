@@ -940,7 +940,8 @@ test("keeps the final Tailwind component families active across public docs", as
 
   await page.goto("/docs/components/sheet");
   await page.getByRole("button", { name: "Open settings" }).click();
-  await expect(page.getByRole("heading", { name: "Workspace settings" })).toBeVisible();
+  const settingsSheet = page.getByRole("dialog", { name: "Workspace settings" });
+  await expect(settingsSheet.locator('[data-slot="sheet-title"]')).toHaveText("Workspace settings");
 
   await expectHealthyPage(page, problems);
 });

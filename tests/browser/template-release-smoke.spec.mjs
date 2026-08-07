@@ -137,9 +137,12 @@ test("covers focus, Sheet restoration, Table scrolling, and Sidebar collapse", a
   await page.reload();
   const sheetTrigger = page.getByRole("button", { name: "Open workspace navigation" });
   await sheetTrigger.click();
-  await expect(page.getByRole("heading", { name: "Workspace navigation" })).toBeVisible();
+  const navigationSheet = page.getByRole("dialog", { name: "Workspace navigation" });
+  await expect(navigationSheet.locator('[data-slot="sheet-title"]')).toHaveText(
+    "Workspace navigation",
+  );
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("heading", { name: "Workspace navigation" })).toBeHidden();
+  await expect(navigationSheet).toBeHidden();
   await expect(sheetTrigger).toBeFocused();
 
   const table = page.getByRole("region", { name: "Workspace initiatives" });
