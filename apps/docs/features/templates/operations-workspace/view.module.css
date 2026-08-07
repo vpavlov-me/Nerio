@@ -350,13 +350,15 @@
 }
 
 .activity-item strong {
-  font-size: var(--n-font-size-sm);
+  font-size: var(--n-font-size-md);
   font-weight: var(--n-font-weight-medium);
+  line-height: var(--n-line-height-normal);
 }
 
 .activity-item span {
   color: var(--n-color-text-tertiary);
-  font-size: var(--n-font-size-xs);
+  font-size: var(--n-font-size-md);
+  line-height: var(--n-line-height-normal);
 }
 
 @media (max-width: 1080px) {

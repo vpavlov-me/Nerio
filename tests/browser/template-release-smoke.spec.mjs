@@ -350,6 +350,21 @@ test("uses current Core primitives with the chart adapter and no deprecated Icon
 
   const statusTabs = await page.getByRole("tablist", { name: "Initiative status" }).boundingBox();
   expect(statusTabs?.width).toBeLessThan(600);
+  const expectedStatusCounts = new Map([
+    ["All", "4"],
+    ["On track", "1"],
+    ["At risk", "1"],
+    ["In review", "1"],
+    ["Planned", "1"],
+  ]);
+  for (const [label, count] of expectedStatusCounts) {
+    await expect(
+      page.getByRole("tab", { name: new RegExp(`^${label} ${count}$`, "i") }),
+    ).toBeVisible();
+  }
+  const firstActivity = page.locator('[class*="activity-item"]').first();
+  await expect(firstActivity.locator("strong")).toHaveCSS("font-size", "14px");
+  await expect(firstActivity.locator("span")).toHaveCSS("font-size", "14px");
   await expect(page.getByRole("searchbox", { name: "Search initiatives" })).toHaveCount(0);
   await expectHealthyPage(page, problems);
 });

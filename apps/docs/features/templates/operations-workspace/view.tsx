@@ -940,11 +940,21 @@ function OperationsWorkspace() {
                   variant="segmented"
                 >
                   <TabsList aria-label="Initiative status" scrollable>
-                    <TabsTrigger value="all">All</TabsTrigger>
-                    <TabsTrigger value="On track">On track</TabsTrigger>
-                    <TabsTrigger value="At risk">At risk</TabsTrigger>
-                    <TabsTrigger value="In review">In review</TabsTrigger>
-                    <TabsTrigger value="Planned">Planned</TabsTrigger>
+                    <TabsTrigger badge={<Badge size="sm">4</Badge>} value="all">
+                      All
+                    </TabsTrigger>
+                    <TabsTrigger badge={<Badge size="sm">1</Badge>} value="On track">
+                      On track
+                    </TabsTrigger>
+                    <TabsTrigger badge={<Badge size="sm">1</Badge>} value="At risk">
+                      At risk
+                    </TabsTrigger>
+                    <TabsTrigger badge={<Badge size="sm">1</Badge>} value="In review">
+                      In review
+                    </TabsTrigger>
+                    <TabsTrigger badge={<Badge size="sm">1</Badge>} value="Planned">
+                      Planned
+                    </TabsTrigger>
                     <TabsIndicator />
                   </TabsList>
                 </Tabs>
