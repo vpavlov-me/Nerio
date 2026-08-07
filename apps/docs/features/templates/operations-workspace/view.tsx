@@ -104,7 +104,7 @@ const initiatives = [
     owner: "Alex Morgan",
     status: "At risk",
     progress: 52,
-    updated: "Tomorrow",
+    updated: "Yesterday",
   },
   {
     name: "Mobile onboarding",
@@ -285,7 +285,7 @@ const commandDetails = {
   },
   "initiative-reporting": {
     icon: ListTree,
-    description: "Alex Morgan · Updated tomorrow",
+    description: "Alex Morgan · Updated yesterday",
     status: "At risk",
     targetId: "initiatives",
   },

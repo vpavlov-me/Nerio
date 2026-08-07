@@ -286,7 +286,7 @@ test("covers Toast stacking and logical swipe in LTR and RTL", async ({ page }) 
   await expectHealthyPage(page, problems);
 });
 
-test("covers status tabs, reduced motion, and forced colors", async ({ page }) => {
+test("covers status filters, reduced motion, and forced colors", async ({ page }) => {
   const problems = monitorPage(page);
   await page.emulateMedia({ colorScheme: "dark", forcedColors: "active", reducedMotion: "reduce" });
   await page.goto(workspaceRoute);
@@ -301,10 +301,11 @@ test("covers status tabs, reduced motion, and forced colors", async ({ page }) =
   await expect(previewSettings.getByRole("group", { name: "Initiative state" })).toHaveCount(0);
   await page.keyboard.press("Escape");
 
-  await page.getByRole("tab", { name: /At risk/ }).click();
+  const statusFilters = page.getByRole("group", { name: "Initiative status filters" });
+  await statusFilters.getByRole("button", { name: /At risk/ }).click();
   await expect(page.getByRole("row", { name: /Reporting migration/ })).toBeVisible();
   await expect(page.getByRole("row", { name: /Client portal launch/ })).toHaveCount(0);
-  await page.getByRole("tab", { name: /All/ }).click();
+  await statusFilters.getByRole("button", { name: /All/ }).click();
   await expect(page.getByRole("region", { name: "Workspace initiatives" })).toBeVisible();
 
   await page.getByRole("button", { name: "New initiative" }).click();
