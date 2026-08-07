@@ -746,6 +746,64 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
 
 final result: passed
 
+## Reset password Block refinement QA — 2026-08-07
+
+### Source truth
+
+- Current-state source capture:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-reset-password-current.png`
+- Approved change set: retain the compact Card and add clearer recovery guidance, the branded email
+  placeholder, and a visual-only route back to Sign in.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/reset-password`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/reset-password-comfortable.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/reset-password-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison places both unchanged captures side by side,
+  so no density normalization was required.
+- State: light appearance, comfortable density, initial static preview.
+- Full-view comparison evidence: Card width, canvas position, padding, field width, and primary action
+  geometry remain unchanged while the approved copy and account-return row expand the Card
+  vertically.
+- A separate focused crop was unnecessary because the 1:1 combined comparison keeps every form
+  label, placeholder, and action legible.
+- Static-preview behavior: Send reset link does not change the URL or reveal validation/success
+  feedback; Sign in is a visual affordance rather than an anchor.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. The longer descriptor wraps naturally within the existing Card and
+  the account-return row uses released Text and link Button typography.
+- Spacing and layout rhythm: passed. The existing token-driven form gap and Card padding preserve a
+  clear header, field, primary action, and return-path sequence.
+- Colors and visual tokens: passed. No color or visual literals were introduced; the field, action,
+  secondary copy, and link inherit the existing theme-aware Nerio tokens.
+- Image quality and asset fidelity: passed. The approved form contains no image or decorative asset,
+  and none was added.
+- Copy and content: passed. The recovery explanation is explicit, the email placeholder is
+  `nerio@vpavlov.com`, and `Remembered your password? Sign in` restores the expected return path.
+
+### Findings and comparison history
+
+1. P2 — The original descriptor did not explain which email to enter or the resulting action.
+   Replaced it with the approved account-specific recovery instruction and verified its wrapping at
+   the same viewport.
+2. P2 — The original form ended after the primary action, leaving no visible return path to
+   authentication. Added the centered Sign in prompt using the existing non-interactive link
+   treatment.
+3. P2 — The original generic email placeholder did not follow the branded auth examples. Replaced
+   it with `nerio@vpavlov.com`.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
 ## Create account Block structure QA — 2026-08-07
 
 ### Source truth

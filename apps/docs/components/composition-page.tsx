@@ -86,7 +86,7 @@ function AuthPreview({ kind }: { kind: "login" | "forgot" }) {
     forgot: {
       title: "Reset your password",
       action: "Send reset link",
-      description: "We will email a recovery link.",
+      description: "Enter the email associated with your account and we’ll send you a reset link.",
     },
   }[kind];
 
@@ -134,7 +134,7 @@ function AuthPreview({ kind }: { kind: "login" | "forgot" }) {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.currentTarget.value)}
-              placeholder={kind === "login" ? "m@example.com" : "you@company.com"}
+              placeholder={kind === "login" ? "m@example.com" : "nerio@vpavlov.com"}
             />
           </Field>
           {kind === "login" ? (
@@ -160,7 +160,14 @@ function AuthPreview({ kind }: { kind: "login" | "forgot" }) {
                 Sign up
               </Button>
             </Text>
-          ) : null}
+          ) : (
+            <Text className="composition-auth-switch" tone="secondary">
+              Remembered your password?{" "}
+              <Button nativeButton={false} render={<span />} variant="link">
+                Sign in
+              </Button>
+            </Text>
+          )}
         </form>
       </CardContent>
     </Card>

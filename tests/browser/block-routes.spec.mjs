@@ -124,6 +124,28 @@ test("renders the complete Create account structure as a static preview", async 
   expect(problems).toEqual([]);
 });
 
+test("renders the complete Reset password structure as a static preview", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/views/blocks/reset-password");
+
+  await expect(page.getByRole("heading", { name: "Reset your password" })).toBeVisible();
+  await expect(
+    page.getByText("Enter the email associated with your account and we’ll send you a reset link."),
+  ).toBeVisible();
+  await expect(page.getByLabel("Email")).toHaveAttribute("placeholder", "nerio@vpavlov.com");
+  await expect(page.getByRole("button", { name: "Send reset link" })).toBeVisible();
+  await expect(page.getByText("Remembered your password?")).toBeVisible();
+  await expect(page.getByText("Sign in")).toBeVisible();
+  await expect(page.locator(".block-view__content a")).toHaveCount(0);
+
+  const url = page.url();
+  await page.getByRole("button", { name: "Send reset link" }).click();
+  await expect(page).toHaveURL(url);
+  await expect(page.getByText("Enter a valid email address.")).toHaveCount(0);
+  await expect(page.getByText("Check your inbox")).toHaveCount(0);
+  expect(problems).toEqual([]);
+});
+
 test("keeps internal fixtures unindexed and outside the public catalog", async ({ page }) => {
   const problems = monitorPage(page);
 
