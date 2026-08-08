@@ -21,6 +21,7 @@ import {
   FileText,
   Layers,
   ListTree,
+  MessageCircle,
   Moon,
   Monitor,
   Palette,
@@ -84,6 +85,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/migration", label: "Migration", icon: ArrowRight },
       { href: "/docs/registry", label: "Registry and CLI", icon: Boxes },
       { href: "/docs/ai", label: "AI tooling", icon: Sparkles },
+      { href: "/docs/feedback", label: "Community feedback", icon: MessageCircle },
     ],
   },
   {
