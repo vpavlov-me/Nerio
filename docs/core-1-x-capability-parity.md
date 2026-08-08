@@ -27,6 +27,9 @@ Registry schema `1.1.0`, 46 Registry items, prepared version `1.0.0-beta.1`, Bas
 public API snapshot hash
 `248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3`.
 
+The machine-readable projection tracks the current reviewed API snapshot separately, so additive
+post-decision documentation routes do not rewrite this pinned evidence boundary.
+
 Sources were retrieved on 2026-08-06:
 
 - [Nerio `dev` baseline](https://github.com/vpavlov-me/Nerio/tree/930890b9c450da7674a3274360bcada8fc99300a)
