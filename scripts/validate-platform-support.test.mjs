@@ -65,3 +65,12 @@ test("platform support validator protects the weekly Playwright canary", () => {
     /Playwright canary must include/,
   );
 });
+
+test("platform support validator keeps beta gap-closure peer evidence aligned", () => {
+  invalidFixture(
+    "--gap-closure",
+    "docs/core-1-0-beta-gap-closure.md",
+    "Motion 12.43.0",
+    /current Motion version/,
+  );
+});
