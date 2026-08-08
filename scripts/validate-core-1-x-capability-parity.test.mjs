@@ -201,6 +201,12 @@ test("capability parity validator separates current API state from the historica
   }, /Current parity API snapshot hash is stale/);
 });
 
+test("capability parity validator pins the reviewed historical API hash", () => {
+  invalidMatrix((matrix) => {
+    matrix.baseline.publicApiSnapshotSha256 = "a".repeat(64);
+  }, /Parity baseline API snapshot hash must retain the reviewed historical value/);
+});
+
 test("capability parity validator keeps the historical API hash in human evidence", () => {
   invalidDocs(
     (docs) => docs.replace("248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3", ""),

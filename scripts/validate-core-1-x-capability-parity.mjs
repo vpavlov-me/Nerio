@@ -14,6 +14,8 @@ const paths = parsePathOptions(process.argv.slice(2), {
   "--docs": resolve(root, "docs/core-1-x-capability-parity.md"),
   "--roadmap": resolve(root, "ROADMAP.md"),
 });
+const baselinePublicApiSnapshotSha256 =
+  "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -110,8 +112,8 @@ assert(
   "Parity baseline Base UI version must match the exact UI dependency.",
 );
 assert(
-  /^[a-f0-9]{64}$/.test(matrix.baseline?.publicApiSnapshotSha256),
-  "Parity baseline API snapshot hash must remain an exact historical hash.",
+  matrix.baseline?.publicApiSnapshotSha256 === baselinePublicApiSnapshotSha256,
+  "Parity baseline API snapshot hash must retain the reviewed historical value.",
 );
 assert(
   matrix.currentPublicApiSnapshotSha256 === apiApproval.snapshotSha256,
