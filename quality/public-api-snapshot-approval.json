@@ -1,8 +1,8 @@
 {
   "approvedBy": "Vladimir Pavlov",
   "baseline": "core-1.0",
-  "classification": "feature",
+  "classification": "fix",
   "issue": "post-merge-template-review",
   "schemaVersion": 1,
-  "snapshotSha256": "8ca05a66b2112bee1b3a18a8cfde091db98f1b33685c1e3bd9c1bf024ea599a7"
+  "snapshotSha256": "ead4183a85dbd947f5dbafdeb441fc50d6a532787d32a98cf8adc52e54c62438"
 }
