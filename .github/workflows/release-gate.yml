@@ -57,7 +57,7 @@ jobs:
             echo "Every release job checks out this immutable SHA."
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Upload exact candidate identity
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-candidate-${{ steps.candidate.outputs.candidate_sha }}
           path: candidate-sha.txt
@@ -136,7 +136,7 @@ jobs:
       - run: pnpm ${{ matrix.command }}
       - name: Upload ${{ matrix.engine }} browser failure and retry evidence
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: browser-${{ matrix.engine }}-${{ needs.candidate.outputs.candidate_sha }}
           if-no-files-found: warn
@@ -166,7 +166,7 @@ jobs:
       - run: pnpm test:visual
       - name: Upload visual regression artifacts
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: release-visual-${{ needs.candidate.outputs.candidate_sha }}
           if-no-files-found: warn
@@ -227,7 +227,7 @@ jobs:
           pnpm generate:sbom --candidate "$CANDIDATE_SHA"
           pnpm validate:sbom --candidate "$CANDIDATE_SHA" --input "artifacts/sbom/nerio-$CANDIDATE_SHA.cdx.json"
       - name: Upload all-package SBOM
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: sbom-${{ needs.candidate.outputs.candidate_sha }}
           path: artifacts/sbom/nerio-${{ needs.candidate.outputs.candidate_sha }}.cdx.json
