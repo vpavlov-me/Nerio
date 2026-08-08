@@ -455,16 +455,15 @@ test("keeps a keyboard-opened Dialog contained and restores focus", async ({ pag
   await expectHealthyPage(page, problems);
 });
 
-test("validates and completes a representative Core form", async ({ page }) => {
+test("opens and closes the static Finance Assets transfer preview", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/views/finance-assets");
   await page.getByRole("button", { name: "Transfer" }).click();
-  const dialog = page.getByRole("dialog", { name: "New transfer" });
-  await dialog.getByRole("button", { name: "Review transfer" }).click();
-  await expect(dialog.getByText("Enter an amount greater than zero.")).toBeVisible();
-  await dialog.getByRole("textbox", { name: "Amount" }).fill("1200");
-  await dialog.getByRole("button", { name: "Review transfer" }).click();
-  await expect(page.getByRole("dialog", { name: "Review transfer" })).toBeVisible();
+  const dialog = page.getByRole("dialog", { name: "Transfer preview" });
+  await expect(dialog.getByText("Demonstration only")).toBeVisible();
+  await expect(dialog.getByText("$5,000.00")).toBeVisible();
+  await dialog.getByRole("button", { name: "Done" }).click();
+  await expect(dialog).toBeHidden();
   await expectHealthyPage(page, problems);
 });
 
