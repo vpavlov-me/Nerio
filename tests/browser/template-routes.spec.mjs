@@ -34,10 +34,6 @@ test("derives screenshot cards and same-origin previews from one route model", a
   const templates = [
     ["operations-workspace", "Operations Workspace"],
     ["finance-assets", "Finance & Assets"],
-    ["content-library", "Content Library"],
-    ["ai-research-workspace", "AI Research Workspace"],
-    ["developer-portal", "Developer Portal"],
-    ["support-desk", "Support Desk"],
   ];
   for (const [slug, title] of templates) {
     await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
@@ -92,6 +88,69 @@ test("supports direct navigation and refresh without documentation chrome", asyn
   expect(problems).toEqual([]);
 });
 
+test("centers every template within a 1200px content frame on wide screens", async ({ page }) => {
+  const routes = ["/views/operations-workspace", "/views/finance-assets"];
+  await page.setViewportSize({ width: 2560, height: 1200 });
+
+  for (const route of routes) {
+    await page.goto(route);
+    const content = page.locator("[data-template-content]");
+    await expect(content).toBeVisible();
+    const contentBox = await content.boundingBox();
+    expect(Math.round(contentBox?.width ?? 0), `${route} max width`).toBe(1200);
+
+    const sidebar = page.locator('[data-slot="sidebar"]');
+    const sidebarBox = (await sidebar.count()) > 0 ? await sidebar.boundingBox() : null;
+    const availableStart = sidebarBox ? sidebarBox.x + sidebarBox.width : 0;
+    const availableWidth = 2560 - availableStart;
+    const expectedX = availableStart + (availableWidth - (contentBox?.width ?? 0)) / 2;
+    expect(
+      Math.abs((contentBox?.x ?? 0) - expectedX),
+      `${route} centered frame`,
+    ).toBeLessThanOrEqual(1);
+  }
+
+  await page.goto("/views/finance-assets");
+  await page.getByRole("button", { name: "Collapse sidebar" }).click();
+  const collapsedContent = page.locator("[data-template-content]");
+  const collapsedSidebar = page.locator('[data-slot="sidebar"]');
+  await expect(collapsedSidebar).toHaveAttribute("data-state", "collapsed");
+  await expect
+    .poll(async () => Math.round((await collapsedSidebar.boundingBox())?.width ?? 0))
+    .toBe(56);
+  const collapsedContentBox = await collapsedContent.boundingBox();
+  const collapsedExpectedX = 56 + (2560 - 56 - (collapsedContentBox?.width ?? 0)) / 2;
+  expect(
+    Math.abs((collapsedContentBox?.x ?? 0) - collapsedExpectedX),
+    "collapsed sidebar content frame",
+  ).toBeLessThanOrEqual(1);
+});
+
+test("keeps template appearance settings out of documentation preferences", async ({ page }) => {
+  await page.goto("/views/finance-assets");
+  await page.getByRole("button", { name: "Open preview settings" }).click();
+  const settings = page.getByRole("dialog", { name: "Preview settings" });
+  await settings.getByRole("combobox", { name: "Mode" }).click();
+  await page.getByRole("option", { name: "Dark" }).click();
+  await settings.getByRole("combobox", { name: "Density" }).click();
+  await page.getByRole("option", { name: "Compact" }).click();
+
+  await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
+  await expect(page.locator("html")).toHaveAttribute("data-density", "compact");
+  expect(
+    await page.evaluate(() => ({
+      density: window.localStorage.getItem("nerio-docs-density"),
+      mode: window.localStorage.getItem("nerio-docs-mode"),
+      theme: window.localStorage.getItem("nerio-docs-theme"),
+    })),
+  ).toEqual({ density: null, mode: null, theme: null });
+
+  await page.goto("/templates");
+  await expect(page.locator("html")).toHaveAttribute("data-mode", "system");
+  await expect(page.locator("html")).toHaveAttribute("data-density", "comfortable");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "purple");
+});
+
 test("returns not found for unknown template and View slugs", async ({ page }) => {
   await page.goto("/templates/operations-workspace");
   await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
@@ -101,4 +160,14 @@ test("returns not found for unknown template and View slugs", async ({ page }) =
 
   await page.goto("/views/not-a-template");
   await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+
+  for (const slug of [
+    "content-library",
+    "ai-research-workspace",
+    "developer-portal",
+    "support-desk",
+  ]) {
+    await page.goto(`/views/${slug}`);
+    await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+  }
 });

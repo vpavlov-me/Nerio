@@ -748,6 +748,7 @@
   --n-sidebar-region-padding: var(--n-density-space-xl);
   --n-sidebar-rail-hit-area: var(--n-size-control-md);
   --n-sidebar-rail-inset: var(--n-density-space-md);
+  --n-sidebar-item-icon-size: var(--n-icon-size-lg);
   --n-sidebar-transition-duration: var(--n-duration-normal);
   --n-sidebar-transition-easing: var(--n-easing-standard);
   --n-sidebar-background: var(--n-color-surface);

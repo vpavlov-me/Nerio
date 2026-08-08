@@ -29,6 +29,7 @@ import {
   Check,
   Circle,
   FileText,
+  Github,
   LayoutDashboard,
   ListTree,
   PanelLeft,
@@ -67,6 +68,7 @@ import {
   SheetTitle,
   SheetTrigger,
   Sidebar,
+  SidebarMenuButton,
   SidebarProvider,
   SidebarRail,
   Stat,
@@ -83,13 +85,18 @@ import {
   useToastManager,
 } from "@nerio-ui/ui/client";
 import {
+  applyAppearanceAxis,
+  captureAppearanceAttributes,
   defaultAppearance,
-  persistAppearanceAxis,
   readAppearanceFromRoot,
   type Appearance,
 } from "../../../lib/appearance";
 import { avatarPreviewAssets } from "../../../lib/avatar-preview-assets";
+import templateLayoutStyles from "../layout.module.css";
 import styles from "./view.module.css";
+
+const operationsTemplateSourceUrl =
+  "https://github.com/vpavlov-me/Nerio/tree/main/apps/docs/features/templates/operations-workspace";
 
 const initiatives = [
   {
@@ -353,10 +360,11 @@ function WorkspaceNavigation() {
       {navigationItems.map((item) => {
         const active = "active" in item && item.active;
         return (
-          <Button
+          <SidebarMenuButton
             key={item.label}
             aria-current={active ? "page" : undefined}
             className={styles["workspace-nav__item"]}
+            collapsedTooltip={item.label}
             data-state={active ? "active" : "inactive"}
             leadingIcon={"icon" in item ? item.icon : undefined}
             nativeButton={false}
@@ -365,7 +373,7 @@ function WorkspaceNavigation() {
             variant={active ? "secondary" : "ghost"}
           >
             {item.label}
-          </Button>
+          </SidebarMenuButton>
         );
       })}
     </nav>
@@ -397,15 +405,16 @@ function PreviewSettings({
     <Sheet>
       <SheetTrigger
         render={
-          <Button
+          <SidebarMenuButton
             aria-label="Open preview settings"
             className={styles["workspace-settings"]}
+            collapsedTooltip="Settings"
             leadingIcon={Settings}
             size="sm"
             variant="ghost"
           >
             Settings
-          </Button>
+          </SidebarMenuButton>
         }
       />
       <SheetContent side={direction === "rtl" ? "left" : "right"} size="sm">
@@ -472,12 +481,14 @@ function OperationsWorkspace() {
   React.useLayoutEffect(() => {
     const root = document.documentElement;
     const initialDirection = root.getAttribute("dir");
+    const restoreAppearance = captureAppearanceAttributes(root);
     const restored = readAppearanceFromRoot(root);
     setThemeValue(restored.theme);
     setModeValue(restored.mode);
     setDensityValue(restored.density);
 
     return () => {
+      restoreAppearance();
       if (initialDirection) root.setAttribute("dir", initialDirection);
       else root.removeAttribute("dir");
     };
@@ -514,23 +525,24 @@ function OperationsWorkspace() {
     const nextTheme = themes.find((candidate) => candidate === value);
     if (!nextTheme) return;
     setThemeValue(nextTheme);
-    persistAppearanceAxis(document.documentElement, "theme", nextTheme);
+    applyAppearanceAxis(document.documentElement, "theme", nextTheme);
   };
   const setMode = (value: string) => {
     const nextMode = modes.find((candidate) => candidate === value);
     if (!nextMode) return;
     setModeValue(nextMode);
-    persistAppearanceAxis(document.documentElement, "mode", nextMode);
+    applyAppearanceAxis(document.documentElement, "mode", nextMode);
   };
   const setDensity = (value: string) => {
     const nextDensity = densities.find((candidate) => candidate === value);
     if (!nextDensity) return;
     setDensityValue(nextDensity);
-    persistAppearanceAxis(document.documentElement, "density", nextDensity);
+    applyAppearanceAxis(document.documentElement, "density", nextDensity);
   };
 
   return (
     <SidebarProvider
+      collapseMode="icons"
       className={`${styles.workspace} n-typography-system`}
       direction={direction}
       side={direction === "rtl" ? "right" : "left"}
@@ -561,11 +573,19 @@ function OperationsWorkspace() {
               onThemeChange={setTheme}
             />
           </SidebarFooter>
-          <SidebarRail label="Toggle workspace sidebar" />
+          <SidebarRail
+            collapseLabel="Collapse sidebar"
+            expandLabel="Expand sidebar"
+            label="Toggle sidebar"
+          />
         </Sidebar>
       ) : null}
 
-      <SidebarInset className={styles["workspace-main"]} id="overview">
+      <SidebarInset
+        className={`${styles["workspace-main"]} ${templateLayoutStyles["content-frame"]}`}
+        data-template-content
+        id="overview"
+      >
         <header className={styles["workspace-topbar"]}>
           <div className={styles["workspace-title"]}>
             {isMobile ? (
@@ -682,6 +702,16 @@ function OperationsWorkspace() {
                 </footer>
               </Command>
             </Dialog>
+            <Button
+              leadingIcon={Github}
+              nativeButton={false}
+              render={
+                <a href={operationsTemplateSourceUrl} rel="noopener noreferrer" target="_blank" />
+              }
+              variant="secondary"
+            >
+              Open in GitHub
+            </Button>
             <Button
               leadingIcon={Sparkles}
               onClick={() => {

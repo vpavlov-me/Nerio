@@ -9,7 +9,6 @@ const publicBlocks = [
   ["notification-preferences", "Notification preferences"],
   ["table-toolbar", "Table toolbar"],
   ["account-summary", "Account summary"],
-  ["empty-project", "Empty project"],
   ["file-upload-state", "File upload state"],
 ];
 
@@ -231,7 +230,10 @@ test("redirects legacy public and internal composition routes", async ({ request
   for (const route of [
     "/blocks/sign-in",
     "/blocks/toString",
+    "/views/blocks/empty-project",
     "/views/blocks/toString",
+    "/docs/blocks/empty-states",
+    "/docs/compositions/empty-states",
     "/visual-test/blocks/toString",
     "/docs/blocks/toString",
     "/docs/compositions/toString",

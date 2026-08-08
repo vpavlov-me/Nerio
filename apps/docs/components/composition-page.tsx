@@ -10,9 +10,7 @@ import {
   EllipsisVertical,
   ExternalLink,
   FileText,
-  Layers,
   PackageOpen,
-  Plus,
   RefreshCw,
   Save,
   Settings,
@@ -40,7 +38,6 @@ import {
   EmptyStateActions,
   EmptyStateDescription,
   EmptyStateHeader,
-  EmptyStateMedia,
   EmptyStateTitle,
   Field,
   FileInput,
@@ -962,30 +959,6 @@ function AccountSummaryPreview() {
   );
 }
 
-function EmptyProjectPreview() {
-  return (
-    <EmptyState size="lg">
-      <EmptyStateMedia aria-hidden="true">
-        <Icon icon={Layers} />
-      </EmptyStateMedia>
-      <EmptyStateHeader>
-        <EmptyStateTitle as="h2">Create your first project</EmptyStateTitle>
-        <EmptyStateDescription>
-          Organize goals, files, and team updates in one shared workspace.
-        </EmptyStateDescription>
-      </EmptyStateHeader>
-      <EmptyStateActions>
-        <Button leadingIcon={Plus} size="md" type="button">
-          Create project
-        </Button>
-        <Button size="md" type="button" variant="secondary">
-          View workspace
-        </Button>
-      </EmptyStateActions>
-    </EmptyState>
-  );
-}
-
 function FileUploadStatePreview() {
   return (
     <Card className="composition-upload-card">
@@ -1450,18 +1423,6 @@ const blocks: Record<string, Composition> = {
       "Activity feeds, social metrics, profile permissions, and a dashboard layout are intentionally excluded.",
     code: '<Card><Item variant="outline"><Avatar name="Vladimir Pavlov" src="/avatars/lucas-moreau.png" />...</Item><KeyValue label="Email" value="nerio@vpavlov.com" /><Dialog title="Edit account">...</Dialog></Card>',
     Preview: AccountSummaryPreview,
-  },
-  "empty-project": {
-    purpose:
-      "Gives a genuinely empty collection one clear creation path and restrained supporting context.",
-    components: ["EmptyState", "Icon", "Button"],
-    accessibility:
-      "The state has an explicit heading, descriptive text, clearly distinguished actions, and decorative media hidden from assistive technology.",
-    responsive: "Actions wrap without reducing target size or changing their reading order.",
-    notes:
-      "Search, permission, offline, and failure cases need separate product-specific recovery language.",
-    code: '<EmptyState size="lg"><EmptyStateMedia aria-hidden="true"><Icon icon={Layers} /></EmptyStateMedia><EmptyStateHeader><EmptyStateTitle as="h2">Create your first project</EmptyStateTitle></EmptyStateHeader><EmptyStateActions><Button leadingIcon={Plus}>Create project</Button><Button variant="secondary">View workspace</Button></EmptyStateActions></EmptyState>',
-    Preview: EmptyProjectPreview,
   },
   "file-upload-state": {
     purpose:

@@ -19,7 +19,7 @@ export default defineConfig({
   },
   webServer: {
     command:
-      "VERCEL_ENV=development pnpm --filter @nerio-ui/docs build && VERCEL_ENV=development pnpm --filter @nerio-ui/docs exec next start --port 3100",
+      "pnpm --filter @nerio-ui/docs build && pnpm --filter @nerio-ui/docs exec next start --port 3100",
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
     url: "http://localhost:3100",
@@ -28,13 +28,9 @@ export default defineConfig({
     {
       name: "template-chromium",
       testMatch: [
-        "ai-research-template.spec.mjs",
         "template-release-smoke.spec.mjs",
         "cross-engine-template.spec.mjs",
-        "content-library-template.spec.mjs",
-        "developer-portal-template.spec.mjs",
         "finance-template.spec.mjs",
-        "support-desk-template.spec.mjs",
         "template-routes.spec.mjs",
         "performance-smoke.spec.mjs",
       ],

@@ -26,7 +26,6 @@ The maintainer-approved Nerio 1.0 visual language is documented in
 color and surfaces, typography, geometry and spacing, interaction states, motion, iconography, and
 signature details. It does not introduce a new runtime axis or silently change public APIs.
 
-<!-- nerio-preview-surfaces:start -->
 Public component documentation lives under `/docs`. `/blocks` is the metadata-driven catalog for
 bounded product tasks, while `/templates` is the catalog for complete app-like scenarios. Their
 same-origin full-screen previews live under `/views/blocks/[slug]` and `/views/[slug]`. Internal
@@ -36,24 +35,8 @@ stable distribution surface. Finance & Assets adds a deterministic consolidated 
 holdings, transaction, transfer-review, and security/display scenario at
 `/views/finance-assets`. It uses the optional
 charts adapter and local mock data only; it is not a released financial product, backend, or Pro
-package. Content Library adds a deterministic media catalog, grid/mobile-list switching,
-multi-selection, local preview and metadata editing, and a complete import-state queue at
-`/views/content-library`. Its CSS artwork,
-metadata, and workflow state are local fixtures; it is not a DAM backend, upload service, or
-released Pro package. AI Research Workspace adds an evidence-grounded conversation, inspectable
-citations, attachments, deterministic tool states, and saved-thread navigation at
-`/views/ai-research-workspace`. Its
-prompts, responses, sources, and runtime state are local fixtures; it is not a model API, agent
-backend, vector database, or released Pro package. Developer Portal adds a developer landing, deep
-navigation, keyboard-accessible search, quickstart examples, API reference states, and a versioned
-changelog at `/views/developer-portal`. Its
-documentation, endpoints, responses, search, and release data are local fixtures; it is not a docs
-backend, remote API, live SDK, or released Pro package. Support Desk adds saved inbox views, dense
-ticket selection, localized conversations, assignment and status controls, customer context, and a
-validated local reply flow at `/views/support-desk`. Its tickets, customers, replies, and workflow
-state are local fixtures; it is not a CRM
-backend, email service, persistence layer, or released Pro package.
-<!-- nerio-preview-surfaces:end -->
+package. These are the only current Templates; additional scenarios will be rebuilt before they
+return to the catalog.
 
 Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
 black surface with a soft shadow and no default border; secondary grouping and TableContainer use
@@ -143,11 +126,9 @@ Supported package consumers use Node.js >=22, React >=19 <20, Next.js >=16.2.0 <
 
 AI agents should select the smallest component set that matches the workflow, avoid unnecessary domain-specific assumptions in Core, use Pro for advanced product workflows, keep examples universal unless the task explicitly asks for a vertical, and never introduce shadcn/ui, Radix UI, Headless UI, Ariakit, or overlapping primitive libraries.
 
-<!-- nerio-preview-surfaces:start -->
-The public Blocks catalog is available at `/blocks`. Its ten docs-local compositions cover sign in,
+The public Blocks catalog is available at `/blocks`. Its nine docs-local compositions cover sign in,
 account creation, password recovery, profile settings, security settings, notification preferences,
-a basic table toolbar, an account summary, an empty project, and deterministic file-upload states.
+a basic table toolbar, an account summary, and deterministic file-upload states.
 Each catalog card navigates in the same tab to its same-origin `/views/blocks/[slug]` preview, which
 provides a `Back to Blocks` action for returning to the catalog. Blocks solve one bounded task; they
 are not Templates, Core component APIs, complete application shells, or backend workflows.
-<!-- nerio-preview-surfaces:end -->

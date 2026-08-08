@@ -116,13 +116,14 @@ test("covers focus, Sheet restoration, Table scrolling, and Sidebar collapse", a
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(workspaceRoute);
   const rail = page.locator('[data-slot="sidebar-rail"]');
-  await expect(rail).toHaveAccessibleName("Toggle workspace sidebar");
+  await expect(rail).toHaveAccessibleName("Collapse sidebar");
   await rail.click();
   await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
     "data-state",
     "collapsed",
   );
   await expect(rail).toHaveAttribute("aria-expanded", "false");
+  await expect(rail).toHaveAccessibleName("Expand sidebar");
   await rail.click();
   await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
     "data-state",
@@ -300,6 +301,11 @@ test("covers status filters, reduced motion, and forced colors", async ({ page }
   await expect(previewSettings.getByRole("combobox")).toHaveCount(4);
   await expect(previewSettings.getByRole("group", { name: "Initiative state" })).toHaveCount(0);
   await page.keyboard.press("Escape");
+
+  await expect(page.getByRole("link", { name: "Open in GitHub" })).toHaveAttribute(
+    "href",
+    "https://github.com/vpavlov-me/Nerio/tree/main/apps/docs/features/templates/operations-workspace",
+  );
 
   const statusFilters = page.getByRole("group", { name: "Initiative status filters" });
   await statusFilters.getByRole("button", { name: /At risk/ }).click();

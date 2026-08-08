@@ -190,6 +190,13 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "ArrowLeftRight",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "ArrowRight",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
@@ -232,7 +239,28 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "BriefcaseBusiness",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "CalendarDays",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ChartNoAxesCombined",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ChartPie",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
       {
@@ -310,6 +338,20 @@
         "deprecations": [],
         "kind": "value",
         "name": "ExternalLink",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "Eye",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "EyeOff",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
       {
@@ -544,6 +586,13 @@
         "deprecations": [],
         "kind": "value",
         "name": "UserPlus",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "WalletCards",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
       {
@@ -4557,6 +4606,41 @@
         "signature": "SidebarInsetProps"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "SidebarMenuButton",
+        "signature": "React.ForwardRefExoticComponent<SidebarMenuButtonProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> { tone?: BadgeTone; emphasis?: BadgeEmphasis; size?: BadgeSize; leadingIcon?: IconComponent; trailingIcon?: IconComponent; loading?: boolean; }",
+          "export interface ButtonRenderState { disabled: boolean; }",
+          "export type BadgeEmphasis = \"soft\" | \"strong\";",
+          "export type BadgeSize = \"sm\" | \"md\" | \"lg\";",
+          "export type BadgeTone = \"neutral\" | \"primary-soft\" | \"accent\" | \"info\" | \"success\" | \"warning\" | \"danger\";",
+          "export type ButtonBadge = React.ReactElement<BadgeProps, typeof Badge>;",
+          "export type ButtonKbd = string | number | React.ReactElement<KbdProps, typeof Kbd>;",
+          "export type ButtonProps = TextButtonProps | IconOnlyButtonProps;",
+          "export type ButtonRenderFunction = (props: ButtonRenderProps, state: ButtonRenderState) => React.ReactElement;",
+          "export type ButtonRenderProps = React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement>; children?: React.ReactNode; disabled?: boolean; \"data-icon-only\"?: string; \"data-disabled\"?: string; \"data-loading\"?: string; \"data-size\"?: ButtonSize; \"data-slot\"?: string; \"data-variant\"?: ButtonVariant; onClick?: React.MouseEventHandler<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type ButtonSize = \"sm\" | \"md\" | \"lg\";",
+          "export type ButtonVariant = \"primary\" | \"secondary\" | \"outline\" | \"ghost\" | \"link\" | \"danger\";",
+          "export type IconComponent = React.ElementType<IconSvgProps>;",
+          "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
+          "export type KbdProps = React.HTMLAttributes<HTMLElement> & { \"data-slot\"?: string; };",
+          "export type SidebarMenuButtonProps = SidebarMenuButtonBaseProps<ButtonProps> & { collapsedTooltip: React.ReactNode; };",
+          "type ButtonBaseProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"aria-label\" | \"children\" | \"className\" | \"color\" | \"disabled\" | \"onClick\" | \"style\"> & { \"data-slot\"?: string; className?: string; disabled?: boolean; focusableWhenDisabled?: boolean; nativeButton?: boolean; onClick?: React.MouseEventHandler<HTMLButtonElement>; render?: React.ReactElement | ButtonRenderFunction; style?: React.CSSProperties; variant?: ButtonVariant; size?: ButtonSize; loading?: boolean; tooltip?: React.ReactNode; };",
+          "type IconOnlyButtonProps = ButtonBaseProps & { icon: IconComponent; children?: never; \"aria-label\": string; leadingIcon?: never; trailingIcon?: never; kbd?: never; badge?: never; };",
+          "type SidebarMenuButtonBaseProps<T> = T extends unknown ? Omit<T, \"tooltip\"> : never;",
+          "type TextButtonProps = ButtonBaseProps & { children: React.ReactNode; icon?: never; \"aria-label\"?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; kbd?: ButtonKbd; badge?: ButtonBadge; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SidebarMenuButtonProps",
+        "signature": "SidebarMenuButtonProps"
+      },
+      {
         "definition": ["export type SidebarProps = React.HTMLAttributes<HTMLElement>;"],
         "deprecations": [],
         "kind": "type",
@@ -4568,11 +4652,12 @@
         "deprecations": [],
         "kind": "value",
         "name": "SidebarProvider",
-        "signature": "({ children, className, defaultExpanded, direction, expanded: controlledExpanded, onExpandedChange, side, sidebarId: providedSidebarId, ...props }: SidebarProviderProps) => React.JSX.Element"
+        "signature": "({ children, className, collapseMode, defaultExpanded, direction, expanded: controlledExpanded, onExpandedChange, side, sidebarId: providedSidebarId, ...props }: SidebarProviderProps) => React.JSX.Element"
       },
       {
         "definition": [
-          "export interface SidebarProviderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"defaultValue\" | \"dir\" | \"onChange\"> { children: React.ReactNode; defaultExpanded?: boolean; direction?: SidebarDirection; expanded?: boolean; onExpandedChange?: (expanded: boolean) => void; side?: SidebarSide; sidebarId?: string; }",
+          "export interface SidebarProviderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"defaultValue\" | \"dir\" | \"onChange\"> { children: React.ReactNode; collapseMode?: SidebarCollapseMode; defaultExpanded?: boolean; direction?: SidebarDirection; expanded?: boolean; onExpandedChange?: (expanded: boolean) => void; side?: SidebarSide; sidebarId?: string; }",
+          "export type SidebarCollapseMode = \"hidden\" | \"icons\";",
           "export type SidebarDirection = \"ltr\" | \"rtl\";",
           "export type SidebarSide = \"left\" | \"right\";"
         ],
@@ -4586,7 +4671,17 @@
         "deprecations": [],
         "kind": "value",
         "name": "SidebarRail",
-        "signature": "React.ForwardRefExoticComponent<Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"aria-controls\" | \"aria-expanded\" | \"aria-label\" | \"children\"> & { children?: React.ReactNode; label: string; } & React.RefAttributes<HTMLButtonElement>>"
+        "signature": "React.ForwardRefExoticComponent<SidebarRailProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface SidebarRailProps extends SidebarToggleProps { collapseLabel?: string; expandLabel?: string; }",
+          "export type SidebarToggleProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"aria-controls\" | \"aria-expanded\" | \"aria-label\" | \"children\"> & { children?: React.ReactNode; label: string; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SidebarRailProps",
+        "signature": "SidebarRailProps"
       },
       {
         "definition": ["export type SidebarRegionProps = React.HTMLAttributes<HTMLElement>;"],
@@ -5464,7 +5559,7 @@
       },
       {
         "definition": [
-          "export interface TooltipProps { defaultOpen?: boolean; disabled?: boolean; onOpenChange?: (open: boolean, eventDetails: TooltipOpenChangeEventDetails) => void; open?: boolean; label: React.ReactNode; children: React.ReactElement; className?: string; delay?: number; }",
+          "export interface TooltipProps { defaultOpen?: boolean; disabled?: boolean; onOpenChange?: (open: boolean, eventDetails: TooltipOpenChangeEventDetails) => void; open?: boolean; label: React.ReactNode; children: React.ReactElement; className?: string; delay?: number; showArrow?: boolean; side?: \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-end\" | \"inline-start\"; sideOffset?: number; }",
           "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
           "export type TooltipOpenChangeEventDetails = NerioChangeEventDetails<TooltipOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
           "export type TooltipOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"disabled\" | \"imperative-action\" | \"none\";"
@@ -5673,7 +5768,7 @@
           }
         },
         {
-          "components": ["calendar"],
+          "components": ["calendar", "sidebar-primitive"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -5775,7 +5870,7 @@
           }
         },
         {
-          "components": ["file-input", "sidebar-primitive"],
+          "components": ["file-input"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -6085,7 +6180,7 @@
           }
         },
         {
-          "components": ["calendar"],
+          "components": ["calendar", "sidebar-primitive"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -6193,7 +6288,7 @@
           }
         },
         {
-          "components": ["file-input", "sidebar-primitive"],
+          "components": ["file-input"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -6965,7 +7060,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7032,7 +7127,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7090,7 +7185,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7185,7 +7280,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7269,7 +7364,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7362,7 +7457,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7419,7 +7514,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7522,7 +7617,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7629,7 +7724,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7708,7 +7803,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7886,7 +7981,7 @@
             "target": "styles/overlays.css"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7994,7 +8089,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8081,7 +8176,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8142,7 +8237,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8210,7 +8305,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8281,7 +8376,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8336,7 +8431,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8397,7 +8492,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8475,7 +8570,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8539,7 +8634,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8614,7 +8709,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8670,7 +8765,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8733,7 +8828,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8791,7 +8886,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8892,7 +8987,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8977,7 +9072,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9052,7 +9147,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9135,7 +9230,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9233,7 +9328,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9329,7 +9424,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9393,7 +9488,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9466,7 +9561,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-d05bee8f4aff5c124017366ab282a74d4b643b28dea5043ddb42dad52ff3d1bf",
+            "integrity": "sha256-ae482928a4fb95fea0e9db235ef5f3bfae9ce4a54bc882c09c772ad233abcfd3",
             "role": "component",
             "source": "../../ui/src/components/sidebar.tsx",
             "target": "components/sidebar.tsx"
@@ -9502,7 +9597,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9516,7 +9611,7 @@
         ],
         "name": "sidebar-primitive",
         "optionalPeerDependencies": [],
-        "registryDependencies": [],
+        "registryDependencies": ["button"],
         "requiredTokens": [
           "--n-sidebar-width",
           "--n-sidebar-collapsed-width",
@@ -9524,6 +9619,7 @@
           "--n-sidebar-region-padding",
           "--n-sidebar-rail-hit-area",
           "--n-sidebar-rail-inset",
+          "--n-sidebar-item-icon-size",
           "--n-sidebar-transition-duration",
           "--n-sidebar-transition-easing",
           "--n-sidebar-background",
@@ -9543,6 +9639,7 @@
           "sidebar-header",
           "sidebar-content",
           "sidebar-footer",
+          "sidebar-menu-button",
           "sidebar-rail",
           "sidebar-inset",
           "sidebar-trigger"
@@ -9588,7 +9685,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9662,7 +9759,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9753,7 +9850,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9805,7 +9902,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9862,7 +9959,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9927,7 +10024,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10022,7 +10119,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10135,7 +10232,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10209,7 +10306,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10322,7 +10419,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10384,7 +10481,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-4fb563f6020a2f168a3d33dd26aa27cc3a16d363246993563c8446ddbeb26360",
+            "integrity": "sha256-978d718dd0573b9dcad4d4d71834c2c2ed68596736406652212d2726f987ad86",
             "role": "component",
             "source": "../../ui/src/components/tooltip.tsx",
             "target": "components/tooltip.tsx"
@@ -10420,7 +10517,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10472,7 +10569,7 @@
             "target": "lib/cn.ts"
           },
           {
-            "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73",
+            "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -11275,6 +11372,7 @@
     "--n-sidebar-control-radius",
     "--n-sidebar-foreground",
     "--n-sidebar-inset-gap",
+    "--n-sidebar-item-icon-size",
     "--n-sidebar-rail-hit-area",
     "--n-sidebar-rail-inset",
     "--n-sidebar-region-padding",

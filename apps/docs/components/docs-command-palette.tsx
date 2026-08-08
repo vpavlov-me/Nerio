@@ -22,6 +22,7 @@ export type DocsCommandEntry = {
   title: string;
   group: string;
   description: string;
+  newTab?: boolean;
 };
 
 const DocsSearchTrigger = React.forwardRef<
@@ -99,7 +100,11 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
   const select = React.useCallback(
     (entry: DocsCommandEntry) => {
       close();
-      router.push(entry.href);
+      if (entry.newTab) {
+        window.open(entry.href, "_blank", "noopener,noreferrer");
+      } else {
+        router.push(entry.href);
+      }
     },
     [close, router],
   );

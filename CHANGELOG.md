@@ -36,6 +36,16 @@ change, Git tag, GitHub Release, or stable-readiness claim.
 
 ### Changed
 
+- Published Blocks, Templates, their same-origin Views, and Playground across all documentation
+  deployments; removed the former deployment flag and production-only discovery gate. The current
+  Template catalog is intentionally limited to Operations Workspace and Finance & Assets, and the
+  redundant Empty project Block has been removed.
+- Added the Sidebar item-icon token used by the stable expanded and collapsed navigation geometry.
+  The raw token CSS budget moves from 72,000 to 72,500 bytes; the measured stylesheet is 72,001
+  bytes and remains within the existing gzip budget.
+- Added an explicit Sidebar collapse mode so existing arbitrary content remains inert by default
+  while migrated SidebarMenuButton navigation can opt into the icon rail. The measured
+  `@nerio-ui/ui` tarball is 65,059 bytes, so its reviewed ceiling moves from 65,000 to 65,500 bytes.
 - Changed CardTitle to render a neutral 16px `div` by default while preserving explicit heading
   opt-in through `as`, and made CardHeader consistently own title-description spacing beside
   CardAction. CardDescription now uses the standard 14px body size.

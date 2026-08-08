@@ -678,7 +678,8 @@ describe("Core static contracts", () => {
     );
     expect(componentSource("date-picker")).toContain("trailingIcon={CalendarDays}");
     expect(componentSource("tooltip")).toContain("<BaseTooltip.Arrow");
-    expect(componentSource("tooltip")).toContain("sideOffset={10}");
+    expect(componentSource("tooltip")).toContain("sideOffset = 10");
+    expect(componentSource("tooltip")).toContain("sideOffset={sideOffset}");
     expect(componentSource("tooltip")).toContain("overflow-clip");
     expect(componentSource("tooltip")).toContain(
       "before:[transform:translate(-50%,50%)_rotate(45deg)]",
@@ -2631,7 +2632,7 @@ describe("Core interactive action contracts", () => {
     const onOpenChange = vi.fn();
     const { rerender } = render(
       <TooltipProvider>
-        <Tooltip label="Copy link" onOpenChange={onOpenChange}>
+        <Tooltip label="Copy link" onOpenChange={onOpenChange} side="right" sideOffset={18}>
           <button>Copy</button>
         </Tooltip>
       </TooltipProvider>,
@@ -2639,6 +2640,7 @@ describe("Core interactive action contracts", () => {
     await user.tab();
     const tooltip = await screen.findByRole("tooltip");
     expect(tooltip).toHaveTextContent("Copy link");
+    expect(tooltip.parentElement).toHaveAttribute("data-side", "right");
     expect(tooltip.querySelector('[data-slot="arrow"]')?.parentElement).toBe(tooltip);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     rerender(
@@ -2650,6 +2652,17 @@ describe("Core interactive action contracts", () => {
     );
     await user.hover(screen.getByRole("button", { name: "Copy" }));
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+
+    rerender(
+      <TooltipProvider>
+        <Tooltip label="Copy link" open showArrow={false}>
+          <button>Copy</button>
+        </Tooltip>
+      </TooltipProvider>,
+    );
+    expect(
+      screen.getByRole("tooltip").querySelector('[data-slot="arrow"]'),
+    ).not.toBeInTheDocument();
   });
 
   it("shows the accessible name as the default tooltip for an icon-only Button", async () => {
@@ -4135,28 +4148,41 @@ describe("Core interactive action contracts", () => {
     expect(sidebar.querySelector('[data-slot="sidebar-footer"]')).toHaveTextContent("Account");
   });
 
-  it("keeps Sidebar rail geometry bottom-right inside the declared hit area", () => {
+  it("keeps Sidebar rail as the final footer action with an icon-only collapsed state", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sidebar.tsx"), "utf8");
     expect(source).toContain("size-(--n-sidebar-rail-hit-area)");
     expect(source).toContain(
-      "right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))]",
-    );
-    expect(source).toContain(
-      "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
+      "bottom-[calc(var(--n-sidebar-region-padding)+env(safe-area-inset-bottom))]",
     );
     expect(source).toContain('data-has-rail={rails.length > 0 ? "true" : undefined}');
-    expect(source).toContain('data-has-footer={hasFooter ? "true" : "false"}');
     expect(source).toContain(
-      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
     );
     expect(source).toContain(
-      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+      "group-data-[state=collapsed]/sidebar:size-(--n-sidebar-rail-hit-area)",
     );
-    expect(source).toContain(
-      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-bottom))]",
+    expect(source).toContain('data-slot="sidebar-rail-label"');
+    expect(source).toContain("collapseLabel");
+    expect(source).toContain("expandLabel");
+    expect(source).toContain("collapsedTooltip");
+    expect(source).toContain("tooltip={false}");
+    expect(source.match(/delay=\{0\}/g)).toHaveLength(2);
+    expect(source).toContain('side={side === "left" ? "right" : "left"}');
+    expect(source).toContain("sideOffset={SIDEBAR_TOOLTIP_SIDE_OFFSET}");
+    expect(source.match(/showArrow=\{false\}/g)).toHaveLength(2);
+    expect(source).toContain("[&_.n-icon]:size-(--n-sidebar-item-icon-size)");
+    expect(source).not.toContain(
+      "[data-state=collapsed]_&]:[&_.n-icon]:size-[calc(var(--n-icon-size-lg)",
     );
+    expect(source).toContain("[&_[data-slot=button-label]]:w-0");
+    expect(source).toContain("[&_[data-slot=button-label]]:opacity-0");
+    expect(source).not.toContain("sidebar-header]>:first-child]:opacity-0");
+    expect(source).toContain("collapseMode?: SidebarCollapseMode");
+    expect(source).toContain('collapseMode = "hidden"');
+    expect(source).toContain('collapseMode === "hidden"');
+    expect(source).toContain('inert={!expanded && collapseMode === "hidden" ? true : undefined}');
     expect(source).not.toContain("inset-y-0");
-    expect(source).not.toContain("top-1/2");
+    expect(source).not.toContain("bottom-[calc(var(--n-sidebar-rail-inset)");
   });
 
   it("exposes an exact SidebarContent div ref and does not churn SidebarInset refs", () => {

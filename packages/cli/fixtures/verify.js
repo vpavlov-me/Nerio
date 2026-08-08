@@ -1865,16 +1865,21 @@ async function verify() {
       !sidebarSource.includes("defaultExpanded") ||
       !sidebarSource.includes('data-state={expanded ? "expanded" : "collapsed"}') ||
       !sidebarSource.includes("aria-controls={sidebarId}") ||
-      !sidebarSource.includes("inert={!expanded || undefined}") ||
+      !sidebarSource.includes('data-slot="sidebar-menu-button"') ||
       !sidebarLayoutSource.includes('from "../lib/compose-refs"') ||
       !sidebarLayoutSource.includes("React.forwardRef<HTMLDivElement, SidebarContentProps>") ||
       !sidebarLayoutSource.includes("React.useMemo(() => composeRefs(ref), [ref])") ||
-      !sidebarSource.includes("size-(--n-sidebar-rail-hit-area)") ||
+      !sidebarSource.includes("SidebarMenuButton") ||
+      !sidebarSource.includes("showArrow={false}") ||
+      !sidebarSource.includes('side={side === "left" ? "right" : "left"}') ||
       !sidebarSource.includes(
-        "right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))]",
+        "right-[calc(var(--n-sidebar-region-padding)+env(safe-area-inset-right))]",
       ) ||
       !sidebarSource.includes(
-        "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
+        "bottom-[calc(var(--n-sidebar-region-padding)+env(safe-area-inset-bottom))]",
+      ) ||
+      !sidebarSource.includes(
+        "group-data-[state=collapsed]/sidebar:size-(--n-sidebar-rail-hit-area)",
       ) ||
       sidebarSource.includes("top-1/2") ||
       !sidebarSource.includes('from "../lib/tailwind-cn"')

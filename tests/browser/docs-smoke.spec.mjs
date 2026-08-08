@@ -73,9 +73,7 @@ test("covers public docs routes, standardized component docs, and the restrained
 
   await page.goto("/docs/components/sidebar-primitive");
   await expect(page.getByLabel("Sidebar preview")).toBeVisible();
-  await expect(
-    page.getByText('label="Toggle workspace sidebar"', { exact: false }).first(),
-  ).toBeVisible();
+  await expect(page.getByText('label="Toggle sidebar"', { exact: false }).first()).toBeVisible();
   await expect(page.locator("#usage").locator("..").locator(".sidebar-doc-examples")).toHaveCount(
     0,
   );
@@ -388,7 +386,7 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
   await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
     "Blocks",
   );
-  await expect(navigation.getByRole("link", { name: "Sign in" })).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "Blocks", exact: true })).toBeVisible();
   await navigation.getByRole("link", { name: "Tokens", exact: true }).click();
   await expect(page).toHaveURL(/\/docs\/foundations\/tokens$/);
 

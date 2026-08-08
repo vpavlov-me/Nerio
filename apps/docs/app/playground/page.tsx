@@ -1,6 +1,4 @@
-import { notFound } from "next/navigation";
 import { VisualPlayground } from "../../components/visual-playground";
-import { arePreviewSurfacesEnabled } from "../../lib/deployment";
 import { createPageMetadata } from "../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -11,7 +9,5 @@ export const metadata = createPageMetadata({
 });
 
 export default function PlaygroundPage() {
-  if (!arePreviewSurfacesEnabled()) notFound();
-
   return <VisualPlayground />;
 }
