@@ -98,7 +98,7 @@ resolvable until publication is separately authorized.
 | WebKit       | 26.5+                             | 16/16 release tests passed            |
 
 The minimum optional-peer profile is TanStack Table 8.21.3, Motion 12.42.2, React Hook Form 7.68.0,
-Recharts 3.6.0, and Zod 4.2.1. The current profile is Table 8.21.3, Motion 12.42.2, React Hook Form
+Recharts 3.6.0, and Zod 4.2.1. The current profile is Table 8.21.3, Motion 12.43.0, React Hook Form
 7.83.0, Recharts 3.10.1, and Zod 4.4.3. Each adapter is checked with its peer installed, while the
 packed icons/UI-only consumer proves unrelated peers do not arrive transitively.
 

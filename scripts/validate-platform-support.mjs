@@ -9,6 +9,7 @@ const paths = parsePathOptions(process.argv.slice(2), {
   "--pr-gate": resolve(root, ".github/workflows/pr-gate.yml"),
   "--release-gate": resolve(root, ".github/workflows/release-gate.yml"),
   "--canary": resolve(root, ".github/workflows/playwright-canary.yml"),
+  "--gap-closure": resolve(root, "docs/core-1-0-beta-gap-closure.md"),
 });
 const readJson = (path) => JSON.parse(readFileSync(resolve(root, path), "utf8"));
 const support = readJson("quality/platform-support.json");
@@ -166,6 +167,26 @@ for (const value of [
   assert(canary.includes(value), `Playwright canary must include ${value}.`);
 }
 assert(!canary.includes("pull_request:"), "The Playwright canary must not gate pull requests.");
+
+const gapClosure = readFileSync(paths["--gap-closure"], "utf8").replaceAll(/\s+/g, " ");
+const optionalPeerLabels = {
+  "@tanstack/react-table": "Table",
+  motion: "Motion",
+  "react-hook-form": "React Hook Form",
+  recharts: "Recharts",
+  zod: "Zod",
+};
+for (const profileName of ["minimum", "current"]) {
+  const profileLabel = profileName === "minimum" ? "minimum optional-peer" : "current";
+  for (const [peer, label] of Object.entries(optionalPeerLabels)) {
+    assert(
+      gapClosure.includes(
+        `${label} ${dependencySupport.profiles[profileName].optionalPeers[peer]}`,
+      ),
+      `Beta gap-closure docs must include the ${profileLabel} ${label} version.`,
+    );
+  }
+}
 console.log(
   "Platform support policy matches runtime declarations, package metadata, bounded dependency profiles, Node 22/24 consumers, pinned Playwright, the weekly stable canary, the cross-engine release gate, and docs.",
 );
