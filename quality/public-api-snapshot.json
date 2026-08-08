@@ -9561,7 +9561,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-8fac3181a69e4d0a7a560056b5295548850899c5e709d1de981403ca5194d395",
+            "integrity": "sha256-ae482928a4fb95fea0e9db235ef5f3bfae9ce4a54bc882c09c772ad233abcfd3",
             "role": "component",
             "source": "../../ui/src/components/sidebar.tsx",
             "target": "components/sidebar.tsx"

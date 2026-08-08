@@ -4165,6 +4165,7 @@ describe("Core interactive action contracts", () => {
     expect(source).toContain("collapseLabel");
     expect(source).toContain("expandLabel");
     expect(source).toContain("collapsedTooltip");
+    expect(source).toContain("tooltip={false}");
     expect(source.match(/delay=\{0\}/g)).toHaveLength(2);
     expect(source).toContain('side={side === "left" ? "right" : "left"}');
     expect(source).toContain("sideOffset={SIDEBAR_TOOLTIP_SIDE_OFFSET}");

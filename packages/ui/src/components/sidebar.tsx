@@ -112,6 +112,7 @@ export const SidebarMenuButton = React.forwardRef<HTMLElement, SidebarMenuButton
           className,
         )}
         data-slot="sidebar-menu-button"
+        tooltip={false}
       />
     );
     return expanded || collapseMode === "hidden" ? (
