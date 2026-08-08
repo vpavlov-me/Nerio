@@ -14,6 +14,8 @@ const paths = parsePathOptions(process.argv.slice(2), {
   "--docs": resolve(root, "docs/core-1-x-capability-parity.md"),
   "--roadmap": resolve(root, "ROADMAP.md"),
 });
+const baselinePublicApiSnapshotSha256 =
+  "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -110,8 +112,12 @@ assert(
   "Parity baseline Base UI version must match the exact UI dependency.",
 );
 assert(
-  matrix.baseline?.publicApiSnapshotSha256 === apiApproval.snapshotSha256,
-  "Parity baseline API snapshot hash is stale.",
+  matrix.baseline?.publicApiSnapshotSha256 === baselinePublicApiSnapshotSha256,
+  "Parity baseline API snapshot hash must retain the reviewed historical value.",
+);
+assert(
+  matrix.currentPublicApiSnapshotSha256 === apiApproval.snapshotSha256,
+  "Current parity API snapshot hash is stale.",
 );
 
 const requiredClassifications = [
@@ -488,6 +494,10 @@ for (const source of matrix.sources) {
 assert(
   docs.includes("No Core 1.0 runtime, package, Registry, token, export, or API snapshot changed"),
   "Human parity decision must state the frozen Core 1.0 boundary.",
+);
+assert(
+  docs.includes(matrix.baseline.publicApiSnapshotSha256),
+  "Human parity decision must retain the pinned baseline API snapshot hash.",
 );
 assert(
   roadmap.includes("docs/core-1-x-capability-parity.md"),

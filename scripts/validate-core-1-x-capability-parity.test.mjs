@@ -195,6 +195,25 @@ test("capability parity validator detects stale baseline metadata", () => {
   }, /Parity baseline Base UI version must match/);
 });
 
+test("capability parity validator separates current API state from the historical baseline", () => {
+  invalidMatrix((matrix) => {
+    matrix.currentPublicApiSnapshotSha256 = matrix.baseline.publicApiSnapshotSha256;
+  }, /Current parity API snapshot hash is stale/);
+});
+
+test("capability parity validator pins the reviewed historical API hash", () => {
+  invalidMatrix((matrix) => {
+    matrix.baseline.publicApiSnapshotSha256 = "a".repeat(64);
+  }, /Parity baseline API snapshot hash must retain the reviewed historical value/);
+});
+
+test("capability parity validator keeps the historical API hash in human evidence", () => {
+  invalidDocs(
+    (docs) => docs.replace("248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3", ""),
+    /Human parity decision must retain the pinned baseline API snapshot hash/,
+  );
+});
+
 test("capability parity validator protects the complete catalog baseline", () => {
   invalidCatalog((catalog) => {
     catalog.components[0].description = `${catalog.components[0].description} changed`;
