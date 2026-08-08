@@ -162,6 +162,7 @@ export {
   SidebarRail,
   SidebarTrigger,
   useSidebar,
+  type SidebarCollapseMode,
   type SidebarDirection,
   type SidebarMenuButtonProps,
   type SidebarProps,

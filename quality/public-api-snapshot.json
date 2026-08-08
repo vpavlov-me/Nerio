@@ -4555,6 +4555,13 @@
         "signature": "React.ForwardRefExoticComponent<SidebarProps & React.RefAttributes<HTMLElement>>"
       },
       {
+        "definition": ["export type SidebarCollapseMode = \"hidden\" | \"icons\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SidebarCollapseMode",
+        "signature": "SidebarCollapseMode"
+      },
+      {
         "definition": [],
         "deprecations": [],
         "kind": "value",
@@ -9561,7 +9568,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-ae482928a4fb95fea0e9db235ef5f3bfae9ce4a54bc882c09c772ad233abcfd3",
+            "integrity": "sha256-b483b9837f6c78cff361e88a381017c8d87dad6a245ce29bd76b7f65e43ab4bc",
             "role": "component",
             "source": "../../ui/src/components/sidebar.tsx",
             "target": "components/sidebar.tsx"

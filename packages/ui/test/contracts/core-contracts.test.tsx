@@ -4105,9 +4105,11 @@ describe("Core interactive action contracts", () => {
               <a href="/projects">Projects</a>
             </nav>
           </SidebarContent>
-          <SidebarFooter data-testid="sidebar-footer" {...unsafeSlot}>
-            Account
-          </SidebarFooter>
+          <React.Fragment>
+            <SidebarFooter data-testid="sidebar-footer" {...unsafeSlot}>
+              Account
+            </SidebarFooter>
+          </React.Fragment>
           <SidebarRail label="Collapse workspace sidebar" {...unsafeSlot} />
         </Sidebar>
         <SidebarInset data-testid="sidebar-inset" {...unsafeSlot}>
@@ -4156,8 +4158,12 @@ describe("Core interactive action contracts", () => {
     );
     expect(source).toContain('data-has-rail={rails.length > 0 ? "true" : undefined}');
     expect(source).toContain(
-      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
+      "data-[has-rail=true]:[&:has([data-slot=sidebar-footer])_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
     );
+    expect(source).toContain(
+      "data-[has-rail=true]:[&:not(:has([data-slot=sidebar-footer]))_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
+    );
+    expect(source).not.toContain("child.type === SidebarFooter");
     expect(source).toContain(
       "group-data-[state=collapsed]/sidebar:size-(--n-sidebar-rail-hit-area)",
     );
