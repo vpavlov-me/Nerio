@@ -4,7 +4,6 @@ import Script from "next/script";
 import "./globals.css";
 import { DocsChrome } from "../components/docs-chrome";
 import { createAppearanceInitializationScript } from "../lib/appearance";
-import { arePreviewSurfacesEnabled } from "../lib/deployment";
 import { siteConfig } from "../lib/site-config";
 
 const geistSans = Geist({
@@ -76,8 +75,6 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const showPreviewSurfaces = arePreviewSurfacesEnabled();
-
   return (
     <html
       suppressHydrationWarning
@@ -94,7 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <DocsChrome showPreviewSurfaces={showPreviewSurfaces}>{children}</DocsChrome>
+        <DocsChrome>{children}</DocsChrome>
         <Script id="yandex-metrika" strategy="afterInteractive">
           {`
             (function(m,e,t,r,i,k,a){

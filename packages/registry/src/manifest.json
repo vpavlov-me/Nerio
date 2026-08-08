@@ -29,7 +29,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
@@ -144,7 +144,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -236,7 +236,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -373,7 +373,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -465,7 +465,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -527,7 +527,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -637,7 +637,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -701,7 +701,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -756,7 +756,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -828,7 +828,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -894,7 +894,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -978,7 +978,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1034,7 +1034,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1097,7 +1097,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1168,7 +1168,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1218,7 +1218,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1268,7 +1268,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1350,7 +1350,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1439,7 +1439,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1548,7 +1548,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1672,7 +1672,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1759,7 +1759,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1858,7 +1858,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1945,7 +1945,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2014,7 +2014,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2100,7 +2100,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2162,7 +2162,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2217,7 +2217,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2275,7 +2275,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2368,7 +2368,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2444,7 +2444,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2524,7 +2524,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2732,7 +2732,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2846,7 +2846,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2952,7 +2952,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3011,7 +3011,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3104,7 +3104,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3170,13 +3170,13 @@
       "description": "Provides a low-level collapsible sidebar layout with bounded rail geometry and stable native refs without owning product navigation or persistence.",
       "category": "navigation",
       "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
-      "registryDependencies": [],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/sidebar.tsx",
           "target": "components/sidebar.tsx",
           "role": "component",
-          "integrity": "sha256-d05bee8f4aff5c124017366ab282a74d4b643b28dea5043ddb42dad52ff3d1bf"
+          "integrity": "sha256-2a3ce738f89e1c216973d3863ee2e443805903a47ff20880f67091d7e32fa1fa"
         },
         {
           "source": "../../ui/src/components/sidebar-layout.tsx",
@@ -3212,7 +3212,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3229,6 +3229,7 @@
         "sidebar-header",
         "sidebar-content",
         "sidebar-footer",
+        "sidebar-menu-button",
         "sidebar-rail",
         "sidebar-inset",
         "sidebar-trigger"
@@ -3249,6 +3250,7 @@
         "--n-sidebar-region-padding",
         "--n-sidebar-rail-hit-area",
         "--n-sidebar-rail-inset",
+        "--n-sidebar-item-icon-size",
         "--n-sidebar-transition-duration",
         "--n-sidebar-transition-easing",
         "--n-sidebar-background",
@@ -3264,14 +3266,14 @@
       "accessibility": [
         "Sidebar renders complementary aside semantics by default; place a labelled navigation landmark inside SidebarContent when the content is navigation.",
         "SidebarTrigger and SidebarRail require a localized label and expose aria-expanded plus a stable aria-controls relationship.",
-        "SidebarRail stays at the bottom-right inside the Sidebar and occupies only --n-sidebar-rail-hit-area while expanded or collapsed.",
+        "SidebarRail stays after footer content as the final sidebar action and occupies only --n-sidebar-rail-hit-area when collapsed.",
         "SidebarContent forwards an HTMLDivElement ref, while SidebarInset preserves stable HTMLElement refs for its explicit div or main root.",
-        "Collapsed Sidebar content is inert, hidden, and removed from pointer and keyboard interaction while SidebarRail remains reachable.",
+        "Collapsed navigation stays reachable with larger icons, preserved accessible names, and focusable labels through SidebarMenuButton tooltips.",
         "State changes keep focus on the external trigger or rail and do not add roving focus or Arrow-key behavior to consumer navigation.",
         "Physical left and right placement, explicit text direction, reduced motion, forced colors, compact density, and safe-area padding are supported.",
         "Persistence and mobile behavior remain consumer-owned; compose Sheet explicitly for mobile navigation so only one interactive tree is rendered."
       ],
-      "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label=\"Toggle workspace sidebar\" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>"
+      "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail collapseLabel=\"Collapse sidebar\" expandLabel=\"Expand sidebar\" label=\"Toggle sidebar\" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>"
     },
     {
       "name": "command-primitive",
@@ -3328,7 +3330,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3461,7 +3463,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3578,7 +3580,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3678,7 +3680,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3756,7 +3758,7 @@
           "source": "../../ui/src/components/tooltip.tsx",
           "target": "components/tooltip.tsx",
           "role": "component",
-          "integrity": "sha256-4fb563f6020a2f168a3d33dd26aa27cc3a16d363246993563c8446ddbeb26360"
+          "integrity": "sha256-978d718dd0573b9dcad4d4d71834c2c2ed68596736406652212d2726f987ad86"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
@@ -3792,7 +3794,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3821,10 +3823,13 @@
       "accessibility": [
         "Uses the Base UI Tooltip primitive.",
         "The arrow stays inside the popup and clips its bordered overlay surface toward the trigger.",
+        "The arrow is shown by default and can be omitted with showArrow when a plain floating label is more appropriate.",
         "Do not put required information only inside a tooltip.",
         "Keep tooltip text short and specific.",
         "Requires an element trigger. Use a keyboard-focusable control when keyboard users need to discover the tooltip.",
         "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed.",
+        "The optional side preference accepts physical or logical placement and retains Base UI collision handling.",
+        "The optional sideOffset controls the trigger-to-surface distance and can keep an arrow clear of a containing navigation edge.",
         "Wrap adjacent tooltip triggers in TooltipProvider so their open and close delays are coordinated."
       ],
       "usage": "import { Tooltip, TooltipProvider } from '@/components/nerio/components/tooltip';\n\n<TooltipProvider>\n  <Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>\n  <Tooltip label=\"Opens settings\"><button type=\"button\">Settings</button></Tooltip>\n</TooltipProvider>"
@@ -3872,7 +3877,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-05052c4679f3f1e2b4ebf328dfd94bc5e95bc0d7ac07ac2580d6e31c07b28a73"
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",

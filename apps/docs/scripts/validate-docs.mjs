@@ -266,7 +266,6 @@ function tailwindDocumentationFailures() {
   const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
-  const deployment = read("apps/docs/lib/deployment.ts");
   const playgroundPage = read("apps/docs/app/playground/page.tsx");
   const playground = read("apps/docs/components/visual-playground.tsx");
   const playgroundSpecimens = read("apps/docs/components/component-playground-specimens.tsx");
@@ -295,12 +294,6 @@ function tailwindDocumentationFailures() {
     [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
     [playgroundPage, "indexable: false", "Playground metadata must remain private"],
-    [playgroundPage, "arePreviewSurfacesEnabled()", "Playground must be unavailable in production"],
-    [
-      deployment,
-      'return process.env.NODE_ENV === "production"',
-      "Deployment detection must protect non-Vercel production builds",
-    ],
     [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
     [playground, "<h1>Playground</h1>", "Playground must use its concise canonical title"],
     [
@@ -392,6 +385,7 @@ function templateArchitectureFailures() {
   const thumbnail = read("apps/docs/components/preview-thumbnail.tsx");
   const viewRoute = read("apps/docs/app/views/[slug]/page.tsx");
   const workspace = read("apps/docs/features/templates/operations-workspace/view.tsx");
+  const finance = read("apps/docs/features/templates/finance-assets/view.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const playwright = read("playwright.config.mjs");
@@ -407,6 +401,12 @@ function templateArchitectureFailures() {
       catalog,
       'previewRoute: "/views/operations-workspace"',
       "Template catalog must own the same-origin Operations Workspace preview route",
+    ],
+    [catalog, 'slug: "finance-assets"', "Template catalog must register Finance & Assets"],
+    [
+      catalog,
+      'previewRoute: "/views/finance-assets"',
+      "Template catalog must own the same-origin Finance & Assets preview route",
     ],
     [gallery, "templateCatalog.map", "Templates gallery must derive from the canonical catalog"],
     [
@@ -438,6 +438,7 @@ function templateArchitectureFailures() {
       "OperationsWorkspaceView",
       "Operations Workspace implementation must remain template-local",
     ],
+    [finance, "FinanceAssetsView", "Finance & Assets implementation must remain template-local"],
     [
       docsChrome,
       'pathname.startsWith("/views/")',
@@ -484,6 +485,16 @@ function templateArchitectureFailures() {
   }
   if (catalog.includes("detailRoute")) {
     failures.push("Template catalog must not restore removed detail routes.");
+  }
+  for (const removedSlug of [
+    "content-library",
+    "ai-research-workspace",
+    "developer-portal",
+    "support-desk",
+  ]) {
+    if (catalog.includes(removedSlug) || viewRoute.includes(removedSlug)) {
+      failures.push(`Removed Template ${removedSlug} must not remain registered or routed.`);
+    }
   }
 
   return failures;
@@ -534,9 +545,9 @@ function blockArchitectureFailures() {
   }
 
   const publicSlugs = [...catalog.matchAll(/slug: "([^"]+)"/g)].map((match) => match[1]);
-  if (publicSlugs.length < 8 || publicSlugs.length > 12) {
+  if (publicSlugs.length < 8 || publicSlugs.length > 11) {
     failures.push(
-      `Blocks catalog must remain compact at 8-12 entries; found ${publicSlugs.length}.`,
+      `Blocks catalog must remain compact at 8-11 entries; found ${publicSlugs.length}.`,
     );
   }
 
@@ -574,6 +585,9 @@ function blockArchitectureFailures() {
   if (catalog.includes("detailRoute")) {
     failures.push("Block catalog must not restore removed detail routes.");
   }
+  if (catalog.includes('slug: "empty-project"') || catalog.includes('"empty-states":')) {
+    failures.push("The redundant Empty project Block and its legacy redirect must stay removed.");
+  }
   if (gallery.includes('target="_blank"')) {
     failures.push("Block cards must preserve same-tab navigation to support Back to Blocks.");
   }
@@ -581,14 +595,11 @@ function blockArchitectureFailures() {
   return failures;
 }
 
-function previewSurfaceGateFailures() {
-  const deployment = read("apps/docs/lib/deployment.ts");
+function publicSurfaceFailures() {
   const layout = read("apps/docs/app/layout.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const robots = read("apps/docs/app/robots.ts");
-  const browserConfig = read("playwright.config.mjs");
-  const visualConfig = read("playwright.visual.config.mjs");
   const llmsRoute = read("apps/docs/app/llms.txt/route.ts");
   const llmsSource = read("apps/docs/content/llms.txt");
   const routeFiles = [
@@ -602,66 +613,26 @@ function previewSurfaceGateFailures() {
   ];
   const failures = [];
   const required = [
-    [
-      deployment,
-      "NERIO_SHOW_PREVIEW_SURFACES",
-      "Preview surfaces must expose one explicit environment override",
-    ],
-    [
-      deployment,
-      "return !isPublicProductionDeployment()",
-      "Preview surfaces must default off only in public production",
-    ],
-    [
-      layout,
-      "showPreviewSurfaces={showPreviewSurfaces}",
-      "The docs shell must receive the server-evaluated preview-surface flag",
-    ],
+    [layout, "<DocsChrome>{children}</DocsChrome>", "The docs shell must expose public surfaces"],
     [
       docsChrome,
-      '!entry.href.startsWith("/blocks")',
-      "Production search must exclude Block entries",
+      "const visibleSearchEntries = searchEntries",
+      "Search must include public surfaces",
     ],
-    [
-      docsChrome,
-      '!entry.href.startsWith("/templates")',
-      "Production search must exclude Template entries",
-    ],
-    [
-      sitemap,
-      "if (!arePreviewSurfacesEnabled()) return publicRoutes",
-      "Production sitemap generation must exclude preview surfaces",
-    ],
+    [sitemap, 'absoluteUrl("/blocks")', "The sitemap must include Blocks"],
+    [sitemap, 'absoluteUrl("/templates")', "The sitemap must include Templates"],
     [
       robots,
-      `["/blocks", "/templates", "/views/", "/visual-test/"]`,
-      "Production robots rules must exclude preview surfaces",
-    ],
-    [
-      browserConfig,
-      "VERCEL_ENV=development",
-      "Browser checks must explicitly enable preview surfaces",
-    ],
-    [
-      visualConfig,
-      "VERCEL_ENV=development",
-      "Visual checks must explicitly enable preview surfaces",
-    ],
-    [
-      llmsRoute,
-      "if (!arePreviewSurfacesEnabled())",
-      "Production llms.txt must use the preview-surface gate",
+      'disallow: ["/views/", "/visual-test/"]',
+      "Robots rules must keep catalogs public while excluding preview Views",
     ],
     [
       llmsRoute,
       'join(process.cwd(), "content", "llms.txt")',
       "The llms.txt route must render the canonical source",
     ],
-    [
-      llmsSource,
-      "<!-- nerio-preview-surfaces:start -->",
-      "The canonical llms.txt source must mark preview-only discovery sections",
-    ],
+    [llmsSource, "`/blocks`", "The canonical llms.txt source must describe Blocks"],
+    [llmsSource, "`/templates`", "The canonical llms.txt source must describe Templates"],
   ];
 
   for (const [source, expected, message] of required) {
@@ -670,13 +641,23 @@ function previewSurfaceGateFailures() {
 
   for (const routeFile of routeFiles) {
     const source = read(routeFile);
-    if (!source.includes("arePreviewSurfacesEnabled()") || !source.includes("notFound()")) {
-      failures.push(`${routeFile}: preview surface route must return notFound when disabled`);
+    if (
+      source.includes("arePreviewSurfacesEnabled") ||
+      source.includes("NERIO_SHOW_PREVIEW_SURFACES")
+    ) {
+      failures.push(`${routeFile}: public surface routes must not depend on deployment flags`);
     }
   }
 
+  if (existsSync(join(root, "apps/docs/lib/deployment.ts"))) {
+    failures.push("The removed preview-surface deployment gate must not be restored");
+  }
+  if (llmsSource.includes("nerio-preview-surfaces")) {
+    failures.push("The public llms.txt source must not retain preview-only markers");
+  }
+
   if (existsSync(join(root, "apps/docs/public/llms.txt"))) {
-    failures.push("Static public llms.txt must not bypass the deployment gate");
+    failures.push("Static public llms.txt must not bypass the canonical route source");
   }
 
   return failures;
@@ -752,7 +733,7 @@ const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
 const blockArchitectureIssues = blockArchitectureFailures();
-const previewSurfaceGateIssues = previewSurfaceGateFailures();
+const publicSurfaceIssues = publicSurfaceFailures();
 const docPageArchitectureIssues = docPageArchitectureFailures(root);
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
@@ -790,7 +771,7 @@ reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
-reportMissing("Preview surface gate issues", previewSurfaceGateIssues);
+reportMissing("Public documentation surface issues", publicSurfaceIssues);
 reportMissing("Documentation server/client architecture issues", docPageArchitectureIssues);
 
 const failures = [
@@ -817,7 +798,7 @@ const failures = [
   tailwindDocumentationIssues,
   templateArchitectureIssues,
   blockArchitectureIssues,
-  previewSurfaceGateIssues,
+  publicSurfaceIssues,
   docPageArchitectureIssues,
 ].flat();
 

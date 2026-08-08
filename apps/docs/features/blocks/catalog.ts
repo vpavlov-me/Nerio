@@ -169,7 +169,7 @@ export const blockCatalog = [
       "Saved views, advanced filters, column settings, and virtualization belong to Pro or the app.",
       "Filtering and selection use local preview state; pagination is a static table control.",
     ],
-    relatedBlocks: ["empty-project"],
+    relatedBlocks: ["file-upload-state"],
     relatedTemplates: ["operations-workspace"],
     indexable: true,
   },
@@ -205,25 +205,6 @@ export const blockCatalog = [
     indexable: true,
   },
   {
-    slug: "empty-project",
-    title: "Empty project",
-    description:
-      "A practical first-project empty state with one primary next step and restrained secondary guidance.",
-    category: "Content and feedback",
-    status: "Preview",
-    previewRoute: "/views/blocks/empty-project",
-    componentsUsed: ["Button", "EmptyState", "Icon"],
-    intendedUse:
-      "Use this block when a collection is genuinely empty and creation is the next task.",
-    boundaries: [
-      "Onboarding policy, permissions, illustrations, and project creation remain application concerns.",
-      "Search, offline, and error states need their own product-specific recovery copy.",
-    ],
-    relatedBlocks: ["table-toolbar", "file-upload-state"],
-    relatedTemplates: ["operations-workspace"],
-    indexable: true,
-  },
-  {
     slug: "file-upload-state",
     title: "File upload state",
     description:
@@ -237,7 +218,7 @@ export const blockCatalog = [
       "File selection, transport, retries, persistence, and server errors remain application concerns.",
       "The preview represents deterministic local file states and does not perform uploads.",
     ],
-    relatedBlocks: ["empty-project"],
+    relatedBlocks: ["table-toolbar"],
     relatedTemplates: ["operations-workspace"],
     indexable: true,
   },
@@ -256,7 +237,6 @@ export const legacyPublicBlockRedirects: Record<string, (typeof blockCatalog)[nu
   "settings-form": "profile-settings",
   "table-toolbar": "table-toolbar",
   "user-profile": "account-summary",
-  "empty-states": "empty-project",
   feedback: "file-upload-state",
 };
 

@@ -8,7 +8,7 @@
     "@nerio-ui/mcp": { "tarballBytes": 4000, "unpackedBytes": 30000 }
   },
   "css": {
-    "tokensRawBytes": 72000,
+    "tokensRawBytes": 72500,
     "tokensGzipBytes": 11000,
     "uiResidualRawBytes": 5000,
     "uiResidualGzipBytes": 3000

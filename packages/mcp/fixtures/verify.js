@@ -729,7 +729,7 @@ async function verify() {
       !sidebarUsage.states.includes("collapsed") ||
       !sidebarUsage.variants.includes("side: left | right") ||
       !sidebarUsage.requiredTokens.includes("--n-sidebar-collapsed-width") ||
-      !sidebarUsage.accessibility.some((item) => item.includes("inert")) ||
+      !sidebarUsage.accessibility.some((item) => item.includes("Collapsed navigation")) ||
       !sidebarUsage.accessibility.some((item) => item.includes("hit-area")) ||
       !sidebarUsage.accessibility.some((item) => item.includes("HTMLDivElement ref")) ||
       !sidebarUsage.usage.includes("SidebarProvider")

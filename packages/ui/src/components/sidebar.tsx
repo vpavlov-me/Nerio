@@ -4,8 +4,9 @@ import * as React from "react";
 import { PanelLeft } from "@nerio-ui/adapters/icons";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
+import { Button, type ButtonProps } from "./button";
 import { Icon } from "./icon";
-import { SidebarFooter } from "./sidebar-layout";
+import { Tooltip } from "./tooltip";
 
 export type SidebarSide = "left" | "right";
 export type SidebarDirection = "ltr" | "rtl";
@@ -20,6 +21,7 @@ type SidebarContextValue = {
 };
 
 const SidebarContext = React.createContext<SidebarContextValue | null>(null);
+const SIDEBAR_TOOLTIP_SIDE_OFFSET = 14;
 
 export interface SidebarProviderProps extends Omit<
   React.HTMLAttributes<HTMLDivElement>,
@@ -87,6 +89,42 @@ export function useSidebar() {
   return context;
 }
 
+type SidebarMenuButtonBaseProps<T> = T extends unknown ? Omit<T, "tooltip"> : never;
+
+export type SidebarMenuButtonProps = SidebarMenuButtonBaseProps<ButtonProps> & {
+  collapsedTooltip: React.ReactNode;
+};
+
+export const SidebarMenuButton = React.forwardRef<HTMLElement, SidebarMenuButtonProps>(
+  function SidebarMenuButton({ className, collapsedTooltip, ...props }, ref) {
+    const { expanded, side } = useSidebar();
+    const button = (
+      <Button
+        ref={ref}
+        {...(props as ButtonProps)}
+        className={cn(
+          "n-sidebar-menu-button [&_.n-icon]:size-(--n-sidebar-item-icon-size)",
+          className,
+        )}
+        data-slot="sidebar-menu-button"
+      />
+    );
+    return expanded ? (
+      button
+    ) : (
+      <Tooltip
+        delay={0}
+        label={collapsedTooltip}
+        showArrow={false}
+        side={side === "left" ? "right" : "left"}
+        sideOffset={SIDEBAR_TOOLTIP_SIDE_OFFSET}
+      >
+        {button}
+      </Tooltip>
+    );
+  },
+);
+
 export type SidebarProps = React.HTMLAttributes<HTMLElement>;
 
 export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Sidebar(
@@ -96,13 +134,9 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
   const { direction, expanded, side, sidebarId } = useSidebar();
   const content: React.ReactNode[] = [];
   const rails: React.ReactNode[] = [];
-  let hasFooter = false;
   React.Children.forEach(children, (child) => {
     if (React.isValidElement(child) && child.type === SidebarRail) rails.push(child);
-    else {
-      if (React.isValidElement(child) && child.type === SidebarFooter) hasFooter = true;
-      content.push(child);
-    }
+    else content.push(child);
   });
 
   return (
@@ -111,7 +145,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
       {...props}
       id={sidebarId}
       className={cn(
-        "n-sidebar sticky top-0 h-dvh min-h-80 w-(--n-sidebar-width) max-w-dvw flex-[0_0_var(--n-sidebar-width)] border-r-(length:--n-sidebar-border-width) border-(--n-sidebar-border) bg-(--n-sidebar-background) pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-(--n-sidebar-foreground) transition-[width,flex-basis] duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) data-[side=right]:border-r-0 data-[side=right]:border-l-(length:--n-sidebar-border-width) data-[state=collapsed]:w-(--n-sidebar-collapsed-width) data-[state=collapsed]:basis-(--n-sidebar-collapsed-width) motion-reduce:duration-[0.01ms] forced-colors:border-[CanvasText]",
+        "n-sidebar group/sidebar sticky top-0 h-dvh min-h-80 w-(--n-sidebar-width) max-w-dvw flex-[0_0_var(--n-sidebar-width)] border-r-(length:--n-sidebar-border-width) border-(--n-sidebar-border) bg-(--n-sidebar-background) pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] text-(--n-sidebar-foreground) transition-[width,flex-basis] duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) data-[side=right]:border-r-0 data-[side=right]:border-l-(length:--n-sidebar-border-width) data-[state=collapsed]:w-(--n-sidebar-collapsed-width) data-[state=collapsed]:basis-(--n-sidebar-collapsed-width) motion-reduce:duration-[0.01ms] forced-colors:border-[CanvasText]",
         className,
       )}
       data-direction={direction}
@@ -120,11 +154,9 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
       data-state={expanded ? "expanded" : "collapsed"}
     >
       <div
-        className="n-sidebar__inner grid h-full w-(--n-sidebar-width) grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))] data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))] data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-bottom))] [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
-        data-has-footer={hasFooter ? "true" : "false"}
+        className="n-sidebar__inner grid h-full w-full grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]]:p-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-content]]:overflow-x-hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-content]]:px-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]]:px-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]]:pt-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_.n-button]:w-(--n-sidebar-rail-hit-area) [[data-state=collapsed]_&]:[&_.n-button]:gap-0 [[data-state=collapsed]_&]:[&_.n-button]:overflow-hidden [[data-state=collapsed]_&]:[&_.n-button]:px-0 [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:w-0 [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:overflow-hidden [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:opacity-0 [[data-state=collapsed]_&]:[&_[data-slot=button-badge]]:hidden [[data-state=collapsed]_&]:[&_[data-slot=button-kbd]]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]_strong]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]_small]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]>:not(.n-button)]:hidden"
         data-has-rail={rails.length > 0 ? "true" : undefined}
         data-slot="sidebar-inner"
-        inert={!expanded || undefined}
       >
         {content}
       </div>
@@ -181,19 +213,42 @@ export const SidebarTrigger = React.forwardRef<HTMLButtonElement, SidebarToggleP
   },
 );
 
-export const SidebarRail = React.forwardRef<HTMLButtonElement, SidebarToggleProps>(
-  function SidebarRail({ className, ...props }, ref) {
-    return (
+export interface SidebarRailProps extends SidebarToggleProps {
+  collapseLabel?: string;
+  expandLabel?: string;
+}
+
+export const SidebarRail = React.forwardRef<HTMLButtonElement, SidebarRailProps>(
+  function SidebarRail({ className, collapseLabel, expandLabel, ...props }, ref) {
+    const { expanded, side } = useSidebar();
+    const stateLabel = expanded ? (collapseLabel ?? props.label) : (expandLabel ?? props.label);
+    const control = (
       <SidebarToggle
         ref={ref}
         {...props}
+        label={stateLabel}
         className={cn(
-          "n-sidebar-rail absolute right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))] bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))] z-1 inline-flex size-(--n-sidebar-rail-hit-area) cursor-pointer appearance-none items-center justify-center rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) font-inherit text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) forced-colors:border forced-colors:border-[ButtonText]",
+          "n-sidebar-rail absolute right-[calc(var(--n-sidebar-region-padding)+env(safe-area-inset-right))] bottom-[calc(var(--n-sidebar-region-padding)+env(safe-area-inset-bottom))] left-[calc(var(--n-sidebar-region-padding)+env(safe-area-inset-left))] z-1 inline-flex h-(--n-sidebar-rail-hit-area) cursor-pointer appearance-none items-center justify-start gap-(--n-button-gap) rounded-(--n-sidebar-control-radius) border-0 bg-(--n-sidebar-control-background) px-(--n-button-padding-inline-sm) font-inherit text-(length:--n-button-font-size) text-(--n-sidebar-control-foreground) hover:bg-(--n-sidebar-control-background-hover) hover:text-(--n-color-text-primary) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) [&_.n-icon]:size-(--n-sidebar-item-icon-size) group-data-[state=collapsed]/sidebar:right-auto group-data-[state=collapsed]/sidebar:left-1/2 group-data-[state=collapsed]/sidebar:size-(--n-sidebar-rail-hit-area) group-data-[state=collapsed]/sidebar:-translate-x-1/2 group-data-[state=collapsed]/sidebar:justify-center group-data-[state=collapsed]/sidebar:px-0 group-data-[state=collapsed]/sidebar:[&_[data-slot=sidebar-rail-label]]:hidden forced-colors:border forced-colors:border-[ButtonText]",
           motionClasses.hover,
           className,
         )}
         data-slot="sidebar-rail"
-      />
+      >
+        <Icon icon={PanelLeft} />
+        <span data-slot="sidebar-rail-label">{stateLabel}</span>
+      </SidebarToggle>
+    );
+    return (
+      <Tooltip
+        delay={0}
+        disabled={expanded}
+        label={stateLabel}
+        showArrow={false}
+        side={side === "left" ? "right" : "left"}
+        sideOffset={SIDEBAR_TOOLTIP_SIDE_OFFSET}
+      >
+        {control}
+      </Tooltip>
     );
   },
 );

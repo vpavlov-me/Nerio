@@ -5,7 +5,6 @@ import {
   isInternalBlockFixture,
   legacyPublicBlockRedirects,
 } from "../../../../features/blocks/catalog";
-import { arePreviewSurfacesEnabled } from "../../../../lib/deployment";
 
 const legacySlugs = [
   ...blockSlugs,
@@ -16,14 +15,10 @@ const legacySlugs = [
 ];
 
 export function generateStaticParams() {
-  if (!arePreviewSurfacesEnabled()) return [];
-
   return [...new Set(legacySlugs)].map((slug) => ({ slug }));
 }
 
 export default async function LegacyBlockPage({ params }: { params: Promise<{ slug: string }> }) {
-  if (!arePreviewSurfacesEnabled()) notFound();
-
   const { slug } = await params;
 
   if (blockSlugs.includes(slug as (typeof blockSlugs)[number])) {

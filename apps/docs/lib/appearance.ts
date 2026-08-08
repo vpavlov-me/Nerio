@@ -55,6 +55,29 @@ export function persistAppearanceAxis<Axis extends keyof Appearance>(
   }
 }
 
+export function applyAppearanceAxis<Axis extends keyof Appearance>(
+  root: HTMLElement,
+  axis: Axis,
+  value: Appearance[Axis],
+) {
+  root.setAttribute(`data-${axis}`, value);
+}
+
+export function captureAppearanceAttributes(root: HTMLElement) {
+  const attributes: string[] = ["data-theme", "data-mode", "data-density"];
+  const snapshot: [string, string | null][] = attributes.map((attribute) => [
+    attribute,
+    root.getAttribute(attribute),
+  ]);
+
+  return () => {
+    for (const [attribute, value] of snapshot) {
+      if (value === null) root.removeAttribute(attribute);
+      else root.setAttribute(attribute, value);
+    }
+  };
+}
+
 export function createAppearanceInitializationScript() {
   return `(() => {
     const root = document.documentElement;

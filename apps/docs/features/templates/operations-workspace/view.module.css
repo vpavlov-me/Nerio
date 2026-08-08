@@ -68,6 +68,17 @@
   color: var(--n-color-text-primary);
 }
 
+.workspace :global(.n-sidebar[data-state="collapsed"]) .workspace-brand {
+  display: flex;
+  justify-content: center;
+}
+
+.workspace :global(.n-sidebar[data-state="collapsed"]) .workspace-nav__item,
+.workspace :global(.n-sidebar[data-state="collapsed"]) .workspace-settings {
+  inline-size: var(--n-sidebar-rail-hit-area);
+  justify-content: center;
+}
+
 .workspace-main {
   display: grid;
   gap: var(--n-space-5);

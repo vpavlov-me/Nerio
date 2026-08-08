@@ -42,10 +42,14 @@ export function SidebarUsageExample() {
           <nav aria-label="Workspace">Workspace navigation</nav>
         </SidebarContent>
         <SidebarFooter>Account</SidebarFooter>
-        <SidebarRail label="Toggle workspace sidebar" />
+        <SidebarRail
+          collapseLabel="Collapse sidebar"
+          expandLabel="Expand sidebar"
+          label="Toggle sidebar"
+        />
       </Sidebar>
       <SidebarInset>
-        <SidebarTrigger label="Toggle workspace sidebar" />
+        <SidebarTrigger label="Toggle sidebar" />
         Product content
       </SidebarInset>
     </SidebarProvider>

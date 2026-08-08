@@ -157,13 +157,16 @@ export {
 } from "./components/sheet";
 export {
   Sidebar,
+  SidebarMenuButton,
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
   useSidebar,
   type SidebarDirection,
+  type SidebarMenuButtonProps,
   type SidebarProps,
   type SidebarProviderProps,
+  type SidebarRailProps,
   type SidebarSide,
   type SidebarToggleProps,
 } from "./components/sidebar";

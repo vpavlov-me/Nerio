@@ -186,8 +186,8 @@ Deliver a functional monorepo and a polished Core foundation suitable for public
 4. Base UI-backed core components: Button, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
 6. Public docs application with navigation, theme/mode/density switcher, component preview, usage snippets, anatomy, variants, states, and accessibility notes.
-7. Docs-local Operations Workspace Template that composes the published components and renders
-   through a same-origin full-screen View.
+7. Docs-local Operations Workspace and Finance & Assets Templates that compose the published
+   components and render through same-origin full-screen Views.
 8. Registry foundations and a minimal `nerio add button` vertical slice.
 9. `llms.txt` and a minimal MCP component-index endpoint or package.
 10. `COMPONENTS.md` and `data/component-catalog.json` kept aligned with implementation status.

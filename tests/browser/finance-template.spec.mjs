@@ -20,63 +20,142 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => window.localStorage.clear());
 });
 
-test("connects portfolio navigation, holdings filters, detail, and semantic transaction states", async ({
-  page,
-}) => {
+test("keeps finance navigation static while supporting overview exploration", async ({ page }) => {
   const problems = monitorPage(page);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(financeRoute);
 
-  await expect(page.getByRole("heading", { level: 2, name: "Portfolio movement" })).toBeVisible();
+  await expect(page.getByText("Portfolio performance", { exact: true })).toBeVisible();
+  const balanceCard = page
+    .locator('[data-slot="card"]')
+    .filter({ hasText: "Consolidated portfolio" })
+    .first();
+  await expect(balanceCard).toBeVisible();
+  await expect(balanceCard.locator('[data-slot="card-content"]')).toBeVisible();
+  await expect(page.getByRole("group", { name: "Performance period" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "1M" })).toHaveAttribute("data-slot", "toggle");
+  await expect(page.getByRole("link", { name: "Open in GitHub" })).toHaveAttribute(
+    "href",
+    "https://github.com/vpavlov-me/Nerio/tree/main/apps/docs/features/templates/finance-assets",
+  );
   await page.getByRole("button", { name: "3M" }).click();
   await expect(page.getByRole("button", { name: "3M" })).toHaveAttribute("aria-pressed", "true");
 
-  await page.getByRole("button", { name: "Holdings" }).click();
-  await page.getByRole("textbox", { name: "Search holdings" }).fill("treasury");
-  await expect(page.getByRole("row", { name: /Short treasury fund/ })).toBeVisible();
-  await page.getByRole("row", { name: /Short treasury fund/ }).click();
-  await expect(page.getByRole("heading", { name: "Short treasury fund" })).toBeVisible();
+  const navigation = page.getByRole("navigation", { name: "Finance workspace" });
+  await expect(navigation.getByText("Overview", { exact: true })).toBeVisible();
+  await expect(navigation.getByText("Portfolio", { exact: true })).toBeVisible();
+  await expect(navigation.getByText("Reports", { exact: true })).toBeVisible();
+  await expect(navigation.getByRole("button")).toHaveCount(0);
 
-  await page.getByRole("textbox", { name: "Search holdings" }).fill("not an asset");
-  await expect(page.getByRole("heading", { name: "No holdings found" })).toBeVisible();
-  await page.getByRole("button", { name: "Clear filters" }).click();
-
-  await page.getByRole("button", { name: "Transactions" }).click();
-  await page.getByRole("combobox", { name: "Transaction status" }).click();
-  await page.getByRole("option", { name: "Failed" }).click();
-  await expect(page.getByText("Vendor transfer")).toBeVisible();
+  await page.getByRole("button", { name: /Short treasury fund/ }).click();
+  await expect(page.getByText("T+1", { exact: true })).toBeVisible();
+  const riskChart = page.getByRole("img", { name: /Risk distribution/ });
+  await expect(riskChart.getByText("100%", { exact: true })).toBeVisible();
+  await expect(riskChart.getByText("Total exposure", { exact: true })).toBeVisible();
+  await expect(riskChart.locator("circle[stroke-dasharray]").first()).toHaveAttribute(
+    "stroke-dasharray",
+    "40.4 59.6",
+  );
+  await expect(page.getByRole("heading", { level: 1, name: "Overview" })).toBeVisible();
   expect(problems).toEqual([]);
 });
 
-test("validates and completes the deterministic transfer while restoring focus", async ({
-  page,
-}) => {
+test("collapses the desktop sidebar to an accessible icon rail", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(financeRoute);
+
+  const sidebar = page.locator('[data-slot="sidebar"]');
+  const sidebarInner = page.locator('[data-slot="sidebar-inner"]');
+  const rail = page.locator('[data-slot="sidebar-rail"]');
+  const navigation = page.getByRole("navigation", { name: "Finance workspace" });
+  const settings = page.getByRole("button", { name: /preview settings|Settings/ });
+  const firstNavigationIcon = navigation.locator(".n-icon").first();
+
+  await expect(rail).toBeVisible();
+  await expect(rail).toHaveAccessibleName("Collapse sidebar");
+  await expect(firstNavigationIcon).toHaveCSS("width", "18px");
+  expect((await rail.boundingBox())?.y).toBeGreaterThan((await settings.boundingBox())?.y ?? 0);
+  await rail.click();
+
+  await expect(sidebar).toHaveAttribute("data-state", "collapsed");
+  await expect(sidebarInner).not.toHaveAttribute("inert", "");
+  await expect.poll(async () => Math.round((await sidebar.boundingBox())?.width ?? 0)).toBe(56);
+  await expect(navigation.locator("svg")).toHaveCount(7);
+  await expect(navigation.locator('[data-state="active"]')).toBeVisible();
+  await expect(navigation.locator('[data-slot="button-label"]').first()).toHaveCSS("width", "0px");
+  await expect(navigation.locator('[data-slot="button-label"]').first()).toHaveCSS("opacity", "0");
+  await expect(firstNavigationIcon).toHaveCSS("width", "18px");
+  await expect(settings).toBeVisible();
+  await expect(rail).toHaveAccessibleName("Expand sidebar");
+  await expect(page.locator('[data-slot="sidebar-header"] strong')).toBeHidden();
+  await expect(page.locator('[data-slot="sidebar-header"] svg')).toBeVisible();
+
+  const settingsBox = await settings.boundingBox();
+  const railBox = await rail.boundingBox();
+  expect(railBox?.y, "collapsed rail below Settings").toBeGreaterThan(
+    (settingsBox?.y ?? 0) + (settingsBox?.height ?? 0),
+  );
+
+  await navigation.locator('[data-slot="sidebar-menu-button"]').first().hover();
+  const overviewTooltip = page.getByRole("tooltip").filter({ hasText: "Overview" });
+  await expect(overviewTooltip).toHaveText("Overview");
+  await expect(overviewTooltip).toHaveAttribute("data-side", "right");
+  const leftSidebarBox = await sidebar.boundingBox();
+  const rightTooltipBox = await overviewTooltip.boundingBox();
+  await expect(overviewTooltip.locator('[data-slot="arrow"]')).toHaveCount(0);
+  expect(rightTooltipBox?.x, "tooltip clears the left sidebar").toBeGreaterThanOrEqual(
+    (leftSidebarBox?.x ?? 0) + (leftSidebarBox?.width ?? 0),
+  );
+  expect(
+    (rightTooltipBox?.x ?? 0) + (rightTooltipBox?.width ?? 0) / 2,
+    "tooltip outside the left sidebar",
+  ).toBeGreaterThan((leftSidebarBox?.x ?? 0) + (leftSidebarBox?.width ?? 0));
+  await rail.hover();
+  await expect(page.getByRole("tooltip", { name: "Expand sidebar" })).toHaveText("Expand sidebar");
+
+  await rail.click();
+  await page.getByRole("button", { name: "Open preview settings" }).click();
+  const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
+  await previewSettings.getByRole("combobox", { name: "Direction" }).click();
+  await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
+  await expect(previewSettings).toBeHidden();
+  await expect(sidebar).toHaveAttribute("data-side", "right");
+  await rail.click();
+  await expect.poll(async () => Math.round((await sidebar.boundingBox())?.width ?? 0)).toBe(56);
+  await navigation.locator('[data-slot="sidebar-menu-button"]').first().hover();
+  const rtlOverviewTooltip = page.getByRole("tooltip").filter({ hasText: "Overview" });
+  await expect(rtlOverviewTooltip).toHaveText("Overview");
+  await expect(rtlOverviewTooltip).toHaveAttribute("data-side", "left");
+  const rightSidebarBox = await sidebar.boundingBox();
+  const leftTooltipBox = await rtlOverviewTooltip.boundingBox();
+  await expect(rtlOverviewTooltip.locator('[data-slot="arrow"]')).toHaveCount(0);
+  expect(
+    (leftTooltipBox?.x ?? 0) + (leftTooltipBox?.width ?? 0),
+    "tooltip clears the right sidebar",
+  ).toBeLessThanOrEqual(rightSidebarBox?.x ?? 0);
+  expect(
+    (leftTooltipBox?.x ?? 0) + (leftTooltipBox?.width ?? 0) / 2,
+    "tooltip outside the right sidebar",
+  ).toBeLessThan(rightSidebarBox?.x ?? 0);
+
+  expect(problems).toEqual([]);
+});
+
+test("shows a static transfer preview while restoring focus", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto(financeRoute);
 
   const trigger = page.getByRole("button", { name: "Transfer" });
   await trigger.click();
-  const dialog = page.getByRole("dialog", { name: "New transfer" });
-  await dialog.getByRole("button", { name: "Review transfer" }).click();
-  await expect(dialog.getByText("Enter an amount greater than zero.")).toBeVisible();
-  await dialog.getByRole("textbox", { name: "Amount" }).fill("1200");
-  await dialog.getByRole("button", { name: "Review transfer" }).click();
-  await expect(page.getByRole("dialog", { name: "Review transfer" })).toBeVisible();
-  await page.getByRole("button", { name: "Confirm transfer" }).click();
-  await page.keyboard.press("Escape");
-  await expect(dialog).toBeHidden();
-  await page.waitForTimeout(800);
-
-  await trigger.click();
-  await expect(page.getByRole("dialog", { name: "New transfer" })).toBeVisible();
-  await expect(page.getByRole("textbox", { name: "Amount" })).toHaveValue("");
-  await page.getByRole("textbox", { name: "Amount" }).fill("1200");
-  await page.getByRole("button", { name: "Review transfer" }).click();
-  await page.getByRole("button", { name: "Confirm transfer" }).click();
-  await expect(page.getByRole("dialog", { name: "Transfer scheduled" })).toBeVisible();
-  await page.getByRole("button", { name: "Done" }).click();
+  const dialog = page.getByRole("dialog", { name: "Transfer preview" });
+  await expect(dialog.getByText("Demonstration only")).toBeVisible();
+  await expect(dialog.getByText("Operating cash · USD")).toBeVisible();
+  await expect(dialog.getByText("Short treasury fund · USTX")).toBeVisible();
+  await expect(dialog.getByText("$5,000.00")).toBeVisible();
+  await dialog.getByRole("button", { name: "Done" }).click();
   await expect(trigger).toBeFocused();
-  await expect(page.locator(".n-toast--managed")).toContainText("Transfer scheduled");
   expect(problems).toEqual([]);
 });
 
@@ -88,13 +167,19 @@ test("supports balance privacy, mobile navigation, runtime axes, RTL, and reflow
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(financeRoute);
 
-  const balanceToggle = page.getByRole("button", { name: "Show balances" });
-  await expect(balanceToggle).toHaveAttribute("aria-pressed", "true");
-  await balanceToggle.click();
-  await expect(balanceToggle).toHaveAttribute("aria-pressed", "false");
-  await expect(balanceToggle).toHaveAccessibleName("Show balances");
-  await expect(page.getByRole("heading", { name: "Balance hidden" })).toBeVisible();
-  await expect(page.getByText("+$4,612", { exact: true })).toHaveCount(0);
+  const hideBalances = page.getByRole("button", { name: "Hide balances" });
+  await expect(hideBalances).toHaveAttribute("aria-pressed", "true");
+  await hideBalances.click();
+  const showBalances = page.getByRole("button", { name: "Show balances" });
+  await expect(showBalances).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator('[data-private-value][aria-label="Balance hidden"]')).toBeVisible();
+  await expect(page.locator('[data-private-value][data-private-state="masked"]')).not.toHaveCount(
+    0,
+  );
+  await expect(page.locator('[data-private-state="masked"] [data-slot="value"]').first()).toHaveCSS(
+    "filter",
+    /blur/,
+  );
   await expect(page.getByRole("img", { name: /Values hidden/ })).toBeVisible();
 
   const navigationTrigger = page.getByRole("button", { name: "Open finance navigation" });
@@ -103,18 +188,25 @@ test("supports balance privacy, mobile navigation, runtime axes, RTL, and reflow
     .getByRole("dialog", { name: "Finance navigation" })
     .getByRole("button", { name: "Settings" })
     .click();
-  await page.keyboard.press("Escape");
 
-  await page.getByRole("combobox", { name: "Mode" }).click();
+  const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
+  await previewSettings.getByRole("combobox", { name: "Mode" }).click();
   await page.getByRole("option", { name: "Dark" }).click();
-  await page.getByRole("combobox", { name: "Density" }).click();
+  await previewSettings.getByRole("combobox", { name: "Density" }).click();
   await page.getByRole("option", { name: "Compact" }).click();
-  await page.getByRole("combobox", { name: "Direction" }).click();
+  await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
 
   await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
   await expect(page.locator("html")).toHaveAttribute("data-density", "compact");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  expect(
+    await page.evaluate(() => ({
+      density: window.localStorage.getItem("nerio-docs-density"),
+      mode: window.localStorage.getItem("nerio-docs-mode"),
+      theme: window.localStorage.getItem("nerio-docs-theme"),
+    })),
+  ).toEqual({ density: null, mode: null, theme: null });
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

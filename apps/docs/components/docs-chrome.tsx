@@ -50,6 +50,8 @@ import {
 import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { modes } from "@nerio-ui/tokens";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
+import { blockCatalog } from "../features/blocks/catalog";
+import { templateCatalog } from "../features/templates/catalog";
 import {
   defaultAppearance,
   persistAppearanceAxis,
@@ -373,6 +375,18 @@ const searchEntries: DocsCommandEntry[] = [
     group: "Product scenarios",
     description: "Explore complete app-like Nerio previews rendered inside the docs application.",
   },
+  ...blockCatalog.map((block) => ({
+    href: block.previewRoute,
+    title: block.title,
+    group: "Blocks",
+    description: `${block.title} documentation and preview.`,
+  })),
+  ...templateCatalog.map((template) => ({
+    href: template.previewRoute,
+    title: template.title,
+    group: "Templates",
+    description: `${template.title} documentation and preview.`,
+  })),
 ];
 
 const foundationGroups = navGroups.slice(0, 2);
@@ -396,27 +410,19 @@ function getAdjacentDocs(pathname: string) {
   };
 }
 
-function MobileDocumentationNavigation({
-  pathname,
-  showPreviewSurfaces,
-}: {
-  pathname: string;
-  showPreviewSurfaces: boolean;
-}) {
+function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
   const [open, setOpen] = React.useState(false);
-  const navigationGroups = showPreviewSurfaces
-    ? [
-        ...navGroups,
-        {
-          title: "Preview",
-          items: [
-            { href: "/blocks", label: "Blocks", icon: Boxes },
-            { href: "/templates", label: "Templates", icon: ListTree },
-            { href: "/playground", label: "Playground", icon: Wrench },
-          ],
-        },
-      ]
-    : navGroups;
+  const navigationGroups = [
+    ...navGroups,
+    {
+      title: "Explore",
+      items: [
+        { href: "/blocks", label: "Blocks", icon: Boxes },
+        { href: "/templates", label: "Templates", icon: ListTree },
+        { href: "/playground", label: "Playground", icon: Wrench },
+      ],
+    },
+  ];
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -671,13 +677,7 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
   );
 }
 
-export function DocsChrome({
-  children,
-  showPreviewSurfaces,
-}: {
-  children: React.ReactNode;
-  showPreviewSurfaces: boolean;
-}) {
+export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const isHomePage = pathname === "/";
@@ -690,14 +690,7 @@ export function DocsChrome({
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
-  const visibleSearchEntries = showPreviewSurfaces
-    ? searchEntries
-    : searchEntries.filter(
-        (entry) =>
-          !entry.href.startsWith("/playground") &&
-          !entry.href.startsWith("/blocks") &&
-          !entry.href.startsWith("/templates"),
-      );
+  const visibleSearchEntries = searchEntries;
 
   React.useEffect(() => {
     setFeedback(null);
@@ -804,10 +797,7 @@ export function DocsChrome({
             <Badge tone="neutral">{version}</Badge>
           </div>
 
-          <MobileDocumentationNavigation
-            pathname={pathname}
-            showPreviewSurfaces={showPreviewSurfaces}
-          />
+          <MobileDocumentationNavigation pathname={pathname} />
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
@@ -826,26 +816,22 @@ export function DocsChrome({
             >
               Components
             </Link>
-            {showPreviewSurfaces ? (
-              <>
-                <Link
-                  href="/blocks"
-                  className={pathname.startsWith("/blocks") ? "is-active" : undefined}
-                >
-                  Blocks
-                </Link>
-                <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
-                  Templates
-                </Link>
-                <Link
-                  href="/playground"
-                  className={isPlaygroundPage ? "is-active" : undefined}
-                  aria-current={isPlaygroundPage ? "page" : undefined}
-                >
-                  Playground
-                </Link>
-              </>
-            ) : null}
+            <Link
+              href="/blocks"
+              className={pathname.startsWith("/blocks") ? "is-active" : undefined}
+            >
+              Blocks
+            </Link>
+            <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
+              Templates
+            </Link>
+            <Link
+              href="/playground"
+              className={isPlaygroundPage ? "is-active" : undefined}
+              aria-current={isPlaygroundPage ? "page" : undefined}
+            >
+              Playground
+            </Link>
           </nav>
 
           <TooltipProvider closeDelay={0} delay={600}>

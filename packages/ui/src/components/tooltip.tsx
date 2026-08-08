@@ -29,6 +29,9 @@ export interface TooltipProps {
   children: React.ReactElement;
   className?: string;
   delay?: number;
+  showArrow?: boolean;
+  side?: "top" | "bottom" | "left" | "right" | "inline-end" | "inline-start";
+  sideOffset?: number;
 }
 
 export interface TooltipProviderProps {
@@ -43,7 +46,19 @@ export function TooltipProvider({ children, ...props }: TooltipProviderProps) {
 }
 
 export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function Tooltip(
-  { label, children, className, open, defaultOpen, onOpenChange, disabled, delay },
+  {
+    label,
+    children,
+    className,
+    open,
+    defaultOpen,
+    onOpenChange,
+    disabled,
+    delay,
+    showArrow = true,
+    side,
+    sideOffset = 10,
+  },
   ref,
 ) {
   return (
@@ -57,7 +72,8 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
       <BaseTooltip.Portal>
         <BaseTooltip.Positioner
           className="n-tooltip-positioner z-(--n-overlay-floating-z-index)"
-          sideOffset={10}
+          side={side}
+          sideOffset={sideOffset}
         >
           <BaseTooltip.Popup
             ref={ref}
@@ -69,10 +85,12 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
             data-slot="content"
             role="tooltip"
           >
-            <BaseTooltip.Arrow
-              className="n-tooltip-arrow relative block h-(--n-space-1-5) w-(--n-space-3) overflow-clip data-[side=bottom]:top-[calc(var(--n-space-1-5)*-1)] data-[side=left]:right-[calc((var(--n-space-2)+1px)*-1)] data-[side=left]:rotate-90 data-[side=right]:left-[calc((var(--n-space-2)+1px)*-1)] data-[side=right]:-rotate-90 data-[side=top]:bottom-[calc(var(--n-space-1-5)*-1)] data-[side=top]:rotate-180 before:absolute before:bottom-0 before:left-1/2 before:size-[calc(var(--n-space-1-5)*1.4142)] before:border-(length:--n-overlay-border-width) before:border-(--n-overlay-border) before:bg-(--n-overlay-background) before:content-[''] before:[transform:translate(-50%,50%)_rotate(45deg)]"
-              data-slot="arrow"
-            />
+            {showArrow ? (
+              <BaseTooltip.Arrow
+                className="n-tooltip-arrow relative block h-(--n-space-1-5) w-(--n-space-3) overflow-clip data-[side=bottom]:top-[calc(var(--n-space-1-5)*-1)] data-[side=left]:right-[calc((var(--n-space-2)+1px)*-1)] data-[side=left]:rotate-90 data-[side=right]:left-[calc((var(--n-space-2)+1px)*-1)] data-[side=right]:-rotate-90 data-[side=top]:bottom-[calc(var(--n-space-1-5)*-1)] data-[side=top]:rotate-180 before:absolute before:bottom-0 before:left-1/2 before:size-[calc(var(--n-space-1-5)*1.4142)] before:border-(length:--n-overlay-border-width) before:border-(--n-overlay-border) before:bg-(--n-overlay-background) before:content-[''] before:[transform:translate(-50%,50%)_rotate(45deg)]"
+                data-slot="arrow"
+              />
+            ) : null}
             {label}
           </BaseTooltip.Popup>
         </BaseTooltip.Positioner>

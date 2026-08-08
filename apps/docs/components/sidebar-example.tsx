@@ -44,7 +44,11 @@ export function SidebarExample() {
               </nav>
             </SidebarContent>
             <SidebarFooter>Core layout only</SidebarFooter>
-            <SidebarRail label="Toggle preview sidebar" />
+            <SidebarRail
+              collapseLabel="Collapse sidebar"
+              expandLabel="Expand sidebar"
+              label="Toggle sidebar"
+            />
           </Sidebar>
           <SidebarInset as="div">
             <div>

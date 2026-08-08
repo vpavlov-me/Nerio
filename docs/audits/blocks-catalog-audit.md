@@ -23,7 +23,7 @@ navigation, search, sitemap, and `llms.txt`.
 | `settings-form` · `/docs/blocks/settings-form`             | Edit profile, notifications, view preferences, security, and deletion | Field, FormGroup, Checkbox, RadioGroup, Select, Textarea, Switch, Dialog, Button, Alert; large multi-section page | Too broad for one Block and approaches a settings page composition                    | Combines three independently useful settings tasks                                        | `split-into-blocks`           | Replace with `profile-settings`, `notification-preferences`, and `security-settings`; redirect legacy route to the closest introductory profile Block |
 | `table-toolbar` · `/docs/blocks/table-toolbar`             | Search, filter, select, act on, and paginate a small table            | Input, DropdownMenu, Button, Table, Badge, EmptyState, Pagination; medium workflow                                | Reusable bounded Block when it stops before DataGrid responsibility                   | Operations Workspace has a larger table scenario, but this remains independently copyable | `simplify-public-block`       | Keep canonical slug; add truthful checkbox selection and selected-count state; preserve empty result and pagination                                   |
 | `user-profile` · `/docs/blocks/user-profile`               | View identity, metrics, metadata, activity, and message action        | Card, Avatar, Stat, KeyValue, List, Badge, Button, Dialog; medium page-like composition                           | Original is broader than a bounded Block; not large enough to become its own Template | Activity and metrics overlap dashboard/profile Template patterns                          | `simplify-public-block`       | Canonical `account-summary`; retain identity, account metadata, status, and one edit action; remove social metrics and activity feed                  |
-| `empty-states` · `/docs/blocks/empty-states`               | Compare six unrelated absence and recovery states                     | EmptyState and Button repeated six times; gallery rather than one task                                            | Component-family/example gallery, not one reusable Block                              | Duplicates Empty State component guidance                                                 | `simplify-public-block`       | Canonical `empty-project`; keep one realistic first-project outcome and link to Operations Workspace; redirect legacy route                           |
+| `empty-states` · `/docs/blocks/empty-states`               | Compare six unrelated absence and recovery states                     | EmptyState and Button repeated six times; gallery rather than one task                                            | Component-family/example gallery, not one reusable Block                              | Duplicates Empty State component guidance                                                 | `remove-public-block`         | Remove the redundant public Block and its legacy redirect; Empty State already has focused component guidance                                         |
 | `feedback` · `/docs/blocks/feedback`                       | Compare alerts, progress, skeletons, spinner, and Toast               | Alert, Toast, Progress, Skeleton, Spinner, Button; broad family fixture                                           | Original is internal component coverage, not a recognizable product task              | Duplicates feedback component documentation                                               | `split-into-blocks`           | Public `file-upload-state` reframes progress and outcomes around one task; preserve original family coverage at `/visual-test/blocks/feedback`        |
 | `overlay-playground` · `/docs/blocks/overlay-playground`   | Stress nested overlays, focus, scrolling, and keyboard behavior       | Dialog, Popover, DropdownMenu, Tooltip, Button, Checkbox; interaction playground                                  | Deterministic internal accessibility and browser fixture                              | Duplicates overlay component docs by design for integration testing                       | `move-to-internal-test-route` | Preserve at `/visual-test/blocks/overlay-playground`; remove from public discovery; legacy route redirects to the unindexed fixture                   |
 | `navigation-patterns` · `/docs/blocks/navigation-patterns` | Compare breadcrumbs, local links, tabs, sidebar, and pagination       | Breadcrumbs, Button, Tabs, Pagination; broad navigation composition                                               | Docs/template composition and internal semantic stress fixture, not one task          | Overlaps the documentation shell and navigation component references                      | `move-to-internal-test-route` | Preserve at `/visual-test/blocks/navigation-patterns`; remove from public discovery; legacy route redirects to fixture                                |
@@ -31,7 +31,7 @@ navigation, search, sitemap, and `llms.txt`.
 
 ## Final public inventory
 
-The initial catalog contains ten Blocks:
+The current catalog contains nine Blocks:
 
 1. Sign in
 2. Create account
@@ -41,8 +41,7 @@ The initial catalog contains ten Blocks:
 6. Notification preferences
 7. Table toolbar
 8. Account summary
-9. Empty project
-10. File upload state
+9. File upload state
 
 This inventory covers authentication, settings and account, team and operations, and content and
 feedback. Each item has one canonical metadata record for its public title, description, category,

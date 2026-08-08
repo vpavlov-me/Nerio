@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { PreviewThumbnail } from "../../components/preview-thumbnail";
 import { blockCatalog } from "../../features/blocks/catalog";
-import { arePreviewSurfacesEnabled } from "../../lib/deployment";
 import { createPageMetadata } from "../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -13,8 +11,6 @@ export const metadata = createPageMetadata({
 });
 
 export default function BlocksPage() {
-  if (!arePreviewSurfacesEnabled()) notFound();
-
   return (
     <article className="doc-page catalog-page blocks-catalog-page">
       <header className="catalog-hero">
