@@ -667,10 +667,12 @@ function publicSurfaceFailures() {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
   }
 
-  const feedbackBlankTargets = feedbackPage.match(/target="_blank"/g)?.length ?? 0;
-  const feedbackSafeRelations = feedbackPage.match(/rel="noopener noreferrer"/g)?.length ?? 0;
-  if (feedbackBlankTargets !== feedbackSafeRelations) {
-    failures.push("Every new-tab Community feedback link must prevent opener access");
+  const feedbackNewTabAnchors = feedbackPage.match(/<a\b[^>]*\btarget="_blank"[^>]*>/gs) ?? [];
+  for (const anchor of feedbackNewTabAnchors) {
+    const relations = new Set(anchor.match(/\brel="([^"]*)"/)?.[1].split(/\s+/) ?? []);
+    if (!relations.has("noopener") || !relations.has("noreferrer")) {
+      failures.push("Every new-tab Community feedback link must prevent opener access");
+    }
   }
 
   for (const routeFile of routeFiles) {
