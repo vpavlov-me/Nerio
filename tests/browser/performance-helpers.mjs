@@ -40,8 +40,28 @@ export async function measureRoute(page, route, testInfo) {
   });
   page.on("pageerror", (error) => errors.push(error.message));
 
-  await page.goto(route, { waitUntil: "networkidle" });
+  // Gallery preview iframes make global network-idle timing runner-dependent. The document load
+  // plus each thumbnail's explicit ready state gives the transfer measurement a bounded signal.
+  await page.goto(route, { waitUntil: "load" });
   await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+
+  const previewThumbnails = page.locator(".preview-thumbnail");
+  const previewThumbnailCount = await previewThumbnails.count();
+  for (let index = 0; index < previewThumbnailCount; index += 1) {
+    await previewThumbnails.nth(index).scrollIntoViewIfNeeded();
+  }
+  if (previewThumbnailCount > 0) {
+    await expect
+      .poll(
+        () =>
+          previewThumbnails.evaluateAll((thumbnails) =>
+            thumbnails.every((thumbnail) => thumbnail.classList.contains("is-ready")),
+          ),
+        { message: `${route} preview thumbnails become ready` },
+      )
+      .toBe(true);
+  }
+
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(250);
 
