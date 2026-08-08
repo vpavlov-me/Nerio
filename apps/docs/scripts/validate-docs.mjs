@@ -602,6 +602,7 @@ function publicSurfaceFailures() {
   const robots = read("apps/docs/app/robots.ts");
   const llmsRoute = read("apps/docs/app/llms.txt/route.ts");
   const llmsSource = read("apps/docs/content/llms.txt");
+  const feedbackPage = read("apps/docs/app/docs/feedback/page.tsx");
   const routeFiles = [
     "apps/docs/app/playground/page.tsx",
     "apps/docs/app/blocks/page.tsx",
@@ -622,6 +623,12 @@ function publicSurfaceFailures() {
     [sitemap, 'absoluteUrl("/blocks")', "The sitemap must include Blocks"],
     [sitemap, 'absoluteUrl("/templates")', "The sitemap must include Templates"],
     [
+      docsChrome,
+      '{ href: "/docs/feedback", label: "Community feedback"',
+      "Overview navigation must expose the Community feedback route",
+    ],
+    [sitemap, '"/docs/feedback"', "The sitemap must include Community feedback"],
+    [
       robots,
       'disallow: ["/views/", "/visual-test/"]',
       "Robots rules must keep catalogs public while excluding preview Views",
@@ -633,6 +640,27 @@ function publicSurfaceFailures() {
     ],
     [llmsSource, "`/blocks`", "The canonical llms.txt source must describe Blocks"],
     [llmsSource, "`/templates`", "The canonical llms.txt source must describe Templates"],
+    [llmsSource, "`/docs/feedback`", "The canonical llms.txt source must describe feedback"],
+    [
+      feedbackPage,
+      "https://github.com/vpavlov-me/Nerio/discussions/385",
+      "Community feedback must link directly to the Core 1.0 beta discussion",
+    ],
+    [
+      feedbackPage,
+      "https://github.com/vpavlov-me/Nerio/discussions",
+      "Community feedback must link to the Discussions hub",
+    ],
+    [
+      feedbackPage,
+      "does not by itself satisfy release evidence",
+      "Community feedback must preserve the manual release-evidence boundary",
+    ],
+    [
+      feedbackPage,
+      "https://github.com/vpavlov-me/Nerio/security/policy",
+      "Community feedback must route private security reports away from Discussions",
+    ],
   ];
 
   for (const [source, expected, message] of required) {
