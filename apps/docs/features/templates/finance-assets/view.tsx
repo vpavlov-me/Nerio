@@ -13,28 +13,26 @@ import {
 } from "@nerio-ui/adapters/charts";
 import {
   ArrowLeft,
+  ArrowLeftRight,
   ArrowRight,
   ArrowUp,
   Boxes,
+  BriefcaseBusiness,
   CalendarDays,
   Check,
+  ChartNoAxesCombined,
+  ChartPie,
   CircleAlert,
   FileText,
+  Eye,
+  EyeOff,
   Github,
   LayoutDashboard,
   PanelLeft,
   Settings,
+  WalletCards,
 } from "@nerio-ui/adapters/icons";
 import type { IconComponent } from "@nerio-ui/adapters/icons";
-import {
-  LuArrowLeftRight,
-  LuBriefcaseBusiness,
-  LuChartNoAxesCombined,
-  LuChartPie,
-  LuEye,
-  LuEyeOff,
-  LuWalletCards,
-} from "react-icons/lu";
 import {
   Card,
   CardAction,
@@ -266,11 +264,11 @@ type NavigationItem = {
 
 const navigationItems: NavigationItem[] = [
   { label: "Overview", icon: LayoutDashboard, active: true },
-  { label: "Portfolio", icon: LuBriefcaseBusiness },
-  { label: "Accounts", icon: LuWalletCards },
-  { label: "Transactions", icon: LuArrowLeftRight },
-  { label: "Allocation", icon: LuChartPie },
-  { label: "Performance", icon: LuChartNoAxesCombined },
+  { label: "Portfolio", icon: BriefcaseBusiness },
+  { label: "Accounts", icon: WalletCards },
+  { label: "Transactions", icon: ArrowLeftRight },
+  { label: "Allocation", icon: ChartPie },
+  { label: "Performance", icon: ChartNoAxesCombined },
   { label: "Reports", icon: FileText },
 ];
 
@@ -365,6 +363,34 @@ function SensitiveValue({ children, visible }: { children: React.ReactNode; visi
     >
       {children}
     </span>
+  );
+}
+
+function PrivateStat({
+  className,
+  label,
+  trend,
+  value,
+  visible,
+}: {
+  className?: string;
+  label: string;
+  trend: string;
+  value: string;
+  visible: boolean;
+}) {
+  return (
+    <>
+      <Stat
+        aria-hidden={visible ? undefined : true}
+        className={`${styles["private-stat"]} ${visible ? "" : styles["masked-stat"]} ${className ?? ""}`}
+        data-private-state={visible ? "visible" : "masked"}
+        label={label}
+        value={value}
+        trend={trend}
+      />
+      {visible ? null : <span className="sr-only">{label}: balance hidden.</span>}
+    </>
   );
 }
 
@@ -549,6 +575,7 @@ function FinanceAssets() {
 
   return (
     <SidebarProvider
+      collapseMode="icons"
       className={`${styles.shell} n-typography-system`}
       direction={direction}
       side={direction === "rtl" ? "right" : "left"}
@@ -638,8 +665,8 @@ function FinanceAssets() {
           <div className={styles.actions}>
             <Tooltip label={balancesVisible ? "Hide balances" : "Show balances"}>
               <Toggle
-                icon={balancesVisible ? LuEye : LuEyeOff}
-                aria-label={balancesVisible ? "Hide balances" : "Show balances"}
+                icon={balancesVisible ? Eye : EyeOff}
+                aria-label="Show balances"
                 pressed={balancesVisible}
                 variant="outline"
                 onPressedChange={setBalancesVisible}
@@ -651,7 +678,9 @@ function FinanceAssets() {
                   aria-label="Open finance template in GitHub"
                   icon={Github}
                   nativeButton={false}
-                  render={<a href={financeTemplateSourceUrl} rel="noreferrer" target="_blank" />}
+                  render={
+                    <a href={financeTemplateSourceUrl} rel="noopener noreferrer" target="_blank" />
+                  }
                   tooltip={false}
                   variant="secondary"
                 />
@@ -660,7 +689,9 @@ function FinanceAssets() {
               <Button
                 leadingIcon={Github}
                 nativeButton={false}
-                render={<a href={financeTemplateSourceUrl} rel="noreferrer" target="_blank" />}
+                render={
+                  <a href={financeTemplateSourceUrl} rel="noopener noreferrer" target="_blank" />
+                }
                 variant="secondary"
               >
                 Open in GitHub
@@ -742,13 +773,16 @@ function Overview({
           <div className={styles["balance-copy"]}>
             <p id="portfolio-heading">Consolidated portfolio</p>
             <div
-              aria-label={balancesVisible ? undefined : "Balance hidden"}
+              aria-hidden={balancesVisible ? undefined : true}
               className={`${styles["balance-value"]} ${styles["private-value"]} ${balancesVisible ? "" : styles["masked-value"]}`}
               data-private-state={balancesVisible ? "visible" : "masked"}
               data-private-value
             >
               {currency.format(125448)}
             </div>
+            {balancesVisible ? null : (
+              <span className="sr-only">Consolidated portfolio balance hidden.</span>
+            )}
             <div
               className={styles["balance-trend"]}
               aria-label={
@@ -780,30 +814,27 @@ function Overview({
       </Card>
 
       <section className={styles["stat-grid"]} aria-label="Portfolio summary">
-        <Stat
-          className={`${styles["private-stat"]} ${balancesVisible ? "" : styles["masked-stat"]}`}
-          data-private-state={balancesVisible ? "visible" : "masked"}
+        <PrivateStat
+          visible={balancesVisible}
           label="Available cash"
           value={currency.format(42850)}
           trend="34.2% allocation"
         />
-        <Stat
-          className={`${styles["private-stat"]} ${balancesVisible ? "" : styles["masked-stat"]}`}
-          data-private-state={balancesVisible ? "visible" : "masked"}
+        <PrivateStat
+          visible={balancesVisible}
           label="Invested assets"
           value={currency.format(82598)}
           trend="Across 3 positions"
         />
-        <Stat
-          className={`${styles["private-stat"]} ${balancesVisible ? "" : styles["masked-stat"]}`}
-          data-private-state={balancesVisible ? "visible" : "masked"}
+        <PrivateStat
+          visible={balancesVisible}
           label="Pending movement"
           value={currency.format(5000)}
           trend="1 transfer pending"
         />
-        <Stat
-          className={`${styles["private-stat"]} ${styles["positive-stat"]} ${balancesVisible ? "" : styles["masked-stat"]}`}
-          data-private-state={balancesVisible ? "visible" : "masked"}
+        <PrivateStat
+          className={styles["positive-stat"]}
+          visible={balancesVisible}
           label="Net cash flow"
           value={currency.format(7270)}
           trend="+$2,150 this month"

@@ -4122,7 +4122,7 @@ describe("Core interactive action contracts", () => {
     expect(sidebar).toHaveAttribute("id", "workspace-sidebar");
     expect(sidebar).toHaveAttribute("data-state", "collapsed");
     expect(sidebar).toHaveAttribute("data-side", "right");
-    expect(sidebar.querySelector('[data-slot="sidebar-inner"]')).not.toHaveAttribute("inert");
+    expect(sidebar.querySelector('[data-slot="sidebar-inner"]')).toHaveAttribute("inert");
     expect(trigger).toHaveAttribute("aria-controls", "workspace-sidebar");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(trigger).toHaveAttribute("data-slot", "sidebar-trigger");
@@ -4176,7 +4176,10 @@ describe("Core interactive action contracts", () => {
     expect(source).toContain("[&_[data-slot=button-label]]:w-0");
     expect(source).toContain("[&_[data-slot=button-label]]:opacity-0");
     expect(source).not.toContain("sidebar-header]>:first-child]:opacity-0");
-    expect(source).not.toContain("inert={!expanded || undefined}");
+    expect(source).toContain("collapseMode?: SidebarCollapseMode");
+    expect(source).toContain('collapseMode = "hidden"');
+    expect(source).toContain('collapseMode === "hidden"');
+    expect(source).toContain('inert={!expanded && collapseMode === "hidden" ? true : undefined}');
     expect(source).not.toContain("inset-y-0");
     expect(source).not.toContain("bottom-[calc(var(--n-sidebar-rail-inset)");
   });

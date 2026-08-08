@@ -167,12 +167,15 @@ test("supports balance privacy, mobile navigation, runtime axes, RTL, and reflow
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(financeRoute);
 
-  const hideBalances = page.getByRole("button", { name: "Hide balances" });
-  await expect(hideBalances).toHaveAttribute("aria-pressed", "true");
-  await hideBalances.click();
   const showBalances = page.getByRole("button", { name: "Show balances" });
+  await expect(showBalances).toHaveAttribute("aria-pressed", "true");
+  await showBalances.click();
   await expect(showBalances).toHaveAttribute("aria-pressed", "false");
-  await expect(page.locator('[data-private-value][aria-label="Balance hidden"]')).toBeVisible();
+  await expect(page.getByText("Consolidated portfolio balance hidden.")).toBeAttached();
+  await expect(page.getByText("Available cash: balance hidden.")).toBeAttached();
+  await expect(
+    page.locator('.n-stat[data-private-state="masked"][aria-hidden="true"]'),
+  ).toHaveCount(4);
   await expect(page.locator('[data-private-value][data-private-state="masked"]')).not.toHaveCount(
     0,
   );

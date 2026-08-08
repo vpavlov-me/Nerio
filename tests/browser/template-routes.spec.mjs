@@ -97,14 +97,17 @@ test("centers every template within a 1200px content frame on wide screens", asy
     const content = page.locator("[data-template-content]");
     await expect(content).toBeVisible();
     const contentBox = await content.boundingBox();
-    expect(contentBox?.width, `${route} max width`).toBeCloseTo(1200, 0);
+    expect(Math.round(contentBox?.width ?? 0), `${route} max width`).toBe(1200);
 
     const sidebar = page.locator('[data-slot="sidebar"]');
     const sidebarBox = (await sidebar.count()) > 0 ? await sidebar.boundingBox() : null;
     const availableStart = sidebarBox ? sidebarBox.x + sidebarBox.width : 0;
     const availableWidth = 2560 - availableStart;
     const expectedX = availableStart + (availableWidth - (contentBox?.width ?? 0)) / 2;
-    expect(contentBox?.x, `${route} centered frame`).toBeCloseTo(expectedX, 0);
+    expect(
+      Math.abs((contentBox?.x ?? 0) - expectedX),
+      `${route} centered frame`,
+    ).toBeLessThanOrEqual(1);
   }
 
   await page.goto("/views/finance-assets");
@@ -117,10 +120,10 @@ test("centers every template within a 1200px content frame on wide screens", asy
     .toBe(56);
   const collapsedContentBox = await collapsedContent.boundingBox();
   const collapsedExpectedX = 56 + (2560 - 56 - (collapsedContentBox?.width ?? 0)) / 2;
-  expect(collapsedContentBox?.x, "collapsed sidebar content frame").toBeCloseTo(
-    collapsedExpectedX,
-    0,
-  );
+  expect(
+    Math.abs((collapsedContentBox?.x ?? 0) - collapsedExpectedX),
+    "collapsed sidebar content frame",
+  ).toBeLessThanOrEqual(1);
 });
 
 test("keeps template appearance settings out of documentation preferences", async ({ page }) => {

@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { LayoutDashboard, ListTree, Settings } from "@nerio-ui/adapters/icons";
-import { Icon, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
-import { Sidebar, SidebarProvider, SidebarRail } from "@nerio-ui/ui/client";
+import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
+import { Sidebar, SidebarMenuButton, SidebarProvider, SidebarRail } from "@nerio-ui/ui/client";
 
 const items = [
   ["Overview", LayoutDashboard],
@@ -22,6 +22,7 @@ export function SidebarExample() {
     <section id="preview" className="component-example" aria-label="Sidebar preview">
       <div className="component-example__preview sidebar-doc-preview">
         <SidebarProvider
+          collapseMode="icons"
           expanded={expanded}
           onExpandedChange={(nextExpanded) => {
             setExpanded(nextExpanded);
@@ -36,10 +37,14 @@ export function SidebarExample() {
             <SidebarContent>
               <nav aria-label="Preview navigation">
                 {items.map(([label, icon]) => (
-                  <button key={label} type="button">
-                    <Icon icon={icon} />
-                    <span>{label}</span>
-                  </button>
+                  <SidebarMenuButton
+                    collapsedTooltip={label}
+                    key={label}
+                    leadingIcon={icon}
+                    variant="ghost"
+                  >
+                    {label}
+                  </SidebarMenuButton>
                 ))}
               </nav>
             </SidebarContent>

@@ -190,6 +190,13 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "ArrowLeftRight",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "ArrowRight",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
@@ -232,7 +239,28 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "BriefcaseBusiness",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "CalendarDays",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ChartNoAxesCombined",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ChartPie",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
       {
@@ -310,6 +338,20 @@
         "deprecations": [],
         "kind": "value",
         "name": "ExternalLink",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "Eye",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "EyeOff",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
       {
@@ -544,6 +586,13 @@
         "deprecations": [],
         "kind": "value",
         "name": "UserPlus",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "WalletCards",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
       {
@@ -4603,11 +4652,12 @@
         "deprecations": [],
         "kind": "value",
         "name": "SidebarProvider",
-        "signature": "({ children, className, defaultExpanded, direction, expanded: controlledExpanded, onExpandedChange, side, sidebarId: providedSidebarId, ...props }: SidebarProviderProps) => React.JSX.Element"
+        "signature": "({ children, className, collapseMode, defaultExpanded, direction, expanded: controlledExpanded, onExpandedChange, side, sidebarId: providedSidebarId, ...props }: SidebarProviderProps) => React.JSX.Element"
       },
       {
         "definition": [
-          "export interface SidebarProviderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"defaultValue\" | \"dir\" | \"onChange\"> { children: React.ReactNode; defaultExpanded?: boolean; direction?: SidebarDirection; expanded?: boolean; onExpandedChange?: (expanded: boolean) => void; side?: SidebarSide; sidebarId?: string; }",
+          "export interface SidebarProviderProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"defaultValue\" | \"dir\" | \"onChange\"> { children: React.ReactNode; collapseMode?: SidebarCollapseMode; defaultExpanded?: boolean; direction?: SidebarDirection; expanded?: boolean; onExpandedChange?: (expanded: boolean) => void; side?: SidebarSide; sidebarId?: string; }",
+          "export type SidebarCollapseMode = \"hidden\" | \"icons\";",
           "export type SidebarDirection = \"ltr\" | \"rtl\";",
           "export type SidebarSide = \"left\" | \"right\";"
         ],
@@ -9511,7 +9561,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-2a3ce738f89e1c216973d3863ee2e443805903a47ff20880f67091d7e32fa1fa",
+            "integrity": "sha256-8fac3181a69e4d0a7a560056b5295548850899c5e709d1de981403ca5194d395",
             "role": "component",
             "source": "../../ui/src/components/sidebar.tsx",
             "target": "components/sidebar.tsx"

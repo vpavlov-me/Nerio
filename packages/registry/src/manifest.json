@@ -3176,7 +3176,7 @@
           "source": "../../ui/src/components/sidebar.tsx",
           "target": "components/sidebar.tsx",
           "role": "component",
-          "integrity": "sha256-2a3ce738f89e1c216973d3863ee2e443805903a47ff20880f67091d7e32fa1fa"
+          "integrity": "sha256-8fac3181a69e4d0a7a560056b5295548850899c5e709d1de981403ca5194d395"
         },
         {
           "source": "../../ui/src/components/sidebar-layout.tsx",

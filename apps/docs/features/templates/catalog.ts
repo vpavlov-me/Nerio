@@ -77,8 +77,8 @@ export const templateCatalog = [
     scenarios: [
       "Consolidated portfolio overview and period movement",
       "Searchable holdings with selected asset detail",
-      "Completed, pending, and failed transaction review",
-      "Validated local transfer flow and sensitive balance controls",
+      "Completed and pending transaction review",
+      "Static transfer preview and sensitive balance controls",
     ],
     runtimeCoverage: [
       "System, light, and dark modes",

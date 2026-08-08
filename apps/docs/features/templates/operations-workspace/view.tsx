@@ -542,6 +542,7 @@ function OperationsWorkspace() {
 
   return (
     <SidebarProvider
+      collapseMode="icons"
       className={`${styles.workspace} n-typography-system`}
       direction={direction}
       side={direction === "rtl" ? "right" : "left"}
@@ -704,7 +705,9 @@ function OperationsWorkspace() {
             <Button
               leadingIcon={Github}
               nativeButton={false}
-              render={<a href={operationsTemplateSourceUrl} rel="noreferrer" target="_blank" />}
+              render={
+                <a href={operationsTemplateSourceUrl} rel="noopener noreferrer" target="_blank" />
+              }
               variant="secondary"
             >
               Open in GitHub

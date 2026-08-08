@@ -436,6 +436,18 @@ test("composes documentation search from Dialog and Command primitives", async (
   await expect(dialog.getByRole("option", { name: /Playground/ })).toBeVisible();
   await search.press("Enter");
   await expect(page).toHaveURL(/\/playground$/);
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  search = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("combobox", { name: "Search documentation" });
+  await search.fill("Finance & Assets");
+  const financeOption = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("option", { name: /Finance & Assets/ });
+  const [templatePreview] = await Promise.all([page.waitForEvent("popup"), financeOption.click()]);
+  await expect(templatePreview).toHaveURL(/\/views\/finance-assets$/);
+  await templatePreview.close();
   await expectHealthyPage(page, problems);
 });
 

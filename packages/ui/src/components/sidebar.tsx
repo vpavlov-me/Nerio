@@ -10,8 +10,10 @@ import { Tooltip } from "./tooltip";
 
 export type SidebarSide = "left" | "right";
 export type SidebarDirection = "ltr" | "rtl";
+export type SidebarCollapseMode = "hidden" | "icons";
 
 type SidebarContextValue = {
+  collapseMode: SidebarCollapseMode;
   direction: SidebarDirection;
   expanded: boolean;
   setExpanded: (expanded: boolean) => void;
@@ -28,6 +30,7 @@ export interface SidebarProviderProps extends Omit<
   "defaultValue" | "dir" | "onChange"
 > {
   children: React.ReactNode;
+  collapseMode?: SidebarCollapseMode;
   defaultExpanded?: boolean;
   direction?: SidebarDirection;
   expanded?: boolean;
@@ -39,6 +42,7 @@ export interface SidebarProviderProps extends Omit<
 export function SidebarProvider({
   children,
   className,
+  collapseMode = "hidden",
   defaultExpanded = true,
   direction = "ltr",
   expanded: controlledExpanded,
@@ -60,8 +64,8 @@ export function SidebarProvider({
   );
   const toggle = React.useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
   const value = React.useMemo(
-    () => ({ direction, expanded, setExpanded, side, sidebarId, toggle }),
-    [direction, expanded, setExpanded, side, sidebarId, toggle],
+    () => ({ collapseMode, direction, expanded, setExpanded, side, sidebarId, toggle }),
+    [collapseMode, direction, expanded, setExpanded, side, sidebarId, toggle],
   );
 
   return (
@@ -73,6 +77,7 @@ export function SidebarProvider({
           className,
         )}
         data-direction={direction}
+        data-collapse-mode={collapseMode}
         data-side={side}
         data-slot="sidebar-provider"
         data-state={expanded ? "expanded" : "collapsed"}
@@ -97,11 +102,11 @@ export type SidebarMenuButtonProps = SidebarMenuButtonBaseProps<ButtonProps> & {
 
 export const SidebarMenuButton = React.forwardRef<HTMLElement, SidebarMenuButtonProps>(
   function SidebarMenuButton({ className, collapsedTooltip, ...props }, ref) {
-    const { expanded, side } = useSidebar();
+    const { collapseMode, expanded, side } = useSidebar();
     const button = (
       <Button
         ref={ref}
-        {...(props as ButtonProps)}
+        {...props}
         className={cn(
           "n-sidebar-menu-button [&_.n-icon]:size-(--n-sidebar-item-icon-size)",
           className,
@@ -109,7 +114,7 @@ export const SidebarMenuButton = React.forwardRef<HTMLElement, SidebarMenuButton
         data-slot="sidebar-menu-button"
       />
     );
-    return expanded ? (
+    return expanded || collapseMode === "hidden" ? (
       button
     ) : (
       <Tooltip
@@ -131,7 +136,7 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
   { children, className, ...props },
   ref,
 ) {
-  const { direction, expanded, side, sidebarId } = useSidebar();
+  const { collapseMode, direction, expanded, side, sidebarId } = useSidebar();
   const content: React.ReactNode[] = [];
   const rails: React.ReactNode[] = [];
   React.Children.forEach(children, (child) => {
@@ -149,14 +154,21 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
         className,
       )}
       data-direction={direction}
+      data-collapse-mode={collapseMode}
       data-side={side}
       data-slot="sidebar"
       data-state={expanded ? "expanded" : "collapsed"}
     >
       <div
-        className="n-sidebar__inner grid h-full w-full grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]]:p-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-content]]:overflow-x-hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-content]]:px-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]]:px-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]]:pt-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_.n-button]:w-(--n-sidebar-rail-hit-area) [[data-state=collapsed]_&]:[&_.n-button]:gap-0 [[data-state=collapsed]_&]:[&_.n-button]:overflow-hidden [[data-state=collapsed]_&]:[&_.n-button]:px-0 [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:w-0 [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:overflow-hidden [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:opacity-0 [[data-state=collapsed]_&]:[&_[data-slot=button-badge]]:hidden [[data-state=collapsed]_&]:[&_[data-slot=button-kbd]]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]_strong]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]_small]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]>:not(.n-button)]:hidden"
+        className={cn(
+          "n-sidebar__inner grid h-full grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
+          collapseMode === "hidden"
+            ? "w-(--n-sidebar-width) opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
+            : "w-full [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]]:p-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-content]]:overflow-x-hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-content]]:px-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]]:px-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]]:pt-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_.n-button]:w-(--n-sidebar-rail-hit-area) [[data-state=collapsed]_&]:[&_.n-button]:gap-0 [[data-state=collapsed]_&]:[&_.n-button]:overflow-hidden [[data-state=collapsed]_&]:[&_.n-button]:px-0 [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:w-0 [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:overflow-hidden [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:opacity-0 [[data-state=collapsed]_&]:[&_[data-slot=button-badge]]:hidden [[data-state=collapsed]_&]:[&_[data-slot=button-kbd]]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]_strong]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]_small]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]>:not(.n-button)]:hidden",
+        )}
         data-has-rail={rails.length > 0 ? "true" : undefined}
         data-slot="sidebar-inner"
+        inert={!expanded && collapseMode === "hidden" ? true : undefined}
       >
         {content}
       </div>

@@ -386,6 +386,7 @@ const searchEntries: DocsCommandEntry[] = [
     title: template.title,
     group: "Templates",
     description: `${template.title} documentation and preview.`,
+    newTab: true,
   })),
 ];
 

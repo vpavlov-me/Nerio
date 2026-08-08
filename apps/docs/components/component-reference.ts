@@ -3405,6 +3405,11 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Explicit ltr or rtl content direction while side remains physical.",
       },
       {
+        title: "Collapse mode",
+        description:
+          "hidden safely removes arbitrary content by default; icons keeps migrated SidebarMenuButton navigation available.",
+      },
+      {
         title: "Density",
         description: "Comfortable and compact spacing resolve through shared tokens.",
       },
@@ -3414,7 +3419,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "Collapsed",
         description:
-          "Navigation remains available as a compact icon-only rail while visible labels collapse.",
+          "Arbitrary content becomes inert by default; collapseMode=icons exposes a compact migrated navigation rail.",
       },
       {
         title: "Controlled",
@@ -3430,7 +3435,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "SidebarRail and any optional external SidebarTrigger require localized labels and expose aria-expanded and aria-controls.",
       "Use the rail as the persistent in-sidebar toggle; render an external trigger only when another product surface requires it.",
       "The rail stays after footer content as the last sidebar action and occupies only its declared hit area without creating a full-height invisible click target.",
-      "Collapsed navigation keeps larger icon actions reachable, preserves their accessible names, and exposes labels through focusable tooltips.",
+      "Use collapseMode=icons only with SidebarMenuButton navigation; its icon actions preserve accessible names and expose labels through focusable tooltips.",
+      "The default hidden collapse mode makes arbitrary legacy content inert so clipped controls cannot remain keyboard reachable.",
       "Keep SidebarRail mounted so collapse preserves focus; collapseLabel and expandLabel provide state-specific visible and accessible text.",
       "The primitive adds no roving focus or Arrow-key behavior to arbitrary consumer navigation.",
       "Render one interactive tree per viewport; use an explicit Sheet composition for mobile.",
@@ -3439,7 +3445,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "SidebarProvider",
         description:
-          "defaultExpanded, expanded, onExpandedChange, side, direction, and optional sidebarId.",
+          "defaultExpanded, expanded, onExpandedChange, side, direction, collapseMode, and optional sidebarId.",
       },
       {
         title: "Sidebar",
