@@ -269,15 +269,18 @@ export function parseNameStatusOutput(output) {
   return paths.filter(Boolean);
 }
 
-function changedFilesBetween(base, head) {
+export function changedFilesBetween(base, head, runGit = execFileSync) {
+  try {
+    runGit("git", ["diff", "--quiet", base, head], { stdio: "ignore" });
+    return [];
+  } catch (error) {
+    if (error?.status !== 1) throw error;
+  }
+
   return parseNameStatusOutput(
-    execFileSync(
-      "git",
-      ["diff", "--name-status", "-z", "--diff-filter=ACMRD", `${base}...${head}`],
-      {
-        encoding: "utf8",
-      },
-    ),
+    runGit("git", ["diff", "--name-status", "-z", "--diff-filter=ACMRD", `${base}...${head}`], {
+      encoding: "utf8",
+    }),
   );
 }
 

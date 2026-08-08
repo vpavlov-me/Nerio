@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { detectCiScopes, parseNameStatusOutput } from "./detect-ci-scopes.mjs";
+import { changedFilesBetween, detectCiScopes, parseNameStatusOutput } from "./detect-ci-scopes.mjs";
 
 function scopes(...paths) {
   return detectCiScopes(paths).scopes;
@@ -150,5 +150,43 @@ test("preserves both paths from renamed and copied files", () => {
       "fixtures/manifest.json",
       "README.md",
     ],
+  );
+});
+
+test("treats identical base and head trees as a zero-content change", () => {
+  const calls = [];
+  const runGit = (...args) => {
+    calls.push(args);
+    return "";
+  };
+
+  assert.deepEqual(changedFilesBetween("base", "head", runGit), []);
+  assert.deepEqual(calls, [["git", ["diff", "--quiet", "base", "head"], { stdio: "ignore" }]]);
+});
+
+test("uses merge-base paths when base and head trees differ", () => {
+  const calls = [];
+  const runGit = (...args) => {
+    calls.push(args);
+    if (calls.length === 1) throw Object.assign(new Error("trees differ"), { status: 1 });
+    return ["M", "scripts/detect-ci-scopes.mjs", ""].join("\0");
+  };
+
+  assert.deepEqual(changedFilesBetween("base", "head", runGit), ["scripts/detect-ci-scopes.mjs"]);
+  assert.deepEqual(calls[1], [
+    "git",
+    ["diff", "--name-status", "-z", "--diff-filter=ACMRD", "base...head"],
+    { encoding: "utf8" },
+  ]);
+});
+
+test("does not hide git failures while comparing trees", () => {
+  const failure = Object.assign(new Error("invalid revision"), { status: 128 });
+  assert.throws(
+    () =>
+      changedFilesBetween("base", "head", () => {
+        throw failure;
+      }),
+    (error) => error === failure,
   );
 });
