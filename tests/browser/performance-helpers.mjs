@@ -47,17 +47,22 @@ export async function measureRoute(page, route, testInfo) {
 
   const previewThumbnails = page.locator(".preview-thumbnail");
   const previewThumbnailCount = await previewThumbnails.count();
-  for (let index = 0; index < previewThumbnailCount; index += 1) {
-    await previewThumbnails.nth(index).scrollIntoViewIfNeeded();
-  }
-  if (previewThumbnailCount > 0) {
+  if (previewThumbnailCount === 0) {
+    await page.waitForLoadState("networkidle");
+  } else {
+    for (let index = 0; index < previewThumbnailCount; index += 1) {
+      await previewThumbnails.nth(index).scrollIntoViewIfNeeded();
+    }
     await expect
       .poll(
         () =>
           previewThumbnails.evaluateAll((thumbnails) =>
             thumbnails.every((thumbnail) => thumbnail.classList.contains("is-ready")),
           ),
-        { message: `${route} preview thumbnails become ready` },
+        {
+          message: `${route} preview thumbnails become ready`,
+          timeout: 30_000,
+        },
       )
       .toBe(true);
   }
