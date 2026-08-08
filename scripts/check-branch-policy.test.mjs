@@ -75,5 +75,11 @@ test("keeps the checked-out workflow aligned with branch and DCO implementations
   );
   assert.match(workflow, /GITHUB_REPOSITORY: \$\{\{ github\.repository \}\}/);
   assert.match(workflow, /node scripts\/check-branch-policy\.mjs/);
+  assert.match(
+    workflow,
+    /github\.event\.pull_request\.head\.repo\.full_name != github\.repository/,
+  );
+  assert.match(workflow, /github\.base_ref != 'main' \|\| github\.head_ref != 'dev'/);
+  assert.match(workflow, /github\.base_ref != 'dev' \|\| github\.head_ref != 'main'/);
   assert.match(workflow, /node scripts\/check-dco\.mjs --base "\$BASE_SHA" --head "\$HEAD_SHA"/);
 });
