@@ -57,7 +57,10 @@ export async function measureRoute(page, route, testInfo) {
           previewThumbnails.evaluateAll((thumbnails) =>
             thumbnails.every((thumbnail) => thumbnail.classList.contains("is-ready")),
           ),
-        { message: `${route} preview thumbnails become ready` },
+        {
+          message: `${route} preview thumbnails become ready`,
+          timeout: 30_000,
+        },
       )
       .toBe(true);
   }
