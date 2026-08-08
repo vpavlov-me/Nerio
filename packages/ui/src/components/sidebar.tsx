@@ -6,7 +6,6 @@ import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
 import { Button, type ButtonProps } from "./button";
 import { Icon } from "./icon";
-import { SidebarFooter } from "./sidebar-layout";
 import { Tooltip } from "./tooltip";
 
 export type SidebarSide = "left" | "right";
@@ -141,13 +140,9 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
   const { collapseMode, direction, expanded, side, sidebarId } = useSidebar();
   const content: React.ReactNode[] = [];
   const rails: React.ReactNode[] = [];
-  let hasFooter = false;
   React.Children.forEach(children, (child) => {
     if (React.isValidElement(child) && child.type === SidebarRail) rails.push(child);
-    else {
-      if (React.isValidElement(child) && child.type === SidebarFooter) hasFooter = true;
-      content.push(child);
-    }
+    else content.push(child);
   });
 
   return (
@@ -167,12 +162,11 @@ export const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(function Side
     >
       <div
         className={cn(
-          "n-sidebar__inner grid h-full grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))] data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
+          "n-sidebar__inner grid h-full grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden data-[has-rail=true]:[&:has([data-slot=sidebar-footer])_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))] data-[has-rail=true]:[&:not(:has([data-slot=sidebar-footer]))_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
           collapseMode === "hidden"
             ? "w-(--n-sidebar-width) opacity-100 transition-opacity duration-(--n-sidebar-transition-duration) ease-(--n-sidebar-transition-easing) [[data-state=collapsed]_&]:pointer-events-none [[data-state=collapsed]_&]:invisible [[data-state=collapsed]_&]:opacity-0 motion-reduce:duration-[0.01ms]"
             : "w-full [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]]:p-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-content]]:overflow-x-hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-content]]:px-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]]:px-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]]:pt-[calc((var(--n-sidebar-collapsed-width)-var(--n-sidebar-rail-hit-area))/2)] [[data-state=collapsed]_&]:[&_.n-button]:w-(--n-sidebar-rail-hit-area) [[data-state=collapsed]_&]:[&_.n-button]:gap-0 [[data-state=collapsed]_&]:[&_.n-button]:overflow-hidden [[data-state=collapsed]_&]:[&_.n-button]:px-0 [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:w-0 [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:overflow-hidden [[data-state=collapsed]_&]:[&_[data-slot=button-label]]:opacity-0 [[data-state=collapsed]_&]:[&_[data-slot=button-badge]]:hidden [[data-state=collapsed]_&]:[&_[data-slot=button-kbd]]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]_strong]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-header]_small]:hidden [[data-state=collapsed]_&]:[&_[data-slot=sidebar-footer]>:not(.n-button)]:hidden",
         )}
-        data-has-footer={hasFooter ? "true" : "false"}
         data-has-rail={rails.length > 0 ? "true" : undefined}
         data-slot="sidebar-inner"
         inert={!expanded && collapseMode === "hidden" ? true : undefined}
