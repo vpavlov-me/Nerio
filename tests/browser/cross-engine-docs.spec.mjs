@@ -327,17 +327,38 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
   };
 
   await gotoFixture("/visual-test#checkbox");
-  const projectUpdates = page.getByRole("checkbox", { name: "Project updates" });
-  await expect(projectUpdates).toBeVisible();
-  await projectUpdates.click();
-  await expect(projectUpdates).toBeChecked();
-  await expect(page.getByRole("checkbox", { name: "Security alerts" })).toBeChecked();
+  const checkboxFixture = page.locator("#checkbox");
+  const weeklySummary = checkboxFixture
+    .getByRole("tabpanel", { name: "Unchecked", exact: true })
+    .getByRole("checkbox", { name: "Weekly summary", exact: true });
+  await expect(weeklySummary).toBeVisible();
+  await weeklySummary.click();
+  await expect(weeklySummary).toBeChecked();
+  await checkboxFixture.getByRole("tab", { name: "Checked", exact: true }).click();
+  await expect(
+    checkboxFixture
+      .getByRole("tabpanel", { name: "Checked", exact: true })
+      .getByRole("checkbox", { name: "Weekly summary", exact: true }),
+  ).toBeChecked();
+  await checkboxFixture.getByRole("tab", { name: "Disabled", exact: true }).click();
+  const disabledWeeklySummary = checkboxFixture
+    .getByRole("tabpanel", { name: "Disabled", exact: true })
+    .getByRole("checkbox", { name: "Weekly summary", exact: true });
+  await expect(disabledWeeklySummary).toBeDisabled();
 
-  const emailNotifications = page.getByRole("switch", { name: "Email notifications" });
-  await expect(emailNotifications).toBeVisible();
-  await emailNotifications.click();
-  await expect(emailNotifications).toBeChecked();
-  await expect(page.getByRole("switch", { name: "Push notifications" })).toBeChecked();
+  const switchFixture = page.locator("#switch");
+  const automaticUpdates = switchFixture
+    .getByRole("tabpanel", { name: "Default", exact: true })
+    .getByRole("switch", { name: "Automatic updates", exact: true });
+  await expect(automaticUpdates).toBeVisible();
+  await automaticUpdates.click();
+  await expect(automaticUpdates).toBeChecked();
+  await switchFixture.getByRole("tab", { name: "Disabled", exact: true }).click();
+  const disabledAutomaticUpdates = switchFixture
+    .getByRole("tabpanel", { name: "Disabled", exact: true })
+    .getByRole("switch", { name: "Automatic updates", exact: true });
+  await expect(disabledAutomaticUpdates).toBeChecked();
+  await expect(disabledAutomaticUpdates).toBeDisabled();
 
   await gotoFixture("/docs/components/table");
   const primaryTableExample = page.getByRole("region", { name: "Primary Table composition" });
