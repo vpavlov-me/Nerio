@@ -473,12 +473,13 @@ export const CommandItem = React.forwardRef<HTMLDivElement, CommandItemProps>(fu
       {...props}
       className={(state) => cn(commandItemClasses, resolveClassName(className, state))}
       disabled={isDisabled}
-      onClickCapture={(event) => {
+      onClick={(event) => {
         if (!rootDisabled && !isDisabled && !readOnly) {
           selectItem(item, event);
           onSelect?.(value, event);
         }
       }}
+      onClickCapture={undefined}
       value={item}
       data-disabled={isDisabled ? "" : undefined}
       data-leading={hasLeading ? "true" : "false"}

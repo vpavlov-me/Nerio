@@ -11,10 +11,10 @@
     "componentCatalogSha256": "a955f4432b80b6a13e1d30591d591c26ee67eac3c91f4d649e6232f447fdffd6",
     "registrySchemaVersion": "1.1.0",
     "registryItemCount": 46,
-    "registryManifestSha256": "9347c91baa92b34a026dc868b7cada267e60a7bde60009dd560011e206cfe1d0",
+    "registryManifestSha256": "b973ad156c9036ac6ac7e27b5bb8d50d63de11ea3189585a24f5ede978b8e113",
     "publicApiSnapshotSha256": "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3"
   },
-  "currentPublicApiSnapshotSha256": "ec215e2cb404e01a42782ae468b9335eec1724060def8e91862e9862ab312e62",
+  "currentPublicApiSnapshotSha256": "0d588827269af527b02da0c5166ce08f2b6dd7f5919c5c68337342242d3073b1",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",

@@ -3294,7 +3294,7 @@
           "source": "../../ui/src/components/command.tsx",
           "target": "components/command.tsx",
           "role": "component",
-          "integrity": "sha256-8a4b9adcff499408a25cf67c0ad224df68d941863709c297870834c68adeaa9b"
+          "integrity": "sha256-c99509e6ddf72975707f5adc0c2cb6ab2174250be9383c789b4f46600efab387"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",

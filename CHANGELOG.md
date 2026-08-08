@@ -80,6 +80,9 @@ change, Git tag, GitHub Release, or stable-readiness claim.
 
 ### Fixed
 
+- Routed CommandItem selection through Base UI's documented click contract so highlighted items
+  selected with Enter invoke consumer callbacks consistently in WebKit, while unsupported runtime
+  click handlers remain blocked.
 - Made Calendar and empty DatePicker initial markup independent of the server or browser clock and
   timezone; consumer-owned `today` now exclusively controls current-day styling and month fallback.
 - Kept unavailable Calendar days out of the roving tab stop and moved the no-available-date focus
