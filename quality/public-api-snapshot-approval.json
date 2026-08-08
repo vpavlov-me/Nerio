@@ -2,7 +2,7 @@
   "approvedBy": "Vladimir Pavlov",
   "baseline": "core-1.0",
   "classification": "feature",
-  "issue": "local-template-review",
+  "issue": "post-merge-template-review",
   "schemaVersion": 1,
-  "snapshotSha256": "9fdd4d6b78df3c26caaabcb15e816dd3a70f24c401cab06579959409fba8db6d"
+  "snapshotSha256": "8ca05a66b2112bee1b3a18a8cfde091db98f1b33685c1e3bd9c1bf024ea599a7"
 }

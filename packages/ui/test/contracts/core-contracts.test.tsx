@@ -4159,6 +4159,10 @@ describe("Core interactive action contracts", () => {
       "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
     );
     expect(source).toContain(
+      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
+    );
+    expect(source).toContain('data-has-footer={hasFooter ? "true" : "false"}');
+    expect(source).toContain(
       "group-data-[state=collapsed]/sidebar:size-(--n-sidebar-rail-hit-area)",
     );
     expect(source).toContain('data-slot="sidebar-rail-label"');
