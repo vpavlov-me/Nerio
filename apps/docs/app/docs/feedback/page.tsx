@@ -26,7 +26,7 @@ export default function Page() {
         <h2>Discuss the Core 1.0 beta</h2>
         <p>
           Start with the dedicated{" "}
-          <a href={releaseDiscussionUrl} target="_blank" rel="noreferrer">
+          <a href={releaseDiscussionUrl} target="_blank" rel="noopener noreferrer">
             Nerio Core 1.0 beta feedback discussion
           </a>
           . It is the canonical public intake for release feedback, including integration problems,
@@ -34,7 +34,7 @@ export default function Page() {
         </p>
         <p>
           Use the broader{" "}
-          <a href={communityUrl} target="_blank" rel="noreferrer">
+          <a href={communityUrl} target="_blank" rel="noopener noreferrer">
             Nerio Community
           </a>{" "}
           to browse existing conversations. Use Ideas for product suggestions and Q&amp;A for
@@ -88,7 +88,7 @@ export default function Page() {
           <a
             href="https://github.com/vpavlov-me/Nerio/security/policy"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             security policy
           </a>{" "}
