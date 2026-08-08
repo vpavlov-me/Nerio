@@ -10,12 +10,7 @@
       "title": "Typography",
       "description": "Semantic heading, text, and inline code primitives with System UI as the Core default and optional consumer-loaded Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk preset recipes.",
       "category": "foundation",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -50,15 +45,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "heading",
-        "text",
-        "code"
-      ],
-      "variants": [
-        "heading sizes",
-        "text tones"
-      ],
+      "slots": ["heading", "text", "code"],
+      "variants": ["heading sizes", "text tones"],
       "requiredTokens": [
         "--n-color-text-primary",
         "--n-color-text-secondary",
@@ -91,13 +79,8 @@
       "description": "Stable optional client-only Motion integration with snapshot-protected token-aligned transitions and variants, locked user-preference reduced motion, bounded configuration, and LazyMotion loading.",
       "category": "foundation",
       "docsPath": "/docs/foundations/motion",
-      "dependencies": [
-        "motion",
-        "react"
-      ],
-      "optionalPeerDependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion", "react"],
+      "optionalPeerDependencies": ["motion"],
       "registryDependencies": [],
       "files": [
         {
@@ -108,20 +91,9 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "motion-config"
-      ],
-      "variants": [
-        "fade",
-        "fadeScale",
-        "directional slide",
-        "collapse"
-      ],
-      "states": [
-        "hidden",
-        "visible",
-        "exit"
-      ],
+      "slots": ["motion-config"],
+      "variants": ["fade", "fadeScale", "directional slide", "collapse"],
+      "states": ["hidden", "visible", "exit"],
       "requiredTokens": [
         "--n-duration-instant",
         "--n-duration-fast",
@@ -147,12 +119,7 @@
       "title": "Kbd",
       "description": "Displays a keyboard shortcut with native kbd semantics.",
       "category": "foundation",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -187,9 +154,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "kbd"
-      ],
+      "slots": ["kbd"],
       "variants": [],
       "requiredTokens": [
         "--n-kbd-background",
@@ -223,12 +188,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "spinner",
-        "tooltip",
-        "kbd",
-        "badge"
-      ],
+      "registryDependencies": ["spinner", "tooltip", "kbd", "badge"],
       "files": [
         {
           "source": "../../ui/src/components/button.tsx",
@@ -285,24 +245,9 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "button"
-      ],
-      "slots": [
-        "button",
-        "button-icon",
-        "button-label",
-        "button-badge",
-        "button-kbd"
-      ],
-      "variants": [
-        "primary",
-        "secondary",
-        "outline",
-        "ghost",
-        "link",
-        "danger"
-      ],
+      "baseUiPrimitives": ["button"],
+      "slots": ["button", "button-icon", "button-label", "button-badge", "button-kbd"],
+      "variants": ["primary", "secondary", "outline", "ghost", "link", "danger"],
       "requiredTokens": [
         "--n-button-height-sm",
         "--n-button-height-md",
@@ -437,26 +382,10 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "toggle"
-      ],
-      "slots": [
-        "toggle",
-        "toggle-icon",
-        "toggle-label"
-      ],
-      "variants": [
-        "ghost",
-        "outline",
-        "sm",
-        "md",
-        "lg"
-      ],
-      "states": [
-        "unpressed",
-        "pressed",
-        "disabled"
-      ],
+      "baseUiPrimitives": ["toggle"],
+      "slots": ["toggle", "toggle-icon", "toggle-label"],
+      "variants": ["ghost", "outline", "sm", "md", "lg"],
+      "states": ["unpressed", "pressed", "disabled"],
       "requiredTokens": [
         "--n-toggle-height-sm",
         "--n-toggle-height-md",
@@ -511,15 +440,8 @@
       "title": "ButtonGroup",
       "description": "Joins a small set of related Buttons into one attached horizontal control set.",
       "category": "actions",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "button"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/button-group.tsx",
@@ -553,9 +475,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "button-group"
-      ],
+      "slots": ["button-group"],
       "variants": [],
       "requiredTokens": [
         "--n-button-radius",
@@ -576,16 +496,8 @@
       "title": "Badge",
       "description": "Labels status, category, or lightweight metadata.",
       "category": "data-display",
-      "dependencies": [
-        "@nerio-ui/adapters",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "spinner"
-      ],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["spinner"],
       "files": [
         {
           "source": "../../ui/src/components/badge.tsx",
@@ -625,12 +537,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "leading-icon",
-        "label",
-        "trailing-icon"
-      ],
+      "slots": ["root", "leading-icon", "label", "trailing-icon"],
       "variants": [
         "sm",
         "md",
@@ -699,12 +606,7 @@
       "title": "Spinner",
       "description": "Indicates short indeterminate loading activity without changing surrounding layout.",
       "category": "feedback",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -745,15 +647,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "label"
-      ],
-      "variants": [
-        "sm",
-        "md",
-        "lg"
-      ],
+      "slots": ["root", "label"],
+      "variants": ["sm", "md", "lg"],
       "requiredTokens": [
         "--n-spinner-size-sm",
         "--n-spinner-size-md",
@@ -775,12 +670,7 @@
       "title": "Skeleton",
       "description": "Reserves layout while content is loading.",
       "category": "feedback",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -821,9 +711,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "skeleton"
-      ],
+      "slots": ["skeleton"],
       "variants": [],
       "requiredTokens": [
         "--n-skeleton-height",
@@ -843,12 +731,7 @@
       "title": "EmptyState",
       "description": "Composable feedback structure for missing content, recovery paths, and first-use moments.",
       "category": "feedback",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -914,13 +797,7 @@
       "title": "Alert",
       "description": "Communicates inline feedback with a clear tone.",
       "category": "feedback",
-      "dependencies": [
-        "@nerio-ui/adapters",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -961,22 +838,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "icon",
-        "content",
-        "title",
-        "description",
-        "action",
-        "close"
-      ],
-      "variants": [
-        "neutral",
-        "info",
-        "success",
-        "warning",
-        "danger"
-      ],
+      "slots": ["root", "icon", "content", "title", "description", "action", "close"],
+      "variants": ["neutral", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-alert-gap",
         "--n-alert-padding",
@@ -1006,12 +869,7 @@
       "title": "Card",
       "description": "Groups related product information on a quiet surface.",
       "category": "data-display",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1056,10 +914,7 @@
         "card-content",
         "card-footer"
       ],
-      "variants": [
-        "default",
-        "secondary"
-      ],
+      "variants": ["default", "secondary"],
       "requiredTokens": [
         "--n-card-padding",
         "--n-card-padding-inline",
@@ -1098,12 +953,7 @@
       "title": "Separator",
       "description": "Divides related sections without adding visual noise.",
       "category": "data-display",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1138,15 +988,9 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root"
-      ],
-      "variants": [
-        "orientation: horizontal | vertical"
-      ],
-      "requiredTokens": [
-        "--n-color-border-subtle"
-      ],
+      "slots": ["root"],
+      "variants": ["orientation: horizontal | vertical"],
+      "requiredTokens": ["--n-color-border-subtle"],
       "accessibility": [
         "Renders an hr element for semantic separation.",
         "Use for related sections, not as a replacement for spacing.",
@@ -1159,12 +1003,7 @@
       "title": "Avatar",
       "description": "Identifies a person, team, or entity.",
       "category": "data-display",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1205,18 +1044,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "image",
-        "fallback"
-      ],
-      "variants": [
-        "sm",
-        "md",
-        "lg",
-        "image",
-        "fallback"
-      ],
+      "slots": ["root", "image", "fallback"],
+      "variants": ["sm", "md", "lg", "image", "fallback"],
       "requiredTokens": [
         "--n-avatar-size-sm",
         "--n-avatar-size-md",
@@ -1237,12 +1066,7 @@
       "title": "Progress",
       "description": "Communicates the completion status of one task that takes time.",
       "category": "feedback",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1283,20 +1107,9 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "header",
-        "label",
-        "value",
-        "track",
-        "indicator"
-      ],
+      "slots": ["root", "header", "label", "value", "track", "indicator"],
       "variants": [],
-      "states": [
-        "indeterminate",
-        "progressing",
-        "complete"
-      ],
+      "states": ["indeterminate", "progressing", "complete"],
       "requiredTokens": [
         "--n-progress-height",
         "--n-progress-radius",
@@ -1330,15 +1143,8 @@
       "title": "Stat",
       "description": "Highlights a compact product metric.",
       "category": "data-display",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "card"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["card"],
       "files": [
         {
           "source": "../../ui/src/components/stat.tsx",
@@ -1372,18 +1178,9 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "card",
-        "label",
-        "value",
-        "trend"
-      ],
+      "slots": ["card", "label", "value", "trend"],
       "variants": [],
-      "requiredTokens": [
-        "--n-stat-gap",
-        "--n-stat-value-size",
-        "--n-stat-trend-color"
-      ],
+      "requiredTokens": ["--n-stat-gap", "--n-stat-value-size", "--n-stat-trend-color"],
       "accessibility": [
         "Use clear labels so values remain understandable out of context.",
         "Keep trend text textual; do not encode direction by color alone.",
@@ -1396,12 +1193,7 @@
       "title": "KeyValue",
       "description": "Displays compact metadata as a label and value pair.",
       "category": "data-display",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1436,16 +1228,9 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "label",
-        "value"
-      ],
+      "slots": ["root", "label", "value"],
       "variants": [],
-      "requiredTokens": [
-        "--n-key-value-gap",
-        "--n-font-size-sm"
-      ],
+      "requiredTokens": ["--n-key-value-gap", "--n-font-size-sm"],
       "accessibility": [
         "Renders a native dl with dt and dd children for one metadata pair.",
         "Keep labels concise and stable.",
@@ -1458,12 +1243,7 @@
       "title": "Table",
       "description": "Presents structured records for scanning and comparison.",
       "category": "data-display",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1498,17 +1278,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "container",
-        "root",
-        "caption",
-        "header",
-        "body",
-        "footer",
-        "row",
-        "head",
-        "cell"
-      ],
+      "slots": ["container", "root", "caption", "header", "body", "footer", "row", "head", "cell"],
       "variants": [],
       "requiredTokens": [
         "--n-table-border",
@@ -1549,15 +1319,8 @@
       "title": "Item",
       "description": "Composes compact content, media, metadata, and independent actions without imposing list semantics.",
       "category": "data-display",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "separator"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["separator"],
       "files": [
         {
           "source": "../../ui/src/components/item.tsx",
@@ -1645,12 +1408,7 @@
       "title": "List",
       "description": "Presents simple structured lists with optional descriptions, metadata, and native links.",
       "category": "data-display",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -1705,9 +1463,7 @@
         "trailing",
         "meta"
       ],
-      "variants": [
-        "marker: disc | decimal | dash | icon | none"
-      ],
+      "variants": ["marker: disc | decimal | dash | icon | none"],
       "requiredTokens": [
         "--n-list-gap",
         "--n-list-marker-gap",
@@ -1744,9 +1500,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "form-message"
-      ],
+      "registryDependencies": ["form-message"],
       "files": [
         {
           "source": "../../ui/src/components/select.tsx",
@@ -1809,9 +1563,7 @@
           "integrity": "sha256-058110182ddc952e91f58f2dace9e858cda3f54c2640f8b06ddf6487a346de33"
         }
       ],
-      "baseUiPrimitives": [
-        "select"
-      ],
+      "baseUiPrimitives": ["select"],
       "slots": [
         "root",
         "label",
@@ -1831,13 +1583,7 @@
         "empty",
         "message"
       ],
-      "variants": [
-        "options",
-        "composed",
-        "sm",
-        "md",
-        "lg"
-      ],
+      "variants": ["options", "composed", "sm", "md", "lg"],
       "requiredTokens": [
         "--n-select-height-sm",
         "--n-select-height-md",
@@ -1883,16 +1629,8 @@
       "title": "RadioGroup",
       "description": "Chooses one option from a small visible set through data-driven options or RadioGroupItem composition.",
       "category": "forms",
-      "dependencies": [
-        "@base-ui/react",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "form-message"
-      ],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["form-message"],
       "files": [
         {
           "source": "../../ui/src/components/radio-group.tsx",
@@ -1943,10 +1681,7 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "radio-group",
-        "radio"
-      ],
+      "baseUiPrimitives": ["radio-group", "radio"],
       "slots": [
         "root",
         "label",
@@ -1960,12 +1695,7 @@
         "option-description",
         "message"
       ],
-      "variants": [
-        "default",
-        "invalid",
-        "disabled",
-        "read-only"
-      ],
+      "variants": ["default", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-radio-size",
         "--n-radio-dot-size",
@@ -1992,12 +1722,7 @@
       "title": "Input",
       "description": "Thin native single-line control for text-like, numeric, and platform temporal values.",
       "category": "forms",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -2044,9 +1769,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "input"
-      ],
+      "slots": ["input"],
       "variants": [
         "sm",
         "md",
@@ -2092,13 +1815,7 @@
       "title": "FileInput",
       "description": "Native file selection with FileList, picker security, form, and reset behavior.",
       "category": "forms",
-      "dependencies": [
-        "@nerio-ui/adapters",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -2151,25 +1868,9 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "file-input-root",
-        "file-input",
-        "file-input-icon"
-      ],
-      "variants": [
-        "sm",
-        "md",
-        "lg",
-        "single",
-        "multiple"
-      ],
-      "states": [
-        "default",
-        "selected",
-        "required",
-        "invalid",
-        "disabled"
-      ],
+      "slots": ["file-input-root", "file-input", "file-input-icon"],
+      "variants": ["sm", "md", "lg", "single", "multiple"],
+      "states": ["default", "selected", "required", "invalid", "disabled"],
       "requiredTokens": [
         "--n-input-height-md",
         "--n-input-height-sm",
@@ -2213,15 +1914,8 @@
       "title": "InputGroup",
       "description": "Composable Input surface with explicit start and end inline addons.",
       "category": "forms",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "input"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["input"],
       "files": [
         {
           "source": "../../ui/src/components/input-group.tsx",
@@ -2261,15 +1955,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "input-group",
-        "input",
-        "input-group-addon"
-      ],
-      "variants": [
-        "start-addon",
-        "end-addon"
-      ],
+      "slots": ["input-group", "input", "input-group-addon"],
+      "variants": ["start-addon", "end-addon"],
       "requiredTokens": [
         "--n-input-height-md",
         "--n-input-radius",
@@ -2296,12 +1983,7 @@
       "title": "Textarea",
       "description": "Collects longer notes, descriptions, and comments.",
       "category": "forms",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -2342,15 +2024,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root"
-      ],
-      "variants": [
-        "default",
-        "invalid",
-        "disabled",
-        "read-only"
-      ],
+      "slots": ["root"],
+      "variants": ["default", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-input-height-md",
         "--n-textarea-min-height",
@@ -2382,16 +2057,8 @@
       "title": "Label",
       "description": "Provides an accessible name for a form control with a composable required marker and supplementary hint.",
       "category": "forms",
-      "dependencies": [
-        "@nerio-ui/adapters",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "tooltip"
-      ],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["tooltip"],
       "files": [
         {
           "source": "../../ui/src/components/label.tsx",
@@ -2442,19 +2109,9 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "Tooltip"
-      ],
-      "slots": [
-        "root",
-        "content",
-        "required",
-        "hint"
-      ],
-      "variants": [
-        "default",
-        "with-hint"
-      ],
+      "baseUiPrimitives": ["Tooltip"],
+      "slots": ["root", "content", "required", "hint"],
+      "variants": ["default", "with-hint"],
       "requiredTokens": [
         "--n-label-font-size",
         "--n-label-font-weight",
@@ -2480,12 +2137,7 @@
       "title": "FormMessage",
       "description": "Communicates help, validation, and error messages near a control.",
       "category": "forms",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -2520,14 +2172,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root"
-      ],
-      "variants": [
-        "neutral",
-        "danger",
-        "success"
-      ],
+      "slots": ["root"],
+      "variants": ["neutral", "danger", "success"],
       "requiredTokens": [
         "--n-color-text-tertiary",
         "--n-color-status-danger",
@@ -2546,16 +2192,8 @@
       "title": "Field",
       "description": "Composes a label, control, description, and validation message.",
       "category": "forms",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "label",
-        "form-message"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["label", "form-message"],
       "files": [
         {
           "source": "../../ui/src/components/field.tsx",
@@ -2589,16 +2227,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "label",
-        "description",
-        "message"
-      ],
-      "variants": [
-        "default",
-        "invalid"
-      ],
+      "slots": ["root", "label", "description", "message"],
+      "variants": ["default", "invalid"],
       "requiredTokens": [
         "--n-field-gap",
         "--n-color-text-secondary",
@@ -2620,15 +2250,8 @@
       "title": "FormGroup",
       "description": "Groups related fields or controls with an optional title, description, message, and layout.",
       "category": "forms",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "form-message"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["form-message"],
       "files": [
         {
           "source": "../../ui/src/components/form-group.tsx",
@@ -2662,19 +2285,8 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "title",
-        "description",
-        "content",
-        "message"
-      ],
-      "variants": [
-        "stack",
-        "inline",
-        "grid",
-        "invalid"
-      ],
+      "slots": ["root", "title", "description", "content", "message"],
+      "variants": ["stack", "inline", "grid", "invalid"],
       "requiredTokens": [
         "--n-form-group-gap",
         "--n-form-group-inline-gap",
@@ -2765,24 +2377,9 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "checkbox"
-      ],
-      "slots": [
-        "field",
-        "root",
-        "indicator",
-        "label",
-        "description"
-      ],
-      "variants": [
-        "checked",
-        "unchecked",
-        "indeterminate",
-        "invalid",
-        "disabled",
-        "read-only"
-      ],
+      "baseUiPrimitives": ["checkbox"],
+      "slots": ["field", "root", "indicator", "label", "description"],
+      "variants": ["checked", "unchecked", "indeterminate", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-checkbox-size",
         "--n-checkbox-radius",
@@ -2810,13 +2407,7 @@
       "title": "Switch",
       "description": "Toggles an immediate binary setting.",
       "category": "forms",
-      "dependencies": [
-        "@base-ui/react",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -2862,23 +2453,9 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "switch"
-      ],
-      "slots": [
-        "field",
-        "root",
-        "thumb",
-        "label",
-        "description"
-      ],
-      "variants": [
-        "checked",
-        "unchecked",
-        "invalid",
-        "disabled",
-        "read-only"
-      ],
+      "baseUiPrimitives": ["switch"],
+      "slots": ["field", "root", "thumb", "label", "description"],
+      "variants": ["checked", "unchecked", "invalid", "disabled", "read-only"],
       "requiredTokens": [
         "--n-switch-height",
         "--n-switch-width",
@@ -2916,16 +2493,8 @@
       "title": "Calendar",
       "description": "Selects one timezone-safe ISO calendar date in a localizable month grid.",
       "category": "forms",
-      "dependencies": [
-        "@nerio-ui/adapters",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "button"
-      ],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/calendar.tsx",
@@ -2980,10 +2549,7 @@
         "cell",
         "day"
       ],
-      "variants": [
-        "single-date",
-        "localized week start"
-      ],
+      "variants": ["single-date", "localized week start"],
       "states": [
         "default",
         "focused",
@@ -3055,11 +2621,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "calendar",
-        "field",
-        "popover"
-      ],
+      "registryDependencies": ["calendar", "field", "popover"],
       "files": [
         {
           "source": "../../ui/src/components/date-picker.tsx",
@@ -3074,29 +2636,10 @@
           "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         }
       ],
-      "baseUiPrimitives": [
-        "popover"
-      ],
-      "slots": [
-        "root",
-        "trigger",
-        "content",
-        "clear",
-        "form-control"
-      ],
-      "variants": [
-        "single-date",
-        "clearable"
-      ],
-      "states": [
-        "empty",
-        "selected",
-        "open",
-        "invalid",
-        "required",
-        "disabled",
-        "read-only"
-      ],
+      "baseUiPrimitives": ["popover"],
+      "slots": ["root", "trigger", "content", "clear", "form-control"],
+      "variants": ["single-date", "clearable"],
+      "states": ["empty", "selected", "open", "invalid", "required", "disabled", "read-only"],
       "requiredTokens": [
         "--n-input-radius",
         "--n-input-border",
@@ -3140,13 +2683,7 @@
       "title": "Slider",
       "description": "Chooses one numeric value within a known range with one thumb.",
       "category": "forms",
-      "dependencies": [
-        "@base-ui/react",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -3204,9 +2741,7 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "slider"
-      ],
+      "baseUiPrimitives": ["slider"],
       "slots": [
         "root",
         "header",
@@ -3218,18 +2753,8 @@
         "thumb",
         "description"
       ],
-      "variants": [
-        "horizontal",
-        "vertical"
-      ],
-      "states": [
-        "default",
-        "dragging",
-        "disabled",
-        "read-only",
-        "invalid",
-        "required"
-      ],
+      "variants": ["horizontal", "vertical"],
+      "states": ["default", "dragging", "disabled", "read-only", "invalid", "required"],
       "requiredTokens": [
         "--n-slider-control-size",
         "--n-slider-length",
@@ -3330,9 +2855,7 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "tabs"
-      ],
+      "baseUiPrimitives": ["tabs"],
       "slots": [
         "root",
         "list",
@@ -3345,16 +2868,7 @@
         "panels",
         "content"
       ],
-      "variants": [
-        "bordered",
-        "separate",
-        "segmented",
-        "sm",
-        "md",
-        "lg",
-        "horizontal",
-        "vertical"
-      ],
+      "variants": ["bordered", "separate", "segmented", "sm", "md", "lg", "horizontal", "vertical"],
       "requiredTokens": [
         "--n-tabs-gap",
         "--n-tabs-content-gap",
@@ -3413,12 +2927,7 @@
       "title": "Breadcrumbs",
       "description": "Shows hierarchy navigation with native anchors and a current page item.",
       "category": "navigation",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -3453,14 +2962,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "list",
-        "item",
-        "link",
-        "current",
-        "separator"
-      ],
+      "slots": ["root", "list", "item", "link", "current", "separator"],
       "variants": [],
       "requiredTokens": [
         "--n-breadcrumbs-gap",
@@ -3484,12 +2986,7 @@
       "title": "Pagination",
       "description": "Provides basic previous, next, and page navigation without owning pagination state.",
       "category": "navigation",
-      "dependencies": [
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -3524,15 +3021,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "root",
-        "list",
-        "item",
-        "previous",
-        "page",
-        "ellipsis",
-        "next"
-      ],
+      "slots": ["root", "list", "item", "previous", "page", "ellipsis", "next"],
       "variants": [],
       "requiredTokens": [
         "--n-pagination-gap",
@@ -3579,9 +3068,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "button"
-      ],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/dialog.tsx",
@@ -3626,9 +3113,7 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "dialog"
-      ],
+      "baseUiPrimitives": ["dialog"],
       "slots": [
         "backdrop",
         "content",
@@ -3684,16 +3169,8 @@
       "title": "Sidebar Primitive",
       "description": "Provides a low-level collapsible sidebar layout with bounded rail geometry and stable native refs without owning product navigation or persistence.",
       "category": "navigation",
-      "dependencies": [
-        "@nerio-ui/adapters",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
-      "registryDependencies": [
-        "button"
-      ],
+      "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/sidebar.tsx",
@@ -3765,10 +3242,7 @@
         "comfortable density",
         "compact density"
       ],
-      "states": [
-        "expanded",
-        "collapsed"
-      ],
+      "states": ["expanded", "collapsed"],
       "requiredTokens": [
         "--n-sidebar-width",
         "--n-sidebar-collapsed-width",
@@ -3814,9 +3288,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "spinner"
-      ],
+      "registryDependencies": ["spinner"],
       "files": [
         {
           "source": "../../ui/src/components/command.tsx",
@@ -3867,9 +3339,7 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "autocomplete"
-      ],
+      "baseUiPrimitives": ["autocomplete"],
       "slots": [
         "command",
         "command-input-group",
@@ -3898,13 +3368,7 @@
         "compact density",
         "RTL"
       ],
-      "states": [
-        "active",
-        "disabled",
-        "empty",
-        "loading",
-        "read-only"
-      ],
+      "states": ["active", "disabled", "empty", "loading", "read-only"],
       "requiredTokens": [
         "--n-command-width",
         "--n-command-list-max-height",
@@ -3963,9 +3427,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "button"
-      ],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/sheet.tsx",
@@ -4010,9 +3472,7 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "dialog"
-      ],
+      "baseUiPrimitives": ["dialog"],
       "slots": [
         "sheet-trigger",
         "sheet-backdrop",
@@ -4024,10 +3484,7 @@
         "sheet-footer",
         "sheet-close"
       ],
-      "variants": [
-        "side: left | right | top | bottom",
-        "size: sm | md | lg"
-      ],
+      "variants": ["side: left | right | top | bottom", "size: sm | md | lg"],
       "requiredTokens": [
         "--n-sheet-width-sm",
         "--n-sheet-width-md",
@@ -4087,9 +3544,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "button"
-      ],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/popover.tsx",
@@ -4134,15 +3589,8 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "popover"
-      ],
-      "slots": [
-        "content",
-        "title",
-        "description",
-        "body"
-      ],
+      "baseUiPrimitives": ["popover"],
+      "slots": ["content", "title", "description", "body"],
       "variants": [],
       "requiredTokens": [
         "--n-popover-width-md",
@@ -4190,9 +3638,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "button"
-      ],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/dropdown-menu.tsx",
@@ -4243,9 +3689,7 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "menu"
-      ],
+      "baseUiPrimitives": ["menu"],
       "slots": [
         "content",
         "group",
@@ -4307,13 +3751,7 @@
       "title": "Tooltip",
       "description": "Clarifies compact controls without carrying essential meaning.",
       "category": "overlays",
-      "dependencies": [
-        "@base-ui/react",
-        "clsx",
-        "react",
-        "tailwind-merge",
-        "tailwindcss"
-      ],
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
       "registryDependencies": [],
       "files": [
         {
@@ -4365,13 +3803,8 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "tooltip"
-      ],
-      "slots": [
-        "content",
-        "arrow"
-      ],
+      "baseUiPrimitives": ["tooltip"],
+      "slots": ["content", "arrow"],
       "variants": [],
       "requiredTokens": [
         "--n-tooltip-radius",
@@ -4414,9 +3847,7 @@
         "tailwind-merge",
         "tailwindcss"
       ],
-      "registryDependencies": [
-        "button"
-      ],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/toast.tsx",
@@ -4455,9 +3886,7 @@
           "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
-      "baseUiPrimitives": [
-        "toast"
-      ],
+      "baseUiPrimitives": ["toast"],
       "slots": [
         "viewport",
         "root",
@@ -4468,13 +3897,7 @@
         "action",
         "close"
       ],
-      "variants": [
-        "neutral",
-        "info",
-        "success",
-        "warning",
-        "danger"
-      ],
+      "variants": ["neutral", "info", "success", "warning", "danger"],
       "requiredTokens": [
         "--n-toast-width",
         "--n-toast-viewport-inset",
