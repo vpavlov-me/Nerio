@@ -108,6 +108,12 @@ Budgets include limited maintenance headroom. A threshold may be raised only in 
 change that records the measured delta, the consumer value that justifies it, and the result in the
 pull request and changelog. Moving a number merely to make CI green is not an override process.
 
+The expanded Operations Workspace template introduced five local avatar assets, charts, risk and
+capacity views, and richer initiative content. Its deterministic Chromium runtime transfer changed
+from 581,370 bytes before the template expansion to 778,265 bytes after it (+196,895). The reviewed
+ceiling is 782,336 bytes, leaving 4,071 bytes of maintenance headroom while keeping the static
+JavaScript, CSS, and deterministic gzip bundle ceilings unchanged.
+
 The versioned Registry/source-lifecycle slice measured the CLI tarball at 10,224 bytes after adding
 portable installed metadata, three-way hash comparison, non-destructive updates, conflict handling,
 and actionable doctor diagnostics. The previous 8,000-byte ceiling was raised to 12,000 bytes; the

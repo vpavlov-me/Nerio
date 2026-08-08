@@ -36,6 +36,10 @@ change, Git tag, GitHub Release, or stable-readiness claim.
 
 ### Changed
 
+- Recalibrated the Operations Workspace full-screen runtime-transfer ceiling after the reviewed
+  template expansion added five local avatar assets, charts, and richer operational content. The
+  deterministic Chromium measurement moves from 581,370 to 778,265 bytes (+196,895), and the
+  ceiling moves from 646,144 to 782,336 bytes, retaining 4,071 bytes of maintenance headroom.
 - Published Blocks, Templates, their same-origin Views, and Playground across all documentation
   deployments; removed the former deployment flag and production-only discovery gate. The current
   Template catalog is intentionally limited to Operations Workspace and Finance & Assets, and the
