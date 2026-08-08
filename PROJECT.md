@@ -15,8 +15,15 @@ Core = building blocks. Pro = product-ready solutions.
 
 Nerio Core `1.0.0-beta.0` is the published public beta for the frozen Core 1.0 API under npm
 `beta`. The protected `alpha` and `latest` tags intentionally remain on `0.1.0-alpha.2` and
-`0.1.0-alpha.0`. The external feedback cycle and stable publication remain manual and are governed
-by the roadmap and `RELEASE.md`.
+`0.1.0-alpha.0`. Coordinated `1.0.0-beta.1` metadata is prepared but unpublished. The external
+feedback cycle, accessibility/device evidence, and every future publication remain manual and are
+governed by the roadmap and `RELEASE.md`.
+
+Post-1.0 scope is governed by
+[`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md). That decision
+classifies current coverage, native guidance, accepted Core 1.1 primitives, later candidates,
+recipes, adapters, Pro, consumer ownership, and explicit rejections. It does not authorize
+post-1.0 implementation before the stable sequence completes.
 
 ## Primary users
 
@@ -154,6 +161,13 @@ remain outside Core 1.0.
 
 Core should be strong enough to build real products without a paid license. It should not contain advanced product compositions that are better treated as Pro value.
 
+After stable 1.0, the accepted Core 1.1 primitive sequence adds direction/localization foundations,
+Accordion and Collapsible, additive compound Dialog anatomy and AlertDialog, a bounded
+single-select Combobox, SearchField, NumberField, OTPField, separate ToggleGroup and CheckboxGroup
+contracts, and complete bounded DropdownMenu anatomy. MultiSelect remains a later decision spike,
+not an approved component. The capability parity decision is authoritative when this summary and
+the detailed sequence differ.
+
 ## Pro component scope
 
 Nerio Pro includes advanced product-ready components and templates: DataGrid, Advanced Table, Filter Bar, Saved Views, Column Settings, KPI Card, KPI Group, Trend Chip, Chart Card, Activity Feed, Analytics Panel, AppShell, AppSidebar, Settings Layout, Billing Settings, Team Members, Roles & Permissions, Audit Log, Documentation Shell, Documentation Header, Documentation Sidebar, Page Table of Contents, Documentation Search, Portfolio Card, Asset Row, Transaction List, Wallet Connector UI, Balance Visibility, PnL components, Risk Badge, AI Chat Shell, Prompt Input, Message, Sources, Tool Call, Reasoning Block, Attachment, Code Block, and product templates.
@@ -172,8 +186,8 @@ Deliver a functional monorepo and a polished Core foundation suitable for public
 4. Base UI-backed core components: Button, Badge, Input, Textarea, Label, Checkbox, Switch, Select, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, Card, Separator, Skeleton, Empty State, and Spinner.
 5. Icon adapter with Lucide implementation and support for custom React SVG components.
 6. Public docs application with navigation, theme/mode/density switcher, component preview, usage snippets, anatomy, variants, states, and accessibility notes.
-7. Docs-local Operations Workspace Template that composes the published components and renders
-   through a same-origin full-screen View.
+7. Docs-local Operations Workspace and Finance & Assets Templates that compose the published
+   components and render through same-origin full-screen Views.
 8. Registry foundations and a minimal `nerio add button` vertical slice.
 9. `llms.txt` and a minimal MCP component-index endpoint or package.
 10. `COMPONENTS.md` and `data/component-catalog.json` kept aligned with implementation status.

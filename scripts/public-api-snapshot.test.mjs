@@ -36,6 +36,31 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
   assert.match(buttonProps.definition.join("\n"), /type ButtonBaseProps/);
   assert.match(buttonProps.definition.join("\n"), /type TextButtonProps/);
   assert.match(buttonProps.definition.join("\n"), /type IconOnlyButtonProps/);
+  const isolatedPrefixes = [
+    "Button",
+    "Checkbox",
+    "Command",
+    "DatePicker",
+    "Dialog",
+    "DropdownMenu",
+    "Popover",
+    "RadioGroup",
+    "Select",
+    "Sheet",
+    "Slider",
+    "Tabs",
+    "Toast",
+    "Toggle",
+    "Tooltip",
+  ];
+  const isolatedSurface = parsed.entrypoints["@nerio-ui/ui/client"]
+    .filter((entry) => isolatedPrefixes.some((prefix) => entry.name.startsWith(prefix)))
+    .flatMap((entry) => [entry.signature, ...(entry.definition ?? [])])
+    .join("\n");
+  assert.doesNotMatch(
+    isolatedSurface,
+    /React\.ComponentProps(?:WithoutRef)?<typeof Base|BaseUIEvent|AriaCombobox/,
+  );
   assert.deepEqual(
     parsed.mcp.wireTools.map((tool) => tool.name),
     ["get_component", "get_component_usage", "get_registry", "list_components"],
@@ -69,7 +94,7 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
     "registryVersion",
     "sourceRevision",
   ];
-  const expectedFileKeys = ["hash", "owners", "role", "source"];
+  const expectedFileKeys = ["hash", "integrity", "owners", "role", "source"];
   assert.ok(
     parsed.cli.lockStateShape.items.recordValues.length > 0,
     "generated lock contract must contain item record shapes",
@@ -89,6 +114,7 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
     true,
   );
   assert.equal(parsed.packages["@nerio-ui/ui"].dependencies["@nerio-ui/tokens"], "workspace:*");
+  assert.equal(parsed.packages["@nerio-ui/ui"].dependencies["@base-ui/react"], "1.6.0");
   assert.equal(
     parsed.registry.publicCommands.cli.localCommands.includes("pnpm exec nerio doctor"),
     true,

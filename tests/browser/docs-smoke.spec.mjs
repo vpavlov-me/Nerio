@@ -46,6 +46,20 @@ test("covers public docs routes, standardized component docs, and the restrained
 
   await page.goto("/docs/getting-started");
   await expect(page.getByRole("heading", { name: "Getting started" })).toBeVisible();
+  const documentationTypeScale = await page.evaluate(() => {
+    const readSize = (selector) =>
+      Number.parseFloat(getComputedStyle(document.querySelector(selector)).fontSize);
+    return {
+      body: readSize("body"),
+      h1: readSize(".doc-page h1"),
+      h2: readSize(".doc-section > h2"),
+      h3: readSize(".doc-section > h3"),
+    };
+  });
+  expect(documentationTypeScale.body).toBe(14);
+  expect(documentationTypeScale.h3).toBeCloseTo(22.5, 1);
+  expect(documentationTypeScale.h2).toBeCloseTo(25.25, 1);
+  expect(documentationTypeScale.h1).toBeGreaterThan(documentationTypeScale.h2);
 
   for (const route of ["button", "sidebar-primitive", "command-primitive"]) {
     await page.goto(`/docs/components/${route}`);
@@ -59,9 +73,7 @@ test("covers public docs routes, standardized component docs, and the restrained
 
   await page.goto("/docs/components/sidebar-primitive");
   await expect(page.getByLabel("Sidebar preview")).toBeVisible();
-  await expect(
-    page.getByText('label="Toggle workspace sidebar"', { exact: false }).first(),
-  ).toBeVisible();
+  await expect(page.getByText('label="Toggle sidebar"', { exact: false }).first()).toBeVisible();
   await expect(page.locator("#usage").locator("..").locator(".sidebar-doc-examples")).toHaveCount(
     0,
   );
@@ -79,7 +91,7 @@ test("covers public docs routes, standardized component docs, and the restrained
     await expect(page.getByRole("heading", { name: heading })).toBeAttached();
   }
 
-  await expect(page.getByText("v1.0.0-beta.0", { exact: true })).toBeVisible();
+  await expect(page.getByText("v1.0.0-beta.1", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Purple", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Comfortable", exact: true })).toHaveCount(0);
   const search = page.getByRole("button", { name: "Search documentation" });
@@ -200,14 +212,30 @@ test("applies every Playground control to the component canvas", async ({ page }
   const problems = monitorPage(page);
   await page.goto("/playground");
   const playground = page.locator(".visual-playground");
-  await expect(page.getByRole("heading", { name: "Nerio Playground" })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Component index" })).toContainText("Button");
-  await expect(page.getByRole("navigation", { name: "Component index" })).not.toContainText(
-    "IconButton",
+  await expect(page.getByRole("heading", { name: "Playground", exact: true })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Component index" })).toHaveCount(0);
+  await expect(page.locator(".component-api-matrix")).toHaveCount(0);
+  expect(await page.locator(".component-lab-section").count()).toBe(
+    await page.locator(".component-lab-section > .component-playground-preview").count(),
   );
-  await expect(page.getByRole("navigation", { name: "Component index" })).not.toContainText(
-    "Chart",
-  );
+
+  const accentSwatch = page
+    .getByRole("radiogroup", { name: "Accent color" })
+    .getByRole("radio")
+    .first();
+  await expect(accentSwatch).toHaveCSS("width", "32px");
+  await expect(accentSwatch).toHaveCSS("height", "32px");
+
+  const buttonSection = page.locator("#button");
+  await buttonSection
+    .getByRole("tablist", { name: "Preview options" })
+    .getByRole("tab", { name: "lg" })
+    .click();
+  await expect(
+    buttonSection
+      .getByRole("tabpanel", { name: "lg" })
+      .getByRole("button", { name: "danger", exact: true }),
+  ).toBeVisible();
 
   await page.getByRole("radio", { name: "blue", exact: true }).click();
   await page
@@ -299,6 +327,9 @@ test("keeps Calendar, InputGroup, and Checkbox component states coherent", async
     (element) => getComputedStyle(element).backgroundColor,
   );
   await groupedInput.hover();
+  await expect
+    .poll(() => inputGroup.evaluate((element) => getComputedStyle(element).backgroundColor))
+    .not.toBe(restingGroupBackground);
   const hoveredInputGroup = await inputGroup.evaluate((element) => {
     const input = element.querySelector(".n-input");
     return {
@@ -309,6 +340,7 @@ test("keeps Calendar, InputGroup, and Checkbox component states coherent", async
   expect(hoveredInputGroup.groupBackground).not.toBe(restingGroupBackground);
   expect(hoveredInputGroup.inputBackground).toBe("rgba(0, 0, 0, 0)");
 
+  await page.getByRole("button", { name: "Open constrained calendar" }).click();
   const constrainedCalendar = page.getByRole("group", { name: "Constrained release date" });
   const unavailableDate = constrainedCalendar.getByRole("button", { name: "June 4, 2026" });
   await expect(unavailableDate).toHaveAttribute("aria-disabled", "true");
@@ -354,7 +386,7 @@ test("keeps mobile navigation singular, searchable, and safe", async ({ page }) 
   await expect(navigation.getByRole("navigation", { name: "Mobile documentation" })).toContainText(
     "Blocks",
   );
-  await expect(navigation.getByRole("link", { name: "Sign in" })).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "Blocks", exact: true })).toBeVisible();
   await navigation.getByRole("link", { name: "Tokens", exact: true }).click();
   await expect(page).toHaveURL(/\/docs\/foundations\/tokens$/);
 
@@ -393,18 +425,19 @@ test("publishes canonical discovery routes and redirects legacy compositions", a
   expect(homepage.headers()["strict-transport-security"]).toContain("max-age=31536000");
   expect(homepage.headers()["content-security-policy"]).toContain("object-src 'none'");
   expect(await sitemap.text()).not.toContain("/playground");
-  expect(await sitemap.text()).toContain("/blocks/sign-in");
+  expect(await sitemap.text()).toContain("/blocks");
+  expect(await sitemap.text()).not.toContain("/blocks/sign-in");
   expect(await sitemap.text()).not.toContain("/views/blocks/");
   expect(await robots.text()).toContain("Sitemap: https://nerio.vpavlov.com/sitemap.xml");
   expect(await robots.text()).toContain("Disallow: /views/");
   expect(await robots.text()).toContain("Disallow: /visual-test/");
   const llmsText = await llms.text();
-  expect(llmsText).toContain("1.0.0-beta.0");
+  expect(llmsText).toContain("1.0.0-beta.1");
   expect(llmsText).toContain("The public Blocks catalog is available at `/blocks`");
   expect(llmsText).not.toContain("/playground");
   expect(llmsText).not.toContain("nerio-preview-surfaces");
   expect(legacy.status()).toBe(308);
-  expect(legacy.headers().location).toBe("/blocks/sign-in");
+  expect(legacy.headers().location).toBe("/views/blocks/sign-in");
 
   await page.goto("/views/blocks/sign-in");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
@@ -575,11 +608,21 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   await page.goto("/docs/components/card");
   const card = page.locator(".n-card").first();
   await expect(card).toBeVisible();
-  await expect(card).toHaveCSS("border-top-width", "0px");
+  await expect(card).toHaveCSS("border-top-width", "1px");
   await expect(card.locator("[data-slot=card-title]").first()).toHaveCSS("font-weight", "500");
+  await expect(card.locator("[data-slot=card-title]").first()).toHaveCSS("font-size", "16px");
+  await expect(card.locator("[data-slot=card-description]").first()).toHaveCSS("font-size", "14px");
   expect(await card.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe("none");
+  const lightCardBorder = await card.evaluate(
+    (element) => getComputedStyle(element).borderTopColor,
+  );
+  expect(lightCardBorder).not.toBe("rgba(0, 0, 0, 0)");
   await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
   await expect(card).toHaveCSS("background-color", "rgb(0, 0, 0)");
+  await expect(card).toHaveCSS("border-top-width", "1px");
+  const darkCardBorder = await card.evaluate((element) => getComputedStyle(element).borderTopColor);
+  expect(darkCardBorder).not.toBe("rgba(0, 0, 0, 0)");
+  expect(darkCardBorder).not.toBe(lightCardBorder);
   await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "light"));
 
   await page.goto("/docs/components/alert");
@@ -895,7 +938,8 @@ test("keeps the final Tailwind component families active across public docs", as
 
   await page.goto("/docs/components/sheet");
   await page.getByRole("button", { name: "Open settings" }).click();
-  await expect(page.getByRole("heading", { name: "Workspace settings" })).toBeVisible();
+  const settingsSheet = page.getByRole("dialog", { name: "Workspace settings" });
+  await expect(settingsSheet.locator('[data-slot="sheet-title"]')).toHaveText("Workspace settings");
 
   await expectHealthyPage(page, problems);
 });

@@ -25,7 +25,7 @@ export default function Page() {
         <h1>Registry and CLI</h1>
         <p className="doc-lede">
           Install and update editable Nerio source from an immutable package Registry, local
-          manifest, or explicit HTTP override without shadcn formats or tooling.
+          manifest, or bounded HTTPS mirror without shadcn formats or tooling.
         </p>
       </header>
 
@@ -52,9 +52,12 @@ export default function Page() {
         <CodeExample code={config} label="nerio.json" />
         <p>
           The default package specifier resolves the immutable Registry shipped with the installed
-          CLI-compatible release. Relative registry paths resolve from the target project. HTTP
-          manifests resolve every source file relative to the manifest URL. Explicit local and HTTP
-          overrides are intended for development, migration testing, or controlled mirrors.
+          CLI-compatible release. Relative registry paths resolve from the target project. HTTPS
+          manifests resolve every source file relative to the final manifest URL. Plain HTTP is
+          rejected unless each command supplies <code>--allow-insecure-http</code>; reserve that
+          opt-in for a trusted local Registry. Remote requests enforce a 10-second request/body
+          timeout, a 2 MiB manifest limit, a 4 MiB per-source limit, at most three redirects,
+          content-type handling, schema/path validation, and SHA-256 integrity.
         </p>
       </section>
 
@@ -64,7 +67,8 @@ export default function Page() {
           A successful install writes <code>nerio.lock.json</code> beside <code>nerio.json</code>.
           The portable record contains Registry schema and release metadata, exact source revision,
           style contract version, requested items, dependency closure, installed paths, and original
-          SHA-256 hashes. It contains no source content, secrets, or absolute machine paths.
+          SHA-256 hashes and Registry integrity metadata. It contains no source content, secrets, or
+          absolute machine paths.
         </p>
         <ul className="doc-list">
           <li>
@@ -87,6 +91,17 @@ export default function Page() {
           <li>
             Shared tokens and utilities are tracked independently from leaf components, so
             dependency closures update without duplicate files.
+          </li>
+          <li>
+            Add and update fetch and validate the complete plan before writing, stage every change,
+            commit source before lock metadata, and restore both source and lock state after any
+            handled failure. A durable local journal recovers an interrupted process on the next
+            state-sensitive command (<code>add</code>, <code>diff</code>, <code>update</code>, or{" "}
+            <code>doctor</code>); already-committed source and lock state is retained. A
+            project-local process lock serializes installs, updates, validation, and recovery so
+            parallel commands cannot lose source ownership or lock metadata; <code>list</code> and{" "}
+            <code>info</code> remain read-only inspection commands. An owner heartbeat also makes
+            locks reclaimable after process death, restart, or PID reuse.
           </li>
         </ul>
         <p>
@@ -129,7 +144,10 @@ export default function Page() {
       <section className="doc-section">
         <h2>Registry contract</h2>
         <ul className="doc-list">
-          <li>Metadata declares dependencies, files, Base UI primitives, slots, and variants.</li>
+          <li>
+            Metadata declares dependencies, files, SHA-256 integrity, Base UI primitives, slots, and
+            variants.
+          </li>
           <li>
             Top-level metadata pins the Registry release, exact source revision, schema, and style
             contract.

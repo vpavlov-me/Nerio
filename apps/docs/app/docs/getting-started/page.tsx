@@ -48,7 +48,9 @@ export default function Page() {
       <section className="doc-section" id="install">
         <h2>Install</h2>
         <p>
-          Nerio Core <code>1.0.0-beta.0</code> is published under the npm <code>beta</code> tag.
+          Nerio Core <code>1.0.0-beta.1</code> is the prepared release candidate. These coordinated
+          commands become available from npm only after a separate publication; the current{" "}
+          <code>beta</code> tag remains on <code>1.0.0-beta.0</code>.
         </p>
         <CodeExample code={packageInstall} label="Package installation" />
         <CodeExample code={tailwindSetup} label="Tailwind CSS v4 package setup" />
@@ -81,9 +83,9 @@ export default function Page() {
         </p>
         <CodeExample code={nextConfig} label="next.config.ts" />
         <p>
-          The supported baseline is Node.js 20.9 or newer, React 19, Next.js 16.2, TypeScript 5.9,
-          and Tailwind CSS v4. Automated browser evidence covers current Chromium, Firefox, and
-          WebKit engine lines. See the repository&apos;s{" "}
+          The supported baseline is Node.js 22 or newer, React 19, Next.js 16.2, TypeScript 5.9, and
+          Tailwind CSS 4.1 or newer within the v4 line. Automated browser evidence covers current
+          Chromium, Firefox, and WebKit engine lines. See the repository&apos;s{" "}
           <a href="https://github.com/vpavlov-me/Nerio/blob/main/docs/platform-support.md">
             platform support policy
           </a>{" "}

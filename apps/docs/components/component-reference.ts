@@ -93,7 +93,7 @@ export const snippets: Record<string, string> = {
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
-    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio-ui/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail } from \'@nerio-ui/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label="Toggle workspace sidebar" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>',
+    'import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from \'@nerio-ui/ui\';\nimport { Sidebar, SidebarProvider, SidebarRail } from \'@nerio-ui/ui/client\';\n\n<SidebarProvider defaultExpanded side="left">\n  <Sidebar aria-label="Workspace sidebar">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent>\n      <nav aria-label="Workspace">...</nav>\n    </SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail collapseLabel="Collapse sidebar" expandLabel="Expand sidebar" label="Toggle sidebar" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>',
   "command-primitive":
     'import { Kbd } from \'@nerio-ui/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio-ui/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
@@ -107,7 +107,7 @@ export const snippets: Record<string, string> = {
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
     'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", description: "Invite people and choose access", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Archive", leadingIcon: X, destructive: true },\n  ]}\n/>',
-  card: 'import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Card as="article">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle as="h2">Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
+  card: 'import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Card as="div">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle>Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
   separator:
     "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
   avatar:
@@ -244,15 +244,16 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "sidebar-header",
       "sidebar-content",
       "sidebar-footer",
+      "sidebar-menu-button",
       "sidebar-rail",
       "sidebar-inset",
       "sidebar-trigger",
     ],
-    motion: ["tokenized width transition", "reduced-motion instant state change"],
+    motion: ["tokenized width and rail reveal transitions", "reduced-motion instant state change"],
     accessibility: [
       "complementary aside semantics",
       "localized toggle names",
-      "inert collapsed content",
+      "accessible icon-only collapsed navigation",
       "stable aria-controls relationship",
     ],
   },
@@ -2436,6 +2437,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-border-focus",
       "--n-input-placeholder",
       "--n-overlay-z-index",
+      "--n-overlay-floating-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-shadow",
@@ -2560,6 +2562,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toast-stack-gap",
       "--n-toast-stack-offset",
       "--n-toast-stack-scale-step",
+      "--n-toast-stack-opacity-step",
       "--n-toast-enter-offset",
       "--n-toast-swipe-dismiss-distance",
       "--n-toast-background",
@@ -2594,8 +2597,12 @@ export const componentReference: Record<string, ComponentReference> = {
         description:
           "Optional generic visual slot for icons, avatars, logos, previews, or media; inset by default and edge-to-edge when placement is bleed.",
       },
-      { title: "card-header", description: "Optional heading area for title and supporting copy." },
-      { title: "card-title", description: "Semantic title slot for concise surface headings." },
+      { title: "card-header", description: "Optional title area for primary and supporting copy." },
+      {
+        title: "card-title",
+        description:
+          "Concise surface title that renders neutral text by default and supports an explicit heading element when document structure requires one.",
+      },
       { title: "card-description", description: "Secondary explanatory text." },
       {
         title: "card-action",
@@ -2634,7 +2641,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Linked Cards use a restrained surface transition and the shared focus ring.",
     ],
     accessibility: [
-      "Keep heading order and actions explicit inside the card.",
+      "CardTitle renders a div by default. Choose an explicit h2-h6 only when the card participates in the document outline, and preserve heading order.",
       "Use href when the full Card has one clear destination; it renders a native anchor. Do not nest interactive controls in a linked Card.",
       "Use CardAction only in a surface Card, never inside a linked Card.",
     ],
@@ -2643,7 +2650,7 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "href", description: "Turns the entire Card into a native anchor destination." },
       {
         title: "variant",
-        description: "default or secondary; secondary is a muted borderless surface.",
+        description: "default or secondary; secondary is a muted, flat surface.",
       },
       {
         title: "CardVisual",
@@ -2660,12 +2667,13 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "CardTitle / CardDescription",
-        description: "Heading and secondary text slots for documentation and registry examples.",
+        description:
+          "Primary and secondary text slots. CardTitle defaults to div and CardDescription uses the standard 14 px body size.",
       },
     ],
     designNotes: [
       "Use Card for truly related content, not as a default wrapper for every section.",
-      "Use typography and spacing first; the default white or black surface carries only a soft elevation shadow, while secondary grouping stays flat and muted.",
+      "Use typography and spacing first; every Card keeps a subtle mode-aware border, the default surface adds soft elevation, and secondary grouping stays flat and muted.",
       "Keep the gap between visual, header, content, and footer larger than the internal title-description and action gaps.",
     ],
     related: ["Separator", "Stat", "KeyValue"],
@@ -2681,6 +2689,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-card-section-gap",
       "--n-card-radius",
       "--n-card-background",
+      "--n-card-border-width",
+      "--n-card-border-color",
       "--n-card-background-interactive-hover",
       "--n-card-background-secondary",
       "--n-card-background-secondary-hover",
@@ -3285,9 +3295,19 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "content", description: "Modal surface rendered through a portal." },
       { title: "header", description: "Title, optional description, and close boundary." },
       { title: "heading", description: "Grouped title and optional description." },
-      { title: "title", description: "Required accessible dialog heading." },
-      { title: "description", description: "Optional supporting context." },
-      { title: "body", description: "Task, decision, and action content." },
+      {
+        title: "title",
+        description: "Required accessible dialog name; renders as a neutral 16 px div by default.",
+      },
+      {
+        title: "description",
+        description: "Optional supporting context using the standard 14 px body size.",
+      },
+      {
+        title: "body",
+        description:
+          "Task, decision, and action content that scrolls within the viewport boundary.",
+      },
       {
         title: "footer",
         description: "Optional action row aligned to the inline end.",
@@ -3309,12 +3329,14 @@ export const componentReference: Record<string, ComponentReference> = {
       "Use a clear title, keep focus contained, and avoid opening dialogs from dialogs.",
       "Base UI handles modal focus trapping, Escape dismissal, outside dismissal, and return focus.",
       "Use open/defaultOpen/onOpenChange when state must be coordinated by the parent.",
+      "Long body content scrolls inside the bounded dialog so the title and dismissal control remain visible.",
     ],
     api: [
       { title: "trigger", description: "React node or text that opens the dialog." },
       {
         title: "title / description",
-        description: "Accessible dialog heading and optional context.",
+        description:
+          "Accessible dialog name and optional context. titleAs opts into h2-h6 only when the title belongs in the document outline.",
       },
       { title: "bodyClassName", description: "Optional class hook for the body slot." },
       {
@@ -3360,8 +3382,14 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       { title: "footer", description: "Stable trailing region for consumer content." },
       {
+        title: "menu button",
+        description:
+          "Sidebar-aware Button that adds a tooltip only while its visible label is collapsed.",
+      },
+      {
         title: "rail",
-        description: "Named bottom-right toggle inside the Sidebar, available in both states.",
+        description:
+          "Named trailing toggle shown as the last sidebar action, with state-specific labels and a collapsed tooltip.",
       },
       { title: "inset", description: "Primary page content adjacent to the sidebar." },
       { title: "trigger", description: "External named control for expansion and collapse." },
@@ -3377,6 +3405,11 @@ export const componentReference: Record<string, ComponentReference> = {
         description: "Explicit ltr or rtl content direction while side remains physical.",
       },
       {
+        title: "Collapse mode",
+        description:
+          "hidden safely removes arbitrary content by default; icons keeps migrated SidebarMenuButton navigation available.",
+      },
+      {
         title: "Density",
         description: "Comfortable and compact spacing resolve through shared tokens.",
       },
@@ -3385,7 +3418,8 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "Expanded", description: "All static regions and consumer content are available." },
       {
         title: "Collapsed",
-        description: "Inner content is inert, hidden, and removed from keyboard interaction.",
+        description:
+          "Arbitrary content becomes inert by default; collapseMode=icons exposes a compact migrated navigation rail.",
       },
       {
         title: "Controlled",
@@ -3393,16 +3427,17 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     motion: [
-      "Width and content visibility use the Sidebar transition tokens.",
+      "Width and label visibility use the Sidebar transition tokens.",
       "Reduced-motion preference removes the visible transition without changing state behavior.",
     ],
     accessibility: [
       "Sidebar renders an aside landmark; add a labelled nav inside SidebarContent for navigation.",
       "SidebarRail and any optional external SidebarTrigger require localized labels and expose aria-expanded and aria-controls.",
       "Use the rail as the persistent in-sidebar toggle; render an external trigger only when another product surface requires it.",
-      "The rail stays bottom-right and occupies only its declared hit area without creating a full-height invisible click target.",
-      "Collapsed descendants are inert so invisible links and controls cannot receive focus.",
-      "Keep the bottom-right SidebarRail mounted so collapsing does not remove the focused control.",
+      "The rail stays after footer content as the last sidebar action and occupies only its declared hit area without creating a full-height invisible click target.",
+      "Use collapseMode=icons only with SidebarMenuButton navigation; its icon actions preserve accessible names and expose labels through focusable tooltips.",
+      "The default hidden collapse mode makes arbitrary legacy content inert so clipped controls cannot remain keyboard reachable.",
+      "Keep SidebarRail mounted so collapse preserves focus; collapseLabel and expandLabel provide state-specific visible and accessible text.",
       "The primitive adds no roving focus or Arrow-key behavior to arbitrary consumer navigation.",
       "Render one interactive tree per viewport; use an explicit Sheet composition for mobile.",
     ],
@@ -3410,7 +3445,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "SidebarProvider",
         description:
-          "defaultExpanded, expanded, onExpandedChange, side, direction, and optional sidebarId.",
+          "defaultExpanded, expanded, onExpandedChange, side, direction, collapseMode, and optional sidebarId.",
       },
       {
         title: "Sidebar",
@@ -3423,7 +3458,13 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "SidebarTrigger / SidebarRail",
-        description: "Named toggle controls with stable focus and ARIA relationships.",
+        description:
+          "Named toggle controls with stable focus and ARIA relationships; SidebarRail supports state-specific labels.",
+      },
+      {
+        title: "SidebarMenuButton",
+        description:
+          "Sidebar-aware Button composition that enables its collapsedTooltip only in icon-only state.",
       },
       {
         title: "useSidebar",
@@ -3452,6 +3493,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-sidebar-inset-gap",
       "--n-sidebar-region-padding",
       "--n-sidebar-rail-hit-area",
+      "--n-sidebar-item-icon-size",
       "--n-sidebar-transition-duration",
       "--n-sidebar-transition-easing",
       "--n-sidebar-background",
@@ -3666,7 +3708,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "SheetHeader / SheetTitle / SheetDescription",
-        description: "Named accessible context slots.",
+        description:
+          "Named accessible context slots. SheetTitle defaults to a neutral 16 px div with explicit heading opt-in through as; SheetDescription uses the standard 14 px body size.",
       },
       {
         title: "SheetBody / SheetFooter / SheetClose",
@@ -3750,6 +3793,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-popover-gap",
       "--n-popover-radius",
       "--n-overlay-z-index",
+      "--n-overlay-floating-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",
@@ -3786,18 +3830,37 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       { title: "disabled", description: "Prevents tooltip display while preserving the trigger." },
       {
+        title: "showArrow",
+        description:
+          "Shows the directional arrow by default; disable it when the positioned surface should remain visually detached from its trigger.",
+      },
+      {
+        title: "side",
+        description:
+          "Preferred physical or logical side of the trigger; collision handling may adjust it when space is constrained.",
+      },
+      {
+        title: "sideOffset",
+        description:
+          "Distance in pixels between the trigger and positioned surface; increase it when an arrow must clear a containing navigation edge.",
+      },
+      {
         title: "TooltipProvider",
         description:
           "Coordinates open and close delays across a group of adjacent tooltip triggers.",
       },
     ],
     guidance: {
-      do: ["Use to name icon-only actions or clarify dense metadata."],
+      do: [
+        "Use to name icon-only actions or clarify dense metadata.",
+        "Place compact navigation tooltips outward from the navigation surface so they do not cover adjacent actions.",
+      ],
       dont: ["Do not put buttons, links, or critical content inside Tooltip."],
     },
     tokens: [
       "--n-tooltip-radius",
       "--n-overlay-z-index",
+      "--n-overlay-floating-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",
@@ -3865,6 +3928,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-dropdown-item-gap",
       "--n-dropdown-radius",
       "--n-overlay-z-index",
+      "--n-overlay-floating-z-index",
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-foreground",

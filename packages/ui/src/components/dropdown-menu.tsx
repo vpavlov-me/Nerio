@@ -7,6 +7,7 @@ import { Button } from "./button";
 import { Icon } from "./icon";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
+import type { NerioChangeEventDetails } from "../lib/component-props";
 
 export interface DropdownMenuItem {
   label: React.ReactNode;
@@ -20,10 +21,28 @@ export interface DropdownMenuItem {
   destructive?: boolean;
 }
 
-export interface DropdownMenuProps extends Pick<
-  React.ComponentProps<typeof BaseMenu.Root>,
-  "defaultOpen" | "onOpenChange" | "open"
-> {
+export type DropdownMenuOpenChangeEventReason =
+  | "trigger-hover"
+  | "trigger-focus"
+  | "trigger-press"
+  | "outside-press"
+  | "focus-out"
+  | "list-navigation"
+  | "escape-key"
+  | "item-press"
+  | "close-press"
+  | "sibling-open"
+  | "cancel-open"
+  | "imperative-action"
+  | "none";
+export type DropdownMenuOpenChangeEventDetails =
+  NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & {
+    preventUnmountOnClose: () => void;
+  };
+export interface DropdownMenuProps {
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean, eventDetails: DropdownMenuOpenChangeEventDetails) => void;
+  open?: boolean;
   trigger: React.ReactNode;
   items: DropdownMenuItem[];
   className?: string;
@@ -56,7 +75,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
           }
         />
         <BaseMenu.Portal>
-          <BaseMenu.Positioner className="n-popover-positioner z-(--n-overlay-z-index)">
+          <BaseMenu.Positioner className="n-popover-positioner z-(--n-overlay-floating-z-index)">
             <BaseMenu.Popup
               ref={ref}
               className={cn(

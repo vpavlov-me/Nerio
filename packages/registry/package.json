@@ -1,6 +1,6 @@
 {
   "name": "@nerio-ui/registry",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "Nerio Core source registry manifest and metadata helpers.",
   "private": false,
   "license": "MIT",
@@ -14,7 +14,7 @@
     "url": "https://github.com/vpavlov-me/Nerio/issues"
   },
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22"
   },
   "files": [
     "src"

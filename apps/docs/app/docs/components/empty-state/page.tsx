@@ -1,51 +1,8 @@
-"use client";
-
-import { Check, UserPlus, X } from "@nerio-ui/adapters/icons";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  EmptyState,
-  EmptyStateActions,
-  EmptyStateDescription,
-  EmptyStateHeader,
-  EmptyStateMedia,
-  EmptyStateTitle,
-  Icon,
-} from "@nerio-ui/ui";
-import { Button } from "@nerio-ui/ui/client";
-import { CodeExample } from "../../../../components/code-example";
+import { Check, X } from "@nerio-ui/adapters/icons";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
-
-const usageCode = `import { UserPlus } from "@nerio-ui/adapters/icons";
-import {
-  EmptyState,
-  EmptyStateActions,
-  EmptyStateDescription,
-  EmptyStateHeader,
-  EmptyStateMedia,
-  EmptyStateTitle,
-  Icon,
-} from "@nerio-ui/ui";
-import { Button } from "@nerio-ui/ui/client";
-
-<EmptyState size="lg">
-  <EmptyStateMedia aria-hidden="true">
-    <Icon icon={UserPlus} />
-  </EmptyStateMedia>
-  <EmptyStateHeader>
-    <EmptyStateTitle>No team members yet</EmptyStateTitle>
-    <EmptyStateDescription>
-      Invite people to collaborate on projects and share updates with the team.
-    </EmptyStateDescription>
-  </EmptyStateHeader>
-  <EmptyStateActions>
-    <Button leadingIcon={UserPlus} size="md">Invite team members</Button>
-  </EmptyStateActions>
-</EmptyState>`;
+import { EmptyStatePreview } from "./empty-state-preview";
 
 const variantRows = [
   ["size", "sm", "Compact tables, lists, cards, sidebars, and panels."],
@@ -162,36 +119,6 @@ const tokenRows = [
   ],
   ["Spacing", "--n-empty-state-gap", "Vertical separation between composed slots."],
 ] as const;
-
-function EmptyStatePreview() {
-  return (
-    <section id="preview" className="component-example" aria-label="EmptyState preview">
-      <div className="component-example__preview">
-        <EmptyState size="lg">
-          <EmptyStateMedia aria-hidden="true">
-            <Icon icon={UserPlus} />
-          </EmptyStateMedia>
-          <EmptyStateHeader>
-            <EmptyStateTitle>No team members yet</EmptyStateTitle>
-            <EmptyStateDescription>
-              Invite people to collaborate on projects and share updates with the team.
-            </EmptyStateDescription>
-          </EmptyStateHeader>
-          <EmptyStateActions>
-            <Button leadingIcon={UserPlus} size="md">
-              Invite team members
-            </Button>
-          </EmptyStateActions>
-        </EmptyState>
-      </div>
-      <CodeExample
-        className="component-example__code"
-        code={usageCode}
-        label="EmptyState preview code"
-      />
-    </section>
-  );
-}
 
 export default function Page() {
   return (

@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openMobilePreviewSettings } from "./helpers/template-preview-settings.mjs";
 
 const themes = ["purple", "blue", "green", "orange", "red", "neutral"];
 const modes = ["system", "light", "dark"];
@@ -57,9 +58,7 @@ test("covers the release appearance and responsive matrix without overflow", asy
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
     await page.goto(workspaceRoute);
-    await expect(
-      page.getByRole("heading", { name: "Product operations without a vertical bias" }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Operations overview" })).toBeVisible();
     if (viewport.width <= 1080) {
       await expect(page.getByRole("button", { name: "Open workspace navigation" })).toBeVisible();
     } else {
@@ -117,13 +116,14 @@ test("covers focus, Sheet restoration, Table scrolling, and Sidebar collapse", a
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(workspaceRoute);
   const rail = page.locator('[data-slot="sidebar-rail"]');
-  await expect(rail).toHaveAccessibleName("Toggle workspace sidebar");
+  await expect(rail).toHaveAccessibleName("Collapse sidebar");
   await rail.click();
   await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
     "data-state",
     "collapsed",
   );
   await expect(rail).toHaveAttribute("aria-expanded", "false");
+  await expect(rail).toHaveAccessibleName("Expand sidebar");
   await rail.click();
   await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
     "data-state",
@@ -138,12 +138,15 @@ test("covers focus, Sheet restoration, Table scrolling, and Sidebar collapse", a
   await page.reload();
   const sheetTrigger = page.getByRole("button", { name: "Open workspace navigation" });
   await sheetTrigger.click();
-  await expect(page.getByRole("heading", { name: "Workspace navigation" })).toBeVisible();
+  const navigationSheet = page.getByRole("dialog", { name: "Workspace navigation" });
+  await expect(navigationSheet.locator('[data-slot="sheet-title"]')).toHaveText(
+    "Workspace navigation",
+  );
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("heading", { name: "Workspace navigation" })).toBeHidden();
+  await expect(navigationSheet).toBeHidden();
   await expect(sheetTrigger).toBeFocused();
 
-  const table = page.getByRole("region", { name: "Workspace projects" });
+  const table = page.getByRole("region", { name: "Workspace initiatives" });
   await table.focus();
   await expect(table).toBeFocused();
   await page.keyboard.press("ArrowRight");
@@ -182,9 +185,21 @@ test("keeps the template shell inside emulated safe areas without overflow", asy
   expect(shell.inlineEnd).toBe("4px");
   expect(shell.overflow).toBeLessThanOrEqual(1);
 
-  await page.getByRole("combobox", { name: "Direction" }).click();
+  const previewSettings = await openMobilePreviewSettings(page);
+  await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
+  await expect(previewSettings).toBeHidden();
+  await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-direction",
+    "rtl",
+  );
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-side",
+    "right",
+  );
   const rtlInsets = await page.locator('[data-slot="sidebar-provider"]').evaluate((element) => {
     const rootStyle = getComputedStyle(element);
     return {
@@ -202,18 +217,19 @@ test("keeps the template shell inside emulated safe areas without overflow", asy
 test("covers Command groups, IME safety, leading layout, and selection", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto(workspaceRoute);
-  await page.getByRole("button", { name: "Search workspace" }).click();
+  await page.keyboard.press("Control+K");
+  await expect(page.getByRole("dialog", { name: "Workspace commands" })).toBeVisible();
   const input = page.getByRole("combobox", { name: "Workspace commands" });
 
-  await expect(page.getByText("Project filters", { exact: true })).toBeVisible();
+  await expect(page.getByText("Navigation", { exact: true })).toBeVisible();
   await expect(
-    page.locator('[data-slot="command-group-label"]').filter({ hasText: "Display" }),
+    page.locator('[data-slot="command-group-label"]').filter({ hasText: "Initiatives" }),
   ).toBeVisible();
-  await expect(page.getByRole("option", { name: /Show all projects/ })).not.toHaveAttribute(
+  await expect(page.getByRole("option", { name: /Overview/ })).toHaveAttribute(
     "data-leading",
     "true",
   );
-  await expect(page.getByRole("option", { name: /Show active projects/ })).toHaveAttribute(
+  await expect(page.getByRole("option", { name: /Client portal launch/ })).toHaveAttribute(
     "data-leading",
     "true",
   );
@@ -222,11 +238,11 @@ test("covers Command groups, IME safety, leading layout, and selection", async (
   await input.press("Enter");
   await expect(input).toBeVisible();
   await input.dispatchEvent("compositionend", { data: "活" });
-  await input.fill("active");
-  await expect(page.getByRole("option", { name: /Show active projects/ })).toBeVisible();
-  await page.getByRole("option", { name: /Show active projects/ }).click();
-  await expect(page.getByRole("row", { name: /Content library/ })).toHaveCount(0);
-  await expect(page.getByRole("row", { name: /Launch workspace/ })).toBeVisible();
+  await input.fill("reporting");
+  await expect(page.getByRole("option", { name: /Reporting migration/ })).toBeVisible();
+  await input.press("Enter");
+  await expect(page.getByRole("row", { name: /Client portal launch/ })).toHaveCount(0);
+  await expect(page.getByRole("row", { name: /Reporting migration/ })).toBeVisible();
 
   await expectHealthyPage(page, problems);
 });
@@ -234,7 +250,7 @@ test("covers Command groups, IME safety, leading layout, and selection", async (
 test("covers Toast stacking and logical swipe in LTR and RTL", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto(workspaceRoute);
-  const create = page.getByRole("button", { name: "Create project" });
+  const create = page.getByRole("button", { name: "New initiative" });
   await create.click();
   await create.click();
   await create.click();
@@ -271,9 +287,7 @@ test("covers Toast stacking and logical swipe in LTR and RTL", async ({ page }) 
   await expectHealthyPage(page, problems);
 });
 
-test("covers loading, empty, error, success, reduced motion, and forced colors", async ({
-  page,
-}) => {
+test("covers status filters, reduced motion, and forced colors", async ({ page }) => {
   const problems = monitorPage(page);
   await page.emulateMedia({ colorScheme: "dark", forcedColors: "active", reducedMotion: "reduce" });
   await page.goto(workspaceRoute);
@@ -282,38 +296,83 @@ test("covers loading, empty, error, success, reduced motion, and forced colors",
     true,
   );
 
-  await page.getByRole("button", { name: "Loading" }).click();
-  await expect(page.getByLabel("Loading recent items")).toBeVisible();
-  await page.getByRole("button", { name: "Error" }).click();
-  await expect(
-    page.getByRole("alert").filter({ hasText: "Activity source unavailable" }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Ready" }).click();
-  await expect(page.getByRole("region", { name: "Workspace projects" })).toBeVisible();
-  await page.getByRole("button", { name: "Success" }).click();
-  await expect(
-    page.getByRole("status").filter({ hasText: "Workspace synchronized" }),
-  ).toBeVisible();
-  await expect(page.getByRole("region", { name: "Workspace projects" })).toBeVisible();
+  await page.getByRole("button", { name: "Open preview settings" }).click();
+  const previewSettings = page.getByRole("dialog", { name: "Preview settings" });
+  await expect(previewSettings.getByRole("combobox")).toHaveCount(4);
+  await expect(previewSettings.getByRole("group", { name: "Initiative state" })).toHaveCount(0);
+  await page.keyboard.press("Escape");
 
-  await page.getByRole("textbox", { name: "Search projects" }).fill("no-such-project");
-  await expect(page.getByRole("status").filter({ hasText: "No matching projects" })).toBeVisible();
-  await page.getByRole("button", { name: "Create project" }).click();
+  await expect(page.getByRole("link", { name: "Open in GitHub" })).toHaveAttribute(
+    "href",
+    "https://github.com/vpavlov-me/Nerio/tree/main/apps/docs/features/templates/operations-workspace",
+  );
+
+  const statusFilters = page.getByRole("group", { name: "Initiative status filters" });
+  await statusFilters.getByRole("button", { name: /At risk/ }).click();
+  await expect(page.getByRole("row", { name: /Reporting migration/ })).toBeVisible();
+  await expect(page.getByRole("row", { name: /Client portal launch/ })).toHaveCount(0);
+  await statusFilters.getByRole("button", { name: /All/ }).click();
+  await expect(page.getByRole("region", { name: "Workspace initiatives" })).toBeVisible();
+
+  await page.getByRole("button", { name: "New initiative" }).click();
   await expect(
-    page.locator(".n-toast--managed").filter({ hasText: "Project draft created" }),
+    page.locator(".n-toast--managed").filter({ hasText: "New initiative action" }),
   ).toBeVisible();
 
   await expectHealthyPage(page, problems);
 });
 
-test("uses current Core primitives without an app-local Chart or deprecated IconButton", async ({
+test("uses current Core primitives with the chart adapter and no deprecated IconButton", async ({
   page,
 }) => {
   const problems = monitorPage(page);
   await page.goto(workspaceRoute);
-  await expect(page.getByRole("heading", { name: "Delivery signals" })).toBeVisible();
+  await expect(
+    page.locator('[data-slot="card-title"]', { hasText: "Delivery health" }),
+  ).toBeVisible();
   await expect(page.getByRole("heading", { name: /Chart/ })).toHaveCount(0);
   await expect(page.locator(".n-icon-button")).toHaveCount(0);
-  await expect(page.getByRole("progressbar", { name: "Research" })).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: /Weekly completion rate rose from 62 percent/ }),
+  ).toBeVisible();
+  await expect(page.getByRole("group", { name: "Six of nine contributors" })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Team capacity details" })).toBeVisible();
+  await expect(page.getByText("Product and design", { exact: true })).toBeVisible();
+  await expect(
+    page.locator('[data-slot="card-title"]', { hasText: "Operational risks" }),
+  ).toBeVisible();
+  await expect(
+    page.locator('[data-slot="card-title"]', { hasText: "Upcoming milestones" }),
+  ).toBeVisible();
+  await expect(page.locator('[data-slot="card-title"]', { hasText: "Cycle time" })).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: /Median cycle time decreased from 6.4 days/ }),
+  ).toBeVisible();
+
+  const sidebar = page.getByRole("complementary", { name: "Workspace sidebar" });
+  await expect(sidebar.getByText("Active initiatives", { exact: true })).toHaveCount(0);
+
+  const statusFilters = page.getByRole("group", { name: "Initiative status filters" });
+  expect((await statusFilters.boundingBox())?.width).toBeLessThan(600);
+  const expectedStatusCounts = new Map([
+    ["All", "4"],
+    ["On track", "1"],
+    ["At risk", "1"],
+    ["In review", "1"],
+    ["Planned", "1"],
+  ]);
+  for (const [label, count] of expectedStatusCounts) {
+    await expect(
+      statusFilters.getByRole("button", { name: new RegExp(`^${label} ${count}$`, "i") }),
+    ).toBeVisible();
+  }
+  await expect(statusFilters.getByRole("button", { name: /^All 4$/i })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  const firstActivity = page.locator('[class*="activity-item"]').first();
+  await expect(firstActivity.locator("strong")).toHaveCSS("font-size", "14px");
+  await expect(firstActivity.locator("span")).toHaveCSS("font-size", "14px");
+  await expect(page.getByRole("searchbox", { name: "Search initiatives" })).toHaveCount(0);
   await expectHealthyPage(page, problems);
 });

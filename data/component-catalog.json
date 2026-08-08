@@ -690,7 +690,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Accessible modal primitive with title, description, localizable close affordance, controlled state, and Base UI focus behavior."
+      "description": "Accessible viewport-bounded modal primitive with a neutral title by default, explicit heading opt-in, standard description, localizable close affordance, controlled state, and Base UI focus behavior."
     },
     {
       "name": "Sheet",
@@ -698,7 +698,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Base UI modal side-panel primitive with neutral close composition, safe-area-aware layout, four explicit sides, Core size scale, internal scrolling, and shared overlay motion contracts."
+      "description": "Base UI modal side-panel primitive with a neutral title by default, explicit heading opt-in, neutral close composition, safe-area-aware layout, four explicit sides, Core size scale, internal scrolling, and shared overlay motion contracts."
     },
     {
       "name": "Popover",
@@ -722,7 +722,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Dropdown menu with disabled and destructive states plus optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
+      "description": "Dropdown menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
     },
     {
       "name": "Card",
@@ -730,7 +730,7 @@
       "package": "@nerio-ui/ui",
       "category": "data-display",
       "status": "stable-core",
-      "description": "Composable surface primitive with verified semantic roots, visual placements, header actions, narrow layouts, focus, density, and browser overflow behavior."
+      "description": "Composable surface primitive with a neutral title by default, explicit heading opt-in, verified semantic roots, visual placements, header actions, tokenized title-description spacing, narrow layouts, focus, density, and browser overflow behavior."
     },
     {
       "name": "Badge",

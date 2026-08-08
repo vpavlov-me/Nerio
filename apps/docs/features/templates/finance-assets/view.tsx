@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { densities, modes } from "@nerio-ui/tokens";
+import { densities, modes, themes } from "@nerio-ui/tokens";
 import {
   Area,
   AreaChart,
@@ -13,35 +13,55 @@ import {
 } from "@nerio-ui/adapters/charts";
 import {
   ArrowLeft,
+  ArrowLeftRight,
   ArrowRight,
   ArrowUp,
   Boxes,
+  BriefcaseBusiness,
+  CalendarDays,
   Check,
+  ChartNoAxesCombined,
+  ChartPie,
+  CircleAlert,
   FileText,
+  Eye,
+  EyeOff,
+  Github,
   LayoutDashboard,
-  Monitor,
   PanelLeft,
-  Rows3,
-  Search,
   Settings,
+  WalletCards,
 } from "@nerio-ui/adapters/icons";
-import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from "@nerio-ui/ui";
+import type { IconComponent } from "@nerio-ui/adapters/icons";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Icon,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+  type BadgeTone,
+} from "@nerio-ui/ui";
 import {
   Alert,
   Badge,
   Button,
-  Card,
   Dialog,
   DialogFooter,
-  EmptyState,
-  EmptyStateActions,
-  EmptyStateDescription,
-  EmptyStateHeader,
-  EmptyStateTitle,
-  Field,
-  Input,
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
   KeyValue,
-  Progress,
   Select,
   Sheet,
   SheetBody,
@@ -51,37 +71,58 @@ import {
   SheetTitle,
   SheetTrigger,
   Sidebar,
+  SidebarMenuButton,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
-  Skeleton,
   Stat,
-  Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableHeader,
-  TableRow,
   Toggle,
-  ToastProvider,
-  ToastViewport,
   Tooltip,
-  useToastManager,
 } from "@nerio-ui/ui/client";
 import {
+  applyAppearanceAxis,
+  captureAppearanceAttributes,
   defaultAppearance,
-  persistAppearanceAxis,
   readAppearanceFromRoot,
   type Appearance,
 } from "../../../lib/appearance";
+import templateLayoutStyles from "../layout.module.css";
 import styles from "./view.module.css";
 
-type Section = "overview" | "holdings" | "transactions" | "settings";
 type TransactionStatus = "Completed" | "Pending" | "Failed";
+type PerformancePeriod = "1M" | "3M" | "1Y";
 
-const holdings = [
+const financeTemplateSourceUrl =
+  "https://github.com/vpavlov-me/Nerio/tree/main/apps/docs/features/templates/finance-assets";
+
+type Holding = {
+  id: string;
+  name: string;
+  symbol: string;
+  type: string;
+  quantity: number;
+  price: number;
+  allocation: number;
+  movement: number;
+  value: number;
+  volatility: string;
+  liquidity: string;
+};
+
+const defaultHolding: Holding = {
+  id: "index",
+  name: "Global index fund",
+  symbol: "NWLD",
+  type: "Fund",
+  quantity: 314.82,
+  price: 142.67,
+  allocation: 35.8,
+  movement: 1.24,
+  value: 44917,
+  volatility: "Moderate",
+  liquidity: "T+2",
+};
+
+const holdings: Holding[] = [
   {
     id: "cash",
     name: "Operating cash",
@@ -92,18 +133,10 @@ const holdings = [
     allocation: 34.2,
     movement: 0,
     value: 42850,
+    volatility: "Low",
+    liquidity: "Immediate",
   },
-  {
-    id: "index",
-    name: "Global index fund",
-    symbol: "NWLD",
-    type: "Fund",
-    quantity: 314.82,
-    price: 142.67,
-    allocation: 35.8,
-    movement: 1.24,
-    value: 44917,
-  },
+  defaultHolding,
   {
     id: "treasury",
     name: "Short treasury fund",
@@ -114,6 +147,8 @@ const holdings = [
     allocation: 18.8,
     movement: 0.18,
     value: 23617,
+    volatility: "Low",
+    liquidity: "T+1",
   },
   {
     id: "digital",
@@ -125,8 +160,10 @@ const holdings = [
     allocation: 11.2,
     movement: -2.31,
     value: 14064,
+    volatility: "High",
+    liquidity: "Immediate",
   },
-] as const;
+];
 
 const transactions: {
   id: string;
@@ -184,39 +221,125 @@ const transactions: {
   },
 ];
 
-const performanceByPeriod = {
+type PerformancePoint = {
+  label: string;
+  portfolio: number;
+  benchmark: number;
+};
+
+const performanceByPeriod: Record<PerformancePeriod, PerformancePoint[]> = {
   "1M": [
-    { label: "Jun 23", value: 117200 },
-    { label: "Jun 29", value: 119100 },
-    { label: "Jul 5", value: 118400 },
-    { label: "Jul 11", value: 122700 },
-    { label: "Jul 17", value: 123900 },
-    { label: "Jul 23", value: 125448 },
+    { label: "Jun 23", portfolio: 117200, benchmark: 117200 },
+    { label: "Jun 29", portfolio: 119100, benchmark: 118300 },
+    { label: "Jul 5", portfolio: 118400, benchmark: 119000 },
+    { label: "Jul 11", portfolio: 122700, benchmark: 120200 },
+    { label: "Jul 17", portfolio: 123900, benchmark: 121800 },
+    { label: "Jul 23", portfolio: 125448, benchmark: 122900 },
   ],
   "3M": [
-    { label: "May", value: 108300 },
-    { label: "May 20", value: 112900 },
-    { label: "Jun", value: 116500 },
-    { label: "Jun 20", value: 114800 },
-    { label: "Jul", value: 121600 },
-    { label: "Now", value: 125448 },
+    { label: "May", portfolio: 108300, benchmark: 108300 },
+    { label: "May 20", portfolio: 112900, benchmark: 110400 },
+    { label: "Jun", portfolio: 116500, benchmark: 112900 },
+    { label: "Jun 20", portfolio: 114800, benchmark: 114100 },
+    { label: "Jul", portfolio: 121600, benchmark: 116800 },
+    { label: "Now", portfolio: 125448, benchmark: 119300 },
   ],
   "1Y": [
-    { label: "Aug", value: 92500 },
-    { label: "Oct", value: 97800 },
-    { label: "Dec", value: 101200 },
-    { label: "Feb", value: 107400 },
-    { label: "Apr", value: 113900 },
-    { label: "Now", value: 125448 },
+    { label: "Aug", portfolio: 92500, benchmark: 92500 },
+    { label: "Oct", portfolio: 97800, benchmark: 95600 },
+    { label: "Dec", portfolio: 101200, benchmark: 98900 },
+    { label: "Feb", portfolio: 107400, benchmark: 102800 },
+    { label: "Apr", portfolio: 113900, benchmark: 107600 },
+    { label: "Now", portfolio: 125448, benchmark: 112900 },
   ],
-} as const;
+};
 
-const navItems = [
-  ["overview", "Overview", LayoutDashboard],
-  ["holdings", "Holdings", Rows3],
-  ["transactions", "Transactions", FileText],
-  ["settings", "Settings", Settings],
-] as const;
+const performancePeriods: PerformancePeriod[] = ["1M", "3M", "1Y"];
+
+type NavigationItem = {
+  label: string;
+  icon: IconComponent;
+  active?: boolean;
+};
+
+const navigationItems: NavigationItem[] = [
+  { label: "Overview", icon: LayoutDashboard, active: true },
+  { label: "Portfolio", icon: BriefcaseBusiness },
+  { label: "Accounts", icon: WalletCards },
+  { label: "Transactions", icon: ArrowLeftRight },
+  { label: "Allocation", icon: ChartPie },
+  { label: "Performance", icon: ChartNoAxesCombined },
+  { label: "Reports", icon: FileText },
+];
+
+const riskSignals: { label: string; description: string; value: string; tone: BadgeTone }[] = [
+  {
+    label: "Liquid assets",
+    description: "Cash and same-day reserves",
+    value: "45.4%",
+    tone: "success",
+  },
+  {
+    label: "Diversified exposure",
+    description: "Funds and fixed income",
+    value: "43.4%",
+    tone: "info",
+  },
+  {
+    label: "High-volatility exposure",
+    description: "Digital asset reserve",
+    value: "11.2%",
+    tone: "warning",
+  },
+];
+
+type DonutSegment = {
+  color: string;
+  label: string;
+  value: number;
+};
+
+const allocationSegments: DonutSegment[] = holdings.map((holding, index) => ({
+  color: `var(--n-chart-categorical-${index + 1})`,
+  label: holding.name,
+  value: holding.allocation,
+}));
+
+const riskSegments: DonutSegment[] = [
+  { color: "var(--n-chart-categorical-3)", label: "Liquid assets", value: 45.4 },
+  { color: "var(--n-chart-categorical-2)", label: "Diversified exposure", value: 43.4 },
+  { color: "var(--n-chart-categorical-4)", label: "High-volatility exposure", value: 11.2 },
+];
+
+const upcomingMovements: {
+  title: string;
+  description: string;
+  amount: string;
+  status: string;
+  tone: BadgeTone;
+}[] = [
+  {
+    title: "Vendor payout",
+    description: "Operating cash · Aug 12",
+    amount: "-$12,400",
+    status: "Scheduled",
+    tone: "warning",
+  },
+  {
+    title: "Treasury maturity",
+    description: "USTX · Aug 14",
+    amount: "+$5,000",
+    status: "Expected",
+    tone: "info",
+  },
+  {
+    title: "Client settlement",
+    description: "Operating cash · Aug 16",
+    amount: "+$8,400",
+    status: "Expected",
+    tone: "success",
+  },
+];
 
 const currency = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -228,12 +351,48 @@ const priceCurrency = new Intl.NumberFormat("en-US", {
   currency: "USD",
   maximumFractionDigits: 2,
 });
-const quantity = new Intl.NumberFormat("en-US", { maximumFractionDigits: 4 });
-
-const maskedValue = "Balance hidden";
-const displayMoney = (value: number, visible: boolean) =>
-  visible ? currency.format(value) : maskedValue;
 const runtimeLabel = (value: string) => `${value[0]?.toUpperCase() ?? ""}${value.slice(1)}`;
+
+function SensitiveValue({ children, visible }: { children: React.ReactNode; visible: boolean }) {
+  return (
+    <span
+      aria-hidden={visible ? undefined : true}
+      className={`${styles["private-value"]} ${visible ? "" : styles["masked-value"]}`}
+      data-private-state={visible ? "visible" : "masked"}
+      data-private-value
+    >
+      {children}
+    </span>
+  );
+}
+
+function PrivateStat({
+  className,
+  label,
+  trend,
+  value,
+  visible,
+}: {
+  className?: string;
+  label: string;
+  trend: string;
+  value: string;
+  visible: boolean;
+}) {
+  return (
+    <>
+      <Stat
+        aria-hidden={visible ? undefined : true}
+        className={`${styles["private-stat"]} ${visible ? "" : styles["masked-stat"]} ${className ?? ""}`}
+        data-private-state={visible ? "visible" : "masked"}
+        label={label}
+        value={value}
+        trend={trend}
+      />
+      {visible ? null : <span className="sr-only">{label}: balance hidden.</span>}
+    </>
+  );
+}
 
 function subscribeToMobileViewport(callback: () => void) {
   const media = window.matchMedia("(max-width: 980px)");
@@ -249,75 +408,143 @@ function useMobileViewport() {
   );
 }
 
-function FinanceNavigation({
-  active,
-  onSelect,
-}: {
-  active: Section;
-  onSelect: (section: Section) => void;
-}) {
+const themeOptions = themes.map((value) => ({ label: runtimeLabel(value), value }));
+const modeOptions = modes.map((value) => ({ label: runtimeLabel(value), value }));
+const densityOptions = densities.map((value) => ({ label: runtimeLabel(value), value }));
+
+function FinanceNavigation() {
   return (
     <nav className={styles.navigation} aria-label="Finance workspace">
-      {navItems.map(([value, label, icon]) => (
-        <Button
-          key={value}
-          aria-current={active === value ? "page" : undefined}
-          className={styles["navigation-item"]}
-          data-state={active === value ? "active" : "inactive"}
-          leadingIcon={icon}
-          size="sm"
-          variant={active === value ? "secondary" : "ghost"}
-          onClick={() => onSelect(value)}
-        >
-          {label}
-        </Button>
-      ))}
+      {navigationItems.map((item) => {
+        const active = "active" in item && item.active;
+        return (
+          <SidebarMenuButton
+            key={item.label}
+            aria-current={active ? "page" : undefined}
+            className={styles["navigation-item"]}
+            collapsedTooltip={item.label}
+            data-state={active ? "active" : "inactive"}
+            leadingIcon={item.icon}
+            nativeButton={false}
+            render={<span />}
+            size="sm"
+            variant={active ? "secondary" : "ghost"}
+          >
+            {item.label}
+          </SidebarMenuButton>
+        );
+      })}
     </nav>
   );
 }
 
-export function FinanceAssetsView() {
+type PreviewSettingsProps = {
+  density: Appearance["density"];
+  direction: "ltr" | "rtl";
+  mode: Appearance["mode"];
+  theme: Appearance["theme"];
+  onDensityChange: (value: string) => void;
+  onDirectionChange: (value: "ltr" | "rtl") => void;
+  onModeChange: (value: string) => void;
+  onThemeChange: (value: string) => void;
+};
+
+function PreviewSettings({
+  density,
+  direction,
+  mode,
+  theme,
+  onDensityChange,
+  onDirectionChange,
+  onModeChange,
+  onThemeChange,
+}: PreviewSettingsProps) {
   return (
-    <ToastProvider>
-      <FinanceAssets />
-      <ToastViewport swipeDirection={["inline-end", "down"]} />
-    </ToastProvider>
+    <Sheet>
+      <SheetTrigger
+        render={
+          <SidebarMenuButton
+            aria-label="Open preview settings"
+            className={styles["navigation-settings"]}
+            collapsedTooltip="Settings"
+            leadingIcon={Settings}
+            size="sm"
+            variant="ghost"
+          >
+            Settings
+          </SidebarMenuButton>
+        }
+      />
+      <SheetContent side={direction === "rtl" ? "left" : "right"} size="sm">
+        <SheetHeader>
+          <SheetTitle>Preview settings</SheetTitle>
+          <SheetDescription>
+            Inspect the same static finance workspace across supported runtime axes.
+          </SheetDescription>
+        </SheetHeader>
+        <SheetBody>
+          <div className={styles["settings-controls"]}>
+            <Select
+              label="Theme"
+              value={theme}
+              onValueChange={onThemeChange}
+              options={themeOptions}
+            />
+            <Select label="Mode" value={mode} onValueChange={onModeChange} options={modeOptions} />
+            <Select
+              label="Density"
+              value={density}
+              onValueChange={onDensityChange}
+              options={densityOptions}
+            />
+            <Select
+              label="Direction"
+              value={direction}
+              onValueChange={(value) => {
+                if (value === "ltr" || value === "rtl") onDirectionChange(value);
+              }}
+              options={[
+                { label: "Left to right", value: "ltr" },
+                { label: "Right to left", value: "rtl" },
+              ]}
+            />
+          </div>
+        </SheetBody>
+      </SheetContent>
+    </Sheet>
   );
 }
 
+export function FinanceAssetsView() {
+  return <FinanceAssets />;
+}
+
 function FinanceAssets() {
-  const [section, setSection] = React.useState<Section>("overview");
   const [balancesVisible, setBalancesVisible] = React.useState(true);
   const [selectedAssetId, setSelectedAssetId] = React.useState("index");
-  const [query, setQuery] = React.useState("");
-  const [assetType, setAssetType] = React.useState("all");
-  const [transactionStatus, setTransactionStatus] = React.useState("all");
-  const [period, setPeriod] = React.useState<keyof typeof performanceByPeriod>("1M");
-  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
+  const [period, setPeriod] = React.useState<PerformancePeriod>("1M");
   const [transferOpen, setTransferOpen] = React.useState(false);
-  const [transferStep, setTransferStep] = React.useState<
-    "details" | "review" | "submitting" | "success"
-  >("details");
-  const [amount, setAmount] = React.useState("");
-  const [amountError, setAmountError] = React.useState("");
-  const transferTimerRef = React.useRef<number | null>(null);
+  const [theme, setThemeValue] = React.useState<Appearance["theme"]>(defaultAppearance.theme);
   const [mode, setModeValue] = React.useState<Appearance["mode"]>(defaultAppearance.mode);
   const [density, setDensityValue] = React.useState<Appearance["density"]>(
     defaultAppearance.density,
   );
-  const [direction, setDirection] = React.useState("ltr");
+  const [direction, setDirection] = React.useState<"ltr" | "rtl">("ltr");
   const isMobile = useMobileViewport();
-  const toasts = useToastManager();
-  const selectedAsset = holdings.find((holding) => holding.id === selectedAssetId) ?? holdings[0];
+  const selectedAsset =
+    holdings.find((holding) => holding.id === selectedAssetId) ?? defaultHolding;
 
   React.useLayoutEffect(() => {
     const root = document.documentElement;
     const initialDirection = root.getAttribute("dir");
+    const restoreAppearance = captureAppearanceAttributes(root);
     const restored = readAppearanceFromRoot(root);
+    setThemeValue(restored.theme);
     setModeValue(restored.mode);
     setDensityValue(restored.density);
 
     return () => {
+      restoreAppearance();
       if (initialDirection) root.setAttribute("dir", initialDirection);
       else root.removeAttribute("dir");
     };
@@ -327,78 +554,33 @@ function FinanceAssets() {
     document.documentElement.setAttribute("dir", direction);
   }, [direction]);
 
-  React.useEffect(
-    () => () => {
-      if (transferTimerRef.current !== null) {
-        window.clearTimeout(transferTimerRef.current);
-      }
-    },
-    [],
-  );
-
-  const visibleHoldings = holdings.filter((holding) => {
-    const normalizedQuery = query.trim().toLowerCase();
-    const matchesQuery =
-      !normalizedQuery ||
-      holding.name.toLowerCase().includes(normalizedQuery) ||
-      holding.symbol.toLowerCase().includes(normalizedQuery);
-    return matchesQuery && (assetType === "all" || holding.type === assetType);
-  });
-  const visibleTransactions = transactions.filter(
-    (transaction) => transactionStatus === "all" || transaction.status === transactionStatus,
-  );
-
-  const selectSection = (nextSection: Section) => {
-    setSection(nextSection);
-    setMobileNavOpen(false);
-    if (isMobile) window.scrollTo({ top: 0, behavior: "smooth" });
+  const setTheme = (value: string) => {
+    const nextTheme = themes.find((candidate) => candidate === value);
+    if (!nextTheme) return;
+    setThemeValue(nextTheme);
+    applyAppearanceAxis(document.documentElement, "theme", nextTheme);
   };
-
   const setMode = (value: string) => {
     const nextMode = modes.find((candidate) => candidate === value);
     if (!nextMode) return;
     setModeValue(nextMode);
-    persistAppearanceAxis(document.documentElement, "mode", nextMode);
+    applyAppearanceAxis(document.documentElement, "mode", nextMode);
   };
   const setDensity = (value: string) => {
     const nextDensity = densities.find((candidate) => candidate === value);
     if (!nextDensity) return;
     setDensityValue(nextDensity);
-    persistAppearanceAxis(document.documentElement, "density", nextDensity);
-  };
-
-  const resetTransfer = () => {
-    if (transferTimerRef.current !== null) {
-      window.clearTimeout(transferTimerRef.current);
-      transferTimerRef.current = null;
-    }
-    setTransferStep("details");
-    setAmount("");
-    setAmountError("");
-  };
-  const reviewTransfer = () => {
-    const parsed = Number(amount);
-    if (!Number.isFinite(parsed) || parsed <= 0) {
-      setAmountError("Enter an amount greater than zero.");
-      return;
-    }
-    if (parsed > 42850) {
-      setAmountError("Amount exceeds the available cash balance.");
-      return;
-    }
-    setAmountError("");
-    setTransferStep("review");
-  };
-  const submitTransfer = () => {
-    setTransferStep("submitting");
-    transferTimerRef.current = window.setTimeout(() => {
-      transferTimerRef.current = null;
-      setTransferStep("success");
-    }, 700);
+    applyAppearanceAxis(document.documentElement, "density", nextDensity);
   };
 
   return (
-    <SidebarProvider className={`${styles.shell} n-typography-system`} sidebarId="finance-sidebar">
+    <SidebarProvider
+      collapseMode="icons"
+      className={`${styles.shell} n-typography-system`}
+      direction={direction}
+      side={direction === "rtl" ? "right" : "left"}
+      sidebarId="finance-sidebar"
+    >
       {!isMobile ? (
         <Sidebar aria-label="Finance sidebar">
           <SidebarHeader>
@@ -406,33 +588,40 @@ function FinanceAssets() {
               <span aria-hidden>
                 <Boxes />
               </span>
-              <div>
-                <strong>Northstar Assets</strong>
-                <small>Consolidated portfolio</small>
-              </div>
+              <strong>Northstar Assets</strong>
             </div>
           </SidebarHeader>
           <SidebarContent>
-            <FinanceNavigation active={section} onSelect={selectSection} />
+            <FinanceNavigation />
           </SidebarContent>
           <SidebarFooter>
-            <div className={styles["security-note"]}>
-              <Check aria-hidden />
-              <p>
-                <strong>Protected workspace</strong>
-                <span>Last verified today at 09:30</span>
-              </p>
-            </div>
+            <PreviewSettings
+              density={density}
+              direction={direction}
+              mode={mode}
+              theme={theme}
+              onDensityChange={setDensity}
+              onDirectionChange={setDirection}
+              onModeChange={setMode}
+              onThemeChange={setTheme}
+            />
           </SidebarFooter>
-          <SidebarRail label="Toggle finance sidebar" />
+          <SidebarRail
+            collapseLabel="Collapse sidebar"
+            expandLabel="Expand sidebar"
+            label="Toggle sidebar"
+          />
         </Sidebar>
       ) : null}
 
-      <SidebarInset className={styles.main}>
+      <SidebarInset
+        className={`${styles.main} ${templateLayoutStyles["content-frame"]}`}
+        data-template-content
+      >
         <header className={styles.topbar}>
           <div className={styles["topbar-title"]}>
             {isMobile ? (
-              <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+              <Sheet>
                 <Tooltip label="Open finance navigation">
                   <SheetTrigger
                     render={
@@ -445,40 +634,72 @@ function FinanceAssets() {
                     }
                   />
                 </Tooltip>
-                <SheetContent side="left" size="sm">
+                <SheetContent side={direction === "rtl" ? "right" : "left"} size="sm">
                   <SheetHeader>
                     <SheetTitle>Finance navigation</SheetTitle>
                     <SheetDescription>Move between portfolio areas.</SheetDescription>
                   </SheetHeader>
                   <SheetBody>
-                    <FinanceNavigation active={section} onSelect={selectSection} />
+                    <div className={styles["mobile-navigation"]}>
+                      <FinanceNavigation />
+                      <PreviewSettings
+                        density={density}
+                        direction={direction}
+                        mode={mode}
+                        theme={theme}
+                        onDensityChange={setDensity}
+                        onDirectionChange={setDirection}
+                        onModeChange={setMode}
+                        onThemeChange={setTheme}
+                      />
+                    </div>
                   </SheetBody>
                 </SheetContent>
               </Sheet>
-            ) : (
-              <SidebarTrigger label="Toggle finance sidebar" />
-            )}
+            ) : null}
             <div>
               <p>Northstar Assets</p>
-              <h1>{navItems.find(([value]) => value === section)?.[1]}</h1>
+              <h1>Overview</h1>
             </div>
           </div>
           <div className={styles.actions}>
-            <Tooltip label="Show balances">
+            <Tooltip label={balancesVisible ? "Hide balances" : "Show balances"}>
               <Toggle
-                icon={Monitor}
+                icon={balancesVisible ? Eye : EyeOff}
                 aria-label="Show balances"
                 pressed={balancesVisible}
                 variant="outline"
                 onPressedChange={setBalancesVisible}
               />
             </Tooltip>
+            {isMobile ? (
+              <Tooltip label="Open finance template in GitHub">
+                <Button
+                  aria-label="Open finance template in GitHub"
+                  icon={Github}
+                  nativeButton={false}
+                  render={
+                    <a href={financeTemplateSourceUrl} rel="noopener noreferrer" target="_blank" />
+                  }
+                  tooltip={false}
+                  variant="secondary"
+                />
+              </Tooltip>
+            ) : (
+              <Button
+                leadingIcon={Github}
+                nativeButton={false}
+                render={
+                  <a href={financeTemplateSourceUrl} rel="noopener noreferrer" target="_blank" />
+                }
+                variant="secondary"
+              >
+                Open in GitHub
+              </Button>
+            )}
             <Dialog
               open={transferOpen}
-              onOpenChange={(open) => {
-                setTransferOpen(open);
-                if (!open) resetTransfer();
-              }}
+              onOpenChange={setTransferOpen}
               trigger={
                 isMobile ? (
                   <Button
@@ -493,141 +714,36 @@ function FinanceAssets() {
                   </Button>
                 )
               }
-              title={
-                transferStep === "success"
-                  ? "Transfer scheduled"
-                  : transferStep === "review"
-                    ? "Review transfer"
-                    : "New transfer"
-              }
-              description="A deterministic local flow. No funds will move."
+              title="Transfer preview"
+              description="Review a static transfer example without moving funds."
             >
-              {transferStep === "details" ? (
-                <>
-                  <div className={styles["transfer-route"]}>
-                    <KeyValue label="From" value="Operating cash · USD" />
-                    <ArrowRight aria-hidden />
-                    <KeyValue label="To" value="Short treasury fund · USTX" />
-                  </div>
-                  <Field
-                    label="Amount"
-                    description="Available: $42,850"
-                    message={amountError || undefined}
-                    invalid={Boolean(amountError)}
-                  >
-                    <Input
-                      inputMode="decimal"
-                      value={amount}
-                      onChange={(event) => setAmount(event.currentTarget.value)}
-                      placeholder="0.00"
-                      aria-invalid={Boolean(amountError)}
-                    />
-                  </Field>
-                  <DialogFooter>
-                    <Button variant="secondary" onClick={() => setTransferOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={reviewTransfer}>Review transfer</Button>
-                  </DialogFooter>
-                </>
-              ) : null}
-              {transferStep === "review" ? (
-                <>
-                  <Alert tone="info" title="Review before confirming">
-                    This mock transfer will be scheduled immediately.
-                  </Alert>
-                  <div className={styles["review-grid"]}>
-                    <KeyValue label="Amount" value={priceCurrency.format(Number(amount))} />
-                    <KeyValue label="From" value="Operating cash" />
-                    <KeyValue label="To" value="Short treasury fund" />
-                    <KeyValue label="Estimated arrival" value="Today" />
-                  </div>
-                  <DialogFooter>
-                    <Button variant="secondary" onClick={() => setTransferStep("details")}>
-                      Back
-                    </Button>
-                    <Button onClick={submitTransfer}>Confirm transfer</Button>
-                  </DialogFooter>
-                </>
-              ) : null}
-              {transferStep === "submitting" ? (
-                <div className={styles["submitting-state"]} role="status">
-                  <Skeleton />
-                  <Skeleton />
-                  <p>Scheduling transfer…</p>
-                </div>
-              ) : null}
-              {transferStep === "success" ? (
-                <>
-                  <Alert tone="success" title="Transfer scheduled">
-                    {priceCurrency.format(Number(amount))} will move to Short treasury fund.
-                  </Alert>
-                  <DialogFooter>
-                    <Button
-                      onClick={() => {
-                        setTransferOpen(false);
-                        toasts.add({
-                          title: "Transfer scheduled",
-                          description: "The local transaction now appears as pending.",
-                          data: { tone: "success" },
-                        });
-                      }}
-                    >
-                      Done
-                    </Button>
-                  </DialogFooter>
-                </>
-              ) : null}
+              <Alert tone="info" title="Demonstration only">
+                This preview shows the information hierarchy of a financial transfer. No account
+                data changes.
+              </Alert>
+              <div className={styles["transfer-route"]}>
+                <KeyValue label="From" value="Operating cash · USD" />
+                <ArrowRight aria-hidden />
+                <KeyValue label="To" value="Short treasury fund · USTX" />
+              </div>
+              <div className={styles["review-grid"]}>
+                <KeyValue label="Amount" value="$5,000.00" />
+                <KeyValue label="Estimated arrival" value="Aug 14" />
+              </div>
+              <DialogFooter>
+                <Button onClick={() => setTransferOpen(false)}>Done</Button>
+              </DialogFooter>
             </Dialog>
           </div>
         </header>
 
-        {section === "overview" ? (
-          <Overview
-            balancesVisible={balancesVisible}
-            period={period}
-            selectedAsset={selectedAsset}
-            onPeriodChange={setPeriod}
-            onSelectAsset={setSelectedAssetId}
-            onOpenHoldings={() => setSection("holdings")}
-          />
-        ) : null}
-        {section === "holdings" ? (
-          <Holdings
-            balancesVisible={balancesVisible}
-            assetType={assetType}
-            query={query}
-            selectedAsset={selectedAsset}
-            visibleHoldings={visibleHoldings}
-            onAssetTypeChange={setAssetType}
-            onQueryChange={setQuery}
-            onSelectAsset={setSelectedAssetId}
-            onReset={() => {
-              setQuery("");
-              setAssetType("all");
-            }}
-          />
-        ) : null}
-        {section === "transactions" ? (
-          <Transactions
-            balancesVisible={balancesVisible}
-            status={transactionStatus}
-            transactions={visibleTransactions}
-            onStatusChange={setTransactionStatus}
-          />
-        ) : null}
-        {section === "settings" ? (
-          <SettingsPanel
-            balancesVisible={balancesVisible}
-            density={density}
-            direction={direction}
-            mode={mode}
-            onBalancesVisibleChange={setBalancesVisible}
-            onDensityChange={setDensity}
-            onDirectionChange={setDirection}
-            onModeChange={setMode}
-          />
-        ) : null}
+        <Overview
+          balancesVisible={balancesVisible}
+          period={period}
+          selectedAsset={selectedAsset}
+          onPeriodChange={setPeriod}
+          onSelectAsset={setSelectedAssetId}
+        />
       </SidebarInset>
     </SidebarProvider>
   );
@@ -639,88 +755,117 @@ function Overview({
   selectedAsset,
   onPeriodChange,
   onSelectAsset,
-  onOpenHoldings,
 }: {
   balancesVisible: boolean;
-  period: keyof typeof performanceByPeriod;
-  selectedAsset: (typeof holdings)[number];
-  onPeriodChange: (period: keyof typeof performanceByPeriod) => void;
+  period: PerformancePeriod;
+  selectedAsset: Holding;
+  onPeriodChange: (period: PerformancePeriod) => void;
   onSelectAsset: (id: string) => void;
-  onOpenHoldings: () => void;
 }) {
   const currentPerformance = performanceByPeriod[period];
+  const firstPerformance = currentPerformance[0];
+  const latestPerformance = currentPerformance[currentPerformance.length - 1];
 
   return (
     <main className={styles.content}>
-      <section className={styles["balance-hero"]} aria-labelledby="portfolio-heading">
-        <div>
-          <p>Consolidated portfolio</p>
-          <h2 id="portfolio-heading">{displayMoney(125448, balancesVisible)}</h2>
-          <span
-            aria-label={
-              balancesVisible
-                ? "Portfolio increased by 3.8 percent and 4,612 dollars over the selected period"
-                : "Portfolio increased by 3.8 percent; monetary change hidden"
-            }
-          >
-            <ArrowUp aria-hidden /> 3.8% · {balancesVisible ? "+$4,612" : "value hidden"}
-          </span>
-        </div>
-        <div className={styles.periods} aria-label="Performance period">
-          {(["1M", "3M", "1Y"] as const).map((value) => (
-            <Button
-              key={value}
-              aria-pressed={period === value}
-              size="sm"
-              variant={period === value ? "secondary" : "ghost"}
-              onClick={() => onPeriodChange(value)}
+      <Card className={styles["balance-hero"]} aria-labelledby="portfolio-heading">
+        <CardContent className={styles["balance-content"]}>
+          <div className={styles["balance-copy"]}>
+            <p id="portfolio-heading">Consolidated portfolio</p>
+            <div
+              aria-hidden={balancesVisible ? undefined : true}
+              className={`${styles["balance-value"]} ${styles["private-value"]} ${balancesVisible ? "" : styles["masked-value"]}`}
+              data-private-state={balancesVisible ? "visible" : "masked"}
+              data-private-value
             >
-              {value}
-            </Button>
-          ))}
-        </div>
-      </section>
+              {currency.format(125448)}
+            </div>
+            {balancesVisible ? null : (
+              <span className="sr-only">Consolidated portfolio balance hidden.</span>
+            )}
+            <div
+              className={styles["balance-trend"]}
+              aria-label={
+                balancesVisible
+                  ? "Portfolio increased by 3.8 percent and 4,612 dollars over the selected period"
+                  : "Portfolio increased by 3.8 percent; monetary change hidden"
+              }
+            >
+              <ArrowUp aria-hidden /> 3.8% ·
+              <SensitiveValue visible={balancesVisible}>+$4,612</SensitiveValue>
+            </div>
+          </div>
+          <div aria-label="Performance period" className={styles.periods} role="group">
+            {performancePeriods.map((value) => (
+              <Toggle
+                key={value}
+                pressed={period === value}
+                size="sm"
+                variant="outline"
+                onPressedChange={(pressed) => {
+                  if (pressed) onPeriodChange(value);
+                }}
+              >
+                {value}
+              </Toggle>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <section className={styles["stat-grid"]} aria-label="Portfolio summary">
-        <Stat
+        <PrivateStat
+          visible={balancesVisible}
           label="Available cash"
-          value={displayMoney(42850, balancesVisible)}
+          value={currency.format(42850)}
           trend="34.2% allocation"
         />
-        <Stat
+        <PrivateStat
+          visible={balancesVisible}
           label="Invested assets"
-          value={displayMoney(82598, balancesVisible)}
+          value={currency.format(82598)}
           trend="Across 3 positions"
         />
-        <Stat
+        <PrivateStat
+          visible={balancesVisible}
           label="Pending movement"
-          value={displayMoney(5000, balancesVisible)}
+          value={currency.format(5000)}
           trend="1 transfer pending"
+        />
+        <PrivateStat
+          className={styles["positive-stat"]}
+          visible={balancesVisible}
+          label="Net cash flow"
+          value={currency.format(7270)}
+          trend="+$2,150 this month"
         />
       </section>
 
-      <section className={styles["overview-grid"]}>
+      <section className={styles["full-width-section"]} aria-label="Portfolio performance">
         <Card className={`${styles.panel} ${styles["chart-panel"]}`}>
-          <div className={styles["panel-heading"]}>
+          <CardHeader>
             <div>
-              <h2>Portfolio movement</h2>
-              <p>{period} closing values in USD</p>
+              <CardTitle>Portfolio performance</CardTitle>
+              <CardDescription>{period} closing values compared with benchmark.</CardDescription>
             </div>
-            <Badge tone="success">Up 3.8%</Badge>
-          </div>
+            <CardAction className={styles["performance-badges"]}>
+              <Badge tone="success">Portfolio +3.8%</Badge>
+              <Badge>Benchmark +2.1%</Badge>
+            </CardAction>
+          </CardHeader>
           <div
-            className={styles.chart}
+            className={`${styles.chart} ${styles["private-chart"]} ${balancesVisible ? "" : styles["chart-masked"]}`}
             role="img"
             aria-label={
-              balancesVisible
-                ? `Portfolio value chart for ${period}, rising from ${currency.format(currentPerformance[0]?.value ?? 0)} to ${currency.format(currentPerformance.at(-1)?.value ?? 0)}`
-                : `Portfolio value chart for ${period}. Values hidden.`
+              balancesVisible && firstPerformance && latestPerformance
+                ? `Portfolio value chart for ${period}, rising from ${currency.format(firstPerformance.portfolio)} to ${currency.format(latestPerformance.portfolio)} and outperforming its benchmark`
+                : `Portfolio and benchmark chart for ${period}. Values hidden.`
             }
           >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
-                data={[...currentPerformance]}
-                margin={{ top: 12, right: 4, bottom: 0, left: 4 }}
+                data={currentPerformance}
+                margin={{ top: 12, right: 8, bottom: 0, left: 0 }}
               >
                 <defs>
                   <linearGradient id="finance-chart-fill" x1="0" y1="0" x2="0" y2="1">
@@ -733,13 +878,27 @@ function Overview({
                   dataKey="label"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "var(--n-color-text-tertiary)", fontSize: 11 }}
+                  tick={{
+                    fill: "var(--n-color-text-tertiary)",
+                    fontSize: "var(--n-font-size-xs)",
+                  }}
                 />
-                <YAxis hide domain={["dataMin - 2500", "dataMax + 1500"]} />
+                <YAxis
+                  axisLine={false}
+                  domain={["dataMin - 2500", "dataMax + 1500"]}
+                  tickFormatter={(value) => `$${Math.round(Number(value) / 1000)}k`}
+                  tickLine={false}
+                  tick={{
+                    fill: "var(--n-color-text-tertiary)",
+                    fontSize: "var(--n-font-size-xs)",
+                  }}
+                  width={48}
+                />
                 <ChartTooltip
-                  formatter={(value) =>
-                    balancesVisible ? currency.format(Number(value)) : maskedValue
-                  }
+                  formatter={(value, name) => [
+                    currency.format(Number(value)),
+                    name === "portfolio" ? "Portfolio" : "Benchmark",
+                  ]}
                   contentStyle={{
                     background: "var(--n-color-surface)",
                     border: "1px solid var(--n-color-border-subtle)",
@@ -749,56 +908,153 @@ function Overview({
                 />
                 <Area
                   type="monotone"
-                  dataKey="value"
+                  dataKey="benchmark"
+                  fill="transparent"
+                  isAnimationActive={false}
+                  stroke="var(--n-color-text-tertiary)"
+                  strokeDasharray="5 5"
+                  strokeWidth={2}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="portfolio"
+                  fill="url(#finance-chart-fill)"
+                  isAnimationActive={false}
                   stroke="var(--n-chart-primary)"
                   strokeWidth={2}
-                  fill="url(#finance-chart-fill)"
                 />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </Card>
+      </section>
 
-        <Card className={styles.panel}>
-          <div className={styles["panel-heading"]}>
-            <div>
-              <h2>Allocation</h2>
-              <p>Select an asset for detail</p>
-            </div>
-            <Button size="sm" variant="ghost" onClick={onOpenHoldings}>
-              View all
-            </Button>
-          </div>
-          <div className={styles["allocation-list"]}>
-            {holdings.map((holding) => (
-              <button
-                key={holding.id}
-                className={styles["allocation-row"]}
-                data-state={selectedAsset.id === holding.id ? "selected" : undefined}
-                onClick={() => onSelectAsset(holding.id)}
-              >
-                <span>
-                  {holding.name}
-                  <small>{holding.symbol}</small>
-                </span>
-                <strong>{holding.allocation}%</strong>
-                <Progress
-                  value={holding.allocation}
-                  aria-label={`${holding.name} ${holding.allocation}% allocation`}
-                />
-              </button>
-            ))}
-          </div>
-        </Card>
-
+      <section className={styles["insight-grid"]} aria-label="Portfolio exposure insights">
         <AssetDetail asset={selectedAsset} balancesVisible={balancesVisible} />
         <Card className={styles.panel}>
-          <div className={styles["panel-heading"]}>
+          <CardHeader>
             <div>
-              <h2>Recent movement</h2>
-              <p>Latest portfolio activity</p>
+              <CardTitle>Risk and diversification</CardTitle>
+              <CardDescription>Current exposure across the consolidated portfolio.</CardDescription>
             </div>
+            <CardAction>
+              <Badge leadingIcon={CircleAlert} tone="info">
+                Balanced
+              </Badge>
+            </CardAction>
+          </CardHeader>
+          <div className={styles["risk-visual"]}>
+            <DonutChart
+              ariaLabel="Risk distribution: 45.4 percent liquid assets, 43.4 percent diversified exposure, and 11.2 percent high-volatility exposure"
+              centerLabel="Total exposure"
+              centerValue="100%"
+              segments={riskSegments}
+            />
+            <ItemGroup aria-label="Portfolio risk signals" className={styles["risk-list"]}>
+              {riskSignals.map((signal) => (
+                <Item key={signal.label} size="sm">
+                  <ItemContent>
+                    <ItemTitle>{signal.label}</ItemTitle>
+                    <ItemDescription>{signal.description}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions>
+                    <Badge tone={signal.tone}>{signal.value}</Badge>
+                  </ItemActions>
+                </Item>
+              ))}
+            </ItemGroup>
           </div>
+        </Card>
+      </section>
+
+      <section className={styles["full-width-section"]} aria-label="Portfolio allocation">
+        <Card className={styles.panel}>
+          <CardHeader>
+            <div>
+              <CardTitle>Allocation</CardTitle>
+              <CardDescription>Select an asset to inspect its exposure.</CardDescription>
+            </div>
+            <CardAction>
+              <Badge>4 assets</Badge>
+            </CardAction>
+          </CardHeader>
+          <div className={styles["allocation-visual"]}>
+            <DonutChart
+              ariaLabel="Portfolio allocation: 34.2 percent operating cash, 35.8 percent global index fund, 18.8 percent short treasury fund, and 11.2 percent digital asset reserve"
+              centerLabel="Allocated"
+              centerValue="100%"
+              segments={allocationSegments}
+            />
+            <ItemGroup aria-label="Portfolio allocation" className={styles["allocation-list"]}>
+              {holdings.map((holding, index) => (
+                <Item
+                  key={holding.id}
+                  data-selected={selectedAsset.id === holding.id ? "" : undefined}
+                  onClick={() => onSelectAsset(holding.id)}
+                  render={<button type="button" />}
+                  size="sm"
+                  variant={selectedAsset.id === holding.id ? "soft" : "plain"}
+                >
+                  <ItemMedia>
+                    <span
+                      aria-hidden
+                      className={styles["legend-swatch"]}
+                      style={{ background: allocationSegments[index]?.color }}
+                    />
+                  </ItemMedia>
+                  <ItemContent>
+                    <ItemTitle>{holding.name}</ItemTitle>
+                    <ItemDescription>{holding.symbol}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions>
+                    <span className={styles["numeric-value"]}>{holding.allocation}%</span>
+                  </ItemActions>
+                </Item>
+              ))}
+            </ItemGroup>
+          </div>
+        </Card>
+      </section>
+
+      <section className={styles["activity-grid"]} aria-label="Portfolio cash movements">
+        <Card className={styles.panel}>
+          <CardHeader>
+            <div>
+              <CardTitle>Upcoming cash movements</CardTitle>
+              <CardDescription>Expected settlements and scheduled obligations.</CardDescription>
+            </div>
+            <CardAction>
+              <Badge leadingIcon={CalendarDays} tone="info">
+                Next 7 days
+              </Badge>
+            </CardAction>
+          </CardHeader>
+          <ItemGroup aria-label="Upcoming cash movements" className={styles["movement-list"]}>
+            {upcomingMovements.map((movement, index) => (
+              <React.Fragment key={movement.title}>
+                {index > 0 ? <ItemSeparator /> : null}
+                <Item>
+                  <ItemContent>
+                    <ItemTitle>{movement.title}</ItemTitle>
+                    <ItemDescription>{movement.description}</ItemDescription>
+                  </ItemContent>
+                  <ItemActions className={styles["movement-actions"]}>
+                    <span>{movement.amount}</span>
+                    <Badge tone={movement.tone}>{movement.status}</Badge>
+                  </ItemActions>
+                </Item>
+              </React.Fragment>
+            ))}
+          </ItemGroup>
+        </Card>
+
+        <Card className={styles.panel}>
+          <CardHeader>
+            <div>
+              <CardTitle>Recent movement</CardTitle>
+              <CardDescription>Latest completed and pending portfolio activity.</CardDescription>
+            </div>
+          </CardHeader>
           <TransactionList
             balancesVisible={balancesVisible}
             transactions={transactions.slice(0, 3)}
@@ -809,337 +1065,52 @@ function Overview({
   );
 }
 
-function Holdings({
-  balancesVisible,
-  assetType,
-  query,
-  selectedAsset,
-  visibleHoldings,
-  onAssetTypeChange,
-  onQueryChange,
-  onSelectAsset,
-  onReset,
-}: {
-  balancesVisible: boolean;
-  assetType: string;
-  query: string;
-  selectedAsset: (typeof holdings)[number];
-  visibleHoldings: (typeof holdings)[number][];
-  onAssetTypeChange: (type: string) => void;
-  onQueryChange: (query: string) => void;
-  onSelectAsset: (id: string) => void;
-  onReset: () => void;
-}) {
+function AssetDetail({ asset, balancesVisible }: { asset: Holding; balancesVisible: boolean }) {
   return (
-    <main className={styles.content}>
-      <div className={styles["section-heading"]}>
+    <Card className={styles.panel}>
+      <CardHeader>
         <div>
-          <p>Portfolio positions</p>
-          <h2>Holdings</h2>
+          <CardTitle>Selected asset</CardTitle>
+          <CardDescription>Position detail within the consolidated account.</CardDescription>
         </div>
-        <Badge>{holdings.length} assets</Badge>
-      </div>
-      <section className={styles.filters} aria-label="Holdings filters">
-        <Field label="Search holdings">
-          <Input
-            value={query}
-            onChange={(event) => onQueryChange(event.currentTarget.value)}
-            placeholder="Name or symbol"
-          />
-        </Field>
-        <Select
-          label="Asset type"
-          value={assetType}
-          onValueChange={onAssetTypeChange}
-          options={[
-            { label: "All asset types", value: "all" },
-            { label: "Cash", value: "Cash" },
-            { label: "Fund", value: "Fund" },
-            { label: "Fixed income", value: "Fixed income" },
-            { label: "Digital asset", value: "Digital asset" },
-          ]}
-        />
-      </section>
-      {visibleHoldings.length ? (
-        <>
-          <Card className={styles["holdings-table-card"]}>
-            <TableContainer aria-label="Portfolio holdings">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Asset</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Allocation</TableHead>
-                    <TableHead>Daily movement</TableHead>
-                    <TableHead>Value</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {visibleHoldings.map((holding) => (
-                    <TableRow
-                      key={holding.id}
-                      className={styles["holding-row"]}
-                      data-state={selectedAsset.id === holding.id ? "selected" : undefined}
-                      tabIndex={0}
-                      onClick={() => onSelectAsset(holding.id)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          onSelectAsset(holding.id);
-                        }
-                      }}
-                    >
-                      <TableCell>
-                        <strong>{holding.name}</strong>
-                        <small>
-                          {holding.symbol} · {holding.type}
-                        </small>
-                      </TableCell>
-                      <TableCell className={styles.numeric}>
-                        {quantity.format(holding.quantity)}
-                      </TableCell>
-                      <TableCell className={styles.numeric}>
-                        {priceCurrency.format(holding.price)}
-                      </TableCell>
-                      <TableCell className={styles.numeric}>{holding.allocation}%</TableCell>
-                      <TableCell className={styles.numeric}>
-                        <Movement value={holding.movement} />
-                      </TableCell>
-                      <TableCell className={styles.numeric}>
-                        <strong>{displayMoney(holding.value, balancesVisible)}</strong>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
-          <div className={styles["mobile-holdings"]}>
-            {visibleHoldings.map((holding) => (
-              <button
-                key={holding.id}
-                className={styles["mobile-holding"]}
-                onClick={() => onSelectAsset(holding.id)}
-              >
-                <span>
-                  <strong>{holding.name}</strong>
-                  <small>
-                    {holding.symbol} · {holding.type}
-                  </small>
-                </span>
-                <span>
-                  <strong>{displayMoney(holding.value, balancesVisible)}</strong>
-                  <Movement value={holding.movement} />
-                </span>
-              </button>
-            ))}
-          </div>
-          <AssetDetail asset={selectedAsset} balancesVisible={balancesVisible} />
-        </>
-      ) : (
-        <EmptyState>
-          <EmptyStateHeader>
-            <Search aria-hidden />
-            <EmptyStateTitle>No holdings found</EmptyStateTitle>
-          </EmptyStateHeader>
-          <EmptyStateDescription>
-            Adjust the search or asset type to see portfolio positions.
-          </EmptyStateDescription>
-          <EmptyStateActions>
-            <Button variant="secondary" onClick={onReset}>
-              Clear filters
-            </Button>
-          </EmptyStateActions>
-        </EmptyState>
-      )}
-    </main>
-  );
-}
-
-function Transactions({
-  balancesVisible,
-  status,
-  transactions: visibleTransactions,
-  onStatusChange,
-}: {
-  balancesVisible: boolean;
-  status: string;
-  transactions: typeof transactions;
-  onStatusChange: (status: string) => void;
-}) {
-  return (
-    <main className={styles.content}>
-      <div className={styles["section-heading"]}>
-        <div>
-          <p>Recorded movement</p>
-          <h2>Transactions</h2>
-        </div>
-        <Select
-          label="Transaction status"
-          value={status}
-          onValueChange={onStatusChange}
-          options={[
-            { label: "All statuses", value: "all" },
-            { label: "Completed", value: "Completed" },
-            { label: "Pending", value: "Pending" },
-            { label: "Failed", value: "Failed" },
-          ]}
-        />
-      </div>
-      {visibleTransactions.length ? (
-        <Card className={styles.panel}>
-          <TransactionList balancesVisible={balancesVisible} transactions={visibleTransactions} />
-        </Card>
-      ) : (
-        <EmptyState>
-          <EmptyStateHeader>
-            <FileText aria-hidden />
-            <EmptyStateTitle>No transactions in this view</EmptyStateTitle>
-          </EmptyStateHeader>
-          <EmptyStateDescription>
-            Choose another status to inspect recorded portfolio movement.
-          </EmptyStateDescription>
-          <EmptyStateActions>
-            <Button variant="secondary" onClick={() => onStatusChange("all")}>
-              Show all
-            </Button>
-          </EmptyStateActions>
-        </EmptyState>
-      )}
-    </main>
-  );
-}
-
-function SettingsPanel({
-  balancesVisible,
-  density,
-  direction,
-  mode,
-  onBalancesVisibleChange,
-  onDensityChange,
-  onDirectionChange,
-  onModeChange,
-}: {
-  balancesVisible: boolean;
-  density: string;
-  direction: string;
-  mode: string;
-  onBalancesVisibleChange: (visible: boolean) => void;
-  onDensityChange: (value: string) => void;
-  onDirectionChange: (value: string) => void;
-  onModeChange: (value: string) => void;
-}) {
-  return (
-    <main className={styles.content}>
-      <div className={styles["section-heading"]}>
-        <div>
-          <p>Security and display</p>
-          <h2>Workspace settings</h2>
-        </div>
-        <Badge tone="success">Verified</Badge>
-      </div>
-      <div className={styles["settings-grid"]}>
-        <Card className={styles.panel}>
-          <div className={styles["panel-heading"]}>
-            <div>
-              <h2>Privacy</h2>
-              <p>Control sensitive financial values.</p>
-            </div>
-          </div>
-          <label className={styles["switch-row"]}>
-            <span>
-              <strong>Show balances</strong>
-              <small>Display portfolio values throughout this browser session.</small>
-            </span>
-            <Switch
-              checked={balancesVisible}
-              onCheckedChange={onBalancesVisibleChange}
-              aria-label="Show balances"
-            />
-          </label>
-          <div className={styles["security-note"]}>
-            <Check aria-hidden />
-            <p>
-              <strong>Recent verification</strong>
-              <span>Passkey confirmed today at 09:30</span>
-            </p>
-          </div>
-        </Card>
-        <Card className={styles.panel}>
-          <div className={styles["panel-heading"]}>
-            <div>
-              <h2>Display</h2>
-              <p>Inspect canonical runtime axes.</p>
-            </div>
-          </div>
-          <div className={styles["settings-controls"]}>
-            <Select
-              label="Mode"
-              value={mode}
-              onValueChange={onModeChange}
-              options={modes.map((value) => ({
-                label: runtimeLabel(value),
-                value,
-              }))}
-            />
-            <Select
-              label="Density"
-              value={density}
-              onValueChange={onDensityChange}
-              options={densities.map((value) => ({
-                label: runtimeLabel(value),
-                value,
-              }))}
-            />
-            <Select
-              label="Direction"
-              value={direction}
-              onValueChange={onDirectionChange}
-              options={[
-                { label: "Left to right", value: "ltr" },
-                { label: "Right to left", value: "rtl" },
-              ]}
-            />
-          </div>
-        </Card>
-        <Alert tone="warning" title="Deterministic preview">
-          Security state, balances, prices, and transfers are local demonstration data. Nothing is
-          persisted or sent.
-        </Alert>
-      </div>
-    </main>
-  );
-}
-
-function AssetDetail({
-  asset,
-  balancesVisible,
-}: {
-  asset: (typeof holdings)[number];
-  balancesVisible: boolean;
-}) {
-  return (
-    <Card className={`${styles.panel} ${styles["asset-detail"]}`}>
-      <div className={styles["asset-identity"]}>
-        <span aria-hidden>{asset.symbol.slice(0, 1)}</span>
-        <div>
+        <CardAction>
           <Badge>{asset.type}</Badge>
-          <h2>{asset.name}</h2>
-          <p>{asset.symbol} · Consolidated account</p>
-        </div>
-      </div>
+        </CardAction>
+      </CardHeader>
+      <Item size="lg" variant="soft">
+        <ItemMedia variant="icon">
+          <Icon icon={Boxes} />
+        </ItemMedia>
+        <ItemContent>
+          <ItemTitle>{asset.name}</ItemTitle>
+          <ItemDescription>{asset.symbol} · Consolidated account</ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <Movement value={asset.movement} />
+        </ItemActions>
+      </Item>
       <div className={styles["detail-grid"]}>
         <KeyValue
           label="Current value"
-          value={<strong>{displayMoney(asset.value, balancesVisible)}</strong>}
+          value={
+            <SensitiveValue visible={balancesVisible}>
+              {currency.format(asset.value)}
+            </SensitiveValue>
+          }
         />
         <KeyValue label="Allocation" value={`${asset.allocation}%`} />
         <KeyValue label="Reference price" value={priceCurrency.format(asset.price)} />
-        <KeyValue label="Daily movement" value={<Movement value={asset.movement} />} />
+        <KeyValue label="Volatility" value={asset.volatility} />
+        <KeyValue label="Liquidity" value={asset.liquidity} />
       </div>
     </Card>
   );
+}
+
+function transactionTone(status: TransactionStatus): BadgeTone {
+  if (status === "Completed") return "success";
+  if (status === "Failed") return "danger";
+  return "info";
 }
 
 function TransactionList({
@@ -1150,8 +1121,8 @@ function TransactionList({
   balancesVisible: boolean;
 }) {
   return (
-    <div className={styles["transaction-list"]}>
-      {items.map((transaction) => {
+    <ItemGroup aria-label="Recent portfolio movement" className={styles["movement-list"]}>
+      {items.map((transaction, index) => {
         const TransactionIcon =
           transaction.kind === "Incoming"
             ? ArrowLeft
@@ -1159,34 +1130,78 @@ function TransactionList({
               ? ArrowRight
               : ArrowRight;
         return (
-          <div key={transaction.id} className={styles.transaction}>
-            <span className={styles["transaction-icon"]}>
-              <TransactionIcon aria-hidden />
-            </span>
-            <span>
-              <strong>{transaction.title}</strong>
-              <small>
-                {transaction.detail} · {transaction.date}
-              </small>
-            </span>
-            <span className={styles["transaction-amount"]}>
-              <strong>{displayMoney(transaction.amount, balancesVisible)}</strong>
-              <Badge
-                tone={
-                  transaction.status === "Completed"
-                    ? "success"
-                    : transaction.status === "Failed"
-                      ? "danger"
-                      : "info"
-                }
-              >
-                {transaction.status === "Completed" ? <Check aria-hidden /> : null}
-                {transaction.status}
-              </Badge>
-            </span>
-          </div>
+          <React.Fragment key={transaction.id}>
+            {index > 0 ? <ItemSeparator /> : null}
+            <Item>
+              <ItemMedia variant="icon">
+                <Icon icon={TransactionIcon} />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle>{transaction.title}</ItemTitle>
+                <ItemDescription>
+                  {transaction.detail} · {transaction.date}
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions className={styles["movement-actions"]}>
+                <SensitiveValue visible={balancesVisible}>
+                  {currency.format(transaction.amount)}
+                </SensitiveValue>
+                <Badge
+                  leadingIcon={transaction.status === "Completed" ? Check : undefined}
+                  tone={transactionTone(transaction.status)}
+                >
+                  {transaction.status}
+                </Badge>
+              </ItemActions>
+            </Item>
+          </React.Fragment>
         );
       })}
+    </ItemGroup>
+  );
+}
+
+function DonutChart({
+  ariaLabel,
+  centerLabel,
+  centerValue,
+  segments,
+}: {
+  ariaLabel: string;
+  centerLabel: string;
+  centerValue: string;
+  segments: DonutSegment[];
+}) {
+  let offset = 0;
+  const segmentGap = 5;
+
+  return (
+    <div className={styles["donut-chart"]} role="img" aria-label={ariaLabel}>
+      <svg aria-hidden viewBox="0 0 100 100">
+        <circle className={styles["donut-track"]} cx="50" cy="50" r="38" pathLength="100" />
+        {segments.map((segment) => {
+          const visibleValue = Math.max(segment.value - segmentGap, 0);
+          const dashOffset = -(offset + segmentGap / 2);
+          offset += segment.value;
+          return (
+            <circle
+              key={segment.label}
+              className={styles["donut-segment"]}
+              cx="50"
+              cy="50"
+              r="38"
+              pathLength="100"
+              stroke={segment.color}
+              strokeDasharray={`${visibleValue} ${100 - visibleValue}`}
+              strokeDashoffset={dashOffset}
+            />
+          );
+        })}
+      </svg>
+      <span className={styles["donut-center"]}>
+        <span>{centerValue}</span>
+        <small>{centerLabel}</small>
+      </span>
     </div>
   );
 }

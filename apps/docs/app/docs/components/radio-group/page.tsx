@@ -44,14 +44,14 @@ const apiRows = [
     "children / RadioGroupItem",
     "Composition API for rich option content and explicit source control.",
   ],
-  ["onValueChange", "Receives value and Base UI event details; onChange remains compatible."],
+  ["onValueChange", "Receives value and bounded Nerio event details."],
   ["label / description / message", "Text slots wired to aria-labelledby and aria-describedby."],
   ["invalid", "Sets invalid state on the group and message."],
 ] as const;
 const implementationRows = [
   [
     "Registry item",
-    "radio-group installs 5 Tailwind-first source files into the configured components directory.",
+    "radio-group installs 8 Tailwind-first source files into the configured components directory.",
   ],
   ["Base UI", "radio-group, radio"],
   ["Registry dependencies", "form-message"],

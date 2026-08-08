@@ -7,7 +7,8 @@ remain the canonical primitive, semantic, and component value layer. Base UI con
 interactive behavior. Tailwind utilities may resolve to Nerio variables, but Tailwind configuration
 must not duplicate token values or create a second visual implementation.
 
-Nerio supports Tailwind CSS `>=4.0.0 <5`. The pilot is verified with 4.3.x and
+Nerio supports Tailwind CSS `>=4.1.0 <5`. The minimum consumer is verified with 4.1.0, the current
+consumer is verified with 4.3.x, and
 `tailwind-merge` 3.6.x.
 
 ## Public bridge

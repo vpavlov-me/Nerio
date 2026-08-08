@@ -9,7 +9,7 @@
 - [x] Docs-local Operations Workspace Template and same-origin preview View
 - [ ] Registry proof of concept and `nerio add button`
 - [ ] Initial AI guidance: `llms.txt` and MCP component discovery
-- [ ] CI, release workflow, and DCO enforcement
+- [x] CI, release workflow, and DCO enforcement
 
 ## Core quality stabilization
 

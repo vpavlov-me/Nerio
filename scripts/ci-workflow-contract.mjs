@@ -4,7 +4,17 @@ import { resolve } from "node:path";
 export const ciWorkflowPaths = {
   prGate: ".github/workflows/pr-gate.yml",
   releaseGate: ".github/workflows/release-gate.yml",
+  branchPolicy: ".github/workflows/branch-policy.yml",
+  playwrightCanary: ".github/workflows/playwright-canary.yml",
 };
+
+const pinnedActions = [
+  "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7",
+  "pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6",
+  "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7",
+];
+const pinnedUploadAction =
+  "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1";
 
 const developmentCommands = [
   "pnpm install --frozen-lockfile",
@@ -24,7 +34,9 @@ const developmentCommands = [
   "pnpm validate:docs",
   "pnpm validate:onboarding",
   "pnpm test:docs-examples",
+  "pnpm test:consumer:vite",
   "pnpm build",
+  "pnpm validate:route-budgets",
 ];
 
 const developmentScopedCommands = [
@@ -37,7 +49,8 @@ const developmentScopedCommands = [
   "pnpm validate:package-budgets",
   "pnpm pack:check",
   "pnpm test:manual-audit-plan",
-  "pnpm validate:manual-audit-plan",
+  "pnpm test:beta-feedback",
+  "pnpm validate:stable-readiness",
 ];
 
 const releaseCommands = [
@@ -48,13 +61,16 @@ const releaseCommands = [
   "pnpm test:mcp",
   "pnpm test:adapters",
   "pnpm test:manual-audit-plan",
-  "pnpm validate:manual-audit-plan",
+  "pnpm test:beta-feedback",
+  "pnpm validate:stable-readiness",
   "pnpm validate:platform-support",
   "pnpm audit:prod",
   "pnpm validate:package-budgets",
   "pnpm validate:release:metadata",
-  "pnpm test:release-consumer",
+  "pnpm test:consumer:${{ matrix.profile }}",
   "pnpm pack:check",
+  "pnpm generate:sbom",
+  "pnpm validate:sbom",
 ];
 
 const forbiddenPublicationStrings = [
@@ -85,10 +101,17 @@ export function readCiWorkflowSources(root) {
   return {
     prGate: readFileSync(resolve(root, ciWorkflowPaths.prGate), "utf8"),
     releaseGate: readFileSync(resolve(root, ciWorkflowPaths.releaseGate), "utf8"),
+    branchPolicy: readFileSync(resolve(root, ciWorkflowPaths.branchPolicy), "utf8"),
+    playwrightCanary: readFileSync(resolve(root, ciWorkflowPaths.playwrightCanary), "utf8"),
   };
 }
 
-export function ciWorkflowContractFailures({ prGate, releaseGate }) {
+export function ciWorkflowContractFailures({
+  prGate,
+  releaseGate,
+  branchPolicy = "",
+  playwrightCanary = "",
+}) {
   const failures = [];
 
   requireStrings(prGate, ciWorkflowPaths.prGate, developmentCommands, failures);
@@ -104,7 +127,18 @@ export function ciWorkflowContractFailures({ prGate, releaseGate }) {
       "cancel-in-progress: true",
       "permissions:",
       "contents: read",
+      "pull-requests: read",
       "node scripts/detect-ci-scopes.mjs",
+      "name: always-fast",
+      "name: docs-contract",
+      "name: ui-contract",
+      "name: workflow-contract",
+      "docs_only:",
+      "broad:",
+      "unknown:",
+      "if: needs.scopes.outputs.docs_only == 'true'",
+      "if: needs.scopes.outputs.docs == 'true' && needs.scopes.outputs.docs_only != 'true'",
+      "GITHUB_TOKEN: ${{ github.token }}",
       "pnpm exec playwright install --with-deps chromium",
       "name: PR gate",
       "if: always()",
@@ -126,6 +160,8 @@ export function ciWorkflowContractFailures({ prGate, releaseGate }) {
       "pnpm test:release-consumer",
       "continue-on-error",
       "secrets.",
+      "${{ inputs.",
+      "@v",
       ...forbiddenPublicationStrings,
     ],
     failures,
@@ -140,10 +176,18 @@ export function ciWorkflowContractFailures({ prGate, releaseGate }) {
       "branches:\n      - main",
       "types: [opened, synchronize, reopened, ready_for_review]",
       "workflow_dispatch:",
+      "candidate_sha:",
+      "required: true",
       "group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}",
       "cancel-in-progress: true",
       "permissions:",
       "contents: read",
+      "name: exact-release-candidate",
+      "DISPATCH_CANDIDATE: ${{ github.event.inputs.candidate_sha }}",
+      "node scripts/validate-release-candidate.mjs",
+      "ref: ${{ needs.candidate.outputs.candidate_sha }}",
+      "release-candidate-${{ steps.candidate.outputs.candidate_sha }}",
+      "sbom-${{ needs.candidate.outputs.candidate_sha }}",
       "fail-fast: false",
       "engine: chromium",
       "command: test:browser:chromium",
@@ -151,18 +195,65 @@ export function ciWorkflowContractFailures({ prGate, releaseGate }) {
       "command: test:browser:firefox",
       "engine: webkit",
       "command: test:browser:webkit",
+      "profile: minimum",
+      "profile: current",
+      "node: 24",
+      "name: release-consumer-${{ matrix.profile }}-node-${{ matrix.node }}",
       "name: Release gate",
       "if: always()",
       "timeout-minutes:",
+      ...pinnedActions,
+      pinnedUploadAction,
     ],
     failures,
   );
   forbidStrings(
     releaseGate,
     ciWorkflowPaths.releaseGate,
-    ["pull_request_target", "continue-on-error", "secrets.", ...forbiddenPublicationStrings],
+    [
+      "pull_request_target",
+      "continue-on-error",
+      "secrets.",
+      "${{ inputs.",
+      "@v",
+      ...forbiddenPublicationStrings,
+    ],
     failures,
   );
+  const releaseCheckoutCount = (
+    releaseGate.match(/uses: actions\/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7/g) ??
+    []
+  ).length;
+  const exactCandidateCheckoutCount = (
+    releaseGate.match(/ref: \$\{\{ needs\.candidate\.outputs\.candidate_sha \}\}/g) ?? []
+  ).length;
+  if (
+    releaseCheckoutCount === 0 ||
+    exactCandidateCheckoutCount !== releaseCheckoutCount - 1 ||
+    !releaseGate.includes("ref: dev")
+  ) {
+    failures.push(
+      `${ciWorkflowPaths.releaseGate}: every downstream checkout must use the exact validated candidate SHA`,
+    );
+  }
+
+  requireStrings(prGate, ciWorkflowPaths.prGate, [...pinnedActions, pinnedUploadAction], failures);
+  requireStrings(branchPolicy, ciWorkflowPaths.branchPolicy, pinnedActions, failures);
+  requireStrings(
+    branchPolicy,
+    ciWorkflowPaths.branchPolicy,
+    ["node scripts/check-dco.mjs", "node scripts/check-branch-policy.mjs"],
+    failures,
+  );
+  requireStrings(playwrightCanary, ciWorkflowPaths.playwrightCanary, pinnedActions, failures);
+  for (const [key, source] of Object.entries({
+    prGate,
+    releaseGate,
+    branchPolicy,
+    playwrightCanary,
+  })) {
+    forbidStrings(source, ciWorkflowPaths[key], ["@v", "@main", "@master"], failures);
+  }
 
   return failures;
 }

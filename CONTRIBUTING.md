@@ -72,7 +72,9 @@ Contributions must include a DCO sign-off confirming that the contributor has th
 Signed-off-by: Your Name <your.email@example.com>
 ```
 
-Use `git commit -s` to add it automatically. The repository will enforce this once CI is bootstrapped.
+Use `git commit -s` to add it automatically. CI requires a matching sign-off for every human
+commit in the pull request. Dependabot and recognized bot-authored commits are exempt so automated
+security updates remain operable; they still pass branch policy, tests, and review.
 
 ## Pull request requirements
 

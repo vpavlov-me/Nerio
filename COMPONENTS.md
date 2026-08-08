@@ -21,6 +21,11 @@ Pro should save time on complex SaaS, fintech, crypto, data-rich dashboard, and 
 
 Update the catalog first, then update this matrix and every affected registry, docs, CLI, and MCP projection. Run `pnpm validate:catalog` to detect drift.
 
+Post-1.0 candidates and non-component capability decisions live in
+[`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md) and
+`quality/core-1-x-capability-parity.json`. They do not become catalog components, Registry
+identities, exports, or stable APIs until their focused implementation issues land.
+
 ## Status values
 
 - `planned`: approved for the tier, not implemented yet.
@@ -100,21 +105,26 @@ consumer or Pro responsibility.
 | DateRangePicker / DateTimePicker / DatePickerWithPresets / NaturalLanguageDatePicker | Pro             | future | Product-ready date workflows.                                                                                                         |
 | GlobalSearch / EntitySearch / AdvancedSearch / CommandPalette / FilterBar            | Pro             | future | Result fetching, workflow behavior, and product-level search/filter composition.                                                      |
 
+The accepted post-1.0 decision keeps SearchField in #346 and splits NumberField into #370 because
+their semantics, values, localization, and primitive contracts differ. Bounded single-select
+Combobox remains #345. MultiSelect #349 is deferred to a Core 1.2 decision spike and is not an
+approved component.
+
 ### Overlays
 
-| Component     | Status      | Package               | Notes                                                                                                                       |
-| ------------- | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Dialog        | stable-core | `@nerio-ui/ui/client` | Modal primitive with title, description, localizable close, controlled state, ref, and Base UI focus behavior               |
-| Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral close composition, safe-area layout, four sides, sizes, and shared overlay motion   |
-| Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                           |
-| Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                         |
-| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states plus optional accessible descriptions, leading icons, trailing icons, and hotkeys |
+| Component     | Status      | Package               | Notes                                                                                                                                                        |
+| ------------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Dialog        | stable-core | `@nerio-ui/ui/client` | Viewport-bounded modal primitive with a neutral accessible title, standard description, localizable close, controlled state, ref, and Base UI focus behavior |
+| Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral title and close composition, safe-area layout, four sides, sizes, and shared overlay motion                          |
+| Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                                                            |
+| Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                                                          |
+| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkeys            |
 
 ### Data display
 
 | Component | Status      | Package        | Notes                                                                                                                                                     |
 | --------- | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Card      | stable-core | `@nerio-ui/ui` | Composable surface with verified visual placement, header action, semantic root, narrow layout, focus, and heading contracts                              |
+| Card      | stable-core | `@nerio-ui/ui` | Composable surface with verified visual placement, header action, neutral default title semantics, narrow layout, focus, and deliberate heading opt-in    |
 | Badge     | stable-core | `@nerio-ui/ui` | Status and metadata                                                                                                                                       |
 | Avatar    | stable-core | `@nerio-ui/ui` | User/entity avatar with verified image transitions, aspect-ratio cropping, accessible naming, and fallback behavior                                       |
 | Table     | stable-core | `@nerio-ui/ui` | Native table anatomy with runtime-safe named keyboard-scroll opt-in, tbody-only row states, responsive and RTL overflow, and consumer-owned data behavior |

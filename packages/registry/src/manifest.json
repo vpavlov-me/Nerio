@@ -1,8 +1,8 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "name": "nerio",
-  "version": "1.0.0-beta.0",
-  "sourceRevision": "v1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
+  "sourceRevision": "v1.0.0-beta.1",
   "styleContractVersion": "tailwind-v1",
   "items": [
     {
@@ -16,27 +16,32 @@
         {
           "source": "../../ui/src/components/typography.tsx",
           "target": "components/typography.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-4216f10af3be21e638500d6f1888249cb128ee94e293996d4bdce6729add2e81"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -81,7 +86,8 @@
         {
           "source": "../../adapters/src/motion.tsx",
           "target": "lib/motion-adapter.tsx",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-05f14fe5f115883563548cd0e7130495169cf79190cd40715101b09d4eaf8d5f"
         }
       ],
       "baseUiPrimitives": [],
@@ -119,27 +125,32 @@
         {
           "source": "../../ui/src/components/kbd.tsx",
           "target": "components/kbd.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-f7d4dd9300f15c1222cd8a780b75710210d220cb74e7853f7f700a21a68cb6c4"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -182,47 +193,56 @@
         {
           "source": "../../ui/src/components/button.tsx",
           "target": "components/button.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-ab37154ef0fd6461fffd696283b25c0c2fe6439e43613ebe804ed88439ba6869"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/compose-refs.ts",
           "target": "lib/compose-refs.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
         },
         {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-39d2914e47db3394224bb2c442b032193534a70283cfbb1be7fe7c33dee3cc29"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["button"],
@@ -310,42 +330,56 @@
         {
           "source": "../../ui/src/components/toggle.tsx",
           "target": "components/toggle.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-ed2ec12dcbe7091b272ab66d5a01f6e978e518ca5c2025e62d19cee646f92fee"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["toggle"],
@@ -412,27 +446,32 @@
         {
           "source": "../../ui/src/components/button-group.tsx",
           "target": "components/button-group.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-da99646e0915c93d1baa4d2efde6ad7712dc3bbcf80c712c2638d865b175ad8a"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -463,32 +502,38 @@
         {
           "source": "../../ui/src/components/badge.tsx",
           "target": "components/badge.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-f2ee334935ff1a2207d5308b2a5e01e03592a231f25e6b8793e2b7c5c1aee6fc"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -567,32 +612,38 @@
         {
           "source": "../../ui/src/components/spinner.tsx",
           "target": "components/spinner.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-86291ac657115212865add4886c6e38a3afc7e51a2ff7fd5734cddfb095f368a"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/styles/spinner.css",
           "target": "styles/spinner.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-186de7a191775f4ae813596b48d030f27ba263e150f7408e51ca8ef793f00a3f"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -625,32 +676,38 @@
         {
           "source": "../../ui/src/components/skeleton.tsx",
           "target": "components/skeleton.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-ba7e8b7b16a4d1d7bc540c2a68e76817d7d1ef6ec8c6877669c98ef92861bbaf"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/styles/feedback.css",
           "target": "styles/feedback.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-821499f14859726170acd1267e6535b5077b4a2f32949ad99bcbd92d1771b91e"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -680,27 +737,32 @@
         {
           "source": "../../ui/src/components/empty-state.tsx",
           "target": "components/empty-state.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-37ce3731bfa9f83fb400bc478774af417be878b48cf03cbe92f22bd3374cbff7"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -741,32 +803,38 @@
         {
           "source": "../../ui/src/components/alert.tsx",
           "target": "components/alert.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-3aa5543047ee6c3e2250d80630fae2c6f5c8778feeaaee3a02f4de989b5030aa"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -807,27 +875,32 @@
         {
           "source": "../../ui/src/components/card.tsx",
           "target": "components/card.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-5e43bc647516c96b9a9e36179a955a5f1aa888d3076aac18738bbcb7e5356fe7"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -850,6 +923,8 @@
         "--n-card-section-gap",
         "--n-card-radius",
         "--n-card-background",
+        "--n-card-border-width",
+        "--n-card-border-color",
         "--n-card-background-interactive-hover",
         "--n-card-background-secondary",
         "--n-card-background-secondary-hover",
@@ -865,7 +940,7 @@
       ],
       "accessibility": [
         "Use Card to group related content, not to decorate every section.",
-        "Provide semantic headings inside cards when the content needs structure.",
+        "CardTitle renders a neutral div by default. Choose an explicit h2-h6 only when the card participates in the document outline, and preserve heading order.",
         "Use CardVisual for icons, avatars, logos, previews, and media; only bleed placement reaches the card edge.",
         "Use CardAction only in a surface Card. Linked Cards cannot contain interactive descendants.",
         "Avoid nesting cards inside cards.",
@@ -884,27 +959,32 @@
         {
           "source": "../../ui/src/components/separator.tsx",
           "target": "components/separator.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-a19607dddc91f621353281a443c922c106c341f2d456851cb1f4e688d3d6bab9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -929,32 +1009,38 @@
         {
           "source": "../../ui/src/components/avatar.tsx",
           "target": "components/avatar.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-1a939bcc19b62bf0b8702d1ebd91d956718120bc923f7b54d58715f3b28c4daf"
         },
         {
           "source": "../../ui/src/components/avatar-image.tsx",
           "target": "components/avatar-image.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-8710c3ab154ab68e808779e4114a479b6fc3084715d37cd480647a921d9cd562"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -986,32 +1072,38 @@
         {
           "source": "../../ui/src/components/progress.tsx",
           "target": "components/progress.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-8e42bf0b808bdc52937fe25f8e825c5642e367e13f0cf8f4c8a051694869706e"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/styles/progress.css",
           "target": "styles/progress.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1c3e78bbf956d8c4f85497049f9e87c00003d4e5008197317783c576f8911658"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1057,27 +1149,32 @@
         {
           "source": "../../ui/src/components/stat.tsx",
           "target": "components/stat.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6f5bf51135e84eaa6f60ceb5429550741d3d21dcf5802bc67077c42a8193d204"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1102,27 +1199,32 @@
         {
           "source": "../../ui/src/components/key-value.tsx",
           "target": "components/key-value.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-8538d08e380951ee89cf7f435a51178efe588b336b5290c90a61a84ea632e9d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1147,27 +1249,32 @@
         {
           "source": "../../ui/src/components/table.tsx",
           "target": "components/table.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-65517c5723bedf04593bee35351246fe061d0ee975f6df75c698fbf5181e5b49"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1218,32 +1325,38 @@
         {
           "source": "../../ui/src/components/item.tsx",
           "target": "components/item.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-65cfb693b8040d5a2ca5a7f4531dbcce290bfa8fe0ce7b222222de63542fbbff"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/compose-refs.ts",
           "target": "lib/compose-refs.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1301,32 +1414,38 @@
         {
           "source": "../../ui/src/components/list.tsx",
           "target": "components/list.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-d37c7ed8e7f827b412666a6848215de607f385c914ad9458fb8fd94aa49cf323"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/compose-refs.ts",
           "target": "lib/compose-refs.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1386,47 +1505,62 @@
         {
           "source": "../../ui/src/components/select.tsx",
           "target": "components/select.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-b6aa3851dadfa2cd14cd729961b4802ce8bc62e1a837bcd612d1fafbf1e5f097"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         },
         {
           "source": "../../ui/src/styles/select.css",
           "target": "styles/select.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-058110182ddc952e91f58f2dace9e858cda3f54c2640f8b06ddf6487a346de33"
         }
       ],
       "baseUiPrimitives": ["select"],
@@ -1472,6 +1606,7 @@
         "--n-input-disabled-background",
         "--n-input-disabled-foreground",
         "--n-overlay-z-index",
+        "--n-overlay-floating-z-index",
         "--n-overlay-background",
         "--n-overlay-border",
         "--n-overlay-shadow",
@@ -1500,37 +1635,50 @@
         {
           "source": "../../ui/src/components/radio-group.tsx",
           "target": "components/radio-group.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-4fce00440a95379995ec17f26d6579c56a1a4030dd196fd4647a130c74c57b0b"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["radio-group", "radio"],
@@ -1580,37 +1728,44 @@
         {
           "source": "../../ui/src/components/input.tsx",
           "target": "components/input.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-e5db2b53ad4d06592854c133f665484ecb016921c64c6b18be0978df72755322"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-39d2914e47db3394224bb2c442b032193534a70283cfbb1be7fe7c33dee3cc29"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1666,42 +1821,50 @@
         {
           "source": "../../ui/src/components/file-input.tsx",
           "target": "components/file-input.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-ebf062fa5980bf2ee5c7131731f728ad14b5a92b87f62604b495cd26c0713226"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-39d2914e47db3394224bb2c442b032193534a70283cfbb1be7fe7c33dee3cc29"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1723,6 +1886,7 @@
         "--n-input-disabled-background",
         "--n-input-disabled-foreground",
         "--n-file-input-button-gap",
+        "--n-file-input-divider-length",
         "--n-file-input-button-size",
         "--n-file-input-button-background",
         "--n-file-input-button-background-hover",
@@ -1756,32 +1920,38 @@
         {
           "source": "../../ui/src/components/input-group.tsx",
           "target": "components/input-group.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-5d0c8a1e2d31fba3c12f958926ed761a0662c327cd51a0a9b688bf249961551f"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1819,32 +1989,38 @@
         {
           "source": "../../ui/src/components/textarea.tsx",
           "target": "components/textarea.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-69355c0ead9dfcc85f6c8c85d3918040648ddda7a4f760e541243c07ef420c31"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -1887,42 +2063,50 @@
         {
           "source": "../../ui/src/components/label.tsx",
           "target": "components/label.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-adeb2b1743ff3b8b424aeef7d4f441a5575688cd0eda97eb1786c5bfb0197d81"
         },
         {
           "source": "../../ui/src/components/label-hint.tsx",
           "target": "components/label-hint.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-23d4557d1710b205c91a57b0a62adccfaa1032b738ac9cb69b416309176dcd60"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["Tooltip"],
@@ -1959,27 +2143,32 @@
         {
           "source": "../../ui/src/components/form-message.tsx",
           "target": "components/form-message.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-56817adf6ac01b18e7408da1815874c5732390e8b297a6aad1b5020f8cfbeff3"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -2009,27 +2198,32 @@
         {
           "source": "../../ui/src/components/field.tsx",
           "target": "components/field.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-4da8312204293f995bf0dfb1a014b3f7f58f39d6a682d7587fb131432fe83f58"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -2062,27 +2256,32 @@
         {
           "source": "../../ui/src/components/form-group.tsx",
           "target": "components/form-group.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-8bc5cce5ac0a542190f5f72183ad66592d6ccd4ff4665f20a211897f09f1baa6"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -2126,42 +2325,56 @@
         {
           "source": "../../ui/src/components/checkbox.tsx",
           "target": "components/checkbox.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-30c5ad0df12e0f49fc5959008c0a191b6bb6cea2eed54ab3c1fa8d6df51903ca"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["checkbox"],
@@ -2200,37 +2413,44 @@
         {
           "source": "../../ui/src/components/switch.tsx",
           "target": "components/switch.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-3cebd63b6c022efa4fb6b799ed4faeef03db3b832c802c4adb28311a1ab07438"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["switch"],
@@ -2279,32 +2499,38 @@
         {
           "source": "../../ui/src/components/calendar.tsx",
           "target": "components/calendar.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-617d095ed7b193619aa586baad6c9cc15fa21440308a57ca787c8eb02d1d0255"
         },
         {
           "source": "../../ui/src/lib/compose-refs.ts",
           "target": "lib/compose-refs.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -2400,7 +2626,14 @@
         {
           "source": "../../ui/src/components/date-picker.tsx",
           "target": "components/date-picker.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-2afcd0c7a50ca92203dd492158c608806d1ec4033a7fcf128fa92f3ac9d47397"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         }
       ],
       "baseUiPrimitives": ["popover"],
@@ -2421,6 +2654,7 @@
         "--n-popover-radius",
         "--n-popover-gap",
         "--n-overlay-z-index",
+        "--n-overlay-floating-z-index",
         "--n-overlay-background",
         "--n-overlay-border-width",
         "--n-overlay-border",
@@ -2434,7 +2668,7 @@
       ],
       "accessibility": [
         "Name the trigger through Field, Label, aria-label, or aria-labelledby.",
-        "The trigger description includes the localized selected value or empty placeholder before the open/change action.",
+        "A self-named trigger does not repeat its visible value; controls named by Field or explicit ARIA retain the localized selected value once before the open/change action.",
         "Opening moves focus to Calendar's selected or active roving day; selection, Escape, outside dismissal, and clear restore focus to the trigger.",
         "The public value and single named form mirror use the timezone-independent YYYY-MM-DD CalendarDate contract; null is the explicit controlled empty value.",
         "Required, disabled, read-only, invalid, form ownership, submission, and reset behavior remain truthful.",
@@ -2455,42 +2689,56 @@
         {
           "source": "../../ui/src/components/slider.tsx",
           "target": "components/slider.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-779c96290b0d3a7aa31a848fe5ef40799462e0cc324d8392873f33039d822edb"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/compose-refs.ts",
           "target": "lib/compose-refs.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["slider"],
@@ -2567,32 +2815,44 @@
         {
           "source": "../../ui/src/components/tabs.tsx",
           "target": "components/tabs.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-e5f228270084ed9bd40bde42bb46401fbea5450bf7719fbb7a7af4023e1c7697"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["tabs"],
@@ -2673,27 +2933,32 @@
         {
           "source": "../../ui/src/components/breadcrumbs.tsx",
           "target": "components/breadcrumbs.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-bf7b92dedc2599578b819bf13c84de8bd909cac7f995988cecf2226da23a8c4f"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -2727,27 +2992,32 @@
         {
           "source": "../../ui/src/components/pagination.tsx",
           "target": "components/pagination.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-e1ac25db02d783c164515e2017de40e2665e7e894b551526e582aa2f171aefd7"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -2803,32 +3073,44 @@
         {
           "source": "../../ui/src/components/dialog.tsx",
           "target": "components/dialog.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-1f9ecc5a46447512b6e7e123ec86993755b93ceafc4ac89f460b62e2c3ef9cac"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../ui/src/styles/overlays.css",
           "target": "styles/overlays.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-134b8f79038195177bfdc00e0a1dfeaa45a4880195bdec5fc122f4e068cd0bb5"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["dialog"],
@@ -2852,6 +3134,7 @@
         "--n-dialog-header-margin",
         "--n-dialog-body-gap",
         "--n-overlay-z-index",
+        "--n-overlay-floating-z-index",
         "--n-overlay-background",
         "--n-overlay-border",
         "--n-overlay-backdrop",
@@ -2874,7 +3157,7 @@
       ],
       "accessibility": [
         "Uses the Base UI Dialog primitive.",
-        "Includes a title and optional description.",
+        "The title renders as a neutral 16px div by default; titleAs opts into h2-h6 only when the title belongs in the document outline. The optional description uses the standard 14px body size.",
         "Focus is trapped while the dialog is open and returns to the trigger on close.",
         "Defaults closeLabel to \"Close dialog\" for the secondary icon Button; provide a localized accessible name when needed.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded popup ref."
@@ -2887,47 +3170,55 @@
       "description": "Provides a low-level collapsible sidebar layout with bounded rail geometry and stable native refs without owning product navigation or persistence.",
       "category": "navigation",
       "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
-      "registryDependencies": [],
+      "registryDependencies": ["button"],
       "files": [
         {
           "source": "../../ui/src/components/sidebar.tsx",
           "target": "components/sidebar.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-b483b9837f6c78cff361e88a381017c8d87dad6a245ce29bd76b7f65e43ab4bc"
         },
         {
           "source": "../../ui/src/components/sidebar-layout.tsx",
           "target": "components/sidebar-layout.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-88a836e73403ee33cd969556409203a7ce24a77e9af657140e9c94bba67381e1"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/compose-refs.ts",
           "target": "lib/compose-refs.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": [],
@@ -2938,6 +3229,7 @@
         "sidebar-header",
         "sidebar-content",
         "sidebar-footer",
+        "sidebar-menu-button",
         "sidebar-rail",
         "sidebar-inset",
         "sidebar-trigger"
@@ -2958,6 +3250,7 @@
         "--n-sidebar-region-padding",
         "--n-sidebar-rail-hit-area",
         "--n-sidebar-rail-inset",
+        "--n-sidebar-item-icon-size",
         "--n-sidebar-transition-duration",
         "--n-sidebar-transition-easing",
         "--n-sidebar-background",
@@ -2973,14 +3266,14 @@
       "accessibility": [
         "Sidebar renders complementary aside semantics by default; place a labelled navigation landmark inside SidebarContent when the content is navigation.",
         "SidebarTrigger and SidebarRail require a localized label and expose aria-expanded plus a stable aria-controls relationship.",
-        "SidebarRail stays at the bottom-right inside the Sidebar and occupies only --n-sidebar-rail-hit-area while expanded or collapsed.",
+        "SidebarRail stays after footer content as the final sidebar action and occupies only --n-sidebar-rail-hit-area when collapsed.",
         "SidebarContent forwards an HTMLDivElement ref, while SidebarInset preserves stable HTMLElement refs for its explicit div or main root.",
-        "Collapsed Sidebar content is inert, hidden, and removed from pointer and keyboard interaction while SidebarRail remains reachable.",
+        "Collapsed navigation stays reachable with larger icons, preserved accessible names, and focusable labels through SidebarMenuButton tooltips.",
         "State changes keep focus on the external trigger or rail and do not add roving focus or Arrow-key behavior to consumer navigation.",
         "Physical left and right placement, explicit text direction, reduced motion, forced colors, compact density, and safe-area padding are supported.",
         "Persistence and mobile behavior remain consumer-owned; compose Sheet explicitly for mobile navigation so only one interactive tree is rendered."
       ],
-      "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail label=\"Toggle workspace sidebar\" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>"
+      "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail collapseLabel=\"Collapse sidebar\" expandLabel=\"Expand sidebar\" label=\"Toggle sidebar\" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>"
     },
     {
       "name": "command-primitive",
@@ -3000,37 +3293,50 @@
         {
           "source": "../../ui/src/components/command.tsx",
           "target": "components/command.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-c99509e6ddf72975707f5adc0c2cb6ab2174250be9383c789b4f46600efab387"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/resolve-class-name.ts",
           "target": "lib/resolve-class-name.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["autocomplete"],
@@ -3126,32 +3432,44 @@
         {
           "source": "../../ui/src/components/sheet.tsx",
           "target": "components/sheet.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-5fb8555f04f1f9d88b1e03aa1f3654cf207467ad1bd54604bf3a503ed872abfc"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/styles/overlays.css",
           "target": "styles/overlays.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-134b8f79038195177bfdc00e0a1dfeaa45a4880195bdec5fc122f4e068cd0bb5"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["dialog"],
@@ -3187,6 +3505,7 @@
         "--n-motion-overlay-exit-duration",
         "--n-motion-overlay-exit-easing",
         "--n-overlay-z-index",
+        "--n-overlay-floating-z-index",
         "--n-overlay-background",
         "--n-overlay-border-width",
         "--n-overlay-border",
@@ -3205,7 +3524,7 @@
       ],
       "accessibility": [
         "Uses the Base UI Dialog primitive for modal focus management, Escape and backdrop dismissal, focus restoration, and scroll locking.",
-        "Provide SheetTitle or an explicit accessible name on SheetContent.",
+        "Provide SheetTitle or an explicit accessible name on SheetContent. SheetTitle renders as a neutral 16px div by default with explicit h2-h6 opt-in through as; SheetDescription uses the standard 14px body size.",
         "Includes a localized aria-label=\"Close sheet\" secondary icon Button by default; when showClose is false, consumers must provide another clear close path.",
         "SheetBody scrolls internally for long content; with viewport-fit=cover, safe-area insets protect panel padding and the default close; physical left and right sides remain explicit in RTL.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and forwarded refs on meaningful slots."
@@ -3230,32 +3549,44 @@
         {
           "source": "../../ui/src/components/popover.tsx",
           "target": "components/popover.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-3de23ce4ffa6743776e421b21f44842c2c577dae12a1312ce2e1a5ad1087b4c1"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-39d2914e47db3394224bb2c442b032193534a70283cfbb1be7fe7c33dee3cc29"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["popover"],
@@ -3267,6 +3598,7 @@
         "--n-popover-gap",
         "--n-popover-radius",
         "--n-overlay-z-index",
+        "--n-overlay-floating-z-index",
         "--n-overlay-background",
         "--n-overlay-border",
         "--n-overlay-foreground",
@@ -3311,37 +3643,50 @@
         {
           "source": "../../ui/src/components/dropdown-menu.tsx",
           "target": "components/dropdown-menu.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-c4d91010c0aed6668e6da344fd4c62c16d582a596d3fb40ae8d58c16019336df"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-39d2914e47db3394224bb2c442b032193534a70283cfbb1be7fe7c33dee3cc29"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["menu"],
@@ -3372,6 +3717,7 @@
         "--n-dropdown-item-gap",
         "--n-dropdown-radius",
         "--n-overlay-z-index",
+        "--n-overlay-floating-z-index",
         "--n-overlay-background",
         "--n-overlay-border",
         "--n-overlay-foreground",
@@ -3411,37 +3757,50 @@
         {
           "source": "../../ui/src/components/tooltip.tsx",
           "target": "components/tooltip.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-978d718dd0573b9dcad4d4d71834c2c2ed68596736406652212d2726f987ad86"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/motion.ts",
           "target": "lib/motion.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
         },
         {
           "source": "../../ui/src/styles/motion.css",
           "target": "styles/motion.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-39d2914e47db3394224bb2c442b032193534a70283cfbb1be7fe7c33dee3cc29"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["tooltip"],
@@ -3450,6 +3809,7 @@
       "requiredTokens": [
         "--n-tooltip-radius",
         "--n-overlay-z-index",
+        "--n-overlay-floating-z-index",
         "--n-overlay-background",
         "--n-overlay-border",
         "--n-overlay-foreground",
@@ -3463,10 +3823,13 @@
       "accessibility": [
         "Uses the Base UI Tooltip primitive.",
         "The arrow stays inside the popup and clips its bordered overlay surface toward the trigger.",
+        "The arrow is shown by default and can be omitted with showArrow when a plain floating label is more appropriate.",
         "Do not put required information only inside a tooltip.",
         "Keep tooltip text short and specific.",
         "Requires an element trigger. Use a keyboard-focusable control when keyboard users need to discover the tooltip.",
         "Supports hover and keyboard focus behavior through Base UI, plus controlled open and disabled states when needed.",
+        "The optional side preference accepts physical or logical placement and retains Base UI collision handling.",
+        "The optional sideOffset controls the trigger-to-surface distance and can keep an arrow clear of a containing navigation edge.",
         "Wrap adjacent tooltip triggers in TooltipProvider so their open and close delays are coordinated."
       ],
       "usage": "import { Tooltip, TooltipProvider } from '@/components/nerio/components/tooltip';\n\n<TooltipProvider>\n  <Tooltip label=\"Copies the share link\"><button type=\"button\">Copy link</button></Tooltip>\n  <Tooltip label=\"Opens settings\"><button type=\"button\">Settings</button></Tooltip>\n</TooltipProvider>"
@@ -3489,32 +3852,38 @@
         {
           "source": "../../ui/src/components/toast.tsx",
           "target": "components/toast.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-ddb5476081dd4105017c7f573912b7eb14a2d236d9fb015816a783405e7e4257"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
           "target": "components/icon.tsx",
-          "role": "component"
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
           "target": "lib/cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
           "target": "lib/tailwind-cn.ts",
-          "role": "utility"
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
         },
         {
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-ce916a118e11d1bfcf595924d27443862258c8861e7c689fbc7bf9cbd094f7b2"
         },
         {
           "source": "../../tokens/src/tailwind.css",
           "target": "styles/tailwind.css",
-          "role": "style"
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
         }
       ],
       "baseUiPrimitives": ["toast"],
@@ -3535,6 +3904,7 @@
         "--n-toast-stack-gap",
         "--n-toast-stack-offset",
         "--n-toast-stack-scale-step",
+        "--n-toast-stack-opacity-step",
         "--n-toast-enter-offset",
         "--n-toast-swipe-dismiss-distance",
         "--n-overlay-z-index",

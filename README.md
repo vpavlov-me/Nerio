@@ -4,9 +4,10 @@
 
 Nerio is an open-source React design system built for teams that need a reliable, accessible foundation without surrendering control of their component code. It combines semantic design tokens, composable primitives, a source registry, and AI-readable guidance so modern products can start consistent and stay adaptable.
 
-> Status: `1.0.0-beta.0` is the published public beta for the frozen Core 1.0 API. Install it from
-> npm under the `beta` tag. The protected `alpha` and `latest` tags intentionally remain on
-> `0.1.0-alpha.2` and `0.1.0-alpha.0`.
+> Status: `1.0.0-beta.1` is the prepared, unpublished candidate for the frozen Core 1.0 API. The
+> current npm `beta` tag remains on `1.0.0-beta.0`; `alpha` and `latest` remain on
+> `0.1.0-alpha.2` and `0.1.0-alpha.0`. The beta.1 commands below become externally resolvable only
+> after a separately authorized publication.
 
 ## Product model
 
@@ -102,13 +103,11 @@ in its use of brand color.
 
 Advanced product-ready patterns such as DataGrid, KPI dashboards, billing flows, finance/crypto widgets, AI chat shells, premium themes, Figma assets, and templates belong to Nerio Pro unless the component matrix says otherwise.
 
-Development and preview deployments of the documentation application include a focused Blocks
-catalog of bounded product compositions and a separate Templates catalog for complete app-like
-scenarios. These preview surfaces remain hidden from the public production documentation until
-launch. Blocks use same-origin full-screen previews, stay smaller than a product page or shell, and
-do not add Core APIs or backend behavior. Operations Workspace, Finance & Assets, Content Library,
-AI Research Workspace, Developer Portal, and Support Desk are deterministic docs-local previews
-rather than released Pro packages.
+The documentation application includes a focused Blocks catalog of bounded product compositions, a
+Templates catalog for complete app-like scenarios, and the visual Playground in every deployment.
+Blocks use same-origin full-screen previews, stay smaller than a product page or shell, and do not
+add Core APIs or backend behavior. Operations Workspace and Finance & Assets are the current
+deterministic docs-local Templates rather than released Pro packages.
 
 See [`COMPONENTS.md`](./COMPONENTS.md) for the current Core/Pro component matrix.
 See the [Core platform primitive coverage decision](./docs/core-platform-primitive-coverage.md) for
@@ -157,7 +156,7 @@ Install the version-aligned Registry and CLI in the consuming project. The `neri
 editable source files through the project-local bin:
 
 ```bash
-pnpm add -D @nerio-ui/registry@1.0.0-beta.0 @nerio-ui/cli@1.0.0-beta.0
+pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1
 pnpm exec nerio init
 pnpm exec nerio list
 pnpm exec nerio info button
@@ -169,27 +168,44 @@ pnpm exec nerio doctor
 ```
 
 For one-off initialization or installation, use the real package name:
-`pnpm dlx @nerio-ui/cli@1.0.0-beta.0 init` or
-`pnpm dlx @nerio-ui/cli@1.0.0-beta.0 add button`. Prefer the local installation for repeatable
+`pnpm dlx @nerio-ui/cli@1.0.0-beta.1 init` or
+`pnpm dlx @nerio-ui/cli@1.0.0-beta.1 add button`. Prefer the local installation for repeatable
 updates and explicit CLI/Registry version alignment.
 
 The default Registry is the immutable manifest packed with the installed `@nerio-ui/registry`
-version; local-path and HTTP overrides remain available. `nerio add` writes the requested source
-closure and records its exact Registry version, revision, file paths, dependency closure, and
-original hashes in `nerio.lock.json`. `nerio diff` separates local and upstream drift. `nerio
-update --dry-run` previews a deterministic update, while `nerio update` applies only safe upstream
-changes and never overwrites locally modified source silently. Run `nerio doctor` after configuring
-the consumer stylesheet to validate versions, installed metadata, dependencies, source drift, the
-Tailwind bridge, package `@source`, token imports, no-Preflight compatibility, and stale legacy CSS.
+version; local-path and HTTPS overrides remain available. Plain HTTP is rejected unless a trusted
+local Registry is selected with the explicit `--allow-insecure-http` flag. Remote manifests and
+source are bounded by a 10-second request/body timeout, a 2 MiB manifest limit, a 4 MiB per-source
+limit, at most three redirects, content-type handling, schema/path validation, and SHA-256
+integrity checks.
+
+`nerio add` resolves and fetches the complete requested source closure before writing. It stages the
+full operation, commits source, and writes `nerio.lock.json` last; any source or lock failure restores
+the previous source and lock state and removes temporary artifacts. A durable local journal lets the
+next state-sensitive command (`add`, `diff`, `update`, or `doctor`) recover an operation interrupted
+by process exit or machine failure; a fully committed source-and-lock transaction is retained and
+only its orphaned journal is removed. State-sensitive Registry commands share one project-local
+process lock, so installs, updates, validation, and recovery cannot race source state against
+`nerio.lock.json`; `list` and `info` remain read-only inspection commands. A dead owner's lock is
+reclaimed before journal recovery, and an expired heartbeat distinguishes a restarted or PID-reused
+owner. The lock records
+exact Registry version, revision, file paths, dependency closure, original hashes, integrity
+metadata, and owners.
+`nerio diff` separates local and upstream drift. `nerio update --dry-run` previews a deterministic
+update, while `nerio update` applies only safe upstream changes and never overwrites locally modified
+source silently. Run `nerio doctor` after configuring the consumer stylesheet to validate versions,
+installed metadata, dependencies, source drift, the Tailwind bridge, package `@source`, token
+imports, no-Preflight compatibility, and stale legacy CSS.
 
 ## MCP server
 
-Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@1.0.0-beta.0`, then configure the
+Install the read-only MCP server with `pnpm add -D @nerio-ui/mcp@1.0.0-beta.1`, then configure the
 client to run the published bin with command `pnpm` and arguments `["exec", "nerio-mcp"]`. A
 package-qualified one-off configuration may use command `pnpm` and arguments
-`["dlx", "@nerio-ui/mcp@1.0.0-beta.0"]`. The server version comes from coordinated package
+`["dlx", "@nerio-ui/mcp@1.0.0-beta.1"]`. The server version comes from coordinated package
 metadata, and its Registry tools report the exact Registry version, source revision, schema, and
-style contract.
+style contract. Every tool declares an output schema and returns equivalent structured content and
+JSON text; missing components use the stable `COMPONENT_NOT_FOUND` error code.
 
 ## Pre-release status
 
@@ -197,13 +213,16 @@ The root workspace, apps, and `@nerio-ui/config` remain private. The public Core
 `@nerio-ui/tokens`, `@nerio-ui/ui`, `@nerio-ui/adapters`, `@nerio-ui/registry`, `@nerio-ui/cli`, and
 `@nerio-ui/mcp`.
 
-The frozen `1.0.0-beta.0` release is published under the npm `beta` tag. npm `alpha` remains on
-`0.1.0-alpha.2`, and `latest` remains on `0.1.0-alpha.0`. Package, Registry, CLI, MCP, npm registry
-signature, and clean-consumer verification passed; the external-feedback gate remains open before
-stable documentation begins. The frozen contract is defined by the
+The coordinated `1.0.0-beta.1` metadata, Registry revision, CLI/MCP copy, and package manifests are
+prepared but not published. npm `beta` remains on `1.0.0-beta.0`; `alpha` remains on
+`0.1.0-alpha.2`, and `latest` remains on `0.1.0-alpha.0`. Clean packed-consumer verification is
+release-candidate evidence, not npm publication evidence. The external-feedback and manual
+accessibility/device gates remain open before stable documentation begins. The frozen contract is
+defined by the
 [public API stability policy](./docs/public-api-stability.md); alpha consumers should use the
 [Core 1.0 migration guide](./docs/migrations/alpha-to-beta.md). See
-[RELEASE.md](./RELEASE.md), [CHANGELOG.md](./CHANGELOG.md), and the
+[RELEASE.md](./RELEASE.md), [CHANGELOG.md](./CHANGELOG.md), the
+[beta technical gap-closure report](./docs/core-1-0-beta-gap-closure.md), and the
 [beta feedback cycle](./docs/beta-feedback-cycle.md).
 
 ## Contributing

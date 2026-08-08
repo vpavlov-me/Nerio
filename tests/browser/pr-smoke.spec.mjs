@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { openMobilePreviewSettings } from "./helpers/template-preview-settings.mjs";
 
 const healthStabilityWindowMs = 250;
 const workspaceRoute = "/views/operations-workspace";
@@ -163,7 +164,7 @@ test("keeps Slider preview singular and product-focused", async ({ page }) => {
   const [headerBox, controlBox] = await Promise.all([header.boundingBox(), control.boundingBox()]);
   expect(headerBox).not.toBeNull();
   expect(controlBox).not.toBeNull();
-  expect(controlBox.y - (headerBox.y + headerBox.height)).toBeGreaterThanOrEqual(7.5);
+  expect(controlBox.y - (headerBox.y + headerBox.height)).toBeGreaterThanOrEqual(3.5);
   await preview.getByText("Tip amount", { exact: true }).click({ position: { x: 20, y: 15 } });
   await expect(slider).toHaveValue("15");
   await expect(page.getByRole("heading", { name: "Preview", exact: true })).toHaveCount(0);
@@ -341,7 +342,7 @@ test("keeps DropdownMenu preview icon-complete and free of a redundant heading",
   page,
 }) => {
   const problems = monitorPage(page);
-  await page.goto("/docs/components/dropdown-menu");
+  await page.goto("/docs/components/dropdown-menu", { waitUntil: "networkidle" });
 
   const preview = page.getByRole("region", { name: "dropdown-menu preview" });
   await preview.getByRole("button", { name: "Actions" }).click();
@@ -435,6 +436,18 @@ test("composes documentation search from Dialog and Command primitives", async (
   await expect(dialog.getByRole("option", { name: /Playground/ })).toBeVisible();
   await search.press("Enter");
   await expect(page).toHaveURL(/\/playground$/);
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  search = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("combobox", { name: "Search documentation" });
+  await search.fill("Finance & Assets");
+  const financeOption = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("option", { name: /Finance & Assets/ });
+  const [templatePreview] = await Promise.all([page.waitForEvent("popup"), financeOption.click()]);
+  await expect(templatePreview).toHaveURL(/\/views\/finance-assets$/);
+  await templatePreview.close();
   await expectHealthyPage(page, problems);
 });
 
@@ -454,16 +467,15 @@ test("keeps a keyboard-opened Dialog contained and restores focus", async ({ pag
   await expectHealthyPage(page, problems);
 });
 
-test("validates and completes a representative Core form", async ({ page }) => {
+test("opens and closes the static Finance Assets transfer preview", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/views/finance-assets");
   await page.getByRole("button", { name: "Transfer" }).click();
-  const dialog = page.getByRole("dialog", { name: "New transfer" });
-  await dialog.getByRole("button", { name: "Review transfer" }).click();
-  await expect(dialog.getByText("Enter an amount greater than zero.")).toBeVisible();
-  await dialog.getByRole("textbox", { name: "Amount" }).fill("1200");
-  await dialog.getByRole("button", { name: "Review transfer" }).click();
-  await expect(page.getByRole("dialog", { name: "Review transfer" })).toBeVisible();
+  const dialog = page.getByRole("dialog", { name: "Transfer preview" });
+  await expect(dialog.getByText("Demonstration only")).toBeVisible();
+  await expect(dialog.getByText("$5,000.00")).toBeVisible();
+  await dialog.getByRole("button", { name: "Done" }).click();
+  await expect(dialog).toBeHidden();
   await expectHealthyPage(page, problems);
 });
 
@@ -553,7 +565,7 @@ test("keeps Slider spacing compact and Slider and Switch thumbs white across mod
 
   const slider = page.getByRole("region", { name: "Slider preview" }).getByRole("group");
   const sliderThumb = slider.locator('[data-slot="thumb"]');
-  await expect(slider).toHaveCSS("row-gap", "8px");
+  await expect(slider).toHaveCSS("row-gap", "4px");
 
   const sliderColors = [];
   for (const mode of ["light", "dark"]) {
@@ -613,10 +625,13 @@ test("shows a rich Card example with stronger external than internal spacing", a
   const problems = monitorPage(page);
   await page.goto("/docs/components/card");
 
-  const card = page.getByRole("region", { name: "card preview" }).getByRole("article");
+  const card = page.getByRole("region", { name: "card preview" }).locator('[data-slot="card"]');
   await expect(card.locator('[data-slot="card-visual"] img')).toBeVisible();
-  await expect(card.getByRole("heading", { name: "Design system rollout" })).toBeVisible();
-  await expect(card.locator('[data-slot="card-description"]')).toBeVisible();
+  const title = card.locator('[data-slot="card-title"]');
+  await expect(title).toHaveText("Design system rollout");
+  await expect(title).toHaveJSProperty("tagName", "DIV");
+  await expect(title).toHaveCSS("font-size", "16px");
+  await expect(card.locator('[data-slot="card-description"]')).toHaveCSS("font-size", "14px");
   await expect(card.locator('[data-slot="card-content"]')).toBeVisible();
   await expect(card.getByRole("button", { name: "Open workspace" })).toHaveAttribute(
     "data-variant",
@@ -633,9 +648,17 @@ test("preserves RTL and reduced motion in a product composition", async ({ page 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize({ width: 390, height: 720 });
   await page.goto(workspaceRoute);
-  await page.getByRole("combobox", { name: "Direction" }).click();
+  const previewSettings = await openMobilePreviewSettings(page);
+  await previewSettings.getByRole("combobox", { name: "Direction" }).click();
   await page.getByRole("option", { name: "Right to left" }).click();
+  await page.keyboard.press("Escape");
+  await expect(previewSettings).toBeHidden();
+  await page.keyboard.press("Escape");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-direction",
+    "rtl",
+  );
   expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(
     true,
   );

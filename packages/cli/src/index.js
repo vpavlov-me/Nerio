@@ -2,6 +2,9 @@
 const fs = require("node:fs");
 const crypto = require("node:crypto");
 const path = require("node:path");
+const { Buffer } = require("node:buffer");
+const { clearTimeout, setTimeout } = require("node:timers");
+const { Worker } = require("node:worker_threads");
 
 const cliPackage = require("../package.json");
 const DEFAULT_REGISTRY = "@nerio-ui/registry/manifest.json";
@@ -9,6 +12,26 @@ const STATE_SCHEMA_VERSION = "1.0.0";
 const SUPPORTED_CONFIG_SCHEMAS = new Set(["0.1.0", "1.0.0"]);
 const SUPPORTED_REGISTRY_SCHEMA_MAJOR = 1;
 const STATE_FILENAME = "nerio.lock.json";
+const REGISTRY_ROLES = new Set(["component", "style", "utility"]);
+const REMOTE_MANIFEST_BYTES = 2 * 1024 * 1024;
+const REMOTE_SOURCE_BYTES = 4 * 1024 * 1024;
+const REMOTE_TIMEOUT_MS = 10_000;
+const REMOTE_REDIRECT_LIMIT = 3;
+const INTEGRITY_PATTERN = /^sha256-([a-f0-9]{64})$/;
+const SCHEMA_VERSION_PATTERN = /^\d+\.\d+\.\d+$/;
+const LOCK_CONTENT_HASH = Symbol("lock-content-hash");
+const TRANSACTION_PREFIX = ".nerio-transaction-";
+const TRANSACTION_SCHEMA_VERSION = "1.0.0";
+const REGISTRY_LOCK_DIRECTORY = ".nerio-registry-lock";
+const REGISTRY_LOCK_SCHEMA_VERSION = "1.0.0";
+const REGISTRY_LOCK_WAIT_MS = 60_000;
+const REGISTRY_LOCK_POLL_MS = 25;
+const REGISTRY_LOCK_HEARTBEAT_MS = 1_000;
+const REGISTRY_LOCK_STALE_MS = 30_000;
+const REGISTRY_LOCK_RECLAIM_CONFIRM_MS = 5_000;
+const REGISTRY_LOCK_CANDIDATE_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.candidate-`;
+const REGISTRY_LOCK_REAP_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.reap-`;
+const LOCK_RENEW_PREFIX = `${REGISTRY_LOCK_DIRECTORY}.renew-`;
 const cwd = process.cwd();
 const args = process.argv.slice(2);
 const command = args[0];
@@ -16,6 +39,7 @@ const itemName =
   ["add", "diff", "info", "update"].includes(command) && !args[1]?.startsWith("--")
     ? args[1]
     : undefined;
+let activeRegistryLock = null;
 
 function option(name) {
   const index = args.indexOf(name);
@@ -36,38 +60,38 @@ function defaultComponentsDirectory() {
 function help(commandName) {
   const sections = {
     init: [
-      "Usage: nerio init [--registry <path-or-url>] [--components <directory>]",
+      "Usage: nerio init [--registry <path-or-url>] [--components <directory>] [--allow-insecure-http]",
       "",
       "Create nerio.json for source-installed components.",
       "Defaults to src/components/nerio for src-dir applications and components/nerio otherwise.",
     ],
     add: [
-      "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite]",
+      "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite] [--allow-insecure-http]",
       "",
       "Install an editable source component, its registry dependencies, and exact source metadata.",
     ],
     diff: [
-      "Usage: nerio diff [component] [--registry <path-or-url>]",
+      "Usage: nerio diff [component] [--registry <path-or-url>] [--allow-insecure-http]",
       "",
       "Compare installed source with its recorded baseline and the configured Registry.",
     ],
     update: [
-      "Usage: nerio update [component] [--registry <path-or-url>] [--dry-run] [--force]",
+      "Usage: nerio update [component] [--registry <path-or-url>] [--dry-run] [--force] [--allow-insecure-http]",
       "",
       "Apply safe upstream source changes without overwriting local modifications.",
     ],
     list: [
-      "Usage: nerio list [--registry <path-or-url>]",
+      "Usage: nerio list [--registry <path-or-url>] [--allow-insecure-http]",
       "",
       "List component names, titles, and categories from the configured registry.",
     ],
     info: [
-      "Usage: nerio info <component> [--registry <path-or-url>]",
+      "Usage: nerio info <component> [--registry <path-or-url>] [--allow-insecure-http]",
       "",
       "Show registry metadata, dependencies, tokens, files, and usage for one component.",
     ],
     doctor: [
-      "Usage: nerio doctor [--registry <path-or-url>]",
+      "Usage: nerio doctor [--registry <path-or-url>] [--allow-insecure-http]",
       "",
       "Validate nerio.json and the configured registry manifest.",
     ],
@@ -83,9 +107,9 @@ function help(commandName) {
       "  nerio info     Show metadata for one component",
       "  nerio doctor   Validate configuration and registry metadata",
       "",
-      "Recommended local install: pnpm add -D @nerio-ui/registry@1.0.0-beta.0 @nerio-ui/cli@1.0.0-beta.0",
+      "Recommended local install: pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1",
       "Run local commands with: pnpm exec nerio <command> [options]",
-      "One-off example: pnpm dlx @nerio-ui/cli@1.0.0-beta.0 init",
+      "One-off example: pnpm dlx @nerio-ui/cli@1.0.0-beta.1 init",
       "",
       "Run nerio <command> --help for command options.",
     ],
@@ -96,6 +120,151 @@ function help(commandName) {
 
 function isUrl(value) {
   return /^https?:\/\//i.test(value);
+}
+
+function safeLocation(location) {
+  if (!isUrl(location)) return location;
+  const url = new URL(location);
+  url.username = "";
+  url.password = "";
+  url.search = "";
+  url.hash = "";
+  return url.toString();
+}
+
+function assertRemoteProtocol(location) {
+  const url = new URL(location);
+  if (url.username || url.password) {
+    throw new Error(`Registry URLs must not contain credentials: ${safeLocation(location)}`);
+  }
+  if (url.protocol === "https:") return;
+  if (url.protocol === "http:" && hasFlag("--allow-insecure-http")) return;
+  throw new Error(
+    `Registry URLs must use HTTPS. Re-run with --allow-insecure-http only for a trusted local HTTP Registry: ${safeLocation(location)}`,
+  );
+}
+
+function validContentType(contentType, kind) {
+  const mediaType = contentType.split(";", 1)[0].trim().toLowerCase();
+  if (kind === "manifest") {
+    return mediaType === "application/json" || mediaType.endsWith("+json");
+  }
+  return (
+    mediaType.startsWith("text/") ||
+    mediaType === "application/javascript" ||
+    mediaType === "application/typescript" ||
+    mediaType === "application/json" ||
+    mediaType === "application/octet-stream"
+  );
+}
+
+function remoteTimeoutMs() {
+  const injected = Number(process.env.NERIO_TEST_REMOTE_TIMEOUT_MS);
+  return Number.isInteger(injected) && injected > 0 ? injected : REMOTE_TIMEOUT_MS;
+}
+
+async function readRemoteText(location, { kind, maxBytes }) {
+  let current = location;
+  for (let redirects = 0; redirects <= REMOTE_REDIRECT_LIMIT; redirects += 1) {
+    assertRemoteProtocol(current);
+    const controller = new globalThis.AbortController();
+    const timeoutMs = remoteTimeoutMs();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    let response;
+    try {
+      response = await fetch(current, {
+        redirect: "manual",
+        signal: controller.signal,
+        headers: { accept: kind === "manifest" ? "application/json" : "text/plain, */*;q=0.1" },
+      });
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        throw new Error(
+          `Registry ${kind} request timed out after ${timeoutMs}ms: ${safeLocation(current)}`,
+        );
+      }
+      throw new Error(`Registry ${kind} request failed: ${safeLocation(current)}`);
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if ([301, 302, 303, 307, 308].includes(response.status)) {
+      if (redirects === REMOTE_REDIRECT_LIMIT) {
+        await response.body?.cancel();
+        throw new Error(
+          `Registry ${kind} exceeded the ${REMOTE_REDIRECT_LIMIT}-redirect limit: ${safeLocation(location)}`,
+        );
+      }
+      const next = response.headers.get("location");
+      if (!next) {
+        throw new Error(
+          `Registry ${kind} redirect is missing a Location header: ${safeLocation(current)}`,
+        );
+      }
+      await response.body?.cancel();
+      current = new URL(next, current).toString();
+      continue;
+    }
+    if (!response.ok) {
+      await response.body?.cancel();
+      throw new Error(
+        `Registry ${kind} request failed (${response.status}): ${safeLocation(current)}`,
+      );
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    if (!validContentType(contentType, kind)) {
+      await response.body?.cancel();
+      throw new Error(
+        `Registry ${kind} returned unsupported content type ${contentType || "(missing)"}: ${safeLocation(current)}`,
+      );
+    }
+    const declaredBytes = Number(response.headers.get("content-length"));
+    if (Number.isFinite(declaredBytes) && declaredBytes > maxBytes) {
+      await response.body?.cancel();
+      throw new Error(
+        `Registry ${kind} exceeds the ${maxBytes}-byte response limit: ${safeLocation(current)}`,
+      );
+    }
+    if (!response.body) {
+      throw new Error(`Registry ${kind} response has no body: ${safeLocation(current)}`);
+    }
+
+    const chunks = [];
+    let received = 0;
+    const reader = response.body.getReader();
+    let bodyTimedOut = false;
+    const bodyTimeout = setTimeout(() => {
+      bodyTimedOut = true;
+      controller.abort();
+    }, timeoutMs);
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        received += value.byteLength;
+        if (received > maxBytes) {
+          await reader.cancel();
+          throw new Error(
+            `Registry ${kind} exceeds the ${maxBytes}-byte response limit: ${safeLocation(current)}`,
+          );
+        }
+        chunks.push(Buffer.from(value));
+      }
+    } catch (error) {
+      if (bodyTimedOut || error?.name === "AbortError") {
+        throw new Error(
+          `Registry ${kind} request timed out after ${timeoutMs}ms: ${safeLocation(current)}`,
+        );
+      }
+      if (error instanceof Error && error.message.startsWith("Registry ")) throw error;
+      throw new Error(`Registry ${kind} response could not be read: ${safeLocation(current)}`);
+    } finally {
+      clearTimeout(bodyTimeout);
+    }
+    return { text: Buffer.concat(chunks, received).toString("utf8"), location: current };
+  }
+  throw new Error(`Registry ${kind} redirect handling failed: ${safeLocation(location)}`);
 }
 
 function readConfig(required = false) {
@@ -125,44 +294,59 @@ function resolvedLocation(location) {
   return location;
 }
 
-async function readText(location) {
+async function readTextResult(location, kind = "source") {
   const resolved = resolvedLocation(location);
   if (isUrl(resolved)) {
-    const response = await fetch(resolved);
-    if (!response.ok) {
-      throw new Error(`Registry request failed (${response.status}): ${resolved}`);
-    }
-    return response.text();
+    return readRemoteText(resolved, {
+      kind,
+      maxBytes: kind === "manifest" ? REMOTE_MANIFEST_BYTES : REMOTE_SOURCE_BYTES,
+    });
   }
 
-  return fs.readFileSync(path.resolve(cwd, resolved), "utf8");
+  const target = path.resolve(cwd, resolved);
+  const size = fs.statSync(target).size;
+  const maxBytes = kind === "manifest" ? REMOTE_MANIFEST_BYTES : REMOTE_SOURCE_BYTES;
+  if (size > maxBytes) {
+    throw new Error(`Registry ${kind} exceeds the ${maxBytes}-byte input limit: ${target}`);
+  }
+  return { text: fs.readFileSync(target, "utf8"), location: target };
+}
+
+async function readText(location, kind = "source") {
+  return (await readTextResult(location, kind)).text;
 }
 
 async function readManifest(location) {
   let manifest;
+  let manifestResult;
   try {
-    manifest = JSON.parse(await readText(location));
+    manifestResult = await readTextResult(location, "manifest");
+    manifest = JSON.parse(manifestResult.text);
   } catch (error) {
     if (error instanceof SyntaxError) {
-      throw new Error(`Registry manifest is not valid JSON: ${location}`);
+      throw new Error(`Registry manifest is not valid JSON: ${safeLocation(location)}`);
     }
     throw error;
   }
 
+  if (!manifest || typeof manifest !== "object" || Array.isArray(manifest)) {
+    throw new Error("Registry manifest must be a JSON object.");
+  }
   if (
-    !manifest.schemaVersion ||
-    !manifest.name ||
-    !manifest.version ||
-    !manifest.sourceRevision ||
-    !manifest.styleContractVersion ||
+    ["schemaVersion", "name", "version", "sourceRevision", "styleContractVersion"].some(
+      (field) => typeof manifest[field] !== "string" || !manifest[field],
+    ) ||
     !Array.isArray(manifest.items)
   ) {
     throw new Error(
       "Registry manifest must define schemaVersion, name, version, sourceRevision, styleContractVersion, and items.",
     );
   }
+  if (!SCHEMA_VERSION_PATTERN.test(manifest.schemaVersion)) {
+    throw new Error(`Registry schema must use x.y.z format: ${manifest.schemaVersion}.`);
+  }
   const schemaMajor = Number.parseInt(manifest.schemaVersion.split(".")[0], 10);
-  if (!Number.isInteger(schemaMajor) || schemaMajor > SUPPORTED_REGISTRY_SCHEMA_MAJOR) {
+  if (schemaMajor > SUPPORTED_REGISTRY_SCHEMA_MAJOR) {
     throw new Error(
       `Registry schema ${manifest.schemaVersion} is newer than this CLI supports. Upgrade @nerio-ui/cli before continuing.`,
     );
@@ -172,13 +356,142 @@ async function readManifest(location) {
       `Registry schema ${manifest.schemaVersion} is no longer supported. Use a Registry compatible with CLI ${cliPackage.version}.`,
     );
   }
+  validateManifest(manifest, {
+    requireIntegrity: isUrl(resolvedLocation(location)),
+    registryLocation: manifestResult.location,
+  });
+  Object.defineProperty(manifest, "__registryLocation", {
+    value: manifestResult.location,
+    enumerable: false,
+  });
   return manifest;
+}
+
+function validateStringArray(item, field) {
+  if (
+    !Array.isArray(item[field]) ||
+    item[field].some((value) => typeof value !== "string" || !value) ||
+    new Set(item[field]).size !== item[field].length
+  ) {
+    throw new Error(
+      `Registry item ${item.name || "(unnamed)"} must define ${field} as unique strings.`,
+    );
+  }
+}
+
+function validateManifest(manifest, { requireIntegrity = false, registryLocation } = {}) {
+  const names = new Set();
+  for (const item of manifest.items) {
+    if (!item || typeof item !== "object" || Array.isArray(item)) {
+      throw new Error("Registry items must be objects.");
+    }
+    for (const field of ["name", "title", "description", "category", "usage"]) {
+      if (typeof item[field] !== "string" || !item[field]) {
+        throw new Error(`Registry item ${item.name || "(unnamed)"} must define ${field}.`);
+      }
+    }
+    if (names.has(item.name))
+      throw new Error(`Registry contains duplicate item name: ${item.name}`);
+    names.add(item.name);
+    for (const field of [
+      "dependencies",
+      "registryDependencies",
+      "baseUiPrimitives",
+      "slots",
+      "variants",
+      "requiredTokens",
+      "accessibility",
+    ]) {
+      validateStringArray(item, field);
+    }
+    if (item.optionalPeerDependencies !== undefined) {
+      validateStringArray(item, "optionalPeerDependencies");
+    }
+    if (item.states !== undefined) validateStringArray(item, "states");
+    if (!Array.isArray(item.files) || !item.files.length) {
+      throw new Error(`Registry item ${item.name} must define at least one file.`);
+    }
+    const targets = new Set();
+    for (const file of item.files) {
+      if (
+        !file ||
+        typeof file !== "object" ||
+        Array.isArray(file) ||
+        typeof file.source !== "string" ||
+        !file.source ||
+        typeof file.target !== "string" ||
+        !file.target ||
+        !REGISTRY_ROLES.has(file.role)
+      ) {
+        throw new Error(`Registry item ${item.name} contains an invalid file entry.`);
+      }
+      if (
+        path.isAbsolute(file.target) ||
+        file.target.includes("\\") ||
+        file.target.split("/").includes("..") ||
+        file.target.includes("\0")
+      ) {
+        throw new Error(`Registry item ${item.name} contains unsafe target ${file.target}.`);
+      }
+      if (file.source.includes("\\") || file.source.includes("\0")) {
+        throw new Error(`Registry item ${item.name} contains unsafe source ${file.source}.`);
+      }
+      if (registryLocation && isUrl(registryLocation)) {
+        const sourceLocation = new URL(file.source, registryLocation).toString();
+        if (!isUrl(sourceLocation)) {
+          throw new Error(
+            `Registry item ${item.name} source must resolve to an HTTP(S) URL: ${file.source}.`,
+          );
+        }
+        assertRemoteProtocol(sourceLocation);
+      } else if (path.isAbsolute(file.source) || isUrl(file.source)) {
+        throw new Error(
+          `Local Registry item ${item.name} source must be a relative file path: ${file.source}.`,
+        );
+      }
+      if (targets.has(file.target)) {
+        throw new Error(`Registry item ${item.name} contains duplicate target ${file.target}.`);
+      }
+      targets.add(file.target);
+      if (
+        (requireIntegrity || file.integrity !== undefined) &&
+        (typeof file.integrity !== "string" || !INTEGRITY_PATTERN.test(file.integrity))
+      ) {
+        throw new Error(
+          `Registry file ${item.name}:${file.target} must define sha256-<64 lowercase hex> integrity.`,
+        );
+      }
+    }
+  }
+  for (const item of manifest.items) {
+    for (const dependency of item.registryDependencies) {
+      if (!names.has(dependency)) {
+        throw new Error(`Registry item ${item.name} depends on unknown item ${dependency}.`);
+      }
+    }
+  }
+  const visited = new Set();
+  const visiting = new Set();
+  const visit = (name) => {
+    if (visited.has(name)) return;
+    if (visiting.has(name)) throw new Error(`Registry dependency cycle includes ${name}.`);
+    visiting.add(name);
+    const item = manifest.items.find((entry) => entry.name === name);
+    for (const dependency of item.registryDependencies) visit(dependency);
+    visiting.delete(name);
+    visited.add(name);
+  };
+  for (const item of manifest.items) visit(item.name);
 }
 
 function resolveSource(registry, source) {
   const resolved = resolvedLocation(registry);
   if (isUrl(resolved)) {
-    return new URL(source, resolved).toString();
+    const location = new URL(source, resolved).toString();
+    if (!isUrl(location)) {
+      throw new Error(`Registry source must resolve to an HTTP(S) URL: ${source}`);
+    }
+    return location;
   }
   return path.resolve(path.dirname(path.resolve(cwd, resolved)), source);
 }
@@ -199,10 +512,25 @@ function resolveTarget(componentsRoot, target) {
   if (!isWithin(root, resolved) || !isWithin(canonicalPath(root), canonicalPath(resolved))) {
     throw new Error(`Registry target escapes the components directory: ${target}`);
   }
+  assertNoSymlinks(root, resolved, `Registry target contains a symlink: ${target}`);
   return resolved;
 }
 
+function assertNoSymlinks(root, target, message) {
+  let current = root;
+  const relative = path.relative(root, target);
+  for (const segment of relative.split(path.sep).filter(Boolean)) {
+    current = path.join(current, segment);
+    try {
+      if (fs.lstatSync(current).isSymbolicLink()) throw new Error(message);
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
+  }
+}
+
 function writeFileAtomic(target, content) {
+  refreshActiveRegistryLockLease();
   fs.mkdirSync(path.dirname(target), { recursive: true });
   const temporary = path.join(
     path.dirname(target),
@@ -211,8 +539,652 @@ function writeFileAtomic(target, content) {
   try {
     fs.writeFileSync(temporary, content, { flag: "wx" });
     fs.renameSync(temporary, target);
+    refreshActiveRegistryLockLease();
   } finally {
     fs.rmSync(temporary, { force: true });
+  }
+}
+
+function injectFailure(point, committed = 0) {
+  const requested = process.env.NERIO_TEST_FAILURE;
+  if (
+    requested === point ||
+    (point === "after-commit" && requested === `after-commit:${committed}`)
+  ) {
+    throw new Error(`Injected Registry transaction failure: ${requested}`);
+  }
+}
+
+function injectCrash(point, committed = 0) {
+  const requested = process.env.NERIO_TEST_CRASH;
+  if (
+    requested === point ||
+    (point === "after-commit" && requested === `after-commit:${committed}`)
+  ) {
+    process.exit(86);
+  }
+}
+
+function pauseTransactionForFixture() {
+  const milliseconds = Number(process.env.NERIO_TEST_TRANSACTION_PAUSE_MS);
+  if (Number.isSafeInteger(milliseconds) && milliseconds > 0) {
+    const clock = new Int32Array(new SharedArrayBuffer(4));
+    Atomics.wait(clock, 0, 0, milliseconds);
+    refreshActiveRegistryLockLease();
+  }
+}
+
+function removeEmptyParents(target, boundary) {
+  let directory = path.dirname(target);
+  while (directory !== boundary && isWithin(boundary, directory)) {
+    try {
+      fs.rmdirSync(directory);
+    } catch {
+      break;
+    }
+    directory = path.dirname(directory);
+  }
+}
+
+function transactionJournalPath(transactionRoot) {
+  return path.join(transactionRoot, "journal.json");
+}
+
+function wait(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+function readRegistryLock(lockPath) {
+  const pathStats = fs.lstatSync(lockPath);
+  if (!pathStats.isFile() || pathStats.isSymbolicLink()) {
+    throw new Error(`Invalid Registry lock path: ${lockPath}`);
+  }
+  const descriptor = fs.openSync(lockPath, "r");
+  let owner;
+  try {
+    const stats = fs.fstatSync(descriptor);
+    if (!sameFile(pathStats, stats)) {
+      throw Object.assign(new Error(`Lock changed while reading its owner.`), {
+        code: "EAGAIN",
+      });
+    }
+    try {
+      owner = JSON.parse(fs.readFileSync(descriptor, "utf8"));
+    } catch {
+      return { owner: null, stats };
+    }
+    if (
+      owner?.schemaVersion !== REGISTRY_LOCK_SCHEMA_VERSION ||
+      !Number.isSafeInteger(owner.pid) ||
+      owner.pid <= 0 ||
+      typeof owner.token !== "string" ||
+      !owner.token ||
+      typeof owner.createdAt !== "string"
+    ) {
+      return { owner: null, stats };
+    }
+    return { owner, stats };
+  } finally {
+    fs.closeSync(descriptor);
+  }
+}
+
+function sameFile(left, right) {
+  return left.dev === right.dev && left.ino === right.ino;
+}
+
+function registryReapClaims() {
+  const now = Date.now();
+  const claims = [];
+  for (const entry of fs.readdirSync(cwd)) {
+    if (!entry.startsWith(REGISTRY_LOCK_REAP_PREFIX)) continue;
+    const claimPath = path.join(cwd, entry);
+    let stats;
+    try {
+      stats = fs.lstatSync(claimPath);
+    } catch (error) {
+      if (error?.code === "ENOENT") continue;
+      throw error;
+    }
+    const claimAge = now - stats.mtimeMs;
+    if (stats.isFile() && !stats.isSymbolicLink() && claimAge >= REGISTRY_LOCK_STALE_MS) {
+      // Claim UUID paths are never reused, so this cannot remove a replacement.
+      fs.rmSync(claimPath, { force: true });
+      continue;
+    }
+    claims.push(claimPath);
+  }
+  return claims.sort();
+}
+
+function activeLockArtifact(target) {
+  let stats;
+  try {
+    stats = fs.lstatSync(target);
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+  if (!stats.isFile() || stats.isSymbolicLink()) {
+    throw new Error(`Invalid Registry lock artifact: ${target}`);
+  }
+  const now = Date.now();
+  if (now - stats.mtimeMs < REGISTRY_LOCK_STALE_MS) return true;
+  if (stats.atimeMs === stats.mtimeMs) fs.utimesSync(target, new Date(now), stats.mtime);
+  else if (now - stats.atimeMs >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+    fs.rmSync(target);
+    return false;
+  }
+  return true;
+}
+
+function renewalActive() {
+  return fs
+    .readdirSync(cwd)
+    .filter((entry) => entry.startsWith(LOCK_RENEW_PREFIX))
+    .some((entry) => activeLockArtifact(path.join(cwd, entry)));
+}
+
+function cleanupRegistryLockCandidates(currentCandidate) {
+  for (const entry of fs.readdirSync(cwd)) {
+    if (!entry.startsWith(REGISTRY_LOCK_CANDIDATE_PREFIX)) continue;
+    const candidatePath = path.join(cwd, entry);
+    if (candidatePath === currentCandidate) continue;
+    activeLockArtifact(candidatePath);
+  }
+}
+
+async function reapRegistryLock(lockPath, token, observed) {
+  const claimPath = path.join(cwd, `${REGISTRY_LOCK_REAP_PREFIX}${token}`);
+  try {
+    fs.writeFileSync(claimPath, `${token}\n`, { flag: "wx", mode: 0o600 });
+    await wait(REGISTRY_LOCK_POLL_MS * 2);
+    if (registryReapClaims()[0] !== claimPath) return false;
+    while (renewalActive()) await wait(REGISTRY_LOCK_POLL_MS);
+    let current;
+    try {
+      current = readRegistryLock(lockPath);
+    } catch (error) {
+      if (["EAGAIN", "ENOENT"].includes(error?.code)) return false;
+      throw error;
+    }
+    if (
+      !sameFile(observed.stats, current.stats) ||
+      current.owner?.token !== observed.owner?.token ||
+      current.stats.mtimeMs !== observed.stats.mtimeMs
+    ) {
+      return false;
+    }
+    if (Date.now() - current.stats.mtimeMs < REGISTRY_LOCK_STALE_MS) return false;
+    try {
+      fs.rmSync(lockPath);
+    } catch (error) {
+      if (error?.code !== "ENOENT") throw error;
+    }
+    return true;
+  } finally {
+    fs.rmSync(claimPath, { force: true });
+  }
+}
+
+function refreshRegistryLockLease(lock) {
+  const observed = readRegistryLock(lock.lockPath);
+  const guard = readRegistryLock(lock.renewPath);
+  if (
+    observed.owner?.token !== lock.token ||
+    guard.owner?.token !== lock.token ||
+    !sameFile(observed.stats, guard.stats)
+  ) {
+    throw new Error(`Registry lock ownership changed.`);
+  }
+  const descriptor = fs.openSync(lock.lockPath, "r");
+  const now = new Date();
+  try {
+    if (!sameFile(observed.stats, fs.fstatSync(descriptor))) {
+      throw new Error(`Registry lock changed before its heartbeat.`);
+    }
+    fs.futimesSync(descriptor, now, now);
+  } finally {
+    fs.closeSync(descriptor);
+  }
+}
+
+function refreshActiveRegistryLockLease() {
+  if (activeRegistryLock) refreshRegistryLockLease(activeRegistryLock);
+}
+
+function startRegistryLockHeartbeat(lock) {
+  lock.renewPath = `${lock.lockPath}.renew-${lock.token}`;
+  try {
+    fs.linkSync(lock.lockPath, lock.renewPath);
+    lock.heartbeat = new Worker(
+      `const{workerData:w}=require("node:worker_threads"),f=require("node:fs"),d=f.openSync(w.path,"r");setInterval(()=>{const n=new Date,a=f.fstatSync(d);f.futimesSync(d,n,n);const b=f.lstatSync(w.path);if(a.dev!==b.dev||a.ino!==b.ino)throw 0},w.interval)`,
+      {
+        eval: true,
+        workerData: { path: lock.renewPath, interval: REGISTRY_LOCK_HEARTBEAT_MS },
+      },
+    );
+  } catch (error) {
+    releaseRegistryLock(lock);
+    throw error;
+  }
+  lock.heartbeat.on("error", (error) => (lock.heartbeatError = error));
+  lock.heartbeat.unref();
+  return lock;
+}
+
+async function acquireRegistryLock() {
+  const lockPath = path.join(cwd, REGISTRY_LOCK_DIRECTORY);
+  const token = crypto.randomUUID();
+  const candidatePath = `${lockPath}.candidate-${token}`;
+  const deadline = Date.now() + REGISTRY_LOCK_WAIT_MS;
+  writeFileAtomic(
+    candidatePath,
+    `${JSON.stringify(
+      {
+        schemaVersion: REGISTRY_LOCK_SCHEMA_VERSION,
+        pid: process.pid,
+        token,
+        createdAt: new Date().toISOString(),
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  fs.chmodSync(candidatePath, 0o600);
+  let candidateHeartbeatAt = Date.now();
+  let staleOwner;
+  try {
+    while (true) {
+      cleanupRegistryLockCandidates(candidatePath);
+      if (Date.now() - candidateHeartbeatAt >= REGISTRY_LOCK_HEARTBEAT_MS) {
+        const now = new Date();
+        fs.utimesSync(candidatePath, now, now);
+        candidateHeartbeatAt = now.getTime();
+      }
+      if (registryReapClaims().length) {
+        if (Date.now() >= deadline) {
+          throw new Error(`Registry lock wait exceeded ${REGISTRY_LOCK_WAIT_MS}ms.`);
+        }
+        await wait(REGISTRY_LOCK_POLL_MS);
+        continue;
+      }
+      try {
+        fs.linkSync(candidatePath, lockPath);
+        if (registryReapClaims().length) {
+          try {
+            const acquired = readRegistryLock(lockPath);
+            if (acquired.owner?.token === token) fs.rmSync(lockPath, { force: true });
+          } catch (error) {
+            if (!["EAGAIN", "ENOENT"].includes(error?.code)) throw error;
+          }
+          await wait(REGISTRY_LOCK_POLL_MS);
+          continue;
+        }
+        return startRegistryLockHeartbeat({ lockPath, token });
+      } catch (error) {
+        if (error?.code !== "EEXIST") throw error;
+      }
+
+      let observed;
+      try {
+        observed = readRegistryLock(lockPath);
+      } catch (error) {
+        if (["EAGAIN", "ENOENT"].includes(error?.code)) continue;
+        throw error;
+      }
+      if (observed.owner) {
+        const leaseAge = Date.now() - observed.stats.mtimeMs;
+        const leaseStale = leaseAge >= REGISTRY_LOCK_STALE_MS;
+        if (leaseStale) {
+          if (
+            staleOwner?.token !== observed.owner.token ||
+            staleOwner.mtimeMs !== observed.stats.mtimeMs
+          ) {
+            staleOwner = {
+              token: observed.owner.token,
+              mtimeMs: observed.stats.mtimeMs,
+              observedAt: Date.now(),
+            };
+          } else if (Date.now() - staleOwner.observedAt >= REGISTRY_LOCK_RECLAIM_CONFIRM_MS) {
+            if (await reapRegistryLock(lockPath, token, observed)) continue;
+          }
+        } else {
+          staleOwner = null;
+        }
+      }
+      if (Date.now() >= deadline) {
+        const owner = observed.owner ? ` held by process ${observed.owner.pid}` : "";
+        throw new Error(`Registry lock wait exceeded ${REGISTRY_LOCK_WAIT_MS}ms${owner}.`);
+      }
+      await wait(REGISTRY_LOCK_POLL_MS);
+    }
+  } finally {
+    fs.rmSync(candidatePath, { force: true });
+  }
+}
+
+function releaseRegistryLock(lock) {
+  lock.heartbeat?.terminate();
+  try {
+    if (!fs.existsSync(lock.lockPath)) {
+      if (lock.heartbeatError) throw lock.heartbeatError;
+      return;
+    }
+    const observed = readRegistryLock(lock.lockPath);
+    if (observed.owner?.token !== lock.token) {
+      throw new Error(`Lock ownership changed before release.`);
+    }
+    fs.rmSync(lock.lockPath, { force: true });
+    if (lock.heartbeatError) throw lock.heartbeatError;
+  } finally {
+    fs.rmSync(lock.renewPath, { force: true });
+  }
+}
+
+function writeTransactionJournal(transactionRoot, journal) {
+  writeFileAtomic(transactionJournalPath(transactionRoot), `${JSON.stringify(journal, null, 2)}\n`);
+}
+
+function backupPath(transactionRoot, snapshot) {
+  if (!snapshot.backup || path.isAbsolute(snapshot.backup)) {
+    throw new Error("Registry transaction journal contains an invalid backup path.");
+  }
+  const target = path.resolve(transactionRoot, snapshot.backup);
+  if (!isWithin(transactionRoot, target)) {
+    throw new Error("Registry transaction journal backup escapes its transaction directory.");
+  }
+  const stats = fs.lstatSync(target);
+  if (!stats.isFile() || stats.isSymbolicLink()) {
+    throw new Error("Registry transaction journal backup must be a regular file.");
+  }
+  return target;
+}
+
+function validateRecoveryJournal(transactionRoot, journal) {
+  const config = readConfig(true);
+  if (typeof config.components !== "string" || !config.components) {
+    throw new Error("nerio.json must define a components directory before recovery.");
+  }
+  const expectedRoot = path.resolve(cwd, config.components);
+  if (
+    journal?.schemaVersion !== TRANSACTION_SCHEMA_VERSION ||
+    !["committing", "committed"].includes(journal.phase) ||
+    !Array.isArray(journal.snapshots) ||
+    !journal.lockSnapshot
+  ) {
+    throw new Error(`Interrupted Registry transaction has an invalid journal: ${transactionRoot}`);
+  }
+  const targets = new Set();
+  for (const snapshot of journal.snapshots) {
+    if (
+      snapshot.root !== expectedRoot ||
+      typeof snapshot.target !== "string" ||
+      !path.isAbsolute(snapshot.target) ||
+      !isWithin(expectedRoot, snapshot.target) ||
+      typeof snapshot.existed !== "boolean" ||
+      (snapshot.mode !== null && typeof snapshot.mode !== "number") ||
+      targets.has(snapshot.target)
+    ) {
+      throw new Error(
+        `Interrupted Registry transaction target is outside the configured components directory: ${transactionRoot}`,
+      );
+    }
+    targets.add(snapshot.target);
+    if (
+      !isWithin(canonicalPath(expectedRoot), canonicalPath(snapshot.target)) ||
+      snapshot.target === statePath()
+    ) {
+      throw new Error(`Interrupted Registry transaction target is unsafe: ${snapshot.target}`);
+    }
+    assertNoSymlinks(
+      expectedRoot,
+      snapshot.target,
+      `Interrupted Registry transaction target contains a symlink: ${snapshot.target}`,
+    );
+    if (snapshot.existed) {
+      backupPath(transactionRoot, snapshot);
+    } else if (snapshot.backup !== null) {
+      throw new Error(`Interrupted Registry transaction has an invalid backup marker.`);
+    }
+  }
+  if (
+    journal.lockSnapshot.target !== statePath() ||
+    typeof journal.lockSnapshot.existed !== "boolean" ||
+    (journal.lockSnapshot.mode !== null && typeof journal.lockSnapshot.mode !== "number")
+  ) {
+    throw new Error(
+      `Interrupted Registry transaction lock snapshot is invalid: ${transactionRoot}`,
+    );
+  }
+  if (journal.lockSnapshot.existed) {
+    backupPath(transactionRoot, journal.lockSnapshot);
+  } else if (journal.lockSnapshot.backup !== null) {
+    throw new Error(`Interrupted Registry transaction has an invalid lock backup marker.`);
+  }
+}
+
+function restoreTransaction(transactionRoot, snapshots, lockSnapshot) {
+  const errors = [];
+  for (const snapshot of [...snapshots].reverse()) {
+    refreshActiveRegistryLockLease();
+    try {
+      if (snapshot.existed) {
+        writeFileAtomic(snapshot.target, fs.readFileSync(backupPath(transactionRoot, snapshot)));
+        if (snapshot.mode !== null) fs.chmodSync(snapshot.target, snapshot.mode);
+      } else {
+        fs.rmSync(snapshot.target, { force: true });
+        removeEmptyParents(snapshot.target, snapshot.root);
+      }
+    } catch (error) {
+      errors.push(`${snapshot.target}: ${error.message}`);
+    }
+  }
+  try {
+    if (lockSnapshot.existed) {
+      writeFileAtomic(
+        lockSnapshot.target,
+        fs.readFileSync(backupPath(transactionRoot, lockSnapshot)),
+      );
+      if (lockSnapshot.mode !== null) fs.chmodSync(lockSnapshot.target, lockSnapshot.mode);
+    } else {
+      fs.rmSync(lockSnapshot.target, { force: true });
+    }
+  } catch (error) {
+    errors.push(`${lockSnapshot.target}: ${error.message}`);
+  }
+  if (errors.length) {
+    throw new Error(`Registry transaction rollback failed:\n- ${errors.join("\n- ")}`);
+  }
+}
+
+function recoverInterruptedTransactions() {
+  const entries = fs
+    .readdirSync(cwd, { withFileTypes: true })
+    .filter((entry) => entry.name.startsWith(TRANSACTION_PREFIX))
+    .sort((left, right) => left.name.localeCompare(right.name));
+  for (const entry of entries) {
+    refreshActiveRegistryLockLease();
+    const transactionRoot = path.join(cwd, entry.name);
+    if (!entry.isDirectory() || fs.lstatSync(transactionRoot).isSymbolicLink()) {
+      throw new Error(`Reserved Registry transaction path is not a directory: ${transactionRoot}`);
+    }
+    const journalPath = transactionJournalPath(transactionRoot);
+    if (!fs.existsSync(journalPath)) {
+      fs.rmSync(transactionRoot, { recursive: true, force: true });
+      continue;
+    }
+    const journalStats = fs.lstatSync(journalPath);
+    if (!journalStats.isFile() || journalStats.isSymbolicLink()) {
+      throw new Error(
+        `Interrupted Registry transaction journal must be a regular file: ${journalPath}`,
+      );
+    }
+    let journal;
+    try {
+      journal = JSON.parse(fs.readFileSync(journalPath, "utf8"));
+    } catch {
+      throw new Error(`Interrupted Registry transaction journal is not valid JSON: ${journalPath}`);
+    }
+    validateRecoveryJournal(transactionRoot, journal);
+    if (journal.phase === "committing") {
+      restoreTransaction(transactionRoot, journal.snapshots, journal.lockSnapshot);
+      console.log(`Recovered interrupted Registry transaction ${entry.name}.`);
+    }
+    fs.rmSync(transactionRoot, { recursive: true, force: true });
+  }
+}
+
+function applyTransaction(operations, nextState, expectedLockHash, validations = operations) {
+  const lockTarget = statePath();
+  try {
+    if (fs.lstatSync(lockTarget).isSymbolicLink()) {
+      throw new Error(`${STATE_FILENAME} must not be a symlink.`);
+    }
+  } catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+  }
+  const uniqueTargets = new Set();
+  for (const operation of operations) {
+    if (uniqueTargets.has(operation.target)) {
+      throw new Error(`Registry transaction contains duplicate target ${operation.target}.`);
+    }
+    uniqueTargets.add(operation.target);
+  }
+  for (const validation of validations) {
+    refreshActiveRegistryLockLease();
+    if (validation.root) {
+      if (
+        !isWithin(validation.root, validation.target) ||
+        !isWithin(canonicalPath(validation.root), canonicalPath(validation.target))
+      ) {
+        throw new Error(`Registry target changed outside the components directory.`);
+      }
+      assertNoSymlinks(
+        validation.root,
+        validation.target,
+        `Registry target became a symlink before commit.`,
+      );
+    }
+    const exists = fs.existsSync(validation.target);
+    const currentHash = exists ? hashContent(fs.readFileSync(validation.target)) : null;
+    refreshActiveRegistryLockLease();
+    if (
+      validation.expectedExists !== undefined &&
+      (exists !== validation.expectedExists ||
+        (validation.expectedHash !== undefined && currentHash !== validation.expectedHash))
+    ) {
+      throw new Error(
+        `Registry transaction stopped because ${path.relative(cwd, validation.target)} changed after planning.`,
+      );
+    }
+  }
+  const lockExistsBeforeStaging = fs.existsSync(lockTarget);
+  const currentLockHash = lockExistsBeforeStaging ? hashContent(fs.readFileSync(lockTarget)) : null;
+  if (currentLockHash !== expectedLockHash) {
+    throw new Error(`${STATE_FILENAME} changed after planning; no source files were written.`);
+  }
+
+  const transactionRoot = fs.mkdtempSync(path.join(cwd, TRANSACTION_PREFIX));
+  const stageRoot = path.join(transactionRoot, "stage");
+  const backupRoot = path.join(transactionRoot, "backup");
+  fs.mkdirSync(stageRoot);
+  fs.mkdirSync(backupRoot);
+  const snapshots = [];
+  let lockSnapshot;
+  let committed = 0;
+  let preserveTransaction = false;
+
+  try {
+    for (const [index, operation] of operations.entries()) {
+      refreshActiveRegistryLockLease();
+      const existed = fs.existsSync(operation.target);
+      const snapshot = {
+        target: operation.target,
+        root: operation.root,
+        existed,
+        backup: existed ? path.join("backup", String(index)) : null,
+        mode: existed ? fs.statSync(operation.target).mode : null,
+      };
+      snapshots.push(snapshot);
+      if (existed) {
+        fs.writeFileSync(
+          path.join(transactionRoot, snapshot.backup),
+          fs.readFileSync(operation.target),
+          {
+            mode: snapshot.mode,
+          },
+        );
+      }
+      if (operation.type === "write") {
+        fs.writeFileSync(path.join(stageRoot, String(index)), operation.content, { flag: "wx" });
+      }
+    }
+    const lockExists = fs.existsSync(lockTarget);
+    lockSnapshot = {
+      target: lockTarget,
+      existed: lockExists,
+      backup: lockExists ? path.join("backup", "lock") : null,
+      mode: lockExists ? fs.statSync(lockTarget).mode : null,
+    };
+    if (lockExists) {
+      fs.writeFileSync(
+        path.join(transactionRoot, lockSnapshot.backup),
+        fs.readFileSync(lockTarget),
+        {
+          mode: lockSnapshot.mode,
+        },
+      );
+    }
+    const nextLock = `${JSON.stringify(nextState, null, 2)}\n`;
+    fs.writeFileSync(path.join(stageRoot, "lock"), nextLock, { flag: "wx" });
+    const journal = {
+      schemaVersion: TRANSACTION_SCHEMA_VERSION,
+      phase: "committing",
+      snapshots,
+      lockSnapshot,
+    };
+    writeTransactionJournal(transactionRoot, journal);
+    pauseTransactionForFixture();
+    injectFailure("after-staging");
+    injectCrash("after-staging");
+
+    for (const [index, operation] of operations.entries()) {
+      refreshActiveRegistryLockLease();
+      if (operation.type === "write") {
+        writeFileAtomic(operation.target, fs.readFileSync(path.join(stageRoot, String(index))));
+      } else if (operation.type === "delete" && fs.existsSync(operation.target)) {
+        fs.rmSync(operation.target);
+      }
+      committed += 1;
+      injectFailure("after-commit", committed);
+      injectCrash("after-commit", committed);
+    }
+
+    injectFailure("before-lock-write");
+    injectCrash("before-lock-write");
+    if (process.env.NERIO_TEST_FAILURE === "during-lock-write") {
+      const partial = path.join(transactionRoot, "partial-lock");
+      fs.writeFileSync(partial, nextLock.slice(0, Math.max(1, Math.floor(nextLock.length / 2))));
+      injectFailure("during-lock-write");
+    }
+    writeFileAtomic(lockTarget, fs.readFileSync(path.join(stageRoot, "lock")));
+    writeTransactionJournal(transactionRoot, { ...journal, phase: "committed" });
+    injectCrash("after-lock-write");
+  } catch (error) {
+    try {
+      if (lockSnapshot) restoreTransaction(transactionRoot, snapshots, lockSnapshot);
+    } catch (rollbackError) {
+      preserveTransaction = true;
+      throw new Error(
+        `${error.message}\n${rollbackError.message}\nRecovery data remains in ${transactionRoot}.`,
+      );
+    }
+    throw new Error(
+      `${error.message}\nRegistry transaction rolled back without source or lock changes.`,
+    );
+  } finally {
+    if (!preserveTransaction) fs.rmSync(transactionRoot, { recursive: true, force: true });
   }
 }
 
@@ -250,8 +1222,10 @@ function readState(required = false) {
   }
 
   let state;
+  let raw;
   try {
-    state = JSON.parse(fs.readFileSync(target, "utf8"));
+    raw = fs.readFileSync(target, "utf8");
+    state = JSON.parse(raw);
   } catch {
     throw new Error(`${STATE_FILENAME} is not valid JSON.`);
   }
@@ -269,13 +1243,24 @@ function readState(required = false) {
     !state.items ||
     !state.files ||
     Object.values(state.files).some(
-      (file) => !file.hash || !file.role || !file.source || !Array.isArray(file.owners),
+      (file) =>
+        !file.hash ||
+        !file.role ||
+        !file.source ||
+        !Array.isArray(file.owners) ||
+        file.owners.some((owner) => typeof owner !== "string" || !owner) ||
+        new Set(file.owners).size !== file.owners.length ||
+        (file.integrity !== undefined && !INTEGRITY_PATTERN.test(file.integrity)),
     )
   ) {
     throw new Error(
       `${STATE_FILENAME} is missing Registry, requestedItems, items, or file metadata.`,
     );
   }
+  Object.defineProperty(state, LOCK_CONTENT_HASH, {
+    value: hashContent(raw),
+    enumerable: false,
+  });
   return state;
 }
 
@@ -300,13 +1285,19 @@ function registryMetadata(manifest) {
   };
 }
 
-function writeState(state) {
-  const target = statePath();
-  writeFileAtomic(target, `${JSON.stringify(state, null, 2)}\n`);
-}
-
 function relativeTarget(componentsRoot, target) {
-  return path.relative(cwd, resolveTarget(componentsRoot, target));
+  const relative = path.relative(cwd, resolveTarget(componentsRoot, target));
+  const normalized = relative.toLowerCase();
+  if (
+    normalized === STATE_FILENAME ||
+    normalized === "nerio.json" ||
+    normalized === REGISTRY_LOCK_DIRECTORY ||
+    normalized.startsWith(`${REGISTRY_LOCK_DIRECTORY}.`) ||
+    normalized.split(path.sep).some((segment) => segment.startsWith(".nerio-transaction-"))
+  ) {
+    throw new Error(`Registry target uses a reserved Nerio path: ${target}`);
+  }
+  return relative;
 }
 
 function isTokenStylesTarget(target) {
@@ -322,6 +1313,7 @@ function resolveInstalledTarget(componentsRoot, storedTarget) {
       `${STATE_FILENAME} path escapes the configured components directory: ${storedTarget}`,
     );
   }
+  assertNoSymlinks(root, resolved, `${STATE_FILENAME} path contains a symlink: ${storedTarget}`);
   return resolved;
 }
 
@@ -331,18 +1323,35 @@ async function registryFiles(registry, items, componentsRoot) {
     for (const file of item.files) {
       const target = relativeTarget(componentsRoot, file.target);
       const content = await readText(resolveSource(registry, file.source));
-      const existing = files.get(target);
-      if (existing && existing.content !== content) {
+      const hash = hashContent(content);
+      const expectedHash = file.integrity?.match(INTEGRITY_PATTERN)?.[1];
+      if (expectedHash && hash !== expectedHash) {
         throw new Error(
-          `Registry items ${existing.owners.join(", ")} and ${item.name} provide conflicting content for ${target}.`,
+          `Registry integrity mismatch for ${item.name}:${file.target}; expected ${file.integrity}.`,
+        );
+      }
+      const existing = files.get(target);
+      if (
+        existing &&
+        (existing.content !== content ||
+          existing.role !== file.role ||
+          existing.source !== file.source ||
+          existing.integrity !== (file.integrity || `sha256-${hash}`))
+      ) {
+        throw new Error(
+          `Registry items ${existing.owners.join(", ")} and ${item.name} provide conflicting metadata or content for ${target}.`,
         );
       }
       if (existing) {
+        if (existing.owners.includes(item.name)) {
+          throw new Error(`Registry item ${item.name} provides duplicate target ${target}.`);
+        }
         existing.owners.push(item.name);
       } else {
         files.set(target, {
           content,
-          hash: hashContent(content),
+          hash,
+          integrity: file.integrity || `sha256-${hash}`,
           role: file.role,
           source: file.source,
           owners: [item.name],
@@ -407,9 +1416,11 @@ async function init() {
     throw new Error("nerio.json already exists.");
   }
 
+  const configuredRegistry = option("--registry") || DEFAULT_REGISTRY;
+  if (isUrl(configuredRegistry)) assertRemoteProtocol(configuredRegistry);
   const config = {
     schemaVersion: "1.0.0",
-    registry: option("--registry") || DEFAULT_REGISTRY,
+    registry: configuredRegistry,
     components: option("--components") || defaultComponentsDirectory(),
   };
   fs.writeFileSync(target, `${JSON.stringify(config, null, 2)}\n`);
@@ -418,7 +1429,9 @@ async function init() {
 
 async function add(name) {
   if (!name || name.startsWith("--")) {
-    throw new Error("Usage: nerio add <component> [--registry <path-or-url>] [--overwrite]");
+    throw new Error(
+      "Usage: nerio add <component> [--registry <path-or-url>] [--dry-run] [--overwrite] [--allow-insecure-http]",
+    );
   }
 
   const config = readConfig(true);
@@ -429,20 +1442,34 @@ async function add(name) {
   const registry = registryLocation(config);
   const manifest = await readManifest(registry);
   const items = collectItems(manifest, name);
-  const upstreamFiles = await registryFiles(registry, items, config.components);
+  const upstreamFiles = await registryFiles(
+    manifest.__registryLocation || registry,
+    items,
+    config.components,
+  );
   const state = readState(false) || emptyState(manifest);
   const written = [];
   const skipped = [];
   const writes = [];
+  const validations = [];
+  const componentsRoot = path.resolve(cwd, config.components);
 
   for (const [relative, file] of upstreamFiles) {
     const target = path.resolve(cwd, relative);
+    const existed = fs.existsSync(target);
+    const existingHash = existed ? hashContent(fs.readFileSync(target)) : undefined;
+    validations.push({
+      target,
+      root: componentsRoot,
+      expectedExists: existed,
+      expectedHash: existingHash,
+    });
     if (hasFlag("--dry-run")) {
       written.push(relative);
       continue;
     }
 
-    if (fs.existsSync(target) && !hasFlag("--overwrite")) {
+    if (existed && !hasFlag("--overwrite")) {
       const content = fs.readFileSync(target, "utf8");
       const tracked = state.files[relative];
       if (content === file.content || isTokenStylesTarget(relative)) {
@@ -457,12 +1484,16 @@ async function add(name) {
         );
       }
     } else {
-      writes.push({ target, content: file.content });
+      writes.push({
+        type: "write",
+        target,
+        content: file.content,
+        root: componentsRoot,
+        expectedExists: existed,
+        expectedHash: existingHash,
+      });
       written.push(relative);
     }
-  }
-  for (const write of writes) {
-    writeFileAtomic(write.target, write.content);
   }
 
   const item = items.get(name);
@@ -470,22 +1501,24 @@ async function add(name) {
     console.log(`Would add ${item.title}: ${written.length} files.`);
     for (const file of written) console.log(`- ${file}`);
   } else {
-    state.registry = registryMetadata(manifest);
-    state.nerioVersion = cliPackage.version;
-    state.requestedItems = [...new Set([...state.requestedItems, name])].sort();
+    const nextState = globalThis.structuredClone(state);
+    nextState.registry = registryMetadata(manifest);
+    nextState.nerioVersion = cliPackage.version;
+    nextState.requestedItems = [...new Set([...nextState.requestedItems, name])].sort();
     for (const dependency of items.values()) {
-      state.items[dependency.name] = itemMetadata(dependency, manifest);
+      nextState.items[dependency.name] = itemMetadata(dependency, manifest);
     }
     for (const [relative, file] of upstreamFiles) {
-      const previous = state.files[relative];
-      state.files[relative] = {
+      const previous = nextState.files[relative];
+      nextState.files[relative] = {
         hash: written.includes(relative) ? file.hash : previous?.hash || file.hash,
+        integrity: file.integrity,
         role: file.role,
         source: file.source,
         owners: [...new Set([...(previous?.owners || []), ...file.owners])].sort(),
       };
     }
-    writeState(state);
+    applyTransaction(writes, nextState, state[LOCK_CONTENT_HASH] ?? null, validations);
     console.log(
       `Added ${item.title}: ${written.length} files written, ${skipped.length} unchanged.`,
     );
@@ -523,7 +1556,11 @@ async function createUpgradePlan(config, registry, manifest, state, name) {
 
   const newItems = new Map();
   for (const selected of selectedRoots) collectItems(manifest, selected, newItems);
-  const upstreamFiles = await registryFiles(registry, newItems, config.components);
+  const upstreamFiles = await registryFiles(
+    manifest.__registryLocation || registry,
+    newItems,
+    config.components,
+  );
 
   const desiredNames = new Set(newItems.keys());
   for (const requested of state.requestedItems) {
@@ -579,7 +1616,9 @@ function printUpgradePlan(title, plan) {
 
 async function diff(name) {
   if (name?.startsWith("--")) {
-    throw new Error("Usage: nerio diff [component] [--registry <path-or-url>]");
+    throw new Error(
+      "Usage: nerio diff [component] [--registry <path-or-url>] [--allow-insecure-http]",
+    );
   }
   const config = readConfig(true);
   const state = readState(true);
@@ -604,7 +1643,7 @@ function conflictStatus(status) {
 async function update(name) {
   if (name?.startsWith("--")) {
     throw new Error(
-      "Usage: nerio update [component] [--registry <path-or-url>] [--dry-run] [--force]",
+      "Usage: nerio update [component] [--registry <path-or-url>] [--dry-run] [--force] [--allow-insecure-http]",
     );
   }
   const config = readConfig(true);
@@ -632,16 +1671,32 @@ async function update(name) {
     );
   }
 
+  const nextState = globalThis.structuredClone(state);
+  const operations = [];
+  const validations = [];
+  const componentsRoot = path.resolve(cwd, config.components);
   for (const entry of plan.entries) {
     const absolute = resolveInstalledTarget(config.components, entry.target);
+    validations.push({
+      target: absolute,
+      root: componentsRoot,
+      expectedExists: entry.existsLocally,
+      expectedHash: entry.localHash,
+    });
     if (!entry.upstream && !entry.owners.length) {
       if (
         entry.existsLocally &&
         (!entry.status.includes("locally modified") || hasFlag("--force"))
       ) {
-        fs.rmSync(absolute);
+        operations.push({
+          type: "delete",
+          target: absolute,
+          root: componentsRoot,
+          expectedExists: entry.existsLocally,
+          expectedHash: entry.localHash,
+        });
       }
-      delete state.files[entry.target];
+      delete nextState.files[entry.target];
       continue;
     }
 
@@ -650,28 +1705,39 @@ async function update(name) {
       (["added", "upstream changed"].includes(entry.status) ||
         (conflictStatus(entry.status) && hasFlag("--force")));
     if (shouldWrite) {
-      writeFileAtomic(absolute, entry.upstream.content);
+      operations.push({
+        type: "write",
+        target: absolute,
+        content: entry.upstream.content,
+        root: componentsRoot,
+        expectedExists: entry.existsLocally,
+        expectedHash: entry.localHash,
+      });
     }
 
     const preserveBaseline = ["locally modified", "locally removed"].includes(entry.status);
     const metadata = {
       hash: preserveBaseline ? entry.previous?.hash : entry.upstream?.hash || entry.previous?.hash,
+      integrity: preserveBaseline
+        ? entry.previous?.integrity
+        : entry.upstream?.integrity || entry.previous?.integrity,
       role: entry.upstream?.role || entry.previous?.role,
       source: entry.upstream?.source || entry.previous?.source,
     };
     if (!metadata.hash || !metadata.role || !metadata.source) {
       throw new Error(`Cannot record complete update metadata for ${entry.target}.`);
     }
-    state.files[entry.target] = {
+    nextState.files[entry.target] = {
       ...metadata,
+      integrity: metadata.integrity || `sha256-${metadata.hash}`,
       owners: entry.owners,
     };
   }
 
-  state.items = plan.nextItems;
-  state.registry = registryMetadata(manifest);
-  state.nerioVersion = cliPackage.version;
-  writeState(state);
+  nextState.items = plan.nextItems;
+  nextState.registry = registryMetadata(manifest);
+  nextState.nerioVersion = cliPackage.version;
+  applyTransaction(operations, nextState, state[LOCK_CONTENT_HASH] ?? null, validations);
   console.log(`Updated source metadata in ${STATE_FILENAME}.`);
 }
 
@@ -1118,18 +2184,46 @@ async function main() {
     console.log(help(command));
     return;
   }
+  const guardedCommand = ["init", "add", "diff", "update", "doctor"].includes(command);
+  const recoveryCommand = ["add", "diff", "update", "doctor"].includes(command);
+  const lock = guardedCommand ? await acquireRegistryLock() : null;
+  activeRegistryLock = lock;
+  let commandError;
+  try {
+    if (recoveryCommand) recoverInterruptedTransactions();
 
-  if (command === "init") await init();
-  else if (command === "add") await add(itemName);
-  else if (command === "diff") await diff(itemName);
-  else if (command === "update") await update(itemName);
-  else if (command === "list") await list();
-  else if (command === "info") await info(itemName);
-  else if (command === "doctor") await doctor();
-  else {
-    console.log(help("root"));
-    process.exitCode = command ? 1 : 0;
+    if (command === "init") await init();
+    else if (command === "add") await add(itemName);
+    else if (command === "diff") await diff(itemName);
+    else if (command === "update") await update(itemName);
+    else if (command === "list") await list();
+    else if (command === "info") await info(itemName);
+    else if (command === "doctor") await doctor();
+    else {
+      console.log(help("root"));
+      process.exitCode = command ? 1 : 0;
+    }
+  } catch (error) {
+    commandError = error;
   }
+  let releaseError;
+  if (lock) {
+    try {
+      releaseRegistryLock(lock);
+    } catch (error) {
+      releaseError = error;
+    }
+  }
+  activeRegistryLock = null;
+  if (commandError && releaseError) {
+    console.error(
+      `Registry lock release also failed: ${
+        releaseError instanceof Error ? releaseError.message : String(releaseError)
+      }`,
+    );
+  }
+  if (commandError) throw commandError;
+  if (releaseError) throw releaseError;
 }
 
 main().catch((error) => {

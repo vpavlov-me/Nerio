@@ -6,7 +6,110 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
-No changes yet.
+This section is the prepared `1.0.0-beta.1` candidate. It is not an npm publication, dist-tag
+change, Git tag, GitHub Release, or stable-readiness claim.
+
+### Added
+
+- Added the canonical post-1.0 capability parity decision, machine-readable projection, and drift
+  validator. The decision classifies the complete current catalog, reviewed Base UI 1.6.0
+  primitives, platform coverage, and issues #342–#357 without changing the frozen Core 1.0 public
+  contract.
+- Added scope-aware PR contracts, exact-SHA release candidate validation, immutable GitHub Action
+  pins, DCO enforcement, and a deterministic candidate-bound CycloneDX SBOM for all six public
+  packages. Current workflows prepare and retain evidence without publishing or requesting npm
+  credentials.
+- Added strict stable-only validators for the real accessibility/device audit and the external beta
+  feedback cycle. Stable readiness requires affirmative audit and beta decisions and rejects
+  future-dated completion evidence. Beta records remain explicitly pending; automation cannot
+  convert prepared templates into completion evidence.
+- Added one machine-readable coordinated release metadata source, a dry-run-first version
+  preparation command, and validators for all six public packages, the Registry revision, CLI,
+  documentation, and installation examples.
+- Added packed minimum/current dependency consumers, independent optional-adapter peer evidence,
+  Node 22 and Node 24 release coverage, and a scheduled non-blocking current-stable Playwright
+  canary.
+- Added SHA-256 integrity metadata for every Registry source file plus CLI, Registry, MCP, packed
+  consumer, and public-contract validation. The Registry tarball grows from 25,279 to 29,812 bytes
+  and unpacked content from 148,383 to 176,740 bytes; its reviewed tarball budget moves from 28,000
+  to 31,000 bytes while the existing 250,000-byte unpacked ceiling remains.
+
+### Changed
+
+- Recalibrated the Operations Workspace full-screen runtime-transfer ceiling after the reviewed
+  template expansion added five local avatar assets, charts, and richer operational content. The
+  deterministic Chromium measurement moves from 581,370 to 778,265 bytes (+196,895), and the
+  ceiling moves from 646,144 to 844,800 bytes, retaining the required 64 KiB runtime-variance
+  allowance after rounding the measurement to the next KiB.
+- Published Blocks, Templates, their same-origin Views, and Playground across all documentation
+  deployments; removed the former deployment flag and production-only discovery gate. The current
+  Template catalog is intentionally limited to Operations Workspace and Finance & Assets, and the
+  redundant Empty project Block has been removed.
+- Added the Sidebar item-icon token used by the stable expanded and collapsed navigation geometry.
+  The raw token CSS budget moves from 72,000 to 72,500 bytes; the measured stylesheet is 72,001
+  bytes and remains within the existing gzip budget.
+- Added an explicit Sidebar collapse mode so existing arbitrary content remains inert by default
+  while migrated SidebarMenuButton navigation can opt into the icon rail. The measured
+  `@nerio-ui/ui` tarball is 65,059 bytes, so its reviewed ceiling moves from 65,000 to 65,500 bytes.
+- Changed CardTitle to render a neutral 16px `div` by default while preserving explicit heading
+  opt-in through `as`, and made CardHeader consistently own title-description spacing beside
+  CardAction. CardDescription now uses the standard 14px body size.
+- Changed Dialog and Sheet titles to render neutral 16px `div` elements by default with explicit
+  heading opt-in, and aligned both descriptions to the standard 14px body size.
+- Added MCP output schemas and structured content for all four discovery tools while preserving the
+  existing JSON text payload, plus stable machine-readable missing-component errors.
+- Split standard documentation into server-rendered reference content and typed, statically
+  registered client preview islands. Added a packed Vite + React + TypeScript + Tailwind CSS v4
+  consumer and replaced the former 8 MiB transfer tripwire with measured per-route JavaScript, CSS,
+  deterministic transfer, runtime, CLS, LCP, network, hydration, and overflow checks. This records
+  fixture evidence and does not add a blanket framework support claim.
+- Raised the public Node.js minimum from 20.9 to 22 and aligned repository runtime declarations,
+  package engines, documentation, fixtures, snapshots, and CI evidence.
+- Raised the Tailwind CSS minimum from 4.0.0 to 4.1.0 after a clean Next.js 16.2 consumer proved
+  that Tailwind 4.0.0 fails the Turbopack/PostCSS scanner contract.
+- Updated the pinned browser gate to Playwright 1.62.1 with Chromium 151, Firefox 153, and WebKit
+  26.5.
+- Refreshed the single affected Linux Finance & Assets mobile screenshot after Chromium 151 produced
+  a deterministic selected-control rasterization delta; component geometry, content, and tokens are
+  unchanged.
+- Replaced Base UI-derived public props and event aliases for the interactive Core components with
+  bounded Nerio-owned contracts, restricted Tabs values to stable strings, and exact-pinned
+  `@base-ui/react` to 1.6.0.
+- Made HTTPS the default remote Registry policy with explicit trusted-local HTTP opt-in and bounded
+  request timeout, response size, redirects, content types, paths, schema, and secret-safe errors.
+
+### Fixed
+
+- Routed CommandItem selection through Base UI's documented click contract so highlighted items
+  selected with Enter invoke consumer callbacks consistently in WebKit, while unsupported runtime
+  click handlers remain blocked.
+- Made Calendar and empty DatePicker initial markup independent of the server or browser clock and
+  timezone; consumer-owned `today` now exclusively controls current-day styling and month fallback.
+- Kept unavailable Calendar days out of the roving tab stop and moved the no-available-date focus
+  fallback to the grid.
+- Avoided repeating DatePicker's visible value for self-named triggers while retaining the selected
+  value once for controls named by Field or explicit ARIA, plus consumer descriptions and the
+  localized open/change instruction.
+- Made `nerio add` and `nerio update` operation-atomic: the CLI fetches and validates the complete
+  closure, stages and backs up affected files, writes lock metadata last, and restores source and
+  lock state after injected source or lock failures. Durable journals recover abrupt process exits
+  on the next state-sensitive command (`add`, `diff`, `update`, or `doctor`) without rolling back a
+  source-and-lock transaction that had fully committed. A project-local process lock serializes
+  installs, updates, validation, and recovery, preventing simultaneous commands from losing source
+  ownership or lock metadata and reclaiming dead owners before journal recovery; `list` and `info`
+  remain read-only inspection commands. A heartbeat lease makes stale locks reclaimable after
+  restart or PID reuse. The CLI tarball grows from 10,559 to 18,994 bytes and unpacked content from
+  40,917 to 79,835 bytes; reviewed budgets move from 18,000 to 19,000 compressed bytes and from
+  75,000 to 80,000 unpacked bytes for this bounded lease and transaction contract.
+
+### Migration
+
+- Follow
+  [`docs/migrations/beta-0-to-beta-1.md`](./docs/migrations/beta-0-to-beta-1.md) for the runtime
+  lower bounds, deterministic date initialization, Tabs string values, Nerio-owned interactive
+  types, Registry integrity, HTTPS policy, and atomic CLI lifecycle. This work prepares but does not
+  publish the next beta. Exact technical closure evidence is recorded in
+  [`docs/core-1-0-beta-gap-closure.md`](./docs/core-1-0-beta-gap-closure.md).
 
 ## 1.0.0-beta.0 — 2026-08-01
 

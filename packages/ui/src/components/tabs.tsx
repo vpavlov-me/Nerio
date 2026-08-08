@@ -6,23 +6,31 @@ import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { Icon } from "./icon";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 import { motionClasses } from "../lib/motion";
+import type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioRenderProp,
+  NerioStyle,
+} from "../lib/component-props";
 
 const tabsClasses =
   "n-tabs grid gap-(--n-tabs-gap) data-[orientation=vertical]:grid-cols-[auto_minmax(0,1fr)] data-[orientation=vertical]:items-start data-[size=sm]:[--n-tabs-trigger-height:var(--n-tabs-trigger-height-sm)] data-[size=sm]:[--n-tabs-trigger-padding-inline:var(--n-tabs-trigger-padding-inline-sm)] data-[size=sm]:[--n-tabs-trigger-content-gap:var(--n-tabs-trigger-content-gap-sm)] data-[size=sm]:[--n-tabs-trigger-font-size:var(--n-tabs-trigger-font-size-sm)] data-[size=sm]:[--n-tabs-icon-size:var(--n-tabs-icon-size-sm)] data-[size=md]:[--n-tabs-trigger-height:var(--n-tabs-trigger-height-md)] data-[size=md]:[--n-tabs-trigger-padding-inline:var(--n-tabs-trigger-padding-inline-md)] data-[size=md]:[--n-tabs-trigger-content-gap:var(--n-tabs-trigger-content-gap-md)] data-[size=md]:[--n-tabs-trigger-font-size:var(--n-tabs-trigger-font-size-md)] data-[size=md]:[--n-tabs-icon-size:var(--n-tabs-icon-size-md)] data-[size=lg]:[--n-tabs-trigger-height:var(--n-tabs-trigger-height-lg)] data-[size=lg]:[--n-tabs-trigger-padding-inline:var(--n-tabs-trigger-padding-inline-lg)] data-[size=lg]:[--n-tabs-trigger-content-gap:var(--n-tabs-trigger-content-gap-lg)] data-[size=lg]:[--n-tabs-trigger-font-size:var(--n-tabs-trigger-font-size-lg)] data-[size=lg]:[--n-tabs-icon-size:var(--n-tabs-icon-size-lg)] data-[variant=bordered]:[&>[data-slot=list]]:border-b-(length:--n-border-width-default) data-[variant=bordered]:[&>[data-slot=list]]:border-(--n-tabs-divider-color) data-[orientation=vertical]:data-[variant=bordered]:[&>[data-slot=list]]:border-b-0 data-[orientation=vertical]:data-[variant=bordered]:[&>[data-slot=list]]:border-e-(length:--n-border-width-default) data-[variant=segmented]:[&>[data-slot=list]]:gap-0 data-[variant=segmented]:[&>[data-slot=list]]:rounded-(--n-tabs-list-radius) data-[variant=segmented]:[&>[data-slot=list]]:bg-(--n-tabs-list-background) data-[variant=segmented]:[&>[data-slot=list]]:p-(--n-tabs-list-padding)";
 const tabsListClasses =
-  "n-tabs__list relative flex min-w-0 items-center gap-(--n-tabs-list-gap) data-scrollable:overflow-x-auto data-scrollable:overflow-y-hidden data-scrollable:overscroll-x-contain data-scrollable:[scrollbar-width:none] data-scrollable:[scroll-padding-inline:var(--n-tabs-trigger-padding-inline)] data-scrollable:[&::-webkit-scrollbar]:hidden [[data-orientation=vertical]_&]:w-fit [[data-orientation=vertical]_&]:flex-col [[data-orientation=vertical]_&]:items-start [[data-orientation=vertical]_&]:self-start [[data-orientation=vertical]_&[data-scrollable]]:overflow-visible [&[data-layout=fill]>[data-slot=trigger]]:flex-1 [[data-orientation=vertical]_&[data-layout=fill]>[data-slot=trigger]]:w-full [[data-orientation=vertical]_&[data-layout=fill]>[data-slot=trigger]]:flex-none [[data-orientation=vertical]_&[data-layout=fill]>[data-slot=trigger]]:self-stretch";
+  "n-tabs__list relative flex min-w-0 items-center gap-(--n-tabs-list-gap) data-[layout=content]:w-fit data-[layout=content]:max-w-full data-[layout=content]:self-start data-scrollable:overflow-x-auto data-scrollable:overflow-y-hidden data-scrollable:overscroll-x-contain data-scrollable:[scrollbar-width:none] data-scrollable:[scroll-padding-inline:var(--n-tabs-trigger-padding-inline)] data-scrollable:[&::-webkit-scrollbar]:hidden [[data-orientation=vertical]_&]:w-fit [[data-orientation=vertical]_&]:flex-col [[data-orientation=vertical]_&]:items-start [[data-orientation=vertical]_&]:self-start [[data-orientation=vertical]_&[data-scrollable]]:overflow-visible [&[data-layout=fill]>[data-slot=trigger]]:flex-1 [[data-orientation=vertical]_&[data-layout=fill]>[data-slot=trigger]]:w-full [[data-orientation=vertical]_&[data-layout=fill]>[data-slot=trigger]]:flex-none [[data-orientation=vertical]_&[data-layout=fill]>[data-slot=trigger]]:self-stretch";
 const tabsTriggerClasses =
-  "n-tabs__trigger relative z-1 inline-flex min-h-(--n-tabs-trigger-height) flex-none cursor-pointer select-none items-center justify-center gap-(--n-tabs-trigger-content-gap) whitespace-nowrap rounded-(--n-tabs-radius) border-0 bg-transparent px-(--n-tabs-trigger-padding-inline) font-inherit text-(length:--n-tabs-trigger-font-size) font-(--n-font-weight-medium) text-(--n-tabs-foreground) data-active:text-(--n-tabs-foreground-active) data-disabled:cursor-not-allowed data-disabled:text-(--n-tabs-foreground-disabled) hover:not-data-active:not-data-disabled:text-(--n-tabs-foreground-hover) focus-visible:z-2 focus-visible:outline-0 focus-visible:shadow-[inset_0_0_0_var(--n-focus-ring-inner-width)_var(--n-color-focus-offset),inset_0_0_0_var(--n-focus-ring-outer-width)_var(--n-color-focus-ring-soft)] [[data-variant=bordered]_&]:pb-(--n-tabs-indicator-thickness) [[data-variant=segmented]_&]:rounded-(--n-tabs-segmented-indicator-radius) [&_[data-slot=leading-icon]]:inline-flex [&_[data-slot=leading-icon]]:flex-none [&_[data-slot=trailing-icon]]:inline-flex [&_[data-slot=trailing-icon]]:flex-none [&_[data-slot=badge]]:inline-flex [&_[data-slot=badge]]:flex-none [&_.n-icon]:size-(--n-tabs-icon-size) forced-colors:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:focus-visible:-outline-offset-(--n-focus-ring-inner-width) forced-colors:focus-visible:outline-[Highlight]";
+  "n-tabs__trigger relative z-1 inline-flex min-h-(--n-tabs-trigger-height) flex-none cursor-pointer select-none items-center justify-center gap-(--n-tabs-trigger-content-gap) whitespace-nowrap rounded-(--n-tabs-radius) border-0 bg-transparent px-(--n-tabs-trigger-padding-inline) font-inherit text-(length:--n-tabs-trigger-font-size) font-(--n-font-weight-medium) text-(--n-tabs-foreground) data-active:text-(--n-tabs-foreground-active) data-disabled:cursor-not-allowed data-disabled:text-(--n-tabs-foreground-disabled) hover:not-data-active:not-data-disabled:text-(--n-tabs-foreground-hover) focus-visible:z-2 focus-visible:outline-0 focus-visible:shadow-[inset_0_0_0_var(--n-focus-ring-inner-width)_var(--n-color-focus-offset),inset_0_0_0_var(--n-focus-ring-outer-width)_var(--n-color-focus-ring-soft)] data-[variant=bordered]:pb-(--n-tabs-indicator-thickness) data-[variant=segmented]:rounded-(--n-tabs-segmented-indicator-radius) [&_[data-slot=leading-icon]]:inline-flex [&_[data-slot=leading-icon]]:flex-none [&_[data-slot=trailing-icon]]:inline-flex [&_[data-slot=trailing-icon]]:flex-none [&_[data-slot=badge]]:inline-flex [&_[data-slot=badge]]:flex-none [&_.n-icon]:size-(--n-tabs-icon-size) forced-colors:focus-visible:outline-(length:--n-focus-ring-inner-width) forced-colors:focus-visible:-outline-offset-(--n-focus-ring-inner-width) forced-colors:focus-visible:outline-[Highlight]";
 const tabsIndicatorClasses =
-  "n-tabs__indicator pointer-events-none absolute bottom-0 left-(--active-tab-left) z-0 w-(--active-tab-width) rounded-(--n-tabs-radius) border-(length:--n-border-width-default) border-(--n-tabs-indicator-border-color) bg-(--n-tabs-indicator-background) transition-[left,width,top,height] duration-(--n-tabs-indicator-duration) ease-(--n-tabs-indicator-easing) [[data-variant=bordered]_&]:-bottom-(--n-border-width-default) [[data-variant=bordered]_&]:h-(--n-tabs-indicator-thickness) [[data-variant=bordered]_&]:rounded-t-(--n-radius-pill) [[data-variant=bordered]_&]:rounded-b-none [[data-variant=bordered]_&]:border-0 [[data-variant=bordered]_&]:bg-(--n-tabs-accent-color) [[data-variant=separate]_&]:top-(--active-tab-top) [[data-variant=separate]_&]:h-(--active-tab-height) [[data-variant=segmented]_&]:top-(--active-tab-top) [[data-variant=segmented]_&]:h-(--active-tab-height) [[data-variant=segmented]_&]:rounded-(--n-tabs-segmented-indicator-radius) [[data-variant=segmented]_&]:shadow-(--n-tabs-indicator-shadow) [[data-orientation=vertical]_&]:top-(--active-tab-top) [[data-orientation=vertical]_&]:right-[calc(var(--n-border-width-default)*-1)] [[data-orientation=vertical]_&]:bottom-auto [[data-orientation=vertical]_&]:left-auto [[data-orientation=vertical]_&]:h-(--active-tab-height) [[data-orientation=vertical]_&]:w-(--n-tabs-indicator-thickness) [[data-orientation=vertical][data-variant=bordered]_&]:rounded-l-(--n-radius-pill) [[data-orientation=vertical][data-variant=bordered]_&]:rounded-r-none [[data-orientation=vertical][data-variant=separate]_&]:inset-x-0 [[data-orientation=vertical][data-variant=separate]_&]:w-full [[data-orientation=vertical][data-variant=segmented]_&]:inset-x-0 [[data-orientation=vertical][data-variant=segmented]_&]:w-full motion-reduce:duration-[1ms] forced-colors:border-[Highlight] forced-colors:bg-[Highlight]";
+  "n-tabs__indicator pointer-events-none absolute bottom-0 left-(--active-tab-left) z-0 w-(--active-tab-width) rounded-(--n-tabs-radius) border-(length:--n-border-width-default) border-(--n-tabs-indicator-border-color) bg-(--n-tabs-indicator-background) transition-[left,width,top,height] duration-(--n-tabs-indicator-duration) ease-(--n-tabs-indicator-easing) data-[variant=bordered]:-bottom-(--n-border-width-default) data-[variant=bordered]:h-(--n-tabs-indicator-thickness) data-[variant=bordered]:rounded-t-(--n-radius-pill) data-[variant=bordered]:rounded-b-none data-[variant=bordered]:border-0 data-[variant=bordered]:bg-(--n-tabs-accent-color) data-[variant=separate]:top-(--active-tab-top) data-[variant=separate]:h-(--active-tab-height) data-[variant=segmented]:top-(--active-tab-top) data-[variant=segmented]:h-(--active-tab-height) data-[variant=segmented]:rounded-(--n-tabs-segmented-indicator-radius) data-[variant=segmented]:shadow-(--n-tabs-indicator-shadow) [[data-orientation=vertical]_&]:top-(--active-tab-top) [[data-orientation=vertical]_&]:right-[calc(var(--n-border-width-default)*-1)] [[data-orientation=vertical]_&]:bottom-auto [[data-orientation=vertical]_&]:left-auto [[data-orientation=vertical]_&]:h-(--active-tab-height) [[data-orientation=vertical]_&]:w-(--n-tabs-indicator-thickness) data-[orientation=vertical]:data-[variant=bordered]:rounded-l-(--n-radius-pill) data-[orientation=vertical]:data-[variant=bordered]:rounded-r-none data-[orientation=vertical]:data-[variant=separate]:inset-x-0 data-[orientation=vertical]:data-[variant=separate]:w-full data-[orientation=vertical]:data-[variant=segmented]:inset-x-0 data-[orientation=vertical]:data-[variant=segmented]:w-full motion-reduce:duration-[1ms] forced-colors:border-[Highlight] forced-colors:bg-[Highlight]";
 
 export type TabsVariant = "segmented" | "separate" | "bordered";
 export type TabsSize = "sm" | "md" | "lg";
 export type TabsListLayout = "content" | "fill";
+const TabsVisualContext = React.createContext<{
+  orientation: "horizontal" | "vertical";
+  variant: TabsVariant;
+}>({ orientation: "horizontal", variant: "bordered" });
 
-type BaseClassName<State> = string | ((state: State) => string | undefined) | undefined;
-
-function withClassName<State>(className: BaseClassName<State>, baseClassName: string) {
+function withClassName<State>(className: NerioClassName<State> | undefined, baseClassName: string) {
   return typeof className === "function"
     ? (state: State) => cn(baseClassName, className(state))
     : cn(baseClassName, className);
@@ -54,32 +62,62 @@ function getAccessibleText(node: React.ReactNode): string {
   return "";
 }
 
-export type TabsProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Root> & {
+export type TabsValue = string;
+export type TabsActivationDirection = "left" | "right" | "up" | "down" | "none";
+export interface TabsRootState {
+  orientation: "horizontal" | "vertical";
+  tabActivationDirection: TabsActivationDirection;
+}
+export type TabsChangeEventReason = "none" | "disabled" | "missing" | "initial";
+export type TabsChangeEventDetails = NerioChangeEventDetails<TabsChangeEventReason> & {
+  activationDirection: TabsActivationDirection;
+};
+export interface TabsProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className" | "defaultValue" | "onChange" | "style"
+> {
+  className?: NerioClassName<TabsRootState>;
+  defaultValue?: TabsValue | null;
+  onValueChange?: (value: TabsValue | null, eventDetails: TabsChangeEventDetails) => void;
+  orientation?: "horizontal" | "vertical";
+  render?: NerioRenderProp<TabsRootState>;
+  style?: NerioStyle<TabsRootState>;
+  value?: TabsValue | null;
   variant?: TabsVariant;
   size?: TabsSize;
-};
+}
 
 export const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   { className, orientation = "horizontal", size = "md", variant = "bordered", ...props },
   ref,
 ) {
   return (
-    <BaseTabs.Root
-      ref={ref}
-      {...props}
-      className={withClassName(className, tabsClasses)}
-      data-slot="root"
-      data-size={size}
-      data-variant={variant}
-      orientation={orientation}
-    />
+    <TabsVisualContext.Provider value={{ orientation, variant }}>
+      <BaseTabs.Root
+        ref={ref}
+        {...props}
+        className={withClassName(className, tabsClasses)}
+        data-slot="root"
+        data-size={size}
+        data-variant={variant}
+        orientation={orientation}
+      />
+    </TabsVisualContext.Provider>
   );
 });
 
-export type TabsListProps = React.ComponentPropsWithoutRef<typeof BaseTabs.List> & {
+export interface TabsListProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className" | "style"
+> {
+  activateOnFocus?: boolean;
+  className?: NerioClassName<TabsRootState>;
   layout?: TabsListLayout;
+  loopFocus?: boolean;
+  render?: NerioRenderProp<TabsRootState>;
   scrollable?: boolean;
-};
+  style?: NerioStyle<TabsRootState>;
+}
 
 function moveFocusPastDisabledTab(event: React.KeyboardEvent<HTMLDivElement>, loopFocus: boolean) {
   const list = event.currentTarget;
@@ -154,14 +192,18 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(function
   },
   ref,
 ) {
+  const { orientation, variant } = React.useContext(TabsVisualContext);
+
   return (
     <BaseTabs.List
       ref={ref}
       {...props}
       className={withClassName(className, tabsListClasses)}
       data-layout={layout}
+      data-orientation={orientation}
       data-scrollable={scrollable || undefined}
       data-slot="list"
+      data-variant={variant}
       loopFocus={loopFocus}
       onKeyDownCapture={(event) => {
         onKeyDownCapture?.(event);
@@ -173,12 +215,25 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(function
   );
 });
 
-export type TabsTriggerProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Tab> & {
+export interface TabsTriggerState extends TabsRootState {
+  disabled: boolean;
+  active: boolean;
+}
+export interface TabsTriggerProps extends Omit<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  "children" | "className" | "color" | "style" | "value"
+> {
+  className?: NerioClassName<TabsTriggerState>;
+  disabled?: boolean;
+  nativeButton?: boolean;
+  render?: NerioRenderProp<TabsTriggerState>;
+  style?: NerioStyle<TabsTriggerState>;
+  value: TabsValue;
   leadingIcon?: IconComponent;
   trailingIcon?: IconComponent;
   badge?: React.ReactNode;
   children: React.ReactNode;
-};
+}
 
 export const TabsTrigger = React.forwardRef<HTMLElement, TabsTriggerProps>(function TabsTrigger(
   {
@@ -193,6 +248,7 @@ export const TabsTrigger = React.forwardRef<HTMLElement, TabsTriggerProps>(funct
   },
   ref,
 ) {
+  const { orientation, variant } = React.useContext(TabsVisualContext);
   const accessibleName = badge
     ? [getAccessibleText(children), getAccessibleText(badge)].filter(Boolean).join(" ").trim() ||
       undefined
@@ -205,7 +261,9 @@ export const TabsTrigger = React.forwardRef<HTMLElement, TabsTriggerProps>(funct
       aria-label={ariaLabel ?? (ariaLabelledBy ? undefined : accessibleName)}
       aria-labelledby={ariaLabelledBy}
       className={withClassName(className, cn(tabsTriggerClasses, motionClasses.hover))}
+      data-orientation={orientation}
       data-slot="trigger"
+      data-variant={variant}
     >
       {leadingIcon ? (
         <span aria-hidden data-slot="leading-icon">
@@ -223,17 +281,38 @@ export const TabsTrigger = React.forwardRef<HTMLElement, TabsTriggerProps>(funct
   );
 });
 
-export type TabsIndicatorProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Indicator>;
+export interface TabsIndicatorState extends TabsRootState {
+  activeTabPosition: {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+  } | null;
+  activeTabSize: { width: number; height: number } | null;
+}
+export interface TabsIndicatorProps extends Omit<
+  React.HTMLAttributes<HTMLSpanElement>,
+  "className" | "style"
+> {
+  className?: NerioClassName<TabsIndicatorState>;
+  render?: NerioRenderProp<TabsIndicatorState>;
+  renderBeforeHydration?: boolean;
+  style?: NerioStyle<TabsIndicatorState>;
+}
 
 export const TabsIndicator = React.forwardRef<HTMLSpanElement, TabsIndicatorProps>(
   function TabsIndicator({ className, renderBeforeHydration = true, ...props }, ref) {
+    const { orientation, variant } = React.useContext(TabsVisualContext);
+
     return (
       <BaseTabs.Indicator
         ref={ref}
         {...props}
         aria-hidden="true"
         className={withClassName(className, tabsIndicatorClasses)}
+        data-orientation={orientation}
         data-slot="indicator"
+        data-variant={variant}
         renderBeforeHydration={renderBeforeHydration}
       />
     );
@@ -256,7 +335,20 @@ export const TabsPanels = React.forwardRef<HTMLDivElement, TabsPanelsProps>(func
   );
 });
 
-export type TabsContentProps = React.ComponentPropsWithoutRef<typeof BaseTabs.Panel>;
+export interface TabsContentState extends TabsRootState {
+  hidden: boolean;
+  transitionStatus: "starting" | "ending" | "idle" | undefined;
+}
+export interface TabsContentProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "className" | "style"
+> {
+  className?: NerioClassName<TabsContentState>;
+  keepMounted?: boolean;
+  render?: NerioRenderProp<TabsContentState>;
+  style?: NerioStyle<TabsContentState>;
+  value: TabsValue;
+}
 
 export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(function TabsContent(
   { className, ...props },

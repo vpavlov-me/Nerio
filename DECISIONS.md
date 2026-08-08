@@ -45,6 +45,22 @@ and domain-specific controls remain outside Core 1.0.
 `docs/core-platform-primitive-coverage.md` is the canonical decision matrix.
 `data/component-catalog.json` is its machine-readable projection and validation boundary.
 
+## Post-1.0 capability parity
+
+[`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md) and
+`quality/core-1-x-capability-parity.json` are the accepted decision and machine-readable projection
+for post-1.0 capability classification and sequencing.
+
+Nerio does not use component-count parity as a product criterion. Every relevant capability is
+classified as existing Core, native guidance, Core 1.1 primitive, later Core candidate, Core
+recipe, adapter, Pro, consumer-owned, or explicitly rejected.
+
+The accepted Core 1.1 component set is additive and begins only after stable 1.0. #342 supplies the
+shared direction/localization foundation without forcing the complete audit to serialize all
+component work. SearchField remains #346 and NumberField is split into #370. MultiSelect #349 is a
+Core 1.2 decision spike with no implementation approval. MCP expansion stays in #354 while the
+repository-native Agent Skill is tracked separately in #369.
+
 Toggle is an approved Core 1.0 action primitive through issue #290. It owns one independent
 pressed/not-pressed button state with `aria-pressed`; it does not absorb Switch, Checkbox, Tabs,
 ButtonGroup, ToggleGroup, Toolbar, persistence, or product workflow responsibilities.
@@ -137,23 +153,18 @@ Geist is the default typeface through semantic font tokens. Components consume `
 ## Templates and preview Views
 
 Templates and full-screen preview Views live inside `apps/docs`; they are not standalone
-applications, domains, repositories, or Vercel projects. `/templates` is the catalog,
-`/templates/[slug]` is the descriptive page, and `/views/[slug]` is the clean same-origin preview
-without documentation chrome.
+applications, domains, repositories, or Vercel projects. `/templates` is the catalog, each catalog
+card links directly to `/views/[slug]` in a new tab, and the View is the clean same-origin preview
+without documentation chrome. Templates do not have separate descriptive detail routes.
 
-Operations Workspace is the first Template and remains a credible universal product workspace rather
-than a banking or finance-only dashboard. Templates may compose Core and template-local code.
-Unproven product patterns remain local until the evidence in `TIERING_AND_TEMPLATE_EVOLUTION.md`
-supports promotion.
+Operations Workspace and Finance & Assets are the current Templates. Templates may compose Core and
+template-local code. Unproven product patterns remain local until the evidence in
+`TIERING_AND_TEMPLATE_EVOLUTION.md` supports promotion.
 
-## Preview-only documentation surfaces
+## Public documentation surfaces
 
-Blocks, Templates, their same-origin preview Views, and the visual Playground are available by
-default in local development and preview deployments, but remain hidden from the public production
-documentation until they are ready to launch. `NERIO_SHOW_PREVIEW_SURFACES=true|false` is the single
-deployment override. When it is unset, public production defaults to hidden while development and
-preview environments default to visible.
-
-The gate applies to primary and mobile navigation, documentation search, sitemap and `llms.txt`
-discovery, catalog and detail routes, legacy public redirects, and full-screen Views. Internal
-unindexed visual-test fixtures remain separate from the public Blocks and Templates contract.
+Blocks, Templates, their same-origin preview Views, and the visual Playground are available in every
+documentation deployment, including public production. Primary and mobile navigation,
+documentation search, the sitemap, `llms.txt`, catalog routes, legacy public redirects, and
+full-screen Views must not depend on a deployment flag. Internal unindexed visual-test fixtures
+remain separate from the public Blocks and Templates contract.

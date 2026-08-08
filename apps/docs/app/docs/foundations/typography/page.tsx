@@ -26,7 +26,9 @@ const scale = [
   ["lg", "--n-font-size-lg", "16px", "Lead copy and compact section intros"],
   ["xl", "--n-font-size-xl", "18px", "Small headings"],
   ["2xl", "--n-font-size-2xl", "20px", "Metric values and page sections"],
-  ["3xl", "--n-font-size-3xl", "24px", "Editorial headings"],
+  ["3xl", "--n-font-size-3xl", "22.5px", "Subsection headings"],
+  ["4xl", "--n-font-size-4xl", "25.25px", "Section headings"],
+  ["5xl", "--n-font-size-5xl", "28.5px", "Page headings"],
 ];
 
 const semanticRoles = [

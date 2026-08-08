@@ -222,6 +222,8 @@
   --n-motion-translate-md: 0.375rem;
   --n-motion-scale-subtle: 0.98;
 
+  /* Microcopy keeps explicit legibility floors. Display steps follow a rounded
+     Major Second progression (1.125) from the 14px UI base. */
   --n-font-size-2xs: 0.6875rem;
   --n-font-size-xs: 0.75rem;
   --n-font-size-sm: 0.8125rem;
@@ -230,7 +232,9 @@
   --n-font-size-lg: 1rem;
   --n-font-size-xl: 1.125rem;
   --n-font-size-2xl: 1.25rem;
-  --n-font-size-3xl: 1.5rem;
+  --n-font-size-3xl: 1.40625rem;
+  --n-font-size-4xl: 1.578125rem;
+  --n-font-size-5xl: 1.78125rem;
   --n-line-height-tight: 1.2;
   --n-line-height-normal: 1.4;
   --n-line-height-sm: var(--n-line-height-normal);
@@ -598,6 +602,7 @@
   --n-input-addon-gap: var(--n-space-1-5);
   --n-input-addon-padding-inline: var(--n-density-space-md);
   --n-file-input-button-gap: var(--n-input-padding-inline);
+  --n-file-input-divider-length: var(--n-density-space-lg);
   --n-file-input-button-size: var(--n-size-control-md);
   --n-file-input-button-background: var(--n-color-action-secondary);
   --n-file-input-button-background-hover: var(--n-color-action-secondary-hover);
@@ -656,7 +661,7 @@
   --n-slider-thumb-size: var(--n-icon-size-md);
   --n-slider-thumb-radius: var(--n-radius-pill);
   --n-slider-thumb-border-width: var(--n-border-width-default);
-  --n-slider-gap: var(--n-space-2);
+  --n-slider-gap: var(--n-space-1);
   --n-slider-header-gap: var(--n-density-space-lg);
   --n-slider-header-width: 10rem;
   --n-slider-label-font-size: var(--n-label-font-size);
@@ -713,7 +718,7 @@
   --n-calendar-easing: var(--n-motion-hover-easing);
   --n-dialog-width-md: 34rem;
   --n-dialog-viewport-inset: var(--n-density-space-lg);
-  --n-dialog-padding: var(--n-density-space-xl);
+  --n-dialog-padding: var(--n-space-6);
   --n-dialog-header-gap: var(--n-density-space-lg);
   --n-dialog-header-margin: var(--n-density-space-lg);
   --n-dialog-body-gap: var(--n-density-space-lg);
@@ -723,7 +728,7 @@
   --n-sheet-height-sm: 18rem;
   --n-sheet-height-md: 28rem;
   --n-sheet-height-lg: 36rem;
-  --n-sheet-padding: var(--n-density-space-xl);
+  --n-sheet-padding: var(--n-space-6);
   --n-sheet-gap: var(--n-density-space-lg);
   --n-sheet-radius: var(--n-radius-overlay);
   --n-sheet-backdrop: var(--n-overlay-backdrop);
@@ -743,6 +748,7 @@
   --n-sidebar-region-padding: var(--n-density-space-xl);
   --n-sidebar-rail-hit-area: var(--n-size-control-md);
   --n-sidebar-rail-inset: var(--n-density-space-md);
+  --n-sidebar-item-icon-size: var(--n-icon-size-lg);
   --n-sidebar-transition-duration: var(--n-duration-normal);
   --n-sidebar-transition-easing: var(--n-easing-standard);
   --n-sidebar-background: var(--n-color-surface);
@@ -774,6 +780,7 @@
   --n-command-item-radius: var(--n-radius-md);
   --n-command-item-background-active: var(--n-overlay-selected-background);
   --n-overlay-z-index: 50;
+  --n-overlay-floating-z-index: calc(var(--n-overlay-z-index) + 2);
   --n-overlay-background: rgb(0 0 0 / 0.88);
   --n-overlay-border-width: var(--n-border-width-0);
   --n-overlay-border: transparent;
@@ -807,6 +814,7 @@
   --n-toast-stack-gap: var(--n-density-space-md);
   --n-toast-stack-offset: var(--n-size-toast-stack-offset);
   --n-toast-stack-scale-step: 0.05;
+  --n-toast-stack-opacity-step: 0.4;
   --n-toast-enter-offset: var(--n-icon-size-md);
   --n-toast-swipe-dismiss-distance: 150%;
   --n-toast-background: var(--n-overlay-glass-background);
@@ -831,16 +839,16 @@
   --n-toast-status-indicator-size: var(--n-size-control-md);
   --n-toast-status-indicator-radius: var(--n-radius-md);
   --n-card-background: var(--n-color-surface-raised);
-  --n-card-border-width: var(--n-border-width-0);
+  --n-card-border-width: var(--n-border-width-default);
   --n-card-border-color: var(--n-color-border-subtle);
   --n-card-background-secondary: var(--n-color-surface-muted);
   --n-card-background-secondary-hover: var(--n-color-surface-subtle);
   --n-card-background-interactive-hover: var(--n-color-surface-subtle);
-  --n-card-border-secondary: transparent;
-  --n-card-border-interactive: transparent;
+  --n-card-border-secondary: var(--n-color-border-subtle);
+  --n-card-border-interactive: var(--n-color-border-default);
   --n-card-shadow-secondary: none;
   --n-card-padding-sm: var(--n-density-space-md);
-  --n-card-padding-md: var(--n-density-space-lg);
+  --n-card-padding-md: var(--n-space-6);
   --n-card-padding-lg: var(--n-density-space-xl);
   --n-card-padding: var(--n-card-padding-md);
   --n-card-padding-inline: var(--n-card-padding);
@@ -961,7 +969,7 @@
   --n-overlay-duration: var(--n-motion-overlay-enter-duration);
   --n-overlay-easing: var(--n-motion-overlay-enter-easing);
   --n-popover-width-md: 20rem;
-  --n-popover-padding: var(--n-space-3);
+  --n-popover-padding: var(--n-density-space-xl);
   --n-popover-gap: var(--n-space-2);
   --n-popover-radius: var(--n-radius-lg);
   --n-tooltip-radius: var(--n-radius-lg);
@@ -1151,6 +1159,8 @@
   --n-chart-tooltip: var(--n-color-surface-overlay);
   --n-chart-selection: var(--n-color-surface-selected);
   --n-overlay-backdrop: rgb(0 0 0 / 0.32);
+  --n-overlay-border-width: var(--n-border-width-default);
+  --n-overlay-border: var(--n-color-border-subtle);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1211,6 +1221,8 @@
     --n-chart-tooltip: var(--n-color-surface-overlay);
     --n-chart-selection: var(--n-color-surface-selected);
     --n-overlay-backdrop: rgb(0 0 0 / 0.32);
+    --n-overlay-border-width: var(--n-border-width-default);
+    --n-overlay-border: var(--n-color-border-subtle);
   }
 }
 
@@ -1447,7 +1459,7 @@
   --n-toggle-height-lg: var(--n-size-control-lg);
   --n-toggle-padding-inline-md: var(--n-density-space-md);
   --n-alert-padding: var(--n-density-space-lg);
-  --n-card-padding-md: var(--n-density-space-lg);
+  --n-card-padding-md: var(--n-space-5);
   --n-card-gap: var(--n-density-space-lg);
   --n-badge-height: 1.375rem;
   --n-badge-height-sm: 1rem;
@@ -1488,7 +1500,8 @@
   --n-pagination-item-size: 1.75rem;
   --n-list-item-padding: var(--n-space-1-5);
   --n-tabs-trigger-padding-inline-md: var(--n-density-space-md);
-  --n-dialog-padding: var(--n-density-space-xl);
+  --n-dialog-padding: var(--n-space-5);
+  --n-sheet-padding: var(--n-space-5);
   --n-sidebar-region-padding: var(--n-density-space-lg);
   --n-sidebar-inset-gap: var(--n-density-space-lg);
   --n-sidebar-rail-hit-area: var(--n-size-control-md);

@@ -44,6 +44,724 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 
+## File upload state block QA — 2026-08-07
+
+### Source truth
+
+- User-provided layout reference: a grouped five-file upload queue showing ready, uploading, processing, failed, and uploaded states.
+- Latest browser annotation: keep the five-file queue, remove the Progress bar, add an Upload action to CardHeader, use secondary icon actions with tooltips, and simplify CardFooter to Cancel plus disabled Save without a separator.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/file-upload-state`
+- Desktop viewport and implementation pixels: 1117 × 837 at device scale factor 1.
+- Desktop screenshot: `/tmp/nerio-file-upload-revision-desktop.png`
+- Mobile viewport: 390 × 844.
+- Mobile implementation pixels: 390 × 844 at device scale factor 1.
+- Mobile screenshot: `/tmp/nerio-file-upload-revision-mobile.png`
+- Full-view comparison: the desktop capture verifies the Card hierarchy, all five queue states, header action, row actions, and footer state together.
+- Focused comparison: the live `Delete file` tooltip was opened on the first row and verified through the rendered accessibility tree; a separate crop was unnecessary because the label and control are readable in the desktop capture.
+- Browser console: no errors.
+
+### Findings and fixes
+
+1. P1 — The original preview demonstrated only one upload and did not communicate the complete state model. Replaced it with a five-item batch queue covering ready, uploading, processing, failed, and uploaded states.
+2. P1 — The upload content floated without a clear container or batch-level hierarchy. Composed it inside Card header, content, and footer regions with a concise queue summary and shared actions.
+3. P1 — The first implementation added Progress beneath the uploading Item, but the approved revision keeps this state compact. Removed Progress while retaining the visible `Uploading · 64%` status.
+4. P2 — The first mobile pass placed the tall Card beneath the fixed back control without enough clearance. Added responsive block-view spacing and verified the corrected mobile composition.
+5. P2 — The footer's summary, separator, and retry-oriented actions did not reflect the final save workflow. Removed the separator and summary, then replaced the actions with Cancel and a disabled Save control.
+6. P2 — File actions were low-affordance ghost buttons without supplementary labels, and retry used an upload glyph. Switched them to secondary icon buttons, added `Delete file` and `Retry file` tooltips, and exposed the semantic RefreshCw icon through the Nerio adapter.
+7. P2 — The Card did not expose the batch's entry action. Added a secondary Upload action through CardAction in the header.
+
+### Comparison history
+
+- Pass 1: five queue states and responsive Card composition passed, but the later annotation superseded the Progress, footer, and row-action treatment.
+- Pass 2: the 1117 × 837 desktop capture verifies the revised action hierarchy and the 390 × 844 capture verifies that rows remain legible and scroll naturally on mobile.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+## Sign in Block structure and Block View navigation QA — 2026-08-07
+
+### Source truth
+
+- `browser://comments/sign-in-structure-1` — the maintainer-supplied structural reference attached
+  to Browser Comment 1. The source image is 1628 × 1302 pixels and defines the required hierarchy:
+  title and description, email, a password label row with recovery navigation, one Login action,
+  and a centered account-creation prompt. The maintainer explicitly scoped the image to structure,
+  not pixel-for-pixel styling.
+- The accompanying 1117 × 837 browser annotation identifies the outer preview frame, insufficient
+  Card padding, and missing gallery-return action in the pre-fix implementation.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3000/views/blocks/sign-in`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/sign-in-comfortable.jpg`
+- Implementation capture: 1280 × 720 pixels, matching the 1280 × 720 CSS viewport at device scale
+  factor 1.
+- The differently proportioned source was not geometrically normalized because it is an explicit
+  structure-only reference. The Card region was compared directly for hierarchy and proximity.
+- Focused measurements: comfortable Card padding 24px with a 20px form gap; compact Card padding
+  20px with a 16px form gap. The Card remains 416px wide in comfortable density.
+- Primary interactions tested: Login and Enter do not submit or change state, the visual Forgot
+  password and Sign up affordances do not navigate, and Back to Blocks remains the only working
+  action and returns to `/blocks`.
+- Catalog thumbnail evidence: `data-preview-thumbnail="true"` is present, the updated Sign in
+  heading renders in the iframe, and `.block-view__back` resolves to `display: none`.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. The implementation keeps Nerio Heading, Text, Label, and Button
+  typography and preserves the reference hierarchy without importing an external font treatment.
+- Spacing and layout rhythm: passed. The outer preview frame is removed, the Card is centered, and
+  density-aware outer padding remains larger than the internal form gap in both reviewed densities.
+- Colors and visual tokens: passed. All surfaces, borders, actions, focus states, and text roles use
+  existing Nerio semantic tokens and continue to support theme and mode switching.
+- Image quality and asset fidelity: not applicable. The reference contains no image assets; the Back
+  action uses the existing Nerio icon adapter rather than a custom drawing.
+- Copy and content: passed. The complete Login structure is present, Google login is intentionally
+  absent, and recovery/account-creation affordances remain visible without acting as navigation.
+
+### Findings and comparison history
+
+1. P1 — The pre-fix Sign in Block omitted the account-creation prompt and placed recovery navigation
+   below the primary action. Rebuilt the form hierarchy to match the supplied structure and verified
+   the revised Card region.
+2. P1 — The full Block View was wrapped in a large bordered preview container. Replaced it with a
+   width-only content wrapper; the final full-page capture has no preview border or nested canvas.
+3. P2 — Card padding was smaller than the distance between semantic form groups. Raised the Core
+   medium Card padding to 24px in comfortable density and 20px in compact density while making the
+   Sign in form gap density-aware at 20px and 16px respectively.
+4. P1 — The first revised Login action submitted the form and the visual recovery/account actions
+   navigated to other previews. The follow-up product decision makes every action inside a public
+   Block preview demonstrative only: click, auxiliary-click, keyboard activation, and form
+   submission are intercepted at the preview boundary without changing the enabled visual
+   treatment.
+5. P2 — Public Block Views had no direct return path to the gallery. Added a Nerio secondary Back to
+   Blocks action to every public View and suppressed it only inside non-interactive catalog
+   thumbnails.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states. A focused Card comparison
+was required because the structural reference targets label/action alignment and proximity rather
+than the surrounding desktop canvas.
+
+final result: passed
+
+## Playground controls, Slider rhythm, and nested Tabs QA — 2026-08-07
+
+### Source truth
+
+- Six user annotations on `http://127.0.0.1:3001/playground`: Select preview controls use compact segmented Tabs; Slider anatomy has tighter vertical rhythm; the DropdownMenu trigger is centered and content-width with a leading icon; Badge tones label themselves; segmented active text remains readable; and content-layout Tabs hug their triggers by default.
+- Source visual evidence: the six 1117 × 837 browser annotation screenshots supplied in the current review thread.
+- Existing product truth: Nerio Core Tabs, Slider, Button, Badge, and DropdownMenu components and the live Playground theme controls.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground`
+- Viewport: 1117 × 837 CSS pixels at device scale 1; light appearance, purple accent, comfortable density, full radius, 100% scaling, calm motion, flat panel style.
+- Select: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-select-segmented-controls.jpg`
+- Slider: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-slider-tight-anatomy.jpg`
+- DropdownMenu: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-dropdown-hug-trigger.jpg`
+- Badge: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-badge-self-describing.jpg`
+- Tabs: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-tabs-segmented-hug-contrast.jpg`
+- Global preview controls follow-up: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-input-segmented-tabs.jpg`
+- All implementation captures are 1117 × 837 JPEGs and match the CSS viewport 1:1; no density normalization was required.
+- Focused browser measurements: Select segmented list 266.27px wide with 2px padding and a 20px radius; Slider anatomy gap 4px; DropdownMenu trigger 117.99 × 32px; nested segmented Tabs list 232.66px wide; active text `rgb(15, 23, 42)` over a white indicator.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged Core typography; self-describing Badge labels and Tabs labels retain the intended UI weight, size, and wrapping.
+- Spacing and layout rhythm: passes; Slider anatomy uses a 4px internal gap, the action trigger hugs its content, and segmented Tabs no longer stretch across their parent grid.
+- Colors and tokens: passes; nested segmented Tabs resolve their own raised indicator and primary foreground instead of inheriting the outer bordered accent treatment.
+- Image quality and assets: no raster assets are present in the reviewed surfaces; the DropdownMenu leading mark uses the existing Nerio icon adapter.
+- Copy and content: passes; Badge tone names are inside their badges, including the readable `primary soft` label, with no redundant captions.
+
+### Comparison history, findings, and fixes
+
+1. P1 — Nested segmented Tabs inherited bordered indicator styling from the outer Playground option Tabs, producing a purple indicator with dark text. Scoped variant and orientation data to each Tabs anatomy node; the post-fix indicator is white with dark primary text.
+2. P1 — Content-layout Tabs stretched to the full grid track. Made `TabsList` content layout explicitly `w-fit`, `max-w-full`, and `self-start`; explicit `layout="fill"` remains available.
+3. P2 — Select preview controls used the bordered variant. Added a Matrix controls variant and rendered this section with the compact segmented recipe, including the canonical list background, padding, and radius.
+4. P2 — Slider used an 8px anatomy gap, creating excessive distance on both sides of the 32px control. Remapped the shared Slider gap to 4px while preserving the control hit area.
+5. P2 — DropdownMenu's trigger stretched to 376.28px and had no leading visual. Centered it in the existing inline composition and added the FileText icon; the post-fix trigger is 117.99px wide.
+6. P2 — Badge previews repeated external tone captions and generic `Label` text. Removed the captions and placed each tone name inside its Badge.
+7. P1 — The segmented recipe was initially limited to Select while the same Preview options control remained bordered elsewhere. Changed the shared Matrix default to segmented and verified Button, Toggle, Input, FileInput, Textarea, FormGroup, Checkbox, Switch, Select, Slider, DatePicker, and Sheet all resolve to the segmented variant with content-width geometry.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states. Focused component captures were required because the typography, compact widths, and nested indicator treatment were too small to verify reliably from one full-page screenshot.
+
+final result: passed
+
+## Playground specimen architecture refinement QA — 2026-08-07
+
+### Source truth
+
+- `browser://comments/playground-specimen-refinement-1-34` — the 34 annotated Playground captures
+  supplied by the maintainer at 1117 × 837 CSS pixels. The annotations define the required
+  relationship between section controls and preview frames, the reduced specimen counts, richer
+  overlay content, and the requested live radius/accent behavior.
+- The individual source captures are state-specific rather than one continuous page image; each
+  selected component and its written annotation is treated as the visual contract for that section.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground`
+- Browser: Codex in-app browser, 1117 × 837 CSS pixels, device scale factor 1.
+- External controls and first specimens:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-refined-controls.png`
+- Authentication Dialog with global radius set to `none`:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-auth-dialog-radius-none.png`
+- Dropdown Menu and open nested Share submenu:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-dropdown-submenu.png`
+- Single Card specimen:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-single-card.png`
+- Primary interactions tested: section tabs, Select popup, radius preset, accent swatch, Dialog,
+  Dropdown Menu keyboard submenu, and standalone Switch/Checkbox controls.
+- Browser console warnings and errors: none.
+
+### Full-view and focused comparison
+
+- The full-view comparison confirms that variant/state tabs now sit between the section header and
+  the bordered preview rather than inside the preview surface. Preview frames contain only the
+  current component demonstration.
+- Focused comparisons were required for the portal-owned Select/Dialog radius, the nested menu, and
+  the single Card width. Computed Select popup radius and the document overlay token both resolve to
+  `0px` under the `none` preset. The blue accent resolves both
+  `--n-color-action-primary` and `--n-tabs-accent-color` to `#3478d4`.
+- The first Card pass retained the former three-column grid and narrowed the only remaining Card.
+  The post-fix capture resolves the single Card to a readable 376px width centered in its preview.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Existing Major Second heading hierarchy and Geist UI roles remain
+  unchanged; new labels and descriptions use existing Heading, Text, Field, and Label primitives.
+- Spacing and layout rhythm: passed. External controls use one consistent section-level placement;
+  preview content is centered, multi-variant displays wrap, and the single Card no longer occupies a
+  stale one-third column.
+- Colors and visual tokens: passed. Portal surfaces now inherit the live Playground token map from
+  the document root, so Select, Dialog, Sheet, Popover, Dropdown Menu, and Tabs respond to radius and
+  accent changes without local literals.
+- Image quality and asset fidelity: passed. Avatar examples reuse the existing preview assets and
+  adapter icons; no placeholder art, handcrafted SVG, or emoji was introduced.
+- Copy and content: passed. Examples use concise English product scenarios: authentication, privacy
+  policy, workspace permissions, budgets, filters, project actions, and empty/loading states.
+
+### Findings and comparison history
+
+1. P1 — Tabs were nested inside preview frames, mixing specimen controls with the rendered
+   component. Added one section control portal and transposed matrix previews so tabs live outside
+   while the preview contains the selected specimen only.
+2. P1 — Portal-owned overlays did not inherit Playground radius and accent variables. Mirrored the
+   live scoped contract onto the document root for the lifetime of Playground and restored the prior
+   document state on unmount.
+3. P1 — Dialog, Sheet, Popover, Dropdown Menu, and Command examples used placeholder anatomy rather
+   than realistic interaction. Replaced them with working auth, privacy, permissions, filtering,
+   project-action, nested-menu, and button-opened command scenarios.
+4. P2 — Repeated Card, Breadcrumb, Table caption, Sidebar Primitive, and multi-state inline examples
+   added noise. Reduced or removed them as annotated.
+5. P2 — The first single-Card implementation inherited the old three-column track and became too
+   narrow. Added an only-child grid rule and reverified the centered readable width.
+6. P2 — Dropdown Menu showed a submenu affordance without submenu behavior. Added one keyboard-
+   accessible nested level backed by Base UI and verified ArrowRight navigation.
+
+No unresolved P0, P1, or P2 findings remain in the reviewed desktop states.
+
+final result: passed
+
+## Playground control anatomy follow-up QA — 2026-08-07
+
+### Source truth
+
+- `browser://comments/playground-control-follow-up-1-11` — the 11 annotated Playground captures
+  supplied by the maintainer at 1117 × 837 CSS pixels. The focused captures define the expected
+  Tabs treatment, self-describing specimen copy, native field anatomy, fixed Switch geometry, and
+  wrapper-free Calendar popup.
+- The source captures and implementation checks use the same route, viewport, CSS pixel density,
+  light appearance, comfortable density, full radius, and 100% scaling.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground`
+- Browser: Codex in-app browser, 1117 × 837 CSS pixels, device scale factor 1.
+- Bordered Nerio Tabs and self-describing Button variants:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-button-tabs-refined.png`
+- Input states and size placeholders:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-form-controls-refined.png`
+- FileInput sizes, short divider, and optically compensated icon:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-file-input-refined.png`
+- Checkbox and FormGroup content:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-choice-controls-refined.png`
+- RadioGroup title and complete descriptions:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-radio-refined.png`
+- Fixed Switch anatomy:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-switch-refined.png`
+- Native Slider label, value, and description:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-slider-native-anatomy.png`
+- Calendar-only popup surface:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-calendar-bare-popup-v2.png`
+- Computed Switch root: 34 × 20 CSS pixels with fixed minimum and maximum inline dimensions.
+- Browser console warnings and errors: none in the reviewed states.
+
+### Full-view and focused comparison
+
+- Full-view comparison confirms that every section-level selector is the released Nerio Tabs
+  component in its bordered presentation and remains outside the preview frame.
+- Focused comparisons were required because the annotations target compact control anatomy. Button,
+  Input, FileInput, Checkbox, RadioGroup, Switch, Slider, and Calendar were inspected independently
+  at the same viewport rather than judged from one distant full-page capture.
+- The final Calendar surface has no outer padding, border, shadow, or extra visible card geometry.
+  Its overlay background prevents the underlying trigger copy from bleeding through the Calendar.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Checkbox and RadioGroup titles use primary text at the component's
+  intended weight; descriptions use the released secondary/tertiary text roles without custom bold
+  wrappers.
+- Spacing and layout rhythm: passed. Switch remains 34 × 20px, FileInput uses the shared short
+  ButtonGroup divider length, and Calendar owns the complete visible popup rectangle.
+- Colors and visual tokens: passed. Tabs use the live accent token, field copy uses semantic text
+  roles, and no local color literals were added.
+- Image quality and asset fidelity: passed. The existing adapter Upload icon is retained and
+  optically aligned; no replacement art, custom SVG, or placeholder asset was introduced.
+- Copy and content: passed. Buttons and size specimens describe themselves, checkbox/radio examples
+  have meaningful labels and descriptions, and the Slider uses its native budget label/value copy.
+
+### Findings and comparison history
+
+1. P1 — Portaling only `TabsList` removed the ancestor variant context, so the selectors looked
+   like unstyled text. Restored the released Tabs wrapper contract around the portaled list and
+   verified the bordered underline resolves to the live accent color.
+2. P1 — The Switch could grow across the specimen and was composed to the right of custom copy.
+   Enforced its token width as width, minimum width, and maximum width in Core, then used the native
+   Switch label and description anatomy in Playground.
+3. P1 — Calendar inherited a visible Popover wrapper and later allowed underlying trigger text to
+   show through the translucent surface. Removed wrapper geometry while retaining the overlay
+   background/filter contract, then recaptured the open Calendar.
+4. P2 — Button, Input, and FileInput previews repeated variant or size labels outside the controls.
+   Moved the identifying copy into Button text and Input placeholders and removed matrix row labels.
+5. P2 — FileInput used a full-height native divider and its Upload icon appeared optically
+   off-center. Replaced the divider with the shared ButtonGroup-length pseudo-element and applied a
+   token-sized inline optical compensation.
+6. P2 — Checkbox, FormGroup, RadioGroup, and Slider examples bypassed released component anatomy.
+   Rebuilt the specimens with native label, description, value, and group-title props; added the
+   missing Public description and simplified the standalone Label example.
+
+No unresolved P0, P1, or P2 findings remain in the reviewed desktop states.
+
+final result: passed
+
+## Long-content Dialog internal-scroll QA — 2026-08-07
+
+### Source truth
+
+- `browser://comment-1/privacy-policy-dialog-before` — the annotated open Privacy policy Dialog
+  supplied by the maintainer at 1117 × 837 CSS pixels. The source identifies the missing internal
+  scroll treatment, insufficient content length, and incorrect primary body-copy tone.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground#dialog`
+- Browser: Codex in-app browser, 1117 × 837 CSS pixels, device scale factor 1.
+- Source and implementation captures are both 1117 × 837 pixels; no density or crop normalization
+  was required.
+- Open Dialog at the top of its scroll range:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-long-dialog-internal-scroll-final.png`
+- Open Dialog after scrolling its body:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-long-dialog-internal-scroll-scrolled.png`
+- Computed body geometry: 705px client height, 1156px scroll height, `overflow-y: auto`,
+  `scrollbar-width: thin`, and stable scrollbar gutter.
+- Primary interactions tested: open, body scroll, Escape dismissal, reopen, and close-button focus.
+- Browser console warnings and errors: none in the reviewed state.
+
+### Full-view and focused comparison
+
+- The full-view comparison confirms that the Dialog remains centered within the same viewport while
+  its header and close control stay visible at the top of the bounded surface.
+- The Dialog itself is the focused region: the source and implementation show the same open,
+  dark-overlay state at the same viewport. A second implementation capture records the body after a
+  180px scroll, demonstrating that only the content region moves.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Section headings and the Dialog title use primary text; policy
+  paragraphs and the updated-at description use the overlay secondary role at the existing type
+  scale and line height.
+- Spacing and layout rhythm: passed. The surface is bounded by the shared viewport inset, the header
+  occupies its own grid row, and the body owns the remaining scrollable row without overflowing the
+  viewport.
+- Colors and visual tokens: passed. Scrollbar thumb and track use overlay foreground-muted and
+  control-background tokens; no local color literals were introduced.
+- Image quality and asset fidelity: passed. No image assets are present or required; the released
+  close icon remains unchanged.
+- Copy and content: passed. The policy now contains substantive collection, use, retention,
+  transfer, security, choices, changes, and contact sections, making the long-content behavior
+  legible without placeholder repetition.
+
+### Findings and comparison history
+
+1. P1 — Dialog had no viewport maximum and therefore could grow beyond the available screen instead
+   of establishing an internal scroll boundary. Converted the surface to a two-row grid, bounded it
+   to the viewport inset, hid outer overflow, and assigned vertical overflow to the body.
+2. P1 — The original policy remained shorter than the proposed demo scroll region, so no scrollbar
+   appeared. Expanded the realistic policy copy and verified 1156px of content inside a 705px body.
+3. P2 — Body paragraphs inherited the primary overlay foreground and competed with section
+   headings. Applied the released secondary Text tone to all prose while preserving primary
+   headings.
+4. P2 — Platform overlay scrollbars could remain invisible until active scrolling. Added a stable,
+   thin, tokenized scrollbar gutter, thumb, and track to the Core Dialog body.
+
+No unresolved P0, P1, or P2 findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Dialog Checkbox label-weight follow-up QA — 2026-08-07
+
+### Source truth
+
+- `browser://comment-1/remember-me-bold-label-before` — the annotated open Sign in Dialog at
+  1117 × 837 CSS pixels, identifying the unexpectedly bold `Remember me` label.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground#dialog`
+- Final screenshot:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-dialog-remember-me-native-checkbox.png`
+- Source and implementation: 1117 × 837 pixels, device scale factor 1, open Dialog in light page
+  appearance with the dark overlay surface.
+- Computed label: native Checkbox `data-slot="label"`, `font-weight: 400`, primary overlay color.
+- Primary interactions tested: open Dialog and inspect the composed Checkbox field.
+- Browser console warnings and errors: none in the reviewed state.
+
+### Comparison and required fidelity surfaces
+
+- Focused comparison was sufficient because the annotation targets one readable label inside an
+  otherwise unchanged Dialog. The final full Dialog capture confirms that surrounding field,
+  footer, radius, and overlay geometry did not drift.
+- Fonts and typography: passed; the label uses the component's normal weight and the description
+  retains its smaller supporting role.
+- Spacing and layout rhythm: passed; native Checkbox field gaps replace the custom flex wrapper.
+- Colors and visual tokens: passed; primary label and supporting description use released semantic
+  roles without local overrides.
+- Image quality and asset fidelity: passed; no image assets are involved.
+- Copy and content: passed; `Remember me` and its 30-day explanation are unchanged.
+
+### Findings and comparison history
+
+1. P2 — The Dialog demo bypassed Checkbox anatomy and wrapped its label in a manual `<strong>`.
+   Replaced the custom label with Checkbox `label` and `description` props and removed the same
+   stale pattern from the Sheet permissions demo.
+
+No unresolved P0, P1, or P2 findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Sheet hierarchy and nested-overlay QA — 2026-08-07
+
+### Source truth
+
+- `browser://comment-1/right-sheet-hierarchy-before` — the annotated open Right Sheet at
+  1117 × 837 CSS pixels, identifying the hidden nested Select, weak content grouping, duplicated
+  Default role label, lowercase title, and bold Checkbox label.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground#sheet`
+- Closed Select and complete Sheet hierarchy:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-sheet-hierarchy-final.png`
+- Open nested Select:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-sheet-nested-select-final.png`
+- Source and implementation: 1117 × 837 pixels, device scale factor 1, right-side small Sheet in
+  the same light page appearance and dark overlay state.
+- Computed layering: Sheet `z-index: 51`; nested Select positioner `z-index: 52`.
+- Computed Checkbox label: `font-weight: 400`, primary overlay color, native `data-slot="label"`.
+- Primary interactions tested: open Sheet, open/close Default role Select, inspect all form labels,
+  close Sheet.
+- Browser console warnings and errors: none in the reviewed states.
+
+### Comparison and required fidelity surfaces
+
+- Full-view comparison confirms that the right-side geometry, footer placement, backdrop, and
+  surrounding Playground remain unchanged.
+- Focused open/closed captures verify both content hierarchy and portal layering; the Select options
+  remain fully readable above the Sheet instead of being clipped or hidden behind it.
+- Fonts and typography: passed. `Right sheet` uses sentence capitalization; Switch and Checkbox
+  labels use their native normal-weight primary text.
+- Spacing and layout rhythm: passed. Form blocks use a dedicated 24px vertical gap while each
+  control keeps its own tighter label/description anatomy.
+- Colors and visual tokens: passed. Floating overlays use the new derived overlay stacking token;
+  no literal z-index or color was introduced in the demo.
+- Image quality and asset fidelity: passed. No image assets are involved.
+- Copy and content: passed. Default role appears once, and all descriptions remain attached to the
+  correct control.
+
+### Findings and comparison history
+
+1. P1 — Select, Popover, Tooltip, and DropdownMenu positioners shared the base overlay z-index and
+   therefore rendered beneath modal surfaces at base + 1. Added the derived
+   `--n-overlay-floating-z-index` at base + 2 and applied it to every floating overlay family.
+2. P2 — Default role was composed as both a Field label and a Select label. Removed the outer Field
+   and kept the Select's native label and description.
+3. P2 — Sheet controls mixed custom bold wrappers with component-owned anatomy and used one tight
+   stack gap. Rebuilt Switch and Checkbox examples with native label/description props and added a
+   dedicated 24px inter-block rhythm.
+4. P2 — The generated side title preserved the lowercase enum value. Converted only its display
+   label to sentence case while leaving the public side value unchanged.
+
+No unresolved P0, P1, or P2 findings remain in the reviewed desktop states.
+
+final result: passed
+
+## Sheet trigger-row simplification QA — 2026-08-07
+
+### Source truth
+
+- `browser://comment-1/sheet-trigger-matrix-before` — the annotated Sheet preview at
+  1117 × 837 CSS pixels, requesting removal of side labels and repeated size suffixes while keeping
+  four side triggers in one row beneath the external size tabs.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground#sheet`
+- Final screenshot:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-sheet-four-buttons-row.png`
+- Source and implementation: 1117 × 837 pixels, device scale factor 1, light appearance, `sm`
+  Sheet size tab selected.
+- Preview text is exactly `left`, `right`, `top`, `bottom` with no additional row-label nodes.
+- All four triggers resolve to the same 390.39px vertical coordinate and 28px height.
+- Primary interactions tested: switch the external size tab and open each side trigger.
+- Browser console warnings and errors: none in the reviewed state.
+
+### Comparison and required fidelity surfaces
+
+- The full-view capture confirms that the surrounding Sheet header, external tabs, preview frame,
+  settings panel, and following Popover section are unchanged.
+- The focused trigger row is fully readable in the full-view screenshot, so a separate crop was not
+  needed.
+- Fonts and typography: passed; only redundant labels were removed.
+- Spacing and layout rhythm: passed; a dedicated four-column max-content grid keeps all triggers on
+  one centered row with the system 12px gap.
+- Colors and visual tokens: passed; existing secondary Button styling is unchanged.
+- Image quality and asset fidelity: passed; no image assets are involved.
+- Copy and content: passed; side names remain intact while the already-selected size is no longer
+  repeated.
+
+### Findings and comparison history
+
+1. P2 — The generic Matrix renderer displayed each side twice and appended the active size to every
+   trigger. Disabled row labels for this specimen and reduced trigger copy to the side value.
+2. P2 — Removing labels alone still left the generic minimum item width, wrapping the four triggers
+   into two rows. Added a Sheet-specific four-column layout without changing other matrix previews.
+
+No unresolved P0, P1, or P2 findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Playground Typography removal QA — 2026-08-07
+
+### Source truth
+
+- `browser://comment-1/typography-playground-before` — the annotated 1117 × 837 Playground capture
+  identified the complete `section#typography` block for removal because Typography already has a
+  dedicated documentation page.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground`
+- Final screenshot:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/playground-without-typography.png`
+- Source and implementation viewport: 1117 × 837 CSS px, device scale factor 1.
+- State: light appearance, comfortable density, full radius, 100% scaling.
+- Computed DOM: zero `section#typography` nodes, zero `Typography token groups` tablists, and
+  `section#kbd` is now the first component specimen.
+- Fresh-load browser console: no warnings or errors.
+
+### Comparison
+
+- Full-view comparison confirms the Typography heading, View docs link, tabs, and token cards are
+  gone; Playground proceeds directly from its title to the Kbd specimen.
+- A separate focused crop was unnecessary because the requested change removes one complete,
+  unambiguous section and the full-view capture clearly shows the new first specimen.
+
+### Required fidelity surfaces
+
+- Fonts and typography: the Playground title and remaining component headings are unchanged.
+- Spacing and layout rhythm: the removed section leaves the existing section rhythm intact; Kbd
+  occupies the first normal specimen position without a custom spacer.
+- Colors and visual tokens: unchanged.
+- Image quality and assets: no image assets are involved; existing Kbd glyphs remain unchanged.
+- Copy and content: only Playground-specific Typography copy was removed; the dedicated Typography
+  documentation and token contract remain untouched.
+
+### Findings and fixes
+
+1. P1 — Playground duplicated the full Typography token reference despite the dedicated foundation
+   page. Removed the section, its local token data and renderer, its private CSS, and the obsolete
+   docs/browser assertions.
+
+No unresolved P0, P1, or P2 findings remain.
+
+final result: passed
+
+## Toast stack depth and dark overlay perimeter QA — 2026-08-07
+
+### Source truth
+
+- `browser://comment-1/toast-stack-before` — the user requested progressively lower opacity and retained backdrop blur for Toast cards behind the frontmost card, with full opacity restored when the stack expands.
+- `browser://comment-2/overlay-border-before` — the user requested a quiet, complete perimeter border for floating surfaces in dark mode, including Dialog, Tooltip, and Command.
+- Source captures: browser-comment screenshots at 1117 × 837 CSS px, device scale factor 1.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground`
+- Viewport: 1117 × 837 CSS px, device scale factor 1; source and implementation use the same viewport and dark theme.
+- Collapsed Toast stack: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/toast-stack-collapsed.png`
+- Corrected whole-layer opacity:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/toast-root-opacity-after-correction.png`
+- Expanded Toast stack: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/toast-stack-expanded.png`
+- Dark Dialog perimeter: `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/dark-overlay-border.png`
+- Initial collapsed Toast computed opacity by depth: `1`, `0.84`, `0.68`.
+- Corrected collapsed Toast root opacity by depth: `1`, `0.6`, `0.2`; every layer retains
+  `blur(24px) saturate(1.2)`.
+- Descendant content keeps local opacity `1`, confirming that the complete root layer is composited
+  at `0.6` and `0.2` instead of making only its background transparent.
+- Expanded Toast computed opacity by depth: `1`, `1`, `1`.
+- Dialog and both Command specimens resolve to `1px` on all four sides with `rgba(255, 255, 255, 0.1)` in dark mode.
+- Primary interactions tested: create a three-item Toast stack, expand it by hovering, collapse it by leaving, and open/close Dialog.
+- Browser console warnings and errors: none.
+
+### Full-view and focused comparison
+
+- The full Playground view confirms that the new borders remain subordinate to the dark surfaces instead of outlining them aggressively.
+- Focused Toast evidence was required because the depth opacity and expanded state are too small to judge reliably from the full view alone.
+- Focused Dialog evidence confirms the border is continuous at the bottom and both sides, not only at the top.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged; Toast and Dialog hierarchy, weights, line height, and wrapping remain intact.
+- Spacing and layout rhythm: unchanged; Toast stack offsets, scale, expanded gap, overlay radius, and Dialog geometry are preserved.
+- Colors and visual tokens: Toast depth now uses a `0.4` whole-layer opacity step; dark overlays use the existing subtle border semantic at 10% white.
+- Image quality and assets: no raster or illustrative assets are involved; existing vector icons remain unchanged and sharp.
+- Copy and content: unchanged in all reviewed specimens.
+
+### Findings and fixes
+
+1. P1 — Every behind Toast used the same content-only opacity, so the stack had no depth progression and the surface itself stayed visually solid. Moved depth opacity to the managed Toast root, derived it from `--toast-index`, retained the existing backdrop filter, and restored full opacity through `data-expanded`.
+2. P1 — Overlay width was globally zero, so dark Dialog and Command surfaces relied on elevation that visually favored the top edge. Added the existing subtle semantic border to explicit dark mode and system-dark mode while leaving light mode unchanged.
+3. P1 follow-up — The first whole-root progression at `0.84` and `0.68` still left the rear text too
+   legible and could read like background-only transparency. Increased the root-level step so the
+   collapsed stack resolves to `1`, `0.6`, and `0.2`; expanded roots still resolve to `1`.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
+
+final result: passed
+
+## Card border visibility QA — 2026-08-07
+
+### Source truth
+
+- User annotation screenshot: `browser://comment-1/card-dark-before`.
+- Source route and state: `http://127.0.0.1:3001/playground#stat`, dark appearance, 1117 × 837
+  CSS-pixel viewport.
+- Review scope: add a restrained Card boundary in both light and dark modes without replacing the
+  existing light-mode elevation hierarchy.
+
+### Implementation evidence
+
+- Browser: Codex in-app browser at device scale 1.
+- Dark implementation:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/card-border-dark-stat.png`
+- Light implementation:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/card-border-light-stat.png`
+- Both implementation screenshots: 1117 × 837 pixels.
+- Computed dark Card boundary: 1px solid `rgba(255, 255, 255, 0.1)`.
+- Computed light Card boundary: 1px solid `rgba(15, 23, 42, 0.06)`.
+- Primary interactions: global mode menu and Playground appearance radio group remained functional.
+- Console: no application errors or warnings observed.
+
+### Findings and comparison history
+
+1. P1 — `--n-card-border-width` resolved to zero, leaving black raised Cards indistinguishable from
+   the black canvas when their soft shadow had no visible contrast. Mapped the component token to the
+   default 1px border width.
+2. P2 — Secondary and interactive Card states explicitly replaced the border with transparency.
+   Mapped secondary Cards to the subtle border and linked-card hover to the default border so the
+   boundary remains present through every variant and interaction state.
+3. Post-fix evidence — the dark screenshot shows a quiet but continuous boundary around the Stat
+   Cards and their preview field. The light screenshot retains the softer 6% boundary plus the
+   existing natural shadow, so the border does not compete with elevation.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed; no type tokens or text styles changed.
+- Spacing and layout rhythm: passed; the border uses the existing box model and does not change Card
+  padding, gaps, radius, or grid placement.
+- Colors and visual tokens: passed; the component uses existing mode-aware subtle/default semantic
+  border tokens rather than new palette values.
+- Image quality and asset fidelity: not applicable; the reviewed surface contains no image assets.
+- Copy and content: passed; no product copy changed.
+
+No unresolved P0, P1, or P2 Card-boundary findings remain in the reviewed light and dark states.
+
+final result: passed
+
+## Major Second typography scale QA — 2026-08-07
+
+### Source truth
+
+- User reference:
+  `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7b4bf848-7170-4c74-97a4-26ee87427e7d.png`
+- Review scope: font-size progression only. The reference uses a `1.125` Major Second scale from a
+  14px base; its layout, color, controls, and assets are not implementation targets.
+- Source pixels: 2940 × 1670.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/docs/getting-started#principles`
+- Browser: Codex in-app browser.
+- Viewport and density: 1117 × 837 CSS pixels at device scale 1.
+- Implementation screenshot:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/getting-started-major-second.png`
+- Implementation pixels: 1117 × 837.
+- Combined focused comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdaf0-a49a-7853-8164-7b9d0fd07777/typography-comparison-v2.png`
+- Computed sizes: body 14px, direct documentation h3 22.5px, direct documentation h2 25.25px,
+  page h1 33.51px at the reviewed fluid desktop width.
+- Primary interactions: documentation navigation and anchor navigation remained functional.
+- Console: no application errors observed.
+
+### Findings and comparison history
+
+1. P1 — Tailwind Preflight resets semantic heading sizes, while documentation h2 styling specified
+   only weight and margin. The rendered heading therefore inherited the 14px body size. Added
+   explicit documentation h2/h3/h4 semantic size mappings.
+2. P1 — The upper token scale jumped from 20px to 24px and ended at 3xl, so it could not represent
+   the reference's steady Major Second progression. Changed 3xl to 22.5px and added 4xl at 25.25px
+   and 5xl at 28.5px.
+3. P2 — A mathematically exact negative scale would push microcopy below the existing readability
+   floors. Retained 11px, 12px, and 13px micro tokens and applied the rounded Major Second
+   progression only from the 14px UI base upward.
+4. Post-fix evidence — the combined comparison shows a visible, consistent hierarchy between body,
+   h3, h2, and the fluid page heading without copying the reference product chrome.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Nerio keeps its existing Geist documentation family and optical
+  weights; the reviewed size progression, tight heading line height, and restrained negative
+  tracking now produce clear hierarchy.
+- Spacing and layout rhythm: passed for this scoped change. Existing documentation spacing remains
+  unchanged; larger headings fit the current content column without collision or clipping.
+- Colors and visual tokens: passed. No color values changed; typography continues to use semantic
+  foreground tokens.
+- Image quality and asset fidelity: not applicable. The reference contains no image asset that
+  belongs in the Nerio implementation; it is used only as a type-scale specimen.
+- Copy and content: passed. No product copy changed.
+
+No unresolved P0, P1, or P2 typography findings remain in the reviewed desktop state.
+
+final result: passed
+
 ## Table loading and EmptyState preview follow-up QA — 2026-07-21
 
 ### Source truth
@@ -63,6 +781,314 @@ final result: passed
 2. P2 — The empty state had title and description only, with insufficient vertical separation. Added a decorative PackageOpen icon through Nerio's icon adapter and token-driven 24px block padding.
 
 No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+## Profile settings identity Item refinement QA — 2026-08-07
+
+### Source truth
+
+- Approved pre-refinement capture:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-compact.jpg`
+- Approved direction: show a real avatar image, present avatar/name/email as a bordered Item that
+  previews the public profile, align Profile photo with the other editable fields, and remove the
+  Display name description.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/profile-settings`
+- Browser: Codex in-app browser.
+- Final compact-density screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-item-avatar-compact.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-item-avatar-comparison.jpg`
+- Source and implementation captures are both normalized to 1117 × 837 pixels at the same
+  1117 × 837 CSS viewport. The implementation was captured at device scale factor 2 and
+  downsampled from 2234 × 1674 to the CSS-pixel target before comparison.
+- State: light appearance, compact density, initial static preview.
+- Full-view evidence: the 512px Card retains its centered geometry while the bordered Item creates a
+  clear preview region above the aligned settings fields.
+- A focused crop was unnecessary because the 1:1 combined comparison keeps the avatar image, Item
+  border, field alignment, and Display name copy legible.
+- Static-preview behavior remains unchanged: Save changes is disabled.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. ItemTitle and ItemDescription provide a clearer identity hierarchy
+  without introducing custom text styling.
+- Spacing and layout rhythm: passed. The Item occupies the full settings column; Profile photo,
+  Display name, and Bio now share one vertical field alignment.
+- Colors and visual tokens: passed. The Item outline, Card, controls, and disabled action inherit
+  released Nerio theme tokens.
+- Image quality and asset fidelity: passed. Avatar uses the existing 128px raster portrait at its
+  native square crop through the released Avatar component.
+- Copy and content: passed. Name, e-mail, and portrait form one profile preview; the redundant
+  `Shown across Nerio.` helper is removed.
+
+### Findings and comparison history
+
+1. P1 — The initials-only identity row did not demonstrate Avatar image rendering. Added a real
+   existing portrait asset with the accessible name `Vladimir Pavlov profile photo`.
+2. P1 — Avatar identity and Profile photo appeared as one loosely assembled control group, obscuring
+   the distinction between preview and settings. Moved identity into a released outlined Item and
+   aligned FileInput with Display name and Bio.
+3. P2 — The Display name description repeated context already established by the Card header.
+   Removed it to reduce visual noise.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Profile settings product-coherence QA — 2026-08-07
+
+### Source truth
+
+- Approved refinement source:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-profile-settings-current.jpg`
+- Approved product direction: keep Profile settings focused on personal identity, group the Avatar
+  and FileInput into one photo region, replace duplicated security controls with profile visibility,
+  and show a truthful saved state.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/profile-settings`
+- Browser: Codex in-app browser.
+- Final compact-density screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/profile-settings-compact.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-coherent-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison preserves both captures at 1:1 scale.
+- State: light appearance, compact density, initial static preview.
+- Full-view evidence: the centered 512px Card preserves the established geometry while presenting
+  one coherent personal-profile workflow.
+- A focused crop was unnecessary because the 1:1 comparison keeps the photo, fields, visibility
+  control, saved state, and disabled action legible.
+- Static-preview behavior: Save changes is disabled and the preview does not expose a false
+  successful action.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Heading, identity, field, helper, Switch, status, and Button copy
+  use released Nerio components and typography.
+- Spacing and layout rhythm: passed. Avatar and FileInput now read as one photo region; fields,
+  visibility, and save state retain token-driven grouping and separation.
+- Colors and visual tokens: passed. Card, Avatar, fields, Switch, Separator, and disabled Button
+  inherit the active Nerio theme without hard-coded visual values.
+- Image quality and asset fidelity: passed. The released Avatar renders the accessible `VP`
+  fallback; no placeholder bitmap, custom SVG, CSS drawing, or generated asset was introduced.
+- Copy and content: passed. `Vladimir Pavlov`, `nerio@vpavlov.com`, the Nerio-specific bio, upload
+  limits, workspace visibility, and saved state form one internally consistent demo.
+
+### Findings and comparison history
+
+1. P1 — The source mixed personal profile, workspace administration, and account security in one
+   Card. Narrowed the Block to a clear personal-profile scope.
+2. P1 — Two-factor authentication duplicated the dedicated Security settings Block and suggested a
+   security workflow this static preview cannot represent. Replaced it with a profile-visibility
+   Switch that belongs to the current scope.
+3. P2 — Avatar identity and FileInput were visually disconnected. Grouped them into one responsive
+   photo region.
+4. P2 — Workspace name and workspace description conflicted with the person shown above them.
+   Replaced them with Display name and Bio using coherent Nerio demo content.
+5. P2 — `Unsaved changes` made the untouched initial state appear dirty. Replaced it with `All
+changes saved` and disabled Save changes.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Profile settings Block and Blocks navigation QA — 2026-08-07
+
+### Source truth
+
+- Current-state Profile settings capture:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-source.jpg`
+- Approved structure: place Profile settings inside a bounded Card, add a descriptive header,
+  identity and avatar-upload controls, preserve workspace fields, expose a 2FA Switch, and repair the
+  primary action contrast.
+- Approved Blocks behavior: gallery cards navigate internally in the same tab now that every public
+  Block View exposes Back to Blocks. Templates retain their new-tab behavior.
+
+### Implementation evidence
+
+- URLs: `http://localhost:3000/views/blocks/profile-settings` and
+  `http://localhost:3000/blocks`.
+- Browser: Codex in-app browser.
+- Final compact-density screenshot for this iteration:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-profile-settings-current.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/profile-settings-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison preserves both captures at 1:1 scale, so no
+  density normalization was required.
+- State: light appearance, compact density, initial static preview.
+- Full-view comparison evidence: the prior full-width form is replaced by a centered 512px Card with
+  20px token-resolved compact padding and a 649px rendered height.
+- A separate focused crop was unnecessary because the combined 1:1 comparison keeps the avatar,
+  FileInput, field labels, Switch, and action copy legible.
+- Save profile computed colors: foreground `rgb(255, 255, 255)` on background
+  `rgb(109, 40, 217)`. Its child text resolves to the same white foreground.
+- Static-preview behavior: Save profile does not change the URL or expose success feedback.
+- Blocks navigation: selecting Profile settings changed the same tab from `/blocks` to
+  `/views/blocks/profile-settings`; Back to Blocks returned that tab to `/blocks`.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Profile, identity, security, field, helper, and action copy use
+  released Heading, Text, Field, Switch, and Button typography.
+- Spacing and layout rhythm: passed. The Card creates one bounded reading column; token-driven gaps
+  separate identity, upload, workspace, security, and save regions while Separators mark major
+  changes in meaning.
+- Colors and visual tokens: passed. Card, avatar, fields, Switch, Separator, and Button inherit the
+  active Nerio theme. Narrowing the save-bar selector to its direct status child stops secondary
+  text color from leaking into the primary Button.
+- Image quality and asset fidelity: passed. The released Avatar component renders the accessible
+  `VP` fallback; no placeholder image, custom SVG, CSS drawing, or generated asset was introduced.
+- Copy and content: passed. The Card explains its scope, shows `Vladimir Pavlov` and
+  `nerio@vpavlov.com`, documents upload limits, retains workspace details, and names the 2FA
+  requirement.
+
+### Findings and comparison history
+
+1. P1 — The original profile form expanded across nearly the full canvas and had no surface
+   boundary. Wrapped the content in the released Card and constrained it to a centered 32rem maximum.
+2. P1 — Save profile inherited secondary text color from the broad `.composition-save-bar span`
+   selector, producing insufficient text/background separation. Scoped the rule to the direct status
+   child and verified white text on the purple primary surface.
+3. P2 — The original form lacked identity, avatar upload, security context, and descriptive Card
+   copy. Added Avatar, FileInput, a Security section, and a labelled 2FA Switch using released
+   components.
+4. P2 — Blocks cards opened duplicate tabs despite every public preview now providing a return path.
+   Removed only the Blocks `target` and `rel` attributes, updated the accessible name, and verified
+   same-tab forward and return navigation. Templates remain unchanged.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed desktop state.
+
+final result: passed
+
+## Reset password Block refinement QA — 2026-08-07
+
+### Source truth
+
+- Current-state source capture:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/01-reset-password-current.png`
+- Approved change set: retain the compact Card and add clearer recovery guidance, the branded email
+  placeholder, and a visual-only route back to Sign in.
+
+### Implementation evidence
+
+- URL: `http://localhost:3000/views/blocks/reset-password`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/reset-password-comfortable.jpg`
+- Side-by-side source and implementation comparison:
+  `/Users/vladimirpavlov/.codex/visualizations/2026/08/07/019fdc4e-7ab6-7863-8654-3bbb0c41ed3b/reset-password-comparison.jpg`
+- Source and implementation captures are both 1117 × 837 pixels at the same 1117 × 837 CSS
+  viewport and device scale factor 1. The comparison places both unchanged captures side by side,
+  so no density normalization was required.
+- State: light appearance, comfortable density, initial static preview.
+- Full-view comparison evidence: Card width, canvas position, padding, field width, and primary action
+  geometry remain unchanged while the approved copy and account-return row expand the Card
+  vertically.
+- A separate focused crop was unnecessary because the 1:1 combined comparison keeps every form
+  label, placeholder, and action legible.
+- Static-preview behavior: Send reset link does not change the URL or reveal validation/success
+  feedback; Sign in is a visual affordance rather than an anchor.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. The longer descriptor wraps naturally within the existing Card and
+  the account-return row uses released Text and link Button typography.
+- Spacing and layout rhythm: passed. The existing token-driven form gap and Card padding preserve a
+  clear header, field, primary action, and return-path sequence.
+- Colors and visual tokens: passed. No color or visual literals were introduced; the field, action,
+  secondary copy, and link inherit the existing theme-aware Nerio tokens.
+- Image quality and asset fidelity: passed. The approved form contains no image or decorative asset,
+  and none was added.
+- Copy and content: passed. The recovery explanation is explicit, the email placeholder is
+  `nerio@vpavlov.com`, and `Remembered your password? Sign in` restores the expected return path.
+
+### Findings and comparison history
+
+1. P2 — The original descriptor did not explain which email to enter or the resulting action.
+   Replaced it with the approved account-specific recovery instruction and verified its wrapping at
+   the same viewport.
+2. P2 — The original form ended after the primary action, leaving no visible return path to
+   authentication. Added the centered Sign in prompt using the existing non-interactive link
+   treatment.
+3. P2 — The original generic email placeholder did not follow the branded auth examples. Replaced
+   it with `nerio@vpavlov.com`.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+## Create account Block structure QA — 2026-08-07
+
+### Source truth
+
+- `browser://comments/create-account-structure-1` — the maintainer-supplied structural reference
+  attached to Browser Comment 1. It defines the company identity above the Card, centered account
+  heading, full name and email fields, side-by-side password confirmation, password guidance,
+  primary action, existing-account prompt, and legal agreement below the Card.
+- The maintainer explicitly scoped the screenshot to layout and required the implementation to use
+  Nerio components, icon adapters, and semantic tokens rather than copying its visual styling.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3000/views/blocks/create-account`
+- Browser: Codex in-app browser.
+- Final comfortable screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/docs/audits/screenshots/create-account-comfortable.jpg`
+- Implementation capture: 1280 × 720 pixels, matching the 1280 × 720 CSS viewport at device scale
+  factor 1.
+- The source and implementation use different canvas proportions; no density normalization was
+  applied because the source is an explicit structure-only reference. The Card and surrounding
+  identity/legal regions were compared as focused layout regions.
+- Focused measurements: Card padding 24px, form gap 20px, and two equal 177px password columns in
+  comfortable density. The password grid collapses to one column below the local 30rem breakpoint.
+- Static-preview behavior: Create account does not submit or change the URL; Sign in, Terms of
+  Service, and Privacy Policy are visual affordances rather than anchors. Back to Blocks remains
+  outside the disabled preview boundary.
+- Catalog thumbnail evidence: the updated Create account heading renders in the second iframe and
+  Back to Blocks resolves to `display: none` after the thumbnail appearance contract initializes.
+- Browser console errors: none.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. Company identity, title, description, labels, helper, account prompt,
+  and legal copy use Nerio Heading, Text, Label, Field, and Button typography.
+- Spacing and layout rhythm: passed. Brand, Card, and legal copy form three clear regions; full-width
+  fields precede the paired credential row, and the existing-account prompt closes the Card.
+- Colors and visual tokens: passed. The company mark, Card, inputs, text roles, borders, and action
+  use existing semantic tokens and remain theme-aware.
+- Image quality and asset fidelity: passed. The reference contains only a simple company mark; the
+  implementation uses the released Nerio Icon component with the adapter Box icon rather than a
+  generated asset, custom SVG, or CSS drawing.
+- Copy and content: passed. The English branded placeholders are `Vladimir Pavlov` and
+  `nerio@vpavlov.com`. Password, confirmation, minimum-length guidance, account action, Sign in
+  prompt, Terms of Service, and Privacy Policy are all present; the obsolete Email verification
+  alert is removed.
+
+### Findings and comparison history
+
+1. P1 — The prior Create account preview lacked company identity, confirm-password, account-switch,
+   and legal agreement regions. Added the complete structural sequence and verified it in the final
+   full-page capture.
+2. P2 — The prior form ended with an Email verification Alert that is absent from the selected
+   reference. Replaced it with password-length guidance and the existing-account prompt.
+3. P2 — The first revised primary action used submit semantics and appended an empty query string
+   despite the global static-preview boundary. Changed this visual action to `type="button"` and
+   reverified that the URL remains unchanged.
+4. P2 — Password and confirm-password needed a paired desktop relationship without creating mobile
+   overflow. Added a token-spaced two-column grid with a one-column narrow-screen fallback.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 

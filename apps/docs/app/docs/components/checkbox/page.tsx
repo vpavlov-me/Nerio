@@ -58,7 +58,7 @@ const apiRows = [
 const implementationRows = [
   [
     "Registry item",
-    "checkbox installs 7 Tailwind-first source files into the configured components directory.",
+    "checkbox installs 9 Tailwind-first source files into the configured components directory.",
   ],
   ["Base UI", "checkbox"],
   ["Registry dependencies", "None."],

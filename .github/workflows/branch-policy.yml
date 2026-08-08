@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -13,33 +14,38 @@ jobs:
   branch-policy:
     name: branch-policy
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Validate pull request direction
         env:
-          ALLOWED_DEVELOPMENT_BRANCH_PATTERN: "^(feat|feature|fix|refactor|docs|test|chore|dependabot)/[A-Za-z0-9._/-]+$"
-          BASE_REF: ${{ github.base_ref }}
-          HEAD_REF: ${{ github.head_ref }}
-          HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          if [[ "$BASE_REF" == "main" ]]; then
-            if [[ "$HEAD_REF" != "dev" || "$HEAD_REPOSITORY" != "$REPOSITORY" ]]; then
-              echo "Pull requests to main are allowed only from the dev integration branch." >&2
-              exit 1
-            fi
-            exit 0
-          fi
-
-          if [[ "$BASE_REF" == "dev" ]]; then
-            if [[ "$HEAD_REF" == "main" ]]; then
-              if [[ "$HEAD_REPOSITORY" != "$REPOSITORY" ]]; then
-                echo "Pull requests from main to dev are allowed only for same-repository synchronization." >&2
-                exit 1
-              fi
-              exit 0
-            fi
-            if [[ ! "$HEAD_REF" =~ $ALLOWED_DEVELOPMENT_BRANCH_PATTERN ]]; then
-              echo "Pull requests to dev must use a feat/, feature/, fix/, refactor/, docs/, test/, chore/, or bot-managed dependabot/ branch." >&2
-              exit 1
-            fi
-          fi
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/check-branch-policy.mjs
+      - name: Require DCO sign-off on human commits
+        if: >-
+          ${{
+            github.event.pull_request.head.repo.full_name != github.repository ||
+            (
+              (github.base_ref != 'main' || github.head_ref != 'dev') &&
+              (github.base_ref != 'dev' || github.head_ref != 'main')
+            )
+          }}
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: node scripts/check-dco.mjs --base "$BASE_SHA" --head "$HEAD_SHA"
+      - run: pnpm test:branch-policy
+      - run: node --test scripts/check-dco.test.mjs

@@ -48,7 +48,11 @@ const requiredReleaseCommands = [
   "pnpm validate:docs",
   "pnpm validate:onboarding",
   "pnpm validate:release:metadata",
-  "pnpm test:release-consumer",
+  "pnpm test:consumer:minimum",
+  "pnpm test:consumer:current",
+  "pnpm test:consumer:vite",
+  "pnpm test:consumer-matrix",
+  "pnpm validate:route-budgets",
   "pnpm validate:release",
   "NERIO_RELEASE_EXPECT_PUBLIC=1 pnpm validate:release",
   "pnpm test:cli",
@@ -56,6 +60,9 @@ const requiredReleaseCommands = [
   "pnpm test:adapters",
   "pnpm test:manual-audit-plan",
   "pnpm validate:manual-audit-plan",
+  "pnpm test:beta-feedback",
+  "pnpm validate:stable-readiness",
+  "pnpm test:sbom",
   "pnpm validate:platform-support",
   "pnpm validate:package-budgets",
   "pnpm test:browser:pr",
@@ -74,14 +81,20 @@ const paths = parsePathOptions(process.argv.slice(2), {
   "--release": resolve(root, "RELEASE.md"),
   "--pr-gate": resolve(root, ".github/workflows/pr-gate.yml"),
   "--release-gate": resolve(root, ".github/workflows/release-gate.yml"),
+  "--branch-policy": resolve(root, ".github/workflows/branch-policy.yml"),
+  "--playwright-canary": resolve(root, ".github/workflows/playwright-canary.yml"),
 });
 
-const [changelog, release, prGate, releaseGate] = await Promise.all([
-  readFile(paths["--changelog"], "utf8"),
-  readFile(paths["--release"], "utf8"),
-  readFile(paths["--pr-gate"], "utf8"),
-  readFile(paths["--release-gate"], "utf8"),
-]);
+const [changelog, release, prGate, releaseGate, branchPolicy, playwrightCanary] = await Promise.all(
+  [
+    readFile(paths["--changelog"], "utf8"),
+    readFile(paths["--release"], "utf8"),
+    readFile(paths["--pr-gate"], "utf8"),
+    readFile(paths["--release-gate"], "utf8"),
+    readFile(paths["--branch-policy"], "utf8"),
+    readFile(paths["--playwright-canary"], "utf8"),
+  ],
+);
 
 const missingChangelogHeadings = requiredChangelogHeadings.filter(
   (heading) => !changelog.includes(heading),
@@ -89,7 +102,12 @@ const missingChangelogHeadings = requiredChangelogHeadings.filter(
 const missingReleaseCommands = requiredReleaseCommands.filter(
   (command) => !release.includes(command),
 );
-const workflowFailures = ciWorkflowContractFailures({ prGate, releaseGate });
+const workflowFailures = ciWorkflowContractFailures({
+  prGate,
+  releaseGate,
+  branchPolicy,
+  playwrightCanary,
+});
 
 if (missingChangelogHeadings.length || missingReleaseCommands.length || workflowFailures.length) {
   if (missingChangelogHeadings.length) {

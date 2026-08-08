@@ -1,8 +1,5 @@
 import type { MetadataRoute } from "next";
-import { blockCatalog } from "../features/blocks/catalog";
-import { templateCatalog } from "../features/templates/catalog";
 import { componentDocSlugs } from "../lib/component-docs";
-import { arePreviewSurfacesEnabled } from "../lib/deployment";
 import { absoluteUrl } from "../lib/seo";
 
 const staticRoutes = [
@@ -12,6 +9,7 @@ const staticRoutes = [
   "/docs/migration",
   "/docs/registry",
   "/docs/ai",
+  "/docs/feedback",
   "/docs/foundations/tokens",
   "/docs/foundations/themes",
   "/docs/foundations/effects",
@@ -27,17 +25,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...componentDocSlugs.map((slug) => ({ url: absoluteUrl(`/docs/components/${slug}`) })),
   ];
 
-  if (!arePreviewSurfacesEnabled()) return publicRoutes;
-
-  return [
-    ...publicRoutes,
-    { url: absoluteUrl("/blocks") },
-    { url: absoluteUrl("/templates") },
-    ...blockCatalog
-      .filter((block) => block.indexable)
-      .map((block) => ({ url: absoluteUrl(block.detailRoute) })),
-    ...templateCatalog
-      .filter((template) => template.indexable)
-      .map((template) => ({ url: absoluteUrl(template.detailRoute) })),
-  ];
+  return [...publicRoutes, { url: absoluteUrl("/blocks") }, { url: absoluteUrl("/templates") }];
 }

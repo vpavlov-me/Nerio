@@ -1,41 +1,8 @@
-"use client";
-
 import { Check, X } from "@nerio-ui/adapters/icons";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Icon,
-  Input,
-  Label,
-  LabelContent,
-  LabelRequired,
-  LabelRow,
-} from "@nerio-ui/ui";
-import { LabelHint } from "@nerio-ui/ui/client";
-import { CodeExample } from "../../../../components/code-example";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
-
-const usageCode = `import {
-  Input,
-  Label,
-  LabelContent,
-  LabelRequired,
-  LabelRow,
-} from "@nerio-ui/ui";
-import { LabelHint } from "@nerio-ui/ui/client";
-
-<LabelRow>
-  <LabelContent>
-    <Label htmlFor="project-name">Project name</Label>
-    <LabelRequired />
-    <LabelHint label="Choose a recognizable name for collaborators." />
-  </LabelContent>
-</LabelRow>
-<Input id="project-name" required />`;
+import { LabelPreview } from "./label-preview";
 
 const apiRows = [
   ["Label", "LabelHTMLAttributes", "Native label that supplies the accessible control name."],
@@ -88,58 +55,13 @@ const tokenRows = [
   ["Focus", "--n-focus-ring", "Visible keyboard focus for the hint."],
 ] as const;
 
-function LabelExample({
-  id,
-  label,
-  required = false,
-  hint,
-}: {
-  id: string;
-  label: string;
-  required?: boolean;
-  hint?: string;
-}) {
-  return (
-    <div className="form-preview-stack">
-      <LabelRow>
-        <LabelContent>
-          <Label htmlFor={id}>{label}</Label>
-          {required ? <LabelRequired /> : null}
-          {hint ? <LabelHint label={hint} /> : null}
-        </LabelContent>
-      </LabelRow>
-      <Input id={id} placeholder="Roadmap refresh" required={required} />
-    </div>
-  );
-}
-
-function Preview() {
-  return (
-    <section id="preview" className="label-showcase" aria-label="Label preview">
-      <div className="label-showcase__preview">
-        <LabelExample
-          hint="Choose a recognizable name for collaborators."
-          id="preview-project-name"
-          label="Project name"
-          required
-        />
-      </div>
-      <CodeExample
-        className="component-example__code"
-        code={usageCode}
-        label="Label live preview code"
-      />
-    </section>
-  );
-}
-
 export default function Page() {
   return (
     <StandardDocPage
       title="Label"
       lede="Labels name form controls. Keep required and supplementary hint context compact and beside the visible label."
       kind="label"
-      preview={<Preview />}
+      preview={<LabelPreview />}
       sectionContent={{
         variants: (
           <DocumentationTable

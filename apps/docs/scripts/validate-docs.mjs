@@ -6,6 +6,7 @@ import {
   ciWorkflowPaths,
   readCiWorkflowSources,
 } from "../../../scripts/ci-workflow-contract.mjs";
+import { docPageArchitectureFailures } from "../../../scripts/doc-page-architecture.mjs";
 
 /* global console, process */
 
@@ -220,7 +221,9 @@ function packageReadinessFailures() {
     "test:ui",
     "test:a11y",
     "test:docs-examples",
+    "test:consumer:vite",
     "validate:docs",
+    "validate:route-budgets",
     "validate:release",
     "audit:prod",
     "test:cli",
@@ -263,12 +266,12 @@ function tailwindDocumentationFailures() {
   const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
-  const deployment = read("apps/docs/lib/deployment.ts");
   const playgroundPage = read("apps/docs/app/playground/page.tsx");
   const playground = read("apps/docs/components/visual-playground.tsx");
   const playgroundSpecimens = read("apps/docs/components/component-playground-specimens.tsx");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
+  const migrationPage = read("apps/docs/app/docs/migration/page.tsx");
   const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
   const failures = [];
 
@@ -291,13 +294,8 @@ function tailwindDocumentationFailures() {
     [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
     [playgroundPage, "indexable: false", "Playground metadata must remain private"],
-    [playgroundPage, "arePreviewSurfacesEnabled()", "Playground must be unavailable in production"],
-    [
-      deployment,
-      'return process.env.NODE_ENV === "production"',
-      "Deployment detection must protect non-Vercel production builds",
-    ],
     [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
+    [playground, "<h1>Playground</h1>", "Playground must use its concise canonical title"],
     [
       playground,
       "there is no Chart component in Core",
@@ -305,13 +303,23 @@ function tailwindDocumentationFailures() {
     ],
     [
       playgroundSpecimens,
-      'aria-label="Component index"',
-      "Playground must expose a navigable Core component index",
+      "Open constrained calendar",
+      "Playground must keep Calendar specimens behind explicit triggers",
     ],
     [
       gettingStarted,
       "component visuals compile from their Tailwind recipes",
       "Getting Started must describe Tailwind-owned component visuals",
+    ],
+    [
+      migrationPage,
+      'aria-label="Beta.0 to beta.1 migration changes"',
+      "Migration must use the Nerio Table for the current beta changes",
+    ],
+    [
+      migrationPage,
+      "It is not a stable release",
+      "Migration must distinguish the prepared beta candidate from stable Core 1.0",
     ],
     [
       progressPage,
@@ -322,6 +330,10 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (migrationPage.includes("<table")) {
+    failures.push("Migration must not use a raw table element");
   }
 
   if (
@@ -342,6 +354,15 @@ function tailwindDocumentationFailures() {
   if (/id="chart"|>Chart</.test(playgroundSpecimens)) {
     failures.push("Playground must not present an app-local Chart as a Core component");
   }
+  if (/<table[\s>]/.test(playgroundSpecimens)) {
+    failures.push("Playground matrices must use the canonical Nerio Table components");
+  }
+  if (/component-lab-index|aria-label="Component index"/.test(playgroundSpecimens)) {
+    failures.push("Playground must not restore the removed component index");
+  }
+  if (/id="icon"/.test(playgroundSpecimens)) {
+    failures.push("Playground must not restore the removed static Icon specimen");
+  }
 
   if (/['"]n-motion-[a-z]/.test(motionPage)) {
     failures.push("Motion Foundation must not restore removed n-motion-* visual utility classes");
@@ -361,9 +382,10 @@ function tailwindDocumentationFailures() {
 function templateArchitectureFailures() {
   const catalog = read("apps/docs/features/templates/catalog.ts");
   const gallery = read("apps/docs/app/templates/page.tsx");
-  const detail = read("apps/docs/app/templates/[slug]/page.tsx");
+  const thumbnail = read("apps/docs/components/preview-thumbnail.tsx");
   const viewRoute = read("apps/docs/app/views/[slug]/page.tsx");
   const workspace = read("apps/docs/features/templates/operations-workspace/view.tsx");
+  const finance = read("apps/docs/features/templates/finance-assets/view.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const playwright = read("playwright.config.mjs");
@@ -380,12 +402,30 @@ function templateArchitectureFailures() {
       'previewRoute: "/views/operations-workspace"',
       "Template catalog must own the same-origin Operations Workspace preview route",
     ],
-    [gallery, "templateCatalog.map", "Templates gallery must derive from the canonical catalog"],
-    [detail, "getTemplate(slug)", "Template detail route must derive from the canonical catalog"],
+    [catalog, 'slug: "finance-assets"', "Template catalog must register Finance & Assets"],
     [
-      detail,
+      catalog,
+      'previewRoute: "/views/finance-assets"',
+      "Template catalog must own the same-origin Finance & Assets preview route",
+    ],
+    [gallery, "templateCatalog.map", "Templates gallery must derive from the canonical catalog"],
+    [
+      gallery,
+      "href={template.previewRoute}",
+      "Template cards must use their catalog-owned same-origin preview routes",
+    ],
+    [gallery, 'target="_blank"', "Template cards must open full-screen previews in a new tab"],
+    [
+      gallery,
       "src={template.previewRoute}",
-      "Template detail iframe must use its catalog-owned same-origin preview route",
+      "Template cards must render their live catalog previews",
+    ],
+    [thumbnail, 'loading="lazy"', "Live catalog previews must preserve lazy iframe loading"],
+    [thumbnail, "tabIndex={-1}", "Live catalog previews must remain outside the keyboard sequence"],
+    [
+      thumbnail,
+      "data-preview-thumbnail",
+      "Live catalog previews must use deterministic thumbnail mode",
     ],
     [
       viewRoute,
@@ -398,6 +438,7 @@ function templateArchitectureFailures() {
       "OperationsWorkspaceView",
       "Operations Workspace implementation must remain template-local",
     ],
+    [finance, "FinanceAssetsView", "Finance & Assets implementation must remain template-local"],
     [
       docsChrome,
       'pathname.startsWith("/views/")',
@@ -405,8 +446,8 @@ function templateArchitectureFailures() {
     ],
     [
       sitemap,
-      "templateCatalog",
-      "Indexable template detail routes must be derived into the sitemap",
+      'absoluteUrl("/templates")',
+      "The preview-surface sitemap must include the Templates catalog",
     ],
     [
       playwright,
@@ -426,7 +467,7 @@ function templateArchitectureFailures() {
   const forbiddenSource = [
     catalog,
     gallery,
-    detail,
+    thumbnail,
     viewRoute,
     workspace,
     docsChrome,
@@ -442,6 +483,19 @@ function templateArchitectureFailures() {
       failures.push(`Templates architecture still depends on ${forbidden}.`);
     }
   }
+  if (catalog.includes("detailRoute")) {
+    failures.push("Template catalog must not restore removed detail routes.");
+  }
+  for (const removedSlug of [
+    "content-library",
+    "ai-research-workspace",
+    "developer-portal",
+    "support-desk",
+  ]) {
+    if (catalog.includes(removedSlug) || viewRoute.includes(removedSlug)) {
+      failures.push(`Removed Template ${removedSlug} must not remain registered or routed.`);
+    }
+  }
 
   return failures;
 }
@@ -449,7 +503,7 @@ function templateArchitectureFailures() {
 function blockArchitectureFailures() {
   const catalog = read("apps/docs/features/blocks/catalog.ts");
   const gallery = read("apps/docs/app/blocks/page.tsx");
-  const detail = read("apps/docs/app/blocks/[slug]/page.tsx");
+  const thumbnail = read("apps/docs/components/preview-thumbnail.tsx");
   const viewRoute = read("apps/docs/app/views/blocks/[slug]/page.tsx");
   const internalRoute = read("apps/docs/app/visual-test/blocks/[slug]/page.tsx");
   const redirects = read("apps/docs/app/docs/blocks/[slug]/page.tsx");
@@ -464,8 +518,13 @@ function blockArchitectureFailures() {
     [catalog, 'previewRoute: "/views/blocks/', "Block previews must be same-origin Views"],
     [catalog, "internalBlockFixtures", "Internal Block fixtures must be classified separately"],
     [gallery, "blockCatalog", "Blocks gallery must derive from the canonical catalog"],
-    [detail, "blockSlugs.map", "Block detail routes must derive static params from the catalog"],
-    [detail, "getBlock(slug)", "Block detail routes must reject unknown slugs"],
+    [
+      gallery,
+      "href={block.previewRoute}",
+      "Block cards must use their catalog-owned same-origin preview routes",
+    ],
+    [gallery, "src={block.previewRoute}", "Block cards must render their live catalog previews"],
+    [thumbnail, 'loading="lazy"', "Live Block previews must preserve lazy iframe loading"],
     [viewRoute, "blockSlugs.map", "Block View routes must derive static params from the catalog"],
     [viewRoute, "indexable: false", "Block Views must remain unindexed"],
     [internalRoute, "isInternalBlockFixture", "Internal fixtures must reject unknown slugs"],
@@ -476,7 +535,7 @@ function blockArchitectureFailures() {
       "Legacy public Block routes must redirect canonically",
     ],
     [docsChrome, 'href="/blocks"', "Primary navigation must use the canonical Blocks catalog"],
-    [sitemap, "blockCatalog", "Indexable Blocks must be derived into the sitemap"],
+    [sitemap, 'absoluteUrl("/blocks")', "The preview-surface sitemap must include Blocks"],
     [robots, '"/views/"', "Robots must exclude full-screen Views from crawling"],
     [robots, '"/visual-test/"', "Robots must exclude internal fixtures from crawling"],
   ];
@@ -486,9 +545,9 @@ function blockArchitectureFailures() {
   }
 
   const publicSlugs = [...catalog.matchAll(/slug: "([^"]+)"/g)].map((match) => match[1]);
-  if (publicSlugs.length < 8 || publicSlugs.length > 12) {
+  if (publicSlugs.length < 8 || publicSlugs.length > 11) {
     failures.push(
-      `Blocks catalog must remain compact at 8-12 entries; found ${publicSlugs.length}.`,
+      `Blocks catalog must remain compact at 8-11 entries; found ${publicSlugs.length}.`,
     );
   }
 
@@ -517,32 +576,37 @@ function blockArchitectureFailures() {
     "feedback",
   ]) {
     if (
-      catalog.includes(`detailRoute: "/blocks/${internalSlug}"`) ||
+      catalog.includes(`previewRoute: "/views/blocks/${internalSlug}"`) ||
       docsChrome.includes(`href: "/blocks/${internalSlug}"`)
     ) {
       failures.push(`${internalSlug} must not be presented as a public Block.`);
     }
   }
+  if (catalog.includes("detailRoute")) {
+    failures.push("Block catalog must not restore removed detail routes.");
+  }
+  if (catalog.includes('slug: "empty-project"') || catalog.includes('"empty-states":')) {
+    failures.push("The redundant Empty project Block and its legacy redirect must stay removed.");
+  }
+  if (gallery.includes('target="_blank"')) {
+    failures.push("Block cards must preserve same-tab navigation to support Back to Blocks.");
+  }
 
   return failures;
 }
 
-function previewSurfaceGateFailures() {
-  const deployment = read("apps/docs/lib/deployment.ts");
+function publicSurfaceFailures() {
   const layout = read("apps/docs/app/layout.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const robots = read("apps/docs/app/robots.ts");
-  const browserConfig = read("playwright.config.mjs");
-  const visualConfig = read("playwright.visual.config.mjs");
   const llmsRoute = read("apps/docs/app/llms.txt/route.ts");
   const llmsSource = read("apps/docs/content/llms.txt");
+  const feedbackPage = read("apps/docs/app/docs/feedback/page.tsx");
   const routeFiles = [
     "apps/docs/app/playground/page.tsx",
     "apps/docs/app/blocks/page.tsx",
-    "apps/docs/app/blocks/[slug]/page.tsx",
     "apps/docs/app/templates/page.tsx",
-    "apps/docs/app/templates/[slug]/page.tsx",
     "apps/docs/app/views/[slug]/page.tsx",
     "apps/docs/app/views/blocks/[slug]/page.tsx",
     "apps/docs/app/docs/blocks/[slug]/page.tsx",
@@ -550,65 +614,52 @@ function previewSurfaceGateFailures() {
   ];
   const failures = [];
   const required = [
-    [
-      deployment,
-      "NERIO_SHOW_PREVIEW_SURFACES",
-      "Preview surfaces must expose one explicit environment override",
-    ],
-    [
-      deployment,
-      "return !isPublicProductionDeployment()",
-      "Preview surfaces must default off only in public production",
-    ],
-    [
-      layout,
-      "showPreviewSurfaces={showPreviewSurfaces}",
-      "The docs shell must receive the server-evaluated preview-surface flag",
-    ],
+    [layout, "<DocsChrome>{children}</DocsChrome>", "The docs shell must expose public surfaces"],
     [
       docsChrome,
-      '!entry.href.startsWith("/blocks")',
-      "Production search must exclude Block entries",
+      "const visibleSearchEntries = searchEntries",
+      "Search must include public surfaces",
     ],
+    [sitemap, 'absoluteUrl("/blocks")', "The sitemap must include Blocks"],
+    [sitemap, 'absoluteUrl("/templates")', "The sitemap must include Templates"],
     [
       docsChrome,
-      '!entry.href.startsWith("/templates")',
-      "Production search must exclude Template entries",
+      '{ href: "/docs/feedback", label: "Community feedback"',
+      "Overview navigation must expose the Community feedback route",
     ],
-    [
-      sitemap,
-      "if (!arePreviewSurfacesEnabled()) return publicRoutes",
-      "Production sitemap generation must exclude preview surfaces",
-    ],
+    [sitemap, '"/docs/feedback"', "The sitemap must include Community feedback"],
     [
       robots,
-      `["/blocks", "/templates", "/views/", "/visual-test/"]`,
-      "Production robots rules must exclude preview surfaces",
-    ],
-    [
-      browserConfig,
-      "VERCEL_ENV=development",
-      "Browser checks must explicitly enable preview surfaces",
-    ],
-    [
-      visualConfig,
-      "VERCEL_ENV=development",
-      "Visual checks must explicitly enable preview surfaces",
-    ],
-    [
-      llmsRoute,
-      "if (!arePreviewSurfacesEnabled())",
-      "Production llms.txt must use the preview-surface gate",
+      'disallow: ["/views/", "/visual-test/"]',
+      "Robots rules must keep catalogs public while excluding preview Views",
     ],
     [
       llmsRoute,
       'join(process.cwd(), "content", "llms.txt")',
       "The llms.txt route must render the canonical source",
     ],
+    [llmsSource, "`/blocks`", "The canonical llms.txt source must describe Blocks"],
+    [llmsSource, "`/templates`", "The canonical llms.txt source must describe Templates"],
+    [llmsSource, "`/docs/feedback`", "The canonical llms.txt source must describe feedback"],
     [
-      llmsSource,
-      "<!-- nerio-preview-surfaces:start -->",
-      "The canonical llms.txt source must mark preview-only discovery sections",
+      feedbackPage,
+      "https://github.com/vpavlov-me/Nerio/discussions/385",
+      "Community feedback must link directly to the Core 1.0 beta discussion",
+    ],
+    [
+      feedbackPage,
+      "https://github.com/vpavlov-me/Nerio/discussions",
+      "Community feedback must link to the Discussions hub",
+    ],
+    [
+      feedbackPage,
+      "does not by itself satisfy release evidence",
+      "Community feedback must preserve the manual release-evidence boundary",
+    ],
+    [
+      feedbackPage,
+      "https://github.com/vpavlov-me/Nerio/security/policy",
+      "Community feedback must route private security reports away from Discussions",
     ],
   ];
 
@@ -616,15 +667,33 @@ function previewSurfaceGateFailures() {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
   }
 
-  for (const routeFile of routeFiles) {
-    const source = read(routeFile);
-    if (!source.includes("arePreviewSurfacesEnabled()") || !source.includes("notFound()")) {
-      failures.push(`${routeFile}: preview surface route must return notFound when disabled`);
+  const feedbackNewTabAnchors = feedbackPage.match(/<a\b[^>]*\btarget="_blank"[^>]*>/gs) ?? [];
+  for (const anchor of feedbackNewTabAnchors) {
+    const relations = new Set(anchor.match(/\brel="([^"]*)"/)?.[1].split(/\s+/) ?? []);
+    if (!relations.has("noopener") || !relations.has("noreferrer")) {
+      failures.push("Every new-tab Community feedback link must prevent opener access");
     }
   }
 
+  for (const routeFile of routeFiles) {
+    const source = read(routeFile);
+    if (
+      source.includes("arePreviewSurfacesEnabled") ||
+      source.includes("NERIO_SHOW_PREVIEW_SURFACES")
+    ) {
+      failures.push(`${routeFile}: public surface routes must not depend on deployment flags`);
+    }
+  }
+
+  if (existsSync(join(root, "apps/docs/lib/deployment.ts"))) {
+    failures.push("The removed preview-surface deployment gate must not be restored");
+  }
+  if (llmsSource.includes("nerio-preview-surfaces")) {
+    failures.push("The public llms.txt source must not retain preview-only markers");
+  }
+
   if (existsSync(join(root, "apps/docs/public/llms.txt"))) {
-    failures.push("Static public llms.txt must not bypass the deployment gate");
+    failures.push("Static public llms.txt must not bypass the canonical route source");
   }
 
   return failures;
@@ -700,7 +769,8 @@ const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
 const blockArchitectureIssues = blockArchitectureFailures();
-const previewSurfaceGateIssues = previewSurfaceGateFailures();
+const publicSurfaceIssues = publicSurfaceFailures();
+const docPageArchitectureIssues = docPageArchitectureFailures(root);
 const catalogBySlug = new Map(
   componentCatalog.components.map((component) => [slugify(component.name), component]),
 );
@@ -737,7 +807,8 @@ reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
-reportMissing("Preview surface gate issues", previewSurfaceGateIssues);
+reportMissing("Public documentation surface issues", publicSurfaceIssues);
+reportMissing("Documentation server/client architecture issues", docPageArchitectureIssues);
 
 const failures = [
   missingNav,
@@ -763,7 +834,8 @@ const failures = [
   tailwindDocumentationIssues,
   templateArchitectureIssues,
   blockArchitectureIssues,
-  previewSurfaceGateIssues,
+  publicSurfaceIssues,
+  docPageArchitectureIssues,
 ].flat();
 
 if (failures.length > 0) {
@@ -771,5 +843,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-  `Docs registry, Tailwind contract, Blocks and Templates architecture, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
+  `Docs registry, server/client islands, Tailwind contract, Blocks and Templates architecture, entrypoint, and package readiness verified for ${registrySlugs.length} components and ${definedTokens.length} tokens.`,
 );

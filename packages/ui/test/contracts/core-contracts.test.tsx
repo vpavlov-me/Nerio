@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import * as React from "react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
@@ -13,6 +15,7 @@ import {
   Card,
   CardAction,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
   CardVisual,
@@ -675,7 +678,8 @@ describe("Core static contracts", () => {
     );
     expect(componentSource("date-picker")).toContain("trailingIcon={CalendarDays}");
     expect(componentSource("tooltip")).toContain("<BaseTooltip.Arrow");
-    expect(componentSource("tooltip")).toContain("sideOffset={10}");
+    expect(componentSource("tooltip")).toContain("sideOffset = 10");
+    expect(componentSource("tooltip")).toContain("sideOffset={sideOffset}");
     expect(componentSource("tooltip")).toContain("overflow-clip");
     expect(componentSource("tooltip")).toContain(
       "before:[transform:translate(-50%,50%)_rotate(45deg)]",
@@ -694,9 +698,13 @@ describe("Core static contracts", () => {
     );
     expect(componentSource("file-input")).toContain("[grid-area:1/1]");
     expect(componentSource("file-input")).not.toContain("absolute inset-block-0");
+    expect(componentSource("file-input")).toContain("after:h-(--n-file-input-divider-length)");
+    expect(componentSource("file-input")).not.toContain("file:border-e");
     expect(componentSource("switch")).toContain("rounded-(--n-switch-radius)");
     expect(componentSource("switch")).toContain("rounded-(--n-switch-thumb-radius)");
     expect(componentSource("switch")).toContain("translate-x-(--n-switch-thumb-offset)");
+    expect(componentSource("switch")).toContain("min-w-(--n-switch-width)");
+    expect(componentSource("switch")).toContain("max-w-(--n-switch-width)");
     expect(tokens).toContain(
       "--n-radius-pill: min(var(--n-radius-control), var(--n-radius-full));",
     );
@@ -706,15 +714,32 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
-    expect(tokens).toContain("--n-slider-gap: var(--n-space-2);");
+    expect(tokens).toContain("--n-slider-gap: var(--n-space-1);");
     expect(tokens).toContain("--n-slider-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-slider-disabled-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-switch-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-switch-thumb-background-checked: var(--n-gray-0);");
     expect(tokens).toContain("--n-list-gap: var(--n-space-1);");
     expect(tokens).toContain("--n-list-item-padding: var(--n-space-2);");
+    expect(tokens).toContain("--n-card-padding-md: var(--n-space-6);");
+    expect(tokens).toMatch(
+      /:root\[data-density="compact"\][\s\S]*--n-card-padding-md: var\(--n-space-5\);/,
+    );
+    expect(tokens).toContain("--n-dialog-padding: var(--n-space-6);");
+    expect(tokens).toContain("--n-sheet-padding: var(--n-space-6);");
+    expect(tokens).toContain("--n-popover-padding: var(--n-density-space-xl);");
+    expect(tokens).toMatch(
+      /:root\[data-density="compact"\][\s\S]*--n-dialog-padding: var\(--n-space-5\);/,
+    );
+    expect(tokens).toMatch(
+      /:root\[data-density="compact"\][\s\S]*--n-sheet-padding: var\(--n-space-5\);/,
+    );
     expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
     expect(tokens).toContain("--n-card-section-gap: var(--n-space-2);");
+    expect(tokens).toContain("--n-card-border-width: var(--n-border-width-default);");
+    expect(tokens).toContain("--n-card-border-color: var(--n-color-border-subtle);");
+    expect(tokens).toContain("--n-card-border-secondary: var(--n-color-border-subtle);");
+    expect(tokens).toContain("--n-card-border-interactive: var(--n-color-border-default);");
     expect(tokens).toContain("--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);");
     expect(tokens).toContain("--n-item-border-width: var(--n-border-width-default);");
     expect(tokens).toContain("--n-toggle-background-pressed: var(--n-color-action-secondary);");
@@ -1005,8 +1030,8 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("visual-card")).toHaveClass(
       "[&:is(a)]:duration-(--n-motion-hover-duration)",
     );
-    expect(screen.getByRole("heading", { name: "Projects" })).toHaveClass(
-      "text-(length:--n-font-size-md)",
+    expect(screen.getByText("Projects")).toHaveClass(
+      "text-(length:--n-font-size-lg)",
       "font-(--n-font-weight-medium)",
     );
     expect(screen.getByTestId("visual-avatar")).toHaveClass("border-(--n-avatar-border)");
@@ -1276,6 +1301,7 @@ describe("Core static contracts", () => {
         <CardHeader>
           <div>
             <CardTitle>Workspace</CardTitle>
+            <CardDescription>Current delivery context</CardDescription>
           </div>
           <CardAction>Active</CardAction>
         </CardHeader>
@@ -1285,7 +1311,12 @@ describe("Core static contracts", () => {
     expect(screen.getByText("Workspace icon")).toHaveAttribute("data-slot", "card-visual");
     expect(screen.getByText("Workspace icon")).toHaveAttribute("data-placement", "inset");
     expect(screen.getByText("Active")).toHaveAttribute("data-slot", "card-action");
-    expect(screen.getByText("Workspace")).toHaveAttribute("data-slot", "card-title");
+    const title = screen.getByText("Workspace");
+    expect(title).toHaveAttribute("data-slot", "card-title");
+    expect(title.tagName).toBe("DIV");
+    expect(screen.getByText("Current delivery context")).toHaveClass(
+      "text-(length:--n-font-size-md)",
+    );
   });
 
   it("supports a bleed CardVisual while protecting Card-owned anatomy", () => {
@@ -1309,6 +1340,8 @@ describe("Core static contracts", () => {
     expect(source).toContain(
       "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
+    expect(source).not.toContain("[&>div:not([data-slot=card-action])]");
+    expect(source).toContain("[&>div:has(>[data-slot=card-title])]:gap-(--n-card-section-gap)");
     expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");
   });
 
@@ -1911,6 +1944,10 @@ describe("Core static contracts", () => {
       "data-slot",
       "empty-state-title",
     );
+    expect(screen.getByRole("heading", { name: "No results" })).toHaveClass(
+      "text-(length:--n-font-size-lg)",
+      "[[data-size=lg]_&]:text-(length:--n-font-size-xl)",
+    );
     expect(screen.getByText("Try a different query.")).toHaveAttribute(
       "data-slot",
       "empty-state-description",
@@ -2122,6 +2159,9 @@ describe("Core static contracts", () => {
     expect(source).toContain("--toast-managed-enter-y");
     expect(source).toContain("--toast-managed-dismiss-x");
     expect(source).toContain("--toast-managed-dismiss-y");
+    expect(source).toContain("--toast-managed-opacity");
+    expect(source).toContain("var(--n-toast-stack-opacity-step)");
+    expect(source).toContain("data-expanded:[--toast-managed-opacity:1]");
     expect(source).toContain("safe-area-inset-left");
     expect(source).toContain("safe-area-inset-right");
     expect(source).toContain("translate3d(var(--toast-managed-x),var(--toast-managed-y),0)");
@@ -2592,7 +2632,7 @@ describe("Core interactive action contracts", () => {
     const onOpenChange = vi.fn();
     const { rerender } = render(
       <TooltipProvider>
-        <Tooltip label="Copy link" onOpenChange={onOpenChange}>
+        <Tooltip label="Copy link" onOpenChange={onOpenChange} side="right" sideOffset={18}>
           <button>Copy</button>
         </Tooltip>
       </TooltipProvider>,
@@ -2600,6 +2640,7 @@ describe("Core interactive action contracts", () => {
     await user.tab();
     const tooltip = await screen.findByRole("tooltip");
     expect(tooltip).toHaveTextContent("Copy link");
+    expect(tooltip.parentElement).toHaveAttribute("data-side", "right");
     expect(tooltip.querySelector('[data-slot="arrow"]')?.parentElement).toBe(tooltip);
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     rerender(
@@ -2611,6 +2652,17 @@ describe("Core interactive action contracts", () => {
     );
     await user.hover(screen.getByRole("button", { name: "Copy" }));
     expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+
+    rerender(
+      <TooltipProvider>
+        <Tooltip label="Copy link" open showArrow={false}>
+          <button>Copy</button>
+        </Tooltip>
+      </TooltipProvider>,
+    );
+    expect(
+      screen.getByRole("tooltip").querySelector('[data-slot="arrow"]'),
+    ).not.toBeInTheDocument();
   });
 
   it("shows the accessible name as the default tooltip for an icon-only Button", async () => {
@@ -3369,8 +3421,10 @@ describe("Core interactive action contracts", () => {
     expect(rootRef.current).toHaveAttribute("data-size", "lg");
     expect(listRef.current).toHaveAttribute("data-slot", "list");
     expect(listRef.current).toHaveAttribute("data-layout", "fill");
+    expect(listRef.current).toHaveAttribute("data-variant", "segmented");
     expect(listRef.current).toHaveAttribute("data-scrollable");
     expect(triggerRef.current).toHaveAttribute("data-slot", "trigger");
+    expect(triggerRef.current).toHaveAttribute("data-variant", "segmented");
     expect(contentRef.current).toHaveAttribute("data-slot", "content");
     expect(panelsRef.current).toHaveAttribute("data-slot", "panels");
     expect(overview.querySelector('[data-slot="leading-icon"]')).toHaveAttribute("aria-hidden");
@@ -3547,12 +3601,42 @@ describe("Core interactive action contracts", () => {
   it("keeps vertical variants compact, horizontal fill-only, and RTL indicator geometry in the CSS contract", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/tabs.tsx"), "utf8");
     expect(source).toContain("data-[orientation=vertical]:items-start");
+    expect(source).toContain("data-[layout=content]:w-fit");
     expect(source).toContain("[[data-orientation=vertical]_&]:w-fit");
     expect(source).toContain("[&[data-layout=fill]>[data-slot=trigger]]:flex-1");
     expect(source).toContain("left-(--active-tab-left)");
     expect(source).toContain("w-(--active-tab-width)");
     expect(source).toContain(
       "[[data-orientation=vertical]_&]:right-[calc(var(--n-border-width-default)*-1)]",
+    );
+  });
+
+  it("scopes nested Tabs variant styling to each component instance", () => {
+    render(
+      <Tabs defaultValue="outer" variant="bordered">
+        <TabsList aria-label="Outer tabs">
+          <TabsTrigger value="outer">Outer</TabsTrigger>
+          <TabsIndicator />
+        </TabsList>
+        <TabsPanels>
+          <TabsContent value="outer">
+            <Tabs defaultValue="inner" variant="segmented">
+              <TabsList aria-label="Inner tabs">
+                <TabsTrigger value="inner">Inner</TabsTrigger>
+                <TabsIndicator />
+              </TabsList>
+            </Tabs>
+          </TabsContent>
+        </TabsPanels>
+      </Tabs>,
+    );
+
+    const innerTab = screen.getByRole("tab", { name: "Inner" });
+    const innerList = innerTab.closest('[data-slot="list"]');
+    expect(innerTab).toHaveAttribute("data-variant", "segmented");
+    expect(innerList?.querySelector('[data-slot="indicator"]')).toHaveAttribute(
+      "data-variant",
+      "segmented",
     );
   });
 
@@ -3592,6 +3676,7 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByRole("tabpanel")).toHaveClass("content-state");
     const indicator = document.querySelector('[data-slot="indicator"]');
     expect(indicator).toHaveClass("indicator-state");
+    expect(indicator).toHaveAttribute("data-variant", "bordered");
     expect(indicator?.getAttribute("style")).toContain("--active-tab-left");
     expect(indicator?.getAttribute("style")).toContain("--active-tab-width");
   });
@@ -3817,7 +3902,13 @@ describe("Core interactive action contracts", () => {
 
   it("keeps Dialog close anatomy truthful and its accessible name localizable", () => {
     render(
-      <Dialog defaultOpen closeLabel="Close workspace dialog" title="Workspace" trigger="Open">
+      <Dialog
+        defaultOpen
+        closeLabel="Close workspace dialog"
+        description="Configure workspace defaults."
+        title="Workspace"
+        trigger="Open"
+      >
         Dialog content
         <DialogFooter>
           <Button variant="secondary">Cancel</Button>
@@ -3830,6 +3921,12 @@ describe("Core interactive action contracts", () => {
     expect(close).toHaveAttribute("data-slot", "close");
     expect(close).toHaveAttribute("data-variant", "secondary");
     expect(close).toHaveAttribute("data-size", "sm");
+    const title = screen.getByText("Workspace");
+    expect(title.tagName).toBe("DIV");
+    expect(title).toHaveClass("text-(length:--n-font-size-lg)");
+    expect(screen.getByText("Configure workspace defaults.")).toHaveClass(
+      "text-(length:--n-font-size-md)",
+    );
     expect(document.querySelector('[data-slot="footer"]')).toHaveClass(
       "flex",
       "flex-wrap",
@@ -3883,10 +3980,13 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByTestId("sheet-content")).toHaveAttribute("data-size", "sm");
     expect(screen.getByTestId("sheet-header")).toHaveAttribute("data-slot", "sheet-header");
     expect(screen.getByTestId("sheet-title")).toHaveAttribute("data-slot", "sheet-title");
+    expect(screen.getByTestId("sheet-title").tagName).toBe("DIV");
+    expect(screen.getByTestId("sheet-title")).toHaveClass("text-(length:--n-font-size-lg)");
     expect(screen.getByTestId("sheet-description")).toHaveAttribute(
       "data-slot",
       "sheet-description",
     );
+    expect(screen.getByTestId("sheet-description")).toHaveClass("text-(length:--n-font-size-md)");
     expect(screen.getByTestId("sheet-body")).toHaveAttribute("data-slot", "sheet-body");
     expect(screen.getByTestId("sheet-footer")).toHaveAttribute("data-slot", "sheet-footer");
   });
@@ -4005,9 +4105,11 @@ describe("Core interactive action contracts", () => {
               <a href="/projects">Projects</a>
             </nav>
           </SidebarContent>
-          <SidebarFooter data-testid="sidebar-footer" {...unsafeSlot}>
-            Account
-          </SidebarFooter>
+          <React.Fragment>
+            <SidebarFooter data-testid="sidebar-footer" {...unsafeSlot}>
+              Account
+            </SidebarFooter>
+          </React.Fragment>
           <SidebarRail label="Collapse workspace sidebar" {...unsafeSlot} />
         </Sidebar>
         <SidebarInset data-testid="sidebar-inset" {...unsafeSlot}>
@@ -4048,28 +4150,45 @@ describe("Core interactive action contracts", () => {
     expect(sidebar.querySelector('[data-slot="sidebar-footer"]')).toHaveTextContent("Account");
   });
 
-  it("keeps Sidebar rail geometry bottom-right inside the declared hit area", () => {
+  it("keeps Sidebar rail as the final footer action with an icon-only collapsed state", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/sidebar.tsx"), "utf8");
     expect(source).toContain("size-(--n-sidebar-rail-hit-area)");
     expect(source).toContain(
-      "right-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-right))]",
-    );
-    expect(source).toContain(
-      "bottom-[calc(var(--n-sidebar-rail-inset)+env(safe-area-inset-bottom))]",
+      "bottom-[calc(var(--n-sidebar-region-padding)+env(safe-area-inset-bottom))]",
     );
     expect(source).toContain('data-has-rail={rails.length > 0 ? "true" : undefined}');
-    expect(source).toContain('data-has-footer={hasFooter ? "true" : "false"}');
     expect(source).toContain(
-      "data-[has-rail=true]:[&_[data-slot=sidebar-footer]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+      "data-[has-rail=true]:[&:has([data-slot=sidebar-footer])_[data-slot=sidebar-footer]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
     );
     expect(source).toContain(
-      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pr-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-right))]",
+      "data-[has-rail=true]:[&:not(:has([data-slot=sidebar-footer]))_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-hit-area)+var(--n-sidebar-rail-inset))]",
     );
+    expect(source).not.toContain("child.type === SidebarFooter");
     expect(source).toContain(
-      "data-[has-footer=false]:data-[has-rail=true]:[&_[data-slot=sidebar-content]]:pb-[calc(var(--n-sidebar-region-padding)+var(--n-sidebar-rail-inset)+var(--n-sidebar-rail-hit-area)+env(safe-area-inset-bottom))]",
+      "group-data-[state=collapsed]/sidebar:size-(--n-sidebar-rail-hit-area)",
     );
+    expect(source).toContain('data-slot="sidebar-rail-label"');
+    expect(source).toContain("collapseLabel");
+    expect(source).toContain("expandLabel");
+    expect(source).toContain("collapsedTooltip");
+    expect(source).toContain("tooltip={false}");
+    expect(source.match(/delay=\{0\}/g)).toHaveLength(2);
+    expect(source).toContain('side={side === "left" ? "right" : "left"}');
+    expect(source).toContain("sideOffset={SIDEBAR_TOOLTIP_SIDE_OFFSET}");
+    expect(source.match(/showArrow=\{false\}/g)).toHaveLength(2);
+    expect(source).toContain("[&_.n-icon]:size-(--n-sidebar-item-icon-size)");
+    expect(source).not.toContain(
+      "[data-state=collapsed]_&]:[&_.n-icon]:size-[calc(var(--n-icon-size-lg)",
+    );
+    expect(source).toContain("[&_[data-slot=button-label]]:w-0");
+    expect(source).toContain("[&_[data-slot=button-label]]:opacity-0");
+    expect(source).not.toContain("sidebar-header]>:first-child]:opacity-0");
+    expect(source).toContain("collapseMode?: SidebarCollapseMode");
+    expect(source).toContain('collapseMode = "hidden"');
+    expect(source).toContain('collapseMode === "hidden"');
+    expect(source).toContain('inert={!expanded && collapseMode === "hidden" ? true : undefined}');
     expect(source).not.toContain("inset-y-0");
-    expect(source).not.toContain("top-1/2");
+    expect(source).not.toContain("bottom-[calc(var(--n-sidebar-rail-inset)");
   });
 
   it("exposes an exact SidebarContent div ref and does not churn SidebarInset refs", () => {
@@ -4472,7 +4591,12 @@ describe("Core interactive action contracts", () => {
     }
 
     expect(tokenSource).toContain("--n-overlay-background: rgb(0 0 0 / 0.88)");
+    expect(tokenSource).toContain(
+      "--n-overlay-floating-z-index: calc(var(--n-overlay-z-index) + 2)",
+    );
     expect(tokenSource).toContain("--n-overlay-border-width: var(--n-border-width-0)");
+    expect(tokenSource).toContain("--n-overlay-border-width: var(--n-border-width-default)");
+    expect(tokenSource).toContain("--n-overlay-border: var(--n-color-border-subtle)");
     expect(tokenSource).toContain("--n-overlay-foreground: var(--n-gray-0)");
     expect(tokenSource).toContain("--n-overlay-surface-filter: blur(24px) saturate(120%)");
     expect(tokenSource).toContain("--n-overlay-backdrop-filter: blur(10px)");
@@ -4485,6 +4609,17 @@ describe("Core interactive action contracts", () => {
       );
     }
     expect(componentSource("dialog")).toContain("n-dialog-backdrop-enter");
+    for (const name of ["select", "popover", "tooltip", "dropdown-menu"]) {
+      expect(componentSource(name), name).toContain("z-(--n-overlay-floating-z-index)");
+    }
+    expect(componentSource("dialog")).toContain(
+      "max-h-[calc(100dvh-(var(--n-dialog-viewport-inset)*2))]",
+    );
+    expect(componentSource("dialog")).toContain("overflow-y-auto");
+    expect(componentSource("dialog")).toContain("[scrollbar-width:thin]");
+    expect(componentSource("dialog")).toContain(
+      "[scrollbar-color:var(--n-overlay-foreground-muted)_var(--n-overlay-control-background)]",
+    );
     expect(overlayMotionSource).toContain("scale: var(--n-motion-scale-subtle)");
     expect(componentSource("sheet")).toContain("--n-sheet-viewport-inset");
     expect(componentSource("sheet")).toContain("n-sheet-enter-right");
@@ -4811,6 +4946,77 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByText("July 2026")).toHaveAttribute("data-slot", "heading");
   });
 
+  it("keeps Calendar initial markup deterministic across server and client time zones", async () => {
+    const previousTimeZone = process.env.TZ;
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const container = document.createElement("div");
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+
+    try {
+      process.env.TZ = "Pacific/Kiritimati";
+      const serverMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
+      process.env.TZ = "America/Adak";
+      const clientMarkup = renderToString(<Calendar aria-label="Deterministic calendar" />);
+
+      expect(clientMarkup).toBe(serverMarkup);
+      expect(serverMarkup).toContain("January 1970");
+      expect(serverMarkup).not.toMatch(/\sdata-today(?:=|>)/);
+
+      container.innerHTML = serverMarkup;
+      document.body.append(container);
+      root = hydrateRoot(container, <Calendar aria-label="Deterministic calendar" />);
+      await act(async () => undefined);
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      if (root) await act(async () => root.unmount());
+      container.remove();
+      consoleError.mockRestore();
+      if (previousTimeZone === undefined) delete process.env.TZ;
+      else process.env.TZ = previousTimeZone;
+    }
+  });
+
+  it("moves focus when constraints invalidate the active day", async () => {
+    const { rerender } = render(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        defaultValue="2026-06-15"
+      />,
+    );
+
+    const calendar = screen.getByRole("group", { name: "Unavailable calendar" });
+    within(calendar).getByRole("button", { name: "June 15, 2026, Selected" }).focus();
+
+    rerender(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        defaultValue="2026-06-15"
+        isDateDisabled={(date) => date === "2026-06-15"}
+      />,
+    );
+    await waitFor(() =>
+      expect(within(calendar).getByRole("button", { name: "June 1, 2026" })).toHaveFocus(),
+    );
+
+    rerender(
+      <Calendar
+        aria-label="Unavailable calendar"
+        defaultMonth="2026-06-01"
+        defaultValue="2026-06-15"
+        isDateDisabled={() => true}
+      />,
+    );
+    await waitFor(() => expect(within(calendar).getByRole("grid")).toHaveFocus());
+    expect(within(calendar).getByRole("grid")).toHaveAttribute("tabindex", "0");
+    expect(
+      within(calendar)
+        .getAllByRole("button")
+        .filter((button) => button.dataset.slot === "day" && button.tabIndex === 0),
+    ).toHaveLength(0);
+  });
+
   it("rejects invalid Calendar dates and inverted constraints", () => {
     expect(() => render(<Calendar aria-label="Invalid calendar" value="2026-02-30" />)).toThrow(
       /valid calendar date/,
@@ -4882,6 +5088,7 @@ describe("Core interactive action contracts", () => {
     expect(trigger.closest('[data-slot="root"]')).toHaveAttribute("data-slot", "root");
     expect(trigger).toHaveAttribute("data-slot", "trigger");
     expect(trigger).toHaveAttribute("aria-describedby", expect.stringContaining("-action"));
+    expect(trigger).toHaveAccessibleDescription(expect.stringContaining("15 Jun 2026"));
     expect(trigger.querySelectorAll('[data-slot="button-icon"]')).toHaveLength(1);
 
     await user.click(trigger);
@@ -4953,7 +5160,7 @@ describe("Core interactive action contracts", () => {
     ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Datum löschen" }));
     await waitFor(() => expect(trigger).toHaveTextContent("Choose a date"));
-    expect(trigger).toHaveAccessibleDescription("Choose a date Datumswahl öffnen");
+    expect(trigger).toHaveAccessibleDescription("Datumswahl öffnen");
     expect(trigger).toHaveFocus();
   });
 
@@ -5014,6 +5221,21 @@ describe("Core interactive action contracts", () => {
 
     expect(screen.getByRole("group", { name: "Choose date" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Clear date" })).toBeNull();
+  });
+
+  it("focuses the DatePicker grid when an empty month has no available day", async () => {
+    const user = userEvent.setup();
+    render(<DatePicker aria-label="Unavailable release date" isDateDisabled={() => true} />);
+
+    await user.click(screen.getByRole("button", { name: "Unavailable release date" }));
+    const calendar = await screen.findByRole("group", { name: "Choose date" });
+    expect(within(calendar).getByText("January 1970")).toBeInTheDocument();
+    await waitFor(() => expect(within(calendar).getByRole("grid")).toHaveFocus());
+    expect(
+      within(calendar)
+        .getAllByRole("button")
+        .filter((button) => button.dataset.slot === "day" && button.tabIndex === 0),
+    ).toHaveLength(0);
   });
 
   it("keeps DatePicker focus and selection coherent inside a modal overlay", async () => {

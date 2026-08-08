@@ -21,6 +21,7 @@ import {
   FileText,
   Layers,
   ListTree,
+  MessageCircle,
   Moon,
   Monitor,
   Palette,
@@ -50,6 +51,8 @@ import {
 import type { IconComponent } from "@nerio-ui/adapters/icons";
 import { modes } from "@nerio-ui/tokens";
 import { DocsCommandPalette, type DocsCommandEntry } from "./docs-command-palette";
+import { blockCatalog } from "../features/blocks/catalog";
+import { templateCatalog } from "../features/templates/catalog";
 import {
   defaultAppearance,
   persistAppearanceAxis,
@@ -58,8 +61,6 @@ import {
 } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
 import { mcpInstall, mcpLocalConfiguration } from "../lib/public-commands";
-import { blockCatalog } from "../features/blocks/catalog";
-import { templateCatalog } from "../features/templates/catalog";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
 type ColorMode = (typeof modes)[number];
@@ -84,6 +85,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/migration", label: "Migration", icon: ArrowRight },
       { href: "/docs/registry", label: "Registry and CLI", icon: Boxes },
       { href: "/docs/ai", label: "AI tooling", icon: Sparkles },
+      { href: "/docs/feedback", label: "Community feedback", icon: MessageCircle },
     ],
   },
   {
@@ -219,34 +221,6 @@ const componentToc: TocItem[] = [
   { id: "tokens", label: "Tokens" },
 ];
 
-const compositionToc: TocItem[] = [
-  { id: "overview", label: "Overview" },
-  { id: "live-preview", label: "Live preview" },
-  { id: "intended-use", label: "Intended use" },
-  { id: "code", label: "Code" },
-  { id: "anatomy", label: "Anatomy" },
-  { id: "accessibility", label: "Accessibility" },
-  { id: "responsive-behaviour", label: "Responsive behaviour" },
-  { id: "boundaries", label: "Boundaries" },
-  { id: "related-surfaces", label: "Related surfaces" },
-];
-
-const compositionGroup: NavGroup = {
-  title: "Blocks",
-  items: blockCatalog.map((block) => ({
-    href: block.detailRoute,
-    label: block.title,
-    icon:
-      block.category === "Authentication"
-        ? PanelLeft
-        : block.category === "Settings and account"
-          ? Wrench
-          : block.category === "Team and operations"
-            ? ListTree
-            : FileText,
-  })),
-};
-
 const buttonToc: TocItem[] = [
   { id: "overview", label: "Overview" },
   { id: "preview", label: "Preview" },
@@ -362,16 +336,11 @@ function getDefaultToc(pathname: string): TocItem[] {
   if (pathname === "/docs/components/button") return buttonToc;
   if (pathname === "/docs/components/badge") return badgeToc;
   if (pathname.startsWith("/docs/components/")) return componentToc;
-  if (pathname.startsWith("/blocks/")) {
-    return compositionToc;
-  }
   return tocByPath[pathname] ?? [];
 }
 
-const publicNavigationGroups = [...navGroups, compositionGroup];
-
 const searchEntries: DocsCommandEntry[] = [
-  ...publicNavigationGroups.flatMap((group) =>
+  ...navGroups.flatMap((group) =>
     group.items.flatMap((item) => {
       const pageSections = getDefaultToc(item.href);
       return [
@@ -408,11 +377,18 @@ const searchEntries: DocsCommandEntry[] = [
     group: "Product scenarios",
     description: "Explore complete app-like Nerio previews rendered inside the docs application.",
   },
+  ...blockCatalog.map((block) => ({
+    href: block.previewRoute,
+    title: block.title,
+    group: "Blocks",
+    description: `${block.title} documentation and preview.`,
+  })),
   ...templateCatalog.map((template) => ({
-    href: template.detailRoute,
+    href: template.previewRoute,
     title: template.title,
     group: "Templates",
-    description: template.description,
+    description: `${template.title} documentation and preview.`,
+    newTab: true,
   })),
 ];
 
@@ -424,9 +400,6 @@ const documentationItems: NavItem[] = [
 ];
 
 function getSidebarGroups(pathname: string): NavGroup[] {
-  if (pathname.startsWith("/blocks/")) {
-    return [compositionGroup];
-  }
   return pathname.startsWith("/docs/components") ? componentGroups : foundationGroups;
 }
 
@@ -440,15 +413,19 @@ function getAdjacentDocs(pathname: string) {
   };
 }
 
-function MobileDocumentationNavigation({
-  pathname,
-  showPreviewSurfaces,
-}: {
-  pathname: string;
-  showPreviewSurfaces: boolean;
-}) {
+function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
   const [open, setOpen] = React.useState(false);
-  const navigationGroups = showPreviewSurfaces ? publicNavigationGroups : navGroups;
+  const navigationGroups = [
+    ...navGroups,
+    {
+      title: "Explore",
+      items: [
+        { href: "/blocks", label: "Blocks", icon: Boxes },
+        { href: "/templates", label: "Templates", icon: ListTree },
+        { href: "/playground", label: "Playground", icon: Wrench },
+      ],
+    },
+  ];
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -703,13 +680,7 @@ function DocsPageNavigation({ pathname }: { pathname: string }) {
   );
 }
 
-export function DocsChrome({
-  children,
-  showPreviewSurfaces,
-}: {
-  children: React.ReactNode;
-  showPreviewSurfaces: boolean;
-}) {
+export function DocsChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const currentYear = new Date().getFullYear();
   const isHomePage = pathname === "/";
@@ -722,14 +693,7 @@ export function DocsChrome({
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
-  const visibleSearchEntries = showPreviewSurfaces
-    ? searchEntries
-    : searchEntries.filter(
-        (entry) =>
-          !entry.href.startsWith("/playground") &&
-          !entry.href.startsWith("/blocks") &&
-          !entry.href.startsWith("/templates"),
-      );
+  const visibleSearchEntries = searchEntries;
 
   React.useEffect(() => {
     setFeedback(null);
@@ -836,10 +800,7 @@ export function DocsChrome({
             <Badge tone="neutral">{version}</Badge>
           </div>
 
-          <MobileDocumentationNavigation
-            pathname={pathname}
-            showPreviewSurfaces={showPreviewSurfaces}
-          />
+          <MobileDocumentationNavigation pathname={pathname} />
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
@@ -858,26 +819,22 @@ export function DocsChrome({
             >
               Components
             </Link>
-            {showPreviewSurfaces ? (
-              <>
-                <Link
-                  href="/blocks"
-                  className={pathname.startsWith("/blocks") ? "is-active" : undefined}
-                >
-                  Blocks
-                </Link>
-                <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
-                  Templates
-                </Link>
-                <Link
-                  href="/playground"
-                  className={isPlaygroundPage ? "is-active" : undefined}
-                  aria-current={isPlaygroundPage ? "page" : undefined}
-                >
-                  Playground
-                </Link>
-              </>
-            ) : null}
+            <Link
+              href="/blocks"
+              className={pathname.startsWith("/blocks") ? "is-active" : undefined}
+            >
+              Blocks
+            </Link>
+            <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
+              Templates
+            </Link>
+            <Link
+              href="/playground"
+              className={isPlaygroundPage ? "is-active" : undefined}
+              aria-current={isPlaygroundPage ? "page" : undefined}
+            >
+              Playground
+            </Link>
           </nav>
 
           <TooltipProvider closeDelay={0} delay={600}>

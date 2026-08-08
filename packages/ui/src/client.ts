@@ -1,37 +1,59 @@
 "use client";
 
 export * from "./index";
+export type {
+  NerioChangeEventDetails,
+  NerioClassName,
+  NerioEventDetails,
+  NerioRenderProp,
+  NerioRenderProps,
+  NerioStyle,
+} from "./lib/component-props";
 export { ButtonGroup, type ButtonGroupProps } from "./components/button-group";
 export { Button } from "./components/button";
 export type {
   ButtonBadge,
   ButtonKbd,
   ButtonProps,
+  ButtonRenderFunction,
+  ButtonRenderProps,
+  ButtonRenderState,
   ButtonSize,
   ButtonVariant,
 } from "./components/button";
-export { Checkbox, type CheckboxProps } from "./components/checkbox";
+export {
+  Checkbox,
+  type CheckboxChangeEventDetails,
+  type CheckboxProps,
+  type CheckboxState,
+} from "./components/checkbox";
 export {
   RadioGroup,
   RadioGroupItem,
   type RadioGroupItemProps,
+  type RadioGroupItemState,
+  type RadioGroupChangeEventDetails,
   type RadioGroupOption,
   type RadioGroupProps,
+  type RadioGroupState,
 } from "./components/radio-group";
 export { Switch, type SwitchProps } from "./components/switch";
 export {
   Toggle,
   type ToggleChangeEventDetails,
   type ToggleProps,
+  type ToggleState,
   type ToggleSize,
   type ToggleVariant,
 } from "./components/toggle";
 export {
   Slider,
   type SliderChangeEventDetails,
+  type SliderChangeEventReason,
   type SliderCommitEventDetails,
   type SliderOrientation,
   type SliderProps,
+  type SliderState,
 } from "./components/slider";
 export {
   Calendar,
@@ -44,6 +66,7 @@ export {
   DatePicker,
   type DatePickerLabels,
   type DatePickerOpenChangeEventDetails,
+  type DatePickerOpenChangeEventReason,
   type DatePickerProps,
 } from "./components/date-picker";
 export {
@@ -53,7 +76,13 @@ export {
   SelectItem,
   SelectSeparator,
   type SelectChangeEventDetails,
+  type SelectChangeEventReason,
   type SelectItemProps,
+  type SelectItemState,
+  type SelectGroupProps,
+  type SelectGroupLabelProps,
+  type SelectPartState,
+  type SelectSeparatorProps,
   type SelectOpenChangeEventDetails,
   type SelectOption,
   type SelectProps,
@@ -67,23 +96,40 @@ export {
   TabsPanels,
   TabsTrigger,
   type TabsContentProps,
+  type TabsContentState,
+  type TabsActivationDirection,
+  type TabsChangeEventDetails,
+  type TabsChangeEventReason,
   type TabsIndicatorProps,
+  type TabsIndicatorState,
   type TabsListLayout,
   type TabsListProps,
   type TabsPanelsProps,
   type TabsProps,
+  type TabsRootState,
   type TabsSize,
   type TabsTriggerProps,
+  type TabsTriggerState,
+  type TabsValue,
   type TabsVariant,
 } from "./components/tabs";
 export {
   Tooltip,
   TooltipProvider,
+  type TooltipOpenChangeEventDetails,
+  type TooltipOpenChangeEventReason,
   type TooltipProps,
   type TooltipProviderProps,
 } from "./components/tooltip";
 export { LabelHint, type LabelHintProps } from "./components/label-hint";
-export { Dialog, DialogFooter, type DialogProps } from "./components/dialog";
+export {
+  Dialog,
+  DialogFooter,
+  type DialogOpenChangeEventDetails,
+  type DialogOpenChangeEventReason,
+  type DialogProps,
+  type DialogTitleElement,
+} from "./components/dialog";
 export {
   Sheet,
   SheetBody,
@@ -95,19 +141,33 @@ export {
   SheetTitle,
   SheetTrigger,
   type SheetContentProps,
+  type SheetContentState,
+  type SheetInteractionType,
   type SheetProps,
+  type SheetOpenChangeEventDetails,
+  type SheetOpenChangeEventReason,
+  type SheetCloseProps,
+  type SheetCloseState,
   type SheetSide,
   type SheetSize,
+  type SheetTriggerProps,
+  type SheetTriggerState,
+  type SheetTitleElement,
+  type SheetTitleProps,
 } from "./components/sheet";
 export {
   Sidebar,
+  SidebarMenuButton,
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
   useSidebar,
+  type SidebarCollapseMode,
   type SidebarDirection,
+  type SidebarMenuButtonProps,
   type SidebarProps,
   type SidebarProviderProps,
+  type SidebarRailProps,
   type SidebarSide,
   type SidebarToggleProps,
 } from "./components/sidebar";
@@ -123,20 +183,34 @@ export {
   CommandSeparator,
   type CommandActiveChangeEventDetails,
   type CommandFilter,
+  type CommandEmptyProps,
+  type CommandGroupLabelProps,
+  type CommandGroupProps,
   type CommandGroupData,
   type CommandInputProps,
   type CommandItemData,
   type CommandItemProps,
+  type CommandItemState,
   type CommandItems,
   type CommandListProps,
   type CommandLoadingProps,
+  type CommandPartState,
   type CommandProps,
   type CommandQueryChangeEventDetails,
+  type CommandQueryChangeEventReason,
   type CommandSelectEvent,
+  type CommandSeparatorProps,
 } from "./components/command";
-export { Popover, type PopoverProps } from "./components/popover";
+export {
+  Popover,
+  type PopoverOpenChangeEventDetails,
+  type PopoverOpenChangeEventReason,
+  type PopoverProps,
+} from "./components/popover";
 export {
   DropdownMenu,
+  type DropdownMenuOpenChangeEventDetails,
+  type DropdownMenuOpenChangeEventReason,
   type DropdownMenuItem,
   type DropdownMenuProps,
 } from "./components/dropdown-menu";
@@ -150,10 +224,15 @@ export {
   type ToastAction,
   type ToastData,
   type ToastManager,
+  type ToastManagerAddOptions,
+  type ToastManagerPromiseOptions,
+  type ToastManagerUpdateOptions,
   type ToastPriority,
   type ToastProps,
+  type ToastRecord,
   type ToastProviderProps,
   type ToastSwipeDirection,
   type ToastTone,
+  type UseToastManagerResult,
   type ToastViewportProps,
 } from "./components/toast";

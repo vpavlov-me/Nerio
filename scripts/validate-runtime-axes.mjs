@@ -171,6 +171,10 @@ function validate() {
     "--docs-layout": join(root, "apps/docs/app/layout.tsx"),
     "--docs-appearance": join(root, "apps/docs/lib/appearance.ts"),
     "--template-controls": join(root, "apps/docs/features/templates/operations-workspace/view.tsx"),
+    "--finance-template-controls": join(
+      root,
+      "apps/docs/features/templates/finance-assets/view.tsx",
+    ),
     "--ui-source-dir": join(root, "packages/ui/src"),
   });
   const tokenCss = readFileSync(paths["--token-file"], "utf8");
@@ -181,6 +185,7 @@ function validate() {
   const docsLayout = readFileSync(paths["--docs-layout"], "utf8");
   const docsAppearance = readFileSync(paths["--docs-appearance"], "utf8");
   const templateControls = readFileSync(paths["--template-controls"], "utf8");
+  const financeTemplateControls = readFileSync(paths["--finance-template-controls"], "utf8");
   const rules = collectRules(parseCss(tokenCss));
   const failures = [];
   const themes = catalog.runtimeAxes?.theme ?? [];
@@ -260,6 +265,7 @@ function validate() {
     ["Docs header", docsControls, ["modes"]],
     ["Docs Playground", docsPlayground, ["themes", "modes", "densities"]],
     ["Operations Workspace", templateControls, ["themes", "modes", "densities"]],
+    ["Finance & Assets", financeTemplateControls, ["themes", "modes", "densities"]],
   ]) {
     const imports = namedImports(source, "@nerio-ui/tokens");
     for (const name of requiredImports) {
@@ -285,8 +291,10 @@ function validate() {
   if (docsControls.includes("toggleMode")) {
     failures.push("Docs controls must not collapse System, Light, and Dark into a binary toggle.");
   }
+  const derivesPlaygroundThemes =
+    docsPlayground.includes("themes.map") || docsPlayground.includes("options={themes}");
   if (
-    !docsPlayground.includes("themes.map") ||
+    !derivesPlaygroundThemes ||
     !docsPlayground.includes("const playgroundModes = [modes[1], modes[2], modes[0]]") ||
     !docsPlayground.includes("options={playgroundModes}") ||
     !docsPlayground.includes("options={densities}")
@@ -299,38 +307,48 @@ function validate() {
     failures.push("Docs Playground token experiments must remain local to its component canvas.");
   }
 
-  for (const [surface, controls, persistedAxes, layout, appearance] of [
-    ["Docs", docsControls, ["mode"], docsLayout, docsAppearance],
-    [
-      "Operations Workspace",
-      templateControls,
-      ["theme", "mode", "density"],
-      docsLayout,
-      docsAppearance,
-    ],
+  if (!docsControls.includes('persistAppearanceAxis(document.documentElement, "mode"')) {
+    failures.push("Docs controls must persist the mode axis independently.");
+  }
+  for (const axis of ["theme", "mode", "density"]) {
+    if (!docsAppearance.includes(`${axis}: "nerio-`)) {
+      failures.push(`Docs appearance runtime is missing a ${axis} storage key.`);
+    }
+    if (!docsAppearance.includes(`attribute: "data-${axis}"`)) {
+      failures.push(`Docs appearance runtime is missing the data-${axis} root contract.`);
+    }
+  }
+  const persistedAppearanceImplementation =
+    docsAppearance.match(/export function persistAppearanceAxis[\s\S]*?\n}\n/)?.[0] ?? "";
+  if (!persistedAppearanceImplementation.includes("root.setAttribute(`data-${axis}`, value);")) {
+    failures.push(
+      "Docs appearance runtime must write data-theme, data-mode, and data-density to the root.",
+    );
+  }
+  if (!/root\.setAttribute\(\s*contract\.attribute\s*,/.test(docsAppearance)) {
+    failures.push("Docs initialization must write all persisted root appearance attributes.");
+  }
+  if (
+    !docsLayout.includes("suppressHydrationWarning") ||
+    !docsLayout.includes("createAppearanceInitializationScript()")
+  ) {
+    failures.push("Docs layout must apply persisted appearance before hydration.");
+  }
+
+  for (const [surface, controls] of [
+    ["Operations Workspace", templateControls],
+    ["Finance & Assets", financeTemplateControls],
   ]) {
-    for (const axis of persistedAxes) {
-      if (!controls.includes(`persistAppearanceAxis(document.documentElement, "${axis}"`)) {
-        failures.push(`${surface} controls must persist the ${axis} axis independently.`);
-      }
+    if (controls.includes("persistAppearanceAxis")) {
+      failures.push(`${surface} settings must not persist into documentation preferences.`);
     }
     for (const axis of ["theme", "mode", "density"]) {
-      if (!appearance.includes(`${axis}: "nerio-`)) {
-        failures.push(`${surface} appearance runtime is missing a ${axis} storage key.`);
-      }
-      if (!appearance.includes(`attribute: "data-${axis}"`)) {
-        failures.push(`${surface} appearance runtime is missing the data-${axis} root contract.`);
+      if (!controls.includes(`applyAppearanceAxis(document.documentElement, "${axis}"`)) {
+        failures.push(`${surface} settings must apply the ${axis} axis locally.`);
       }
     }
-    if (!appearance.includes("root.setAttribute(`data-${axis}`, value);")) {
-      failures.push(
-        `${surface} appearance runtime must write data-theme, data-mode, and data-density to the root.`,
-      );
-    }
-    if (!/root\.setAttribute\(\s*contract\.attribute\s*,/.test(appearance)) {
-      failures.push(
-        `${surface} initialization must write all persisted root appearance attributes.`,
-      );
+    if (!controls.includes("captureAppearanceAttributes(root)")) {
+      failures.push(`${surface} settings must restore document appearance when the View unmounts.`);
     }
     const restoresAppearanceDirectly =
       /readAppearanceFromRoot\(\s*document\.documentElement\s*\)/.test(controls);
@@ -339,12 +357,6 @@ function validate() {
       /readAppearanceFromRoot\(\s*root\s*\)/.test(controls);
     if (!restoresAppearanceDirectly && !restoresAppearanceFromRootAlias) {
       failures.push(`${surface} controls must restore pre-hydrated appearance state.`);
-    }
-    if (
-      !layout.includes("suppressHydrationWarning") ||
-      !layout.includes("createAppearanceInitializationScript()")
-    ) {
-      failures.push(`${surface} layout must apply persisted appearance before hydration.`);
     }
   }
 

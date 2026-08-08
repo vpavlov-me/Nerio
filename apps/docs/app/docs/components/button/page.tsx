@@ -1,29 +1,8 @@
-"use client";
-
-import { ArrowUp, Check, X } from "@nerio-ui/adapters/icons";
+import { Check, X } from "@nerio-ui/adapters/icons";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
-import { Button } from "@nerio-ui/ui/client";
-import { CodeExample } from "../../../../components/code-example";
 import { DocumentationTable } from "../../../../components/documentation-table";
 import { StandardDocPage } from "../../../../components/doc-page";
-
-function ButtonPreview() {
-  return (
-    <section id="preview" className="button-showcase" aria-label="Button preview">
-      <div className="button-showcase__preview">
-        <Button>Button</Button>
-        <Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" />
-      </div>
-      <CodeExample
-        className="component-example__code"
-        code={
-          'import { ArrowUp } from "@nerio-ui/adapters/icons";\nimport { Button } from "@nerio-ui/ui/client";\n\n<Button>Button</Button>\n<Button icon={ArrowUp} aria-label="Move up" tooltip="Move up" />'
-        }
-        label="Button live preview code"
-      />
-    </section>
-  );
-}
+import { ButtonPreview } from "./button-preview";
 
 const apiRows = [
   ["variant", "primary | secondary | outline | ghost | link | danger", "Sets action emphasis."],

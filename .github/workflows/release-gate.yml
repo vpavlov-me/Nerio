@@ -6,6 +6,11 @@ on:
       - main
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact 40-character candidate commit on the dev release branch
+        required: true
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -15,18 +20,64 @@ permissions:
   contents: read
 
 jobs:
+  candidate:
+    name: exact-release-candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      candidate_sha: ${{ steps.candidate.outputs.candidate_sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: dev
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+      - name: Resolve and validate exact candidate
+        id: candidate
+        env:
+          DISPATCH_CANDIDATE: ${{ github.event.inputs.candidate_sha }}
+          PULL_REQUEST_CANDIDATE: ${{ github.event.pull_request.head.sha }}
+        run: |
+          CANDIDATE_SHA="${DISPATCH_CANDIDATE:-$PULL_REQUEST_CANDIDATE}"
+          if [[ ! "$CANDIDATE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Release candidate must be an exact lowercase 40-character SHA." >&2
+            exit 1
+          fi
+          git fetch --no-tags origin "$CANDIDATE_SHA"
+          node scripts/validate-release-candidate.mjs --candidate "$CANDIDATE_SHA" --release-ref origin/dev
+          git show -s --format='%H %cI %s' "$CANDIDATE_SHA" > candidate-sha.txt
+          echo "candidate_sha=$CANDIDATE_SHA" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Exact release candidate"
+            echo
+            echo "\`$(cat candidate-sha.txt)\`"
+            echo
+            echo "Every release job checks out this immutable SHA."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload exact candidate identity
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-candidate-${{ steps.candidate.outputs.candidate_sha }}
+          path: candidate-sha.txt
+          if-no-files-found: error
+          retention-days: 30
+
   release_quality:
     name: release-quality
+    needs: candidate
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          ref: ${{ needs.candidate.outputs.candidate_sha }}
           fetch-depth: 0
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           version: 11.7.0
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22
           cache: pnpm
@@ -50,10 +101,13 @@ jobs:
       - run: pnpm validate:docs
       - run: pnpm validate:onboarding
       - run: pnpm test:docs-examples
+      - run: pnpm test:consumer:vite
       - run: pnpm build
+      - run: pnpm validate:route-budgets
 
   release_browser:
     name: release-browser-${{ matrix.engine }}
+    needs: candidate
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
@@ -67,11 +121,13 @@ jobs:
           - engine: webkit
             command: test:browser:webkit
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.candidate.outputs.candidate_sha }}
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           version: 11.7.0
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22
           cache: pnpm
@@ -80,9 +136,9 @@ jobs:
       - run: pnpm ${{ matrix.command }}
       - name: Upload ${{ matrix.engine }} browser failure and retry evidence
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: browser-${{ matrix.engine }}-artifacts
+          name: browser-${{ matrix.engine }}-${{ needs.candidate.outputs.candidate_sha }}
           if-no-files-found: warn
           retention-days: 14
           path: |
@@ -91,14 +147,17 @@ jobs:
 
   release_visual:
     name: release-visual
+    needs: candidate
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.candidate.outputs.candidate_sha }}
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           version: 11.7.0
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22
           cache: pnpm
@@ -107,9 +166,9 @@ jobs:
       - run: pnpm test:visual
       - name: Upload visual regression artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: release-visual-artifacts
+          name: release-visual-${{ needs.candidate.outputs.candidate_sha }}
           if-no-files-found: warn
           retention-days: 14
           path: |
@@ -120,14 +179,17 @@ jobs:
 
   release_tool_contracts:
     name: release-tool-contracts
+    needs: candidate
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.candidate.outputs.candidate_sha }}
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           version: 11.7.0
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22
           cache: pnpm
@@ -138,14 +200,17 @@ jobs:
 
   release_package_contracts:
     name: release-package-contracts
+    needs: candidate
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.candidate.outputs.candidate_sha }}
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           version: 11.7.0
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22
           cache: pnpm
@@ -154,61 +219,113 @@ jobs:
       - run: pnpm audit:prod
       - run: pnpm validate:package-budgets
       - run: pnpm validate:release:metadata
-      - run: pnpm test:release-consumer
-        env:
-          NERIO_RELEASE_EXPECT_PUBLIC: "1"
       - run: pnpm pack:check
-
-  release_manual_audit_contract:
-    name: release-manual-audit-contract
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v7
+      - name: Generate candidate-bound CycloneDX SBOM
+        env:
+          CANDIDATE_SHA: ${{ needs.candidate.outputs.candidate_sha }}
+        run: |
+          pnpm generate:sbom --candidate "$CANDIDATE_SHA"
+          pnpm validate:sbom --candidate "$CANDIDATE_SHA" --input "artifacts/sbom/nerio-$CANDIDATE_SHA.cdx.json"
+      - name: Upload all-package SBOM
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          fetch-depth: 2
-      - uses: pnpm/action-setup@v6
+          name: sbom-${{ needs.candidate.outputs.candidate_sha }}
+          path: artifacts/sbom/nerio-${{ needs.candidate.outputs.candidate_sha }}.cdx.json
+          if-no-files-found: error
+          retention-days: 90
+
+  release_consumer_matrix:
+    name: release-consumer-${{ matrix.profile }}-node-${{ matrix.node }}
+    needs: candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: minimum
+            node: 22
+          - profile: current
+            node: 22
+          - profile: current
+            node: 24
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.candidate.outputs.candidate_sha }}
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           version: 11.7.0
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:consumer:${{ matrix.profile }}
+        env:
+          NERIO_RELEASE_EXPECT_PUBLIC: "1"
+
+  release_manual_audit_contract:
+    name: release-manual-and-beta-contract
+    needs: candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.candidate.outputs.candidate_sha }}
+          fetch-depth: 0
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        with:
+          version: 11.7.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:manual-audit-plan
-      - run: pnpm validate:manual-audit-plan
+      - run: pnpm test:beta-feedback
+      - run: pnpm validate:stable-readiness
 
   release_gate:
     name: Release gate
     if: always()
     needs:
+      - candidate
       - release_quality
       - release_browser
       - release_visual
       - release_tool_contracts
       - release_package_contracts
+      - release_consumer_matrix
       - release_manual_audit_contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Require every release-candidate job
+      - name: Require exact candidate and every release job
         env:
+          CANDIDATE_RESULT: ${{ needs.candidate.result }}
+          CANDIDATE_SHA: ${{ needs.candidate.outputs.candidate_sha }}
           RELEASE_QUALITY_RESULT: ${{ needs.release_quality.result }}
           RELEASE_BROWSER_RESULT: ${{ needs.release_browser.result }}
           RELEASE_VISUAL_RESULT: ${{ needs.release_visual.result }}
           RELEASE_TOOL_RESULT: ${{ needs.release_tool_contracts.result }}
           RELEASE_PACKAGE_RESULT: ${{ needs.release_package_contracts.result }}
+          RELEASE_CONSUMER_RESULT: ${{ needs.release_consumer_matrix.result }}
           RELEASE_MANUAL_AUDIT_RESULT: ${{ needs.release_manual_audit_contract.result }}
         run: |
           for result in \
+            "$CANDIDATE_RESULT" \
             "$RELEASE_QUALITY_RESULT" \
             "$RELEASE_BROWSER_RESULT" \
             "$RELEASE_VISUAL_RESULT" \
             "$RELEASE_TOOL_RESULT" \
             "$RELEASE_PACKAGE_RESULT" \
+            "$RELEASE_CONSUMER_RESULT" \
             "$RELEASE_MANUAL_AUDIT_RESULT"; do
             if [[ "$result" != "success" ]]; then
               echo "A release-candidate job ended with $result." >&2
               exit 1
             fi
           done
+          echo "All release gates passed for exact candidate $CANDIDATE_SHA." >> "$GITHUB_STEP_SUMMARY"

@@ -1,6 +1,24 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  Box,
+  Check,
+  CircleAlert,
+  EllipsisVertical,
+  ExternalLink,
+  FileText,
+  PackageOpen,
+  RefreshCw,
+  Save,
+  Settings,
+  Type,
+  Upload,
+  UserPlus,
+  X,
+} from "@nerio-ui/adapters/icons";
 import {
   Alert,
   Avatar,
@@ -8,10 +26,13 @@ import {
   Breadcrumbs,
   Button,
   Card,
+  CardAction,
   CardContent,
+  CardFooter,
   CardHeader,
   Checkbox,
   Dialog,
+  DialogFooter,
   DropdownMenu,
   EmptyState,
   EmptyStateActions,
@@ -19,10 +40,22 @@ import {
   EmptyStateHeader,
   EmptyStateTitle,
   Field,
+  FileInput,
   FormGroup,
   Heading,
+  Icon,
   Input,
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
   KeyValue,
+  Label,
+  LabelContent,
+  LabelRow,
   Pagination,
   Popover,
   Progress,
@@ -51,8 +84,7 @@ import {
   Tooltip,
   useToastManager,
 } from "@nerio-ui/ui/client";
-import { CodeExample } from "./code-example";
-import { getBlock, internalBlockFixtures } from "../features/blocks/catalog";
+import { internalBlockFixtures } from "../features/blocks/catalog";
 
 type Composition = {
   purpose: string;
@@ -66,23 +98,22 @@ type Composition = {
 
 const authComponents = ["Card", "Field", "Input", "Button", "Alert"];
 
-function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
+function AuthPreview({ kind }: { kind: "login" | "forgot" }) {
   const [submitted, setSubmitted] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [completed, setCompleted] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const invalid = submitted && !email.includes("@");
   const copy = {
-    login: { title: "Welcome back", action: "Sign in", description: "Use your workspace email." },
-    register: {
-      title: "Create your account",
-      action: "Create account",
-      description: "Start with a secure workspace.",
+    login: {
+      title: "Login to your account",
+      action: "Login",
+      description: "Enter your email below to login to your account.",
     },
     forgot: {
       title: "Reset your password",
       action: "Send reset link",
-      description: "We will email a recovery link.",
+      description: "Enter the email associated with your account and we’ll send you a reset link.",
     },
   }[kind];
 
@@ -120,11 +151,6 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
             }
           }}
         >
-          {kind === "register" ? (
-            <Field label="Full name">
-              <Input autoComplete="name" placeholder="Alex Morgan" />
-            </Field>
-          ) : null}
           <Field
             label="Email"
             invalid={invalid}
@@ -135,281 +161,797 @@ function AuthPreview({ kind }: { kind: "login" | "register" | "forgot" }) {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.currentTarget.value)}
-              placeholder="you@company.com"
+              placeholder={kind === "login" ? "m@example.com" : "nerio@vpavlov.com"}
             />
           </Field>
-          {kind !== "forgot" ? (
-            <Field label="Password">
-              <Input
-                autoComplete={kind === "login" ? "current-password" : "new-password"}
-                type="password"
-                placeholder="At least 8 characters"
-              />
-            </Field>
-          ) : null}
-          <Button loading={busy}>{copy.action}</Button>
           {kind === "login" ? (
-            <Button
-              nativeButton={false}
-              render={<a href="/blocks/reset-password" />}
-              variant="link"
-            >
-              Forgot your password?
-            </Button>
+            <div className="composition-auth-password">
+              <LabelRow className="composition-auth-password__label">
+                <LabelContent>
+                  <Label htmlFor="sign-in-password">Password</Label>
+                </LabelContent>
+                <Button nativeButton={false} render={<span />} variant="link">
+                  Forgot your password?
+                </Button>
+              </LabelRow>
+              <Input id="sign-in-password" autoComplete="current-password" type="password" />
+            </div>
           ) : null}
-          {kind === "register" ? (
-            <Alert tone="info" title="Email verification">
-              Use a work email to create a workspace.
-            </Alert>
-          ) : null}
+          <Button className="composition-auth-submit" loading={busy} type="submit">
+            {copy.action}
+          </Button>
+          {kind === "login" ? (
+            <Text className="composition-auth-switch" tone="secondary">
+              Don&apos;t have an account?{" "}
+              <Button nativeButton={false} render={<span />} variant="link">
+                Sign up
+              </Button>
+            </Text>
+          ) : (
+            <Text className="composition-auth-switch" tone="secondary">
+              Remembered your password?{" "}
+              <Button nativeButton={false} render={<span />} variant="link">
+                Sign in
+              </Button>
+            </Text>
+          )}
         </form>
       </CardContent>
     </Card>
   );
 }
 
-function ProfileSettingsPreview() {
-  const [saved, setSaved] = React.useState(false);
+function CreateAccountPreview() {
   return (
-    <form
-      className="composition-settings"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setSaved(true);
-      }}
-    >
-      <section>
-        <h3>Profile</h3>
-        <Field label="Workspace name" description="Shown in shared areas.">
-          <Input defaultValue="Northstar" />
-        </Field>
-        <Field label="About this workspace">
-          <Textarea defaultValue="A focused product team." />
-        </Field>
-      </section>
-      {saved ? (
-        <Alert role="status" tone="success" title="Profile saved">
-          Workspace details are up to date.
-        </Alert>
-      ) : null}
-      <div className="composition-save-bar">
-        <span>{saved ? "Changes saved." : "Unsaved changes"}</span>
-        <Button type="submit" loading={false}>
-          Save profile
-        </Button>
+    <div className="composition-create-account">
+      <div className="composition-auth-brand">
+        <span className="composition-auth-brand__mark">
+          <Icon icon={Box} />
+        </span>
+        <Heading as="h2" size="lg">
+          Acme Inc.
+        </Heading>
       </div>
-    </form>
+
+      <Card className="composition-auth-card composition-create-account__card">
+        <CardHeader className="composition-create-account__header">
+          <Heading as="h3" size="xl">
+            Create your account
+          </Heading>
+          <Text tone="secondary">Enter your email below to create your account.</Text>
+        </CardHeader>
+        <CardContent>
+          <form className="composition-form">
+            <Field label="Full name">
+              <Input autoComplete="name" placeholder="Vladimir Pavlov" />
+            </Field>
+            <Field label="Email">
+              <Input autoComplete="email" placeholder="nerio@vpavlov.com" type="email" />
+            </Field>
+            <div className="composition-create-account__passwords">
+              <Field label="Password">
+                <Input autoComplete="new-password" type="password" />
+              </Field>
+              <Field label="Confirm password">
+                <Input autoComplete="new-password" type="password" />
+              </Field>
+            </div>
+            <Text className="composition-create-account__helper" tone="secondary">
+              Must be at least 8 characters long.
+            </Text>
+            <Button className="composition-auth-submit" type="button">
+              Create account
+            </Button>
+            <Text className="composition-auth-switch" tone="secondary">
+              Already have an account?{" "}
+              <Button nativeButton={false} render={<span />} variant="link">
+                Sign in
+              </Button>
+            </Text>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Text className="composition-create-account__legal" tone="secondary">
+        By clicking continue, you agree to our{" "}
+        <Button nativeButton={false} render={<span />} variant="link">
+          Terms of Service
+        </Button>{" "}
+        and{" "}
+        <Button nativeButton={false} render={<span />} variant="link">
+          Privacy Policy
+        </Button>
+        .
+      </Text>
+    </div>
+  );
+}
+
+function ProfileSettingsPreview() {
+  return (
+    <Card className="composition-profile-settings-card">
+      <CardHeader>
+        <Heading as="h2" size="lg">
+          Profile settings
+        </Heading>
+        <Text tone="secondary">Manage how you appear across Nerio.</Text>
+      </CardHeader>
+      <CardContent>
+        <form className="composition-profile-settings">
+          <Item size="lg" variant="outline">
+            <ItemMedia>
+              <Avatar
+                alt="Vladimir Pavlov profile photo"
+                name="Vladimir Pavlov"
+                size="lg"
+                src="/avatars/lucas-moreau.png"
+              />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>Vladimir Pavlov</ItemTitle>
+              <ItemDescription>nerio@vpavlov.com</ItemDescription>
+            </ItemContent>
+          </Item>
+
+          <Field label="Profile photo" description="PNG or JPG up to 2 MB.">
+            <FileInput accept="image/jpeg,image/png" />
+          </Field>
+          <Field label="Display name">
+            <Input defaultValue="Vladimir Pavlov" />
+          </Field>
+          <Field label="Bio">
+            <Textarea defaultValue="Designing and maintaining Nerio for product teams." />
+          </Field>
+
+          <Separator />
+
+          <Switch
+            data-preview-interaction="allowed"
+            defaultChecked
+            label="Show profile in workspace"
+            description="Let workspace members view your name, photo, and bio."
+          />
+
+          <div className="composition-save-bar">
+            <span>All changes saved</span>
+            <Button disabled type="button" variant="primary">
+              Save changes
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 
 function NotificationPreferencesPreview() {
+  const initialPreferences = {
+    mentions: true,
+    projectUpdates: true,
+    workspaceActivity: false,
+    productAnnouncements: false,
+    digestFrequency: "weekly",
+  };
+  const [preferences, setPreferences] = React.useState(initialPreferences);
+  const [savedPreferences, setSavedPreferences] = React.useState(initialPreferences);
   const [saved, setSaved] = React.useState(false);
+  const hasUnsavedChanges = JSON.stringify(preferences) !== JSON.stringify(savedPreferences);
+  const digestDescription =
+    preferences.digestFrequency === "never"
+      ? "You won’t receive summary emails."
+      : preferences.digestFrequency === "daily"
+        ? "Daily digests arrive every morning at 9:00 AM."
+        : "Weekly digests arrive every Monday at 9:00 AM.";
+
+  function updatePreference<Key extends keyof typeof preferences>(
+    key: Key,
+    value: (typeof preferences)[Key],
+  ) {
+    setPreferences((current) => ({ ...current, [key]: value }));
+    setSaved(false);
+  }
+
+  function savePreferences() {
+    setSavedPreferences(preferences);
+    setSaved(true);
+  }
+
   return (
-    <form
-      className="composition-settings"
-      onSubmit={(event) => {
-        event.preventDefault();
-        setSaved(true);
-      }}
-    >
-      <section>
-        <h3>Notification preferences</h3>
-        <p>Choose which workspace updates should reach your inbox.</p>
-        <FormGroup
-          title="Email notifications"
-          description="Select every update you want to receive."
+    <Card className="composition-notification-preferences-card">
+      <CardHeader>
+        <Heading as="h2" size="lg">
+          Notification preferences
+        </Heading>
+        <Text tone="secondary">Choose how Nerio keeps you informed about workspace activity.</Text>
+      </CardHeader>
+      <CardContent>
+        <form
+          className="composition-notification-preferences"
+          onSubmit={(event) => {
+            event.preventDefault();
+            savePreferences();
+          }}
         >
-          <label className="composition-choice">
-            <Checkbox defaultChecked /> Mentions and assignments
-          </label>
-          <label className="composition-choice">
-            <Checkbox defaultChecked /> Project status changes
-          </label>
-          <label className="composition-choice">
-            <Checkbox /> Product announcements
-          </label>
-        </FormGroup>
-        <Select
-          label="Digest frequency"
-          defaultValue="weekly"
-          options={[
-            { label: "Daily", value: "daily" },
-            { label: "Weekly", value: "weekly" },
-            { label: "Never", value: "never" },
-          ]}
-        />
-      </section>
-      {saved ? (
-        <Alert role="status" tone="success" title="Preferences saved">
-          Future workspace updates will use these choices.
-        </Alert>
-      ) : null}
-      <div className="composition-save-bar">
-        <span>{saved ? "Up to date" : "Review your notification choices"}</span>
-        <Button type="submit">Save preferences</Button>
-      </div>
-    </form>
+          <FormGroup
+            title="Activity notifications"
+            description="Stay informed about work that needs your attention."
+          >
+            <Item className="composition-notification-preferences__item" size="lg">
+              <ItemContent>
+                <ItemTitle>Mentions and assignments</ItemTitle>
+                <ItemDescription>When someone mentions you or assigns work to you.</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch
+                  aria-label="Mentions and assignments"
+                  checked={preferences.mentions}
+                  data-preview-interaction="allowed"
+                  onCheckedChange={(checked) => updatePreference("mentions", checked)}
+                />
+              </ItemActions>
+            </Item>
+
+            <Item className="composition-notification-preferences__item" size="lg">
+              <ItemContent>
+                <ItemTitle>Project updates</ItemTitle>
+                <ItemDescription>
+                  Status changes and important activity in projects you follow.
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch
+                  aria-label="Project updates"
+                  checked={preferences.projectUpdates}
+                  data-preview-interaction="allowed"
+                  onCheckedChange={(checked) => updatePreference("projectUpdates", checked)}
+                />
+              </ItemActions>
+            </Item>
+
+            <Item className="composition-notification-preferences__item" size="lg">
+              <ItemContent>
+                <ItemTitle>Workspace activity</ItemTitle>
+                <ItemDescription>
+                  New comments, approvals, and changes from your team.
+                </ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch
+                  aria-label="Workspace activity"
+                  checked={preferences.workspaceActivity}
+                  data-preview-interaction="allowed"
+                  onCheckedChange={(checked) => updatePreference("workspaceActivity", checked)}
+                />
+              </ItemActions>
+            </Item>
+          </FormGroup>
+
+          <Separator />
+
+          <FormGroup
+            title="Nerio updates"
+            description="Occasional news about the product and its development."
+          >
+            <Item className="composition-notification-preferences__item" size="lg">
+              <ItemContent>
+                <ItemTitle>Product announcements</ItemTitle>
+                <ItemDescription>New features, improvements, and release notes.</ItemDescription>
+              </ItemContent>
+              <ItemActions>
+                <Switch
+                  aria-label="Product announcements"
+                  checked={preferences.productAnnouncements}
+                  data-preview-interaction="allowed"
+                  onCheckedChange={(checked) => updatePreference("productAnnouncements", checked)}
+                />
+              </ItemActions>
+            </Item>
+          </FormGroup>
+
+          <Separator />
+
+          <Item className="composition-notification-preferences__item" size="lg">
+            <ItemContent>
+              <ItemTitle>Email digest</ItemTitle>
+              <ItemDescription>{digestDescription}</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Select
+                className="composition-notification-preferences__select"
+                data-preview-interaction="allowed"
+                label={<span className="sr-only">Email digest</span>}
+                value={preferences.digestFrequency}
+                onValueChange={(value) => updatePreference("digestFrequency", value)}
+                options={[
+                  { label: "Daily", value: "daily" },
+                  { label: "Weekly", value: "weekly" },
+                  { label: "Never", value: "never" },
+                ]}
+              />
+            </ItemActions>
+          </Item>
+
+          {saved ? (
+            <Alert role="status" tone="success" title="Preferences saved">
+              Future workspace updates will use these choices.
+            </Alert>
+          ) : null}
+
+          <div className="composition-save-bar">
+            <span>{hasUnsavedChanges ? "Unsaved changes" : "All changes saved"}</span>
+            <Button
+              data-preview-interaction="allowed"
+              disabled={!hasUnsavedChanges}
+              onClick={savePreferences}
+              type="button"
+            >
+              Save preferences
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 
 function SecuritySettingsPreview() {
+  const accountName = "Vladimir Pavlov";
+  const [confirmation, setConfirmation] = React.useState("");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [confirmed, setConfirmed] = React.useState(false);
+  const canDelete = confirmation === accountName;
+
+  function handleDialogOpenChange(open: boolean) {
+    setDialogOpen(open);
+    if (!open) {
+      setConfirmation("");
+    }
+  }
+
   return (
-    <div className="composition-settings">
-      <section>
-        <h3>Account security</h3>
-        <label className="composition-switch">
-          <span>
-            Require two-factor authentication
-            <small>Add a second verification step when signing in.</small>
-          </span>
-          <Switch aria-label="Require two-factor authentication" />
-        </label>
-      </section>
-      <Separator />
-      <section className="composition-danger">
-        <h3>Delete account</h3>
-        <p>Permanently remove this account and its personal data.</p>
-        <Dialog
-          trigger={<Button variant="danger">Delete account</Button>}
-          title="Delete account"
-          description="This action cannot be undone."
-        >
-          <Field label="Type DELETE to confirm">
-            <Input autoComplete="off" />
-          </Field>
-          <Button variant="danger">Delete account</Button>
-        </Dialog>
-      </section>
-    </div>
+    <Card className="composition-security-settings-card">
+      <CardHeader>
+        <Heading as="h2" size="lg">
+          Security settings
+        </Heading>
+        <Text tone="secondary">Manage sign-in protection and sensitive account actions.</Text>
+      </CardHeader>
+      <CardContent className="composition-security-settings">
+        <Item className="composition-security-settings__item" size="lg">
+          <ItemContent>
+            <ItemTitle>Password</ItemTitle>
+            <ItemDescription>Last changed 3 months ago.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Button type="button" variant="secondary">
+              Change password
+            </Button>
+          </ItemActions>
+        </Item>
+
+        <Item className="composition-security-settings__item" size="lg">
+          <ItemContent>
+            <ItemTitle>Two-factor authentication</ItemTitle>
+            <ItemDescription>Add an extra verification step when signing in.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Button type="button" variant="secondary">
+              Set up
+            </Button>
+          </ItemActions>
+        </Item>
+
+        <Item className="composition-security-settings__item" size="lg">
+          <ItemContent>
+            <ItemTitle>Active sessions</ItemTitle>
+            <ItemDescription>You’re signed in on 2 devices.</ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Button type="button" variant="secondary">
+              Review sessions
+            </Button>
+          </ItemActions>
+        </Item>
+
+        <Item className="composition-security-settings__item" size="lg">
+          <ItemContent>
+            <ItemTitle className="composition-security-settings__danger-title">
+              Delete account
+            </ItemTitle>
+            <ItemDescription>
+              Permanently remove your account and personal data. This action cannot be undone.
+            </ItemDescription>
+          </ItemContent>
+          <ItemActions>
+            <Dialog
+              open={dialogOpen}
+              onOpenChange={handleDialogOpenChange}
+              trigger={
+                <Button data-preview-interaction="allowed" type="button" variant="danger">
+                  Delete account
+                </Button>
+              }
+              title="Delete your account?"
+              description="This permanently removes your Nerio account, profile, and personal data. This action cannot be undone."
+            >
+              <Field
+                label={`Type ${accountName} to confirm`}
+                description="Enter the account name exactly as shown."
+              >
+                <Input
+                  autoFocus
+                  autoComplete="off"
+                  placeholder={accountName}
+                  value={confirmation}
+                  onChange={(event) => setConfirmation(event.currentTarget.value)}
+                />
+              </Field>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => handleDialogOpenChange(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  disabled={!canDelete}
+                  type="button"
+                  variant="danger"
+                  onClick={() => {
+                    if (!canDelete) return;
+                    setConfirmed(true);
+                    handleDialogOpenChange(false);
+                  }}
+                >
+                  Delete account
+                </Button>
+              </DialogFooter>
+            </Dialog>
+          </ItemActions>
+        </Item>
+
+        {confirmed ? (
+          <Alert role="status" title="Preview only" tone="info">
+            No account was deleted.
+          </Alert>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }
 
 function TableToolbarPreview() {
+  const projects = [
+    { id: "aster", name: "Aster", status: "active", owner: "Alex Morgan" },
+    { id: "canvas", name: "Canvas", status: "active", owner: "Maya Chen" },
+    { id: "luma", name: "Luma", status: "archived", owner: "Jordan Lee" },
+    { id: "northstar", name: "Northstar", status: "active", owner: "Sam Rivera" },
+    { id: "orbit", name: "Orbit", status: "archived", owner: "Taylor Kim" },
+    { id: "atlas", name: "Atlas", status: "active", owner: "Rowan Patel" },
+  ] as const;
   const [query, setQuery] = React.useState("");
   const [selected, setSelected] = React.useState<string[]>([]);
-  const rows = ["Aster", "Canvas", "Luma"].filter((row) =>
-    row.toLowerCase().includes(query.toLowerCase()),
+  const [status, setStatus] = React.useState<"all" | "active" | "archived">("all");
+  const filteredProjects = projects.filter(
+    (project) =>
+      (status === "all" || project.status === status) &&
+      project.name.toLowerCase().includes(query.toLowerCase()),
   );
-  const visibleSelected = rows.filter((row) => selected.includes(row));
+  const visibleProjects = filteredProjects.slice(0, 4);
+  const visibleProjectIds = visibleProjects.map((project) => project.id);
+  const visibleSelected = visibleProjects.filter((project) => selected.includes(project.id));
+  const allVisibleSelected =
+    visibleProjects.length > 0 && visibleProjects.every((project) => selected.includes(project.id));
+  const someVisibleSelected = visibleSelected.length > 0 && !allVisibleSelected;
+  const totalPages = Math.max(1, Math.ceil(filteredProjects.length / 4));
+
+  function updateStatus(nextStatus: string | null) {
+    if (nextStatus !== "all" && nextStatus !== "active" && nextStatus !== "archived") {
+      return;
+    }
+    setStatus(nextStatus);
+    setSelected([]);
+  }
+
+  function updateQuery(nextQuery: string) {
+    setQuery(nextQuery);
+    setSelected([]);
+  }
+
+  function toggleAllVisible(checked: boolean) {
+    setSelected((current) => {
+      const next = new Set(current);
+      visibleProjectIds.forEach((id) => {
+        if (checked) {
+          next.add(id);
+        } else {
+          next.delete(id);
+        }
+      });
+      return [...next];
+    });
+  }
+
   return (
-    <div className="composition-table">
-      <div className="composition-toolbar">
-        <div>
-          <h3>Projects</h3>
-          <p>Simple scanning and lightweight actions.</p>
+    <Card className="composition-table-card">
+      <CardHeader>
+        <div className="composition-table-header">
+          <div>
+            <Heading as="h2" size="lg">
+              Projects
+            </Heading>
+            <Text tone="secondary">Manage active and archived workspace projects.</Text>
+          </div>
+          <Input
+            aria-label="Search projects"
+            placeholder="Search projects"
+            value={query}
+            onChange={(event) => updateQuery(event.currentTarget.value)}
+          />
         </div>
-        <Input
-          aria-label="Search projects"
-          placeholder="Search projects"
-          value={query}
-          onChange={(event) => setQuery(event.currentTarget.value)}
-        />
-        <DropdownMenu
-          trigger={<Button variant="secondary">Status filter</Button>}
-          items={[{ label: "All projects" }, { label: "Active" }, { label: "Archived" }]}
-        />
-      </div>
-      {visibleSelected.length ? (
-        <div className="composition-bulk" role="status">
-          <span>{visibleSelected.length} selected</span>
-          <Button size="sm" variant="ghost">
-            Archive
-          </Button>
-          <Button size="sm" variant="ghost">
-            Assign owner
-          </Button>
+      </CardHeader>
+      <CardContent className="composition-table">
+        <div className="composition-table-toolbar">
+          <Tabs
+            data-preview-interaction="allowed"
+            onValueChange={updateStatus}
+            size="sm"
+            value={status}
+            variant="segmented"
+          >
+            <TabsList aria-label="Project status">
+              <TabsTrigger badge={<Badge size="sm">6</Badge>} value="all">
+                All
+              </TabsTrigger>
+              <TabsTrigger badge={<Badge size="sm">4</Badge>} value="active">
+                Active
+              </TabsTrigger>
+              <TabsTrigger badge={<Badge size="sm">2</Badge>} value="archived">
+                Archived
+              </TabsTrigger>
+              <TabsIndicator />
+            </TabsList>
+          </Tabs>
+          {visibleSelected.length ? (
+            <div className="composition-table-actions">
+              <Button leadingIcon={PackageOpen} size="sm" type="button" variant="secondary">
+                Archive
+              </Button>
+              <Button leadingIcon={UserPlus} size="sm" type="button" variant="secondary">
+                Assign owner
+              </Button>
+              <Button
+                data-preview-interaction="allowed"
+                leadingIcon={X}
+                onClick={() => setSelected([])}
+                size="sm"
+                type="button"
+                variant="secondary"
+              >
+                Clear
+              </Button>
+            </div>
+          ) : null}
         </div>
-      ) : null}
-      {rows.length ? (
-        <TableContainer aria-label="Projects">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>
-                  <span className="sr-only">Select</span>
-                </TableHead>
-                <TableHead>Project</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Owner</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row}>
-                  <TableCell>
-                    <Checkbox
-                      aria-label={`Select ${row}`}
-                      checked={selected.includes(row)}
-                      onCheckedChange={(checked) =>
-                        setSelected((current) =>
-                          checked ? [...current, row] : current.filter((item) => item !== row),
-                        )
-                      }
-                    />
-                  </TableCell>
-                  <TableCell>{row}</TableCell>
-                  <TableCell>
-                    <Badge tone="success">Active</Badge>
-                  </TableCell>
-                  <TableCell>Alex Morgan</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <EmptyState role="status" size="sm">
-          <EmptyStateHeader>
-            <EmptyStateTitle>No projects found</EmptyStateTitle>
-            <EmptyStateDescription>
-              Try another search term or clear the filter.
-            </EmptyStateDescription>
-          </EmptyStateHeader>
-          <EmptyStateActions>
-            <Button variant="secondary" onClick={() => setQuery("")}>
-              Clear search
-            </Button>
-          </EmptyStateActions>
-        </EmptyState>
-      )}
-      <Pagination
-        pages={[
-          { key: "1", label: "1", href: "#projects", current: true },
-          { key: "2", label: "2", href: "#projects" },
-        ]}
-        nextHref="#projects"
-      />
-    </div>
+
+        <div className="composition-table-frame">
+          {filteredProjects.length ? (
+            <TableContainer
+              aria-label="Projects"
+              className="composition-table-frame__container"
+              focusable
+            >
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>
+                      <Checkbox
+                        aria-label="Select all projects"
+                        checked={allVisibleSelected}
+                        data-preview-interaction="allowed"
+                        indeterminate={someVisibleSelected}
+                        onCheckedChange={toggleAllVisible}
+                        parent
+                      />
+                    </TableHead>
+                    <TableHead>Project</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Owner</TableHead>
+                    <TableHead>
+                      <span className="sr-only">Actions</span>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {visibleProjects.map((project) => {
+                    const isSelected = selected.includes(project.id);
+                    return (
+                      <TableRow data-selected={isSelected ? "" : undefined} key={project.id}>
+                        <TableCell>
+                          <Checkbox
+                            aria-label={`Select ${project.name}`}
+                            checked={isSelected}
+                            data-preview-interaction="allowed"
+                            onCheckedChange={(checked) =>
+                              setSelected((current) =>
+                                checked
+                                  ? [...current, project.id]
+                                  : current.filter((item) => item !== project.id),
+                              )
+                            }
+                          />
+                        </TableCell>
+                        <TableCell>{project.name}</TableCell>
+                        <TableCell>
+                          <Badge tone={project.status === "active" ? "success" : "neutral"}>
+                            {project.status === "active" ? "Active" : "Archived"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <span className="composition-table-owner">
+                            <Avatar name={project.owner} size="sm" />
+                            <span>{project.owner}</span>
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu
+                            trigger={
+                              <Button
+                                aria-label={`Actions for ${project.name}`}
+                                data-preview-interaction="allowed"
+                                icon={EllipsisVertical}
+                                size="sm"
+                                variant="ghost"
+                              />
+                            }
+                            items={[
+                              { label: "Open project", leadingIcon: ExternalLink },
+                              { label: "Rename", leadingIcon: Type },
+                              {
+                                destructive: project.status === "active",
+                                label: project.status === "active" ? "Archive" : "Delete",
+                                leadingIcon: project.status === "active" ? PackageOpen : X,
+                              },
+                            ]}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          ) : (
+            <EmptyState role="status" size="sm">
+              <EmptyStateHeader>
+                <EmptyStateTitle>No projects found</EmptyStateTitle>
+                <EmptyStateDescription>
+                  Try another search term or choose a different status.
+                </EmptyStateDescription>
+              </EmptyStateHeader>
+              <EmptyStateActions>
+                <Button
+                  data-preview-interaction="allowed"
+                  onClick={() => updateQuery("")}
+                  variant="secondary"
+                >
+                  Clear search
+                </Button>
+              </EmptyStateActions>
+            </EmptyState>
+          )}
+        </div>
+        {filteredProjects.length ? (
+          <div className="composition-table-footer" role="status">
+            <span>
+              {visibleSelected.length
+                ? `${visibleSelected.length} ${
+                    visibleSelected.length === 1 ? "project" : "projects"
+                  } selected`
+                : `1–${visibleProjects.length} of ${filteredProjects.length} projects`}
+            </span>
+            <Pagination
+              aria-label="Projects pagination"
+              nextHref={totalPages > 1 ? "#projects" : undefined}
+              pages={Array.from({ length: totalPages }, (_, index) => ({
+                current: index === 0,
+                href: "#projects",
+                key: String(index + 1),
+                label: String(index + 1),
+              }))}
+            />
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }
 
 function AccountSummaryPreview() {
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+
   return (
-    <Card className="composition-profile">
-      <CardContent>
-        <div className="composition-profile-head">
-          <Avatar name="Alex Morgan" />
-          <div>
-            <h3>Alex Morgan</h3>
-            <p>Product designer · Northstar</p>
-          </div>
-          <Badge tone="success">Active</Badge>
-        </div>
-        <dl className="composition-key-values">
-          <KeyValue label="Email" value="alex@northstar.example" />
+    <Card className="composition-account-summary-card">
+      <CardHeader>
+        <Heading as="h2" size="lg">
+          Account summary
+        </Heading>
+        <Text tone="secondary">Profile and workspace membership details.</Text>
+      </CardHeader>
+      <CardContent className="composition-account-summary">
+        <Item className="composition-account-summary__identity" size="lg" variant="outline">
+          <ItemMedia>
+            <Avatar
+              alt="Vladimir Pavlov profile photo"
+              name="Vladimir Pavlov"
+              size="lg"
+              src="/avatars/lucas-moreau.png"
+            />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>Vladimir Pavlov</ItemTitle>
+            <ItemDescription>Product designer at Northstar</ItemDescription>
+          </ItemContent>
+          <ItemActions className="composition-account-summary__badges">
+            <Badge tone="success">Active</Badge>
+            <Badge>Member</Badge>
+          </ItemActions>
+        </Item>
+
+        <Separator />
+
+        <dl className="composition-account-summary__metadata">
+          <KeyValue label="Email" value="nerio@vpavlov.com" />
           <KeyValue label="Location" value="Tbilisi, Georgia" />
+          <KeyValue label="Time zone" value="GMT+4" />
           <KeyValue label="Member since" value="May 2024" />
+          <KeyValue label="Workspace role" value="Member" />
+          <KeyValue label="Last active" value="Today at 10:42 AM" />
         </dl>
-        <div className="composition-actions">
+
+        <Separator />
+
+        <div className="composition-account-summary__footer">
+          <Text tone="secondary">Account details are visible to workspace members.</Text>
           <Dialog
-            trigger={<Button>Edit account</Button>}
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+            trigger={
+              <Button
+                data-preview-interaction="allowed"
+                leadingIcon={Settings}
+                type="button"
+                variant="secondary"
+              >
+                Edit account
+              </Button>
+            }
             title="Edit account"
-            description="Update the public account details shown to collaborators."
+            description="Update the profile details shown to workspace members."
           >
-            <Field label="About">
-              <Textarea defaultValue="Product designer at Northstar." />
-            </Field>
-            <Button>Save changes</Button>
+            <div className="composition-account-summary__form">
+              <Field label="Display name">
+                <Input defaultValue="Vladimir Pavlov" />
+              </Field>
+              <Field label="Job title">
+                <Input defaultValue="Product designer" />
+              </Field>
+              <Field label="Location">
+                <Input defaultValue="Tbilisi, Georgia" />
+              </Field>
+              <Field label="About">
+                <Textarea defaultValue="Designing product experiences for the Northstar workspace." />
+              </Field>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="secondary" onClick={() => setDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="button" onClick={() => setDialogOpen(false)}>
+                Save changes
+              </Button>
+            </DialogFooter>
           </Dialog>
         </div>
       </CardContent>
@@ -417,84 +959,154 @@ function AccountSummaryPreview() {
   );
 }
 
-function EmptyProjectPreview() {
-  return (
-    <EmptyState size="sm">
-      <EmptyStateHeader>
-        <EmptyStateTitle>Create your first project</EmptyStateTitle>
-        <EmptyStateDescription>
-          Organize a delivery goal, invite collaborators, and keep progress visible in one place.
-        </EmptyStateDescription>
-      </EmptyStateHeader>
-      <EmptyStateActions>
-        <Button size="sm">Create project</Button>
-        <Button
-          nativeButton={false}
-          size="sm"
-          variant="ghost"
-          render={<a href="/templates/operations-workspace" />}
-        >
-          See a project workspace
-        </Button>
-      </EmptyStateActions>
-    </EmptyState>
-  );
-}
-
-type UploadState = "uploading" | "complete" | "failed" | "cancelled";
-
 function FileUploadStatePreview() {
-  const [state, setState] = React.useState<UploadState>("uploading");
-  const progress = state === "complete" ? 100 : state === "uploading" ? 64 : 0;
   return (
-    <div className="composition-feedback">
-      <div>
-        <div className="composition-inline-status">
-          <span>
-            <strong>research-notes.pdf</strong>
-            <small>{state === "uploading" ? "4.8 MB of 7.5 MB" : "7.5 MB"}</small>
-          </span>
-          {state === "uploading" ? <Spinner label="Uploading research-notes.pdf" /> : null}
+    <Card className="composition-upload-card">
+      <CardHeader>
+        <div>
+          <Heading as="h2" size="lg">
+            Upload files
+          </Heading>
+          <Text tone="secondary">Review files being added to the Northstar workspace.</Text>
         </div>
-        {state === "uploading" || state === "complete" ? (
-          <Progress value={progress} aria-label="File upload progress" />
-        ) : null}
-      </div>
-      {state === "complete" ? (
-        <Alert role="status" tone="success" title="Upload complete">
-          research-notes.pdf is ready to use.
-        </Alert>
-      ) : null}
-      {state === "failed" ? (
-        <Alert role="alert" tone="danger" title="Upload failed">
-          The connection was interrupted. Retry when you are ready.
-        </Alert>
-      ) : null}
-      {state === "cancelled" ? (
-        <Alert role="status" title="Upload cancelled">
-          The file was not added to this project.
-        </Alert>
-      ) : null}
-      <div className="composition-actions">
-        {state === "uploading" ? (
-          <>
-            <Button variant="secondary" onClick={() => setState("complete")}>
-              Complete upload
-            </Button>
-            <Button variant="ghost" onClick={() => setState("cancelled")}>
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <Button variant="secondary" onClick={() => setState("uploading")}>
-            {state === "failed" ? "Retry upload" : "Upload again"}
+        <CardAction>
+          <Button leadingIcon={Upload} type="button" variant="secondary">
+            Upload
           </Button>
-        )}
-        <Button variant="ghost" onClick={() => setState("failed")}>
-          Show failure
-        </Button>
-      </div>
-    </div>
+        </CardAction>
+      </CardHeader>
+
+      <CardContent>
+        <ItemGroup aria-label="Upload queue" className="composition-upload-list">
+          <Item size="lg" variant="outline">
+            <ItemMedia variant="icon">
+              <Icon icon={Upload} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>project-brief.pdf</ItemTitle>
+              <ItemDescription>Ready to upload · 2.4 MB</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete project-brief.pdf"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+
+          <Item size="lg" variant="outline">
+            <ItemMedia variant="icon">
+              <Spinner decorative size="sm" />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>design-system.zip</ItemTitle>
+              <ItemDescription>Uploading · 64%</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete design-system.zip"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+
+          <Item size="lg" variant="outline">
+            <ItemMedia variant="icon">
+              <Icon icon={FileText} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>market-research.pdf</ItemTitle>
+              <ItemDescription>Processing document</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete market-research.pdf"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+
+          <Item className="composition-upload-item--failed" size="lg" variant="outline">
+            <ItemMedia className="composition-upload-item__media--danger" variant="icon">
+              <Icon icon={CircleAlert} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>financial-model.xlsx</ItemTitle>
+              <ItemDescription className="composition-upload-item__description--danger">
+                Upload failed. Try again.
+              </ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Retry file">
+                <Button
+                  aria-label="Retry financial-model.xlsx"
+                  icon={RefreshCw}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete financial-model.xlsx"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+
+          <Item size="lg" variant="outline">
+            <ItemMedia variant="icon">
+              <Icon icon={Check} />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>uploaded-report.pdf</ItemTitle>
+              <ItemDescription>Uploaded · 1.8 MB</ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <Tooltip label="Delete file">
+                <Button
+                  aria-label="Delete uploaded-report.pdf"
+                  icon={X}
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                />
+              </Tooltip>
+            </ItemActions>
+          </Item>
+        </ItemGroup>
+      </CardContent>
+
+      <CardFooter className="composition-upload-footer">
+        <div className="composition-upload-footer__actions">
+          <Button type="button" variant="secondary">
+            Cancel
+          </Button>
+          <Button disabled leadingIcon={Save} type="button">
+            Save
+          </Button>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
 
@@ -676,10 +1288,10 @@ function DenseFormPreview() {
 const blocks: Record<string, Composition> = {
   "sign-in": {
     purpose:
-      "Combines the smallest authentication flow from Core building blocks, including validation, loading, and recovery navigation.",
+      "Combines the smallest authentication layout from Core building blocks, including credentials and recovery context.",
     components: authComponents,
     accessibility:
-      "Fields retain visible labels and error messages; native form submission supports Enter and the link remains a separate navigation target.",
+      "Fields retain visible labels, while link-styled text and submission remain intentionally inert in the preview.",
     responsive:
       "The card stays single-column, keeps 32px controls, and uses page padding rather than shrinking touch targets.",
     notes:
@@ -689,23 +1301,22 @@ const blocks: Record<string, Composition> = {
   },
   "create-account": {
     purpose:
-      "Tests the relationship between a small account form, validation, and explanatory feedback.",
-    components: authComponents,
+      "Tests a complete account-creation layout with identity, credentials, confirmation, and policy context.",
+    components: ["Card", "Heading", "Text", "Field", "Input", "Button", "Icon"],
     accessibility:
-      "Each input is labelled through Field and inline feedback is associated with its control.",
+      "Every input keeps a visible label, password confirmation remains explicit, and visual links stay non-interactive in the preview.",
     responsive:
-      "The form remains one column on narrow widths so labels and validation copy stay readable.",
+      "Password fields share a row when space allows and stack into one column on narrow viewports.",
     notes:
       "Core covers the primitives only. Invitation systems, entitlement checks, and account provisioning remain outside this gallery.",
-    code: '<Field label="Full name"><Input /></Field><Field label="Email"><Input /></Field>',
-    Preview: () => <AuthPreview kind="register" />,
+    code: '<Field label="Full name"><Input /></Field><Field label="Email"><Input /></Field><Field label="Password"><Input /></Field><Field label="Confirm password"><Input /></Field>',
+    Preview: CreateAccountPreview,
   },
   "reset-password": {
-    purpose:
-      "Validates how feedback changes a compact recovery action without changing page structure.",
+    purpose: "Tests a compact recovery layout without adding application-owned delivery behavior.",
     components: authComponents,
     accessibility:
-      "The success state is announced inline and the form has one clear labelled input and submit action.",
+      "The form has one clear labelled input and a visible submit action that remains inert.",
     responsive:
       "The narrow card uses readable copy and never creates a horizontal action row on small screens.",
     notes:
@@ -715,89 +1326,115 @@ const blocks: Record<string, Composition> = {
   },
   "profile-settings": {
     purpose:
-      "Keeps profile editing to one recognizable task rather than presenting a complete settings page.",
-    components: ["Field", "Input", "Textarea", "Button", "Alert"],
+      "Keeps avatar upload, personal details, and profile visibility in one bounded settings card.",
+    components: [
+      "Card",
+      "Avatar",
+      "FileInput",
+      "Field",
+      "Input",
+      "Item",
+      "Textarea",
+      "Switch",
+      "Separator",
+      "Button",
+    ],
     accessibility:
-      "Every control has a visible label, native form submission supports Enter, and saved feedback uses a status message.",
+      "Every editable control has a visible label, the avatar exposes the account name, and the visibility switch includes its own description.",
     responsive:
-      "The fields remain one column and the save row wraps instead of compressing its action.",
+      "The photo group, fields, preference, and actions remain one readable column while the save row wraps on narrow screens.",
     notes:
       "The application still owns the settings route, persistence, navigation, and permission model.",
-    code: '<form><Field label="Workspace name"><Input /></Field><Field label="About"><Textarea /></Field><Button type="submit">Save profile</Button></form>',
+    code: '<Card><Item variant="outline"><ItemMedia><Avatar name="Vladimir Pavlov" src="/avatars/lucas-moreau.png" /></ItemMedia><ItemContent>...</ItemContent></Item><Field label="Profile photo"><FileInput /></Field><Field label="Display name"><Input /></Field><Field label="Bio"><Textarea /></Field><Switch label="Show profile in workspace" /><Button disabled>Save changes</Button></Card>',
     Preview: ProfileSettingsPreview,
   },
   "security-settings": {
     purpose:
-      "Pairs one immediate security preference with an appropriately separated destructive confirmation.",
-    components: ["Switch", "Separator", "Dialog", "Field", "Input", "Button"],
+      "Combines credential, two-factor, and session controls with a guarded, demo-safe destructive confirmation.",
+    components: ["Card", "Item", "Alert", "Dialog", "Field", "Input", "Button"],
     accessibility:
-      "The switch has an explicit accessible name and deletion opens a labelled modal with focus restoration.",
+      "The confirmation dialog is labelled, keeps consequences visible, and requires an exact account-name match before enabling deletion.",
     responsive:
-      "The setting row and destructive action wrap without changing source order or shrinking controls.",
+      "The bounded card remains one readable column while the status item and dialog actions wrap without changing source order.",
     notes:
-      "Authorization, reauthentication, audit history, and deletion policy remain product responsibilities.",
-    code: '<Switch aria-label="Require two-factor authentication" />\n<Dialog title="Delete account">...</Dialog>',
+      "Authorization, reauthentication, audit history, and deletion policy remain product responsibilities; the confirmed action only shows a preview status.",
+    code: '<Card><Item><ItemContent>Password</ItemContent><ItemActions><Button>Change password</Button></ItemActions></Item><Item><ItemContent>Two-factor authentication</ItemContent><ItemActions><Button>Set up</Button></ItemActions></Item><Item><ItemContent>Active sessions</ItemContent><ItemActions><Button>Review sessions</Button></ItemActions></Item><Item><ItemContent>Delete account</ItemContent><ItemActions><Dialog title="Delete your account?">...</Dialog></ItemActions></Item></Card>',
     Preview: SecuritySettingsPreview,
   },
   "notification-preferences": {
     purpose:
-      "Collects a small set of related notification choices without becoming a product-wide preferences system.",
-    components: ["FormGroup", "Checkbox", "Select", "Alert", "Button"],
+      "Presents workspace activity, product update, and digest preferences in a bounded settings card.",
+    components: ["Card", "FormGroup", "Item", "Switch", "Separator", "Select", "Alert", "Button"],
     accessibility:
-      "Related checkboxes use FormGroup semantics, the frequency control has a label, and save feedback is announced politely.",
+      "Related switches use FormGroup semantics and accessible names, the digest control includes contextual help, and save feedback is announced politely.",
     responsive:
-      "Choices stay in a readable vertical sequence and the save row wraps at narrow widths.",
+      "The bounded card stays in one readable column while item actions and the save row wrap at narrow widths.",
     notes:
-      "Consent rules, delivery infrastructure, and available channels remain application policy.",
-    code: '<FormGroup title="Email notifications"><Checkbox />...</FormGroup>\n<Select label="Digest frequency" />',
+      "Delivery infrastructure, consent rules, product-specific channels, and granular project subscriptions remain application policy.",
+    code: '<Card><FormGroup title="Activity notifications"><Item><ItemContent>Mentions and assignments</ItemContent><ItemActions><Switch /></ItemActions></Item></FormGroup><Select label="Email digest" /></Card>',
     Preview: NotificationPreferencesPreview,
   },
   "table-toolbar": {
     purpose:
-      "Tests table density and simple operational actions while deliberately stopping before advanced data-grid features.",
-    components: ["Input", "DropdownMenu", "Button", "Table", "Badge", "EmptyState", "Pagination"],
+      "Demonstrates a bounded project table with status tabs, search, contextual bulk actions, row menus, selection state, and visual pagination.",
+    components: [
+      "Card",
+      "Tabs",
+      "Input",
+      "Checkbox",
+      "Avatar",
+      "DropdownMenu",
+      "Button",
+      "Table",
+      "Badge",
+      "EmptyState",
+      "Pagination",
+    ],
     accessibility:
-      "Search has an explicit accessible name, table headers use column scope, and the menu remains keyboard navigable.",
+      "Status filters use tabs, search has an explicit name, select-all exposes checked and indeterminate states, table headers use column scope, and row menus remain keyboard navigable.",
     responsive:
-      "Toolbar controls wrap before their target size changes; the basic table remains a scrollable data surface when necessary.",
+      "Tabs and search wrap before their target size changes, while the table remains a labelled, focusable horizontal scroll region.",
     notes:
       "Saved views, filter builders, column management, and virtualized grids are intentionally Pro territory.",
-    code: '<Input aria-label="Search projects" />\n<DropdownMenu items={filters} />\n<Table>...</Table>',
+    code: '<Card><Input aria-label="Search projects" /><Tabs variant="segmented">...</Tabs><Table><TableHeader><Checkbox aria-label="Select all projects" /></TableHeader>...</Table><Pagination /></Card>',
     Preview: TableToolbarPreview,
   },
   "account-summary": {
     purpose:
-      "Combines identity and account metadata in a bounded summary rather than a full profile page.",
-    components: ["Card", "Avatar", "KeyValue", "Badge", "Button", "Dialog", "Field", "Textarea"],
+      "Combines identity, workspace membership, and account metadata in a bounded summary rather than a full profile page.",
+    components: [
+      "Card",
+      "Avatar",
+      "Item",
+      "KeyValue",
+      "Badge",
+      "Button",
+      "Dialog",
+      "Field",
+      "Input",
+      "Textarea",
+      "Separator",
+    ],
     accessibility:
-      "Avatar fallback is derived from the person’s name, metadata uses a definition list, and editing opens a labelled dialog.",
-    responsive: "Identity and actions wrap while the account name remains first in reading order.",
+      "The profile photo has a descriptive alternative, metadata uses a definition list, status is named in text, and editing opens a labelled dialog.",
+    responsive:
+      "Identity and actions wrap while the account name remains first in reading order, and the metadata grid collapses to one column on narrow screens.",
     notes:
       "Activity feeds, social metrics, profile permissions, and a dashboard layout are intentionally excluded.",
-    code: '<Avatar name="Alex Morgan" />\n<KeyValue label="Email" value="alex@northstar.example" />\n<Dialog title="Edit account">...</Dialog>',
+    code: '<Card><Item variant="outline"><Avatar name="Vladimir Pavlov" src="/avatars/lucas-moreau.png" />...</Item><KeyValue label="Email" value="nerio@vpavlov.com" /><Dialog title="Edit account">...</Dialog></Card>',
     Preview: AccountSummaryPreview,
   },
-  "empty-project": {
-    purpose:
-      "Gives a genuinely empty collection one clear creation path and restrained supporting context.",
-    components: ["EmptyState", "Button"],
-    accessibility:
-      "The state has an explicit heading, descriptive text, a primary action, and a separate navigation link.",
-    responsive: "Actions wrap without reducing target size or changing their reading order.",
-    notes:
-      "Search, permission, offline, and failure cases need separate product-specific recovery language.",
-    code: "<EmptyState><EmptyStateHeader><EmptyStateTitle>Create your first project</EmptyStateTitle></EmptyStateHeader><EmptyStateActions><Button>Create project</Button></EmptyStateActions></EmptyState>",
-    Preview: EmptyProjectPreview,
-  },
   "file-upload-state": {
-    purpose: "Frames progress and outcome feedback around one recognizable file-upload operation.",
-    components: ["Alert", "Progress", "Spinner", "Button"],
+    purpose:
+      "Frames queued, uploading, processing, failed, and completed files as one bounded batch operation.",
+    components: ["Card", "Item", "Icon", "Spinner", "Button", "Tooltip"],
     accessibility:
-      "Progress has a file-specific accessible name, failure is urgent, routine outcomes are polite, and every transition has text.",
-    responsive: "Status, progress, and actions stack and wrap while preserving reading order.",
+      "Every file has a visible text status, progress has a file-specific accessible name, and icon-only actions name both the operation and file.",
+    responsive:
+      "File metadata and item actions reflow inside Item while the batch footer wraps without changing action order.",
     notes:
-      "File selection, transfer, retry policy, persistence, and server errors remain application responsibilities.",
-    code: '<Progress aria-label="File upload progress" value={64} />\n<Alert tone="success" title="Upload complete" />',
+      "Selection, transport, retries, file persistence, and server error semantics remain application concerns.",
+    code: '<Card><CardHeader>Upload files<CardAction><Button leadingIcon={Upload}>Upload</Button></CardAction></CardHeader><CardContent><ItemGroup><Item><ItemMedia><Spinner /></ItemMedia><ItemContent>design-system.zip</ItemContent><ItemActions><Tooltip label="Delete file"><Button icon={X} variant="secondary" /></Tooltip></ItemActions></Item>...</ItemGroup></CardContent><CardFooter><Button variant="secondary">Cancel</Button><Button disabled>Save</Button></CardFooter></Card>',
     Preview: FileUploadStatePreview,
   },
 };
@@ -855,13 +1492,48 @@ const internalFixtures: Record<keyof typeof internalBlockFixtures, Composition> 
   },
 };
 
+function preventBlockPreviewAction(event: React.SyntheticEvent) {
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const action = target.closest("a, button");
+  if (
+    !action ||
+    action.closest('[data-preview-interaction="allowed"]') ||
+    action.closest('[role="dialog"]')
+  ) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+}
+
 export function BlockPreview({ slug }: { slug: string }) {
   const block = blocks[slug];
   if (!block) return null;
   const { Preview } = block;
   return (
     <main className="block-view">
-      <div className="composition-preview">
+      <Button
+        className="block-view__back"
+        leadingIcon={ArrowLeft}
+        nativeButton={false}
+        render={<Link href="/blocks" />}
+        size="sm"
+        variant="secondary"
+      >
+        Back to Blocks
+      </Button>
+      <div
+        className="block-view__content"
+        data-preview-interactions="disabled"
+        onAuxClickCapture={preventBlockPreviewAction}
+        onClickCapture={preventBlockPreviewAction}
+        onSubmitCapture={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+      >
         <Preview />
       </div>
     </main>
@@ -884,92 +1556,5 @@ export function InternalBlockFixture({ slug }: { slug: keyof typeof internalBloc
         <Preview />
       </div>
     </main>
-  );
-}
-
-export function BlockDetail({ slug }: { slug: string }) {
-  const composition = blocks[slug];
-  const block = getBlock(slug);
-  if (!composition || !block) return null;
-  return (
-    <article className="doc-page composition-page">
-      <header>
-        <p className="doc-kicker">
-          {block.category} · {block.status}
-        </p>
-        <h1>{block.title}</h1>
-        <p className="doc-lede">{block.description}</p>
-      </header>
-      <section className="doc-section">
-        <h2 id="overview">Overview</h2>
-        <p>{composition.purpose}</p>
-      </section>
-      <section className="doc-section">
-        <h2 id="live-preview">Live Preview</h2>
-        <iframe
-          className="block-preview-frame"
-          src={block.previewRoute}
-          title={`${block.title} preview`}
-        />
-      </section>
-      <section className="doc-section">
-        <h2 id="intended-use">Intended Use</h2>
-        <p>{block.intendedUse}</p>
-      </section>
-      <section className="doc-section">
-        <h2 id="code">Code</h2>
-        <CodeExample code={composition.code} label={`${block.title} block`} />
-      </section>
-      <section className="doc-section">
-        <h2 id="anatomy">Anatomy</h2>
-        <p>This Block composes the following Nerio Core parts with block-local layout.</p>
-        <div className="token-chip-row">
-          {composition.components.map((component) => (
-            <code key={component}>{component}</code>
-          ))}
-        </div>
-      </section>
-      <section className="doc-section">
-        <h2 id="accessibility">Accessibility</h2>
-        <p>{composition.accessibility}</p>
-      </section>
-      <section className="doc-section">
-        <h2 id="responsive-behaviour">Responsive Behaviour</h2>
-        <p>{composition.responsive}</p>
-      </section>
-      <section className="doc-section">
-        <h2 id="boundaries">Boundaries</h2>
-        <p>{composition.notes}</p>
-        <ul>
-          {block.boundaries.map((boundary) => (
-            <li key={boundary}>{boundary}</li>
-          ))}
-        </ul>
-      </section>
-      <section className="doc-section">
-        <h2 id="related-surfaces">Related Surfaces</h2>
-        <ul>
-          {block.relatedBlocks.map((relatedSlug) => {
-            const related = getBlock(relatedSlug);
-            return related ? (
-              <li key={related.slug}>
-                <a href={related.detailRoute}>{related.title} Block</a>
-              </li>
-            ) : null;
-          })}
-          {block.relatedTemplates.map((templateSlug) => (
-            <li key={templateSlug}>
-              <a href={`/templates/${templateSlug}`}>
-                {templateSlug
-                  .split("-")
-                  .map((word) => word[0]?.toUpperCase() + word.slice(1))
-                  .join(" ")}{" "}
-                Template
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </article>
   );
 }

@@ -1,9 +1,6 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { Badge, Card, CardContent, CardFooter, CardHeader, CardTitle } from "@nerio-ui/ui";
-import { Button } from "@nerio-ui/ui/client";
+import { PreviewThumbnail } from "../../components/preview-thumbnail";
 import { templateCatalog } from "../../features/templates/catalog";
-import { arePreviewSurfacesEnabled } from "../../lib/deployment";
 import { createPageMetadata } from "../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -14,50 +11,35 @@ export const metadata = createPageMetadata({
 });
 
 export default function TemplatesPage() {
-  if (!arePreviewSurfacesEnabled()) notFound();
-
   return (
-    <article className="doc-page templates-page">
-      <header className="templates-hero">
-        <p className="doc-kicker">Product scenarios · Preview</p>
+    <article className="doc-page catalog-page">
+      <header className="catalog-hero">
         <h1>See Nerio working in complete product interfaces.</h1>
-        <p className="doc-lede">
+        <p>
           Templates are realistic, deterministic product scenarios that stress-test Core composition
           and reveal future Pro patterns. They are previews, not independently deployed products or
           released Pro packages.
         </p>
       </header>
 
-      <section className="templates-grid" aria-label="Template catalog">
+      <section className="catalog-grid" aria-label="Template catalog">
         {templateCatalog.map((template) => (
-          <Card key={template.slug} className="template-card">
-            <CardHeader>
-              <div className="template-card__eyebrow">
-                <span>{template.category}</span>
-                <Badge tone="info">{template.status}</Badge>
-              </div>
-              <CardTitle>{template.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <article key={template.slug} className="catalog-card">
+            <div className="catalog-card__media">
+              <PreviewThumbnail src={template.previewRoute} title={template.title} />
+            </div>
+            <div className="catalog-card__content">
+              <h2>{template.title}</h2>
               <p>{template.description}</p>
-              <p className="template-card__coverage">
-                {template.componentsUsed.length} Core components · {template.runtimeCoverage.length}{" "}
-                runtime and responsive checks
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button
-                nativeButton={false}
-                variant="secondary"
-                render={<Link href={template.detailRoute} />}
-              >
-                View details
-              </Button>
-              <Button nativeButton={false} render={<Link href={template.previewRoute} />}>
-                Open full-screen preview
-              </Button>
-            </CardFooter>
-          </Card>
+            </div>
+            <Link
+              className="catalog-card__link"
+              href={template.previewRoute}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Open ${template.title} preview in a new tab`}
+            />
+          </article>
         ))}
       </section>
     </article>

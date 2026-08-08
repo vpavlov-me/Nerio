@@ -56,3 +56,21 @@ test("platform support validator protects every Playwright project", () => {
     /Playwright config must include firefox/,
   );
 });
+
+test("platform support validator protects the weekly Playwright canary", () => {
+  invalidFixture(
+    "--canary",
+    ".github/workflows/playwright-canary.yml",
+    "@playwright/test@latest",
+    /Playwright canary must include/,
+  );
+});
+
+test("platform support validator keeps beta gap-closure peer evidence aligned", () => {
+  invalidFixture(
+    "--gap-closure",
+    "docs/core-1-0-beta-gap-closure.md",
+    "Motion 12.43.0",
+    /current Motion version/,
+  );
+});

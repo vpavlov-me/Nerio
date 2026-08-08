@@ -74,11 +74,17 @@ const packageContracts = {
     bin: ["nerio-mcp"],
   },
 };
-const expectedVersion = "1.0.0-beta.0";
+const releaseMetadata = readJson(join(root, "quality/release-metadata.json"));
+const expectedVersion = releaseMetadata.coreVersion;
 const expectPublicPackages = process.env.NERIO_RELEASE_EXPECT_PUBLIC === "1";
 const expectPublishedPackages = process.env.NERIO_RELEASE_EXPECT_PUBLISHED === "1";
 const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 const publicCommands = readJson(join(root, "packages/registry/src/public-commands.json"));
+const platformSupport = readJson(join(root, "quality/platform-support.json"));
+const dependencySupport = readJson(join(root, "quality/dependency-support.json"));
+const stackProfile = process.env.NERIO_STACK_PROFILE || "current";
+const stack = dependencySupport.profiles[stackProfile];
+if (!stack) throw new Error(`Unknown NERIO_STACK_PROFILE: ${stackProfile}`);
 
 function run(command, args, options = {}) {
   return execFileSync(command, args, {
@@ -144,7 +150,7 @@ function validatePackedPackage(name, tarball) {
     packageJson.repository?.directory !== directory ||
     packageJson.homepage !== contract.homepage ||
     packageJson.bugs?.url !== "https://github.com/vpavlov-me/Nerio/issues" ||
-    packageJson.engines?.node !== ">=20.9.0"
+    packageJson.engines?.node !== platformSupport.node
   ) {
     throw new Error(`${name} is missing coordinated release metadata.`);
   }
@@ -212,7 +218,7 @@ function validatePackedPackage(name, tarball) {
   if (name === "@nerio-ui/registry") {
     const manifest = JSON.parse(run("tar", ["-xOf", tarball, "package/src/manifest.json"]));
     if (
-      manifest.schemaVersion !== "1.0.0" ||
+      manifest.schemaVersion !== "1.1.0" ||
       manifest.version !== expectedVersion ||
       manifest.sourceRevision !== `v${expectedVersion}` ||
       manifest.styleContractVersion !== "tailwind-v1" ||
@@ -221,6 +227,15 @@ function validatePackedPackage(name, tarball) {
       throw new Error(
         "@nerio-ui/registry must pack coordinated immutable version, revision, style, and item metadata.",
       );
+    }
+    for (const item of manifest.items) {
+      for (const file of item.files) {
+        if (!/^sha256-[a-f0-9]{64}$/.test(file.integrity || "")) {
+          throw new Error(
+            `@nerio-ui/registry packed manifest is missing SHA-256 integrity for ${item.name}:${file.target}.`,
+          );
+        }
+      }
     }
   }
 }
@@ -263,18 +278,18 @@ try {
       clsx: uiPackage.dependencies.clsx,
       "tailwind-merge": uiPackage.dependencies["tailwind-merge"],
       "lucide-react": adaptersPackage.dependencies["lucide-react"],
-      next: docsPackage.dependencies.next,
-      react: docsPackage.dependencies.react,
-      "react-dom": docsPackage.dependencies["react-dom"],
+      next: stack.next,
+      react: stack.react,
+      "react-dom": stack.reactDom,
     },
     devDependencies: {
-      "@tailwindcss/postcss": docsPackage.devDependencies["@tailwindcss/postcss"],
+      "@tailwindcss/postcss": stack.tailwindcss,
       "@types/node": docsPackage.devDependencies["@types/node"],
       "@types/react": docsPackage.devDependencies["@types/react"],
       "@types/react-dom": docsPackage.devDependencies["@types/react-dom"],
       postcss: docsPackage.devDependencies.postcss,
-      tailwindcss: docsPackage.dependencies.tailwindcss,
-      typescript: docsPackage.devDependencies.typescript,
+      tailwindcss: stack.tailwindcss,
+      typescript: stack.typescript,
     },
   };
   writeFileSync(
@@ -439,7 +454,7 @@ try {
   assertSingleTokenPayload(readBuiltCss(consumerDirectory), "Source-install");
 
   console.log(
-    `Release smoke passed for ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, documented ${publicCommands.cli.localCommands.length}-command local CLI workflow, ${expectPublishedPackages ? "published one-off CLI execution, " : ""}packaged MCP-bin discovery, representative source installs, and a clean Next.js consumer build.`,
+    `Release smoke passed for the ${stackProfile} dependency profile, ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, documented ${publicCommands.cli.localCommands.length}-command local CLI workflow, ${expectPublishedPackages ? "published one-off CLI execution, " : ""}packaged MCP-bin discovery, representative source installs, and a clean Next.js consumer build.`,
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });
