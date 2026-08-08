@@ -111,8 +111,9 @@ pull request and changelog. Moving a number merely to make CI green is not an ov
 The expanded Operations Workspace template introduced five local avatar assets, charts, risk and
 capacity views, and richer initiative content. Its deterministic Chromium runtime transfer changed
 from 581,370 bytes before the template expansion to 778,265 bytes after it (+196,895). The reviewed
-ceiling is 782,336 bytes, leaving 4,071 bytes of maintenance headroom while keeping the static
-JavaScript, CSS, and deterministic gzip bundle ceilings unchanged.
+ceiling is 844,800 bytes: the measurement rounds to the next KiB before adding the policy's 64 KiB
+runtime-variance allowance. Static JavaScript, CSS, and deterministic gzip bundle ceilings remain
+unchanged.
 
 The versioned Registry/source-lifecycle slice measured the CLI tarball at 10,224 bytes after adding
 portable installed metadata, three-way hash comparison, non-destructive updates, conflict handling,
