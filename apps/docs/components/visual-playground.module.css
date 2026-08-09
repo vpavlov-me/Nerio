@@ -41,63 +41,50 @@
   box-sizing: border-box;
   display: grid;
   gap: var(--n-space-6);
-  grid-template-columns: minmax(0, 1fr) 18rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
   min-block-size: 0;
-  padding: var(--n-space-6);
+  padding: 0 var(--n-space-6) var(--n-space-6);
   position: relative;
-  transition:
-    column-gap var(--n-duration-normal) var(--n-easing-standard),
-    grid-template-columns var(--n-duration-normal) var(--n-easing-standard);
-}
-
-.root :global(.visual-playground__workspace--radix[data-settings-state="collapsed"]) {
-  grid-template-columns: minmax(0, 1fr) var(--n-space-12);
 }
 
 .root :global(.playground-settings--radix) {
-  align-self: start;
+  align-items: end;
   background: var(--n-card-background);
   border: var(--n-card-border-width) solid var(--n-card-border-color);
   border-radius: var(--n-card-radius);
   box-shadow: none;
-  gap: var(--n-space-5);
-  grid-column: 2;
-  grid-row: 1;
-  grid-template-rows: auto auto auto;
-  max-block-size: calc(100% - var(--n-space-6));
+  gap: var(--n-space-4);
+  grid-column: 1;
+  grid-row: 2;
+  grid-template-columns: minmax(0, 1fr) auto;
+  inline-size: 100%;
+  justify-self: center;
+  max-inline-size: 56.25rem;
   min-block-size: 0;
   min-inline-size: 0;
-  overflow: hidden;
-  padding: var(--n-space-6);
+  padding: var(--n-space-4);
   position: relative;
   top: auto;
-  transition:
-    opacity var(--n-duration-fast) var(--n-easing-standard),
-    transform var(--n-duration-normal) var(--n-easing-standard);
-}
-
-.root
-  :global(.visual-playground__workspace--radix[data-settings-state="collapsed"])
-  :global(.playground-settings--radix) {
-  display: none;
-  opacity: 0;
-  pointer-events: none;
-  transform: none;
 }
 
 .root :global(.playground-settings__body) {
-  align-content: start;
+  align-items: end;
   display: grid;
   gap: var(--n-space-4);
+  grid-template-columns: repeat(5, minmax(9rem, 1fr));
   min-block-size: 0;
-  overflow: auto;
+  min-inline-size: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
   padding: 0;
+  scrollbar-gutter: stable;
 }
 
 .root :global(.playground-settings--radix) :global(.playground-settings__actions) {
   background: transparent;
   border: 0;
-  grid-template-columns: 1fr;
+  align-self: end;
   margin: 0;
   padding: 0;
   position: static;
@@ -107,30 +94,7 @@
   :global(.playground-settings--radix)
   :global(.playground-settings__actions)
   :global(.n-button) {
-  inline-size: 100%;
-}
-
-.root :global(.playground-settings__rail) {
-  align-self: start;
-  align-items: flex-start;
-  background: var(--n-card-background);
-  block-size: auto;
-  border: var(--n-card-border-width) solid var(--n-card-border-color);
-  border-radius: var(--n-card-radius);
-  box-shadow: none;
-  box-sizing: border-box;
-  display: flex;
-  grid-column: 2;
-  grid-row: 1;
-  inline-size: 100%;
-  justify-content: center;
-  min-block-size: 0;
-  padding: var(--n-space-2);
-}
-
-.root :global(.playground-settings__restore) {
-  flex: 0 0 auto;
-  position: static;
+  white-space: nowrap;
 }
 
 .root :global(.playground-color-option) {
@@ -161,7 +125,11 @@
   overflow: auto;
   overscroll-behavior: contain;
   padding: 0;
-  scrollbar-gutter: stable;
+  scrollbar-width: none;
+}
+
+.root :global(.playground-canvas--catalog)::-webkit-scrollbar {
+  display: none;
 }
 
 .root :global(.playground-canvas--catalog:focus-visible) {
@@ -181,11 +149,11 @@
   box-sizing: border-box;
   inline-size: max-content;
   min-block-size: 100%;
-  padding: var(--n-space-8);
+  padding: var(--n-space-12);
 }
 
 .root :global(.playground-masonry) {
-  --playground-masonry-gap: calc(var(--n-space-5) * 2);
+  --playground-masonry-gap: var(--n-space-8);
 
   align-items: start;
   column-gap: var(--playground-masonry-gap);
@@ -248,47 +216,18 @@
 
   .root :global(.visual-playground__workspace--radix) {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .root :global(.playground-settings--radix),
-  .root :global(.playground-canvas--catalog) {
-    grid-column: 1;
+    grid-template-rows: 72dvh auto;
   }
 
   .root :global(.playground-settings--radix) {
-    grid-row: 1;
-    max-block-size: none;
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .root :global(.playground-canvas--catalog) {
     block-size: 72dvh;
-    grid-row: 2;
-  }
-
-  .root :global(.visual-playground__workspace--radix[data-settings-state="collapsed"]) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto 72dvh;
-  }
-
-  .root
-    :global(.visual-playground__workspace--radix[data-settings-state="collapsed"])
-    :global(.playground-settings--radix) {
-    display: none;
-  }
-
-  .root
-    :global(.visual-playground__workspace--radix[data-settings-state="collapsed"])
-    :global(.playground-canvas--catalog) {
-    grid-row: 2;
-  }
-
-  .root
-    :global(.visual-playground__workspace--radix[data-settings-state="collapsed"])
-    :global(.playground-settings__rail) {
-    block-size: auto;
     grid-column: 1;
     grid-row: 1;
-    inline-size: calc(var(--n-size-control-sm) + var(--n-space-4));
-    justify-self: end;
   }
 }

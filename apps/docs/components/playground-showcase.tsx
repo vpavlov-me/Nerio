@@ -143,7 +143,7 @@ function WorkspaceSetup() {
           <Avatar {...avatarPreviewAssets[0]} />
         </ItemMedia>
         <ItemContent>
-          <ItemTitle>Northstar Studio</ItemTitle>
+          <ItemTitle>Nerio</ItemTitle>
           <ItemDescription>4 collaborators ready to join</ItemDescription>
         </ItemContent>
         <ItemActions>
@@ -151,7 +151,7 @@ function WorkspaceSetup() {
         </ItemActions>
       </Item>
       <Field label="Workspace name">
-        <Input defaultValue="Northstar Studio" />
+        <Input defaultValue="Nerio" />
       </Field>
       <Select
         defaultValue="design"
@@ -179,7 +179,7 @@ function SignIn() {
           <InputGroupAddon placement="start">
             <Icon icon={Mail} />
           </InputGroupAddon>
-          <Input defaultValue="maya@northstar.co" type="email" />
+          <Input defaultValue="maya@nerio.dev" type="email" />
         </InputGroup>
       </Field>
       <Field label="Password" message="Password strength looks good.">
@@ -209,7 +209,7 @@ function SocialLinks() {
           <InputGroupAddon placement="start">
             <Icon icon={Github} />
           </InputGroupAddon>
-          <Input defaultValue="github.com/northstar" />
+          <Input defaultValue="github.com/vpavlov-me/Nerio" />
         </InputGroup>
       </Field>
       <Field label="Website">
@@ -217,7 +217,7 @@ function SocialLinks() {
           <InputGroupAddon placement="start">
             <Icon icon={ExternalLink} />
           </InputGroupAddon>
-          <Input defaultValue="northstar.design" />
+          <Input defaultValue="nerio.vpavlov.com" />
         </InputGroup>
       </Field>
     </ScenarioCard>
@@ -572,10 +572,10 @@ function TeamDirectory() {
           </TableHeader>
           <TableBody>
             {[
-              ["Maya Chen", "maya@northstar.co", "Owner", "Active"],
-              ["Malik Johnson", "malik@northstar.co", "Engineer", "Active"],
-              ["Sofia Alvarez", "sofia@northstar.co", "Research", "Invited"],
-              ["Arjun Patel", "arjun@northstar.co", "Operations", "Active"],
+              ["Maya Chen", "maya@nerio.dev", "Owner", "Active"],
+              ["Malik Johnson", "malik@nerio.dev", "Engineer", "Active"],
+              ["Sofia Alvarez", "sofia@nerio.dev", "Research", "Invited"],
+              ["Arjun Patel", "arjun@nerio.dev", "Operations", "Active"],
             ].map(([name, email, role, status], index) => (
               <TableRow key={email}>
                 <TableCell>
@@ -852,7 +852,7 @@ function PreviewDeployment() {
   return (
     <ScenarioCard
       title="Preview deployment"
-      description="Review the latest documentation build for Atlas."
+      description="Review the latest documentation build for Nerio."
       footer={
         <>
           <Button leadingIcon={RefreshCw} variant="secondary">
@@ -888,7 +888,7 @@ function PreviewDeployment() {
         <Item size="sm">
           <ItemContent>
             <ItemTitle>Preview domain</ItemTitle>
-            <ItemDescription>atlas-preview.nerio.dev</ItemDescription>
+            <ItemDescription>nerio-preview.nerio.dev</ItemDescription>
           </ItemContent>
           <ItemActions>
             <Badge>Secure</Badge>
@@ -957,7 +957,7 @@ function InviteDialogCard() {
         description="Share this workspace with your product team."
       >
         <Field label="Email address">
-          <Input placeholder="name@company.com" type="email" />
+          <Input placeholder="teammate@nerio.dev" type="email" />
         </Field>
         <Select
           defaultValue="member"
@@ -1079,12 +1079,12 @@ function QuickFilterCard() {
 function ActionsMenuCard() {
   return (
     <ScenarioCard
-      title="Atlas launch"
+      title="Nerio launch"
       description="Coordinate the final release checklist."
       action={
         <DropdownMenu
           trigger={
-            <Button icon={EllipsisVertical} aria-label="Atlas launch actions" variant="ghost" />
+            <Button icon={EllipsisVertical} aria-label="Nerio launch actions" variant="ghost" />
           }
           items={[
             { label: "Open project", leadingIcon: ExternalLink },
@@ -1280,12 +1280,12 @@ function SearchResults() {
         <InputGroupAddon placement="start">
           <Icon icon={Search} />
         </InputGroupAddon>
-        <Input aria-label="Search workspace" defaultValue="atlas" />
+        <Input aria-label="Search workspace" defaultValue="nerio" />
       </InputGroup>
       <ItemGroup>
         <Item size="sm">
           <ItemContent>
-            <ItemTitle>Atlas redesign</ItemTitle>
+            <ItemTitle>Nerio redesign</ItemTitle>
             <ItemDescription>Project · updated 12 minutes ago</ItemDescription>
           </ItemContent>
           <ItemActions>
@@ -1295,7 +1295,7 @@ function SearchResults() {
         <ItemSeparator />
         <Item size="sm">
           <ItemContent>
-            <ItemTitle>Atlas launch checklist</ItemTitle>
+            <ItemTitle>Nerio launch checklist</ItemTitle>
             <ItemDescription>Document · updated yesterday</ItemDescription>
           </ItemContent>
           <ItemActions>
