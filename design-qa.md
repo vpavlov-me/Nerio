@@ -2146,17 +2146,17 @@ final result: passed
 
 ### Source truth
 
-- User direction: set `--n-card-section-gap` to `1rem` at the Card component level, not in the global token layer.
+- User direction: set the Card-owned `--n-card-section-gap` contract to `1rem` while preserving inherited consumer overrides.
 
 ### Finding and fix
 
-1. P2 — The global semantic token must remain available at its existing `--n-space-2` fallback, while Card itself needs a `1rem` section rhythm. Added `[--n-card-section-gap:1rem]` to the root Card class and preserved the global token definition unchanged.
+1. P2 — A Card-root custom-property declaration would override theme and density wrappers. Updated the Card-namespaced token default to `--n-space-4` in the token layer and intentionally left the Card root without a local `--n-card-section-gap` declaration, so inherited consumer overrides remain effective.
 
 ### Verification
 
 - In-app browser inspection: all 35 Playground Cards resolve `--n-card-section-gap` to `1rem`; sampled CardContent row gaps resolve to `16px`.
 - Masonry remains valid with 35 Cards, zero overlaps, and zero invalid rows.
-- UI contract tests: 174 passed.
+- UI contract tests: 175 passed.
 - UI lint, UI typecheck, token validation, formatting, and `git diff --check` pass.
 - Console inspection: no warnings or errors.
 
