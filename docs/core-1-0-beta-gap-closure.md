@@ -1,7 +1,9 @@
 # Core 1.0 beta technical gap closure
 
 This report records the technical work completed after the `1.0.0-beta.0` publication and the
-evidence collected for the coordinated, unpublished `1.0.0-beta.1` candidate.
+evidence collected for the coordinated `1.0.0-beta.1` candidate. Beta.1 was subsequently published
+on 2026-08-09 from exact commit `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`; the historical
+pre-publication evidence below remains pinned to the candidate-preparation sequence.
 
 **Decision: Technical gaps closed; manual beta and accessibility gates remain**
 
@@ -20,7 +22,7 @@ was moved, no Git tag or GitHub Release was created, and `main` was not changed 
 | Exact-candidate release gate | [run 30756737816](https://github.com/vpavlov-me/Nerio/actions/runs/30756737816), all 13 jobs passed |
 | Change window                | 154 files, 12,857 insertions, 2,760 deletions                                                       |
 | Prepared version             | `1.0.0-beta.1` across all six public packages                                                       |
-| Published version            | npm `beta` remains `1.0.0-beta.0`                                                                   |
+| Published version            | npm `beta` resolves to `1.0.0-beta.1`                                                               |
 | Manual accessibility gate    | [#143](https://github.com/vpavlov-me/Nerio/issues/143), open; evidence pending                      |
 | External beta gate           | [#146](https://github.com/vpavlov-me/Nerio/issues/146), open; evidence pending                      |
 
@@ -80,8 +82,7 @@ The complete consumer-facing instructions are in
 6. MCP consumers may migrate from parsing the preserved JSON text to validated
    `structuredContent`.
 
-The prepared `1.0.0-beta.1` commands in README and onboarding surfaces are not externally
-resolvable until publication is separately authorized.
+The `1.0.0-beta.1` commands in README and onboarding surfaces resolve from the public npm packages.
 
 ## Support and browser matrix
 
@@ -283,9 +284,10 @@ reject missing or future-dated human evidence and blocking decisions.
 
 ## Known limitations and next authority boundary
 
-- `1.0.0-beta.1` is prepared but unpublished; npm `beta` still resolves to `1.0.0-beta.0`.
-- Publication, dist-tag movement, Git tags, GitHub Releases, and `dev -> main` promotion require
-  separate explicit authorization.
+- `1.0.0-beta.1` is published under npm `beta` from signed tag `v1.0.0-beta.1` and exact commit
+  `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`.
+- Any future publication, dist-tag movement, Git tag, GitHub Release, or `dev -> main` promotion
+  requires separate explicit authorization.
 - This work does not claim stable readiness.
 - Vite evidence covers the maintained fixture, not every Vite/plugin combination.
 - Windows and mobile operating systems do not have native CI runners; their assistive-technology

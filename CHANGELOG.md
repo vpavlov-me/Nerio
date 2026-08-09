@@ -6,8 +6,9 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
-This section is the prepared `1.0.0-beta.1` candidate. It is not an npm publication, dist-tag
-change, Git tag, GitHub Release, or stable-readiness claim.
+No changes yet.
+
+## 1.0.0-beta.1 — 2026-08-09
 
 ### Added
 
@@ -107,8 +108,8 @@ change, Git tag, GitHub Release, or stable-readiness claim.
 - Follow
   [`docs/migrations/beta-0-to-beta-1.md`](./docs/migrations/beta-0-to-beta-1.md) for the runtime
   lower bounds, deterministic date initialization, Tabs string values, Nerio-owned interactive
-  types, Registry integrity, HTTPS policy, and atomic CLI lifecycle. This work prepares but does not
-  publish the next beta. Exact technical closure evidence is recorded in
+  types, Registry integrity, HTTPS policy, and atomic CLI lifecycle. Exact technical closure and
+  publication evidence is recorded in
   [`docs/core-1-0-beta-gap-closure.md`](./docs/core-1-0-beta-gap-closure.md).
 
 ## 1.0.0-beta.0 — 2026-08-01

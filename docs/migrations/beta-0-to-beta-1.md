@@ -1,8 +1,7 @@
 # Migrate from Core 1.0.0-beta.0 to 1.0.0-beta.1
 
-This guide records only consumer-visible changes accepted after the `1.0.0-beta.0` publication. It
-describes the coordinated, unpublished `1.0.0-beta.1` candidate; no package is published by this
-work.
+This guide records the consumer-visible changes from the published `1.0.0-beta.0` release to the
+coordinated `1.0.0-beta.1` public beta.
 
 ## Runtime and dependency support
 
@@ -122,4 +121,4 @@ that support structured output can migrate to `structuredContent` and validate a
 declared schema.
 
 The coordinated MCP and Registry version is `1.0.0-beta.1` with source revision
-`v1.0.0-beta.1`. Do not infer npm availability from this prepared metadata.
+`v1.0.0-beta.1`. All six public packages are available from npm under the `beta` dist-tag.
