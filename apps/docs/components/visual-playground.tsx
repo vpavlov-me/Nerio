@@ -16,6 +16,7 @@ import {
   ToastViewport,
 } from "@nerio-ui/ui/client";
 import { PlaygroundShowcase } from "./playground-showcase";
+import styles from "./visual-playground.module.css";
 
 type Theme = (typeof themes)[number];
 type Density = (typeof densities)[number];
@@ -872,7 +873,7 @@ export function VisualPlayground() {
     <ToastProvider>
       <div
         ref={playgroundRef}
-        className="visual-playground visual-playground--lab"
+        className={`visual-playground visual-playground--lab ${styles.root}`}
         data-theme={theme}
         data-mode={resolvedMode}
         data-density={density}
