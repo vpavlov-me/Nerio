@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Playground masonry and theme comparison</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+      body {
+        background: #111;
+        color: #fff;
+        font:
+          14px/1.4 system-ui,
+          sans-serif;
+      }
+      main {
+        display: grid;
+        gap: 1px;
+        grid-template-columns: 1fr 1fr;
+        min-height: 100vh;
+      }
+      figure {
+        background: #222;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        margin: 0;
+        min-width: 0;
+      }
+      figcaption {
+        padding: 10px 14px;
+      }
+      img {
+        align-self: start;
+        display: block;
+        height: auto;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <figure>
+        <figcaption>Reference</figcaption>
+        <img src="./reference.png" alt="Original Playground reference" />
+      </figure>
+      <figure>
+        <figcaption>Implementation — standard cards and masonry</figcaption>
+        <img src="./01-final-light.png" alt="Updated Nerio Playground" />
+      </figure>
+    </main>
+  </body>
+</html>

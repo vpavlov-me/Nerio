@@ -1,22 +1,30 @@
 "use client";
 
 import * as React from "react";
-import { Check, Copy, Palette } from "@nerio-ui/adapters/icons";
-import { densities, modes, themes } from "@nerio-ui/tokens";
-import { Button, Icon, ToastProvider, ToastViewport } from "@nerio-ui/ui/client";
-import { ComponentPlayground } from "./component-playground-specimens";
+import { ChevronRight, Settings } from "@nerio-ui/adapters/icons";
+import { densities, themes } from "@nerio-ui/tokens";
+import {
+  Button,
+  Card,
+  CardAction,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  Select,
+  ToastProvider,
+  ToastViewport,
+} from "@nerio-ui/ui/client";
+import { PlaygroundShowcase } from "./playground-showcase";
+import styles from "./visual-playground.module.css";
 
 type Theme = (typeof themes)[number];
-type Mode = (typeof modes)[number];
 type Density = (typeof densities)[number];
 type NeutralRecipe = "slate" | "gray" | "mauve" | "sage" | "olive" | "sand";
 type RadiusPreset = "none" | "small" | "medium" | "large" | "full";
 type MotionPreset = "reduced" | "calm" | "standard";
 type PanelStyle = "flat" | "raised";
-type SettingsView = "theme" | "colors";
 type PlaygroundStyle = React.CSSProperties & Record<`--${string}`, string | number>;
-
-const playgroundModes = [modes[1], modes[2], modes[0]] as const;
 
 type SemanticColors = {
   canvas: string;
@@ -60,8 +68,6 @@ type SemanticColors = {
   chart4: string;
   chart5: string;
 };
-
-type ColorKey = keyof SemanticColors;
 
 const lightDefaults: SemanticColors = {
   canvas: "#ffffff",
@@ -157,6 +163,36 @@ const themeAccents: Record<Theme, [string, string, string, string, string]> = {
   red: ["#c54c4c", "#b33f3f", "#9c3434", "#ffeded", "#391b1e"],
   neutral: ["#536071", "#465161", "#3a4452", "#eef2f7", "#252d3a"],
 };
+
+const neutralRecipeOptions = ["slate", "gray", "mauve", "sage", "olive", "sand"] as const;
+const radiusOptions = ["none", "small", "medium", "large", "full"] as const;
+const scaleOptions = [90, 95, 100, 105, 110] as const;
+const motionOptions = ["reduced", "calm", "standard"] as const;
+const panelOptions = ["flat", "raised"] as const;
+
+function titleCase(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function ColorOption({ color, label }: { color: string; label: string }) {
+  return (
+    <span className="playground-color-option">
+      <span
+        aria-hidden
+        className="playground-color-option__swatch"
+        style={{ "--playground-option-color": color } as React.CSSProperties}
+      />
+      <span>{label}</span>
+    </span>
+  );
+}
+
+function selectHandler<T extends string>(options: readonly T[], onChange: (value: T) => void) {
+  return (value: string) => {
+    const selected = options.find((option) => option === value);
+    if (selected) onChange(selected);
+  };
+}
 
 const neutralRecipes: Record<
   NeutralRecipe,
@@ -284,79 +320,6 @@ const darkNeutralRecipes: typeof neutralRecipes = {
   },
 };
 
-const colorGroups: Array<{ label: string; colors: Array<[ColorKey, string]> }> = [
-  {
-    label: "Surfaces",
-    colors: [
-      ["canvas", "Canvas"],
-      ["surface", "Default"],
-      ["control", "Control"],
-      ["controlHover", "Control hover"],
-      ["controlActive", "Control active"],
-      ["subtle", "Subtle"],
-      ["sunken", "Sunken"],
-      ["raised", "Raised"],
-      ["overlay", "Overlay"],
-      ["selected", "Selected"],
-    ],
-  },
-  {
-    label: "Text",
-    colors: [
-      ["textPrimary", "Primary"],
-      ["textSecondary", "Secondary"],
-      ["textTertiary", "Tertiary"],
-      ["textDisabled", "Disabled"],
-      ["textInverse", "Inverse"],
-    ],
-  },
-  {
-    label: "Borders",
-    colors: [
-      ["borderSubtle", "Subtle"],
-      ["borderDefault", "Default"],
-      ["borderStrong", "Strong"],
-      ["borderInteractive", "Interactive"],
-      ["borderFocus", "Focus"],
-      ["borderDanger", "Danger"],
-    ],
-  },
-  {
-    label: "Action",
-    colors: [
-      ["actionPrimary", "Primary"],
-      ["actionPrimaryHover", "Hover"],
-      ["actionPrimaryActive", "Active"],
-      ["actionOnPrimary", "On primary"],
-    ],
-  },
-  {
-    label: "Status",
-    colors: [
-      ["statusInfo", "Info"],
-      ["statusInfoSoft", "Info soft"],
-      ["statusSuccess", "Success"],
-      ["statusSuccessSoft", "Success soft"],
-      ["statusWarning", "Warning"],
-      ["statusWarningSoft", "Warning soft"],
-      ["statusDanger", "Danger"],
-      ["statusDangerSoft", "Danger soft"],
-      ["statusNeutral", "Neutral"],
-      ["statusNeutralSoft", "Neutral soft"],
-    ],
-  },
-  {
-    label: "Chart aliases (tokens only)",
-    colors: [
-      ["chart1", "Categorical 1"],
-      ["chart2", "Categorical 2"],
-      ["chart3", "Categorical 3"],
-      ["chart4", "Categorical 4"],
-      ["chart5", "Categorical 5"],
-    ],
-  },
-];
-
 function scaled(value: number, scale: number) {
   return `${Math.round(value * scale * 100) / 100}px`;
 }
@@ -368,17 +331,54 @@ function toStyle(
   radius: RadiusPreset,
   motion: MotionPreset,
   panel: PanelStyle,
+  isDark: boolean,
 ): PlaygroundStyle {
   const scale = scalePercent / 100;
   const compact = density === "compact";
-  const radiusValues: Record<RadiusPreset, [number, number, number, number, number, number]> = {
-    none: [0, 0, 0, 0, 0, 0],
-    small: [4, 6, 8, 10, 12, 14],
-    medium: [6, 8, 12, 16, 20, 24],
-    large: [8, 12, 16, 20, 24, 28],
-    full: [8, 12, 16, 20, 28, 32],
+  const densityScaled = (compactValue: number, comfortableValue: number) =>
+    scaled(compact ? compactValue : comfortableValue, scale);
+  const radiusValues: Record<
+    RadiusPreset,
+    {
+      primitive: [number, number, number, number, number, number];
+      control: number;
+      container: number;
+      overlay: number;
+      pill: number;
+    }
+  > = {
+    none: { primitive: [0, 0, 0, 0, 0, 0], control: 0, container: 0, overlay: 0, pill: 0 },
+    small: {
+      primitive: [2, 4, 6, 8, 10, 12],
+      control: 4,
+      container: 8,
+      overlay: 12,
+      pill: 4,
+    },
+    medium: {
+      primitive: [4, 6, 8, 10, 14, 18],
+      control: 8,
+      container: 14,
+      overlay: 18,
+      pill: 8,
+    },
+    large: {
+      primitive: [4, 8, 10, 12, 20, 24],
+      control: 12,
+      container: 20,
+      overlay: 24,
+      pill: 12,
+    },
+    full: {
+      primitive: [4, 8, 12, 16, 28, 32],
+      control: 999,
+      container: 28,
+      overlay: 32,
+      pill: 999,
+    },
   };
-  const [xs, sm, md, lg, xl, xxl] = radiusValues[radius];
+  const { primitive, control, container, overlay, pill } = radiusValues[radius];
+  const [xs, sm, md, lg, xl, xxl] = primitive;
   const durations: Record<MotionPreset, [number, number, number]> = {
     reduced: [1, 1, 1],
     calm: [160, 260, 400],
@@ -400,7 +400,6 @@ function toStyle(
     "--n-input-background": colors.control,
     "--n-input-background-hover": colors.controlHover,
     "--n-input-background-on-muted": colors.surface,
-    "--n-table-container-background": colors.subtle,
     "--n-overlay-background": "rgb(0 0 0 / 0.88)",
     "--n-overlay-foreground": "#ffffff",
     "--n-overlay-foreground-muted": "#cbd5e1",
@@ -438,6 +437,94 @@ function toStyle(
     "--n-chart-categorical-3": colors.chart3,
     "--n-chart-categorical-4": colors.chart4,
     "--n-chart-categorical-5": colors.chart5,
+    "--n-card-background": colors.raised,
+    "--n-card-background-secondary": colors.subtle,
+    "--n-card-background-secondary-hover": colors.controlHover,
+    "--n-card-background-interactive-hover": colors.subtle,
+    "--n-card-border-color": isDark ? "rgb(255 255 255 / 0.14)" : colors.borderSubtle,
+    "--n-card-border-secondary": isDark ? "rgb(255 255 255 / 0.14)" : colors.borderSubtle,
+    "--n-card-border-interactive": colors.borderDefault,
+    "--n-card-shadow":
+      panel === "raised"
+        ? "0 1px 2px rgb(31 45 68 / 0.05), 0 8px 24px rgb(31 45 68 / 0.07)"
+        : "none",
+    "--n-button-background-primary": colors.actionPrimary,
+    "--n-button-background-primary-hover": colors.actionPrimaryHover,
+    "--n-button-background-primary-active": colors.actionPrimaryActive,
+    "--n-button-foreground-primary": colors.actionOnPrimary,
+    "--n-button-background-secondary": colors.control,
+    "--n-button-background-secondary-hover": colors.controlHover,
+    "--n-button-background-secondary-active": colors.controlActive,
+    "--n-button-foreground-secondary": colors.textPrimary,
+    "--n-button-background-outline-hover": colors.controlHover,
+    "--n-button-background-outline-active": colors.controlActive,
+    "--n-button-border-outline": colors.borderDefault,
+    "--n-button-foreground-outline": colors.textPrimary,
+    "--n-button-background-ghost-hover": colors.subtle,
+    "--n-button-background-ghost-active": colors.controlActive,
+    "--n-button-foreground-ghost": colors.textSecondary,
+    "--n-input-placeholder": colors.textTertiary,
+    "--n-input-foreground": colors.textPrimary,
+    "--n-input-disabled-background": colors.subtle,
+    "--n-input-disabled-foreground": colors.textDisabled,
+    "--n-input-readonly-background": colors.subtle,
+    "--n-input-readonly-border": colors.borderSubtle,
+    "--n-input-addon-foreground": colors.textTertiary,
+    "--n-alert-background": colors.subtle,
+    "--n-alert-title-color": colors.textPrimary,
+    "--n-alert-icon-color": colors.statusNeutral,
+    "--n-badge-background": colors.subtle,
+    "--n-badge-foreground": colors.textSecondary,
+    "--n-badge-background-primary-soft": colors.selected,
+    "--n-badge-foreground-primary-soft": colors.actionPrimary,
+    "--n-badge-background-info": colors.statusInfoSoft,
+    "--n-badge-foreground-info": colors.statusInfo,
+    "--n-badge-background-success": colors.statusSuccessSoft,
+    "--n-badge-foreground-success": colors.statusSuccess,
+    "--n-badge-background-warning": colors.statusWarningSoft,
+    "--n-badge-foreground-warning": colors.statusWarning,
+    "--n-badge-background-danger": colors.statusDangerSoft,
+    "--n-badge-foreground-danger": colors.statusDanger,
+    "--n-avatar-foreground": colors.textSecondary,
+    "--n-progress-label-color": colors.textSecondary,
+    "--n-progress-value-color": colors.textSecondary,
+    "--n-progress-track-background": colors.subtle,
+    "--n-progress-indicator-background": colors.actionPrimary,
+    "--n-empty-state-mark-background": colors.selected,
+    "--n-empty-state-mark-foreground": colors.actionPrimary,
+    "--n-form-group-title-color": colors.textPrimary,
+    "--n-form-group-description-color": colors.textTertiary,
+    "--n-form-group-message-color": colors.statusDanger,
+    "--n-switch-background": colors.control,
+    "--n-switch-background-hover": colors.controlHover,
+    "--n-switch-background-checked": colors.actionPrimary,
+    "--n-switch-background-checked-hover": colors.actionPrimaryHover,
+    "--n-switch-background-checked-active": colors.actionPrimaryActive,
+    "--n-switch-border": colors.borderSubtle,
+    "--n-switch-border-hover": colors.borderInteractive,
+    "--n-slider-label-color": colors.textSecondary,
+    "--n-slider-value-color": colors.textTertiary,
+    "--n-slider-track-background": colors.control,
+    "--n-slider-indicator-background": colors.actionPrimary,
+    "--n-slider-thumb-border": colors.borderStrong,
+    "--n-slider-thumb-border-hover": colors.borderInteractive,
+    "--n-item-background-hover": colors.controlHover,
+    "--n-item-background-active": colors.controlActive,
+    "--n-item-background-selected": colors.control,
+    "--n-item-background-soft": colors.subtle,
+    "--n-item-border": colors.borderSubtle,
+    "--n-item-border-selected": colors.borderSubtle,
+    "--n-item-foreground": colors.textPrimary,
+    "--n-item-description": colors.textSecondary,
+    "--n-item-media-background": colors.control,
+    "--n-table-border": colors.borderSubtle,
+    "--n-table-container-background": colors.subtle,
+    "--n-table-header-foreground": colors.textTertiary,
+    "--n-table-row-background-hover": colors.subtle,
+    "--n-table-row-background-selected": colors.selected,
+    "--n-table-row-selection-indicator": colors.borderDefault,
+    "--n-table-cell-foreground-disabled": colors.textDisabled,
+    "--n-table-cell-foreground-danger": colors.statusDanger,
     "--n-space-0-5": scaled(2, scale),
     "--n-space-1": scaled(4, scale),
     "--n-space-1-5": scaled(6, scale),
@@ -460,67 +547,131 @@ function toStyle(
     "--n-font-size-3xl": scaled(22.5, scale),
     "--n-font-size-4xl": scaled(25.25, scale),
     "--n-font-size-5xl": scaled(28.5, scale),
-    "--n-size-control-sm": scaled(compact ? 24 : 28, scale),
-    "--n-size-control-md": scaled(compact ? 28 : 32, scale),
-    "--n-size-control-lg": scaled(compact ? 32 : 36, scale),
-    "--n-density-space-md": scaled(compact ? 10 : 12, scale),
-    "--n-density-space-lg": scaled(compact ? 14 : 16, scale),
-    "--n-density-space-xl": scaled(compact ? 16 : 20, scale),
-    "--n-button-height-sm": scaled(compact ? 24 : 28, scale),
-    "--n-button-height-md": scaled(compact ? 28 : 32, scale),
-    "--n-button-height-lg": scaled(compact ? 32 : 36, scale),
-    "--n-icon-button-size-sm": scaled(compact ? 24 : 28, scale),
-    "--n-icon-button-size-md": scaled(compact ? 28 : 32, scale),
-    "--n-icon-button-size-lg": scaled(compact ? 32 : 36, scale),
-    "--n-input-height-sm": scaled(compact ? 24 : 28, scale),
-    "--n-input-height-md": scaled(compact ? 28 : 32, scale),
-    "--n-input-height-lg": scaled(compact ? 32 : 36, scale),
-    "--n-select-height-sm": scaled(compact ? 24 : 28, scale),
-    "--n-select-height-md": scaled(compact ? 28 : 32, scale),
-    "--n-select-height-lg": scaled(compact ? 32 : 36, scale),
-    "--n-tabs-trigger-height-sm": scaled(compact ? 24 : 28, scale),
-    "--n-tabs-trigger-height-md": scaled(compact ? 28 : 32, scale),
-    "--n-tabs-trigger-height-lg": scaled(compact ? 32 : 36, scale),
-    "--n-avatar-size-sm": scaled(compact ? 20 : 24, scale),
-    "--n-avatar-size-md": scaled(compact ? 28 : 32, scale),
-    "--n-avatar-size-lg": scaled(compact ? 32 : 36, scale),
-    "--n-badge-height-sm": scaled(compact ? 16 : 18, scale),
-    "--n-badge-height": scaled(compact ? 22 : 24, scale),
-    "--n-badge-height-lg": scaled(compact ? 24 : 28, scale),
-    "--n-spinner-size-sm": scaled(compact ? 12 : 14, scale),
-    "--n-spinner-size-md": scaled(compact ? 14 : 16, scale),
-    "--n-spinner-size-lg": scaled(compact ? 18 : 20, scale),
-    "--n-pagination-item-size": scaled(compact ? 28 : 32, scale),
-    "--n-command-input-height": scaled(compact ? 32 : 36, scale),
-    "--n-command-item-height": scaled(compact ? 32 : 36, scale),
-    "--n-table-row-min-height": scaled(compact ? 36 : 44, scale),
-    "--n-checkbox-size": scaled(compact ? 14 : 16, scale),
-    "--n-radio-size": scaled(compact ? 14 : 16, scale),
+    "--n-size-control-sm": densityScaled(24, 28),
+    "--n-size-control-md": densityScaled(28, 32),
+    "--n-size-control-lg": densityScaled(32, 36),
+    "--n-density-space-md": densityScaled(8, 12),
+    "--n-density-space-lg": densityScaled(12, 16),
+    "--n-density-space-xl": densityScaled(16, 20),
+    "--n-button-height-sm": densityScaled(24, 28),
+    "--n-button-height-md": densityScaled(28, 32),
+    "--n-button-height-lg": densityScaled(32, 36),
+    "--n-button-padding-inline-md": densityScaled(8, 12),
+    "--n-button-padding-inline-lg": densityScaled(12, 16),
+    "--n-toggle-height-sm": densityScaled(24, 28),
+    "--n-toggle-height-md": densityScaled(28, 32),
+    "--n-toggle-height-lg": densityScaled(32, 36),
+    "--n-toggle-padding-inline-md": densityScaled(8, 12),
+    "--n-icon-button-size-sm": densityScaled(24, 28),
+    "--n-icon-button-size-md": densityScaled(28, 32),
+    "--n-icon-button-size-lg": densityScaled(32, 36),
+    "--n-input-height-sm": densityScaled(24, 28),
+    "--n-input-height-md": densityScaled(28, 32),
+    "--n-input-height-lg": densityScaled(32, 36),
+    "--n-input-padding-inline": densityScaled(8, 12),
+    "--n-input-addon-padding-inline": densityScaled(8, 12),
+    "--n-select-height-sm": densityScaled(24, 28),
+    "--n-select-height-md": densityScaled(28, 32),
+    "--n-select-height-lg": densityScaled(32, 36),
+    "--n-select-trigger-gap": densityScaled(8, 12),
+    "--n-select-item-gap": densityScaled(8, 12),
+    "--n-select-item-padding-inline": densityScaled(8, 12),
+    "--n-select-group-label-padding-inline": densityScaled(8, 12),
+    "--n-select-empty-padding": densityScaled(8, 12),
+    "--n-field-gap": densityScaled(4, 6),
+    "--n-form-group-gap": densityScaled(8, 12),
+    "--n-form-group-inline-gap": densityScaled(12, 16),
+    "--n-tabs-trigger-height-sm": densityScaled(24, 28),
+    "--n-tabs-trigger-height-md": densityScaled(28, 32),
+    "--n-tabs-trigger-height-lg": densityScaled(32, 36),
+    "--n-tabs-trigger-padding-inline-md": densityScaled(8, 12),
+    "--n-avatar-size-sm": densityScaled(20, 24),
+    "--n-avatar-size-md": densityScaled(28, 32),
+    "--n-avatar-size-lg": densityScaled(32, 36),
+    "--n-badge-height-sm": densityScaled(16, 18),
+    "--n-badge-height": densityScaled(22, 24),
+    "--n-badge-height-lg": densityScaled(24, 28),
+    "--n-spinner-size-sm": densityScaled(12, 14),
+    "--n-spinner-size-md": densityScaled(14, 16),
+    "--n-spinner-size-lg": densityScaled(18, 20),
+    "--n-card-padding-md": densityScaled(20, 24),
+    "--n-card-padding": densityScaled(20, 24),
+    "--n-card-padding-inline": densityScaled(20, 24),
+    "--n-card-padding-block": densityScaled(20, 24),
+    "--n-card-gap": densityScaled(12, 16),
+    "--n-alert-gap": densityScaled(8, 12),
+    "--n-alert-padding": densityScaled(12, 16),
+    "--n-alert-list-padding-inline": densityScaled(12, 16),
+    "--n-progress-height": densityScaled(6, 8),
+    "--n-skeleton-height": densityScaled(14, 16),
+    "--n-empty-state-mark-size": densityScaled(28, 32),
+    "--n-item-gap": densityScaled(8, 12),
+    "--n-item-gap-lg": densityScaled(12, 16),
+    "--n-item-padding-sm": densityScaled(6, 8),
+    "--n-item-padding-md": densityScaled(8, 12),
+    "--n-item-padding-lg": densityScaled(12, 16),
+    "--n-item-padding": densityScaled(8, 12),
+    "--n-list-item-padding": densityScaled(6, 8),
+    "--n-pagination-item-size": densityScaled(28, 32),
+    "--n-command-input-height": densityScaled(32, 36),
+    "--n-command-item-height": densityScaled(32, 36),
+    "--n-command-item-padding-block": densityScaled(6, 8),
+    "--n-command-item-padding-inline": densityScaled(8, 12),
+    "--n-table-row-min-height": densityScaled(36, 44),
+    "--n-table-cell-padding-y": densityScaled(8, 12),
+    "--n-table-cell-padding-x": densityScaled(8, 12),
+    "--n-table-cell-padding": `${densityScaled(8, 12)} ${densityScaled(8, 12)}`,
+    "--n-calendar-cell-size": densityScaled(28, 32),
+    "--n-calendar-padding": densityScaled(8, 16),
+    "--n-calendar-header-gap": densityScaled(8, 12),
+    "--n-calendar-grid-gap": densityScaled(8, 12),
+    "--n-dialog-padding": densityScaled(20, 24),
+    "--n-dialog-viewport-inset": densityScaled(12, 16),
+    "--n-dialog-header-gap": densityScaled(12, 16),
+    "--n-dialog-header-margin": densityScaled(12, 16),
+    "--n-dialog-body-gap": densityScaled(12, 16),
+    "--n-sheet-padding": densityScaled(20, 24),
+    "--n-sheet-gap": densityScaled(12, 16),
+    "--n-sheet-viewport-inset": densityScaled(12, 16),
+    "--n-sheet-transition-distance": densityScaled(12, 16),
+    "--n-checkbox-size": densityScaled(14, 16),
+    "--n-radio-size": densityScaled(14, 16),
+    "--n-radio-dot-size": densityScaled(5, 6),
     "--n-switch-height": scaled(20, scale),
-    "--n-switch-width": scaled(compact ? 30 : 34, scale),
-    "--n-switch-thumb-size": scaled(compact ? 14 : 16, scale),
-    "--n-switch-thumb-offset": scaled(compact ? 12 : 14, scale),
+    "--n-switch-width": densityScaled(30, 34),
+    "--n-switch-thumb-size": densityScaled(14, 16),
+    "--n-switch-thumb-offset": densityScaled(12, 14),
     "--n-switch-padding": scaled(1, scale),
+    "--n-switch-field-gap": densityScaled(8, 12),
+    "--n-slider-control-size": densityScaled(28, 32),
+    "--n-slider-thumb-size": densityScaled(14, 16),
+    "--n-slider-header-gap": densityScaled(8, 16),
+    "--n-sidebar-region-padding": densityScaled(12, 20),
+    "--n-sidebar-inset-gap": densityScaled(12, 24),
+    "--n-sidebar-rail-hit-area": densityScaled(28, 32),
+    "--n-command-group-spacing": densityScaled(4, 8),
+    "--n-command-state-padding": densityScaled(16, 20),
     "--n-radius-xs": `${xs}px`,
     "--n-radius-sm": `${sm}px`,
     "--n-radius-md": `${md}px`,
     "--n-radius-lg": `${lg}px`,
     "--n-radius-xl": `${xl}px`,
     "--n-radius-2xl": `${xxl}px`,
-    "--n-radius-control": `${lg}px`,
-    "--n-radius-container": `${xl}px`,
-    "--n-radius-overlay": `${xxl}px`,
-    "--n-radius-pill": `${lg}px`,
-    "--n-alert-radius": `${xl}px`,
-    "--n-avatar-radius": `${lg}px`,
-    "--n-badge-radius": `${lg}px`,
-    "--n-button-radius": `${lg}px`,
-    "--n-icon-button-radius": `${lg}px`,
-    "--n-input-radius": `${lg}px`,
-    "--n-pagination-radius": `${lg}px`,
-    "--n-calendar-radius": `${xl}px`,
-    "--n-calendar-day-radius": `${lg}px`,
-    "--n-card-radius": `${xl}px`,
+    "--n-radius-control": `${control}px`,
+    "--n-radius-container": `${container}px`,
+    "--n-radius-overlay": `${overlay}px`,
+    "--n-radius-pill": `${pill}px`,
+    "--n-alert-radius": `${container}px`,
+    "--n-avatar-radius": `${pill}px`,
+    "--n-badge-radius": `${pill}px`,
+    "--n-button-radius": `${control}px`,
+    "--n-icon-button-radius": `${control}px`,
+    "--n-toggle-radius": `${control}px`,
+    "--n-input-radius": `${control}px`,
+    "--n-pagination-radius": `${control}px`,
+    "--n-calendar-radius": `${container}px`,
+    "--n-calendar-day-radius": `${control}px`,
+    "--n-card-radius": `${container}px`,
     "--n-checkbox-radius": `${Math.min(xs, 4)}px`,
     "--n-command-radius": `${Math.min(xxl, 24)}px`,
     "--n-command-item-radius": `${md}px`,
@@ -531,21 +682,21 @@ function toStyle(
     "--n-kbd-radius": `${sm}px`,
     "--n-list-item-radius": `${lg}px`,
     "--n-popover-radius": `${lg}px`,
-    "--n-progress-radius": `${lg}px`,
-    "--n-radio-radius": `${lg}px`,
+    "--n-progress-radius": `${pill}px`,
+    "--n-radio-radius": `${pill}px`,
     "--n-select-popup-radius": `${md}px`,
-    "--n-sheet-radius": `${xxl}px`,
-    "--n-sidebar-control-radius": `${lg}px`,
-    "--n-slider-track-radius": `${lg}px`,
-    "--n-slider-thumb-radius": `${lg}px`,
-    "--n-switch-radius": `${lg}px`,
-    "--n-switch-thumb-radius": `${lg}px`,
+    "--n-sheet-radius": `${overlay}px`,
+    "--n-sidebar-control-radius": `${control}px`,
+    "--n-slider-track-radius": `${pill}px`,
+    "--n-slider-thumb-radius": `${pill}px`,
+    "--n-switch-radius": `${pill}px`,
+    "--n-switch-thumb-radius": `${pill}px`,
     "--n-table-container-radius": `${lg}px`,
     "--n-table-row-group-radius": `${md}px`,
-    "--n-tabs-radius": `${lg}px`,
-    "--n-tabs-list-radius": `${lg}px`,
+    "--n-tabs-radius": `${control}px`,
+    "--n-tabs-list-radius": `${control}px`,
     "--n-tabs-segmented-indicator-radius": `${md}px`,
-    "--n-toast-radius": `${xxl}px`,
+    "--n-toast-radius": `${overlay}px`,
     "--n-toast-status-indicator-radius": `${md}px`,
     "--n-tooltip-radius": `${lg}px`,
     "--n-duration-fast": `${fast}ms`,
@@ -562,160 +713,72 @@ function toStyle(
   };
 }
 
-function toCss(style: PlaygroundStyle) {
-  return `:root {\n${Object.entries(style)
-    .map(([name, value]) => `  ${name}: ${value};`)
-    .join("\n")}\n}`;
-}
-
-function rgbChannels(value: string) {
-  const channels = value.match(
-    /^rgb\(\s*(\d+)(?:\s*,\s*|\s+)(\d+)(?:\s*,\s*|\s+)(\d+)(?:\s*(?:\/|,)\s*[\d.]+%?)?\s*\)$/i,
-  );
-  if (!channels || channels.slice(1, 4).some((channel) => Number(channel) > 255)) {
-    return undefined;
-  }
-
-  return channels.slice(1, 4).map(Number);
-}
-
-function colorPickerValue(value: string) {
-  if (/^#[0-9a-f]{6}$/i.test(value)) return value;
-
-  const channels = rgbChannels(value);
-  if (!channels) return "#000000";
-
-  return `#${channels.map((channel) => Number(channel).toString(16).padStart(2, "0")).join("")}`;
-}
-
-function ColorControl({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <label className="playground-color-control">
-      <span>{label}</span>
-      <span className="playground-color-control__input">
-        <input
-          className="playground-color-control__picker"
-          type="color"
-          value={colorPickerValue(value)}
-          onChange={(event) => onChange(event.target.value)}
-        />
-        <input
-          className="playground-color-control__hex"
-          type="text"
-          aria-label={`${label} CSS color value`}
-          value={value}
-          spellCheck={false}
-          onChange={(event) => {
-            const nextValue = event.target.value;
-            if (/^#[0-9a-fA-F]{6}$/.test(nextValue) || rgbChannels(nextValue)) {
-              onChange(nextValue.toLowerCase());
-            }
-          }}
-        />
-      </span>
-    </label>
-  );
-}
-
-function Segmented<T extends string>({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: T;
-  options: readonly T[];
-  onChange: (value: T) => void;
-}) {
-  return (
-    <div className="playground-segmented" role="radiogroup" aria-label={label}>
-      {options.map((option) => (
-        <button
-          type="button"
-          role="radio"
-          aria-checked={value === option}
-          key={option}
-          data-active={value === option || undefined}
-          onClick={() => onChange(option)}
-        >
-          {option.charAt(0).toUpperCase() + option.slice(1)}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function SwatchPicker<T extends string>({
-  label,
-  value,
-  options,
-  getColor,
-  onChange,
-}: {
-  label: string;
-  value: T;
-  options: readonly T[];
-  getColor: (option: T) => string;
-  onChange: (value: T) => void;
-}) {
-  return (
-    <div className="playground-swatch-options" role="radiogroup" aria-label={label}>
-      {options.map((option) => (
-        <button
-          type="button"
-          role="radio"
-          aria-checked={value === option}
-          aria-label={option}
-          key={option}
-          data-active={value === option || undefined}
-          style={{ "--playground-swatch": getColor(option) } as PlaygroundStyle}
-          onClick={() => onChange(option)}
-        />
-      ))}
-    </div>
-  );
-}
-
 export function VisualPlayground() {
   const [theme, setTheme] = React.useState<Theme>("purple");
-  const [mode, setMode] = React.useState<Mode>("light");
+  const [appearanceMode, setAppearanceMode] = React.useState<"light" | "dark" | "system" | null>(
+    null,
+  );
   const [systemDark, setSystemDark] = React.useState(false);
   const [density, setDensity] = React.useState<Density>("comfortable");
   const [neutral, setNeutral] = React.useState<NeutralRecipe>("slate");
   const [radius, setRadius] = React.useState<RadiusPreset>("full");
   const [scale, setScale] = React.useState(100);
   const [motion, setMotion] = React.useState<MotionPreset>("calm");
-  const [panel, setPanel] = React.useState<PanelStyle>("flat");
-  const [settingsView, setSettingsView] = React.useState<SettingsView>("theme");
+  const [panel, setPanel] = React.useState<PanelStyle>("raised");
+  const [settingsExpanded, setSettingsExpanded] = React.useState(true);
   const [lightColors, setLightColors] = React.useState(lightDefaults);
   const [darkColors, setDarkColors] = React.useState(darkDefaults);
-  const [copyState, setCopyState] = React.useState("Copy theme");
   const playgroundRef = React.useRef<HTMLDivElement>(null);
+  const collapseSettingsRef = React.useRef<HTMLButtonElement>(null);
+  const restoreSettingsRef = React.useRef<HTMLButtonElement>(null);
+  const settingsFocusTarget = React.useRef<"collapse" | "restore" | null>(null);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const query = window.matchMedia("(prefers-color-scheme: dark)");
-    const update = () => setSystemDark(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
+    const root = document.documentElement;
+    const updateSystem = () => setSystemDark(query.matches);
+    const updateAppearance = () => {
+      const nextMode = root.dataset.mode;
+      setAppearanceMode(
+        nextMode === "light" || nextMode === "dark" || nextMode === "system" ? nextMode : "system",
+      );
+    };
+    const observer = new MutationObserver(updateAppearance);
+
+    updateSystem();
+    updateAppearance();
+    query.addEventListener("change", updateSystem);
+    observer.observe(root, { attributeFilter: ["data-mode"], attributes: true });
+
+    return () => {
+      query.removeEventListener("change", updateSystem);
+      observer.disconnect();
+    };
   }, []);
 
-  const resolvedMode = mode === "system" ? (systemDark ? "dark" : "light") : mode;
+  React.useEffect(() => {
+    if (settingsFocusTarget.current === "collapse") collapseSettingsRef.current?.focus();
+    if (settingsFocusTarget.current === "restore") restoreSettingsRef.current?.focus();
+    settingsFocusTarget.current = null;
+  }, [settingsExpanded]);
+
+  const resolvedMode =
+    appearanceMode === null
+      ? null
+      : appearanceMode === "system"
+        ? systemDark
+          ? "dark"
+          : "light"
+        : appearanceMode;
   const colors = resolvedMode === "dark" ? darkColors : lightColors;
-  const style = toStyle(colors, scale, density, radius, motion, panel);
+  const style =
+    resolvedMode === null
+      ? undefined
+      : toStyle(colors, scale, density, radius, motion, panel, resolvedMode === "dark");
 
   React.useEffect(() => {
     const playground = playgroundRef.current;
-    if (!playground) return;
+    if (!playground || !resolvedMode || !style) return;
 
     let portalIntentUntil = 0;
     const registerPortalIntent = () => {
@@ -730,7 +793,11 @@ export function VisualPlayground() {
         portal.style.setProperty(property, String(value));
       });
     };
-    document.querySelectorAll<HTMLElement>("[data-playground-portal]").forEach(applyPortalTheme);
+    document
+      .querySelectorAll<HTMLElement>(
+        '[data-playground-portal], .n-toast-viewport[data-slot="viewport"]',
+      )
+      .forEach(applyPortalTheme);
 
     const observer = new MutationObserver((mutations) => {
       if (Date.now() > portalIntentUntil) return;
@@ -761,11 +828,6 @@ export function VisualPlayground() {
       });
     };
   }, [density, resolvedMode, style, theme]);
-
-  const updateColor = (key: ColorKey, value: string) => {
-    const setter = resolvedMode === "dark" ? setDarkColors : setLightColors;
-    setter((current) => ({ ...current, [key]: value }));
-  };
 
   const applyTheme = (nextTheme: Theme) => {
     const [accent, hover, active] = themeAccents[nextTheme];
@@ -810,199 +872,174 @@ export function VisualPlayground() {
     }));
   };
 
-  const copyCss = async () => {
-    await navigator.clipboard.writeText(toCss(style));
-    setCopyState("Copied");
-    window.setTimeout(() => setCopyState("Copy theme"), 1600);
-  };
-
   const reset = () => {
     setTheme("purple");
-    setMode("light");
     setDensity("comfortable");
     setNeutral("slate");
     setRadius("full");
     setScale(100);
     setMotion("calm");
-    setPanel("flat");
+    setPanel("raised");
     setLightColors(lightDefaults);
     setDarkColors(darkDefaults);
   };
+
+  const isCustomized =
+    theme !== "purple" ||
+    density !== "comfortable" ||
+    neutral !== "slate" ||
+    radius !== "full" ||
+    scale !== 100 ||
+    motion !== "calm" ||
+    panel !== "raised";
 
   return (
     <ToastProvider>
       <div
         ref={playgroundRef}
-        className="visual-playground visual-playground--lab"
+        className={`visual-playground visual-playground--lab ${styles.root}`}
         data-theme={theme}
         data-mode={resolvedMode}
         data-density={density}
         style={style}
       >
-        <div className="visual-playground__workspace visual-playground__workspace--radix">
-          <main className="playground-canvas playground-canvas--catalog">
-            <header className="visual-playground__intro">
-              <h1>Playground</h1>
-            </header>
-            <ComponentPlayground />
-          </main>
-
-          <aside
+        <div
+          className="visual-playground__workspace visual-playground__workspace--radix"
+          data-settings-state={settingsExpanded ? "expanded" : "collapsed"}
+        >
+          <Card
+            id="playground-theme-settings"
+            as="div"
+            role="complementary"
             className="playground-settings playground-settings--radix"
             aria-label="Theme settings"
+            aria-hidden={!settingsExpanded}
+            inert={!settingsExpanded ? true : undefined}
           >
-            <div className="playground-settings__heading">
-              <div>
-                <span>Live settings</span>
-                <h2>Theme</h2>
-              </div>
-              <Icon icon={Palette} aria-hidden />
-            </div>
-            <Segmented
-              label="Settings view"
-              value={settingsView}
-              options={["theme", "colors"] as const}
-              onChange={setSettingsView}
-            />
-            {settingsView === "theme" ? (
-              <>
-                <div className="playground-settings__group">
-                  <h3>Accent color</h3>
-                  <SwatchPicker
-                    label="Accent color"
-                    value={theme}
-                    options={themes}
-                    getColor={(name) => themeAccents[name][0]}
-                    onChange={applyTheme}
-                  />
-                </div>
-                <div className="playground-settings__group">
-                  <h3>Neutral recipe</h3>
-                  <SwatchPicker
-                    label="Neutral recipe"
-                    value={neutral}
-                    options={Object.keys(neutralRecipes) as NeutralRecipe[]}
-                    getColor={(name) => neutralRecipes[name].textSecondary}
-                    onChange={applyNeutral}
-                  />
-                </div>
-                <div className="playground-settings__group">
-                  <h3>Appearance</h3>
-                  <Segmented
-                    label="Appearance"
-                    value={mode}
-                    options={playgroundModes}
-                    onChange={setMode}
-                  />
-                </div>
-                <div className="playground-settings__group">
-                  <h3>Density</h3>
-                  <Segmented
-                    label="Density"
-                    value={density}
-                    options={densities}
-                    onChange={setDensity}
-                  />
-                </div>
-                <div className="playground-settings__group">
-                  <h3>Radius</h3>
-                  <div className="playground-radius-options" role="radiogroup" aria-label="Radius">
-                    {(["none", "small", "medium", "large", "full"] as RadiusPreset[]).map(
-                      (value) => (
-                        <button
-                          type="button"
-                          role="radio"
-                          aria-checked={radius === value}
-                          key={value}
-                          data-active={radius === value || undefined}
-                          onClick={() => setRadius(value)}
-                        >
-                          <span data-radius={value} />
-                          <small>{value}</small>
-                        </button>
-                      ),
-                    )}
-                  </div>
-                </div>
-                <div className="playground-settings__group">
-                  <h3>Scaling</h3>
-                  <div className="playground-scale-options" role="radiogroup" aria-label="Scaling">
-                    {[90, 95, 100, 105, 110].map((value) => (
-                      <button
-                        type="button"
-                        role="radio"
-                        aria-checked={scale === value}
-                        key={value}
-                        data-active={scale === value || undefined}
-                        onClick={() => setScale(value)}
-                      >
-                        {value}%
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="playground-settings__group">
-                  <h3>Motion</h3>
-                  <Segmented
-                    label="Motion"
-                    value={motion}
-                    options={["reduced", "calm", "standard"] as const}
-                    onChange={setMotion}
-                  />
-                </div>
-                <div className="playground-settings__group">
-                  <h3>Panel style</h3>
-                  <Segmented
-                    label="Panel style"
-                    value={panel}
-                    options={["flat", "raised"] as const}
-                    onChange={setPanel}
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="playground-color-groups">
-                <p className="playground-settings__note">
-                  Editing {resolvedMode} values. Chart colors are foundation aliases only; there is
-                  no Chart component in Core. Transient overlays use the shared inverted black-glass
-                  recipe rather than the flat surface aliases below.
-                </p>
-                {colorGroups.map((group) => (
-                  <details
-                    key={group.label}
-                    open={group.label === "Surfaces" || group.label === "Text"}
-                  >
-                    <summary>
-                      {group.label}
-                      <span>{group.colors.length}</span>
-                    </summary>
-                    <div>
-                      {group.colors.map(([key, label]) => (
-                        <ColorControl
-                          key={key}
-                          label={label}
-                          value={colors[key]}
-                          onChange={(value) => updateColor(key, value)}
-                        />
-                      ))}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            )}
-            <div className="playground-settings__actions">
-              <Button size="sm" variant="secondary" onClick={reset}>
-                Reset
-              </Button>
+            <CardHeader>
+              <CardTitle as="h2">Settings</CardTitle>
+              <CardAction>
+                <Button
+                  ref={collapseSettingsRef}
+                  aria-controls="playground-theme-settings"
+                  aria-expanded={settingsExpanded}
+                  aria-label="Collapse settings"
+                  trailingIcon={ChevronRight}
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    settingsFocusTarget.current = "restore";
+                    setSettingsExpanded(false);
+                  }}
+                >
+                  Hide
+                </Button>
+              </CardAction>
+            </CardHeader>
+            <CardContent className="playground-settings__body">
+              <Select
+                label="Accent color"
+                value={theme}
+                options={themes.map((value) => ({
+                  label: <ColorOption color={themeAccents[value][0]} label={titleCase(value)} />,
+                  textValue: titleCase(value),
+                  value,
+                }))}
+                onValueChange={selectHandler(themes, applyTheme)}
+              />
+              <Select
+                label="Neutral recipe"
+                value={neutral}
+                options={neutralRecipeOptions.map((value) => ({
+                  label: (
+                    <ColorOption
+                      color={neutralRecipes[value].textSecondary}
+                      label={titleCase(value)}
+                    />
+                  ),
+                  textValue: titleCase(value),
+                  value,
+                }))}
+                onValueChange={selectHandler(neutralRecipeOptions, applyNeutral)}
+              />
+              <Select
+                label="Density"
+                value={density}
+                options={densities.map((value) => ({ label: titleCase(value), value }))}
+                onValueChange={selectHandler(densities, setDensity)}
+              />
+              <Select
+                label="Radius"
+                value={radius}
+                options={radiusOptions.map((value) => ({ label: titleCase(value), value }))}
+                onValueChange={selectHandler(radiusOptions, setRadius)}
+              />
+              <Select
+                label="UI scale"
+                value={String(scale)}
+                options={scaleOptions.map((value) => ({
+                  label: `${value}%`,
+                  value: String(value),
+                }))}
+                onValueChange={(value) => {
+                  const selected = scaleOptions.find((option) => String(option) === value);
+                  if (selected) setScale(selected);
+                }}
+              />
+              <Select
+                label="Motion"
+                value={motion}
+                options={motionOptions.map((value) => ({ label: titleCase(value), value }))}
+                onValueChange={selectHandler(motionOptions, setMotion)}
+              />
+              <Select
+                label="Panel style"
+                value={panel}
+                options={panelOptions.map((value) => ({ label: titleCase(value), value }))}
+                onValueChange={selectHandler(panelOptions, setPanel)}
+              />
+            </CardContent>
+            {isCustomized ? (
+              <CardFooter className="playground-settings__actions">
+                <Button size="sm" variant="secondary" onClick={reset}>
+                  Reset
+                </Button>
+              </CardFooter>
+            ) : null}
+          </Card>
+
+          {!settingsExpanded ? (
+            <aside aria-label="Collapsed theme settings" className="playground-settings__rail">
               <Button
+                ref={restoreSettingsRef}
+                aria-controls="playground-theme-settings"
+                aria-expanded={settingsExpanded}
+                aria-label="Show settings"
+                className="playground-settings__restore"
+                icon={Settings}
                 size="sm"
-                leadingIcon={copyState === "Copied" ? Check : Copy}
-                onClick={copyCss}
-              >
-                {copyState}
-              </Button>
+                variant="ghost"
+                onClick={() => {
+                  settingsFocusTarget.current = "collapse";
+                  setSettingsExpanded(true);
+                }}
+              />
+            </aside>
+          ) : null}
+
+          <section
+            aria-label="Nerio scenario canvas"
+            className="playground-canvas playground-canvas--catalog"
+            tabIndex={0}
+          >
+            <div className="playground-sr-only">
+              <h1>Playground</h1>
+              <p>Chart aliases remain token-only; there is no Chart component in Core.</p>
             </div>
-          </aside>
+            <div className="playground-canvas__surface">
+              <PlaygroundShowcase />
+            </div>
+          </section>
         </div>
       </div>
       <ToastViewport swipeDirection={["left", "right", "up", "down"]} />

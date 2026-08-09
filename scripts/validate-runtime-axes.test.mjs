@@ -216,11 +216,11 @@ test("runtime-axis validator checks runtime controls through canonical imports",
     "--docs-playground",
     "visual-playground.tsx",
     readFileSync(docsPlaygroundSource, "utf8").replace(
-      'import { densities, modes, themes } from "@nerio-ui/tokens";',
       'import { densities, themes } from "@nerio-ui/tokens";',
+      'import { themes } from "@nerio-ui/tokens";',
     ),
     (stderr) =>
-      assert.match(stderr, /Docs Playground runtime controls must import canonical modes/),
+      assert.match(stderr, /Docs Playground runtime controls must import canonical densities/),
   );
 });
 
@@ -229,11 +229,11 @@ test("runtime-axis validator ignores commented canonical imports", () => {
     "--docs-playground",
     "visual-playground.tsx",
     readFileSync(docsPlaygroundSource, "utf8").replace(
-      'import { densities, modes, themes } from "@nerio-ui/tokens";',
-      '// import { densities, modes, themes } from "@nerio-ui/tokens";\nimport { densities, themes } from "@nerio-ui/tokens";',
+      'import { densities, themes } from "@nerio-ui/tokens";',
+      '// import { densities, themes } from "@nerio-ui/tokens";\nimport { themes } from "@nerio-ui/tokens";',
     ),
     (stderr) =>
-      assert.match(stderr, /Docs Playground runtime controls must import canonical modes/),
+      assert.match(stderr, /Docs Playground runtime controls must import canonical densities/),
   );
 });
 

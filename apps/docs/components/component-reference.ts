@@ -1649,6 +1649,7 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-textarea-min-height",
+      "--n-textarea-radius-max",
       "--n-input-radius",
       "--n-input-background",
       "--n-input-border-focus",
@@ -2093,6 +2094,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-slider-thumb-background",
       "--n-slider-thumb-border",
       "--n-slider-focus-ring",
+      "--n-slider-description-font-size",
       "--n-slider-disabled-opacity",
       "--n-slider-duration",
       "--n-slider-easing",
@@ -2687,6 +2689,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-card-padding-block",
       "--n-card-gap",
       "--n-card-section-gap",
+      "--n-card-header-gap",
+      "--n-card-footer-gap",
       "--n-card-radius",
       "--n-card-background",
       "--n-card-border-width",
@@ -3175,6 +3179,7 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-item-gap",
+      "--n-item-group-outline-gap",
       "--n-item-padding",
       "--n-item-radius",
       "--n-item-background-hover",

@@ -279,7 +279,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
     <div
       ref={ref}
       className={cn(
-        "n-field n-select-field grid gap-(--n-field-gap) [&_p]:m-0 [&_p]:text-(length:--n-helper-font-size) [&_p]:text-(--n-color-text-tertiary)",
+        "n-field n-select-field grid content-start gap-(--n-field-gap) [&_p]:m-0 [&_p]:text-(length:--n-helper-font-size) [&_p]:text-(--n-color-text-tertiary)",
         className,
       )}
       {...props}

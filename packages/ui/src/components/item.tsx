@@ -92,7 +92,10 @@ export const ItemGroup = React.forwardRef<HTMLElement, ItemGroupProps>(function 
     render,
     {
       ...props,
-      className: cn("n-item-group grid w-full gap-(--n-item-group-gap,0)", className),
+      className: cn(
+        "n-item-group grid w-full gap-(--n-item-group-gap,0) has-[>[data-slot=item][data-variant=outline]]:[--n-item-group-gap:var(--n-item-group-outline-gap)]",
+        className,
+      ),
       "data-slot": "item-group",
     },
     composedRef,

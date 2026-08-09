@@ -77,7 +77,7 @@ export const CardHeader = React.forwardRef<HTMLDivElement, CardSectionProps>(fun
       ref={ref}
       {...props}
       className={cn(
-        "n-card__header grid min-w-0 gap-(--n-card-section-gap) has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)_auto] has-[>[data-slot=card-action]]:items-start [&>div:has(>[data-slot=card-title])]:grid [&>div:has(>[data-slot=card-title])]:min-w-0 [&>div:has(>[data-slot=card-title])]:gap-(--n-card-section-gap) max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
+        "n-card__header grid min-w-0 gap-(--n-card-header-gap) has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)_auto] has-[>[data-slot=card-action]]:items-start [&>div:has(>[data-slot=card-title])]:grid [&>div:has(>[data-slot=card-title])]:min-w-0 [&>div:has(>[data-slot=card-title])]:gap-(--n-card-header-gap) max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
         className,
       )}
       data-slot="card-header"
@@ -159,7 +159,7 @@ export const CardFooter = React.forwardRef<HTMLDivElement, CardSectionProps>(fun
       ref={ref}
       {...props}
       className={cn(
-        "n-card__footer flex min-w-0 flex-wrap items-center justify-start gap-(--n-card-section-gap)",
+        "n-card__footer flex min-w-0 flex-wrap items-center justify-start gap-(--n-card-footer-gap)",
         className,
       )}
       data-slot="card-footer"

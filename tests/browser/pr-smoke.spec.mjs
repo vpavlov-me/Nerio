@@ -164,7 +164,7 @@ test("keeps Slider preview singular and product-focused", async ({ page }) => {
   const [headerBox, controlBox] = await Promise.all([header.boundingBox(), control.boundingBox()]);
   expect(headerBox).not.toBeNull();
   expect(controlBox).not.toBeNull();
-  expect(controlBox.y - (headerBox.y + headerBox.height)).toBeGreaterThanOrEqual(3.5);
+  expect(controlBox.y - (headerBox.y + headerBox.height)).toBeGreaterThanOrEqual(1.5);
   await preview.getByText("Tip amount", { exact: true }).click({ position: { x: 20, y: 15 } });
   await expect(slider).toHaveValue("15");
   await expect(page.getByRole("heading", { name: "Preview", exact: true })).toHaveCount(0);
@@ -565,7 +565,7 @@ test("keeps Slider spacing compact and Slider and Switch thumbs white across mod
 
   const slider = page.getByRole("region", { name: "Slider preview" }).getByRole("group");
   const sliderThumb = slider.locator('[data-slot="thumb"]');
-  await expect(slider).toHaveCSS("row-gap", "4px");
+  await expect(slider).toHaveCSS("row-gap", "2px");
 
   const sliderColors = [];
   for (const mode of ["light", "dark"]) {
@@ -639,7 +639,7 @@ test("shows a rich Card example with stronger external than internal spacing", a
   );
   await expect(card.getByRole("button")).toHaveCount(1);
   await expect(card).toHaveCSS("row-gap", "16px");
-  await expect(card.locator('[data-slot="card-header"]')).toHaveCSS("row-gap", "8px");
+  await expect(card.locator('[data-slot="card-header"]')).toHaveCSS("row-gap", "3.2px");
   await expectHealthyPage(page, problems);
 });
 
