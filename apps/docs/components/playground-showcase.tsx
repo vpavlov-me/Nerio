@@ -449,9 +449,17 @@ function BillingSummary() {
       </Heading>
       <Text tone="secondary">Studio plan · annual billing</Text>
       <Separator />
-      <KeyValue label="Members" orientation="row" value="12" />
-      <KeyValue label="Next invoice" orientation="row" value="September 1, 2026" />
-      <KeyValue label="Payment method" orientation="row" value="Visa •••• 4242" />
+      <KeyValue className="playground-key-value-row" label="Members" value="12" />
+      <KeyValue
+        className="playground-key-value-row"
+        label="Next invoice"
+        value="September 1, 2026"
+      />
+      <KeyValue
+        className="playground-key-value-row"
+        label="Payment method"
+        value="Visa •••• 4242"
+      />
     </ScenarioCard>
   );
 }

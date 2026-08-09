@@ -213,7 +213,7 @@ test("applies every Playground control to the product scenario canvas", async ({
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/playground");
   const playground = page.locator(".visual-playground");
-  const canvas = page.getByRole("main", { name: "Nerio scenario canvas" });
+  const canvas = page.getByRole("region", { name: "Nerio scenario canvas" });
   await expect(page.getByRole("heading", { name: "Playground", exact: true })).toBeAttached();
   await expect(page.locator(".playground-scene")).toHaveCount(35);
   await expect(page.locator('.playground-scene[data-variant="default"]')).toHaveCount(35);
@@ -428,9 +428,9 @@ test("applies every Playground control to the product scenario canvas", async ({
   const billingSummaryCard = page
     .getByRole("heading", { name: "Billing summary", exact: true })
     .locator("xpath=ancestor::section[@data-playground-card]");
-  await expect(billingSummaryCard.locator('.n-key-value[data-orientation="row"]')).toHaveCount(3);
+  await expect(billingSummaryCard.locator(".playground-key-value-row")).toHaveCount(3);
   const billingMetadataTypography = await billingSummaryCard
-    .locator('.n-key-value[data-orientation="row"]')
+    .locator(".playground-key-value-row")
     .first()
     .evaluate((element) => ({
       label: getComputedStyle(element.querySelector("dt")).fontSize,

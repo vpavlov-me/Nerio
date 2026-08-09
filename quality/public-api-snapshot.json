@@ -1763,7 +1763,7 @@
       },
       {
         "definition": [
-          "export interface KeyValueProps extends React.HTMLAttributes<HTMLDListElement> { label: string; orientation?: \"column\" | \"row\"; value: React.ReactNode; }"
+          "export interface KeyValueProps extends React.HTMLAttributes<HTMLDListElement> { label: string; value: React.ReactNode; }"
         ],
         "deprecations": [],
         "kind": "type",
@@ -3762,7 +3762,7 @@
       },
       {
         "definition": [
-          "export interface KeyValueProps extends React.HTMLAttributes<HTMLDListElement> { label: string; orientation?: \"column\" | \"row\"; value: React.ReactNode; }"
+          "export interface KeyValueProps extends React.HTMLAttributes<HTMLDListElement> { label: string; value: React.ReactNode; }"
         ],
         "deprecations": [],
         "kind": "type",
@@ -5638,7 +5638,6 @@
             "empty-state",
             "form-message",
             "input",
-            "key-value",
             "list",
             "separator",
             "spinner",
@@ -5694,7 +5693,7 @@
           }
         },
         {
-          "components": ["breadcrumbs", "kbd", "pagination", "skeleton", "table"],
+          "components": ["breadcrumbs", "kbd", "key-value", "pagination", "skeleton", "table"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -6041,7 +6040,6 @@
             "empty-state",
             "form-message",
             "input",
-            "key-value",
             "list",
             "separator",
             "spinner",
@@ -6101,7 +6099,7 @@
           }
         },
         {
-          "components": ["breadcrumbs", "kbd", "pagination", "skeleton", "table"],
+          "components": ["breadcrumbs", "kbd", "key-value", "pagination", "skeleton", "table"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -7070,7 +7068,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7137,7 +7135,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7195,7 +7193,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7290,7 +7288,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7374,7 +7372,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7467,7 +7465,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7524,7 +7522,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7627,7 +7625,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7736,7 +7734,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7815,7 +7813,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7993,7 +7991,7 @@
             "target": "styles/overlays.css"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8101,7 +8099,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8188,7 +8186,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8249,7 +8247,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8317,7 +8315,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8388,7 +8386,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8443,7 +8441,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8504,7 +8502,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8582,7 +8580,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8646,7 +8644,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8722,7 +8720,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8760,7 +8758,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-084a20b8ed95c0c74a65e241b892676b2255a23153890fdf0ba23bc19f313c41",
+            "integrity": "sha256-8538d08e380951ee89cf7f435a51178efe588b336b5290c90a61a84ea632e9d9",
             "role": "component",
             "source": "../../ui/src/components/key-value.tsx",
             "target": "components/key-value.tsx"
@@ -8778,7 +8776,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8793,10 +8791,10 @@
         "name": "key-value",
         "optionalPeerDependencies": [],
         "registryDependencies": [],
-        "requiredTokens": ["--n-key-value-gap", "--n-key-value-row-gap", "--n-font-size-sm"],
+        "requiredTokens": ["--n-key-value-gap", "--n-font-size-sm"],
         "slots": ["root", "label", "value"],
         "states": [],
-        "variants": ["column", "row"]
+        "variants": []
       },
       {
         "baseUiPrimitives": ["Tooltip"],
@@ -8841,7 +8839,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8899,7 +8897,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9000,7 +8998,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9085,7 +9083,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9160,7 +9158,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9243,7 +9241,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9341,7 +9339,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9437,7 +9435,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9501,7 +9499,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9610,7 +9608,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9698,7 +9696,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9772,7 +9770,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9864,7 +9862,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9916,7 +9914,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9973,7 +9971,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10038,7 +10036,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10133,7 +10131,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10246,7 +10244,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10321,7 +10319,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10434,7 +10432,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10532,7 +10530,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10584,7 +10582,7 @@
             "target": "lib/cn.ts"
           },
           {
-            "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9",
+            "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -11162,7 +11160,6 @@
     "--n-kbd-padding-inline",
     "--n-kbd-radius",
     "--n-key-value-gap",
-    "--n-key-value-row-gap",
     "--n-label-font-size",
     "--n-label-font-weight",
     "--n-label-gap",
