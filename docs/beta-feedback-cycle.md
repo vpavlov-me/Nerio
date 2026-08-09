@@ -1,22 +1,22 @@
 # Core 1.0 beta feedback cycle
 
-This document records the completed manual beta publication and the external evaluation required
-by issue #146. It does not authorize another npm publication, dist-tag change, Git tag, GitHub
-Release, tester outreach, or a stable-release decision.
+This document records the completed beta.1 publication and the external evaluation required by
+issue #146. It does not authorize another npm publication, dist-tag change, Git tag, GitHub
+Release, additional tester outreach, or a stable-release decision.
 
 ## Candidate record
 
 | Field               | Required value                                                               |
 | ------------------- | ---------------------------------------------------------------------------- |
-| Version             | `1.0.0-beta.0`                                                               |
+| Version             | `1.0.0-beta.1`                                                               |
 | Frozen API baseline | `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`                                   |
-| Publish candidate   | `5ffbd44e208039c9007ae3397a74d279d4a22eff`                                   |
-| Registry revision   | `v1.0.0-beta.0`                                                              |
+| Publish candidate   | `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`                                   |
+| Registry revision   | `v1.0.0-beta.1`                                                              |
 | npm tag             | `beta`                                                                       |
 | Protected tags      | Do not move `latest` or `alpha`                                              |
-| Git tag and Release | `v1.0.0-beta.0`, GitHub prerelease, created from the exact publish candidate |
-| Window opens        | `2026-08-01T16:42:44Z`                                                       |
-| Earliest close      | `2026-08-15T16:42:44Z`                                                       |
+| Git tag and Release | `v1.0.0-beta.1`, GitHub prerelease, created from the exact publish candidate |
+| Window opens        | `2026-08-09T08:02:53Z`                                                       |
+| Earliest close      | `2026-08-23T08:02:53Z`                                                       |
 
 The publish candidate must contain the frozen API baseline plus only reviewed release preparation
 and approved blocker fixes. Record any frozen API change, its SemVer classification, migration
@@ -24,7 +24,7 @@ update, snapshot approval, and targeted consumer or accessibility revalidation.
 
 ## Pre-publication decision
 
-The maintainer records a single `Approved to publish beta.0` or `Blocked before beta.0` decision
+The maintainer records a single `Approved to publish beta.1` or `Blocked before beta.1` decision
 after all of the following are complete:
 
 - the `dev -> main` release gate passes on the exact candidate, including Chromium, Firefox,
@@ -39,7 +39,7 @@ after all of the following are complete:
 - the alpha-to-beta migration guide and known limitations are reviewed;
 - there is no open P0/P1 or accepted beta-blocking P2 issue.
 
-Decision: **Approved to publish beta.0** on 2026-08-01. The exact-candidate gate, tarball review,
+Decision: **Approved to publish beta.1** on 2026-08-09. The exact-candidate gate, tarball review,
 npm access and 2FA checks, migration review, and blocker review passed before publication.
 
 ## Public verification record
@@ -49,15 +49,15 @@ returned success.
 
 | Artifact             | Exact version or reference | Provenance                | Public metadata | Clean install | Result |
 | -------------------- | -------------------------- | ------------------------- | --------------- | ------------- | ------ |
-| `@nerio-ui/tokens`   | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
-| `@nerio-ui/adapters` | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
-| `@nerio-ui/registry` | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
-| `@nerio-ui/ui`       | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
-| `@nerio-ui/cli`      | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
-| `@nerio-ui/mcp`      | `1.0.0-beta.0`             | npm registry signature: 1 | Verified        | Passed        | Passed |
-| Immutable Registry   | `v1.0.0-beta.0`            | N/A                       | Verified        | Passed        | Passed |
-| Git tag              | `v1.0.0-beta.0`            | Signed: verified          | Exact SHA       | N/A           | Passed |
-| GitHub Release       | `v1.0.0-beta.0` prerelease | Exact SHA and tag match   | Links verified  | N/A           | Passed |
+| `@nerio-ui/tokens`   | `1.0.0-beta.1`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/adapters` | `1.0.0-beta.1`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/registry` | `1.0.0-beta.1`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/ui`       | `1.0.0-beta.1`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/cli`      | `1.0.0-beta.1`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| `@nerio-ui/mcp`      | `1.0.0-beta.1`             | npm registry signature: 1 | Verified        | Passed        | Passed |
+| Immutable Registry   | `v1.0.0-beta.1`            | N/A                       | Verified        | Passed        | Passed |
+| Git tag              | `v1.0.0-beta.1`            | Signed: verified          | Exact SHA       | N/A           | Passed |
+| GitHub Release       | `v1.0.0-beta.1` prerelease | Exact SHA and tag match   | Links verified  | N/A           | Passed |
 
 After all six packages exist, run the published-artifact smoke:
 
@@ -68,7 +68,7 @@ NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release
 The command passed against all six public packages after publication. It verified coordinated
 public metadata and dependencies, package and source installation, the documented eight-command
 local CLI workflow, package-qualified one-off CLI execution, MCP bin discovery, and a clean Next.js
-consumer build. npm `beta` points to `1.0.0-beta.0` for every package; `alpha` and `latest` were not
+consumer build. npm `beta` points to `1.0.0-beta.1` for every package; `alpha` and `latest` were not
 moved. npm reports one registry signature per package. This release used interactive 2FA and npm
 registry signatures; it does not claim a separate provenance attestation.
 

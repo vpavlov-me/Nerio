@@ -3,10 +3,10 @@
   "status": "evidence-pending",
   "trackingIssue": 146,
   "candidate": {
-    "version": "1.0.0-beta.0",
-    "commit": "5ffbd44e208039c9007ae3397a74d279d4a22eff",
-    "windowOpenedAt": "2026-08-01T16:42:44Z",
-    "earliestCloseAt": "2026-08-15T16:42:44Z",
+    "version": "1.0.0-beta.1",
+    "commit": "a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9",
+    "windowOpenedAt": "2026-08-09T08:02:53Z",
+    "earliestCloseAt": "2026-08-23T08:02:53Z",
     "closedAt": null
   },
   "consumers": [],
