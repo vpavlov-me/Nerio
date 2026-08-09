@@ -256,11 +256,11 @@ browser verification, changelog review, and tarball inspection.
 ## Rollback guidance
 
 If a package is wrong before later packages are published, stop the sequence and leave the release
-incomplete. Do not reuse the version. Prefer publishing a corrected `1.0.0-beta.1` and moving the
-`beta` dist-tag only after verification. If the registry permits and policy requires it, deprecate
-the faulty version with a concise install warning. Restore the previous dist-tag when one exists,
-document affected packages and consumers, and avoid npm unpublish except for a security incident or
-an explicit maintainer/legal decision.
+incomplete. Do not reuse the version. Prepare and publish the next coordinated prerelease version,
+then move the `beta` dist-tag only after verification. If the registry permits and policy requires
+it, deprecate the faulty version with a concise install warning. Restore the previous dist-tag when
+one exists, document affected packages and consumers, and avoid npm unpublish except for a security
+incident or an explicit maintainer/legal decision.
 
 ## Public changelog page
 

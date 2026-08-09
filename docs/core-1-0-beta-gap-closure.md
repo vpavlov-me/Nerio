@@ -7,8 +7,9 @@ pre-publication evidence below remains pinned to the candidate-preparation seque
 
 **Decision: Technical gaps closed; manual beta and accessibility gates remain**
 
-This is a beta engineering decision, not stable approval. No npm package was published, no dist-tag
-was moved, no Git tag or GitHub Release was created, and `main` was not changed by this work.
+This is a beta engineering decision, not stable approval. The candidate-preparation work recorded
+here did not itself publish an npm package, move a dist-tag, create a Git tag or GitHub Release, or
+change `main`; those separately authorized publication actions occurred afterward.
 
 ## Scope and immutable evidence
 
