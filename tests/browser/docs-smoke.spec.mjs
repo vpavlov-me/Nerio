@@ -32,7 +32,10 @@ test("covers public docs routes, standardized component docs, and the restrained
 
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.locator(".docs-footer")).toHaveCSS("font-size", "14px");
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("--n-font-size-md", "17px");
+  });
+  await expect(page.locator(".docs-footer")).toHaveCSS("font-size", "17px");
   const primaryHeroAction = page.getByRole("link", { name: "Get started", exact: true });
   await expect(primaryHeroAction).toHaveCount(1);
   const primaryHeroColors = await primaryHeroAction.evaluate((element) => {
