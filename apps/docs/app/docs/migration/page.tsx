@@ -13,7 +13,7 @@ import { createPageMetadata } from "../../../lib/seo";
 
 export const metadata = createPageMetadata({
   title: "Migration",
-  description: "Prepare Nerio 1.0.0-beta.0 consumers for the coordinated 1.0.0-beta.1 candidate.",
+  description: "Migrate Nerio 1.0.0-beta.0 consumers to the coordinated 1.0.0-beta.1 public beta.",
   path: "/docs/migration",
 });
 
@@ -66,21 +66,20 @@ export default function Page() {
       <header>
         <h1>Migration</h1>
         <p className="doc-lede">
-          Prepare coordinated package and editable-source consumers for the next Nerio beta
-          candidate without treating it as a stable Core 1.0 release.
+          Upgrade coordinated package and editable-source consumers to the current Nerio beta
+          without treating it as a stable Core 1.0 release.
         </p>
       </header>
 
       <section className="doc-section" id="status">
         <h2>Current status</h2>
         <p className="doc-decision-boundary">
-          <Code>1.0.0-beta.1</Code> is the prepared repository candidate. It is not a stable
-          release, and the checked-in version does not prove npm publication or dist-tag
-          availability.
+          <Code>1.0.0-beta.1</Code> is the current public beta. It is not a stable release; external
+          feedback and manual accessibility/device evidence remain required before 1.0.
         </p>
         <p>
-          Keep all six public Nerio packages aligned. Check the package registry before upgrading an
-          external consumer; source-install consumers can review the checked-in candidate directly.
+          Keep all six public Nerio packages aligned. Package and source-install consumers should
+          upgrade the coordinated set together.
         </p>
       </section>
 

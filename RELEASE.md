@@ -1,15 +1,15 @@
 # Release Process
 
-Nerio Core `1.0.0-beta.0` is the published public beta for the frozen Core 1.0 API. The reviewed
+Nerio Core `1.0.0-beta.1` is the published public beta for the frozen Core 1.0 API. The reviewed
 frozen baseline is `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`; the exact published `main` commit
-is `5ffbd44e208039c9007ae3397a74d279d4a22eff`. All six packages are available under npm `beta`.
+is `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`. All six packages are available under npm `beta`.
 The protected `alpha` and `latest` tags intentionally remain on `0.1.0-alpha.2` and
 `0.1.0-alpha.0`.
 
-Coordinated `1.0.0-beta.1` package and Registry metadata is prepared on `dev` but is not published,
-tagged, released, or merged to `main`. The current npm `beta` tag remains on `1.0.0-beta.0`.
+The signed `v1.0.0-beta.1` tag and GitHub prerelease point to the exact publish candidate. Public
+metadata and a clean package/source, CLI, MCP, and Next.js consumer smoke passed after publication.
 
-The beta publication completed after explicit maintainer approval, the exact-candidate gate, and
+The beta.1 publication completed after explicit maintainer approval, the exact-candidate gate, and
 tarball inspection. Every future release action remains manual and requires separate explicit
 maintainer approval. This document does not authorize another publication, dist-tag change, tag,
 or GitHub Release.

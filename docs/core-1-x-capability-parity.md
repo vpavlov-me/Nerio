@@ -23,7 +23,7 @@ The canonical machine-readable projection is
 
 The decision uses the exact `dev` baseline
 [`930890b9c450da7674a3274360bcada8fc99300a`](https://github.com/vpavlov-me/Nerio/tree/930890b9c450da7674a3274360bcada8fc99300a),
-Registry schema `1.1.0`, 46 Registry items, prepared version `1.0.0-beta.1`, Base UI `1.6.0`, and
+Registry schema `1.1.0`, 46 Registry items, published version `1.0.0-beta.1`, Base UI `1.6.0`, and
 public API snapshot hash
 `248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3`.
 
