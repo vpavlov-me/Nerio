@@ -2146,7 +2146,9 @@ final result: passed
 
 ### Source truth
 
-- User direction: set the Card-owned `--n-card-section-gap` contract to `1rem` while preserving inherited consumer overrides.
+- Original user direction: set `--n-card-section-gap` to `1rem`.
+- Follow-up user clarification: apply the change at the Card component level.
+- Superseding implementation decision after review: treat this as a Card-owned token contract rather than a declaration on each Card root. A root declaration blocks inherited theme and density overrides, so the Card-namespaced token supplies the `1rem` default from the token layer while Card instances continue to inherit consumer overrides.
 
 ### Finding and fix
 
@@ -2156,7 +2158,7 @@ final result: passed
 
 - In-app browser inspection: all 35 Playground Cards resolve `--n-card-section-gap` to `1rem`; sampled CardContent row gaps resolve to `16px`.
 - Masonry remains valid with 35 Cards, zero overlaps, and zero invalid rows.
-- UI contract tests: 175 passed.
+- `pnpm --filter @nerio-ui/ui test`: 175 tests passed across 2 contract test files.
 - UI lint, UI typecheck, token validation, formatting, and `git diff --check` pass.
 - Console inspection: no warnings or errors.
 
