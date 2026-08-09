@@ -1,16 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { ChevronRight, Settings } from "@nerio-ui/adapters/icons";
 import { densities, themes } from "@nerio-ui/tokens";
 import {
   Button,
   Card,
-  CardAction,
   CardContent,
   CardFooter,
-  CardHeader,
-  CardTitle,
   Select,
   ToastProvider,
   ToastViewport,
@@ -166,8 +162,6 @@ const themeAccents: Record<Theme, [string, string, string, string, string]> = {
 
 const neutralRecipeOptions = ["slate", "gray", "mauve", "sage", "olive", "sand"] as const;
 const radiusOptions = ["none", "small", "medium", "large", "full"] as const;
-const scaleOptions = [90, 95, 100, 105, 110] as const;
-const motionOptions = ["reduced", "calm", "standard"] as const;
 const panelOptions = ["flat", "raised"] as const;
 
 function titleCase(value: string) {
@@ -722,16 +716,10 @@ export function VisualPlayground() {
   const [density, setDensity] = React.useState<Density>("comfortable");
   const [neutral, setNeutral] = React.useState<NeutralRecipe>("slate");
   const [radius, setRadius] = React.useState<RadiusPreset>("full");
-  const [scale, setScale] = React.useState(100);
-  const [motion, setMotion] = React.useState<MotionPreset>("calm");
   const [panel, setPanel] = React.useState<PanelStyle>("raised");
-  const [settingsExpanded, setSettingsExpanded] = React.useState(true);
   const [lightColors, setLightColors] = React.useState(lightDefaults);
   const [darkColors, setDarkColors] = React.useState(darkDefaults);
   const playgroundRef = React.useRef<HTMLDivElement>(null);
-  const collapseSettingsRef = React.useRef<HTMLButtonElement>(null);
-  const restoreSettingsRef = React.useRef<HTMLButtonElement>(null);
-  const settingsFocusTarget = React.useRef<"collapse" | "restore" | null>(null);
 
   React.useLayoutEffect(() => {
     const query = window.matchMedia("(prefers-color-scheme: dark)");
@@ -756,12 +744,6 @@ export function VisualPlayground() {
     };
   }, []);
 
-  React.useEffect(() => {
-    if (settingsFocusTarget.current === "collapse") collapseSettingsRef.current?.focus();
-    if (settingsFocusTarget.current === "restore") restoreSettingsRef.current?.focus();
-    settingsFocusTarget.current = null;
-  }, [settingsExpanded]);
-
   const resolvedMode =
     appearanceMode === null
       ? null
@@ -774,7 +756,7 @@ export function VisualPlayground() {
   const style =
     resolvedMode === null
       ? undefined
-      : toStyle(colors, scale, density, radius, motion, panel, resolvedMode === "dark");
+      : toStyle(colors, 100, density, radius, "calm", panel, resolvedMode === "dark");
 
   React.useEffect(() => {
     const playground = playgroundRef.current;
@@ -877,8 +859,6 @@ export function VisualPlayground() {
     setDensity("comfortable");
     setNeutral("slate");
     setRadius("full");
-    setScale(100);
-    setMotion("calm");
     setPanel("raised");
     setLightColors(lightDefaults);
     setDarkColors(darkDefaults);
@@ -889,8 +869,6 @@ export function VisualPlayground() {
     density !== "comfortable" ||
     neutral !== "slate" ||
     radius !== "full" ||
-    scale !== 100 ||
-    motion !== "calm" ||
     panel !== "raised";
 
   return (
@@ -903,39 +881,28 @@ export function VisualPlayground() {
         data-density={density}
         style={style}
       >
-        <div
-          className="visual-playground__workspace visual-playground__workspace--radix"
-          data-settings-state={settingsExpanded ? "expanded" : "collapsed"}
-        >
+        <div className="visual-playground__workspace visual-playground__workspace--radix">
+          <section
+            aria-label="Nerio scenario canvas"
+            className="playground-canvas playground-canvas--catalog"
+            tabIndex={0}
+          >
+            <div className="playground-sr-only">
+              <h1>Playground</h1>
+              <p>Chart aliases remain token-only; there is no Chart component in Core.</p>
+            </div>
+            <div className="playground-canvas__surface">
+              <PlaygroundShowcase />
+            </div>
+          </section>
+
           <Card
             id="playground-theme-settings"
             as="div"
             role="complementary"
             className="playground-settings playground-settings--radix"
             aria-label="Theme settings"
-            aria-hidden={!settingsExpanded}
-            inert={!settingsExpanded ? true : undefined}
           >
-            <CardHeader>
-              <CardTitle as="h2">Settings</CardTitle>
-              <CardAction>
-                <Button
-                  ref={collapseSettingsRef}
-                  aria-controls="playground-theme-settings"
-                  aria-expanded={settingsExpanded}
-                  aria-label="Collapse settings"
-                  trailingIcon={ChevronRight}
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    settingsFocusTarget.current = "restore";
-                    setSettingsExpanded(false);
-                  }}
-                >
-                  Hide
-                </Button>
-              </CardAction>
-            </CardHeader>
             <CardContent className="playground-settings__body">
               <Select
                 label="Accent color"
@@ -948,7 +915,7 @@ export function VisualPlayground() {
                 onValueChange={selectHandler(themes, applyTheme)}
               />
               <Select
-                label="Neutral recipe"
+                label="Neutral color"
                 value={neutral}
                 options={neutralRecipeOptions.map((value) => ({
                   label: (
@@ -969,28 +936,10 @@ export function VisualPlayground() {
                 onValueChange={selectHandler(densities, setDensity)}
               />
               <Select
-                label="Radius"
+                label="Radii"
                 value={radius}
                 options={radiusOptions.map((value) => ({ label: titleCase(value), value }))}
                 onValueChange={selectHandler(radiusOptions, setRadius)}
-              />
-              <Select
-                label="UI scale"
-                value={String(scale)}
-                options={scaleOptions.map((value) => ({
-                  label: `${value}%`,
-                  value: String(value),
-                }))}
-                onValueChange={(value) => {
-                  const selected = scaleOptions.find((option) => String(option) === value);
-                  if (selected) setScale(selected);
-                }}
-              />
-              <Select
-                label="Motion"
-                value={motion}
-                options={motionOptions.map((value) => ({ label: titleCase(value), value }))}
-                onValueChange={selectHandler(motionOptions, setMotion)}
               />
               <Select
                 label="Panel style"
@@ -1007,39 +956,6 @@ export function VisualPlayground() {
               </CardFooter>
             ) : null}
           </Card>
-
-          {!settingsExpanded ? (
-            <aside aria-label="Collapsed theme settings" className="playground-settings__rail">
-              <Button
-                ref={restoreSettingsRef}
-                aria-controls="playground-theme-settings"
-                aria-expanded={settingsExpanded}
-                aria-label="Show settings"
-                className="playground-settings__restore"
-                icon={Settings}
-                size="sm"
-                variant="ghost"
-                onClick={() => {
-                  settingsFocusTarget.current = "collapse";
-                  setSettingsExpanded(true);
-                }}
-              />
-            </aside>
-          ) : null}
-
-          <section
-            aria-label="Nerio scenario canvas"
-            className="playground-canvas playground-canvas--catalog"
-            tabIndex={0}
-          >
-            <div className="playground-sr-only">
-              <h1>Playground</h1>
-              <p>Chart aliases remain token-only; there is no Chart component in Core.</p>
-            </div>
-            <div className="playground-canvas__surface">
-              <PlaygroundShowcase />
-            </div>
-          </section>
         </div>
       </div>
       <ToastViewport swipeDirection={["left", "right", "up", "down"]} />
