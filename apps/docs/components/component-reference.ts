@@ -3189,6 +3189,7 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-item-gap",
+      "--n-item-group-outline-gap",
       "--n-item-padding",
       "--n-item-radius",
       "--n-item-background-hover",

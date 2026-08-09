@@ -793,7 +793,11 @@ export function VisualPlayground() {
         portal.style.setProperty(property, String(value));
       });
     };
-    document.querySelectorAll<HTMLElement>("[data-playground-portal]").forEach(applyPortalTheme);
+    document
+      .querySelectorAll<HTMLElement>(
+        '[data-playground-portal], .n-toast-viewport[data-slot="viewport"]',
+      )
+      .forEach(applyPortalTheme);
 
     const observer = new MutationObserver((mutations) => {
       if (Date.now() > portalIntentUntil) return;
