@@ -2922,24 +2922,14 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "label", description: "Metadata key." },
       { title: "value", description: "Metadata value, text, or small component." },
     ],
-    variants: [
-      {
-        title: "Column orientation",
-        description: "The default orientation prop renders a compact stacked label/value pair.",
-      },
-      {
-        title: "Row orientation",
-        description:
-          'Set orientation="row" to distribute short metadata horizontally using matching text sizes.',
-      },
-    ],
+    variants: [{ title: "Default", description: "Compact label/value pair." }],
     states: [{ title: "Static", description: "Reads as metadata, not a control." }],
     accessibility: ["Renders a native definition list for each label/value pair."],
     guidance: {
       do: ["Use for owner, updated date, status, and permissions."],
       dont: ["Do not use for long prose or multi-step content."],
     },
-    tokens: ["--n-key-value-gap", "--n-key-value-row-gap", "--n-font-size-sm", ...sharedTokens],
+    tokens: ["--n-key-value-gap", "--n-font-size-sm", ...sharedTokens],
   },
   table: {
     category: "Data display",

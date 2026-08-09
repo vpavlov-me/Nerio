@@ -205,6 +205,17 @@
   grid-column: span 2;
 }
 
+.root :global(.playground-key-value-row) {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: var(--n-space-4);
+}
+
+.root :global(.playground-key-value-row dt),
+.root :global(.playground-key-value-row dd) {
+  font-size: var(--n-font-size-sm);
+}
+
 .root :global(.playground-sr-only) {
   block-size: 1px;
   clip: rect(0 0 0 0);

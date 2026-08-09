@@ -1027,7 +1027,7 @@ export function VisualPlayground() {
             </aside>
           ) : null}
 
-          <main
+          <section
             aria-label="Nerio scenario canvas"
             className="playground-canvas playground-canvas--catalog"
             tabIndex={0}
@@ -1039,7 +1039,7 @@ export function VisualPlayground() {
             <div className="playground-canvas__surface">
               <PlaygroundShowcase />
             </div>
-          </main>
+          </section>
         </div>
       </div>
       <ToastViewport swipeDirection={["left", "right", "up", "down"]} />

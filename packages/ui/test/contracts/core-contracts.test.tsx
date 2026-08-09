@@ -749,7 +749,7 @@ describe("Core static contracts", () => {
       /:root\[data-density="compact"\][\s\S]*--n-sheet-padding: var\(--n-space-5\);/,
     );
     expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
-    expect(tokens).toContain("--n-card-section-gap: 1rem;");
+    expect(tokens).toContain("--n-card-section-gap: var(--n-space-4);");
     expect(tokens).toContain("--n-card-header-gap: 0.2rem;");
     expect(tokens).toContain("--n-card-footer-gap: 0.5rem;");
     expect(tokens).toContain("--n-card-border-width: var(--n-border-width-default);");
@@ -961,7 +961,6 @@ describe("Core static contracts", () => {
           orientation="vertical"
         />
         <KeyValue data-testid="key-value" label="Owner" value="Product team" {...unsafeSlot} />
-        <KeyValue data-testid="key-value-row" label="Members" orientation="row" value="12" />
         <Alert data-testid="alert" title="Saved" tone="success" {...unsafeSlot} />
         <Toast data-testid="toast" title="Updated" tone="info" {...unsafeSlot} />
         <Table data-testid="table" {...unsafeSlot}>
@@ -1004,9 +1003,6 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("separator")).toHaveClass("h-6");
     expect(screen.getByTestId("separator")).not.toHaveClass("h-auto");
     expect(screen.getByTestId("key-value")).toHaveAttribute("data-slot", "root");
-    expect(screen.getByTestId("key-value")).toHaveAttribute("data-orientation", "column");
-    expect(screen.getByTestId("key-value-row")).toHaveAttribute("data-orientation", "row");
-    expect(screen.getByTestId("key-value-row")).toHaveClass("grid-cols-[minmax(0,1fr)_auto]");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-tone", "success");
     expect(screen.getByTestId("toast")).toHaveAttribute("data-slot", "root");
@@ -1364,7 +1360,8 @@ describe("Core static contracts", () => {
     expect(source).not.toContain("[&>div:not([data-slot=card-action])]");
     expect(tokens).toContain("--n-card-footer-gap: 0.5rem;");
     expect(tokens).toContain("--n-card-header-gap: 0.2rem;");
-    expect(tokens).toContain("--n-card-section-gap: 1rem;");
+    expect(tokens).toContain("--n-card-section-gap: var(--n-space-4);");
+    expect(source).not.toContain("[--n-card-section-gap:");
     expect(source).toContain("[&>div:has(>[data-slot=card-title])]:gap-(--n-card-header-gap)");
     expect(source).toContain("gap-(--n-card-footer-gap)");
     expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");

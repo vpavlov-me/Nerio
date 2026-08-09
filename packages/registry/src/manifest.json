@@ -29,7 +29,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
@@ -144,7 +144,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -236,7 +236,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -373,7 +373,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -465,7 +465,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -527,7 +527,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -637,7 +637,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -701,7 +701,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -756,7 +756,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -828,7 +828,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -894,7 +894,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -980,7 +980,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1036,7 +1036,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1099,7 +1099,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1170,7 +1170,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1202,7 +1202,7 @@
           "source": "../../ui/src/components/key-value.tsx",
           "target": "components/key-value.tsx",
           "role": "component",
-          "integrity": "sha256-084a20b8ed95c0c74a65e241b892676b2255a23153890fdf0ba23bc19f313c41"
+          "integrity": "sha256-8538d08e380951ee89cf7f435a51178efe588b336b5290c90a61a84ea632e9d9"
         },
         {
           "source": "../../ui/src/lib/cn.ts",
@@ -1220,7 +1220,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1231,8 +1231,8 @@
       ],
       "baseUiPrimitives": [],
       "slots": ["root", "label", "value"],
-      "variants": ["column", "row"],
-      "requiredTokens": ["--n-key-value-gap", "--n-key-value-row-gap", "--n-font-size-sm"],
+      "variants": [],
+      "requiredTokens": ["--n-key-value-gap", "--n-font-size-sm"],
       "accessibility": [
         "Renders a native dl with dt and dd children for one metadata pair.",
         "Keep labels concise and stable.",
@@ -1270,7 +1270,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1352,7 +1352,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1442,7 +1442,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1551,7 +1551,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1675,7 +1675,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1762,7 +1762,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1861,7 +1861,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1948,7 +1948,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2017,7 +2017,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2104,7 +2104,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2166,7 +2166,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2221,7 +2221,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2279,7 +2279,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2372,7 +2372,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2448,7 +2448,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2528,7 +2528,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2736,7 +2736,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2851,7 +2851,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2957,7 +2957,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3016,7 +3016,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3109,7 +3109,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3217,7 +3217,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3335,7 +3335,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3468,7 +3468,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3585,7 +3585,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3685,7 +3685,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3799,7 +3799,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3882,7 +3882,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-8ea919f6c72854a8aeda1fc795e04768b0b7fb90c5ad26ed7caedf0e83d8bcf9"
+          "integrity": "sha256-80e0d61bb145c8fcdbda7417f96994734b6a40d2a310a1404431d2dddfa76e57"
         },
         {
           "source": "../../tokens/src/tailwind.css",

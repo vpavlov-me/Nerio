@@ -856,7 +856,7 @@
   --n-card-padding-inline: var(--n-card-padding);
   --n-card-padding-block: var(--n-card-padding);
   --n-card-gap: var(--n-density-space-lg);
-  --n-card-section-gap: 1rem;
+  --n-card-section-gap: var(--n-space-4);
   --n-card-header-gap: 0.2rem;
   --n-card-footer-gap: 0.5rem;
   --n-card-radius: var(--n-radius-container);
@@ -865,7 +865,6 @@
   --n-stat-value-size: var(--n-font-size-2xl);
   --n-stat-trend-color: var(--n-color-text-secondary);
   --n-key-value-gap: var(--n-space-1);
-  --n-key-value-row-gap: var(--n-space-4);
   --n-table-border: var(--n-color-border-subtle);
   --n-table-border-width: var(--n-border-width-default);
   --n-table-container-border: none;
