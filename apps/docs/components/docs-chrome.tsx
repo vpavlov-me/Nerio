@@ -804,6 +804,13 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
           <nav className="docs-primary-nav" aria-label="Primary navigation">
             <Link
+              href="/playground"
+              className={isPlaygroundPage ? "is-active" : undefined}
+              aria-current={isPlaygroundPage ? "page" : undefined}
+            >
+              Playground
+            </Link>
+            <Link
               href="/docs"
               className={
                 pathname === "/docs" || pathname === "/docs/getting-started"
@@ -827,13 +834,6 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
             </Link>
             <Link href="/templates" className={isTemplatesPage ? "is-active" : undefined}>
               Templates
-            </Link>
-            <Link
-              href="/playground"
-              className={isPlaygroundPage ? "is-active" : undefined}
-              aria-current={isPlaygroundPage ? "page" : undefined}
-            >
-              Playground
             </Link>
           </nav>
 

@@ -2340,3 +2340,210 @@ final result: passed
 No actionable P0, P1, or P2 findings remain in the annotated scope.
 
 final result: passed
+
+## Vertical Playground settings layout — 2026-08-09
+
+### Source truth
+
+- User direction: place the scenario canvas above Settings, place Settings below the canvas, remove the show/hide behavior and heading, keep the remaining Selects in one horizontal row, and remove Motion and UI scale from the live controls.
+
+### Findings and fixes
+
+1. P2 — The side-by-side workspace constrained the canvas and made Settings read as a sidebar. Replaced it with a two-row workspace: the scrollable canvas occupies the flexible top row and the settings Card occupies the bottom row.
+2. P2 — The collapse/restore state no longer matched the intended persistent control surface. Removed the state, focus-transfer logic, hidden/inert attributes, rail, and both toggle controls.
+3. P2 — Seven vertically stacked controls made the panel taller than necessary. Removed Motion and UI scale from the UI, retained their `Calm` and `100%` defaults internally, and arranged Accent color, Neutral color, Density, Radii, and Panel style in one horizontal row.
+4. P3 — The Settings heading duplicated the complementary region label. Removed the visible heading while preserving `aria-label="Theme settings"` on the region.
+
+### Verification
+
+- The canvas precedes Settings in the DOM and renders above it at desktop and narrow widths.
+- Settings exposes exactly five Selects in one horizontal row; the narrow layout provides horizontal overflow instead of stacking the controls.
+- No Settings heading, collapse control, restore control, hidden state, or inert state remains.
+- The focused Chromium smoke passes control behavior, reset behavior, horizontal field alignment, canvas overflow, and console/page-error checks.
+
+This direction supersedes the earlier collapsible Settings layout while retaining the shared 6px Field rhythm.
+
+final result: passed
+
+## Centered Playground viewport and settings width — 2026-08-09
+
+### Source truth
+
+- User browser annotation: center the Settings panel with a 900px maximum width, hide canvas scrollbars, and start the canvas exactly centered on both axes.
+
+### Findings and fixes
+
+1. P2 — Settings filled the entire workspace width. Limited the Card to `56.25rem` (`900px` at the root font size), retained fluid width below that limit, and centered it in the workspace.
+2. P2 — Native scrollbars competed with the canvas content. Hid scrollbar chrome in Firefox and WebKit/Blink while retaining two-axis mouse, trackpad, keyboard, and programmatic scrolling.
+3. P2 — The canvas opened at its top-left scroll origin. Added a one-time post-layout centering step that waits for the measured masonry surface to overflow, then positions both scroll axes at half their available range.
+
+### Verification
+
+- At the annotated desktop viewport, Settings is horizontally centered and no wider than 900px.
+- Canvas computed `scrollbar-width` is `none`, while its scroll extents remain larger than its client dimensions.
+- Browser smoke verifies `scrollLeft` and `scrollTop` are within one pixel of the exact center after masonry layout.
+
+final result: passed
+
+## Expanded Playground canvas rhythm — 2026-08-09
+
+### Source truth
+
+- User direction: double the internal canvas padding and the gaps between scenario cards.
+
+### Implementation and verification
+
+- Canvas surface padding increased from 32px to 64px through the existing spacing token.
+- The shared masonry gap increased from 40px to 80px on both axes; the measured packing algorithm continues to use the same computed gap as its vertical placement offset.
+- Focused browser coverage asserts the exact 64px padding and 80px gap while preserving seven columns, balanced wide-card placement, and zero overlaps.
+
+This direction supersedes the earlier 40px canvas-gutter review value.
+
+final result: passed
+
+## Playground origin, navigation order, and header alignment — 2026-08-10
+
+### Source truth
+
+- User direction: restore the canvas start to its top-left origin, move Playground to the first primary-navigation position, and remove the visual gap between the header and canvas.
+
+### Findings and fixes
+
+1. P2 — Programmatic post-layout centering overrode the familiar canvas origin. Removed the centering observer and scroll mutation so each load starts at `scrollLeft: 0` and `scrollTop: 0`; the user owns all subsequent scrolling.
+2. P2 — Playground appeared after the reference catalogs in primary navigation. Reordered the links to Playground, Docs, Components, Blocks, Templates without changing destinations or active-state behavior.
+3. P2 — Workspace padding added 24px of empty space above the canvas. Removed only the block-start padding so the canvas begins directly after the sticky header; inline and block-end workspace padding remain unchanged.
+
+### Verification
+
+- Browser smoke asserts the exact primary-navigation label order.
+- Canvas starts at `(0, 0)` and remains independently scrollable with hidden scrollbar chrome.
+- The measured difference between the header bottom and canvas top is below one pixel.
+
+This direction supersedes the earlier centered initial canvas viewport.
+
+final result: passed
+
+## Footer text size — 2026-08-10
+
+### Source truth
+
+- User browser annotation: the site footer must use the system MD text size instead of helper-sized text.
+
+### Implementation and verification
+
+- Replaced `--n-helper-font-size` with `--n-font-size-md` on the shared docs footer.
+- Browser coverage asserts the rendered footer text resolves to 14px on the homepage.
+
+final result: passed
+
+## Documentation inline code and prose links — 2026-08-10
+
+### Source truth
+
+- User browser annotation: inline code in documentation prose needs a compact visual container, and prose links need a persistent branded, underlined treatment so neither blends into body copy.
+
+### Implementation and verification
+
+- Scoped the treatment to `code` and anchors inside prose paragraphs, list items, and description details; navigation, controls, and full-size code examples remain unchanged.
+- Inline code now uses the semantic control surface, default border, small radius, mono typography, and compact token spacing. Clone decoration keeps wrapped inline fragments visually coherent.
+- Prose links now use the semantic link color with a persistent underline, hover color, and the shared focus ring.
+- Browser coverage compares the rendered inline-code surface and border and the rendered link color against their semantic tokens, and asserts the visible underline.
+
+final result: passed
+
+## Compact Playground canvas rhythm — 2026-08-10
+
+### Source truth
+
+- User browser annotation: reduce the Playground canvas gaps and padding so more interface examples are visible together and theme changes are easier to compare.
+
+### Implementation and verification
+
+- Restored the canvas surface padding from 64px to the previous 32px spacing token.
+- Restored the shared masonry gap from 80px to 40px while keeping the measured layout algorithm tied to the same computed value.
+- Focused browser coverage asserts the 32px padding and 40px gap while retaining the seven-column layout and overlap checks.
+
+This direction supersedes the expanded Playground canvas rhythm from 2026-08-09.
+
+final result: passed
+
+## Documentation prose leading and inline-code refinement — 2026-08-10
+
+### Source truth
+
+- User browser annotations: documentation prose needs 150–160% line height, while inline code should use syntax-aware color, a background without a border, and an approximately 4px radius matching the supplied reference.
+
+### Implementation and verification
+
+- Added the documentation prose line-height token as an alias of the existing relaxed typography token (`1.55`) and applied it to direct section prose, lists, and description lists.
+- Reused the existing syntax string color for inline-code foregrounds so package paths connect visually to import strings in full code examples across light and dark themes.
+- Removed the inline-code border and replaced the 12px small radius with the 4px extra-small radius token; the semantic control background and compact spacing remain.
+- Narrowed prose code and link selectors to direct documentation content so component-preview copy is not restyled.
+- Browser coverage asserts token-resolved prose leading, inline-code foreground/background, no border, 4px radius, and the existing branded link treatment.
+
+This direction supersedes the bordered inline-code treatment from earlier on 2026-08-10.
+
+final result: passed
+
+## Playground canvas edge and card spacing — 2026-08-10
+
+### Source truth
+
+- User browser annotation: the canvas outer padding must be 48px, while the gap between cards must be 32px.
+
+### Implementation and verification
+
+- Set the canvas surface padding to the existing 48px spacing token.
+- Set the shared masonry gap to the existing 32px spacing token; the measured vertical layout continues to read the same computed gap.
+- Focused browser coverage asserts the exact 48px outer padding and 32px card gap while retaining overlap protection.
+
+This direction supersedes the compact 32px padding and 40px gap values from earlier on 2026-08-10.
+
+final result: passed
+
+## Nerio-branded Playground content — 2026-08-10
+
+### Source truth
+
+- User browser annotation: organizational names, URLs, email domains, and named product examples in the Playground must use Nerio instead of unrelated placeholder brands.
+
+### Implementation and verification
+
+- Replaced the Northstar workspace identity with Nerio and changed all team addresses to the existing `@nerio.dev` project domain.
+- Replaced the social fields with the canonical repository path (`github.com/vpavlov-me/Nerio`) and documentation site (`nerio.vpavlov.com`) from the shared site configuration.
+- Replaced Atlas project, search, launch, and preview copy with Nerio-branded equivalents; the invite placeholder now uses `teammate@nerio.dev`.
+- Retained person names and the Starter, Studio, and Enterprise tier labels because they represent users and plan names rather than unrelated organizations.
+- Browser coverage asserts the canonical visible field values and fails if Northstar or Atlas appears anywhere in the Playground.
+
+final result: passed
+
+## Neutral inline-code foreground — 2026-08-10
+
+### Source truth
+
+- User browser annotation: inline code in prose should remain neutral instead of borrowing the green syntax color; use secondary text on the gray background.
+
+### Implementation and verification
+
+- Replaced the syntax-string foreground with the semantic secondary text color for inline code only.
+- Preserved the neutral control background, borderless 4px container, compact spacing, and colored syntax tokens inside full code blocks.
+- Browser coverage compares the rendered inline-code foreground against `--n-color-text-secondary`.
+
+This direction supersedes the syntax-colored inline-code foreground from earlier on 2026-08-10.
+
+final result: passed
+
+## Documentation prose font size — 2026-08-10
+
+### Source truth
+
+- User browser annotation: documentation body copy should use a 15–16px typography step for readability, scoped to documentation content rather than the global design system.
+
+### Implementation and verification
+
+- Added a documentation prose font-size alias to the existing 16px large typography token.
+- Applied it only to direct section paragraphs, documentation lists, and description lists; the global 14px UI base, navigation, controls, component previews, and design-system typography remain unchanged.
+- Kept the existing relaxed 1.55 prose leading, which now resolves proportionally against the 16px content size.
+- Browser coverage compares both rendered prose size and line height against their documentation token aliases while retaining the 14px global body assertion.
+
+final result: passed
