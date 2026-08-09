@@ -18,7 +18,7 @@ export const KeyValue = React.forwardRef<HTMLDListElement, KeyValueProps>(functi
       className={cn(
         "n-key-value grid gap-(--n-key-value-gap) [&_dd]:m-0 [&_dt]:m-0 [&_dt]:text-(length:--n-font-size-sm) [&_dt]:text-(--n-color-text-tertiary)",
         orientation === "row" &&
-          "grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-(--n-space-4) [&_dd]:text-(length:--n-font-size-sm)",
+          "grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-(--n-key-value-row-gap) [&_dd]:text-(length:--n-font-size-sm)",
         className,
       )}
       data-orientation={orientation}

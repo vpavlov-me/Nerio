@@ -749,7 +749,9 @@ describe("Core static contracts", () => {
       /:root\[data-density="compact"\][\s\S]*--n-sheet-padding: var\(--n-space-5\);/,
     );
     expect(tokens).toContain("--n-card-gap: var(--n-density-space-lg);");
-    expect(tokens).toContain("--n-card-section-gap: var(--n-space-2);");
+    expect(tokens).toContain("--n-card-section-gap: 1rem;");
+    expect(tokens).toContain("--n-card-header-gap: 0.2rem;");
+    expect(tokens).toContain("--n-card-footer-gap: 0.5rem;");
     expect(tokens).toContain("--n-card-border-width: var(--n-border-width-default);");
     expect(tokens).toContain("--n-card-border-color: var(--n-color-border-subtle);");
     expect(tokens).toContain("--n-card-border-secondary: var(--n-color-border-subtle);");
@@ -1355,13 +1357,14 @@ describe("Core static contracts", () => {
 
   it("keeps Card narrow layouts and high-contrast focus visible", () => {
     const source = readFileSync(resolve(process.cwd(), "src/components/card.tsx"), "utf8");
+    const tokens = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
     expect(source).toContain(
       "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
     expect(source).not.toContain("[&>div:not([data-slot=card-action])]");
-    expect(source).toContain("[--n-card-footer-gap:0.5rem]");
-    expect(source).toContain("[--n-card-header-gap:0.2rem]");
-    expect(source).toContain("[--n-card-section-gap:1rem]");
+    expect(tokens).toContain("--n-card-footer-gap: 0.5rem;");
+    expect(tokens).toContain("--n-card-header-gap: 0.2rem;");
+    expect(tokens).toContain("--n-card-section-gap: 1rem;");
     expect(source).toContain("[&>div:has(>[data-slot=card-title])]:gap-(--n-card-header-gap)");
     expect(source).toContain("gap-(--n-card-footer-gap)");
     expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");

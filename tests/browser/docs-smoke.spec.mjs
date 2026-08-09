@@ -327,6 +327,7 @@ test("applies every Playground control to the product scenario canvas", async ({
   await expect(settings).toHaveAttribute("inert", "");
   const showSettings = page.getByRole("button", { name: "Show settings" });
   await expect(showSettings).toBeVisible();
+  await expect(showSettings).toBeFocused();
   await expect(showSettings.locator("svg")).toHaveCount(1);
   await expect(page.locator(".playground-settings__rail")).toHaveCSS("width", "48px");
   expect(await canvas.evaluate((element) => element.getBoundingClientRect().width)).toBeGreaterThan(
@@ -358,6 +359,7 @@ test("applies every Playground control to the product scenario canvas", async ({
   await expect(workspace).toHaveAttribute("data-settings-state", "expanded");
   await expect(settings).toHaveAttribute("aria-hidden", "false");
   await expect(settings).not.toHaveAttribute("inert", "");
+  await expect(page.getByRole("button", { name: "Collapse settings" })).toBeFocused();
   await expect(page.getByText("No projects yet", { exact: true })).toHaveCount(0);
   await expect(page.getByText("You're all caught up", { exact: true })).toHaveCount(0);
   await expect(

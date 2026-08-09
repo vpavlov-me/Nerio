@@ -715,7 +715,9 @@ function toStyle(
 
 export function VisualPlayground() {
   const [theme, setTheme] = React.useState<Theme>("purple");
-  const [appearanceMode, setAppearanceMode] = React.useState<"light" | "dark" | "system">("system");
+  const [appearanceMode, setAppearanceMode] = React.useState<"light" | "dark" | "system" | null>(
+    null,
+  );
   const [systemDark, setSystemDark] = React.useState(false);
   const [density, setDensity] = React.useState<Density>("comfortable");
   const [neutral, setNeutral] = React.useState<NeutralRecipe>("slate");
@@ -727,8 +729,11 @@ export function VisualPlayground() {
   const [lightColors, setLightColors] = React.useState(lightDefaults);
   const [darkColors, setDarkColors] = React.useState(darkDefaults);
   const playgroundRef = React.useRef<HTMLDivElement>(null);
+  const collapseSettingsRef = React.useRef<HTMLButtonElement>(null);
+  const restoreSettingsRef = React.useRef<HTMLButtonElement>(null);
+  const settingsFocusTarget = React.useRef<"collapse" | "restore" | null>(null);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const query = window.matchMedia("(prefers-color-scheme: dark)");
     const root = document.documentElement;
     const updateSystem = () => setSystemDark(query.matches);
@@ -751,14 +756,29 @@ export function VisualPlayground() {
     };
   }, []);
 
+  React.useEffect(() => {
+    if (settingsFocusTarget.current === "collapse") collapseSettingsRef.current?.focus();
+    if (settingsFocusTarget.current === "restore") restoreSettingsRef.current?.focus();
+    settingsFocusTarget.current = null;
+  }, [settingsExpanded]);
+
   const resolvedMode =
-    appearanceMode === "system" ? (systemDark ? "dark" : "light") : appearanceMode;
+    appearanceMode === null
+      ? null
+      : appearanceMode === "system"
+        ? systemDark
+          ? "dark"
+          : "light"
+        : appearanceMode;
   const colors = resolvedMode === "dark" ? darkColors : lightColors;
-  const style = toStyle(colors, scale, density, radius, motion, panel, resolvedMode === "dark");
+  const style =
+    resolvedMode === null
+      ? undefined
+      : toStyle(colors, scale, density, radius, motion, panel, resolvedMode === "dark");
 
   React.useEffect(() => {
     const playground = playgroundRef.current;
-    if (!playground) return;
+    if (!playground || !resolvedMode || !style) return;
 
     let portalIntentUntil = 0;
     const registerPortalIntent = () => {
@@ -896,13 +916,17 @@ export function VisualPlayground() {
               <CardTitle as="h2">Settings</CardTitle>
               <CardAction>
                 <Button
+                  ref={collapseSettingsRef}
                   aria-controls="playground-theme-settings"
                   aria-expanded={settingsExpanded}
                   aria-label="Collapse settings"
                   trailingIcon={ChevronRight}
                   size="sm"
                   variant="ghost"
-                  onClick={() => setSettingsExpanded(false)}
+                  onClick={() => {
+                    settingsFocusTarget.current = "restore";
+                    setSettingsExpanded(false);
+                  }}
                 >
                   Hide
                 </Button>
@@ -983,6 +1007,7 @@ export function VisualPlayground() {
           {!settingsExpanded ? (
             <aside aria-label="Collapsed theme settings" className="playground-settings__rail">
               <Button
+                ref={restoreSettingsRef}
                 aria-controls="playground-theme-settings"
                 aria-expanded={settingsExpanded}
                 aria-label="Show settings"
@@ -990,7 +1015,10 @@ export function VisualPlayground() {
                 icon={Settings}
                 size="sm"
                 variant="ghost"
-                onClick={() => setSettingsExpanded(true)}
+                onClick={() => {
+                  settingsFocusTarget.current = "collapse";
+                  setSettingsExpanded(true);
+                }}
               />
             </aside>
           ) : null}
