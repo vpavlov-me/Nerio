@@ -267,7 +267,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(function Sli
       </BaseSlider.Control>
       {description ? (
         <p
-          className="n-slider__description m-0 text-(length:--n-helper-font-size) text-(--n-color-text-tertiary)"
+          className="n-slider__description m-0 text-(length:--n-slider-description-font-size) text-(--n-color-text-tertiary)"
           data-slot="description"
           id={descriptionId}
         >

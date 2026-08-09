@@ -1649,6 +1649,7 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-textarea-min-height",
+      "--n-textarea-radius-max",
       "--n-input-radius",
       "--n-input-background",
       "--n-input-border-focus",
@@ -2093,6 +2094,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-slider-thumb-background",
       "--n-slider-thumb-border",
       "--n-slider-focus-ring",
+      "--n-slider-description-font-size",
       "--n-slider-disabled-opacity",
       "--n-slider-duration",
       "--n-slider-easing",
@@ -2687,6 +2689,8 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-card-padding-block",
       "--n-card-gap",
       "--n-card-section-gap",
+      "--n-card-header-gap",
+      "--n-card-footer-gap",
       "--n-card-radius",
       "--n-card-background",
       "--n-card-border-width",
@@ -2918,14 +2922,24 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "label", description: "Metadata key." },
       { title: "value", description: "Metadata value, text, or small component." },
     ],
-    variants: [{ title: "Default", description: "Compact label/value pair." }],
+    variants: [
+      {
+        title: "Column orientation",
+        description: "The default orientation prop renders a compact stacked label/value pair.",
+      },
+      {
+        title: "Row orientation",
+        description:
+          'Set orientation="row" to distribute short metadata horizontally using matching text sizes.',
+      },
+    ],
     states: [{ title: "Static", description: "Reads as metadata, not a control." }],
     accessibility: ["Renders a native definition list for each label/value pair."],
     guidance: {
       do: ["Use for owner, updated date, status, and permissions."],
       dont: ["Do not use for long prose or multi-step content."],
     },
-    tokens: ["--n-key-value-gap", "--n-font-size-sm", ...sharedTokens],
+    tokens: ["--n-key-value-gap", "--n-key-value-row-gap", "--n-font-size-sm", ...sharedTokens],
   },
   table: {
     category: "Data display",
@@ -3175,6 +3189,7 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-item-gap",
+      "--n-item-group-outline-gap",
       "--n-item-padding",
       "--n-item-radius",
       "--n-item-background-hover",
