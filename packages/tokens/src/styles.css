@@ -661,14 +661,15 @@
   --n-slider-thumb-size: var(--n-icon-size-md);
   --n-slider-thumb-radius: var(--n-radius-pill);
   --n-slider-thumb-border-width: var(--n-border-width-default);
-  --n-slider-gap: var(--n-space-1);
+  --n-slider-gap: var(--n-space-0-5);
   --n-slider-header-gap: var(--n-density-space-lg);
   --n-slider-header-width: 10rem;
-  --n-slider-label-font-size: var(--n-label-font-size);
+  --n-slider-label-font-size: var(--n-font-size-md);
   --n-slider-label-font-weight: var(--n-label-font-weight);
   --n-slider-label-color: var(--n-color-text-secondary);
-  --n-slider-value-font-size: var(--n-font-size-xs);
+  --n-slider-value-font-size: var(--n-font-size-md);
   --n-slider-value-color: var(--n-color-text-tertiary);
+  --n-slider-description-font-size: var(--n-font-size-sm);
   --n-slider-track-background: var(--n-color-surface-control);
   --n-slider-indicator-background: var(--n-color-action-primary);
   --n-slider-thumb-background: var(--n-gray-0);
@@ -902,7 +903,8 @@
   --n-item-padding-lg: var(--n-density-space-lg);
   --n-item-padding: var(--n-item-padding-md);
   --n-item-row-gap: var(--n-space-2);
-  --n-item-group-gap: var(--n-space-2);
+  --n-item-group-gap: var(--n-space-0);
+  --n-item-group-outline-gap: var(--n-space-2);
   --n-item-content-gap: var(--n-space-1);
   --n-item-actions-gap: var(--n-space-2);
   --n-item-radius: var(--n-radius-md);

@@ -263,7 +263,7 @@ function validate() {
 
   for (const [surface, source, requiredImports] of [
     ["Docs header", docsControls, ["modes"]],
-    ["Docs Playground", docsPlayground, ["themes", "modes", "densities"]],
+    ["Docs Playground", docsPlayground, ["themes", "densities"]],
     ["Operations Workspace", templateControls, ["themes", "modes", "densities"]],
     ["Finance & Assets", financeTemplateControls, ["themes", "modes", "densities"]],
   ]) {
@@ -293,14 +293,15 @@ function validate() {
   }
   const derivesPlaygroundThemes =
     docsPlayground.includes("themes.map") || docsPlayground.includes("options={themes}");
+  const derivesPlaygroundDensities =
+    docsPlayground.includes("densities.map") || docsPlayground.includes("options={densities}");
   if (
     !derivesPlaygroundThemes ||
-    !docsPlayground.includes("const playgroundModes = [modes[1], modes[2], modes[0]]") ||
-    !docsPlayground.includes("options={playgroundModes}") ||
-    !docsPlayground.includes("options={densities}")
+    !docsPlayground.includes('window.matchMedia("(prefers-color-scheme: dark)")') ||
+    !derivesPlaygroundDensities
   ) {
     failures.push(
-      "Docs Playground must derive Theme, Mode, and Density controls from canonical runtime axes.",
+      "Docs Playground must derive Theme and Density controls from canonical runtime axes and follow system color mode.",
     );
   }
   if (docsPlayground.includes("persistAppearanceAxis")) {

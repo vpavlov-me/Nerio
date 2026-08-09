@@ -44,6 +44,47 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 
+## Playground scenario catalog — 2026-08-09
+
+### Source truth
+
+- User reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png`
+- Audit screenshot: `design-qa-artifacts/playground-audit-35/01-current-catalog.png`
+- Final browser screenshot: `design-qa-artifacts/playground-audit-35/05-final-masonry.png`
+- Detailed audit: `design-qa-artifacts/playground-audit-35/audit.md`
+
+### Findings and fixes
+
+1. P1 — Removed the permanently embedded Calendar. Appointment and milestone scenarios now expose Calendar only through DatePicker popovers.
+2. P1 — Removed custom scene surfaces and every Card-inside-Card composition. All 35 scenarios render from exported Nerio Core primitives.
+3. P2 — Expanded the catalog from 16 cards in four columns to exactly 35 cards in seven desktop columns.
+4. P2 — Added real masonry packing with measured row spans; shorter cards no longer inherit the height of the tallest card in their row.
+5. P2 — Added three two-column table scenarios for team access, invoices, and API keys.
+6. P2 — Rebound component-level semantic tokens to the active Playground palette so system appearance cannot produce mismatched card, text, and input colors.
+
+### Scenario coverage
+
+The catalog now includes workspace setup, sign-in, social links, account access, notification preferences, appointment booking, new milestones, two empty states, billing, payouts, savings, transactions, three data tables, upload and release states, command and navigation patterns, security, password reset, dialog, sheet, popover, menu, toast, loading, error recovery, plans, feedback, destructive confirmation, activity, search, and feature flags.
+
+### Required fidelity surfaces
+
+- Typography: existing Geist type styles and Core component hierarchy are preserved.
+- Layout rhythm: a seven-column, horizontally scrollable masonry canvas uses token spacing and independent vertical packing.
+- Colors and tokens: canvas, cards, controls, tables, statuses, and overlays resolve from the selected Playground theme.
+- Assets: existing Nerio avatar assets and adapter icons are reused.
+- Copy: all scenario copy is concise, English-only, and product-contextual.
+
+### Interaction evidence
+
+- Browser metrics: 35 cards, 7 columns, 3 wide cards, zero nested Cards, and zero inline Calendars.
+- DatePicker opened the selected August 18, 2026 Calendar in a themed portal and removed it on Escape.
+- Dialog portal inherited comfortable density; Toast rendered the 35-scenario confirmation.
+- The canvas scrolled to `left=700, top=700` without body overflow or zoom controls.
+
+No actionable P0, P1, or P2 findings remain.
+
+final result: passed
+
 ## File upload state block QA — 2026-08-07
 
 ### Source truth
@@ -1676,5 +1717,624 @@ final result: passed
 2. P2 — Kept the table header, system EmptyState anatomy, icon, copy, and secondary `Create project` action unchanged.
 
 No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+# Playground Canvas Design QA
+
+- Source visual truth: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png`
+- Source pixels: `2940 x 1670`, normalized to `1600 x 911`
+- Implementation: `http://127.0.0.1:3001/playground`
+- Final implementation screenshot: `design-qa-artifacts/playground-implementation-1600x911-final.png`
+- Final comparison board: `design-qa-artifacts/playground-comparison-final-3200x959.png`
+- CSS viewport: `1600 x 911`
+- Device scale factor: `1`
+- State: system light appearance, purple accent, slate neutral, comfortable density, full radius, 100% scaling, calm motion, flat panels
+
+## Findings
+
+No actionable P0, P1, or P2 findings remain.
+
+The implementation preserves the reference's two-region workbench, compact settings rail, neutral scrollable canvas, dense multi-column card composition, varied card heights, and realistic product contexts. Intentional product differences are the existing Nerio documentation header, system-owned appearance, Nerio semantic colors, and the use of Core primitives instead of presenting a local chart as a Core component.
+
+## Required fidelity surfaces
+
+- Fonts and typography: Existing Geist typography is preserved. Headings, labels, helper text, and card hierarchy follow Nerio tokens and match the compact reference hierarchy.
+- Spacing and layout rhythm: The left rail is fixed, the right canvas owns both overflow axes, body overflow is disabled, and the four-column masonry surface keeps consistent card gaps and padding.
+- Colors and visual tokens: Default light canvas, neutral surfaces, borders, status colors, and accent controls all use live Nerio semantic tokens. System dark mode is inherited automatically.
+- Image quality and asset fidelity: The only visible raster assets are the existing high-resolution Nerio avatar and brand assets. UI symbols use the existing adapter icon library.
+- Copy and content: All sixteen cards use concise English product copy and realistic mock data.
+
+## Full-view comparison evidence
+
+`design-qa-artifacts/playground-comparison-final-3200x959.png` places the normalized source and final browser render in the same image. The primary composition, canvas density, card treatment, and settings-to-preview relationship are aligned. The source's dark settings rail is intentionally not copied because Playground appearance follows the system theme.
+
+## Focused-region comparison evidence
+
+A separate crop was not needed: the original-size comparison board keeps the left controls and the first three card columns legible at 1:1 inspection. Controls, borders, radii, helper copy, icon alignment, and card spacing were checked there.
+
+## Comparison history
+
+1. Initial browser render established the correct full-height split and a `1744 x 1876` scrollable canvas inside an `805 x 769` viewport, with sixteen rendered scenes and no body overflow.
+2. First comparison found that Reset was below the visible settings viewport. A persistent footer was added.
+3. Second comparison found that the first footer treatment overlapped Panel style. Settings were separated into a scrollable body and fixed footer.
+4. Third comparison tightened group spacing so every requested control and Reset are visible together at the QA viewport. The final browser render reported zero console errors.
+
+## Primary interactions verified
+
+- Accent, neutral, density, radius, scaling, motion, panel style, and Reset
+- Horizontal and vertical canvas scrolling without canvas zoom
+- System dark appearance
+- Calendar and DatePicker state
+- InputGroup and Checkbox state
+- Dialog portal theming
+- Toast feedback
+- Responsive mobile stacking contract
+
+## Follow-up polish
+
+- P3: The settings rail is slightly wider than the source so five radius presets retain readable labels and touch targets.
+- P3: The existing Nerio docs navigation is intentionally simpler than the reference site's global navigation.
+
+## Final result
+
+final result: passed
+
+## Playground settings iteration — 2026-08-09
+
+### Source truth
+
+- User-provided reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png`
+- User feedback: use the semantic canvas background, present every Live settings value as a simple Select, and reveal Reset only after customization.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/playground`
+- Viewport: `1600 × 911` CSS pixels at device scale factor `1`
+- Implementation screenshot: `design-qa-artifacts/playground-implementation-selects-1600x911.png`
+- Side-by-side comparison: `design-qa-artifacts/playground-comparison-selects-3200x951.png`
+- State: system light appearance and the neutral Playground preset, with the canvas and both settings states inspected.
+
+### Findings and fixes
+
+1. P2 — The canvas used the subtle surface token instead of the page background. Mapped the canvas to `--n-color-surface-canvas`; the inspected light render resolves to pure white.
+2. P2 — Live settings mixed swatches, segmented controls, radius diagrams, and scale buttons. Replaced all seven controls with the system Select component while preserving the same values and live token behavior.
+3. P2 — Reset was permanently visible and reserved a footer in the neutral state. Made the action conditional on any setting differing from `Purple / Slate / Comfortable / Full / 100% / Calm / Flat`; browser interaction confirmed it appears after selecting Blue and disappears after Reset.
+
+No actionable P0, P1, or P2 findings remain in this iteration.
+
+### Required fidelity surfaces
+
+- Fonts and typography: existing Geist hierarchy and 14px control baseline remain unchanged.
+- Spacing and layout rhythm: the settings rail now has one consistent field rhythm; no empty Reset footer remains in the neutral state.
+- Colors and visual tokens: the canvas uses the semantic canvas token and resolves to `#ffffff` in the reviewed light state.
+- Image quality and asset fidelity: existing avatar and brand assets are unchanged.
+- Copy and content: all setting names and available values are preserved.
+
+### Focused-region evidence
+
+The settings rail is readable at 1:1 in the full comparison, so a separate crop is unnecessary. The Select labels, values, chevrons, group dividers, canvas boundary, and conditional Reset state were inspected directly.
+
+final result: passed
+
+## Playground settings card iteration — 2026-08-09
+
+### Source truth
+
+- User reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png`
+- Implementation screenshot: `design-qa-artifacts/playground-settings-card/01-settings-card.png`
+- Side-by-side comparison: `design-qa-artifacts/playground-settings-card/02-comparison.png`
+- Viewport: `1600 × 911` CSS pixels at device scale factor `1`.
+- State: light system appearance, Purple accent, Slate neutral recipe, Raised panel style, no customization Reset.
+
+### Findings and fixes
+
+1. P2 — Settings read as a permanent sidebar and shared an edge with the canvas. Replaced the sidebar surface with the Core Card anatomy and moved it to the right side of the workspace.
+2. P2 — The canvas was not visually bounded as an independent region. Added a token border and container radius while preserving its semantic canvas background and two-axis scrolling.
+3. P2 — Twenty-pixel card gaps felt denser than the requested reference rhythm. Increased both masonry axes to `40px`; measured masonry spans continue to recompute from the live row gap.
+4. P2 — Flat was the neutral panel preset. Changed the default and Reset target to Raised and rebound Card shadow directly inside the local Playground theme.
+5. P2 — Accent and neutral Select values were text-only. Added color swatches to the selected values and all six options in each popup.
+6. P3 — The reference keeps settings on the left; the implementation intentionally mirrors the composition with Settings on the right per user direction.
+
+### Required fidelity surfaces
+
+- Fonts and typography: the existing Geist hierarchy remains unchanged; the settings title is reduced to one Core CardTitle, `Settings`.
+- Spacing and layout rhythm: workspace padding and inter-panel gap use Core tokens; card-to-card gaps resolve to `40px`.
+- Colors and visual tokens: both panel borders, canvas background, Raised elevation, and Select swatches use the active Playground semantic palette.
+- Image quality and asset fidelity: no new raster assets were required; existing avatar assets remain unchanged.
+- Copy and content: the duplicate `Live settings / Theme` hierarchy and palette icon were removed without changing the seven setting labels.
+
+### Interaction evidence
+
+- Neutral state: Panel style is Raised and Reset is absent.
+- Customized state: selecting Blue reveals Reset; Reset restores Purple and Raised and disappears again.
+- Accent popup exposes six colored swatches; Neutral recipe popup exposes six colored swatches.
+- Browser metrics: Settings column `2`, canvas column `1`, both borders `1px`, masonry gap `40px`, and 35 scenario cards preserved.
+
+The full comparison is sufficient for panel geometry, heading hierarchy, container boundaries, and card rhythm. Popup swatches were verified directly in the browser because they are an interaction state absent from the static reference.
+
+No actionable P0, P1, or P2 findings remain.
+
+final result: passed
+
+## Playground masonry and global appearance iteration — 2026-08-09
+
+### Source truth and evidence
+
+- User reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png`
+- Light implementation: `design-qa-artifacts/playground-masonry-theme/01-final-light.png`
+- Dark implementation: `design-qa-artifacts/playground-masonry-theme/02-final-dark.png`
+- Side-by-side comparison: `design-qa-artifacts/playground-masonry-theme/03-comparison.png`
+- Viewport: `1600 × 911` CSS pixels at device scale factor `1`.
+
+### Findings and fixes
+
+1. P1 — The earlier per-card row-span calculation used the visible 40px gap as the grid track step. That quantized placement and could leave excessive vertical air; an intermediate attempt also exposed invalid `Infinity` rows when parsing an unresolved `calc()`. Replaced it with one centralized seven-column packing pass using the computed column gap and explicit row starts/spans.
+2. P1 — Playground resolved only `prefers-color-scheme`, so explicit Light and Dark choices in the docs header did not update its local semantic palette. Added a root `data-mode` observer and resolve System through the media query only when System is selected.
+3. P2 — Thirteen scenario cards used the secondary gray Card surface. Removed the scenario-level variant axis; all 35 now render the standard Card variant.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged across Light and Dark; headings and muted copy retain the Core hierarchy.
+- Spacing and layout rhythm: centralized packing preserves the visible 40px gap, seven columns, three two-column cards, and zero card intersections.
+- Colors and visual tokens: Light resolves all 35 Card surfaces to `rgb(255, 255, 255)`; Dark resolves the same standard Card contract to `rgb(0, 0, 0)` with light foreground tokens.
+- Image quality and asset fidelity: existing avatars and adapter icons remain unchanged in both appearance states.
+- Copy and content: all 35 scenario names and product data remain unchanged.
+
+### Interaction and browser evidence
+
+- Header `System → Dark → Light → System` updates both root `data-mode` and Playground `data-mode` without reload.
+- Dark inspection: canvas, Settings, and Card surfaces resolve to black; Card headings resolve to `rgb(244, 247, 251)`.
+- Light inspection: every scenario Card resolves to white; Card headings resolve to `rgb(15, 23, 42)`.
+- Structural inspection: 35 default Cards, zero secondary Cards, zero overlapping card pairs, and no invalid grid rows.
+- Console contains only the Next.js development connection and React DevTools informational messages.
+
+The full comparison covers hierarchy, density, white standard surfaces, and masonry rhythm. The dedicated Dark screenshot is the focused comparison for appearance synchronization.
+
+No actionable P0, P1, or P2 findings remain.
+
+final result: passed
+
+## Playground workspace background correction — 2026-08-09
+
+### Source truth and evidence
+
+- User browser annotation: the outer workspace around Canvas and Settings must use the standard page background, without a gray backing surface.
+- Light implementation: `design-qa-artifacts/playground-standard-background/01-final-light.png`
+- Dark implementation: `design-qa-artifacts/playground-standard-background/02-final-dark.png`
+- Viewport: `1600 × 911` CSS pixels at device scale factor `1`.
+
+### Finding and fix
+
+1. P2 — The outer workspace used `--n-color-surface-subtle`, creating a visible gray panel behind both framed regions. Rebound it to `--n-color-surface-canvas`; the canvas and Settings borders remain unchanged.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged.
+- Spacing and layout rhythm: workspace padding, panel gap, masonry spacing, and the seven-column layout are unchanged.
+- Colors and visual tokens: the workspace now resolves to the semantic canvas background in both Light and Dark instead of a separate gray surface.
+- Image quality and asset fidelity: unchanged.
+- Copy and content: unchanged.
+
+### Verification
+
+- The focused Chromium test confirms that the workspace computed background equals `--n-color-surface-canvas` while switching through the global appearance control.
+- Light resolves to the standard white page background; Dark resolves to the standard black page background.
+- Both inner containers retain their one-pixel boundaries in the reviewed screenshots.
+- A focused inspection was sufficient because this correction changes one semantic surface token and follows the user annotation directly.
+
+No actionable P0, P1, or P2 findings remain.
+
+final result: passed
+
+## Playground masonry recovery — 2026-08-09
+
+### Source truth and evidence
+
+- Source visual: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png` (`2940 × 1670` pixels).
+- Fixed implementation: `design-qa-artifacts/playground-grid-recovery/01-fixed.png` (`1470 × 837` pixels).
+- Full-view comparison: `design-qa-artifacts/playground-grid-recovery/02-comparison.png` (`2485 × 700` pixels); both captures were normalized to `700px` height before comparison.
+- Browser viewport: `1470 × 837` CSS pixels, device scale factor `2`; the in-app capture is normalized to CSS-pixel dimensions.
+- State: Light, Purple accent, Slate neutral recipe, Comfortable density, Full radius, Raised panels.
+
+### Finding, fix, and post-fix evidence
+
+1. P1 — During an early style recalculation, `column-gap` could temporarily be non-numeric. The packing pass propagated that value into all seven column heights, leaving 28 cards with `grid-row: Infinity` and 409 overlapping card pairs. The layout now waits for a finite gap and positive card measurements before applying positions. Post-fix browser inspection reports 35 cards, zero invalid rows, zero overlaps, and a `2098px` masonry height.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged by the fix; card hierarchy and wrapping remain intact.
+- Spacing and layout rhythm: seven columns and the visible `40px` gutter are restored; cards pack vertically without intersections.
+- Colors and visual tokens: unchanged; the standard canvas and Card surfaces remain active.
+- Image quality and asset fidelity: existing avatars and icons are unchanged.
+- Copy and content: all 35 scenarios and Settings values are unchanged.
+
+### Verification
+
+- The targeted Chromium Playground test passes and now rejects `Infinity` or `NaN` grid rows explicitly.
+- Reloaded in-app browser inspection at the reported viewport confirms the repaired layout.
+- One existing React development warning about a leaked `leadingIcon` prop remains outside this grid-only correction; it does not affect masonry geometry.
+- Focused crops were unnecessary because the defect and recovery are clearly visible at full-canvas scale.
+
+No actionable P0, P1, or P2 masonry findings remain.
+
+final result: passed
+
+## Playground annotated component refactor — 2026-08-09
+
+### Source truth and evidence
+
+- User browser annotations: Settings field grouping, bordered workspace Item, project listing, notification feed, and compact transaction Item geometry.
+- Original reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png` (`2940 × 1670` pixels).
+- Fixed implementation: `design-qa-artifacts/playground-annotation-refactor/01-final.png` (`1470 × 837` pixels).
+- Full-view comparison: `design-qa-artifacts/playground-annotation-refactor/02-comparison.png` (`2485 × 700` pixels); both sources were normalized to `700px` height.
+- Browser viewport: `1470 × 837` CSS pixels, device scale factor `2`; Light appearance with neutral Playground defaults.
+
+### Findings, fixes, and post-fix evidence
+
+1. P2 — Settings wrapped every Select in a redundant layout group, making field ownership less clear and increasing vertical separation. Removed the wrappers so all seven controls are direct Select fields and locally mapped `--n-field-gap` to `4px`. Browser geometry confirms a `4px` label-to-trigger gap for every field.
+2. P2 — The Northstar Studio identity used a plain Item even though it is a discrete workspace preview. Switched it to the built-in `outline` variant.
+3. P2 — Projects repeated an Empty State already demonstrated elsewhere. Replaced it with three realistic project previews built from small outlined Items, ItemMedia, ItemContent, and ItemActions.
+4. P2 — Notification center repeated the same Empty State pattern. Replaced it with three compact notification Items and system ItemSeparators.
+5. P2 — Recent transaction Items used medium padding inside an already padded Card. Switched them to the built-in small Item size; computed inline padding is now `8px` for all three rows.
+6. P1 — Fast Refresh could replace one of the edited scenario Cards while masonry still observed the previous DOM node, leaving replacement Cards at `grid-row: auto`. Added child-list synchronization so the ResizeObserver tracks the current Card set. A live component rename after page load preserved 35 Cards, zero auto/invalid rows, and zero intersections.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged; labels, Item titles, descriptions, and actions retain the Core hierarchy.
+- Spacing and layout rhythm: Settings field anatomy is tighter; Item sizes now match their Card contexts; masonry remains seven columns with no overlap.
+- Colors and visual tokens: all changes use existing Select, Item, Card, Badge, Button, and semantic token contracts.
+- Image quality and asset fidelity: the existing workspace avatar and adapter icons are preserved; no approximate assets were introduced.
+- Copy and content: duplicated empty-state copy was replaced with realistic project and notification data while the remaining 33 scenario concepts stay unchanged.
+
+### Verification
+
+- In-app browser inspection: 35 Cards, zero overlaps, zero `auto`/`Infinity`/`NaN` rows, three project Items, three notification Items, outlined workspace identity, and small transaction Items.
+- Settings inspection: seven accessible comboboxes, each with a `4px` label-to-trigger gap.
+- Console inspection after reload: no warnings or errors.
+- `lint`, `typecheck`, docs validation, token validation, formatting, and `git diff --check` pass.
+- The full comparison is sufficient for Settings, workspace identity, and project-list geometry. Notification and transaction anatomy were additionally checked from their live DOM structure and computed Item metrics because those Cards sit outside the initial canvas viewport.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
+
+final result: passed
+
+## Playground contextual SaaS cards — 2026-08-09
+
+### Source truth and evidence
+
+- User browser annotations: replace component-demo cards with contextual SaaS entities, expand project filters, and compact the Atlas search-result Items.
+- Original reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png` (`2940 × 1670` pixels).
+- Focused implementation: `design-qa-artifacts/playground-contextual-cards/01-final.png` (`1470 × 837` pixels).
+- Comparison board: `design-qa-artifacts/playground-contextual-cards/02-comparison.png` (`2485 × 700` pixels); both captures were normalized to `700px` height.
+- Browser viewport: `1470 × 837` CSS pixels, device scale factor `2`; Light appearance with neutral Playground defaults and the canvas scrolled to the annotated Cards.
+
+### Findings, fixes, and post-fix evidence
+
+1. P2 — Command search exposed an isolated component specimen instead of a product entity. Replaced it with Move task: a selected work Item, destination project and section Selects, assignee preservation, and contextual Cancel/Move actions.
+2. P2 — Quick filter contained only a popover trigger and two switches. Replaced it with Project filters containing a keyword Field, Status and Owner Selects, an alerts Switch, controlled Reset behavior, and Save filters feedback.
+3. P2 — Context menu described an implementation pattern instead of a SaaS object. Replaced it with Atlas launch: project progress, owner, target date, blocker state, and an entity-bound action menu in CardAction.
+4. P2 — Search-result Items added medium padding inside an already padded Card. Switched both Atlas results to the built-in small Item size; computed inline padding is `8px` for each row.
+
+### Required fidelity surfaces
+
+- Fonts and typography: existing Core heading, label, helper, Item, and KeyValue hierarchy is preserved.
+- Spacing and layout rhythm: the new forms use primitive-owned field gaps; small search Items remove the excessive nested inset; masonry remains intersection-free.
+- Colors and visual tokens: all states use existing semantic Card, Item, Select, Input, Switch, Progress, Badge, and Button tokens.
+- Image quality and asset fidelity: no new raster or approximate assets were introduced; adapter icons are used where needed.
+- Copy and content: generic component names were replaced with realistic task, project, filter, ownership, and release data.
+
+### Verification
+
+- In-app browser inspection: 35 Cards, zero overlaps, zero invalid rows, and no remaining Command search, Quick filter, or Context menu headings.
+- Contextual anatomy: Move task exposes two Selects and one Switch; Project filters exposes four filter controls plus Reset and Save filters; Atlas launch binds actions directly to the project Card.
+- Search results: two small plain Items, each resolving to `8px` inline padding.
+- Console inspection: no warnings or errors.
+- `lint`, `typecheck`, docs validation, token validation, formatting, and `git diff --check` pass.
+- The focused screenshot was required because the annotated Cards sit below and to the right of the initial canvas viewport; it clearly covers Move task, Atlas launch, and Project filters. Search-result padding was additionally verified from the live Item metrics.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
+
+final result: passed
+
+## Playground compact Items and destructive action corrections — 2026-08-09
+
+### Source truth and evidence
+
+- User browser annotations: compact Feature flags and Activity feed Item geometry, Switch semantics for Compact tables, and a destructive Delete account action.
+- Original reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png` (`2940 × 1670` pixels).
+- Focused implementation: `design-qa-artifacts/playground-final-item-actions/01-final.png` (`1470 × 837` pixels).
+- Comparison board: `design-qa-artifacts/playground-final-item-actions/02-comparison.png` (`2485 × 700` pixels); both captures were normalized to `700px` height.
+- Browser viewport: `1470 × 837` CSS pixels, device scale factor `2`; Light appearance with neutral Playground defaults.
+
+### Findings, fixes, and post-fix evidence
+
+1. P2 — Feature flag rows used medium Item padding inside an already padded Card. Switched all three rows to the built-in small Item size; computed inline padding is now `8px`.
+2. P2 — Compact tables used Toggle semantics for a persistent binary setting. Replaced it with the system Switch in the checked state.
+3. P1 — Delete account was styled as a neutral secondary action despite being irreversible. Applied the Button `danger` variant; the live result resolves to a red background with white text.
+4. P2 — Activity feed rows repeated medium Item padding inside the Card. Switched all three rows to the small Item size; computed inline padding is now `8px`.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged; Item titles, descriptions, and actions preserve the Core hierarchy.
+- Spacing and layout rhythm: compact Items remove the nested inset while preserving the seven-column masonry and Card padding.
+- Colors and visual tokens: the destructive action and Switch states use existing semantic Button and Switch tokens.
+- Image quality and asset fidelity: existing avatars and adapter icons are preserved; no approximate assets were introduced.
+- Copy and content: scenario copy and data remain unchanged; only component semantics and geometry changed.
+
+### Verification
+
+- In-app browser inspection: 35 Cards, seven columns, zero overlaps, and zero `auto`/`Infinity`/`NaN` rows.
+- Component inspection: three small Activity feed Items, three small Feature flags Items, Compact tables exposed as a checked Switch, and Delete account exposed as a `danger` Button.
+- Computed geometry: every corrected Item resolves to `8px` inline padding.
+- Console inspection: no warnings or errors.
+- `lint`, `typecheck`, docs validation, token validation, formatting, and `git diff --check` pass.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
+
+final result: passed
+
+## Playground Notifications card correction — 2026-08-09
+
+### Source truth and evidence
+
+- User browser annotation: promote Save preferences to the primary CTA and compose Quiet hours as an Item with its Switch on the right.
+- Original reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png` (`2940 × 1670` pixels).
+- Focused implementation: `design-qa-artifacts/playground-notifications-card/01-final.png` (`1470 × 837` pixels).
+- Comparison board: `design-qa-artifacts/playground-notifications-card/02-comparison.png` (`2485 × 700` pixels); both captures were normalized to `700px` height.
+- Browser viewport: `1470 × 837` CSS pixels, device scale factor `2`; Light appearance with neutral Playground defaults.
+
+### Findings, fixes, and post-fix evidence
+
+1. P2 — Save preferences used the secondary Button variant despite being the Card's completion action. Restored the default primary variant.
+2. P2 — Quiet hours rendered as a standalone labeled Switch, so the control was not aligned with the other entity rows. Composed a small system Item with ItemContent and ItemActions; the checked Switch now sits on the right.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged; the new Item uses the existing ItemTitle and ItemDescription hierarchy.
+- Spacing and layout rhythm: the small Item resolves to `8px` inline padding and keeps the Switch right-aligned.
+- Colors and visual tokens: the CTA and Switch use existing primary semantic tokens.
+- Image quality and asset fidelity: no assets were added or changed.
+- Copy and content: all notification labels, descriptions, and values remain unchanged.
+
+### Verification
+
+- In-app browser inspection: 35 Cards, zero overlaps, and zero invalid masonry rows.
+- Notifications anatomy: primary Save preferences Button; one small Item; checked Quiet hours Switch positioned in ItemActions on the right.
+- Console inspection: no warnings or errors.
+- `lint`, `typecheck`, docs validation, token validation, formatting, and `git diff --check` pass.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
+
+final result: passed
+
+## Playground canvas origin and milestone actions — 2026-08-09
+
+### Source truth and evidence
+
+- User feedback: the canvas appeared broken again, and Set new milestone incorrectly grouped Cancel and Set milestone in ButtonGroup.
+- Original reference: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-7606849f-d237-4b03-be65-0428a6eb09ad.png` (`2940 × 1670` pixels).
+- Focused implementation: `design-qa-artifacts/playground-canvas-milestone/01-final.png` (`1470 × 837` pixels).
+- Comparison board: `design-qa-artifacts/playground-canvas-milestone/02-comparison.png` (`2485 × 700` pixels); both captures were normalized to `700px` height.
+- Browser viewport: `1470 × 837` CSS pixels, device scale factor `2`; Light appearance with neutral Playground defaults.
+
+### Findings, fixes, and post-fix evidence
+
+1. P1 — The masonry itself remained valid, but the shared review tab had been left at `scrollLeft: 819px` by the previous focused QA inspection, hiding the first columns and making the canvas appear broken. Restored the canvas viewport to its origin (`scrollLeft: 0`, `scrollTop: 0`) and kept that state for handoff.
+2. P2 — Set new milestone used ButtonGroup for two independent footer actions. Removed that grouping so CardFooter owns the spacing between a secondary Cancel Button and primary Set milestone Button.
+
+### Required fidelity surfaces
+
+- Fonts and typography: unchanged.
+- Spacing and layout rhythm: the seven-column masonry is visible from its true origin; independent Card footer actions retain primitive-owned spacing.
+- Colors and visual tokens: Cancel remains secondary and Set milestone remains primary.
+- Image quality and asset fidelity: no assets were added or changed.
+- Copy and content: milestone copy and form values remain unchanged.
+
+### Verification
+
+- In-app browser inspection: 35 Cards, seven columns, zero overlaps, zero invalid rows, and canvas scroll position `0, 0`.
+- Milestone anatomy: zero ButtonGroup instances in the Card; separate visible Cancel and Set milestone Buttons.
+- Console inspection: no warnings or errors.
+- `lint`, `typecheck`, docs validation, token validation, formatting, and `git diff --check` pass.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
+
+final result: passed
+
+## Card component section spacing — 2026-08-09
+
+### Source truth
+
+- User direction: set `--n-card-section-gap` to `1rem` at the Card component level, not in the global token layer.
+
+### Finding and fix
+
+1. P2 — The global semantic token must remain available at its existing `--n-space-2` fallback, while Card itself needs a `1rem` section rhythm. Added `[--n-card-section-gap:1rem]` to the root Card class and preserved the global token definition unchanged.
+
+### Verification
+
+- In-app browser inspection: all 35 Playground Cards resolve `--n-card-section-gap` to `1rem`; sampled CardContent row gaps resolve to `16px`.
+- Masonry remains valid with 35 Cards, zero overlaps, and zero invalid rows.
+- UI contract tests: 174 passed.
+- UI lint, UI typecheck, token validation, formatting, and `git diff --check` pass.
+- Console inspection: no warnings or errors.
+
+No actionable P0, P1, or P2 findings remain in the requested scope.
+
+final result: passed
+
+## Card header spacing separation — 2026-08-09
+
+### Source truth
+
+- User browser annotation on the Notifications Card header: retain the Card section gap at `1rem`, but reduce the CardHeader title/description spacing to `0.5rem`.
+
+### Finding and fix
+
+1. P2 — CardHeader reused `--n-card-section-gap`, coupling its compact title/description relationship to the larger content rhythm. Added a component-local `--n-card-header-gap: 0.5rem` and applied it to both the CardHeader grid and its title/description group. CardContent and CardFooter continue to use the `1rem` section gap.
+
+### Verification
+
+- Notifications Card: CardHeader gap `8px`, title/description gap `8px`, CardContent gap `16px`.
+- All 35 Playground Cards expose `--n-card-header-gap: 0.5rem` and `--n-card-section-gap: 1rem` through the Card root.
+- Masonry remains valid with zero overlaps and zero invalid rows.
+- UI contract tests: 174 passed; UI lint, UI typecheck, formatting, and `git diff --check` pass.
+- Console inspection: no warnings or errors.
+
+No actionable P0, P1, or P2 findings remain in the requested scope.
+
+final result: passed
+
+## Release readiness independent actions — 2026-08-09
+
+### Source truth
+
+- User direction: the Review and Approve CTAs in Release readiness must be separate Buttons rather than a ButtonGroup.
+
+### Finding and fix
+
+1. P2 — Release readiness grouped two independent workflow actions in ButtonGroup. Removed the grouping so CardFooter owns the spacing between secondary Review and primary Approve Buttons.
+
+### Verification
+
+- Release readiness contains zero ButtonGroup instances and two direct footer Buttons: Review (`secondary`) and Approve (`primary`).
+- Masonry remains valid with 35 Cards, zero overlaps, and zero invalid rows.
+- Docs lint, docs typecheck, docs validation, formatting, and `git diff --check` pass.
+- Console inspection: no warnings or errors.
+
+No actionable P0, P1, or P2 findings remain in the requested scope.
+
+final result: passed
+
+## Project filters independent actions — 2026-08-09
+
+### Source truth
+
+- User direction: Reset and Save filters in Project filters must be separate Buttons rather than a ButtonGroup.
+
+### Finding and fix
+
+1. P2 — Project filters grouped two independent form actions in ButtonGroup. Removed the grouping so CardFooter owns the spacing between secondary Reset and primary Save filters Buttons; existing reset and toast behavior remains unchanged.
+
+### Verification
+
+- Project filters contains zero ButtonGroup instances and two direct footer Buttons: Reset (`secondary`) and Save filters (`primary`).
+- Masonry remains valid with 35 Cards, zero overlaps, and zero invalid rows.
+- Docs lint, docs typecheck, docs validation, formatting, and `git diff --check` pass.
+- Console inspection: no warnings or errors.
+
+No actionable P0, P1, or P2 findings remain in the requested scope.
+
+final result: passed
+
+## Loading, plan radio, Move task, and CardFooter corrections — 2026-08-09
+
+### Source truth
+
+- User browser annotations: remove the redundant Fetching recent changes indicator, move plan metadata into RadioGroupItem descriptions, separate Move task actions, and reduce the independent CardFooter action gap to `0.5rem`.
+
+### Findings and fixes
+
+1. P2 — Loading state showed three simultaneous loading patterns. Removed the inline Spinner and Fetching recent changes copy; retained three Skeleton rows and the Syncing loading Badge.
+2. P2 — Plan names and metadata were combined in each radio label. Kept Starter, Studio, and Enterprise as labels and moved Free, $48 per member, and Contact sales into RadioGroupItem descriptions.
+3. P2 — Move task grouped independent Cancel and Move task actions in ButtonGroup. Removed the group while preserving secondary and primary roles.
+4. P2 — CardFooter reused the `1rem` section gap, producing excessive space between independent actions. Added component-local `--n-card-footer-gap: 0.5rem` and bound CardFooter to it; CardContent remains at `1rem`.
+
+### Verification
+
+- Loading state: three Skeletons, Syncing Badge present, Fetching recent changes absent.
+- Choose a plan: three concise labels and three separate descriptions exposed through the RadioGroupItem contract.
+- Move task and Release readiness: zero ButtonGroup instances, direct secondary/primary Buttons, computed footer gap `8px`.
+- Masonry remains valid with 35 Cards, zero overlaps, and zero invalid rows.
+- UI contract tests: 174 passed; UI/docs lint, UI/docs typecheck, docs validation, formatting, and `git diff --check` pass.
+- Console inspection: no warnings or errors.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
+
+final result: passed
+
+## Card header gap refinement — 2026-08-09
+
+### Source truth
+
+- User direction: set the Card component's `--n-card-header-gap` to `0.2rem`.
+
+### Finding and fix
+
+1. P2 — The component-local CardHeader gap remained wider than requested at `0.5rem`. Reduced it to `0.2rem` while preserving `--n-card-footer-gap: 0.5rem` and `--n-card-section-gap: 1rem`.
+
+### Verification
+
+- Card source contract requires `[--n-card-header-gap:0.2rem]` and continues to bind CardHeader and its title/description group to that variable.
+- UI contract tests: 174 passed; UI lint, UI typecheck, formatting, and `git diff --check` pass.
+
+No actionable P0, P1, or P2 findings remain in the requested scope.
+
+final result: passed
+
+## Playground CTA, ItemGroup, Slider, and wide-card balance — 2026-08-09
+
+### Source truth
+
+- User browser annotations: make Save links primary, tighten the Account access item group, correct Slider spacing and typography, and place two-column cards only over balanced adjacent columns.
+
+### Findings and fixes
+
+1. P2 — Social links used a secondary Save CTA. Restored the primary Button variant.
+2. P2 — Account access combined medium Items with a non-zero group gap. Switched its rows to the system `sm` Item size and corrected the ItemGroup token to zero so explicit separators do not gain additional spacing.
+3. P2 — Slider used a `0.25rem` section gap and label/XS typography. Reduced the component gap to `0.125rem`, assigned MD tokens to label and value, and assigned SM to the description.
+4. P2 — Wide cards selected only the lowest adjacent columns, even when their heights diverged. The layout now prioritizes the most balanced adjacent pair for span-two Cards, using vertical position as the tie-breaker; card heights remain intrinsic.
+
+### Verification
+
+- Social links exposes Save links as primary.
+- Account access contains three `sm` Items in an ItemGroup with a computed zero gap.
+- Payout Slider resolves to a 2px vertical gap at 100% scaling, MD label/value, and a smaller SM description.
+- All three wide cards stay within one canvas-gap plus 8px of the adjacent-column skyline; the catalog keeps 35 Cards with no overlaps or invalid grid rows.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
+
+final result: passed
+
+## Collapsible Settings and field rhythm — 2026-08-09
+
+### Source truth
+
+- User direction: allow the Settings card to collapse like a sidebar so the canvas uses the released width, and make every Settings Select use the same label-to-control spacing as the Password Field.
+
+### Findings and fixes
+
+1. P2 — The Settings column was permanently reserved. Added explicit Hide and Settings controls, a collapsed workspace state with a zero-width settings column, and an inert/hidden panel state while preserving all theme values in React state.
+2. P2 — Playground Selects locally overrode the shared Field gap to `0.25rem`, diverging from the Password Field. Removed the override so both resolve through the system `--n-field-gap` token at `0.375rem`.
+
+### Verification
+
+- Expanded Settings exposes seven Selects and a Collapse settings control.
+- Collapsed Settings is inert and `aria-hidden`, exposes a Show settings control, and expands the canvas into the released column.
+- Accent color remains selected after collapse and restore.
+- Accent color and Password both resolve to a 6px label-to-control gap at 100% scaling.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
+
+final result: passed
+
+## Outline ItemGroup spacing — 2026-08-09
+
+### Source truth
+
+- User browser annotation: bordered project Items should keep visible space between their outlines, while spacing should be owned by the ItemGroup component rather than the Playground card.
+
+### Finding and fix
+
+1. P2 — ItemGroup used the zero-gap plain-list contract for outline Items as well, causing adjacent borders to touch. Added `--n-item-group-outline-gap: var(--n-space-2)` and made ItemGroup adopt it whenever the group directly contains an outline Item. Plain groups with explicit ItemSeparator children continue to use a zero gap.
+
+### Verification
+
+- Projects contains three `sm` outline Items and resolves its ItemGroup gap to 8px.
+- Account access and other plain ItemGroups keep a computed zero gap.
+- No Playground-specific spacing class or wrapper was added.
+
+No actionable P0, P1, or P2 findings remain in the annotated scope.
 
 final result: passed

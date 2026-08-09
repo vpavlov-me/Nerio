@@ -513,6 +513,15 @@ describe("Core static contracts", () => {
     expect(loadingItem).toHaveAttribute("data-loading");
   });
 
+  it("keeps plain ItemGroup rows flush and spaces grouped outline Items", () => {
+    const source = readFileSync(resolve(process.cwd(), "src/components/item.tsx"), "utf8");
+
+    expect(source).toContain("gap-(--n-item-group-gap,0)");
+    expect(source).toContain(
+      "has-[>[data-slot=item][data-variant=outline]]:[--n-item-group-gap:var(--n-item-group-outline-gap)]",
+    );
+  });
+
   it("composes render-element and forwarded Item refs without dropping either ref shape", () => {
     const renderObjectRef = React.createRef<HTMLAnchorElement>();
     const forwardedCallbackRef = vi.fn<(node: HTMLElement | null) => void>();
@@ -714,13 +723,18 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
-    expect(tokens).toContain("--n-slider-gap: var(--n-space-1);");
+    expect(tokens).toContain("--n-slider-gap: var(--n-space-0-5);");
+    expect(tokens).toContain("--n-slider-label-font-size: var(--n-font-size-md);");
+    expect(tokens).toContain("--n-slider-value-font-size: var(--n-font-size-md);");
+    expect(tokens).toContain("--n-slider-description-font-size: var(--n-font-size-sm);");
     expect(tokens).toContain("--n-slider-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-slider-disabled-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-switch-thumb-background: var(--n-gray-0);");
     expect(tokens).toContain("--n-switch-thumb-background-checked: var(--n-gray-0);");
     expect(tokens).toContain("--n-list-gap: var(--n-space-1);");
     expect(tokens).toContain("--n-list-item-padding: var(--n-space-2);");
+    expect(tokens).toContain("--n-item-group-gap: var(--n-space-0);");
+    expect(tokens).toContain("--n-item-group-outline-gap: var(--n-space-2);");
     expect(tokens).toContain("--n-card-padding-md: var(--n-space-6);");
     expect(tokens).toMatch(
       /:root\[data-density="compact"\][\s\S]*--n-card-padding-md: var\(--n-space-5\);/,
@@ -945,6 +959,7 @@ describe("Core static contracts", () => {
           orientation="vertical"
         />
         <KeyValue data-testid="key-value" label="Owner" value="Product team" {...unsafeSlot} />
+        <KeyValue data-testid="key-value-row" label="Members" orientation="row" value="12" />
         <Alert data-testid="alert" title="Saved" tone="success" {...unsafeSlot} />
         <Toast data-testid="toast" title="Updated" tone="info" {...unsafeSlot} />
         <Table data-testid="table" {...unsafeSlot}>
@@ -987,6 +1002,9 @@ describe("Core static contracts", () => {
     expect(screen.getByTestId("separator")).toHaveClass("h-6");
     expect(screen.getByTestId("separator")).not.toHaveClass("h-auto");
     expect(screen.getByTestId("key-value")).toHaveAttribute("data-slot", "root");
+    expect(screen.getByTestId("key-value")).toHaveAttribute("data-orientation", "column");
+    expect(screen.getByTestId("key-value-row")).toHaveAttribute("data-orientation", "row");
+    expect(screen.getByTestId("key-value-row")).toHaveClass("grid-cols-[minmax(0,1fr)_auto]");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-slot", "root");
     expect(screen.getByTestId("alert")).toHaveAttribute("data-tone", "success");
     expect(screen.getByTestId("toast")).toHaveAttribute("data-slot", "root");
@@ -1341,7 +1359,11 @@ describe("Core static contracts", () => {
       "max-[30rem]:has-[>[data-slot=card-action]]:grid-cols-[minmax(0,1fr)]",
     );
     expect(source).not.toContain("[&>div:not([data-slot=card-action])]");
-    expect(source).toContain("[&>div:has(>[data-slot=card-title])]:gap-(--n-card-section-gap)");
+    expect(source).toContain("[--n-card-footer-gap:0.5rem]");
+    expect(source).toContain("[--n-card-header-gap:0.2rem]");
+    expect(source).toContain("[--n-card-section-gap:1rem]");
+    expect(source).toContain("[&>div:has(>[data-slot=card-title])]:gap-(--n-card-header-gap)");
+    expect(source).toContain("gap-(--n-card-footer-gap)");
     expect(source).toContain("forced-colors:[&:is(a):focus-visible]:outline-[Highlight]");
   });
 

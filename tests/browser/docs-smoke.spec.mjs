@@ -208,57 +208,408 @@ test("keeps the homepage concise while local tooling remains accessible", async 
   await expectHealthyPage(page, problems);
 });
 
-test("applies every Playground control to the component canvas", async ({ page }) => {
+test("applies every Playground control to the product scenario canvas", async ({ page }) => {
   const problems = monitorPage(page);
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/playground");
   const playground = page.locator(".visual-playground");
-  await expect(page.getByRole("heading", { name: "Playground", exact: true })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Component index" })).toHaveCount(0);
-  await expect(page.locator(".component-api-matrix")).toHaveCount(0);
-  expect(await page.locator(".component-lab-section").count()).toBe(
-    await page.locator(".component-lab-section > .component-playground-preview").count(),
+  const canvas = page.getByRole("main", { name: "Nerio scenario canvas" });
+  await expect(page.getByRole("heading", { name: "Playground", exact: true })).toBeAttached();
+  await expect(page.locator(".playground-scene")).toHaveCount(35);
+  await expect(page.locator('.playground-scene[data-variant="default"]')).toHaveCount(35);
+  await expect(page.locator('.playground-scene[data-variant="secondary"]')).toHaveCount(0);
+  await expect(page.locator('.playground-scene[data-span="2"]')).toHaveCount(3);
+  await expect(page.locator(".playground-scene .n-card")).toHaveCount(0);
+  await expect(page.locator(".playground-scene .n-calendar")).toHaveCount(0);
+  const catalogGrid = await page.locator(".playground-masonry").evaluate((element) => ({
+    columns: getComputedStyle(element).gridTemplateColumns.split(" ").length,
+    display: getComputedStyle(element).display,
+  }));
+  expect(catalogGrid).toEqual({ columns: 7, display: "grid" });
+  const masonryOverlaps = await page.locator(".playground-masonry").evaluate((element) => {
+    const cards = Array.from(element.querySelectorAll("[data-playground-card]"));
+    const rectangles = cards.map((card) => card.getBoundingClientRect());
+    let overlaps = 0;
+
+    for (let first = 0; first < rectangles.length; first += 1) {
+      for (let second = first + 1; second < rectangles.length; second += 1) {
+        const inlineOverlap =
+          Math.min(rectangles[first].right, rectangles[second].right) -
+          Math.max(rectangles[first].left, rectangles[second].left);
+        const blockOverlap =
+          Math.min(rectangles[first].bottom, rectangles[second].bottom) -
+          Math.max(rectangles[first].top, rectangles[second].top);
+        if (inlineOverlap > 1 && blockOverlap > 1) overlaps += 1;
+      }
+    }
+
+    return overlaps;
+  });
+  expect(masonryOverlaps).toBe(0);
+  const masonryRows = await page
+    .locator("[data-playground-card]")
+    .evaluateAll((cards) => cards.map((card) => getComputedStyle(card).gridRow));
+  expect(
+    masonryRows.every(
+      (row) => !row.includes("Infinity") && !row.includes("NaN") && !row.includes("auto"),
+    ),
+  ).toBe(true);
+  const wideCardBalance = await page.locator(".playground-masonry").evaluate((element) => {
+    const cards = Array.from(element.querySelectorAll("[data-playground-card]"));
+    const gap = Number.parseFloat(getComputedStyle(element).columnGap);
+
+    return {
+      gap,
+      imbalances: cards
+        .filter((card) => card.getAttribute("data-span") === "2")
+        .map((wideCard) => {
+          const wideRect = wideCard.getBoundingClientRect();
+          const samplePoints = [
+            wideRect.left + wideRect.width * 0.25,
+            wideRect.left + wideRect.width * 0.75,
+          ];
+          const cardsAbove = cards.filter((card) => {
+            if (card === wideCard) return false;
+            const rect = card.getBoundingClientRect();
+            return rect.bottom <= wideRect.top + 1;
+          });
+          const skyline = samplePoints.map((samplePoint) =>
+            Math.max(
+              0,
+              ...cardsAbove
+                .map((card) => card.getBoundingClientRect())
+                .filter((rect) => rect.left <= samplePoint && rect.right >= samplePoint)
+                .map((rect) => rect.bottom),
+            ),
+          );
+
+          return Math.abs(skyline[0] - skyline[1]);
+        }),
+    };
+  });
+  expect(
+    wideCardBalance.imbalances.every((imbalance) => imbalance <= wideCardBalance.gap + 8),
+  ).toBe(true);
+  await expect(page.getByRole("radiogroup", { name: "Appearance" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Copy theme" })).toHaveCount(0);
+  await expect(playground).toHaveAttribute("data-mode", "dark");
+  const settings = page.locator("#playground-theme-settings");
+  await expect(settings).toHaveAttribute("role", "complementary");
+  await expect(settings).toHaveAttribute("aria-label", "Theme settings");
+  await expect(settings.getByRole("combobox")).toHaveCount(7);
+  const workspace = page.locator(".visual-playground__workspace--radix");
+  const expandedCanvasWidth = await canvas.evaluate(
+    (element) => element.getBoundingClientRect().width,
+  );
+  const expandedSettingsLayout = await workspace.evaluate((element) => {
+    const canvasRect = element.querySelector(".playground-canvas").getBoundingClientRect();
+    const settingsElement = element.querySelector("#playground-theme-settings");
+    const settingsRect = settingsElement.getBoundingClientRect();
+    return {
+      canvasHeight: canvasRect.height,
+      settingsHeight: settingsRect.height,
+      settingsShadow: getComputedStyle(settingsElement).boxShadow,
+    };
+  });
+  expect(expandedSettingsLayout.settingsHeight).toBeLessThan(expandedSettingsLayout.canvasHeight);
+  expect(expandedSettingsLayout.settingsShadow).toBe("none");
+  await expect(settings.locator(".n-select-field").first()).toHaveCSS("gap", "6px");
+  await expect(
+    page
+      .getByRole("heading", { name: "Sign in", exact: true })
+      .locator("xpath=ancestor::section[@data-playground-card]")
+      .locator(".n-field")
+      .filter({ has: page.getByText("Password", { exact: true }) }),
+  ).toHaveCSS("gap", "6px");
+  await page.getByRole("button", { name: "Collapse settings" }).click();
+  await expect(workspace).toHaveAttribute("data-settings-state", "collapsed");
+  await expect(settings).toHaveAttribute("aria-hidden", "true");
+  await expect(settings).toHaveAttribute("inert", "");
+  const showSettings = page.getByRole("button", { name: "Show settings" });
+  await expect(showSettings).toBeVisible();
+  await expect(showSettings.locator("svg")).toHaveCount(1);
+  await expect(page.locator(".playground-settings__rail")).toHaveCSS("width", "48px");
+  expect(await canvas.evaluate((element) => element.getBoundingClientRect().width)).toBeGreaterThan(
+    expandedCanvasWidth,
+  );
+  const collapsedLayout = await workspace.evaluate((element) => {
+    const canvasRect = element.querySelector(".playground-canvas").getBoundingClientRect();
+    const railRect = element.querySelector(".playground-settings__rail").getBoundingClientRect();
+    const workspaceRect = element.getBoundingClientRect();
+    const columnGap = Number.parseFloat(getComputedStyle(element).columnGap);
+    const paddingInlineEnd = Number.parseFloat(getComputedStyle(element).paddingInlineEnd);
+    return {
+      canvasEdge: canvasRect.right,
+      expectedCanvasEdge: railRect.left - columnGap,
+      railEdge: railRect.right,
+      expectedRailEdge: workspaceRect.right - paddingInlineEnd,
+      canvasHeight: canvasRect.height,
+      railHeight: railRect.height,
+      railWidth: railRect.width,
+      railShadow: getComputedStyle(element.querySelector(".playground-settings__rail")).boxShadow,
+    };
+  });
+  expect(Math.abs(collapsedLayout.canvasEdge - collapsedLayout.expectedCanvasEdge)).toBeLessThan(1);
+  expect(Math.abs(collapsedLayout.railEdge - collapsedLayout.expectedRailEdge)).toBeLessThan(1);
+  expect(collapsedLayout.railHeight).toBeLessThan(collapsedLayout.canvasHeight);
+  expect(collapsedLayout.railWidth).toBe(48);
+  expect(collapsedLayout.railShadow).toBe("none");
+  await showSettings.click();
+  await expect(workspace).toHaveAttribute("data-settings-state", "expanded");
+  await expect(settings).toHaveAttribute("aria-hidden", "false");
+  await expect(settings).not.toHaveAttribute("inert", "");
+  await expect(page.getByText("No projects yet", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("You're all caught up", { exact: true })).toHaveCount(0);
+  await expect(
+    page.locator('[data-slot="item-title"]').getByText("Design system release", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText("Maya mentioned you", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Command search" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Project navigation" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Preview deployment" })).toHaveCount(1);
+  await expect(page.getByRole("heading", { name: "Context menu" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Move task" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Project filters" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Atlas launch", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Save filters" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reset", exact: true })).toBeVisible();
+  const projectFiltersCard = page
+    .getByRole("heading", { name: "Project filters", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(projectFiltersCard.locator(".n-button-group")).toHaveCount(0);
+  await expect(
+    projectFiltersCard.getByRole("button", { name: "Reset", exact: true }),
+  ).toHaveAttribute("data-variant", "secondary");
+  await expect(
+    projectFiltersCard.getByRole("button", { name: "Save filters", exact: true }),
+  ).toHaveAttribute("data-variant", "primary");
+  const deleteAccountCard = page
+    .getByRole("heading", { name: "Delete account", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(deleteAccountCard.getByRole("button", { name: "Delete account" })).toHaveAttribute(
+    "data-variant",
+    "danger",
+  );
+  const activityFeedCard = page
+    .getByRole("heading", { name: "Activity feed", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(activityFeedCard.locator(".n-item[data-size='sm']")).toHaveCount(3);
+  const featureFlagsCard = page
+    .getByRole("heading", { name: "Feature flags", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(featureFlagsCard.locator(".n-item[data-size='sm']")).toHaveCount(3);
+  await expect(featureFlagsCard.getByRole("switch", { name: "Compact tables" })).toBeChecked();
+  await expect(featureFlagsCard.getByRole("button", { name: "Compact tables" })).toHaveCount(0);
+  const notificationsCard = page
+    .getByRole("heading", { name: "Notifications", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(notificationsCard.getByRole("button", { name: "Save preferences" })).toHaveAttribute(
+    "data-variant",
+    "primary",
+  );
+  await expect(notificationsCard.locator(".n-item[data-size='sm']")).toHaveCount(1);
+  await expect(notificationsCard.getByRole("switch", { name: "Quiet hours" })).toBeChecked();
+  const socialLinksCard = page
+    .getByRole("heading", { name: "Social links", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(socialLinksCard.getByText("Links open in a new tab.", { exact: true })).toHaveCount(
+    0,
+  );
+  await expect(socialLinksCard.getByRole("button", { name: "Save links" })).toHaveAttribute(
+    "data-variant",
+    "primary",
+  );
+  const signInCard = page
+    .getByRole("heading", { name: "Sign in", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(signInCard.locator(".n-kbd")).toHaveCount(0);
+  const billingSummaryCard = page
+    .getByRole("heading", { name: "Billing summary", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(billingSummaryCard.locator('.n-key-value[data-orientation="row"]')).toHaveCount(3);
+  const billingMetadataTypography = await billingSummaryCard
+    .locator('.n-key-value[data-orientation="row"]')
+    .first()
+    .evaluate((element) => ({
+      label: getComputedStyle(element.querySelector("dt")).fontSize,
+      value: getComputedStyle(element.querySelector("dd")).fontSize,
+    }));
+  expect(billingMetadataTypography.label).toBe(billingMetadataTypography.value);
+  const accountAccessCard = page
+    .getByRole("heading", { name: "Account access", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(accountAccessCard.locator(".n-item-group")).toHaveCSS("gap", "0px");
+  await expect(accountAccessCard.locator(".n-item[data-size='sm']")).toHaveCount(3);
+  const payoutCard = page
+    .getByRole("heading", { name: "Payout threshold", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  const sliderMetrics = await payoutCard.locator(".n-slider").evaluate((element) => ({
+    description: getComputedStyle(element.querySelector(".n-slider__description")).fontSize,
+    gap: getComputedStyle(element).gap,
+    label: getComputedStyle(element.querySelector(".n-slider__label")).fontSize,
+    value: getComputedStyle(element.querySelector(".n-slider__value")).fontSize,
+  }));
+  expect(sliderMetrics).toMatchObject({ gap: "2px", label: "14px", value: "14px" });
+  expect(Number.parseFloat(sliderMetrics.description)).toBeLessThan(
+    Number.parseFloat(sliderMetrics.label),
+  );
+  const milestoneCard = page
+    .getByRole("heading", { name: "Set new milestone", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(milestoneCard.locator(".n-button-group")).toHaveCount(0);
+  await expect(milestoneCard.getByRole("button", { name: "Cancel", exact: true })).toBeVisible();
+  await expect(
+    milestoneCard.getByRole("button", { name: "Set milestone", exact: true }),
+  ).toBeVisible();
+  const releaseCard = page
+    .getByRole("heading", { name: "Release readiness", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(releaseCard.locator(".n-button-group")).toHaveCount(0);
+  await expect(releaseCard.getByRole("button", { name: "Review", exact: true })).toBeVisible();
+  await expect(releaseCard.getByRole("button", { name: "Approve", exact: true })).toBeVisible();
+  expect(
+    await releaseCard
+      .locator(".n-card__footer")
+      .evaluate((element) => getComputedStyle(element).gap),
+  ).toBe("8px");
+  const moveTaskCard = page
+    .getByRole("heading", { name: "Move task", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(moveTaskCard.locator(".n-button-group")).toHaveCount(0);
+  await expect(moveTaskCard.getByRole("button", { name: "Cancel", exact: true })).toHaveAttribute(
+    "data-variant",
+    "secondary",
+  );
+  await expect(
+    moveTaskCard.getByRole("button", { name: "Move task", exact: true }),
+  ).toHaveAttribute("data-variant", "primary");
+  const loadingCard = page
+    .getByRole("heading", { name: "Loading state", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(loadingCard.locator(".n-skeleton")).toHaveCount(3);
+  await expect(loadingCard.getByText("Syncing", { exact: true })).toBeVisible();
+  await expect(loadingCard.getByText("Fetching recent changes…", { exact: true })).toHaveCount(0);
+  const planCard = page
+    .getByRole("heading", { name: "Choose a plan", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  expect(
+    await planCard
+      .locator("[data-slot='option-label']")
+      .evaluateAll((elements) => elements.map((element) => element.textContent?.trim())),
+  ).toEqual(["Starter", "Studio", "Enterprise"]);
+  expect(
+    await planCard
+      .locator("[data-slot='option-description']")
+      .evaluateAll((elements) => elements.map((element) => element.textContent?.trim())),
+  ).toEqual(["Free", "$48 per member", "Contact sales"]);
+  await expect(
+    page
+      .getByText("Northstar Studio", { exact: true })
+      .first()
+      .locator("xpath=ancestor::*[@data-slot='item']"),
+  ).toHaveAttribute("data-variant", "outline");
+  const projectsCard = page
+    .getByRole("heading", { name: "Projects", exact: true })
+    .locator("xpath=ancestor::section[@data-playground-card]");
+  await expect(projectsCard.locator(".n-item-group")).toHaveCSS("gap", "8px");
+  await expect(projectsCard.locator('.n-item[data-variant="outline"]')).toHaveCount(3);
+  await expect(settings.getByRole("button", { name: "Reset" })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Color mode: System" }).click();
+  await page.getByRole("menuitem", { name: "Light" }).click();
+  await expect(playground).toHaveAttribute("data-mode", "light");
+  await page.getByRole("button", { name: "Color mode: Light" }).click();
+  await page.getByRole("menuitem", { name: "Dark" }).click();
+  await expect(playground).toHaveAttribute("data-mode", "dark");
+  await page.getByRole("button", { name: "Color mode: Dark" }).click();
+  await page.getByRole("menuitem", { name: "System" }).click();
+  await expect(playground).toHaveAttribute("data-mode", "dark");
+  await expect(page.locator(".playground-masonry > .n-card").first()).toHaveCSS(
+    "border-color",
+    "rgba(255, 255, 255, 0.14)",
   );
 
-  const accentSwatch = page
-    .getByRole("radiogroup", { name: "Accent color" })
-    .getByRole("radio")
-    .first();
-  await expect(accentSwatch).toHaveCSS("width", "32px");
-  await expect(accentSwatch).toHaveCSS("height", "32px");
+  const canvasBackground = await canvas.evaluate((element) => {
+    const probe = document.createElement("div");
+    probe.style.background = "var(--n-color-surface-canvas)";
+    element.append(probe);
+    const expected = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return { actual: getComputedStyle(element).backgroundColor, expected };
+  });
+  expect(canvasBackground.actual).toBe(canvasBackground.expected);
 
-  const buttonSection = page.locator("#button");
-  await buttonSection
-    .getByRole("tablist", { name: "Preview options" })
-    .getByRole("tab", { name: "lg" })
-    .click();
-  await expect(
-    buttonSection
-      .getByRole("tabpanel", { name: "lg" })
-      .getByRole("button", { name: "danger", exact: true }),
-  ).toBeVisible();
+  const workspaceBackground = await page
+    .locator(".visual-playground__workspace--radix")
+    .evaluate((element) => {
+      const probe = document.createElement("div");
+      probe.style.background = "var(--n-color-surface-canvas)";
+      element.append(probe);
+      const expected = getComputedStyle(probe).backgroundColor;
+      probe.remove();
+      return { actual: getComputedStyle(element).backgroundColor, expected };
+    });
+  expect(workspaceBackground.actual).toBe(workspaceBackground.expected);
 
-  await page.getByRole("radio", { name: "blue", exact: true }).click();
-  await page
-    .getByRole("radiogroup", { name: "Appearance" })
-    .getByRole("radio", { name: "Dark" })
-    .click();
-  await page
-    .getByRole("radiogroup", { name: "Density" })
-    .getByRole("radio", { name: "Compact" })
-    .click();
-  await page
-    .getByRole("radiogroup", { name: "Radius" })
-    .getByRole("radio")
-    .filter({ hasText: "none" })
-    .click();
-  await page
-    .getByRole("radiogroup", { name: "Scaling" })
-    .getByRole("radio", { name: "90%" })
-    .click();
-  await page
-    .getByRole("radiogroup", { name: "Motion" })
-    .getByRole("radio", { name: "Reduced" })
-    .click();
+  const overflow = await canvas.evaluate((element) => ({
+    bodyHeight: document.body.scrollHeight,
+    viewportHeight: document.body.clientHeight,
+    bodyWidth: document.body.scrollWidth,
+    viewportWidth: document.body.clientWidth,
+    clientHeight: element.clientHeight,
+    scrollHeight: element.scrollHeight,
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  }));
+  expect(overflow.bodyHeight).toBe(overflow.viewportHeight);
+  expect(overflow.bodyWidth).toBe(overflow.viewportWidth);
+  expect(overflow.scrollHeight).toBeGreaterThan(overflow.clientHeight);
+  expect(overflow.scrollWidth).toBeGreaterThan(overflow.clientWidth);
+
+  const setting = (label) => settings.getByRole("combobox", { name: label });
+  const chooseSetting = async (label, option) => {
+    await setting(label).click();
+    await page.getByRole("option", { name: option, exact: true }).click();
+  };
+
+  await chooseSetting("Accent color", "Blue");
+  await expect(settings.getByRole("button", { name: "Reset" })).toBeVisible();
+  await chooseSetting("Density", "Compact");
+
+  const firstScenarioCard = page.locator(".playground-masonry > .n-card").first();
+  const firstScenarioButton = page.locator(".playground-masonry .n-button").first();
+  const firstScenarioItem = page.locator(".playground-masonry .n-item").first();
+  const firstScenarioTextarea = page.locator(".playground-masonry .n-textarea").first();
+  const firstScenarioTable = page.locator(".playground-masonry .n-table-container").first();
+  await expect(firstScenarioCard).toHaveCSS("padding", "20px");
+  await expect(firstScenarioButton).toHaveCSS("height", "28px");
+  await expect(firstScenarioItem).toHaveCSS("padding", "8px");
+  await expect(firstScenarioCard).toHaveCSS("border-radius", "28px");
+  await expect(firstScenarioButton).toHaveCSS("border-radius", "999px");
+  await expect(firstScenarioTextarea).toHaveCSS("border-radius", "16px");
+  await expect(firstScenarioTable).toHaveCSS("border-radius", "16px");
+
+  await chooseSetting("Radius", "Large");
+  await expect(firstScenarioCard).toHaveCSS("border-radius", "20px");
+  await expect(firstScenarioButton).toHaveCSS("border-radius", "12px");
+  await expect(firstScenarioTextarea).toHaveCSS("border-radius", "12px");
+  await expect(firstScenarioTable).toHaveCSS("border-radius", "12px");
+  await chooseSetting("Radius", "Medium");
+  await expect(firstScenarioCard).toHaveCSS("border-radius", "14px");
+  await expect(firstScenarioButton).toHaveCSS("border-radius", "8px");
+  await expect(firstScenarioTextarea).toHaveCSS("border-radius", "8px");
+  await expect(firstScenarioTable).toHaveCSS("border-radius", "10px");
+  await chooseSetting("Radius", "Small");
+  await expect(firstScenarioCard).toHaveCSS("border-radius", "8px");
+  await expect(firstScenarioButton).toHaveCSS("border-radius", "4px");
+  await expect(firstScenarioTextarea).toHaveCSS("border-radius", "4px");
+  await expect(firstScenarioTable).toHaveCSS("border-radius", "8px");
+  await chooseSetting("Radius", "None");
+  await expect(firstScenarioTextarea).toHaveCSS("border-radius", "0px");
+  await expect(firstScenarioTable).toHaveCSS("border-radius", "0px");
+  await chooseSetting("UI scale", "90%");
+  await chooseSetting("Motion", "Reduced");
+  await chooseSetting("Panel style", "Flat");
 
   await expect(playground).toHaveAttribute("data-theme", "blue");
   await expect(playground).toHaveAttribute("data-mode", "dark");
@@ -279,50 +630,42 @@ test("applies every Playground control to the component canvas", async ({ page }
     space: "14.4px",
   });
 
-  await page
-    .getByRole("radiogroup", { name: "Settings view" })
-    .getByRole("radio", { name: "Colors" })
-    .click();
-  await expect(page.getByRole("textbox", { name: "Canvas CSS color value" })).toHaveValue(
-    "#000000",
-  );
-
-  await page
-    .getByRole("radiogroup", { name: "Settings view" })
-    .getByRole("radio", { name: "Theme" })
-    .click();
   const darkTextBefore = await playground.evaluate((element) =>
     getComputedStyle(element).getPropertyValue("--n-color-text-secondary").trim(),
   );
-  await page.getByRole("radio", { name: "mauve", exact: true }).click();
+  await chooseSetting("Neutral recipe", "Mauve");
   const darkTextAfter = await playground.evaluate((element) =>
     getComputedStyle(element).getPropertyValue("--n-color-text-secondary").trim(),
   );
   expect(darkTextAfter).not.toBe(darkTextBefore);
 
-  await page
-    .getByRole("radiogroup", { name: "Settings view" })
-    .getByRole("radio", { name: "Colors" })
-    .click();
-  const canvasValue = page.getByRole("textbox", { name: "Canvas CSS color value" });
-  await canvasValue.fill("rgb(255, 0, 0)");
-  await expect(canvasValue).toHaveValue("rgb(255, 0, 0)");
-  await expect(page.locator(".playground-color-control__picker").first()).toHaveValue("#ff0000");
+  const scrolled = await canvas.evaluate((element) => {
+    element.scrollTo({ left: 600, top: 700 });
+    return { left: element.scrollLeft, top: element.scrollTop };
+  });
+  expect(scrolled.left).toBeGreaterThan(0);
+  expect(scrolled.top).toBeGreaterThan(0);
+
+  await settings.getByRole("button", { name: "Reset" }).click();
+  await expect(setting("Accent color")).toContainText("Purple");
+  await expect(setting("Density")).toContainText("Comfortable");
+  await expect(setting("Panel style")).toContainText("Raised");
+  await expect(settings.getByRole("button", { name: "Reset" })).toHaveCount(0);
   await expectHealthyPage(page, problems);
 });
 
-test("keeps Calendar, InputGroup, and Checkbox component states coherent", async ({ page }) => {
+test("keeps Playground scenarios and themed overlays interactive", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/playground");
 
-  const checkbox = page.locator("#checkbox .n-checkbox").first();
+  const checkbox = page.getByRole("checkbox", { name: "Send invitations now" });
   await expect(checkbox).toBeVisible();
   expect(
     await checkbox.evaluate((element) => Number.parseFloat(getComputedStyle(element).borderRadius)),
   ).toBeLessThanOrEqual(4);
 
-  const inputGroup = page.locator("#input-group .n-input-group").last();
-  const groupedInput = inputGroup.locator(".n-input");
+  const groupedInput = page.getByRole("textbox", { name: "Email" });
+  const inputGroup = groupedInput.locator("xpath=ancestor::*[contains(@class, 'n-input-group')]");
   const restingGroupBackground = await inputGroup.evaluate(
     (element) => getComputedStyle(element).backgroundColor,
   );
@@ -340,33 +683,28 @@ test("keeps Calendar, InputGroup, and Checkbox component states coherent", async
   expect(hoveredInputGroup.groupBackground).not.toBe(restingGroupBackground);
   expect(hoveredInputGroup.inputBackground).toBe("rgba(0, 0, 0, 0)");
 
-  await page.getByRole("button", { name: "Open constrained calendar" }).click();
-  const constrainedCalendar = page.getByRole("group", { name: "Constrained release date" });
-  const unavailableDate = constrainedCalendar.getByRole("button", { name: "June 4, 2026" });
-  await expect(unavailableDate).toHaveAttribute("aria-disabled", "true");
-  const unavailableVisual = await unavailableDate.evaluate((element) => {
-    const style = getComputedStyle(element);
-    const probe = document.createElement("span");
-    probe.style.color = "var(--n-calendar-day-foreground-unavailable)";
-    element.parentElement?.append(probe);
-    const tokenColor = getComputedStyle(probe).color;
-    probe.remove();
-    return {
-      color: style.color,
-      decoration: style.textDecorationLine,
-      opacity: style.opacity,
-      tokenColor,
-      tokenOpacity: getComputedStyle(element)
-        .getPropertyValue("--n-calendar-disabled-opacity")
-        .trim(),
-    };
-  });
-  expect(unavailableVisual.color).toBe(unavailableVisual.tokenColor);
-  expect(Number(unavailableVisual.opacity)).toBe(Number(unavailableVisual.tokenOpacity));
-  expect(unavailableVisual.decoration).toBe("none");
+  const calendar = page.getByRole("group", { name: "Choose date" });
+  await expect(calendar).toHaveCount(0);
+  await page.getByRole("button", { name: "Appointment date" }).click();
+  await expect(calendar).toBeVisible();
+  await expect(calendar.getByRole("button", { name: "August 18, 2026, Selected" })).toHaveAttribute(
+    "data-selected",
+    "",
+  );
+  await page.keyboard.press("Escape");
+  await expect(calendar).toHaveCount(0);
 
-  await page.emulateMedia({ forcedColors: "active" });
-  await expect(unavailableDate).toHaveCSS("opacity", "1");
+  await page.getByRole("button", { name: "Open invite dialog" }).click();
+  const dialog = page.getByRole("dialog", { name: "Invite teammates" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator("xpath=ancestor::*[@data-playground-portal]")).toHaveAttribute(
+    "data-density",
+    "comfortable",
+  );
+  await page.keyboard.press("Escape");
+
+  await page.getByRole("button", { name: "Show success toast" }).click();
+  await expect(page.getByText("Changes saved", { exact: true })).toBeVisible();
 
   await expectHealthyPage(page, problems);
 });
