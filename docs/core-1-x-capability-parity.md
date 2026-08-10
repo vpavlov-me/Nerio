@@ -2,7 +2,8 @@
 
 ## Decision
 
-**Accepted planning baseline — 2026-08-06**
+**Accepted planning baseline — 2026-08-06**  
+**Chart-foundation amendment — 2026-08-10**
 
 Nerio will sequence post-1.0 work by user capability, semantic responsibility, accessibility
 contract, and measured product value. Component-count parity with Base UI, shadcn/ui, HeroUI, or any
@@ -13,8 +14,8 @@ The current Core 1.0 surface is complete for its frozen boundary. The beta.1 tec
 #143/#146 evidence gates and the existing #148 → #150 → #151 sequence.
 
 No Core 1.0 runtime, package, Registry, token, export, or API snapshot changed in this decision.
-Until #151 is complete, #342–#370 remain planning only unless roadmap #152 explicitly accepts a
-focused release blocker from real manual or beta evidence.
+Until #151 is complete, #342–#370 and #424 remain planning only unless roadmap #152 explicitly
+accepts a focused release blocker from real manual or beta evidence.
 
 The canonical machine-readable projection is
 [`quality/core-1-x-capability-parity.json`](../quality/core-1-x-capability-parity.json).
@@ -28,7 +29,9 @@ public API snapshot hash
 `248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3`.
 
 The machine-readable projection tracks the current reviewed API snapshot separately, so additive
-post-decision documentation routes do not rewrite this pinned evidence boundary.
+post-decision documentation routes do not rewrite this pinned evidence boundary. The 2026-08-10
+chart-foundation amendment uses the already reviewed repository adapter, token, template, and Pro
+boundary evidence plus focused issue #424; it does not repin the historical baseline.
 
 Sources were retrieved on 2026-08-06:
 
@@ -163,11 +166,14 @@ Pro and consumer applications compose them.
 | <!-- capability:agent-skill classification:core-recipe priority:P2 target:Core 1.2 --> Agent Skill                          | Use #369 as the separate canonical progressive-disclosure skill issue.                                                               | [#369](https://github.com/vpavlov-me/Nerio/issues/369) |
 | <!-- capability:component-lab classification:later-core-candidate priority:P3 target:Core 1.2 --> Component Lab             | Existing docs and visual fixtures remain default; build only after a measured prototype proves another surface is worth maintaining. | [#355](https://github.com/vpavlov-me/Nerio/issues/355) |
 | <!-- capability:core-recipes classification:core-recipe priority:P2 target:Core 1.2 --> Core recipes                        | Ship a stable-1.0 tranche independently; later recipes wait only for their exact component dependencies.                             | [#356](https://github.com/vpavlov-me/Nerio/issues/356) |
+| <!-- capability:chart-foundation classification:adapter priority:P2 target:Core 1.2 --> Chart foundation                    | Keep Recharts optional behind a curated adapter; add shared tokens, accessibility, states, and a small source-first recipe tranche.   | [#424](https://github.com/vpavlov-me/Nerio/issues/424) |
 | <!-- capability:figma-interchange classification:adapter priority:P3 target:Ecosystem --> Figma interchange                 | Code-owned export and drift validation are an adapter; a real file and visual approval remain manual.                                | [#357](https://github.com/vpavlov-me/Nerio/issues/357) |
 
 The repository-native Agent Skill is intentionally removed from #354's implementation ownership.
 MCP may expose canonical data that the skill references, but the two artifacts must not become one
-oversized issue or duplicate their instructions.
+oversized issue or duplicate their instructions. The chart adapter and token/accessibility
+foundation in #424 may start independently after #151; Registry-distributed recipe metadata follows
+#356, and product-ready chart compositions remain Pro.
 
 ## Issue dispositions
 
@@ -191,6 +197,7 @@ oversized issue or duplicate their instructions.
 | [#357](https://github.com/vpavlov-me/Nerio/issues/357) | Retain, mixed manual             | P3 / Ecosystem    | Export work after stable; component subset after first 1.1 tranche.                                |
 | [#369](https://github.com/vpavlov-me/Nerio/issues/369) | Retain separately                | P2 / Core 1.2     | Canonical Agent Skill issue after #151.                                                            |
 | [#370](https://github.com/vpavlov-me/Nerio/issues/370) | Created from split               | P1 / Core 1.1     | Independent NumberField after relevant #342 foundation.                                            |
+| [#424](https://github.com/vpavlov-me/Nerio/issues/424) | Retain as adapter foundation     | P2 / Core 1.2     | Adapter/foundation after #151; Registry recipe publication follows #356; product compositions stay Pro. |
 
 ## Parallel implementation order
 
@@ -204,14 +211,17 @@ oversized issue or duplicate their instructions.
 4. Start adoption after #151 without waiting for new primitives:
    - the first #356 stable-1.0 recipe tranche;
    - #369 Agent Skill.
-5. Run independent Core 1.2 platform tracks:
+5. Start #424's optional Recharts adapter, chart token/accessibility foundation, and generic
+   composition work after #151. Registry-distributed chart recipes follow #356 rather than creating
+   a second recipe contract.
+6. Run independent Core 1.2 platform tracks:
    - #351 package-output decision;
    - #352 CLI modularization;
    - #354 MCP discovery;
    - #355 Lab decision/prototype.
-6. Start #353 after only the CLI modularization slice. Start CLI bootstrap after only the #351
+7. Start #353 after only the CLI modularization slice. Start CLI bootstrap after only the #351
    package decision. Start #349 after #345 and #348 provide real evidence.
-7. Start #357's component-library tranche after the first accepted Core 1.1 subset and the required
+8. Start #357's component-library tranche after the first accepted Core 1.1 subset and the required
    human visual authority are available.
 
 ## Measurable acceptance boundary
@@ -221,7 +231,7 @@ This planning baseline remains valid only while the validator proves:
 - every current catalog component is classified;
 - every reviewed Base UI 1.6.0 public primitive is classified;
 - every platform coverage decision is represented;
-- every issue #342–#357 plus related #369/#370 has one disposition;
+- every issue #342–#357 plus related #369/#370/#424 has one disposition;
 - the exact catalog, Registry, Base UI dependency, and public API snapshot baseline has not drifted;
 - this document, the machine projection, and `ROADMAP.md` agree.
 
