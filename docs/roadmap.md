@@ -39,7 +39,7 @@
 - [ ] Navigation, command menu, and searchable selection
 - [ ] Overlay patterns and notifications
 - [ ] Data table adapter and empty/loading/error patterns
-- [ ] Chart adapter and universal analytics examples
+- [ ] Optional Recharts adapter, token-aligned chart foundation, accessibility contract, and canonical visualization recipes (#424)
 - [ ] Product date, scheduling, and availability workflows above the bounded Core single-date primitives
 - [ ] File upload workflows above native Core file selection
 
