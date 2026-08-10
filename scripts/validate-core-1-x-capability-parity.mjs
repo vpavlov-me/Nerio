@@ -262,6 +262,7 @@ const requiredCapabilityIds = [
   "agent-skill",
   "component-lab",
   "core-recipes",
+  "chart-foundation",
   "figma-interchange",
   "library-plumbing",
 ];
@@ -297,6 +298,7 @@ const requiredCapabilityDependencies = new Map([
   ["agent-skill", [151, 341]],
   ["component-lab", [151, 341]],
   ["core-recipes", [151, 341]],
+  ["chart-foundation", [151, 341]],
   ["figma-interchange", [151, 341, 342]],
 ]);
 for (const capability of capabilities) {
@@ -395,11 +397,12 @@ const requiredIssueDependencies = new Map([
   [357, [341, 342, 151]],
   [369, [341, 151]],
   [370, [341, 342, 151]],
+  [424, [341, 151]],
 ]);
 for (let issue = 342; issue <= 357; issue += 1) {
   assert(dispositionByIssue.has(issue), `Parity matrix is missing issue #${issue}.`);
 }
-for (const issue of [369, 370]) {
+for (const issue of [369, 370, 424]) {
   assert(dispositionByIssue.has(issue), `Parity matrix is missing related issue #${issue}.`);
 }
 for (const disposition of dispositions) {
@@ -448,6 +451,10 @@ assert(
   dispositionByIssue.get(354)?.decision.includes("#369"),
   "MCP disposition must link the separate Agent Skill issue.",
 );
+assert(
+  dispositionByIssue.get(424)?.decision.includes("#356"),
+  "Chart foundation disposition must retain the shared recipe-contract dependency.",
+);
 
 const sequences = Array.isArray(matrix.sequence) ? matrix.sequence : [];
 const requiredSequenceIds = [
@@ -458,6 +465,7 @@ const requiredSequenceIds = [
   "multi-select-decision",
   "adoption",
   "developer-platform",
+  "chart-foundation",
   "ecosystem",
 ];
 for (const id of duplicates(sequences.map((sequence) => sequence.id))) {
