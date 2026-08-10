@@ -149,8 +149,6 @@ components they use.
 
 ### Core 1.2 chart foundation
 
-<!-- parity-track:chart-foundation issues:#424 depends-on:#151,#341 -->
-
 - #424 establishes Recharts as the optional default engine behind a curated adapter, token-aligned
   composable chart foundation, accessibility contract, and small canonical recipe tranche.
 - Adapter and foundation work may begin after #151 without waiting for unrelated Core 1.1
