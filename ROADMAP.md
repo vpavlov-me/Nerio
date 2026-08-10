@@ -147,6 +147,17 @@ components they use.
 - #355 remains a measured build/expand/defer Component Lab decision; current docs and visual
   fixtures remain the default.
 
+### Core 1.2 chart foundation
+
+<!-- parity-track:chart-foundation issues:#424 depends-on:#151,#341 -->
+
+- #424 establishes Recharts as the optional default engine behind a curated adapter, token-aligned
+  composable chart foundation, accessibility contract, and small canonical recipe tranche.
+- Adapter and foundation work may begin after #151 without waiting for unrelated Core 1.1
+  primitives. Registry-distributed recipes and their metadata must follow #356.
+- Product-ready Chart Card, KPI, analytics, dashboard, finance, HR, CRM, and crypto compositions
+  remain Phase 3 Pro responsibilities.
+
 ### Ecosystem
 
 <!-- parity-track:ecosystem issues:#357 depends-on:#151,#341,#342 -->
