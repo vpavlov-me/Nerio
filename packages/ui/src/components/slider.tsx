@@ -218,7 +218,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(function Sli
     >
       {label !== undefined || valueLabel !== undefined ? (
         <div
-          className="n-slider__header flex items-baseline justify-between gap-(--n-slider-header-gap) data-[orientation=vertical]:w-(--n-slider-header-width)"
+          className="n-slider__header relative z-1 flex items-baseline justify-between gap-(--n-slider-header-gap) data-[orientation=vertical]:w-(--n-slider-header-width)"
           data-orientation={orientation}
           data-slot="header"
         >
@@ -267,7 +267,7 @@ export const Slider = React.forwardRef<HTMLDivElement, SliderProps>(function Sli
       </BaseSlider.Control>
       {description ? (
         <p
-          className="n-slider__description m-0 text-(length:--n-slider-description-font-size) text-(--n-color-text-tertiary)"
+          className="n-slider__description relative z-1 m-0 text-(length:--n-slider-description-font-size) text-(--n-color-text-tertiary)"
           data-slot="description"
           id={descriptionId}
         >

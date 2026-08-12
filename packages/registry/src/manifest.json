@@ -2694,7 +2694,7 @@
           "source": "../../ui/src/components/slider.tsx",
           "target": "components/slider.tsx",
           "role": "component",
-          "integrity": "sha256-96d3a5dd1b149c486dfc8763719af2fb13b780cf141e7c95bf134fa02574070f"
+          "integrity": "sha256-846533adc33a2bf4397b5bffdf370c53226681be86cb5cf9b44bf057b838927e"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",

@@ -160,11 +160,11 @@ test("keeps Slider preview singular and product-focused", async ({ page }) => {
   await expect(slider).toHaveValue("15");
   await expect(preview.getByText("$15", { exact: true })).toBeVisible();
   const header = preview.locator('[data-slot="header"]');
-  const control = preview.locator('[data-slot="control"]');
-  const [headerBox, controlBox] = await Promise.all([header.boundingBox(), control.boundingBox()]);
+  const track = preview.locator('[data-slot="track"]');
+  const [headerBox, trackBox] = await Promise.all([header.boundingBox(), track.boundingBox()]);
   expect(headerBox).not.toBeNull();
-  expect(controlBox).not.toBeNull();
-  expect(controlBox.y - (headerBox.y + headerBox.height)).toBeGreaterThanOrEqual(1.5);
+  expect(trackBox).not.toBeNull();
+  expect(Math.round(trackBox.y - (headerBox.y + headerBox.height))).toBe(8);
   await preview.getByText("Tip amount", { exact: true }).click({ position: { x: 20, y: 15 } });
   await expect(slider).toHaveValue("15");
   await expect(page.getByRole("heading", { name: "Preview", exact: true })).toHaveCount(0);
