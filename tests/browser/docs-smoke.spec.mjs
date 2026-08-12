@@ -725,10 +725,25 @@ test("applies every Playground control to the product scenario canvas", async ({
     await setting(label).click();
     await page.getByRole("option", { name: option, exact: true }).click();
   };
+  const expectSegmentedTabsRadius = async (expected) => {
+    await expect
+      .poll(() =>
+        releaseCard.locator(".n-tabs").evaluate((element) => {
+          const list = element.querySelector(".n-tabs__list");
+          const trigger = element.querySelector(".n-tabs__trigger");
+          const indicator = element.querySelector(".n-tabs__indicator");
+          return [list, trigger, indicator].map((part) =>
+            part ? Number.parseFloat(getComputedStyle(part).borderRadius) : Number.NaN,
+          );
+        }),
+      )
+      .toEqual([expected, expected, expected]);
+  };
 
   await chooseSetting("Accent color", "Blue");
   await expect(settings.getByRole("button", { name: "Reset" })).toBeVisible();
   await chooseSetting("Density", "Compact");
+  await chooseSetting("Radii", "Full");
 
   const firstScenarioCard = page.locator(".playground-masonry > .n-card").first();
   const firstScenarioButton = page.locator(".playground-masonry .n-button").first();
@@ -738,27 +753,32 @@ test("applies every Playground control to the product scenario canvas", async ({
   await expect(firstScenarioCard).toHaveCSS("padding", "20px");
   await expect(firstScenarioButton).toHaveCSS("height", "28px");
   await expect(firstScenarioItem).toHaveCSS("padding", "8px");
+  await expectSegmentedTabsRadius(999);
   await expect(firstScenarioCard).toHaveCSS("border-radius", "28px");
   await expect(firstScenarioButton).toHaveCSS("border-radius", "999px");
   await expect(firstScenarioTextarea).toHaveCSS("border-radius", "16px");
   await expect(firstScenarioTable).toHaveCSS("border-radius", "16px");
 
   await chooseSetting("Radii", "Large");
+  await expectSegmentedTabsRadius(12);
   await expect(firstScenarioCard).toHaveCSS("border-radius", "20px");
   await expect(firstScenarioButton).toHaveCSS("border-radius", "12px");
   await expect(firstScenarioTextarea).toHaveCSS("border-radius", "12px");
   await expect(firstScenarioTable).toHaveCSS("border-radius", "12px");
   await chooseSetting("Radii", "Medium");
+  await expectSegmentedTabsRadius(8);
   await expect(firstScenarioCard).toHaveCSS("border-radius", "14px");
   await expect(firstScenarioButton).toHaveCSS("border-radius", "8px");
   await expect(firstScenarioTextarea).toHaveCSS("border-radius", "8px");
   await expect(firstScenarioTable).toHaveCSS("border-radius", "10px");
   await chooseSetting("Radii", "Small");
+  await expectSegmentedTabsRadius(4);
   await expect(firstScenarioCard).toHaveCSS("border-radius", "8px");
   await expect(firstScenarioButton).toHaveCSS("border-radius", "4px");
   await expect(firstScenarioTextarea).toHaveCSS("border-radius", "4px");
   await expect(firstScenarioTable).toHaveCSS("border-radius", "8px");
   await chooseSetting("Radii", "None");
+  await expectSegmentedTabsRadius(0);
   await expect(firstScenarioTextarea).toHaveCSS("border-radius", "0px");
   await expect(firstScenarioTable).toHaveCSS("border-radius", "0px");
   await chooseSetting("Panel style", "Flat");

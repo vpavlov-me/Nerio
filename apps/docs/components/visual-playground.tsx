@@ -708,6 +708,7 @@ function toStyle(
     "--n-table-row-group-radius": `${md}px`,
     "--n-tabs-radius": `${control}px`,
     "--n-tabs-list-radius": `${control}px`,
+    "--n-tabs-segmented-indicator-radius": `${control}px`,
     "--n-toast-radius": `${Math.min(overlay, 20)}px`,
     "--n-toast-status-indicator-radius": `${md}px`,
     "--n-tooltip-radius": `${lg}px`,

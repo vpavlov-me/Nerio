@@ -951,10 +951,10 @@
   --n-tabs-icon-size-md: var(--n-icon-size-sm);
   --n-tabs-icon-size-lg: var(--n-icon-size-md);
   --n-tabs-icon-size: var(--n-tabs-icon-size-md);
-  --n-tabs-radius: var(--n-radius-pill);
-  --n-tabs-list-radius: var(--n-radius-pill);
+  --n-tabs-radius: var(--n-radius-control);
+  --n-tabs-list-radius: var(--n-tabs-radius);
   --n-tabs-list-padding: var(--n-space-0-5);
-  --n-tabs-segmented-indicator-radius: calc(var(--n-tabs-list-radius) - var(--n-tabs-list-padding));
+  --n-tabs-segmented-indicator-radius: var(--n-tabs-radius);
   --n-tabs-foreground: var(--n-color-text-tertiary);
   --n-tabs-foreground-hover: var(--n-color-text-primary);
   --n-tabs-foreground-active: var(--n-color-text-primary);
