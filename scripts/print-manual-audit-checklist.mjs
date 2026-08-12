@@ -43,7 +43,7 @@ const lines = [
   "- Zoom: `<value>`",
   "- Package/source mode: `<mode actually used>`",
   "",
-  "Use only `Pass`, `Fail`, or `Blocked`. Add one concrete observation for every result.",
+  "Use only `Pass`, `Fail`, `Blocked`, or `Not applicable`. Add one concrete observation for every result; `Not applicable` requires a reason.",
   "A single GitHub comment containing this completed checklist may be reused as the HTTPS evidence link for every result in this environment.",
   "",
 ];
@@ -54,7 +54,7 @@ for (const [index, scenario] of scenarios.entries()) {
     "",
     `- Scenario ID: \`${scenario.id}\``,
     `- Route: \`${scenario.route}\``,
-    "- Result: `<Pass | Fail | Blocked>`",
+    "- Result: `<Pass | Fail | Blocked | Not applicable>`",
     "- Notes: `<what happened, including focus or announcement details>`",
     "",
     "Steps:",
@@ -71,7 +71,7 @@ for (const [index, scenario] of scenarios.entries()) {
 lines.push(
   "## Environment decision",
   "",
-  "- Result: `<Pass | Fail | Blocked>`",
+  "- Result: `<Pass | Fail | Blocked | Not applicable>`",
   "- Summary: `<what was covered and any limitations>`",
   "- Finding issues: `<Nerio issue URLs or None recorded>`",
   "",

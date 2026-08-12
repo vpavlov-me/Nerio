@@ -68,7 +68,8 @@ For every scenario, choose one:
 
 - `Pass` — all expected behavior was observed;
 - `Fail` — an actionable product defect was observed;
-- `Blocked` — the scenario could not be completed in the required environment.
+- `Blocked` — the scenario could not be completed in the required environment;
+- `Not applicable` — the scenario legitimately does not apply; record the specific reason.
 
 Add at least one concrete sentence. For screen readers, record the control name, role, state, and
 important announcement or focus transition. For keyboard, record the key sequence and final focus.
@@ -93,10 +94,10 @@ fix, and provide a retest checklist. Do not hide a failure by marking it not app
 
 ## Finish an environment
 
-At the end of the checklist, record `Pass`, `Fail`, or `Blocked` for the environment and link any
-finding issues. Send the completed issue-comment URL to Codex. Codex will transfer the real results
-into the machine-readable completion record and the canonical report without changing the human
-observations.
+At the end of the checklist, record `Pass`, `Fail`, `Blocked`, or `Not applicable` for the environment
+and link any finding issues. Send the completed issue-comment URL to Codex. Codex will transfer the
+real results into the machine-readable completion record and the canonical report without changing
+the human observations.
 
 After all eight environments are complete, run:
 

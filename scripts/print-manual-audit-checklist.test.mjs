@@ -26,6 +26,8 @@ test("prints an environment-specific evidence checklist", () => {
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Operating-system reduced-motion preference/);
   assert.match(result.stdout, /motion-adapter-reduced-motion/);
+  assert.match(result.stdout, /Pass \| Fail \| Blocked \| Not applicable/);
+  assert.match(result.stdout, /`Not applicable` requires a reason/);
   assert.doesNotMatch(result.stdout, /native-temporal-inputs/);
   assert.equal((result.stdout.match(/^- Scenario ID:/gm) ?? []).length, 6);
 });
