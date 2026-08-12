@@ -733,7 +733,7 @@ test("applies every Playground control to the product scenario canvas", async ({
           const trigger = element.querySelector(".n-tabs__trigger");
           const indicator = element.querySelector(".n-tabs__indicator");
           return [list, trigger, indicator].map((part) =>
-            Number.parseFloat(getComputedStyle(part).borderRadius),
+            part ? Number.parseFloat(getComputedStyle(part).borderRadius) : Number.NaN,
           );
         }),
       )
