@@ -311,7 +311,7 @@ export const Select = React.forwardRef<HTMLDivElement, SelectProps>(function Sel
         value={value}
       >
         <BaseSelect.Label
-          className="n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-secondary)"
+          className="n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-primary)"
           data-slot="label"
         >
           {label}

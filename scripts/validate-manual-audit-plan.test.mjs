@@ -1754,21 +1754,56 @@ test("manual audit validator locks the candidate scenario matrix", () => {
 });
 
 test("manual audit validator rejects evidence after post-candidate source changes", () => {
-  const parentCommit = spawnSync("git", ["rev-parse", "HEAD^"], {
+  const currentScope = JSON.stringify({
+    issue: auditPlanFixture.issue,
+    requiredEnvironments: auditPlanFixture.requiredEnvironments,
+    requiredEvidenceFields: auditPlanFixture.requiredEvidenceFields,
+    scenarios: auditPlanFixture.scenarios,
+  });
+  const allowedPostCandidateChanges = new Set([
+    "quality/manual-audit-plan.json",
+    "docs/audits/core-1-0-accessibility-device-audit.md",
+  ]);
+  const parentCommit = spawnSync("git", ["rev-list", "--first-parent", "HEAD"], {
     cwd: root,
     encoding: "utf8",
-  }).stdout.trim();
+  })
+    .stdout.trim()
+    .split(/\r?\n/)
+    .slice(1)
+    .find((commit) => {
+      const candidatePlan = spawnSync("git", ["show", `${commit}:quality/manual-audit-plan.json`], {
+        cwd: root,
+        encoding: "utf8",
+      });
+      if (candidatePlan.status !== 0) return false;
+      const plan = JSON.parse(candidatePlan.stdout);
+      const candidateScope = JSON.stringify({
+        issue: plan.issue,
+        requiredEnvironments: plan.requiredEnvironments,
+        requiredEvidenceFields: plan.requiredEvidenceFields,
+        scenarios: plan.scenarios,
+      });
+      if (candidateScope !== currentScope) return false;
+      return spawnSync("git", ["diff", "--name-only", `${commit}..HEAD`, "--"], {
+        cwd: root,
+        encoding: "utf8",
+      })
+        .stdout.trim()
+        .split(/\r?\n/)
+        .some((path) => path && !allowedPostCandidateChanges.has(path));
+    });
+  assert.ok(parentCommit, "Expected an ancestor with matching audit scope and source changes.");
   withPlanAndReportFixtures(
     (source) => {
       const plan = JSON.parse(completedPlan(source));
       plan.completion.candidate.commit = parentCommit;
+      plan.completion.candidate.githubVerification = `https://github.com/vpavlov-me/Nerio/commit/${parentCommit}`;
+      plan.completion.candidate.ciCommit = parentCommit;
+      plan.completion.candidate.vercelCommit = parentCommit;
       return JSON.stringify(plan, null, 2);
     },
-    (source) =>
-      completedReport(source).replace(
-        `Candidate commit: **${currentCommit}**`,
-        `Candidate commit: **${parentCommit}**`,
-      ),
+    (source) => completedReport(source).replaceAll(currentCommit, parentCommit),
     (planTarget, reportTarget) => {
       const result = run(["--plan", planTarget, "--report", reportTarget]);
       assert.notEqual(result.status, 0);

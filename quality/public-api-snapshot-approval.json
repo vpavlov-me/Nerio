@@ -2,7 +2,7 @@
   "approvedBy": "Vladimir Pavlov",
   "baseline": "core-1.0",
   "classification": "fix",
-  "issue": "405",
+  "issue": "430",
   "schemaVersion": 1,
-  "snapshotSha256": "07998bcbfadd62f8f84929a2962e36f9660d48ba956229323afd842361ca106a"
+  "snapshotSha256": "4242713e5f0f3ddf3218219a849a8de3c35153ff45a6927bf16c931291bfba2e"
 }

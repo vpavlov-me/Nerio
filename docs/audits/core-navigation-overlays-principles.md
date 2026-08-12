@@ -56,8 +56,9 @@ product filters, and documentation shells remain Pro or consumer composition.
 - Current and selected navigation remain neutral by default. Segmented Tabs add only a small,
   natural shadow to separate the selected surface; brand color remains limited to the compact
   indicator variant and focus.
-- Tooltip, Popover, Dropdown Menu, Command, Dialog, and Sheet use the approved inverted dark-glass
-  hierarchy with white text, blur, restrained elevation, and borderless surfaces in every mode.
+- Popover, Dropdown Menu, Command, Dialog, and Sheet use the standard adaptive overlay hierarchy:
+  white with dark text in light mode and black with light text in dark mode. Tooltip alone retains
+  the inverted dark-glass treatment in every mode.
 - Popover and Dropdown Menu use smaller radii and compact internal spacing than Dialog and Sheet.
 - Dialog uses a subtle opacity and independent scale settle so centering transforms remain stable;
   modal backdrops fade with blur. Sheet preserves physical side causality for enter and exit motion.

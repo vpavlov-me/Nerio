@@ -4036,6 +4036,16 @@ pre {
 }
 
 @media (max-width: 700px) {
+  .component-lab-section,
+  .component-lab-section > header,
+  .component-playground-controls,
+  .component-playground-controls__tabs,
+  .component-playground-preview {
+    inline-size: 100%;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+  }
+
   .component-lab-card-grid,
   .component-lab-key-values {
     grid-template-columns: 1fr;

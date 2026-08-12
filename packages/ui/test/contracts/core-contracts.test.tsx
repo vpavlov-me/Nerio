@@ -670,7 +670,13 @@ describe("Core static contracts", () => {
       "group-data-disabled/slider:opacity-(--n-slider-disabled-opacity)",
     );
     expect(componentSource("slider")).toContain(
-      "n-slider__control relative flex h-(--n-slider-control-size)",
+      'orientation === "horizontal" && (label !== undefined || valueLabel !== undefined)',
+    );
+    expect(componentSource("slider")).toContain('"mt-(--n-slider-control-layout-offset)"');
+    expect(componentSource("slider")).toContain('orientation === "horizontal" && description');
+    expect(componentSource("slider")).toContain('"mb-(--n-slider-control-layout-offset)"');
+    expect(componentSource("slider")).toContain(
+      "[--n-slider-control-layout-offset:calc((var(--n-slider-control-size)-var(--n-slider-track-size)-var(--n-slider-gap)-var(--n-slider-gap))*-0.5)]",
     );
     expect(componentSource("slider")).toContain(
       "n-slider__track relative h-(--n-slider-track-size)",
@@ -723,8 +729,11 @@ describe("Core static contracts", () => {
     expect(tokens).toContain("--n-radio-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-track-radius: var(--n-radius-pill);");
     expect(tokens).toContain("--n-slider-thumb-radius: var(--n-radius-pill);");
-    expect(tokens).toContain("--n-slider-gap: var(--n-space-0-5);");
+    expect(tokens).toContain("--n-label-font-size: var(--n-font-size-md);");
+    expect(tokens).toContain("--n-label-font-weight: var(--n-font-weight-regular);");
+    expect(tokens).toContain("--n-slider-gap: var(--n-space-2);");
     expect(tokens).toContain("--n-slider-label-font-size: var(--n-font-size-md);");
+    expect(tokens).toContain("--n-slider-label-color: var(--n-color-text-primary);");
     expect(tokens).toContain("--n-slider-value-font-size: var(--n-font-size-md);");
     expect(tokens).toContain("--n-slider-description-font-size: var(--n-font-size-sm);");
     expect(tokens).toContain("--n-slider-thumb-background: var(--n-gray-0);");
@@ -771,6 +780,8 @@ describe("Core static contracts", () => {
       "data-pressed:[&:active:not(:disabled):not([data-disabled])]:border-(--n-toggle-border-pressed-active)",
     );
     expect(tokens).toContain("--n-toast-width: 25rem;");
+    expect(tokens).toContain("--n-toast-radius: min(var(--n-radius-overlay), 1.25rem);");
+    expect(tokens).toContain("--n-toast-stack-opacity-step: 0;");
     expect(componentSource("toast")).toContain("max-w-(--n-toast-width)");
     expect(tokens).toContain(
       "--n-calendar-day-foreground-unavailable: var(--n-color-text-disabled);",
@@ -1084,7 +1095,8 @@ describe("Core static contracts", () => {
       'press:\n    "transition-[background-color,border-color,color,opacity,scale] duration-(--n-motion-press-duration) ease-(--n-motion-press-easing)',
     );
     expect(tokens).toContain("--n-alert-border-width: var(--n-border-width-0)");
-    expect(tokens).toContain("--n-toast-background: var(--n-overlay-glass-background)");
+    expect(tokens).toContain("--n-toast-background: var(--n-overlay-background)");
+    expect(tokens).toContain("--n-size-toast-stack-offset: 0.5rem;");
     expect(tokens).toContain("--n-avatar-border: var(--n-gray-0)");
     expect(tokens).toContain("--n-avatar-border: var(--n-gray-1000)");
     expect(tokens).toContain("--n-stat-trend-color: var(--n-color-text-secondary)");
@@ -4598,7 +4610,7 @@ describe("Core interactive action contracts", () => {
     fireEvent.compositionEnd(input, { data: "検索" });
   });
 
-  it("applies the approved neutral navigation and inverted overlay visual contracts", () => {
+  it("applies the approved neutral navigation and adaptive overlay visual contracts", () => {
     const componentSource = (name: string) =>
       readFileSync(resolve(process.cwd(), `src/components/${name}.tsx`), "utf8");
     const tokenSource = readFileSync(resolve(process.cwd(), "../tokens/src/styles.css"), "utf8");
@@ -4612,14 +4624,14 @@ describe("Core interactive action contracts", () => {
       expect(componentSource(name), name).toContain("motionClasses.hover");
     }
 
-    expect(tokenSource).toContain("--n-overlay-background: rgb(0 0 0 / 0.88)");
+    expect(tokenSource).toContain("--n-overlay-background: var(--n-color-surface-overlay)");
     expect(tokenSource).toContain(
       "--n-overlay-floating-z-index: calc(var(--n-overlay-z-index) + 2)",
     );
-    expect(tokenSource).toContain("--n-overlay-border-width: var(--n-border-width-0)");
     expect(tokenSource).toContain("--n-overlay-border-width: var(--n-border-width-default)");
     expect(tokenSource).toContain("--n-overlay-border: var(--n-color-border-subtle)");
-    expect(tokenSource).toContain("--n-overlay-foreground: var(--n-gray-0)");
+    expect(tokenSource).toContain("--n-overlay-foreground: var(--n-color-text-primary)");
+    expect(tokenSource).toContain("--n-overlay-glass-background: rgb(0 0 0 / 0.88)");
     expect(tokenSource).toContain("--n-overlay-surface-filter: blur(24px) saturate(120%)");
     expect(tokenSource).toContain("--n-overlay-backdrop-filter: blur(10px)");
     expect(tokenSource).toContain("--n-popover-radius: var(--n-radius-lg)");
@@ -4630,6 +4642,8 @@ describe("Core interactive action contracts", () => {
         "[backdrop-filter:var(--n-overlay-surface-filter)]",
       );
     }
+    expect(componentSource("tooltip")).toContain("bg-(--n-overlay-glass-background)");
+    expect(componentSource("tooltip")).toContain("text-(--n-overlay-glass-foreground)");
     expect(componentSource("dialog")).toContain("n-dialog-backdrop-enter");
     for (const name of ["select", "popover", "tooltip", "dropdown-menu"]) {
       expect(componentSource(name), name).toContain("z-(--n-overlay-floating-z-index)");

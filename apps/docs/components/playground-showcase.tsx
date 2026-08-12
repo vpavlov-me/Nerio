@@ -1181,7 +1181,6 @@ function PlanSelection() {
           Enterprise
         </RadioGroupItem>
       </RadioGroup>
-      <Badge tone="primary-soft">Studio includes unlimited projects</Badge>
     </ScenarioCard>
   );
 }

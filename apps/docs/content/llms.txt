@@ -44,15 +44,16 @@ flat muted surfaces. Table keeps native semantics and consumer-owned behavior wh
 current rows combine a neutral fill with a logical-edge indicator. Avatar fallbacks use fixed
 light/dark fills and overlap borders so translucent seams do not appear in groups. Alert is a flat
 muted inline surface whose semantic tone is carried by its icon and complete message text. Toast is
-an inverted dark glass surface with blur in every mode, neutral white copy, glass-aware controls,
+an adaptive raised overlay surface with standard mode-aware text and controls, subtle elevation,
 and restrained semantic status icons. Stat trend text is neutral by default because Core does not
 infer direction or meaning from an arbitrary string.
 
 Navigation, Layout, and Overlays use one focus, selection, and motion language. Current navigation
 stays neutral unless a compact indicator is needed; segmented Tabs use a soft selected-surface
-shadow, and hover feedback resolves through shared motion tokens. Tooltip, Popover, Dropdown Menu,
-Command, Dialog, and Sheet use the approved inverted dark-glass surface with white hierarchy and
-blur; compact popups use smaller radii than Dialog and Sheet. Modal backdrops blur, Dialog settles
+shadow, and hover feedback resolves through shared motion tokens. Popover, Dropdown Menu, Command,
+Dialog, Sheet, and Toast use standard adaptive overlay surfaces and text hierarchy; compact popups
+use smaller radii than Dialog and Sheet. Tooltip remains the dark-glass exception in every mode.
+Modal backdrops blur, Dialog settles
 with restrained scale and opacity, and Sheet preserves the physical direction of its side. Dialog
 and Sheet titles render neutral 16 px `div` elements by default with explicit heading opt-in, while
 their descriptions use the standard 14 px body size. Their close controls are secondary icon
@@ -67,7 +68,7 @@ Use `/docs/feedback` for the public feedback path. Core 1.0 beta reports begin i
 
 Use primitive tokens only for raw values. Use semantic tokens such as `--n-color-surface-default`, `--n-color-text-primary`, `--n-color-action-primary`, `--n-color-border-default`, `--n-font-sans`, and `--n-font-mono` in product code. Components should prefer component tokens for local contracts such as `--n-button-background-primary`, `--n-input-border`, `--n-dialog-width-md`, `--n-overlay-background`, and `--n-table-cell-padding-x`.
 
-Nerio is neutral-first and compact: use white or black primary surfaces, cool blue-gray grouping fills, whitespace between major blocks, restrained internal spacing, regular 12-14px UI typography, large concentric radii, and borderless controls by default. Adaptive controls, hover and pressed states, neutral selected surfaces, subdued borders, and grid lines use cool near-black alpha primitives in light mode and white alpha primitives in dark mode so the same semantic layer composes naturally over different surfaces. Canvas, primary surfaces, text, actions, semantic status colors, chart series, and contrast-critical roles remain opaque. Reserve the brand color for primary actions, focus, and compact justified selection indicators. Transient overlays use the inverted black-glass token family with white text, blur, and restrained elevation; placeholders may provide the compact visual prompt only when an explicit accessible name remains present.
+Nerio is neutral-first and compact: use white or black primary surfaces, cool blue-gray grouping fills, whitespace between major blocks, restrained internal spacing, regular 12-14px UI typography, large concentric radii, and borderless controls by default. Adaptive controls, hover and pressed states, neutral selected surfaces, subdued borders, and grid lines use cool near-black alpha primitives in light mode and white alpha primitives in dark mode so the same semantic layer composes naturally over different surfaces. Canvas, primary surfaces, text, actions, semantic status colors, chart series, and contrast-critical roles remain opaque. Reserve the brand color for primary actions, focus, and compact justified selection indicators. Transient overlays use standard adaptive surface, text, control, border, and elevation tokens; Tooltip and chart tooltips alone retain the inverted black-glass token family. Placeholders may provide the compact visual prompt only when an explicit accessible name remains present.
 
 System UI is the default Core font stack and the cross-platform system mono stack is the default technical font. Geist is the documentation brand only. Core provides System, Geist, Inter, IBM Plex, Manrope, Source Sans 3, and Space Grotesk scoped token recipes; non-system families remain consumer-loaded, no font files are bundled, and components must consume font tokens rather than hard-coded families.
 

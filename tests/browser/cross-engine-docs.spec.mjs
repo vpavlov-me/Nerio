@@ -169,6 +169,29 @@ test("keeps Toggle touch activation portable", async ({ browser, browserName }, 
   }
 });
 
+test("keeps the manual audit fixture contained at narrow reflow widths", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 320, height: 844 });
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await page.goto("/visual-test");
+  await expect(page.locator('[data-visual-test-ready="true"]')).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    )
+    .toBeLessThanOrEqual(1);
+  expect(await page.evaluate(() => matchMedia("(forced-colors: active)").matches)).toBe(true);
+  expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(
+    true,
+  );
+  expect(problems).toEqual([]);
+});
+
 test("preserves native temporal Input values, constraints, form data, and reflow", async ({
   browserName,
   page,

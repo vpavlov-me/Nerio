@@ -66,8 +66,8 @@ cleanup such as the deprecated Badge `variant` alias remains owned by the final 
   seams when avatars overlap while preserving all image, fallback, and decorative behavior.
 - Alert is a flat muted inline surface. Status color is limited to its icon; title and description
   remain neutral and continue to carry the complete message in text.
-- Toast is an inverted dark glass surface with blur, restrained semantic status icons, neutral
-  white copy, and glass-aware action controls in both light and dark modes.
+- Toast is a standard adaptive overlay surface with mode-aware copy and controls, subtle elevation,
+  and restrained semantic status icons.
 - Stat trends are neutral by default because Core cannot infer whether an arbitrary trend string is
   positive or negative. Progress remains the only default accent-colored feedback track; Spinner,
   Skeleton, and Empty State remain restrained and reduced-motion safe.

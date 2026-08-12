@@ -13,6 +13,11 @@ follow-up implementation focused on primitive, semantic, family, or component-ex
 
 This is design evidence. It does not implement token or component changes.
 
+> Superseded decision (2026-08-12): the dark-glass overlay recommendation below is retained as
+> historical audit evidence only. Current overlays use standard adaptive surface and text tokens;
+> Tooltip and chart tooltips are the only dark-glass exceptions. See
+> [`docs/visual-language-1-0.md`](../visual-language-1-0.md).
+
 ## Cause map
 
 | System cause         | Recurring baseline symptom                                                                                   | Approved rule                                                                                                                              | Implementation owner                                             |
