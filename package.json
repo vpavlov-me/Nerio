@@ -77,9 +77,9 @@
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
     "@playwright/test": "1.62.1",
-    "esbuild": "0.28.1",
+    "esbuild": "0.28.2",
     "prettier": "^3.9.6",
-    "turbo": "^2.10.7",
-    "typescript": "^5.9.3"
+    "turbo": "^2.10.9",
+    "typescript": "^7.0.2"
   }
 }
