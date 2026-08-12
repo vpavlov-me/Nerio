@@ -810,6 +810,10 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
   const problems = monitorPage(page);
   await page.goto("/playground");
 
+  const settings = page.getByRole("complementary", { name: "Theme settings" });
+  await settings.getByRole("combobox", { name: "Neutral color" }).click();
+  await page.getByRole("option", { name: "Mauve", exact: true }).click();
+
   const checkbox = page.getByRole("checkbox", { name: "Send invitations now" });
   await expect(checkbox).toBeVisible();
   expect(
@@ -856,7 +860,21 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
   await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "Show success toast" }).click();
-  await expect(page.getByText("Changes saved", { exact: true })).toBeVisible();
+  const toast = page.locator(".n-toast").filter({ hasText: "Changes saved" });
+  await expect(toast).toBeVisible();
+  const toastTheme = await toast.evaluate((element) => {
+    const viewport = element.closest(".n-toast-viewport");
+    const probe = document.createElement("div");
+    probe.style.background = "var(--n-overlay-background)";
+    viewport.append(probe);
+    const expectedBackground = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return {
+      actualBackground: getComputedStyle(element).backgroundColor,
+      expectedBackground,
+    };
+  });
+  expect(toastTheme.actualBackground).toBe(toastTheme.expectedBackground);
 
   await expectHealthyPage(page, problems);
 });
