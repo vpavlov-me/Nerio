@@ -2821,7 +2821,7 @@
           "source": "../../ui/src/components/tabs.tsx",
           "target": "components/tabs.tsx",
           "role": "component",
-          "integrity": "sha256-76affdf3afaa2d9c5a30c41298027b3f4cf57095a018cbd60d87cef1dde4b6ed"
+          "integrity": "sha256-e5f228270084ed9bd40bde42bb46401fbea5450bf7719fbb7a7af4023e1c7697"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
