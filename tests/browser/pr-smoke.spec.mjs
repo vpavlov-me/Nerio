@@ -610,6 +610,32 @@ test("keeps Slider spacing compact and Slider and Switch thumbs white across mod
   await expectHealthyPage(page, problems);
 });
 
+test("keeps an aria-labelled Slider hit area inside its layout box", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/visual-test/slider");
+
+  const slider = page.locator(".n-slider").filter({
+    has: page.getByRole("slider", { name: "Read-only volume" }),
+  });
+  const control = slider.locator('[data-slot="control"]');
+  const [sliderBox, controlBox, controlMargins] = await Promise.all([
+    slider.boundingBox(),
+    control.boundingBox(),
+    control.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return { bottom: style.marginBottom, top: style.marginTop };
+    }),
+  ]);
+  expect(sliderBox).not.toBeNull();
+  expect(controlBox).not.toBeNull();
+  expect(Math.round(controlBox.height)).toBe(32);
+  expect(controlMargins).toEqual({ bottom: "0px", top: "0px" });
+  expect(controlBox.y).toBeGreaterThanOrEqual(sliderBox.y);
+  expect(controlBox.y + controlBox.height).toBeLessThanOrEqual(sliderBox.y + sliderBox.height);
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps simple List items compact", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/list");
