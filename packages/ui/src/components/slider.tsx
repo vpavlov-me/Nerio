@@ -98,7 +98,7 @@ const sliderClasses =
   "n-slider group/slider grid w-full gap-0 text-(--n-color-text-primary) data-[orientation=vertical]:w-max data-[orientation=vertical]:gap-(--n-slider-gap) data-disabled:cursor-not-allowed data-disabled:text-(--n-color-text-disabled) data-readonly:cursor-default";
 
 const sliderControlClasses =
-  "n-slider__control relative flex h-[calc(var(--n-slider-track-size)+var(--n-slider-gap)+var(--n-slider-gap))] w-full touch-none select-none items-center data-[orientation=vertical]:h-(--n-slider-length) data-[orientation=vertical]:w-(--n-slider-control-size) data-[orientation=vertical]:justify-center data-readonly:touch-auto";
+  "n-slider__control relative my-(--n-slider-control-layout-offset) flex h-(--n-slider-control-size) w-full touch-none select-none items-center [--n-slider-control-layout-offset:calc((var(--n-slider-control-size)-var(--n-slider-track-size)-var(--n-slider-gap)-var(--n-slider-gap))*-0.5)] data-[orientation=vertical]:my-0 data-[orientation=vertical]:h-(--n-slider-length) data-[orientation=vertical]:w-(--n-slider-control-size) data-[orientation=vertical]:justify-center data-readonly:touch-auto";
 
 const sliderTrackClasses =
   "n-slider__track relative h-(--n-slider-track-size) w-full overflow-hidden rounded-(--n-slider-track-radius) bg-(--n-slider-track-background) data-[orientation=vertical]:h-full data-[orientation=vertical]:w-(--n-slider-track-size) group-data-disabled/slider:bg-(--n-slider-disabled-track-background) group-data-disabled/slider:opacity-(--n-slider-disabled-opacity) forced-colors:bg-[Canvas] forced-colors:opacity-100 forced-colors:outline forced-colors:outline-1 forced-colors:outline-[CanvasText]";

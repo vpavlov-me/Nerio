@@ -670,7 +670,10 @@ describe("Core static contracts", () => {
       "group-data-disabled/slider:opacity-(--n-slider-disabled-opacity)",
     );
     expect(componentSource("slider")).toContain(
-      "h-[calc(var(--n-slider-track-size)+var(--n-slider-gap)+var(--n-slider-gap))]",
+      "my-(--n-slider-control-layout-offset) flex h-(--n-slider-control-size)",
+    );
+    expect(componentSource("slider")).toContain(
+      "[--n-slider-control-layout-offset:calc((var(--n-slider-control-size)-var(--n-slider-track-size)-var(--n-slider-gap)-var(--n-slider-gap))*-0.5)]",
     );
     expect(componentSource("slider")).toContain(
       "n-slider__track relative h-(--n-slider-track-size)",

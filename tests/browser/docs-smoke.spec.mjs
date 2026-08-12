@@ -515,27 +515,37 @@ test("applies every Playground control to the product scenario canvas", async ({
     .locator("xpath=ancestor::section[@data-playground-card]");
   const sliderMetrics = await payoutCard.locator(".n-slider").evaluate((element) => {
     const tokenProbe = document.createElement("span");
+    tokenProbe.style.position = "fixed";
+    tokenProbe.style.inset = "0";
+    tokenProbe.style.pointerEvents = "none";
+    tokenProbe.style.visibility = "hidden";
     tokenProbe.style.color = "var(--n-color-text-primary)";
     element.append(tokenProbe);
     const primaryTextColor = getComputedStyle(tokenProbe).color;
     tokenProbe.remove();
 
     return {
+      controlHeight: Math.round(
+        element.querySelector(".n-slider__control").getBoundingClientRect().height,
+      ),
       description: getComputedStyle(element.querySelector(".n-slider__description")).fontSize,
-      headerToTrack:
+      headerToTrack: Math.round(
         element.querySelector(".n-slider__track").getBoundingClientRect().top -
-        element.querySelector(".n-slider__header").getBoundingClientRect().bottom,
+          element.querySelector(".n-slider__header").getBoundingClientRect().bottom,
+      ),
       label: getComputedStyle(element.querySelector(".n-slider__label")).fontSize,
       labelColor: getComputedStyle(element.querySelector(".n-slider__label")).color,
       labelWeight: getComputedStyle(element.querySelector(".n-slider__label")).fontWeight,
       primaryTextColor,
-      trackToDescription:
+      trackToDescription: Math.round(
         element.querySelector(".n-slider__description").getBoundingClientRect().top -
-        element.querySelector(".n-slider__track").getBoundingClientRect().bottom,
+          element.querySelector(".n-slider__track").getBoundingClientRect().bottom,
+      ),
       value: getComputedStyle(element.querySelector(".n-slider__value")).fontSize,
     };
   });
   expect(sliderMetrics).toMatchObject({
+    controlHeight: 32,
     headerToTrack: 8,
     label: "14px",
     labelWeight: "400",
@@ -550,6 +560,10 @@ test("applies every Playground control to the product scenario canvas", async ({
     .getByText("Notes", { exact: true })
     .evaluate((element) => {
       const tokenProbe = document.createElement("span");
+      tokenProbe.style.position = "fixed";
+      tokenProbe.style.inset = "0";
+      tokenProbe.style.pointerEvents = "none";
+      tokenProbe.style.visibility = "hidden";
       tokenProbe.style.color = "var(--n-color-text-primary)";
       element.append(tokenProbe);
       const primaryTextColor = getComputedStyle(tokenProbe).color;
