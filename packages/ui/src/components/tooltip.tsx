@@ -78,7 +78,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
           <BaseTooltip.Popup
             ref={ref}
             className={cn(
-              "n-tooltip-popup z-(--n-overlay-floating-z-index) max-w-(--n-size-tooltip-max) whitespace-normal rounded-(--n-tooltip-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) px-(--n-space-3) py-(--n-space-2) text-(length:--n-font-size-xs) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)]",
+              "n-tooltip-popup z-(--n-overlay-floating-z-index) max-w-(--n-size-tooltip-max) whitespace-normal rounded-(--n-tooltip-radius) border-(length:--n-overlay-glass-border-width) border-(--n-overlay-glass-border) bg-(--n-overlay-glass-background) px-(--n-space-3) py-(--n-space-2) text-(length:--n-font-size-xs) text-(--n-overlay-glass-foreground) shadow-(--n-overlay-glass-shadow) [backdrop-filter:var(--n-overlay-surface-filter)]",
               motionClasses.overlayEnter,
               className,
             )}
@@ -87,7 +87,7 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(function T
           >
             {showArrow ? (
               <BaseTooltip.Arrow
-                className="n-tooltip-arrow relative block h-(--n-space-1-5) w-(--n-space-3) overflow-clip data-[side=bottom]:top-[calc(var(--n-space-1-5)*-1)] data-[side=left]:right-[calc((var(--n-space-2)+1px)*-1)] data-[side=left]:rotate-90 data-[side=right]:left-[calc((var(--n-space-2)+1px)*-1)] data-[side=right]:-rotate-90 data-[side=top]:bottom-[calc(var(--n-space-1-5)*-1)] data-[side=top]:rotate-180 before:absolute before:bottom-0 before:left-1/2 before:size-[calc(var(--n-space-1-5)*1.4142)] before:border-(length:--n-overlay-border-width) before:border-(--n-overlay-border) before:bg-(--n-overlay-background) before:content-[''] before:[transform:translate(-50%,50%)_rotate(45deg)]"
+                className="n-tooltip-arrow relative block h-(--n-space-1-5) w-(--n-space-3) overflow-clip data-[side=bottom]:top-[calc(var(--n-space-1-5)*-1)] data-[side=left]:right-[calc((var(--n-space-2)+1px)*-1)] data-[side=left]:rotate-90 data-[side=right]:left-[calc((var(--n-space-2)+1px)*-1)] data-[side=right]:-rotate-90 data-[side=top]:bottom-[calc(var(--n-space-1-5)*-1)] data-[side=top]:rotate-180 before:absolute before:bottom-0 before:left-1/2 before:size-[calc(var(--n-space-1-5)*1.4142)] before:border-(length:--n-overlay-glass-border-width) before:border-(--n-overlay-glass-border) before:bg-(--n-overlay-glass-background) before:content-[''] before:[transform:translate(-50%,50%)_rotate(45deg)]"
                 data-slot="arrow"
               />
             ) : null}

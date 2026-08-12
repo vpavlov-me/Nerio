@@ -2554,7 +2554,7 @@ export const componentReference: Record<string, ComponentReference> = {
       ],
     },
     designNotes: [
-      "Toast is an inverted dark glass surface in every mode so transient feedback is clearly separated from flat page content.",
+      "Toast uses the standard adaptive overlay surface, text, control, border, and elevation tokens for the active color mode.",
       "Semantic color is limited to the status icon; copy and controls use the toast foreground hierarchy.",
       "Toast width is capped at 25rem (400px) before viewport insets reduce it on smaller screens.",
     ],

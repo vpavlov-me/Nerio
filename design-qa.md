@@ -44,6 +44,64 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 
+## Adaptive overlay surfaces with dark Tooltip exception — 2026-08-12
+
+### Source truth
+
+- User decision: revoke the rule that every surface displayed above the interface is permanently
+  dark.
+- Popovers, menus and Select popups, Command, Dialog, Sheet, Calendar, and Toast use the standard
+  mode-aware surface and text hierarchy. Tooltip remains intentionally dark in every mode.
+
+### Implementation and verification
+
+- `--n-overlay-*` now resolves through adaptive surface, text, control, selected, border, status,
+  and elevation semantics: white with dark text in light mode and black with light text in dark
+  mode.
+- `--n-overlay-glass-*` retains the former translucent black palette only for Tooltip; chart
+  tooltips follow the same narrow exception.
+- Toast moved from the glass aliases to the standard overlay family while preserving its 8px
+  collapsed stack step, opaque background cards, and 20px maximum radius.
+- Dialog and Sheet retain their blurred modal backdrop and established motion, anatomy, safe-area,
+  and focus behavior.
+- The current design decision, component guidance, LLM reference, token validator, UI contracts,
+  and browser assertions now express the same rule. The original visual-language audit is explicitly
+  marked as superseded historical evidence.
+
+### Regression evidence
+
+- Token tests: 50/50 passed.
+- Token validation: passed with 950 definitions and 46 registry items.
+- UI contracts: 175/175 passed.
+- Focused docs-browser coverage passed for Data Display/Feedback and Navigation/Layout/Overlays,
+  including adaptive light/dark Toast surfaces and a dark Tooltip in both modes.
+- Visual regression: 22/22 passed after reviewing and accepting only the four intentionally changed
+  reduced-motion baselines for Dialog, Sheet, Popover, and Dropdown Menu. The Tooltip baseline was
+  unchanged.
+
+final result: passed
+
+## Playground Label, Slider, and Tabs polish — 2026-08-12
+
+### Source truth
+
+- Three user browser annotations on `http://127.0.0.1:3001/playground`: labels use medium regular primary text; Slider visible vertical gaps are about 8px; segmented Tabs follow the Playground `Full` radius.
+- Source visual evidence: the three 1117 × 837 browser annotation screenshots supplied in the current review thread.
+
+### Implementation and verification
+
+- Label: 14px, weight 400, computed primary text color.
+- Slider: 8px header-to-track and 8px track-to-description.
+- Tabs with `Radii = Full`: list radius 999px; trigger and indicator radius 18px on 32px-high controls, producing a pill shape.
+- The local Playground was visually inspected in the in-app browser in the annotated light, Purple / Slate, Comfortable, Full, Raised state.
+- Focused Playground and Slider browser tests passed.
+- The visual regression suite passed 22/22 after reviewing and updating the intentional Label and Slider snapshots.
+- Formatting, lint, typecheck, docs validation, token tests, token validation, and UI tests passed.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
+
+final result: passed
+
 ## Playground scenario catalog — 2026-08-09
 
 ### Source truth
@@ -2545,5 +2603,70 @@ final result: passed
 - Applied it only to direct section paragraphs, documentation lists, and description lists; the global 14px UI base, navigation, controls, component previews, and design-system typography remain unchanged.
 - Kept the existing relaxed 1.55 prose leading, which now resolves proportionally against the 16px content size.
 - Browser coverage compares both rendered prose size and line height against their documentation token aliases while retaining the 14px global body assertion.
+
+final result: passed
+
+## Collapsed Toast stack text occlusion — 2026-08-12
+
+### Source truth
+
+- User-provided 904 × 304 browser crop: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-2edb5b03-6ee6-44f3-b9e7-4554a5d66b67.png`.
+- Required behavior: collapsed background Toast cards expose only their surface edge; title and description copy must remain fully hidden behind the card in front.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3001/docs/components/toast`.
+- Browser: Codex in-app browser.
+- Before/after comparison: `/tmp/nerio-toast-stack-before-after.png`.
+- The collapsed stack offset changed from 16px to 8px through the public Toast stack token.
+- Measured collapsed top positions step by exactly 8px. The second and third title bounds begin below the top edge of the preceding card, so no background copy is visible.
+- Expanding, dismissal, scaling, opacity, reading order, and the frontmost Toast geometry remain unchanged.
+
+### Regression evidence
+
+- Token tests: 50/50 passed.
+- Token validation: passed with 950 definitions and 46 registry items.
+- UI contracts: 175/175 passed.
+- Browser coverage now asserts the 8px collapsed step and verifies each background title is geometrically occluded by the preceding Toast.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+## Playground plan Badge removal — 2026-08-12
+
+### Source truth
+
+- User browser annotation on the `Choose a plan` card: remove the `Studio includes unlimited projects` Badge and preserve the rest of the scenario.
+
+### Implementation and verification
+
+- URL: `http://127.0.0.1:3001/playground`.
+- Browser: Codex in-app browser.
+- The annotated Badge is absent from both the card and the document text.
+- The Starter, Studio, and Enterprise options remain unchanged, Studio remains selected, and the `Continue with Studio` action remains present.
+- No surrounding layout, content, styling, or interaction was changed.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
+## Toast opaque stack and 20px radius cap — 2026-08-12
+
+### Source truth
+
+- User follow-up: remove the opacity fade from background Toast cards and make Toast an exception whose maximum corner radius is 20px.
+
+### Implementation and verification
+
+- URL: `http://127.0.0.1:3001/playground`.
+- Browser: Codex in-app browser.
+- Three managed Toasts were opened with Playground `Radii = Full`.
+- All three Toasts resolve to opacity 1; the existing 8px collapsed stack step still keeps background copy hidden.
+- All three Toasts resolve to a 20px radius while the active overlay radius is 32px.
+- The default Toast token uses a CSS minimum, so smaller radius modes remain smaller and only values above 20px are capped.
+- Other overlay components and their radius mappings are unchanged.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
 
 final result: passed

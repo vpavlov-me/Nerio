@@ -565,7 +565,15 @@ test("keeps Slider spacing compact and Slider and Switch thumbs white across mod
 
   const slider = page.getByRole("region", { name: "Slider preview" }).getByRole("group");
   const sliderThumb = slider.locator('[data-slot="thumb"]');
-  await expect(slider).toHaveCSS("row-gap", "2px");
+  const sliderRhythm = await slider.evaluate((element) => ({
+    headerToTrack:
+      element.querySelector("[data-slot=track]").getBoundingClientRect().top -
+      element.querySelector("[data-slot=header]").getBoundingClientRect().bottom,
+    trackToDescription:
+      element.querySelector("[data-slot=description]").getBoundingClientRect().top -
+      element.querySelector("[data-slot=track]").getBoundingClientRect().bottom,
+  }));
+  expect(sliderRhythm).toEqual({ headerToTrack: 8, trackToDescription: 8 });
 
   const sliderColors = [];
   for (const mode of ["light", "dark"]) {
