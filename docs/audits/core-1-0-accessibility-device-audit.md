@@ -50,6 +50,10 @@ pnpm test:browser
 
 ## Evidence rules
 
+Use the
+[maintainer runbook](./core-1-0-accessibility-device-audit-runbook.md) to generate one concise,
+environment-specific checklist and evidence comment at a time.
+
 For every environment and scenario:
 
 1. Record exact operating system, browser, assistive-technology version, device model, viewport,
