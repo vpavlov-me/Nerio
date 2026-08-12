@@ -9728,7 +9728,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-846533adc33a2bf4397b5bffdf370c53226681be86cb5cf9b44bf057b838927e",
+            "integrity": "sha256-afef8db54d4de54e6aeca87e2e7da92d8a38bbf9742015486616578ea6c59d83",
             "role": "component",
             "source": "../../ui/src/components/slider.tsx",
             "target": "components/slider.tsx"
