@@ -743,6 +743,7 @@ test("applies every Playground control to the product scenario canvas", async ({
   await chooseSetting("Accent color", "Blue");
   await expect(settings.getByRole("button", { name: "Reset" })).toBeVisible();
   await chooseSetting("Density", "Compact");
+  await chooseSetting("Radii", "Full");
 
   const firstScenarioCard = page.locator(".playground-masonry > .n-card").first();
   const firstScenarioButton = page.locator(".playground-masonry .n-button").first();
