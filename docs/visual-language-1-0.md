@@ -57,7 +57,8 @@ the visual identity does not depend on filling the interface with purple.
   regions, and quiet alerts.
 - `raised` is used only when a surface genuinely needs separation. In light mode it remains white;
   in dark mode it remains black.
-- `overlay` is a transient surface above the interface and follows the inverted-glass rule below.
+- `overlay` is a transient raised surface above the interface. It follows the active color mode:
+  white with dark text in light mode, and black with light text in dark mode.
 - `selected` communicates state with a restrained neutral surface first. Brand color is not the
   default navigation selection fill.
 
@@ -90,19 +91,22 @@ the visual identity does not depend on filling the interface with purple.
 
 ## Transient and overlay surfaces
 
-Tooltips, popovers, dropdown menus, command surfaces, toasts, and other transient UI use an
-inverted-glass treatment:
+Popovers, dropdown menus, command surfaces, dialogs, sheets, toasts, and other transient UI use the
+standard adaptive overlay treatment:
 
-- in light mode, the surface is translucent black with white foreground;
-- in dark mode, it preserves the same high-contrast transient character instead of becoming a
-  simple light-mode inversion;
-- the surface uses background blur and a restrained translucent outline only when needed for edge
-  definition;
+- in light mode, the surface is white with dark foreground;
+- in dark mode, the surface is black with light foreground;
+- the surface uses the standard subtle border, control, selected, text, and elevation semantics for
+  the active mode;
 - modal and sheet backdrops use blur as part of the focus transition;
-- the glass treatment must preserve WCAG contrast over realistic content and forced-color fallbacks;
+- overlay content must preserve WCAG contrast and forced-color fallbacks;
 - popup radius is smaller than dialog or sheet radius so compact anchored surfaces do not become
   bubble-like;
 - internal popup spacing is compact, regular, and aligned to item anatomy.
+
+Tooltip is the single inverted exception. It remains translucent black with white text and blur in
+every mode so its compact explanatory layer keeps a stable, high-contrast character. Chart tooltip
+surfaces follow the same exception.
 
 Dialog and Sheet remain larger neutral task surfaces. Their close action is an icon-only secondary
 Button, and their action footer aligns actions to the inline end. These are component or family
@@ -208,7 +212,8 @@ must not create one-off per-component timings.
 The two repeatable Nerio signature details are:
 
 1. soft, highly rounded neutral geometry on the page;
-2. compact dark glass for UI that appears above the page.
+2. adaptive raised surfaces for UI that appears above the page, with compact dark glass reserved
+   for Tooltip.
 
 They are system patterns, not decorative effects to apply everywhere.
 
@@ -261,7 +266,8 @@ implementation issues land.
 - Whitespace between regions and compact conventional spacing inside groups.
 - Fewer and lower-contrast borders.
 - Neutral active navigation instead of a brand-soft fill.
-- Inverted dark glass for transient overlay UI and blurred backdrops.
+- Adaptive white/black surfaces for transient overlay UI, with Tooltip as the dark-glass exception
+  and blurred backdrops for modal focus transitions.
 - Smooth tokenized hover and state motion.
 - Narrow, soft-shadow exceptions for actual elevation and selected segmented surfaces.
 - Small regular-weight typography with clearer role-to-role scale steps.
@@ -337,10 +343,10 @@ Issue #136 implements the shared visual foundation in `packages/tokens/src/style
 - cool opaque gray and alpha-neutral primitive scales remain immutable across runtime selectors;
 - light and dark modes map canvas/default/raised to pure white or black and adaptive layers to
   dark-alpha or white-alpha semantic roles;
-- control, container, task-surface, compact-popup, Checkbox, Avatar isolation, and overlay-glass
+- control, container, task-surface, compact-popup, Checkbox, Avatar isolation, and overlay
   decisions resolve through semantic or component aliases;
-- `--n-overlay-*` aliases define the approved inverted-glass family after #139, while the
-  `--n-overlay-glass-*` aliases remain compatible component-facing mappings for Toast;
+- `--n-overlay-*` aliases define the adaptive raised-surface family, while the
+  `--n-overlay-glass-*` aliases define the intentionally inverted Tooltip exception;
 - hover, press, focus, disclosure, and overlay timing resolve through shared motion aliases;
 - `scripts/validate-tokens.mjs` calculates load-bearing text, action, overlay, and focus contrast for
   every preset theme in light and dark modes;

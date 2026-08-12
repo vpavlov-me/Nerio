@@ -109,10 +109,13 @@ test("token validator protects approved overlay, Checkbox, Kbd, and Toast compon
           "--n-checkbox-radius: min(var(--n-radius-xs), 0.25rem);",
           "--n-checkbox-radius: 0.5rem;",
         )
-        .replace("--n-overlay-background: rgb(0 0 0 / 0.88);", "--n-overlay-background: black;")
         .replace(
-          "--n-overlay-foreground: var(--n-gray-0);",
+          "--n-overlay-background: var(--n-color-surface-overlay);",
+          "--n-overlay-background: black;",
+        )
+        .replace(
           "--n-overlay-foreground: var(--n-color-text-primary);",
+          "--n-overlay-foreground: var(--n-gray-0);",
         )
         .replace(
           "--n-kbd-background: var(--n-color-surface-control);",
@@ -138,11 +141,11 @@ test("token validator protects approved overlay, Checkbox, Kbd, and Toast compon
       );
       assert.match(
         stderr,
-        /Approved component contract --n-overlay-background must resolve to rgb\(0 0 0 \/ 0\.88\)/,
+        /Approved component contract --n-overlay-background must resolve to var\(--n-color-surface-overlay\)/,
       );
       assert.match(
         stderr,
-        /Approved component contract --n-overlay-foreground must resolve to var\(--n-gray-0\)/,
+        /Approved component contract --n-overlay-foreground must resolve to var\(--n-color-text-primary\)/,
       );
       assert.match(
         stderr,

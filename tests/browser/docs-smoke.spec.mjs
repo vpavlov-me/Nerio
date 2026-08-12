@@ -513,16 +513,74 @@ test("applies every Playground control to the product scenario canvas", async ({
   const payoutCard = page
     .getByRole("heading", { name: "Payout threshold", exact: true })
     .locator("xpath=ancestor::section[@data-playground-card]");
-  const sliderMetrics = await payoutCard.locator(".n-slider").evaluate((element) => ({
-    description: getComputedStyle(element.querySelector(".n-slider__description")).fontSize,
-    gap: getComputedStyle(element).gap,
-    label: getComputedStyle(element.querySelector(".n-slider__label")).fontSize,
-    value: getComputedStyle(element.querySelector(".n-slider__value")).fontSize,
-  }));
-  expect(sliderMetrics).toMatchObject({ gap: "2px", label: "14px", value: "14px" });
+  const sliderMetrics = await payoutCard.locator(".n-slider").evaluate((element) => {
+    const tokenProbe = document.createElement("span");
+    tokenProbe.style.position = "fixed";
+    tokenProbe.style.inset = "0";
+    tokenProbe.style.pointerEvents = "none";
+    tokenProbe.style.visibility = "hidden";
+    tokenProbe.style.color = "var(--n-color-text-primary)";
+    element.append(tokenProbe);
+    const primaryTextColor = getComputedStyle(tokenProbe).color;
+    tokenProbe.remove();
+
+    return {
+      controlHeight: Math.round(
+        element.querySelector(".n-slider__control").getBoundingClientRect().height,
+      ),
+      description: getComputedStyle(element.querySelector(".n-slider__description")).fontSize,
+      headerToTrack: Math.round(
+        element.querySelector(".n-slider__track").getBoundingClientRect().top -
+          element.querySelector(".n-slider__header").getBoundingClientRect().bottom,
+      ),
+      label: getComputedStyle(element.querySelector(".n-slider__label")).fontSize,
+      labelColor: getComputedStyle(element.querySelector(".n-slider__label")).color,
+      labelWeight: getComputedStyle(element.querySelector(".n-slider__label")).fontWeight,
+      primaryTextColor,
+      trackToDescription: Math.round(
+        element.querySelector(".n-slider__description").getBoundingClientRect().top -
+          element.querySelector(".n-slider__track").getBoundingClientRect().bottom,
+      ),
+      value: getComputedStyle(element.querySelector(".n-slider__value")).fontSize,
+    };
+  });
+  expect(sliderMetrics).toMatchObject({
+    controlHeight: 32,
+    headerToTrack: 8,
+    label: "14px",
+    labelWeight: "400",
+    trackToDescription: 8,
+    value: "14px",
+  });
+  expect(sliderMetrics.labelColor).toBe(sliderMetrics.primaryTextColor);
   expect(Number.parseFloat(sliderMetrics.description)).toBeLessThan(
     Number.parseFloat(sliderMetrics.label),
   );
+  const fieldLabelMetrics = await payoutCard
+    .getByText("Notes", { exact: true })
+    .evaluate((element) => {
+      const tokenProbe = document.createElement("span");
+      tokenProbe.style.position = "fixed";
+      tokenProbe.style.inset = "0";
+      tokenProbe.style.pointerEvents = "none";
+      tokenProbe.style.visibility = "hidden";
+      tokenProbe.style.color = "var(--n-color-text-primary)";
+      element.append(tokenProbe);
+      const primaryTextColor = getComputedStyle(tokenProbe).color;
+      tokenProbe.remove();
+      const style = getComputedStyle(element);
+      return {
+        color: style.color,
+        fontSize: style.fontSize,
+        fontWeight: style.fontWeight,
+        primaryTextColor,
+      };
+    });
+  expect(fieldLabelMetrics).toMatchObject({
+    color: fieldLabelMetrics.primaryTextColor,
+    fontSize: "14px",
+    fontWeight: "400",
+  });
   const milestoneCard = page
     .getByRole("heading", { name: "Set new milestone", exact: true })
     .locator("xpath=ancestor::section[@data-playground-card]");
@@ -534,6 +592,22 @@ test("applies every Playground control to the product scenario canvas", async ({
   const releaseCard = page
     .getByRole("heading", { name: "Release readiness", exact: true })
     .locator("xpath=ancestor::section[@data-playground-card]");
+  const segmentedTabsRadius = await releaseCard.locator(".n-tabs").evaluate((element) => ({
+    indicatorHeight: element.querySelector(".n-tabs__indicator").getBoundingClientRect().height,
+    indicator: Number.parseFloat(
+      getComputedStyle(element.querySelector(".n-tabs__indicator")).borderRadius,
+    ),
+    list: Number.parseFloat(getComputedStyle(element.querySelector(".n-tabs__list")).borderRadius),
+    trigger: Number.parseFloat(
+      getComputedStyle(element.querySelector(".n-tabs__trigger")).borderRadius,
+    ),
+    triggerHeight: element.querySelector(".n-tabs__trigger").getBoundingClientRect().height,
+  }));
+  expect(segmentedTabsRadius.list).toBeGreaterThan(100);
+  expect(segmentedTabsRadius.trigger).toBeGreaterThanOrEqual(segmentedTabsRadius.triggerHeight / 2);
+  expect(segmentedTabsRadius.indicator).toBeGreaterThanOrEqual(
+    segmentedTabsRadius.indicatorHeight / 2,
+  );
   await expect(releaseCard.locator(".n-button-group")).toHaveCount(0);
   await expect(releaseCard.getByRole("button", { name: "Review", exact: true })).toBeVisible();
   await expect(releaseCard.getByRole("button", { name: "Approve", exact: true })).toBeVisible();
@@ -572,6 +646,9 @@ test("applies every Playground control to the product scenario canvas", async ({
       .locator("[data-slot='option-description']")
       .evaluateAll((elements) => elements.map((element) => element.textContent?.trim())),
   ).toEqual(["Free", "$48 per member", "Contact sales"]);
+  await expect(
+    planCard.getByText("Studio includes unlimited projects", { exact: true }),
+  ).toHaveCount(0);
   const workspaceCard = page
     .getByRole("heading", { name: "Create workspace", exact: true })
     .locator("xpath=ancestor::section[@data-playground-card]");
@@ -733,6 +810,10 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
   const problems = monitorPage(page);
   await page.goto("/playground");
 
+  const settings = page.getByRole("complementary", { name: "Theme settings" });
+  await settings.getByRole("combobox", { name: "Neutral color" }).click();
+  await page.getByRole("option", { name: "Mauve", exact: true }).click();
+
   const checkbox = page.getByRole("checkbox", { name: "Send invitations now" });
   await expect(checkbox).toBeVisible();
   expect(
@@ -779,7 +860,21 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
   await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "Show success toast" }).click();
-  await expect(page.getByText("Changes saved", { exact: true })).toBeVisible();
+  const toast = page.locator(".n-toast").filter({ hasText: "Changes saved" });
+  await expect(toast).toBeVisible();
+  const toastTheme = await toast.evaluate((element) => {
+    const viewport = element.closest(".n-toast-viewport");
+    const probe = document.createElement("div");
+    probe.style.background = "var(--n-overlay-background)";
+    viewport.append(probe);
+    const expectedBackground = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return {
+      actualBackground: getComputedStyle(element).backgroundColor,
+      expectedBackground,
+    };
+  });
+  expect(toastTheme.actualBackground).toBe(toastTheme.expectedBackground);
 
   await expectHealthyPage(page, problems);
 });
@@ -1047,19 +1142,47 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
 
   await page.goto("/docs/components/toast");
   await page.getByRole("button", { name: "Stack notifications" }).click();
+  const toastStack = page.locator(".n-toast--managed");
+  await expect(toastStack).toHaveCount(3);
+  const collapsedToastGeometry = await toastStack.evaluateAll((elements) =>
+    elements.map((element) => {
+      const bounds = element.getBoundingClientRect();
+      const titleBounds = element.querySelector('[data-slot="title"]').getBoundingClientRect();
+      return {
+        titleTop: titleBounds.top,
+        top: bounds.top,
+      };
+    }),
+  );
+  for (let index = 1; index < collapsedToastGeometry.length; index += 1) {
+    expect(collapsedToastGeometry[index].top).toBeCloseTo(
+      collapsedToastGeometry[index - 1].top - 8,
+      1,
+    );
+    expect(collapsedToastGeometry[index].titleTop).toBeGreaterThanOrEqual(
+      collapsedToastGeometry[index - 1].top,
+    );
+  }
+  expect(
+    await toastStack.evaluateAll((elements) =>
+      elements.map((element) => getComputedStyle(element).opacity),
+    ),
+  ).toEqual(["1", "1", "1"]);
   const toast = page.locator(".n-toast").first();
   await expect(toast).toBeVisible();
-  await expect(toast).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
-  await expect(toast).toHaveCSS("color", "rgb(255, 255, 255)");
+  await expect(toast).toHaveCSS("border-radius", "20px");
+  await expect(toast).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  await expect(toast).toHaveCSS("color", "rgb(2, 6, 23)");
   expect(await toast.evaluate((element) => getComputedStyle(element).backdropFilter)).toContain(
     "blur(24px)",
   );
   const toastClose = page.locator(".n-toast__close").first();
   await expect(toastClose).toBeVisible();
   await toastClose.hover();
-  await expect(toastClose).toHaveCSS("color", "rgb(255, 255, 255)");
+  await expect(toastClose).toHaveCSS("color", "rgb(2, 6, 23)");
   await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
-  await expect(toast).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
+  await expect(toast).toHaveCSS("background-color", "rgb(0, 0, 0)");
+  await expect(toast).toHaveCSS("color", "rgb(248, 250, 252)");
   await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "light"));
 
   await page.goto("/docs/components/table");
@@ -1105,7 +1228,7 @@ test("keeps Data Display and Feedback neutral, compact, and motion-aware", async
   await expectHealthyPage(page, problems);
 });
 
-test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally animated", async ({
+test("keeps Navigation, Layout, and Overlays neutral, adaptive, and causally animated", async ({
   page,
 }) => {
   const problems = monitorPage(page);
@@ -1145,9 +1268,9 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
       surfaceFilter: style.backdropFilter,
     };
   });
-  expect(dialogVisual.background).toBe("rgba(0, 0, 0, 0.88)");
-  expect(dialogVisual.color).toBe("rgb(255, 255, 255)");
-  expect(dialogVisual.borderWidth).toBe("0px");
+  expect(dialogVisual.background).toBe("rgb(255, 255, 255)");
+  expect(dialogVisual.color).toBe("rgb(2, 6, 23)");
+  expect(dialogVisual.borderWidth).toBe("1px");
   expect(dialogVisual.surfaceFilter).toContain("blur(24px)");
   expect(dialogVisual.backdropFilter).toContain("blur(10px)");
   expect(dialogVisual.animationName).toContain("n-dialog-enter");
@@ -1229,7 +1352,7 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
         surfaceFilter: style.backdropFilter,
       };
     });
-  expect(commandVisual.background).toBe("rgba(0, 0, 0, 0.88)");
+  expect(commandVisual.background).toBe("rgb(255, 255, 255)");
   expect(commandVisual.inputRadius).toBeGreaterThan(0);
   expect(commandVisual.inputRadius).toBeLessThanOrEqual(24);
   expect(commandVisual.surfaceFilter).toContain("blur(24px)");
@@ -1247,7 +1370,7 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
       surfaceFilter: style.backdropFilter,
     };
   });
-  expect(popoverVisual.background).toBe("rgba(0, 0, 0, 0.88)");
+  expect(popoverVisual.background).toBe("rgb(255, 255, 255)");
   expect(popoverVisual.padding).toBeGreaterThan(0);
   expect(popoverVisual.radius).toBeGreaterThan(0);
   expect(popoverVisual.surfaceFilter).toContain("blur(24px)");
@@ -1274,6 +1397,10 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
   expect(tooltipVisual.arrowSide).toBe("top");
   expect(tooltipVisual.arrowAttached).toBeLessThanOrEqual(1);
   expect(tooltipVisual.surfaceFilter).toContain("blur(24px)");
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "dark"));
+  await expect(tooltip).toHaveCSS("background-color", "rgba(0, 0, 0, 0.88)");
+  await expect(tooltip).toHaveCSS("color", "rgb(255, 255, 255)");
+  await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "light"));
 
   await page.goto("/docs/components/dropdown-menu");
   await page.getByRole("button", { name: "Actions", exact: true }).click();
@@ -1289,7 +1416,7 @@ test("keeps Navigation, Layout, and Overlays neutral, glassy, and causally anima
       surfaceFilter: style.backdropFilter,
     };
   });
-  expect(dropdownVisual.background).toBe("rgba(0, 0, 0, 0.88)");
+  expect(dropdownVisual.background).toBe("rgb(255, 255, 255)");
   expect(dropdownVisual.itemDuration).not.toBe("0s");
   expect(dropdownVisual.radius).toBe(popoverVisual.radius);
   expect(dropdownVisual.surfaceFilter).toContain("blur(24px)");

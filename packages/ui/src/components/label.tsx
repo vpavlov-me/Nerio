@@ -2,7 +2,7 @@ import * as React from "react";
 import { tailwindCn as cn } from "../lib/tailwind-cn";
 
 const labelClasses =
-  "n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-secondary)";
+  "n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-primary)";
 
 export type LabelProps = React.LabelHTMLAttributes<HTMLLabelElement>;
 
