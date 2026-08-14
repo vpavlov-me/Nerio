@@ -11,7 +11,8 @@
     "@nerio-ui/cli",
     "@nerio-ui/mcp"
   ],
-  "protectedDistTags": ["latest", "alpha"],
+  "defaultDistTag": "latest",
+  "protectedDistTags": ["alpha"],
   "docsStatusLabel": "Published beta.1",
   "publicInstallationVersion": "1.0.0-beta.1",
   "migrationTarget": "1.0.0-beta.1"

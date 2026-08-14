@@ -2,6 +2,13 @@
   "name": "@nerio-ui/registry",
   "version": "1.0.0-beta.1",
   "description": "Nerio Core source registry manifest and metadata helpers.",
+  "keywords": [
+    "nerio",
+    "design-system",
+    "component-registry",
+    "source-code",
+    "react"
+  ],
   "private": false,
   "license": "MIT",
   "repository": {

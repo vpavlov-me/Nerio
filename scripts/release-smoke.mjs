@@ -163,6 +163,7 @@ function validatePackedPackage(name, tarball) {
         !entry.startsWith("package/src/") &&
         entry !== "package/package.json" &&
         entry !== "package/LICENSE" &&
+        entry !== "package/README.md" &&
         entry !== "package/",
     )
   ) {
@@ -171,6 +172,16 @@ function validatePackedPackage(name, tarball) {
 
   if (JSON.stringify(packageJson.files) !== JSON.stringify(["src"])) {
     throw new Error(`${name} must pack only its src directory.`);
+  }
+  if (!Array.isArray(packageJson.keywords) || packageJson.keywords.length < 3) {
+    throw new Error(`${name} must include public npm discovery keywords.`);
+  }
+  if (!entries.includes("package/README.md")) {
+    throw new Error(`${name} must include a package README.`);
+  }
+  const packageReadme = run("tar", ["-xOf", tarball, "package/README.md"]);
+  if (!packageReadme.includes(name) || !packageReadme.includes(expectedVersion)) {
+    throw new Error(`${name} README must identify the package and coordinated version.`);
   }
   assertKeys(name, "exports", packageJson.exports, contract.exports);
   assertKeys(name, "dependencies", packageJson.dependencies, contract.dependencies);

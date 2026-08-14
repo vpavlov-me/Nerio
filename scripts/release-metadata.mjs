@@ -56,6 +56,7 @@ export function validateReleaseMetadata() {
     ["alpha", "beta", "stable"].includes(metadata.channel),
     "channel must be alpha, beta, or stable.",
   );
+  assert(metadata.defaultDistTag === "latest", "defaultDistTag must be latest.");
   assert(
     metadata.registrySourceRevision === `v${metadata.registryVersion}`,
     "Registry source revision must be the immutable v-prefixed Registry version.",
@@ -68,6 +69,10 @@ export function validateReleaseMetadata() {
     new Set(metadata.protectedDistTags).size === metadata.protectedDistTags.length &&
       metadata.protectedDistTags.every((tag) => tag !== metadata.channel),
     "Protected dist-tags must be unique and exclude the active channel.",
+  );
+  assert(
+    !metadata.protectedDistTags.includes(metadata.defaultDistTag),
+    "The default dist-tag must move with the newest coordinated publication.",
   );
 
   for (const [name, path] of Object.entries(packagePaths)) {
