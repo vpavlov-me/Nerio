@@ -48,7 +48,6 @@ const sources = Object.fromEntries(
   [...optionNames].map(([option, fallback]) => [fallback, read(optionPath(option, fallback))]),
 );
 const registryVersion = JSON.parse(sources["packages/registry/src/manifest.json"]).version;
-const escapedRegistryVersion = registryVersion.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const failures = [];
 
 const expectedLocalCommands = [
@@ -94,6 +93,12 @@ for (const command of [
 ]) {
   requireText(sources["README.md"], command, "README.md", failures);
 }
+requireText(
+  sources["README.md"],
+  "pnpm add @nerio-ui/ui @nerio-ui/tokens @nerio-ui/adapters",
+  "README.md",
+  failures,
+);
 
 for (const command of [
   "pnpm test:onboarding",
@@ -153,11 +158,8 @@ for (const fragment of [
 const forbiddenPatterns = [
   [/pnpm dlx nerio\b/g, "unqualified one-off CLI package"],
   [
-    new RegExp(
-      String.raw`pnpm (?:add(?: -D)?|dlx)[^\n\`]*@nerio-ui\/(?:tokens|adapters|ui|registry|cli|mcp)(?!@${escapedRegistryVersion})`,
-      "g",
-    ),
-    "unpinned prerelease package install",
+    /@nerio-ui\/(?:tokens|adapters|ui|registry|cli|mcp)@0\.1\.0-alpha\.[0-9]+/g,
+    "stale alpha package install",
   ],
   [/packages\/mcp\/src\/server\.js/g, "monorepo-only MCP path"],
   [/pnpm --filter @nerio-ui\/mcp start/g, "workspace-only MCP command"],

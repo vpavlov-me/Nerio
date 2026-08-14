@@ -12,8 +12,8 @@ Release, additional tester outreach, or a stable-release decision.
 | Frozen API baseline | `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`                                   |
 | Publish candidate   | `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`                                   |
 | Registry revision   | `v1.0.0-beta.1`                                                              |
-| npm tag             | `beta`                                                                       |
-| Protected tags      | Do not move `latest` or `alpha`                                              |
+| npm tags            | `beta` and `latest`                                                          |
+| Protected tags      | Do not move `alpha`                                                          |
 | Git tag and Release | `v1.0.0-beta.1`, GitHub prerelease, created from the exact publish candidate |
 | Window opens        | `2026-08-09T08:02:53Z`                                                       |
 | Earliest close      | `2026-08-23T08:02:53Z`                                                       |
@@ -68,9 +68,9 @@ NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release
 The command passed against all six public packages after publication. It verified coordinated
 public metadata and dependencies, package and source installation, the documented eight-command
 local CLI workflow, package-qualified one-off CLI execution, MCP bin discovery, and a clean Next.js
-consumer build. npm `beta` points to `1.0.0-beta.1` for every package; `alpha` and `latest` were not
-moved. npm reports one registry signature per package. This release used interactive 2FA and npm
-registry signatures; it does not claim a separate provenance attestation.
+consumer build. npm `beta` and `latest` point to `1.0.0-beta.1` for every package; `alpha` remains
+on `0.1.0-alpha.2`. npm reports one registry signature per package. This release used interactive
+2FA and npm registry signatures; it does not claim a separate provenance attestation.
 
 Also verify package mode and source mode in separate clean supported Next.js consumers, the
 documented local and package-qualified CLI commands, Registry `diff` and update dry run,

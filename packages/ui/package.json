@@ -2,6 +2,15 @@
   "name": "@nerio-ui/ui",
   "version": "1.0.0-beta.1",
   "description": "Nerio Core React components, utilities, and styles.",
+  "keywords": [
+    "nerio",
+    "design-system",
+    "react",
+    "components",
+    "tailwindcss",
+    "base-ui",
+    "accessibility"
+  ],
   "private": false,
   "license": "MIT",
   "repository": {

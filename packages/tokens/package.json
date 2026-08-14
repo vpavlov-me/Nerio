@@ -2,6 +2,13 @@
   "name": "@nerio-ui/tokens",
   "version": "1.0.0-beta.1",
   "description": "Nerio Core design tokens, themes, modes, density, and CSS variable contracts.",
+  "keywords": [
+    "nerio",
+    "design-system",
+    "design-tokens",
+    "css-variables",
+    "tailwindcss"
+  ],
   "private": false,
   "license": "MIT",
   "repository": {
