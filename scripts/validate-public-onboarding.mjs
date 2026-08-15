@@ -165,7 +165,7 @@ const forbiddenPatterns = [
   [/No npm release exists/g, "stale unpublished-package copy"],
 ];
 const versionedPublicPackagePattern =
-  /@nerio-ui\/(?:tokens|adapters|ui|registry|cli|mcp)@([0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?(?:\+[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?)/g;
+  /@nerio-ui\/(?:tokens|adapters|ui|registry|cli|mcp)@([0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?)/g;
 for (const [path, source] of Object.entries(sources)) {
   for (const match of source.matchAll(versionedPublicPackagePattern)) {
     if (match[1] !== registryVersion) {
