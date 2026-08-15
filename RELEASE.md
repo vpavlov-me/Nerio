@@ -220,8 +220,8 @@ browser verification, changelog review, and tarball inspection.
    does not weaken version, metadata, contents, runtime, source-install, or consumer-build checks.
 4. Publish one package at a time in the documented dependency order with the `beta` dist-tag, for
    example `pnpm --filter @nerio-ui/tokens publish --access public --tag beta --no-git-checks`.
-   Do not move `alpha` or `latest`. Never make a partially published coordinated version the
-   default install target.
+   During this per-package publication phase, do not move `alpha` or `latest`. Never make a
+   partially published coordinated version the default install target.
 5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
    provenance, ownership, or install mismatch.
 6. After all six packages exist, run the published exact-version smoke before changing `latest`:
@@ -230,9 +230,10 @@ browser verification, changelog review, and tarball inspection.
    NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release-consumer
    ```
 
-   This makes the documented package-qualified `pnpm dlx` path resolve the published coordinated
-   dependency graph. The candidate gate intentionally omits this network-only assertion because an
-   unpublished exact prerelease dependency cannot resolve from npm.
+   This makes the documented package-qualified CLI and MCP `pnpm dlx` paths resolve the published
+   coordinated dependency graph and verifies both bins against the exact approved version. The
+   candidate gate intentionally omits this network-only assertion because an unpublished exact
+   prerelease dependency cannot resolve from npm.
 
 7. Move `latest` for all six packages to the approved version only after the published-package
    smoke passes, then verify both the release-channel tag and `latest` for every package.

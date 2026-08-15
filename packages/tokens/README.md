@@ -10,6 +10,7 @@ Core. The current coordinated release is `1.0.0-beta.1`.
 
 ```bash
 pnpm add @nerio-ui/tokens
+pnpm add -D tailwindcss@^4.1.0
 ```
 
 ## Use
