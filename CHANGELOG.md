@@ -6,6 +6,13 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
+### Added
+
+- Added a public documentation changelog with the official Nerio X announcement and summaries of
+  every published Core release. Each release now renders its canonical Added, Changed, Fixed, and
+  Migration notes directly from this file so the public page cannot drift from the technical
+  history.
+
 ### Changed
 
 - Made the newest coordinated public release the default npm install target through `latest`, while

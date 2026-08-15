@@ -86,6 +86,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/registry", label: "Registry and CLI", icon: Boxes },
       { href: "/docs/ai", label: "AI tooling", icon: Sparkles },
       { href: "/docs/feedback", label: "Community feedback", icon: MessageCircle },
+      { href: "/docs/changelog", label: "Changelog", icon: FileText },
     ],
   },
   {
@@ -264,6 +265,15 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "install", label: "Install" },
     { id: "project-shape", label: "Project shape" },
     { id: "principles", label: "Principles" },
+  ],
+  "/docs/changelog": [
+    { id: "x-launch", label: "Nerio is now on X" },
+    { id: "beta-1", label: "Core 1.0 beta.1" },
+    { id: "beta-0", label: "Core 1.0 beta.0" },
+    { id: "alpha-2", label: "Core 0.1 alpha.2" },
+    { id: "alpha-1", label: "Core 0.1 alpha.1" },
+    { id: "alpha-0", label: "Core 0.1 alpha.0" },
+    { id: "technical-changelog", label: "Technical changelog" },
   ],
   "/docs/foundations/tokens": [
     { id: "token-architecture", label: "Token architecture" },
@@ -707,7 +717,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     const headings = Array.from(
       document.querySelectorAll<HTMLElement>(".docs-main h2, .docs-main h3, .docs-main h4"),
-    ).filter((heading) => !heading.closest(".component-example"));
+    ).filter((heading) => !heading.closest(".component-example, [data-toc-exclude]"));
     const usedIds = new Set<string>();
     const nextToc = headings.map((heading) => {
       const label = heading.textContent?.trim() ?? "";
@@ -745,7 +755,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
       document.querySelectorAll<HTMLElement>(
         ".docs-main h2[id], .docs-main h3[id], .docs-main h4[id]",
       ),
-    ).filter((heading) => !heading.closest(".component-example"));
+    ).filter((heading) => !heading.closest(".component-example, [data-toc-exclude]"));
     if (headings.length === 0) return;
 
     const observer = new IntersectionObserver(
@@ -868,7 +878,14 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               <Button
                 className="docs-github-link"
                 nativeButton={false}
-                render={<a href={repoUrl} target="_blank" rel="noreferrer" />}
+                render={
+                  <a
+                    href={repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View Nerio on GitHub"
+                  />
+                }
                 variant="secondary"
               >
                 <span className="docs-github-mark" aria-hidden>
@@ -910,22 +927,16 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
               {sidebarGroups.map((group) => (
                 <div className="nav-group" key={group.title}>
                   <h2>{group.title}</h2>
-                  {group.items.map(({ href, label, icon }) => {
-                    const hasIcon = group.title === "Overview" || group.title === "Foundations";
-
-                    return (
-                      <Link
-                        key={href}
-                        href={href}
-                        data-has-icon={hasIcon || undefined}
-                        className={pathname === href ? "is-active" : undefined}
-                        aria-current={pathname === href ? "page" : undefined}
-                      >
-                        {hasIcon ? <Icon icon={icon} /> : null}
-                        {label}
-                      </Link>
-                    );
-                  })}
+                  {group.items.map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={pathname === href ? "is-active" : undefined}
+                      aria-current={pathname === href ? "page" : undefined}
+                    >
+                      {label}
+                    </Link>
+                  ))}
                 </div>
               ))}
             </nav>

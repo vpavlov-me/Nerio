@@ -598,11 +598,13 @@ function blockArchitectureFailures() {
 function publicSurfaceFailures() {
   const layout = read("apps/docs/app/layout.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const siteConfig = read("apps/docs/lib/site-config.ts");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const robots = read("apps/docs/app/robots.ts");
   const llmsRoute = read("apps/docs/app/llms.txt/route.ts");
   const llmsSource = read("apps/docs/content/llms.txt");
   const feedbackPage = read("apps/docs/app/docs/feedback/page.tsx");
+  const changelogPage = read("apps/docs/app/docs/changelog/page.tsx");
   const routeFiles = [
     "apps/docs/app/playground/page.tsx",
     "apps/docs/app/blocks/page.tsx",
@@ -629,6 +631,12 @@ function publicSurfaceFailures() {
     ],
     [sitemap, '"/docs/feedback"', "The sitemap must include Community feedback"],
     [
+      docsChrome,
+      '{ href: "/docs/changelog", label: "Changelog"',
+      "Overview navigation must expose the Changelog route",
+    ],
+    [sitemap, '"/docs/changelog"', "The sitemap must include Changelog"],
+    [
       robots,
       'disallow: ["/views/", "/visual-test/"]',
       "Robots rules must keep catalogs public while excluding preview Views",
@@ -641,6 +649,22 @@ function publicSurfaceFailures() {
     [llmsSource, "`/blocks`", "The canonical llms.txt source must describe Blocks"],
     [llmsSource, "`/templates`", "The canonical llms.txt source must describe Templates"],
     [llmsSource, "`/docs/feedback`", "The canonical llms.txt source must describe feedback"],
+    [llmsSource, "`/docs/changelog`", "The canonical llms.txt source must describe Changelog"],
+    [
+      siteConfig,
+      "https://x.com/nerio_ui",
+      "Site configuration must define the official Nerio X account",
+    ],
+    [
+      changelogPage,
+      "siteConfig.xUrl",
+      "The Changelog must link through the official Nerio X account configuration",
+    ],
+    [
+      changelogPage,
+      "CHANGELOG.md",
+      "The public Changelog must preserve the canonical technical history link",
+    ],
     [
       feedbackPage,
       "https://github.com/vpavlov-me/Nerio/discussions/385",

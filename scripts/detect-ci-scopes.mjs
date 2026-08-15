@@ -32,6 +32,7 @@ function matchesAny(path, patterns) {
 
 function isBrowserSurface(path) {
   return matchesAny(path, [
+    "CHANGELOG.md",
     /^packages\/ui\/src\//,
     /^packages\/tokens\/src\//,
     /^packages\/adapters\/src\//,
@@ -46,6 +47,7 @@ function isBrowserSurface(path) {
 
 function isVisualSurface(path) {
   return matchesAny(path, [
+    "CHANGELOG.md",
     /^packages\/ui\/src\/(?:components|styles)\//,
     /^packages\/ui\/src\/lib\/(?:cn|tailwind-cn)\.ts$/,
     "packages/ui/src/styles.css",
@@ -144,6 +146,7 @@ export function detectCiScopes(inputPaths) {
       /^quality\/docs-route-/,
     ]);
     scopes.ui ||= matchesAny(path, [
+      "CHANGELOG.md",
       /^packages\/(?:ui|tokens|registry)\/src\//,
       /^packages\/ui\/tests?\//,
       /^tests\/browser\//,
@@ -201,6 +204,7 @@ export function detectCiScopes(inputPaths) {
     paths.length > 0 &&
     paths.every(
       (path) =>
+        path !== "CHANGELOG.md" &&
         markdownOnlyPath.test(path) &&
         !isManualAuditContract(path) &&
         !codeExtension.test(path.replace(/\.md$/, "")),
