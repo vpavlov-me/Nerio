@@ -84,8 +84,10 @@ async function verify() {
     }
     const registryMatchesExpectedVersion =
       publishedVersion !== undefined
-        ? registry.version === publishedVersion &&
-          registry.sourceRevision === `v${publishedVersion}`
+        ? registry.schemaVersion === manifest.schemaVersion &&
+          registry.version === publishedVersion &&
+          registry.sourceRevision === `v${publishedVersion}` &&
+          registry.styleContractVersion === manifest.styleContractVersion
         : registry.schemaVersion === manifest.schemaVersion &&
           registry.version === manifest.version &&
           registry.sourceRevision === manifest.sourceRevision &&
