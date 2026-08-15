@@ -14,10 +14,11 @@ pnpm add @nerio-ui/tokens
 
 ## Use
 
-Import the Tailwind CSS v4 bridge and register package source from the consuming application:
+Import the canonical token values and the Tailwind CSS v4 bridge from the consuming application:
 
 ```css
 @import "tailwindcss";
+@import "@nerio-ui/tokens/styles.css";
 @import "@nerio-ui/tokens/tailwind.css";
 ```
 
