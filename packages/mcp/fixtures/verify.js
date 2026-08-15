@@ -5,7 +5,13 @@ const manifest = require(path.resolve(__dirname, "../../registry/src/manifest.js
 
 function optionValue(name) {
   const index = process.argv.indexOf(name);
-  return index < 0 ? undefined : process.argv[index + 1];
+  if (index < 0) return undefined;
+
+  const value = process.argv[index + 1];
+  if (!value || value.startsWith("--")) {
+    throw new Error(`Missing value after ${name}.`);
+  }
+  return value;
 }
 
 function serverCommand() {
@@ -99,9 +105,11 @@ async function verify() {
     if (publishedVersion !== undefined) {
       const listResult = await client.callTool({ name: "list_components", arguments: {} });
       const components = JSON.parse(listResult.content[0].text);
+      const structuredComponents = listResult.structuredContent?.components;
       if (
-        listResult.structuredContent?.components?.length !== components.length ||
-        !components.some((component) => component.name === "button")
+        structuredComponents?.length !== components.length ||
+        !components.some((component) => component.name === "button") ||
+        !structuredComponents.some((component) => component.name === "button")
       ) {
         throw new Error("Published MCP discovery did not return the structured Button catalog.");
       }

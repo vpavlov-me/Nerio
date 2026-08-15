@@ -157,10 +157,6 @@ for (const fragment of [
 
 const forbiddenPatterns = [
   [/pnpm dlx nerio\b/g, "unqualified one-off CLI package"],
-  [
-    /@nerio-ui\/(?:tokens|adapters|ui|registry|cli|mcp)@0\.1\.0-alpha\.[0-9]+/g,
-    "stale alpha package install",
-  ],
   [/packages\/mcp\/src\/server\.js/g, "monorepo-only MCP path"],
   [/pnpm --filter @nerio-ui\/mcp start/g, "workspace-only MCP command"],
   [/^\s*(?:npx|pnpm)\s+nerio\b/gm, "unsupported CLI runner"],
@@ -168,7 +164,14 @@ const forbiddenPatterns = [
   [/@nerio\//g, "obsolete package scope"],
   [/No npm release exists/g, "stale unpublished-package copy"],
 ];
+const versionedPublicPackagePattern =
+  /@nerio-ui\/(?:tokens|adapters|ui|registry|cli|mcp)@([0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?)/g;
 for (const [path, source] of Object.entries(sources)) {
+  for (const match of source.matchAll(versionedPublicPackagePattern)) {
+    if (match[1] !== registryVersion) {
+      failures.push(`${path}: contains stale versioned package install ${match[0]}`);
+    }
+  }
   for (const [pattern, description] of forbiddenPatterns) {
     if (pattern.test(source)) failures.push(`${path}: contains ${description}`);
     pattern.lastIndex = 0;
