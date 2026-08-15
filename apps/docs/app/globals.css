@@ -160,8 +160,12 @@ pre {
 }
 
 .brand {
-  font-size: var(--n-font-size-lg);
-  font-weight: var(--n-font-weight-semibold);
+  display: inline-flex;
+}
+
+.brand img {
+  block-size: var(--n-space-5);
+  inline-size: auto;
 }
 
 .docs-brand-lockup .n-badge {
