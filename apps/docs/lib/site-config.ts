@@ -4,6 +4,7 @@ export const siteConfig = {
   name: "Nerio",
   url: "https://nerio.vpavlov.com",
   repositoryUrl: "https://github.com/vpavlov-me/Nerio",
+  xUrl: "https://x.com/nerio_ui",
   version: `v${uiPackage.version}`,
   defaultTitle: "Nerio — Open-source React design system",
   titleTemplate: "%s · Nerio",
