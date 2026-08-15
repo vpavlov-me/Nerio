@@ -2,6 +2,14 @@
   "name": "@nerio-ui/mcp",
   "version": "1.0.0-beta.1",
   "description": "Nerio Model Context Protocol server for component discovery.",
+  "keywords": [
+    "nerio",
+    "design-system",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "component-registry"
+  ],
   "private": false,
   "license": "MIT",
   "repository": {

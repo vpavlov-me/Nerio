@@ -82,10 +82,12 @@ updating the snapshot only to make CI green is not approval.
 
 ## Distribution channels
 
-Prereleases use the matching npm dist-tag such as `alpha`, `beta`, or `rc`. The `latest` tag is
-reserved for stable releases. Publishing, changing a dist-tag, creating a Git tag, and creating a
-GitHub Release are separate maintainer-approved actions; passing this policy does not authorize
-them.
+Prereleases use the matching npm dist-tag such as `alpha`, `beta`, or `rc`. After every coordinated
+publication is verified, `latest` moves to that same version so an unqualified install resolves to
+the newest public Nerio release. Historical channel tags remain protected unless a separately
+approved release intentionally advances them. Publishing, changing a dist-tag, creating a Git tag,
+and creating a GitHub Release are separate maintainer-approved actions; passing this policy does not
+authorize them.
 
 ## Source-install ownership
 

@@ -64,14 +64,14 @@ test("public onboarding validator rejects the obsolete package scope", () => {
   assert.match(stderr, /obsolete package scope/);
 });
 
-test("public onboarding validator rejects unpinned prerelease installs", () => {
+test("public onboarding validator rejects stale alpha installs", () => {
   const stderr = invalidFixture("--readme", "README.md", (source) =>
     source.replace(
       "@nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1",
-      "@nerio-ui/registry @nerio-ui/cli",
+      "@nerio-ui/registry@0.1.0-alpha.0 @nerio-ui/cli@0.1.0-alpha.0",
     ),
   );
-  assert.match(stderr, /unpinned prerelease package install/);
+  assert.match(stderr, /stale alpha package install/);
 });
 
 test("public onboarding validator rejects internal CLI release smoke", () => {

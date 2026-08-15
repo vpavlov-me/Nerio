@@ -2,9 +2,8 @@
 
 Nerio Core `1.0.0-beta.1` is the published public beta for the frozen Core 1.0 API. The reviewed
 frozen baseline is `3689a58d48878bfdbfa8ad6a27383c08ecf97ea3`; the exact published `main` commit
-is `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`. All six packages are available under npm `beta`.
-The protected `alpha` and `latest` tags intentionally remain on `0.1.0-alpha.2` and
-`0.1.0-alpha.0`.
+is `a4089d5b402ea882e44aa6b7b6eb49fd1435cbc9`. All six packages are available under npm `beta` and
+`latest`. The protected `alpha` tag intentionally remains on `0.1.0-alpha.2`.
 
 The signed `v1.0.0-beta.1` tag and GitHub prerelease point to the exact publish candidate. Public
 metadata and a clean package/source, CLI, MCP, and Next.js consumer smoke passed after publication.
@@ -221,23 +220,28 @@ browser verification, changelog review, and tarball inspection.
    does not weaken version, metadata, contents, runtime, source-install, or consumer-build checks.
 4. Publish one package at a time in the documented dependency order with the `beta` dist-tag, for
    example `pnpm --filter @nerio-ui/tokens publish --access public --tag beta --no-git-checks`.
-   Do not move `latest` or `alpha`.
+   Do not move `alpha` or `latest`. Never make a partially published coordinated version the
+   default install target.
 5. Verify each package before continuing to the next one. Stop immediately on a version, contents,
    provenance, ownership, or install mismatch.
-6. Create a signed Git tag and GitHub Release only after all six packages and consumer checks pass.
+6. After all six packages exist, run the published exact-version smoke before changing `latest`:
+
+   ```bash
+   NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release-consumer
+   ```
+
+   This makes the documented package-qualified `pnpm dlx` path resolve the published coordinated
+   dependency graph. The candidate gate intentionally omits this network-only assertion because an
+   unpublished exact prerelease dependency cannot resolve from npm.
+
+7. Move `latest` for all six packages to the approved version only after the published-package
+   smoke passes, then verify both the release-channel tag and `latest` for every package.
+8. Create a signed Git tag and GitHub Release only after all six packages and consumer checks pass.
 
 ## Post-release verification
 
-- Confirm `npm view <package>@<approved-version> version dist-tags files` for every package.
-- Run the published-package smoke after all six packages exist:
-
-  ```bash
-  NERIO_RELEASE_EXPECT_PUBLIC=1 NERIO_RELEASE_EXPECT_PUBLISHED=1 pnpm test:release-consumer
-  ```
-
-  This makes the documented package-qualified `pnpm dlx` path resolve the published coordinated
-  dependency graph. The candidate gate intentionally omits this network-only assertion because an
-  unpublished exact prerelease dependency cannot resolve from npm.
+- Confirm `npm view <package>@<approved-version> version dist-tags files` for every package and
+  verify both the release-channel tag and `latest` still resolve to the approved version.
 
 - Install the six published packages into a new supported Next.js project and rerun the package and
   source-install smoke paths.

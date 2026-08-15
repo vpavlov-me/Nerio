@@ -13,11 +13,15 @@ const packagePaths = {
   "@nerio-ui/cli": "packages/cli/package.json",
   "@nerio-ui/mcp": "packages/mcp/package.json",
 };
+const packageReadmePaths = Object.values(packagePaths).map((path) =>
+  path.replace(/package\.json$/, "README.md"),
+);
 const activeVersionSurfaces = [
   "README.md",
   "apps/docs/app/docs/getting-started/page.tsx",
   "apps/docs/app/docs/foundations/motion/page.tsx",
   "apps/docs/content/llms.txt",
+  ...packageReadmePaths,
   "packages/registry/src/public-commands.json",
   "packages/cli/src/index.js",
   "packages/cli/fixtures/basic/README.md",
@@ -56,6 +60,7 @@ export function validateReleaseMetadata() {
     ["alpha", "beta", "stable"].includes(metadata.channel),
     "channel must be alpha, beta, or stable.",
   );
+  assert(metadata.defaultDistTag === "latest", "defaultDistTag must be latest.");
   assert(
     metadata.registrySourceRevision === `v${metadata.registryVersion}`,
     "Registry source revision must be the immutable v-prefixed Registry version.",
@@ -68,6 +73,10 @@ export function validateReleaseMetadata() {
     new Set(metadata.protectedDistTags).size === metadata.protectedDistTags.length &&
       metadata.protectedDistTags.every((tag) => tag !== metadata.channel),
     "Protected dist-tags must be unique and exclude the active channel.",
+  );
+  assert(
+    !metadata.protectedDistTags.includes(metadata.defaultDistTag),
+    "The default dist-tag must move with the newest coordinated publication.",
   );
 
   for (const [name, path] of Object.entries(packagePaths)) {

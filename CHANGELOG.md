@@ -6,7 +6,17 @@ Items under `Unreleased` may change before the next public release.
 
 ## Unreleased
 
-No changes yet.
+### Changed
+
+- Made the newest coordinated public release the default npm install target through `latest`, while
+  preserving the historical `alpha` channel, and aligned release policy, public documentation, and
+  machine-readable release metadata with that contract.
+- Added npm version/download badges, package discovery links, keywords, and package-level READMEs so
+  GitHub and npm consumers see current installation and usage guidance for all six public packages.
+  The measured `@nerio-ui/ui` tarball grows to 65,782 bytes, so its reviewed documentation-inclusive
+  ceiling moves from 65,500 to 67,000 bytes. The measured CLI tarball grows to 19,377 bytes, so its
+  tarball and unpacked ceilings move from 19,000 to 20,000 bytes and from 80,000 to 82,000 bytes;
+  runtime source and bundle budgets are unchanged.
 
 ## 1.0.0-beta.1 — 2026-08-09
 

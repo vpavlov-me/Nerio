@@ -2,6 +2,14 @@
   "name": "@nerio-ui/adapters",
   "version": "1.0.0-beta.1",
   "description": "Responsibility-scoped Nerio Core adapters for icons, tables, charts, forms, schemas, and optional advanced motion.",
+  "keywords": [
+    "nerio",
+    "design-system",
+    "react",
+    "adapters",
+    "lucide",
+    "motion"
+  ],
   "private": false,
   "license": "MIT",
   "repository": {
