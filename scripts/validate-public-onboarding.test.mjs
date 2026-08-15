@@ -8,6 +8,9 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const validator = resolve(root, "scripts/validate-public-onboarding.mjs");
+const registryVersion = JSON.parse(
+  readFileSync(resolve(root, "packages/registry/src/manifest.json"), "utf8"),
+).version;
 
 function invalidFixture(option, source, mutate) {
   const directory = mkdtempSync(resolve(tmpdir(), "nerio-public-onboarding-"));
@@ -72,6 +75,24 @@ test("public onboarding validator rejects stale versioned package installs", () 
     ),
   );
   assert.match(stderr, /stale versioned package install/);
+});
+
+test("public onboarding validator excludes prose punctuation from package versions", () => {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-public-onboarding-"));
+  const target = resolve(directory, "README.md");
+  writeFileSync(
+    target,
+    `${readFileSync(resolve(root, "README.md"), "utf8")}\nUse @nerio-ui/mcp@${registryVersion}.\n`,
+  );
+  try {
+    const result = spawnSync(process.execPath, [validator, "--readme", target], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test("public onboarding validator rejects internal CLI release smoke", () => {
