@@ -13,11 +13,15 @@ const packagePaths = {
   "@nerio-ui/cli": "packages/cli/package.json",
   "@nerio-ui/mcp": "packages/mcp/package.json",
 };
+const packageReadmePaths = Object.values(packagePaths).map((path) =>
+  path.replace(/package\.json$/, "README.md"),
+);
 const activeVersionSurfaces = [
   "README.md",
   "apps/docs/app/docs/getting-started/page.tsx",
   "apps/docs/app/docs/foundations/motion/page.tsx",
   "apps/docs/content/llms.txt",
+  ...packageReadmePaths,
   "packages/registry/src/public-commands.json",
   "packages/cli/src/index.js",
   "packages/cli/fixtures/basic/README.md",
