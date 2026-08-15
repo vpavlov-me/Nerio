@@ -32,4 +32,10 @@ test("prints a deterministic dry-run without modifying files", () => {
   assert.ok(
     output.changes.some(({ path }) => path === "apps/docs/app/docs/foundations/motion/page.tsx"),
   );
+  for (const packageName of ["tokens", "adapters", "registry", "ui", "cli", "mcp"]) {
+    assert.ok(
+      output.changes.some(({ path }) => path === `packages/${packageName}/README.md`),
+      `${packageName} README must participate in coordinated version preparation`,
+    );
+  }
 });
