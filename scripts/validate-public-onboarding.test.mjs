@@ -95,6 +95,16 @@ test("public onboarding validator excludes prose punctuation from package versio
   }
 });
 
+test("public onboarding validator preserves hyphens inside SemVer identifiers", () => {
+  const versionCore = registryVersion.match(/^[0-9]+\.[0-9]+\.[0-9]+/)[0];
+  const stderr = invalidFixture(
+    "--readme",
+    "README.md",
+    (source) => `${source}\nUse @nerio-ui/mcp@${versionCore}-nerio-test-.\n`,
+  );
+  assert.match(stderr, /stale versioned package install/);
+});
+
 test("public onboarding validator rejects internal CLI release smoke", () => {
   const stderr = invalidFixture("--release-smoke", "scripts/release-smoke.mjs", (source) =>
     source.replace('run(pnpm, ["exec", "nerio"', "run(process.execPath, [cli"),
