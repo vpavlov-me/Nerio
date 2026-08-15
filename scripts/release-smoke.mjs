@@ -403,6 +403,21 @@ try {
     if (oneOffConfig.registry !== "@nerio-ui/registry/manifest.json") {
       throw new Error("One-off public CLI did not create the canonical Registry configuration.");
     }
+    const mcpFixture = join(root, "packages/mcp/fixtures/verify.js");
+    run(
+      process.execPath,
+      [
+        mcpFixture,
+        "--published-smoke",
+        expectedVersion,
+        "--command",
+        pnpm,
+        "--",
+        "dlx",
+        `@nerio-ui/mcp@${expectedVersion}`,
+      ],
+      { cwd: oneOffDirectory },
+    );
   }
 
   run(pnpm, ["build"], {
@@ -465,7 +480,7 @@ try {
   assertSingleTokenPayload(readBuiltCss(consumerDirectory), "Source-install");
 
   console.log(
-    `Release smoke passed for the ${stackProfile} dependency profile, ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, documented ${publicCommands.cli.localCommands.length}-command local CLI workflow, ${expectPublishedPackages ? "published one-off CLI execution, " : ""}packaged MCP-bin discovery, representative source installs, and a clean Next.js consumer build.`,
+    `Release smoke passed for the ${stackProfile} dependency profile, ${packageNames.length} ${expectPublicPackages ? "public" : "private"} packed packages, strict package contracts, documented ${publicCommands.cli.localCommands.length}-command local CLI workflow, ${expectPublishedPackages ? "published one-off CLI and MCP execution, " : ""}packaged MCP-bin discovery, representative source installs, and a clean Next.js consumer build.`,
   );
 } finally {
   rmSync(tempRoot, { recursive: true, force: true });

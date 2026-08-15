@@ -3,6 +3,11 @@ const { Client } = require("@modelcontextprotocol/sdk/client/index.js");
 const { StdioClientTransport } = require("@modelcontextprotocol/sdk/client/stdio.js");
 const manifest = require(path.resolve(__dirname, "../../registry/src/manifest.json"));
 
+function optionValue(name) {
+  const index = process.argv.indexOf(name);
+  return index < 0 ? undefined : process.argv[index + 1];
+}
+
 function serverCommand() {
   const commandIndex = process.argv.indexOf("--command");
   if (commandIndex < 0) {
@@ -47,15 +52,17 @@ function assertRegistryParity(name, usage, expectedFiles) {
 }
 
 async function verify() {
+  const publishedVersion = optionValue("--published-smoke");
+  const expectedVersion = publishedVersion ?? manifest.version;
   const client = new Client({ name: "nerio-mcp-fixture", version: "0.1.0" });
   const transport = new StdioClientTransport(serverCommand());
 
   try {
     await client.connect(transport);
     const serverVersion = client.getServerVersion();
-    if (serverVersion?.name !== "nerio-components" || serverVersion.version !== manifest.version) {
+    if (serverVersion?.name !== "nerio-components" || serverVersion.version !== expectedVersion) {
       throw new Error(
-        `MCP server metadata drifted. Expected nerio-components ${manifest.version}; received ${serverVersion?.name ?? "unknown"} ${serverVersion?.version ?? "unknown"}.`,
+        `MCP server metadata drifted. Expected nerio-components ${expectedVersion}; received ${serverVersion?.name ?? "unknown"} ${serverVersion?.version ?? "unknown"}.`,
       );
     }
     const listed = await client.listTools();
@@ -75,13 +82,29 @@ async function verify() {
         "MCP get_registry structured content drifted from its preserved text payload.",
       );
     }
-    if (
-      registry.schemaVersion !== manifest.schemaVersion ||
-      registry.version !== manifest.version ||
-      registry.sourceRevision !== manifest.sourceRevision ||
-      registry.styleContractVersion !== manifest.styleContractVersion
-    ) {
+    const registryMatchesExpectedVersion =
+      publishedVersion !== undefined
+        ? registry.version === publishedVersion &&
+          registry.sourceRevision === `v${publishedVersion}`
+        : registry.schemaVersion === manifest.schemaVersion &&
+          registry.version === manifest.version &&
+          registry.sourceRevision === manifest.sourceRevision &&
+          registry.styleContractVersion === manifest.styleContractVersion;
+    if (!registryMatchesExpectedVersion) {
       throw new Error("MCP Registry metadata drifted from the versioned manifest.");
+    }
+
+    if (publishedVersion !== undefined) {
+      const listResult = await client.callTool({ name: "list_components", arguments: {} });
+      const components = JSON.parse(listResult.content[0].text);
+      if (
+        listResult.structuredContent?.components?.length !== components.length ||
+        !components.some((component) => component.name === "button")
+      ) {
+        throw new Error("Published MCP discovery did not return the structured Button catalog.");
+      }
+      console.log(`Published MCP smoke passed for ${publishedVersion}.`);
+      return;
     }
 
     const result = await client.callTool({ name: "get_component", arguments: { name: "button" } });
