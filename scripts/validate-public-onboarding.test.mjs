@@ -67,8 +67,8 @@ test("public onboarding validator rejects the obsolete package scope", () => {
 test("public onboarding validator rejects stale versioned package installs", () => {
   const stderr = invalidFixture("--readme", "README.md", (source) =>
     source.replace(
-      "@nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1",
-      "@nerio-ui/registry@1.0.0-beta.0 @nerio-ui/cli@1.0.0-beta.0",
+      /@nerio-ui\/registry@[0-9A-Za-z.-]+ @nerio-ui\/cli@[0-9A-Za-z.-]+/,
+      "@nerio-ui/registry@0.0.0 @nerio-ui/cli@0.0.0",
     ),
   );
   assert.match(stderr, /stale versioned package install/);
