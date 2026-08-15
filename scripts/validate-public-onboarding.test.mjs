@@ -96,11 +96,13 @@ test("public onboarding validator excludes prose punctuation from package versio
 });
 
 test("public onboarding validator preserves hyphens inside SemVer identifiers", () => {
-  const versionCore = registryVersion.match(/^[0-9]+\.[0-9]+\.[0-9]+/)[0];
+  const hyphenatedVersion = registryVersion.includes("-")
+    ? `${registryVersion}-`
+    : `${registryVersion}--hotfix`;
   const stderr = invalidFixture(
     "--readme",
     "README.md",
-    (source) => `${source}\nUse @nerio-ui/mcp@${versionCore}-nerio-test-.\n`,
+    (source) => `${source}\nUse @nerio-ui/mcp@${hyphenatedVersion}.\n`,
   );
   assert.match(stderr, /stale versioned package install/);
 });
