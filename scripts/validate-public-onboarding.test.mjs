@@ -8,6 +8,9 @@ import { fileURLToPath } from "node:url";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const validator = resolve(root, "scripts/validate-public-onboarding.mjs");
+const registryVersion = JSON.parse(
+  readFileSync(resolve(root, "packages/registry/src/manifest.json"), "utf8"),
+).version;
 
 function invalidFixture(option, source, mutate) {
   const directory = mkdtempSync(resolve(tmpdir(), "nerio-public-onboarding-"));
@@ -70,6 +73,34 @@ test("public onboarding validator rejects stale versioned package installs", () 
       /@nerio-ui\/registry@[0-9A-Za-z.-]+ @nerio-ui\/cli@[0-9A-Za-z.-]+/,
       "@nerio-ui/registry@0.0.0 @nerio-ui/cli@0.0.0",
     ),
+  );
+  assert.match(stderr, /stale versioned package install/);
+});
+
+test("public onboarding validator excludes prose punctuation from package versions", () => {
+  const directory = mkdtempSync(resolve(tmpdir(), "nerio-public-onboarding-"));
+  const target = resolve(directory, "README.md");
+  writeFileSync(
+    target,
+    `${readFileSync(resolve(root, "README.md"), "utf8")}\nUse @nerio-ui/mcp@${registryVersion}.\n`,
+  );
+  try {
+    const result = spawnSync(process.execPath, [validator, "--readme", target], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    assert.equal(result.status, 0, result.stderr);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("public onboarding validator preserves hyphens inside SemVer identifiers", () => {
+  const versionCore = registryVersion.match(/^[0-9]+\.[0-9]+\.[0-9]+/)[0];
+  const stderr = invalidFixture(
+    "--readme",
+    "README.md",
+    (source) => `${source}\nUse @nerio-ui/mcp@${versionCore}-nerio-test-.\n`,
   );
   assert.match(stderr, /stale versioned package install/);
 });
