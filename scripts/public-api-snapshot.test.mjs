@@ -114,7 +114,7 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
     true,
   );
   assert.equal(parsed.packages["@nerio-ui/ui"].dependencies["@nerio-ui/tokens"], "workspace:*");
-  assert.equal(parsed.packages["@nerio-ui/ui"].dependencies["@base-ui/react"], "1.6.0");
+  assert.equal(parsed.packages["@nerio-ui/ui"].dependencies["@base-ui/react"], "1.7.0");
   assert.equal(
     parsed.registry.publicCommands.cli.localCommands.includes("pnpm exec nerio doctor"),
     true,

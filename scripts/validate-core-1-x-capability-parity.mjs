@@ -108,8 +108,12 @@ assert(
   "Parity baseline Core version must match the Registry version.",
 );
 assert(
-  matrix.baseline?.baseUiVersion === uiPackage.dependencies?.["@base-ui/react"],
-  "Parity baseline Base UI version must match the exact UI dependency.",
+  matrix.baseline?.baseUiVersion === "1.6.0",
+  "Parity baseline Base UI version must retain the reviewed historical value.",
+);
+assert(
+  matrix.currentBaseUiVersion === uiPackage.dependencies?.["@base-ui/react"],
+  "Current parity Base UI version must match the exact UI dependency.",
 );
 assert(
   matrix.baseline?.publicApiSnapshotSha256 === baselinePublicApiSnapshotSha256,
@@ -219,7 +223,7 @@ const expectedBaseUiPrimitives = [
   "unstable-use-media-query",
 ];
 compareSets(
-  "Reviewed Base UI 1.6.0 primitive set",
+  `Reviewed Base UI ${matrix.baseline.baseUiVersion} primitive set`,
   matrix.reviewedBaseUiPrimitives ?? [],
   expectedBaseUiPrimitives,
 );

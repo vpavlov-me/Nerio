@@ -14,7 +14,8 @@
     "registryManifestSha256": "22094d0b3e69536548a6838d5d7d9a4f99f5d64596b35aa5eb8c864fffb71de0",
     "publicApiSnapshotSha256": "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3"
   },
-  "currentPublicApiSnapshotSha256": "e90514de935bcb0bd97c0886a706a9c46dec9f0fb6aa4d1b27a2e44bd9df32a8",
+  "currentBaseUiVersion": "1.7.0",
+  "currentPublicApiSnapshotSha256": "ca87f6d5be7b3a1acaed8e0881c2904ce40895ab6ba33a47c45edae02291f01e",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
