@@ -68,10 +68,7 @@ test("keeps documentation actions attached and inside DropdownMenu slots", async
   await expectHealthyPage(page, problems);
 });
 
-test("preserves changelog hierarchy and inline code in public actions", async ({
-  context,
-  page,
-}) => {
+test("preserves copied changelog hierarchy and rendered inline code", async ({ context, page }) => {
   const problems = monitorPage(page);
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/docs/changelog");
@@ -111,6 +108,10 @@ test("links the Nerio profile card to X and omits the density preference", async
   await page.goto("/");
 
   const profile = page.getByRole("link", { name: /Nerio — Design System/ });
+  await expect(profile).toHaveAccessibleName("Nerio — Design System");
+  await expect(profile).toHaveAccessibleDescription(
+    "Accessible building blocks for adaptable product teams.",
+  );
   await expect(profile).toHaveAttribute("href", "https://x.com/nerio_ui");
   await expect(profile).toHaveAttribute("target", "_blank");
   await expect(profile).toHaveAttribute("rel", "noopener noreferrer");

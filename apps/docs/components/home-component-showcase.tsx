@@ -347,6 +347,8 @@ export function HomeComponentShowcase() {
           </section>
 
           <a
+            aria-describedby="nerio-profile-description"
+            aria-labelledby="nerio-profile-title"
             className="home-gallery__profile"
             href={siteConfig.xUrl}
             rel="noopener noreferrer"
@@ -355,10 +357,10 @@ export function HomeComponentShowcase() {
             <Avatar name="Nerio — Design System" size="lg" src={nerioXAvatarUrl} />
             <div className="home-gallery__profile-content">
               <div className="home-gallery__profile-heading">
-                <h3>Nerio — Design System</h3>
+                <h3 id="nerio-profile-title">Nerio — Design System</h3>
                 <p>@nerio_ui</p>
               </div>
-              <p className="home-gallery__profile-description">
+              <p className="home-gallery__profile-description" id="nerio-profile-description">
                 Accessible building blocks for adaptable product teams.
               </p>
               <div className="home-gallery__profile-stats">
