@@ -38,6 +38,11 @@ charts adapter and local mock data only; it is not a released financial product,
 package. These are the only current Templates; additional scenarios will be rebuilt before they
 return to the catalog.
 
+Use `/docs/changelog` for notable Nerio releases and project announcements. Follow the official
+Nerio account at `https://x.com/nerio_ui` for release notes, component updates, documentation
+improvements, and important project news. The repository `CHANGELOG.md` remains the canonical
+technical history.
+
 Data Display and Feedback follow one neutral-first hierarchy. Card is a generic raised white or
 black surface with a soft shadow and no default border; secondary grouping and TableContainer use
 flat muted surfaces. Table keeps native semantics and consumer-owned behavior while selected or

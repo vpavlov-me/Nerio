@@ -41,6 +41,15 @@ test("keeps ordinary Markdown changes out of runtime scopes", () => {
   assert.equal(result.packages, false);
 });
 
+test("treats the rendered changelog as a docs build and browser surface", () => {
+  const result = scopes("CHANGELOG.md");
+  assert.equal(result.docs, true);
+  assert.equal(result.ui, true);
+  assert.equal(result.browser, true);
+  assert.equal(result.visual, true);
+  assert.equal(result.docs_only, false);
+});
+
 test("isolates the manual audit contract", () => {
   const result = scopes(
     "quality/manual-audit-plan.json",

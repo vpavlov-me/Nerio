@@ -65,7 +65,12 @@ export const metadata: Metadata = {
       ? { yandex: process.env.YANDEX_SITE_VERIFICATION }
       : {}),
   },
-  icons: { icon: "/icon" },
+  icons: {
+    icon: [
+      { url: "/icon", type: "image/png" },
+      { url: "/brand/favicon.svg", type: "image/svg+xml" },
+    ],
+  },
 };
 
 export const viewport: Viewport = {
