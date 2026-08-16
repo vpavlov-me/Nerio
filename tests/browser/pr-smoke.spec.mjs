@@ -68,6 +68,28 @@ test("keeps documentation actions attached and inside DropdownMenu slots", async
   await expectHealthyPage(page, problems);
 });
 
+test("preserves changelog hierarchy and inline code in public actions", async ({
+  context,
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/docs/changelog");
+
+  const migrationLink = page.getByRole("link", {
+    name: "docs/migrations/beta-0-to-beta-1.md",
+  });
+  await expect(migrationLink.locator("code")).toHaveText("docs/migrations/beta-0-to-beta-1.md");
+  await expect(page.locator('time[datetime="2026-08-09"]')).toHaveText("August 9, 2026");
+
+  await page.getByRole("button", { name: "Copy Markdown" }).click();
+  await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
+  const markdown = await page.evaluate(() => navigator.clipboard.readText());
+  expect(markdown).toContain("#### Foundations");
+  expect(markdown).toContain("#### Components");
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps FileInput preview singular and pagination button-based", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/file-input");
