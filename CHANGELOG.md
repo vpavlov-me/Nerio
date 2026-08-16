@@ -15,6 +15,9 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Updated the exact `@base-ui/react` runtime pin from 1.6.0 to 1.7.0 after reviewing the current
+  public primitive inventory and validating the UI, accessibility, browser, and packed-consumer
+  contracts. Nerio-owned public props and event-detail aliases remain unchanged.
 - Replaced the documentation wordmark and favicon with the new Nerio brand assets. The wordmark
   preserves the purple brand mark while its text follows the operating-system color scheme, and the
   favicon switches between black and white for light and dark system modes.
