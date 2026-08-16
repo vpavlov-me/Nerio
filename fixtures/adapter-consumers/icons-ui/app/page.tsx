@@ -1,4 +1,4 @@
-import { Check } from "@nerio-ui/adapters/icons";
+import { Check, Github } from "@nerio-ui/adapters/icons";
 import { Card, CardContent, CardHeader, CardTitle, Icon } from "@nerio-ui/ui";
 import { ClientPreview } from "./client-preview";
 
@@ -11,6 +11,7 @@ export default function Page() {
         </CardHeader>
         <CardContent>
           <Icon icon={Check} decorative={false} label="Available" />
+          <Icon icon={Github} decorative={false} label="GitHub" />
         </CardContent>
       </Card>
       <ClientPreview />
