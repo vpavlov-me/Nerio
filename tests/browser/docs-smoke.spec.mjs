@@ -171,7 +171,7 @@ test("covers public docs routes, standardized component docs, and the restrained
   await colorMode.hover();
   await expect(page.getByRole("tooltip", { name: "Color mode: System" })).toBeVisible();
   await expect(page.getByRole("tooltip")).toHaveCount(1);
-  const github = page.getByRole("link", { name: "GitHub", exact: true }).first();
+  const github = page.getByRole("link", { name: "View Nerio on GitHub", exact: true });
   await expect(github.locator('img[src="/brand/github-invertocat-black.svg"]')).toBeAttached();
   await github.hover();
   await expect(page.getByRole("tooltip")).toHaveCount(0);
