@@ -496,13 +496,14 @@ function pageToMarkdown() {
   if (!article) return `# Nerio\n\n${window.location.href}`;
 
   const lines: string[] = [];
-  article.querySelectorAll("h1, h2, h3, p, li, pre code").forEach((node) => {
+  article.querySelectorAll("h1, h2, h3, h4, p, li, pre code").forEach((node) => {
     const text = node.textContent?.trim();
     if (!text) return;
 
     if (node.matches("h1")) lines.push(`# ${text}`);
     else if (node.matches("h2")) lines.push(`## ${text}`);
     else if (node.matches("h3")) lines.push(`### ${text}`);
+    else if (node.matches("h4")) lines.push(`#### ${text}`);
     else if (node.matches("li")) lines.push(`- ${text}`);
     else if (node.matches("pre code")) lines.push(`\`\`\`\n${text}\n\`\`\``);
     else lines.push(text);

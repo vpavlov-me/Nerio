@@ -32,6 +32,18 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
 });
 
+function renderInlineCode(source: string) {
+  return source
+    .split(/(`[^`]+`)/g)
+    .map((token, index) =>
+      token.startsWith("`") && token.endsWith("`") ? (
+        <code key={index}>{token.slice(1, -1)}</code>
+      ) : (
+        token
+      ),
+    );
+}
+
 function renderInlineMarkdown(source: string) {
   return source.split(/(`[^`]+`|\[[^\]]+\]\([^)]+\))/g).map((token, index) => {
     if (token.startsWith("`") && token.endsWith("`")) {
@@ -48,7 +60,7 @@ function renderInlineMarkdown(source: string) {
         : `${siteConfig.repositoryUrl}/blob/main/${path}`;
       return (
         <a href={href} key={index} target="_blank" rel="noopener noreferrer">
-          {label}
+          {renderInlineCode(label)}
         </a>
       );
     }
@@ -100,8 +112,10 @@ export default function Page() {
             key={release.version}
           >
             <p className="doc-kicker">
-              <time dateTime={release.date}>{dateFormatter.format(new Date(release.date))}</time> ·
-              Release
+              <time dateTime={release.date}>
+                {dateFormatter.format(new Date(`${release.date}T00:00:00.000Z`))}
+              </time>{" "}
+              · Release
             </p>
             <h2>Nerio Core {release.version}</h2>
             <p>
