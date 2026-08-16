@@ -83,6 +83,7 @@ test("preserves changelog hierarchy and inline code in public actions", async ({
   await expect(page.locator('time[datetime="2026-08-09"]')).toHaveText("August 9, 2026");
 
   await page.getByRole("button", { name: "Copy Markdown" }).click();
+  await expect(page.getByRole("button", { name: "Copied" })).toBeVisible();
   const markdown = await page.evaluate(() => navigator.clipboard.readText());
   expect(markdown).toContain("#### Foundations");
   expect(markdown).toContain("#### Components");
