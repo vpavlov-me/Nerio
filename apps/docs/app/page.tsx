@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Badge, Icon } from "@nerio-ui/ui";
 import { Button } from "@nerio-ui/ui/client";
-import { Check, Rocket } from "@nerio-ui/adapters/icons";
+import { Check } from "@nerio-ui/adapters/icons";
 import { HomeComponentShowcase } from "../components/home-component-showcase";
+import { getLatestChangelogPost } from "../lib/changelog";
 import { siteConfig } from "../lib/site-config";
 
 const structuredData = [
@@ -32,6 +33,8 @@ const structuredData = [
 ];
 
 export default function HomePage() {
+  const latestChangelogPost = getLatestChangelogPost();
+
   return (
     <div className="home-page">
       <script
@@ -41,9 +44,9 @@ export default function HomePage() {
         }}
       />
       <section className="home-hero" aria-labelledby="home-title">
-        <Badge leadingIcon={Rocket} tone="primary-soft">
-          Source-first UI
-        </Badge>
+        <Link className="home-hero__changelog" href={latestChangelogPost.href}>
+          <Badge tone="primary-soft">{latestChangelogPost.title}</Badge>
+        </Link>
         <h1 id="home-title">Open-source React design system for adaptable product teams.</h1>
         <p>
           Nerio is an open-source React design system with accessible components, semantic tokens,
