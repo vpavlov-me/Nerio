@@ -47,9 +47,10 @@ derive it inside a server/client component render if the two environments may di
 
 ## Nerio-owned interactive types
 
-The UI package pins `@base-ui/react` to `1.6.0`, and public component props and event-detail aliases
-no longer derive from Base UI declarations. This is a breaking beta type cleanup even though the
-runtime interaction model is retained.
+At the beta.1 release, the UI package pinned `@base-ui/react` to `1.6.0`; later patch releases may
+advance that exact runtime pin after compatibility review. Public component props and event-detail
+aliases no longer derive from Base UI declarations. This is a breaking beta type cleanup even
+though the runtime interaction model is retained.
 
 - Change handlers receive bounded `NerioChangeEventDetails` or `NerioEventDetails` contracts with
   named reason unions. Cancellation, propagation control, native event access, trigger access, and
