@@ -365,12 +365,10 @@
       },
       {
         "definition": [],
-        "deprecations": [
-          "Brand icons have been deprecated and are due to be removed, please refer to https://github.com/lucide-icons/lucide/issues/670. We recommend using https://simpleicons.org/?q=github instead. This icon will be removed in v1.0"
-        ],
+        "deprecations": [],
         "kind": "value",
         "name": "Github",
-        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+        "signature": "React.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & React.RefAttributes<SVGSVGElement>>"
       },
       {
         "definition": [],
@@ -6875,7 +6873,7 @@
     "@nerio-ui/adapters": {
       "bin": null,
       "dependencies": {
-        "lucide-react": "^0.561.0"
+        "lucide-react": "^1.31.0"
       },
       "engines": {
         "node": ">=22"

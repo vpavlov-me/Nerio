@@ -64,7 +64,7 @@
       "unstable-use-media-query"
     ]
   },
-  "currentPublicApiSnapshotSha256": "ca87f6d5be7b3a1acaed8e0881c2904ce40895ab6ba33a47c45edae02291f01e",
+  "currentPublicApiSnapshotSha256": "948031422bb1635594628bcff633d81958ef17c484501b45e97ff46033907996",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
