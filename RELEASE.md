@@ -270,6 +270,6 @@ unpublish except for a security incident or an explicit maintainer/legal decisio
 
 ## Public changelog page
 
-The documentation application should add a public Changelog page only when the first public pre-release is ready, at least one supported public installation method exists, package or registry versions are externally meaningful, external users need migration information, and the release policy is stable enough to maintain versioned entries.
+The public Changelog page is part of the documentation Overview navigation now that Nerio has public pre-releases, supported installation methods, externally meaningful package and Registry versions, and versioned migration guidance.
 
-Until then, [CHANGELOG.md](./CHANGELOG.md) is the canonical release ledger. It must not appear in primary documentation navigation, and merged development work remains under `Unreleased`.
+[CHANGELOG.md](./CHANGELOG.md) remains the canonical technical release ledger. Keep the public page focused on notable releases and project announcements, and keep merged development work under `Unreleased` until it ships in a coordinated release.
