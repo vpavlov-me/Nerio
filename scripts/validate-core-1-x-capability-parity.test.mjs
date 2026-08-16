@@ -192,7 +192,13 @@ test("capability parity validator cross-checks human capability fields", () => {
 test("capability parity validator detects stale baseline metadata", () => {
   invalidMatrix((matrix) => {
     matrix.baseline.baseUiVersion = "1.5.0";
-  }, /Parity baseline Base UI version must match/);
+  }, /Parity baseline Base UI version must retain/);
+});
+
+test("capability parity validator separates the current Base UI dependency from the historical baseline", () => {
+  invalidMatrix((matrix) => {
+    matrix.currentBaseUiVersion = matrix.baseline.baseUiVersion;
+  }, /Current parity Base UI version must match/);
 });
 
 test("capability parity validator separates current API state from the historical baseline", () => {
