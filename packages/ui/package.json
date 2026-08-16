@@ -45,7 +45,7 @@
     "test:a11y": "vitest run test/accessibility"
   },
   "dependencies": {
-    "@base-ui/react": "1.6.0",
+    "@base-ui/react": "1.7.0",
     "@nerio-ui/adapters": "workspace:*",
     "@nerio-ui/tokens": "workspace:*",
     "clsx": "^2.1.1",

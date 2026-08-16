@@ -108,8 +108,36 @@ assert(
   "Parity baseline Core version must match the Registry version.",
 );
 assert(
-  matrix.baseline?.baseUiVersion === uiPackage.dependencies?.["@base-ui/react"],
-  "Parity baseline Base UI version must match the exact UI dependency.",
+  matrix.baseline?.baseUiVersion === "1.6.0",
+  "Parity baseline Base UI version must retain the reviewed historical value.",
+);
+assert(
+  matrix.currentBaseUiVersion === uiPackage.dependencies?.["@base-ui/react"],
+  "Current parity Base UI version must match the exact UI dependency.",
+);
+assert(
+  matrix.currentBaseUiReview &&
+    typeof matrix.currentBaseUiReview === "object" &&
+    !Array.isArray(matrix.currentBaseUiReview),
+  "Current Base UI review must be an object.",
+);
+assert(
+  matrix.currentBaseUiReview.version === matrix.currentBaseUiVersion,
+  "Current Base UI review version must match the current parity dependency.",
+);
+assert(
+  /^\d{4}-\d{2}-\d{2}$/.test(matrix.currentBaseUiReview.retrievedAt ?? ""),
+  "Current Base UI review retrievedAt must be an ISO date.",
+);
+assert(
+  matrix.currentBaseUiReview.releaseUrl ===
+    `https://github.com/mui/base-ui/releases/tag/v${matrix.currentBaseUiVersion}`,
+  "Current Base UI review must link the exact official release.",
+);
+assert(
+  matrix.currentBaseUiReview.packageUrl ===
+    `https://www.npmjs.com/package/@base-ui/react/v/${matrix.currentBaseUiVersion}`,
+  "Current Base UI review must link the exact package metadata.",
 );
 assert(
   matrix.baseline?.publicApiSnapshotSha256 === baselinePublicApiSnapshotSha256,
@@ -218,9 +246,22 @@ const expectedBaseUiPrimitives = [
   "tooltip",
   "unstable-use-media-query",
 ];
+assert(
+  Array.isArray(matrix.reviewedBaseUiPrimitives),
+  "Reviewed historical Base UI primitives must be an array.",
+);
+assert(
+  Array.isArray(matrix.currentBaseUiReview.reviewedPrimitives),
+  "Reviewed current Base UI primitives must be an array.",
+);
 compareSets(
-  "Reviewed Base UI 1.6.0 primitive set",
+  `Reviewed Base UI ${matrix.baseline.baseUiVersion} primitive set`,
   matrix.reviewedBaseUiPrimitives ?? [],
+  expectedBaseUiPrimitives,
+);
+compareSets(
+  `Reviewed Base UI ${matrix.currentBaseUiVersion} primitive set`,
+  matrix.currentBaseUiReview.reviewedPrimitives,
   expectedBaseUiPrimitives,
 );
 
@@ -346,9 +387,9 @@ assertUniqueOwnership(
   classifiedBaseUiPrimitives,
 );
 compareSets(
-  "Capability coverage of reviewed Base UI primitives",
+  `Capability coverage of reviewed Base UI ${matrix.currentBaseUiVersion} primitives`,
   classifiedBaseUiPrimitives,
-  matrix.reviewedBaseUiPrimitives,
+  matrix.currentBaseUiReview.reviewedPrimitives,
 );
 
 const classifiedComponents = capabilities.flatMap((capability) => capability.nerioComponents);
@@ -505,5 +546,5 @@ assert(
 );
 
 console.log(
-  `Core 1.x capability parity is valid: ${capabilities.length} capabilities, ${dispositions.length} issue dispositions, ${matrix.reviewedBaseUiPrimitives.length} reviewed Base UI primitives.`,
+  `Core 1.x capability parity is valid: ${capabilities.length} capabilities, ${dispositions.length} issue dispositions, ${matrix.currentBaseUiReview.reviewedPrimitives.length} reviewed Base UI ${matrix.currentBaseUiVersion} primitives.`,
 );

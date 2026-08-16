@@ -51,6 +51,9 @@ import {
   X,
 } from "@nerio-ui/adapters/icons";
 import { avatarPreviewAssets } from "../lib/avatar-preview-assets";
+import { siteConfig } from "../lib/site-config";
+
+const nerioXAvatarUrl = "/brand/x-avatar.svg";
 
 function AvatarStack({ label = "Chat participants" }: { label?: string }) {
   return (
@@ -343,26 +346,33 @@ export function HomeComponentShowcase() {
             </div>
           </section>
 
-          <section className="home-gallery__profile" aria-labelledby="profile-title">
-            <Avatar name="Nerio Core" size="lg" />
+          <a
+            aria-describedby="nerio-profile-description"
+            aria-labelledby="nerio-profile-title"
+            className="home-gallery__profile"
+            href={siteConfig.xUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <Avatar name="Nerio — Design System" size="lg" src={nerioXAvatarUrl} />
             <div className="home-gallery__profile-content">
               <div className="home-gallery__profile-heading">
-                <h3 id="profile-title">
-                  Nerio Core <Badge tone="primary-soft">Open source</Badge>
-                </h3>
-                <p>@nerio-ui</p>
+                <h3 id="nerio-profile-title">Nerio — Design System</h3>
+                <p>@nerio_ui</p>
               </div>
-              <strong>Accessible building blocks for adaptable product teams.</strong>
+              <p className="home-gallery__profile-description" id="nerio-profile-description">
+                Accessible building blocks for adaptable product teams.
+              </p>
               <div className="home-gallery__profile-stats">
                 <span>
-                  <b>38</b> Components
+                  <b>46</b> Components
                 </span>
                 <span>
-                  <b>587</b> Tokens
+                  <b>950</b> Tokens
                 </span>
               </div>
             </div>
-          </section>
+          </a>
 
           <Alert
             action={<Button size="sm">Upgrade</Button>}
@@ -373,14 +383,6 @@ export function HomeComponentShowcase() {
           >
             Add a project to keep your workspace moving.
           </Alert>
-
-          <section className="home-gallery__preference" aria-label="Density preference">
-            <span>
-              <strong>Compact density</strong>
-              <small>Use tighter control spacing.</small>
-            </span>
-            <Switch aria-label="Enable compact density" defaultChecked />
-          </section>
         </div>
 
         <div className="home-gallery__column">
@@ -406,7 +408,7 @@ export function HomeComponentShowcase() {
               <Separator />
             </div>
             <div className="home-gallery__project-actions">
-              <Button size="sm" variant="secondary">
+              <Button variant="secondary">
                 <span className="home-auth-action">
                   <img
                     alt=""
@@ -418,7 +420,7 @@ export function HomeComponentShowcase() {
                   <span>Continue with Google</span>
                 </span>
               </Button>
-              <Button size="sm" variant="secondary">
+              <Button variant="secondary">
                 <span className="home-auth-action">
                   <img
                     alt=""

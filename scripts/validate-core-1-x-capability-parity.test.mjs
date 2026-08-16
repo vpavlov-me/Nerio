@@ -118,6 +118,27 @@ test("capability parity validator protects the reviewed Base UI set", () => {
   }, /Reviewed Base UI 1\.6\.0 primitive set is missing: accordion/);
 });
 
+test("capability parity validator protects the current Base UI review inventory", () => {
+  invalidMatrix((matrix) => {
+    matrix.currentBaseUiReview.reviewedPrimitives =
+      matrix.currentBaseUiReview.reviewedPrimitives.filter(
+        (primitive) => primitive !== "accordion",
+      );
+  }, /Reviewed Base UI 1\.7\.0 primitive set is missing: accordion/);
+});
+
+test("capability parity validator requires a current Base UI review object", () => {
+  invalidMatrix((matrix) => {
+    delete matrix.currentBaseUiReview;
+  }, /Current Base UI review must be an object/);
+});
+
+test("capability parity validator requires a current Base UI primitive array", () => {
+  invalidMatrix((matrix) => {
+    matrix.currentBaseUiReview.reviewedPrimitives = {};
+  }, /Reviewed current Base UI primitives must be an array/);
+});
+
 test("capability parity validator cross-checks linked issue dispositions", () => {
   invalidMatrix((matrix) => {
     matrix.capabilities.find((capability) => capability.id === "direction-localization").target =
@@ -192,7 +213,13 @@ test("capability parity validator cross-checks human capability fields", () => {
 test("capability parity validator detects stale baseline metadata", () => {
   invalidMatrix((matrix) => {
     matrix.baseline.baseUiVersion = "1.5.0";
-  }, /Parity baseline Base UI version must match/);
+  }, /Parity baseline Base UI version must retain/);
+});
+
+test("capability parity validator separates the current Base UI dependency from the historical baseline", () => {
+  invalidMatrix((matrix) => {
+    matrix.currentBaseUiVersion = matrix.baseline.baseUiVersion;
+  }, /Current parity Base UI version must match/);
 });
 
 test("capability parity validator separates current API state from the historical baseline", () => {

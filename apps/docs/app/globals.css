@@ -708,6 +708,17 @@ pre {
   justify-self: center;
 }
 
+.home-hero__changelog {
+  border-radius: var(--n-badge-radius);
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.home-hero__changelog:focus-visible {
+  outline: 2px solid var(--n-color-focus-ring);
+  outline-offset: 2px;
+}
+
 .home-hero h1 {
   color: var(--n-color-text-primary);
   font-size: clamp(2.25rem, 5.6vw, 4.5rem);
@@ -966,7 +977,7 @@ pre {
   min-inline-size: 0;
 }
 
-.home-gallery__column > :where(section, .n-alert) {
+.home-gallery__column > :where(section, .n-alert, .home-gallery__profile) {
   background: var(--n-color-surface);
   border: var(--n-border-subtle);
   border-radius: var(--n-radius-lg);
@@ -1208,6 +1219,11 @@ pre {
   grid-template-columns: 1fr;
 }
 
+.home-gallery__project-actions [data-slot="button-label"] {
+  align-items: center;
+  display: inline-flex;
+}
+
 .home-auth-action {
   align-items: center;
   display: inline-flex;
@@ -1300,10 +1316,25 @@ pre {
 
 .home-gallery__profile {
   align-items: start;
+  color: inherit;
   display: grid;
   gap: var(--n-space-3);
   grid-area: profile;
   grid-template-columns: auto minmax(0, 1fr);
+  text-decoration: none;
+  transition:
+    border-color var(--n-duration-fast) var(--n-easing-standard),
+    background-color var(--n-duration-fast) var(--n-easing-standard);
+}
+
+.home-gallery__profile:hover {
+  background: var(--n-color-surface-subtle);
+  border-color: var(--n-color-border-strong);
+}
+
+.home-gallery__profile:focus-visible {
+  outline: 2px solid var(--n-color-focus-ring);
+  outline-offset: 2px;
 }
 
 .home-gallery__profile-content {
@@ -1334,10 +1365,10 @@ pre {
   margin-block-start: calc(var(--n-space-1) * -1);
 }
 
-.home-gallery__profile strong {
+.home-gallery__profile p.home-gallery__profile-description {
   color: var(--n-color-text-primary);
   font-size: var(--n-font-size-sm);
-  font-weight: var(--n-font-weight-medium);
+  line-height: var(--n-line-height-normal);
 }
 
 .home-gallery__profile b {
@@ -1387,26 +1418,6 @@ pre {
 
 .home-gallery__credits {
   box-shadow: none;
-}
-
-.home-gallery__preference {
-  align-items: center;
-  display: flex;
-  gap: var(--n-space-4);
-  justify-content: space-between;
-}
-
-.home-gallery__preference > span {
-  display: grid;
-  gap: var(--n-space-1);
-}
-
-.home-gallery__preference strong {
-  color: var(--n-color-text-primary);
-}
-
-.home-gallery__preference small {
-  color: var(--n-color-text-tertiary);
 }
 
 .home-gallery__confirm {

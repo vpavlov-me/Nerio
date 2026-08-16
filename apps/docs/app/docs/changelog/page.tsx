@@ -1,5 +1,5 @@
 import { createPageMetadata } from "../../../lib/seo";
-import { getPublishedChangelog } from "../../../lib/changelog";
+import { getChangelogReleaseId, getPublishedChangelog } from "../../../lib/changelog";
 import { siteConfig } from "../../../lib/site-config";
 
 const technicalChangelogUrl = `${siteConfig.repositoryUrl}/blob/main/CHANGELOG.md`;
@@ -15,14 +15,6 @@ const releaseSummaries: Record<string, string> = {
     "Aligned documentation and governance with the first coordinated package release, completed Tailwind CSS v4 source-install guidance, and tightened release validation and migration evidence.",
   "0.1.0-alpha.0":
     "Introduced the first public Nerio Core alpha with semantic tokens, accessible components, the Registry and CLI workflow, MCP discovery, documentation, and initial migration guidance.",
-};
-
-const releaseIds: Record<string, string> = {
-  "1.0.0-beta.1": "beta-1",
-  "1.0.0-beta.0": "beta-0",
-  "0.1.0-alpha.2": "alpha-2",
-  "0.1.0-alpha.1": "alpha-1",
-  "0.1.0-alpha.0": "alpha-0",
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -108,7 +100,7 @@ export default function Page() {
         {releases.map((release) => (
           <section
             className="doc-section changelog-entry"
-            id={releaseIds[release.version] ?? `release-${release.version.replaceAll(".", "-")}`}
+            id={getChangelogReleaseId(release.version)}
             key={release.version}
           >
             <p className="doc-kicker">

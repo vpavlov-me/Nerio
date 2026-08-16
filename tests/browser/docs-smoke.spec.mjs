@@ -220,7 +220,7 @@ test("keeps the homepage concise while local tooling remains accessible", async 
   const homepageToggle = page.getByRole("button", { name: "Follow updates" });
   await expect(homepageToggle).toHaveClass(/n-toggle/);
   await expect(homepageToggle).toHaveAttribute("aria-pressed", "true");
-  await expect(page.getByText("38 Components", { exact: true })).toBeVisible();
+  await expect(page.getByText("46 Components", { exact: true })).toBeVisible();
 
   const actionMenu = page.locator(".home-gallery__action-dropdown");
   await expect(page.getByRole("heading", { name: "Team members" })).toBeVisible();

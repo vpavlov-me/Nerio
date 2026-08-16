@@ -17,6 +17,30 @@ export type ChangelogRelease = {
   sections: ChangelogSection[];
 };
 
+export type ChangelogPost = {
+  date: string;
+  href: string;
+  title: string;
+};
+
+const xLaunchAnnouncement = {
+  date: "2026-08-16",
+  href: "/docs/changelog#x-launch",
+  title: "Nerio is now on X",
+} satisfies ChangelogPost;
+
+const releaseIds: Record<string, string> = {
+  "1.0.0-beta.1": "beta-1",
+  "1.0.0-beta.0": "beta-0",
+  "0.1.0-alpha.2": "alpha-2",
+  "0.1.0-alpha.1": "alpha-1",
+  "0.1.0-alpha.0": "alpha-0",
+};
+
+export function getChangelogReleaseId(version: string) {
+  return releaseIds[version] ?? `release-${version.replaceAll(".", "-")}`;
+}
+
 export function getPublishedChangelog(): ChangelogRelease[] {
   const source = readFileSync(join(process.cwd(), "..", "..", "CHANGELOG.md"), "utf8");
   const releases: ChangelogRelease[] = [];
@@ -87,4 +111,17 @@ export function getPublishedChangelog(): ChangelogRelease[] {
       }))
       .filter((itemSection) => itemSection.groups.length > 0),
   }));
+}
+
+export function getLatestChangelogPost(): ChangelogPost {
+  const posts = [
+    xLaunchAnnouncement,
+    ...getPublishedChangelog().map((release) => ({
+      date: release.date,
+      href: `/docs/changelog#${getChangelogReleaseId(release.version)}`,
+      title: `Nerio Core ${release.version}`,
+    })),
+  ].sort((left, right) => right.date.localeCompare(left.date));
+
+  return posts[0] ?? xLaunchAnnouncement;
 }

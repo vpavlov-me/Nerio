@@ -68,10 +68,7 @@ test("keeps documentation actions attached and inside DropdownMenu slots", async
   await expectHealthyPage(page, problems);
 });
 
-test("preserves changelog hierarchy and inline code in public actions", async ({
-  context,
-  page,
-}) => {
+test("preserves copied changelog hierarchy and rendered inline code", async ({ context, page }) => {
   const problems = monitorPage(page);
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/docs/changelog");
@@ -87,6 +84,64 @@ test("preserves changelog hierarchy and inline code in public actions", async ({
   const markdown = await page.evaluate(() => navigator.clipboard.readText());
   expect(markdown).toContain("#### Foundations");
   expect(markdown).toContain("#### Components");
+  await expectHealthyPage(page, problems);
+});
+
+test("links the homepage badge to the latest changelog post", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/");
+
+  const latestPost = page.locator(".home-hero__changelog");
+  const latestPostTitle = (await latestPost.innerText()).trim();
+  const latestPostHref = await latestPost.getAttribute("href");
+  expect(latestPostTitle).not.toBe("");
+  expect(latestPostHref).toMatch(/^\/docs\/changelog#[a-z0-9-]+$/);
+  await expect(latestPost.locator('[data-slot="leading-icon"]')).toHaveCount(0);
+  await latestPost.click();
+  await expect(page).toHaveURL(new RegExp(`${latestPostHref}$`));
+  await expect(page.getByRole("heading", { name: latestPostTitle })).toBeVisible();
+  await expectHealthyPage(page, problems);
+});
+
+test("links the Nerio profile card to X and omits the density preference", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/");
+
+  const profile = page.getByRole("link", { name: /Nerio — Design System/ });
+  await expect(profile).toHaveAccessibleName("Nerio — Design System");
+  await expect(profile).toHaveAccessibleDescription(
+    "Accessible building blocks for adaptable product teams.",
+  );
+  await expect(profile).toHaveAttribute("href", "https://x.com/nerio_ui");
+  await expect(profile).toHaveAttribute("target", "_blank");
+  await expect(profile).toHaveAttribute("rel", "noopener noreferrer");
+  await expect(profile).toContainText("@nerio_ui");
+  await expect(profile.getByText("Open source", { exact: true })).toHaveCount(0);
+  await expect(
+    profile.getByText("Accessible building blocks for adaptable product teams.", { exact: true }),
+  ).toHaveJSProperty("tagName", "P");
+  await expect(profile.getByText("46 Components", { exact: true })).toBeVisible();
+  await expect(profile.getByText("950 Tokens", { exact: true })).toBeVisible();
+  await expect(profile.getByRole("img", { name: "Nerio — Design System" })).toHaveAttribute(
+    "src",
+    "/brand/x-avatar.svg",
+  );
+  await expect(page.getByText("Compact density", { exact: true })).toHaveCount(0);
+
+  const accountCard = page.getByRole("region", { name: "Create an account" });
+  const primaryAccountAction = accountCard.getByRole("button", { name: "Get started" });
+  const providerActions = accountCard.getByRole("button", { name: /^Continue with/ });
+  await expect(providerActions).toHaveCount(2);
+  await expect(providerActions.nth(0)).toHaveAttribute("data-size", "md");
+  await expect(providerActions.nth(1)).toHaveAttribute("data-size", "md");
+  const accountActionHeights = await Promise.all([
+    primaryAccountAction.evaluate((element) => element.getBoundingClientRect().height),
+    providerActions.nth(0).evaluate((element) => element.getBoundingClientRect().height),
+    providerActions.nth(1).evaluate((element) => element.getBoundingClientRect().height),
+  ]);
+  expect(Math.max(...accountActionHeights) - Math.min(...accountActionHeights)).toBeLessThanOrEqual(
+    0.5,
+  );
   await expectHealthyPage(page, problems);
 });
 
