@@ -15,6 +15,9 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Replaced the documentation wordmark and favicon with the new Nerio brand assets. The wordmark
+  preserves the purple brand mark while its text follows the operating-system color scheme, and the
+  favicon switches between black and white for light and dark system modes.
 - Made the newest coordinated public release the default npm install target through `latest`, while
   preserving the historical `alpha` channel, and aligned release policy, public documentation, and
   machine-readable release metadata with that contract.

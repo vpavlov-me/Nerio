@@ -804,8 +804,13 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
       <header className="docs-header">
         <div className="docs-header-top">
           <div className="docs-brand-lockup">
-            <Link href="/" className="brand">
-              Nerio
+            <Link href="/" className="brand" aria-label="Nerio home">
+              <img
+                src={mode === "system" ? "/brand/logo.svg" : `/brand/logo.svg#${mode}`}
+                alt=""
+                width={68}
+                height={20}
+              />
             </Link>
             <Badge tone="neutral">{version}</Badge>
           </div>
