@@ -8,7 +8,6 @@
     "build": "remotion bundle src/index.ts --out-dir=dist",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "capture": "node scripts/capture-templates.mjs",
     "stills": "node scripts/render-stills.mjs",
     "render:main": "remotion render src/index.ts NerioShowreel out/nerio-showreel.mp4 --codec=h264 --overwrite",
     "render:vertical": "remotion render src/index.ts NerioShowreelVertical out/nerio-showreel-vertical.mp4 --codec=h264 --overwrite",
@@ -27,7 +26,6 @@
   },
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
-    "@playwright/test": "1.62.1",
     "@remotion/cli": "4.0.512",
     "@types/node": "^26.1.2",
     "@types/react": "^19.2.18",

@@ -54,7 +54,6 @@
     "test:visual:update": "playwright test --config playwright.visual.config.mjs --update-snapshots",
     "showreel:dev": "pnpm --filter @nerio-ui/showreel dev",
     "showreel:stills": "pnpm --filter @nerio-ui/showreel stills",
-    "showreel:capture": "pnpm --filter @nerio-ui/showreel capture",
     "showreel:render:main": "pnpm --filter @nerio-ui/showreel render:main",
     "showreel:render:vertical": "pnpm --filter @nerio-ui/showreel render:vertical",
     "showreel:render:square": "pnpm --filter @nerio-ui/showreel render:square",

@@ -14,7 +14,7 @@ export function RemotionRoot() {
         <Composition
           id="NerioShowreel"
           component={NerioShowreel}
-          durationInFrames={2880}
+          durationInFrames={2340}
           fps={60}
           width={1920}
           height={1080}

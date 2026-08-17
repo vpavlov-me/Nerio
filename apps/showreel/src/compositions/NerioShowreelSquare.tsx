@@ -1,11 +1,11 @@
 import * as React from "react";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
-import { ComponentsScene } from "../scenes/ComponentsScene";
-import { FoundationsScene } from "../scenes/FoundationsScene";
+import { ApprovalScene } from "../scenes/ApprovalScene";
+import { ComponentPortraitsScene } from "../scenes/ComponentPortraitsScene";
 import { IdentityScene } from "../scenes/IdentityScene";
 import { OutroScene } from "../scenes/OutroScene";
-import { ProductScene } from "../scenes/ProductScene";
+import { TypeManifestoScene } from "../scenes/TypeManifestoScene";
 
 const transition = (
   <TransitionSeries.Transition
@@ -21,16 +21,16 @@ export function NerioShowreelSquare() {
         <IdentityScene format="square" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={180} name="Foundations square">
-        <FoundationsScene format="square" />
+      <TransitionSeries.Sequence durationInFrames={180} name="Type manifesto square">
+        <TypeManifestoScene format="square" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={200} name="Core components square">
-        <ComponentsScene format="square" />
+      <TransitionSeries.Sequence durationInFrames={220} name="Component portraits square">
+        <ComponentPortraitsScene format="square" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={230} name="Product composition square">
-        <ProductScene format="square" />
+      <TransitionSeries.Sequence durationInFrames={240} name="Approval composition square">
+        <ApprovalScene format="square" />
       </TransitionSeries.Sequence>
       {transition}
       <TransitionSeries.Sequence durationInFrames={180} name="Outro square">

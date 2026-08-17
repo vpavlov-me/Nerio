@@ -1,19 +1,19 @@
 import * as React from "react";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
-import { ComponentsScene } from "../scenes/ComponentsScene";
+import { ApprovalScene } from "../scenes/ApprovalScene";
+import { ComponentPortraitsScene } from "../scenes/ComponentPortraitsScene";
+import { CompositionScene } from "../scenes/CompositionScene";
 import { DeveloperScene } from "../scenes/DeveloperScene";
-import { FoundationsScene } from "../scenes/FoundationsScene";
 import { IdentityScene } from "../scenes/IdentityScene";
-import { InteractionScene } from "../scenes/InteractionScene";
 import { OutroScene } from "../scenes/OutroScene";
-import { PositioningScene } from "../scenes/PositioningScene";
-import { ProductScene } from "../scenes/ProductScene";
+import { SystemLanguageScene } from "../scenes/SystemLanguageScene";
+import { TypeManifestoScene } from "../scenes/TypeManifestoScene";
 
 const transition = (
   <TransitionSeries.Transition
     presentation={fade()}
-    timing={linearTiming({ durationInFrames: 15 })}
+    timing={linearTiming({ durationInFrames: 12 })}
   />
 );
 
@@ -24,31 +24,31 @@ export function NerioShowreel() {
         <IdentityScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={240} name="Positioning">
-        <PositioningScene format="wide" />
+      <TransitionSeries.Sequence durationInFrames={420} name="Type manifesto">
+        <TypeManifestoScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={360} name="Foundations">
-        <FoundationsScene format="wide" />
+      <TransitionSeries.Sequence durationInFrames={240} name="System language">
+        <SystemLanguageScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={660} name="Core components">
-        <ComponentsScene format="wide" />
+      <TransitionSeries.Sequence durationInFrames={480} name="Component portraits">
+        <ComponentPortraitsScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={480} name="Interaction choreography">
-        <InteractionScene format="wide" />
+      <TransitionSeries.Sequence durationInFrames={240} name="Built to compose">
+        <CompositionScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={480} name="Product composition">
-        <ProductScene format="wide" />
+      <TransitionSeries.Sequence durationInFrames={480} name="Approval composition">
+        <ApprovalScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={360} name="Developer experience">
+      <TransitionSeries.Sequence durationInFrames={240} name="Developer experience">
         <DeveloperScene format="wide" />
       </TransitionSeries.Sequence>
       {transition}
-      <TransitionSeries.Sequence durationInFrames={225} name="Outro">
+      <TransitionSeries.Sequence durationInFrames={144} name="Outro">
         <OutroScene format="wide" />
       </TransitionSeries.Sequence>
     </TransitionSeries>

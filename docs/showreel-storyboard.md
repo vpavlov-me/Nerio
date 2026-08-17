@@ -13,26 +13,26 @@ frames, and marketing-only component APIs are excluded.
 
 ## Main composition
 
-| Time   | Scene                    | Visual story                                                                  | Canonical sources                                                                                 |
-| ------ | ------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| 00–03s | Identity                 | Official Nerio mark and wordmark resolve from the neutral canvas.             | `apps/docs/public/brand/logo.svg`, `docs/visual-language-1-0.md`                                  |
-| 03–07s | Positioning              | “Source-first design system for modern digital products” meets real source.   | `PROJECT.md`, `README.md`, `quality/public-api-snapshot.json`                                     |
-| 07–13s | Foundations              | Token roles become live Button, Input, Badge, and Progress surfaces.          | `packages/tokens/src/styles.css`, `@nerio-ui/ui`, `@nerio-ui/ui/client`                           |
-| 13–24s | Core components          | Actions, forms, selection, feedback, and data display compose consistently.   | `data/component-catalog.json`, Button, Toggle, Checkbox, Tabs, Card, Badge, Avatar, Progress      |
-| 24–32s | Interaction choreography | Real controlled state changes settle into the actual Nerio Dialog contract.   | Toggle, Switch, Progress, Dialog, DialogFooter                                                    |
-| 32–40s | Product composition      | Two distinct real products demonstrate dense and operational composition.     | `/views/operations-workspace`, `/views/finance-assets`, `apps/docs/features/templates/catalog.ts` |
-| 40–46s | Developer experience     | Package and source workflows use the exact current public commands.           | `README.md`, `quality/public-api-snapshot.json`, Registry/CLI public contract                     |
-| 46–48s | Outro                    | Open-source beta status, React + TypeScript, and canonical URL close cleanly. | `quality/release-metadata.json`, `packages/ui/package.json`, `apps/docs/lib/site-config.ts`       |
+| Time   | Scene                | Visual story                                                               | Canonical sources                                                                           |
+| ------ | -------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 00–03s | Identity             | Official Nerio mark and wordmark resolve from the neutral canvas.          | `apps/docs/public/brand/logo.svg`, `docs/visual-language-1-0.md`                            |
+| 03–10s | Type manifesto       | “Build the product.” gives way to the Purple-accented “Own the source.”    | `PROJECT.md`, `README.md`                                                                   |
+| 10–14s | System language      | Actions, Forms, Navigation, Data, and Feedback sit under “One system.”     | `data/component-catalog.json`                                                               |
+| 14–22s | Component portraits  | Button, Input, and Tabs receive large isolated editorial portraits.        | Button, Input, Tabs, Badge                                                                  |
+| 22–26s | Built to compose     | Component names orbit one typographic composition claim.                   | `data/component-catalog.json`, `docs/visual-language-1-0.md`                                |
+| 26–34s | Approval composition | The previously introduced components assemble into one release decision.   | Card, Progress, Badge, Avatar, Button                                                       |
+| 34–37s | Developer experience | One exact public command supports the typographic “Inspect. Install. Own.” | `README.md`, Registry/CLI public contract                                                   |
+| 37–39s | Outro                | Open-source beta status, React + TypeScript, and canonical URL close.      | `quality/release-metadata.json`, `packages/ui/package.json`, `apps/docs/lib/site-config.ts` |
 
-Scene lengths include restrained 15-frame crossfades. The total composition is exactly 2,880 frames
-at 60fps (48 seconds).
+Scene lengths include restrained 12-frame crossfades. The total composition is exactly 2,340 frames
+at 60fps (39 seconds).
 
 ## Alternative compositions
 
-- **Vertical:** 24 seconds at 1080×1920. Identity and positioning stack vertically; components use
-  a single-column stage; product captures use tall windows rather than a crop of the wide frame.
-- **Square:** 15 seconds at 1080×1080. The cut prioritizes identity, foundations, components,
-  product composition, and the final developer/open-source claim.
+- **Vertical:** 24 seconds at 1080×1920. Identity and manifesto stack vertically; component
+  portraits become a single editorial column; the approval surface is recomposed below its title.
+- **Square:** 15 seconds at 1080×1080. The cut prioritizes identity, manifesto, component
+  portraits, approval composition, and the final open-source claim.
 - **Hero loop:** 8 seconds at 1920×1080 and 30fps. The official mark, token arcs, and one Core action
   move on periodic frame functions so frame 240 returns to the opening state. It remains readable
   and complete without audio.
@@ -41,34 +41,18 @@ at 60fps (48 seconds).
 
 ### Real Core sources shown
 
-- Button and icon Button states;
-- Toggle, Checkbox, Switch, and Tabs selection states;
-- Input, Badge, Card, Avatar, Progress, Dialog, and DialogFooter;
+- Button, Input, Tabs, Badge, Card, Avatar, and Progress;
 - semantic text, surface, border, action, radius, and motion tokens;
-- adapter-provided Lucide icons at the Nerio stroke contract.
+- adapter-provided Lucide icons at the Nerio stroke contract;
+- one static release-approval composition built from public Core components.
 
-### Real product sources shown
+Product screenshots, state walkthroughs, toggle demonstrations, and simulated clicks are excluded.
+Motion belongs to composition, scale, masks, and spatial assembly rather than UI state changes.
 
-- Operations Workspace: operational health, initiative ownership, activity, and responsive shell.
-- Finance & Assets: portfolio, holdings, transactions, security, and dense numeric hierarchy.
-
-The Template captures are same-origin, deterministic, and generated from `apps/docs`. They are the
-only screenshot-based material and remain a minority of the showreel.
-
-### Exact developer commands shown
+### Exact developer command shown
 
 ```bash
-pnpm add @nerio-ui/ui @nerio-ui/tokens @nerio-ui/adapters
-pnpm add -D @nerio-ui/registry@1.0.0-beta.1 @nerio-ui/cli@1.0.0-beta.1
-pnpm exec nerio init
 pnpm exec nerio add button
-pnpm exec nerio doctor
-```
-
-```tsx
-import { Card } from "@nerio-ui/ui";
-import { Button } from "@nerio-ui/ui/client";
-import "@nerio-ui/ui/styles.css";
 ```
 
 ## Review gates

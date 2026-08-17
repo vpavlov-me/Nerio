@@ -195,9 +195,68 @@ body {
   zoom: 1.28;
 }
 
+.showreel-portrait {
+  position: relative;
+  min-height: 330px;
+  overflow: hidden;
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: 36px;
+  background: var(--n-color-surface-default);
+  box-shadow: 0 24px 70px rgb(15 23 42 / 7%);
+}
+
+.showreel-portrait-label {
+  position: absolute;
+  top: 22px;
+  left: 28px;
+  color: var(--n-color-text-disabled);
+  font-size: 64px;
+  font-weight: 540;
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.showreel-portrait-content {
+  position: absolute;
+  inset: auto 30px 34px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  zoom: 1.26;
+}
+
+.showreel-approval {
+  display: grid;
+  gap: 24px;
+  padding: 34px;
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: 38px;
+  background: var(--n-color-surface-default);
+  box-shadow: 0 28px 90px rgb(15 23 42 / 10%);
+}
+
 .showreel-frame[data-format="vertical"] .showreel-component-scale,
 .showreel-frame[data-format="square"] .showreel-component-scale {
   zoom: 1.1;
+}
+
+.showreel-frame[data-format="vertical"] .showreel-portrait {
+  min-height: 260px;
+}
+
+.showreel-frame[data-format="square"] .showreel-portrait {
+  min-height: 220px;
+}
+
+.showreel-frame[data-format="vertical"] .showreel-portrait-label,
+.showreel-frame[data-format="square"] .showreel-portrait-label {
+  font-size: 50px;
+}
+
+.showreel-frame[data-format="vertical"] .showreel-portrait-content,
+.showreel-frame[data-format="square"] .showreel-portrait-content {
+  zoom: 1.08;
 }
 
 @media (prefers-reduced-motion: reduce) {

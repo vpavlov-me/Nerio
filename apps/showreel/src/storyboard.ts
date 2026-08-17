@@ -6,28 +6,28 @@ export type StoryboardScene = {
 
 export const mainStoryboard = [
   { id: "identity", label: "Identity", durationInFrames: 180 },
-  { id: "positioning", label: "Positioning", durationInFrames: 240 },
-  { id: "foundations", label: "Foundations", durationInFrames: 360 },
-  { id: "components", label: "Core components", durationInFrames: 660 },
-  { id: "interaction", label: "Interaction", durationInFrames: 480 },
-  { id: "product", label: "Product composition", durationInFrames: 480 },
-  { id: "developer", label: "Developer experience", durationInFrames: 360 },
-  { id: "outro", label: "Outro", durationInFrames: 225 },
+  { id: "manifesto", label: "Type manifesto", durationInFrames: 420 },
+  { id: "system", label: "System language", durationInFrames: 240 },
+  { id: "components", label: "Component portraits", durationInFrames: 480 },
+  { id: "composition", label: "Built to compose", durationInFrames: 240 },
+  { id: "approval", label: "Approval composition", durationInFrames: 480 },
+  { id: "developer", label: "Developer experience", durationInFrames: 240 },
+  { id: "outro", label: "Outro", durationInFrames: 144 },
 ] as const satisfies readonly StoryboardScene[];
 
 export const verticalStoryboard = [
   { id: "identity", label: "Identity", durationInFrames: 150 },
-  { id: "positioning", label: "Positioning", durationInFrames: 210 },
-  { id: "foundations", label: "Foundations", durationInFrames: 270 },
-  { id: "components", label: "Core components", durationInFrames: 300 },
-  { id: "product", label: "Product composition", durationInFrames: 330 },
-  { id: "outro", label: "Outro", durationInFrames: 240 },
+  { id: "manifesto", label: "Type manifesto", durationInFrames: 300 },
+  { id: "components", label: "Component portraits", durationInFrames: 330 },
+  { id: "approval", label: "Approval composition", durationInFrames: 360 },
+  { id: "developer", label: "Developer experience", durationInFrames: 180 },
+  { id: "outro", label: "Outro", durationInFrames: 170 },
 ] as const satisfies readonly StoryboardScene[];
 
 export const squareStoryboard = [
-  { id: "identity", label: "Identity", durationInFrames: 150 },
-  { id: "foundations", label: "Foundations", durationInFrames: 180 },
-  { id: "components", label: "Core components", durationInFrames: 200 },
-  { id: "product", label: "Product composition", durationInFrames: 230 },
+  { id: "identity", label: "Identity", durationInFrames: 120 },
+  { id: "manifesto", label: "Type manifesto", durationInFrames: 180 },
+  { id: "components", label: "Component portraits", durationInFrames: 220 },
+  { id: "approval", label: "Approval composition", durationInFrames: 240 },
   { id: "outro", label: "Outro", durationInFrames: 180 },
 ] as const satisfies readonly StoryboardScene[];
