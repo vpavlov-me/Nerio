@@ -95,6 +95,12 @@ test("detects a newly implemented typography step omitted from the checked-in pr
   );
 });
 
+test("projects the canonical default font aliases", () => {
+  const metadata = createFoundationMetadata(input());
+  assert.equal(metadata.typography.fontDefaults.sans.reference, "--n-font-sans-system");
+  assert.equal(metadata.typography.fontDefaults.mono.reference, "--n-font-mono-system");
+});
+
 test("reports missing foundation discovery coverage", () => {
   const failures = foundationDiscoveryFailures({
     pages: [{ path: "/docs/foundations/example", label: "Example" }],
@@ -104,5 +110,17 @@ test("reports missing foundation discovery coverage", () => {
   assert.deepEqual(failures, [
     "/docs/foundations/example: canonical foundation route has no page.tsx implementation.",
     "apps/docs/content/llms.txt is missing canonical foundation route /docs/foundations/example; update the Foundations index.",
+  ]);
+});
+
+test("does not accept a foundation route mentioned outside the Foundations index", () => {
+  const path = "/docs/foundations/example";
+  const failures = foundationDiscoveryFailures({
+    pages: [{ path, label: "Example" }],
+    llmsSource: `Another section mentions \`${path}\`.\n\nThe public Foundations index is \`/docs/foundations/tokens\`.`,
+    routeExists: () => true,
+  });
+  assert.deepEqual(failures, [
+    `apps/docs/content/llms.txt is missing canonical foundation route ${path}; update the Foundations index.`,
   ]);
 });

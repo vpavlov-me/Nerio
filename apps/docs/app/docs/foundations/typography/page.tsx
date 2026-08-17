@@ -24,7 +24,7 @@ export const metadata = createPageMetadata({
   path: "/docs/foundations/typography",
 });
 
-const { scale, presets, semanticRoles, lineHeights } = foundationMetadata.typography;
+const { fontDefaults, scale, presets, semanticRoles, lineHeights } = foundationMetadata.typography;
 const scalePurpose: Record<(typeof scale)[number]["token"], string> = {
   "--n-font-size-2xs": "Internal component-scale input; not for product UI text",
   "--n-font-size-xs": "Metadata, badges, and dense captions",
@@ -145,14 +145,18 @@ export default function Page() {
               <TableRow>
                 <TableCell>Sans</TableCell>
                 <TableCell>
-                  <Code>--n-font-sans → --n-font-sans-system</Code>
+                  <Code>
+                    {fontDefaults.sans.token} → {projectedValue(fontDefaults.sans)}
+                  </Code>
                 </TableCell>
                 <TableCell>Product UI and body copy</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Mono</TableCell>
                 <TableCell>
-                  <Code>--n-font-mono → --n-font-mono-system</Code>
+                  <Code>
+                    {fontDefaults.mono.token} → {projectedValue(fontDefaults.mono)}
+                  </Code>
                 </TableCell>
                 <TableCell>Code and technical identifiers</TableCell>
               </TableRow>
