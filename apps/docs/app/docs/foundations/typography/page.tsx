@@ -15,13 +15,14 @@ import { createPageMetadata } from "../../../../lib/seo";
 export const metadata = createPageMetadata({
   title: "Typography",
   description:
-    "Understand Nerio typography tokens, semantic roles, and font overrides for readable, adaptable product interfaces.",
+    "Understand Nerio typography tokens, semantic roles, resilience requirements, and font overrides for readable product interfaces.",
   path: "/docs/foundations/typography",
 });
 
 const scale = [
-  ["xs", "--n-font-size-xs", "12px", "Metadata, badges, dense captions"],
-  ["sm", "--n-font-size-sm", "13px", "Labels, helper text, table cells"],
+  ["2xs", "--n-font-size-2xs", "11px", "Exceptional microcopy and non-essential metadata"],
+  ["xs", "--n-font-size-xs", "12px", "Metadata, badges, and dense captions"],
+  ["sm", "--n-font-size-sm", "13px", "Labels, helper text, and table cells"],
   ["md", "--n-font-size-md", "14px", "Default UI body and controls"],
   ["lg", "--n-font-size-lg", "16px", "Lead copy and compact section intros"],
   ["xl", "--n-font-size-xl", "18px", "Small headings"],
@@ -29,17 +30,50 @@ const scale = [
   ["3xl", "--n-font-size-3xl", "22.5px", "Subsection headings"],
   ["4xl", "--n-font-size-4xl", "25.25px", "Section headings"],
   ["5xl", "--n-font-size-5xl", "28.5px", "Page headings"],
-];
+] as const;
 
 const semanticRoles = [
   ["Body size", "--n-body-font-size", "--n-font-size-md"],
   ["Body line height", "--n-body-line-height", "--n-line-height-normal"],
   ["Control size", "--n-control-font-size", "--n-font-size-md"],
-  ["Control weight", "--n-control-font-weight", "--n-font-weight-medium"],
+  ["Control weight", "--n-control-font-weight", "--n-font-weight-regular"],
   ["Label size", "--n-label-font-size", "--n-font-size-md"],
-  ["Label weight", "--n-label-font-weight", "--n-font-weight-medium"],
+  ["Label weight", "--n-label-font-weight", "--n-font-weight-regular"],
   ["Helper size", "--n-helper-font-size", "--n-font-size-xs"],
   ["Helper line height", "--n-helper-line-height", "--n-line-height-normal"],
+] as const;
+
+const lineHeights = [
+  ["Tight", "--n-line-height-tight", "1.2", "Large headings and short display text"],
+  ["Normal", "--n-line-height-normal", "1.4", "Default product UI and controls"],
+  ["Relaxed", "--n-line-height-relaxed", "1.55", "Longer descriptions and reading surfaces"],
+] as const;
+
+const validationChecks = [
+  [
+    "Text resize",
+    "Resize text to 200% without clipping, overlap, hidden controls, or loss of information.",
+  ],
+  [
+    "Narrow reflow",
+    "Verify equivalent 320 CSS pixel content width; only content requiring two-dimensional layout for usage or meaning may require two-axis scrolling.",
+  ],
+  [
+    "Text spacing",
+    "Override line height, paragraph, letter, and word spacing to WCAG 2.2 values without truncation or overlap.",
+  ],
+  [
+    "Localization",
+    "Test long translated strings, target scripts, plural forms, and bidirectional content before approving fixed geometry.",
+  ],
+  [
+    "Truncation",
+    "Confirm essential content remains available through wrapping, expansion, or an accessible full-value disclosure.",
+  ],
+  [
+    "Numeric data",
+    "Check decimal alignment, signs, currencies, percentages, and tabular numerals in dense data surfaces.",
+  ],
 ] as const;
 
 const systemInstall = `@import "@nerio-ui/tokens/styles.css";`;
@@ -66,6 +100,10 @@ const customOverride = `:root {
   --n-font-sans: "IBM Plex Sans", var(--n-font-sans-system);
 }`;
 
+const numericRecipe = `.numeric-column {
+  font-variant-numeric: tabular-nums;
+}`;
+
 export default function Page() {
   return (
     <article className="doc-page">
@@ -74,7 +112,8 @@ export default function Page() {
         <h1>Typography</h1>
         <p className="doc-lede">
           Nerio Core defaults to platform System UI so products stay native, neutral, and usable
-          without a font request. The documentation brand uses Geist independently.
+          without a font request. The typography contract also defines how text survives resize,
+          localization, narrow containers, and data-heavy interfaces.
         </p>
       </header>
 
@@ -105,7 +144,7 @@ export default function Page() {
                 <TableCell>
                   <Code>--n-font-mono → --n-font-mono-system</Code>
                 </TableCell>
-                <TableCell>Code and numeric values</TableCell>
+                <TableCell>Code and technical identifiers</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -114,6 +153,11 @@ export default function Page() {
           Native consistency means a product uses each platform&apos;s familiar UI family; it does
           not mean pixels are identical across operating systems. Font family changes remain CSS
           token overrides, not a fourth runtime axis beside theme, mode, and density.
+        </p>
+        <p>
+          A consumer-provided family must cover the scripts and symbols required by the product.
+          Keep the system stack as a fallback, then test real target locales rather than assuming a
+          Latin-focused family has complete language coverage.
         </p>
       </section>
 
@@ -213,7 +257,8 @@ export default function Page() {
         <p>
           The <code>n-typography-*</code> classes are scoped token recipes. They can style an app
           root, preview, or product area, but Nerio intentionally has no <code>data-font</code>{" "}
-          axis.
+          axis. Presets change family selection while preserving the shared scale, line heights,
+          control geometry, and semantic roles.
         </p>
       </section>
 
@@ -238,6 +283,11 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="type-scale">Type scale</h2>
+        <p>
+          Scale tokens are raw typographic values. Components should consume established semantic
+          roles when one exists. Product composition may use a scale step directly for headings or
+          metrics, but repeated cross-component meaning should become a reviewed semantic alias.
+        </p>
         <TableContainer aria-label="Type scale tokens">
           <Table>
             <TableHeader>
@@ -262,6 +312,11 @@ export default function Page() {
             </TableBody>
           </Table>
         </TableContainer>
+        <p>
+          Treat <Code>--n-font-size-2xs</Code> as an exception for short, non-essential metadata. Do
+          not use it for instructions, validation, primary actions, or long-form body copy. Text
+          remains available through browser zoom and user-controlled text resizing at every step.
+        </p>
       </section>
 
       <section className="doc-section">
@@ -290,6 +345,37 @@ export default function Page() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <h3>Line height</h3>
+        <TableContainer aria-label="Line-height tokens">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableHead>Token</TableHead>
+                <TableHead>Default</TableHead>
+                <TableHead>Use</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {lineHeights.map(([label, token, value, use]) => (
+                <TableRow key={token}>
+                  <TableCell>{label}</TableCell>
+                  <TableCell>
+                    <Code>{token}</Code>
+                  </TableCell>
+                  <TableCell>{value}</TableCell>
+                  <TableCell>{use}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <p>
+          Use tight leading only for short display text. Labels, controls, helper text, and wrapped
+          body copy need enough vertical room for diacritics, mixed scripts, and user spacing
+          overrides. Avoid fixed block heights around content that may wrap.
+        </p>
       </section>
 
       <section className="doc-section">
@@ -303,8 +389,50 @@ export default function Page() {
             Components consume semantic font tokens, never hard-coded Geist, Inter, or system
             stacks.
           </li>
+          <li>Use relative sizing and allow text containers to grow in the block direction.</li>
+          <li>
+            Wrap by default. Truncate only when the content hierarchy permits it and provide an
+            accessible way to reach the complete value.
+          </li>
+          <li>
+            Keep long-form prose within a readable measure instead of stretching it across the full
+            width of a dashboard or settings surface.
+          </li>
           <li>Do not scale type with viewport width inside compact product surfaces.</li>
         </ul>
+
+        <h3>Numeric and data typography</h3>
+        <p>
+          Use tabular numerals for columns and metrics that users compare vertically. A mono family
+          is appropriate for code, hashes, addresses, and identifiers; ordinary financial values do
+          not require mono when the selected sans family supports tabular figures.
+        </p>
+        <CodeExample code={numericRecipe} label="Aligned numeric values" />
+
+        <h3>Resilience validation</h3>
+        <TableContainer aria-label="Typography resilience validation">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Check</TableHead>
+                <TableHead>Expected result</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {validationChecks.map(([check, expectation]) => (
+                <TableRow key={check}>
+                  <TableCell>{check}</TableCell>
+                  <TableCell>{expectation}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <p>
+          Automated snapshots can reveal regressions, but approval still requires browser-level
+          review with real content. Typography is complete only when information and operation
+          remain available after resize, reflow, spacing overrides, and localization.
+        </p>
       </section>
     </article>
   );

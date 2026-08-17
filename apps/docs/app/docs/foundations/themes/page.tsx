@@ -28,6 +28,29 @@ const themes = [
   ["Neutral", "neutral", "--n-gray-950"],
 ];
 
+const themeValidation = [
+  [
+    "Text contrast",
+    "Normal text reaches 4.5:1; the 3:1 exception is reserved for text that qualifies as large under WCAG 2.2.",
+  ],
+  [
+    "Non-text contrast",
+    "Control boundaries, meaningful graphics, and focus indicators reach 3:1 where WCAG 2.2 applies.",
+  ],
+  [
+    "State communication",
+    "Selection, status, validation, and urgency remain understandable without relying on color alone.",
+  ],
+  [
+    "Mode coverage",
+    "Review light, dark, and both operating-system preferences while data-mode is system.",
+  ],
+  [
+    "System preferences",
+    "Verify forced colors, reduced motion, text resize, and zoom/reflow without losing state or operation.",
+  ],
+] as const;
+
 const customTheme = `<html data-theme="purple" data-mode="system" data-density="comfortable">
 
 :root[data-theme="acme"] {
@@ -152,9 +175,16 @@ export default function Page() {
       <section className="doc-section">
         <h2 id="mode-behavior">Mode behavior</h2>
         <p>
-          Light mode uses a white canvas, gray control surfaces, and white raised surfaces. Dark
-          mode remaps the same roles to gray-950, gray-900, and gray-800. Purple and neutral also
-          use lighter primary actions in dark and system-dark modes to preserve contrast.
+          Light mode uses opaque white foundations with cool dark alpha neutrals for adaptive
+          controls, grouping, borders, and interaction states. Dark mode maps the canvas, default,
+          sunken, raised, and overlay surface roles to <Code>--n-gray-1000</Code>, then uses white
+          alpha neutrals for controls, borders, selected layers, and other adaptive surfaces.
+        </p>
+        <p>
+          Text, focus, actions, statuses, and charts remap through their own semantic roles. Purple
+          and neutral use lighter primary actions in dark and system-dark modes where the light-mode
+          accent would lose contrast. Product code consumes semantic roles and does not depend on a
+          resolved gray or alpha primitive.
         </p>
         <p>
           The appearance control exposes System, Light, and Dark explicitly. System follows live OS
@@ -224,11 +254,33 @@ export default function Page() {
         <h2 id="custom-themes">Custom themes</h2>
         <CodeExample code={customTheme} label="Custom theme" />
         <ul className="doc-list">
+          <li>Override semantic roles and stable component contracts, not primitive palettes.</li>
           <li>Do not create combined names such as purple-light or neutral-dark.</li>
           <li>Do not use vertical-specific preset names such as fintech-blue.</li>
           <li>Keep brand color as an accent for primary action, selection, focus, and charts.</li>
           <li>Provide dark-mode accent overrides when the light accent loses contrast.</li>
+          <li>Test real component states and content rather than approving isolated swatches.</li>
         </ul>
+
+        <h3>Theme validation</h3>
+        <TableContainer aria-label="Custom theme validation">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Check</TableHead>
+                <TableHead>Expected result</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {themeValidation.map(([check, expectation]) => (
+                <TableRow key={check}>
+                  <TableCell>{check}</TableCell>
+                  <TableCell>{expectation}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
@@ -249,9 +301,22 @@ export default function Page() {
                 </TableCell>
               </TableRow>
               <TableRow>
+                <TableCell>Do</TableCell>
+                <TableCell>
+                  Validate action, focus, status, chart, and selected-state pairs in every supported
+                  mode.
+                </TableCell>
+              </TableRow>
+              <TableRow>
                 <TableCell>Do not</TableCell>
                 <TableCell>
                   Fork component source to hard-code a product color into a button or field.
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Do not</TableCell>
+                <TableCell>
+                  communicate status, selection, or validation through hue alone.
                 </TableCell>
               </TableRow>
             </TableBody>
