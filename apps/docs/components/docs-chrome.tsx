@@ -61,10 +61,21 @@ import {
 } from "../lib/appearance";
 import { siteConfig } from "../lib/site-config";
 import { mcpInstall, mcpLocalConfiguration } from "../lib/public-commands";
+import { foundationPages } from "../lib/generated/foundation-pages";
 
 const { version, repositoryUrl: repoUrl } = siteConfig;
 type ColorMode = (typeof modes)[number];
 type FeedbackValue = "helpful" | "neutral" | "not-helpful";
+
+const foundationIcons: Record<(typeof foundationPages)[number]["path"], IconComponent> = {
+  "/docs/foundations/tokens": Layers,
+  "/docs/foundations/typography": Type,
+  "/docs/foundations/themes": Palette,
+  "/docs/foundations/motion": Sparkles,
+  "/docs/foundations/radius": Circle,
+  "/docs/foundations/effects": Wrench,
+  "/docs/foundations/icons": Box,
+};
 
 type NavItem = {
   href: string;
@@ -91,15 +102,11 @@ const navGroups: NavGroup[] = [
   },
   {
     title: "Foundations",
-    items: [
-      { href: "/docs/foundations/tokens", label: "Tokens", icon: Layers },
-      { href: "/docs/foundations/typography", label: "Typography", icon: Type },
-      { href: "/docs/foundations/themes", label: "Themes", icon: Palette },
-      { href: "/docs/foundations/motion", label: "Motion", icon: Sparkles },
-      { href: "/docs/foundations/radius", label: "Radius", icon: Circle },
-      { href: "/docs/foundations/effects", label: "Effects", icon: Wrench },
-      { href: "/docs/foundations/icons", label: "Icons", icon: Box },
-    ],
+    items: foundationPages.map(({ path, label }) => ({
+      href: path,
+      label,
+      icon: foundationIcons[path],
+    })),
   },
   {
     title: "Actions",

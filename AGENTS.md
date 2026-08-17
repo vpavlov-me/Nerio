@@ -14,6 +14,8 @@ This repository is the source of truth for Nerio. Read the following documents b
 - `docs/core-platform-primitive-coverage.md` before adding a web-platform wrapper, changing the Core 1.0 native-control boundary, or working on issues #258–#262.
 - `docs/core-1-x-capability-parity.md` before accepting, sequencing, deferring, or rejecting a
   post-1.0 component, recipe, adapter, tooling, ecosystem, or competitor-parity proposal.
+- `docs/foundation-metadata.md` before changing source-backed foundation facts, token projections,
+  foundation routes, navigation, search, the sitemap, or the Foundations index in `llms.txt`.
 
 ## Product constraints
 

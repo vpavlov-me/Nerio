@@ -10,7 +10,12 @@ import {
   TableRow,
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
+import { foundationMetadata } from "../../../../lib/generated/foundation-metadata";
 import { createPageMetadata } from "../../../../lib/seo";
+
+function projectedValue(mapping: { value: string; reference: string | null }) {
+  return mapping.reference ?? mapping.value;
+}
 
 export const metadata = createPageMetadata({
   title: "Typography",
@@ -19,35 +24,39 @@ export const metadata = createPageMetadata({
   path: "/docs/foundations/typography",
 });
 
-const scale = [
-  ["2xs", "--n-font-size-2xs", "11px", "Internal component-scale input; not for product UI text"],
-  ["xs", "--n-font-size-xs", "12px", "Metadata, badges, and dense captions"],
-  ["sm", "--n-font-size-sm", "13px", "Labels, helper text, and table cells"],
-  ["md", "--n-font-size-md", "14px", "Default UI body and controls"],
-  ["lg", "--n-font-size-lg", "16px", "Lead copy and compact section intros"],
-  ["xl", "--n-font-size-xl", "18px", "Small headings"],
-  ["2xl", "--n-font-size-2xl", "20px", "Metric values and page sections"],
-  ["3xl", "--n-font-size-3xl", "22.5px", "Subsection headings"],
-  ["4xl", "--n-font-size-4xl", "25.25px", "Section headings"],
-  ["5xl", "--n-font-size-5xl", "28.5px", "Page headings"],
-] as const;
-
-const semanticRoles = [
-  ["Body size", "--n-body-font-size", "--n-font-size-md"],
-  ["Body line height", "--n-body-line-height", "--n-line-height-normal"],
-  ["Control size", "--n-control-font-size", "--n-font-size-md"],
-  ["Control weight", "--n-control-font-weight", "--n-font-weight-regular"],
-  ["Label size", "--n-label-font-size", "--n-font-size-md"],
-  ["Label weight", "--n-label-font-weight", "--n-font-weight-regular"],
-  ["Helper size", "--n-helper-font-size", "--n-font-size-xs"],
-  ["Helper line height", "--n-helper-line-height", "--n-line-height-normal"],
-] as const;
-
-const lineHeights = [
-  ["Tight", "--n-line-height-tight", "1.2", "Large headings and short display text"],
-  ["Normal", "--n-line-height-normal", "1.4", "Default product UI and controls"],
-  ["Relaxed", "--n-line-height-relaxed", "1.55", "Longer descriptions and reading surfaces"],
-] as const;
+const { scale, presets, semanticRoles, lineHeights } = foundationMetadata.typography;
+const scalePurpose: Record<(typeof scale)[number]["token"], string> = {
+  "--n-font-size-2xs": "Internal component-scale input; not for product UI text",
+  "--n-font-size-xs": "Metadata, badges, and dense captions",
+  "--n-font-size-sm": "Labels, helper text, and table cells",
+  "--n-font-size-md": "Default UI body and controls",
+  "--n-font-size-lg": "Lead copy and compact section intros",
+  "--n-font-size-xl": "Small headings",
+  "--n-font-size-2xl": "Metric values and page sections",
+  "--n-font-size-3xl": "Subsection headings",
+  "--n-font-size-4xl": "Section headings",
+  "--n-font-size-5xl": "Page headings",
+};
+const semanticRoleLabels: Record<(typeof semanticRoles)[number]["token"], string> = {
+  "--n-body-font-size": "Body size",
+  "--n-body-line-height": "Body line height",
+  "--n-control-font-size": "Control size",
+  "--n-control-font-weight": "Control weight",
+  "--n-label-font-size": "Label size",
+  "--n-label-font-weight": "Label weight",
+  "--n-helper-font-size": "Helper size",
+  "--n-helper-line-height": "Helper line height",
+};
+const lineHeightGuidance: Record<(typeof lineHeights)[number]["token"], string> = {
+  "--n-line-height-tight": "Large headings and short display text",
+  "--n-line-height-normal": "Default product UI and controls",
+  "--n-line-height-relaxed": "Longer descriptions and reading surfaces",
+};
+const lineHeightLabels: Record<(typeof lineHeights)[number]["token"], string> = {
+  "--n-line-height-tight": "Tight",
+  "--n-line-height-normal": "Normal",
+  "--n-line-height-relaxed": "Relaxed",
+};
 
 const validationChecks = [
   [
@@ -175,76 +184,18 @@ export default function Page() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell>System</TableCell>
-                <TableCell>
-                  <Code>--n-font-sans-system</Code>
-                </TableCell>
-                <TableCell>
-                  <Code>--n-font-mono-system</Code>
-                </TableCell>
-                <TableCell>None</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Geist</TableCell>
-                <TableCell>
-                  <Code>--n-font-sans-geist</Code>
-                </TableCell>
-                <TableCell>
-                  <Code>--n-font-mono-geist</Code>
-                </TableCell>
-                <TableCell>Consumer-owned</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Inter</TableCell>
-                <TableCell>
-                  <Code>--n-font-sans-inter</Code>
-                </TableCell>
-                <TableCell>
-                  <Code>--n-font-mono-system</Code>
-                </TableCell>
-                <TableCell>Consumer-owned</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>IBM Plex</TableCell>
-                <TableCell>
-                  <Code>--n-font-sans-ibm-plex</Code>
-                </TableCell>
-                <TableCell>
-                  <Code>--n-font-mono-ibm-plex</Code>
-                </TableCell>
-                <TableCell>Consumer-owned</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Manrope</TableCell>
-                <TableCell>
-                  <Code>--n-font-sans-manrope</Code>
-                </TableCell>
-                <TableCell>
-                  <Code>--n-font-mono-system</Code>
-                </TableCell>
-                <TableCell>Consumer-owned</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Source Sans 3</TableCell>
-                <TableCell>
-                  <Code>--n-font-sans-source-sans</Code>
-                </TableCell>
-                <TableCell>
-                  <Code>--n-font-mono-system</Code>
-                </TableCell>
-                <TableCell>Consumer-owned</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Space Grotesk</TableCell>
-                <TableCell>
-                  <Code>--n-font-sans-space-grotesk</Code>
-                </TableCell>
-                <TableCell>
-                  <Code>--n-font-mono-system</Code>
-                </TableCell>
-                <TableCell>Consumer-owned</TableCell>
-              </TableRow>
+              {presets.map((preset) => (
+                <TableRow key={preset.value}>
+                  <TableCell>{preset.label}</TableCell>
+                  <TableCell>
+                    <Code>{projectedValue(preset.sans)}</Code>
+                  </TableCell>
+                  <TableCell>
+                    <Code>{projectedValue(preset.mono)}</Code>
+                  </TableCell>
+                  <TableCell>{preset.value === "system" ? "None" : "Consumer-owned"}</TableCell>
+                </TableRow>
+              ))}
               <TableRow>
                 <TableCell>Custom</TableCell>
                 <TableCell colSpan={2}>
@@ -300,14 +251,14 @@ export default function Page() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {scale.map(([name, token, value, purpose]) => (
+              {scale.map(({ name, token, value, pixels }) => (
                 <TableRow key={token}>
                   <TableCell>{name}</TableCell>
                   <TableCell>
                     <Code>{token}</Code>
                   </TableCell>
-                  <TableCell>{value}</TableCell>
-                  <TableCell>{purpose}</TableCell>
+                  <TableCell>{pixels ?? value}</TableCell>
+                  <TableCell>{scalePurpose[token]}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -333,14 +284,14 @@ export default function Page() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {semanticRoles.map(([label, token, primitive]) => (
+              {semanticRoles.map(({ token, reference, value }) => (
                 <TableRow key={token}>
-                  <TableCell>{label}</TableCell>
+                  <TableCell>{semanticRoleLabels[token]}</TableCell>
                   <TableCell>
                     <Code>{token}</Code>
                   </TableCell>
                   <TableCell>
-                    <Code>{primitive}</Code>
+                    <Code>{reference ?? value}</Code>
                   </TableCell>
                 </TableRow>
               ))}
@@ -360,14 +311,14 @@ export default function Page() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {lineHeights.map(([label, token, value, use]) => (
+              {lineHeights.map(({ token, value }) => (
                 <TableRow key={token}>
-                  <TableCell>{label}</TableCell>
+                  <TableCell>{lineHeightLabels[token]}</TableCell>
                   <TableCell>
                     <Code>{token}</Code>
                   </TableCell>
                   <TableCell>{value}</TableCell>
-                  <TableCell>{use}</TableCell>
+                  <TableCell>{lineHeightGuidance[token]}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
