@@ -20,7 +20,7 @@ export const metadata = createPageMetadata({
 });
 
 const scale = [
-  ["2xs", "--n-font-size-2xs", "11px", "Exceptional microcopy and non-essential metadata"],
+  ["2xs", "--n-font-size-2xs", "11px", "Internal component-scale input; not for product UI text"],
   ["xs", "--n-font-size-xs", "12px", "Metadata, badges, and dense captions"],
   ["sm", "--n-font-size-sm", "13px", "Labels, helper text, and table cells"],
   ["md", "--n-font-size-md", "14px", "Default UI body and controls"],
@@ -101,6 +101,7 @@ const customOverride = `:root {
 }`;
 
 const numericRecipe = `.numeric-column {
+  text-align: end;
   font-variant-numeric: tabular-nums;
 }`;
 
@@ -313,9 +314,10 @@ export default function Page() {
           </Table>
         </TableContainer>
         <p>
-          Treat <Code>--n-font-size-2xs</Code> as an exception for short, non-essential metadata. Do
-          not use it for instructions, validation, primary actions, or long-form body copy. Text
-          remains available through browser zoom and user-controlled text resizing at every step.
+          <Code>--n-font-size-2xs</Code> is listed for source completeness because existing
+          component recipes may resolve through it. Do not consume it directly for product UI text;
+          the public UI-text floor remains 12px. Text must remain available through browser zoom and
+          user-controlled text resizing at every supported step.
         </p>
       </section>
 
@@ -405,7 +407,9 @@ export default function Page() {
         <p>
           Use tabular numerals for columns and metrics that users compare vertically. A mono family
           is appropriate for code, hashes, addresses, and identifiers; ordinary financial values do
-          not require mono when the selected sans family supports tabular figures.
+          not require mono when the selected sans family supports tabular figures. Align numeric
+          cells to the logical end and format values to consistent decimal places when decimal
+          separators need to line up.
         </p>
         <CodeExample code={numericRecipe} label="Aligned numeric values" />
 

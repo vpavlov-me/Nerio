@@ -43,7 +43,7 @@ const themeValidation = [
   ],
   [
     "Mode coverage",
-    "Review light, dark, and both operating-system preferences while data-mode is system.",
+    'Review explicit light and dark modes, then test both OS light and OS dark preferences while data-mode="system".',
   ],
   [
     "System preferences",

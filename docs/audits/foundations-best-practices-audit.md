@@ -157,15 +157,17 @@ page grids, breakpoints, or application-shell composition.
 
 ### F-07 — Token lifecycle and interoperability need explicit contracts
 
-**Priority:** P1
+**Priority:** P3 / Ecosystem, after stable 1.0
 
 Nerio validates public CSS variables and preserves aliases, but public documentation does not define
 how tokens are introduced, deprecated, aliased, migrated, or removed. CSS remains the right runtime
 source, while design tools benefit from typed metadata and alias graphs.
 
-**Action:** document lifecycle rules and create a separate ADR for a generated DTCG 2025.10 export.
-The first step should be a one-way generated interchange artifact, not a second hand-maintained token
-source. Promote JSON to canonical only after tooling evidence justifies the migration.
+**Action:** keep the generated DTCG 2025.10 export and drift validation under post-1.0 issues #490
+and #357. The first implementation step should be a one-way generated interchange artifact, not a
+second hand-maintained token source. Promote JSON to canonical only after tooling evidence justifies
+the migration. This audit does not move the accepted P3 / Ecosystem work into the pre-stable
+foundation sequence.
 
 ### F-08 — Content and localization guidance is fragmented
 
@@ -214,8 +216,10 @@ mappings.
 - Explain semantic density aliases and composition boundaries.
 - Add examples for narrow containers, wrapping, overflow, RTL, and long localized content.
 
-### Tranche D — Add token interoperability deliberately
+### Tranche D — Add token interoperability deliberately after stable 1.0
 
+- Follow the accepted P3 / Ecosystem disposition in #490 and #357; do not start this tranche in the
+  pre-stable foundation sequence.
 - Record an ADR for DTCG 2025.10 compatibility.
 - Generate a typed token interchange artifact from the canonical source or from one accepted
   structured source.
