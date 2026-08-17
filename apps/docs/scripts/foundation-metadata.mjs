@@ -184,6 +184,10 @@ export function createFoundationMetadata({ cssSource, catalog, foundationPages }
   const semanticRoles = [...base]
     .filter(([token]) => typographyRolePattern.test(token))
     .map(([token, value]) => tokenRecord(token, value));
+  const fontDefaults = {
+    sans: tokenRecord("--n-font-sans", requireValue(base, "--n-font-sans", ":root")),
+    mono: tokenRecord("--n-font-mono", requireValue(base, "--n-font-mono", ":root")),
+  };
 
   const typographyPresets = [];
   root.walkRules((rule) => {
@@ -272,6 +276,7 @@ export function createFoundationMetadata({ cssSource, catalog, foundationPages }
       foundationRoutes: "apps/docs/content/foundations.json",
     },
     typography: {
+      fontDefaults,
       scale: typographyScale,
       presets: typographyPresets,
       semanticRoles,
@@ -317,11 +322,13 @@ export function assertGeneratedProjection({ actual, expected, target, sources })
 
 export function foundationDiscoveryFailures({ pages, llmsSource, routeExists }) {
   const failures = [];
+  const foundationsIndex =
+    llmsSource.match(/(?:^|\n)The public Foundations index is[\s\S]*?(?=\n\n|$)/)?.[0] ?? "";
   for (const page of pages) {
     if (!routeExists(page.path)) {
       failures.push(`${page.path}: canonical foundation route has no page.tsx implementation.`);
     }
-    if (!llmsSource.includes(`\`${page.path}\``)) {
+    if (!foundationsIndex.includes(`\`${page.path}\``)) {
       failures.push(
         `apps/docs/content/llms.txt is missing canonical foundation route ${page.path}; update the Foundations index.`,
       );

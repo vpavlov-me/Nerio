@@ -8,6 +8,18 @@ export const foundationMetadata = {
     foundationRoutes: "apps/docs/content/foundations.json",
   },
   typography: {
+    fontDefaults: {
+      sans: {
+        token: "--n-font-sans",
+        value: "var(--n-font-sans-system)",
+        reference: "--n-font-sans-system",
+      },
+      mono: {
+        token: "--n-font-mono",
+        value: "var(--n-font-mono-system)",
+        reference: "--n-font-mono-system",
+      },
+    },
     scale: [
       {
         name: "2xs",
