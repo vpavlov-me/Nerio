@@ -1,0 +1,208 @@
+@import "tailwindcss";
+@import "@nerio-ui/ui/styles.css";
+
+@source "../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../../../packages/adapters/src/**/*.{ts,tsx}";
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--n-color-surface-canvas);
+  font-family: var(--n-font-sans);
+}
+
+.showreel-root,
+.showreel-root * {
+  box-sizing: border-box;
+}
+
+.showreel-root * {
+  animation: none !important;
+  transition: none !important;
+}
+
+.showreel-root {
+  background: var(--n-color-surface-canvas);
+  color: var(--n-color-text-primary);
+  font-family: var(--n-font-sans);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.showreel-root code,
+.showreel-root pre {
+  font-family: var(--n-font-mono);
+}
+
+.showreel-frame {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: clamp(72px, 7vw, 132px);
+  overflow: hidden;
+}
+
+.showreel-frame[data-format="vertical"] {
+  padding: 120px 80px;
+}
+
+.showreel-frame[data-format="square"] {
+  padding: 76px;
+}
+
+.showreel-eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: var(--n-color-surface-subtle);
+  color: var(--n-color-text-secondary);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.showreel-heading {
+  max-width: 1180px;
+  margin: 0;
+  font-size: clamp(72px, 7vw, 132px);
+  font-weight: 520;
+  letter-spacing: -0.06em;
+  line-height: 0.94;
+}
+
+.showreel-frame[data-format="vertical"] .showreel-heading {
+  font-size: 104px;
+  line-height: 0.98;
+}
+
+.showreel-frame[data-format="square"] .showreel-heading {
+  font-size: 76px;
+  line-height: 0.98;
+}
+
+.showreel-lede {
+  max-width: 840px;
+  margin: 0;
+  color: var(--n-color-text-secondary);
+  font-size: clamp(28px, 2.3vw, 44px);
+  line-height: 1.24;
+}
+
+.showreel-frame[data-format="vertical"] .showreel-lede,
+.showreel-frame[data-format="square"] .showreel-lede {
+  font-size: 30px;
+}
+
+.showreel-stage {
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: 42px;
+  background: var(--n-color-surface-default);
+  box-shadow: 0 24px 80px rgb(15 23 42 / 8%);
+}
+
+.showreel-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+.showreel-code {
+  margin: 0;
+  padding: 26px 30px;
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: 24px;
+  background: #09090b;
+  color: #f4f4f5;
+  font-size: 20px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.showreel-code-line-muted {
+  color: #a1a1aa;
+}
+
+.showreel-code-line-accent {
+  color: #c4b5fd;
+}
+
+.showreel-window {
+  overflow: hidden;
+  border: 1px solid var(--n-color-border-subtle);
+  border-radius: 34px;
+  background: var(--n-color-surface-default);
+  box-shadow: 0 28px 90px rgb(15 23 42 / 10%);
+}
+
+.showreel-window-bar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 48px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--n-color-border-subtle);
+  background: var(--n-color-surface-subtle);
+}
+
+.showreel-window-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--n-color-border-strong);
+}
+
+.showreel-capture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+}
+
+.showreel-logo-text {
+  font-size: clamp(112px, 12vw, 210px);
+  font-weight: 570;
+  letter-spacing: -0.075em;
+  line-height: 0.85;
+}
+
+.showreel-frame[data-format="vertical"] .showreel-logo-text,
+.showreel-frame[data-format="square"] .showreel-logo-text {
+  font-size: 148px;
+}
+
+.showreel-accent {
+  color: var(--n-color-action-primary);
+}
+
+.showreel-meta {
+  color: var(--n-color-text-tertiary);
+  font-size: 18px;
+}
+
+.showreel-component-scale {
+  font-size: 18px;
+  zoom: 1.28;
+}
+
+.showreel-frame[data-format="vertical"] .showreel-component-scale,
+.showreel-frame[data-format="square"] .showreel-component-scale {
+  zoom: 1.1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showreel-root * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

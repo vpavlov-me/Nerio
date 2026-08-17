@@ -1,0 +1,38 @@
+{
+  "name": "@nerio-ui/showreel",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Source-first Remotion launch showreel for Nerio.",
+  "scripts": {
+    "dev": "remotion studio src/index.ts --no-open",
+    "build": "remotion bundle src/index.ts --out-dir=dist",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "capture": "node scripts/capture-templates.mjs",
+    "stills": "node scripts/render-stills.mjs",
+    "render:main": "remotion render src/index.ts NerioShowreel out/nerio-showreel.mp4 --codec=h264 --overwrite",
+    "render:vertical": "remotion render src/index.ts NerioShowreelVertical out/nerio-showreel-vertical.mp4 --codec=h264 --overwrite",
+    "render:square": "remotion render src/index.ts NerioShowreelSquare out/nerio-showreel-square.mp4 --codec=h264 --overwrite",
+    "render:hero": "remotion render src/index.ts NerioHeroLoop out/nerio-hero-loop.mp4 --codec=h264 --overwrite"
+  },
+  "dependencies": {
+    "@nerio-ui/adapters": "workspace:*",
+    "@nerio-ui/ui": "workspace:*",
+    "@remotion/tailwind-v4": "4.0.512",
+    "@remotion/transitions": "4.0.512",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remotion": "4.0.512",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@nerio-ui/config": "workspace:*",
+    "@playwright/test": "1.62.1",
+    "@remotion/cli": "4.0.512",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3"
+  }
+}

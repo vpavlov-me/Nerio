@@ -1,0 +1,10 @@
+{
+  "extends": "@nerio-ui/config/tsconfig/react",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["remotion.config.ts", "scripts/**/*.mjs", "src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["dist", "node_modules", "out", "stills"]
+}
