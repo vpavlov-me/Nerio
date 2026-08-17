@@ -529,12 +529,16 @@ function stringCollection(path, variableName) {
 
 function docsRoutes() {
   const staticRoutes = stringCollection(join(root, "apps/docs/app/sitemap.ts"), "staticRoutes");
+  const foundationRoutes = readJson(join(root, "apps/docs/content/foundations.json")).map(
+    (page) => page.path,
+  );
   const componentSlugs = stringCollection(
     join(root, "apps/docs/lib/component-docs.ts"),
     "componentLedes",
   );
   return [
     ...staticRoutes,
+    ...foundationRoutes,
     ...componentSlugs.map((slug) => `/docs/components/${slug}`),
     "/llms.txt",
   ].sort();

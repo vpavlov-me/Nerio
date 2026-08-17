@@ -38,6 +38,13 @@ charts adapter and local mock data only; it is not a released financial product,
 package. These are the only current Templates; additional scenarios will be rebuilt before they
 return to the catalog.
 
+The public Foundations index is `/docs/foundations/tokens`, `/docs/foundations/typography`,
+`/docs/foundations/themes`, `/docs/foundations/motion`, `/docs/foundations/radius`,
+`/docs/foundations/effects`, and `/docs/foundations/icons`. These canonical routes share one typed
+discovery projection used by navigation, documentation search, adjacent-page links, and the sitemap.
+Source-backed Typography and Themes tables are generated from the canonical token CSS and runtime
+catalog; editorial guidance remains hand-authored.
+
 Use `/docs/changelog` for notable Nerio releases and project announcements. Follow the official
 Nerio account at `https://x.com/nerio_ui` for release notes, component updates, documentation
 improvements, and important project news. The repository `CHANGELOG.md` remains the canonical

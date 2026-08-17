@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
+import { foundationMetadata } from "../../../../lib/generated/foundation-metadata";
 import { createPageMetadata } from "../../../../lib/seo";
 
 export const metadata = createPageMetadata({
@@ -19,14 +20,18 @@ export const metadata = createPageMetadata({
   path: "/docs/foundations/themes",
 });
 
-const themes = [
-  ["Purple", "purple", "--n-purple-600"],
-  ["Blue", "blue", "--n-blue-600"],
-  ["Green", "green", "--n-green-600"],
-  ["Orange", "orange", "--n-orange-600"],
-  ["Red", "red", "--n-red-600"],
-  ["Neutral", "neutral", "--n-gray-950"],
-];
+const { theme, mode, density } = foundationMetadata.runtimeAxes;
+const lightMode = mode.mappings.find((mapping) => mapping.value === "light")!;
+const darkMode = mode.mappings.find((mapping) => mapping.value === "dark")!;
+const systemMode = mode.mappings.find((mapping) => mapping.value === "system")!;
+function projectedValue(mapping: { value: string; reference: string | null }) {
+  return mapping.reference ?? mapping.value;
+}
+const densityGuidance: Record<(typeof density.mappings)[number]["value"], string> = {
+  comfortable: "Default spacing for mixed product and documentation surfaces.",
+  compact:
+    "Remaps semantic density aliases and component tokens for dense operational interfaces without changing primitive spacing values.",
+};
 
 const themeValidation = [
   [
@@ -120,21 +125,21 @@ export default function Page() {
                 <TableCell>
                   <Code>data-theme</Code>
                 </TableCell>
-                <TableCell>purple, blue, green, orange, red, neutral, or custom</TableCell>
+                <TableCell>{theme.values.join(", ")}, or custom</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Mode</TableCell>
                 <TableCell>
                   <Code>data-mode</Code>
                 </TableCell>
-                <TableCell>system, light, dark</TableCell>
+                <TableCell>{mode.values.join(", ")}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Density</TableCell>
                 <TableCell>
                   <Code>data-density</Code>
                 </TableCell>
-                <TableCell>comfortable, compact</TableCell>
+                <TableCell>{density.values.join(", ")}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -152,18 +157,18 @@ export default function Page() {
               <TableRow>
                 <TableHead>Theme</TableHead>
                 <TableHead>Attribute value</TableHead>
-                <TableHead>Primary accent token</TableHead>
+                <TableHead>Light primary mapping</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {themes.map(([label, value, token]) => (
-                <TableRow key={value}>
-                  <TableCell>{label}</TableCell>
+              {theme.presets.map((preset) => (
+                <TableRow key={preset.value}>
+                  <TableCell>{preset.label}</TableCell>
                   <TableCell>
-                    <Code>data-theme="{value}"</Code>
+                    <Code>data-theme="{preset.value}"</Code>
                   </TableCell>
                   <TableCell>
-                    <Code>{token}</Code>
+                    <Code>{projectedValue(preset.primaryAccent.light)}</Code>
                   </TableCell>
                 </TableRow>
               ))}
@@ -196,24 +201,32 @@ export default function Page() {
             <TableHeader>
               <TableRow>
                 <TableHead>Role</TableHead>
-                <TableHead>Token</TableHead>
+                <TableHead>Light</TableHead>
+                <TableHead>Dark</TableHead>
+                <TableHead>System dark</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[
-                ["Canvas", "--n-color-surface-canvas"],
-                ["Control", "--n-color-surface-control"],
-                ["Raised surface", "--n-color-surface-raised"],
-                ["Primary action", "--n-color-action-primary"],
-                ["Action foreground", "--n-color-action-on-primary"],
-              ].map(([label, token]) => (
-                <TableRow key={token}>
-                  <TableCell>{label}</TableCell>
-                  <TableCell>
-                    <Code>{token}</Code>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {lightMode.mappings.map((lightMapping, index) => {
+                const darkMapping = darkMode.mappings[index]!;
+                const systemMapping = systemMode.mappings[index]!;
+                return (
+                  <TableRow key={lightMapping.token}>
+                    <TableCell>
+                      <Code>{lightMapping.token}</Code>
+                    </TableCell>
+                    <TableCell>
+                      <Code>{projectedValue(lightMapping)}</Code>
+                    </TableCell>
+                    <TableCell>
+                      <Code>{projectedValue(darkMapping)}</Code>
+                    </TableCell>
+                    <TableCell>
+                      <Code>{projectedValue(systemMapping)}</Code>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -227,24 +240,25 @@ export default function Page() {
               <TableRow>
                 <TableHead>Value</TableHead>
                 <TableHead>Use</TableHead>
+                <TableHead>Source-backed aliases</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Code>comfortable</Code>
-                </TableCell>
-                <TableCell>Default spacing for mixed product and documentation surfaces.</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Code>compact</Code>
-                </TableCell>
-                <TableCell>
-                  Remaps semantic density aliases and component tokens for dense operational
-                  interfaces without changing primitive spacing values.
-                </TableCell>
-              </TableRow>
+              {density.mappings.map((mapping) => (
+                <TableRow key={mapping.value}>
+                  <TableCell>
+                    <Code>{mapping.value}</Code>
+                  </TableCell>
+                  <TableCell>{densityGuidance[mapping.value]}</TableCell>
+                  <TableCell>
+                    {mapping.aliases.map((alias) => (
+                      <div key={alias.token}>
+                        <Code>{alias.token}</Code> → <Code>{alias.reference ?? alias.value}</Code>
+                      </div>
+                    ))}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>

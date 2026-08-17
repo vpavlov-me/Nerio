@@ -273,6 +273,7 @@ function tailwindDocumentationFailures() {
   const gettingStarted = read("apps/docs/app/docs/getting-started/page.tsx");
   const migrationPage = read("apps/docs/app/docs/migration/page.tsx");
   const progressPage = read("apps/docs/app/docs/components/progress/page.tsx");
+  const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
   const failures = [];
 
   const required = [
@@ -285,11 +286,6 @@ function tailwindDocumentationFailures() {
       "Component docs must expose an overview and decision boundary",
     ],
     [componentPage, 'id="installation"', "Component docs must expose installation and imports"],
-    [
-      docsChrome,
-      '{ href: "/docs/foundations/motion", label: "Motion"',
-      "Foundation navigation must use the canonical Motion route and label",
-    ],
     [docsChrome, 'href="/blocks"', "Primary navigation must expose the Blocks reference surface"],
     [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
@@ -330,6 +326,14 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (
+    !foundationPages.some(
+      (page) => page.path === "/docs/foundations/motion" && page.label === "Motion",
+    )
+  ) {
+    failures.push("Foundation route metadata must use the canonical Motion route and label");
   }
 
   if (migrationPage.includes("<table")) {

@@ -8,6 +8,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added a deterministic source-backed foundation metadata projection and drift validator. Typography
+  and Themes now render token scales, presets, runtime mappings, and density aliases from canonical
+  CSS and catalog sources, while foundation navigation, search, sitemap, and `llms.txt` discovery
+  share one validated route contract.
 - Added a public documentation changelog with the official Nerio X announcement and summaries of
   every published Core release. Each release now renders its canonical Added, Changed, Fixed, and
   Migration notes directly from this file so the public page cannot drift from the technical
