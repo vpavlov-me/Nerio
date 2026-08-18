@@ -236,6 +236,9 @@ test("capability parity validator separates current catalog metadata from the hi
 
 test("capability parity validator separates current Registry metadata from the historical baseline", () => {
   invalidMatrix((matrix) => {
+    matrix.currentRegistrySchemaVersion = "0.0.0";
+  }, /Current parity Registry schema is stale/);
+  invalidMatrix((matrix) => {
     matrix.currentRegistryItemCount = 0;
   }, /Current parity Registry item count is stale/);
 });
@@ -248,8 +251,17 @@ test("capability parity validator separates the current Core version from the hi
 
 test("capability parity validator pins the reviewed historical projection metadata", () => {
   invalidMatrix((matrix) => {
+    matrix.baseline.componentCatalogSchemaVersion = 0;
+  }, /Parity baseline component catalog schema must retain the reviewed historical value/);
+  invalidMatrix((matrix) => {
+    matrix.baseline.registrySchemaVersion = "0.0.0";
+  }, /Parity baseline Registry schema must retain the reviewed historical value/);
+  invalidMatrix((matrix) => {
     matrix.baseline.registryItemCount = 0;
   }, /Parity baseline Registry item count must retain the reviewed historical value/);
+  invalidMatrix((matrix) => {
+    matrix.baseline.coreVersion = "0.0.0";
+  }, /Parity baseline Core version must retain the reviewed historical value/);
 });
 
 test("capability parity validator pins the reviewed historical catalog hash", () => {
