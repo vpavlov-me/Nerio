@@ -30,6 +30,12 @@ and downstream design-tool integration remain post-1.0 implementation work.
 
 ## Decision
 
+Nerio will keep CSS and source metadata canonical and expose token interoperability through
+one-way, deterministic, versioned DTCG projections. Generated artifacts are downstream contracts,
+not authoring sources, and design tools cannot write values back into Core.
+
+## Rules
+
 ### 1. Canonical sources and generation direction
 
 Nerio will use a one-way generation model:
@@ -316,5 +322,6 @@ versioning are not defined well enough to make design-tool writes safe.
 - [DTCG Resolver Module 2025.10](https://www.designtokens.org/TR/2025.10/resolver/)
 - [ADR 0004: Theme, mode, and density axes](./0004-theme-mode-density-axes.md)
 - [Foundation documentation and standards audit](../audits/foundations-best-practices-audit.md)
+- [Issue #487](https://github.com/vpavlov-me/Nerio/issues/487)
 - [Issue #490](https://github.com/vpavlov-me/Nerio/issues/490)
 - [Issue #357](https://github.com/vpavlov-me/Nerio/issues/357)
