@@ -16,6 +16,10 @@ const paths = parsePathOptions(process.argv.slice(2), {
 });
 const baselinePublicApiSnapshotSha256 =
   "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3";
+const baselineComponentCatalogSha256 =
+  "a79f8bc053ae0d7c31e93bcc5f3ebda8955271f479e77ced0917c103ad1841cc";
+const baselineRegistryManifestSha256 =
+  "c92f1c1db90bfeee6a4c665c6a074137a1938ddc2bc5ca4223681a7bef92d07f";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -88,8 +92,8 @@ assert(
   "Parity baseline component catalog schema is stale.",
 );
 assert(
-  matrix.baseline?.componentCatalogSha256 === canonicalJsonSha256(catalog),
-  "Parity baseline component catalog hash is stale.",
+  matrix.baseline?.componentCatalogSha256 === baselineComponentCatalogSha256,
+  "Parity baseline component catalog hash must retain the reviewed historical value.",
 );
 assert(
   matrix.baseline?.registrySchemaVersion === manifest.schemaVersion,
@@ -100,8 +104,8 @@ assert(
   "Parity baseline Registry item count is stale.",
 );
 assert(
-  matrix.baseline?.registryManifestSha256 === canonicalJsonSha256(manifest),
-  "Parity baseline Registry manifest hash is stale.",
+  matrix.baseline?.registryManifestSha256 === baselineRegistryManifestSha256,
+  "Parity baseline Registry manifest hash must retain the reviewed historical value.",
 );
 assert(
   matrix.baseline?.coreVersion === manifest.version,
@@ -142,6 +146,14 @@ assert(
 assert(
   matrix.baseline?.publicApiSnapshotSha256 === baselinePublicApiSnapshotSha256,
   "Parity baseline API snapshot hash must retain the reviewed historical value.",
+);
+assert(
+  matrix.currentComponentCatalogSha256 === canonicalJsonSha256(catalog),
+  "Current parity component catalog hash is stale.",
+);
+assert(
+  matrix.currentRegistryManifestSha256 === canonicalJsonSha256(manifest),
+  "Current parity Registry manifest hash is stale.",
 );
 assert(
   matrix.currentPublicApiSnapshotSha256 === apiApproval.snapshotSha256,

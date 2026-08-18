@@ -812,7 +812,7 @@
   --n-dropdown-item-gap: var(--n-space-2);
   --n-dropdown-radius: var(--n-radius-lg);
   --n-toast-width: 25rem;
-  --n-toast-viewport-inset: var(--n-density-space-lg);
+  --n-toast-viewport-inset: var(--n-density-space-xl);
   --n-toast-stack-gap: var(--n-density-space-md);
   --n-toast-stack-offset: var(--n-size-toast-stack-offset);
   --n-toast-stack-scale-step: 0.05;
@@ -821,15 +821,15 @@
   --n-toast-swipe-dismiss-distance: 150%;
   --n-toast-background: var(--n-overlay-background);
   --n-toast-border-width: var(--n-overlay-border-width);
-  --n-toast-border: var(--n-overlay-border);
+  --n-toast-border: var(--n-color-border-default);
   --n-toast-radius: min(var(--n-radius-overlay), 1.25rem);
-  --n-toast-shadow: var(--n-overlay-shadow);
+  --n-toast-shadow: var(--n-shadow-sm);
   --n-toast-foreground: var(--n-overlay-foreground);
   --n-toast-foreground-muted: var(--n-overlay-foreground-muted);
   --n-toast-control-background: var(--n-overlay-control-background);
   --n-toast-control-background-hover: var(--n-overlay-control-background-hover);
   --n-toast-control-background-active: var(--n-overlay-selected-background);
-  --n-toast-padding: var(--n-density-space-md) var(--n-density-space-lg);
+  --n-toast-padding: var(--n-density-space-lg) var(--n-density-space-xl);
   --n-toast-gap: var(--n-density-space-md);
   --n-toast-content-gap: var(--n-density-space-md);
   --n-toast-copy-gap: var(--n-space-1);
@@ -838,7 +838,7 @@
   --n-toast-status-success: var(--n-color-status-success);
   --n-toast-status-warning: var(--n-color-status-warning);
   --n-toast-status-danger: var(--n-color-status-danger);
-  --n-toast-status-indicator-size: var(--n-size-control-md);
+  --n-toast-status-indicator-size: var(--n-icon-size-md);
   --n-toast-status-indicator-radius: var(--n-radius-md);
   --n-card-background: var(--n-color-surface-raised);
   --n-card-border-width: var(--n-border-width-default);

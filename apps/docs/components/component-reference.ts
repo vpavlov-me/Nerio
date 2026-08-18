@@ -2483,7 +2483,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "Expanded stack",
         description:
-          "Expands upward from a bottom-centered stack whose collapsed cards scale and step upward behind the frontmost toast.",
+          "Expands upward from a bottom-right stack whose collapsed cards scale and step upward behind the frontmost toast.",
       },
       { title: "Limited", description: "Keeps overflow mounted but inert and visually hidden." },
     ],
@@ -2554,8 +2554,9 @@ export const componentReference: Record<string, ComponentReference> = {
       ],
     },
     designNotes: [
-      "Toast uses the standard adaptive overlay surface, text, control, border, and elevation tokens for the active color mode.",
+      "Toast uses the adaptive overlay surface and text hierarchy with a compact shadow and a visible default border.",
       "Semantic color is limited to the status icon; copy and controls use the toast foreground hierarchy.",
+      "Managed actions stay beside the copy and use the primary Button treatment; dismissal remains the trailing ghost control.",
       "Toast width is capped at 25rem (400px) before viewport insets reduce it on smaller screens.",
     ],
     tokens: [

@@ -837,7 +837,7 @@ async function verify() {
       !toastUsage.requiredTokens.includes("--n-toast-viewport-inset") ||
       !toastUsage.requiredTokens.includes("--n-toast-enter-offset") ||
       !toastUsage.requiredTokens.includes("--n-toast-stack-scale-step") ||
-      !toastUsage.accessibility.some((item) => item.includes("bottom-centered")) ||
+      !toastUsage.accessibility.some((item) => item.includes("bottom-right")) ||
       !toastUsage.usage.includes("ToastProvider")
     ) {
       throw new Error(
