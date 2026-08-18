@@ -187,15 +187,28 @@ alias, export visibility, and validation evidence.
 
 #### Rename and deprecation
 
-Public tokens are not renamed in place. A rename creates the new canonical token and keeps the old
-CSS variable as a deprecated compatibility alias to it.
+Public tokens are not renamed in place. CSS custom-property aliases resolve in the scope where they
+are declared, so a root-level `--old: var(--new)` or `--new: var(--old)` bridge cannot preserve
+arbitrary descendant overrides of both names. A minor release MAY deprecate the old identity and
+announce its future replacement, but the old CSS variable MUST remain the active component and
+semantic consumption path and the only guaranteed override path for the rest of that major line.
+Switching runtime consumption to the new identity and removing the old identity happen together in
+an approved major release.
+
+A release MAY expose both names as runtime override paths only when it provides an explicit bridge
+that is evaluated in every documented override scope, preserves the old variable's default and
+direct-consumption behavior, and has focused browser evidence for both names. A root-level alias
+alone does not satisfy this requirement. If that evidence cannot be provided, the replacement CSS
+identity MUST wait for the major release rather than claim incomplete compatibility.
 
 - Deprecation is introduced in a minor release and MUST include a reason, replacement when one
   exists, migration guidance, and the first deprecated version.
 - A deprecated alias remains for the rest of the current major line. It MUST also remain for at
   least two minor releases after notice when that cadence exists.
-- A deprecated token MUST continue to resolve, appear in the interchange artifact, and pass alias
-  validation until its approved removal.
+- A deprecated token MUST continue to resolve and appear in the interchange artifact until its
+  approved removal. When a live replacement alias is emitted, it MUST also pass alias validation.
+- Validation MUST prove that overriding every documented live CSS identity changes the runtime
+  value observed by the semantic or component consumption path in every supported override scope.
 - A deprecation with no replacement MUST explain the supported composition, native platform, Pro,
   or consumer-owned alternative.
 
