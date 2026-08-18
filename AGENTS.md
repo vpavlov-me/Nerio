@@ -44,10 +44,10 @@ This repository is the source of truth for Nerio. Read the following documents b
   other product workflows.
 - Do not add another Core component unless the coverage matrix identifies an objective 1.0 blocker and the roadmap contains a focused issue.
 - Do not mark a component `stable-core` until it passes the full Core quality checklist.
-- Do not start #342–#370 runtime, package, Registry, token, export, or component implementation
-  before stable 1.0 (#151) unless roadmap #152 explicitly accepts a focused blocker from real
-  manual or beta evidence.
-- After #151, use the parity decision's parallel tracks. The minimum #342
+- Do not start #343–#370 runtime, package, Registry, token, export, or component implementation
+  before their current roadmap dependencies are complete. Roadmap #152 explicitly authorizes #342
+  on `dev` before stable 1.0 while keeping it outside the isolated release candidate.
+- Use the parity decision's parallel tracks. The minimum #342
   direction/localization contract precedes direction-sensitive API merges, but the full #342 audit
   is not a global serialization barrier.
 

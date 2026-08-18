@@ -348,7 +348,7 @@ const classifications = new Set(requiredClassifications);
 const priorities = new Set(matrix.priorityValues ?? []);
 const targets = new Set(matrix.targetValues ?? []);
 const requiredCapabilityDependencies = new Map([
-  ["direction-localization", [151, 341]],
+  ["direction-localization", [341]],
   ["disclosure-family", [151, 341, 342]],
   ["compound-dialog-alert-dialog", [151, 341, 342]],
   ["single-select-combobox", [151, 341, 342]],
@@ -447,7 +447,7 @@ const dispositionByIssue = new Map(
   dispositions.map((disposition) => [disposition.issue, disposition]),
 );
 const requiredIssueDependencies = new Map([
-  [342, [341, 151]],
+  [342, [341]],
   [343, [341, 342, 151]],
   [344, [341, 342, 151]],
   [345, [341, 342, 151]],

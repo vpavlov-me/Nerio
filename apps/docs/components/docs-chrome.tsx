@@ -8,6 +8,7 @@ import { SiClaude, SiCursor } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
 import {
   ArrowLeft,
+  ArrowLeftRight,
   ArrowRight,
   BookOpen,
   Box,
@@ -71,6 +72,7 @@ const foundationIcons: Record<(typeof foundationPages)[number]["path"], IconComp
   "/docs/foundations/tokens": Layers,
   "/docs/foundations/typography": Type,
   "/docs/foundations/themes": Palette,
+  "/docs/foundations/localization": ArrowLeftRight,
   "/docs/foundations/motion": Sparkles,
   "/docs/foundations/radius": Circle,
   "/docs/foundations/effects": Wrench,
@@ -304,6 +306,15 @@ const tocByPath: Record<string, TocItem[]> = {
     { id: "density", label: "Density" },
     { id: "custom-themes", label: "Custom themes" },
     { id: "do-do-not", label: "Do / do not" },
+  ],
+  "/docs/foundations/localization": [
+    { id: "direction", label: "Direction" },
+    { id: "base-ui-behavior", label: "Base UI behavior" },
+    { id: "rtl-fixture", label: "RTL fixture" },
+    { id: "locale", label: "Locale-sensitive output" },
+    { id: "labels", label: "Labels and copy" },
+    { id: "keyboard", label: "Keyboard direction" },
+    { id: "consumer-boundary", label: "Consumer boundary" },
   ],
   "/docs/foundations/motion": [
     { id: "duration-tokens", label: "Duration tokens" },

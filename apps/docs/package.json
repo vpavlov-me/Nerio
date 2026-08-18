@@ -13,6 +13,7 @@
     "validate:docs": "node scripts/validate-foundation-metadata.mjs && node scripts/validate-docs.mjs"
   },
   "dependencies": {
+    "@base-ui/react": "1.7.0",
     "@nerio-ui/adapters": "workspace:*",
     "@nerio-ui/registry": "workspace:*",
     "@nerio-ui/tokens": "workspace:*",

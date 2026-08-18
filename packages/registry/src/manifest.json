@@ -1623,6 +1623,7 @@
         "Does not select the first option when only a placeholder is supplied.",
         "Error messages are announced with role=\"alert\" only when invalid is true.",
         "Options support disabled states, typeahead, and Base UI keyboard navigation.",
+        "Pair the document dir attribute with Base UI DirectionProvider so popup behavior follows LTR or RTL.",
         "Large, filterable, remotely loaded, and multi-select datasets belong to a future Combobox."
       ],
       "usage": "import { Select } from '@/components/nerio/components/select';\n\n<Select label=\"Status\" name=\"status\" placeholder=\"Choose status\" options={[{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }, { label: 'Archived', value: 'archived', disabled: true }]} />"
@@ -2797,6 +2798,7 @@
         "Supports Arrow keys, Home, End, Page Up, and Page Down through the nested native range input.",
         "Supports value, defaultValue, onValueChange, onValueCommitted, min, max, step, largeStep, name, form, disabled, readOnly, and required while intentionally rejecting arrays and multiple thumbs.",
         "Use format and locale for number formatting, and aria-valuetext or getAriaValueText for localized semantic value text.",
+        "Pair the document dir attribute with Base UI DirectionProvider so horizontal keyboard and pointer behavior follows LTR or RTL.",
         "Read-only Slider remains focusable and form-associated while canceling value changes.",
         "Consumers own units, marks, thresholds, tooltips, charts, filters, media logic, and product-specific scales."
       ],
@@ -2922,6 +2924,7 @@
         "Uses Base UI tab, tablist, and tabpanel relationships and selected state; Nerio keeps keyboard focus on enabled tabs.",
         "Provide aria-label or aria-labelledby when the tablist purpose is not clear from adjacent labelled content.",
         "Every trigger requires a visible text label; decorative icons are hidden from assistive technology and Badge text remains available.",
+        "Pair the document dir attribute with Base UI DirectionProvider so horizontal keyboard behavior follows LTR or RTL.",
         "Manual activation is the default. Use activateOnFocus only when panels are available without noticeable latency.",
         "Provide an enabled defaultValue for predictable SSR when the first trigger is disabled."
       ],
@@ -3745,6 +3748,7 @@
         "Items are keyboard reachable and can be disabled.",
         "Group labels and separators organize related commands without becoming menu items.",
         "Optional descriptions are associated with their menu items through aria-describedby.",
+        "Pair the document dir attribute with Base UI DirectionProvider so menu navigation and positioned content follow LTR or RTL.",
         "Disabled items stay visible but cannot be selected.",
         "Use destructive tone only for irreversible or high-risk commands.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded menu popup ref."
@@ -3859,7 +3863,7 @@
           "source": "../../ui/src/components/toast.tsx",
           "target": "components/toast.tsx",
           "role": "component",
-          "integrity": "sha256-7454fe708a9b755e45be533fa12c305285f2034ee784173627f52f632eec7a67"
+          "integrity": "sha256-9d3c2e923bf7c48ea235f749da3d5df4c949db1e1aa9ba3a0b030f1552dcb374"
         },
         {
           "source": "../../ui/src/components/icon.tsx",

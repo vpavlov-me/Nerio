@@ -55,9 +55,10 @@ Nerio does not use component-count parity as a product criterion. Every relevant
 classified as existing Core, native guidance, Core 1.1 primitive, later Core candidate, Core
 recipe, adapter, Pro, consumer-owned, or explicitly rejected.
 
-The accepted Core 1.1 component set is additive and begins only after stable 1.0. #342 supplies the
-shared direction/localization foundation without forcing the complete audit to serialize all
-component work. SearchField remains #346 and NumberField is split into #370. MultiSelect #349 is a
+The accepted Core 1.1 component set is additive. Roadmap #152 authorizes #342 on `dev` before stable
+1.0 because the isolated release candidate excludes forward development. #342 supplies the shared
+direction/localization foundation without forcing the complete audit to serialize all component
+work. SearchField remains #346 and NumberField is split into #370. MultiSelect #349 is a
 Core 1.2 decision spike with no implementation approval. MCP expansion stays in #354 while the
 repository-native Agent Skill is tracked separately in #369.
 
