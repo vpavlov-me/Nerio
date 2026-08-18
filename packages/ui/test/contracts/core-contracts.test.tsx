@@ -4382,8 +4382,9 @@ describe("Core interactive action contracts", () => {
       });
       await waitFor(() => expect(provider).toHaveAttribute("data-direction", "rtl"));
       expect(provider).not.toHaveAttribute("dir");
-      expect(provider.className).toContain("[direction:ltr]");
-      expect(provider.className).toContain("data-[direction=rtl]:[&>*]:[direction:rtl]");
+      expect(provider.className).toContain("data-[direction=rtl]:flex-row-reverse");
+      expect(provider.className).toContain("data-[direction=rtl]:data-[side=right]:flex-row");
+      expect(provider.className).not.toContain("[direction:ltr]");
       expect(sidebar).toHaveAttribute("data-direction", "rtl");
 
       view.rerender(
