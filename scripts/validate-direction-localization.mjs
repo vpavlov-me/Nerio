@@ -123,9 +123,10 @@ requireValue(
 );
 requireValue(
   sidebar.includes('closest<HTMLElement>("[dir]")') &&
-    !sidebar.includes("[direction:ltr]") &&
+    sidebar.includes("[direction:ltr]") &&
+    sidebar.includes("data-[direction=rtl]:[&>*]:[direction:rtl]") &&
     !sidebar.includes('direction = "ltr"'),
-  "Sidebar must inherit HTML direction unless an explicit override is supplied.",
+  "Sidebar must inherit content direction while preserving its physical-side layout axis.",
 );
 
 const directionCapability = parity.capabilities.find(

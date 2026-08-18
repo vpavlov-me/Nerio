@@ -1,7 +1,9 @@
 "use client";
 
 import { DirectionProvider } from "@base-ui/react/direction-provider";
+import { SidebarInset } from "@nerio-ui/ui";
 import {
+  Sidebar,
   SidebarProvider,
   Slider,
   Tabs,
@@ -28,9 +30,22 @@ export function LocalizationPreview({ snippet }: { snippet: string }) {
             </TabsPanels>
           </Tabs>
           <Slider label="RTL priority" defaultValue={35} />
-          <SidebarProvider>
-            <span>Inherited Sidebar direction</span>
-          </SidebarProvider>
+          {(["left", "right"] as const).map((side) => (
+            <SidebarProvider
+              key={side}
+              className="h-20 min-h-0 overflow-hidden rounded-(--n-radius-overlay) border border-(--n-color-border-default)"
+              data-physical-side={side}
+              side={side}
+            >
+              <Sidebar
+                aria-label={`${side} inherited direction sidebar`}
+                className="h-20 min-h-0 w-20 basis-20"
+              />
+              <SidebarInset as="div" className="flex items-center justify-center p-2">
+                {side} content
+              </SidebarInset>
+            </SidebarProvider>
+          ))}
         </div>
       </PreviewFrame>
     </DirectionProvider>
