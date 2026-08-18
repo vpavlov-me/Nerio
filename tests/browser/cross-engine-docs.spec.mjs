@@ -427,6 +427,7 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
       name: `${side} inherited direction sidebar`,
     });
     await expect(provider).toHaveAttribute("data-direction", "rtl");
+    await expect(provider).toHaveCSS("direction", "rtl");
     await expect(sidebar).toHaveCSS("direction", "rtl");
     const providerBox = await provider.boundingBox();
     const sidebarBox = await sidebar.boundingBox();
