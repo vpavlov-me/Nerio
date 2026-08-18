@@ -188,7 +188,11 @@ alias, export visibility, and validation evidence.
 #### Rename and deprecation
 
 Public tokens are not renamed in place. A rename creates the new canonical token and keeps the old
-CSS variable as a deprecated compatibility alias to it.
+CSS variable as a deprecated compatibility alias to it. During the compatibility window, existing
+component and semantic consumption MUST continue through the old variable, whose default value
+delegates to the new canonical token. This lets consumers override either name without losing the
+customization path. Switching consumption to the new variable and removing the old bridge happen
+together only in the approved major removal.
 
 - Deprecation is introduced in a minor release and MUST include a reason, replacement when one
   exists, migration guidance, and the first deprecated version.
@@ -196,6 +200,8 @@ CSS variable as a deprecated compatibility alias to it.
   least two minor releases after notice when that cadence exists.
 - A deprecated token MUST continue to resolve, appear in the interchange artifact, and pass alias
   validation until its approved removal.
+- Validation MUST prove that overriding either the deprecated name or its replacement changes the
+  resolved consuming contract throughout the retention window.
 - A deprecation with no replacement MUST explain the supported composition, native platform, Pro,
   or consumer-owned alternative.
 
