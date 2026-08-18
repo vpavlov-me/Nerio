@@ -63,6 +63,10 @@ because they appear in a leading or trailing slot.
 | Slider and Tabs                             | Base UI provider owns horizontal direction while Nerio preserves accessible focus and value contracts. |
 | Toast                                       | Viewport uses logical inline-end placement; swipe direction and owned labels are overridable.          |
 
+Sidebar isolates its internal flex axis to keep `side="left" | "right"` physical. The UI stylesheet
+captures the nearest explicit HTML direction in an inherited custom property and restores it through
+the provider content boundary, including server-rendered text nodes before hydration.
+
 ## Next.js setup
 
 Use one client boundary to keep the HTML and Base UI behavior values aligned:

@@ -426,8 +426,10 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
     const sidebar = provider.getByRole("complementary", {
       name: `${side} inherited direction sidebar`,
     });
+    const content = provider.locator('[data-slot="sidebar-provider-content"]');
     await expect(provider).toHaveAttribute("data-direction", "rtl");
-    await expect(provider).toHaveCSS("direction", "rtl");
+    await expect(provider).toHaveCSS("direction", "ltr");
+    await expect(content).toHaveCSS("direction", "rtl");
     await expect(sidebar).toHaveCSS("direction", "rtl");
     const providerBox = await provider.boundingBox();
     const sidebarBox = await sidebar.boundingBox();
@@ -440,6 +442,7 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
     await provider.evaluate((element) => element.setAttribute("dir", "ltr"));
     await expect(provider).toHaveCSS("direction", "ltr");
     await expect(provider).toHaveAttribute("data-direction", "ltr");
+    await expect(content).toHaveCSS("direction", "ltr");
     await expect(sidebar).toHaveCSS("direction", "ltr");
     const explicitProviderBox = await provider.boundingBox();
     const explicitSidebarBox = await sidebar.boundingBox();
@@ -478,6 +481,35 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
     1,
   );
   expect(problems).toEqual([]);
+});
+
+test("keeps Sidebar direction and physical sides correct in server HTML", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  try {
+    await page.goto("/docs/foundations/localization");
+    const fixture = page.getByRole("region", { name: "RTL direction preview" });
+    for (const side of ["left", "right"]) {
+      const provider = fixture.locator(`[data-physical-side="${side}"]`);
+      const content = provider.locator('[data-slot="sidebar-provider-content"]');
+      const sidebar = provider.getByRole("complementary", {
+        name: `${side} inherited direction sidebar`,
+      });
+      await expect(provider).toHaveAttribute("data-direction", "ltr");
+      await expect(provider).toHaveCSS("direction", "ltr");
+      await expect(content).toHaveCSS("direction", "rtl");
+      await expect(sidebar).toHaveCSS("direction", "rtl");
+      const providerBox = await provider.boundingBox();
+      const sidebarBox = await sidebar.boundingBox();
+      expect(providerBox).not.toBeNull();
+      expect(sidebarBox).not.toBeNull();
+      const expectedX = side === "left" ? providerBox.x : providerBox.x + providerBox.width;
+      const actualX = side === "left" ? sidebarBox.x : sidebarBox.x + sidebarBox.width;
+      expect(Math.abs(actualX - expectedX)).toBeLessThanOrEqual(1);
+    }
+  } finally {
+    await context.close();
+  }
 });
 
 test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only behavior portable", async ({
