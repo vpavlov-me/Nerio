@@ -2178,9 +2178,7 @@ describe("Core static contracts", () => {
     );
 
     const viewport = screen.getByRole("region", { name: "RTL notifications" });
-    expect(viewport).toHaveClass(
-      "right-[max(var(--n-toast-viewport-inset),env(safe-area-inset-right))]",
-    );
+    expect(viewport).toHaveClass("[inset-inline-end:var(--toast-viewport-inline-inset)]");
     expect(viewport).not.toHaveClass("left-1/2", "-translate-x-1/2");
   });
 

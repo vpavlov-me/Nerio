@@ -95,10 +95,10 @@ roadmap method.
 
 ### Core 1.1 shared contract
 
-<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341,#151 -->
+<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341 -->
 
-- #342 establishes the minimum inherited direction, RTL, locale, and localization contract after
-  stable 1.0.
+- #342 establishes the minimum inherited direction, RTL, locale, and localization contract on
+  `dev`; it stays outside the isolated stable 1.0 candidate.
 - The full #342 audit continues as a parallel shared track. A direction-sensitive component API
   waits only for the relevant accepted contract, not for the complete cross-repository audit.
 

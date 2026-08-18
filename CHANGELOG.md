@@ -8,6 +8,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the Core 1.1 direction and localization contract on `dev`, including deterministic locale
+  defaults, consumer setup for HTML direction and Base UI behavior, audited component guidance,
+  public Foundation documentation, and machine-readable drift validation. This forward contract
+  remains outside the isolated Core 1.0 release candidate.
 - Added a deterministic source-backed foundation metadata projection and drift validator. Typography
   and Themes now render token scales, presets, runtime mappings, and density aliases from canonical
   CSS and catalog sources, while foundation navigation, search, sitemap, and `llms.txt` discovery

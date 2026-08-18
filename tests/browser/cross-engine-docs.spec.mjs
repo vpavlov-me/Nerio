@@ -415,6 +415,27 @@ test("exposes the semantic Table, Item, Pagination, form, and Tabs audit fixture
   expect(problems).toEqual([]);
 });
 
+test("keeps the public direction contract behavioral in RTL", async ({ browserName, page }) => {
+  const problems = monitorPage(page, browserName);
+  await page.goto("/docs/foundations/localization");
+
+  const fixture = page.getByRole("region", { name: "RTL direction preview" });
+  await expect(fixture.locator('[data-direction-fixture="rtl"]')).toHaveAttribute("dir", "rtl");
+
+  const overview = fixture.getByRole("tab", { name: "Overview" });
+  const details = fixture.getByRole("tab", { name: "Details" });
+  await overview.focus();
+  await overview.press("ArrowLeft");
+  await expect(details).toBeFocused();
+
+  const slider = fixture.getByRole("slider", { name: "RTL priority" });
+  await expect(slider).toHaveValue("35");
+  await slider.focus();
+  await slider.press("ArrowRight");
+  await expect(slider).toHaveValue("34");
+  expect(problems).toEqual([]);
+});
+
 test("keeps single-value Slider keyboard, pointer, form, RTL, and read-only behavior portable", async ({
   browserName,
   page,

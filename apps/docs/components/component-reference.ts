@@ -2043,6 +2043,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Slider is interactive and imports from @nerio-ui/ui/client.",
       "Provide exactly one visible label, aria-label, or aria-labelledby.",
       "Base UI owns Arrow keys, Home, End, Page Up, Page Down, pointer, touch, RTL, and orientation behavior.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
       "Use aria-valuetext or getAriaValueText when the numeric value alone does not communicate units or meaning.",
       "Read-only remains keyboard focusable but cancels value changes; disabled removes interaction.",
       "The nested native range input preserves name, form, min, max, step, required, and ref access.",
@@ -2420,6 +2421,7 @@ export const componentReference: Record<string, ComponentReference> = {
       'Error messages use role="alert" only when invalid is true.',
       "Use name, required, form, and autoComplete when the select participates in native form submission.",
       "Base UI manages combobox roles, focus restoration, Arrow key navigation, Home, End, Escape, and typeahead.",
+      "Pair the document dir attribute with Base UI DirectionProvider so popup behavior follows LTR or RTL.",
     ],
     guidance: {
       do: ["Use for status, owner, view mode, and compact configuration choices."],
@@ -3233,6 +3235,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Provide aria-label or aria-labelledby when the tablist purpose is not clear from nearby text.",
       "Base UI owns tab, tablist, tabpanel relationships and activation direction; Nerio keeps arrow navigation on enabled triggers.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
       "Every trigger needs a visible text label. Icons are decorative; Badge text remains available to assistive technology.",
       "Provide an enabled defaultValue for predictable SSR when the first trigger is disabled.",
     ],
@@ -3904,6 +3907,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Keep labels action-oriented and support keyboard navigation through Base UI.",
       "Optional descriptions remain separate from the accessible name and are exposed through aria-describedby.",
+      "Pair the document dir attribute with Base UI DirectionProvider so navigation and positioning follow LTR or RTL.",
     ],
     api: [
       {

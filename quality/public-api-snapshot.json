@@ -109,6 +109,7 @@
     "/docs/feedback",
     "/docs/foundations/effects",
     "/docs/foundations/icons",
+    "/docs/foundations/localization",
     "/docs/foundations/motion",
     "/docs/foundations/radius",
     "/docs/foundations/themes",
@@ -10294,7 +10295,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-7454fe708a9b755e45be533fa12c305285f2034ee784173627f52f632eec7a67",
+            "integrity": "sha256-9d3c2e923bf7c48ea235f749da3d5df4c949db1e1aa9ba3a0b030f1552dcb374",
             "role": "component",
             "source": "../../ui/src/components/toast.tsx",
             "target": "components/toast.tsx"
