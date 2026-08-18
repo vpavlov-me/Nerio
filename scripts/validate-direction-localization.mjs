@@ -108,6 +108,7 @@ const datePicker = read("packages/ui/src/components/date-picker.tsx");
 const dialog = read("packages/ui/src/components/dialog.tsx");
 const sidebar = read("packages/ui/src/components/sidebar.tsx");
 const styles = read("packages/ui/src/styles.css");
+const tokenStyles = read("packages/tokens/src/styles.css");
 const toast = read("packages/ui/src/components/toast.tsx");
 requireValue(calendar.includes('locale = "en-US"'), "Calendar must keep deterministic en-US SSR.");
 requireValue(
@@ -127,9 +128,9 @@ requireValue(
     sidebar.includes("[direction:ltr]") &&
     sidebar.includes("[direction:var(--n-inherited-direction,ltr)]") &&
     sidebar.includes('data-slot="sidebar-provider-content"') &&
-    styles.includes(':where([dir="ltr"])') &&
-    styles.includes(':where([dir="rtl"])') &&
-    styles.includes("--n-inherited-direction") &&
+    tokenStyles.includes(':where([dir="ltr"])') &&
+    tokenStyles.includes(':where([dir="rtl"])') &&
+    tokenStyles.includes("--n-inherited-direction") &&
     !sidebar.includes('direction = "ltr"'),
   "Sidebar must preserve inherited content direction and physical-side layout in server markup.",
 );
