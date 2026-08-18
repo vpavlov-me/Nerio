@@ -223,7 +223,7 @@ This planning baseline remains valid only while the validator proves:
 - every platform coverage decision is represented;
 - every issue #342–#357 plus related #369/#370 has one disposition;
 - the historical catalog, Registry, Core version, and public API metadata remain pinned to baseline
-  commit `930890b9c450da7674a3274360bcada8fc99300a`, while separate current metadata tracks
+  commit `930890b9c450da7674a3274360bcada8fc99300a`, while separate current metadata track
   intentional repository changes;
 - the exact current catalog schema and hash, Registry schema, item count and hash, Core version,
   Base UI dependency, and approved public API snapshot have not drifted;
