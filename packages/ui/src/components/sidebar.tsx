@@ -66,7 +66,7 @@ export function SidebarProvider({
     [controlledExpanded, onExpandedChange],
   );
   const toggle = React.useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     if (direction) return undefined;
 
     const updateDirection = () => {
@@ -101,7 +101,7 @@ export function SidebarProvider({
         ref={providerRef}
         {...props}
         className={cn(
-          "n-sidebar-provider flex min-h-full w-full flex-row data-[direction=rtl]:flex-row-reverse data-[side=right]:flex-row-reverse data-[direction=rtl]:data-[side=right]:flex-row data-[state=collapsed]:[&>.n-sidebar]:w-(--n-sidebar-collapsed-width) data-[state=collapsed]:[&>.n-sidebar]:basis-(--n-sidebar-collapsed-width)",
+          "n-sidebar-provider flex min-h-full w-full [direction:ltr] data-[side=right]:flex-row-reverse",
           className,
         )}
         dir={direction}
@@ -111,7 +111,12 @@ export function SidebarProvider({
         data-slot="sidebar-provider"
         data-state={expanded ? "expanded" : "collapsed"}
       >
-        {children}
+        <div
+          className="contents [direction:var(--n-inherited-direction,ltr)]"
+          data-slot="sidebar-provider-content"
+        >
+          {children}
+        </div>
       </div>
     </SidebarContext.Provider>
   );

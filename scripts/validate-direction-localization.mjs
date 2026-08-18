@@ -107,6 +107,7 @@ const calendar = read("packages/ui/src/components/calendar.tsx");
 const datePicker = read("packages/ui/src/components/date-picker.tsx");
 const dialog = read("packages/ui/src/components/dialog.tsx");
 const sidebar = read("packages/ui/src/components/sidebar.tsx");
+const styles = read("packages/ui/src/styles.css");
 const toast = read("packages/ui/src/components/toast.tsx");
 requireValue(calendar.includes('locale = "en-US"'), "Calendar must keep deterministic en-US SSR.");
 requireValue(
@@ -123,12 +124,14 @@ requireValue(
 );
 requireValue(
   sidebar.includes('closest<HTMLElement>("[dir]")') &&
-    sidebar.includes("React.useLayoutEffect") &&
-    sidebar.includes("data-[direction=rtl]:flex-row-reverse") &&
-    sidebar.includes("data-[direction=rtl]:data-[side=right]:flex-row") &&
-    !sidebar.includes("[direction:ltr]") &&
+    sidebar.includes("[direction:ltr]") &&
+    sidebar.includes("[direction:var(--n-inherited-direction,ltr)]") &&
+    sidebar.includes('data-slot="sidebar-provider-content"') &&
+    styles.includes(':where([dir="ltr"])') &&
+    styles.includes(':where([dir="rtl"])') &&
+    styles.includes("--n-inherited-direction") &&
     !sidebar.includes('direction = "ltr"'),
-  "Sidebar must inherit content direction during SSR and resolve its physical-side layout before client paint.",
+  "Sidebar must preserve inherited content direction and physical-side layout in server markup.",
 );
 
 const directionCapability = parity.capabilities.find(
