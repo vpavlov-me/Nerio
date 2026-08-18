@@ -222,7 +222,11 @@ This planning baseline remains valid only while the validator proves:
 - every reviewed Base UI 1.6.0 public primitive is classified;
 - every platform coverage decision is represented;
 - every issue #342–#357 plus related #369/#370 has one disposition;
-- the exact catalog, Registry, Base UI dependency, and public API snapshot baseline has not drifted;
+- the historical catalog, Registry, and public API hashes remain pinned to baseline commit
+  `930890b9c450da7674a3274360bcada8fc99300a`, while separate current hashes track intentional
+  repository changes;
+- the exact current catalog, Registry, Base UI dependency, and approved public API snapshot have
+  not drifted;
 - this document, the machine projection, and `ROADMAP.md` agree.
 
 Future implementation PRs must still synchronize source, public types, catalog, `COMPONENTS.md`,

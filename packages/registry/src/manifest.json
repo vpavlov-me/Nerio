@@ -29,7 +29,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
@@ -144,7 +144,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -236,7 +236,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -373,7 +373,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -465,7 +465,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -527,7 +527,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -637,7 +637,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -701,7 +701,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -756,7 +756,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -828,7 +828,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -894,7 +894,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -980,7 +980,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1036,7 +1036,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1099,7 +1099,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1170,7 +1170,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1220,7 +1220,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1270,7 +1270,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1352,7 +1352,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1442,7 +1442,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1551,7 +1551,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1675,7 +1675,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1762,7 +1762,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1861,7 +1861,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1948,7 +1948,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2017,7 +2017,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2104,7 +2104,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2166,7 +2166,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2221,7 +2221,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2279,7 +2279,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2372,7 +2372,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2448,7 +2448,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2528,7 +2528,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2736,7 +2736,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2851,7 +2851,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2957,7 +2957,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3016,7 +3016,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3109,7 +3109,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3217,7 +3217,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3335,7 +3335,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3468,7 +3468,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3585,7 +3585,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3685,7 +3685,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3799,7 +3799,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3859,7 +3859,7 @@
           "source": "../../ui/src/components/toast.tsx",
           "target": "components/toast.tsx",
           "role": "component",
-          "integrity": "sha256-ddb5476081dd4105017c7f573912b7eb14a2d236d9fb015816a783405e7e4257"
+          "integrity": "sha256-7454fe708a9b755e45be533fa12c305285f2034ee784173627f52f632eec7a67"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
@@ -3883,7 +3883,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-c0f4fb10cd1b0b71dc2f412b78e4ad3ede1e7306b496bcbc4d96bf1362366622"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3938,7 +3938,7 @@
         "Use low priority for routine polite confirmations and high priority only for urgent updates.",
         "Base UI announces managed title and description once; decorative status icons and action copy are excluded from the announcement.",
         "Static Toast remains presentation-only and separate from managed status and stack behavior; managed actions and icon-only dismissal use Button.",
-        "The managed viewport is bottom-centered; collapsed toasts scale and step upward behind the frontmost card, then expand upward without changing reading order.",
+        "The managed viewport is bottom-right; collapsed toasts scale and step upward behind the frontmost card, then expand upward without changing reading order.",
         "Managed toasts never steal focus. F6 enters the viewport, where actions and dismissal remain keyboard reachable.",
         "Timers pause on pointer hover, keyboard focus, and window blur, then resume from the remaining duration. Set timeout to 0 only for an intentionally persistent toast.",
         "Inherited document direction is resolved for the first interactive render and remains synchronized with root dir changes; explicit direction wins immediately.",

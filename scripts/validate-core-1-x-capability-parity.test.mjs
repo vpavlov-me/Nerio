@@ -228,6 +228,18 @@ test("capability parity validator separates current API state from the historica
   }, /Current parity API snapshot hash is stale/);
 });
 
+test("capability parity validator pins the reviewed historical catalog hash", () => {
+  invalidMatrix((matrix) => {
+    matrix.baseline.componentCatalogSha256 = matrix.currentComponentCatalogSha256;
+  }, /Parity baseline component catalog hash must retain the reviewed historical value/);
+});
+
+test("capability parity validator pins the reviewed historical Registry hash", () => {
+  invalidMatrix((matrix) => {
+    matrix.baseline.registryManifestSha256 = matrix.currentRegistryManifestSha256;
+  }, /Parity baseline Registry manifest hash must retain the reviewed historical value/);
+});
+
 test("capability parity validator pins the reviewed historical API hash", () => {
   invalidMatrix((matrix) => {
     matrix.baseline.publicApiSnapshotSha256 = "a".repeat(64);
@@ -241,14 +253,14 @@ test("capability parity validator keeps the historical API hash in human evidenc
   );
 });
 
-test("capability parity validator protects the complete catalog baseline", () => {
+test("capability parity validator protects the complete current catalog", () => {
   invalidCatalog((catalog) => {
     catalog.components[0].description = `${catalog.components[0].description} changed`;
-  }, /Parity baseline component catalog hash is stale/);
+  }, /Current parity component catalog hash is stale/);
 });
 
-test("capability parity validator protects the complete Registry baseline", () => {
+test("capability parity validator protects the complete current Registry", () => {
   invalidManifest((manifest) => {
     manifest.items[0].description = `${manifest.items[0].description} changed`;
-  }, /Parity baseline Registry manifest hash is stale/);
+  }, /Current parity Registry manifest hash is stale/);
 });

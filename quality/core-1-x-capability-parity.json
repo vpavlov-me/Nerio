@@ -8,10 +8,10 @@
     "coreVersion": "1.0.0-beta.1",
     "baseUiVersion": "1.6.0",
     "componentCatalogSchemaVersion": 1,
-    "componentCatalogSha256": "a955f4432b80b6a13e1d30591d591c26ee67eac3c91f4d649e6232f447fdffd6",
+    "componentCatalogSha256": "a79f8bc053ae0d7c31e93bcc5f3ebda8955271f479e77ced0917c103ad1841cc",
     "registrySchemaVersion": "1.1.0",
     "registryItemCount": 46,
-    "registryManifestSha256": "22094d0b3e69536548a6838d5d7d9a4f99f5d64596b35aa5eb8c864fffb71de0",
+    "registryManifestSha256": "c92f1c1db90bfeee6a4c665c6a074137a1938ddc2bc5ca4223681a7bef92d07f",
     "publicApiSnapshotSha256": "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3"
   },
   "currentBaseUiVersion": "1.7.0",
@@ -64,7 +64,9 @@
       "unstable-use-media-query"
     ]
   },
-  "currentPublicApiSnapshotSha256": "948031422bb1635594628bcff633d81958ef17c484501b45e97ff46033907996",
+  "currentComponentCatalogSha256": "3d4509ef89d74b51993e0f9918ab0ceaee7f0fa97dd8ca6241542c3de67dd0f2",
+  "currentRegistryManifestSha256": "1a4f3c3b60b6c5afec5f32b6e2fb970bebfe67469b2f0d4decc3647a3605a72a",
+  "currentPublicApiSnapshotSha256": "13aaecbc968660b4e0adac32a03e343e720f2feb882ef95fd605f475a373edd5",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",

@@ -2300,7 +2300,7 @@ async function verify() {
       !toastSource.includes('from "../lib/tailwind-cn"')
     ) {
       throw new Error(
-        "Installed Toast styles are missing the bottom-centered scaled stack or unified transform coordinate system.",
+        "Installed Toast styles are missing the bottom-right scaled stack or unified transform coordinate system.",
       );
     }
 

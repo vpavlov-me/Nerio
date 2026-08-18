@@ -1070,8 +1070,15 @@ describe("Core static contracts", () => {
       "font-(--n-font-weight-medium)",
     );
     expect(screen.getByTestId("visual-toast")).toHaveClass(
+      "items-start",
       "[backdrop-filter:var(--n-overlay-surface-filter)]",
       "[--n-button-foreground-ghost:var(--n-toast-foreground-muted)]",
+      "[&_[data-slot=title]]:text-(length:--n-font-size-md)",
+      "[&_[data-slot=title]]:font-(--n-font-weight-regular)",
+      "[&_[data-slot=title]]:text-(--n-toast-foreground)",
+      "[&_[data-slot=description]]:text-(length:--n-font-size-md)",
+      "[&_[data-slot=description]]:font-(--n-font-weight-regular)",
+      "[&_[data-slot=description]]:text-(--n-toast-foreground-muted)",
       "[&_[data-slot=close]:hover:not(:disabled):not([data-disabled])]:text-(--n-toast-foreground)",
     );
     expect(screen.getByRole("heading", { name: "No projects" })).toHaveClass(
@@ -1096,6 +1103,9 @@ describe("Core static contracts", () => {
     );
     expect(tokens).toContain("--n-alert-border-width: var(--n-border-width-0)");
     expect(tokens).toContain("--n-toast-background: var(--n-overlay-background)");
+    expect(tokens).toContain("--n-toast-border: var(--n-color-border-default);");
+    expect(tokens).toContain("--n-toast-shadow: var(--n-shadow-sm);");
+    expect(tokens).toContain("--n-toast-status-indicator-size: var(--n-icon-size-md);");
     expect(tokens).toContain("--n-size-toast-stack-offset: 0.5rem;");
     expect(tokens).toContain("--n-avatar-border: var(--n-gray-0)");
     expect(tokens).toContain("--n-avatar-border: var(--n-gray-1000)");
@@ -2079,7 +2089,17 @@ describe("Core static contracts", () => {
     expect(close).toHaveClass("n-button", "n-toast__close");
     expect(close.querySelector("svg")).not.toBeNull();
     const undo = await screen.findByRole("button", { name: "Undo" });
-    expect(undo).toHaveClass("n-button", "n-toast__action");
+    expect(undo).toHaveClass("n-button", "n-toast__action", "bg-(--n-button-background-primary)");
+    expect(undo.parentElement).toHaveClass("n-toast__content", "items-start");
+    expect(close.parentElement).toHaveClass("n-toast__content", "items-start");
+    const title = screen.getByText("Saved");
+    const copy = title.parentElement;
+    expect(copy).toHaveClass(
+      "n-toast__copy",
+      "grid-cols-[var(--n-toast-status-indicator-size)_minmax(0,1fr)]",
+      "items-center",
+    );
+    expect(copy?.querySelector('[data-slot="status-indicator"]')).not.toBeNull();
     await user.click(undo);
     expect(action).toHaveBeenCalledOnce();
     expect(screen.queryByText("Saved")).not.toBeInTheDocument();
@@ -2150,7 +2170,7 @@ describe("Core static contracts", () => {
     }
   });
 
-  it("keeps the Toast viewport centered with an explicit RTL direction", () => {
+  it("keeps the Toast viewport bottom-right with an explicit RTL direction", () => {
     render(
       <ToastProvider>
         <ToastViewport direction="rtl" label="RTL notifications" />
@@ -2158,8 +2178,10 @@ describe("Core static contracts", () => {
     );
 
     const viewport = screen.getByRole("region", { name: "RTL notifications" });
-    expect(viewport).toHaveClass("left-1/2", "-translate-x-1/2");
-    expect(viewport).not.toHaveClass("rtl:translate-x-1/2");
+    expect(viewport).toHaveClass(
+      "right-[max(var(--n-toast-viewport-inset),env(safe-area-inset-right))]",
+    );
+    expect(viewport).not.toHaveClass("left-1/2", "-translate-x-1/2");
   });
 
   it("keeps inherited Toast direction synchronized with the document root", async () => {

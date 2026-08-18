@@ -810,7 +810,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "feedback",
       "status": "stable-core",
-      "description": "Static and managed anatomy stay separate; managed actions and icon-only dismissal use Button, status icons have no backing surface, and copy margins are reset inside the floating surface; the managed viewport is bottom-centered and the collapsed stack scales and steps upward behind the frontmost toast; a unified enter, expand, swipe, and dismissal coordinate system prevents transform jumps; inherited RTL, timers, managers, safe areas, accessibility, and clean installs are covered."
+      "description": "Static and managed anatomy stay separate; managed actions use the primary Button beside the copy, icon-only dismissal uses the trailing ghost Button, status icons have no backing surface, and copy margins are reset inside the floating surface; the managed viewport is bottom-right and the collapsed stack scales and steps upward behind the frontmost toast; a unified enter, expand, swipe, and dismissal coordinate system prevents transform jumps; inherited RTL, timers, managers, safe areas, accessibility, and clean installs are covered."
     },
     {
       "name": "Progress",
