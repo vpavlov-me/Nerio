@@ -421,6 +421,10 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
 
   const fixture = page.getByRole("region", { name: "RTL direction preview" });
   await expect(fixture.locator('[data-direction-fixture="rtl"]')).toHaveAttribute("dir", "rtl");
+  await expect(fixture.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
+    "data-direction",
+    "rtl",
+  );
 
   const overview = fixture.getByRole("tab", { name: "Overview" });
   const details = fixture.getByRole("tab", { name: "Details" });
@@ -433,6 +437,19 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
   await slider.focus();
   await slider.press("ArrowRight");
   await expect(slider).toHaveValue("34");
+
+  await page.goto("/docs/components/dialog");
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  await page
+    .getByRole("region", { name: "dialog preview" })
+    .getByRole("button", { name: "Open dialog" })
+    .click();
+  const dialogBox = await page.getByRole("dialog", { name: "Share collection" }).boundingBox();
+  expect(dialogBox).not.toBeNull();
+  const dialogViewportWidth = await page.evaluate(() => window.innerWidth);
+  expect(Math.abs(dialogBox.x + dialogBox.width / 2 - dialogViewportWidth / 2)).toBeLessThanOrEqual(
+    1,
+  );
   expect(problems).toEqual([]);
 });
 

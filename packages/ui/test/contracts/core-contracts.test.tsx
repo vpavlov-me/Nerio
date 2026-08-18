@@ -4366,6 +4366,39 @@ describe("Core interactive action contracts", () => {
     );
   });
 
+  it("inherits Sidebar direction by default and keeps the explicit override", async () => {
+    const previousDirection = document.documentElement.getAttribute("dir");
+    document.documentElement.dir = "rtl";
+    const view = render(
+      <SidebarProvider data-testid="inherited-sidebar-provider">
+        <Sidebar aria-label="Inherited direction sidebar" />
+      </SidebarProvider>,
+    );
+
+    try {
+      const provider = screen.getByTestId("inherited-sidebar-provider");
+      const sidebar = screen.getByRole("complementary", {
+        name: "Inherited direction sidebar",
+      });
+      await waitFor(() => expect(provider).toHaveAttribute("data-direction", "rtl"));
+      expect(provider).not.toHaveAttribute("dir");
+      expect(sidebar).toHaveAttribute("data-direction", "rtl");
+
+      view.rerender(
+        <SidebarProvider data-testid="inherited-sidebar-provider" direction="ltr">
+          <Sidebar aria-label="Inherited direction sidebar" />
+        </SidebarProvider>,
+      );
+      expect(provider).toHaveAttribute("dir", "ltr");
+      expect(provider).toHaveAttribute("data-direction", "ltr");
+      expect(sidebar).toHaveAttribute("data-direction", "ltr");
+    } finally {
+      view.unmount();
+      if (previousDirection === null) document.documentElement.removeAttribute("dir");
+      else document.documentElement.setAttribute("dir", previousDirection);
+    }
+  });
+
   it("filters Command items, skips disabled values, and emits stable selections", async () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
@@ -4665,6 +4698,8 @@ describe("Core interactive action contracts", () => {
     expect(componentSource("tooltip")).toContain("bg-(--n-overlay-glass-background)");
     expect(componentSource("tooltip")).toContain("text-(--n-overlay-glass-foreground)");
     expect(componentSource("dialog")).toContain("n-dialog-backdrop-enter");
+    expect(componentSource("dialog")).toContain("fixed left-1/2 top-1/2");
+    expect(componentSource("dialog")).not.toContain("fixed start-1/2 top-1/2");
     for (const name of ["select", "popover", "tooltip", "dropdown-menu"]) {
       expect(componentSource(name), name).toContain("z-(--n-overlay-floating-z-index)");
     }

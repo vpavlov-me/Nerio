@@ -1,7 +1,15 @@
 "use client";
 
 import { DirectionProvider } from "@base-ui/react/direction-provider";
-import { Slider, Tabs, TabsContent, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";
+import {
+  SidebarProvider,
+  Slider,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsPanels,
+  TabsTrigger,
+} from "@nerio-ui/ui/client";
 import { PreviewFrame } from "./doc-page-previews/shared";
 
 export function LocalizationPreview({ snippet }: { snippet: string }) {
@@ -20,6 +28,9 @@ export function LocalizationPreview({ snippet }: { snippet: string }) {
             </TabsPanels>
           </Tabs>
           <Slider label="RTL priority" defaultValue={35} />
+          <SidebarProvider>
+            <span>Inherited Sidebar direction</span>
+          </SidebarProvider>
         </div>
       </PreviewFrame>
     </DirectionProvider>

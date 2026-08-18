@@ -24,7 +24,7 @@ const documentExample = `<html dir="rtl" data-theme="purple" data-mode="system" 
 </html>`;
 
 const fixtureExample = `import { DirectionProvider } from "@base-ui/react/direction-provider";
-import { Slider, Tabs, TabsContent, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";
+import { SidebarProvider, Slider, Tabs, TabsContent, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";
 
 <DirectionProvider direction="rtl">
   <div dir="rtl">
@@ -39,6 +39,7 @@ import { Slider, Tabs, TabsContent, TabsList, TabsPanels, TabsTrigger } from "@n
       </TabsPanels>
     </Tabs>
     <Slider label="RTL priority" defaultValue={35} />
+    <SidebarProvider>Inherited Sidebar direction</SidebarProvider>
   </div>
 </DirectionProvider>`;
 

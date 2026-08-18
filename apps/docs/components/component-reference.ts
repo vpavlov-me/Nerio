@@ -3411,7 +3411,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "Direction",
-        description: "Explicit ltr or rtl content direction while side remains physical.",
+        description:
+          "Inherits the nearest HTML dir by default; an explicit ltr or rtl override leaves side physical.",
       },
       {
         title: "Collapse mode",
@@ -3454,7 +3455,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "SidebarProvider",
         description:
-          "defaultExpanded, expanded, onExpandedChange, side, direction, collapseMode, and optional sidebarId.",
+          "defaultExpanded, expanded, onExpandedChange, physical side, optional direction override, collapseMode, and optional sidebarId.",
       },
       {
         title: "Sidebar",
