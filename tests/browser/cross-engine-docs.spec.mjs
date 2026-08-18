@@ -421,10 +421,21 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
 
   const fixture = page.getByRole("region", { name: "RTL direction preview" });
   await expect(fixture.locator('[data-direction-fixture="rtl"]')).toHaveAttribute("dir", "rtl");
-  await expect(fixture.locator('[data-slot="sidebar-provider"]')).toHaveAttribute(
-    "data-direction",
-    "rtl",
-  );
+  for (const side of ["left", "right"]) {
+    const provider = fixture.locator(`[data-physical-side="${side}"]`);
+    const sidebar = provider.getByRole("complementary", {
+      name: `${side} inherited direction sidebar`,
+    });
+    await expect(provider).toHaveAttribute("data-direction", "rtl");
+    await expect(sidebar).toHaveCSS("direction", "rtl");
+    const providerBox = await provider.boundingBox();
+    const sidebarBox = await sidebar.boundingBox();
+    expect(providerBox).not.toBeNull();
+    expect(sidebarBox).not.toBeNull();
+    const expectedX = side === "left" ? providerBox.x : providerBox.x + providerBox.width;
+    const actualX = side === "left" ? sidebarBox.x : sidebarBox.x + sidebarBox.width;
+    expect(Math.abs(actualX - expectedX)).toBeLessThanOrEqual(1);
+  }
 
   const overview = fixture.getByRole("tab", { name: "Overview" });
   const details = fixture.getByRole("tab", { name: "Details" });
@@ -438,6 +449,7 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
   await slider.press("ArrowRight");
   await expect(slider).toHaveValue("34");
 
+  await page.waitForLoadState("networkidle");
   await page.goto("/docs/components/dialog");
   await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
   await page

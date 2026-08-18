@@ -101,7 +101,7 @@ export function SidebarProvider({
         ref={providerRef}
         {...props}
         className={cn(
-          "n-sidebar-provider flex min-h-full w-full data-[side=right]:flex-row-reverse data-[state=collapsed]:[&>.n-sidebar]:w-(--n-sidebar-collapsed-width) data-[state=collapsed]:[&>.n-sidebar]:basis-(--n-sidebar-collapsed-width)",
+          "n-sidebar-provider flex min-h-full w-full [direction:ltr] data-[direction=rtl]:[&>*]:[direction:rtl] data-[side=right]:flex-row-reverse data-[state=collapsed]:[&>.n-sidebar]:w-(--n-sidebar-collapsed-width) data-[state=collapsed]:[&>.n-sidebar]:basis-(--n-sidebar-collapsed-width)",
           className,
         )}
         dir={direction}

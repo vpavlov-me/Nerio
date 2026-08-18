@@ -39,7 +39,8 @@ import { SidebarProvider, Slider, Tabs, TabsContent, TabsList, TabsPanels, TabsT
       </TabsPanels>
     </Tabs>
     <Slider label="RTL priority" defaultValue={35} />
-    <SidebarProvider>Inherited Sidebar direction</SidebarProvider>
+    <SidebarProvider side="left">Inherited left Sidebar direction</SidebarProvider>
+    <SidebarProvider side="right">Inherited right Sidebar direction</SidebarProvider>
   </div>
 </DirectionProvider>`;
 
