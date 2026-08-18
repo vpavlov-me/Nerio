@@ -64,7 +64,11 @@
       "unstable-use-media-query"
     ]
   },
+  "currentComponentCatalogSchemaVersion": 1,
   "currentComponentCatalogSha256": "3d4509ef89d74b51993e0f9918ab0ceaee7f0fa97dd8ca6241542c3de67dd0f2",
+  "currentCoreVersion": "1.0.0-beta.1",
+  "currentRegistrySchemaVersion": "1.1.0",
+  "currentRegistryItemCount": 46,
   "currentRegistryManifestSha256": "1a4f3c3b60b6c5afec5f32b6e2fb970bebfe67469b2f0d4decc3647a3605a72a",
   "currentPublicApiSnapshotSha256": "13aaecbc968660b4e0adac32a03e343e720f2feb882ef95fd605f475a373edd5",
   "classificationValues": {
