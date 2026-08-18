@@ -981,6 +981,15 @@
   --n-dropdown-min-width: 14rem;
 }
 
+/* Capture the nearest explicit HTML direction before layout components isolate a physical axis. */
+:where([dir="ltr"]) {
+  --n-inherited-direction: ltr;
+}
+
+:where([dir="rtl"]) {
+  --n-inherited-direction: rtl;
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root {
     --n-duration-instant: 1ms;

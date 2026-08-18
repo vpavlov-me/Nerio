@@ -6,15 +6,6 @@
 @import "./styles/select.css";
 @import "./styles/overlays.css";
 
-/* Capture the nearest explicit HTML direction before layout components isolate a physical axis. */
-:where([dir="ltr"]) {
-  --n-inherited-direction: ltr;
-}
-
-:where([dir="rtl"]) {
-  --n-inherited-direction: rtl;
-}
-
 /* Scoped no-Preflight compatibility for source and package consumers. */
 :where([class^="n-"], [class*=" n-"]) {
   box-sizing: border-box;

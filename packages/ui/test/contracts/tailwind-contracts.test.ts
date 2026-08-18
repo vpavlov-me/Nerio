@@ -124,7 +124,7 @@ describe("Tailwind styling contract", () => {
     expect(styles).toContain("font-family: inherit;");
   });
 
-  it("keeps residual CSS on the documented direction, keyframe, and no-Preflight allowlist", () => {
+  it("keeps residual CSS on the documented keyframe and no-Preflight allowlist", () => {
     const stylesDirectory = resolve(process.cwd(), "src/styles");
     expect(readdirSync(stylesDirectory).sort()).toEqual(Object.keys(residualKeyframes).sort());
 
@@ -149,15 +149,11 @@ describe("Tailwind styling contract", () => {
       "./styles/overlays.css",
     ]);
     expect(topLevelBlockHeaders(entrypoint.replaceAll(/@import\s+"[^"]+";/g, ""))).toEqual([
-      ':where([dir="ltr"])',
-      ':where([dir="rtl"])',
       ':where([class^="n-"], [class*=" n-"])',
       ':where(button, input, select, textarea):where([class^="n-"], [class*=" n-"])',
     ]);
     expect(entrypoint).toContain("box-sizing: border-box;");
     expect(entrypoint).toContain("font-family: inherit;");
-    expect(entrypoint).toContain("--n-inherited-direction: ltr;");
-    expect(entrypoint).toContain("--n-inherited-direction: rtl;");
     expect(entrypoint).not.toContain("@apply");
   });
 

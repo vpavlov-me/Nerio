@@ -36,8 +36,7 @@ All released Core families are Tailwind-first: Foundations, Actions, Forms, Data
 Progress, Navigation, Layout, Overlays, and compound UI. The final component stylesheet surface is
 3,954 bytes. Named shared keyframes are the only rules under `packages/ui/src/styles/*.css`;
 `packages/ui/src/styles.css` additionally owns the scoped no-Preflight box-sizing and native-control
-typography compatibility rules plus two non-visual `[dir]` selectors that preserve inherited content
-direction across a deliberately physical layout axis.
+typography compatibility rules.
 
 Contract tests reject visual `.n-*` component selectors, BEM arbitrary-selector ambiguity, legacy
 merge helpers, `@apply` mirrors, raw palette utilities, and residual CSS outside the allowlist. There
