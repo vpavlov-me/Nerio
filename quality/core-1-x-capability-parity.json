@@ -69,8 +69,8 @@
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
   "currentRegistryItemCount": 46,
-  "currentRegistryManifestSha256": "377b477cac9d3fec601a62b962a0591296e5cca8626041455ed7f7b6ef397c29",
-  "currentPublicApiSnapshotSha256": "d5b031ef913f31c7f7f4550d372fedb27be55ab1f9cfda207369c7d3b903c7da",
+  "currentRegistryManifestSha256": "abdaf5e24faa5a9192725e5e3339d7376292a24ddcb6ad609a82e6927446113c",
+  "currentPublicApiSnapshotSha256": "dc8b942db0b9b8d247512072c96b8aa285b5fff98e65508e22739045a28c89c9",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",

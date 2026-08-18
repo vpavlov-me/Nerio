@@ -436,6 +436,20 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
     const expectedX = side === "left" ? providerBox.x : providerBox.x + providerBox.width;
     const actualX = side === "left" ? sidebarBox.x : sidebarBox.x + sidebarBox.width;
     expect(Math.abs(actualX - expectedX)).toBeLessThanOrEqual(1);
+
+    await provider.evaluate((element) => element.setAttribute("dir", "ltr"));
+    await expect(provider).toHaveCSS("direction", "ltr");
+    await expect(provider).toHaveAttribute("data-direction", "ltr");
+    await expect(sidebar).toHaveCSS("direction", "ltr");
+    const explicitProviderBox = await provider.boundingBox();
+    const explicitSidebarBox = await sidebar.boundingBox();
+    expect(explicitProviderBox).not.toBeNull();
+    expect(explicitSidebarBox).not.toBeNull();
+    const explicitExpectedX =
+      side === "left" ? explicitProviderBox.x : explicitProviderBox.x + explicitProviderBox.width;
+    const explicitActualX =
+      side === "left" ? explicitSidebarBox.x : explicitSidebarBox.x + explicitSidebarBox.width;
+    expect(Math.abs(explicitActualX - explicitExpectedX)).toBeLessThanOrEqual(1);
   }
 
   const overview = fixture.getByRole("tab", { name: "Overview" });

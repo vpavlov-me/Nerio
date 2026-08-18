@@ -123,11 +123,12 @@ requireValue(
 );
 requireValue(
   sidebar.includes('closest<HTMLElement>("[dir]")') &&
-    sidebar.includes("rtl:flex-row-reverse") &&
-    sidebar.includes("rtl:data-[side=right]:flex-row") &&
+    sidebar.includes("React.useLayoutEffect") &&
+    sidebar.includes("data-[direction=rtl]:flex-row-reverse") &&
+    sidebar.includes("data-[direction=rtl]:data-[side=right]:flex-row") &&
     !sidebar.includes("[direction:ltr]") &&
     !sidebar.includes('direction = "ltr"'),
-  "Sidebar must inherit direction at first paint while preserving its physical-side layout axis.",
+  "Sidebar must inherit content direction during SSR and resolve its physical-side layout before client paint.",
 );
 
 const directionCapability = parity.capabilities.find(
