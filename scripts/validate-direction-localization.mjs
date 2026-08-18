@@ -105,6 +105,8 @@ for (const phrase of [
 
 const calendar = read("packages/ui/src/components/calendar.tsx");
 const datePicker = read("packages/ui/src/components/date-picker.tsx");
+const dialog = read("packages/ui/src/components/dialog.tsx");
+const sidebar = read("packages/ui/src/components/sidebar.tsx");
 const toast = read("packages/ui/src/components/toast.tsx");
 requireValue(calendar.includes('locale = "en-US"'), "Calendar must keep deterministic en-US SSR.");
 requireValue(
@@ -114,6 +116,16 @@ requireValue(
 requireValue(
   toast.includes("[inset-inline-end:var(--toast-viewport-inline-inset)]"),
   "Toast viewport must use logical inline-end placement.",
+);
+requireValue(
+  dialog.includes("fixed left-1/2 top-1/2") && !dialog.includes("fixed start-1/2 top-1/2"),
+  "Dialog centering must use consistently physical geometry in LTR and RTL.",
+);
+requireValue(
+  sidebar.includes('closest<HTMLElement>("[dir]")') &&
+    !sidebar.includes("[direction:ltr]") &&
+    !sidebar.includes('direction = "ltr"'),
+  "Sidebar must inherit HTML direction unless an explicit override is supplied.",
 );
 
 const directionCapability = parity.capabilities.find(

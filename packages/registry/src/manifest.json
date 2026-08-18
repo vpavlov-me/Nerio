@@ -3082,7 +3082,7 @@
           "source": "../../ui/src/components/dialog.tsx",
           "target": "components/dialog.tsx",
           "role": "component",
-          "integrity": "sha256-1f9ecc5a46447512b6e7e123ec86993755b93ceafc4ac89f460b62e2c3ef9cac"
+          "integrity": "sha256-36a07d2b42ecf9b47546ecd43aca560a64b5e3abdb61b6ac7356b664c8b1a991"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
@@ -3184,7 +3184,7 @@
           "source": "../../ui/src/components/sidebar.tsx",
           "target": "components/sidebar.tsx",
           "role": "component",
-          "integrity": "sha256-b483b9837f6c78cff361e88a381017c8d87dad6a245ce29bd76b7f65e43ab4bc"
+          "integrity": "sha256-3b183a1731fbdc594c1fcb1f868d73891fde2034fdab0c3f0887856eff4e91c0"
         },
         {
           "source": "../../ui/src/components/sidebar-layout.tsx",
@@ -3278,7 +3278,7 @@
         "SidebarContent forwards an HTMLDivElement ref, while SidebarInset preserves stable HTMLElement refs for its explicit div or main root.",
         "Collapsed navigation stays reachable with larger icons, preserved accessible names, and focusable labels through SidebarMenuButton tooltips.",
         "State changes keep focus on the external trigger or rail and do not add roving focus or Arrow-key behavior to consumer navigation.",
-        "Physical left and right placement, explicit text direction, reduced motion, forced colors, compact density, and safe-area padding are supported.",
+        "Physical left and right placement, inherited HTML direction with an explicit override, reduced motion, forced colors, compact density, and safe-area padding are supported.",
         "Persistence and mobile behavior remain consumer-owned; compose Sheet explicitly for mobile navigation so only one interactive tree is rendered."
       ],
       "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail collapseLabel=\"Collapse sidebar\" expandLabel=\"Expand sidebar\" label=\"Toggle sidebar\" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>"
