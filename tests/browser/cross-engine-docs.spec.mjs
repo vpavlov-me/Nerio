@@ -220,6 +220,30 @@ test("keeps Collapsible and Accordion disclosure behavior portable", async ({
   expect(problems).toEqual([]);
 });
 
+test("animates disclosure panels through their full measured height", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.goto("/docs/components/accordion");
+  const trigger = page.getByRole("button", { name: "Can I invite collaborators?" });
+  await trigger.click();
+  const panel = page.locator(`#${await trigger.getAttribute("aria-controls")}`);
+  await page.waitForTimeout(320);
+  const openGeometry = await panel.evaluate((element) => ({
+    contentHeight: element.firstElementChild?.getBoundingClientRect().height,
+    openHeight: element.getBoundingClientRect().height,
+  }));
+  expect(Math.abs(openGeometry.openHeight - openGeometry.contentHeight)).toBeLessThanOrEqual(1);
+
+  await trigger.click();
+  await page.waitForTimeout(200);
+  expect(
+    await panel.evaluate((element) => element.getBoundingClientRect().height),
+  ).toBeLessThanOrEqual(4);
+  expect(problems).toEqual([]);
+});
+
 test("keeps the manual audit fixture contained at narrow reflow widths", async ({
   browserName,
   page,

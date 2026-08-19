@@ -7340,7 +7340,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-b89413a86e087293354e9e1c6ae27da25c689e0d1d245e6683fbb7eab5b4a46d",
+            "integrity": "sha256-a6d1053b50c60e6b9489ae0e6078ecc13130c66fde8a9361ed6d5b64e2721343",
             "role": "component",
             "source": "../../ui/src/components/accordion.tsx",
             "target": "components/accordion.tsx"
@@ -8141,7 +8141,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-ddbaaa3c6659569dff705417eccade1881df0e01396e7dd69a1671e96c3cfce3",
+            "integrity": "sha256-7f4fa4cd9ff19bc77af9deb1999bcb338e959c079cb76fb3fb61a815d753876e",
             "role": "component",
             "source": "../../ui/src/components/collapsible.tsx",
             "target": "components/collapsible.tsx"

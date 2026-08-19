@@ -8,9 +8,9 @@
   "routes": [
     {
       "route": "/",
-      "jsBytes": 749675,
-      "cssBytes": 346763,
-      "transferBytes": 279836,
+      "jsBytes": 750009,
+      "cssBytes": 346784,
+      "transferBytes": 279903,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -18,14 +18,14 @@
           "transferBytes": 36545
         },
         {
+          "asset": "static/chunks/3kenb26t_igj6.js",
+          "rawBytes": 63621,
+          "transferBytes": 15208
+        },
+        {
           "asset": "static/chunks/39ksgytoxn2zg.js",
           "rawBytes": 63433,
           "transferBytes": 20726
-        },
-        {
-          "asset": "static/chunks/13-wetwzlz9gy.js",
-          "rawBytes": 63287,
-          "transferBytes": 15144
         },
         {
           "asset": "static/chunks/2-fhjxlb4_8c1.js",
@@ -61,7 +61,6 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
-            "static/chunks/13-wetwzlz9gy.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
             "static/chunks/25yt8n5z0ypi9.js",
@@ -71,6 +70,7 @@
             "static/chunks/39ksgytoxn2zg.js",
             "static/chunks/3f_nwzhsihc89.js",
             "static/chunks/3grq8x200_kwu.js",
+            "static/chunks/3kenb26t_igj6.js",
             "static/chunks/3pu0cvltuende.js",
             "static/chunks/3ulbj79_6zeq1.js"
           ]
@@ -82,7 +82,6 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
-            "static/chunks/13-wetwzlz9gy.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
             "static/chunks/25yt8n5z0ypi9.js",
@@ -92,6 +91,7 @@
             "static/chunks/39ksgytoxn2zg.js",
             "static/chunks/3f_nwzhsihc89.js",
             "static/chunks/3grq8x200_kwu.js",
+            "static/chunks/3kenb26t_igj6.js",
             "static/chunks/3pu0cvltuende.js",
             "static/chunks/3ulbj79_6zeq1.js"
           ]
@@ -103,7 +103,6 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
-            "static/chunks/13-wetwzlz9gy.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
             "static/chunks/2-fhjxlb4_8c1.js",
@@ -115,6 +114,7 @@
             "static/chunks/39ksgytoxn2zg.js",
             "static/chunks/3f_nwzhsihc89.js",
             "static/chunks/3grq8x200_kwu.js",
+            "static/chunks/3kenb26t_igj6.js",
             "static/chunks/3pu0cvltuende.js",
             "static/chunks/3ulbj79_6zeq1.js"
           ]
@@ -212,16 +212,16 @@
         ]
       },
       "delta": {
-        "jsBytes": 16643,
-        "cssBytes": 8532,
-        "transferBytes": 8098
+        "jsBytes": 16977,
+        "cssBytes": 8553,
+        "transferBytes": 8165
       }
     },
     {
       "route": "/docs/getting-started",
       "jsBytes": 467049,
-      "cssBytes": 346763,
-      "transferBytes": 196865,
+      "cssBytes": 346784,
+      "transferBytes": 196868,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -347,15 +347,15 @@
       },
       "delta": {
         "jsBytes": 7438,
-        "cssBytes": 8532,
-        "transferBytes": 6059
+        "cssBytes": 8553,
+        "transferBytes": 6062
       }
     },
     {
       "route": "/docs/components/button",
       "jsBytes": 472069,
-      "cssBytes": 346763,
-      "transferBytes": 198734,
+      "cssBytes": 346784,
+      "transferBytes": 198737,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -495,15 +495,15 @@
       },
       "delta": {
         "jsBytes": 7435,
-        "cssBytes": 8532,
-        "transferBytes": 6065
+        "cssBytes": 8553,
+        "transferBytes": 6068
       }
     },
     {
       "route": "/docs/components/select",
       "jsBytes": 471187,
-      "cssBytes": 346763,
-      "transferBytes": 198402,
+      "cssBytes": 346784,
+      "transferBytes": 198405,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -643,15 +643,15 @@
       },
       "delta": {
         "jsBytes": 7436,
-        "cssBytes": 8532,
-        "transferBytes": 6064
+        "cssBytes": 8553,
+        "transferBytes": 6067
       }
     },
     {
       "route": "/docs/components/calendar",
       "jsBytes": 481182,
-      "cssBytes": 346763,
-      "transferBytes": 201834,
+      "cssBytes": 346784,
+      "transferBytes": 201837,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -791,15 +791,15 @@
       },
       "delta": {
         "jsBytes": 7432,
-        "cssBytes": 8532,
-        "transferBytes": 6060
+        "cssBytes": 8553,
+        "transferBytes": 6063
       }
     },
     {
       "route": "/docs/components/date-picker",
       "jsBytes": 504855,
-      "cssBytes": 346763,
-      "transferBytes": 209592,
+      "cssBytes": 346784,
+      "transferBytes": 209595,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -940,15 +940,15 @@
       },
       "delta": {
         "jsBytes": 6189,
-        "cssBytes": 8532,
-        "transferBytes": 5778
+        "cssBytes": 8553,
+        "transferBytes": 5781
       }
     },
     {
       "route": "/docs/components/command-primitive",
       "jsBytes": 474330,
-      "cssBytes": 346763,
-      "transferBytes": 199495,
+      "cssBytes": 346784,
+      "transferBytes": 199498,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -1088,15 +1088,15 @@
       },
       "delta": {
         "jsBytes": 7436,
-        "cssBytes": 8532,
-        "transferBytes": 6069
+        "cssBytes": 8553,
+        "transferBytes": 6072
       }
     },
     {
       "route": "/templates",
       "jsBytes": 464923,
-      "cssBytes": 346763,
-      "transferBytes": 196166,
+      "cssBytes": 346784,
+      "transferBytes": 196169,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -1224,15 +1224,15 @@
       },
       "delta": {
         "jsBytes": 7438,
-        "cssBytes": 8532,
-        "transferBytes": 6060
+        "cssBytes": 8553,
+        "transferBytes": 6063
       }
     },
     {
       "route": "/views/operations-workspace",
       "jsBytes": 977446,
-      "cssBytes": 368068,
-      "transferBytes": 344489,
+      "cssBytes": 368089,
+      "transferBytes": 344492,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2i2sae_-u1qup.js",
@@ -1358,8 +1358,8 @@
       },
       "delta": {
         "jsBytes": -135648,
-        "cssBytes": -43961,
-        "transferBytes": -38964
+        "cssBytes": -43940,
+        "transferBytes": -38961
       }
     }
   ]
