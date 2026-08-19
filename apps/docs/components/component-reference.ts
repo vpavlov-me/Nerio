@@ -101,6 +101,10 @@ export const snippets: Record<string, string> = {
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
+  collapsible:
+    'import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "@nerio-ui/ui/client";\n\n<Collapsible>\n  <CollapsibleTrigger>Recovery keys</CollapsibleTrigger>\n  <CollapsiblePanel>Generate and store recovery keys securely.</CollapsiblePanel>\n</Collapsible>',
+  accordion:
+    'import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, AccordionTrigger } from "@nerio-ui/ui/client";\n\n<Accordion defaultValue={["billing"]}>\n  <AccordionItem value="billing">\n    <AccordionHeader>\n      <AccordionTrigger>How does billing work?</AccordionTrigger>\n    </AccordionHeader>\n    <AccordionPanel>Plans renew monthly unless cancelled.</AccordionPanel>\n  </AccordionItem>\n</Accordion>',
   tooltip:
     'import { Button, Tooltip, TooltipProvider } from \'@nerio-ui/ui/client\';\n\n<TooltipProvider>\n  <Tooltip label="Copies the share link"><Button>Copy link</Button></Tooltip>\n  <Tooltip label="Opens settings"><Button>Settings</Button></Tooltip>\n</TooltipProvider>',
   popover:
@@ -382,6 +386,40 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "focus transfer and restoration",
       "Escape and outside dismissal",
       "native form value, required, disabled, and reset behavior",
+    ],
+  },
+  collapsible: {
+    name: "Collapsible",
+    description: "Reveals one independent controlled or uncontrolled panel.",
+    status: "experimental",
+    layer: "core",
+    category: "Layout",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Accordion", "Button", "Card"],
+    anatomy: ["root", "trigger", "panel"],
+    motion: ["tokenized height and opacity", "reduced-motion immediate state change"],
+    accessibility: [
+      "Base UI disclosure relationships",
+      "native button trigger",
+      "hidden descendants removed from focus order",
+    ],
+  },
+  accordion: {
+    name: "Accordion",
+    description: "Groups related disclosure items with single or multiple expansion.",
+    status: "experimental",
+    layer: "core",
+    category: "Layout",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Collapsible", "Card", "Tabs"],
+    anatomy: ["root", "item", "header", "trigger", "panel"],
+    motion: ["tokenized height and opacity", "reduced-motion immediate state change"],
+    accessibility: [
+      "Base UI disclosure relationships",
+      "semantic heading and native button trigger",
+      "hidden descendants removed from focus order",
     ],
   },
   "input-group": {
@@ -3190,6 +3228,157 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-item-border",
       "--n-item-media-size-md",
       "--n-focus-ring",
+    ],
+  },
+  collapsible: {
+    category: "Layout",
+    purpose:
+      "Use Collapsible for one independent disclosure when controlled state, shared anatomy, or maintained motion adds durable value.",
+    anatomy: [
+      { title: "root", description: "Owns one controlled or uncontrolled open state." },
+      { title: "trigger", description: "Native button with expanded and controls relationships." },
+      { title: "panel", description: "Associated content that unmounts when closed by default." },
+    ],
+    variants: [{ title: "Independent disclosure", description: "One trigger controls one panel." }],
+    states: [
+      {
+        title: "Closed",
+        description: "Panel is unmounted by default and has no focusable descendants.",
+      },
+      { title: "Open", description: "Panel height and opacity resolve to visible content." },
+      { title: "Disabled", description: "Trigger remains visible and cannot change state." },
+    ],
+    motion: [
+      "Panel height uses the Base UI measured height variable and shared reveal tokens.",
+      "Opacity reinforces state without carrying essential information.",
+      "Reduced motion makes the state change immediate.",
+    ],
+    accessibility: [
+      "Base UI owns aria-expanded, aria-controls, stable panel association, and activation behavior.",
+      "The trigger renders a native type=button by default and retains focus after activation.",
+      "Closed content is unmounted by default; keepMounted and hiddenUntilFound preserve browser-hidden semantics.",
+      "Use native details and summary for simple uncontrolled disclosure that needs no maintained abstraction.",
+    ],
+    api: [
+      {
+        title: "open / defaultOpen / onOpenChange",
+        description:
+          "Controlled or uncontrolled Base UI state with cancellable Nerio event details.",
+      },
+      {
+        title: "disabled",
+        description: "Prevents trigger interaction for the complete disclosure.",
+      },
+      {
+        title: "CollapsiblePanel keepMounted / hiddenUntilFound",
+        description:
+          "Opt into browser-hidden content only when persistence or page search requires it.",
+      },
+      {
+        title: "render / className / style",
+        description:
+          "Compose semantic elements and state-aware customization without replacing Base UI behavior.",
+      },
+    ],
+    designNotes: [
+      "Collapsible owns one disclosure only; grouped expansion belongs to Accordion.",
+      "Content, persistence, fetching, analytics, and product workflow remain consumer-owned.",
+    ],
+    related: ["Accordion", "Button", "Card"],
+    guidance: {
+      do: ["Use for one independently controlled panel with meaningful hidden content."],
+      dont: [
+        "Do not replace native details and summary when no shared state, motion, or anatomy is needed.",
+      ],
+    },
+    tokens: [
+      "--n-disclosure-background",
+      "--n-disclosure-border",
+      "--n-disclosure-radius",
+      "--n-disclosure-trigger-min-height",
+      "--n-disclosure-trigger-padding-inline",
+      "--n-disclosure-panel-padding-inline",
+      "--n-disclosure-panel-foreground",
+      "--n-motion-reveal-duration",
+      "--n-disclosure-focus-ring",
+    ],
+  },
+  accordion: {
+    category: "Layout",
+    purpose:
+      "Use Accordion for a related group of disclosure items whose expansion state benefits from one bounded owner.",
+    anatomy: [
+      { title: "root", description: "Owns the ordered set of expanded item values." },
+      { title: "item", description: "Stable string value and optional disabled state." },
+      { title: "header", description: "Semantic heading chosen to fit the surrounding outline." },
+      { title: "trigger", description: "Native button associated with one panel." },
+      { title: "panel", description: "Associated content that unmounts when closed by default." },
+    ],
+    variants: [
+      { title: "Single expansion", description: "Default mode keeps at most one item open." },
+      {
+        title: "Multiple expansion",
+        description: "The multiple prop allows independent open items.",
+      },
+    ],
+    states: [
+      {
+        title: "Closed",
+        description: "Panel is unmounted by default and leaves no focusable hidden descendants.",
+      },
+      { title: "Open", description: "Item value is present in the root value array." },
+      { title: "Disabled", description: "Item remains visible and cannot change state." },
+    ],
+    motion: [
+      "Panel height uses the Base UI measured height variable and shared reveal tokens.",
+      "Opacity reinforces state without carrying essential information.",
+      "Reduced motion makes the state change immediate.",
+    ],
+    accessibility: [
+      "Base UI owns expanded state, trigger-panel relationships, and activation behavior.",
+      "Wrap every trigger in AccordionHeader and choose a heading level that fits the document outline through render composition.",
+      "Tab follows document order and Enter or Space toggles the focused trigger; deprecated roving Arrow-key behavior is not reintroduced.",
+      "Closed content is unmounted by default; keepMounted and hiddenUntilFound preserve browser-hidden semantics.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled arrays of stable string item values.",
+      },
+      { title: "multiple", description: "Allows more than one item value to remain expanded." },
+      {
+        title: "AccordionItem value / disabled",
+        description:
+          "Requires a stable value and optionally prevents one item from changing state.",
+      },
+      {
+        title: "render / className / style",
+        description:
+          "Compose heading levels and state-aware customization without replacing Base UI behavior.",
+      },
+    ],
+    designNotes: [
+      "Accordion is content disclosure, not application navigation or a routing owner.",
+      "FAQ schema, nested persistence, fetching, analytics, and product workflow remain consumer-owned.",
+    ],
+    related: ["Collapsible", "Card", "Tabs"],
+    guidance: {
+      do: [
+        "Use concise related headings and stable values; choose single or multiple expansion deliberately.",
+      ],
+      dont: ["Do not use Accordion for navigation trees, routed menus, or unrelated sections."],
+    },
+    tokens: [
+      "--n-disclosure-background",
+      "--n-disclosure-border",
+      "--n-disclosure-divider",
+      "--n-disclosure-radius",
+      "--n-disclosure-trigger-min-height",
+      "--n-disclosure-trigger-padding-inline",
+      "--n-disclosure-panel-padding-inline",
+      "--n-disclosure-panel-foreground",
+      "--n-motion-reveal-duration",
+      "--n-disclosure-focus-ring",
     ],
   },
   tabs: {

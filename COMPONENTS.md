@@ -120,6 +120,15 @@ approved component.
 | Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                                                          |
 | Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkeys            |
 
+### Disclosure
+
+| Component   | Status              | Package               | Notes                                                                                                                                       |
+| ----------- | ------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Collapsible | implemented-initial | `@nerio-ui/ui/client` | One independent controlled or uncontrolled disclosure with disabled behavior, stable trigger/panel anatomy, and tokenized height motion.    |
+| Accordion   | implemented-initial | `@nerio-ui/ui/client` | Grouped disclosure with stable string values, single or multiple expansion, disabled items, semantic headings, and tokenized height motion. |
+
+Native `details` and `summary` remain the preferred zero-abstraction path for simple content.
+
 ### Data display
 
 | Component | Status      | Package        | Notes                                                                                                                                                     |

@@ -928,6 +928,29 @@
   --n-item-media-icon-size: var(--n-icon-size-sm);
   --n-item-media-background: var(--n-color-surface-control);
   --n-item-media-radius: var(--n-radius-sm);
+  --n-disclosure-background: var(--n-color-surface-raised);
+  --n-disclosure-background-hover: var(--n-color-surface-subtle);
+  --n-disclosure-border-width: var(--n-border-width-default);
+  --n-disclosure-border: var(--n-color-border-subtle);
+  --n-disclosure-divider-width: var(--n-border-width-default);
+  --n-disclosure-divider: var(--n-color-border-subtle);
+  --n-disclosure-radius: var(--n-radius-container);
+  --n-disclosure-foreground: var(--n-color-text-primary);
+  --n-disclosure-trigger-min-height: calc(var(--n-size-control-md) + var(--n-density-space-md));
+  --n-disclosure-trigger-padding-inline: var(--n-density-space-lg);
+  --n-disclosure-trigger-padding-block: var(--n-density-space-md);
+  --n-disclosure-trigger-gap: var(--n-density-space-md);
+  --n-disclosure-trigger-font-size: var(--n-font-size-md);
+  --n-disclosure-trigger-font-weight: var(--n-font-weight-medium);
+  --n-disclosure-focus-ring:
+    inset 0 0 0 var(--n-focus-ring-inner-width) var(--n-color-focus-offset),
+    inset 0 0 0 var(--n-focus-ring-outer-width) var(--n-color-focus-ring-soft);
+  --n-disclosure-panel-padding-inline: var(--n-density-space-lg);
+  --n-disclosure-panel-padding-block: var(--n-density-space-lg);
+  --n-disclosure-panel-font-size: var(--n-font-size-md);
+  --n-disclosure-panel-line-height: var(--n-line-height-relaxed);
+  --n-disclosure-panel-foreground: var(--n-color-text-secondary);
+  --n-disclosure-disabled-opacity: var(--n-opacity-disabled);
   --n-tabs-gap: var(--n-density-space-lg);
   --n-tabs-content-gap: var(--n-space-0);
   --n-tabs-trigger-height-sm: var(--n-size-control-sm);
@@ -1513,6 +1536,11 @@
   --n-table-row-min-height: var(--n-size-control-lg);
   --n-pagination-item-size: 1.75rem;
   --n-list-item-padding: var(--n-space-1-5);
+  --n-disclosure-trigger-min-height: var(--n-size-control-lg);
+  --n-disclosure-trigger-padding-inline: var(--n-density-space-lg);
+  --n-disclosure-trigger-padding-block: var(--n-space-2);
+  --n-disclosure-panel-padding-inline: var(--n-density-space-lg);
+  --n-disclosure-panel-padding-block: var(--n-density-space-md);
   --n-tabs-trigger-padding-inline-md: var(--n-density-space-md);
   --n-dialog-padding: var(--n-space-5);
   --n-sheet-padding: var(--n-space-5);

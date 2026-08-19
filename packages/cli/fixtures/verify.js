@@ -228,6 +228,15 @@ const expectedOverlayAndTabsFiles = [
   "styles/overlays.css",
   "styles/tailwind.css",
 ];
+const expectedDisclosureFiles = [
+  "components/accordion.tsx",
+  "components/collapsible.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 
 function execute(cwd, args, env = {}) {
   return new Promise((resolve, reject) => {
@@ -1777,6 +1786,8 @@ async function verify() {
     await run(localTarget, "add", "spinner");
     await run(localTarget, "add", "empty-state");
     await run(localTarget, "add", "tabs");
+    await run(localTarget, "add", "collapsible");
+    await run(localTarget, "add", "accordion");
     await run(localTarget, "add", "breadcrumbs");
     await run(localTarget, "add", "pagination");
     await run(localTarget, "add", "popover");
@@ -2069,6 +2080,28 @@ async function verify() {
     assertFiles(localTarget, expectedFeedbackFiles);
     assertFiles(localTarget, expectedProgressFiles);
     assertFiles(localTarget, expectedOverlayAndTabsFiles);
+    assertFiles(localTarget, expectedDisclosureFiles);
+    const collapsibleSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/collapsible.tsx"),
+      "utf8",
+    );
+    const accordionSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/accordion.tsx"),
+      "utf8",
+    );
+    if (
+      !collapsibleSource.includes("@base-ui/react/collapsible") ||
+      !collapsibleSource.includes('data-slot="panel"') ||
+      !collapsibleSource.includes("--collapsible-panel-height") ||
+      !accordionSource.includes("@base-ui/react/accordion") ||
+      !accordionSource.includes("value: AccordionValue") ||
+      !accordionSource.includes('data-slot="header"') ||
+      !accordionSource.includes("--accordion-panel-height")
+    ) {
+      throw new Error(
+        "Installed disclosure source did not preserve Base UI state, stable values, anatomy, or height motion.",
+      );
+    }
 
     const tableSource = fs.readFileSync(
       path.join(localTarget, "components/nerio/components/table.tsx"),

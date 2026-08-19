@@ -129,6 +129,25 @@ test("protects purple light comfortable mobile", async ({ page }) => {
   await captureFixture(page, "purple-light-comfortable-mobile.png");
 });
 
+test("protects disclosure primitives", async ({ page }) => {
+  await page.goto("/visual-test/disclosure");
+  await page.evaluate(() => document.fonts.ready);
+  await page.addStyleTag({
+    content: `
+      nextjs-portal { display: none !important; }
+      *, *::before, *::after {
+        animation: none !important;
+        caret-color: transparent !important;
+        transition: none !important;
+      }
+    `,
+  });
+  await expect(page.locator('[data-visual-test-ready="true"]')).toBeVisible();
+  await expect(page.locator(".disclosure-visual-fixture")).toHaveScreenshot(
+    "disclosure-primitives.png",
+  );
+});
+
 async function prepareOverlayFixture(page) {
   await showSections(page, categoryFixtures.overlays);
 }

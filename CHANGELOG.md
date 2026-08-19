@@ -8,6 +8,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added Core 1.1 Collapsible and Accordion primitives on `dev`, with bounded controlled and
+  uncontrolled disclosure state, single or multiple grouped expansion, disabled items, semantic
+  headings, tokenized height motion, RTL and reduced-motion support, Registry/source-install
+  parity, and explicit native `details`/`summary` guidance. This forward feature remains outside
+  the isolated Core 1.0 release candidate.
 - Added the Core 1.1 direction and localization contract on `dev`, including deterministic locale
   defaults, consumer setup for HTML direction and Base UI behavior, audited component guidance,
   public Foundation documentation, and machine-readable drift validation. This forward contract
@@ -23,6 +28,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Raised only the measured additive budgets needed for the disclosure family: the UI tarball is
+  68,421 bytes against a 70,000-byte ceiling, the Registry tarball is 32,079 bytes against a
+  34,000-byte ceiling, raw token CSS is 74,025 bytes against a 75,000-byte ceiling, and shared docs
+  CSS is 346,903 bytes against a 350,208-byte ceiling. Named-import bundle probes and existing
+  unpacked, gzip, and runtime ceilings remain within their prior limits.
 - Updated the exact `@base-ui/react` runtime pin from 1.6.0 to 1.7.0 after reviewing the current
   public primitive inventory and validating the UI, accessibility, browser, and packed-consumer
   contracts. Nerio-owned public props and event-detail aliases remain unchanged.

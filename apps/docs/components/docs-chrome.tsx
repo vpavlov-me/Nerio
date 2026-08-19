@@ -156,6 +156,8 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/typography", label: "Typography", icon: Type },
       { href: "/docs/components/card", label: "Card", icon: PanelLeft },
       { href: "/docs/components/separator", label: "Separator", icon: Circle },
+      { href: "/docs/components/collapsible", label: "Collapsible", icon: ChevronDown },
+      { href: "/docs/components/accordion", label: "Accordion", icon: ListTree },
     ],
   },
   {

@@ -108,7 +108,7 @@ roadmap method.
 
 After the relevant #342 foundation, these may proceed in parallel:
 
-- #343 — Accordion and Collapsible;
+- #343 — Accordion and Collapsible (complete on `dev`);
 - #344 — additive compound Dialog anatomy and AlertDialog;
 - #345 — bounded single-select Combobox;
 - #346 — SearchField;

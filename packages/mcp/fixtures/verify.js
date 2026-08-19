@@ -687,6 +687,56 @@ async function verify() {
       throw new Error("MCP Tabs usage is missing Base UI, token, or accessibility metadata.");
     }
 
+    const collapsibleUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "collapsible" },
+    });
+    const collapsibleUsage = JSON.parse(collapsibleUsageResult.content[0].text);
+    assertRegistryParity("collapsible", collapsibleUsage, [
+      "components/collapsible.tsx",
+      "lib/cn.ts",
+      "lib/component-props.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      !collapsibleUsage.baseUiPrimitives.includes("collapsible") ||
+      !collapsibleUsage.slots.includes("panel") ||
+      !collapsibleUsage.states.includes("open") ||
+      !collapsibleUsage.requiredTokens.includes("--n-disclosure-trigger-min-height") ||
+      !collapsibleUsage.accessibility.some((item) => item.includes("native details"))
+    ) {
+      throw new Error(
+        "MCP Collapsible usage is missing Base UI, anatomy, token, or native guidance.",
+      );
+    }
+
+    const accordionUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "accordion" },
+    });
+    const accordionUsage = JSON.parse(accordionUsageResult.content[0].text);
+    assertRegistryParity("accordion", accordionUsage, [
+      "components/accordion.tsx",
+      "lib/cn.ts",
+      "lib/component-props.ts",
+      "lib/tailwind-cn.ts",
+      "styles/tailwind.css",
+      "styles/tokens.css",
+    ]);
+    if (
+      !accordionUsage.baseUiPrimitives.includes("accordion") ||
+      !accordionUsage.slots.includes("header") ||
+      !accordionUsage.variants.includes("multiple expansion") ||
+      !accordionUsage.requiredTokens.includes("--n-disclosure-divider") ||
+      !accordionUsage.accessibility.some((item) => item.includes("stable string value"))
+    ) {
+      throw new Error(
+        "MCP Accordion usage is missing grouped state, anatomy, token, or value metadata.",
+      );
+    }
+
     const breadcrumbsUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "breadcrumbs" },

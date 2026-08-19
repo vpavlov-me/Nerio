@@ -144,6 +144,7 @@ test("keeps Toggle keyboard, pointer, state, naming, focus, and reflow portable"
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     ),
   ).toBeLessThanOrEqual(1);
+
   expect(problems).toEqual([]);
 });
 
@@ -167,6 +168,112 @@ test("keeps Toggle touch activation portable", async ({ browser, browserName }, 
   } finally {
     await context.close();
   }
+});
+
+test("keeps Collapsible and Accordion disclosure behavior portable", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.setViewportSize({ width: 320, height: 844 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+
+  await page.goto("/docs/components/collapsible");
+  const collapsible = page.getByRole("button", { name: "Recovery keys" });
+  await expect(collapsible).toHaveAttribute("aria-expanded", "false");
+  await collapsible.focus();
+  await collapsible.press("Enter");
+  await expect(collapsible).toHaveAttribute("aria-expanded", "true");
+  const collapsiblePanel = page.locator(`#${await collapsible.getAttribute("aria-controls")}`);
+  await expect(collapsiblePanel).toBeVisible();
+  expect(
+    await collapsiblePanel.evaluate((element) =>
+      getComputedStyle(element)
+        .transitionDuration.split(",")
+        .every((duration) => Number.parseFloat(duration) <= 0.001),
+    ),
+  ).toBe(true);
+
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+
+  await page.goto("/docs/components/accordion");
+  const billing = page.getByRole("button", { name: "How does billing work?" });
+  const members = page.getByRole("button", { name: "Can I invite collaborators?" });
+  await expect(billing).toHaveAttribute("aria-expanded", "true");
+  await expect(members).toHaveAttribute("aria-expanded", "false");
+  expect(await billing.evaluate((element) => element.parentElement?.tagName)).toBe("H3");
+  await members.press("Enter");
+  await expect(billing).toHaveAttribute("aria-expanded", "false");
+  await expect(members).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator(`#${await members.getAttribute("aria-controls")}`)).toContainText(
+    "Workspace owners can invite and remove members.",
+  );
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+
+  await page.goto("/visual-test/disclosure");
+  const disabledDisclosure = page.getByRole("button", { name: "Managed by your organization" });
+  const disabledBackground = await disabledDisclosure.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  );
+  await disabledDisclosure.hover();
+  await expect
+    .poll(() => disabledDisclosure.evaluate((element) => getComputedStyle(element).backgroundColor))
+    .toBe(disabledBackground);
+  expect(problems).toEqual([]);
+});
+
+test("animates disclosure panels through their full measured height", async ({
+  browserName,
+  page,
+}) => {
+  const problems = monitorPage(page, browserName);
+  await page.goto("/docs/components/accordion");
+  const trigger = page.getByRole("button", { name: "Can I invite collaborators?" });
+  await trigger.click();
+  const panel = page.locator(`#${await trigger.getAttribute("aria-controls")}`);
+  await expect
+    .poll(() =>
+      panel.evaluate((element) =>
+        Math.abs(
+          element.getBoundingClientRect().height -
+            (element.firstElementChild?.getBoundingClientRect().height ?? 0),
+        ),
+      ),
+    )
+    .toBeLessThanOrEqual(1);
+  const openGeometry = await panel.evaluate((element) => ({
+    contentHeight: element.firstElementChild?.getBoundingClientRect().height,
+    contentPaddingTop: Number.parseFloat(
+      getComputedStyle(element.firstElementChild).paddingBlockStart,
+    ),
+    focusRingWidth: Number.parseFloat(
+      getComputedStyle(element).getPropertyValue("--n-focus-ring-outer-width"),
+    ),
+    openHeight: element.getBoundingClientRect().height,
+  }));
+  expect(Math.abs(openGeometry.openHeight - openGeometry.contentHeight)).toBeLessThanOrEqual(1);
+  expect(openGeometry.contentPaddingTop).toBeGreaterThanOrEqual(openGeometry.focusRingWidth);
+
+  const panelHandle = await panel.elementHandle();
+  expect(panelHandle).not.toBeNull();
+  await trigger.click();
+  await expect
+    .poll(() =>
+      panelHandle.evaluate((element) =>
+        element.isConnected ? element.getBoundingClientRect().height : 0,
+      ),
+    )
+    .toBeLessThanOrEqual(4);
+  expect(problems).toEqual([]);
 });
 
 test("keeps the manual audit fixture contained at narrow reflow widths", async ({

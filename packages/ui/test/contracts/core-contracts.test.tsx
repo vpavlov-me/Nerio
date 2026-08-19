@@ -73,10 +73,18 @@ import {
   Textarea,
 } from "../../src/index";
 import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
   Button,
   Calendar,
   type CalendarDate,
   Checkbox,
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
   Command,
   CommandEmpty,
   CommandInput,
@@ -5497,5 +5505,155 @@ describe("Core interactive action contracts", () => {
     expect(input).toHaveAttribute("type", "file");
     expect(input).toHaveAttribute("data-slot", "file-input");
     expect(screen.getByLabelText("Unavailable files")).toBeDisabled();
+  });
+
+  it("keeps Collapsible uncontrolled, controlled, disabled, ref, and hidden-panel contracts", async () => {
+    const user = userEvent.setup();
+    const rootRef = React.createRef<HTMLDivElement>();
+    const triggerRef = React.createRef<HTMLElement>();
+    const onOpenChange = vi.fn();
+    render(
+      <>
+        <Collapsible ref={rootRef} defaultOpen>
+          <CollapsibleTrigger ref={triggerRef}>Details</CollapsibleTrigger>
+          <CollapsiblePanel keepMounted>
+            <button type="button">Nested action</button>
+          </CollapsiblePanel>
+        </Collapsible>
+        <Collapsible disabled>
+          <CollapsibleTrigger>Unavailable details</CollapsibleTrigger>
+          <CollapsiblePanel>Unavailable content</CollapsiblePanel>
+        </Collapsible>
+        <Collapsible open={false} onOpenChange={onOpenChange}>
+          <CollapsibleTrigger>Controlled details</CollapsibleTrigger>
+          <CollapsiblePanel>Controlled content</CollapsiblePanel>
+        </Collapsible>
+      </>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Details" });
+    const panel = screen.getByText("Nested action").closest('[data-slot="panel"]');
+    expect(rootRef.current).toHaveAttribute("data-slot", "root");
+    expect(triggerRef.current).toBe(trigger);
+    expect(trigger).toHaveAttribute("type", "button");
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(trigger).toHaveAttribute("aria-controls", panel?.id);
+    expect(panel).toHaveAttribute("data-slot", "panel");
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(panel).toHaveAttribute("hidden");
+    expect(screen.getByRole("button", { name: "Unavailable details" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await user.click(screen.getByRole("button", { name: "Controlled details" }));
+    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
+    expect(screen.getByRole("button", { name: "Controlled details" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+  });
+
+  it("keeps Accordion single, multiple, controlled, disabled, and heading contracts", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const { unmount } = render(
+      <Accordion defaultValue={["profile"]} onValueChange={onValueChange}>
+        <AccordionItem value="profile">
+          <AccordionHeader>
+            <AccordionTrigger>Profile</AccordionTrigger>
+          </AccordionHeader>
+          <AccordionPanel>Profile content</AccordionPanel>
+        </AccordionItem>
+        <AccordionItem disabled value="billing">
+          <AccordionHeader>
+            <AccordionTrigger>Billing</AccordionTrigger>
+          </AccordionHeader>
+          <AccordionPanel>Billing content</AccordionPanel>
+        </AccordionItem>
+        <AccordionItem value="security">
+          <AccordionHeader>
+            <AccordionTrigger>Security</AccordionTrigger>
+          </AccordionHeader>
+          <AccordionPanel>Security content</AccordionPanel>
+        </AccordionItem>
+      </Accordion>,
+    );
+
+    const profile = screen.getByRole("button", { name: "Profile" });
+    const security = screen.getByRole("button", { name: "Security" });
+    expect(profile.parentElement?.tagName).toBe("H3");
+    expect(profile).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Billing" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await user.click(security);
+    expect(profile).toHaveAttribute("aria-expanded", "false");
+    expect(security).toHaveAttribute("aria-expanded", "true");
+    expect(onValueChange).toHaveBeenCalledWith(["security"], expect.anything());
+
+    unmount();
+    render(
+      <Accordion multiple value={["profile"]} onValueChange={onValueChange}>
+        {[
+          ["profile", "Profile"],
+          ["security", "Security"],
+        ].map(([value, label]) => (
+          <AccordionItem key={value} value={value!}>
+            <AccordionHeader>
+              <AccordionTrigger>{label}</AccordionTrigger>
+            </AccordionHeader>
+            <AccordionPanel>{label} content</AccordionPanel>
+          </AccordionItem>
+        ))}
+      </Accordion>,
+    );
+    await user.click(screen.getByRole("button", { name: "Security" }));
+    expect(onValueChange).toHaveBeenLastCalledWith(["profile", "security"], expect.anything());
+    expect(screen.getByRole("button", { name: "Profile" })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+  });
+
+  it("preserves semantic children when disclosure panels use custom render targets", () => {
+    const collapsibleListRef = React.createRef<HTMLUListElement>();
+    const accordionListRef = React.createRef<HTMLUListElement>();
+    render(
+      <>
+        <Collapsible defaultOpen>
+          <CollapsibleTrigger>Collapsible list</CollapsibleTrigger>
+          <CollapsiblePanel
+            ref={collapsibleListRef}
+            render={<ul aria-label="Collapsible options" />}
+          >
+            <li>First option</li>
+          </CollapsiblePanel>
+        </Collapsible>
+        <Accordion defaultValue={["options"]}>
+          <AccordionItem value="options">
+            <AccordionHeader>
+              <AccordionTrigger>Accordion list</AccordionTrigger>
+            </AccordionHeader>
+            <AccordionPanel ref={accordionListRef} render={<ul aria-label="Accordion options" />}>
+              <li>Second option</li>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </>,
+    );
+
+    const collapsibleList = screen.getByRole("list", { name: "Collapsible options" });
+    const accordionList = document.querySelector('ul[aria-label="Accordion options"]');
+    expect(accordionList).not.toBeNull();
+    expect(collapsibleList.firstElementChild?.tagName).toBe("LI");
+    expect(accordionList?.firstElementChild?.tagName).toBe("LI");
+    expect(collapsibleList).toHaveAttribute("data-slot", "panel");
+    expect(accordionList).toHaveAttribute("data-slot", "panel");
+    expect(collapsibleListRef.current).toBe(collapsibleList);
+    expect(accordionListRef.current).toBe(accordionList);
+    expect(collapsibleList).toHaveClass("data-ending-style:pt-0", "data-ending-style:pb-0");
+    expect(accordionList).toHaveClass("data-ending-style:pt-0", "data-ending-style:pb-0");
   });
 });

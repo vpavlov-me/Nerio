@@ -114,6 +114,37 @@ export {
   type TabsVariant,
 } from "./components/tabs";
 export {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+  type CollapsibleChangeEventDetails,
+  type CollapsibleChangeEventReason,
+  type CollapsiblePanelProps,
+  type CollapsiblePanelState,
+  type CollapsibleProps,
+  type CollapsibleState,
+  type CollapsibleTriggerProps,
+  type CollapsibleTriggerState,
+} from "./components/collapsible";
+export {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+  type AccordionChangeEventDetails,
+  type AccordionChangeEventReason,
+  type AccordionHeaderProps,
+  type AccordionItemProps,
+  type AccordionItemState,
+  type AccordionPanelProps,
+  type AccordionPanelState,
+  type AccordionProps,
+  type AccordionState,
+  type AccordionTriggerProps,
+  type AccordionValue,
+} from "./components/accordion";
+export {
   Tooltip,
   TooltipProvider,
   type TooltipOpenChangeEventDetails,
