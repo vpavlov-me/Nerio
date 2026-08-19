@@ -145,6 +145,7 @@ export default function Page() {
                 "--n-disclosure-panel-padding-inline / foreground",
                 "Panel content rhythm and tone.",
               ],
+              ["--n-disclosure-focus-ring", "Inset trigger focus treatment."],
               ["--n-motion-reveal-duration / easing", "Measured-height state transition."],
             ]}
             codeColumns={1}

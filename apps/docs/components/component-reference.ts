@@ -3300,7 +3300,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-disclosure-panel-padding-inline",
       "--n-disclosure-panel-foreground",
       "--n-motion-reveal-duration",
-      "--n-focus-ring",
+      "--n-disclosure-focus-ring",
     ],
   },
   accordion: {
@@ -3378,7 +3378,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-disclosure-panel-padding-inline",
       "--n-disclosure-panel-foreground",
       "--n-motion-reveal-duration",
-      "--n-focus-ring",
+      "--n-disclosure-focus-ring",
     ],
   },
   tabs: {

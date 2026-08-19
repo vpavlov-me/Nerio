@@ -942,6 +942,9 @@
   --n-disclosure-trigger-gap: var(--n-density-space-md);
   --n-disclosure-trigger-font-size: var(--n-font-size-md);
   --n-disclosure-trigger-font-weight: var(--n-font-weight-medium);
+  --n-disclosure-focus-ring:
+    inset 0 0 0 var(--n-focus-ring-inner-width) var(--n-color-focus-offset),
+    inset 0 0 0 var(--n-focus-ring-outer-width) var(--n-color-focus-ring-soft);
   --n-disclosure-panel-padding-inline: var(--n-density-space-lg);
   --n-disclosure-panel-padding-block: var(--n-density-space-lg);
   --n-disclosure-panel-font-size: var(--n-font-size-md);

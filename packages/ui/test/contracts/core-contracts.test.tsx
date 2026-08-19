@@ -5616,4 +5616,44 @@ describe("Core interactive action contracts", () => {
       "true",
     );
   });
+
+  it("preserves semantic children when disclosure panels use custom render targets", () => {
+    const collapsibleListRef = React.createRef<HTMLUListElement>();
+    const accordionListRef = React.createRef<HTMLUListElement>();
+    render(
+      <>
+        <Collapsible defaultOpen>
+          <CollapsibleTrigger>Collapsible list</CollapsibleTrigger>
+          <CollapsiblePanel
+            ref={collapsibleListRef}
+            render={<ul aria-label="Collapsible options" />}
+          >
+            <li>First option</li>
+          </CollapsiblePanel>
+        </Collapsible>
+        <Accordion defaultValue={["options"]}>
+          <AccordionItem value="options">
+            <AccordionHeader>
+              <AccordionTrigger>Accordion list</AccordionTrigger>
+            </AccordionHeader>
+            <AccordionPanel ref={accordionListRef} render={<ul aria-label="Accordion options" />}>
+              <li>Second option</li>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </>,
+    );
+
+    const collapsibleList = screen.getByRole("list", { name: "Collapsible options" });
+    const accordionList = document.querySelector('ul[aria-label="Accordion options"]');
+    expect(accordionList).not.toBeNull();
+    expect(collapsibleList.firstElementChild?.tagName).toBe("LI");
+    expect(accordionList?.firstElementChild?.tagName).toBe("LI");
+    expect(collapsibleList).toHaveAttribute("data-slot", "panel");
+    expect(accordionList).toHaveAttribute("data-slot", "panel");
+    expect(collapsibleListRef.current).toBe(collapsibleList);
+    expect(accordionListRef.current).toBe(accordionList);
+    expect(collapsibleList).toHaveClass("data-ending-style:pt-0", "data-ending-style:pb-0");
+    expect(accordionList).toHaveClass("data-ending-style:pt-0", "data-ending-style:pb-0");
+  });
 });

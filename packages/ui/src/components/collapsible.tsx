@@ -13,11 +13,16 @@ import type {
 const rootClasses =
   "n-collapsible box-border w-full overflow-clip rounded-(--n-disclosure-radius) border-(length:--n-disclosure-border-width) border-(--n-disclosure-border) bg-(--n-disclosure-background) text-(--n-disclosure-foreground)";
 const triggerClasses =
-  "n-collapsible__trigger box-border flex min-h-(--n-disclosure-trigger-min-height) w-full cursor-pointer items-center justify-between gap-(--n-disclosure-trigger-gap) border-0 bg-transparent px-(--n-disclosure-trigger-padding-inline) py-(--n-disclosure-trigger-padding-block) text-start font-inherit text-(length:--n-disclosure-trigger-font-size) font-(--n-disclosure-trigger-font-weight) text-(--n-disclosure-foreground) hover:not-data-disabled:bg-(--n-disclosure-background-hover) focus-visible:relative focus-visible:z-1 focus-visible:outline-0 focus-visible:shadow-[inset_0_0_0_var(--n-focus-ring-inner-width)_var(--n-color-focus-offset),inset_0_0_0_var(--n-focus-ring-outer-width)_var(--n-color-focus-ring-soft)] data-disabled:cursor-not-allowed data-disabled:opacity-(--n-disclosure-disabled-opacity) forced-colors:border-[ButtonText] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-[-2px] forced-colors:focus-visible:outline-[Highlight] transition-[background-color,color,box-shadow] duration-(--n-motion-hover-duration) ease-(--n-motion-hover-easing) motion-reduce:duration-(--n-duration-instant)";
+  "n-collapsible__trigger box-border flex min-h-(--n-disclosure-trigger-min-height) w-full cursor-pointer items-center justify-between gap-(--n-disclosure-trigger-gap) border-0 bg-transparent px-(--n-disclosure-trigger-padding-inline) py-(--n-disclosure-trigger-padding-block) text-start font-inherit text-(length:--n-disclosure-trigger-font-size) font-(--n-disclosure-trigger-font-weight) text-(--n-disclosure-foreground) hover:not-data-disabled:bg-(--n-disclosure-background-hover) focus-visible:relative focus-visible:z-1 focus-visible:outline-0 focus-visible:shadow-(--n-disclosure-focus-ring) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-disclosure-disabled-opacity) forced-colors:border-[ButtonText] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-[-2px] forced-colors:focus-visible:outline-[Highlight] transition-[background-color,color,box-shadow] duration-(--n-motion-hover-duration) ease-(--n-motion-hover-easing) motion-reduce:duration-(--n-duration-instant)";
 const panelClasses =
   "n-collapsible__panel box-border h-(--collapsible-panel-height) overflow-hidden opacity-100 transition-[height,opacity] duration-(--n-motion-reveal-duration) ease-(--n-motion-reveal-easing) data-starting-style:h-0 data-starting-style:opacity-0 data-ending-style:h-0 data-ending-style:opacity-0 motion-reduce:duration-(--n-duration-instant)";
 const panelContentClasses =
   "n-collapsible__panel-content box-border px-(--n-disclosure-panel-padding-inline) pt-(--n-focus-ring-outer-width) pb-(--n-disclosure-panel-padding-block) text-(length:--n-disclosure-panel-font-size) leading-(--n-disclosure-panel-line-height) text-(--n-disclosure-panel-foreground)";
+const customPanelClasses = cn(
+  panelClasses,
+  panelContentClasses,
+  "transition-[height,opacity,padding-block-start,padding-block-end] data-starting-style:pt-0 data-starting-style:pb-0 data-ending-style:pt-0 data-ending-style:pb-0",
+);
 
 function withClassName<State>(className: NerioClassName<State> | undefined, baseClassName: string) {
   return typeof className === "function"
@@ -101,16 +106,17 @@ export interface CollapsiblePanelProps extends Omit<
   style?: NerioStyle<CollapsiblePanelState>;
 }
 
-export const CollapsiblePanel = React.forwardRef<HTMLDivElement, CollapsiblePanelProps>(
-  function CollapsiblePanel({ children, className, ...props }, ref) {
+export const CollapsiblePanel = React.forwardRef<HTMLElement, CollapsiblePanelProps>(
+  function CollapsiblePanel({ children, className, render, ...props }, ref) {
     return (
       <BaseCollapsible.Panel
-        ref={ref}
+        ref={ref as React.Ref<HTMLDivElement>}
         {...props}
-        className={withClassName(className, panelClasses)}
+        className={withClassName(className, render ? customPanelClasses : panelClasses)}
         data-slot="panel"
+        render={render}
       >
-        <div className={panelContentClasses}>{children}</div>
+        {render ? children : <div className={panelContentClasses}>{children}</div>}
       </BaseCollapsible.Panel>
     );
   },
