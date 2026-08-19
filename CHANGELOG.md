@@ -29,7 +29,7 @@ Items under `Unreleased` may change before the next public release.
 ### Changed
 
 - Raised only the measured additive budgets needed for the disclosure family: the UI tarball is
-  68,246 bytes against a 70,000-byte ceiling, the Registry tarball is 32,051 bytes against a
+  68,310 bytes against a 70,000-byte ceiling, the Registry tarball is 32,080 bytes against a
   34,000-byte ceiling, raw token CSS is 74,025 bytes against a 75,000-byte ceiling, and shared docs
   CSS is 346,763 bytes against a 350,208-byte ceiling. Named-import bundle probes and existing
   unpacked, gzip, and runtime ceilings remain within their prior limits.

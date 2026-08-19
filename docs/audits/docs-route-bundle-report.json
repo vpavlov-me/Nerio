@@ -8,9 +8,9 @@
   "routes": [
     {
       "route": "/",
-      "jsBytes": 749467,
+      "jsBytes": 749675,
       "cssBytes": 346763,
-      "transferBytes": 279794,
+      "transferBytes": 279836,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -23,9 +23,9 @@
           "transferBytes": 20726
         },
         {
-          "asset": "static/chunks/1rdjuy9k_skl8.js",
-          "rawBytes": 63079,
-          "transferBytes": 15102
+          "asset": "static/chunks/13-wetwzlz9gy.js",
+          "rawBytes": 63287,
+          "transferBytes": 15144
         },
         {
           "asset": "static/chunks/2-fhjxlb4_8c1.js",
@@ -61,9 +61,9 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
+            "static/chunks/13-wetwzlz9gy.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
-            "static/chunks/1rdjuy9k_skl8.js",
             "static/chunks/25yt8n5z0ypi9.js",
             "static/chunks/2m-_um-peya_g.js",
             "static/chunks/2nki5nvowsizb.js",
@@ -82,9 +82,9 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
+            "static/chunks/13-wetwzlz9gy.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
-            "static/chunks/1rdjuy9k_skl8.js",
             "static/chunks/25yt8n5z0ypi9.js",
             "static/chunks/2m-_um-peya_g.js",
             "static/chunks/2nki5nvowsizb.js",
@@ -103,9 +103,9 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
+            "static/chunks/13-wetwzlz9gy.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
-            "static/chunks/1rdjuy9k_skl8.js",
             "static/chunks/2-fhjxlb4_8c1.js",
             "static/chunks/25yt8n5z0ypi9.js",
             "static/chunks/2l0bts52ecp_v.js",
@@ -212,9 +212,9 @@
         ]
       },
       "delta": {
-        "jsBytes": 16435,
+        "jsBytes": 16643,
         "cssBytes": 8532,
-        "transferBytes": 8056
+        "transferBytes": 8098
       }
     },
     {
