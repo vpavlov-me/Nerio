@@ -47,9 +47,17 @@ import {
   Textarea,
 } from "../../src/index";
 import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
   Button,
   Calendar,
   Checkbox,
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
   Command,
   CommandEmpty,
   CommandInput,
@@ -851,5 +859,51 @@ describe("Core accessibility contracts", () => {
         })
       ).violations,
     ).toEqual([]);
+  });
+
+  it("keeps disclosure names, relationships, keyboard operation, and hidden content accessible", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <main>
+        <h2>Account details</h2>
+        <Collapsible>
+          <CollapsibleTrigger>Show account note</CollapsibleTrigger>
+          <CollapsiblePanel keepMounted>
+            <button type="button">Edit note</button>
+          </CollapsiblePanel>
+        </Collapsible>
+        <Accordion defaultValue={["profile"]}>
+          <AccordionItem value="profile">
+            <AccordionHeader>
+              <AccordionTrigger>Profile settings</AccordionTrigger>
+            </AccordionHeader>
+            <AccordionPanel>Profile content</AccordionPanel>
+          </AccordionItem>
+          <AccordionItem disabled value="billing">
+            <AccordionHeader>
+              <AccordionTrigger>Billing settings</AccordionTrigger>
+            </AccordionHeader>
+            <AccordionPanel>Billing content</AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </main>,
+    );
+
+    const collapsibleTrigger = screen.getByRole("button", { name: "Show account note" });
+    expect(collapsibleTrigger).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("button", { name: "Edit note" })).not.toBeInTheDocument();
+    collapsibleTrigger.focus();
+    await user.keyboard("{Enter}");
+    expect(collapsibleTrigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Edit note" })).toBeInTheDocument();
+
+    const profileTrigger = screen.getByRole("button", { name: "Profile settings" });
+    expect(profileTrigger.closest("h3")).not.toBeNull();
+    expect(profileTrigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Billing settings" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    expect((await axe(container)).violations).toEqual([]);
   });
 });

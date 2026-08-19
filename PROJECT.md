@@ -120,7 +120,7 @@ spacing, radius, typography, icon, or control-size scales.
 
 `@nerio-ui/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
 
-Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
+Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Collapsible, Accordion, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
 
 `@nerio-ui/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
 
@@ -161,6 +161,11 @@ scheduling, upload workflows, multi-thumb sliders, parsing, time zones, and othe
 remain outside Core 1.0.
 
 Core should be strong enough to build real products without a paid license. It should not contain advanced product compositions that are better treated as Pro value.
+
+Core 1.1 adds Collapsible for one independent controlled or uncontrolled disclosure and Accordion
+for a grouped collection with single or multiple expansion. Plain native `details` and `summary`
+remain the preferred path when controlled state, grouped behavior, maintained motion, or shared
+anatomy adds no durable value.
 
 The accepted Core 1.1 primitive sequence starts with direction/localization foundations on `dev`,
 then adds

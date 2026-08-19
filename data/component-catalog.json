@@ -107,6 +107,8 @@
     { "name": "checkbox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "switch", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "tabs", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "collapsible", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "accordion", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "breadcrumbs", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "pagination", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "dialog", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -723,6 +725,22 @@
       "category": "overlays",
       "status": "stable-core",
       "description": "Dropdown menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
+    },
+    {
+      "name": "Collapsible",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "data-display",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI disclosure primitive with one controlled or uncontrolled open state, disabled behavior, stable trigger and panel anatomy, tokenized height motion, and explicit native details guidance."
+    },
+    {
+      "name": "Accordion",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "data-display",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI grouped disclosure primitive with stable item values, single or multiple expansion, disabled items, semantic headings, tokenized height motion, and consumer-owned content."
     },
     {
       "name": "Card",

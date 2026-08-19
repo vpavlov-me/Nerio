@@ -65,12 +65,12 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "3d4509ef89d74b51993e0f9918ab0ceaee7f0fa97dd8ca6241542c3de67dd0f2",
+  "currentComponentCatalogSha256": "0da55b773e54f657635acc2c6793919602095cbe12f52b61e22799d4b64e96b2",
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
-  "currentRegistryItemCount": 46,
-  "currentRegistryManifestSha256": "645823d1dd8e9f52d557fdbc3656eddcd96df9fde4d8e84bcb996843d57afa3f",
-  "currentPublicApiSnapshotSha256": "635a74a39e1c90529b138eedc23d0cd67aae15237af5e73212eec93c6bde1634",
+  "currentRegistryItemCount": 48,
+  "currentRegistryManifestSha256": "6cdb2e6016de72ca57e53321e0796ff1ff486923194289582cb369e93b5d07c3",
+  "currentPublicApiSnapshotSha256": "f7cc5d8bd3e8394c7cc09c243d6961d983626ec4eec52be28db50c0cc48ea99e",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -741,7 +741,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["Accordion", "Collapsible"],
       "baseUiPrimitives": ["accordion", "collapsible"],
       "platformCoverageIds": [],
       "competitorEvidence": [

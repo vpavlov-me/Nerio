@@ -65,6 +65,10 @@ const componentLedes: Record<string, string> = {
   list: "Lists present simple structured items with descriptions, metadata, and native links.",
   item: "Items compose compact content, media, and actions while leaving semantics and interactions to the consumer.",
   tabs: "Tabs switch between related panels without leaving the current product context.",
+  collapsible:
+    "Collapsible reveals one independent panel when controlled state, shared anatomy, or maintained motion adds value beyond native disclosure.",
+  accordion:
+    "Accordion groups related disclosure items with single or multiple expansion while keeping content and product policy consumer-owned.",
   breadcrumbs:
     "Breadcrumbs show hierarchy navigation with ordered list semantics and current page support.",
   pagination:

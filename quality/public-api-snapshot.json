@@ -61,6 +61,7 @@
     "/docs",
     "/docs/ai",
     "/docs/changelog",
+    "/docs/components/accordion",
     "/docs/components/alert",
     "/docs/components/avatar",
     "/docs/components/badge",
@@ -70,6 +71,7 @@
     "/docs/components/calendar",
     "/docs/components/card",
     "/docs/components/checkbox",
+    "/docs/components/collapsible",
     "/docs/components/command-primitive",
     "/docs/components/date-picker",
     "/docs/components/dialog",
@@ -2272,6 +2274,185 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "Accordion",
+        "signature": "React.ForwardRefExoticComponent<AccordionProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type AccordionChangeEventDetails = NerioChangeEventDetails<AccordionChangeEventReason>;",
+          "export type AccordionChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionChangeEventDetails",
+        "signature": "AccordionChangeEventDetails"
+      },
+      {
+        "definition": ["export type AccordionChangeEventReason = \"trigger-press\" | \"none\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionChangeEventReason",
+        "signature": "AccordionChangeEventReason"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AccordionHeader",
+        "signature": "React.ForwardRefExoticComponent<AccordionHeaderProps & React.RefAttributes<HTMLHeadingElement>>"
+      },
+      {
+        "definition": [
+          "export interface AccordionHeaderProps extends Omit<React.HTMLAttributes<HTMLHeadingElement>, \"className\" | \"style\"> { className?: NerioClassName<AccordionItemState>; render?: NerioRenderProp<AccordionItemState>; style?: NerioStyle<AccordionItemState>; }",
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionHeaderProps",
+        "signature": "AccordionHeaderProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AccordionItem",
+        "signature": "React.ForwardRefExoticComponent<AccordionItemProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"onChange\" | \"style\"> { className?: NerioClassName<AccordionItemState>; disabled?: boolean; onOpenChange?: (open: boolean, eventDetails: AccordionChangeEventDetails) => void; render?: NerioRenderProp<AccordionItemState>; style?: NerioStyle<AccordionItemState>; value: AccordionValue; }",
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionChangeEventDetails = NerioChangeEventDetails<AccordionChangeEventReason>;",
+          "export type AccordionChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type AccordionValue = string;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionItemProps",
+        "signature": "AccordionItemProps"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionItemState",
+        "signature": "AccordionItemState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AccordionPanel",
+        "signature": "React.ForwardRefExoticComponent<AccordionPanelProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionPanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<AccordionPanelState>; hiddenUntilFound?: boolean; keepMounted?: boolean; render?: NerioRenderProp<AccordionPanelState>; style?: NerioStyle<AccordionPanelState>; }",
+          "export interface AccordionPanelState extends AccordionItemState { transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionPanelProps",
+        "signature": "AccordionPanelProps"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionPanelState extends AccordionItemState { transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionPanelState",
+        "signature": "AccordionPanelState"
+      },
+      {
+        "definition": [
+          "export interface AccordionProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"defaultValue\" | \"onChange\" | \"style\"> { className?: NerioClassName<AccordionState>; defaultValue?: AccordionValue[]; disabled?: boolean; hiddenUntilFound?: boolean; keepMounted?: boolean; multiple?: boolean; onValueChange?: (value: AccordionValue[], eventDetails: AccordionChangeEventDetails) => void; render?: NerioRenderProp<AccordionState>; style?: NerioStyle<AccordionState>; value?: AccordionValue[]; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionChangeEventDetails = NerioChangeEventDetails<AccordionChangeEventReason>;",
+          "export type AccordionChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type AccordionValue = string;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionProps",
+        "signature": "AccordionProps"
+      },
+      {
+        "definition": [
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionState",
+        "signature": "AccordionState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AccordionTrigger",
+        "signature": "React.ForwardRefExoticComponent<AccordionTriggerProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export interface AccordionTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<AccordionItemState>; nativeButton?: boolean; render?: NerioRenderProp<AccordionItemState>; style?: NerioStyle<AccordionItemState>; }",
+          "export type AccordionValue = string;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionTriggerProps",
+        "signature": "AccordionTriggerProps"
+      },
+      {
+        "definition": ["export type AccordionValue = string;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionValue",
+        "signature": "string"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "Alert",
         "signature": "React.ForwardRefExoticComponent<AlertProps & React.RefAttributes<HTMLDivElement>>"
       },
@@ -2761,6 +2942,121 @@
         "kind": "type",
         "name": "CodeProps",
         "signature": "CodeProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "Collapsible",
+        "signature": "React.ForwardRefExoticComponent<CollapsibleProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type CollapsibleChangeEventDetails = NerioChangeEventDetails<CollapsibleChangeEventReason>;",
+          "export type CollapsibleChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleChangeEventDetails",
+        "signature": "CollapsibleChangeEventDetails"
+      },
+      {
+        "definition": ["export type CollapsibleChangeEventReason = \"trigger-press\" | \"none\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleChangeEventReason",
+        "signature": "CollapsibleChangeEventReason"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "CollapsiblePanel",
+        "signature": "React.ForwardRefExoticComponent<CollapsiblePanelProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface CollapsiblePanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<CollapsiblePanelState>; hiddenUntilFound?: boolean; keepMounted?: boolean; render?: NerioRenderProp<CollapsiblePanelState>; style?: NerioStyle<CollapsiblePanelState>; }",
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type CollapsiblePanelState = CollapsibleState;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsiblePanelProps",
+        "signature": "CollapsiblePanelProps"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type CollapsiblePanelState = CollapsibleState;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsiblePanelState",
+        "signature": "CollapsibleState"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"onChange\" | \"style\"> { className?: NerioClassName<CollapsibleState>; defaultOpen?: boolean; disabled?: boolean; onOpenChange?: (open: boolean, eventDetails: CollapsibleChangeEventDetails) => void; open?: boolean; render?: NerioRenderProp<CollapsibleState>; style?: NerioStyle<CollapsibleState>; }",
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type CollapsibleChangeEventDetails = NerioChangeEventDetails<CollapsibleChangeEventReason>;",
+          "export type CollapsibleChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleProps",
+        "signature": "CollapsibleProps"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleState",
+        "signature": "CollapsibleState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "CollapsibleTrigger",
+        "signature": "React.ForwardRefExoticComponent<CollapsibleTriggerProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface CollapsibleTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<CollapsibleTriggerState>; nativeButton?: boolean; render?: NerioRenderProp<CollapsibleTriggerState>; style?: NerioStyle<CollapsibleTriggerState>; }",
+          "export type CollapsibleTriggerState = CollapsibleState;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleTriggerProps",
+        "signature": "CollapsibleTriggerProps"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type CollapsibleTriggerState = CollapsibleState;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleTriggerState",
+        "signature": "CollapsibleState"
       },
       {
         "definition": [],
@@ -5631,6 +5927,32 @@
     "helpers": {
       "componentShapes": [
         {
+          "components": ["accordion", "collapsible", "slider", "toggle"],
+          "shape": {
+            "accessibility": ["string"],
+            "baseUiPrimitives": ["string"],
+            "category": "string",
+            "dependencies": ["string"],
+            "description": "string",
+            "files": [
+              {
+                "integrity": "string",
+                "role": "string",
+                "source": "string",
+                "target": "string"
+              }
+            ],
+            "name": "string",
+            "registryDependencies": [],
+            "requiredTokens": ["string"],
+            "slots": ["string"],
+            "states": ["string"],
+            "title": "string",
+            "usage": "string",
+            "variants": ["string"]
+          }
+        },
+        {
           "components": [
             "alert",
             "avatar",
@@ -5955,32 +6277,6 @@
             "title": "string",
             "usage": "string",
             "variants": []
-          }
-        },
-        {
-          "components": ["slider", "toggle"],
-          "shape": {
-            "accessibility": ["string"],
-            "baseUiPrimitives": ["string"],
-            "category": "string",
-            "dependencies": ["string"],
-            "description": "string",
-            "files": [
-              {
-                "integrity": "string",
-                "role": "string",
-                "source": "string",
-                "target": "string"
-              }
-            ],
-            "name": "string",
-            "registryDependencies": [],
-            "requiredTokens": ["string"],
-            "slots": ["string"],
-            "states": ["string"],
-            "title": "string",
-            "usage": "string",
-            "variants": ["string"]
           }
         },
         {
@@ -6033,6 +6329,33 @@
       ],
       "usageShapes": [
         {
+          "components": ["accordion", "collapsible", "slider", "toggle"],
+          "shape": {
+            "accessibility": ["string"],
+            "baseUiPrimitives": ["string"],
+            "category": "string",
+            "dependencies": ["string"],
+            "description": "string",
+            "files": [
+              {
+                "integrity": "string",
+                "role": "string",
+                "source": "string",
+                "target": "string"
+              }
+            ],
+            "name": "string",
+            "optionalPeerDependencies": [],
+            "registryDependencies": [],
+            "requiredTokens": ["string"],
+            "slots": ["string"],
+            "states": ["string"],
+            "title": "string",
+            "usage": "string",
+            "variants": ["string"]
+          }
+        },
+        {
           "components": [
             "alert",
             "avatar",
@@ -6375,33 +6698,6 @@
             "title": "string",
             "usage": "string",
             "variants": []
-          }
-        },
-        {
-          "components": ["slider", "toggle"],
-          "shape": {
-            "accessibility": ["string"],
-            "baseUiPrimitives": ["string"],
-            "category": "string",
-            "dependencies": ["string"],
-            "description": "string",
-            "files": [
-              {
-                "integrity": "string",
-                "role": "string",
-                "source": "string",
-                "target": "string"
-              }
-            ],
-            "name": "string",
-            "optionalPeerDependencies": [],
-            "registryDependencies": [],
-            "requiredTokens": ["string"],
-            "slots": ["string"],
-            "states": ["string"],
-            "title": "string",
-            "usage": "string",
-            "variants": ["string"]
           }
         },
         {
@@ -7038,6 +7334,81 @@
   "registry": {
     "items": [
       {
+        "baseUiPrimitives": ["accordion"],
+        "category": "data-display",
+        "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-ff595b0ec427f62502688377fc6d7bd8887e62158024de53085095daa5e4e421",
+            "role": "component",
+            "source": "../../ui/src/components/accordion.tsx",
+            "target": "components/accordion.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c",
+            "role": "utility",
+            "source": "../../ui/src/lib/cn.ts",
+            "target": "lib/cn.ts"
+          },
+          {
+            "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31",
+            "role": "utility",
+            "source": "../../ui/src/lib/tailwind-cn.ts",
+            "target": "lib/tailwind-cn.ts"
+          },
+          {
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
+            "role": "style",
+            "source": "../../tokens/src/styles.css",
+            "target": "styles/tokens.css"
+          },
+          {
+            "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441",
+            "role": "style",
+            "source": "../../tokens/src/tailwind.css",
+            "target": "styles/tailwind.css"
+          }
+        ],
+        "name": "accordion",
+        "optionalPeerDependencies": [],
+        "registryDependencies": [],
+        "requiredTokens": [
+          "--n-disclosure-background",
+          "--n-disclosure-background-hover",
+          "--n-disclosure-border-width",
+          "--n-disclosure-border",
+          "--n-disclosure-divider-width",
+          "--n-disclosure-divider",
+          "--n-disclosure-radius",
+          "--n-disclosure-foreground",
+          "--n-disclosure-trigger-min-height",
+          "--n-disclosure-trigger-padding-inline",
+          "--n-disclosure-trigger-padding-block",
+          "--n-disclosure-trigger-gap",
+          "--n-disclosure-trigger-font-size",
+          "--n-disclosure-trigger-font-weight",
+          "--n-disclosure-panel-padding-inline",
+          "--n-disclosure-panel-padding-block",
+          "--n-disclosure-panel-font-size",
+          "--n-disclosure-panel-line-height",
+          "--n-disclosure-panel-foreground",
+          "--n-disclosure-disabled-opacity",
+          "--n-motion-reveal-duration",
+          "--n-motion-reveal-easing",
+          "--n-focus-ring"
+        ],
+        "slots": ["root", "item", "header", "trigger", "panel"],
+        "states": ["closed", "open", "disabled", "starting", "ending"],
+        "variants": ["single expansion", "multiple expansion"]
+      },
+      {
         "baseUiPrimitives": [],
         "category": "feedback",
         "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
@@ -7068,7 +7439,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7135,7 +7506,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7193,7 +7564,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7288,7 +7659,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7372,7 +7743,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7465,7 +7836,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7522,7 +7893,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7625,7 +7996,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7734,7 +8105,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7762,6 +8133,79 @@
         "slots": ["field", "root", "indicator", "label", "description"],
         "states": [],
         "variants": ["checked", "unchecked", "indeterminate", "invalid", "disabled", "read-only"]
+      },
+      {
+        "baseUiPrimitives": ["collapsible"],
+        "category": "data-display",
+        "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-6936a425be5061d0ce359ccc163f4a4948a0fe63ecab8a526fb7afa372aefb1c",
+            "role": "component",
+            "source": "../../ui/src/components/collapsible.tsx",
+            "target": "components/collapsible.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c",
+            "role": "utility",
+            "source": "../../ui/src/lib/cn.ts",
+            "target": "lib/cn.ts"
+          },
+          {
+            "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31",
+            "role": "utility",
+            "source": "../../ui/src/lib/tailwind-cn.ts",
+            "target": "lib/tailwind-cn.ts"
+          },
+          {
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
+            "role": "style",
+            "source": "../../tokens/src/styles.css",
+            "target": "styles/tokens.css"
+          },
+          {
+            "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441",
+            "role": "style",
+            "source": "../../tokens/src/tailwind.css",
+            "target": "styles/tailwind.css"
+          }
+        ],
+        "name": "collapsible",
+        "optionalPeerDependencies": [],
+        "registryDependencies": [],
+        "requiredTokens": [
+          "--n-disclosure-background",
+          "--n-disclosure-background-hover",
+          "--n-disclosure-border-width",
+          "--n-disclosure-border",
+          "--n-disclosure-radius",
+          "--n-disclosure-foreground",
+          "--n-disclosure-trigger-min-height",
+          "--n-disclosure-trigger-padding-inline",
+          "--n-disclosure-trigger-padding-block",
+          "--n-disclosure-trigger-gap",
+          "--n-disclosure-trigger-font-size",
+          "--n-disclosure-trigger-font-weight",
+          "--n-disclosure-panel-padding-inline",
+          "--n-disclosure-panel-padding-block",
+          "--n-disclosure-panel-font-size",
+          "--n-disclosure-panel-line-height",
+          "--n-disclosure-panel-foreground",
+          "--n-disclosure-disabled-opacity",
+          "--n-motion-reveal-duration",
+          "--n-motion-reveal-easing",
+          "--n-focus-ring"
+        ],
+        "slots": ["root", "trigger", "panel"],
+        "states": ["closed", "open", "disabled", "starting", "ending"],
+        "variants": ["independent disclosure"]
       },
       {
         "baseUiPrimitives": ["autocomplete"],
@@ -7813,7 +8257,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7991,7 +8435,7 @@
             "target": "styles/overlays.css"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8099,7 +8543,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8186,7 +8630,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8247,7 +8691,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8315,7 +8759,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8386,7 +8830,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8441,7 +8885,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8502,7 +8946,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8580,7 +9024,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8644,7 +9088,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8720,7 +9164,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8776,7 +9220,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8839,7 +9283,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8897,7 +9341,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8998,7 +9442,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9083,7 +9527,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9158,7 +9602,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9241,7 +9685,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9339,7 +9783,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9435,7 +9879,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9499,7 +9943,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9608,7 +10052,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9696,7 +10140,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9770,7 +10214,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9862,7 +10306,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9914,7 +10358,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9971,7 +10415,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10036,7 +10480,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10131,7 +10575,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10244,7 +10688,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10319,7 +10763,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10432,7 +10876,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10530,7 +10974,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10583,7 +11027,7 @@
             "target": "lib/cn.ts"
           },
           {
-            "integrity": "sha256-5955bc889e103a1addade3ff937d9c66a22d8579dce2879e05659fc8e1be0e2d",
+            "integrity": "sha256-765a1df92cf7883789ef7d6f3f2adb3b647df3f44b86dc8e5f2471f227ec1ace",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10979,6 +11423,26 @@
     "--n-dialog-padding",
     "--n-dialog-viewport-inset",
     "--n-dialog-width-md",
+    "--n-disclosure-background",
+    "--n-disclosure-background-hover",
+    "--n-disclosure-border",
+    "--n-disclosure-border-width",
+    "--n-disclosure-disabled-opacity",
+    "--n-disclosure-divider",
+    "--n-disclosure-divider-width",
+    "--n-disclosure-foreground",
+    "--n-disclosure-panel-font-size",
+    "--n-disclosure-panel-foreground",
+    "--n-disclosure-panel-line-height",
+    "--n-disclosure-panel-padding-block",
+    "--n-disclosure-panel-padding-inline",
+    "--n-disclosure-radius",
+    "--n-disclosure-trigger-font-size",
+    "--n-disclosure-trigger-font-weight",
+    "--n-disclosure-trigger-gap",
+    "--n-disclosure-trigger-min-height",
+    "--n-disclosure-trigger-padding-block",
+    "--n-disclosure-trigger-padding-inline",
     "--n-dropdown-item-gap",
     "--n-dropdown-item-padding-inline",
     "--n-dropdown-min-width",
