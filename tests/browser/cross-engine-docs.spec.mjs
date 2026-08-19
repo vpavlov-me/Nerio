@@ -144,6 +144,7 @@ test("keeps Toggle keyboard, pointer, state, naming, focus, and reflow portable"
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     ),
   ).toBeLessThanOrEqual(1);
+
   expect(problems).toEqual([]);
 });
 
@@ -217,6 +218,16 @@ test("keeps Collapsible and Accordion disclosure behavior portable", async ({
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     ),
   ).toBeLessThanOrEqual(1);
+
+  await page.goto("/visual-test/disclosure");
+  const disabledDisclosure = page.getByRole("button", { name: "Managed by your organization" });
+  const disabledBackground = await disabledDisclosure.evaluate(
+    (element) => getComputedStyle(element).backgroundColor,
+  );
+  await disabledDisclosure.hover();
+  await expect
+    .poll(() => disabledDisclosure.evaluate((element) => getComputedStyle(element).backgroundColor))
+    .toBe(disabledBackground);
   expect(problems).toEqual([]);
 });
 

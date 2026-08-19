@@ -8,9 +8,9 @@
   "routes": [
     {
       "route": "/",
-      "jsBytes": 750073,
-      "cssBytes": 346863,
-      "transferBytes": 279934,
+      "jsBytes": 750109,
+      "cssBytes": 346903,
+      "transferBytes": 279941,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -18,9 +18,9 @@
           "transferBytes": 36545
         },
         {
-          "asset": "static/chunks/0xnor5k5e2ysp.js",
-          "rawBytes": 63685,
-          "transferBytes": 15217
+          "asset": "static/chunks/0xkk4z1v3ri5w.js",
+          "rawBytes": 63721,
+          "transferBytes": 15220
         },
         {
           "asset": "static/chunks/39ksgytoxn2zg.js",
@@ -61,7 +61,7 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
-            "static/chunks/0xnor5k5e2ysp.js",
+            "static/chunks/0xkk4z1v3ri5w.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
             "static/chunks/25yt8n5z0ypi9.js",
@@ -82,7 +82,7 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
-            "static/chunks/0xnor5k5e2ysp.js",
+            "static/chunks/0xkk4z1v3ri5w.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
             "static/chunks/25yt8n5z0ypi9.js",
@@ -103,7 +103,7 @@
             "static/chunks/0cxukb05tjsex.js",
             "static/chunks/0mhcv1yhjr0og.js",
             "static/chunks/0pd46_cacb07v.js",
-            "static/chunks/0xnor5k5e2ysp.js",
+            "static/chunks/0xkk4z1v3ri5w.js",
             "static/chunks/1i5h0cvs0pu4u.js",
             "static/chunks/1r4u3cswrbfoq.js",
             "static/chunks/2-fhjxlb4_8c1.js",
@@ -212,16 +212,16 @@
         ]
       },
       "delta": {
-        "jsBytes": 17041,
-        "cssBytes": 8632,
-        "transferBytes": 8196
+        "jsBytes": 17077,
+        "cssBytes": 8672,
+        "transferBytes": 8203
       }
     },
     {
       "route": "/docs/getting-started",
       "jsBytes": 467049,
-      "cssBytes": 346863,
-      "transferBytes": 196890,
+      "cssBytes": 346903,
+      "transferBytes": 196894,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -347,15 +347,15 @@
       },
       "delta": {
         "jsBytes": 7438,
-        "cssBytes": 8632,
-        "transferBytes": 6084
+        "cssBytes": 8672,
+        "transferBytes": 6088
       }
     },
     {
       "route": "/docs/components/button",
       "jsBytes": 472069,
-      "cssBytes": 346863,
-      "transferBytes": 198759,
+      "cssBytes": 346903,
+      "transferBytes": 198763,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -495,15 +495,15 @@
       },
       "delta": {
         "jsBytes": 7435,
-        "cssBytes": 8632,
-        "transferBytes": 6090
+        "cssBytes": 8672,
+        "transferBytes": 6094
       }
     },
     {
       "route": "/docs/components/select",
       "jsBytes": 471187,
-      "cssBytes": 346863,
-      "transferBytes": 198427,
+      "cssBytes": 346903,
+      "transferBytes": 198431,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -643,15 +643,15 @@
       },
       "delta": {
         "jsBytes": 7436,
-        "cssBytes": 8632,
-        "transferBytes": 6089
+        "cssBytes": 8672,
+        "transferBytes": 6093
       }
     },
     {
       "route": "/docs/components/calendar",
       "jsBytes": 481182,
-      "cssBytes": 346863,
-      "transferBytes": 201859,
+      "cssBytes": 346903,
+      "transferBytes": 201863,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -791,15 +791,15 @@
       },
       "delta": {
         "jsBytes": 7432,
-        "cssBytes": 8632,
-        "transferBytes": 6085
+        "cssBytes": 8672,
+        "transferBytes": 6089
       }
     },
     {
       "route": "/docs/components/date-picker",
       "jsBytes": 504855,
-      "cssBytes": 346863,
-      "transferBytes": 209617,
+      "cssBytes": 346903,
+      "transferBytes": 209621,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -940,15 +940,15 @@
       },
       "delta": {
         "jsBytes": 6189,
-        "cssBytes": 8632,
-        "transferBytes": 5803
+        "cssBytes": 8672,
+        "transferBytes": 5807
       }
     },
     {
       "route": "/docs/components/command-primitive",
       "jsBytes": 474330,
-      "cssBytes": 346863,
-      "transferBytes": 199520,
+      "cssBytes": 346903,
+      "transferBytes": 199524,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -1088,15 +1088,15 @@
       },
       "delta": {
         "jsBytes": 7436,
-        "cssBytes": 8632,
-        "transferBytes": 6094
+        "cssBytes": 8672,
+        "transferBytes": 6098
       }
     },
     {
       "route": "/templates",
       "jsBytes": 464923,
-      "cssBytes": 346863,
-      "transferBytes": 196191,
+      "cssBytes": 346903,
+      "transferBytes": 196195,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2nki5nvowsizb.js",
@@ -1224,15 +1224,15 @@
       },
       "delta": {
         "jsBytes": 7438,
-        "cssBytes": 8632,
-        "transferBytes": 6085
+        "cssBytes": 8672,
+        "transferBytes": 6089
       }
     },
     {
       "route": "/views/operations-workspace",
       "jsBytes": 977446,
-      "cssBytes": 368168,
-      "transferBytes": 344514,
+      "cssBytes": 368208,
+      "transferBytes": 344518,
       "majorClientChunks": [
         {
           "asset": "static/chunks/2i2sae_-u1qup.js",
@@ -1358,8 +1358,8 @@
       },
       "delta": {
         "jsBytes": -135648,
-        "cssBytes": -43861,
-        "transferBytes": -38939
+        "cssBytes": -43821,
+        "transferBytes": -38935
       }
     }
   ]
