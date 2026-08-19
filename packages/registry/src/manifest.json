@@ -2942,7 +2942,7 @@
           "source": "../../ui/src/components/collapsible.tsx",
           "target": "components/collapsible.tsx",
           "role": "component",
-          "integrity": "sha256-7f4fa4cd9ff19bc77af9deb1999bcb338e959c079cb76fb3fb61a815d753876e"
+          "integrity": "sha256-eede996b6ac856445eeff319e29a7ba0c772950ebc10d8b73d1b567d5b7d835f"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
@@ -3025,7 +3025,7 @@
           "source": "../../ui/src/components/accordion.tsx",
           "target": "components/accordion.tsx",
           "role": "component",
-          "integrity": "sha256-a6d1053b50c60e6b9489ae0e6078ecc13130c66fde8a9361ed6d5b64e2721343"
+          "integrity": "sha256-581f719141327c7f31be39c2a046ab5bf15a65c1b788f39009a64af89758c25c"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",

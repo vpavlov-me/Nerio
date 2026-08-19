@@ -17,7 +17,7 @@ const triggerClasses =
 const panelClasses =
   "n-collapsible__panel box-border h-(--collapsible-panel-height) overflow-hidden opacity-100 transition-[height,opacity] duration-(--n-motion-reveal-duration) ease-(--n-motion-reveal-easing) data-starting-style:h-0 data-starting-style:opacity-0 data-ending-style:h-0 data-ending-style:opacity-0 motion-reduce:duration-(--n-duration-instant)";
 const panelContentClasses =
-  "n-collapsible__panel-content box-border px-(--n-disclosure-panel-padding-inline) pb-(--n-disclosure-panel-padding-block) text-(length:--n-disclosure-panel-font-size) leading-(--n-disclosure-panel-line-height) text-(--n-disclosure-panel-foreground)";
+  "n-collapsible__panel-content box-border px-(--n-disclosure-panel-padding-inline) pt-(--n-focus-ring-outer-width) pb-(--n-disclosure-panel-padding-block) text-(length:--n-disclosure-panel-font-size) leading-(--n-disclosure-panel-line-height) text-(--n-disclosure-panel-foreground)";
 
 function withClassName<State>(className: NerioClassName<State> | undefined, baseClassName: string) {
   return typeof className === "function"

@@ -232,14 +232,23 @@ test("animates disclosure panels through their full measured height", async ({
   await page.waitForTimeout(320);
   const openGeometry = await panel.evaluate((element) => ({
     contentHeight: element.firstElementChild?.getBoundingClientRect().height,
+    contentPaddingTop: Number.parseFloat(
+      getComputedStyle(element.firstElementChild).paddingBlockStart,
+    ),
+    focusRingWidth: Number.parseFloat(
+      getComputedStyle(element).getPropertyValue("--n-focus-ring-outer-width"),
+    ),
     openHeight: element.getBoundingClientRect().height,
   }));
   expect(Math.abs(openGeometry.openHeight - openGeometry.contentHeight)).toBeLessThanOrEqual(1);
+  expect(openGeometry.contentPaddingTop).toBeGreaterThanOrEqual(openGeometry.focusRingWidth);
 
+  const panelHandle = await panel.elementHandle();
+  expect(panelHandle).not.toBeNull();
   await trigger.click();
   await page.waitForTimeout(200);
   expect(
-    await panel.evaluate((element) => element.getBoundingClientRect().height),
+    await panelHandle.evaluate((element) => element.getBoundingClientRect().height),
   ).toBeLessThanOrEqual(4);
   expect(problems).toEqual([]);
 });
