@@ -240,7 +240,16 @@ test("animates disclosure panels through their full measured height", async ({
   const trigger = page.getByRole("button", { name: "Can I invite collaborators?" });
   await trigger.click();
   const panel = page.locator(`#${await trigger.getAttribute("aria-controls")}`);
-  await page.waitForTimeout(320);
+  await expect
+    .poll(() =>
+      panel.evaluate((element) =>
+        Math.abs(
+          element.getBoundingClientRect().height -
+            (element.firstElementChild?.getBoundingClientRect().height ?? 0),
+        ),
+      ),
+    )
+    .toBeLessThanOrEqual(1);
   const openGeometry = await panel.evaluate((element) => ({
     contentHeight: element.firstElementChild?.getBoundingClientRect().height,
     contentPaddingTop: Number.parseFloat(
@@ -257,10 +266,13 @@ test("animates disclosure panels through their full measured height", async ({
   const panelHandle = await panel.elementHandle();
   expect(panelHandle).not.toBeNull();
   await trigger.click();
-  await page.waitForTimeout(200);
-  expect(
-    await panelHandle.evaluate((element) => element.getBoundingClientRect().height),
-  ).toBeLessThanOrEqual(4);
+  await expect
+    .poll(() =>
+      panelHandle.evaluate((element) =>
+        element.isConnected ? element.getBoundingClientRect().height : 0,
+      ),
+    )
+    .toBeLessThanOrEqual(4);
   expect(problems).toEqual([]);
 });
 
