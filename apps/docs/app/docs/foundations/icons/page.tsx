@@ -11,13 +11,9 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
+import { getFoundationPage } from "../../../../lib/foundations";
 
-export const metadata = createPageMetadata({
-  title: "Icons",
-  description:
-    "Use the Nerio icon adapter to keep icons accessible, consistent, and independent from individual component APIs.",
-  path: "/docs/foundations/icons",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/icons"));
 
 const iconSizes = [
   ["Extra small", "--n-icon-size-xs", "12px"],

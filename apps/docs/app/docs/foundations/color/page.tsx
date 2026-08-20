@@ -11,14 +11,10 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { foundationMetadata } from "../../../../lib/generated/foundation-metadata";
+import { getFoundationPage } from "../../../../lib/foundations";
 import { createPageMetadata } from "../../../../lib/seo";
 
-export const metadata = createPageMetadata({
-  title: "Color",
-  description:
-    "Choose Nerio semantic color roles, review complete state sequences, and validate custom themes across modes and accessibility preferences.",
-  path: "/docs/foundations/color",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/color"));
 
 const { color, runtimeAxes } = foundationMetadata;
 const representativeModeTokens = [

@@ -11,14 +11,10 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { foundationMetadata } from "../../../../lib/generated/foundation-metadata";
+import { getFoundationPage } from "../../../../lib/foundations";
 import { createPageMetadata } from "../../../../lib/seo";
 
-export const metadata = createPageMetadata({
-  title: "Themes",
-  description:
-    "Configure Nerio brand themes, color modes, and density through CSS variables without changing component source.",
-  path: "/docs/foundations/themes",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/themes"));
 
 const { theme, mode, density } = foundationMetadata.runtimeAxes;
 const lightMode = mode.mappings.find((mapping) => mapping.value === "light")!;

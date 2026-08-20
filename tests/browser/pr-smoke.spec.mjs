@@ -590,6 +590,77 @@ test("opens mobile documentation navigation and follows a route", async ({ page 
   await expectHealthyPage(page, problems);
 });
 
+test("keeps canonical foundation discovery ordered and aliases non-competing", async ({
+  page,
+  request,
+}) => {
+  const problems = monitorPage(page);
+  const foundationLabels = [
+    "Tokens",
+    "Color",
+    "Typography",
+    "Spacing & layout",
+    "Themes",
+    "Accessibility",
+    "Localization",
+    "Radius",
+    "Effects",
+    "Motion",
+    "Icons",
+  ];
+  const foundationPaths = [
+    "/docs/foundations/tokens",
+    "/docs/foundations/color",
+    "/docs/foundations/typography",
+    "/docs/foundations/spacing-layout",
+    "/docs/foundations/themes",
+    "/docs/foundations/accessibility",
+    "/docs/foundations/localization",
+    "/docs/foundations/radius",
+    "/docs/foundations/effects",
+    "/docs/foundations/motion",
+    "/docs/foundations/icons",
+  ];
+
+  await page.goto("/docs/foundations/tokens");
+  const desktopFoundations = page
+    .getByRole("navigation", { name: "Documentation" })
+    .locator(".nav-group")
+    .filter({ has: page.getByRole("heading", { name: "Foundations", exact: true }) });
+  await expect(desktopFoundations.getByRole("link")).toHaveText(foundationLabels);
+  await expect(
+    page
+      .getByRole("navigation", { name: "Documentation pagination" })
+      .getByRole("link", { name: "Color", exact: true }),
+  ).toHaveAttribute("href", "/docs/foundations/color");
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  const searchDialog = page.getByRole("dialog", { name: "Search documentation" });
+  await searchDialog
+    .getByRole("combobox", { name: "Search documentation" })
+    .fill("semantic color roles");
+  await expect(searchDialog.getByRole("option", { name: /Color/ }).first()).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Open documentation navigation" }).click();
+  const mobileFoundations = page
+    .getByRole("dialog", { name: "Documentation" })
+    .locator(".docs-mobile-navigation__group")
+    .filter({ has: page.getByRole("heading", { name: "Foundations", exact: true }) });
+  await expect(mobileFoundations.getByRole("link")).toHaveText(foundationLabels);
+
+  const sitemap = await request.get("/sitemap.xml");
+  const sitemapText = await sitemap.text();
+  foundationPaths.forEach((path) => expect(sitemapText).toContain(path));
+  expect(sitemapText).not.toContain("/docs/foundations/animations");
+
+  const legacy = await request.get("/docs/foundations/animations", { maxRedirects: 0 });
+  expect(legacy.status()).toBe(308);
+  expect(legacy.headers().location).toBe("/docs/foundations/motion");
+  await expectHealthyPage(page, problems);
+});
+
 test("discovers the Accessibility foundation through navigation and search", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/foundations/accessibility");

@@ -760,8 +760,6 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
   const [toc, setToc] = React.useState<TocItem[]>(fallbackToc);
   const [activeTocId, setActiveTocId] = React.useState("");
   const [feedback, setFeedback] = React.useState<FeedbackValue | null>(null);
-  const visibleSearchEntries = searchEntries;
-
   React.useEffect(() => {
     setFeedback(null);
   }, [pathname]);
@@ -911,7 +909,7 @@ export function DocsChrome({ children }: { children: React.ReactNode }) {
 
           <TooltipProvider closeDelay={0} delay={600}>
             <div className="docs-controls">
-              <DocsCommandPalette entries={visibleSearchEntries} />
+              <DocsCommandPalette entries={searchEntries} />
               <span className="docs-controls-divider" aria-hidden />
               <DropdownMenu
                 className="docs-mode-menu"

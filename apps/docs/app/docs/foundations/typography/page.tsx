@@ -11,18 +11,14 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { foundationMetadata } from "../../../../lib/generated/foundation-metadata";
+import { getFoundationPage } from "../../../../lib/foundations";
 import { createPageMetadata } from "../../../../lib/seo";
 
 function projectedValue(mapping: { value: string; reference: string | null }) {
   return mapping.reference ?? mapping.value;
 }
 
-export const metadata = createPageMetadata({
-  title: "Typography",
-  description:
-    "Understand Nerio typography tokens, semantic roles, resilience requirements, and font overrides for readable product interfaces.",
-  path: "/docs/foundations/typography",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/typography"));
 
 const { fontDefaults, scale, presets, semanticRoles, lineHeights } = foundationMetadata.typography;
 const scalePurpose: Record<(typeof scale)[number]["token"], string> = {
