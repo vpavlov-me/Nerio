@@ -1,3 +1,4 @@
+import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
@@ -52,6 +53,17 @@ import {
   AccordionItem,
   AccordionPanel,
   AccordionTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogBackdrop,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Button,
   Calendar,
   Checkbox,
@@ -570,6 +582,41 @@ describe("Core accessibility contracts", () => {
     await user.click(screen.getByRole("button", { name: "Close dialog" }));
     await user.click(screen.getByRole("button", { name: "Show toast" }));
     await screen.findByRole("button", { name: "Undo" });
+    expect((await axe(document.body)).violations).toEqual([]);
+  });
+
+  it("covers an open alert dialog with explicit safe and confirm responses", async () => {
+    function Confirmation() {
+      const cancelRef = React.useRef<HTMLButtonElement>(null);
+      return (
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />
+          <AlertDialogPortal>
+            <AlertDialogBackdrop />
+            <AlertDialogContent initialFocus={cancelRef}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete project?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This permanently removes the project and cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  ref={cancelRef}
+                  render={<Button variant="secondary">Cancel</Button>}
+                />
+                <AlertDialogAction render={<Button variant="danger">Delete project</Button>} />
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogPortal>
+        </AlertDialog>
+      );
+    }
+
+    const user = userEvent.setup();
+    render(<Confirmation />);
+    await user.click(screen.getByRole("button", { name: "Delete project" }));
+    await screen.findByRole("alertdialog", { name: "Delete project?" });
     expect((await axe(document.body)).violations).toEqual([]);
   });
 

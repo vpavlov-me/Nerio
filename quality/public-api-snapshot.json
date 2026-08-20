@@ -63,6 +63,7 @@
     "/docs/changelog",
     "/docs/components/accordion",
     "/docs/components/alert",
+    "/docs/components/alert-dialog",
     "/docs/components/avatar",
     "/docs/components/badge",
     "/docs/components/breadcrumbs",
@@ -2460,6 +2461,259 @@
         "signature": "React.ForwardRefExoticComponent<AlertProps & React.RefAttributes<HTMLDivElement>>"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialog",
+        "signature": "({ children, defaultOpen, onOpenChange, open }: AlertDialogProps) => React.JSX.Element"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogAction",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogActionProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogActionProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<AlertDialogActionState>; nativeButton?: boolean; render?: NerioRenderProp<AlertDialogActionState>; style?: NerioStyle<AlertDialogActionState>; }",
+          "export interface AlertDialogActionState { disabled: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogActionProps",
+        "signature": "AlertDialogActionProps"
+      },
+      {
+        "definition": ["export interface AlertDialogActionState { disabled: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogActionState",
+        "signature": "AlertDialogActionState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogBackdrop",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogBackdropProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogBackdropProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<AlertDialogBackdropState>; forceRender?: boolean; render?: NerioRenderProp<AlertDialogBackdropState>; style?: NerioStyle<AlertDialogBackdropState>; }",
+          "export interface AlertDialogBackdropState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogBackdropProps",
+        "signature": "AlertDialogBackdropProps"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogBackdropState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogBackdropState",
+        "signature": "AlertDialogBackdropState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogBody",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogCancel",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogActionProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogContent",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogContentProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"color\" | \"style\"> { children: React.ReactNode; className?: NerioClassName<AlertDialogContentState>; finalFocus?: DialogFocusTarget; initialFocus?: DialogFocusTarget; render?: NerioRenderProp<AlertDialogContentState>; style?: NerioStyle<AlertDialogContentState>; }",
+          "export interface AlertDialogContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }",
+          "export type DialogFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DialogInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DialogInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogContentProps",
+        "signature": "AlertDialogContentProps"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogContentState",
+        "signature": "AlertDialogContentState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogDescription",
+        "signature": "React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLParagraphElement> & React.RefAttributes<HTMLParagraphElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogFooter",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, \"ref\"> & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogHeader",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, \"ref\"> & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export type AlertDialogOpenChangeEventDetails = NerioChangeEventDetails<AlertDialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type AlertDialogOpenChangeEventReason = DialogOpenChangeEventReason;",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogOpenChangeEventDetails",
+        "signature": "AlertDialogOpenChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type AlertDialogOpenChangeEventReason = DialogOpenChangeEventReason;",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogOpenChangeEventReason",
+        "signature": "DialogOpenChangeEventReason"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogPortal",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogPortalProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogPortalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<AlertDialogPortalState>; container?: HTMLElement | ShadowRoot | React.RefObject<HTMLElement | ShadowRoot | null> | null; keepMounted?: boolean; render?: NerioRenderProp<AlertDialogPortalState>; style?: NerioStyle<AlertDialogPortalState>; }",
+          "export type AlertDialogPortalState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogPortalProps",
+        "signature": "AlertDialogPortalProps"
+      },
+      {
+        "definition": ["export type AlertDialogPortalState = Record<never, never>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogPortalState",
+        "signature": "AlertDialogPortalState"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogProps { children: React.ReactNode; defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: AlertDialogOpenChangeEventDetails) => void; open?: boolean; }",
+          "export type AlertDialogOpenChangeEventDetails = NerioChangeEventDetails<AlertDialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type AlertDialogOpenChangeEventReason = DialogOpenChangeEventReason;",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogProps",
+        "signature": "AlertDialogProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogTitle",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogTitleProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export type AlertDialogTitleElement = DialogTitleElement;",
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogTitleElement",
+        "signature": "DialogTitleElement"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogTitleProps extends React.HTMLAttributes<HTMLElement> { as?: AlertDialogTitleElement; }",
+          "export type AlertDialogTitleElement = DialogTitleElement;",
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogTitleProps",
+        "signature": "AlertDialogTitleProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogTrigger",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogTriggerProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<AlertDialogTriggerState>; nativeButton?: boolean; render?: NerioRenderProp<AlertDialogTriggerState>; style?: NerioStyle<AlertDialogTriggerState>; }",
+          "export interface AlertDialogTriggerState { disabled: boolean; open: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogTriggerProps",
+        "signature": "AlertDialogTriggerProps"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogTriggerState { disabled: boolean; open: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogTriggerState",
+        "signature": "AlertDialogTriggerState"
+      },
+      {
         "definition": [
           "export interface AlertProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"title\"> { tone?: AlertTone; title?: React.ReactNode; icon?: IconComponent; action?: React.ReactNode; closeAction?: React.ReactNode; }",
           "export type AlertTone = \"neutral\" | \"info\" | \"success\" | \"warning\" | \"danger\";",
@@ -3400,8 +3654,138 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "DialogBackdrop",
+        "signature": "React.ForwardRefExoticComponent<DialogBackdropProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogBackdropProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<DialogBackdropState>; forceRender?: boolean; render?: NerioRenderProp<DialogBackdropState>; style?: NerioStyle<DialogBackdropState>; }",
+          "export interface DialogBackdropState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogBackdropProps",
+        "signature": "DialogBackdropProps"
+      },
+      {
+        "definition": [
+          "export interface DialogBackdropState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogBackdropState",
+        "signature": "DialogBackdropState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogBody",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogClose",
+        "signature": "React.ForwardRefExoticComponent<DialogCloseProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogCloseProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DialogCloseState>; nativeButton?: boolean; render?: NerioRenderProp<DialogCloseState>; style?: NerioStyle<DialogCloseState>; }",
+          "export interface DialogCloseState { disabled: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogCloseProps",
+        "signature": "DialogCloseProps"
+      },
+      {
+        "definition": ["export interface DialogCloseState { disabled: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogCloseState",
+        "signature": "DialogCloseState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogContent",
+        "signature": "React.ForwardRefExoticComponent<DialogContentProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"color\" | \"style\"> { children: React.ReactNode; className?: NerioClassName<DialogContentState>; finalFocus?: DialogFocusTarget; initialFocus?: DialogFocusTarget; render?: NerioRenderProp<DialogContentState>; style?: NerioStyle<DialogContentState>; }",
+          "export interface DialogContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }",
+          "export type DialogFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DialogInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DialogInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogContentProps",
+        "signature": "DialogContentProps"
+      },
+      {
+        "definition": [
+          "export interface DialogContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogContentState",
+        "signature": "DialogContentState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogDescription",
+        "signature": "React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLParagraphElement> & React.RefAttributes<HTMLParagraphElement>>"
+      },
+      {
+        "definition": [
+          "export type DialogFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DialogInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DialogInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogFocusTarget",
+        "signature": "DialogFocusTarget"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "DialogFooter",
         "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, \"ref\"> & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogHeader",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, \"ref\"> & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export type DialogInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogInteractionType",
+        "signature": "DialogInteractionType"
       },
       {
         "definition": [
@@ -3424,6 +3808,34 @@
         "signature": "DialogOpenChangeEventReason"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogPortal",
+        "signature": "React.ForwardRefExoticComponent<DialogPortalProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogPortalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<DialogPortalState>; container?: HTMLElement | ShadowRoot | React.RefObject<HTMLElement | ShadowRoot | null> | null; keepMounted?: boolean; render?: NerioRenderProp<DialogPortalState>; style?: NerioStyle<DialogPortalState>; }",
+          "export type DialogPortalState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogPortalProps",
+        "signature": "DialogPortalProps"
+      },
+      {
+        "definition": ["export type DialogPortalState = Record<never, never>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogPortalState",
+        "signature": "DialogPortalState"
+      },
+      {
         "definition": [
           "export interface DialogProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; title: React.ReactNode; titleAs?: DialogTitleElement; description?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string; closeLabel?: string; }",
           "export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
@@ -3437,6 +3849,32 @@
         "signature": "DialogProps"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogRoot",
+        "signature": "({ children, defaultOpen, onOpenChange, open }: DialogRootProps) => React.JSX.Element"
+      },
+      {
+        "definition": [
+          "export interface DialogRootProps { children: React.ReactNode; defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; }",
+          "export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogRootProps",
+        "signature": "DialogRootProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogTitle",
+        "signature": "React.ForwardRefExoticComponent<DialogTitleProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
         "definition": [
           "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
@@ -3444,6 +3882,44 @@
         "kind": "type",
         "name": "DialogTitleElement",
         "signature": "DialogTitleElement"
+      },
+      {
+        "definition": [
+          "export interface DialogTitleProps extends React.HTMLAttributes<HTMLElement> { as?: DialogTitleElement; }",
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogTitleProps",
+        "signature": "DialogTitleProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogTrigger",
+        "signature": "React.ForwardRefExoticComponent<DialogTriggerProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DialogTriggerState>; nativeButton?: boolean; render?: NerioRenderProp<DialogTriggerState>; style?: NerioStyle<DialogTriggerState>; }",
+          "export interface DialogTriggerState { disabled: boolean; open: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogTriggerProps",
+        "signature": "DialogTriggerProps"
+      },
+      {
+        "definition": ["export interface DialogTriggerState { disabled: boolean; open: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogTriggerState",
+        "signature": "DialogTriggerState"
       },
       {
         "definition": [],
@@ -5993,6 +6469,31 @@
           }
         },
         {
+          "components": ["alert-dialog", "dialog", "popover"],
+          "shape": {
+            "accessibility": ["string"],
+            "baseUiPrimitives": ["string"],
+            "category": "string",
+            "dependencies": ["string"],
+            "description": "string",
+            "files": [
+              {
+                "integrity": "string",
+                "role": "string",
+                "source": "string",
+                "target": "string"
+              }
+            ],
+            "name": "string",
+            "registryDependencies": ["string"],
+            "requiredTokens": ["string"],
+            "slots": ["string"],
+            "title": "string",
+            "usage": "string",
+            "variants": []
+          }
+        },
+        {
           "components": ["badge", "field", "form-group", "input-group", "item"],
           "shape": {
             "accessibility": ["string"],
@@ -6175,31 +6676,6 @@
             "title": "string",
             "usage": "string",
             "variants": ["string"]
-          }
-        },
-        {
-          "components": ["dialog", "popover"],
-          "shape": {
-            "accessibility": ["string"],
-            "baseUiPrimitives": ["string"],
-            "category": "string",
-            "dependencies": ["string"],
-            "description": "string",
-            "files": [
-              {
-                "integrity": "string",
-                "role": "string",
-                "source": "string",
-                "target": "string"
-              }
-            ],
-            "name": "string",
-            "registryDependencies": ["string"],
-            "requiredTokens": ["string"],
-            "slots": ["string"],
-            "title": "string",
-            "usage": "string",
-            "variants": []
           }
         },
         {
@@ -6398,6 +6874,33 @@
           }
         },
         {
+          "components": ["alert-dialog", "dialog", "popover"],
+          "shape": {
+            "accessibility": ["string"],
+            "baseUiPrimitives": ["string"],
+            "category": "string",
+            "dependencies": ["string"],
+            "description": "string",
+            "files": [
+              {
+                "integrity": "string",
+                "role": "string",
+                "source": "string",
+                "target": "string"
+              }
+            ],
+            "name": "string",
+            "optionalPeerDependencies": [],
+            "registryDependencies": ["string"],
+            "requiredTokens": ["string"],
+            "slots": ["string"],
+            "states": [],
+            "title": "string",
+            "usage": "string",
+            "variants": []
+          }
+        },
+        {
           "components": ["badge", "field", "form-group", "input-group", "item"],
           "shape": {
             "accessibility": ["string"],
@@ -6592,33 +7095,6 @@
             "title": "string",
             "usage": "string",
             "variants": ["string"]
-          }
-        },
-        {
-          "components": ["dialog", "popover"],
-          "shape": {
-            "accessibility": ["string"],
-            "baseUiPrimitives": ["string"],
-            "category": "string",
-            "dependencies": ["string"],
-            "description": "string",
-            "files": [
-              {
-                "integrity": "string",
-                "role": "string",
-                "source": "string",
-                "target": "string"
-              }
-            ],
-            "name": "string",
-            "optionalPeerDependencies": [],
-            "registryDependencies": ["string"],
-            "requiredTokens": ["string"],
-            "slots": ["string"],
-            "states": [],
-            "title": "string",
-            "usage": "string",
-            "variants": []
           }
         },
         {
@@ -7477,6 +7953,62 @@
         "slots": ["root", "icon", "content", "title", "description", "action", "close"],
         "states": [],
         "variants": ["neutral", "info", "success", "warning", "danger"]
+      },
+      {
+        "baseUiPrimitives": ["alert-dialog"],
+        "category": "overlays",
+        "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-7ac8f2f73b22562d7d54bac23d65d45dbb2de82f16c2345376546d7f0e1d205c",
+            "role": "component",
+            "source": "../../ui/src/components/alert-dialog.tsx",
+            "target": "components/alert-dialog.tsx"
+          }
+        ],
+        "name": "alert-dialog",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["dialog"],
+        "requiredTokens": [
+          "--n-dialog-width-md",
+          "--n-dialog-viewport-inset",
+          "--n-dialog-padding",
+          "--n-dialog-header-gap",
+          "--n-dialog-header-margin",
+          "--n-dialog-body-gap",
+          "--n-overlay-z-index",
+          "--n-overlay-background",
+          "--n-overlay-border",
+          "--n-overlay-backdrop",
+          "--n-overlay-backdrop-filter",
+          "--n-overlay-foreground",
+          "--n-overlay-foreground-muted",
+          "--n-overlay-control-background",
+          "--n-overlay-control-background-hover",
+          "--n-overlay-surface-filter",
+          "--n-overlay-shadow",
+          "--n-motion-overlay-enter-duration",
+          "--n-motion-overlay-enter-easing",
+          "--n-motion-overlay-exit-duration",
+          "--n-motion-overlay-exit-easing",
+          "--n-focus-ring"
+        ],
+        "slots": [
+          "portal",
+          "trigger",
+          "backdrop",
+          "content",
+          "header",
+          "title",
+          "description",
+          "body",
+          "footer",
+          "cancel",
+          "action"
+        ],
+        "states": [],
+        "variants": []
       },
       {
         "baseUiPrimitives": [],
@@ -8408,7 +8940,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-36a07d2b42ecf9b47546ecd43aca560a64b5e3abdb61b6ac7356b664c8b1a991",
+            "integrity": "sha256-e886317e469d553dd29c958702129352cf0379c9b2612abe78a8fd4c13612992",
             "role": "component",
             "source": "../../ui/src/components/dialog.tsx",
             "target": "components/dialog.tsx"
@@ -8483,6 +9015,8 @@
           "--n-focus-ring"
         ],
         "slots": [
+          "trigger",
+          "portal",
           "backdrop",
           "content",
           "header",

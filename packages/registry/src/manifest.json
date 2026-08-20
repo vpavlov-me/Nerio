@@ -3236,7 +3236,7 @@
     {
       "name": "dialog",
       "title": "Dialog",
-      "description": "Focuses a short decision or task above the current surface.",
+      "description": "Focuses a short decision or task above the current surface through a compatible convenience API or compound anatomy.",
       "category": "overlays",
       "dependencies": [
         "@base-ui/react",
@@ -3252,7 +3252,7 @@
           "source": "../../ui/src/components/dialog.tsx",
           "target": "components/dialog.tsx",
           "role": "component",
-          "integrity": "sha256-36a07d2b42ecf9b47546ecd43aca560a64b5e3abdb61b6ac7356b664c8b1a991"
+          "integrity": "sha256-e886317e469d553dd29c958702129352cf0379c9b2612abe78a8fd4c13612992"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
@@ -3293,6 +3293,8 @@
       ],
       "baseUiPrimitives": ["dialog"],
       "slots": [
+        "trigger",
+        "portal",
         "backdrop",
         "content",
         "header",
@@ -3335,12 +3337,77 @@
       ],
       "accessibility": [
         "Uses the Base UI Dialog primitive.",
+        "The existing Dialog convenience API remains compatible; DialogRoot, DialogTrigger, DialogPortal, DialogBackdrop, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, and DialogClose expose meaningful compound anatomy.",
         "The title renders as a neutral 16px div by default; titleAs opts into h2-h6 only when the title belongs in the document outline. The optional description uses the standard 14px body size.",
         "Focus is trapped while the dialog is open and returns to the trigger on close.",
         "Defaults closeLabel to \"Close dialog\" for the secondary icon Button; provide a localized accessible name when needed.",
-        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded popup ref."
+        "Compound DialogContent supports deliberate initialFocus and finalFocus targets while every modal composition retains a keyboard-reachable DialogClose.",
+        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and forwarded trigger, portal, backdrop, content, title, description, body, footer, and close refs."
       ],
-      "usage": "import { Dialog, DialogFooter } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\" description=\"Choose collaborators and permissions.\">\n  ...\n  <DialogFooter>...</DialogFooter>\n</Dialog>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { Dialog, DialogBackdrop, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogRoot, DialogTitle, DialogTrigger } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\">...</Dialog>\n\n<DialogRoot>\n  <DialogTrigger render={<Button>Open custom dialog</Button>} />\n  <DialogPortal>\n    <DialogBackdrop />\n    <DialogContent>\n      <DialogHeader><DialogTitle>Custom dialog</DialogTitle><DialogDescription>Compose only the regions this task needs.</DialogDescription></DialogHeader>\n      ...\n      <DialogFooter><DialogClose render={<Button variant=\"secondary\">Cancel</Button>} /></DialogFooter>\n    </DialogContent>\n  </DialogPortal>\n</DialogRoot>"
+    },
+    {
+      "name": "alert-dialog",
+      "title": "AlertDialog",
+      "description": "Requires an explicit response before a sensitive action proceeds.",
+      "category": "overlays",
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["dialog"],
+      "files": [
+        {
+          "source": "../../ui/src/components/alert-dialog.tsx",
+          "target": "components/alert-dialog.tsx",
+          "role": "component",
+          "integrity": "sha256-7ac8f2f73b22562d7d54bac23d65d45dbb2de82f16c2345376546d7f0e1d205c"
+        }
+      ],
+      "baseUiPrimitives": ["alert-dialog"],
+      "slots": [
+        "portal",
+        "trigger",
+        "backdrop",
+        "content",
+        "header",
+        "title",
+        "description",
+        "body",
+        "footer",
+        "cancel",
+        "action"
+      ],
+      "variants": [],
+      "requiredTokens": [
+        "--n-dialog-width-md",
+        "--n-dialog-viewport-inset",
+        "--n-dialog-padding",
+        "--n-dialog-header-gap",
+        "--n-dialog-header-margin",
+        "--n-dialog-body-gap",
+        "--n-overlay-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-backdrop",
+        "--n-overlay-backdrop-filter",
+        "--n-overlay-foreground",
+        "--n-overlay-foreground-muted",
+        "--n-overlay-control-background",
+        "--n-overlay-control-background-hover",
+        "--n-overlay-surface-filter",
+        "--n-overlay-shadow",
+        "--n-motion-overlay-enter-duration",
+        "--n-motion-overlay-enter-easing",
+        "--n-motion-overlay-exit-duration",
+        "--n-motion-overlay-exit-easing",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Alert Dialog primitive with role=alertdialog, modal focus containment, Escape dismissal, scroll locking, and pointer dismissal disabled.",
+        "AlertDialogTitle provides the accessible name and AlertDialogDescription explains the consequence in concrete language.",
+        "Place AlertDialogCancel before AlertDialogAction and pass its ref to AlertDialogContent initialFocus for destructive or difficult-to-reverse actions.",
+        "AlertDialogCancel and AlertDialogAction are explicit close boundaries; mutation, async orchestration, permissions, routing, and confirmation copy remain consumer-owned.",
+        "Focus returns to the trigger after either response and every action keeps native Button keyboard semantics through render composition."
+      ],
+      "usage": "import * as React from 'react';\nimport { Button } from '@/components/nerio/components/button';\nimport { AlertDialog, AlertDialogAction, AlertDialogBackdrop, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger } from '@/components/nerio/components/alert-dialog';\n\nconst cancelRef = React.useRef<HTMLButtonElement>(null);\n\n<AlertDialog>\n  <AlertDialogTrigger render={<Button variant=\"danger\">Delete project</Button>} />\n  <AlertDialogPortal>\n    <AlertDialogBackdrop />\n    <AlertDialogContent initialFocus={cancelRef}>\n      <AlertDialogHeader>\n        <AlertDialogTitle>Delete project?</AlertDialogTitle>\n        <AlertDialogDescription>This permanently removes the project and cannot be undone.</AlertDialogDescription>\n      </AlertDialogHeader>\n      <AlertDialogFooter>\n        <AlertDialogCancel ref={cancelRef} render={<Button variant=\"secondary\">Cancel</Button>} />\n        <AlertDialogAction render={<Button variant=\"danger\" onClick={deleteProject}>Delete project</Button>} />\n      </AlertDialogFooter>\n    </AlertDialogContent>\n  </AlertDialogPortal>\n</AlertDialog>"
     },
     {
       "name": "sidebar-primitive",

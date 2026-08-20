@@ -27,6 +27,7 @@ const expectedFiles = [
   "styles/tailwind.css",
 ];
 const expectedDialogFiles = [...expectedFiles, "components/dialog.tsx", "styles/overlays.css"];
+const expectedAlertDialogFiles = [...expectedDialogFiles, "components/alert-dialog.tsx"];
 const expectedSheetFiles = [
   ...expectedFiles,
   "components/button.tsx",
@@ -1758,6 +1759,7 @@ async function verify() {
     await run(localTarget, "add", "button-group");
     await run(localTarget, "add", "button");
     await run(localTarget, "add", "dialog");
+    await run(localTarget, "add", "alert-dialog");
     await run(localTarget, "add", "sheet");
     await run(localTarget, "add", "sidebar-primitive");
     await run(localTarget, "add", "command-primitive");
@@ -1845,9 +1847,25 @@ async function verify() {
     );
     if (
       !dialogSource.includes('closeLabel = "Close dialog"') ||
-      !dialogSource.includes('data-slot="close"')
+      !dialogSource.includes('data-slot="close"') ||
+      !dialogSource.includes("export function DialogRoot") ||
+      !dialogSource.includes("export const DialogContent")
     ) {
-      throw new Error("Installed Dialog source is missing its localizable close anatomy contract.");
+      throw new Error("Installed Dialog source is missing its convenience or compound contract.");
+    }
+    assertInstall(localTarget, expectedAlertDialogFiles);
+    const alertDialogSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/alert-dialog.tsx"),
+      "utf8",
+    );
+    if (
+      !alertDialogSource.includes("BaseAlertDialog.Root") ||
+      !alertDialogSource.includes('createAlertDialogAction("cancel")') ||
+      !alertDialogSource.includes('createAlertDialogAction("action")')
+    ) {
+      throw new Error(
+        "Installed AlertDialog source is missing its conservative response contract.",
+      );
     }
     assertFiles(localTarget, expectedSheetFiles);
     const sheetSource = fs.readFileSync(

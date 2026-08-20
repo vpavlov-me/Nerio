@@ -781,6 +781,21 @@ async function verify() {
       throw new Error("MCP Dialog usage is missing overlay, adapter, or close metadata.");
     }
 
+    const alertDialogUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "alert-dialog" },
+    });
+    const alertDialogUsage = JSON.parse(alertDialogUsageResult.content[0].text);
+    if (
+      !alertDialogUsage.registryDependencies.includes("dialog") ||
+      !alertDialogUsage.baseUiPrimitives.includes("alert-dialog") ||
+      !alertDialogUsage.slots.includes("cancel") ||
+      !alertDialogUsage.slots.includes("action") ||
+      !alertDialogUsage.accessibility.some((item) => item.includes("pointer dismissal disabled"))
+    ) {
+      throw new Error("MCP AlertDialog usage is missing its response or dismissal contract.");
+    }
+
     const sheetUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "sheet" },
@@ -921,6 +936,7 @@ async function verify() {
       "motion-adapter",
       "button-group",
       "dialog",
+      "alert-dialog",
       "sheet",
       "select",
       "tabs",

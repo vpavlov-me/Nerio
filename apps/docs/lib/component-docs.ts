@@ -38,6 +38,8 @@ const componentLedes: Record<string, string> = {
   switch:
     "Switches toggle immediate settings with clear on and off affordances, including read-only and invalid states.",
   dialog: "Dialogs focus a short decision or task above the current product surface.",
+  "alert-dialog":
+    "Alert dialogs require an explicit response before a consequential action proceeds.",
   sheet:
     "Sheets present a focused modal panel from an explicit side while leaving product workflows to the consumer.",
   select:
@@ -84,6 +86,7 @@ const componentLedes: Record<string, string> = {
 
 const componentTitles: Record<string, string> = {
   "button-group": "ButtonGroup",
+  "alert-dialog": "AlertDialog",
   "command-primitive": "Command",
   "dropdown-menu": "DropdownMenu",
   "empty-state": "EmptyState",

@@ -89,7 +89,9 @@ export const snippets: Record<string, string> = {
   "date-picker":
     'import { Field } from "@nerio-ui/ui";\nimport { DatePicker } from "@nerio-ui/ui/client";\n\n<Field label="Release date">\n  <DatePicker defaultValue="2026-06-15" clearable />\n</Field>',
   dialog:
-    'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
+    'import { Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogRoot, DialogTitle, DialogTrigger } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>\n\n<DialogRoot>\n  <DialogTrigger render={<Button>Open custom dialog</Button>} />\n  <DialogPortal>\n    <DialogContent>\n      <DialogHeader>\n        <DialogTitle>Move collection</DialogTitle>\n        <DialogDescription>Choose a destination workspace.</DialogDescription>\n      </DialogHeader>\n      ...\n      <DialogFooter>\n        <DialogClose render={<Button variant="secondary">Cancel</Button>} />\n        <Button>Move collection</Button>\n      </DialogFooter>\n    </DialogContent>\n  </DialogPortal>\n</DialogRoot>',
+  "alert-dialog":
+    'import * as React from \'react\';\nimport { AlertDialog, AlertDialogAction, AlertDialogBackdrop, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, Button } from \'@nerio-ui/ui/client\';\n\nfunction DeleteProjectDialog() {\n  const cancelRef = React.useRef<HTMLButtonElement>(null);\n\n  return (\n    <AlertDialog>\n      <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />\n      <AlertDialogPortal>\n        <AlertDialogBackdrop />\n        <AlertDialogContent initialFocus={cancelRef}>\n          <AlertDialogHeader>\n            <AlertDialogTitle>Delete project?</AlertDialogTitle>\n            <AlertDialogDescription>This permanently removes the project and cannot be undone.</AlertDialogDescription>\n          </AlertDialogHeader>\n          <AlertDialogFooter>\n            <AlertDialogCancel ref={cancelRef} render={<Button variant="secondary">Cancel</Button>} />\n            <AlertDialogAction render={<Button variant="danger" onClick={deleteProject}>Delete project</Button>} />\n          </AlertDialogFooter>\n        </AlertDialogContent>\n      </AlertDialogPortal>\n    </AlertDialog>\n  );\n}',
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
@@ -206,6 +208,62 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: ["button-group"],
     motion: ["inherits Button motion"],
     accessibility: ["group role", "aria-label", "child Button semantics"],
+  },
+  dialog: {
+    name: "Dialog",
+    description:
+      "A compatible convenience modal with additive compound anatomy for focused tasks and decisions.",
+    status: "stable",
+    layer: "core",
+    category: "Overlays",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["AlertDialog", "Sheet", "Popover", "Button"],
+    anatomy: [
+      "trigger",
+      "portal",
+      "backdrop",
+      "content",
+      "header",
+      "title",
+      "description",
+      "body",
+      "footer",
+      "close",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion fade-only state change"],
+    accessibility: ["Base UI modal focus management", "accessible name", "keyboard close path"],
+  },
+  "alert-dialog": {
+    name: "AlertDialog",
+    description:
+      "A conservative confirmation primitive with explicit cancel and action boundaries.",
+    status: "beta",
+    layer: "core",
+    category: "Overlays",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Dialog", "Button"],
+    anatomy: [
+      "trigger",
+      "portal",
+      "backdrop",
+      "content",
+      "header",
+      "title",
+      "description",
+      "body",
+      "footer",
+      "cancel",
+      "action",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion fade-only state change"],
+    accessibility: [
+      "Base UI alertdialog semantics",
+      "pointer dismissal disabled",
+      "deliberate initial focus",
+      "explicit cancel and action controls",
+    ],
   },
   sheet: {
     name: "Sheet",
@@ -3486,9 +3544,10 @@ export const componentReference: Record<string, ComponentReference> = {
   dialog: {
     category: "Overlays",
     purpose:
-      "Use Dialog to focus a short task, confirmation, or decision above the current surface.",
+      "Use Dialog to focus a short task or reversible decision above the current surface; use AlertDialog when a consequential action requires an explicit response.",
     anatomy: [
       { title: "trigger", description: "Control that opens the dialog." },
+      { title: "portal", description: "Optional container boundary for portalled modal content." },
       { title: "backdrop", description: "Backdrop that separates the dialog from the page." },
       { title: "content", description: "Modal surface rendered through a portal." },
       { title: "header", description: "Title, optional description, and close boundary." },
@@ -3516,8 +3575,15 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     variants: [
-      { title: "Task", description: "Short focused task with clear completion." },
-      { title: "Confirmation", description: "Decision point for sensitive actions." },
+      {
+        title: "Convenience",
+        description: "Compatible trigger, title, description, body, footer, and close path.",
+      },
+      {
+        title: "Compound",
+        description:
+          "Meaningful parts may be omitted, reordered, or customized while Base UI retains behavior.",
+      },
     ],
     states: [
       { title: "Open", description: "Focus moves into the dialog." },
@@ -3526,6 +3592,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Use a clear title, keep focus contained, and avoid opening dialogs from dialogs.",
       "Base UI handles modal focus trapping, Escape dismissal, outside dismissal, and return focus.",
+      "Compound compositions keep a keyboard-reachable DialogClose; initialFocus and finalFocus are explicit advanced controls.",
       "Use open/defaultOpen/onOpenChange when state must be coordinated by the parent.",
       "Long body content scrolls inside the bounded dialog so the title and dismissal control remain visible.",
     ],
@@ -3538,8 +3605,9 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       { title: "bodyClassName", description: "Optional class hook for the body slot." },
       {
-        title: "DialogFooter",
-        description: "Composable footer that keeps modal actions aligned to the inline end.",
+        title: "DialogRoot and compound parts",
+        description:
+          "Expose Trigger, Portal, Backdrop, Content, Header, Title, Description, Body, Footer, and Close without changing the convenience Dialog API.",
       },
       {
         title: "closeLabel",
@@ -3547,8 +3615,100 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     guidance: {
-      do: ["Use for short decisions that need context without a route change."],
-      dont: ["Do not use Dialog for long, multi-page workflows."],
+      do: [
+        "Use the convenience API for the common path and compound parts only when the task needs structural control.",
+      ],
+      dont: [
+        "Do not use Dialog for long workflows or consequential confirmation that belongs in AlertDialog.",
+      ],
+    },
+    tokens: [
+      "--n-dialog-width-md",
+      "--n-overlay-z-index",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-backdrop",
+      "--n-overlay-backdrop-filter",
+      "--n-overlay-foreground",
+      "--n-overlay-foreground-muted",
+      "--n-overlay-surface-filter",
+      "--n-overlay-shadow",
+      "--n-motion-overlay-enter-duration",
+      "--n-motion-overlay-exit-duration",
+      "--n-focus-ring",
+    ],
+  },
+  "alert-dialog": {
+    category: "Overlays",
+    purpose:
+      "Use AlertDialog when a destructive or difficult-to-reverse action must pause for one explicit response.",
+    anatomy: [
+      { title: "trigger", description: "Control that requests the confirmation." },
+      { title: "portal", description: "Container boundary for the portalled confirmation." },
+      { title: "backdrop", description: "Modal backdrop that does not dismiss on pointer press." },
+      {
+        title: "content",
+        description: "Viewport-bounded alertdialog surface with deliberate focus.",
+      },
+      { title: "header", description: "Groups the accessible name and concrete consequence." },
+      { title: "title", description: "Required accessible name phrased as the decision." },
+      { title: "description", description: "Explains the consequence without ambiguous language." },
+      { title: "body", description: "Optional supporting content; keep the decision concise." },
+      { title: "footer", description: "Action row with cancel before confirmation." },
+      { title: "cancel", description: "Safe response and recommended initial-focus target." },
+      {
+        title: "action",
+        description: "Explicit confirmation boundary that closes after the consumer handler runs.",
+      },
+    ],
+    variants: [{ title: "Confirmation", description: "One explicit cancel/action decision." }],
+    states: [
+      {
+        title: "Open",
+        description: "Pointer dismissal is disabled and focus stays in the alertdialog.",
+      },
+      { title: "Cancelled", description: "The safe response closes and restores focus." },
+      { title: "Confirmed", description: "The consumer handler runs and the dialog closes." },
+    ],
+    accessibility: [
+      "Base UI supplies role=alertdialog, modal focus containment, Escape dismissal, scroll locking, and pointer-dismissal protection.",
+      "Provide both AlertDialogTitle and AlertDialogDescription with concrete action and consequence copy.",
+      "For destructive or difficult-to-reverse actions, pass the AlertDialogCancel ref to AlertDialogContent initialFocus.",
+      "Keep cancel before action in reading and tab order; do not communicate danger through color alone.",
+      "Mutation, async state, permissions, routing, and error recovery remain consumer-owned.",
+    ],
+    api: [
+      {
+        title: "AlertDialog",
+        description: "Controlled or uncontrolled Base UI Alert Dialog root.",
+      },
+      {
+        title: "AlertDialogContent",
+        description:
+          "Accepts initialFocus, finalFocus, className, native popup props, and a forwarded ref.",
+      },
+      {
+        title: "AlertDialogCancel",
+        description: "Explicit safe close boundary and recommended initial-focus target.",
+      },
+      {
+        title: "AlertDialogAction",
+        description:
+          "Explicit confirm close boundary; consumers attach mutation behavior to the rendered Button.",
+      },
+    ],
+    designNotes: [
+      "AlertDialog is a response boundary, not an async mutation orchestrator.",
+      "A normal Dialog remains appropriate for reversible tasks and forms with their own completion model.",
+    ],
+    related: ["Dialog", "Button"],
+    guidance: {
+      do: [
+        "Name the action and consequence precisely, focus Cancel first, and keep one clear confirmation action.",
+      ],
+      dont: [
+        "Do not hide side effects, default focus to a destructive action, or put multi-step workflows in AlertDialog.",
+      ],
     },
     tokens: [
       "--n-dialog-width-md",
