@@ -39,14 +39,23 @@ package. These are the only current Templates; additional scenarios will be rebu
 return to the catalog.
 
 The public Foundations index is `/docs/foundations/tokens`, `/docs/foundations/typography`,
-`/docs/foundations/themes`, `/docs/foundations/color`, `/docs/foundations/localization`, `/docs/foundations/accessibility`, `/docs/foundations/motion`, `/docs/foundations/radius`,
-`/docs/foundations/effects`, and `/docs/foundations/icons`. These canonical routes share one typed
+`/docs/foundations/themes`, `/docs/foundations/color`, `/docs/foundations/localization`,
+`/docs/foundations/accessibility`, `/docs/foundations/spacing-layout`,
+`/docs/foundations/motion`, `/docs/foundations/radius`, `/docs/foundations/effects`, and
+`/docs/foundations/icons`. These canonical routes share one typed
 discovery projection used by navigation, documentation search, adjacent-page links, and the sitemap.
 Source-backed Typography, Themes, and Color tables are generated from the canonical token CSS and
 runtime catalog; editorial guidance remains hand-authored. Color guidance uses semantic roles,
 evaluates complete foreground/background and interaction-state sequences, keeps meaning available
 without hue, and validates custom themes in light, dark, system-dark, forced-colors, and real
 component contexts.
+
+Spacing and layout guidance renders the primitive spacing scale, density aliases, and representative
+component geometry from the same source-backed projection. Core owns those contracts and resilient
+component behavior; products own page grids, breakpoints, application shells, routing layouts,
+content priority, and domain hierarchy. Compact density remaps semantic and component aliases
+without redefining primitive spacing, shrinking content indiscriminately, or adding another runtime
+axis.
 
 Direction and localization use one Core 1.1 contract. HTML `dir` owns layout and CSS inheritance;
 direction-sensitive Base UI primitives receive the same value through

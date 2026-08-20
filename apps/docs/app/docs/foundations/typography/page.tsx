@@ -394,7 +394,10 @@ export default function Page() {
         </p>
         <p>
           The <a href="/docs/foundations/accessibility">Accessibility foundation</a> defines the
-          shared zoom, reflow, text-spacing, assistive-technology, and manual evidence boundary.
+          shared zoom, reflow, text-spacing, assistive-technology, and manual evidence boundary. The{" "}
+          <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> covers
+          content-driven growth, wrapping, narrow containers, and long localization in product
+          composition.
         </p>
       </section>
     </article>

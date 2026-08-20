@@ -3,6 +3,7 @@ import postcss from "postcss";
 const typographyRolePattern =
   /^--n-(?:body|control|label|helper)-(?:font-size|font-weight|line-height)$/;
 const densityAliasPattern = /^--n-density-space-/;
+const primitiveSpacingPattern = /^--n-space-\d+(?:-\d+)?$/;
 const modeMappingTokens = [
   "--n-color-surface-canvas",
   "--n-color-surface-default",
@@ -110,6 +111,20 @@ const componentColorAliasTokens = [
   "--n-badge-background-success",
   "--n-badge-foreground-success",
   "--n-card-background",
+];
+const componentSpacingAliasTokens = [
+  "--n-button-gap",
+  "--n-button-padding-inline-md",
+  "--n-field-gap",
+  "--n-form-group-gap",
+  "--n-card-padding",
+  "--n-card-gap",
+  "--n-card-section-gap",
+  "--n-table-cell-padding-y",
+  "--n-table-cell-padding-x",
+  "--n-item-gap",
+  "--n-dialog-padding",
+  "--n-sidebar-region-padding",
 ];
 
 function references(value) {
@@ -223,6 +238,7 @@ function validateDeclarations(root) {
 }
 
 function formatPixels(value) {
+  if (value === "0") return "0px";
   const rem = value.match(/^(-?[0-9.]+)rem$/)?.[1];
   if (!rem) return null;
   return `${Number(rem) * 16}px`;
@@ -334,6 +350,16 @@ export function createFoundationMetadata({ cssSource, catalog, foundationPages }
   const contrastTargets = [...base]
     .filter(([token]) => token.startsWith("--n-contrast-"))
     .map(([token, value]) => tokenRecord(token, value));
+  const primitiveSpacing = [...base]
+    .filter(([token]) => primitiveSpacingPattern.test(token))
+    .map(([token, value]) => ({
+      name: token.slice("--n-space-".length),
+      ...tokenRecord(token, value),
+      pixels: formatPixels(value),
+    }));
+  const componentSpacingAliases = componentSpacingAliasTokens.map((token) =>
+    tokenRecord(token, requireValue(base, token, ":root")),
+  );
 
   const typographyPresets = [];
   root.walkRules((rule) => {
@@ -447,6 +473,10 @@ export function createFoundationMetadata({ cssSource, catalog, foundationPages }
       semanticFamilies: semanticColorFamilies,
       componentAliases: componentColorAliases,
       contrastTargets,
+    },
+    spacing: {
+      primitiveScale: primitiveSpacing,
+      componentAliases: componentSpacingAliases,
     },
     runtimeAxes: {
       theme: {

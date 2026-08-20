@@ -164,6 +164,39 @@ test("projects representative light, dark, and system-dark color mappings", () =
   );
 });
 
+test("projects the canonical primitive spacing scale and component aliases", () => {
+  const metadata = createFoundationMetadata(input());
+  assert.deepEqual(
+    metadata.spacing.primitiveScale.map((step) => step.name),
+    ["0", "0-5", "1", "1-5", "2", "2-5", "3", "4", "5", "6", "8", "10", "12"],
+  );
+  assert.equal(metadata.spacing.primitiveScale[0].pixels, "0px");
+  assert.equal(
+    metadata.spacing.componentAliases.find((alias) => alias.token === "--n-table-cell-padding-y")
+      .reference,
+    "--n-density-space-md",
+  );
+});
+
+test("detects primitive spacing drift from canonical token CSS", () => {
+  const expected = renderFoundationMetadataModule(createFoundationMetadata(input()));
+  const mutated = cssSource.replace(
+    "--n-space-12: 3rem;",
+    "--n-space-12: 3rem;\n  --n-space-14: 3.5rem;",
+  );
+  const actual = renderFoundationMetadataModule(createFoundationMetadata(input(mutated)));
+  assert.throws(
+    () =>
+      assertGeneratedProjection({
+        actual,
+        expected,
+        target: "apps/docs/lib/generated/foundation-metadata.ts",
+        sources: ["packages/tokens/src/styles.css"],
+      }),
+    /Run pnpm prepare:foundation-metadata/,
+  );
+});
+
 test("detects color metadata drift from canonical token CSS", () => {
   const expected = renderFoundationMetadataModule(createFoundationMetadata(input()));
   const mutated = cssSource.replace(

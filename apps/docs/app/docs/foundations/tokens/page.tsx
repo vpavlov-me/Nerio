@@ -199,7 +199,10 @@ export default function Page() {
           focus, non-color communication, custom-theme responsibility, and the evidence that token
           ratios alone cannot establish. Use the{" "}
           <a href="/docs/foundations/color">Color foundation</a> for the complete semantic role
-          inventory, pairing guidance, and state validation matrix.
+          inventory, pairing guidance, and state validation matrix. The{" "}
+          <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> explains
+          when to choose component contracts, density aliases, primitive steps, or product-owned
+          composition tokens.
         </p>
       </section>
 

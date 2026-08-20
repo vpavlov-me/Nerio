@@ -305,7 +305,10 @@ export default function Page() {
         <p>
           The <a href="/docs/foundations/themes">Themes foundation</a> defines custom-theme review,
           and the <a href="/docs/foundations/motion">Motion foundation</a> defines the shared
-          reduced-motion contract.
+          reduced-motion contract. The{" "}
+          <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> applies the
+          reflow, text-growth, overflow, density, and logical-property boundary to product
+          composition.
         </p>
       </section>
 

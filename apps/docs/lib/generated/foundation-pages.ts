@@ -26,6 +26,10 @@ export const foundationPages = [
     label: "Accessibility",
   },
   {
+    path: "/docs/foundations/spacing-layout",
+    label: "Spacing & layout",
+  },
+  {
     path: "/docs/foundations/motion",
     label: "Motion",
   },
