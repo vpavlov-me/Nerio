@@ -2,6 +2,7 @@
   { "path": "/docs/foundations/tokens", "label": "Tokens" },
   { "path": "/docs/foundations/typography", "label": "Typography" },
   { "path": "/docs/foundations/themes", "label": "Themes" },
+  { "path": "/docs/foundations/color", "label": "Color" },
   { "path": "/docs/foundations/localization", "label": "Localization" },
   { "path": "/docs/foundations/accessibility", "label": "Accessibility" },
   { "path": "/docs/foundations/motion", "label": "Motion" },

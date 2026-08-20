@@ -279,6 +279,11 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="platform-preferences">Platform preferences and customization</h2>
+        <p>
+          Apply these checks to every foreground/background pair and interaction sequence described
+          in the <a href="/docs/foundations/color">Color foundation</a>, especially after custom
+          theme overrides.
+        </p>
         <TableContainer aria-label="Accessibility platform preferences">
           <Table>
             <TableHeader>

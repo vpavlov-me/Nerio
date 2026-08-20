@@ -464,6 +464,78 @@ function accessibilityFoundationFailures() {
   return failures;
 }
 
+function colorFoundationFailures() {
+  const colorPage = read("apps/docs/app/docs/foundations/color/page.tsx");
+  const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const themesPage = read("apps/docs/app/docs/foundations/themes/page.tsx");
+  const accessibilityPage = read("apps/docs/app/docs/foundations/accessibility/page.tsx");
+  const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
+  const normalized = colorPage.replaceAll(/\s+/g, " ");
+  const failures = [];
+  const requiredPageContracts = [
+    ["Color architecture", "Color Foundation must explain the token architecture"],
+    ["color.primitiveFamilies", "Color Foundation must render source-backed primitive families"],
+    ["color.semanticFamilies", "Color Foundation must render source-backed semantic families"],
+    ["color.componentAliases", "Color Foundation must render source-backed component aliases"],
+    ["Representative mode mappings", "Color Foundation must render mode mappings"],
+    ["System dark", "Color Foundation must label the projected system mapping as OS dark"],
+    ["runtimeAxes.theme.presets", "Color Foundation must render built-in theme mappings"],
+    ["foreground/background pair", "Color Foundation must review complete color pairs"],
+    ["Default", "Color Foundation must cover the default interaction state"],
+    ["Hover", "Color Foundation must cover the hover interaction state"],
+    ["Active", "Color Foundation must cover the active interaction state"],
+    ["Focus-visible", "Color Foundation must cover visible focus"],
+    ["Disabled", "Color Foundation must cover disabled color behavior"],
+    ["Selected", "Color Foundation must cover selected color behavior"],
+    ["Invalid", "Color Foundation must cover invalid color behavior"],
+    ["Color foundation example preview", "Color Foundation must include a live component preview"],
+    ["colorExample", "Color Foundation must include a public component snippet"],
+    ["Text contrast", "Color Foundation must cover text contrast"],
+    ["Non-text contrast", "Color Foundation must cover non-text contrast"],
+    ["Color-independent meaning", "Color Foundation must reject color-only communication"],
+    ["Forced colors", "Color Foundation must cover forced colors"],
+    ["Increased contrast", "Color Foundation must cover increased contrast"],
+    ["Color vision", "Color Foundation must cover color-vision limitations"],
+    ["system with OS dark", "Color Foundation must validate system-dark custom themes"],
+    ["Custom color theme", "Color Foundation must include a custom theme snippet"],
+    [
+      ':root[data-theme="acme"][data-mode="system"]',
+      "Color Foundation must include the system-dark custom theme selector",
+    ],
+    ["Validation matrix", "Color Foundation must include a custom theme validation matrix"],
+    ["Chart foundation issue", "Color Foundation must preserve the chart ownership boundary"],
+    [
+      "does not currently expose a contrast runtime axis",
+      "Color Foundation must state known runtime limitations",
+    ],
+  ];
+
+  for (const [expected, message] of requiredPageContracts) {
+    if (!normalized.includes(expected)) failures.push(message);
+  }
+  if (colorPage.includes('"use client"')) {
+    failures.push("Color Foundation must remain server-rendered");
+  }
+  if (
+    !foundationPages.some(
+      (page) => page.path === "/docs/foundations/color" && page.label === "Color",
+    )
+  ) {
+    failures.push("Foundation route metadata must expose the canonical Color route");
+  }
+  for (const [source, label] of [
+    [tokenPage, "Tokens"],
+    [themesPage, "Themes"],
+    [accessibilityPage, "Accessibility"],
+  ]) {
+    if (!source.includes("/docs/foundations/color")) {
+      failures.push(`${label} documentation must link to the Color Foundation`);
+    }
+  }
+
+  return failures;
+}
+
 function templateArchitectureFailures() {
   const catalog = read("apps/docs/features/templates/catalog.ts");
   const gallery = read("apps/docs/app/templates/page.tsx");
@@ -877,6 +949,7 @@ const uiEntrypointIssues = uiEntrypointFailures();
 const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
 const accessibilityFoundationIssues = accessibilityFoundationFailures();
+const colorFoundationIssues = colorFoundationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
 const blockArchitectureIssues = blockArchitectureFailures();
 const publicSurfaceIssues = publicSurfaceFailures();
@@ -916,6 +989,7 @@ reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
 reportMissing("Accessibility foundation issues", accessibilityFoundationIssues);
+reportMissing("Color foundation issues", colorFoundationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
 reportMissing("Public documentation surface issues", publicSurfaceIssues);
@@ -944,6 +1018,7 @@ const failures = [
   packageReadinessIssues,
   tailwindDocumentationIssues,
   accessibilityFoundationIssues,
+  colorFoundationIssues,
   templateArchitectureIssues,
   blockArchitectureIssues,
   publicSurfaceIssues,

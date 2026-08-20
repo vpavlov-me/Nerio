@@ -197,7 +197,9 @@ export default function Page() {
         <p>
           Use the <a href="/docs/foundations/accessibility">Accessibility foundation</a> to review
           focus, non-color communication, custom-theme responsibility, and the evidence that token
-          ratios alone cannot establish.
+          ratios alone cannot establish. Use the{" "}
+          <a href="/docs/foundations/color">Color foundation</a> for the complete semantic role
+          inventory, pairing guidance, and state validation matrix.
         </p>
       </section>
 

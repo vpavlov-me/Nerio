@@ -3184,7 +3184,10 @@ pre {
   border: var(--n-border-subtle);
   border-radius: var(--n-radius-sm);
   block-size: var(--n-docs-avatar-size);
+  display: inline-block;
   inline-size: var(--n-docs-avatar-size);
+  margin-inline-end: var(--n-space-2);
+  vertical-align: middle;
 }
 
 .token-color-table .token-color-swatch {
