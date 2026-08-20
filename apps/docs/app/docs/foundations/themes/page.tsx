@@ -302,7 +302,9 @@ export default function Page() {
         <p>
           Review contrast, focus, non-color communication, and manual evidence responsibilities in
           the <a href="/docs/foundations/accessibility">Accessibility foundation</a> before
-          approving a custom theme.
+          approving a custom theme. The <a href="/docs/foundations/color">Color foundation</a>{" "}
+          defines the source-backed role inventory, required accent mappings, and complete
+          foreground/background validation matrix.
         </p>
         <TableContainer aria-label="Theme guidance">
           <Table>

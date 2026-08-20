@@ -101,6 +101,88 @@ test("projects the canonical default font aliases", () => {
   assert.equal(metadata.typography.fontDefaults.mono.reference, "--n-font-mono-system");
 });
 
+test("projects every canonical primitive and semantic color family", () => {
+  const metadata = createFoundationMetadata(input());
+  assert.deepEqual(
+    metadata.color.primitiveFamilies.map((family) => family.value),
+    [
+      "gray",
+      "gray-alpha",
+      "white-alpha",
+      "purple",
+      "blue",
+      "green",
+      "orange",
+      "red",
+      "amber",
+      "cyan",
+      "magenta",
+    ],
+  );
+  assert.deepEqual(
+    metadata.color.semanticFamilies.map((family) => family.value),
+    ["surface", "text", "border", "action", "focus", "status", "trend", "chart"],
+  );
+  assert.ok(
+    metadata.color.componentAliases.some(
+      (alias) =>
+        alias.token === "--n-button-background-primary" &&
+        alias.reference === "--n-color-action-primary",
+    ),
+  );
+  assert.ok(
+    metadata.color.componentAliases.some(
+      (alias) =>
+        alias.token === "--n-button-background-destructive" &&
+        alias.reference === "--n-color-danger",
+    ),
+  );
+});
+
+test("projects representative light, dark, and system-dark color mappings", () => {
+  const metadata = createFoundationMetadata(input());
+  const dark = metadata.runtimeAxes.mode.mappings.find((mapping) => mapping.value === "dark");
+  const system = metadata.runtimeAxes.mode.mappings.find((mapping) => mapping.value === "system");
+  const purple = metadata.runtimeAxes.theme.presets.find((preset) => preset.value === "purple");
+  assert.equal(
+    dark.colorMappings.find((mapping) => mapping.token === "--n-color-text-primary").reference,
+    "--n-gray-50",
+  );
+  assert.equal(
+    system.colorMappings.find((mapping) => mapping.token === "--n-color-text-primary").reference,
+    "--n-gray-50",
+  );
+  assert.equal(
+    purple.colorMappings.dark.find((mapping) => mapping.token === "--n-color-action-primary")
+      .reference,
+    "--n-purple-500",
+  );
+  assert.equal(
+    purple.colorMappings.systemDark.find((mapping) => mapping.token === "--n-color-action-primary")
+      .reference,
+    "--n-purple-500",
+  );
+});
+
+test("detects color metadata drift from canonical token CSS", () => {
+  const expected = renderFoundationMetadataModule(createFoundationMetadata(input()));
+  const mutated = cssSource.replace(
+    "--n-color-text-primary: var(--n-gray-950);",
+    "--n-color-text-primary: var(--n-gray-900);",
+  );
+  const actual = renderFoundationMetadataModule(createFoundationMetadata(input(mutated)));
+  assert.throws(
+    () =>
+      assertGeneratedProjection({
+        actual,
+        expected,
+        target: "apps/docs/lib/generated/foundation-metadata.ts",
+        sources: ["packages/tokens/src/styles.css"],
+      }),
+    /drifted from packages\/tokens\/src\/styles\.css/,
+  );
+});
+
 test("reports missing foundation discovery coverage", () => {
   const failures = foundationDiscoveryFailures({
     pages: [{ path: "/docs/foundations/example", label: "Example" }],

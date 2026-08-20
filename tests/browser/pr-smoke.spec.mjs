@@ -628,6 +628,76 @@ test("discovers the Accessibility foundation through navigation and search", asy
   await expectHealthyPage(page, problems);
 });
 
+test("discovers and remaps the source-backed Color foundation", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/foundations/color");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Color" })).toBeVisible();
+  const example = page.getByRole("region", { name: "Color foundation example preview" });
+  const examplePreview = example.locator(".component-example__preview");
+  await expect(examplePreview.getByText("Selected", { exact: true })).toBeVisible();
+  await expect(examplePreview.getByText("Published", { exact: true })).toBeVisible();
+  await expect(
+    page
+      .getByRole("complementary", { name: "On this page" })
+      .getByRole("link", { name: "Pairing and interaction states", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Source-backed semantic color families")).toBeVisible();
+  await expect(page.getByLabel("Custom theme validation matrix")).toBeVisible();
+
+  await page.evaluate(() => {
+    document.documentElement.dataset.mode = "light";
+    document.documentElement.dataset.theme = "purple";
+  });
+  const purpleLight = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue("--n-color-action-primary"),
+  );
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = "blue";
+  });
+  const blueLight = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue("--n-color-action-primary"),
+  );
+  expect(blueLight).not.toBe(purpleLight);
+
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = "orange";
+    document.documentElement.dataset.mode = "dark";
+  });
+  const orangeDark = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue("--n-color-action-primary"),
+  );
+  expect(orangeDark).not.toBe(blueLight);
+
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.evaluate(() => {
+    document.documentElement.dataset.mode = "system";
+  });
+  await expect(example).toBeVisible();
+
+  await page.emulateMedia({ forcedColors: "active" });
+  const accessibilityLink = page
+    .getByRole("link", { name: "Accessibility foundation", exact: true })
+    .first();
+  await accessibilityLink.focus();
+  await expect(accessibilityLink).toBeFocused();
+
+  await page.emulateMedia({ colorScheme: "light", forcedColors: "none" });
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  const search = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("combobox", { name: "Search documentation" });
+  await search.fill("Color");
+  await expect(
+    page
+      .getByRole("dialog", { name: "Search documentation" })
+      .getByRole("option", { name: /Color/ })
+      .first(),
+  ).toBeVisible();
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps the maintainer-only visual language reference out of public docs", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/getting-started");

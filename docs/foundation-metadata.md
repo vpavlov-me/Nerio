@@ -29,11 +29,13 @@ pnpm validate:foundation-metadata
 pnpm validate:docs
 ```
 
-Commit the source and generated projection together. Typography and Themes server pages consume the
-full metadata projection. Documentation navigation, search, adjacent-page links, and the sitemap
-consume the smaller generated route projection so token metadata is not added to the client shell.
-The validator also requires every canonical foundation route to exist and appear in the Foundations
-index in `apps/docs/content/llms.txt`.
+Commit the source and generated projection together. Typography, Themes, and Color server pages
+consume the full metadata projection. Color metadata groups canonical primitive and semantic
+families and preserves representative component aliases plus mode and theme mappings without
+flattening their CSS-variable references. Documentation navigation, search, adjacent-page links,
+and the sitemap consume the smaller generated route projection so token metadata is not added to
+the client shell. The validator also requires every canonical foundation route to exist and appear
+in the Foundations index in `apps/docs/content/llms.txt`.
 
 ## Failure model
 

@@ -10,6 +10,107 @@ const modeMappingTokens = [
   "--n-color-surface-raised",
   "--n-color-surface-overlay",
 ];
+const primitiveColorFamilyLabels = {
+  gray: "Opaque neutral",
+  "gray-alpha": "Dark alpha neutral",
+  "white-alpha": "Light alpha neutral",
+  purple: "Purple",
+  blue: "Blue",
+  green: "Green",
+  orange: "Orange",
+  red: "Red",
+  amber: "Amber",
+  cyan: "Cyan",
+  magenta: "Magenta",
+};
+const semanticColorFamilyPatterns = [
+  ["Surface", /^--n-color-surface-/],
+  ["Text", /^--n-color-text-/],
+  ["Border", /^--n-color-border-/],
+  ["Action", /^--n-color-action-/],
+  ["Focus", /^--n-color-focus-/],
+  ["Status", /^--n-color-(?:status-|danger$|success$)/],
+  ["Trend", /^--n-color-trend-/],
+  ["Chart", /^--n-chart-/],
+];
+const modeColorMappingTokens = [
+  "--n-color-surface-canvas",
+  "--n-color-surface-default",
+  "--n-color-surface-control",
+  "--n-color-surface-control-hover",
+  "--n-color-surface-control-active",
+  "--n-color-surface-subtle",
+  "--n-color-surface-sunken",
+  "--n-color-surface-raised",
+  "--n-color-surface-overlay",
+  "--n-color-text-primary",
+  "--n-color-text-secondary",
+  "--n-color-text-tertiary",
+  "--n-color-text-disabled",
+  "--n-color-text-inverse",
+  "--n-color-border-subtle",
+  "--n-color-border-default",
+  "--n-color-border-strong",
+  "--n-color-border-interactive",
+  "--n-color-border-danger",
+  "--n-color-status-success",
+  "--n-color-status-success-soft",
+  "--n-color-status-success-strong",
+  "--n-color-status-warning",
+  "--n-color-status-warning-soft",
+  "--n-color-status-warning-strong",
+  "--n-color-status-danger",
+  "--n-color-status-danger-soft",
+  "--n-color-status-danger-strong",
+  "--n-color-status-info",
+  "--n-color-status-info-soft",
+  "--n-color-status-info-strong",
+  "--n-color-status-neutral",
+  "--n-color-status-neutral-soft",
+  "--n-color-status-neutral-strong",
+  "--n-color-trend-positive",
+  "--n-color-trend-negative",
+  "--n-color-trend-pending",
+  "--n-color-trend-locked",
+  "--n-color-trend-verified",
+  "--n-color-trend-unverified",
+  "--n-color-trend-risk",
+  "--n-chart-comparison",
+  "--n-chart-grid",
+  "--n-chart-axis",
+  "--n-chart-tooltip",
+  "--n-chart-selection",
+];
+const themeColorMappingTokens = [
+  "--n-color-surface-selected",
+  "--n-color-border-focus",
+  "--n-color-action-primary",
+  "--n-color-action-primary-hover",
+  "--n-color-action-primary-active",
+  "--n-color-action-on-primary",
+  "--n-color-focus-ring",
+  "--n-color-focus-ring-soft",
+  "--n-chart-primary",
+  "--n-chart-categorical-1",
+];
+const componentColorAliasTokens = [
+  "--n-button-background-primary",
+  "--n-button-background-primary-hover",
+  "--n-button-background-primary-active",
+  "--n-button-foreground-primary",
+  "--n-button-background-destructive",
+  "--n-button-background-destructive-hover",
+  "--n-button-background-destructive-active",
+  "--n-button-foreground-destructive",
+  "--n-input-background",
+  "--n-input-background-hover",
+  "--n-input-border",
+  "--n-input-border-focus",
+  "--n-input-border-danger",
+  "--n-badge-background-success",
+  "--n-badge-foreground-success",
+  "--n-card-background",
+];
 
 function references(value) {
   return [...value.matchAll(/var\((--n-[a-z0-9-]+)/g)].map((match) => match[1]);
@@ -59,6 +160,19 @@ function requireValue(declarations, token, selector) {
 
 function tokenRecord(token, value) {
   return { token, value, reference: directReference(value) };
+}
+
+function primitiveColorFamily(token) {
+  if (/^--n-gray-a-/.test(token)) return "gray-alpha";
+  if (/^--n-white-a-/.test(token)) return "white-alpha";
+  return (
+    token.match(/^--n-(gray|purple|blue|green|orange|red|amber|cyan|magenta)-\d+$/)?.[1] ?? null
+  );
+}
+
+function mappedTokenRecord(base, overrides, token, selector) {
+  const value = overrides.get(token) ?? requireValue(base, token, ":root");
+  return { ...tokenRecord(token, value), selector };
 }
 
 function validateDeclarations(root) {
@@ -189,6 +303,38 @@ export function createFoundationMetadata({ cssSource, catalog, foundationPages }
     mono: tokenRecord("--n-font-mono", requireValue(base, "--n-font-mono", ":root")),
   };
 
+  const primitiveColorFamilies = [];
+  const primitiveColorFamilyIndex = new Map();
+  for (const [token, value] of base) {
+    const family = primitiveColorFamily(token);
+    if (!family) continue;
+    let record = primitiveColorFamilyIndex.get(family);
+    if (!record) {
+      record = {
+        value: family,
+        label: primitiveColorFamilyLabels[family],
+        tokens: [],
+      };
+      primitiveColorFamilyIndex.set(family, record);
+      primitiveColorFamilies.push(record);
+    }
+    record.tokens.push(tokenRecord(token, value));
+  }
+
+  const semanticColorFamilies = semanticColorFamilyPatterns.map(([label, pattern]) => ({
+    value: label.toLowerCase(),
+    label,
+    tokens: [...base]
+      .filter(([token]) => pattern.test(token))
+      .map(([token, value]) => tokenRecord(token, value)),
+  }));
+  const componentColorAliases = componentColorAliasTokens.map((token) =>
+    tokenRecord(token, requireValue(base, token, ":root")),
+  );
+  const contrastTargets = [...base]
+    .filter(([token]) => token.startsWith("--n-contrast-"))
+    .map(([token, value]) => tokenRecord(token, value));
+
   const typographyPresets = [];
   root.walkRules((rule) => {
     if (!/^\.n-typography-[a-z0-9-]+$/.test(rule.selector)) return;
@@ -238,6 +384,17 @@ export function createFoundationMetadata({ cssSource, catalog, foundationPages }
           requireValue(systemDark, "--n-color-action-primary", systemSelector),
         ),
       },
+      colorMappings: {
+        light: themeColorMappingTokens.map((token) =>
+          mappedTokenRecord(base, light, token, lightSelector),
+        ),
+        dark: themeColorMappingTokens.map((token) =>
+          mappedTokenRecord(base, dark, token, darkSelector),
+        ),
+        systemDark: themeColorMappingTokens.map((token) =>
+          mappedTokenRecord(base, systemDark, token, systemSelector),
+        ),
+      },
     };
   });
 
@@ -251,6 +408,9 @@ export function createFoundationMetadata({ cssSource, catalog, foundationPages }
       media,
       mappings: modeMappingTokens.map((token) =>
         tokenRecord(token, requireValue(declarations, token, selector)),
+      ),
+      colorMappings: modeColorMappingTokens.map((token) =>
+        mappedTokenRecord(base, declarations, token, selector),
       ),
     };
   });
@@ -281,6 +441,12 @@ export function createFoundationMetadata({ cssSource, catalog, foundationPages }
       presets: typographyPresets,
       semanticRoles,
       lineHeights,
+    },
+    color: {
+      primitiveFamilies: primitiveColorFamilies,
+      semanticFamilies: semanticColorFamilies,
+      componentAliases: componentColorAliases,
+      contrastTargets,
     },
     runtimeAxes: {
       theme: {

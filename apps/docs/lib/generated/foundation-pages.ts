@@ -14,6 +14,10 @@ export const foundationPages = [
     label: "Themes",
   },
   {
+    path: "/docs/foundations/color",
+    label: "Color",
+  },
+  {
     path: "/docs/foundations/localization",
     label: "Localization",
   },
