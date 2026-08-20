@@ -1,14 +1,10 @@
 import { Code, Heading, Text } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { LocalizationPreview } from "../../../../components/localization-preview";
+import { getFoundationPage } from "../../../../lib/foundations";
 import { createPageMetadata } from "../../../../lib/seo";
 
-export const metadata = createPageMetadata({
-  title: "Direction and localization",
-  description:
-    "Configure LTR and RTL behavior, deterministic locale-sensitive output, and overridable Core labels in Nerio.",
-  path: "/docs/foundations/localization",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/localization"));
 
 const providerExample = `"use client";
 

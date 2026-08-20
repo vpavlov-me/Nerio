@@ -25,6 +25,16 @@ export type DocsCommandEntry = {
   newTab?: boolean;
 };
 
+async function loadFoundationSearchEntries(): Promise<DocsCommandEntry[]> {
+  const { foundationPageMetadata } = await import("../lib/generated/foundation-search-pages");
+  return foundationPageMetadata.map((page) => ({
+    href: page.path,
+    title: page.label,
+    group: "Foundations",
+    description: page.description,
+  }));
+}
+
 const DocsSearchTrigger = React.forwardRef<
   HTMLButtonElement,
   Omit<React.ComponentPropsWithoutRef<"button">, "children">
@@ -48,16 +58,20 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
+  const [loadedEntries, setLoadedEntries] = React.useState<DocsCommandEntry[] | null>(null);
+  const indexedEntries = loadedEntries
+    ? entries.map((entry) => loadedEntries.find((loaded) => loaded.href === entry.href) ?? entry)
+    : entries;
   const queryText = query.trim().toLowerCase();
   const results = React.useMemo(() => {
     const matches = queryText
-      ? entries.filter((entry) =>
+      ? indexedEntries.filter((entry) =>
           [entry.title, entry.group, entry.description, entry.href]
             .join(" ")
             .toLowerCase()
             .includes(queryText),
         )
-      : entries.filter((entry) => !entry.href.includes("#"));
+      : indexedEntries.filter((entry) => !entry.href.includes("#"));
 
     if (!queryText) return matches.slice(0, 12);
 
@@ -68,7 +82,7 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
     });
 
     return [...exactMatches, ...partialMatches].slice(0, 12);
-  }, [entries, queryText]);
+  }, [indexedEntries, queryText]);
   const entriesByHref = React.useMemo(
     () => new Map(results.map((entry) => [entry.href, entry])),
     [results],
@@ -121,6 +135,11 @@ export function DocsCommandPalette({ entries }: { entries: DocsCommandEntry[] })
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  React.useEffect(() => {
+    if (!open || loadedEntries) return;
+    void loadFoundationSearchEntries().then(setLoadedEntries);
+  }, [loadedEntries, open]);
 
   React.useEffect(() => {
     if (!open) setQuery("");

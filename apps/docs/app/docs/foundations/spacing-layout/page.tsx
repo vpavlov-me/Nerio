@@ -18,14 +18,10 @@ import {
 import { Button } from "@nerio-ui/ui/client";
 import { CodeExample } from "../../../../components/code-example";
 import { foundationMetadata } from "../../../../lib/generated/foundation-metadata";
+import { getFoundationPage } from "../../../../lib/foundations";
 import { createPageMetadata } from "../../../../lib/seo";
 
-export const metadata = createPageMetadata({
-  title: "Spacing & layout",
-  description:
-    "Use Nerio spacing, density, rhythm, reflow, overflow, and direction contracts without moving product layout into Core.",
-  path: "/docs/foundations/spacing-layout",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/spacing-layout"));
 
 const { spacing, runtimeAxes } = foundationMetadata;
 

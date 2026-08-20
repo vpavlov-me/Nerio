@@ -8,6 +8,8 @@ import {
   createFoundationMetadata,
   foundationDiscoveryFailures,
   renderFoundationMetadataModule,
+  renderFoundationPagesModule,
+  renderFoundationSearchPagesModule,
 } from "./foundation-metadata.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -15,7 +17,12 @@ const read = (path) => readFileSync(join(root, path), "utf8");
 const cssSource = read("packages/tokens/src/styles.css");
 const catalog = JSON.parse(read("data/component-catalog.json"));
 const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
-const input = (source = cssSource) => ({ cssSource: source, catalog, foundationPages });
+const cloneFoundationPages = () => JSON.parse(JSON.stringify(foundationPages));
+const input = (source = cssSource, pages = foundationPages) => ({
+  cssSource: source,
+  catalog,
+  foundationPages: pages,
+});
 
 test("foundation metadata generation is deterministic", () => {
   const first = renderFoundationMetadataModule(createFoundationMetadata(input()));
@@ -55,6 +62,38 @@ test("rejects missing aliases", () => {
 test("rejects unsupported alias cycles", () => {
   const mutated = `${cssSource}\n:root { --n-cycle-a: var(--n-cycle-b); --n-cycle-b: var(--n-cycle-a); }\n`;
   assert.throws(() => createFoundationMetadata(input(mutated)), /unsupported alias cycle/);
+});
+
+test("rejects incomplete foundation discovery metadata", () => {
+  const mutated = cloneFoundationPages();
+  delete mutated[0].description;
+  assert.throws(
+    () => createFoundationMetadata(input(cssSource, mutated)),
+    /path, label, title, description, and aliases/,
+  );
+});
+
+test("rejects aliases that compete with canonical foundation identity", () => {
+  const mutated = cloneFoundationPages();
+  mutated[0].aliases = [mutated[1].path];
+  assert.throws(
+    () => createFoundationMetadata(input(cssSource, mutated)),
+    /competes with a canonical route/,
+  );
+});
+
+test("projects legacy aliases into deterministic redirects", () => {
+  const projection = renderFoundationPagesModule(foundationPages);
+  assert.match(projection, /export const foundationAliases/);
+  assert.match(projection, /"path": "\/docs\/foundations\/animations"/);
+  assert.match(projection, /"destination": "\/docs\/foundations\/motion"/);
+});
+
+test("projects canonical descriptions into a separate search index", () => {
+  const projection = renderFoundationSearchPagesModule(foundationPages);
+  assert.match(projection, /export const foundationPageMetadata/);
+  assert.match(projection, /semantic color roles/);
+  assert.doesNotMatch(renderFoundationPagesModule(foundationPages), /semantic color roles/);
 });
 
 test("detects the historical dark-surface mapping drift", () => {
@@ -218,11 +257,12 @@ test("detects color metadata drift from canonical token CSS", () => {
 
 test("reports missing foundation discovery coverage", () => {
   const failures = foundationDiscoveryFailures({
-    pages: [{ path: "/docs/foundations/example", label: "Example" }],
+    pages: [{ path: "/docs/foundations/example", label: "Example", aliases: [] }],
     llmsSource: "# Foundations",
     routeExists: () => false,
   });
   assert.deepEqual(failures, [
+    "apps/docs/content/llms.txt Foundations index must match canonical foundation order exactly.",
     "/docs/foundations/example: canonical foundation route has no page.tsx implementation.",
     "apps/docs/content/llms.txt is missing canonical foundation route /docs/foundations/example; update the Foundations index.",
   ]);
@@ -231,11 +271,45 @@ test("reports missing foundation discovery coverage", () => {
 test("does not accept a foundation route mentioned outside the Foundations index", () => {
   const path = "/docs/foundations/example";
   const failures = foundationDiscoveryFailures({
-    pages: [{ path, label: "Example" }],
+    pages: [{ path, label: "Example", aliases: [] }],
     llmsSource: `Another section mentions \`${path}\`.\n\nThe public Foundations index is \`/docs/foundations/tokens\`.`,
     routeExists: () => true,
   });
   assert.deepEqual(failures, [
+    "apps/docs/content/llms.txt Foundations index must match canonical foundation order exactly.",
     `apps/docs/content/llms.txt is missing canonical foundation route ${path}; update the Foundations index.`,
+  ]);
+});
+
+test("rejects competing alias discovery and unclassified routes", () => {
+  const canonical = "/docs/foundations/example";
+  const alias = "/docs/foundations/examples";
+  const failures = foundationDiscoveryFailures({
+    pages: [{ path: canonical, aliases: [alias] }],
+    llmsSource: `The public Foundations index is \`${canonical}\`.\n\nLegacy: \`${alias}\`.`,
+    routeExists: () => true,
+    implementedRoutes: [canonical, "/docs/foundations/unclassified"],
+    aliasesUseGeneratedRedirects: false,
+  });
+  assert.deepEqual(failures, [
+    "/docs/foundations/unclassified: implemented foundation route is missing canonical discovery metadata or an explicit redirect.",
+    "Foundation aliases must be wired through the generated redirect projection.",
+  ]);
+});
+
+test("rejects a client-only or incomplete canonical foundation shell", () => {
+  const path = "/docs/foundations/example";
+  const failures = foundationDiscoveryFailures({
+    pages: [{ path, aliases: [] }],
+    llmsSource: `The public Foundations index is \`${path}\`.`,
+    routeExists: () => true,
+    routeSource: () => '"use client";\n<article className="doc-page"><h1>Example</h1></article>',
+  });
+  assert.deepEqual(failures, [
+    `${path}: canonical foundation page is missing its Foundation kicker.`,
+    `${path}: canonical foundation page is missing its page lede.`,
+    `${path}: canonical foundation page needs section headings for the table of contents.`,
+    `${path}: canonical foundation page must remain server-rendered.`,
+    `${path}: page metadata must use the canonical foundation projection.`,
   ]);
 });

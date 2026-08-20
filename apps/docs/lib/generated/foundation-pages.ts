@@ -6,32 +6,28 @@ export const foundationPages = [
     label: "Tokens",
   },
   {
-    path: "/docs/foundations/typography",
-    label: "Typography",
-  },
-  {
-    path: "/docs/foundations/themes",
-    label: "Themes",
-  },
-  {
     path: "/docs/foundations/color",
     label: "Color",
   },
   {
-    path: "/docs/foundations/localization",
-    label: "Localization",
-  },
-  {
-    path: "/docs/foundations/accessibility",
-    label: "Accessibility",
+    path: "/docs/foundations/typography",
+    label: "Typography",
   },
   {
     path: "/docs/foundations/spacing-layout",
     label: "Spacing & layout",
   },
   {
-    path: "/docs/foundations/motion",
-    label: "Motion",
+    path: "/docs/foundations/themes",
+    label: "Themes",
+  },
+  {
+    path: "/docs/foundations/accessibility",
+    label: "Accessibility",
+  },
+  {
+    path: "/docs/foundations/localization",
+    label: "Localization",
   },
   {
     path: "/docs/foundations/radius",
@@ -42,7 +38,18 @@ export const foundationPages = [
     label: "Effects",
   },
   {
+    path: "/docs/foundations/motion",
+    label: "Motion",
+  },
+  {
     path: "/docs/foundations/icons",
     label: "Icons",
+  },
+] as const;
+
+export const foundationAliases = [
+  {
+    path: "/docs/foundations/animations",
+    destination: "/docs/foundations/motion",
   },
 ] as const;

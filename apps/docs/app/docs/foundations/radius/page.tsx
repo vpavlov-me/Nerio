@@ -11,13 +11,9 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
+import { getFoundationPage } from "../../../../lib/foundations";
 
-export const metadata = createPageMetadata({
-  title: "Radius",
-  description:
-    "Use Nerio radius tokens and role aliases to maintain a consistent shape language across controls, containers, and overlays.",
-  path: "/docs/foundations/radius",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/radius"));
 
 const radiusTokens = [
   ["None", "--n-radius-none", "Square edges and opt-out cases.", "0"],

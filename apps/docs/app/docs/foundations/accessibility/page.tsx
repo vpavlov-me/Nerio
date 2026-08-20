@@ -12,13 +12,9 @@ import {
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
 import { createPageMetadata } from "../../../../lib/seo";
+import { getFoundationPage } from "../../../../lib/foundations";
 
-export const metadata = createPageMetadata({
-  title: "Accessibility",
-  description:
-    "Understand Nerio accessibility invariants, product responsibilities, evidence boundaries, and validation workflow.",
-  path: "/docs/foundations/accessibility",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/accessibility"));
 
 const accessibleFieldExample = `import { Field, Input } from "@nerio-ui/ui";
 

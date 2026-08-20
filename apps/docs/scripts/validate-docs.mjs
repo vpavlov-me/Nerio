@@ -822,6 +822,7 @@ function blockArchitectureFailures() {
 function publicSurfaceFailures() {
   const layout = read("apps/docs/app/layout.tsx");
   const docsChrome = read("apps/docs/components/docs-chrome.tsx");
+  const docsCommandPalette = read("apps/docs/components/docs-command-palette.tsx");
   const siteConfig = read("apps/docs/lib/site-config.ts");
   const sitemap = read("apps/docs/app/sitemap.ts");
   const robots = read("apps/docs/app/robots.ts");
@@ -841,10 +842,11 @@ function publicSurfaceFailures() {
   const failures = [];
   const required = [
     [layout, "<DocsChrome>{children}</DocsChrome>", "The docs shell must expose public surfaces"],
+    [docsChrome, "entries={searchEntries}", "Search must include public surfaces"],
     [
-      docsChrome,
-      "const visibleSearchEntries = searchEntries",
-      "Search must include public surfaces",
+      docsCommandPalette,
+      'import("../lib/generated/foundation-search-pages")',
+      "Search must load canonical Foundation descriptions",
     ],
     [sitemap, 'absoluteUrl("/blocks")', "The sitemap must include Blocks"],
     [sitemap, 'absoluteUrl("/templates")', "The sitemap must include Templates"],
