@@ -56,12 +56,8 @@ export default function HomePage() {
           <Button nativeButton={false} render={<Link href="/docs/getting-started" />}>
             Get started
           </Button>
-          <Button
-            nativeButton={false}
-            variant="secondary"
-            render={<Link href="/docs/components/button" />}
-          >
-            Explore components
+          <Button nativeButton={false} variant="secondary" render={<Link href="/playground" />}>
+            Playground
           </Button>
         </div>
         <p className="home-hero__note">
