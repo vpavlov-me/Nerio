@@ -383,6 +383,87 @@ function tailwindDocumentationFailures() {
   return failures;
 }
 
+function accessibilityFoundationFailures() {
+  const accessibilityPage = read("apps/docs/app/docs/foundations/accessibility/page.tsx");
+  const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const typographyPage = read("apps/docs/app/docs/foundations/typography/page.tsx");
+  const themesPage = read("apps/docs/app/docs/foundations/themes/page.tsx");
+  const componentPage = read("apps/docs/components/doc-page.tsx");
+  const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
+  const failures = [];
+
+  const requiredPageContracts = [
+    ["Responsibility model", "Accessibility Foundation must define the responsibility model"],
+    ["Nerio Core", "Accessibility Foundation must name the Core responsibility"],
+    ["Product team", "Accessibility Foundation must name the product responsibility"],
+    ["Nerio Pro", "Accessibility Foundation must name the Pro responsibility"],
+    ["Applied example", "Accessibility Foundation must include a focused applied example"],
+    [
+      "Accessibility example preview",
+      "Accessibility Foundation must include a live component preview",
+    ],
+    ["accessibleFieldExample", "Accessibility Foundation must include a public usage snippet"],
+    [
+      "does not automatically make a product conform to WCAG",
+      "Accessibility Foundation must reject automatic product conformance claims",
+    ],
+    [
+      "Semantics and native behavior",
+      "Accessibility Foundation must cover semantic HTML and native behavior",
+    ],
+    [
+      "Names, descriptions, and errors",
+      "Accessibility Foundation must cover accessible names and relationships",
+    ],
+    ["Keyboard and focus", "Accessibility Foundation must cover keyboard and focus behavior"],
+    [
+      "Contrast and non-color communication",
+      "Accessibility Foundation must cover contrast-independent communication",
+    ],
+    ["Pointer and touch", "Accessibility Foundation must cover pointer and touch input"],
+    ["Dynamic feedback", "Accessibility Foundation must cover loading and status feedback"],
+    ["320 CSS pixel", "Accessibility Foundation must cover narrow reflow"],
+    ["Text resize and spacing", "Accessibility Foundation must cover text resizing and spacing"],
+    ["Direction and locale", "Accessibility Foundation must cover RTL and localization"],
+    ["Reduced motion", "Accessibility Foundation must cover reduced motion"],
+    ["Forced colors", "Accessibility Foundation must cover forced colors"],
+    ["Increased contrast", "Accessibility Foundation must cover increased contrast"],
+    ["pnpm test:a11y", "Accessibility Foundation must document automated a11y evidence"],
+    ["pnpm typecheck", "Accessibility Foundation must document typecheck evidence separately"],
+    ["pnpm test:browser:pr", "Accessibility Foundation must document browser evidence"],
+    ["GitHub issue #143", "Accessibility Foundation must link the manual evidence gate"],
+    ["Known limitations", "Accessibility Foundation must expose known limitations"],
+  ];
+
+  for (const [expected, message] of requiredPageContracts) {
+    if (!accessibilityPage.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  if (accessibilityPage.includes('"use client"')) {
+    failures.push("Accessibility Foundation must remain server-rendered");
+  }
+  if (
+    !foundationPages.some(
+      (page) => page.path === "/docs/foundations/accessibility" && page.label === "Accessibility",
+    )
+  ) {
+    failures.push("Foundation route metadata must expose the canonical Accessibility route");
+  }
+
+  for (const [source, label] of [
+    [tokenPage, "Tokens"],
+    [typographyPage, "Typography"],
+    [themesPage, "Themes"],
+    [componentPage, "component"],
+  ]) {
+    if (!source.includes("/docs/foundations/accessibility")) {
+      failures.push(`${label} documentation must link to the Accessibility Foundation`);
+    }
+  }
+
+  return failures;
+}
+
 function templateArchitectureFailures() {
   const catalog = read("apps/docs/features/templates/catalog.ts");
   const gallery = read("apps/docs/app/templates/page.tsx");
@@ -795,6 +876,7 @@ const themeTokenMatrixIssues = themeTokenMatrixFailures(tokenStyles);
 const uiEntrypointIssues = uiEntrypointFailures();
 const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
+const accessibilityFoundationIssues = accessibilityFoundationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
 const blockArchitectureIssues = blockArchitectureFailures();
 const publicSurfaceIssues = publicSurfaceFailures();
@@ -833,6 +915,7 @@ reportMissing("Theme token matrix issues", themeTokenMatrixIssues);
 reportMissing("UI package entrypoint issues", uiEntrypointIssues);
 reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
+reportMissing("Accessibility foundation issues", accessibilityFoundationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
 reportMissing("Public documentation surface issues", publicSurfaceIssues);
@@ -860,6 +943,7 @@ const failures = [
   uiEntrypointIssues,
   packageReadinessIssues,
   tailwindDocumentationIssues,
+  accessibilityFoundationIssues,
   templateArchitectureIssues,
   blockArchitectureIssues,
   publicSurfaceIssues,

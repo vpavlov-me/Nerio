@@ -392,6 +392,10 @@ export default function Page() {
           review with real content. Typography is complete only when information and operation
           remain available after resize, reflow, spacing overrides, and localization.
         </p>
+        <p>
+          The <a href="/docs/foundations/accessibility">Accessibility foundation</a> defines the
+          shared zoom, reflow, text-spacing, assistive-technology, and manual evidence boundary.
+        </p>
       </section>
     </article>
   );

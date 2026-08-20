@@ -194,6 +194,11 @@ export default function Page() {
             </tbody>
           </Table>
         </TableContainer>
+        <p>
+          Use the <a href="/docs/foundations/accessibility">Accessibility foundation</a> to review
+          focus, non-color communication, custom-theme responsibility, and the evidence that token
+          ratios alone cannot establish.
+        </p>
       </section>
 
       <section className="doc-section">

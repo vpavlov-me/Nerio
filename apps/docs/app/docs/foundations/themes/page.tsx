@@ -299,6 +299,11 @@ export default function Page() {
 
       <section className="doc-section">
         <h2 id="do-do-not">Do / do not</h2>
+        <p>
+          Review contrast, focus, non-color communication, and manual evidence responsibilities in
+          the <a href="/docs/foundations/accessibility">Accessibility foundation</a> before
+          approving a custom theme.
+        </p>
         <TableContainer aria-label="Theme guidance">
           <Table>
             <TableHeader>
