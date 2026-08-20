@@ -38,6 +38,10 @@ test("covers public docs routes, standardized component docs, and the restrained
   await expect(page.locator(".docs-footer")).toHaveCSS("font-size", "17px");
   const primaryHeroAction = page.getByRole("link", { name: "Get started", exact: true });
   await expect(primaryHeroAction).toHaveCount(1);
+  const secondaryHeroAction = page
+    .locator(".home-hero__actions")
+    .getByRole("link", { name: "Playground", exact: true });
+  await expect(secondaryHeroAction).toHaveAttribute("href", "/playground");
   const primaryHeroColors = await primaryHeroAction.evaluate((element) => {
     const probe = document.createElement("span");
     probe.style.color = "var(--n-button-foreground-primary)";
