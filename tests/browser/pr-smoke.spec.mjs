@@ -698,6 +698,70 @@ test("discovers and remaps the source-backed Color foundation", async ({ page })
   await expectHealthyPage(page, problems);
 });
 
+test("discovers the source-backed Spacing and layout foundation", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/foundations/spacing-layout");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Spacing & layout" })).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Source-backed primitive spacing scale" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Source-backed density spacing aliases" }),
+  ).toBeVisible();
+  const preview = page.getByRole("region", { name: "Spacing and layout examples" });
+  await expect(preview.getByLabel("Workspace settings example")).toBeVisible();
+  const overflow = preview.getByRole("region", {
+    name: "Team access with horizontal overflow",
+  });
+  await overflow.focus();
+  await expect(overflow).toBeFocused();
+  await expect(
+    page.getByRole("complementary", { name: "On this page" }).getByRole("link", {
+      name: "Resilient layout",
+      exact: true,
+    }),
+  ).toBeVisible();
+
+  const comfortable = await page.evaluate(() => {
+    document.documentElement.dataset.density = "comfortable";
+    return getComputedStyle(document.documentElement).getPropertyValue("--n-density-space-md");
+  });
+  const compact = await page.evaluate(() => {
+    document.documentElement.dataset.density = "compact";
+    return getComputedStyle(document.documentElement).getPropertyValue("--n-density-space-md");
+  });
+  expect(compact).not.toBe(comfortable);
+
+  await page.setViewportSize({ width: 320, height: 844 });
+  const layout = await page.evaluate(() => {
+    document.documentElement.dir = "rtl";
+    return {
+      codeDirection: getComputedStyle(document.querySelector(".code-block")).direction,
+      direction: getComputedStyle(document.querySelector(".spacing-layout-preview")).direction,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+  expect(layout.codeDirection).toBe("ltr");
+  expect(layout.direction).toBe("rtl");
+  expect(layout.overflow).toBeLessThanOrEqual(1);
+  await expect(preview.getByText("Workspace name for regional operations")).toBeVisible();
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  const search = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("combobox", { name: "Search documentation" });
+  await search.fill("Spacing");
+  await expect(
+    page
+      .getByRole("dialog", { name: "Search documentation" })
+      .getByRole("option", { name: /Spacing & layout/ })
+      .first(),
+  ).toBeVisible();
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps the maintainer-only visual language reference out of public docs", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/getting-started");

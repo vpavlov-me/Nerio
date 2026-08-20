@@ -304,7 +304,10 @@ export default function Page() {
           the <a href="/docs/foundations/accessibility">Accessibility foundation</a> before
           approving a custom theme. The <a href="/docs/foundations/color">Color foundation</a>{" "}
           defines the source-backed role inventory, required accent mappings, and complete
-          foreground/background validation matrix.
+          foreground/background validation matrix. The{" "}
+          <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> defines how
+          comfortable and compact density remap semantic and component geometry without changing the
+          primitive scale.
         </p>
         <TableContainer aria-label="Theme guidance">
           <Table>

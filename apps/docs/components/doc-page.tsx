@@ -150,7 +150,9 @@ export function StandardDocPage({
         <p>
           Review the shared responsibility and evidence boundaries in the{" "}
           <a href="/docs/foundations/accessibility">Accessibility foundation</a> alongside this
-          component-specific contract.
+          component-specific contract. Use the{" "}
+          <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> for shared
+          density, wrapping, overflow, reflow, and component-versus-product ownership guidance.
         </p>
       </section>
       <section className="doc-section">

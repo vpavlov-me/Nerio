@@ -5,6 +5,7 @@
   { "path": "/docs/foundations/color", "label": "Color" },
   { "path": "/docs/foundations/localization", "label": "Localization" },
   { "path": "/docs/foundations/accessibility", "label": "Accessibility" },
+  { "path": "/docs/foundations/spacing-layout", "label": "Spacing & layout" },
   { "path": "/docs/foundations/motion", "label": "Motion" },
   { "path": "/docs/foundations/radius", "label": "Radius" },
   { "path": "/docs/foundations/effects", "label": "Effects" },

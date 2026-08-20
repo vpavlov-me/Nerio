@@ -536,6 +536,73 @@ function colorFoundationFailures() {
   return failures;
 }
 
+function spacingLayoutFoundationFailures() {
+  const spacingPage = read("apps/docs/app/docs/foundations/spacing-layout/page.tsx");
+  const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
+  const themesPage = read("apps/docs/app/docs/foundations/themes/page.tsx");
+  const typographyPage = read("apps/docs/app/docs/foundations/typography/page.tsx");
+  const accessibilityPage = read("apps/docs/app/docs/foundations/accessibility/page.tsx");
+  const componentPage = read("apps/docs/components/doc-page.tsx");
+  const foundationPages = JSON.parse(read("apps/docs/content/foundations.json"));
+  const normalized = spacingPage.replaceAll(/\s+/g, " ");
+  const failures = [];
+  const requiredPageContracts = [
+    ["Responsibility model", "Spacing & layout Foundation must define ownership"],
+    ["Nerio Core", "Spacing & layout Foundation must name Core responsibility"],
+    ["Product team", "Spacing & layout Foundation must name product responsibility"],
+    ["Nerio Pro", "Spacing & layout Foundation must name Pro responsibility"],
+    ["spacing.primitiveScale", "Spacing & layout Foundation must render the source-backed scale"],
+    ["runtimeAxes.density.mappings", "Spacing & layout Foundation must render density mappings"],
+    ["spacing.componentAliases", "Spacing & layout Foundation must render component geometry"],
+    ["Component contract", "Spacing & layout Foundation must define token selection order"],
+    ["Semantic density alias", "Spacing & layout Foundation must define semantic aliases"],
+    ["Primitive step", "Spacing & layout Foundation must define primitive use"],
+    ["Local semantic token", "Spacing & layout Foundation must define product aliases"],
+    ["comfortable", "Spacing & layout Foundation must cover comfortable density"],
+    ["compact", "Spacing & layout Foundation must cover compact density"],
+    ["Spacing and layout examples", "Spacing & layout Foundation must include a live preview"],
+    ["spacingLayoutExample", "Spacing & layout Foundation must include public usage code"],
+    ["wrapping action toolbar", "Spacing & layout Foundation must cover toolbar wrapping"],
+    ["repeated table rows", "Spacing & layout Foundation must cover repeated rows"],
+    ["horizontal overflow", "Spacing & layout Foundation must cover two-dimensional overflow"],
+    ["320 CSS pixels", "Spacing & layout Foundation must cover narrow reflow"],
+    ["Long localization", "Spacing & layout Foundation must cover content growth"],
+    ["Direction and logical properties", "Spacing & layout Foundation must cover RTL layout"],
+    ["Grid, Stack, Container", "Spacing & layout Foundation must reject layout API backdoors"],
+    ["application shell", "Spacing & layout Foundation must preserve the application boundary"],
+    ["pnpm validate:route-budgets", "Spacing & layout Foundation must document route budgets"],
+    ["Known limitations", "Spacing & layout Foundation must expose current limitations"],
+  ];
+
+  for (const [expected, message] of requiredPageContracts) {
+    if (!normalized.includes(expected)) failures.push(message);
+  }
+  if (spacingPage.includes('"use client"')) {
+    failures.push("Spacing & layout Foundation must remain server-rendered");
+  }
+  if (
+    !foundationPages.some(
+      (page) =>
+        page.path === "/docs/foundations/spacing-layout" && page.label === "Spacing & layout",
+    )
+  ) {
+    failures.push("Foundation route metadata must expose the canonical Spacing & layout route");
+  }
+  for (const [source, label] of [
+    [tokenPage, "Tokens"],
+    [themesPage, "Themes"],
+    [typographyPage, "Typography"],
+    [accessibilityPage, "Accessibility"],
+    [componentPage, "component"],
+  ]) {
+    if (!source.includes("/docs/foundations/spacing-layout")) {
+      failures.push(`${label} documentation must link to the Spacing & layout Foundation`);
+    }
+  }
+
+  return failures;
+}
+
 function templateArchitectureFailures() {
   const catalog = read("apps/docs/features/templates/catalog.ts");
   const gallery = read("apps/docs/app/templates/page.tsx");
@@ -950,6 +1017,7 @@ const packageReadinessIssues = packageReadinessFailures();
 const tailwindDocumentationIssues = tailwindDocumentationFailures();
 const accessibilityFoundationIssues = accessibilityFoundationFailures();
 const colorFoundationIssues = colorFoundationFailures();
+const spacingLayoutFoundationIssues = spacingLayoutFoundationFailures();
 const templateArchitectureIssues = templateArchitectureFailures();
 const blockArchitectureIssues = blockArchitectureFailures();
 const publicSurfaceIssues = publicSurfaceFailures();
@@ -990,6 +1058,7 @@ reportMissing("Package readiness issues", packageReadinessIssues);
 reportMissing("Tailwind documentation issues", tailwindDocumentationIssues);
 reportMissing("Accessibility foundation issues", accessibilityFoundationIssues);
 reportMissing("Color foundation issues", colorFoundationIssues);
+reportMissing("Spacing & layout foundation issues", spacingLayoutFoundationIssues);
 reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
 reportMissing("Public documentation surface issues", publicSurfaceIssues);
@@ -1019,6 +1088,7 @@ const failures = [
   tailwindDocumentationIssues,
   accessibilityFoundationIssues,
   colorFoundationIssues,
+  spacingLayoutFoundationIssues,
   templateArchitectureIssues,
   blockArchitectureIssues,
   publicSurfaceIssues,
