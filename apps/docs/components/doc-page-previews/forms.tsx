@@ -2,6 +2,7 @@
 
 import {
   Checkbox,
+  Combobox,
   Field,
   FileInput,
   FormGroup,
@@ -144,6 +145,26 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
               { label: "In review", value: "review" },
               { label: "Published", value: "published" },
               { label: "Archived", value: "archived", disabled: true },
+            ]}
+          />
+        </div>
+      ) : null}
+      {kind === "combobox" ? (
+        <div className="form-preview-stack">
+          <Combobox
+            label="City"
+            name="city"
+            description="Filter the supported destinations and choose one value."
+            options={[
+              { value: "paris", label: "Paris", textValue: "Paris" },
+              { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
+              { value: "tokyo", label: "Tokyo", textValue: "Tokyo" },
+              {
+                value: "unavailable",
+                label: "Unavailable",
+                textValue: "Unavailable",
+                disabled: true,
+              },
             ]}
           />
         </div>

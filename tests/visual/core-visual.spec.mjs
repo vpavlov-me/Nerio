@@ -16,6 +16,7 @@ const categoryFixtures = {
     "radio-group",
     "switch",
     "select",
+    "combobox",
     "slider",
     "calendar",
     "date-picker",

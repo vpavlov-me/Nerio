@@ -149,6 +149,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/radio-group", label: "RadioGroup", icon: Circle },
       { href: "/docs/components/switch", label: "Switch", icon: Circle },
       { href: "/docs/components/select", label: "Select", icon: Circle },
+      { href: "/docs/components/combobox", label: "Combobox", icon: Search },
       { href: "/docs/components/slider", label: "Slider", icon: Circle },
       { href: "/docs/components/calendar", label: "Calendar", icon: Circle },
       { href: "/docs/components/date-picker", label: "DatePicker", icon: Circle },

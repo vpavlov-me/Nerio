@@ -65,12 +65,12 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "88405cf51efd774ca59c40d9ae1b541b71a5511aa58633534924490a64263b2c",
+  "currentComponentCatalogSha256": "95a17a5c3a873e5017d20ca5432551d484a2f504461e5141c051ae36a0338903",
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
-  "currentRegistryItemCount": 49,
-  "currentRegistryManifestSha256": "98e9d9d2acd703a4d8eea3cc24febb830d5232afbc814c16349b1e4a71f73562",
-  "currentPublicApiSnapshotSha256": "d061be1e24693a85804feca215d005ac8f4d228b91b8ff91102534b04dd28557",
+  "currentRegistryItemCount": 50,
+  "currentRegistryManifestSha256": "968df5d3e71c53c5d23c705258db1d9c4972a71ec96dd01f7c663b32c93e2c8a",
+  "currentPublicApiSnapshotSha256": "be1d5e4f45fd955842821adb18214fe3822436fed6d4617a82b90b66fc8559ed",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -200,7 +200,7 @@
       "target": "Core 1.1",
       "mayStart": "after the relevant #342 contract foundation",
       "issues": [343, 344, 345, 346, 347, 370],
-      "dependsOn": [151, 341, 342],
+      "dependsOn": [341, 342],
       "rule": "Disclosure, dialog, single-selection, search, OTP, and number work may proceed in parallel after their shared direction decisions are accepted."
     },
     {
@@ -282,7 +282,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Accept one synchronous, single-select, form-backed primitive; fetching, creation, virtualization, and product search remain outside Core."
     },
     {
@@ -785,13 +785,13 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["Combobox"],
       "baseUiPrimitives": ["combobox"],
       "platformCoverageIds": [],
       "competitorEvidence": ["shadcn-components:Combobox", "heroui-components:ComboBox"],
       "value": "high",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One synchronous selected value with consumer-supplied data and bounded filtering.",
       "nonGoals": ["Remote fetching", "Creation", "Multiple selection", "Virtualization"],

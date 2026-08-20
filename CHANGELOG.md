@@ -8,6 +8,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added a bounded Core 1.1 single-select Combobox on `dev` with synchronous locale-aware filtering,
+  generic string value identity, options and composed-item modes, independent query, selection, and
+  popup state, form/reset support, groups, disabled items, clear behavior, and consumer-provided
+  empty and loading presentation. Fetching, debounce, ranking, creation, virtualization,
+  multi-selection, routing, analytics, and persistence remain consumer or Pro responsibilities.
 - Added additive compound Dialog anatomy and a separate AlertDialog confirmation primitive on
   `dev`. The existing convenience Dialog remains compatible, while AlertDialog adds conservative
   pointer-dismissal behavior, deliberate safe-action focus, explicit cancel/action boundaries,
@@ -33,6 +38,13 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Raised the UI tarball ceiling from 72,000 to 76,000 bytes for the additive Combobox source; the
+  measured tarball is 74,722 bytes. Existing unpacked, CSS, named-import bundle, and runtime
+  ceilings remain unchanged.
+- Raised only the measured documentation route JS and deterministic transfer ceilings needed for
+  the public Combobox API, preview, and reference metadata. The largest affected route is `/` at
+  787,214 raw JS bytes and 290,484 gzip-transfer bytes; CSS and browser-runtime ceilings remain
+  unchanged.
 - Raised the UI tarball ceiling from 70,000 to 72,000 bytes for the additive Dialog compound API
   and separate AlertDialog source; the measured tarball is 70,585 bytes. Existing unpacked, CSS,
   named-import bundle, and runtime ceilings remain unchanged.

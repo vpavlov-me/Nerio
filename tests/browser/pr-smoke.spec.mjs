@@ -385,6 +385,33 @@ test("keeps Command to one preview and focuses only its search control", async (
   await expectHealthyPage(page, problems);
 });
 
+test("keeps Combobox query, keyboard, pointer, clear, and RTL behavior bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/combobox");
+
+  const preview = page.getByRole("region", { name: "combobox preview" });
+  const input = preview.getByRole("combobox", { name: "City" });
+  await input.fill("tbi");
+  const option = page.getByRole("option", { name: "Tbilisi" });
+  await expect(option).toBeVisible();
+  await expect(page.getByRole("option", { name: "Paris" })).toHaveCount(0);
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+  await expect(input).toHaveValue("Tbilisi");
+
+  await preview.getByRole("button", { name: "Clear selection" }).click();
+  await expect(input).toHaveValue("");
+  await page.locator("html").evaluate((root) => {
+    root.dir = "rtl";
+  });
+  await preview.getByRole("button", { name: "Toggle options" }).click();
+  await expect(page.getByRole("listbox")).toBeVisible();
+  await expect(page.locator('[data-slot="content"]')).toHaveAttribute("data-align", "start");
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dialog");

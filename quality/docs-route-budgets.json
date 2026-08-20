@@ -3,45 +3,45 @@
   "policy": "Production JS, CSS, and deterministic gzip transfer use approximately 4 KiB review headroom. Browser runtime transfer uses 64 KiB for protocol, font, and route payload variance. Raise only in a focused reviewed change with recorded delta and consumer value.",
   "routes": {
     "/": {
-      "jsBytes": 764000,
+      "jsBytes": 792000,
       "cssBytes": 350208,
-      "transferBytes": 282624,
+      "transferBytes": 294912,
       "runtimeTransferBytes": 852992
     },
     "/docs/getting-started": {
-      "jsBytes": 480256,
+      "jsBytes": 486400,
       "cssBytes": 350208,
-      "transferBytes": 198656,
+      "transferBytes": 205312,
       "runtimeTransferBytes": 761856
     },
     "/docs/components/button": {
-      "jsBytes": 484864,
+      "jsBytes": 491520,
       "cssBytes": 350208,
-      "transferBytes": 200704,
+      "transferBytes": 207360,
       "runtimeTransferBytes": 784384
     },
     "/docs/components/select": {
-      "jsBytes": 484352,
+      "jsBytes": 490496,
       "cssBytes": 350208,
-      "transferBytes": 200704,
+      "transferBytes": 207360,
       "runtimeTransferBytes": 844800
     },
     "/docs/components/calendar": {
-      "jsBytes": 494592,
+      "jsBytes": 500224,
       "cssBytes": 350208,
-      "transferBytes": 203776,
+      "transferBytes": 210432,
       "runtimeTransferBytes": 831488
     },
     "/docs/components/date-picker": {
-      "jsBytes": 519168,
+      "jsBytes": 524288,
       "cssBytes": 350208,
-      "transferBytes": 211968,
+      "transferBytes": 218112,
       "runtimeTransferBytes": 825344
     },
     "/docs/components/command-primitive": {
-      "jsBytes": 487424,
+      "jsBytes": 493568,
       "cssBytes": 350208,
-      "transferBytes": 201216,
+      "transferBytes": 208384,
       "runtimeTransferBytes": 814080
     },
     "/templates": {

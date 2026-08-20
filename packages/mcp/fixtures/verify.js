@@ -281,6 +281,24 @@ async function verify() {
       );
     }
 
+    const comboboxUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "combobox" },
+    });
+    const comboboxUsage = JSON.parse(comboboxUsageResult.content[0].text);
+    if (
+      !comboboxUsage.baseUiPrimitives.includes("combobox") ||
+      !comboboxUsage.registryDependencies.includes("spinner") ||
+      !comboboxUsage.slots.includes("loading") ||
+      !comboboxUsage.states.includes("read-only") ||
+      !comboboxUsage.accessibility.some((item) => item.includes("independent controlled")) ||
+      !comboboxUsage.accessibility.some((item) => item.includes("Fetching"))
+    ) {
+      throw new Error(
+        "MCP Combobox usage is missing state ownership, presentation, or consumer boundaries.",
+      );
+    }
+
     const tableUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "table" },

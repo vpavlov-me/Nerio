@@ -1624,9 +1624,166 @@
         "Error messages are announced with role=\"alert\" only when invalid is true.",
         "Options support disabled states, typeahead, and Base UI keyboard navigation.",
         "Pair the document dir attribute with Base UI DirectionProvider so popup behavior follows LTR or RTL.",
-        "Large, filterable, remotely loaded, and multi-select datasets belong to a future Combobox."
+        "Use Combobox for a bounded synchronous searchable set. Remotely loaded and multi-select datasets remain outside Select."
       ],
       "usage": "import { Select } from '@/components/nerio/components/select';\n\n<Select label=\"Status\" name=\"status\" placeholder=\"Choose status\" options={[{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }, { label: 'Archived', value: 'archived', disabled: true }]} />"
+    },
+    {
+      "name": "combobox",
+      "title": "Combobox",
+      "description": "Filters one bounded synchronous option set and commits one selected form value.",
+      "category": "forms",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["form-message", "spinner"],
+      "files": [
+        {
+          "source": "../../ui/src/components/combobox.tsx",
+          "target": "components/combobox.tsx",
+          "role": "component",
+          "integrity": "sha256-b4b06ac7a21e99bd52a186214f6c3e210407d8f9adc9c21943c10da5e53f2e6b"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style",
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
+        },
+        {
+          "source": "../../ui/src/styles/select.css",
+          "target": "styles/select.css",
+          "role": "style",
+          "integrity": "sha256-058110182ddc952e91f58f2dace9e858cda3f54c2640f8b06ddf6487a346de33"
+        }
+      ],
+      "baseUiPrimitives": ["combobox"],
+      "slots": [
+        "root",
+        "label",
+        "input-group",
+        "input",
+        "clear",
+        "trigger",
+        "icon",
+        "content",
+        "list",
+        "item",
+        "item-content",
+        "item-label",
+        "item-description",
+        "indicator",
+        "group",
+        "group-label",
+        "empty",
+        "loading",
+        "description",
+        "message"
+      ],
+      "variants": ["options", "composed", "flat", "grouped", "sm", "md", "lg", "RTL"],
+      "states": [
+        "query",
+        "open",
+        "highlighted",
+        "selected",
+        "disabled",
+        "read-only",
+        "required",
+        "invalid",
+        "empty",
+        "loading"
+      ],
+      "requiredTokens": [
+        "--n-select-height-sm",
+        "--n-select-height-md",
+        "--n-select-height-lg",
+        "--n-select-padding-inline",
+        "--n-select-item-gap",
+        "--n-select-item-padding-inline",
+        "--n-select-group-label-padding-inline",
+        "--n-select-empty-padding",
+        "--n-select-popup-radius",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-danger",
+        "--n-input-placeholder",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
+        "--n-overlay-floating-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-shadow",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Combobox primitive with a native visible label and active-descendant listbox navigation.",
+        "Query, selected value, and popup state each support independent controlled and uncontrolled ownership without mirrored state.",
+        "Options require stable unique generic string values and explicit textValue strings for filtering, input display, and accessible identity.",
+        "Arrow keys navigate enabled options, Enter commits one value, Escape closes, pointer selection retains input focus, and disabled options are skipped.",
+        "Description and message content are associated with the input; invalid messages use alert semantics only when invalid is true.",
+        "Clear and popup actions have localizable accessible names through clearLabel and toggleLabel.",
+        "Empty and loading presentation use dedicated polite regions that remain mounted.",
+        "Name, form, required, autoComplete, disabled, readOnly, and native form reset are supported.",
+        "Pair document dir with Base UI DirectionProvider and localize visible text plus action labels for RTL and non-English products.",
+        "Fetching, debounce, ranking, creation, virtualization, multiple selection, routing, analytics, persistence, and business validation remain consumer or Pro responsibilities."
+      ],
+      "usage": "import { Combobox } from '@/components/nerio/components/combobox';\n\n<Combobox label=\"City\" name=\"city\" options={[{ value: 'paris', label: 'Paris', textValue: 'Paris' }, { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' }]} />"
     },
     {
       "name": "radio-group",
