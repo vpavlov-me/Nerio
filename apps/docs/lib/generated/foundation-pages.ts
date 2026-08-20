@@ -18,6 +18,10 @@ export const foundationPages = [
     label: "Localization",
   },
   {
+    path: "/docs/foundations/accessibility",
+    label: "Accessibility",
+  },
+  {
     path: "/docs/foundations/motion",
     label: "Motion",
   },

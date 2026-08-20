@@ -147,6 +147,11 @@ export function StandardDocPage({
             <li key={item}>{item}</li>
           ))}
         </ul>
+        <p>
+          Review the shared responsibility and evidence boundaries in the{" "}
+          <a href="/docs/foundations/accessibility">Accessibility foundation</a> alongside this
+          component-specific contract.
+        </p>
       </section>
       <section className="doc-section">
         <h2 id="api">API</h2>
@@ -358,6 +363,7 @@ const relatedRouteAliases: Record<string, string> = {
 };
 
 const relatedFoundationRoutes: Record<string, string> = {
+  Accessibility: "/docs/foundations/accessibility",
   Heading: "/docs/foundations/typography",
   "Icon Adapter": "/docs/foundations/icons",
   Text: "/docs/foundations/typography",

@@ -590,6 +590,44 @@ test("opens mobile documentation navigation and follows a route", async ({ page 
   await expectHealthyPage(page, problems);
 });
 
+test("discovers the Accessibility foundation through navigation and search", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/foundations/accessibility");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Accessibility" })).toBeVisible();
+  const example = page.getByRole("region", { name: "Accessibility example preview" });
+  const input = example.getByRole("textbox", { name: "Project name" });
+  await expect(input).toHaveAccessibleDescription(
+    "Use a short name that collaborators will recognize.",
+  );
+  await input.focus();
+  await expect(input).toBeFocused();
+  await expect(
+    page.getByRole("complementary", { name: "On this page" }).getByRole("link", {
+      name: "Automated and manual evidence",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Localization foundation" })).toHaveAttribute(
+    "href",
+    "/docs/foundations/localization",
+  );
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  const search = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("combobox", { name: "Search documentation" });
+  await search.fill("Accessibility");
+  await expect(
+    page
+      .getByRole("dialog", { name: "Search documentation" })
+      .getByRole("option", { name: /Accessibility/ })
+      .first(),
+  ).toBeVisible();
+
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps the maintainer-only visual language reference out of public docs", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/getting-started");
