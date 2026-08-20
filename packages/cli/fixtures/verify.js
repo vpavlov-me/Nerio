@@ -101,6 +101,21 @@ const expectedSelectFiles = [
   "styles/select.css",
   "styles/tailwind.css",
 ];
+const expectedComboboxFiles = [
+  "components/combobox.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/spinner.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/select.css",
+  "styles/spinner.css",
+  "styles/tailwind.css",
+];
 const expectedPhase2BFiles = [
   "components/alert.tsx",
   "components/form-message.tsx",
@@ -1770,6 +1785,7 @@ async function verify() {
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "toggle");
     await run(localTarget, "add", "select");
+    await run(localTarget, "add", "combobox");
     await run(localTarget, "add", "slider");
     await run(localTarget, "add", "calendar");
     await run(localTarget, "add", "date-picker");
@@ -2029,6 +2045,23 @@ async function verify() {
       !selectSource.includes("autoComplete={autoComplete}")
     ) {
       throw new Error("Installed Select source did not preserve placeholder and form metadata.");
+    }
+    assertFiles(localTarget, expectedComboboxFiles);
+    const comboboxSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/combobox.tsx"),
+      "utf8",
+    );
+    if (
+      !comboboxSource.includes("@base-ui/react/combobox") ||
+      !comboboxSource.includes("setUncontrolledQuery") ||
+      !comboboxSource.includes("setUncontrolledOpen(false)") ||
+      !comboboxSource.includes("isItemEqualToValue") ||
+      !comboboxSource.includes('data-slot="loading"') ||
+      !comboboxSource.includes("loadingMessage")
+    ) {
+      throw new Error(
+        "Installed Combobox source did not preserve generic identity, state, or presentation contracts.",
+      );
     }
     assertFiles(localTarget, expectedSliderFiles);
     const sliderSource = fs.readFileSync(

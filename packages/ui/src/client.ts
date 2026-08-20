@@ -89,6 +89,28 @@ export {
   type SelectSize,
 } from "./components/select";
 export {
+  Combobox,
+  ComboboxGroup,
+  ComboboxGroupLabel,
+  ComboboxItem,
+  type ComboboxChangeEventDetails,
+  type ComboboxChangeEventReason,
+  type ComboboxFilter,
+  type ComboboxGroupLabelProps,
+  type ComboboxGroupProps,
+  type ComboboxHighlightEventDetails,
+  type ComboboxItemProps,
+  type ComboboxItemState,
+  type ComboboxItems,
+  type ComboboxOpenChangeEventDetails,
+  type ComboboxOption,
+  type ComboboxOptionGroup,
+  type ComboboxPartState,
+  type ComboboxProps,
+  type ComboboxQueryChangeEventDetails,
+  type ComboboxSize,
+} from "./components/combobox";
+export {
   Tabs,
   TabsContent,
   TabsIndicator,

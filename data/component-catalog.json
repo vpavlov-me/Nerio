@@ -92,6 +92,7 @@
     { "name": "item", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "list", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "combobox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "calendar", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "date-picker", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -654,6 +655,14 @@
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only single-select control with data-driven options, curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior."
+    },
+    {
+      "name": "Combobox",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only bounded single-select Combobox with synchronous filtering, generic string value identity, options or composed item modes, independent query, value, and popup state, form metadata, groups, clear, empty, and loading presentation hooks."
     },
     {
       "name": "Slider",

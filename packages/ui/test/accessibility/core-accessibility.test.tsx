@@ -67,6 +67,10 @@ import {
   Button,
   Calendar,
   Checkbox,
+  Combobox,
+  ComboboxGroup,
+  ComboboxGroupLabel,
+  ComboboxItem,
   Collapsible,
   CollapsiblePanel,
   CollapsibleTrigger,
@@ -547,6 +551,41 @@ describe("Core accessibility contracts", () => {
           rules: { region: { enabled: false } },
         })
       ).violations,
+    ).toEqual([]);
+  });
+
+  it("keeps closed, open, invalid, grouped, empty, and loading Combobox states accessible", async () => {
+    const user = userEvent.setup();
+    const items = [
+      { value: "paris", label: "Paris", textValue: "Paris" },
+      { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi", disabled: true },
+    ] as const;
+    const { container } = render(
+      <>
+        <Combobox
+          description="Choose one supported city."
+          invalid
+          label="City"
+          message="A city is required."
+          options={items}
+        />
+        <Combobox aria-label="Primary city" label="Destination" items={items}>
+          <ComboboxGroup>
+            <ComboboxGroupLabel>Europe</ComboboxGroupLabel>
+            <ComboboxItem value="paris">Paris</ComboboxItem>
+            <ComboboxItem disabled value="tbilisi">
+              Tbilisi
+            </ComboboxItem>
+          </ComboboxGroup>
+        </Combobox>
+        <Combobox label="Remote presentation" loading options={[]} />
+      </>,
+    );
+    expect((await axe(container)).violations).toEqual([]);
+    await user.click(screen.getByRole("combobox", { name: "City" }));
+    await screen.findByRole("listbox");
+    expect(
+      (await axe(document.body, { rules: { region: { enabled: false } } })).violations,
     ).toEqual([]);
   });
 

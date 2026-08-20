@@ -93,6 +93,10 @@ import {
   Calendar,
   type CalendarDate,
   Checkbox,
+  Combobox,
+  ComboboxGroup,
+  ComboboxGroupLabel,
+  ComboboxItem,
   Collapsible,
   CollapsiblePanel,
   CollapsibleTrigger,
@@ -3064,6 +3068,149 @@ describe("Core interactive action contracts", () => {
     expect(screen.getByText("No options available.")).toHaveAttribute("data-slot", "empty");
     expect(document.querySelector(".n-select-positioner")).toBeInTheDocument();
     expect(document.querySelector(".n-select-list")).toBeInTheDocument();
+  });
+
+  it("keeps Combobox query, value, open, form, and reset state independently owned", async () => {
+    const user = userEvent.setup();
+    const valueChanges = vi.fn();
+    const queryChanges = vi.fn();
+    const openChanges = vi.fn();
+    const { container } = render(
+      <form>
+        <Combobox
+          defaultValue="paris"
+          label="City"
+          name="city"
+          onOpenChange={openChanges}
+          onQueryChange={queryChanges}
+          onValueChange={valueChanges}
+          options={[
+            { value: "paris", label: "Paris", textValue: "Paris" },
+            { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
+          ]}
+        />
+        <button type="reset">Reset</button>
+      </form>,
+    );
+
+    const input = screen.getByRole("combobox", { name: "City" });
+    expect(screen.getByRole("button", { name: "Clear selection" })).toHaveClass(
+      "forced-colors:focus-visible:outline-[Highlight]",
+    );
+    expect(screen.getByRole("button", { name: "Toggle options" })).toHaveClass(
+      "forced-colors:focus-visible:outline-[Highlight]",
+    );
+    expect(input).toHaveValue("Paris");
+    expect(new FormData(container.querySelector("form")!).get("city")).toBe("paris");
+    await user.clear(input);
+    await user.type(input, "tbi");
+    expect(queryChanges).toHaveBeenLastCalledWith(
+      "tbi",
+      expect.objectContaining({ reason: "input-change" }),
+    );
+    await user.click(await screen.findByRole("option", { name: "Tbilisi" }));
+    expect(valueChanges).toHaveBeenLastCalledWith(
+      "tbilisi",
+      expect.objectContaining({ reason: "item-press" }),
+    );
+    expect(openChanges).toHaveBeenCalled();
+    expect(new FormData(container.querySelector("form")!).get("city")).toBe("tbilisi");
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+    await waitFor(() =>
+      expect(screen.getByRole("combobox", { name: "City" })).toHaveValue("Paris"),
+    );
+    expect(new FormData(container.querySelector("form")!).get("city")).toBe("paris");
+  });
+
+  it("resets Combobox state without replacing the focused input or reopening defaultOpen", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <form>
+        <Combobox
+          defaultOpen
+          defaultValue="paris"
+          label="Reset city"
+          name="city"
+          options={[
+            { value: "paris", label: "Paris", textValue: "Paris" },
+            { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
+          ]}
+        />
+      </form>,
+    );
+
+    const input = screen.getByRole("combobox", { name: "Reset city" });
+    await user.clear(input);
+    await user.type(input, "tbi");
+    await user.keyboard("{Escape}");
+    input.focus();
+    expect(input).toHaveFocus();
+
+    act(() => container.querySelector("form")!.reset());
+
+    await waitFor(() => expect(input).toHaveValue("Paris"));
+    expect(input).toHaveFocus();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    expect(new FormData(container.querySelector("form")!).get("city")).toBe("paris");
+  });
+
+  it("filters Combobox by textValue and supports groups, composition, disabled items, empty, and loading", async () => {
+    const user = userEvent.setup();
+    const items = [
+      { value: "design", label: "Design systems", textValue: "Design systems" },
+      { value: "research", label: "Research", textValue: "User research", disabled: true },
+    ] as const;
+    const { rerender } = render(
+      <Combobox label="Discipline" items={items}>
+        <ComboboxGroup>
+          <ComboboxGroupLabel>Product</ComboboxGroupLabel>
+          <ComboboxItem value="design">Design systems</ComboboxItem>
+          <ComboboxItem disabled value="research">
+            Research
+          </ComboboxItem>
+        </ComboboxGroup>
+      </Combobox>,
+    );
+    const input = screen.getByRole("combobox", { name: "Discipline" });
+    await user.type(input, "user");
+    expect(await screen.findByRole("option", { name: "Research" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    expect(screen.queryByRole("option", { name: "Design systems" })).not.toBeInTheDocument();
+    await user.clear(input);
+    await user.type(input, "missing");
+    expect(await screen.findByText("No matching options.")).toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    rerender(<Combobox label="Discipline" loading options={items} />);
+    await user.click(screen.getByRole("combobox", { name: "Discipline" }));
+    expect(await screen.findByText("Loading options…")).toBeInTheDocument();
+    expect(document.querySelector('[data-slot="loading"]')).toHaveAttribute("role", "status");
+  });
+
+  it("keeps controlled Combobox state consumer-owned and exposes truthful read-only hooks", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const options = [{ value: "draft", label: "Draft", textValue: "Draft" }] as const;
+    const { rerender } = render(
+      <Combobox
+        label="Status"
+        onValueChange={onValueChange}
+        options={options}
+        readOnly
+        value="draft"
+      />,
+    );
+    const input = screen.getByRole("combobox", { name: "Status" });
+    expect(input).toHaveAttribute("readonly");
+    expect(input.closest('[data-slot="root"]')).toHaveAttribute("data-readonly", "");
+    await user.click(input);
+    expect(onValueChange).not.toHaveBeenCalled();
+    rerender(
+      <Combobox label="Status" onValueChange={onValueChange} options={options} value={null} />,
+    );
+    expect(input).toHaveValue("");
   });
 
   it("supports checkbox, radio group, and switch state contracts", async () => {

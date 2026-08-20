@@ -44,6 +44,8 @@ const componentLedes: Record<string, string> = {
     "Sheets present a focused modal panel from an explicit side while leaving product workflows to the consumer.",
   select:
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
+  combobox:
+    "Combobox filters one bounded synchronous option set and commits one form-backed value while data orchestration remains consumer-owned.",
   slider:
     "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
   calendar:
@@ -97,6 +99,7 @@ const componentTitles: Record<string, string> = {
   "key-value": "KeyValue",
   "radio-group": "RadioGroup",
   "sidebar-primitive": "Sidebar",
+  combobox: "Combobox",
 };
 
 function getComponentTitle(slug: string) {

@@ -48,6 +48,7 @@ const previewRegistry = {
   "radio-group": FormsPreview,
   switch: FormsPreview,
   select: FormsPreview,
+  combobox: FormsPreview,
   dialog: OverlaysPreview,
   "alert-dialog": AlertDialogPreview,
   sheet: OverlaysPreview,

@@ -100,6 +100,8 @@ export const snippets: Record<string, string> = {
     'import { Kbd } from \'@nerio-ui/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio-ui/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
     "import { Select } from '@nerio-ui/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
+  combobox:
+    "import { Combobox } from '@nerio-ui/ui/client';\n\n<Combobox\n  label=\"City\"\n  name=\"city\"\n  options={[\n    { value: 'paris', label: 'Paris', textValue: 'Paris' },\n    { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' },\n    { value: 'tokyo', label: 'Tokyo', textValue: 'Tokyo' },\n  ]}\n/>",
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
@@ -587,6 +589,37 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "no implicit role",
       "native rendered link or button",
       "static root remains unfocusable",
+    ],
+  },
+  combobox: {
+    name: "Combobox",
+    description: "Filters one bounded synchronous option set and commits one selected value.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Select", "Command Primitive", "Input", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "input",
+      "clear",
+      "trigger",
+      "content",
+      "list",
+      "item",
+      "group",
+      "empty",
+      "loading",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI combobox and listbox semantics",
+      "native visible label",
+      "active descendant keyboard navigation",
+      "polite empty and loading regions",
     ],
   },
 };
@@ -2522,7 +2555,7 @@ export const componentReference: Record<string, ComponentReference> = {
     guidance: {
       do: ["Use for status, owner, view mode, and compact configuration choices."],
       dont: [
-        "Do not use Select for large, searchable, async, or remotely loaded datasets; use a future Combobox.",
+        "Do not use Select for a searchable set; use Combobox for bounded synchronous filtering.",
         "Do not use Select for multiple selection, tags, or creatable values.",
       ],
     },
@@ -2541,6 +2574,87 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-shadow",
+    ],
+  },
+  combobox: {
+    category: "Forms",
+    purpose:
+      "Use Combobox when one value must be selected from a bounded synchronous set that benefits from filtering.",
+    anatomy: [
+      { title: "input", description: "Editable query field that retains DOM focus." },
+      {
+        title: "clear / trigger",
+        description: "Localizable icon-only actions for clearing and toggling options.",
+      },
+      { title: "list / item", description: "Filtered listbox and one selectable option." },
+      { title: "group / group-label", description: "Optional labelled option grouping." },
+      { title: "empty / loading", description: "Polite consumer-provided presentation regions." },
+    ],
+    variants: [
+      { title: "Options", description: "Concise flat or grouped data-driven items." },
+      {
+        title: "Composed",
+        description: "Curated ComboboxItem and group children paired with canonical item data.",
+      },
+    ],
+    states: [
+      { title: "Query", description: "Filters items without becoming the selected form value." },
+      {
+        title: "Open",
+        description: "Shows a collision-aware popup while input focus remains stable.",
+      },
+      {
+        title: "Highlighted / selected",
+        description: "Separates navigation focus from the committed value.",
+      },
+      {
+        title: "Empty / loading",
+        description: "Presents consumer-owned data state without fetching.",
+      },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Exposes truthful form and accessibility state.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label; placeholder text is only a hint.",
+      "Base UI owns active-descendant focus, Arrow navigation, Enter selection, Escape, pointer selection, and disabled-item skipping.",
+      "Localize clearLabel, toggleLabel, emptyMessage, and loadingMessage when the product locale is not English.",
+      "Pair document dir with Base UI DirectionProvider so positioning and navigation follow LTR or RTL.",
+      "Keep Empty and Status regions mounted so polite announcements remain reliable.",
+    ],
+    api: [
+      {
+        title: "query / value / open",
+        description: "Independent controlled and uncontrolled state pairs.",
+      },
+      {
+        title: "filter / locale",
+        description:
+          "Locale-aware contains matching by default, a consumer predicate, or false for no filtering.",
+      },
+      {
+        title: "name / form / required / autoComplete",
+        description: "Native form identity, reset, required state, and autofill hint.",
+      },
+    ],
+    guidance: {
+      do: ["Use for one selected city, owner, category, or other bounded synchronous option set."],
+      dont: [
+        "Do not add remote fetching, debounce, ranking, creation, virtualization, multiple selection, routing, analytics, or persistence.",
+      ],
+    },
+    related: ["select", "command-primitive", "input", "field"],
+    tokens: [
+      "--n-select-height-md",
+      "--n-select-padding-inline",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-placeholder",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+      "--n-focus-ring",
     ],
   },
   toast: {
