@@ -400,6 +400,25 @@ test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   await expectHealthyPage(page, problems);
 });
 
+test("keeps AlertDialog conservative and focuses the safe action", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/alert-dialog");
+
+  const trigger = page.getByRole("button", { name: "Delete project" }).first();
+  await trigger.click();
+  const dialog = page.getByRole("alertdialog", { name: "Delete project?" });
+  const cancel = dialog.getByRole("button", { name: "Cancel" });
+  await expect(dialog).toBeVisible();
+  await expect(cancel).toBeFocused();
+
+  await page.mouse.click(8, 8);
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Tooltip preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/tooltip");

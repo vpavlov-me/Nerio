@@ -3,7 +3,7 @@
   "policy": "Production JS, CSS, and deterministic gzip transfer use approximately 4 KiB review headroom. Browser runtime transfer uses 64 KiB for protocol, font, and route payload variance. Raise only in a focused reviewed change with recorded delta and consumer value.",
   "routes": {
     "/": {
-      "jsBytes": 752640,
+      "jsBytes": 764000,
       "cssBytes": 350208,
       "transferBytes": 282624,
       "runtimeTransferBytes": 852992

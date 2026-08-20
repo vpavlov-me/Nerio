@@ -78,6 +78,17 @@ import {
   AccordionItem,
   AccordionPanel,
   AccordionTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogBackdrop,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Button,
   Calendar,
   type CalendarDate,
@@ -92,7 +103,17 @@ import {
   CommandList,
   CommandLoading,
   Dialog,
+  DialogBackdrop,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogPortal,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
   DatePicker,
   DropdownMenu,
   LabelHint,
@@ -2778,6 +2799,89 @@ describe("Core interactive action contracts", () => {
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect(onOpenChange).toHaveBeenCalledWith(false, expect.anything());
+  });
+
+  it("supports compound Dialog anatomy without changing Base UI focus behavior", async () => {
+    const user = userEvent.setup();
+    render(
+      <DialogRoot>
+        <DialogTrigger render={<Button>Open composed dialog</Button>} />
+        <DialogPortal>
+          <DialogBackdrop />
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Move collection</DialogTitle>
+              <DialogDescription>Choose a destination workspace.</DialogDescription>
+            </DialogHeader>
+            <DialogBody>Destination picker</DialogBody>
+            <DialogFooter>
+              <DialogClose render={<Button variant="secondary">Cancel</Button>} />
+            </DialogFooter>
+          </DialogContent>
+        </DialogPortal>
+      </DialogRoot>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Open composed dialog" });
+    await user.click(trigger);
+    const dialog = await screen.findByRole("dialog", { name: "Move collection" });
+    expect(dialog).toHaveAttribute("aria-describedby");
+    expect(within(dialog).getByText("Destination picker")).toHaveAttribute("data-slot", "body");
+    await user.click(within(dialog).getByRole("button", { name: "Cancel" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+    expect(trigger).toHaveFocus();
+  });
+
+  it("keeps AlertDialog conservative and focuses the safe response", async () => {
+    const user = userEvent.setup();
+    const onAction = vi.fn();
+
+    function Confirmation() {
+      const cancelRef = React.useRef<HTMLButtonElement>(null);
+      return (
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />
+          <AlertDialogPortal>
+            <AlertDialogBackdrop data-testid="alert-backdrop" />
+            <AlertDialogContent initialFocus={cancelRef}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete project?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This permanently removes the project and cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  ref={cancelRef}
+                  render={<Button variant="secondary">Cancel</Button>}
+                />
+                <AlertDialogAction
+                  render={
+                    <Button variant="danger" onClick={onAction}>
+                      Delete project
+                    </Button>
+                  }
+                />
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogPortal>
+        </AlertDialog>
+      );
+    }
+
+    render(<Confirmation />);
+    const trigger = screen.getByRole("button", { name: "Delete project" });
+    await user.click(trigger);
+    const alertDialog = await screen.findByRole("alertdialog", { name: "Delete project?" });
+    await waitFor(() =>
+      expect(within(alertDialog).getByRole("button", { name: "Cancel" })).toHaveFocus(),
+    );
+    await user.click(screen.getByTestId("alert-backdrop"));
+    expect(screen.getByRole("alertdialog", { name: "Delete project?" })).toBeInTheDocument();
+    await user.click(within(alertDialog).getByRole("button", { name: "Delete project" }));
+    expect(onAction).toHaveBeenCalledOnce();
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument());
+    expect(trigger).toHaveFocus();
   });
 
   it("supports controlled Select values, labels, descriptions, and invalid state", () => {

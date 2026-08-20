@@ -190,6 +190,7 @@ const navGroups: NavGroup[] = [
     title: "Overlays",
     items: [
       { href: "/docs/components/dialog", label: "Dialog", icon: PanelLeft },
+      { href: "/docs/components/alert-dialog", label: "AlertDialog", icon: PanelLeft },
       { href: "/docs/components/sheet", label: "Sheet", icon: PanelLeft },
       { href: "/docs/components/popover", label: "Popover", icon: PanelLeft },
       { href: "/docs/components/tooltip", label: "Tooltip", icon: Circle },

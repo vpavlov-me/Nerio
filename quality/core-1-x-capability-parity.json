@@ -65,12 +65,12 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "0da55b773e54f657635acc2c6793919602095cbe12f52b61e22799d4b64e96b2",
+  "currentComponentCatalogSha256": "88405cf51efd774ca59c40d9ae1b541b71a5511aa58633534924490a64263b2c",
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
-  "currentRegistryItemCount": 48,
-  "currentRegistryManifestSha256": "2df040e4ed801045f697f4e04a9d7af493e067c4467001be22558ac28f1ecef8",
-  "currentPublicApiSnapshotSha256": "a5f69f4e999b9112f494166fc9fa1fa1545093775cf589ae85b47b01fa22bfca",
+  "currentRegistryItemCount": 49,
+  "currentRegistryManifestSha256": "98e9d9d2acd703a4d8eea3cc24febb830d5232afbc814c16349b1e4a71f73562",
+  "currentPublicApiSnapshotSha256": "d061be1e24693a85804feca215d005ac8f4d228b91b8ff91102534b04dd28557",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -272,7 +272,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Additive compound anatomy and a separate confirmation responsibility are justified; the current convenience Dialog must remain compatible."
     },
     {
@@ -583,7 +583,7 @@
       "classification": "existing-core",
       "priority": "none",
       "target": "current",
-      "nerioComponents": ["Dialog", "Sheet", "Popover", "Tooltip"],
+      "nerioComponents": ["Sheet", "Popover", "Tooltip"],
       "baseUiPrimitives": ["dialog", "drawer", "popover", "tooltip"],
       "platformCoverageIds": ["dialog", "popover"],
       "competitorEvidence": [
@@ -763,7 +763,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["Dialog", "AlertDialog"],
       "baseUiPrimitives": ["alert-dialog"],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -772,7 +772,7 @@
       ],
       "value": "high",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "Preserve the current Dialog API; add meaningful compound parts and a separate conservative confirmation responsibility.",
       "nonGoals": ["Mutation orchestration", "Permission checks", "Routing guards"],

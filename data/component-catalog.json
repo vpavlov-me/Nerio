@@ -112,6 +112,7 @@
     { "name": "breadcrumbs", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "pagination", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "dialog", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "alert-dialog", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "sidebar-primitive", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "command-primitive", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "sheet", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -358,14 +359,14 @@
     },
     {
       "id": "dialog",
-      "surface": "Dialog",
-      "catalogComponents": ["Dialog"],
+      "surface": "Dialog and AlertDialog",
+      "catalogComponents": ["Dialog", "AlertDialog"],
       "coverageMode": "dedicated-component",
       "status": "covered",
       "issue": null,
-      "capability": "modal dialog",
-      "rationale": "Base UI supplies modal focus containment, dismissal, inertness, labelling, and restoration that native styling alone does not standardize.",
-      "boundary": "Core owns the modal primitive. Consumers own task content and confirmation policy."
+      "capability": "modal dialog and explicit confirmation",
+      "rationale": "Base UI supplies modal focus containment, dismissal, inertness, labelling, restoration, and a conservative alert-dialog mode that native styling alone does not standardize.",
+      "boundary": "Core owns modal and confirmation primitives. Consumers own task content, mutation orchestration, permissions, routing, and confirmation copy."
     },
     {
       "id": "popover",
@@ -692,7 +693,15 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Accessible viewport-bounded modal primitive with a neutral title by default, explicit heading opt-in, standard description, localizable close affordance, controlled state, and Base UI focus behavior."
+      "description": "Accessible viewport-bounded modal primitive with a compatible convenience API, additive compound anatomy, neutral title by default, explicit heading opt-in, standard description, localizable close affordance, controlled state, and Base UI focus behavior."
+    },
+    {
+      "name": "AlertDialog",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "overlays",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI confirmation primitive with alertdialog semantics, pointer-dismissal protection, explicit cancel and action boundaries, controlled state, and consumer-owned mutation policy."
     },
     {
       "name": "Sheet",

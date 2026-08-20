@@ -171,6 +171,7 @@ function uiEntrypointFailures() {
   const packageJson = JSON.parse(read("packages/ui/package.json"));
   const failures = [];
   const clientOnlyExports = [
+    "alert-dialog",
     "button",
     "checkbox",
     "dialog",

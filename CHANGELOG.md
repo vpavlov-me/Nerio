@@ -8,6 +8,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added additive compound Dialog anatomy and a separate AlertDialog confirmation primitive on
+  `dev`. The existing convenience Dialog remains compatible, while AlertDialog adds conservative
+  pointer-dismissal behavior, deliberate safe-action focus, explicit cancel/action boundaries,
+  Registry/source-install parity, and consumer-owned mutation policy. This Core 1.1 feature remains
+  outside the isolated Core 1.0 release candidate.
 - Added Core 1.1 Collapsible and Accordion primitives on `dev`, with bounded controlled and
   uncontrolled disclosure state, single or multiple grouped expansion, disabled items, semantic
   headings, tokenized height motion, RTL and reduced-motion support, Registry/source-install
@@ -28,6 +33,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Raised the UI tarball ceiling from 70,000 to 72,000 bytes for the additive Dialog compound API
+  and separate AlertDialog source; the measured tarball is 70,585 bytes. Existing unpacked, CSS,
+  named-import bundle, and runtime ceilings remain unchanged.
+- Raised the root documentation route JS ceiling from 752,640 to 764,000 bytes for the new public
+  AlertDialog export and isolated preview chunk; the measured production manifest is 759,535 bytes.
+  CSS, deterministic transfer, and browser runtime ceilings remain unchanged.
 - Raised only the measured additive budgets needed for the disclosure family: the UI tarball is
   68,421 bytes against a 70,000-byte ceiling, the Registry tarball is 32,079 bytes against a
   34,000-byte ceiling, raw token CSS is 74,025 bytes against a 75,000-byte ceiling, and shared docs
