@@ -3256,6 +3256,9 @@ describe("Core interactive action contracts", () => {
     );
     await user.keyboard("{Enter}");
     expect(searches).toHaveBeenCalledWith("Nerio", expect.objectContaining({ reason: "enter" }));
+    searches.mockClear();
+    fireEvent.keyDown(input, { key: "Enter", keyCode: 229 });
+    expect(searches).not.toHaveBeenCalled();
 
     await user.click(screen.getByRole("button", { name: "Clear search" }));
     expect(valueChanges).toHaveBeenLastCalledWith("", expect.objectContaining({ reason: "clear" }));
