@@ -818,6 +818,16 @@ test("applies every Playground control to the product scenario canvas", async ({
   await expect(page.locator("html")).toHaveAttribute("data-mode", "light");
   await chooseSetting("Color mode", "Dark");
   await expect(playground).toHaveAttribute("data-nerio-theme-scope", "");
+  await page.evaluate(() => {
+    document.documentElement.dataset.mode = "dark";
+  });
+  await expect(page.locator("html")).toHaveAttribute("data-mode", "dark");
+  await expect(playground).toHaveAttribute("data-mode", "dark");
+  await page.evaluate(() => {
+    document.documentElement.dataset.mode = "light";
+  });
+  await expect(page.locator("html")).toHaveAttribute("data-mode", "light");
+  await expect(playground).toHaveAttribute("data-mode", "dark");
   const isolatedModes = await page.evaluate(() => {
     const root = document.documentElement;
     const playground = document.querySelector("[data-playground-preview]");
@@ -898,6 +908,16 @@ test("applies every Playground control to the product scenario canvas", async ({
   });
   expect(applied.font).toContain("Space Grotesk");
   expect(applied.fontFamily).toContain("Space Grotesk");
+  await expect
+    .poll(() =>
+      page.evaluate(async () => {
+        await document.fonts.load('16px "Space Grotesk"');
+        return Array.from(document.fonts).some(
+          (face) => face.family.includes("Space Grotesk") && face.status === "loaded",
+        );
+      }),
+    )
+    .toBe(true);
 
   const darkTextBefore = await playground.evaluate((element) =>
     getComputedStyle(element).getPropertyValue("--n-color-text-secondary").trim(),
@@ -939,6 +959,21 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
   const settings = page.getByRole("complementary", { name: "Playground settings" });
   await settings.getByRole("combobox", { name: "Neutral color" }).click();
   await page.getByRole("option", { name: "Mauve", exact: true }).click();
+  await settings.getByRole("combobox", { name: "UI scale" }).click();
+  await page.getByRole("option", { name: "110%", exact: true }).click();
+
+  await page.getByRole("button", { name: "Add social link" }).hover();
+  const tooltip = page.getByRole("tooltip", { name: "Add another social link" });
+  await expect(tooltip).toBeVisible();
+  const tooltipPortal = tooltip.locator("xpath=ancestor::*[@data-playground-portal]");
+  await expect(tooltipPortal).toHaveAttribute("data-nerio-theme-scope", "");
+  await expect
+    .poll(() =>
+      tooltipPortal.evaluate((element) =>
+        getComputedStyle(element).getPropertyValue("--n-space-4").trim(),
+      ),
+    )
+    .toBe("17.6px");
 
   const checkbox = page.getByRole("checkbox", { name: "Send invitations now" });
   await expect(checkbox).toBeVisible();

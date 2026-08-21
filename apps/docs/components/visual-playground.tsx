@@ -760,7 +760,7 @@ function toStyle(
   };
 }
 
-export function VisualPlayground() {
+export function VisualPlayground({ fontClassName = "" }: { fontClassName?: string }) {
   const [theme, setTheme] = React.useState<Theme>("purple");
   const [appearanceMode, setAppearanceMode] = React.useState<AppearanceMode | null>(null);
   const [systemDark, setSystemDark] = React.useState(false);
@@ -774,12 +774,14 @@ export function VisualPlayground() {
   const [lightColors, setLightColors] = React.useState(lightDefaults);
   const [darkColors, setDarkColors] = React.useState(darkDefaults);
   const playgroundRef = React.useRef<HTMLDivElement>(null);
+  const hasLocalAppearanceOverride = React.useRef(false);
 
   React.useLayoutEffect(() => {
     const query = window.matchMedia("(prefers-color-scheme: dark)");
     const root = document.documentElement;
     const updateSystem = () => setSystemDark(query.matches);
     const updateAppearance = () => {
+      if (hasLocalAppearanceOverride.current) return;
       const nextMode = root.dataset.mode;
       setAppearanceMode(
         nextMode === "light" || nextMode === "dark" || nextMode === "system" ? nextMode : "system",
@@ -834,6 +836,9 @@ export function VisualPlayground() {
       portal.dataset.theme = theme;
       portal.dataset.mode = resolvedMode;
       portal.dataset.density = density;
+      fontClassName.split(" ").forEach((className) => {
+        if (className) portal.classList.add(className);
+      });
       portal.style.fontFamily = "var(--n-font-sans)";
       Object.entries(style).forEach(([property, value]) => {
         portal.style.setProperty(property, String(value));
@@ -850,12 +855,14 @@ export function VisualPlayground() {
       });
     });
     observer.observe(document.body, { childList: true });
+    document.addEventListener("pointerover", registerPortalIntent, true);
     document.addEventListener("pointerdown", registerPortalIntent, true);
     document.addEventListener("focusin", registerPortalIntent, true);
     document.addEventListener("keydown", registerPortalIntent, true);
 
     return () => {
       observer.disconnect();
+      document.removeEventListener("pointerover", registerPortalIntent, true);
       document.removeEventListener("pointerdown", registerPortalIntent, true);
       document.removeEventListener("focusin", registerPortalIntent, true);
       document.removeEventListener("keydown", registerPortalIntent, true);
@@ -868,11 +875,14 @@ export function VisualPlayground() {
           delete portal.dataset.theme;
           delete portal.dataset.mode;
           delete portal.dataset.density;
+          fontClassName.split(" ").forEach((className) => {
+            if (className) portal.classList.remove(className);
+          });
           portal.style.removeProperty("font-family");
           Object.keys(style).forEach((property) => portal.style.removeProperty(property));
         });
     };
-  }, [density, resolvedMode, style, theme]);
+  }, [density, fontClassName, resolvedMode, style, theme]);
 
   const applyTheme = (nextTheme: Theme) => {
     const [accent, hover, active] = themeAccents[nextTheme];
@@ -918,6 +928,7 @@ export function VisualPlayground() {
   };
 
   const reset = () => {
+    hasLocalAppearanceOverride.current = true;
     setTheme("purple");
     setAppearanceMode("system");
     setDensity("comfortable");
@@ -959,7 +970,7 @@ export function VisualPlayground() {
 
   return (
     <ToastProvider>
-      <div className={`visual-playground visual-playground--lab ${styles.root}`}>
+      <div className={`visual-playground visual-playground--lab ${styles.root} ${fontClassName}`}>
         <div className="visual-playground__workspace visual-playground__workspace--radix">
           <Card
             id="playground-theme-settings"
@@ -1006,7 +1017,10 @@ export function VisualPlayground() {
                 label="Color mode"
                 value={appearanceMode ?? "system"}
                 options={appearanceOptions.map((value) => ({ label: titleCase(value), value }))}
-                onValueChange={selectHandler(appearanceOptions, setAppearanceMode)}
+                onValueChange={selectHandler(appearanceOptions, (value) => {
+                  hasLocalAppearanceOverride.current = true;
+                  setAppearanceMode(value);
+                })}
               />
               <Select
                 label="Density"
@@ -1089,6 +1103,7 @@ export function VisualPlayground() {
         </div>
       </div>
       <ToastViewport
+        className={fontClassName}
         data-density={density}
         data-mode={resolvedMode ?? undefined}
         data-nerio-theme-scope=""
