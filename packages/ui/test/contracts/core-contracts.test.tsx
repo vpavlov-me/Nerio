@@ -2878,6 +2878,11 @@ describe("Core interactive action contracts", () => {
     const trigger = screen.getByRole("button", { name: "Delete project" });
     await user.click(trigger);
     const alertDialog = await screen.findByRole("alertdialog", { name: "Delete project?" });
+    expect(alertDialog.querySelector('[data-slot="header"]')).toHaveClass(
+      "flex-col",
+      "justify-start",
+      "gap-(--n-dialog-header-gap)",
+    );
     await waitFor(() =>
       expect(within(alertDialog).getByRole("button", { name: "Cancel" })).toHaveFocus(),
     );

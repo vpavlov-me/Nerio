@@ -133,6 +133,9 @@ export const snippets: Record<string, string> = {
   item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio-ui/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
 };
 
+export const alertDialogConfirmationSnippet =
+  'import * as React from \'react\';\nimport { AlertDialog, AlertDialogAction, AlertDialogBackdrop, AlertDialogBody, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, Button, Field, Input } from \'@nerio-ui/ui/client\';\n\nfunction DeleteProjectDialog() {\n  const cancelRef = React.useRef<HTMLButtonElement>(null);\n  const projectName = "Nerio";\n  const [confirmation, setConfirmation] = React.useState("");\n  const isConfirmed = confirmation === projectName;\n\n  return (\n    <AlertDialog onOpenChange={(open) => !open && setConfirmation("")}>\n      <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />\n      <AlertDialogPortal>\n        <AlertDialogBackdrop />\n        <AlertDialogContent initialFocus={cancelRef}>\n          <AlertDialogHeader>\n            <AlertDialogTitle>Delete project?</AlertDialogTitle>\n            <AlertDialogDescription>This permanently removes the project and cannot be undone.</AlertDialogDescription>\n          </AlertDialogHeader>\n          <AlertDialogBody>\n            <Field label={`Type “${projectName}” to confirm`} description="The project name is case-sensitive.">\n              <Input autoComplete="off" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} />\n            </Field>\n          </AlertDialogBody>\n          <AlertDialogFooter>\n            <AlertDialogCancel ref={cancelRef} render={<Button variant="secondary">Cancel</Button>} />\n            <AlertDialogAction disabled={!isConfirmed} render={<Button variant="danger" onClick={deleteProject}>Delete project</Button>} />\n          </AlertDialogFooter>\n        </AlertDialogContent>\n      </AlertDialogPortal>\n    </AlertDialog>\n  );\n}';
+
 export const sharedTokens = [
   "--n-color-surface",
   "--n-color-text-primary",
@@ -3887,6 +3890,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Provide both AlertDialogTitle and AlertDialogDescription with concrete action and consequence copy.",
       "For destructive or difficult-to-reverse actions, pass the AlertDialogCancel ref to AlertDialogContent initialFocus.",
       "Keep cancel before action in reading and tab order; do not communicate danger through color alone.",
+      "When product policy requires stronger confirmation, compose an exact entity-name field and disable the action until it matches.",
       "Mutation, async state, permissions, routing, and error recovery remain consumer-owned.",
     ],
     api: [
@@ -3911,12 +3915,14 @@ export const componentReference: Record<string, ComponentReference> = {
     ],
     designNotes: [
       "AlertDialog is a response boundary, not an async mutation orchestrator.",
+      "Exact-name confirmation is optional consumer-owned policy composed inside AlertDialogBody.",
       "A normal Dialog remains appropriate for reversible tasks and forms with their own completion model.",
     ],
     related: ["Dialog", "Button"],
     guidance: {
       do: [
         "Name the action and consequence precisely, focus Cancel first, and keep one clear confirmation action.",
+        "Compose an exact entity-name confirmation when consumer product policy requires it.",
       ],
       dont: [
         "Do not hide side effects, default focus to a destructive action, or put multi-step workflows in AlertDialog.",
