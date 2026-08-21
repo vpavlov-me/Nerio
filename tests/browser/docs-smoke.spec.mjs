@@ -811,8 +811,8 @@ test("applies every Playground control to the product scenario canvas", async ({
   await chooseSetting("UI scale", "90%");
   const scaledTextSizes = await playground.evaluate((element) => {
     const style = getComputedStyle(element);
-    return ["2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl"].map(
-      (size) => Number.parseFloat(style.getPropertyValue(`--n-font-size-${size}`)),
+    return ["2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl"].map((size) =>
+      Number.parseFloat(style.getPropertyValue(`--n-font-size-${size}`)),
     );
   });
   expect(Math.min(...scaledTextSizes)).toBeGreaterThanOrEqual(12);
