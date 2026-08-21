@@ -108,6 +108,18 @@ test("runtime-axis validator requires complete accent declarations in dark scope
   });
 });
 
+test("runtime-axis validator requires scoped System to reset to light defaults", () => {
+  withFixture(
+    "--token-file",
+    "styles.css",
+    readFileSync(tokenSource, "utf8").replace(
+      ',\n[data-nerio-theme-scope][data-mode="system"] {',
+      " {",
+    ),
+    (stderr) => assert.match(stderr, /Light mode selector is missing or misplaced/),
+  );
+});
+
 test("runtime-axis validator rejects prohibited axes structurally", () => {
   withFixture(
     "--token-file",
@@ -190,6 +202,19 @@ test("runtime-axis validator requires density aliases and representative compone
   );
   withFixture("--token-file", "styles.css", source, (stderr) => {
     assert.match(stderr, /Compact density is missing --n-table-cell-padding-y/);
+  });
+});
+
+test("runtime-axis validator requires Comfortable to reset every Compact alias", () => {
+  const source = readFileSync(tokenSource, "utf8").replace(
+    /(:root\[data-density="comfortable"\],\s*\n\[data-nerio-theme-scope\]\[data-density="comfortable"\]\s*\{[\s\S]*?)^\s*--n-table-cell-padding-y:.*\n/m,
+    "$1",
+  );
+  withFixture("--token-file", "styles.css", source, (stderr) => {
+    assert.match(
+      stderr,
+      /Comfortable density must reset --n-table-cell-padding-y to the :root value/,
+    );
   });
 });
 

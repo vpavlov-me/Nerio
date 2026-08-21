@@ -817,7 +817,14 @@ export function VisualPlayground() {
     if (!playground || !resolvedMode || !style) return;
 
     let portalIntentUntil = 0;
-    const registerPortalIntent = () => {
+    const registerPortalIntent = (event: Event) => {
+      const target = event.target;
+      if (
+        !(target instanceof Element) ||
+        (!playground.contains(target) && !target.closest("[data-playground-portal]"))
+      ) {
+        return;
+      }
       portalIntentUntil = Date.now() + 1_000;
     };
     const applyPortalTheme = (portal: HTMLElement) => {
@@ -843,15 +850,15 @@ export function VisualPlayground() {
       });
     });
     observer.observe(document.body, { childList: true });
-    playground.addEventListener("pointerdown", registerPortalIntent, true);
-    playground.addEventListener("focusin", registerPortalIntent, true);
-    playground.addEventListener("keydown", registerPortalIntent, true);
+    document.addEventListener("pointerdown", registerPortalIntent, true);
+    document.addEventListener("focusin", registerPortalIntent, true);
+    document.addEventListener("keydown", registerPortalIntent, true);
 
     return () => {
       observer.disconnect();
-      playground.removeEventListener("pointerdown", registerPortalIntent, true);
-      playground.removeEventListener("focusin", registerPortalIntent, true);
-      playground.removeEventListener("keydown", registerPortalIntent, true);
+      document.removeEventListener("pointerdown", registerPortalIntent, true);
+      document.removeEventListener("focusin", registerPortalIntent, true);
+      document.removeEventListener("keydown", registerPortalIntent, true);
       document
         .querySelectorAll<HTMLElement>("[data-playground-dynamic-portal]")
         .forEach((portal) => {

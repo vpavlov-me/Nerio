@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { collectRules, parseCss, scopedRule } from "./css-structure.mjs";
+import { collectRules, exactRule, parseCss, scopedRule } from "./css-structure.mjs";
 import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -79,8 +79,8 @@ function isPrimitiveToken(token) {
   return primitiveTokenPatterns.some((pattern) => pattern.test(token));
 }
 
-function requireRule(rules, selector, media, tokens, label, failures) {
-  const rule = scopedRule(rules, selector, media ?? undefined);
+function requireRule(rules, selector, media, tokens, label, failures, additionalSelectors = []) {
+  const rule = scopedRule(rules, selector, media ?? undefined, additionalSelectors);
   const mediaRules = rule?.atRules.filter((atRule) => atRule.name === "media") ?? [];
   const correctlyPlaced =
     rule &&
@@ -218,7 +218,9 @@ function validate() {
       failures,
     );
   }
-  requireRule(rules, ':root[data-mode="light"]', null, modeTokens, "Light mode", failures);
+  requireRule(rules, ':root[data-mode="light"]', null, modeTokens, "Light mode", failures, [
+    '[data-nerio-theme-scope][data-mode="system"]',
+  ]);
   requireRule(rules, ':root[data-mode="dark"]', null, modeTokens, "Dark mode", failures);
   requireRule(
     rules,
@@ -236,6 +238,23 @@ function validate() {
     "Compact density",
     failures,
   );
+
+  const rootRule = exactRule(rules, ":root");
+  const compactRule = scopedRule(rules, ':root[data-density="compact"]');
+  const comfortableRule = scopedRule(rules, ':root[data-density="comfortable"]');
+  if (!rootRule || !compactRule || !comfortableRule) {
+    failures.push("Comfortable density reset is missing or misplaced.");
+  } else {
+    for (const token of compactRule.declarations.keys()) {
+      const expected = rootRule.declarations.get(token);
+      const actual = comfortableRule.declarations.get(token);
+      if (actual !== expected) {
+        failures.push(
+          `Comfortable density must reset ${token} to the :root value ${expected ?? "missing"}.`,
+        );
+      }
+    }
+  }
 
   for (const rule of rules) {
     for (const selector of rule.selectors) {

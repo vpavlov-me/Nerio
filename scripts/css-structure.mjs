@@ -135,14 +135,20 @@ export function exactRule(rules, selector, media) {
   );
 }
 
-export function scopedRule(rules, selector, media) {
+export function scopedRule(rules, selector, media, additionalSelectors = []) {
   const normalized = normalizeSelector(selector);
   const scoped = normalized.replace(/^:root/, "[data-nerio-theme-scope]");
+  const expectedSelectors = new Set([
+    normalized,
+    scoped,
+    ...additionalSelectors.map(normalizeSelector),
+  ]);
   return rules.find(
     (rule) =>
       rule.selectors.includes(normalized) &&
       rule.selectors.includes(scoped) &&
-      rule.selectors.every((candidate) => candidate === normalized || candidate === scoped) &&
+      rule.selectors.length === expectedSelectors.size &&
+      rule.selectors.every((candidate) => expectedSelectors.has(candidate)) &&
       (media === undefined ||
         rule.atRules.some((atRule) => atRule.name === "media" && atRule.prelude === media)),
   );

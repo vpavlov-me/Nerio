@@ -835,6 +835,34 @@ test("applies every Playground control to the product scenario canvas", async ({
   expect(isolatedModes.globalIndicator).toBe("#fff");
   expect(isolatedModes.canvasIndicator).not.toBe(isolatedModes.globalIndicator);
   expect(isolatedModes.indicatorBackground).toBe("rgba(255, 255, 255, 0.16)");
+
+  await page.emulateMedia({ colorScheme: "light" });
+  const nestedAxisResets = await page.evaluate(() => {
+    const ancestor = document.createElement("div");
+    ancestor.dataset.nerioThemeScope = "";
+    ancestor.dataset.mode = "dark";
+    ancestor.dataset.density = "compact";
+
+    const probe = document.createElement("div");
+    probe.dataset.nerioThemeScope = "";
+    probe.dataset.mode = "system";
+    probe.dataset.density = "comfortable";
+    ancestor.append(probe);
+    document.body.append(ancestor);
+    const style = getComputedStyle(probe);
+    const result = {
+      colorScheme: style.colorScheme,
+      controlHeight: style.getPropertyValue("--n-button-height-md").trim(),
+      surface: style.getPropertyValue("--n-color-surface-canvas").trim(),
+    };
+    ancestor.remove();
+    return result;
+  });
+  expect(nestedAxisResets).toEqual({
+    colorScheme: "light",
+    controlHeight: "2rem",
+    surface: "#fff",
+  });
   await chooseSetting("Panel style", "Flat");
 
   const settingsTokensAfter = await settings.evaluate((element) => {
@@ -959,6 +987,19 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
     "data-nerio-theme-scope",
     "",
   );
+  await page.waitForTimeout(1_100);
+  await dialog.getByRole("combobox", { name: "Role" }).click();
+  const roleListbox = page.getByRole("listbox");
+  await expect(roleListbox).toBeVisible();
+  await expect(roleListbox.locator("xpath=ancestor::*[@data-playground-portal]")).toHaveAttribute(
+    "data-nerio-theme-scope",
+    "",
+  );
+  await expect(roleListbox.locator("xpath=ancestor::*[@data-playground-portal]")).toHaveAttribute(
+    "data-mode",
+    await dialog.locator("xpath=ancestor::*[@data-playground-portal]").getAttribute("data-mode"),
+  );
+  await page.keyboard.press("Escape");
   await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "Show success toast" }).click();

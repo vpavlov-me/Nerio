@@ -72,8 +72,8 @@ final result: passed
   padding, local mode, and Reset state updated in the rendered page. A second font pass applied IBM
   Plex Sans to the live Invite teammates Dialog portal.
 - Browser console: no warnings or errors.
-- Production route CSS resolves to 353216 bytes after adding paired root/canvas runtime selectors,
-  3008 bytes above the previous route budget. The reviewed budget is 357312 bytes, preserving the
+- Production route CSS resolves to 356543 bytes after adding paired root/canvas runtime selectors,
+  6335 bytes above the previous route budget. The reviewed budget is 360640 bytes, preserving the
   policy's approximately 4 KiB headroom without changing JavaScript or runtime-transfer limits.
 
 ### Required fidelity surfaces

@@ -336,7 +336,9 @@ function validate() {
     );
   }
   requireDeclarations(
-    scopedRule(rules, ':root[data-mode="light"]'),
+    scopedRule(rules, ':root[data-mode="light"]', undefined, [
+      '[data-nerio-theme-scope][data-mode="system"]',
+    ]),
     modeSemanticTokens,
     "light mode",
     failures,
@@ -347,7 +349,12 @@ function validate() {
       const declarations = new Map(rootRule?.declarations ?? []);
       for (const rule of [
         scopedRule(rules, `:root[data-theme="${theme}"]`),
-        scopedRule(rules, `:root[data-mode="${mode}"]`),
+        scopedRule(
+          rules,
+          `:root[data-mode="${mode}"]`,
+          undefined,
+          mode === "light" ? ['[data-nerio-theme-scope][data-mode="system"]'] : [],
+        ),
         ...rules.filter(
           (rule) =>
             rule.atRules.length === 0 &&

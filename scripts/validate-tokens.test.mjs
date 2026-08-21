@@ -234,6 +234,16 @@ test("dark Tabs indicator stays lighter than the control surface", () => {
   assert.match(source, /--n-tabs-indicator-background: var\(--n-color-surface-raised\);/);
 });
 
+test("scoped System shares the explicit light reset before the dark media override", () => {
+  const rules = collectRules(parseCss(readFileSync(tokenSource, "utf8")));
+  const lightRule = scopedRule(rules, ':root[data-mode="light"]', undefined, [
+    '[data-nerio-theme-scope][data-mode="system"]',
+  ]);
+
+  assert.equal(lightRule?.declarations.get("color-scheme"), "light");
+  assert.equal(lightRule?.declarations.get("--n-color-surface-canvas"), "var(--n-gray-0)");
+});
+
 test("token validator reports unresolved aliases", () => {
   withTokenFixture(
     (source) => `${source}\n:root { --n-test-unresolved: var(--n-does-not-exist); }\n`,
