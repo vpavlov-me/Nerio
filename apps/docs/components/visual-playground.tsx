@@ -344,8 +344,8 @@ const darkNeutralRecipes: typeof neutralRecipes = {
   },
 };
 
-function scaled(value: number, scale: number) {
-  return `${Math.round(value * scale * 100) / 100}px`;
+function scaled(value: number, scale: number, minimum = 0) {
+  return `${Math.max(Math.round(value * scale * 100) / 100, minimum)}px`;
 }
 
 function toStyle(
@@ -584,16 +584,16 @@ function toStyle(
     "--n-space-8": scaled(32, scale),
     "--n-space-10": scaled(40, scale),
     "--n-space-12": scaled(48, scale),
-    "--n-font-size-2xs": scaled(11, scale),
-    "--n-font-size-xs": scaled(12, scale),
-    "--n-font-size-sm": scaled(13, scale),
-    "--n-font-size-md": scaled(14, scale),
-    "--n-font-size-lg": scaled(16, scale),
-    "--n-font-size-xl": scaled(18, scale),
-    "--n-font-size-2xl": scaled(20, scale),
-    "--n-font-size-3xl": scaled(22.5, scale),
-    "--n-font-size-4xl": scaled(25.25, scale),
-    "--n-font-size-5xl": scaled(28.5, scale),
+    "--n-font-size-2xs": scaled(11, scale, 12),
+    "--n-font-size-xs": scaled(12, scale, 12),
+    "--n-font-size-sm": scaled(13, scale, 12),
+    "--n-font-size-md": scaled(14, scale, 12),
+    "--n-font-size-lg": scaled(16, scale, 12),
+    "--n-font-size-xl": scaled(18, scale, 12),
+    "--n-font-size-2xl": scaled(20, scale, 12),
+    "--n-font-size-3xl": scaled(22.5, scale, 12),
+    "--n-font-size-4xl": scaled(25.25, scale, 12),
+    "--n-font-size-5xl": scaled(28.5, scale, 12),
     "--n-size-control-sm": densityScaled(24, 28),
     "--n-size-control-md": densityScaled(28, 32),
     "--n-size-control-lg": densityScaled(32, 36),

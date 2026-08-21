@@ -808,6 +808,14 @@ test("applies every Playground control to the product scenario canvas", async ({
   await expectSegmentedTabsRadius(0);
   await expect(firstScenarioTextarea).toHaveCSS("border-radius", "0px");
   await expect(firstScenarioTable).toHaveCSS("border-radius", "0px");
+  await chooseSetting("UI scale", "90%");
+  const scaledTextSizes = await playground.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return ["2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl", "4xl", "5xl"].map(
+      (size) => Number.parseFloat(style.getPropertyValue(`--n-font-size-${size}`)),
+    );
+  });
+  expect(Math.min(...scaledTextSizes)).toBeGreaterThanOrEqual(12);
   await chooseSetting("UI scale", "110%");
   await chooseSetting("Motion", "Standard");
   await chooseSetting("Font", "Space Grotesk");
