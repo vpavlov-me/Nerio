@@ -82,6 +82,7 @@ import {
   Progress,
   RadioGroup,
   RadioGroupItem,
+  SearchField,
   Select,
   Separator,
   Sheet,
@@ -879,6 +880,32 @@ export function ComponentPlayground() {
                   invalid
                 />,
                 <Combobox key="disabled" label="City" options={cityOptions} disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="search-field"
+        title="SearchField"
+        api="native search · value · clear · Enter search · loading · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Value", "Loading", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <SearchField key="default" label="Search projects" />,
+                <SearchField key="value" label="Search projects" defaultValue="Roadmap" />,
+                <SearchField key="loading" label="Search projects" defaultValue="Nerio" loading />,
+                <SearchField
+                  key="invalid"
+                  label="Search projects"
+                  message="Enter a project name."
+                  invalid
+                />,
+                <SearchField key="disabled" label="Search projects" disabled />,
               ],
             },
           ]}

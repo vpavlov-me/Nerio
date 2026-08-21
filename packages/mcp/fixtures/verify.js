@@ -299,6 +299,25 @@ async function verify() {
       );
     }
 
+    const searchFieldUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "search-field" },
+    });
+    const searchFieldUsage = JSON.parse(searchFieldUsageResult.content[0].text);
+    if (
+      searchFieldUsage.baseUiPrimitives.length !== 0 ||
+      !searchFieldUsage.registryDependencies.includes("input-group") ||
+      !searchFieldUsage.slots.includes("clear") ||
+      !searchFieldUsage.slots.includes("loading") ||
+      !searchFieldUsage.states.includes("read-only") ||
+      !searchFieldUsage.accessibility.some((item) => item.includes("restores focus")) ||
+      !searchFieldUsage.accessibility.some((item) => item.includes("Results"))
+    ) {
+      throw new Error(
+        "MCP SearchField usage is missing native state, focus, presentation, or consumer boundaries.",
+      );
+    }
+
     const tableUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "table" },
@@ -957,6 +976,7 @@ async function verify() {
       "alert-dialog",
       "sheet",
       "select",
+      "search-field",
       "tabs",
       "toast",
       "input",

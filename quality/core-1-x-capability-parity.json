@@ -65,12 +65,12 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "95a17a5c3a873e5017d20ca5432551d484a2f504461e5141c051ae36a0338903",
+  "currentComponentCatalogSha256": "9264c5b288bf9dd789c131ec287c63768cfc1c90c4c8510ebad919442678da63",
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
-  "currentRegistryItemCount": 50,
-  "currentRegistryManifestSha256": "968df5d3e71c53c5d23c705258db1d9c4972a71ec96dd01f7c663b32c93e2c8a",
-  "currentPublicApiSnapshotSha256": "be1d5e4f45fd955842821adb18214fe3822436fed6d4617a82b90b66fc8559ed",
+  "currentRegistryItemCount": 51,
+  "currentRegistryManifestSha256": "55bd9811d8051a6d1862f639b740a9d1522d030f00491b5472eeff1bf512f87e",
+  "currentPublicApiSnapshotSha256": "3103871f8471d192b93b67a8b5d5a26f84e61232e9ed5b61a15a0d59044084bf",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -292,7 +292,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Retain #346 for SearchField only. NumberField has a different value, locale, form, and primitive contract and moves to #370."
     },
     {
@@ -804,7 +804,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["SearchField"],
       "baseUiPrimitives": [],
       "platformCoverageIds": [],
       "competitorEvidence": [
@@ -813,7 +813,7 @@
       ],
       "value": "high",
       "complexity": "medium",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One query input, clear action, and search event composed from existing form primitives.",
       "nonGoals": ["Results", "Requests", "Debounce", "Global shortcuts"],

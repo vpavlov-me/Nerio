@@ -15,6 +15,7 @@ import {
   LabelRow,
   RadioGroup,
   RadioGroupItem,
+  SearchField,
   Select,
   Switch,
   Textarea,
@@ -167,6 +168,17 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
               },
             ]}
           />
+        </div>
+      ) : null}
+      {kind === "search-field" ? (
+        <div className="form-preview-stack">
+          <SearchField
+            label="Search projects"
+            name="query"
+            defaultValue="Roadmap"
+            description="Submit one query; results and requests stay in the product."
+          />
+          <SearchField label="Search activity" loading loadingLabel="Searching activity" />
         </div>
       ) : null}
     </PreviewFrame>

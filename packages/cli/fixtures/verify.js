@@ -116,6 +116,25 @@ const expectedComboboxFiles = [
   "styles/spinner.css",
   "styles/tailwind.css",
 ];
+const expectedSearchFieldFiles = [
+  "components/button.tsx",
+  "components/field.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/input.tsx",
+  "components/input-group.tsx",
+  "components/label.tsx",
+  "components/search-field.tsx",
+  "components/spinner.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/motion.css",
+  "styles/spinner.css",
+  "styles/tailwind.css",
+];
 const expectedPhase2BFiles = [
   "components/alert.tsx",
   "components/form-message.tsx",
@@ -1786,6 +1805,7 @@ async function verify() {
     await run(localTarget, "add", "toggle");
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "combobox");
+    await run(localTarget, "add", "search-field");
     await run(localTarget, "add", "slider");
     await run(localTarget, "add", "calendar");
     await run(localTarget, "add", "date-picker");
@@ -2061,6 +2081,22 @@ async function verify() {
     ) {
       throw new Error(
         "Installed Combobox source did not preserve generic identity, state, or presentation contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedSearchFieldFiles);
+    const searchFieldSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/search-field.tsx"),
+      "utf8",
+    );
+    if (
+      !searchFieldSource.includes('type="search"') ||
+      !searchFieldSource.includes("setUncontrolledValue") ||
+      !searchFieldSource.includes('reason: "enter"') ||
+      !searchFieldSource.includes('data-slot="clear"') ||
+      !searchFieldSource.includes("nativeInputRef.current?.focus()")
+    ) {
+      throw new Error(
+        "Installed SearchField source did not preserve native search, state, clear, or focus contracts.",
       );
     }
     assertFiles(localTarget, expectedSliderFiles);

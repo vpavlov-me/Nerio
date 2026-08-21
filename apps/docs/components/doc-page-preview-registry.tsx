@@ -49,6 +49,7 @@ const previewRegistry = {
   switch: FormsPreview,
   select: FormsPreview,
   combobox: FormsPreview,
+  "search-field": FormsPreview,
   dialog: OverlaysPreview,
   "alert-dialog": AlertDialogPreview,
   sheet: OverlaysPreview,
