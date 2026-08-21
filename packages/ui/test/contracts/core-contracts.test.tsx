@@ -2166,6 +2166,17 @@ describe("Core static contracts", () => {
     expect(secondary).toHaveAttribute("dir", "rtl");
   });
 
+  it("lets a native aria-label name the Toast viewport", () => {
+    render(
+      <ToastProvider>
+        <ToastViewport aria-label="Errors" />
+      </ToastProvider>,
+    );
+
+    expect(screen.getByRole("region", { name: "Errors" })).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Notifications" })).not.toBeInTheDocument();
+  });
+
   it("resolves inherited and explicit Toast directions on the initial client render", () => {
     const originalDirection = document.documentElement.dir;
     document.documentElement.dir = "rtl";

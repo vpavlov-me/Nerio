@@ -7,6 +7,8 @@ import {
   Card,
   CardContent,
   CardFooter,
+  CardHeader,
+  CardTitle,
   Select,
   ToastProvider,
   ToastViewport,
@@ -20,6 +22,9 @@ type NeutralRecipe = "slate" | "gray" | "mauve" | "sage" | "olive" | "sand";
 type RadiusPreset = "none" | "small" | "medium" | "large" | "full";
 type MotionPreset = "reduced" | "calm" | "standard";
 type PanelStyle = "flat" | "raised";
+type TypographyRecipe =
+  "system" | "geist" | "inter" | "ibm-plex" | "manrope" | "source-sans" | "space-grotesk";
+type AppearanceMode = "light" | "dark" | "system";
 type PlaygroundStyle = React.CSSProperties & Record<`--${string}`, string | number>;
 
 type SemanticColors = {
@@ -162,7 +167,32 @@ const themeAccents: Record<Theme, [string, string, string, string, string]> = {
 
 const neutralRecipeOptions = ["slate", "gray", "mauve", "sage", "olive", "sand"] as const;
 const radiusOptions = ["none", "small", "medium", "large", "full"] as const;
+const scaleOptions = [90, 95, 100, 105, 110] as const;
+const motionOptions = ["reduced", "calm", "standard"] as const;
 const panelOptions = ["flat", "raised"] as const;
+const appearanceOptions = ["system", "light", "dark"] as const;
+const typographyOptions = [
+  { label: "System", value: "system" },
+  { label: "Geist", value: "geist" },
+  { label: "Inter", value: "inter" },
+  { label: "IBM Plex", value: "ibm-plex" },
+  { label: "Manrope", value: "manrope" },
+  { label: "Source Sans 3", value: "source-sans" },
+  { label: "Space Grotesk", value: "space-grotesk" },
+] as const satisfies readonly { label: string; value: TypographyRecipe }[];
+
+const typographyTokens: Record<TypographyRecipe, { sans: string; mono: string }> = {
+  system: { sans: "var(--n-font-sans-system)", mono: "var(--n-font-mono-system)" },
+  geist: { sans: "var(--n-font-sans-geist)", mono: "var(--n-font-mono-geist)" },
+  inter: { sans: "var(--n-font-sans-inter)", mono: "var(--n-font-mono-system)" },
+  "ibm-plex": { sans: "var(--n-font-sans-ibm-plex)", mono: "var(--n-font-mono-ibm-plex)" },
+  manrope: { sans: "var(--n-font-sans-manrope)", mono: "var(--n-font-mono-system)" },
+  "source-sans": { sans: "var(--n-font-sans-source-sans)", mono: "var(--n-font-mono-system)" },
+  "space-grotesk": {
+    sans: "var(--n-font-sans-space-grotesk)",
+    mono: "var(--n-font-mono-system)",
+  },
+};
 
 function titleCase(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
@@ -314,8 +344,8 @@ const darkNeutralRecipes: typeof neutralRecipes = {
   },
 };
 
-function scaled(value: number, scale: number) {
-  return `${Math.round(value * scale * 100) / 100}px`;
+function scaled(value: number, scale: number, minimum = 0) {
+  return `${Math.max(Math.round(value * scale * 100) / 100, minimum)}px`;
 }
 
 function toStyle(
@@ -325,6 +355,7 @@ function toStyle(
   radius: RadiusPreset,
   motion: MotionPreset,
   panel: PanelStyle,
+  typography: TypographyRecipe,
   isDark: boolean,
 ): PlaygroundStyle {
   const scale = scalePercent / 100;
@@ -379,7 +410,10 @@ function toStyle(
     standard: [140, 220, 360],
   };
   const [fast, normal, slow] = durations[motion];
+  const font = typographyTokens[typography];
   return {
+    "--n-font-sans": font.sans,
+    "--n-font-mono": font.mono,
     "--n-color-surface-canvas": colors.canvas,
     "--n-color-surface-default": colors.surface,
     "--n-color-surface-control": colors.control,
@@ -550,16 +584,16 @@ function toStyle(
     "--n-space-8": scaled(32, scale),
     "--n-space-10": scaled(40, scale),
     "--n-space-12": scaled(48, scale),
-    "--n-font-size-2xs": scaled(11, scale),
-    "--n-font-size-xs": scaled(12, scale),
-    "--n-font-size-sm": scaled(13, scale),
-    "--n-font-size-md": scaled(14, scale),
-    "--n-font-size-lg": scaled(16, scale),
-    "--n-font-size-xl": scaled(18, scale),
-    "--n-font-size-2xl": scaled(20, scale),
-    "--n-font-size-3xl": scaled(22.5, scale),
-    "--n-font-size-4xl": scaled(25.25, scale),
-    "--n-font-size-5xl": scaled(28.5, scale),
+    "--n-font-size-2xs": scaled(11, scale, 12),
+    "--n-font-size-xs": scaled(12, scale, 12),
+    "--n-font-size-sm": scaled(13, scale, 12),
+    "--n-font-size-md": scaled(14, scale, 12),
+    "--n-font-size-lg": scaled(16, scale, 12),
+    "--n-font-size-xl": scaled(18, scale, 12),
+    "--n-font-size-2xl": scaled(20, scale, 12),
+    "--n-font-size-3xl": scaled(22.5, scale, 12),
+    "--n-font-size-4xl": scaled(25.25, scale, 12),
+    "--n-font-size-5xl": scaled(28.5, scale, 12),
     "--n-size-control-sm": densityScaled(24, 28),
     "--n-size-control-md": densityScaled(28, 32),
     "--n-size-control-lg": densityScaled(32, 36),
@@ -726,25 +760,28 @@ function toStyle(
   };
 }
 
-export function VisualPlayground() {
+export function VisualPlayground({ fontClassName = "" }: { fontClassName?: string }) {
   const [theme, setTheme] = React.useState<Theme>("purple");
-  const [appearanceMode, setAppearanceMode] = React.useState<"light" | "dark" | "system" | null>(
-    null,
-  );
+  const [appearanceMode, setAppearanceMode] = React.useState<AppearanceMode | null>(null);
   const [systemDark, setSystemDark] = React.useState(false);
   const [density, setDensity] = React.useState<Density>("comfortable");
   const [neutral, setNeutral] = React.useState<NeutralRecipe>("slate");
   const [radius, setRadius] = React.useState<RadiusPreset>("full");
+  const [scale, setScale] = React.useState(100);
+  const [motion, setMotion] = React.useState<MotionPreset>("calm");
   const [panel, setPanel] = React.useState<PanelStyle>("raised");
+  const [typography, setTypography] = React.useState<TypographyRecipe>("geist");
   const [lightColors, setLightColors] = React.useState(lightDefaults);
   const [darkColors, setDarkColors] = React.useState(darkDefaults);
   const playgroundRef = React.useRef<HTMLDivElement>(null);
+  const hasLocalAppearanceOverride = React.useRef(false);
 
   React.useLayoutEffect(() => {
     const query = window.matchMedia("(prefers-color-scheme: dark)");
     const root = document.documentElement;
     const updateSystem = () => setSystemDark(query.matches);
     const updateAppearance = () => {
+      if (hasLocalAppearanceOverride.current) return;
       const nextMode = root.dataset.mode;
       setAppearanceMode(
         nextMode === "light" || nextMode === "dark" || nextMode === "system" ? nextMode : "system",
@@ -775,31 +812,38 @@ export function VisualPlayground() {
   const style =
     resolvedMode === null
       ? undefined
-      : toStyle(colors, 100, density, radius, "calm", panel, resolvedMode === "dark");
+      : toStyle(colors, scale, density, radius, motion, panel, typography, resolvedMode === "dark");
 
   React.useEffect(() => {
     const playground = playgroundRef.current;
     if (!playground || !resolvedMode || !style) return;
 
     let portalIntentUntil = 0;
-    const registerPortalIntent = () => {
+    const registerPortalIntent = (event: Event) => {
+      const target = event.target;
+      if (
+        !(target instanceof Element) ||
+        (!playground.contains(target) && !target.closest("[data-playground-portal]"))
+      ) {
+        return;
+      }
       portalIntentUntil = Date.now() + 1_000;
     };
     const applyPortalTheme = (portal: HTMLElement) => {
       portal.dataset.playgroundPortal = "";
+      portal.dataset.playgroundDynamicPortal = "";
+      portal.dataset.nerioThemeScope = "";
       portal.dataset.theme = theme;
       portal.dataset.mode = resolvedMode;
       portal.dataset.density = density;
+      fontClassName.split(" ").forEach((className) => {
+        if (className) portal.classList.add(className);
+      });
+      portal.style.fontFamily = "var(--n-font-sans)";
       Object.entries(style).forEach(([property, value]) => {
         portal.style.setProperty(property, String(value));
       });
     };
-    document
-      .querySelectorAll<HTMLElement>(
-        '[data-playground-portal], .n-toast-viewport[data-slot="viewport"]',
-      )
-      .forEach(applyPortalTheme);
-
     const observer = new MutationObserver((mutations) => {
       if (Date.now() > portalIntentUntil) return;
       mutations.forEach((mutation) => {
@@ -811,24 +855,34 @@ export function VisualPlayground() {
       });
     });
     observer.observe(document.body, { childList: true });
-    playground.addEventListener("pointerdown", registerPortalIntent, true);
-    playground.addEventListener("focusin", registerPortalIntent, true);
-    playground.addEventListener("keydown", registerPortalIntent, true);
+    document.addEventListener("pointerover", registerPortalIntent, true);
+    document.addEventListener("pointerdown", registerPortalIntent, true);
+    document.addEventListener("focusin", registerPortalIntent, true);
+    document.addEventListener("keydown", registerPortalIntent, true);
 
     return () => {
       observer.disconnect();
-      playground.removeEventListener("pointerdown", registerPortalIntent, true);
-      playground.removeEventListener("focusin", registerPortalIntent, true);
-      playground.removeEventListener("keydown", registerPortalIntent, true);
-      document.querySelectorAll<HTMLElement>("[data-playground-portal]").forEach((portal) => {
-        delete portal.dataset.playgroundPortal;
-        delete portal.dataset.theme;
-        delete portal.dataset.mode;
-        delete portal.dataset.density;
-        Object.keys(style).forEach((property) => portal.style.removeProperty(property));
-      });
+      document.removeEventListener("pointerover", registerPortalIntent, true);
+      document.removeEventListener("pointerdown", registerPortalIntent, true);
+      document.removeEventListener("focusin", registerPortalIntent, true);
+      document.removeEventListener("keydown", registerPortalIntent, true);
+      document
+        .querySelectorAll<HTMLElement>("[data-playground-dynamic-portal]")
+        .forEach((portal) => {
+          delete portal.dataset.playgroundPortal;
+          delete portal.dataset.playgroundDynamicPortal;
+          delete portal.dataset.nerioThemeScope;
+          delete portal.dataset.theme;
+          delete portal.dataset.mode;
+          delete portal.dataset.density;
+          fontClassName.split(" ").forEach((className) => {
+            if (className) portal.classList.remove(className);
+          });
+          portal.style.removeProperty("font-family");
+          Object.keys(style).forEach((property) => portal.style.removeProperty(property));
+        });
     };
-  }, [density, resolvedMode, style, theme]);
+  }, [density, fontClassName, resolvedMode, style, theme]);
 
   const applyTheme = (nextTheme: Theme) => {
     const [accent, hover, active] = themeAccents[nextTheme];
@@ -874,54 +928,65 @@ export function VisualPlayground() {
   };
 
   const reset = () => {
+    hasLocalAppearanceOverride.current = true;
     setTheme("purple");
+    setAppearanceMode("system");
     setDensity("comfortable");
     setNeutral("slate");
     setRadius("full");
+    setScale(100);
+    setMotion("calm");
     setPanel("raised");
+    setTypography("geist");
     setLightColors(lightDefaults);
     setDarkColors(darkDefaults);
   };
 
+  const shuffle = () => {
+    const pick = <T,>(options: readonly T[]) =>
+      options[Math.floor(Math.random() * options.length)] as T;
+    const nextTheme = pick(themes);
+    const nextNeutral = pick(neutralRecipeOptions);
+    applyTheme(nextTheme);
+    applyNeutral(nextNeutral);
+    setDensity(pick(densities));
+    setRadius(pick(radiusOptions));
+    setScale(pick(scaleOptions));
+    setMotion(pick(motionOptions));
+    setPanel(pick(panelOptions));
+    setTypography(pick(typographyOptions).value);
+  };
+
   const isCustomized =
     theme !== "purple" ||
+    (appearanceMode !== null && appearanceMode !== "system") ||
     density !== "comfortable" ||
     neutral !== "slate" ||
     radius !== "full" ||
-    panel !== "raised";
+    scale !== 100 ||
+    motion !== "calm" ||
+    panel !== "raised" ||
+    typography !== "geist";
 
   return (
     <ToastProvider>
-      <div
-        ref={playgroundRef}
-        className={`visual-playground visual-playground--lab ${styles.root}`}
-        data-theme={theme}
-        data-mode={resolvedMode}
-        data-density={density}
-        style={style}
-      >
+      <div className={`visual-playground visual-playground--lab ${styles.root} ${fontClassName}`}>
         <div className="visual-playground__workspace visual-playground__workspace--radix">
-          <section
-            aria-label="Nerio scenario canvas"
-            className="playground-canvas playground-canvas--catalog"
-            tabIndex={0}
-          >
-            <div className="playground-sr-only">
-              <h1>Playground</h1>
-              <p>Chart aliases remain token-only; there is no Chart component in Core.</p>
-            </div>
-            <div className="playground-canvas__surface">
-              <PlaygroundShowcase />
-            </div>
-          </section>
-
           <Card
             id="playground-theme-settings"
             as="div"
             role="complementary"
             className="playground-settings playground-settings--radix"
-            aria-label="Theme settings"
+            aria-label="Playground settings"
           >
+            <CardHeader className="playground-settings__header">
+              <div>
+                <CardTitle as="h2">Playground style</CardTitle>
+                <p className="playground-settings__description">
+                  Tune the design system and inspect every change live.
+                </p>
+              </div>
+            </CardHeader>
             <CardContent className="playground-settings__body">
               <Select
                 label="Accent color"
@@ -949,10 +1014,31 @@ export function VisualPlayground() {
                 onValueChange={selectHandler(neutralRecipeOptions, applyNeutral)}
               />
               <Select
+                label="Color mode"
+                value={appearanceMode ?? "system"}
+                options={appearanceOptions.map((value) => ({ label: titleCase(value), value }))}
+                onValueChange={selectHandler(appearanceOptions, (value) => {
+                  hasLocalAppearanceOverride.current = true;
+                  setAppearanceMode(value);
+                })}
+              />
+              <Select
                 label="Density"
                 value={density}
                 options={densities.map((value) => ({ label: titleCase(value), value }))}
                 onValueChange={selectHandler(densities, setDensity)}
+              />
+              <Select
+                label="UI scale"
+                value={String(scale)}
+                options={scaleOptions.map((value) => ({
+                  label: `${value}%`,
+                  value: String(value),
+                }))}
+                onValueChange={(value) => {
+                  const selected = scaleOptions.find((option) => String(option) === value);
+                  if (selected) setScale(selected);
+                }}
               />
               <Select
                 label="Radii"
@@ -961,23 +1047,71 @@ export function VisualPlayground() {
                 onValueChange={selectHandler(radiusOptions, setRadius)}
               />
               <Select
+                label="Font"
+                value={typography}
+                options={[...typographyOptions]}
+                onValueChange={selectHandler(
+                  typographyOptions.map((option) => option.value),
+                  setTypography,
+                )}
+              />
+              <Select
+                label="Motion"
+                value={motion}
+                options={motionOptions.map((value) => ({ label: titleCase(value), value }))}
+                onValueChange={selectHandler(motionOptions, setMotion)}
+              />
+              <Select
                 label="Panel style"
                 value={panel}
                 options={panelOptions.map((value) => ({ label: titleCase(value), value }))}
                 onValueChange={selectHandler(panelOptions, setPanel)}
               />
             </CardContent>
-            {isCustomized ? (
-              <CardFooter className="playground-settings__actions">
+            <CardFooter className="playground-settings__actions">
+              <Button size="sm" variant="secondary" onClick={shuffle}>
+                Shuffle
+              </Button>
+              {isCustomized ? (
                 <Button size="sm" variant="secondary" onClick={reset}>
                   Reset
                 </Button>
-              </CardFooter>
-            ) : null}
+              ) : null}
+            </CardFooter>
           </Card>
+
+          <section
+            ref={playgroundRef}
+            aria-label="Nerio scenario canvas"
+            className="playground-canvas playground-canvas--catalog"
+            data-density={density}
+            data-mode={resolvedMode}
+            data-nerio-theme-scope=""
+            data-playground-preview=""
+            data-theme={theme}
+            style={style}
+            tabIndex={0}
+          >
+            <div className="playground-sr-only">
+              <h1>Playground</h1>
+              <p>Chart aliases remain token-only; there is no Chart component in Core.</p>
+            </div>
+            <div className="playground-canvas__surface">
+              <PlaygroundShowcase />
+            </div>
+          </section>
         </div>
       </div>
-      <ToastViewport swipeDirection={["left", "right", "up", "down"]} />
+      <ToastViewport
+        className={fontClassName}
+        data-density={density}
+        data-mode={resolvedMode ?? undefined}
+        data-nerio-theme-scope=""
+        data-playground-portal=""
+        data-theme={theme}
+        style={style}
+        swipeDirection={["left", "right", "up", "down"]}
+      />
     </ToastProvider>
   );
 }

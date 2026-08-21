@@ -116,8 +116,10 @@ export function ToastProvider({
   );
 }
 
-export interface ToastViewportProps {
-  className?: string;
+export interface ToastViewportProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  "children" | "dir"
+> {
   direction?: "ltr" | "rtl";
   dismissText?: string;
   dismissLabel?: string;
@@ -132,14 +134,17 @@ export function ToastViewport({
   dismissLabel = "Dismiss notification",
   label = "Notifications",
   swipeDirection = ["inline-end", "down"],
+  ...props
 }: ToastViewportProps) {
+  const { "aria-label": ariaLabel, ...viewportProps } = props;
   const resolvedDirection = useDocumentDirection(direction);
   const resolvedSwipeDirection = resolveSwipeDirection(swipeDirection, resolvedDirection);
 
   return (
     <BaseToast.Portal>
       <BaseToast.Viewport
-        aria-label={label}
+        {...viewportProps}
+        aria-label={ariaLabel ?? label}
         className={cn(
           "n-toast-viewport fixed [inset-inline-end:var(--toast-viewport-inline-inset)] bottom-[max(var(--n-toast-viewport-inset),env(safe-area-inset-bottom))] z-(--n-overlay-z-index) h-0 max-h-[calc(100dvh-max(var(--n-toast-viewport-inset),env(safe-area-inset-top))-max(var(--n-toast-viewport-inset),env(safe-area-inset-bottom)))] w-[min(calc(100dvw-(var(--toast-viewport-inline-inset)*2)),var(--n-toast-width))] pointer-events-none [--toast-viewport-inline-inset:max(var(--n-toast-viewport-inset),env(safe-area-inset-left),env(safe-area-inset-right))]",
           className,
