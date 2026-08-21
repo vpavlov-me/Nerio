@@ -111,7 +111,7 @@ After the relevant #342 foundation, these may proceed in parallel:
 - #343 — Accordion and Collapsible (complete on `dev`);
 - #344 — additive compound Dialog anatomy and AlertDialog (complete on `dev`);
 - #345 — bounded single-select Combobox (complete on `dev`);
-- #346 — SearchField;
+- #346 — SearchField (complete on `dev`);
 - #347 — OTPField;
 - #370 — NumberField, split from #346.
 

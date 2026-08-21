@@ -46,6 +46,8 @@ const componentLedes: Record<string, string> = {
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
   combobox:
     "Combobox filters one bounded synchronous option set and commits one form-backed value while data orchestration remains consumer-owned.",
+  "search-field":
+    "SearchField collects one native search query with accessible clear, deliberate Enter events, and consumer-owned results.",
   slider:
     "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
   calendar:
@@ -100,6 +102,7 @@ const componentTitles: Record<string, string> = {
   "radio-group": "RadioGroup",
   "sidebar-primitive": "Sidebar",
   combobox: "Combobox",
+  "search-field": "SearchField",
 };
 
 function getComponentTitle(slug: string) {

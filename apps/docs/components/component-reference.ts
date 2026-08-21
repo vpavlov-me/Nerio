@@ -102,6 +102,8 @@ export const snippets: Record<string, string> = {
     "import { Select } from '@nerio-ui/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   combobox:
     "import { Combobox } from '@nerio-ui/ui/client';\n\n<Combobox\n  label=\"City\"\n  name=\"city\"\n  options={[\n    { value: 'paris', label: 'Paris', textValue: 'Paris' },\n    { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' },\n    { value: 'tokyo', label: 'Tokyo', textValue: 'Tokyo' },\n  ]}\n/>",
+  "search-field":
+    'import { SearchField } from \'@nerio-ui/ui/client\';\n\n<SearchField\n  label="Search projects"\n  name="query"\n  autoComplete="off"\n  onSearch={(query) => runSearch(query)}\n/>',
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
@@ -620,6 +622,36 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "native visible label",
       "active descendant keyboard navigation",
       "polite empty and loading regions",
+    ],
+  },
+  "search-field": {
+    name: "SearchField",
+    description:
+      "Collects one native search query with accessible clear and deliberate Enter behavior.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "Combobox", "Command Primitive", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "search-icon",
+      "input",
+      "actions",
+      "loading",
+      "clear",
+      "description",
+      "message",
+    ],
+    motion: ["shared form-control transitions", "reduced-motion immediate transition"],
+    accessibility: [
+      "native searchbox semantics",
+      "visible Field label and associated supporting content",
+      "localizable clear action with input focus restoration",
+      "IME-safe Enter search event without suppressed form submission",
     ],
   },
 };
@@ -2654,6 +2686,72 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-shadow",
+      "--n-focus-ring",
+    ],
+  },
+  "search-field": {
+    category: "Forms",
+    purpose:
+      "Use SearchField for one free-form query that needs accessible clear and explicit Enter search behavior.",
+    anatomy: [
+      { title: "input", description: "One native search input and form value." },
+      { title: "search-icon", description: "Decorative default or consumer-provided icon." },
+      {
+        title: "clear",
+        description: "Localizable native button that restores focus to the same input.",
+      },
+      {
+        title: "loading",
+        description: "Localizable default status or consumer-provided indicator slot.",
+      },
+    ],
+    variants: [
+      { title: "Small, medium, large", description: "Shared form-control size contract." },
+      { title: "LTR and RTL", description: "Logical addon placement follows document direction." },
+    ],
+    states: [
+      { title: "Value", description: "One controlled or uncontrolled string query." },
+      { title: "Loading", description: "Presentation only; requests remain consumer-owned." },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Preserves native form and accessibility state.",
+      },
+    ],
+    accessibility: [
+      "Provide the visible label and localize clearLabel and loadingLabel for the product locale.",
+      "Enter emits onSearch without suppressing native form submission and ignores IME composition.",
+      "The clear action is unavailable while disabled or read-only and restores input focus.",
+      "A custom loadingIndicator must provide semantics equivalent to the default status.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "One controlled or uncontrolled query and bounded input or clear reason.",
+      },
+      {
+        title: "onSearch",
+        description: "Receives the current query and an IME-safe Enter event detail.",
+      },
+      {
+        title: "name / form / required / autoComplete",
+        description: "Native form identity, reset, required state, and autofill hints.",
+      },
+    ],
+    guidance: {
+      do: ["Use for a free-form project, documentation, or catalog query."],
+      dont: [
+        "Do not add results, suggestions, requests, debounce, filtering, ranking, routing, global shortcuts, history, analytics, or product entities.",
+      ],
+    },
+    related: ["input", "combobox", "command-primitive", "field"],
+    tokens: [
+      "--n-input-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-border-focus",
+      "--n-input-placeholder",
+      "--n-input-addon-foreground",
       "--n-focus-ring",
     ],
   },

@@ -17,6 +17,7 @@ const categoryFixtures = {
     "switch",
     "select",
     "combobox",
+    "search-field",
     "slider",
     "calendar",
     "date-picker",

@@ -111,6 +111,13 @@ export {
   type ComboboxSize,
 } from "./components/combobox";
 export {
+  SearchField,
+  type SearchFieldProps,
+  type SearchFieldSearchEventDetails,
+  type SearchFieldValueChangeEventDetails,
+  type SearchFieldValueChangeReason,
+} from "./components/search-field";
+export {
   Tabs,
   TabsContent,
   TabsIndicator,

@@ -412,6 +412,49 @@ test("keeps Combobox query, keyboard, pointer, clear, and RTL behavior bounded",
   await expectHealthyPage(page, problems);
 });
 
+test("keeps SearchField native query, clear focus, loading, RTL, and narrow layout bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/docs/components/search-field");
+
+  const preview = page.getByRole("region", { name: "search-field preview" });
+  const input = preview.getByRole("searchbox", { name: "Search projects" });
+  await expect(input).toHaveAttribute("type", "search");
+  await expect(input).toHaveValue("Roadmap");
+  await preview.getByRole("button", { name: "Clear search" }).click();
+  await expect(input).toHaveValue("");
+  await expect(input).toBeFocused();
+  await input.fill("Nerio");
+  await input.press("Enter");
+  await expect(input).toHaveValue("Nerio");
+  await expect(preview.getByRole("status")).toContainText("Searching activity");
+
+  await page.locator("html").evaluate((root) => {
+    root.dir = "rtl";
+  });
+  const positions = await preview
+    .locator('[data-slot="input-group"]')
+    .first()
+    .evaluate((group) => {
+      const searchIcon = group.querySelector('[data-slot="search-icon"]')?.getBoundingClientRect();
+      const clear = group.querySelector('[data-slot="clear"]')?.getBoundingClientRect();
+      const bounds = group.getBoundingClientRect();
+      return searchIcon && clear
+        ? {
+            clearCenter: clear.left + clear.width / 2,
+            iconCenter: searchIcon.left + searchIcon.width / 2,
+            overflow: group.scrollWidth - bounds.width,
+          }
+        : null;
+    });
+  expect(positions).not.toBeNull();
+  expect(positions.iconCenter).toBeGreaterThan(positions.clearCenter);
+  expect(positions.overflow).toBeLessThanOrEqual(1);
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dialog");

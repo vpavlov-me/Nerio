@@ -93,6 +93,7 @@
     { "name": "list", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "combobox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "search-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "calendar", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "date-picker", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -663,6 +664,14 @@
       "category": "forms",
       "status": "implemented-initial",
       "description": "Client-only bounded single-select Combobox with synchronous filtering, generic string value identity, options or composed item modes, independent query, value, and popup state, form metadata, groups, clear, empty, and loading presentation hooks."
+    },
+    {
+      "name": "SearchField",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only native search composition with one controlled or uncontrolled query, an accessible focus-restoring clear action, deliberate Enter search events, form reset, Field relationships, and loading presentation."
     },
     {
       "name": "Slider",

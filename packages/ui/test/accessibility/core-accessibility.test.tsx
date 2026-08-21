@@ -86,6 +86,7 @@ import {
   DropdownMenu,
   RadioGroup,
   RadioGroupItem,
+  SearchField,
   Select,
   SelectGroup,
   SelectGroupLabel,
@@ -120,6 +121,37 @@ import { Bell } from "@nerio-ui/adapters/icons";
 import { RouterLinkFixture } from "../fixtures/router-link";
 
 describe("Core accessibility contracts", () => {
+  it("keeps SearchField labels, messages, clear, loading, and read-only states accessible", async () => {
+    const { container } = render(
+      <main>
+        <SearchField
+          label="Search documentation"
+          description="Search by component name."
+          message="Enter a query."
+          defaultValue="Button"
+          loading
+          loadingLabel="Searching documentation"
+        />
+        <SearchField
+          label="Managed query"
+          clearLabel="Clear managed query"
+          defaultValue="Locked"
+          readOnly
+        />
+        <SearchField label="Unavailable query" disabled />
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("searchbox", { name: "Search documentation" }),
+    ).toHaveAccessibleDescription("Search by component name. Enter a query.");
+    expect(screen.getByRole("button", { name: "Clear search" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Searching documentation");
+    expect(screen.getByRole("searchbox", { name: "Managed query" })).toHaveAttribute("readonly");
+    expect(screen.getByRole("searchbox", { name: "Unavailable query" })).toBeDisabled();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
   it("keeps the polished-component verification matrix accessible", async () => {
     const { container } = render(
       <>

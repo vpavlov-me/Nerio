@@ -124,6 +124,7 @@ import {
   Popover,
   RadioGroup,
   RadioGroupItem,
+  SearchField,
   Select,
   SelectGroup,
   SelectGroupLabel,
@@ -3211,6 +3212,99 @@ describe("Core interactive action contracts", () => {
       <Combobox label="Status" onValueChange={onValueChange} options={options} value={null} />,
     );
     expect(input).toHaveValue("");
+  });
+
+  it("owns one SearchField query with bounded clear, search, form, and reset behavior", async () => {
+    const user = userEvent.setup();
+    const valueChanges = vi.fn();
+    const searches = vi.fn();
+    const inputRef = React.createRef<HTMLInputElement>();
+    const { container } = render(
+      <form
+        onReset={(event) => {
+          if (event.currentTarget.dataset.cancelReset === "true") event.preventDefault();
+        }}
+      >
+        <SearchField
+          id="project-search"
+          inputRef={inputRef}
+          label="Search projects"
+          description="Search by project name."
+          message="Results stay consumer-owned."
+          name="query"
+          defaultValue="Roadmap"
+          onSearch={searches}
+          onValueChange={valueChanges}
+        />
+        <button type="reset">Reset search</button>
+      </form>,
+    );
+
+    const input = screen.getByRole("searchbox", { name: "Search projects" });
+    expect(input).toBe(inputRef.current);
+    expect(input).toHaveAttribute("id", "project-search");
+    expect(screen.getByText("Search projects")).toHaveAttribute("for", "project-search");
+    expect(input).toHaveAttribute("type", "search");
+    expect(input).toHaveAttribute("aria-describedby");
+    expect(new FormData(container.querySelector("form")!).get("query")).toBe("Roadmap");
+
+    await user.clear(input);
+    await user.type(input, "Nerio");
+    expect(valueChanges).toHaveBeenLastCalledWith(
+      "Nerio",
+      expect.objectContaining({ reason: "input" }),
+    );
+    await user.keyboard("{Enter}");
+    expect(searches).toHaveBeenCalledWith("Nerio", expect.objectContaining({ reason: "enter" }));
+
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+    expect(valueChanges).toHaveBeenLastCalledWith("", expect.objectContaining({ reason: "clear" }));
+    expect(input).toHaveValue("");
+    expect(input).toHaveFocus();
+
+    await user.type(input, "Changed");
+    await user.click(screen.getByRole("button", { name: "Reset search" }));
+    await waitFor(() => expect(input).toHaveValue("Roadmap"));
+    expect(input).toBe(inputRef.current);
+
+    await user.clear(input);
+    await user.type(input, "Keep this query");
+    const form = container.querySelector("form")!;
+    form.dataset.cancelReset = "true";
+    await user.click(screen.getByRole("button", { name: "Reset search" }));
+    await waitFor(() => expect(input).toHaveValue("Keep this query"));
+  });
+
+  it("keeps controlled, disabled, read-only, invalid, and loading SearchField state truthful", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const { rerender } = render(
+      <SearchField
+        label="Search records"
+        value="Fixed"
+        onValueChange={onValueChange}
+        invalid
+        loading
+        loadingLabel="Loading records"
+      />,
+    );
+
+    const input = screen.getByRole("searchbox", { name: "Search records" });
+    expect(input).toHaveValue("Fixed");
+    expect(input).toHaveAttribute("aria-invalid", "true");
+    expect(input).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByRole("status")).toHaveTextContent("Loading records");
+    await user.click(screen.getByRole("button", { name: "Clear search" }));
+    expect(onValueChange).toHaveBeenCalledWith("", expect.objectContaining({ reason: "clear" }));
+    expect(input).toHaveValue("Fixed");
+
+    rerender(<SearchField key="read-only" label="Search records" defaultValue="Fixed" readOnly />);
+    expect(screen.getByRole("searchbox", { name: "Search records" })).toHaveAttribute("readonly");
+    expect(screen.getByRole("button", { name: "Clear search" })).toBeDisabled();
+
+    rerender(<SearchField key="disabled" label="Search records" defaultValue="Fixed" disabled />);
+    expect(screen.getByRole("searchbox", { name: "Search records" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Clear search" })).toBeDisabled();
   });
 
   it("supports checkbox, radio group, and switch state contracts", async () => {

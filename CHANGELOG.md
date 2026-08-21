@@ -8,6 +8,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added a bounded Core 1.1 SearchField on `dev` with native search semantics, one controlled or
+  uncontrolled query, an accessible focus-restoring clear action, deliberate Enter search events,
+  Field relationships, form/reset support, loading presentation, and localizable action/status
+  labels. Results, requests, debounce, filtering, ranking, routing, global shortcuts, analytics,
+  and product search workflows remain consumer or Pro responsibilities.
 - Added a bounded Core 1.1 single-select Combobox on `dev` with synchronous locale-aware filtering,
   generic string value identity, options and composed-item modes, independent query, selection, and
   popup state, form/reset support, groups, disabled items, clear behavior, and consumer-provided
@@ -38,6 +43,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Raised the UI tarball ceiling from 76,000 to 78,000 bytes for the additive SearchField source;
+  the measured tarball is 76,291 bytes. The Registry tarball ceiling moves from 34,000 to 36,000
+  bytes for the new installable metadata, measured at 34,486 bytes. Existing unpacked, CSS,
+  named-import bundle, and runtime ceilings remain unchanged.
 - Raised the UI tarball ceiling from 72,000 to 76,000 bytes for the additive Combobox source; the
   measured tarball is 74,722 bytes. Existing unpacked, CSS, named-import bundle, and runtime
   ceilings remain unchanged.

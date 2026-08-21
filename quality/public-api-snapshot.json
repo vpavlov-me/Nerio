@@ -94,6 +94,7 @@
     "/docs/components/popover",
     "/docs/components/progress",
     "/docs/components/radio-group",
+    "/docs/components/search-field",
     "/docs/components/select",
     "/docs/components/separator",
     "/docs/components/sheet",
@@ -5147,6 +5148,60 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "SearchField",
+        "signature": "React.ForwardRefExoticComponent<SearchFieldProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, \"size\" | \"type\"> { size?: InputSize; htmlSize?: number; type?: InputType; invalid?: boolean; }",
+          "export interface SearchFieldProps extends SearchFieldInputProps { label: React.ReactNode; description?: React.ReactNode; message?: React.ReactNode; invalid?: boolean; size?: InputSize; value?: string; defaultValue?: string; onValueChange?: (value: string, eventDetails: SearchFieldValueChangeEventDetails) => void; onSearch?: (value: string, eventDetails: SearchFieldSearchEventDetails) => void; onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>; clearLabel?: string; loading?: boolean; loadingLabel?: string; searchIcon?: IconComponent; loadingIndicator?: React.ReactNode; inputRef?: React.Ref<HTMLInputElement>; className?: string; style?: React.CSSProperties; }",
+          "export type IconComponent = React.ElementType<IconSvgProps>;",
+          "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
+          "export type InputSize = \"sm\" | \"md\" | \"lg\";",
+          "export type InputType = \"text\" | \"email\" | \"password\" | \"search\" | \"tel\" | \"url\" | \"number\" | \"date\" | \"month\" | \"week\" | \"time\" | \"datetime-local\";",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type SearchFieldSearchEventDetails = NerioEventDetails<\"enter\">;",
+          "export type SearchFieldValueChangeEventDetails = NerioEventDetails<SearchFieldValueChangeReason>;",
+          "export type SearchFieldValueChangeReason = \"input\" | \"clear\";",
+          "type SearchFieldInputProps = Omit<InputProps, \"children\" | \"className\" | \"defaultValue\" | \"invalid\" | \"onChange\" | \"onKeyDown\" | \"onSearch\" | \"size\" | \"type\" | \"value\">;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SearchFieldProps",
+        "signature": "SearchFieldProps"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type SearchFieldSearchEventDetails = NerioEventDetails<\"enter\">;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SearchFieldSearchEventDetails",
+        "signature": "SearchFieldSearchEventDetails"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type SearchFieldValueChangeEventDetails = NerioEventDetails<SearchFieldValueChangeReason>;",
+          "export type SearchFieldValueChangeReason = \"input\" | \"clear\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SearchFieldValueChangeEventDetails",
+        "signature": "SearchFieldValueChangeEventDetails"
+      },
+      {
+        "definition": ["export type SearchFieldValueChangeReason = \"input\" | \"clear\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SearchFieldValueChangeReason",
+        "signature": "SearchFieldValueChangeReason"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "Select",
         "signature": "React.ForwardRefExoticComponent<SelectProps & React.RefAttributes<HTMLDivElement>>"
       },
@@ -6815,7 +6870,7 @@
           }
         },
         {
-          "components": ["calendar", "sidebar-primitive"],
+          "components": ["calendar", "search-field", "sidebar-primitive"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -7230,7 +7285,7 @@
           }
         },
         {
-          "components": ["calendar", "sidebar-primitive"],
+          "components": ["calendar", "search-field", "sidebar-primitive"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -10620,6 +10675,76 @@
         ],
         "states": [],
         "variants": ["default", "invalid", "disabled", "read-only"]
+      },
+      {
+        "baseUiPrimitives": [],
+        "category": "forms",
+        "dependencies": [
+          "@nerio-ui/adapters",
+          "@base-ui/react",
+          "clsx",
+          "react",
+          "tailwind-merge",
+          "tailwindcss"
+        ],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-383905300e326a4211da4d1ed213195517ea5158b8156bc08770095516c70b72",
+            "role": "component",
+            "source": "../../ui/src/components/search-field.tsx",
+            "target": "components/search-field.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f",
+            "role": "utility",
+            "source": "../../ui/src/lib/compose-refs.ts",
+            "target": "lib/compose-refs.ts"
+          }
+        ],
+        "name": "search-field",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["button", "field", "input-group", "spinner"],
+        "requiredTokens": [
+          "--n-input-height-sm",
+          "--n-input-height-md",
+          "--n-input-height-lg",
+          "--n-input-radius",
+          "--n-input-background",
+          "--n-input-background-hover",
+          "--n-input-border",
+          "--n-input-border-hover",
+          "--n-input-border-focus",
+          "--n-input-border-danger",
+          "--n-input-placeholder",
+          "--n-input-foreground",
+          "--n-input-disabled-background",
+          "--n-input-disabled-foreground",
+          "--n-input-addon-foreground",
+          "--n-input-addon-gap",
+          "--n-input-addon-padding-inline",
+          "--n-focus-ring"
+        ],
+        "slots": [
+          "root",
+          "label",
+          "input-group",
+          "search-icon",
+          "input",
+          "actions",
+          "loading",
+          "clear",
+          "description",
+          "message"
+        ],
+        "states": ["default", "value", "loading", "disabled", "read-only", "required", "invalid"],
+        "variants": ["sm", "md", "lg", "LTR", "RTL"]
       },
       {
         "baseUiPrimitives": ["select"],
