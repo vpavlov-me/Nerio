@@ -95,23 +95,23 @@ roadmap method.
 
 ### Core 1.1 shared contract
 
-<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341,#151 -->
+<!-- parity-track:shared-direction-contract issues:#342 depends-on:#341 -->
 
-- #342 establishes the minimum inherited direction, RTL, locale, and localization contract after
-  stable 1.0.
+- #342 establishes the minimum inherited direction, RTL, locale, and localization contract on
+  `dev`; it stays outside the isolated stable 1.0 candidate.
 - The full #342 audit continues as a parallel shared track. A direction-sensitive component API
   waits only for the relevant accepted contract, not for the complete cross-repository audit.
 
 ### Core 1.1 primitive parity
 
-<!-- parity-track:primitive-parity-a issues:#343,#344,#345,#346,#347,#370 depends-on:#151,#341,#342 -->
+<!-- parity-track:primitive-parity-a issues:#343,#344,#345,#346,#347,#370 depends-on:#341,#342 -->
 
 After the relevant #342 foundation, these may proceed in parallel:
 
-- #343 — Accordion and Collapsible;
-- #344 — additive compound Dialog anatomy and AlertDialog;
-- #345 — bounded single-select Combobox;
-- #346 — SearchField;
+- #343 — Accordion and Collapsible (complete on `dev`);
+- #344 — additive compound Dialog anatomy and AlertDialog (complete on `dev`);
+- #345 — bounded single-select Combobox (complete on `dev`);
+- #346 — SearchField (complete on `dev`);
 - #347 — OTPField;
 - #370 — NumberField, split from #346.
 

@@ -22,8 +22,9 @@ remain manual and are governed by the roadmap and `RELEASE.md`.
 Post-1.0 scope is governed by
 [`docs/core-1-x-capability-parity.md`](./docs/core-1-x-capability-parity.md). That decision
 classifies current coverage, native guidance, accepted Core 1.1 primitives, later candidates,
-recipes, adapters, Pro, consumer ownership, and explicit rejections. It does not authorize
-post-1.0 implementation before the stable sequence completes.
+recipes, adapters, Pro, consumer ownership, and explicit rejections. Roadmap #152 authorizes the
+#342 shared direction/localization contract on `dev` before the stable sequence completes because
+that work stays outside the isolated Core 1.0 release candidate.
 
 ## Primary users
 
@@ -119,7 +120,7 @@ spacing, radius, typography, icon, or control-size scales.
 
 `@nerio-ui/ui` is the server-safe default entrypoint for static components and utilities. It must not contain `"use client"` or import client-only Base UI modules.
 
-Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
+Interactive Base UI-backed components are exported from `@nerio-ui/ui/client`, which is the client-only entrypoint for Button, Toggle, Checkbox, RadioGroup, Switch, Select, Slider, Tabs, Collapsible, Accordion, Tooltip, Dialog, Popover, Dropdown Menu, Toast, ToastProvider, ToastViewport, `toastManager`, and `useToastManager`.
 
 `@nerio-ui/ui/styles.css` remains the styles entrypoint. Source-installed registry components keep local paths such as `@/components/nerio/components/button`.
 
@@ -161,7 +162,13 @@ remain outside Core 1.0.
 
 Core should be strong enough to build real products without a paid license. It should not contain advanced product compositions that are better treated as Pro value.
 
-After stable 1.0, the accepted Core 1.1 primitive sequence adds direction/localization foundations,
+Core 1.1 adds Collapsible for one independent controlled or uncontrolled disclosure and Accordion
+for a grouped collection with single or multiple expansion. Plain native `details` and `summary`
+remain the preferred path when controlled state, grouped behavior, maintained motion, or shared
+anatomy adds no durable value.
+
+The accepted Core 1.1 primitive sequence starts with direction/localization foundations on `dev`,
+then adds
 Accordion and Collapsible, additive compound Dialog anatomy and AlertDialog, a bounded
 single-select Combobox, SearchField, NumberField, OTPField, separate ToggleGroup and CheckboxGroup
 contracts, and complete bounded DropdownMenu anatomy. MultiSelect remains a later decision spike,

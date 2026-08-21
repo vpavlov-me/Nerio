@@ -1,3 +1,4 @@
+import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "vitest-axe";
@@ -47,9 +48,32 @@ import {
   Textarea,
 } from "../../src/index";
 import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogBackdrop,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogPortal,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Button,
   Calendar,
   Checkbox,
+  Combobox,
+  ComboboxGroup,
+  ComboboxGroupLabel,
+  ComboboxItem,
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
   Command,
   CommandEmpty,
   CommandInput,
@@ -62,6 +86,7 @@ import {
   DropdownMenu,
   RadioGroup,
   RadioGroupItem,
+  SearchField,
   Select,
   SelectGroup,
   SelectGroupLabel,
@@ -96,6 +121,37 @@ import { Bell } from "@nerio-ui/adapters/icons";
 import { RouterLinkFixture } from "../fixtures/router-link";
 
 describe("Core accessibility contracts", () => {
+  it("keeps SearchField labels, messages, clear, loading, and read-only states accessible", async () => {
+    const { container } = render(
+      <main>
+        <SearchField
+          label="Search documentation"
+          description="Search by component name."
+          message="Enter a query."
+          defaultValue="Button"
+          loading
+          loadingLabel="Searching documentation"
+        />
+        <SearchField
+          label="Managed query"
+          clearLabel="Clear managed query"
+          defaultValue="Locked"
+          readOnly
+        />
+        <SearchField label="Unavailable query" disabled />
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("searchbox", { name: "Search documentation" }),
+    ).toHaveAccessibleDescription("Search by component name. Enter a query.");
+    expect(screen.getByRole("button", { name: "Clear search" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Searching documentation");
+    expect(screen.getByRole("searchbox", { name: "Managed query" })).toHaveAttribute("readonly");
+    expect(screen.getByRole("searchbox", { name: "Unavailable query" })).toBeDisabled();
+    expect((await axe(container)).violations).toEqual([]);
+  });
+
   it("keeps the polished-component verification matrix accessible", async () => {
     const { container } = render(
       <>
@@ -530,6 +586,41 @@ describe("Core accessibility contracts", () => {
     ).toEqual([]);
   });
 
+  it("keeps closed, open, invalid, grouped, empty, and loading Combobox states accessible", async () => {
+    const user = userEvent.setup();
+    const items = [
+      { value: "paris", label: "Paris", textValue: "Paris" },
+      { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi", disabled: true },
+    ] as const;
+    const { container } = render(
+      <>
+        <Combobox
+          description="Choose one supported city."
+          invalid
+          label="City"
+          message="A city is required."
+          options={items}
+        />
+        <Combobox aria-label="Primary city" label="Destination" items={items}>
+          <ComboboxGroup>
+            <ComboboxGroupLabel>Europe</ComboboxGroupLabel>
+            <ComboboxItem value="paris">Paris</ComboboxItem>
+            <ComboboxItem disabled value="tbilisi">
+              Tbilisi
+            </ComboboxItem>
+          </ComboboxGroup>
+        </Combobox>
+        <Combobox label="Remote presentation" loading options={[]} />
+      </>,
+    );
+    expect((await axe(container)).violations).toEqual([]);
+    await user.click(screen.getByRole("combobox", { name: "City" }));
+    await screen.findByRole("listbox");
+    expect(
+      (await axe(document.body, { rules: { region: { enabled: false } } })).violations,
+    ).toEqual([]);
+  });
+
   it("covers an open dialog and a managed toast action", async () => {
     function ToastTrigger() {
       const manager = useToastManager();
@@ -562,6 +653,41 @@ describe("Core accessibility contracts", () => {
     await user.click(screen.getByRole("button", { name: "Close dialog" }));
     await user.click(screen.getByRole("button", { name: "Show toast" }));
     await screen.findByRole("button", { name: "Undo" });
+    expect((await axe(document.body)).violations).toEqual([]);
+  });
+
+  it("covers an open alert dialog with explicit safe and confirm responses", async () => {
+    function Confirmation() {
+      const cancelRef = React.useRef<HTMLButtonElement>(null);
+      return (
+        <AlertDialog>
+          <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />
+          <AlertDialogPortal>
+            <AlertDialogBackdrop />
+            <AlertDialogContent initialFocus={cancelRef}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete project?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This permanently removes the project and cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  ref={cancelRef}
+                  render={<Button variant="secondary">Cancel</Button>}
+                />
+                <AlertDialogAction render={<Button variant="danger">Delete project</Button>} />
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogPortal>
+        </AlertDialog>
+      );
+    }
+
+    const user = userEvent.setup();
+    render(<Confirmation />);
+    await user.click(screen.getByRole("button", { name: "Delete project" }));
+    await screen.findByRole("alertdialog", { name: "Delete project?" });
     expect((await axe(document.body)).violations).toEqual([]);
   });
 
@@ -851,5 +977,51 @@ describe("Core accessibility contracts", () => {
         })
       ).violations,
     ).toEqual([]);
+  });
+
+  it("keeps disclosure names, relationships, keyboard operation, and hidden content accessible", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <main>
+        <h2>Account details</h2>
+        <Collapsible>
+          <CollapsibleTrigger>Show account note</CollapsibleTrigger>
+          <CollapsiblePanel keepMounted>
+            <button type="button">Edit note</button>
+          </CollapsiblePanel>
+        </Collapsible>
+        <Accordion defaultValue={["profile"]}>
+          <AccordionItem value="profile">
+            <AccordionHeader>
+              <AccordionTrigger>Profile settings</AccordionTrigger>
+            </AccordionHeader>
+            <AccordionPanel>Profile content</AccordionPanel>
+          </AccordionItem>
+          <AccordionItem disabled value="billing">
+            <AccordionHeader>
+              <AccordionTrigger>Billing settings</AccordionTrigger>
+            </AccordionHeader>
+            <AccordionPanel>Billing content</AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </main>,
+    );
+
+    const collapsibleTrigger = screen.getByRole("button", { name: "Show account note" });
+    expect(collapsibleTrigger).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("button", { name: "Edit note" })).not.toBeInTheDocument();
+    collapsibleTrigger.focus();
+    await user.keyboard("{Enter}");
+    expect(collapsibleTrigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Edit note" })).toBeInTheDocument();
+
+    const profileTrigger = screen.getByRole("button", { name: "Profile settings" });
+    expect(profileTrigger.closest("h3")).not.toBeNull();
+    expect(profileTrigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Billing settings" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    expect((await axe(container)).violations).toEqual([]);
   });
 });

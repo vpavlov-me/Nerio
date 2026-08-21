@@ -38,10 +38,16 @@ const componentLedes: Record<string, string> = {
   switch:
     "Switches toggle immediate settings with clear on and off affordances, including read-only and invalid states.",
   dialog: "Dialogs focus a short decision or task above the current product surface.",
+  "alert-dialog":
+    "Alert dialogs require an explicit response before a consequential action proceeds.",
   sheet:
     "Sheets present a focused modal panel from an explicit side while leaving product workflows to the consumer.",
   select:
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
+  combobox:
+    "Combobox filters one bounded synchronous option set and commits one form-backed value while data orchestration remains consumer-owned.",
+  "search-field":
+    "SearchField collects one native search query with accessible clear, deliberate Enter events, and consumer-owned results.",
   slider:
     "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
   calendar:
@@ -65,6 +71,10 @@ const componentLedes: Record<string, string> = {
   list: "Lists present simple structured items with descriptions, metadata, and native links.",
   item: "Items compose compact content, media, and actions while leaving semantics and interactions to the consumer.",
   tabs: "Tabs switch between related panels without leaving the current product context.",
+  collapsible:
+    "Collapsible reveals one independent panel when controlled state, shared anatomy, or maintained motion adds value beyond native disclosure.",
+  accordion:
+    "Accordion groups related disclosure items with single or multiple expansion while keeping content and product policy consumer-owned.",
   breadcrumbs:
     "Breadcrumbs show hierarchy navigation with ordered list semantics and current page support.",
   pagination:
@@ -80,6 +90,7 @@ const componentLedes: Record<string, string> = {
 
 const componentTitles: Record<string, string> = {
   "button-group": "ButtonGroup",
+  "alert-dialog": "AlertDialog",
   "command-primitive": "Command",
   "dropdown-menu": "DropdownMenu",
   "empty-state": "EmptyState",
@@ -90,6 +101,8 @@ const componentTitles: Record<string, string> = {
   "key-value": "KeyValue",
   "radio-group": "RadioGroup",
   "sidebar-primitive": "Sidebar",
+  combobox: "Combobox",
+  "search-field": "SearchField",
 };
 
 function getComponentTitle(slug: string) {

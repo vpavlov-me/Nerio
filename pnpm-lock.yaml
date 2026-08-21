@@ -42,6 +42,9 @@ importers:
 
   apps/docs:
     dependencies:
+      '@base-ui/react':
+        specifier: 1.7.0
+        version: 1.7.0(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@nerio-ui/adapters':
         specifier: workspace:*
         version: link:../../packages/adapters
@@ -94,6 +97,9 @@ importers:
       postcss:
         specifier: ^8.5.24
         version: 8.5.24
+      prettier:
+        specifier: ^3.9.6
+        version: 3.9.6
       typescript:
         specifier: ^5.9.3
         version: 5.9.3

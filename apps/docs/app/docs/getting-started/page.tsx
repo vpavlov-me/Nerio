@@ -1,4 +1,5 @@
 import { CodeExample } from "../../../components/code-example";
+import { FoundationDirectory } from "../../../components/foundation-directory";
 import {
   localCliInstall,
   localCliWorkflow,
@@ -165,6 +166,17 @@ export default function Page() {
             local package install.
           </li>
         </ul>
+      </section>
+
+      <section className="doc-section" id="foundations">
+        <h2>Foundations</h2>
+        <p>
+          Use the canonical foundation sequence to move from token architecture and visual roles to
+          composition, runtime behavior, accessibility, localization, and focused visual details.
+          Every destination below is shared by documentation navigation, search, adjacent-page
+          links, the sitemap, and the public <code>llms.txt</code> index.
+        </p>
+        <FoundationDirectory />
       </section>
 
       <section className="doc-section" id="principles">

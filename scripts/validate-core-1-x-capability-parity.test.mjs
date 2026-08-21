@@ -228,6 +228,54 @@ test("capability parity validator separates current API state from the historica
   }, /Current parity API snapshot hash is stale/);
 });
 
+test("capability parity validator separates current catalog metadata from the historical baseline", () => {
+  invalidMatrix((matrix) => {
+    matrix.currentComponentCatalogSchemaVersion = 0;
+  }, /Current parity component catalog schema is stale/);
+});
+
+test("capability parity validator separates current Registry metadata from the historical baseline", () => {
+  invalidMatrix((matrix) => {
+    matrix.currentRegistrySchemaVersion = "0.0.0";
+  }, /Current parity Registry schema is stale/);
+  invalidMatrix((matrix) => {
+    matrix.currentRegistryItemCount = 0;
+  }, /Current parity Registry item count is stale/);
+});
+
+test("capability parity validator separates the current Core version from the historical baseline", () => {
+  invalidMatrix((matrix) => {
+    matrix.currentCoreVersion = "0.0.0";
+  }, /Current parity Core version is stale/);
+});
+
+test("capability parity validator pins the reviewed historical projection metadata", () => {
+  invalidMatrix((matrix) => {
+    matrix.baseline.componentCatalogSchemaVersion = 0;
+  }, /Parity baseline component catalog schema must retain the reviewed historical value/);
+  invalidMatrix((matrix) => {
+    matrix.baseline.registrySchemaVersion = "0.0.0";
+  }, /Parity baseline Registry schema must retain the reviewed historical value/);
+  invalidMatrix((matrix) => {
+    matrix.baseline.registryItemCount = 0;
+  }, /Parity baseline Registry item count must retain the reviewed historical value/);
+  invalidMatrix((matrix) => {
+    matrix.baseline.coreVersion = "0.0.0";
+  }, /Parity baseline Core version must retain the reviewed historical value/);
+});
+
+test("capability parity validator pins the reviewed historical catalog hash", () => {
+  invalidMatrix((matrix) => {
+    matrix.baseline.componentCatalogSha256 = matrix.currentComponentCatalogSha256;
+  }, /Parity baseline component catalog hash must retain the reviewed historical value/);
+});
+
+test("capability parity validator pins the reviewed historical Registry hash", () => {
+  invalidMatrix((matrix) => {
+    matrix.baseline.registryManifestSha256 = matrix.currentRegistryManifestSha256;
+  }, /Parity baseline Registry manifest hash must retain the reviewed historical value/);
+});
+
 test("capability parity validator pins the reviewed historical API hash", () => {
   invalidMatrix((matrix) => {
     matrix.baseline.publicApiSnapshotSha256 = "a".repeat(64);
@@ -241,14 +289,14 @@ test("capability parity validator keeps the historical API hash in human evidenc
   );
 });
 
-test("capability parity validator protects the complete catalog baseline", () => {
+test("capability parity validator protects the complete current catalog", () => {
   invalidCatalog((catalog) => {
     catalog.components[0].description = `${catalog.components[0].description} changed`;
-  }, /Parity baseline component catalog hash is stale/);
+  }, /Current parity component catalog hash is stale/);
 });
 
-test("capability parity validator protects the complete Registry baseline", () => {
+test("capability parity validator protects the complete current Registry", () => {
   invalidManifest((manifest) => {
     manifest.items[0].description = `${manifest.items[0].description} changed`;
-  }, /Parity baseline Registry manifest hash is stale/);
+  }, /Current parity Registry manifest hash is stale/);
 });

@@ -36,6 +36,7 @@ import {
   CardTitle,
   CardVisual,
   Checkbox,
+  Combobox,
   Command,
   CommandEmpty,
   CommandInput,
@@ -81,6 +82,7 @@ import {
   Progress,
   RadioGroup,
   RadioGroupItem,
+  SearchField,
   Select,
   Separator,
   Sheet,
@@ -301,6 +303,13 @@ const commandItems = [
   { value: "activity", label: "Activity" },
   { value: "settings", label: "Settings" },
   { value: "disabled", label: "Unavailable", disabled: true },
+] as const;
+
+const cityOptions = [
+  { value: "paris", label: "Paris", textValue: "Paris" },
+  { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
+  { value: "tokyo", label: "Tokyo", textValue: "Tokyo" },
+  { value: "unavailable", label: "Unavailable", textValue: "Unavailable", disabled: true },
 ] as const;
 
 function SheetExample({
@@ -833,6 +842,70 @@ export function ComponentPlayground() {
                   placeholder="Unavailable"
                   options={[{ label: "Active", value: "active" }]}
                 />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="combobox"
+        title="Combobox"
+        api="query · selected value · options · groups · disabled · readOnly · invalid · empty · loading"
+      >
+        <Matrix
+          columns={["Default", "Selected", "Read only", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <Combobox key="default" label="City" options={cityOptions} />,
+                <Combobox
+                  key="selected"
+                  label="City"
+                  defaultValue="tbilisi"
+                  options={cityOptions}
+                />,
+                <Combobox
+                  key="readonly"
+                  label="City"
+                  defaultValue="paris"
+                  options={cityOptions}
+                  readOnly
+                />,
+                <Combobox
+                  key="invalid"
+                  label="City"
+                  message="Choose a supported city."
+                  options={cityOptions}
+                  invalid
+                />,
+                <Combobox key="disabled" label="City" options={cityOptions} disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="search-field"
+        title="SearchField"
+        api="native search · value · clear · Enter search · loading · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Value", "Loading", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <SearchField key="default" label="Search projects" />,
+                <SearchField key="value" label="Search projects" defaultValue="Roadmap" />,
+                <SearchField key="loading" label="Search projects" defaultValue="Nerio" loading />,
+                <SearchField
+                  key="invalid"
+                  label="Search projects"
+                  message="Enter a project name."
+                  invalid
+                />,
+                <SearchField key="disabled" label="Search projects" disabled />,
               ],
             },
           ]}

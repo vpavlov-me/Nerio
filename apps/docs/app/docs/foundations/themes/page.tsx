@@ -10,23 +10,47 @@ import {
   TableRow,
 } from "@nerio-ui/ui";
 import { CodeExample } from "../../../../components/code-example";
+import { foundationMetadata } from "../../../../lib/generated/foundation-metadata";
+import { getFoundationPage } from "../../../../lib/foundations";
 import { createPageMetadata } from "../../../../lib/seo";
 
-export const metadata = createPageMetadata({
-  title: "Themes",
-  description:
-    "Configure Nerio brand themes, color modes, and density through CSS variables without changing component source.",
-  path: "/docs/foundations/themes",
-});
+export const metadata = createPageMetadata(getFoundationPage("/docs/foundations/themes"));
 
-const themes = [
-  ["Purple", "purple", "--n-purple-600"],
-  ["Blue", "blue", "--n-blue-600"],
-  ["Green", "green", "--n-green-600"],
-  ["Orange", "orange", "--n-orange-600"],
-  ["Red", "red", "--n-red-600"],
-  ["Neutral", "neutral", "--n-gray-950"],
-];
+const { theme, mode, density } = foundationMetadata.runtimeAxes;
+const lightMode = mode.mappings.find((mapping) => mapping.value === "light")!;
+const darkMode = mode.mappings.find((mapping) => mapping.value === "dark")!;
+const systemMode = mode.mappings.find((mapping) => mapping.value === "system")!;
+function projectedValue(mapping: { value: string; reference: string | null }) {
+  return mapping.reference ?? mapping.value;
+}
+const densityGuidance: Record<(typeof density.mappings)[number]["value"], string> = {
+  comfortable: "Default spacing for mixed product and documentation surfaces.",
+  compact:
+    "Remaps semantic density aliases and component tokens for dense operational interfaces without changing primitive spacing values.",
+};
+
+const themeValidation = [
+  [
+    "Text contrast",
+    "Normal text reaches 4.5:1; the 3:1 exception is reserved for text that qualifies as large under WCAG 2.2.",
+  ],
+  [
+    "Non-text contrast",
+    "Control boundaries, meaningful graphics, and focus indicators reach 3:1 where WCAG 2.2 applies.",
+  ],
+  [
+    "State communication",
+    "Selection, status, validation, and urgency remain understandable without relying on color alone.",
+  ],
+  [
+    "Mode coverage",
+    'Review explicit light and dark modes, then test both OS light and OS dark preferences while data-mode="system".',
+  ],
+  [
+    "System preferences",
+    "Verify forced colors, reduced motion, text resize, and zoom/reflow without losing state or operation.",
+  ],
+] as const;
 
 const customTheme = `<html data-theme="purple" data-mode="system" data-density="comfortable">
 
@@ -97,21 +121,21 @@ export default function Page() {
                 <TableCell>
                   <Code>data-theme</Code>
                 </TableCell>
-                <TableCell>purple, blue, green, orange, red, neutral, or custom</TableCell>
+                <TableCell>{theme.values.join(", ")}, or custom</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Mode</TableCell>
                 <TableCell>
                   <Code>data-mode</Code>
                 </TableCell>
-                <TableCell>system, light, dark</TableCell>
+                <TableCell>{mode.values.join(", ")}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Density</TableCell>
                 <TableCell>
                   <Code>data-density</Code>
                 </TableCell>
-                <TableCell>comfortable, compact</TableCell>
+                <TableCell>{density.values.join(", ")}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -129,18 +153,18 @@ export default function Page() {
               <TableRow>
                 <TableHead>Theme</TableHead>
                 <TableHead>Attribute value</TableHead>
-                <TableHead>Primary accent token</TableHead>
+                <TableHead>Light primary mapping</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {themes.map(([label, value, token]) => (
-                <TableRow key={value}>
-                  <TableCell>{label}</TableCell>
+              {theme.presets.map((preset) => (
+                <TableRow key={preset.value}>
+                  <TableCell>{preset.label}</TableCell>
                   <TableCell>
-                    <Code>data-theme="{value}"</Code>
+                    <Code>data-theme="{preset.value}"</Code>
                   </TableCell>
                   <TableCell>
-                    <Code>{token}</Code>
+                    <Code>{projectedValue(preset.primaryAccent.light)}</Code>
                   </TableCell>
                 </TableRow>
               ))}
@@ -152,9 +176,16 @@ export default function Page() {
       <section className="doc-section">
         <h2 id="mode-behavior">Mode behavior</h2>
         <p>
-          Light mode uses a white canvas, gray control surfaces, and white raised surfaces. Dark
-          mode remaps the same roles to gray-950, gray-900, and gray-800. Purple and neutral also
-          use lighter primary actions in dark and system-dark modes to preserve contrast.
+          Light mode uses opaque white foundations with cool dark alpha neutrals for adaptive
+          controls, grouping, borders, and interaction states. Dark mode maps the canvas, default,
+          sunken, raised, and overlay surface roles to <Code>--n-gray-1000</Code>, then uses white
+          alpha neutrals for controls, borders, selected layers, and other adaptive surfaces.
+        </p>
+        <p>
+          Text, focus, actions, statuses, and charts remap through their own semantic roles. Purple
+          and neutral use lighter primary actions in dark and system-dark modes where the light-mode
+          accent would lose contrast. Product code consumes semantic roles and does not depend on a
+          resolved gray or alpha primitive.
         </p>
         <p>
           The appearance control exposes System, Light, and Dark explicitly. System follows live OS
@@ -166,24 +197,32 @@ export default function Page() {
             <TableHeader>
               <TableRow>
                 <TableHead>Role</TableHead>
-                <TableHead>Token</TableHead>
+                <TableHead>Light</TableHead>
+                <TableHead>Dark</TableHead>
+                <TableHead>System dark</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[
-                ["Canvas", "--n-color-surface-canvas"],
-                ["Control", "--n-color-surface-control"],
-                ["Raised surface", "--n-color-surface-raised"],
-                ["Primary action", "--n-color-action-primary"],
-                ["Action foreground", "--n-color-action-on-primary"],
-              ].map(([label, token]) => (
-                <TableRow key={token}>
-                  <TableCell>{label}</TableCell>
-                  <TableCell>
-                    <Code>{token}</Code>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {lightMode.mappings.map((lightMapping, index) => {
+                const darkMapping = darkMode.mappings[index]!;
+                const systemMapping = systemMode.mappings[index]!;
+                return (
+                  <TableRow key={lightMapping.token}>
+                    <TableCell>
+                      <Code>{lightMapping.token}</Code>
+                    </TableCell>
+                    <TableCell>
+                      <Code>{projectedValue(lightMapping)}</Code>
+                    </TableCell>
+                    <TableCell>
+                      <Code>{projectedValue(darkMapping)}</Code>
+                    </TableCell>
+                    <TableCell>
+                      <Code>{projectedValue(systemMapping)}</Code>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -197,24 +236,25 @@ export default function Page() {
               <TableRow>
                 <TableHead>Value</TableHead>
                 <TableHead>Use</TableHead>
+                <TableHead>Source-backed aliases</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell>
-                  <Code>comfortable</Code>
-                </TableCell>
-                <TableCell>Default spacing for mixed product and documentation surfaces.</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Code>compact</Code>
-                </TableCell>
-                <TableCell>
-                  Remaps semantic density aliases and component tokens for dense operational
-                  interfaces without changing primitive spacing values.
-                </TableCell>
-              </TableRow>
+              {density.mappings.map((mapping) => (
+                <TableRow key={mapping.value}>
+                  <TableCell>
+                    <Code>{mapping.value}</Code>
+                  </TableCell>
+                  <TableCell>{densityGuidance[mapping.value]}</TableCell>
+                  <TableCell>
+                    {mapping.aliases.map((alias) => (
+                      <div key={alias.token}>
+                        <Code>{alias.token}</Code> → <Code>{alias.reference ?? alias.value}</Code>
+                      </div>
+                    ))}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -224,15 +264,47 @@ export default function Page() {
         <h2 id="custom-themes">Custom themes</h2>
         <CodeExample code={customTheme} label="Custom theme" />
         <ul className="doc-list">
+          <li>Override semantic roles and stable component contracts, not primitive palettes.</li>
           <li>Do not create combined names such as purple-light or neutral-dark.</li>
           <li>Do not use vertical-specific preset names such as fintech-blue.</li>
           <li>Keep brand color as an accent for primary action, selection, focus, and charts.</li>
           <li>Provide dark-mode accent overrides when the light accent loses contrast.</li>
+          <li>Test real component states and content rather than approving isolated swatches.</li>
         </ul>
+
+        <h3>Theme validation</h3>
+        <TableContainer aria-label="Custom theme validation">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Check</TableHead>
+                <TableHead>Expected result</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {themeValidation.map(([check, expectation]) => (
+                <TableRow key={check}>
+                  <TableCell>{check}</TableCell>
+                  <TableCell>{expectation}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </section>
 
       <section className="doc-section">
         <h2 id="do-do-not">Do / do not</h2>
+        <p>
+          Review contrast, focus, non-color communication, and manual evidence responsibilities in
+          the <a href="/docs/foundations/accessibility">Accessibility foundation</a> before
+          approving a custom theme. The <a href="/docs/foundations/color">Color foundation</a>{" "}
+          defines the source-backed role inventory, required accent mappings, and complete
+          foreground/background validation matrix. The{" "}
+          <a href="/docs/foundations/spacing-layout">Spacing &amp; layout foundation</a> defines how
+          comfortable and compact density remap semantic and component geometry without changing the
+          primitive scale.
+        </p>
         <TableContainer aria-label="Theme guidance">
           <Table>
             <TableHeader>
@@ -249,9 +321,22 @@ export default function Page() {
                 </TableCell>
               </TableRow>
               <TableRow>
+                <TableCell>Do</TableCell>
+                <TableCell>
+                  Validate action, focus, status, chart, and selected-state pairs in every supported
+                  mode.
+                </TableCell>
+              </TableRow>
+              <TableRow>
                 <TableCell>Do not</TableCell>
                 <TableCell>
                   Fork component source to hard-code a product color into a button or field.
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Do not</TableCell>
+                <TableCell>
+                  communicate status, selection, or validation through hue alone.
                 </TableCell>
               </TableRow>
             </TableBody>

@@ -385,6 +385,76 @@ test("keeps Command to one preview and focuses only its search control", async (
   await expectHealthyPage(page, problems);
 });
 
+test("keeps Combobox query, keyboard, pointer, clear, and RTL behavior bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/combobox");
+
+  const preview = page.getByRole("region", { name: "combobox preview" });
+  const input = preview.getByRole("combobox", { name: "City" });
+  await input.fill("tbi");
+  const option = page.getByRole("option", { name: "Tbilisi" });
+  await expect(option).toBeVisible();
+  await expect(page.getByRole("option", { name: "Paris" })).toHaveCount(0);
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+  await expect(input).toHaveValue("Tbilisi");
+
+  await preview.getByRole("button", { name: "Clear selection" }).click();
+  await expect(input).toHaveValue("");
+  await page.locator("html").evaluate((root) => {
+    root.dir = "rtl";
+  });
+  await preview.getByRole("button", { name: "Toggle options" }).click();
+  await expect(page.getByRole("listbox")).toBeVisible();
+  await expect(page.locator('[data-slot="content"]')).toHaveAttribute("data-align", "start");
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps SearchField native query, clear focus, loading, RTL, and narrow layout bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/docs/components/search-field");
+
+  const preview = page.getByRole("region", { name: "search-field preview" });
+  const input = preview.getByRole("searchbox", { name: "Search projects" });
+  await expect(input).toHaveAttribute("type", "search");
+  await expect(input).toHaveValue("Roadmap");
+  await preview.getByRole("button", { name: "Clear search" }).click();
+  await expect(input).toHaveValue("");
+  await expect(input).toBeFocused();
+  await input.fill("Nerio");
+  await input.press("Enter");
+  await expect(input).toHaveValue("Nerio");
+  await expect(preview.getByRole("status")).toContainText("Searching activity");
+
+  await page.locator("html").evaluate((root) => {
+    root.dir = "rtl";
+  });
+  const positions = await preview
+    .locator('[data-slot="input-group"]')
+    .first()
+    .evaluate((group) => {
+      const searchIcon = group.querySelector('[data-slot="search-icon"]')?.getBoundingClientRect();
+      const clear = group.querySelector('[data-slot="clear"]')?.getBoundingClientRect();
+      const bounds = group.getBoundingClientRect();
+      return searchIcon && clear
+        ? {
+            clearCenter: clear.left + clear.width / 2,
+            iconCenter: searchIcon.left + searchIcon.width / 2,
+            overflow: group.scrollWidth - bounds.width,
+          }
+        : null;
+    });
+  expect(positions).not.toBeNull();
+  expect(positions.iconCenter).toBeGreaterThan(positions.clearCenter);
+  expect(positions.overflow).toBeLessThanOrEqual(1);
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dialog");
@@ -397,6 +467,25 @@ test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
       .getByRole("complementary", { name: "On this page" })
       .getByRole("link", { name: "Preview", exact: true }),
   ).toHaveCount(0);
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps AlertDialog conservative and focuses the safe action", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/alert-dialog");
+
+  const trigger = page.getByRole("button", { name: "Delete project" }).first();
+  await trigger.click();
+  const dialog = page.getByRole("alertdialog", { name: "Delete project?" });
+  const cancel = dialog.getByRole("button", { name: "Cancel" });
+  await expect(dialog).toBeVisible();
+  await expect(cancel).toBeFocused();
+
+  await page.mouse.click(8, 8);
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
   await expectHealthyPage(page, problems);
 });
 
@@ -587,6 +676,249 @@ test("opens mobile documentation navigation and follows a route", async ({ page 
   await expect(navigation).toBeVisible();
   await navigation.getByRole("link", { name: "Tokens", exact: true }).click();
   await expect(page).toHaveURL(/\/docs\/foundations\/tokens$/);
+  await expectHealthyPage(page, problems);
+});
+
+test("keeps canonical foundation discovery ordered and aliases non-competing", async ({
+  page,
+  request,
+}) => {
+  const problems = monitorPage(page);
+  const foundationLabels = [
+    "Tokens",
+    "Color",
+    "Typography",
+    "Spacing & layout",
+    "Themes",
+    "Accessibility",
+    "Localization",
+    "Radius",
+    "Effects",
+    "Motion",
+    "Icons",
+  ];
+  const foundationPaths = [
+    "/docs/foundations/tokens",
+    "/docs/foundations/color",
+    "/docs/foundations/typography",
+    "/docs/foundations/spacing-layout",
+    "/docs/foundations/themes",
+    "/docs/foundations/accessibility",
+    "/docs/foundations/localization",
+    "/docs/foundations/radius",
+    "/docs/foundations/effects",
+    "/docs/foundations/motion",
+    "/docs/foundations/icons",
+  ];
+
+  await page.goto("/docs/foundations/tokens");
+  const desktopFoundations = page
+    .getByRole("navigation", { name: "Documentation" })
+    .locator(".nav-group")
+    .filter({ has: page.getByRole("heading", { name: "Foundations", exact: true }) });
+  await expect(desktopFoundations.getByRole("link")).toHaveText(foundationLabels);
+  await expect(
+    page
+      .getByRole("navigation", { name: "Documentation pagination" })
+      .getByRole("link", { name: "Color", exact: true }),
+  ).toHaveAttribute("href", "/docs/foundations/color");
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  const searchDialog = page.getByRole("dialog", { name: "Search documentation" });
+  await searchDialog
+    .getByRole("combobox", { name: "Search documentation" })
+    .fill("semantic color roles");
+  await expect(searchDialog.getByRole("option", { name: /Color/ }).first()).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Open documentation navigation" }).click();
+  const mobileFoundations = page
+    .getByRole("dialog", { name: "Documentation" })
+    .locator(".docs-mobile-navigation__group")
+    .filter({ has: page.getByRole("heading", { name: "Foundations", exact: true }) });
+  await expect(mobileFoundations.getByRole("link")).toHaveText(foundationLabels);
+
+  const sitemap = await request.get("/sitemap.xml");
+  const sitemapText = await sitemap.text();
+  foundationPaths.forEach((path) => expect(sitemapText).toContain(path));
+  expect(sitemapText).not.toContain("/docs/foundations/animations");
+
+  const legacy = await request.get("/docs/foundations/animations", { maxRedirects: 0 });
+  expect(legacy.status()).toBe(308);
+  expect(legacy.headers().location).toBe("/docs/foundations/motion");
+  await expectHealthyPage(page, problems);
+});
+
+test("discovers the Accessibility foundation through navigation and search", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/foundations/accessibility");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Accessibility" })).toBeVisible();
+  const example = page.getByRole("region", { name: "Accessibility example preview" });
+  const input = example.getByRole("textbox", { name: "Project name" });
+  await expect(input).toHaveAccessibleDescription(
+    "Use a short name that collaborators will recognize.",
+  );
+  await input.focus();
+  await expect(input).toBeFocused();
+  await expect(
+    page.getByRole("complementary", { name: "On this page" }).getByRole("link", {
+      name: "Automated and manual evidence",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Localization foundation" })).toHaveAttribute(
+    "href",
+    "/docs/foundations/localization",
+  );
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  const search = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("combobox", { name: "Search documentation" });
+  await search.fill("Accessibility");
+  await expect(
+    page
+      .getByRole("dialog", { name: "Search documentation" })
+      .getByRole("option", { name: /Accessibility/ })
+      .first(),
+  ).toBeVisible();
+
+  await expectHealthyPage(page, problems);
+});
+
+test("discovers and remaps the source-backed Color foundation", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/foundations/color");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Color" })).toBeVisible();
+  const example = page.getByRole("region", { name: "Color foundation example preview" });
+  const examplePreview = example.locator(".component-example__preview");
+  await expect(examplePreview.getByText("Selected", { exact: true })).toBeVisible();
+  await expect(examplePreview.getByText("Published", { exact: true })).toBeVisible();
+  await expect(
+    page
+      .getByRole("complementary", { name: "On this page" })
+      .getByRole("link", { name: "Pairing and interaction states", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Source-backed semantic color families")).toBeVisible();
+  await expect(page.getByLabel("Custom theme validation matrix")).toBeVisible();
+
+  await page.evaluate(() => {
+    document.documentElement.dataset.mode = "light";
+    document.documentElement.dataset.theme = "purple";
+  });
+  const purpleLight = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue("--n-color-action-primary"),
+  );
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = "blue";
+  });
+  const blueLight = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue("--n-color-action-primary"),
+  );
+  expect(blueLight).not.toBe(purpleLight);
+
+  await page.evaluate(() => {
+    document.documentElement.dataset.theme = "orange";
+    document.documentElement.dataset.mode = "dark";
+  });
+  const orangeDark = await page.evaluate(() =>
+    getComputedStyle(document.documentElement).getPropertyValue("--n-color-action-primary"),
+  );
+  expect(orangeDark).not.toBe(blueLight);
+
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.evaluate(() => {
+    document.documentElement.dataset.mode = "system";
+  });
+  await expect(example).toBeVisible();
+
+  await page.emulateMedia({ forcedColors: "active" });
+  const accessibilityLink = page
+    .getByRole("link", { name: "Accessibility foundation", exact: true })
+    .first();
+  await accessibilityLink.focus();
+  await expect(accessibilityLink).toBeFocused();
+
+  await page.emulateMedia({ colorScheme: "light", forcedColors: "none" });
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  const search = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("combobox", { name: "Search documentation" });
+  await search.fill("Color");
+  await expect(
+    page
+      .getByRole("dialog", { name: "Search documentation" })
+      .getByRole("option", { name: /Color/ })
+      .first(),
+  ).toBeVisible();
+
+  await expectHealthyPage(page, problems);
+});
+
+test("discovers the source-backed Spacing and layout foundation", async ({ page }) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/foundations/spacing-layout");
+
+  await expect(page.getByRole("heading", { level: 1, name: "Spacing & layout" })).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Source-backed primitive spacing scale" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Source-backed density spacing aliases" }),
+  ).toBeVisible();
+  const preview = page.getByRole("region", { name: "Spacing and layout examples" });
+  await expect(preview.getByLabel("Workspace settings example")).toBeVisible();
+  const overflow = preview.getByRole("region", {
+    name: "Team access with horizontal overflow",
+  });
+  await overflow.focus();
+  await expect(overflow).toBeFocused();
+  await expect(
+    page.getByRole("complementary", { name: "On this page" }).getByRole("link", {
+      name: "Resilient layout",
+      exact: true,
+    }),
+  ).toBeVisible();
+
+  const comfortable = await page.evaluate(() => {
+    document.documentElement.dataset.density = "comfortable";
+    return getComputedStyle(document.documentElement).getPropertyValue("--n-density-space-md");
+  });
+  const compact = await page.evaluate(() => {
+    document.documentElement.dataset.density = "compact";
+    return getComputedStyle(document.documentElement).getPropertyValue("--n-density-space-md");
+  });
+  expect(compact).not.toBe(comfortable);
+
+  await page.setViewportSize({ width: 320, height: 844 });
+  const layout = await page.evaluate(() => {
+    document.documentElement.dir = "rtl";
+    return {
+      codeDirection: getComputedStyle(document.querySelector(".code-block")).direction,
+      direction: getComputedStyle(document.querySelector(".spacing-layout-preview")).direction,
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    };
+  });
+  expect(layout.codeDirection).toBe("ltr");
+  expect(layout.direction).toBe("rtl");
+  expect(layout.overflow).toBeLessThanOrEqual(1);
+  await expect(preview.getByText("Workspace name for regional operations")).toBeVisible();
+
+  await page.getByRole("button", { name: "Search documentation" }).click();
+  const search = page
+    .getByRole("dialog", { name: "Search documentation" })
+    .getByRole("combobox", { name: "Search documentation" });
+  await search.fill("Spacing");
+  await expect(
+    page
+      .getByRole("dialog", { name: "Search documentation" })
+      .getByRole("option", { name: /Spacing & layout/ })
+      .first(),
+  ).toBeVisible();
+
   await expectHealthyPage(page, problems);
 });
 

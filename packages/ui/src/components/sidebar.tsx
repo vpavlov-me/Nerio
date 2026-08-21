@@ -44,13 +44,16 @@ export function SidebarProvider({
   className,
   collapseMode = "hidden",
   defaultExpanded = true,
-  direction = "ltr",
+  direction,
   expanded: controlledExpanded,
   onExpandedChange,
   side = "left",
   sidebarId: providedSidebarId,
   ...props
 }: SidebarProviderProps) {
+  const providerRef = React.useRef<HTMLDivElement>(null);
+  const [inheritedDirection, setInheritedDirection] = React.useState<SidebarDirection>("ltr");
+  const resolvedDirection = direction ?? inheritedDirection;
   const generatedId = React.useId();
   const sidebarId = providedSidebarId ?? `nerio-sidebar-${generatedId.replace(/:/g, "")}`;
   const [uncontrolledExpanded, setUncontrolledExpanded] = React.useState(defaultExpanded);
@@ -63,26 +66,57 @@ export function SidebarProvider({
     [controlledExpanded, onExpandedChange],
   );
   const toggle = React.useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
+  React.useEffect(() => {
+    if (direction) return undefined;
+
+    const updateDirection = () => {
+      const directionOwner = providerRef.current?.closest<HTMLElement>("[dir]");
+      setInheritedDirection(directionOwner?.dir === "rtl" ? "rtl" : "ltr");
+    };
+    updateDirection();
+    const observer = new MutationObserver(updateDirection);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["dir"],
+      subtree: true,
+    });
+    return () => observer.disconnect();
+  }, [direction]);
   const value = React.useMemo(
-    () => ({ collapseMode, direction, expanded, setExpanded, side, sidebarId, toggle }),
-    [collapseMode, direction, expanded, setExpanded, side, sidebarId, toggle],
+    () => ({
+      collapseMode,
+      direction: resolvedDirection,
+      expanded,
+      setExpanded,
+      side,
+      sidebarId,
+      toggle,
+    }),
+    [collapseMode, resolvedDirection, expanded, setExpanded, side, sidebarId, toggle],
   );
 
   return (
     <SidebarContext.Provider value={value}>
       <div
+        ref={providerRef}
         {...props}
         className={cn(
-          "n-sidebar-provider flex min-h-full w-full [direction:ltr] data-[side=right]:flex-row-reverse data-[direction=rtl]:[&>*]:[direction:rtl] data-[state=collapsed]:[&>.n-sidebar]:w-(--n-sidebar-collapsed-width) data-[state=collapsed]:[&>.n-sidebar]:basis-(--n-sidebar-collapsed-width)",
+          "n-sidebar-provider flex min-h-full w-full [direction:ltr] data-[side=right]:flex-row-reverse",
           className,
         )}
-        data-direction={direction}
+        dir={direction}
+        data-direction={resolvedDirection}
         data-collapse-mode={collapseMode}
         data-side={side}
         data-slot="sidebar-provider"
         data-state={expanded ? "expanded" : "collapsed"}
       >
-        {children}
+        <div
+          className="contents [direction:var(--n-inherited-direction,ltr)]"
+          data-slot="sidebar-provider-content"
+        >
+          {children}
+        </div>
       </div>
     </SidebarContext.Provider>
   );

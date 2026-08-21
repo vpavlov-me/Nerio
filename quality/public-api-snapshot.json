@@ -61,7 +61,9 @@
     "/docs",
     "/docs/ai",
     "/docs/changelog",
+    "/docs/components/accordion",
     "/docs/components/alert",
+    "/docs/components/alert-dialog",
     "/docs/components/avatar",
     "/docs/components/badge",
     "/docs/components/breadcrumbs",
@@ -70,6 +72,8 @@
     "/docs/components/calendar",
     "/docs/components/card",
     "/docs/components/checkbox",
+    "/docs/components/collapsible",
+    "/docs/components/combobox",
     "/docs/components/command-primitive",
     "/docs/components/date-picker",
     "/docs/components/dialog",
@@ -90,6 +94,7 @@
     "/docs/components/popover",
     "/docs/components/progress",
     "/docs/components/radio-group",
+    "/docs/components/search-field",
     "/docs/components/select",
     "/docs/components/separator",
     "/docs/components/sheet",
@@ -107,10 +112,14 @@
     "/docs/components/tooltip",
     "/docs/components/typography",
     "/docs/feedback",
+    "/docs/foundations/accessibility",
+    "/docs/foundations/color",
     "/docs/foundations/effects",
     "/docs/foundations/icons",
+    "/docs/foundations/localization",
     "/docs/foundations/motion",
     "/docs/foundations/radius",
+    "/docs/foundations/spacing-layout",
     "/docs/foundations/themes",
     "/docs/foundations/tokens",
     "/docs/foundations/typography",
@@ -2271,8 +2280,440 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "Accordion",
+        "signature": "React.ForwardRefExoticComponent<AccordionProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type AccordionChangeEventDetails = NerioChangeEventDetails<AccordionChangeEventReason>;",
+          "export type AccordionChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionChangeEventDetails",
+        "signature": "AccordionChangeEventDetails"
+      },
+      {
+        "definition": ["export type AccordionChangeEventReason = \"trigger-press\" | \"none\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionChangeEventReason",
+        "signature": "AccordionChangeEventReason"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AccordionHeader",
+        "signature": "React.ForwardRefExoticComponent<AccordionHeaderProps & React.RefAttributes<HTMLHeadingElement>>"
+      },
+      {
+        "definition": [
+          "export interface AccordionHeaderProps extends Omit<React.HTMLAttributes<HTMLHeadingElement>, \"className\" | \"style\"> { className?: NerioClassName<AccordionItemState>; render?: NerioRenderProp<AccordionItemState>; style?: NerioStyle<AccordionItemState>; }",
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionHeaderProps",
+        "signature": "AccordionHeaderProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AccordionItem",
+        "signature": "React.ForwardRefExoticComponent<AccordionItemProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"onChange\" | \"style\"> { className?: NerioClassName<AccordionItemState>; disabled?: boolean; onOpenChange?: (open: boolean, eventDetails: AccordionChangeEventDetails) => void; render?: NerioRenderProp<AccordionItemState>; style?: NerioStyle<AccordionItemState>; value: AccordionValue; }",
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionChangeEventDetails = NerioChangeEventDetails<AccordionChangeEventReason>;",
+          "export type AccordionChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type AccordionValue = string;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionItemProps",
+        "signature": "AccordionItemProps"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionItemState",
+        "signature": "AccordionItemState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AccordionPanel",
+        "signature": "React.ForwardRefExoticComponent<AccordionPanelProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionPanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<AccordionPanelState>; hiddenUntilFound?: boolean; keepMounted?: boolean; render?: NerioRenderProp<AccordionPanelState>; style?: NerioStyle<AccordionPanelState>; }",
+          "export interface AccordionPanelState extends AccordionItemState { transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionPanelProps",
+        "signature": "AccordionPanelProps"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionPanelState extends AccordionItemState { transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionPanelState",
+        "signature": "AccordionPanelState"
+      },
+      {
+        "definition": [
+          "export interface AccordionProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"defaultValue\" | \"onChange\" | \"style\"> { className?: NerioClassName<AccordionState>; defaultValue?: AccordionValue[]; disabled?: boolean; hiddenUntilFound?: boolean; keepMounted?: boolean; multiple?: boolean; onValueChange?: (value: AccordionValue[], eventDetails: AccordionChangeEventDetails) => void; render?: NerioRenderProp<AccordionState>; style?: NerioStyle<AccordionState>; value?: AccordionValue[]; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionChangeEventDetails = NerioChangeEventDetails<AccordionChangeEventReason>;",
+          "export type AccordionChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type AccordionValue = string;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionProps",
+        "signature": "AccordionProps"
+      },
+      {
+        "definition": [
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export type AccordionValue = string;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionState",
+        "signature": "AccordionState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AccordionTrigger",
+        "signature": "React.ForwardRefExoticComponent<AccordionTriggerProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface AccordionItemState extends AccordionState { hidden: boolean; index: number; open: boolean; }",
+          "export interface AccordionState { value: AccordionValue[]; disabled: boolean; }",
+          "export interface AccordionTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<AccordionItemState>; nativeButton?: boolean; render?: NerioRenderProp<AccordionItemState>; style?: NerioStyle<AccordionItemState>; }",
+          "export type AccordionValue = string;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionTriggerProps",
+        "signature": "AccordionTriggerProps"
+      },
+      {
+        "definition": ["export type AccordionValue = string;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AccordionValue",
+        "signature": "string"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "Alert",
         "signature": "React.ForwardRefExoticComponent<AlertProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialog",
+        "signature": "({ children, defaultOpen, onOpenChange, open }: AlertDialogProps) => React.JSX.Element"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogAction",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogActionProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogActionProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<AlertDialogActionState>; nativeButton?: boolean; render?: NerioRenderProp<AlertDialogActionState>; style?: NerioStyle<AlertDialogActionState>; }",
+          "export interface AlertDialogActionState { disabled: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogActionProps",
+        "signature": "AlertDialogActionProps"
+      },
+      {
+        "definition": ["export interface AlertDialogActionState { disabled: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogActionState",
+        "signature": "AlertDialogActionState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogBackdrop",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogBackdropProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogBackdropProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<AlertDialogBackdropState>; forceRender?: boolean; render?: NerioRenderProp<AlertDialogBackdropState>; style?: NerioStyle<AlertDialogBackdropState>; }",
+          "export interface AlertDialogBackdropState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogBackdropProps",
+        "signature": "AlertDialogBackdropProps"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogBackdropState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogBackdropState",
+        "signature": "AlertDialogBackdropState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogBody",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogCancel",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogActionProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogContent",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogContentProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"color\" | \"style\"> { children: React.ReactNode; className?: NerioClassName<AlertDialogContentState>; finalFocus?: DialogFocusTarget; initialFocus?: DialogFocusTarget; render?: NerioRenderProp<AlertDialogContentState>; style?: NerioStyle<AlertDialogContentState>; }",
+          "export interface AlertDialogContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }",
+          "export type DialogFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DialogInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DialogInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogContentProps",
+        "signature": "AlertDialogContentProps"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogContentState",
+        "signature": "AlertDialogContentState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogDescription",
+        "signature": "React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLParagraphElement> & React.RefAttributes<HTMLParagraphElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogFooter",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, \"ref\"> & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogHeader",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, \"ref\"> & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export type AlertDialogOpenChangeEventDetails = NerioChangeEventDetails<AlertDialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type AlertDialogOpenChangeEventReason = DialogOpenChangeEventReason;",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogOpenChangeEventDetails",
+        "signature": "AlertDialogOpenChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type AlertDialogOpenChangeEventReason = DialogOpenChangeEventReason;",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogOpenChangeEventReason",
+        "signature": "DialogOpenChangeEventReason"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogPortal",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogPortalProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogPortalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<AlertDialogPortalState>; container?: HTMLElement | ShadowRoot | React.RefObject<HTMLElement | ShadowRoot | null> | null; keepMounted?: boolean; render?: NerioRenderProp<AlertDialogPortalState>; style?: NerioStyle<AlertDialogPortalState>; }",
+          "export type AlertDialogPortalState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogPortalProps",
+        "signature": "AlertDialogPortalProps"
+      },
+      {
+        "definition": ["export type AlertDialogPortalState = Record<never, never>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogPortalState",
+        "signature": "AlertDialogPortalState"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogProps { children: React.ReactNode; defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: AlertDialogOpenChangeEventDetails) => void; open?: boolean; }",
+          "export type AlertDialogOpenChangeEventDetails = NerioChangeEventDetails<AlertDialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type AlertDialogOpenChangeEventReason = DialogOpenChangeEventReason;",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogProps",
+        "signature": "AlertDialogProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogTitle",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogTitleProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export type AlertDialogTitleElement = DialogTitleElement;",
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogTitleElement",
+        "signature": "DialogTitleElement"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogTitleProps extends React.HTMLAttributes<HTMLElement> { as?: AlertDialogTitleElement; }",
+          "export type AlertDialogTitleElement = DialogTitleElement;",
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogTitleProps",
+        "signature": "AlertDialogTitleProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "AlertDialogTrigger",
+        "signature": "React.ForwardRefExoticComponent<AlertDialogTriggerProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<AlertDialogTriggerState>; nativeButton?: boolean; render?: NerioRenderProp<AlertDialogTriggerState>; style?: NerioStyle<AlertDialogTriggerState>; }",
+          "export interface AlertDialogTriggerState { disabled: boolean; open: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogTriggerProps",
+        "signature": "AlertDialogTriggerProps"
+      },
+      {
+        "definition": [
+          "export interface AlertDialogTriggerState { disabled: boolean; open: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "AlertDialogTriggerState",
+        "signature": "AlertDialogTriggerState"
       },
       {
         "definition": [
@@ -2765,6 +3206,333 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "Collapsible",
+        "signature": "React.ForwardRefExoticComponent<CollapsibleProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type CollapsibleChangeEventDetails = NerioChangeEventDetails<CollapsibleChangeEventReason>;",
+          "export type CollapsibleChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleChangeEventDetails",
+        "signature": "CollapsibleChangeEventDetails"
+      },
+      {
+        "definition": ["export type CollapsibleChangeEventReason = \"trigger-press\" | \"none\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleChangeEventReason",
+        "signature": "CollapsibleChangeEventReason"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "CollapsiblePanel",
+        "signature": "React.ForwardRefExoticComponent<CollapsiblePanelProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface CollapsiblePanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<CollapsiblePanelState>; hiddenUntilFound?: boolean; keepMounted?: boolean; render?: NerioRenderProp<CollapsiblePanelState>; style?: NerioStyle<CollapsiblePanelState>; }",
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type CollapsiblePanelState = CollapsibleState;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsiblePanelProps",
+        "signature": "CollapsiblePanelProps"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type CollapsiblePanelState = CollapsibleState;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsiblePanelState",
+        "signature": "CollapsibleState"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"onChange\" | \"style\"> { className?: NerioClassName<CollapsibleState>; defaultOpen?: boolean; disabled?: boolean; onOpenChange?: (open: boolean, eventDetails: CollapsibleChangeEventDetails) => void; open?: boolean; render?: NerioRenderProp<CollapsibleState>; style?: NerioStyle<CollapsibleState>; }",
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type CollapsibleChangeEventDetails = NerioChangeEventDetails<CollapsibleChangeEventReason>;",
+          "export type CollapsibleChangeEventReason = \"trigger-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleProps",
+        "signature": "CollapsibleProps"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleState",
+        "signature": "CollapsibleState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "CollapsibleTrigger",
+        "signature": "React.ForwardRefExoticComponent<CollapsibleTriggerProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface CollapsibleTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<CollapsibleTriggerState>; nativeButton?: boolean; render?: NerioRenderProp<CollapsibleTriggerState>; style?: NerioStyle<CollapsibleTriggerState>; }",
+          "export type CollapsibleTriggerState = CollapsibleState;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleTriggerProps",
+        "signature": "CollapsibleTriggerProps"
+      },
+      {
+        "definition": [
+          "export interface CollapsibleState { open: boolean; disabled: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type CollapsibleTriggerState = CollapsibleState;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CollapsibleTriggerState",
+        "signature": "CollapsibleState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "Combobox",
+        "signature": "<Value extends string = string>(props: ComboboxProps<Value> & React.RefAttributes<HTMLDivElement>) => React.ReactElement"
+      },
+      {
+        "definition": [
+          "export type ComboboxChangeEventDetails = NerioChangeEventDetails<ComboboxChangeEventReason>;",
+          "export type ComboboxChangeEventReason = \"trigger-press\" | \"outside-press\" | \"item-press\" | \"close-press\" | \"escape-key\" | \"list-navigation\" | \"focus-out\" | \"input-change\" | \"input-clear\" | \"input-press\" | \"clear-press\" | \"chip-remove-press\" | \"cancel-open\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxChangeEventDetails",
+        "signature": "ComboboxChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type ComboboxChangeEventReason = \"trigger-press\" | \"outside-press\" | \"item-press\" | \"close-press\" | \"escape-key\" | \"list-navigation\" | \"focus-out\" | \"input-change\" | \"input-clear\" | \"input-press\" | \"clear-press\" | \"chip-remove-press\" | \"cancel-open\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxChangeEventReason",
+        "signature": "ComboboxChangeEventReason"
+      },
+      {
+        "definition": [
+          "export interface ComboboxOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }",
+          "export type ComboboxFilter<Value extends string = string> = (option: ComboboxOption<Value>, query: string) => boolean;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxFilter",
+        "signature": "ComboboxFilter<Value>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ComboboxGroup",
+        "signature": "React.ForwardRefExoticComponent<ComboboxGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ComboboxGroupLabel",
+        "signature": "React.ForwardRefExoticComponent<ComboboxGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface ComboboxGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<ComboboxPartState>; render?: NerioRenderProp<ComboboxPartState>; style?: NerioStyle<ComboboxPartState>; }",
+          "export type ComboboxGroupLabelProps = ComboboxGroupProps;",
+          "export type ComboboxPartState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxGroupLabelProps",
+        "signature": "ComboboxGroupProps"
+      },
+      {
+        "definition": [
+          "export interface ComboboxGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<ComboboxPartState>; render?: NerioRenderProp<ComboboxPartState>; style?: NerioStyle<ComboboxPartState>; }",
+          "export type ComboboxPartState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxGroupProps",
+        "signature": "ComboboxGroupProps"
+      },
+      {
+        "definition": [
+          "export type ComboboxHighlightEventDetails = NerioEventDetails<\"keyboard\" | \"pointer\" | \"none\"> & { index: number; };",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxHighlightEventDetails",
+        "signature": "ComboboxHighlightEventDetails"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ComboboxItem",
+        "signature": "<Value extends string = string>(props: ComboboxItemProps<Value> & React.RefAttributes<HTMLDivElement>) => React.ReactElement"
+      },
+      {
+        "definition": [
+          "export interface ComboboxItemProps<Value extends string = string> extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"color\" | \"style\"> { children: React.ReactNode; className?: NerioClassName<ComboboxItemState>; description?: React.ReactNode; disabled?: boolean; render?: NerioRenderProp<ComboboxItemState>; style?: NerioStyle<ComboboxItemState>; value: Value; }",
+          "export interface ComboboxItemState { disabled: boolean; selected: boolean; highlighted: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxItemProps",
+        "signature": "ComboboxItemProps<Value>"
+      },
+      {
+        "definition": [
+          "export interface ComboboxOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }",
+          "export interface ComboboxOptionGroup<Value extends string = string> { value: string; label: React.ReactNode; options: readonly ComboboxOption<Value>[]; }",
+          "export type ComboboxItems<Value extends string = string> = readonly ComboboxOption<Value>[] | readonly ComboboxOptionGroup<Value>[];"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxItems",
+        "signature": "ComboboxItems<Value>"
+      },
+      {
+        "definition": [
+          "export interface ComboboxItemState { disabled: boolean; selected: boolean; highlighted: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxItemState",
+        "signature": "ComboboxItemState"
+      },
+      {
+        "definition": [
+          "export type ComboboxChangeEventDetails = NerioChangeEventDetails<ComboboxChangeEventReason>;",
+          "export type ComboboxChangeEventReason = \"trigger-press\" | \"outside-press\" | \"item-press\" | \"close-press\" | \"escape-key\" | \"list-navigation\" | \"focus-out\" | \"input-change\" | \"input-clear\" | \"input-press\" | \"clear-press\" | \"chip-remove-press\" | \"cancel-open\" | \"none\";",
+          "export type ComboboxOpenChangeEventDetails = ComboboxChangeEventDetails;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxOpenChangeEventDetails",
+        "signature": "ComboboxChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export interface ComboboxOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxOption",
+        "signature": "ComboboxOption<Value>"
+      },
+      {
+        "definition": [
+          "export interface ComboboxOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }",
+          "export interface ComboboxOptionGroup<Value extends string = string> { value: string; label: React.ReactNode; options: readonly ComboboxOption<Value>[]; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxOptionGroup",
+        "signature": "ComboboxOptionGroup<Value>"
+      },
+      {
+        "definition": ["export type ComboboxPartState = Record<never, never>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxPartState",
+        "signature": "ComboboxPartState"
+      },
+      {
+        "definition": [
+          "export interface ComboboxOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }",
+          "export interface ComboboxOptionGroup<Value extends string = string> { value: string; label: React.ReactNode; options: readonly ComboboxOption<Value>[]; }",
+          "export type ComboboxChangeEventDetails = NerioChangeEventDetails<ComboboxChangeEventReason>;",
+          "export type ComboboxChangeEventReason = \"trigger-press\" | \"outside-press\" | \"item-press\" | \"close-press\" | \"escape-key\" | \"list-navigation\" | \"focus-out\" | \"input-change\" | \"input-clear\" | \"input-press\" | \"clear-press\" | \"chip-remove-press\" | \"cancel-open\" | \"none\";",
+          "export type ComboboxFilter<Value extends string = string> = (option: ComboboxOption<Value>, query: string) => boolean;",
+          "export type ComboboxHighlightEventDetails = NerioEventDetails<\"keyboard\" | \"pointer\" | \"none\"> & { index: number; };",
+          "export type ComboboxItems<Value extends string = string> = readonly ComboboxOption<Value>[] | readonly ComboboxOptionGroup<Value>[];",
+          "export type ComboboxOpenChangeEventDetails = ComboboxChangeEventDetails;",
+          "export type ComboboxProps<Value extends string = string> = SharedComboboxProps<Value> & (OptionsComboboxProps<Value> | ComposedComboboxProps<Value>);",
+          "export type ComboboxQueryChangeEventDetails = ComboboxChangeEventDetails;",
+          "export type ComboboxSize = \"sm\" | \"md\" | \"lg\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "type ComposedComboboxProps<Value extends string> = { children: React.ReactNode; items: ComboboxItems<Value>; options?: never; };",
+          "type OptionsComboboxProps<Value extends string> = { options: ComboboxItems<Value>; children?: never; items?: never; };",
+          "type SharedComboboxProps<Value extends string> = Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"defaultValue\" | \"onChange\"> & { autoComplete?: string; clearLabel?: string; defaultOpen?: boolean; defaultQuery?: string; defaultValue?: NoInfer<Value> | null; description?: React.ReactNode; disabled?: boolean; emptyMessage?: React.ReactNode; filter?: ComboboxFilter<Value> | false; form?: string; id?: string; inputRef?: React.Ref<HTMLInputElement>; invalid?: boolean; label: React.ReactNode; loading?: boolean; loadingMessage?: React.ReactNode; locale?: Intl.LocalesArgument; loopFocus?: boolean; message?: React.ReactNode; name?: string; onHighlightChange?: (value: Value | undefined, eventDetails: ComboboxHighlightEventDetails) => void; onOpenChange?: (open: boolean, eventDetails: ComboboxOpenChangeEventDetails) => void; onQueryChange?: (query: string, eventDetails: ComboboxQueryChangeEventDetails) => void; onValueChange?: (value: Value | null, eventDetails: ComboboxChangeEventDetails) => void; open?: boolean; placeholder?: string; query?: string; readOnly?: boolean; required?: boolean; size?: ComboboxSize; toggleLabel?: string; value?: NoInfer<Value> | null; \"data-slot\"?: string; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxProps",
+        "signature": "ComboboxProps<Value>"
+      },
+      {
+        "definition": [
+          "export type ComboboxChangeEventDetails = NerioChangeEventDetails<ComboboxChangeEventReason>;",
+          "export type ComboboxChangeEventReason = \"trigger-press\" | \"outside-press\" | \"item-press\" | \"close-press\" | \"escape-key\" | \"list-navigation\" | \"focus-out\" | \"input-change\" | \"input-clear\" | \"input-press\" | \"clear-press\" | \"chip-remove-press\" | \"cancel-open\" | \"none\";",
+          "export type ComboboxQueryChangeEventDetails = ComboboxChangeEventDetails;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxQueryChangeEventDetails",
+        "signature": "ComboboxChangeEventDetails"
+      },
+      {
+        "definition": ["export type ComboboxSize = \"sm\" | \"md\" | \"lg\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ComboboxSize",
+        "signature": "ComboboxSize"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "Command",
         "signature": "React.ForwardRefExoticComponent<CommandProps & React.RefAttributes<HTMLDivElement>>"
       },
@@ -3100,8 +3868,138 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "DialogBackdrop",
+        "signature": "React.ForwardRefExoticComponent<DialogBackdropProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogBackdropProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<DialogBackdropState>; forceRender?: boolean; render?: NerioRenderProp<DialogBackdropState>; style?: NerioStyle<DialogBackdropState>; }",
+          "export interface DialogBackdropState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogBackdropProps",
+        "signature": "DialogBackdropProps"
+      },
+      {
+        "definition": [
+          "export interface DialogBackdropState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogBackdropState",
+        "signature": "DialogBackdropState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogBody",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>, \"ref\"> & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogClose",
+        "signature": "React.ForwardRefExoticComponent<DialogCloseProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogCloseProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DialogCloseState>; nativeButton?: boolean; render?: NerioRenderProp<DialogCloseState>; style?: NerioStyle<DialogCloseState>; }",
+          "export interface DialogCloseState { disabled: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogCloseProps",
+        "signature": "DialogCloseProps"
+      },
+      {
+        "definition": ["export interface DialogCloseState { disabled: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogCloseState",
+        "signature": "DialogCloseState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogContent",
+        "signature": "React.ForwardRefExoticComponent<DialogContentProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"color\" | \"style\"> { children: React.ReactNode; className?: NerioClassName<DialogContentState>; finalFocus?: DialogFocusTarget; initialFocus?: DialogFocusTarget; render?: NerioRenderProp<DialogContentState>; style?: NerioStyle<DialogContentState>; }",
+          "export interface DialogContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }",
+          "export type DialogFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DialogInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DialogInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogContentProps",
+        "signature": "DialogContentProps"
+      },
+      {
+        "definition": [
+          "export interface DialogContentState { open: boolean; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; nested: boolean; nestedDialogOpen: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogContentState",
+        "signature": "DialogContentState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogDescription",
+        "signature": "React.ForwardRefExoticComponent<React.HTMLAttributes<HTMLParagraphElement> & React.RefAttributes<HTMLParagraphElement>>"
+      },
+      {
+        "definition": [
+          "export type DialogFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DialogInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DialogInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogFocusTarget",
+        "signature": "DialogFocusTarget"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "DialogFooter",
         "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, \"ref\"> & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogHeader",
+        "signature": "React.ForwardRefExoticComponent<Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, \"ref\"> & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export type DialogInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogInteractionType",
+        "signature": "DialogInteractionType"
       },
       {
         "definition": [
@@ -3124,6 +4022,34 @@
         "signature": "DialogOpenChangeEventReason"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogPortal",
+        "signature": "React.ForwardRefExoticComponent<DialogPortalProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogPortalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<DialogPortalState>; container?: HTMLElement | ShadowRoot | React.RefObject<HTMLElement | ShadowRoot | null> | null; keepMounted?: boolean; render?: NerioRenderProp<DialogPortalState>; style?: NerioStyle<DialogPortalState>; }",
+          "export type DialogPortalState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogPortalProps",
+        "signature": "DialogPortalProps"
+      },
+      {
+        "definition": ["export type DialogPortalState = Record<never, never>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogPortalState",
+        "signature": "DialogPortalState"
+      },
+      {
         "definition": [
           "export interface DialogProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; title: React.ReactNode; titleAs?: DialogTitleElement; description?: React.ReactNode; children: React.ReactNode; className?: string; bodyClassName?: string; closeLabel?: string; }",
           "export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
@@ -3137,6 +4063,32 @@
         "signature": "DialogProps"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogRoot",
+        "signature": "({ children, defaultOpen, onOpenChange, open }: DialogRootProps) => React.JSX.Element"
+      },
+      {
+        "definition": [
+          "export interface DialogRootProps { children: React.ReactNode; defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DialogOpenChangeEventDetails) => void; open?: boolean; }",
+          "export type DialogOpenChangeEventDetails = NerioChangeEventDetails<DialogOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DialogOpenChangeEventReason = \"trigger-press\" | \"outside-press\" | \"escape-key\" | \"close-press\" | \"focus-out\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogRootProps",
+        "signature": "DialogRootProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogTitle",
+        "signature": "React.ForwardRefExoticComponent<DialogTitleProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
         "definition": [
           "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
         ],
@@ -3144,6 +4096,44 @@
         "kind": "type",
         "name": "DialogTitleElement",
         "signature": "DialogTitleElement"
+      },
+      {
+        "definition": [
+          "export interface DialogTitleProps extends React.HTMLAttributes<HTMLElement> { as?: DialogTitleElement; }",
+          "export type DialogTitleElement = \"div\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogTitleProps",
+        "signature": "DialogTitleProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DialogTrigger",
+        "signature": "React.ForwardRefExoticComponent<DialogTriggerProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface DialogTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DialogTriggerState>; nativeButton?: boolean; render?: NerioRenderProp<DialogTriggerState>; style?: NerioStyle<DialogTriggerState>; }",
+          "export interface DialogTriggerState { disabled: boolean; open: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogTriggerProps",
+        "signature": "DialogTriggerProps"
+      },
+      {
+        "definition": ["export interface DialogTriggerState { disabled: boolean; open: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DialogTriggerState",
+        "signature": "DialogTriggerState"
       },
       {
         "definition": [],
@@ -4153,6 +5143,60 @@
         "kind": "type",
         "name": "RadioGroupState",
         "signature": "RadioGroupState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "SearchField",
+        "signature": "React.ForwardRefExoticComponent<SearchFieldProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, \"size\" | \"type\"> { size?: InputSize; htmlSize?: number; type?: InputType; invalid?: boolean; }",
+          "export interface SearchFieldProps extends SearchFieldInputProps { label: React.ReactNode; description?: React.ReactNode; message?: React.ReactNode; invalid?: boolean; size?: InputSize; value?: string; defaultValue?: string; onValueChange?: (value: string, eventDetails: SearchFieldValueChangeEventDetails) => void; onSearch?: (value: string, eventDetails: SearchFieldSearchEventDetails) => void; onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>; clearLabel?: string; loading?: boolean; loadingLabel?: string; searchIcon?: IconComponent; loadingIndicator?: React.ReactNode; inputRef?: React.Ref<HTMLInputElement>; className?: string; style?: React.CSSProperties; }",
+          "export type IconComponent = React.ElementType<IconSvgProps>;",
+          "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
+          "export type InputSize = \"sm\" | \"md\" | \"lg\";",
+          "export type InputType = \"text\" | \"email\" | \"password\" | \"search\" | \"tel\" | \"url\" | \"number\" | \"date\" | \"month\" | \"week\" | \"time\" | \"datetime-local\";",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type SearchFieldSearchEventDetails = NerioEventDetails<\"enter\">;",
+          "export type SearchFieldValueChangeEventDetails = NerioEventDetails<SearchFieldValueChangeReason>;",
+          "export type SearchFieldValueChangeReason = \"input\" | \"clear\";",
+          "type SearchFieldInputProps = Omit<InputProps, \"children\" | \"className\" | \"defaultValue\" | \"invalid\" | \"onChange\" | \"onKeyDown\" | \"onSearch\" | \"size\" | \"type\" | \"value\">;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SearchFieldProps",
+        "signature": "SearchFieldProps"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type SearchFieldSearchEventDetails = NerioEventDetails<\"enter\">;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SearchFieldSearchEventDetails",
+        "signature": "SearchFieldSearchEventDetails"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type SearchFieldValueChangeEventDetails = NerioEventDetails<SearchFieldValueChangeReason>;",
+          "export type SearchFieldValueChangeReason = \"input\" | \"clear\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SearchFieldValueChangeEventDetails",
+        "signature": "SearchFieldValueChangeEventDetails"
+      },
+      {
+        "definition": ["export type SearchFieldValueChangeReason = \"input\" | \"clear\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "SearchFieldValueChangeReason",
+        "signature": "SearchFieldValueChangeReason"
       },
       {
         "definition": [],
@@ -5630,6 +6674,32 @@
     "helpers": {
       "componentShapes": [
         {
+          "components": ["accordion", "collapsible", "slider", "toggle"],
+          "shape": {
+            "accessibility": ["string"],
+            "baseUiPrimitives": ["string"],
+            "category": "string",
+            "dependencies": ["string"],
+            "description": "string",
+            "files": [
+              {
+                "integrity": "string",
+                "role": "string",
+                "source": "string",
+                "target": "string"
+              }
+            ],
+            "name": "string",
+            "registryDependencies": [],
+            "requiredTokens": ["string"],
+            "slots": ["string"],
+            "states": ["string"],
+            "title": "string",
+            "usage": "string",
+            "variants": ["string"]
+          }
+        },
+        {
           "components": [
             "alert",
             "avatar",
@@ -5664,6 +6734,31 @@
             "title": "string",
             "usage": "string",
             "variants": ["string"]
+          }
+        },
+        {
+          "components": ["alert-dialog", "dialog", "popover"],
+          "shape": {
+            "accessibility": ["string"],
+            "baseUiPrimitives": ["string"],
+            "category": "string",
+            "dependencies": ["string"],
+            "description": "string",
+            "files": [
+              {
+                "integrity": "string",
+                "role": "string",
+                "source": "string",
+                "target": "string"
+              }
+            ],
+            "name": "string",
+            "registryDependencies": ["string"],
+            "requiredTokens": ["string"],
+            "slots": ["string"],
+            "title": "string",
+            "usage": "string",
+            "variants": []
           }
         },
         {
@@ -5775,7 +6870,7 @@
           }
         },
         {
-          "components": ["calendar", "sidebar-primitive"],
+          "components": ["calendar", "search-field", "sidebar-primitive"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -5826,7 +6921,7 @@
           }
         },
         {
-          "components": ["command-primitive", "date-picker"],
+          "components": ["combobox", "command-primitive", "date-picker"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": ["string"],
@@ -5849,31 +6944,6 @@
             "title": "string",
             "usage": "string",
             "variants": ["string"]
-          }
-        },
-        {
-          "components": ["dialog", "popover"],
-          "shape": {
-            "accessibility": ["string"],
-            "baseUiPrimitives": ["string"],
-            "category": "string",
-            "dependencies": ["string"],
-            "description": "string",
-            "files": [
-              {
-                "integrity": "string",
-                "role": "string",
-                "source": "string",
-                "target": "string"
-              }
-            ],
-            "name": "string",
-            "registryDependencies": ["string"],
-            "requiredTokens": ["string"],
-            "slots": ["string"],
-            "title": "string",
-            "usage": "string",
-            "variants": []
           }
         },
         {
@@ -5954,32 +7024,6 @@
             "title": "string",
             "usage": "string",
             "variants": []
-          }
-        },
-        {
-          "components": ["slider", "toggle"],
-          "shape": {
-            "accessibility": ["string"],
-            "baseUiPrimitives": ["string"],
-            "category": "string",
-            "dependencies": ["string"],
-            "description": "string",
-            "files": [
-              {
-                "integrity": "string",
-                "role": "string",
-                "source": "string",
-                "target": "string"
-              }
-            ],
-            "name": "string",
-            "registryDependencies": [],
-            "requiredTokens": ["string"],
-            "slots": ["string"],
-            "states": ["string"],
-            "title": "string",
-            "usage": "string",
-            "variants": ["string"]
           }
         },
         {
@@ -6032,6 +7076,33 @@
       ],
       "usageShapes": [
         {
+          "components": ["accordion", "collapsible", "slider", "toggle"],
+          "shape": {
+            "accessibility": ["string"],
+            "baseUiPrimitives": ["string"],
+            "category": "string",
+            "dependencies": ["string"],
+            "description": "string",
+            "files": [
+              {
+                "integrity": "string",
+                "role": "string",
+                "source": "string",
+                "target": "string"
+              }
+            ],
+            "name": "string",
+            "optionalPeerDependencies": [],
+            "registryDependencies": [],
+            "requiredTokens": ["string"],
+            "slots": ["string"],
+            "states": ["string"],
+            "title": "string",
+            "usage": "string",
+            "variants": ["string"]
+          }
+        },
+        {
           "components": [
             "alert",
             "avatar",
@@ -6068,6 +7139,33 @@
             "title": "string",
             "usage": "string",
             "variants": ["string"]
+          }
+        },
+        {
+          "components": ["alert-dialog", "dialog", "popover"],
+          "shape": {
+            "accessibility": ["string"],
+            "baseUiPrimitives": ["string"],
+            "category": "string",
+            "dependencies": ["string"],
+            "description": "string",
+            "files": [
+              {
+                "integrity": "string",
+                "role": "string",
+                "source": "string",
+                "target": "string"
+              }
+            ],
+            "name": "string",
+            "optionalPeerDependencies": [],
+            "registryDependencies": ["string"],
+            "requiredTokens": ["string"],
+            "slots": ["string"],
+            "states": [],
+            "title": "string",
+            "usage": "string",
+            "variants": []
           }
         },
         {
@@ -6187,7 +7285,7 @@
           }
         },
         {
-          "components": ["calendar", "sidebar-primitive"],
+          "components": ["calendar", "search-field", "sidebar-primitive"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": [],
@@ -6241,7 +7339,7 @@
           }
         },
         {
-          "components": ["command-primitive", "date-picker"],
+          "components": ["combobox", "command-primitive", "date-picker"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": ["string"],
@@ -6265,33 +7363,6 @@
             "title": "string",
             "usage": "string",
             "variants": ["string"]
-          }
-        },
-        {
-          "components": ["dialog", "popover"],
-          "shape": {
-            "accessibility": ["string"],
-            "baseUiPrimitives": ["string"],
-            "category": "string",
-            "dependencies": ["string"],
-            "description": "string",
-            "files": [
-              {
-                "integrity": "string",
-                "role": "string",
-                "source": "string",
-                "target": "string"
-              }
-            ],
-            "name": "string",
-            "optionalPeerDependencies": [],
-            "registryDependencies": ["string"],
-            "requiredTokens": ["string"],
-            "slots": ["string"],
-            "states": [],
-            "title": "string",
-            "usage": "string",
-            "variants": []
           }
         },
         {
@@ -6374,33 +7445,6 @@
             "title": "string",
             "usage": "string",
             "variants": []
-          }
-        },
-        {
-          "components": ["slider", "toggle"],
-          "shape": {
-            "accessibility": ["string"],
-            "baseUiPrimitives": ["string"],
-            "category": "string",
-            "dependencies": ["string"],
-            "description": "string",
-            "files": [
-              {
-                "integrity": "string",
-                "role": "string",
-                "source": "string",
-                "target": "string"
-              }
-            ],
-            "name": "string",
-            "optionalPeerDependencies": [],
-            "registryDependencies": [],
-            "requiredTokens": ["string"],
-            "slots": ["string"],
-            "states": ["string"],
-            "title": "string",
-            "usage": "string",
-            "variants": ["string"]
           }
         },
         {
@@ -7037,6 +8081,81 @@
   "registry": {
     "items": [
       {
+        "baseUiPrimitives": ["accordion"],
+        "category": "data-display",
+        "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-537e90cd2352e3ccdf9e48bd5d61cf1ef73e478e13a5e7f8136f331eb0e95e39",
+            "role": "component",
+            "source": "../../ui/src/components/accordion.tsx",
+            "target": "components/accordion.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c",
+            "role": "utility",
+            "source": "../../ui/src/lib/cn.ts",
+            "target": "lib/cn.ts"
+          },
+          {
+            "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31",
+            "role": "utility",
+            "source": "../../ui/src/lib/tailwind-cn.ts",
+            "target": "lib/tailwind-cn.ts"
+          },
+          {
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
+            "role": "style",
+            "source": "../../tokens/src/styles.css",
+            "target": "styles/tokens.css"
+          },
+          {
+            "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441",
+            "role": "style",
+            "source": "../../tokens/src/tailwind.css",
+            "target": "styles/tailwind.css"
+          }
+        ],
+        "name": "accordion",
+        "optionalPeerDependencies": [],
+        "registryDependencies": [],
+        "requiredTokens": [
+          "--n-disclosure-background",
+          "--n-disclosure-background-hover",
+          "--n-disclosure-border-width",
+          "--n-disclosure-border",
+          "--n-disclosure-divider-width",
+          "--n-disclosure-divider",
+          "--n-disclosure-radius",
+          "--n-disclosure-foreground",
+          "--n-disclosure-trigger-min-height",
+          "--n-disclosure-trigger-padding-inline",
+          "--n-disclosure-trigger-padding-block",
+          "--n-disclosure-trigger-gap",
+          "--n-disclosure-trigger-font-size",
+          "--n-disclosure-trigger-font-weight",
+          "--n-disclosure-panel-padding-inline",
+          "--n-disclosure-panel-padding-block",
+          "--n-disclosure-panel-font-size",
+          "--n-disclosure-panel-line-height",
+          "--n-disclosure-panel-foreground",
+          "--n-disclosure-disabled-opacity",
+          "--n-motion-reveal-duration",
+          "--n-motion-reveal-easing",
+          "--n-disclosure-focus-ring"
+        ],
+        "slots": ["root", "item", "header", "trigger", "panel"],
+        "states": ["closed", "open", "disabled", "starting", "ending"],
+        "variants": ["single expansion", "multiple expansion"]
+      },
+      {
         "baseUiPrimitives": [],
         "category": "feedback",
         "dependencies": ["@nerio-ui/adapters", "clsx", "react", "tailwind-merge", "tailwindcss"],
@@ -7067,7 +8186,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7104,6 +8223,62 @@
         "variants": ["neutral", "info", "success", "warning", "danger"]
       },
       {
+        "baseUiPrimitives": ["alert-dialog"],
+        "category": "overlays",
+        "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-777a3c6ac69435729d1240312de74eb73c8d286021289fed0912e9d11b04eb2a",
+            "role": "component",
+            "source": "../../ui/src/components/alert-dialog.tsx",
+            "target": "components/alert-dialog.tsx"
+          }
+        ],
+        "name": "alert-dialog",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["dialog"],
+        "requiredTokens": [
+          "--n-dialog-width-md",
+          "--n-dialog-viewport-inset",
+          "--n-dialog-padding",
+          "--n-dialog-header-gap",
+          "--n-dialog-header-margin",
+          "--n-dialog-body-gap",
+          "--n-overlay-z-index",
+          "--n-overlay-background",
+          "--n-overlay-border",
+          "--n-overlay-backdrop",
+          "--n-overlay-backdrop-filter",
+          "--n-overlay-foreground",
+          "--n-overlay-foreground-muted",
+          "--n-overlay-control-background",
+          "--n-overlay-control-background-hover",
+          "--n-overlay-surface-filter",
+          "--n-overlay-shadow",
+          "--n-motion-overlay-enter-duration",
+          "--n-motion-overlay-enter-easing",
+          "--n-motion-overlay-exit-duration",
+          "--n-motion-overlay-exit-easing",
+          "--n-focus-ring"
+        ],
+        "slots": [
+          "portal",
+          "trigger",
+          "backdrop",
+          "content",
+          "header",
+          "title",
+          "description",
+          "body",
+          "footer",
+          "cancel",
+          "action"
+        ],
+        "states": [],
+        "variants": []
+      },
+      {
         "baseUiPrimitives": [],
         "category": "data-display",
         "dependencies": ["clsx", "react", "tailwind-merge", "tailwindcss"],
@@ -7134,7 +8309,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7192,7 +8367,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7287,7 +8462,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7371,7 +8546,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7464,7 +8639,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7521,7 +8696,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7624,7 +8799,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7733,7 +8908,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7761,6 +8936,223 @@
         "slots": ["field", "root", "indicator", "label", "description"],
         "states": [],
         "variants": ["checked", "unchecked", "indeterminate", "invalid", "disabled", "read-only"]
+      },
+      {
+        "baseUiPrimitives": ["collapsible"],
+        "category": "data-display",
+        "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-61edef66e8217c16cb6879206569449501fab3dfe00e31e220d476e2bcea9619",
+            "role": "component",
+            "source": "../../ui/src/components/collapsible.tsx",
+            "target": "components/collapsible.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c",
+            "role": "utility",
+            "source": "../../ui/src/lib/cn.ts",
+            "target": "lib/cn.ts"
+          },
+          {
+            "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31",
+            "role": "utility",
+            "source": "../../ui/src/lib/tailwind-cn.ts",
+            "target": "lib/tailwind-cn.ts"
+          },
+          {
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
+            "role": "style",
+            "source": "../../tokens/src/styles.css",
+            "target": "styles/tokens.css"
+          },
+          {
+            "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441",
+            "role": "style",
+            "source": "../../tokens/src/tailwind.css",
+            "target": "styles/tailwind.css"
+          }
+        ],
+        "name": "collapsible",
+        "optionalPeerDependencies": [],
+        "registryDependencies": [],
+        "requiredTokens": [
+          "--n-disclosure-background",
+          "--n-disclosure-background-hover",
+          "--n-disclosure-border-width",
+          "--n-disclosure-border",
+          "--n-disclosure-radius",
+          "--n-disclosure-foreground",
+          "--n-disclosure-trigger-min-height",
+          "--n-disclosure-trigger-padding-inline",
+          "--n-disclosure-trigger-padding-block",
+          "--n-disclosure-trigger-gap",
+          "--n-disclosure-trigger-font-size",
+          "--n-disclosure-trigger-font-weight",
+          "--n-disclosure-panel-padding-inline",
+          "--n-disclosure-panel-padding-block",
+          "--n-disclosure-panel-font-size",
+          "--n-disclosure-panel-line-height",
+          "--n-disclosure-panel-foreground",
+          "--n-disclosure-disabled-opacity",
+          "--n-motion-reveal-duration",
+          "--n-motion-reveal-easing",
+          "--n-disclosure-focus-ring"
+        ],
+        "slots": ["root", "trigger", "panel"],
+        "states": ["closed", "open", "disabled", "starting", "ending"],
+        "variants": ["independent disclosure"]
+      },
+      {
+        "baseUiPrimitives": ["combobox"],
+        "category": "forms",
+        "dependencies": [
+          "@base-ui/react",
+          "@nerio-ui/adapters",
+          "clsx",
+          "react",
+          "tailwind-merge",
+          "tailwindcss"
+        ],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-b07d61a466491c36c85190bc9067010274c0b64644a67474c1be2b8df445c8a5",
+            "role": "component",
+            "source": "../../ui/src/components/combobox.tsx",
+            "target": "components/combobox.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f",
+            "role": "utility",
+            "source": "../../ui/src/lib/compose-refs.ts",
+            "target": "lib/compose-refs.ts"
+          },
+          {
+            "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b",
+            "role": "utility",
+            "source": "../../ui/src/lib/motion.ts",
+            "target": "lib/motion.ts"
+          },
+          {
+            "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9",
+            "role": "component",
+            "source": "../../ui/src/components/icon.tsx",
+            "target": "components/icon.tsx"
+          },
+          {
+            "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c",
+            "role": "utility",
+            "source": "../../ui/src/lib/cn.ts",
+            "target": "lib/cn.ts"
+          },
+          {
+            "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31",
+            "role": "utility",
+            "source": "../../ui/src/lib/tailwind-cn.ts",
+            "target": "lib/tailwind-cn.ts"
+          },
+          {
+            "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737",
+            "role": "utility",
+            "source": "../../ui/src/lib/resolve-class-name.ts",
+            "target": "lib/resolve-class-name.ts"
+          },
+          {
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
+            "role": "style",
+            "source": "../../tokens/src/styles.css",
+            "target": "styles/tokens.css"
+          },
+          {
+            "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441",
+            "role": "style",
+            "source": "../../tokens/src/tailwind.css",
+            "target": "styles/tailwind.css"
+          },
+          {
+            "integrity": "sha256-058110182ddc952e91f58f2dace9e858cda3f54c2640f8b06ddf6487a346de33",
+            "role": "style",
+            "source": "../../ui/src/styles/select.css",
+            "target": "styles/select.css"
+          }
+        ],
+        "name": "combobox",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["form-message", "spinner"],
+        "requiredTokens": [
+          "--n-select-height-sm",
+          "--n-select-height-md",
+          "--n-select-height-lg",
+          "--n-select-padding-inline",
+          "--n-select-item-gap",
+          "--n-select-item-padding-inline",
+          "--n-select-group-label-padding-inline",
+          "--n-select-empty-padding",
+          "--n-select-popup-radius",
+          "--n-input-radius",
+          "--n-input-background",
+          "--n-input-border",
+          "--n-input-border-hover",
+          "--n-input-border-danger",
+          "--n-input-placeholder",
+          "--n-input-foreground",
+          "--n-input-disabled-background",
+          "--n-input-disabled-foreground",
+          "--n-overlay-floating-z-index",
+          "--n-overlay-background",
+          "--n-overlay-border",
+          "--n-overlay-shadow",
+          "--n-focus-ring"
+        ],
+        "slots": [
+          "root",
+          "label",
+          "input-group",
+          "input",
+          "clear",
+          "trigger",
+          "icon",
+          "content",
+          "list",
+          "item",
+          "item-content",
+          "item-label",
+          "item-description",
+          "indicator",
+          "group",
+          "group-label",
+          "empty",
+          "loading",
+          "description",
+          "message"
+        ],
+        "states": [
+          "query",
+          "open",
+          "highlighted",
+          "selected",
+          "disabled",
+          "read-only",
+          "required",
+          "invalid",
+          "empty",
+          "loading"
+        ],
+        "variants": ["options", "composed", "flat", "grouped", "sm", "md", "lg", "RTL"]
       },
       {
         "baseUiPrimitives": ["autocomplete"],
@@ -7812,7 +9204,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -7960,7 +9352,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-1f9ecc5a46447512b6e7e123ec86993755b93ceafc4ac89f460b62e2c3ef9cac",
+            "integrity": "sha256-e886317e469d553dd29c958702129352cf0379c9b2612abe78a8fd4c13612992",
             "role": "component",
             "source": "../../ui/src/components/dialog.tsx",
             "target": "components/dialog.tsx"
@@ -7990,7 +9382,7 @@
             "target": "styles/overlays.css"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8035,6 +9427,8 @@
           "--n-focus-ring"
         ],
         "slots": [
+          "trigger",
+          "portal",
           "backdrop",
           "content",
           "header",
@@ -8098,7 +9492,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8185,7 +9579,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8246,7 +9640,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8314,7 +9708,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8385,7 +9779,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8440,7 +9834,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8501,7 +9895,7 @@
             "target": "styles/motion.css"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8579,7 +9973,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8643,7 +10037,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8719,7 +10113,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8775,7 +10169,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8838,7 +10232,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8896,7 +10290,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -8997,7 +10391,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9082,7 +10476,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9157,7 +10551,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9240,7 +10634,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9281,6 +10675,76 @@
         ],
         "states": [],
         "variants": ["default", "invalid", "disabled", "read-only"]
+      },
+      {
+        "baseUiPrimitives": [],
+        "category": "forms",
+        "dependencies": [
+          "@nerio-ui/adapters",
+          "@base-ui/react",
+          "clsx",
+          "react",
+          "tailwind-merge",
+          "tailwindcss"
+        ],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-1b49dd0ef47fc4d075c22a49d03fb01bf5db96dbbf0681d2b891cbe53e750ae6",
+            "role": "component",
+            "source": "../../ui/src/components/search-field.tsx",
+            "target": "components/search-field.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f",
+            "role": "utility",
+            "source": "../../ui/src/lib/compose-refs.ts",
+            "target": "lib/compose-refs.ts"
+          }
+        ],
+        "name": "search-field",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["button", "field", "input-group", "spinner"],
+        "requiredTokens": [
+          "--n-input-height-sm",
+          "--n-input-height-md",
+          "--n-input-height-lg",
+          "--n-input-radius",
+          "--n-input-background",
+          "--n-input-background-hover",
+          "--n-input-border",
+          "--n-input-border-hover",
+          "--n-input-border-focus",
+          "--n-input-border-danger",
+          "--n-input-placeholder",
+          "--n-input-foreground",
+          "--n-input-disabled-background",
+          "--n-input-disabled-foreground",
+          "--n-input-addon-foreground",
+          "--n-input-addon-gap",
+          "--n-input-addon-padding-inline",
+          "--n-focus-ring"
+        ],
+        "slots": [
+          "root",
+          "label",
+          "input-group",
+          "search-icon",
+          "input",
+          "actions",
+          "loading",
+          "clear",
+          "description",
+          "message"
+        ],
+        "states": ["default", "value", "loading", "disabled", "read-only", "required", "invalid"],
+        "variants": ["sm", "md", "lg", "LTR", "RTL"]
       },
       {
         "baseUiPrimitives": ["select"],
@@ -9338,7 +10802,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9434,7 +10898,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9498,7 +10962,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9571,7 +11035,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-b483b9837f6c78cff361e88a381017c8d87dad6a245ce29bd76b7f65e43ab4bc",
+            "integrity": "sha256-e2e4a4cddf9f7d76f69dcca36f96704e6b76ce4ba97486fcf696d15f877e397e",
             "role": "component",
             "source": "../../ui/src/components/sidebar.tsx",
             "target": "components/sidebar.tsx"
@@ -9607,7 +11071,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9695,7 +11159,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9769,7 +11233,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9861,7 +11325,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9913,7 +11377,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -9970,7 +11434,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10035,7 +11499,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10130,7 +11594,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10243,7 +11707,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10294,7 +11758,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-ddb5476081dd4105017c7f573912b7eb14a2d236d9fb015816a783405e7e4257",
+            "integrity": "sha256-9d3c2e923bf7c48ea235f749da3d5df4c949db1e1aa9ba3a0b030f1552dcb374",
             "role": "component",
             "source": "../../ui/src/components/toast.tsx",
             "target": "components/toast.tsx"
@@ -10318,7 +11782,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10431,7 +11895,7 @@
             "target": "lib/resolve-class-name.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10529,7 +11993,7 @@
             "target": "lib/tailwind-cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10582,7 +12046,7 @@
             "target": "lib/cn.ts"
           },
           {
-            "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a",
+            "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121",
             "role": "style",
             "source": "../../tokens/src/styles.css",
             "target": "styles/tokens.css"
@@ -10978,6 +12442,27 @@
     "--n-dialog-padding",
     "--n-dialog-viewport-inset",
     "--n-dialog-width-md",
+    "--n-disclosure-background",
+    "--n-disclosure-background-hover",
+    "--n-disclosure-border",
+    "--n-disclosure-border-width",
+    "--n-disclosure-disabled-opacity",
+    "--n-disclosure-divider",
+    "--n-disclosure-divider-width",
+    "--n-disclosure-focus-ring",
+    "--n-disclosure-foreground",
+    "--n-disclosure-panel-font-size",
+    "--n-disclosure-panel-foreground",
+    "--n-disclosure-panel-line-height",
+    "--n-disclosure-panel-padding-block",
+    "--n-disclosure-panel-padding-inline",
+    "--n-disclosure-radius",
+    "--n-disclosure-trigger-font-size",
+    "--n-disclosure-trigger-font-weight",
+    "--n-disclosure-trigger-gap",
+    "--n-disclosure-trigger-min-height",
+    "--n-disclosure-trigger-padding-block",
+    "--n-disclosure-trigger-padding-inline",
     "--n-dropdown-item-gap",
     "--n-dropdown-item-padding-inline",
     "--n-dropdown-min-width",
@@ -11090,6 +12575,7 @@
     "--n-icon-size-sm",
     "--n-icon-size-xl",
     "--n-icon-size-xs",
+    "--n-inherited-direction",
     "--n-input-addon-foreground",
     "--n-input-addon-gap",
     "--n-input-addon-padding-inline",

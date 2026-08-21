@@ -29,7 +29,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../ui/src/lib/tailwind-cn.ts",
@@ -144,7 +144,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -236,7 +236,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -373,7 +373,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -465,7 +465,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -527,7 +527,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -637,7 +637,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -701,7 +701,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -756,7 +756,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -828,7 +828,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -894,7 +894,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -980,7 +980,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1036,7 +1036,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1099,7 +1099,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1170,7 +1170,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1220,7 +1220,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1270,7 +1270,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1352,7 +1352,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1442,7 +1442,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1551,7 +1551,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1623,9 +1623,247 @@
         "Does not select the first option when only a placeholder is supplied.",
         "Error messages are announced with role=\"alert\" only when invalid is true.",
         "Options support disabled states, typeahead, and Base UI keyboard navigation.",
-        "Large, filterable, remotely loaded, and multi-select datasets belong to a future Combobox."
+        "Pair the document dir attribute with Base UI DirectionProvider so popup behavior follows LTR or RTL.",
+        "Use Combobox for a bounded synchronous searchable set. Remotely loaded and multi-select datasets remain outside Select."
       ],
       "usage": "import { Select } from '@/components/nerio/components/select';\n\n<Select label=\"Status\" name=\"status\" placeholder=\"Choose status\" options={[{ label: 'Draft', value: 'draft' }, { label: 'Published', value: 'published' }, { label: 'Archived', value: 'archived', disabled: true }]} />"
+    },
+    {
+      "name": "combobox",
+      "title": "Combobox",
+      "description": "Filters one bounded synchronous option set and commits one selected form value.",
+      "category": "forms",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["form-message", "spinner"],
+      "files": [
+        {
+          "source": "../../ui/src/components/combobox.tsx",
+          "target": "components/combobox.tsx",
+          "role": "component",
+          "integrity": "sha256-b07d61a466491c36c85190bc9067010274c0b64644a67474c1be2b8df445c8a5"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style",
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
+        },
+        {
+          "source": "../../ui/src/styles/select.css",
+          "target": "styles/select.css",
+          "role": "style",
+          "integrity": "sha256-058110182ddc952e91f58f2dace9e858cda3f54c2640f8b06ddf6487a346de33"
+        }
+      ],
+      "baseUiPrimitives": ["combobox"],
+      "slots": [
+        "root",
+        "label",
+        "input-group",
+        "input",
+        "clear",
+        "trigger",
+        "icon",
+        "content",
+        "list",
+        "item",
+        "item-content",
+        "item-label",
+        "item-description",
+        "indicator",
+        "group",
+        "group-label",
+        "empty",
+        "loading",
+        "description",
+        "message"
+      ],
+      "variants": ["options", "composed", "flat", "grouped", "sm", "md", "lg", "RTL"],
+      "states": [
+        "query",
+        "open",
+        "highlighted",
+        "selected",
+        "disabled",
+        "read-only",
+        "required",
+        "invalid",
+        "empty",
+        "loading"
+      ],
+      "requiredTokens": [
+        "--n-select-height-sm",
+        "--n-select-height-md",
+        "--n-select-height-lg",
+        "--n-select-padding-inline",
+        "--n-select-item-gap",
+        "--n-select-item-padding-inline",
+        "--n-select-group-label-padding-inline",
+        "--n-select-empty-padding",
+        "--n-select-popup-radius",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-danger",
+        "--n-input-placeholder",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
+        "--n-overlay-floating-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-shadow",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Combobox primitive with a native visible label and active-descendant listbox navigation.",
+        "Query, selected value, and popup state each support independent controlled and uncontrolled ownership without mirrored state.",
+        "Options require stable unique generic string values and explicit textValue strings for filtering, input display, and accessible identity.",
+        "Arrow keys navigate enabled options, Enter commits one value, Escape closes, pointer selection retains input focus, and disabled options are skipped.",
+        "Description and message content are associated with the input; invalid messages use alert semantics only when invalid is true.",
+        "Clear and popup actions have localizable accessible names through clearLabel and toggleLabel.",
+        "Empty and loading presentation use dedicated polite regions that remain mounted.",
+        "Name, form, required, autoComplete, disabled, readOnly, and native form reset are supported.",
+        "Pair document dir with Base UI DirectionProvider and localize visible text plus action labels for RTL and non-English products.",
+        "Fetching, debounce, ranking, creation, virtualization, multiple selection, routing, analytics, persistence, and business validation remain consumer or Pro responsibilities."
+      ],
+      "usage": "import { Combobox } from '@/components/nerio/components/combobox';\n\n<Combobox label=\"City\" name=\"city\" options={[{ value: 'paris', label: 'Paris', textValue: 'Paris' }, { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' }]} />"
+    },
+    {
+      "name": "search-field",
+      "title": "SearchField",
+      "description": "Collects one native search query with accessible clear and deliberate Enter search behavior.",
+      "category": "forms",
+      "dependencies": [
+        "@nerio-ui/adapters",
+        "@base-ui/react",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["button", "field", "input-group", "spinner"],
+      "files": [
+        {
+          "source": "../../ui/src/components/search-field.tsx",
+          "target": "components/search-field.tsx",
+          "role": "component",
+          "integrity": "sha256-1b49dd0ef47fc4d075c22a49d03fb01bf5db96dbbf0681d2b891cbe53e750ae6"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
+        }
+      ],
+      "baseUiPrimitives": [],
+      "slots": [
+        "root",
+        "label",
+        "input-group",
+        "search-icon",
+        "input",
+        "actions",
+        "loading",
+        "clear",
+        "description",
+        "message"
+      ],
+      "variants": ["sm", "md", "lg", "LTR", "RTL"],
+      "states": ["default", "value", "loading", "disabled", "read-only", "required", "invalid"],
+      "requiredTokens": [
+        "--n-input-height-sm",
+        "--n-input-height-md",
+        "--n-input-height-lg",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-background-hover",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
+        "--n-input-border-danger",
+        "--n-input-placeholder",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
+        "--n-input-addon-foreground",
+        "--n-input-addon-gap",
+        "--n-input-addon-padding-inline",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses a native input type=search associated with a visible Field label, description, and message.",
+        "Supports one controlled or uncontrolled string value without mirrored state; native form identity and reset remain intact.",
+        "The localizable clear action is a native button, is unavailable while disabled or read-only, and restores focus to the same input node.",
+        "Enter emits one Nerio-owned search event without preventing native form submission; IME composition is not treated as a search.",
+        "The search icon is decorative. The default loading indicator exposes a localizable status through loadingLabel; a custom loadingIndicator must provide equivalent semantics.",
+        "Disabled, read-only, required, invalid, autofill, LTR, RTL, narrow-container, and long-label behavior preserve the shared form contracts.",
+        "Results, suggestions, requests, debounce, filtering, ranking, routing, global shortcuts, history, analytics, and product search workflows remain consumer or Pro responsibilities."
+      ],
+      "usage": "import { SearchField } from '@/components/nerio/components/search-field';\n\n<SearchField label=\"Search projects\" name=\"query\" onSearch={(query) => console.log(query)} />"
     },
     {
       "name": "radio-group",
@@ -1675,7 +1913,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1762,7 +2000,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1861,7 +2099,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -1948,7 +2186,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2017,7 +2255,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2104,7 +2342,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2166,7 +2404,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2221,7 +2459,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2279,7 +2517,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2372,7 +2610,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2448,7 +2686,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2528,7 +2766,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2736,7 +2974,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2797,6 +3035,7 @@
         "Supports Arrow keys, Home, End, Page Up, and Page Down through the nested native range input.",
         "Supports value, defaultValue, onValueChange, onValueCommitted, min, max, step, largeStep, name, form, disabled, readOnly, and required while intentionally rejecting arrays and multiple thumbs.",
         "Use format and locale for number formatting, and aria-valuetext or getAriaValueText for localized semantic value text.",
+        "Pair the document dir attribute with Base UI DirectionProvider so horizontal keyboard and pointer behavior follows LTR or RTL.",
         "Read-only Slider remains focusable and form-associated while canceling value changes.",
         "Consumers own units, marks, thresholds, tooltips, charts, filters, media logic, and product-specific scales."
       ],
@@ -2851,7 +3090,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -2922,10 +3161,181 @@
         "Uses Base UI tab, tablist, and tabpanel relationships and selected state; Nerio keeps keyboard focus on enabled tabs.",
         "Provide aria-label or aria-labelledby when the tablist purpose is not clear from adjacent labelled content.",
         "Every trigger requires a visible text label; decorative icons are hidden from assistive technology and Badge text remains available.",
+        "Pair the document dir attribute with Base UI DirectionProvider so horizontal keyboard behavior follows LTR or RTL.",
         "Manual activation is the default. Use activateOnFocus only when panels are available without noticeable latency.",
         "Provide an enabled defaultValue for predictable SSR when the first trigger is disabled."
       ],
       "usage": "import { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from '@/components/nerio/components/tabs';\n\n<Tabs defaultValue=\"overview\"><TabsList aria-label=\"Workspace sections\"><TabsTrigger value=\"overview\">Overview</TabsTrigger><TabsTrigger value=\"activity\">Activity</TabsTrigger><TabsIndicator /></TabsList><TabsPanels><TabsContent value=\"overview\">...</TabsContent><TabsContent value=\"activity\">...</TabsContent></TabsPanels></Tabs>"
+    },
+    {
+      "name": "collapsible",
+      "title": "Collapsible",
+      "description": "Reveals one independent panel through a controlled or uncontrolled trigger.",
+      "category": "data-display",
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/collapsible.tsx",
+          "target": "components/collapsible.tsx",
+          "role": "component",
+          "integrity": "sha256-61edef66e8217c16cb6879206569449501fab3dfe00e31e220d476e2bcea9619"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style",
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
+        }
+      ],
+      "baseUiPrimitives": ["collapsible"],
+      "slots": ["root", "trigger", "panel"],
+      "variants": ["independent disclosure"],
+      "states": ["closed", "open", "disabled", "starting", "ending"],
+      "requiredTokens": [
+        "--n-disclosure-background",
+        "--n-disclosure-background-hover",
+        "--n-disclosure-border-width",
+        "--n-disclosure-border",
+        "--n-disclosure-radius",
+        "--n-disclosure-foreground",
+        "--n-disclosure-trigger-min-height",
+        "--n-disclosure-trigger-padding-inline",
+        "--n-disclosure-trigger-padding-block",
+        "--n-disclosure-trigger-gap",
+        "--n-disclosure-trigger-font-size",
+        "--n-disclosure-trigger-font-weight",
+        "--n-disclosure-panel-padding-inline",
+        "--n-disclosure-panel-padding-block",
+        "--n-disclosure-panel-font-size",
+        "--n-disclosure-panel-line-height",
+        "--n-disclosure-panel-foreground",
+        "--n-disclosure-disabled-opacity",
+        "--n-motion-reveal-duration",
+        "--n-motion-reveal-easing",
+        "--n-disclosure-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Collapsible primitive with a native type=button trigger by default.",
+        "The trigger owns aria-expanded and aria-controls while the panel owns the corresponding stable ID.",
+        "Closed panels are unmounted by default so hidden interactive descendants do not remain focusable; keepMounted and hiddenUntilFound preserve browser-hidden semantics.",
+        "Supports one controlled or uncontrolled open state and a disabled root without duplicating Base UI state.",
+        "Enter, Space, pointer, and touch activation toggle the panel while focus remains on the trigger.",
+        "Height and opacity motion use shared disclosure tokens and become immediate under reduced motion.",
+        "Use native details and summary when controlled state, maintained motion, or shared anatomy adds no durable value."
+      ],
+      "usage": "import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from '@/components/nerio/components/collapsible';\n\n<Collapsible><CollapsibleTrigger>Recovery keys</CollapsibleTrigger><CollapsiblePanel>Generate and store recovery keys securely.</CollapsiblePanel></Collapsible>"
+    },
+    {
+      "name": "accordion",
+      "title": "Accordion",
+      "description": "Groups related disclosure items with single or multiple expansion.",
+      "category": "data-display",
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "source": "../../ui/src/components/accordion.tsx",
+          "target": "components/accordion.tsx",
+          "role": "component",
+          "integrity": "sha256-537e90cd2352e3ccdf9e48bd5d61cf1ef73e478e13a5e7f8136f331eb0e95e39"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style",
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
+        }
+      ],
+      "baseUiPrimitives": ["accordion"],
+      "slots": ["root", "item", "header", "trigger", "panel"],
+      "variants": ["single expansion", "multiple expansion"],
+      "states": ["closed", "open", "disabled", "starting", "ending"],
+      "requiredTokens": [
+        "--n-disclosure-background",
+        "--n-disclosure-background-hover",
+        "--n-disclosure-border-width",
+        "--n-disclosure-border",
+        "--n-disclosure-divider-width",
+        "--n-disclosure-divider",
+        "--n-disclosure-radius",
+        "--n-disclosure-foreground",
+        "--n-disclosure-trigger-min-height",
+        "--n-disclosure-trigger-padding-inline",
+        "--n-disclosure-trigger-padding-block",
+        "--n-disclosure-trigger-gap",
+        "--n-disclosure-trigger-font-size",
+        "--n-disclosure-trigger-font-weight",
+        "--n-disclosure-panel-padding-inline",
+        "--n-disclosure-panel-padding-block",
+        "--n-disclosure-panel-font-size",
+        "--n-disclosure-panel-line-height",
+        "--n-disclosure-panel-foreground",
+        "--n-disclosure-disabled-opacity",
+        "--n-motion-reveal-duration",
+        "--n-motion-reveal-easing",
+        "--n-disclosure-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Accordion primitive and one native trigger button for each item.",
+        "Wrap each trigger in AccordionHeader and choose a heading level that fits the surrounding page hierarchy through render composition.",
+        "Each item requires a stable string value for controlled state and predictable associations.",
+        "Single expansion is the default; multiple allows independent open items without changing trigger keyboard semantics.",
+        "Disabled items remain visible but cannot change state.",
+        "Closed panels are unmounted by default so hidden interactive descendants do not remain focusable; keepMounted and hiddenUntilFound preserve browser-hidden semantics.",
+        "Tab follows document order and Enter or Space toggles the focused trigger; Arrow-key roving focus is intentionally not added after the current APG guidance update.",
+        "Height and opacity motion use shared disclosure tokens and become immediate under reduced motion.",
+        "Routing, FAQ schema, fetching, nested-state persistence, and navigation behavior remain consumer-owned."
+      ],
+      "usage": "import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, AccordionTrigger } from '@/components/nerio/components/accordion';\n\n<Accordion defaultValue={[\"billing\"]}><AccordionItem value=\"billing\"><AccordionHeader><AccordionTrigger>How does billing work?</AccordionTrigger></AccordionHeader><AccordionPanel>Plans renew monthly unless cancelled.</AccordionPanel></AccordionItem></Accordion>"
     },
     {
       "name": "breadcrumbs",
@@ -2957,7 +3367,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3016,7 +3426,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3063,7 +3473,7 @@
     {
       "name": "dialog",
       "title": "Dialog",
-      "description": "Focuses a short decision or task above the current surface.",
+      "description": "Focuses a short decision or task above the current surface through a compatible convenience API or compound anatomy.",
       "category": "overlays",
       "dependencies": [
         "@base-ui/react",
@@ -3079,7 +3489,7 @@
           "source": "../../ui/src/components/dialog.tsx",
           "target": "components/dialog.tsx",
           "role": "component",
-          "integrity": "sha256-1f9ecc5a46447512b6e7e123ec86993755b93ceafc4ac89f460b62e2c3ef9cac"
+          "integrity": "sha256-e886317e469d553dd29c958702129352cf0379c9b2612abe78a8fd4c13612992"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
@@ -3109,7 +3519,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3120,6 +3530,8 @@
       ],
       "baseUiPrimitives": ["dialog"],
       "slots": [
+        "trigger",
+        "portal",
         "backdrop",
         "content",
         "header",
@@ -3162,12 +3574,77 @@
       ],
       "accessibility": [
         "Uses the Base UI Dialog primitive.",
+        "The existing Dialog convenience API remains compatible; DialogRoot, DialogTrigger, DialogPortal, DialogBackdrop, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, and DialogClose expose meaningful compound anatomy.",
         "The title renders as a neutral 16px div by default; titleAs opts into h2-h6 only when the title belongs in the document outline. The optional description uses the standard 14px body size.",
         "Focus is trapped while the dialog is open and returns to the trigger on close.",
         "Defaults closeLabel to \"Close dialog\" for the secondary icon Button; provide a localized accessible name when needed.",
-        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded popup ref."
+        "Compound DialogContent supports deliberate initialFocus and finalFocus targets while every modal composition retains a keyboard-reachable DialogClose.",
+        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and forwarded trigger, portal, backdrop, content, title, description, body, footer, and close refs."
       ],
-      "usage": "import { Dialog, DialogFooter } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\" description=\"Choose collaborators and permissions.\">\n  ...\n  <DialogFooter>...</DialogFooter>\n</Dialog>"
+      "usage": "import { Button } from '@/components/nerio/components/button';\nimport { Dialog, DialogBackdrop, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogRoot, DialogTitle, DialogTrigger } from '@/components/nerio/components/dialog';\n\n<Dialog trigger=\"Share\" title=\"Share collection\">...</Dialog>\n\n<DialogRoot>\n  <DialogTrigger render={<Button>Open custom dialog</Button>} />\n  <DialogPortal>\n    <DialogBackdrop />\n    <DialogContent>\n      <DialogHeader><DialogTitle>Custom dialog</DialogTitle><DialogDescription>Compose only the regions this task needs.</DialogDescription></DialogHeader>\n      ...\n      <DialogFooter><DialogClose render={<Button variant=\"secondary\">Cancel</Button>} /></DialogFooter>\n    </DialogContent>\n  </DialogPortal>\n</DialogRoot>"
+    },
+    {
+      "name": "alert-dialog",
+      "title": "AlertDialog",
+      "description": "Requires an explicit response before a sensitive action proceeds.",
+      "category": "overlays",
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["dialog"],
+      "files": [
+        {
+          "source": "../../ui/src/components/alert-dialog.tsx",
+          "target": "components/alert-dialog.tsx",
+          "role": "component",
+          "integrity": "sha256-777a3c6ac69435729d1240312de74eb73c8d286021289fed0912e9d11b04eb2a"
+        }
+      ],
+      "baseUiPrimitives": ["alert-dialog"],
+      "slots": [
+        "portal",
+        "trigger",
+        "backdrop",
+        "content",
+        "header",
+        "title",
+        "description",
+        "body",
+        "footer",
+        "cancel",
+        "action"
+      ],
+      "variants": [],
+      "requiredTokens": [
+        "--n-dialog-width-md",
+        "--n-dialog-viewport-inset",
+        "--n-dialog-padding",
+        "--n-dialog-header-gap",
+        "--n-dialog-header-margin",
+        "--n-dialog-body-gap",
+        "--n-overlay-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-backdrop",
+        "--n-overlay-backdrop-filter",
+        "--n-overlay-foreground",
+        "--n-overlay-foreground-muted",
+        "--n-overlay-control-background",
+        "--n-overlay-control-background-hover",
+        "--n-overlay-surface-filter",
+        "--n-overlay-shadow",
+        "--n-motion-overlay-enter-duration",
+        "--n-motion-overlay-enter-easing",
+        "--n-motion-overlay-exit-duration",
+        "--n-motion-overlay-exit-easing",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Alert Dialog primitive with role=alertdialog, modal focus containment, Escape dismissal, scroll locking, and pointer dismissal disabled.",
+        "AlertDialogTitle provides the accessible name and AlertDialogDescription explains the consequence in concrete language.",
+        "Place AlertDialogCancel before AlertDialogAction and pass its ref to AlertDialogContent initialFocus for destructive or difficult-to-reverse actions.",
+        "AlertDialogCancel and AlertDialogAction are explicit close boundaries; mutation, async orchestration, permissions, routing, and confirmation copy remain consumer-owned.",
+        "Focus returns to the trigger after either response and every action keeps native Button keyboard semantics through render composition."
+      ],
+      "usage": "import * as React from 'react';\nimport { Button } from '@/components/nerio/components/button';\nimport { AlertDialog, AlertDialogAction, AlertDialogBackdrop, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger } from '@/components/nerio/components/alert-dialog';\n\nconst cancelRef = React.useRef<HTMLButtonElement>(null);\n\n<AlertDialog>\n  <AlertDialogTrigger render={<Button variant=\"danger\">Delete project</Button>} />\n  <AlertDialogPortal>\n    <AlertDialogBackdrop />\n    <AlertDialogContent initialFocus={cancelRef}>\n      <AlertDialogHeader>\n        <AlertDialogTitle>Delete project?</AlertDialogTitle>\n        <AlertDialogDescription>This permanently removes the project and cannot be undone.</AlertDialogDescription>\n      </AlertDialogHeader>\n      <AlertDialogFooter>\n        <AlertDialogCancel ref={cancelRef} render={<Button variant=\"secondary\">Cancel</Button>} />\n        <AlertDialogAction render={<Button variant=\"danger\" onClick={deleteProject}>Delete project</Button>} />\n      </AlertDialogFooter>\n    </AlertDialogContent>\n  </AlertDialogPortal>\n</AlertDialog>"
     },
     {
       "name": "sidebar-primitive",
@@ -3181,7 +3658,7 @@
           "source": "../../ui/src/components/sidebar.tsx",
           "target": "components/sidebar.tsx",
           "role": "component",
-          "integrity": "sha256-b483b9837f6c78cff361e88a381017c8d87dad6a245ce29bd76b7f65e43ab4bc"
+          "integrity": "sha256-e2e4a4cddf9f7d76f69dcca36f96704e6b76ce4ba97486fcf696d15f877e397e"
         },
         {
           "source": "../../ui/src/components/sidebar-layout.tsx",
@@ -3217,7 +3694,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3275,7 +3752,7 @@
         "SidebarContent forwards an HTMLDivElement ref, while SidebarInset preserves stable HTMLElement refs for its explicit div or main root.",
         "Collapsed navigation stays reachable with larger icons, preserved accessible names, and focusable labels through SidebarMenuButton tooltips.",
         "State changes keep focus on the external trigger or rail and do not add roving focus or Arrow-key behavior to consumer navigation.",
-        "Physical left and right placement, explicit text direction, reduced motion, forced colors, compact density, and safe-area padding are supported.",
+        "Physical left and right placement, inherited HTML direction with an explicit override, reduced motion, forced colors, compact density, and safe-area padding are supported.",
         "Persistence and mobile behavior remain consumer-owned; compose Sheet explicitly for mobile navigation so only one interactive tree is rendered."
       ],
       "usage": "import { SidebarContent, SidebarFooter, SidebarHeader, SidebarInset } from '@/components/nerio/components/sidebar-layout';\nimport { Sidebar, SidebarProvider, SidebarRail } from '@/components/nerio/components/sidebar';\n\n<SidebarProvider defaultExpanded side=\"left\">\n  <Sidebar aria-label=\"Workspace sidebar\">\n    <SidebarHeader>Workspace</SidebarHeader>\n    <SidebarContent><nav aria-label=\"Workspace\">...</nav></SidebarContent>\n    <SidebarFooter>...</SidebarFooter>\n    <SidebarRail collapseLabel=\"Collapse sidebar\" expandLabel=\"Expand sidebar\" label=\"Toggle sidebar\" />\n  </Sidebar>\n  <SidebarInset>...</SidebarInset>\n</SidebarProvider>"
@@ -3335,7 +3812,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3468,7 +3945,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3585,7 +4062,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3685,7 +4162,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3745,6 +4222,7 @@
         "Items are keyboard reachable and can be disabled.",
         "Group labels and separators organize related commands without becoming menu items.",
         "Optional descriptions are associated with their menu items through aria-describedby.",
+        "Pair the document dir attribute with Base UI DirectionProvider so menu navigation and positioned content follow LTR or RTL.",
         "Disabled items stay visible but cannot be selected.",
         "Use destructive tone only for irreversible or high-risk commands.",
         "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded menu popup ref."
@@ -3799,7 +4277,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3859,7 +4337,7 @@
           "source": "../../ui/src/components/toast.tsx",
           "target": "components/toast.tsx",
           "role": "component",
-          "integrity": "sha256-ddb5476081dd4105017c7f573912b7eb14a2d236d9fb015816a783405e7e4257"
+          "integrity": "sha256-9d3c2e923bf7c48ea235f749da3d5df4c949db1e1aa9ba3a0b030f1552dcb374"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
@@ -3883,7 +4361,7 @@
           "source": "../../tokens/src/styles.css",
           "target": "styles/tokens.css",
           "role": "style",
-          "integrity": "sha256-529b6b08e0715ce3827bc6fca8f4bb6f6eb0b2c0d33dc8c12b1b73344e837b4a"
+          "integrity": "sha256-e2b6cf4c5c208b3e18b758815765950b24a29100d3a1d16d0b7cc3006a7b1121"
         },
         {
           "source": "../../tokens/src/tailwind.css",
@@ -3938,7 +4416,7 @@
         "Use low priority for routine polite confirmations and high priority only for urgent updates.",
         "Base UI announces managed title and description once; decorative status icons and action copy are excluded from the announcement.",
         "Static Toast remains presentation-only and separate from managed status and stack behavior; managed actions and icon-only dismissal use Button.",
-        "The managed viewport is bottom-centered; collapsed toasts scale and step upward behind the frontmost card, then expand upward without changing reading order.",
+        "The managed viewport is bottom-right; collapsed toasts scale and step upward behind the frontmost card, then expand upward without changing reading order.",
         "Managed toasts never steal focus. F6 enters the viewport, where actions and dismissal remain keyboard reachable.",
         "Timers pause on pointer hover, keyboard focus, and window blur, then resume from the remaining duration. Set timeout to 0 only for an intentionally persistent toast.",
         "Inherited document direction is resolved for the first interactive render and remains synchronized with root dir changes; explicit direction wins immediately.",

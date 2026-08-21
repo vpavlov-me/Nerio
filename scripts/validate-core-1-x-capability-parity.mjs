@@ -16,6 +16,14 @@ const paths = parsePathOptions(process.argv.slice(2), {
 });
 const baselinePublicApiSnapshotSha256 =
   "248544c8b546a702c3f9415729ecc3eba298019000ae402c7e5a551275f7e9a3";
+const baselineComponentCatalogSha256 =
+  "a79f8bc053ae0d7c31e93bcc5f3ebda8955271f479e77ced0917c103ad1841cc";
+const baselineRegistryManifestSha256 =
+  "c92f1c1db90bfeee6a4c665c6a074137a1938ddc2bc5ca4223681a7bef92d07f";
+const baselineComponentCatalogSchemaVersion = 1;
+const baselineCoreVersion = "1.0.0-beta.1";
+const baselineRegistrySchemaVersion = "1.1.0";
+const baselineRegistryItemCount = 46;
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -84,28 +92,28 @@ assert(
   "Parity matrix retrievedAt must be an ISO date.",
 );
 assert(
-  matrix.baseline?.componentCatalogSchemaVersion === catalog.schemaVersion,
-  "Parity baseline component catalog schema is stale.",
+  matrix.baseline?.componentCatalogSchemaVersion === baselineComponentCatalogSchemaVersion,
+  "Parity baseline component catalog schema must retain the reviewed historical value.",
 );
 assert(
-  matrix.baseline?.componentCatalogSha256 === canonicalJsonSha256(catalog),
-  "Parity baseline component catalog hash is stale.",
+  matrix.baseline?.componentCatalogSha256 === baselineComponentCatalogSha256,
+  "Parity baseline component catalog hash must retain the reviewed historical value.",
 );
 assert(
-  matrix.baseline?.registrySchemaVersion === manifest.schemaVersion,
-  "Parity baseline Registry schema is stale.",
+  matrix.baseline?.registrySchemaVersion === baselineRegistrySchemaVersion,
+  "Parity baseline Registry schema must retain the reviewed historical value.",
 );
 assert(
-  matrix.baseline?.registryItemCount === manifest.items?.length,
-  "Parity baseline Registry item count is stale.",
+  matrix.baseline?.registryItemCount === baselineRegistryItemCount,
+  "Parity baseline Registry item count must retain the reviewed historical value.",
 );
 assert(
-  matrix.baseline?.registryManifestSha256 === canonicalJsonSha256(manifest),
-  "Parity baseline Registry manifest hash is stale.",
+  matrix.baseline?.registryManifestSha256 === baselineRegistryManifestSha256,
+  "Parity baseline Registry manifest hash must retain the reviewed historical value.",
 );
 assert(
-  matrix.baseline?.coreVersion === manifest.version,
-  "Parity baseline Core version must match the Registry version.",
+  matrix.baseline?.coreVersion === baselineCoreVersion,
+  "Parity baseline Core version must retain the reviewed historical value.",
 );
 assert(
   matrix.baseline?.baseUiVersion === "1.6.0",
@@ -142,6 +150,27 @@ assert(
 assert(
   matrix.baseline?.publicApiSnapshotSha256 === baselinePublicApiSnapshotSha256,
   "Parity baseline API snapshot hash must retain the reviewed historical value.",
+);
+assert(
+  matrix.currentComponentCatalogSchemaVersion === catalog.schemaVersion,
+  "Current parity component catalog schema is stale.",
+);
+assert(
+  matrix.currentComponentCatalogSha256 === canonicalJsonSha256(catalog),
+  "Current parity component catalog hash is stale.",
+);
+assert(matrix.currentCoreVersion === manifest.version, "Current parity Core version is stale.");
+assert(
+  matrix.currentRegistrySchemaVersion === manifest.schemaVersion,
+  "Current parity Registry schema is stale.",
+);
+assert(
+  matrix.currentRegistryItemCount === manifest.items?.length,
+  "Current parity Registry item count is stale.",
+);
+assert(
+  matrix.currentRegistryManifestSha256 === canonicalJsonSha256(manifest),
+  "Current parity Registry manifest hash is stale.",
 );
 assert(
   matrix.currentPublicApiSnapshotSha256 === apiApproval.snapshotSha256,
@@ -319,11 +348,11 @@ const classifications = new Set(requiredClassifications);
 const priorities = new Set(matrix.priorityValues ?? []);
 const targets = new Set(matrix.targetValues ?? []);
 const requiredCapabilityDependencies = new Map([
-  ["direction-localization", [151, 341]],
+  ["direction-localization", [341]],
   ["disclosure-family", [151, 341, 342]],
-  ["compound-dialog-alert-dialog", [151, 341, 342]],
-  ["single-select-combobox", [151, 341, 342]],
-  ["search-field", [151, 341, 342]],
+  ["compound-dialog-alert-dialog", [341, 342]],
+  ["single-select-combobox", [341, 342]],
+  ["search-field", [341, 342]],
   ["number-field", [151, 341, 342]],
   ["otp-field", [151, 341, 342]],
   ["grouped-selection", [151, 341, 342]],
@@ -418,11 +447,11 @@ const dispositionByIssue = new Map(
   dispositions.map((disposition) => [disposition.issue, disposition]),
 );
 const requiredIssueDependencies = new Map([
-  [342, [341, 151]],
+  [342, [341]],
   [343, [341, 342, 151]],
-  [344, [341, 342, 151]],
-  [345, [341, 342, 151]],
-  [346, [341, 342, 151]],
+  [344, [341, 342]],
+  [345, [341, 342]],
+  [346, [341, 342]],
   [347, [341, 342, 151]],
   [348, [341, 342, 151]],
   [349, [341, 342, 345, 348, 151]],

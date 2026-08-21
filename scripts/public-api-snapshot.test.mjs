@@ -121,6 +121,14 @@ test("accepts the reviewed Core 1.0 public API snapshot", () => {
   );
   assert.match(parsed.registry.publicCommands.cli.localInstall, /@nerio-ui\/cli@<version>/);
   assert.equal(parsed.docsRoutes.includes("/docs/components/button"), true);
+  const foundationRoutes = JSON.parse(
+    readFileSync(join(root, "apps/docs/content/foundations.json"), "utf8"),
+  ).map((page) => page.path);
+  assert.equal(
+    foundationRoutes.every((route) => parsed.docsRoutes.includes(route)),
+    true,
+    "The public API snapshot must include every canonical foundation route",
+  );
   assert.equal(
     parsed.docsRoutes.some(
       (route) =>

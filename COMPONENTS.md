@@ -70,23 +70,25 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Forms
 
-| Component   | Status      | Package               | Notes                                                                                                                                             |
-| ----------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Input       | stable-core | `@nerio-ui/ui`        | Thin native single-line control for text-like, numeric, and temporal values; native picker, form, and validation behavior stay browser-owned      |
-| InputGroup  | stable-core | `@nerio-ui/ui`        | Composable surface for an Input with explicit start/end addons                                                                                    |
-| Textarea    | stable-core | `@nerio-ui/ui`        | Multiline input with native disabled/read-only behavior and normalized focus and invalid-state hooks                                              |
-| Label       | stable-core | `@nerio-ui/ui`        | Accessible form label with a native non-submit supplementary hint trigger                                                                         |
-| Field       | stable-core | `@nerio-ui/ui`        | Label, help text, error, description                                                                                                              |
-| FormMessage | stable-core | `@nerio-ui/ui`        | Field message/error text                                                                                                                          |
-| FormGroup   | stable-core | `@nerio-ui/ui`        | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout                                      |
-| Checkbox    | stable-core | `@nerio-ui/ui/client` | Base UI checkbox for grouped multi-selection, indeterminate aggregates, and form-backed option sets                                               |
-| Radio Group | stable-core | `@nerio-ui/ui/client` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states                                               |
-| Switch      | stable-core | `@nerio-ui/ui/client` | Base UI toggle for immediate binary settings with invalid and read-only state support                                                             |
-| Select      | stable-core | `@nerio-ui/ui/client` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior              |
-| Slider      | stable-core | `@nerio-ui/ui/client` | Base UI single-value range primitive with form metadata, horizontal/vertical orientation, read-only behavior, localized value text, and one thumb |
-| FileInput   | stable-core | `@nerio-ui/ui`        | Native file selection with forwarded FileList, form/reset semantics, single or multiple selection, and no upload workflow ownership               |
-| Calendar    | stable-core | `@nerio-ui/ui/client` | Timezone-safe single-date grid with ISO values, roving focus, locale labels, week starts, constraints, and controlled or uncontrolled state       |
-| DatePicker  | stable-core | `@nerio-ui/ui/client` | Form-backed single-date control composed from Calendar and Popover with ISO values, localization, constraints, reset, and focus restoration       |
+| Component   | Status              | Package               | Notes                                                                                                                                                          |
+| ----------- | ------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Input       | stable-core         | `@nerio-ui/ui`        | Thin native single-line control for text-like, numeric, and temporal values; native picker, form, and validation behavior stay browser-owned                   |
+| InputGroup  | stable-core         | `@nerio-ui/ui`        | Composable surface for an Input with explicit start/end addons                                                                                                 |
+| Textarea    | stable-core         | `@nerio-ui/ui`        | Multiline input with native disabled/read-only behavior and normalized focus and invalid-state hooks                                                           |
+| Label       | stable-core         | `@nerio-ui/ui`        | Accessible form label with a native non-submit supplementary hint trigger                                                                                      |
+| Field       | stable-core         | `@nerio-ui/ui`        | Label, help text, error, description                                                                                                                           |
+| FormMessage | stable-core         | `@nerio-ui/ui`        | Field message/error text                                                                                                                                       |
+| FormGroup   | stable-core         | `@nerio-ui/ui`        | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout                                                   |
+| Checkbox    | stable-core         | `@nerio-ui/ui/client` | Base UI checkbox for grouped multi-selection, indeterminate aggregates, and form-backed option sets                                                            |
+| Radio Group | stable-core         | `@nerio-ui/ui/client` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states                                                            |
+| Switch      | stable-core         | `@nerio-ui/ui/client` | Base UI toggle for immediate binary settings with invalid and read-only state support                                                                          |
+| Select      | stable-core         | `@nerio-ui/ui/client` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior                           |
+| Combobox    | implemented-initial | `@nerio-ui/ui/client` | Bounded single-select control with synchronous filtering, options or composed items, form metadata, and independently controlled query, value, and popup state |
+| SearchField | implemented-initial | `@nerio-ui/ui/client` | Native search composition with one controlled or uncontrolled query, accessible clear, deliberate Enter search events, form reset, and loading presentation    |
+| Slider      | stable-core         | `@nerio-ui/ui/client` | Base UI single-value range primitive with form metadata, horizontal/vertical orientation, read-only behavior, localized value text, and one thumb              |
+| FileInput   | stable-core         | `@nerio-ui/ui`        | Native file selection with forwarded FileList, form/reset semantics, single or multiple selection, and no upload workflow ownership                            |
+| Calendar    | stable-core         | `@nerio-ui/ui/client` | Timezone-safe single-date grid with ISO values, roving focus, locale labels, week starts, constraints, and controlled or uncontrolled state                    |
+| DatePicker  | stable-core         | `@nerio-ui/ui/client` | Form-backed single-date control composed from Calendar and Popover with ISO values, localization, constraints, reset, and focus restoration                    |
 
 ### Input-family roadmap
 
@@ -97,28 +99,37 @@ Calendar and DatePicker provide the bounded custom single-date path. FileInput i
 selection primitive delivered by #260; ranges, scheduling, parsing, and upload workflows remain
 consumer or Pro responsibility.
 
-| Component                                                                            | Tier            | Status | Boundary                                                                                                                              |
-| ------------------------------------------------------------------------------------ | --------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| SearchInput                                                                          | Core candidate  | future | Composes Input and InputGroup for a query, icon, and optional accessible clear action; it never owns results, fetching, or filtering. |
-| PasswordInput                                                                        | Core candidate  | future | Composes Input and InputGroup for an accessible visibility action; it never owns password policy.                                     |
-| Combobox / NumberField / OTPInput                                                    | Core candidates | future | Candidates only; no public API is committed.                                                                                          |
-| DateRangePicker / DateTimePicker / DatePickerWithPresets / NaturalLanguageDatePicker | Pro             | future | Product-ready date workflows.                                                                                                         |
-| GlobalSearch / EntitySearch / AdvancedSearch / CommandPalette / FilterBar            | Pro             | future | Result fetching, workflow behavior, and product-level search/filter composition.                                                      |
+| Component                                                                            | Tier            | Status | Boundary                                                                                          |
+| ------------------------------------------------------------------------------------ | --------------- | ------ | ------------------------------------------------------------------------------------------------- |
+| PasswordInput                                                                        | Core candidate  | future | Composes Input and InputGroup for an accessible visibility action; it never owns password policy. |
+| NumberField / OTPInput                                                               | Core candidates | future | Candidates only; no public API is committed.                                                      |
+| DateRangePicker / DateTimePicker / DatePickerWithPresets / NaturalLanguageDatePicker | Pro             | future | Product-ready date workflows.                                                                     |
+| GlobalSearch / EntitySearch / AdvancedSearch / CommandPalette / FilterBar            | Pro             | future | Result fetching, workflow behavior, and product-level search/filter composition.                  |
 
 The accepted post-1.0 decision keeps SearchField in #346 and splits NumberField into #370 because
 their semantics, values, localization, and primitive contracts differ. Bounded single-select
-Combobox remains #345. MultiSelect #349 is deferred to a Core 1.2 decision spike and is not an
-approved component.
+Combobox and SearchField are implemented on `dev` through #345 and #346. MultiSelect #349 is
+deferred to a Core 1.2 decision spike and is not an approved component.
 
 ### Overlays
 
-| Component     | Status      | Package               | Notes                                                                                                                                                        |
-| ------------- | ----------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Dialog        | stable-core | `@nerio-ui/ui/client` | Viewport-bounded modal primitive with a neutral accessible title, standard description, localizable close, controlled state, ref, and Base UI focus behavior |
-| Sheet         | stable-core | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral title and close composition, safe-area layout, four sides, sizes, and shared overlay motion                          |
-| Popover       | stable-core | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                                                            |
-| Tooltip       | stable-core | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                                                          |
-| Dropdown Menu | stable-core | `@nerio-ui/ui/client` | Menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkeys            |
+| Component     | Status              | Package               | Notes                                                                                                                                                                               |
+| ------------- | ------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dialog        | stable-core         | `@nerio-ui/ui/client` | Compatible convenience API plus compound Root, Trigger, Portal, Backdrop, Content, Header, Title, Description, Body, Footer, and Close anatomy with Base UI modal focus behavior    |
+| AlertDialog   | implemented-initial | `@nerio-ui/ui/client` | Explicit confirmation primitive with alertdialog semantics, pointer-dismissal protection, deliberate initial focus, separate cancel/action boundaries, and consumer-owned mutations |
+| Sheet         | stable-core         | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral title and close composition, safe-area layout, four sides, sizes, and shared overlay motion                                                 |
+| Popover       | stable-core         | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                                                                                   |
+| Tooltip       | stable-core         | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                                                                                 |
+| Dropdown Menu | stable-core         | `@nerio-ui/ui/client` | Menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkeys                                   |
+
+### Disclosure
+
+| Component   | Status              | Package               | Notes                                                                                                                                       |
+| ----------- | ------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Collapsible | implemented-initial | `@nerio-ui/ui/client` | One independent controlled or uncontrolled disclosure with disabled behavior, stable trigger/panel anatomy, and tokenized height motion.    |
+| Accordion   | implemented-initial | `@nerio-ui/ui/client` | Grouped disclosure with stable string values, single or multiple expansion, disabled items, semantic headings, and tokenized height motion. |
+
+Native `details` and `summary` remain the preferred zero-abstraction path for simple content.
 
 ### Data display
 
@@ -136,14 +147,14 @@ approved component.
 
 ### Feedback
 
-| Component   | Status      | Package               | Notes                                                                                                                                                                                                                                               |
-| ----------- | ----------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Alert       | stable-core | `@nerio-ui/ui`        | Inline feedback with persistent semantic context, actions below the description, and an optional trailing close slot                                                                                                                                |
-| Toast       | stable-core | `@nerio-ui/ui/client` | Bottom-centered stack with smaller cards stepping upward, standard Button actions and icon dismissal, reset copy margins, floating elevation, unified enter/expand/swipe/dismiss transforms, inherited RTL, lifecycle, priority, and clean installs |
-| Progress    | stable-core | `@nerio-ui/ui`        | Task-completion progress with required accessible naming, normalized ranges, and tokenized motion                                                                                                                                                   |
-| Skeleton    | stable-core | `@nerio-ui/ui`        | Loading placeholder                                                                                                                                                                                                                                 |
-| Empty State | stable-core | `@nerio-ui/ui`        | Composable media, header, actions, size, alignment, role guidance, and responsive stacking                                                                                                                                                          |
-| Spinner     | stable-core | `@nerio-ui/ui`        | Loading indicator with a component radius alias that remains fully round across themes                                                                                                                                                              |
+| Component   | Status      | Package               | Notes                                                                                                                                                                                                                                                                      |
+| ----------- | ----------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Alert       | stable-core | `@nerio-ui/ui`        | Inline feedback with persistent semantic context, actions below the description, and an optional trailing close slot                                                                                                                                                       |
+| Toast       | stable-core | `@nerio-ui/ui/client` | Bottom-right stack with smaller cards stepping upward, a primary Button action beside the copy, trailing icon dismissal, reset copy margins, bordered low elevation, unified enter/expand/swipe/dismiss transforms, inherited RTL, lifecycle, priority, and clean installs |
+| Progress    | stable-core | `@nerio-ui/ui`        | Task-completion progress with required accessible naming, normalized ranges, and tokenized motion                                                                                                                                                                          |
+| Skeleton    | stable-core | `@nerio-ui/ui`        | Loading placeholder                                                                                                                                                                                                                                                        |
+| Empty State | stable-core | `@nerio-ui/ui`        | Composable media, header, actions, size, alignment, role guidance, and responsive stacking                                                                                                                                                                                 |
+| Spinner     | stable-core | `@nerio-ui/ui`        | Loading indicator with a component radius alias that remains fully round across themes                                                                                                                                                                                     |
 
 ### Navigation and layout
 

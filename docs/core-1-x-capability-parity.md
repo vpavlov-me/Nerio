@@ -13,8 +13,8 @@ The current Core 1.0 surface is complete for its frozen boundary. The beta.1 tec
 #143/#146 evidence gates and the existing #148 → #150 → #151 sequence.
 
 No Core 1.0 runtime, package, Registry, token, export, or API snapshot changed in this decision.
-Until #151 is complete, #342–#370 remain planning only unless roadmap #152 explicitly accepts a
-focused release blocker from real manual or beta evidence.
+Roadmap #152 authorizes #342 on `dev` before #151 while the isolated stable candidate remains
+unchanged. Other forward tracks retain their recorded dependencies.
 
 The canonical machine-readable projection is
 [`quality/core-1-x-capability-parity.json`](../quality/core-1-x-capability-parity.json).
@@ -171,26 +171,26 @@ oversized issue or duplicate their instructions.
 
 ## Issue dispositions
 
-| Issue                                                  | Disposition                      | Priority / target | Dependency decision                                                                                |
-| ------------------------------------------------------ | -------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------- |
-| [#342](https://github.com/vpavlov-me/Nerio/issues/342) | Retain                           | P1 / Core 1.1     | After #151; minimum contract precedes direction-sensitive API merges, full audit runs in parallel. |
-| [#343](https://github.com/vpavlov-me/Nerio/issues/343) | Retain                           | P1 / Core 1.1     | After #151 and relevant #342 foundation.                                                           |
-| [#344](https://github.com/vpavlov-me/Nerio/issues/344) | Retain                           | P1 / Core 1.1     | Parallel with other primitive work after relevant #342 foundation.                                 |
-| [#345](https://github.com/vpavlov-me/Nerio/issues/345) | Retain                           | P1 / Core 1.1     | Single-select only; parallel field track.                                                          |
-| [#346](https://github.com/vpavlov-me/Nerio/issues/346) | Split                            | P1 / Core 1.1     | Retain SearchField; NumberField moves to #370.                                                     |
-| [#347](https://github.com/vpavlov-me/Nerio/issues/347) | Retain                           | P1 / Core 1.1     | Base UI 1.6.0 stable OTPField; no auth workflow.                                                   |
-| [#348](https://github.com/vpavlov-me/Nerio/issues/348) | Retain with parallel slices      | P1 / Core 1.1     | ToggleGroup and CheckboxGroup may use separate PRs.                                                |
-| [#349](https://github.com/vpavlov-me/Nerio/issues/349) | Defer implementation             | P2 / Core 1.2     | Decision spike after #345 and #348.                                                                |
-| [#350](https://github.com/vpavlov-me/Nerio/issues/350) | Retain                           | P1 / Core 1.1     | Complete shared menu anatomy; no ContextMenu/Menubar/NavigationMenu.                               |
-| [#351](https://github.com/vpavlov-me/Nerio/issues/351) | Retain, decision-first           | P2 / Core 1.2     | Independent package track after #151.                                                              |
-| [#352](https://github.com/vpavlov-me/Nerio/issues/352) | Retain with slices               | P2 / Core 1.2     | Modularization/lifecycle independent; bootstrap waits for #351.                                    |
-| [#353](https://github.com/vpavlov-me/Nerio/issues/353) | Retain                           | P2 / Core 1.2     | Waits for CLI modularization, not full #352.                                                       |
-| [#354](https://github.com/vpavlov-me/Nerio/issues/354) | Split                            | P2 / Core 1.2     | MCP only; Agent Skill moves to #369.                                                               |
-| [#355](https://github.com/vpavlov-me/Nerio/issues/355) | Retain, decision-first           | P3 / Core 1.2     | Existing fixtures remain default pending measured prototype.                                       |
-| [#356](https://github.com/vpavlov-me/Nerio/issues/356) | Retain with independent tranches | P2 / Core 1.2     | Stable-1.0 tranche does not wait for Core 1.1.                                                     |
-| [#357](https://github.com/vpavlov-me/Nerio/issues/357) | Retain, mixed manual             | P3 / Ecosystem    | Export work after stable; component subset after first 1.1 tranche.                                |
-| [#369](https://github.com/vpavlov-me/Nerio/issues/369) | Retain separately                | P2 / Core 1.2     | Canonical Agent Skill issue after #151.                                                            |
-| [#370](https://github.com/vpavlov-me/Nerio/issues/370) | Created from split               | P1 / Core 1.1     | Independent NumberField after relevant #342 foundation.                                            |
+| Issue                                                  | Disposition                      | Priority / target | Dependency decision                                                                                             |
+| ------------------------------------------------------ | -------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| [#342](https://github.com/vpavlov-me/Nerio/issues/342) | Retain                           | P1 / Core 1.1     | Ready on dev after #341; minimum contract precedes direction-sensitive API merges, full audit runs in parallel. |
+| [#343](https://github.com/vpavlov-me/Nerio/issues/343) | Retain                           | P1 / Core 1.1     | After #151 and the relevant #342 foundation.                                                                    |
+| [#344](https://github.com/vpavlov-me/Nerio/issues/344) | Retain                           | P1 / Core 1.1     | Parallel with other primitive work after relevant #342 foundation.                                              |
+| [#345](https://github.com/vpavlov-me/Nerio/issues/345) | Retain                           | P1 / Core 1.1     | Single-select only; parallel field track.                                                                       |
+| [#346](https://github.com/vpavlov-me/Nerio/issues/346) | Split                            | P1 / Core 1.1     | Retain SearchField; NumberField moves to #370.                                                                  |
+| [#347](https://github.com/vpavlov-me/Nerio/issues/347) | Retain                           | P1 / Core 1.1     | Base UI 1.6.0 stable OTPField; no auth workflow.                                                                |
+| [#348](https://github.com/vpavlov-me/Nerio/issues/348) | Retain with parallel slices      | P1 / Core 1.1     | ToggleGroup and CheckboxGroup may use separate PRs.                                                             |
+| [#349](https://github.com/vpavlov-me/Nerio/issues/349) | Defer implementation             | P2 / Core 1.2     | Decision spike after #345 and #348.                                                                             |
+| [#350](https://github.com/vpavlov-me/Nerio/issues/350) | Retain                           | P1 / Core 1.1     | Complete shared menu anatomy; no ContextMenu/Menubar/NavigationMenu.                                            |
+| [#351](https://github.com/vpavlov-me/Nerio/issues/351) | Retain, decision-first           | P2 / Core 1.2     | Independent package track after #151.                                                                           |
+| [#352](https://github.com/vpavlov-me/Nerio/issues/352) | Retain with slices               | P2 / Core 1.2     | Modularization/lifecycle independent; bootstrap waits for #351.                                                 |
+| [#353](https://github.com/vpavlov-me/Nerio/issues/353) | Retain                           | P2 / Core 1.2     | Waits for CLI modularization, not full #352.                                                                    |
+| [#354](https://github.com/vpavlov-me/Nerio/issues/354) | Split                            | P2 / Core 1.2     | MCP only; Agent Skill moves to #369.                                                                            |
+| [#355](https://github.com/vpavlov-me/Nerio/issues/355) | Retain, decision-first           | P3 / Core 1.2     | Existing fixtures remain default pending measured prototype.                                                    |
+| [#356](https://github.com/vpavlov-me/Nerio/issues/356) | Retain with independent tranches | P2 / Core 1.2     | Stable-1.0 tranche does not wait for Core 1.1.                                                                  |
+| [#357](https://github.com/vpavlov-me/Nerio/issues/357) | Retain, mixed manual             | P3 / Ecosystem    | Export work after stable; component subset after first 1.1 tranche.                                             |
+| [#369](https://github.com/vpavlov-me/Nerio/issues/369) | Retain separately                | P2 / Core 1.2     | Canonical Agent Skill issue after #151.                                                                         |
+| [#370](https://github.com/vpavlov-me/Nerio/issues/370) | Created from split               | P1 / Core 1.1     | Independent NumberField after relevant #342 foundation.                                                         |
 
 ## Parallel implementation order
 
@@ -222,7 +222,11 @@ This planning baseline remains valid only while the validator proves:
 - every reviewed Base UI 1.6.0 public primitive is classified;
 - every platform coverage decision is represented;
 - every issue #342–#357 plus related #369/#370 has one disposition;
-- the exact catalog, Registry, Base UI dependency, and public API snapshot baseline has not drifted;
+- the historical catalog, Registry, Core version, and public API metadata remain pinned to baseline
+  commit `930890b9c450da7674a3274360bcada8fc99300a`, while separate current metadata track
+  intentional repository changes;
+- the exact current catalog schema and hash, Registry schema, item count and hash, Core version,
+  Base UI dependency, and approved public API snapshot have not drifted;
 - this document, the machine projection, and `ROADMAP.md` agree.
 
 Future implementation PRs must still synchronize source, public types, catalog, `COMPONENTS.md`,

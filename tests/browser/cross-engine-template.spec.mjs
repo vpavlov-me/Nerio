@@ -146,7 +146,12 @@ test("keeps RTL, reduced-motion, dynamic viewport, Sidebar, and Toast behavior e
   const toast = page.locator(".n-toast--managed");
   await expect(toast).toHaveCount(1);
   await toast.hover();
-  await expect(page.locator('[data-slot="viewport"]')).toHaveAttribute("data-direction", "rtl");
+  const toastViewport = page.locator('[data-slot="viewport"]');
+  await expect(toastViewport).toHaveAttribute("data-direction", "rtl");
+  const toastViewportBox = await toastViewport.boundingBox();
+  expect(toastViewportBox).not.toBeNull();
+  const viewportWidth = await page.evaluate(() => window.innerWidth);
+  expect(toastViewportBox.x).toBeLessThan(viewportWidth / 2);
   await toast.getByRole("button", { name: "Dismiss notification" }).click();
   await expect(toast).toHaveCount(0);
 

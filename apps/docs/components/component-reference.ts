@@ -89,7 +89,9 @@ export const snippets: Record<string, string> = {
   "date-picker":
     'import { Field } from "@nerio-ui/ui";\nimport { DatePicker } from "@nerio-ui/ui/client";\n\n<Field label="Release date">\n  <DatePicker defaultValue="2026-06-15" clearable />\n</Field>',
   dialog:
-    'import { Button, Dialog, DialogFooter } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">\n  ...\n  <DialogFooter>\n    <Button variant="secondary">Cancel</Button>\n    <Button>Share</Button>\n  </DialogFooter>\n</Dialog>',
+    'import { Button, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogPortal, DialogRoot, DialogTitle, DialogTrigger } from \'@nerio-ui/ui/client\';\n\n<Dialog trigger="Open dialog" title="Share collection">...</Dialog>\n\n<DialogRoot>\n  <DialogTrigger render={<Button>Open custom dialog</Button>} />\n  <DialogPortal>\n    <DialogContent>\n      <DialogHeader>\n        <DialogTitle>Move collection</DialogTitle>\n        <DialogDescription>Choose a destination workspace.</DialogDescription>\n      </DialogHeader>\n      ...\n      <DialogFooter>\n        <DialogClose render={<Button variant="secondary">Cancel</Button>} />\n        <Button>Move collection</Button>\n      </DialogFooter>\n    </DialogContent>\n  </DialogPortal>\n</DialogRoot>',
+  "alert-dialog":
+    'import * as React from \'react\';\nimport { AlertDialog, AlertDialogAction, AlertDialogBackdrop, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, Button } from \'@nerio-ui/ui/client\';\n\nfunction DeleteProjectDialog() {\n  const cancelRef = React.useRef<HTMLButtonElement>(null);\n\n  return (\n    <AlertDialog>\n      <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />\n      <AlertDialogPortal>\n        <AlertDialogBackdrop />\n        <AlertDialogContent initialFocus={cancelRef}>\n          <AlertDialogHeader>\n            <AlertDialogTitle>Delete project?</AlertDialogTitle>\n            <AlertDialogDescription>This permanently removes the project and cannot be undone.</AlertDialogDescription>\n          </AlertDialogHeader>\n          <AlertDialogFooter>\n            <AlertDialogCancel ref={cancelRef} render={<Button variant="secondary">Cancel</Button>} />\n            <AlertDialogAction render={<Button variant="danger" onClick={deleteProject}>Delete project</Button>} />\n          </AlertDialogFooter>\n        </AlertDialogContent>\n      </AlertDialogPortal>\n    </AlertDialog>\n  );\n}',
   sheet:
     'import { Button, Sheet, SheetBody, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from \'@nerio-ui/ui/client\';\n\n<Sheet>\n  <SheetTrigger render={<Button variant="secondary">Open settings</Button>} />\n  <SheetContent side="right" size="md" showClose={false}>\n    <SheetHeader>\n      <SheetTitle>Workspace settings</SheetTitle>\n      <SheetDescription>Configure shared defaults for this workspace.</SheetDescription>\n    </SheetHeader>\n    <SheetBody>...</SheetBody>\n    <SheetFooter>\n      <SheetClose render={<Button variant="secondary">Cancel</Button>} />\n      <Button>Save changes</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>',
   "sidebar-primitive":
@@ -98,9 +100,17 @@ export const snippets: Record<string, string> = {
     'import { Kbd } from \'@nerio-ui/ui\';\nimport { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from \'@nerio-ui/ui/client\';\n\nconst items = [{ value: "settings", label: "Workspace settings", keywords: ["preferences"] }];\n\n<Command items={items}>\n  <CommandInput aria-label="Workspace commands" placeholder="Search commands" />\n  <CommandEmpty>No matching commands.</CommandEmpty>\n  <CommandList>\n    {(item) => (\n      <CommandItem key={item.value} value={item.value} shortcut={<Kbd aria-hidden>⌘,</Kbd>} onSelect={(value, event) => runCommand(value, event)}>\n        {item.label}\n      </CommandItem>\n    )}\n  </CommandList>\n</Command>',
   select:
     "import { Select } from '@nerio-ui/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
+  combobox:
+    "import { Combobox } from '@nerio-ui/ui/client';\n\n<Combobox\n  label=\"City\"\n  name=\"city\"\n  options={[\n    { value: 'paris', label: 'Paris', textValue: 'Paris' },\n    { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' },\n    { value: 'tokyo', label: 'Tokyo', textValue: 'Tokyo' },\n  ]}\n/>",
+  "search-field":
+    'import { SearchField } from \'@nerio-ui/ui/client\';\n\n<SearchField\n  label="Search projects"\n  name="query"\n  autoComplete="off"\n  onSearch={(query) => runSearch(query)}\n/>',
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
+  collapsible:
+    'import { Collapsible, CollapsiblePanel, CollapsibleTrigger } from "@nerio-ui/ui/client";\n\n<Collapsible>\n  <CollapsibleTrigger>Recovery keys</CollapsibleTrigger>\n  <CollapsiblePanel>Generate and store recovery keys securely.</CollapsiblePanel>\n</Collapsible>',
+  accordion:
+    'import { Accordion, AccordionHeader, AccordionItem, AccordionPanel, AccordionTrigger } from "@nerio-ui/ui/client";\n\n<Accordion defaultValue={["billing"]}>\n  <AccordionItem value="billing">\n    <AccordionHeader>\n      <AccordionTrigger>How does billing work?</AccordionTrigger>\n    </AccordionHeader>\n    <AccordionPanel>Plans renew monthly unless cancelled.</AccordionPanel>\n  </AccordionItem>\n</Accordion>',
   tooltip:
     'import { Button, Tooltip, TooltipProvider } from \'@nerio-ui/ui/client\';\n\n<TooltipProvider>\n  <Tooltip label="Copies the share link"><Button>Copy link</Button></Tooltip>\n  <Tooltip label="Opens settings"><Button>Settings</Button></Tooltip>\n</TooltipProvider>',
   popover:
@@ -122,6 +132,9 @@ export const snippets: Record<string, string> = {
   list: 'import { Heading, List } from \'@nerio-ui/ui\';\n\n<Heading as="h2" id="setup-steps-title" size="sm">Setup steps</Heading>\n<List\n  aria-labelledby="setup-steps-title"\n  marker="decimal"\n  items={[\n    { id: "install", title: "Install tokens" },\n    { id: "source", title: "Register Tailwind source" },\n    { id: "components", title: "Add your first component" },\n  ]}\n/>',
   item: 'import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from \'@nerio-ui/ui\';\n\n<Item render={<a href="/settings" />}>\n  <ItemMedia variant="icon">...</ItemMedia>\n  <ItemContent><ItemTitle>Workspace settings</ItemTitle></ItemContent>\n  <ItemActions>...</ItemActions>\n</Item>',
 };
+
+export const alertDialogConfirmationSnippet =
+  'import * as React from \'react\';\nimport { AlertDialog, AlertDialogAction, AlertDialogBackdrop, AlertDialogBody, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogPortal, AlertDialogTitle, AlertDialogTrigger, Button, Field, Input } from \'@nerio-ui/ui/client\';\n\nfunction DeleteProjectDialog() {\n  const cancelRef = React.useRef<HTMLButtonElement>(null);\n  const projectName = "Nerio";\n  const [confirmation, setConfirmation] = React.useState("");\n  const isConfirmed = confirmation === projectName;\n\n  return (\n    <AlertDialog onOpenChange={(open) => !open && setConfirmation("")}>\n      <AlertDialogTrigger render={<Button variant="danger">Delete project</Button>} />\n      <AlertDialogPortal>\n        <AlertDialogBackdrop />\n        <AlertDialogContent initialFocus={cancelRef}>\n          <AlertDialogHeader>\n            <AlertDialogTitle>Delete project?</AlertDialogTitle>\n            <AlertDialogDescription>This permanently removes the project and cannot be undone.</AlertDialogDescription>\n          </AlertDialogHeader>\n          <AlertDialogBody>\n            <Field label={`Type “${projectName}” to confirm`} description="The project name is case-sensitive.">\n              <Input autoComplete="off" value={confirmation} onChange={(event) => setConfirmation(event.target.value)} />\n            </Field>\n          </AlertDialogBody>\n          <AlertDialogFooter>\n            <AlertDialogCancel ref={cancelRef} render={<Button variant="secondary">Cancel</Button>} />\n            <AlertDialogAction disabled={!isConfirmed} render={<Button variant="danger" onClick={deleteProject}>Delete project</Button>} />\n          </AlertDialogFooter>\n        </AlertDialogContent>\n      </AlertDialogPortal>\n    </AlertDialog>\n  );\n}';
 
 export const sharedTokens = [
   "--n-color-surface",
@@ -202,6 +215,62 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
     anatomy: ["button-group"],
     motion: ["inherits Button motion"],
     accessibility: ["group role", "aria-label", "child Button semantics"],
+  },
+  dialog: {
+    name: "Dialog",
+    description:
+      "A compatible convenience modal with additive compound anatomy for focused tasks and decisions.",
+    status: "stable",
+    layer: "core",
+    category: "Overlays",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["AlertDialog", "Sheet", "Popover", "Button"],
+    anatomy: [
+      "trigger",
+      "portal",
+      "backdrop",
+      "content",
+      "header",
+      "title",
+      "description",
+      "body",
+      "footer",
+      "close",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion fade-only state change"],
+    accessibility: ["Base UI modal focus management", "accessible name", "keyboard close path"],
+  },
+  "alert-dialog": {
+    name: "AlertDialog",
+    description:
+      "A conservative confirmation primitive with explicit cancel and action boundaries.",
+    status: "beta",
+    layer: "core",
+    category: "Overlays",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Dialog", "Button"],
+    anatomy: [
+      "trigger",
+      "portal",
+      "backdrop",
+      "content",
+      "header",
+      "title",
+      "description",
+      "body",
+      "footer",
+      "cancel",
+      "action",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion fade-only state change"],
+    accessibility: [
+      "Base UI alertdialog semantics",
+      "pointer dismissal disabled",
+      "deliberate initial focus",
+      "explicit cancel and action controls",
+    ],
   },
   sheet: {
     name: "Sheet",
@@ -384,6 +453,40 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "native form value, required, disabled, and reset behavior",
     ],
   },
+  collapsible: {
+    name: "Collapsible",
+    description: "Reveals one independent controlled or uncontrolled panel.",
+    status: "experimental",
+    layer: "core",
+    category: "Layout",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Accordion", "Button", "Card"],
+    anatomy: ["root", "trigger", "panel"],
+    motion: ["tokenized height and opacity", "reduced-motion immediate state change"],
+    accessibility: [
+      "Base UI disclosure relationships",
+      "native button trigger",
+      "hidden descendants removed from focus order",
+    ],
+  },
+  accordion: {
+    name: "Accordion",
+    description: "Groups related disclosure items with single or multiple expansion.",
+    status: "experimental",
+    layer: "core",
+    category: "Layout",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Collapsible", "Card", "Tabs"],
+    anatomy: ["root", "item", "header", "trigger", "panel"],
+    motion: ["tokenized height and opacity", "reduced-motion immediate state change"],
+    accessibility: [
+      "Base UI disclosure relationships",
+      "semantic heading and native button trigger",
+      "hidden descendants removed from focus order",
+    ],
+  },
   "input-group": {
     name: "InputGroup",
     description:
@@ -491,6 +594,67 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "no implicit role",
       "native rendered link or button",
       "static root remains unfocusable",
+    ],
+  },
+  combobox: {
+    name: "Combobox",
+    description: "Filters one bounded synchronous option set and commits one selected value.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Select", "Command Primitive", "Input", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "input",
+      "clear",
+      "trigger",
+      "content",
+      "list",
+      "item",
+      "group",
+      "empty",
+      "loading",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI combobox and listbox semantics",
+      "native visible label",
+      "active descendant keyboard navigation",
+      "polite empty and loading regions",
+    ],
+  },
+  "search-field": {
+    name: "SearchField",
+    description:
+      "Collects one native search query with accessible clear and deliberate Enter behavior.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "Combobox", "Command Primitive", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "search-icon",
+      "input",
+      "actions",
+      "loading",
+      "clear",
+      "description",
+      "message",
+    ],
+    motion: ["shared form-control transitions", "reduced-motion immediate transition"],
+    accessibility: [
+      "native searchbox semantics",
+      "visible Field label and associated supporting content",
+      "localizable clear action with input focus restoration",
+      "IME-safe Enter search event without suppressed form submission",
     ],
   },
 };
@@ -2043,6 +2207,7 @@ export const componentReference: Record<string, ComponentReference> = {
       "Slider is interactive and imports from @nerio-ui/ui/client.",
       "Provide exactly one visible label, aria-label, or aria-labelledby.",
       "Base UI owns Arrow keys, Home, End, Page Up, Page Down, pointer, touch, RTL, and orientation behavior.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
       "Use aria-valuetext or getAriaValueText when the numeric value alone does not communicate units or meaning.",
       "Read-only remains keyboard focusable but cancels value changes; disabled removes interaction.",
       "The nested native range input preserves name, form, min, max, step, required, and ref access.",
@@ -2420,11 +2585,12 @@ export const componentReference: Record<string, ComponentReference> = {
       'Error messages use role="alert" only when invalid is true.',
       "Use name, required, form, and autoComplete when the select participates in native form submission.",
       "Base UI manages combobox roles, focus restoration, Arrow key navigation, Home, End, Escape, and typeahead.",
+      "Pair the document dir attribute with Base UI DirectionProvider so popup behavior follows LTR or RTL.",
     ],
     guidance: {
       do: ["Use for status, owner, view mode, and compact configuration choices."],
       dont: [
-        "Do not use Select for large, searchable, async, or remotely loaded datasets; use a future Combobox.",
+        "Do not use Select for a searchable set; use Combobox for bounded synchronous filtering.",
         "Do not use Select for multiple selection, tags, or creatable values.",
       ],
     },
@@ -2443,6 +2609,153 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-overlay-background",
       "--n-overlay-border",
       "--n-overlay-shadow",
+    ],
+  },
+  combobox: {
+    category: "Forms",
+    purpose:
+      "Use Combobox when one value must be selected from a bounded synchronous set that benefits from filtering.",
+    anatomy: [
+      { title: "input", description: "Editable query field that retains DOM focus." },
+      {
+        title: "clear / trigger",
+        description: "Localizable icon-only actions for clearing and toggling options.",
+      },
+      { title: "list / item", description: "Filtered listbox and one selectable option." },
+      { title: "group / group-label", description: "Optional labelled option grouping." },
+      { title: "empty / loading", description: "Polite consumer-provided presentation regions." },
+    ],
+    variants: [
+      { title: "Options", description: "Concise flat or grouped data-driven items." },
+      {
+        title: "Composed",
+        description: "Curated ComboboxItem and group children paired with canonical item data.",
+      },
+    ],
+    states: [
+      { title: "Query", description: "Filters items without becoming the selected form value." },
+      {
+        title: "Open",
+        description: "Shows a collision-aware popup while input focus remains stable.",
+      },
+      {
+        title: "Highlighted / selected",
+        description: "Separates navigation focus from the committed value.",
+      },
+      {
+        title: "Empty / loading",
+        description: "Presents consumer-owned data state without fetching.",
+      },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Exposes truthful form and accessibility state.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label; placeholder text is only a hint.",
+      "Base UI owns active-descendant focus, Arrow navigation, Enter selection, Escape, pointer selection, and disabled-item skipping.",
+      "Localize clearLabel, toggleLabel, emptyMessage, and loadingMessage when the product locale is not English.",
+      "Pair document dir with Base UI DirectionProvider so positioning and navigation follow LTR or RTL.",
+      "Keep Empty and Status regions mounted so polite announcements remain reliable.",
+    ],
+    api: [
+      {
+        title: "query / value / open",
+        description: "Independent controlled and uncontrolled state pairs.",
+      },
+      {
+        title: "filter / locale",
+        description:
+          "Locale-aware contains matching by default, a consumer predicate, or false for no filtering.",
+      },
+      {
+        title: "name / form / required / autoComplete",
+        description: "Native form identity, reset, required state, and autofill hint.",
+      },
+    ],
+    guidance: {
+      do: ["Use for one selected city, owner, category, or other bounded synchronous option set."],
+      dont: [
+        "Do not add remote fetching, debounce, ranking, creation, virtualization, multiple selection, routing, analytics, or persistence.",
+      ],
+    },
+    related: ["select", "command-primitive", "input", "field"],
+    tokens: [
+      "--n-select-height-md",
+      "--n-select-padding-inline",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-placeholder",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+      "--n-focus-ring",
+    ],
+  },
+  "search-field": {
+    category: "Forms",
+    purpose:
+      "Use SearchField for one free-form query that needs accessible clear and explicit Enter search behavior.",
+    anatomy: [
+      { title: "input", description: "One native search input and form value." },
+      { title: "search-icon", description: "Decorative default or consumer-provided icon." },
+      {
+        title: "clear",
+        description: "Localizable native button that restores focus to the same input.",
+      },
+      {
+        title: "loading",
+        description: "Localizable default status or consumer-provided indicator slot.",
+      },
+    ],
+    variants: [
+      { title: "Small, medium, large", description: "Shared form-control size contract." },
+      { title: "LTR and RTL", description: "Logical addon placement follows document direction." },
+    ],
+    states: [
+      { title: "Value", description: "One controlled or uncontrolled string query." },
+      { title: "Loading", description: "Presentation only; requests remain consumer-owned." },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Preserves native form and accessibility state.",
+      },
+    ],
+    accessibility: [
+      "Provide the visible label and localize clearLabel and loadingLabel for the product locale.",
+      "Enter emits onSearch without suppressing native form submission and ignores IME composition.",
+      "The clear action is unavailable while disabled or read-only and restores input focus.",
+      "A custom loadingIndicator must provide semantics equivalent to the default status.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "One controlled or uncontrolled query and bounded input or clear reason.",
+      },
+      {
+        title: "onSearch",
+        description: "Receives the current query and an IME-safe Enter event detail.",
+      },
+      {
+        title: "name / form / required / autoComplete",
+        description: "Native form identity, reset, required state, and autofill hints.",
+      },
+    ],
+    guidance: {
+      do: ["Use for a free-form project, documentation, or catalog query."],
+      dont: [
+        "Do not add results, suggestions, requests, debounce, filtering, ranking, routing, global shortcuts, history, analytics, or product entities.",
+      ],
+    },
+    related: ["input", "combobox", "command-primitive", "field"],
+    tokens: [
+      "--n-input-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-border-focus",
+      "--n-input-placeholder",
+      "--n-input-addon-foreground",
+      "--n-focus-ring",
     ],
   },
   toast: {
@@ -2483,7 +2796,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "Expanded stack",
         description:
-          "Expands upward from a bottom-centered stack whose collapsed cards scale and step upward behind the frontmost toast.",
+          "Expands upward from a bottom inline-end stack whose collapsed cards scale and step upward behind the frontmost toast.",
       },
       { title: "Limited", description: "Keeps overflow mounted but inert and visually hidden." },
     ],
@@ -2554,8 +2867,9 @@ export const componentReference: Record<string, ComponentReference> = {
       ],
     },
     designNotes: [
-      "Toast uses the standard adaptive overlay surface, text, control, border, and elevation tokens for the active color mode.",
+      "Toast uses the adaptive overlay surface and text hierarchy with a compact shadow and a visible default border.",
       "Semantic color is limited to the status icon; copy and controls use the toast foreground hierarchy.",
+      "Managed actions stay beside the copy and use the primary Button treatment; dismissal remains the trailing ghost control.",
       "Toast width is capped at 25rem (400px) before viewport insets reduce it on smaller screens.",
     ],
     tokens: [
@@ -3189,6 +3503,157 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-focus-ring",
     ],
   },
+  collapsible: {
+    category: "Layout",
+    purpose:
+      "Use Collapsible for one independent disclosure when controlled state, shared anatomy, or maintained motion adds durable value.",
+    anatomy: [
+      { title: "root", description: "Owns one controlled or uncontrolled open state." },
+      { title: "trigger", description: "Native button with expanded and controls relationships." },
+      { title: "panel", description: "Associated content that unmounts when closed by default." },
+    ],
+    variants: [{ title: "Independent disclosure", description: "One trigger controls one panel." }],
+    states: [
+      {
+        title: "Closed",
+        description: "Panel is unmounted by default and has no focusable descendants.",
+      },
+      { title: "Open", description: "Panel height and opacity resolve to visible content." },
+      { title: "Disabled", description: "Trigger remains visible and cannot change state." },
+    ],
+    motion: [
+      "Panel height uses the Base UI measured height variable and shared reveal tokens.",
+      "Opacity reinforces state without carrying essential information.",
+      "Reduced motion makes the state change immediate.",
+    ],
+    accessibility: [
+      "Base UI owns aria-expanded, aria-controls, stable panel association, and activation behavior.",
+      "The trigger renders a native type=button by default and retains focus after activation.",
+      "Closed content is unmounted by default; keepMounted and hiddenUntilFound preserve browser-hidden semantics.",
+      "Use native details and summary for simple uncontrolled disclosure that needs no maintained abstraction.",
+    ],
+    api: [
+      {
+        title: "open / defaultOpen / onOpenChange",
+        description:
+          "Controlled or uncontrolled Base UI state with cancellable Nerio event details.",
+      },
+      {
+        title: "disabled",
+        description: "Prevents trigger interaction for the complete disclosure.",
+      },
+      {
+        title: "CollapsiblePanel keepMounted / hiddenUntilFound",
+        description:
+          "Opt into browser-hidden content only when persistence or page search requires it.",
+      },
+      {
+        title: "render / className / style",
+        description:
+          "Compose semantic elements and state-aware customization without replacing Base UI behavior.",
+      },
+    ],
+    designNotes: [
+      "Collapsible owns one disclosure only; grouped expansion belongs to Accordion.",
+      "Content, persistence, fetching, analytics, and product workflow remain consumer-owned.",
+    ],
+    related: ["Accordion", "Button", "Card"],
+    guidance: {
+      do: ["Use for one independently controlled panel with meaningful hidden content."],
+      dont: [
+        "Do not replace native details and summary when no shared state, motion, or anatomy is needed.",
+      ],
+    },
+    tokens: [
+      "--n-disclosure-background",
+      "--n-disclosure-border",
+      "--n-disclosure-radius",
+      "--n-disclosure-trigger-min-height",
+      "--n-disclosure-trigger-padding-inline",
+      "--n-disclosure-panel-padding-inline",
+      "--n-disclosure-panel-foreground",
+      "--n-motion-reveal-duration",
+      "--n-disclosure-focus-ring",
+    ],
+  },
+  accordion: {
+    category: "Layout",
+    purpose:
+      "Use Accordion for a related group of disclosure items whose expansion state benefits from one bounded owner.",
+    anatomy: [
+      { title: "root", description: "Owns the ordered set of expanded item values." },
+      { title: "item", description: "Stable string value and optional disabled state." },
+      { title: "header", description: "Semantic heading chosen to fit the surrounding outline." },
+      { title: "trigger", description: "Native button associated with one panel." },
+      { title: "panel", description: "Associated content that unmounts when closed by default." },
+    ],
+    variants: [
+      { title: "Single expansion", description: "Default mode keeps at most one item open." },
+      {
+        title: "Multiple expansion",
+        description: "The multiple prop allows independent open items.",
+      },
+    ],
+    states: [
+      {
+        title: "Closed",
+        description: "Panel is unmounted by default and leaves no focusable hidden descendants.",
+      },
+      { title: "Open", description: "Item value is present in the root value array." },
+      { title: "Disabled", description: "Item remains visible and cannot change state." },
+    ],
+    motion: [
+      "Panel height uses the Base UI measured height variable and shared reveal tokens.",
+      "Opacity reinforces state without carrying essential information.",
+      "Reduced motion makes the state change immediate.",
+    ],
+    accessibility: [
+      "Base UI owns expanded state, trigger-panel relationships, and activation behavior.",
+      "Wrap every trigger in AccordionHeader and choose a heading level that fits the document outline through render composition.",
+      "Tab follows document order and Enter or Space toggles the focused trigger; deprecated roving Arrow-key behavior is not reintroduced.",
+      "Closed content is unmounted by default; keepMounted and hiddenUntilFound preserve browser-hidden semantics.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled arrays of stable string item values.",
+      },
+      { title: "multiple", description: "Allows more than one item value to remain expanded." },
+      {
+        title: "AccordionItem value / disabled",
+        description:
+          "Requires a stable value and optionally prevents one item from changing state.",
+      },
+      {
+        title: "render / className / style",
+        description:
+          "Compose heading levels and state-aware customization without replacing Base UI behavior.",
+      },
+    ],
+    designNotes: [
+      "Accordion is content disclosure, not application navigation or a routing owner.",
+      "FAQ schema, nested persistence, fetching, analytics, and product workflow remain consumer-owned.",
+    ],
+    related: ["Collapsible", "Card", "Tabs"],
+    guidance: {
+      do: [
+        "Use concise related headings and stable values; choose single or multiple expansion deliberately.",
+      ],
+      dont: ["Do not use Accordion for navigation trees, routed menus, or unrelated sections."],
+    },
+    tokens: [
+      "--n-disclosure-background",
+      "--n-disclosure-border",
+      "--n-disclosure-divider",
+      "--n-disclosure-radius",
+      "--n-disclosure-trigger-min-height",
+      "--n-disclosure-trigger-padding-inline",
+      "--n-disclosure-panel-padding-inline",
+      "--n-disclosure-panel-foreground",
+      "--n-motion-reveal-duration",
+      "--n-disclosure-focus-ring",
+    ],
+  },
   tabs: {
     category: "Navigation",
     purpose: "Use Tabs to switch between related panels within the same context.",
@@ -3232,6 +3697,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Provide aria-label or aria-labelledby when the tablist purpose is not clear from nearby text.",
       "Base UI owns tab, tablist, tabpanel relationships and activation direction; Nerio keeps arrow navigation on enabled triggers.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
       "Every trigger needs a visible text label. Icons are decorative; Badge text remains available to assistive technology.",
       "Provide an enabled defaultValue for predictable SSR when the first trigger is disabled.",
     ],
@@ -3293,9 +3759,10 @@ export const componentReference: Record<string, ComponentReference> = {
   dialog: {
     category: "Overlays",
     purpose:
-      "Use Dialog to focus a short task, confirmation, or decision above the current surface.",
+      "Use Dialog to focus a short task or reversible decision above the current surface; use AlertDialog when a consequential action requires an explicit response.",
     anatomy: [
       { title: "trigger", description: "Control that opens the dialog." },
+      { title: "portal", description: "Optional container boundary for portalled modal content." },
       { title: "backdrop", description: "Backdrop that separates the dialog from the page." },
       { title: "content", description: "Modal surface rendered through a portal." },
       { title: "header", description: "Title, optional description, and close boundary." },
@@ -3323,8 +3790,15 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     variants: [
-      { title: "Task", description: "Short focused task with clear completion." },
-      { title: "Confirmation", description: "Decision point for sensitive actions." },
+      {
+        title: "Convenience",
+        description: "Compatible trigger, title, description, body, footer, and close path.",
+      },
+      {
+        title: "Compound",
+        description:
+          "Meaningful parts may be omitted, reordered, or customized while Base UI retains behavior.",
+      },
     ],
     states: [
       { title: "Open", description: "Focus moves into the dialog." },
@@ -3333,6 +3807,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Use a clear title, keep focus contained, and avoid opening dialogs from dialogs.",
       "Base UI handles modal focus trapping, Escape dismissal, outside dismissal, and return focus.",
+      "Compound compositions keep a keyboard-reachable DialogClose; initialFocus and finalFocus are explicit advanced controls.",
       "Use open/defaultOpen/onOpenChange when state must be coordinated by the parent.",
       "Long body content scrolls inside the bounded dialog so the title and dismissal control remain visible.",
     ],
@@ -3345,8 +3820,9 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       { title: "bodyClassName", description: "Optional class hook for the body slot." },
       {
-        title: "DialogFooter",
-        description: "Composable footer that keeps modal actions aligned to the inline end.",
+        title: "DialogRoot and compound parts",
+        description:
+          "Expose Trigger, Portal, Backdrop, Content, Header, Title, Description, Body, Footer, and Close without changing the convenience Dialog API.",
       },
       {
         title: "closeLabel",
@@ -3354,8 +3830,103 @@ export const componentReference: Record<string, ComponentReference> = {
       },
     ],
     guidance: {
-      do: ["Use for short decisions that need context without a route change."],
-      dont: ["Do not use Dialog for long, multi-page workflows."],
+      do: [
+        "Use the convenience API for the common path and compound parts only when the task needs structural control.",
+      ],
+      dont: [
+        "Do not use Dialog for long workflows or consequential confirmation that belongs in AlertDialog.",
+      ],
+    },
+    tokens: [
+      "--n-dialog-width-md",
+      "--n-overlay-z-index",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-backdrop",
+      "--n-overlay-backdrop-filter",
+      "--n-overlay-foreground",
+      "--n-overlay-foreground-muted",
+      "--n-overlay-surface-filter",
+      "--n-overlay-shadow",
+      "--n-motion-overlay-enter-duration",
+      "--n-motion-overlay-exit-duration",
+      "--n-focus-ring",
+    ],
+  },
+  "alert-dialog": {
+    category: "Overlays",
+    purpose:
+      "Use AlertDialog when a destructive or difficult-to-reverse action must pause for one explicit response.",
+    anatomy: [
+      { title: "trigger", description: "Control that requests the confirmation." },
+      { title: "portal", description: "Container boundary for the portalled confirmation." },
+      { title: "backdrop", description: "Modal backdrop that does not dismiss on pointer press." },
+      {
+        title: "content",
+        description: "Viewport-bounded alertdialog surface with deliberate focus.",
+      },
+      { title: "header", description: "Groups the accessible name and concrete consequence." },
+      { title: "title", description: "Required accessible name phrased as the decision." },
+      { title: "description", description: "Explains the consequence without ambiguous language." },
+      { title: "body", description: "Optional supporting content; keep the decision concise." },
+      { title: "footer", description: "Action row with cancel before confirmation." },
+      { title: "cancel", description: "Safe response and recommended initial-focus target." },
+      {
+        title: "action",
+        description: "Explicit confirmation boundary that closes after the consumer handler runs.",
+      },
+    ],
+    variants: [{ title: "Confirmation", description: "One explicit cancel/action decision." }],
+    states: [
+      {
+        title: "Open",
+        description: "Pointer dismissal is disabled and focus stays in the alertdialog.",
+      },
+      { title: "Cancelled", description: "The safe response closes and restores focus." },
+      { title: "Confirmed", description: "The consumer handler runs and the dialog closes." },
+    ],
+    accessibility: [
+      "Base UI supplies role=alertdialog, modal focus containment, Escape dismissal, scroll locking, and pointer-dismissal protection.",
+      "Provide both AlertDialogTitle and AlertDialogDescription with concrete action and consequence copy.",
+      "For destructive or difficult-to-reverse actions, pass the AlertDialogCancel ref to AlertDialogContent initialFocus.",
+      "Keep cancel before action in reading and tab order; do not communicate danger through color alone.",
+      "When product policy requires stronger confirmation, compose an exact entity-name field and disable the action until it matches.",
+      "Mutation, async state, permissions, routing, and error recovery remain consumer-owned.",
+    ],
+    api: [
+      {
+        title: "AlertDialog",
+        description: "Controlled or uncontrolled Base UI Alert Dialog root.",
+      },
+      {
+        title: "AlertDialogContent",
+        description:
+          "Accepts initialFocus, finalFocus, className, native popup props, and a forwarded ref.",
+      },
+      {
+        title: "AlertDialogCancel",
+        description: "Explicit safe close boundary and recommended initial-focus target.",
+      },
+      {
+        title: "AlertDialogAction",
+        description:
+          "Explicit confirm close boundary; consumers attach mutation behavior to the rendered Button.",
+      },
+    ],
+    designNotes: [
+      "AlertDialog is a response boundary, not an async mutation orchestrator.",
+      "Exact-name confirmation is optional consumer-owned policy composed inside AlertDialogBody.",
+      "A normal Dialog remains appropriate for reversible tasks and forms with their own completion model.",
+    ],
+    related: ["Dialog", "Button"],
+    guidance: {
+      do: [
+        "Name the action and consequence precisely, focus Cancel first, and keep one clear confirmation action.",
+        "Compose an exact entity-name confirmation when consumer product policy requires it.",
+      ],
+      dont: [
+        "Do not hide side effects, default focus to a destructive action, or put multi-step workflows in AlertDialog.",
+      ],
     },
     tokens: [
       "--n-dialog-width-md",
@@ -3407,7 +3978,8 @@ export const componentReference: Record<string, ComponentReference> = {
       },
       {
         title: "Direction",
-        description: "Explicit ltr or rtl content direction while side remains physical.",
+        description:
+          "Inherits the nearest HTML dir by default; an explicit ltr or rtl override leaves side physical.",
       },
       {
         title: "Collapse mode",
@@ -3450,7 +4022,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "SidebarProvider",
         description:
-          "defaultExpanded, expanded, onExpandedChange, side, direction, collapseMode, and optional sidebarId.",
+          "defaultExpanded, expanded, onExpandedChange, physical side, optional direction override, collapseMode, and optional sidebarId.",
       },
       {
         title: "Sidebar",
@@ -3903,6 +4475,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Keep labels action-oriented and support keyboard navigation through Base UI.",
       "Optional descriptions remain separate from the accessible name and are exposed through aria-describedby.",
+      "Pair the document dir attribute with Base UI DirectionProvider so navigation and positioning follow LTR or RTL.",
     ],
     api: [
       {
