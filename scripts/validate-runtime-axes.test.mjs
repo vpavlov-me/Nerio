@@ -78,8 +78,8 @@ test("runtime-axis validator rejects selector substrings that are not exact sele
     "--token-file",
     "styles.css",
     readFileSync(tokenSource, "utf8").replace(
-      ':root[data-theme="purple"] {',
-      '.preview :root[data-theme="purple"] {',
+      ':root[data-theme="purple"],\n[data-nerio-theme-scope][data-theme="purple"] {',
+      '.preview :root[data-theme="purple"],\n[data-nerio-theme-scope][data-theme="purple"] {',
     ),
     (stderr) => assert.match(stderr, /Light theme purple selector is missing or misplaced/),
   );
@@ -100,7 +100,7 @@ test("runtime-axis validator requires system-dark selectors inside the dark medi
 test("runtime-axis validator requires complete accent declarations in dark scopes", () => {
   const source = readFileSync(tokenSource, "utf8");
   const mutated = source.replace(
-    /(:root\[data-theme="red"\]\[data-mode="dark"\]\s*\{[\s\S]*?)^\s*--n-chart-categorical-1:.*\n/m,
+    /(:root\[data-theme="red"\]\[data-mode="dark"\],\s*\n\[data-nerio-theme-scope\]\[data-theme="red"\]\[data-mode="dark"\]\s*\{[\s\S]*?)^\s*--n-chart-categorical-1:.*\n/m,
     "$1",
   );
   withFixture("--token-file", "styles.css", mutated, (stderr) => {
@@ -143,8 +143,8 @@ for (const operator of ["=", "~=", "|=", "^=", "$=", "*=", null]) {
 
 test("runtime-axis validator rejects primitive token overrides in runtime selectors", () => {
   const source = readFileSync(tokenSource, "utf8").replace(
-    ':root[data-density="compact"] {',
-    ':root[data-density="compact"] {\n  --n-radius-md: 0.5rem;',
+    '[data-nerio-theme-scope][data-density="compact"] {',
+    '[data-nerio-theme-scope][data-density="compact"] {\n  --n-radius-md: 0.5rem;',
   );
   withFixture("--token-file", "styles.css", source, (stderr) => {
     assert.match(
@@ -156,8 +156,8 @@ test("runtime-axis validator rejects primitive token overrides in runtime select
 
 test("runtime-axis validator treats alpha neutrals as immutable primitives", () => {
   const source = readFileSync(tokenSource, "utf8").replace(
-    ':root[data-density="compact"] {',
-    ':root[data-density="compact"] {\n  --n-gray-a-8: rgb(15 23 42 / 0.5);',
+    '[data-nerio-theme-scope][data-density="compact"] {',
+    '[data-nerio-theme-scope][data-density="compact"] {\n  --n-gray-a-8: rgb(15 23 42 / 0.5);',
   );
   withFixture("--token-file", "styles.css", source, (stderr) => {
     assert.match(stderr, /redefines primitive token --n-gray-a-8/);
@@ -166,8 +166,8 @@ test("runtime-axis validator treats alpha neutrals as immutable primitives", () 
 
 test("runtime-axis validator treats overlay elevation as an immutable primitive", () => {
   const source = readFileSync(tokenSource, "utf8").replace(
-    ':root[data-density="compact"] {',
-    ':root[data-density="compact"] {\n  --n-shadow-overlay: none;',
+    '[data-nerio-theme-scope][data-density="compact"] {',
+    '[data-nerio-theme-scope][data-density="compact"] {\n  --n-shadow-overlay: none;',
   );
   withFixture("--token-file", "styles.css", source, (stderr) => {
     assert.match(stderr, /redefines primitive token --n-shadow-overlay/);
@@ -185,7 +185,7 @@ test("runtime-axis validator recognizes whitespace-padded runtime selectors", ()
 
 test("runtime-axis validator requires density aliases and representative component remaps", () => {
   const source = readFileSync(tokenSource, "utf8").replace(
-    /(:root\[data-density="compact"\]\s*\{[\s\S]*?)^\s*--n-table-cell-padding-y:.*\n/m,
+    /(:root\[data-density="compact"\],\s*\n\[data-nerio-theme-scope\]\[data-density="compact"\]\s*\{[\s\S]*?)^\s*--n-table-cell-padding-y:.*\n/m,
     "$1",
   );
   withFixture("--token-file", "styles.css", source, (stderr) => {

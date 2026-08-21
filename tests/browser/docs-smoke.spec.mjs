@@ -286,8 +286,8 @@ test("applies every Playground control to the product scenario canvas", async ({
   const problems = monitorPage(page);
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/playground");
-  const playground = page.locator(".visual-playground");
   const canvas = page.getByRole("region", { name: "Nerio scenario canvas" });
+  const playground = canvas;
   await expect(
     page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link"),
   ).toHaveText(["Playground", "Docs", "Components", "Blocks", "Templates"]);
@@ -374,43 +374,49 @@ test("applies every Playground control to the product scenario canvas", async ({
   await expect(playground).toHaveAttribute("data-mode", "dark");
   const settings = page.locator("#playground-theme-settings");
   await expect(settings).toHaveAttribute("role", "complementary");
-  await expect(settings).toHaveAttribute("aria-label", "Theme settings");
-  await expect(settings.getByRole("combobox")).toHaveCount(5);
-  await expect(page.getByRole("heading", { name: "Settings", exact: true })).toHaveCount(0);
+  await expect(settings).toHaveAttribute("aria-label", "Playground settings");
+  await expect(settings.getByRole("combobox")).toHaveCount(9);
+  await expect(page.getByRole("heading", { name: "Playground style", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Collapse settings" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Show settings" })).toHaveCount(0);
-  await expect(settings.getByRole("combobox", { name: "UI scale" })).toHaveCount(0);
-  await expect(settings.getByRole("combobox", { name: "Motion" })).toHaveCount(0);
+  await expect(settings.getByRole("combobox", { name: "UI scale" })).toBeVisible();
+  await expect(settings.getByRole("combobox", { name: "Motion" })).toBeAttached();
+  await expect(settings.getByRole("combobox", { name: "Font" })).toBeAttached();
+  await expect(settings.getByRole("button", { name: "Shuffle" })).toBeVisible();
+  await expect(settings.getByRole("button", { name: /Copy|Get code/i })).toHaveCount(0);
+  await expect(settings.getByRole("heading", { name: "Color", exact: true })).toHaveCount(0);
+  await expect(settings.getByRole("heading", { name: "Layout", exact: true })).toHaveCount(0);
+  await expect(settings.getByRole("heading", { name: "Typography", exact: true })).toHaveCount(0);
+  await expect(settings.getByRole("heading", { name: "Effects", exact: true })).toHaveCount(0);
+  await expect(settings).not.toHaveAttribute("data-theme");
+  await expect(settings).not.toHaveAttribute("data-mode");
+  await expect(settings).not.toHaveAttribute("data-density");
+  await expect(page.locator(".visual-playground")).not.toHaveAttribute("style");
+  await expect(page.locator(".visual-playground")).not.toHaveAttribute("data-theme");
+  await expect(page.locator(".visual-playground")).not.toHaveAttribute("data-mode");
+  await expect(page.locator(".visual-playground")).not.toHaveAttribute("data-density");
   const workspace = page.locator(".visual-playground__workspace--radix");
   const settingsLayout = await workspace.evaluate((element) => {
-    const workspaceRect = element.getBoundingClientRect();
     const canvasRect = element.querySelector(".playground-canvas").getBoundingClientRect();
     const settingsElement = element.querySelector("#playground-theme-settings");
     const settingsRect = settingsElement.getBoundingClientRect();
-    const selectRects = Array.from(settingsElement.querySelectorAll('[role="combobox"]')).map(
-      (select) => select.getBoundingClientRect(),
-    );
     return {
-      canvasBottom: canvasRect.bottom,
       canvasHeight: canvasRect.height,
-      centerDelta: Math.abs(
-        settingsRect.left + settingsRect.width / 2 - (workspaceRect.left + workspaceRect.width / 2),
-      ),
+      canvasLeft: canvasRect.left,
+      canvasTop: canvasRect.top,
+      settingsRight: settingsRect.right,
       settingsWidth: settingsRect.width,
       settingsTop: settingsRect.top,
       settingsHeight: settingsRect.height,
       settingsShadow: getComputedStyle(settingsElement).boxShadow,
-      selectTops: selectRects.map((rect) => rect.top),
     };
   });
-  expect(settingsLayout.settingsTop).toBeGreaterThan(settingsLayout.canvasBottom);
-  expect(settingsLayout.settingsHeight).toBeLessThan(settingsLayout.canvasHeight);
-  expect(settingsLayout.settingsWidth).toBeLessThanOrEqual(900);
-  expect(settingsLayout.centerDelta).toBeLessThan(1);
+  expect(Math.abs(settingsLayout.settingsTop - settingsLayout.canvasTop)).toBeLessThan(1);
+  expect(settingsLayout.settingsRight).toBeLessThan(settingsLayout.canvasLeft);
+  expect(Math.abs(settingsLayout.settingsHeight - settingsLayout.canvasHeight)).toBeLessThan(12);
+  expect(settingsLayout.settingsWidth).toBeGreaterThanOrEqual(256);
+  expect(settingsLayout.settingsWidth).toBeLessThanOrEqual(288);
   expect(settingsLayout.settingsShadow).toBe("none");
-  expect(
-    Math.max(...settingsLayout.selectTops) - Math.min(...settingsLayout.selectTops),
-  ).toBeLessThan(1);
   await expect(settings.locator(".n-select-field").first()).toHaveCSS("gap", "6px");
   await expect(canvas).toHaveCSS("scrollbar-width", "none");
   const canvasHeaderGap = await page.evaluate(() => {
@@ -745,7 +751,23 @@ test("applies every Playground control to the product scenario canvas", async ({
       .toEqual([expected, expected, expected]);
   };
 
-  await chooseSetting("Accent color", "Blue");
+  const settingsTokensBefore = await settings.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const trigger = element.querySelector(".n-select-trigger");
+    return {
+      font: style.fontFamily,
+      radius: getComputedStyle(trigger).borderRadius,
+      space: style.getPropertyValue("--n-space-4").trim(),
+    };
+  });
+
+  await setting("Accent color").click();
+  const accentOptions = page.getByRole("option").filter({
+    has: page.locator(".playground-color-option"),
+  });
+  await expect(accentOptions).toHaveCount(6);
+  await expect(accentOptions.locator(".playground-color-option__swatch")).toHaveCount(6);
+  await page.getByRole("option", { name: "Blue", exact: true }).click();
   await expect(settings.getByRole("button", { name: "Reset" })).toBeVisible();
   await chooseSetting("Density", "Compact");
   await chooseSetting("Radii", "Full");
@@ -786,7 +808,45 @@ test("applies every Playground control to the product scenario canvas", async ({
   await expectSegmentedTabsRadius(0);
   await expect(firstScenarioTextarea).toHaveCSS("border-radius", "0px");
   await expect(firstScenarioTable).toHaveCSS("border-radius", "0px");
+  await chooseSetting("UI scale", "110%");
+  await chooseSetting("Motion", "Standard");
+  await chooseSetting("Font", "Space Grotesk");
+  await chooseSetting("Color mode", "Light");
+  await expect(playground).toHaveAttribute("data-mode", "light");
+  await page.getByRole("button", { name: "Color mode: System" }).click();
+  await page.getByRole("menuitem", { name: "Light", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-mode", "light");
+  await chooseSetting("Color mode", "Dark");
+  await expect(playground).toHaveAttribute("data-nerio-theme-scope", "");
+  const isolatedModes = await page.evaluate(() => {
+    const root = document.documentElement;
+    const playground = document.querySelector("[data-playground-preview]");
+    const indicator = playground?.querySelector(".n-tabs__indicator");
+    return {
+      canvasIndicator: getComputedStyle(playground)
+        .getPropertyValue("--n-tabs-indicator-background")
+        .trim(),
+      globalIndicator: getComputedStyle(root)
+        .getPropertyValue("--n-tabs-indicator-background")
+        .trim(),
+      indicatorBackground: getComputedStyle(indicator).backgroundColor,
+    };
+  });
+  expect(isolatedModes.globalIndicator).toBe("#fff");
+  expect(isolatedModes.canvasIndicator).not.toBe(isolatedModes.globalIndicator);
+  expect(isolatedModes.indicatorBackground).toBe("rgba(255, 255, 255, 0.16)");
   await chooseSetting("Panel style", "Flat");
+
+  const settingsTokensAfter = await settings.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const trigger = element.querySelector(".n-select-trigger");
+    return {
+      font: style.fontFamily,
+      radius: getComputedStyle(trigger).borderRadius,
+      space: style.getPropertyValue("--n-space-4").trim(),
+    };
+  });
+  expect(settingsTokensAfter).toEqual(settingsTokensBefore);
 
   await expect(playground).toHaveAttribute("data-theme", "blue");
   await expect(playground).toHaveAttribute("data-mode", "dark");
@@ -796,21 +856,31 @@ test("applies every Playground control to the product scenario canvas", async ({
     return {
       controlHeight: style.getPropertyValue("--n-button-height-md").trim(),
       duration: style.getPropertyValue("--n-duration-normal").trim(),
+      font: style.getPropertyValue("--n-font-sans").trim(),
+      fontFamily: style.fontFamily,
       radius: style.getPropertyValue("--n-radius-md").trim(),
       space: style.getPropertyValue("--n-space-4").trim(),
     };
   });
-  expect(applied).toEqual({
-    controlHeight: "28px",
-    duration: "260ms",
+  expect(applied).toMatchObject({
+    controlHeight: "30.8px",
+    duration: "220ms",
     radius: "0px",
-    space: "16px",
+    space: "17.6px",
   });
+  expect(applied.font).toContain("Space Grotesk");
+  expect(applied.fontFamily).toContain("Space Grotesk");
 
   const darkTextBefore = await playground.evaluate((element) =>
     getComputedStyle(element).getPropertyValue("--n-color-text-secondary").trim(),
   );
-  await chooseSetting("Neutral color", "Mauve");
+  await setting("Neutral color").click();
+  const neutralOptions = page.getByRole("option").filter({
+    has: page.locator(".playground-color-option"),
+  });
+  await expect(neutralOptions).toHaveCount(6);
+  await expect(neutralOptions.locator(".playground-color-option__swatch")).toHaveCount(6);
+  await page.getByRole("option", { name: "Mauve", exact: true }).click();
   const darkTextAfter = await playground.evaluate((element) =>
     getComputedStyle(element).getPropertyValue("--n-color-text-secondary").trim(),
   );
@@ -826,6 +896,9 @@ test("applies every Playground control to the product scenario canvas", async ({
   await settings.getByRole("button", { name: "Reset" }).click();
   await expect(setting("Accent color")).toContainText("Purple");
   await expect(setting("Density")).toContainText("Comfortable");
+  await expect(setting("UI scale")).toContainText("100%");
+  await expect(setting("Motion")).toContainText("Calm");
+  await expect(setting("Font")).toContainText("Geist");
   await expect(setting("Panel style")).toContainText("Raised");
   await expect(settings.getByRole("button", { name: "Reset" })).toHaveCount(0);
   await expectHealthyPage(page, problems);
@@ -835,7 +908,7 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
   const problems = monitorPage(page);
   await page.goto("/playground");
 
-  const settings = page.getByRole("complementary", { name: "Theme settings" });
+  const settings = page.getByRole("complementary", { name: "Playground settings" });
   await settings.getByRole("combobox", { name: "Neutral color" }).click();
   await page.getByRole("option", { name: "Mauve", exact: true }).click();
 
@@ -882,6 +955,10 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
     "data-density",
     "comfortable",
   );
+  await expect(dialog.locator("xpath=ancestor::*[@data-playground-portal]")).toHaveAttribute(
+    "data-nerio-theme-scope",
+    "",
+  );
   await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "Show success toast" }).click();
@@ -897,9 +974,14 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
     return {
       actualBackground: getComputedStyle(element).backgroundColor,
       expectedBackground,
+      canvasMode: document.querySelector("[data-playground-preview]")?.dataset.mode,
+      mode: viewport.dataset.mode,
+      scoped: viewport.hasAttribute("data-nerio-theme-scope"),
     };
   });
   expect(toastTheme.actualBackground).toBe(toastTheme.expectedBackground);
+  expect(toastTheme.mode).toBe(toastTheme.canvasMode);
+  expect(toastTheme.scoped).toBe(true);
 
   await expectHealthyPage(page, problems);
 });

@@ -134,3 +134,16 @@ export function exactRule(rules, selector, media) {
         rule.atRules.some((atRule) => atRule.name === "media" && atRule.prelude === media)),
   );
 }
+
+export function scopedRule(rules, selector, media) {
+  const normalized = normalizeSelector(selector);
+  const scoped = normalized.replace(/^:root/, "[data-nerio-theme-scope]");
+  return rules.find(
+    (rule) =>
+      rule.selectors.includes(normalized) &&
+      rule.selectors.includes(scoped) &&
+      rule.selectors.every((candidate) => candidate === normalized || candidate === scoped) &&
+      (media === undefined ||
+        rule.atRules.some((atRule) => atRule.name === "media" && atRule.prelude === media)),
+  );
+}

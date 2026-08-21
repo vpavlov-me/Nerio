@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { collectRules, normalizeSelector, parseCss } from "./css-structure.mjs";
+import { collectRules, parseCss, scopedRule } from "./css-structure.mjs";
 import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -79,23 +79,15 @@ function isPrimitiveToken(token) {
   return primitiveTokenPatterns.some((pattern) => pattern.test(token));
 }
 
-function findExactRule(rules, selector, media = null) {
-  const expected = normalizeSelector(selector);
-  return rules.find((rule) => {
-    const exactSelector = rule.selectors.length === 1 && rule.selectors[0] === expected;
-    const mediaRules = rule.atRules.filter((atRule) => atRule.name === "media");
-    return (
-      exactSelector &&
-      (media === null
-        ? mediaRules.length === 0
-        : mediaRules.length === 1 && mediaRules[0].prelude === media)
-    );
-  });
-}
-
 function requireRule(rules, selector, media, tokens, label, failures) {
-  const rule = findExactRule(rules, selector, media);
-  if (!rule) {
+  const rule = scopedRule(rules, selector, media ?? undefined);
+  const mediaRules = rule?.atRules.filter((atRule) => atRule.name === "media") ?? [];
+  const correctlyPlaced =
+    rule &&
+    (media === null
+      ? mediaRules.length === 0
+      : mediaRules.length === 1 && mediaRules[0].prelude === media);
+  if (!correctlyPlaced) {
     failures.push(`${label} selector is missing or misplaced: ${selector}`);
     return;
   }
