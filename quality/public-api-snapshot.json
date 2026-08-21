@@ -10690,7 +10690,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-383905300e326a4211da4d1ed213195517ea5158b8156bc08770095516c70b72",
+            "integrity": "sha256-1b49dd0ef47fc4d075c22a49d03fb01bf5db96dbbf0681d2b891cbe53e750ae6",
             "role": "component",
             "source": "../../ui/src/components/search-field.tsx",
             "target": "components/search-field.tsx"

@@ -144,6 +144,7 @@ export const SearchField = React.forwardRef<HTMLDivElement, SearchFieldProps>(fu
               event.defaultPrevented ||
               event.key !== "Enter" ||
               event.nativeEvent.isComposing ||
+              event.nativeEvent.keyCode === 229 ||
               disabled
             ) {
               return;
