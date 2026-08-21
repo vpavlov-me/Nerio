@@ -3082,7 +3082,14 @@ describe("Core interactive action contracts", () => {
     const queryChanges = vi.fn();
     const openChanges = vi.fn();
     const { container } = render(
-      <form>
+      <form
+        onReset={(event) => {
+          if (event.currentTarget.dataset.cancelReset === "true") event.preventDefault();
+          if (event.currentTarget.dataset.stopResetPropagation === "true") {
+            event.stopPropagation();
+          }
+        }}
+      >
         <Combobox
           defaultValue="paris"
           label="City"
@@ -3126,6 +3133,51 @@ describe("Core interactive action contracts", () => {
       expect(screen.getByRole("combobox", { name: "City" })).toHaveValue("Paris"),
     );
     expect(new FormData(container.querySelector("form")!).get("city")).toBe("paris");
+
+    await user.clear(input);
+    await user.type(input, "tbi");
+    await user.click(await screen.findByRole("option", { name: "Tbilisi" }));
+    const form = container.querySelector("form")!;
+    form.dataset.cancelReset = "true";
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+    await act(async () => new Promise((resolve) => setTimeout(resolve, 0)));
+    expect(input).toHaveValue("Tbilisi");
+    expect(new FormData(form).get("city")).toBe("tbilisi");
+
+    delete form.dataset.cancelReset;
+    form.dataset.stopResetPropagation = "true";
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+    await waitFor(() => expect(input).toHaveValue("Paris"));
+    expect(new FormData(form).get("city")).toBe("paris");
+  });
+
+  it("preserves pending Combobox resets across synchronous consumer rerenders", async () => {
+    const user = userEvent.setup();
+
+    function ResetRerenderCombobox() {
+      const [, rerender] = React.useReducer((count: number) => count + 1, 0);
+      return (
+        <form onReset={rerender}>
+          <Combobox
+            defaultValue="paris"
+            label="Rerender city"
+            options={[
+              { value: "paris", label: "Paris", textValue: "Paris" },
+              { value: "tbilisi", label: "Tbilisi", textValue: "Tbilisi" },
+            ]}
+          />
+          <button type="reset">Reset rerender city</button>
+        </form>
+      );
+    }
+
+    render(<ResetRerenderCombobox />);
+    const input = screen.getByRole("combobox", { name: "Rerender city" });
+    await user.clear(input);
+    await user.type(input, "tbi");
+    await user.click(await screen.findByRole("option", { name: "Tbilisi" }));
+    await user.click(screen.getByRole("button", { name: "Reset rerender city" }));
+    await waitFor(() => expect(input).toHaveValue("Paris"));
   });
 
   it("resets Combobox state without replacing the focused input or reopening defaultOpen", async () => {

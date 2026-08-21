@@ -2,7 +2,7 @@
   "approvedBy": "vpavlov-me",
   "baseline": "core-1.0",
   "classification": "fix",
-  "issue": "344",
+  "issue": "345",
   "schemaVersion": 1,
-  "snapshotSha256": "77f4408aab438138302c863a0cc26ca019474e6279212b113bf6756d9a5925a9"
+  "snapshotSha256": "718401504286f09fffaedf34adaa314b096f274d52786c2b2b7addf18c85f081"
 }

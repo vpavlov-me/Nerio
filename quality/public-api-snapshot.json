@@ -9024,7 +9024,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-b4b06ac7a21e99bd52a186214f6c3e210407d8f9adc9c21943c10da5e53f2e6b",
+            "integrity": "sha256-b07d61a466491c36c85190bc9067010274c0b64644a67474c1be2b8df445c8a5",
             "role": "component",
             "source": "../../ui/src/components/combobox.tsx",
             "target": "components/combobox.tsx"

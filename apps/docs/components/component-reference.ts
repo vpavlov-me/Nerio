@@ -2796,7 +2796,7 @@ export const componentReference: Record<string, ComponentReference> = {
       {
         title: "Expanded stack",
         description:
-          "Expands upward from a bottom-right stack whose collapsed cards scale and step upward behind the frontmost toast.",
+          "Expands upward from a bottom inline-end stack whose collapsed cards scale and step upward behind the frontmost toast.",
       },
       { title: "Limited", description: "Keeps overflow mounted but inert and visually hidden." },
     ],

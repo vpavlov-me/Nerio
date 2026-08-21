@@ -450,20 +450,53 @@ function ComboboxInner<Value extends string>(
     () => ({ optionsByValue: optionsByValue as ReadonlyMap<string, ComboboxOption<string>> }),
     [optionsByValue],
   );
+  const resetStateRef = React.useRef({
+    defaultQuery,
+    defaultValue,
+    open,
+    query,
+    selectedDefaultValue,
+    value,
+  });
+  resetStateRef.current = {
+    defaultQuery,
+    defaultValue,
+    open,
+    query,
+    selectedDefaultValue,
+    value,
+  };
 
   React.useEffect(() => {
     const owningForm = visibleInputRef.current?.form;
     if (!owningForm) return undefined;
-    const handleReset = () => {
-      if (value === undefined) setUncontrolledValue(defaultValue ?? null);
-      if (query === undefined) {
-        setUncontrolledQuery(defaultQuery ?? selectedDefaultValue?.textValue ?? "");
-      }
-      if (open === undefined) setUncontrolledOpen(false);
+    let active = true;
+    const resetTimeouts = new Set<ReturnType<typeof setTimeout>>();
+    const handleReset = (event: Event) => {
+      if (event.target !== owningForm) return;
+      const timeout = setTimeout(() => {
+        resetTimeouts.delete(timeout);
+        if (!active || event.defaultPrevented) return;
+        const resetState = resetStateRef.current;
+        if (resetState.value === undefined) {
+          setUncontrolledValue(resetState.defaultValue ?? null);
+        }
+        if (resetState.query === undefined) {
+          setUncontrolledQuery(
+            resetState.defaultQuery ?? resetState.selectedDefaultValue?.textValue ?? "",
+          );
+        }
+        if (resetState.open === undefined) setUncontrolledOpen(false);
+      }, 0);
+      resetTimeouts.add(timeout);
     };
     owningForm.addEventListener("reset", handleReset);
-    return () => owningForm.removeEventListener("reset", handleReset);
-  }, [defaultQuery, defaultValue, form, open, query, selectedDefaultValue, value]);
+    return () => {
+      active = false;
+      resetTimeouts.forEach(clearTimeout);
+      owningForm.removeEventListener("reset", handleReset);
+    };
+  }, [form]);
 
   return (
     <ComboboxContext.Provider value={context}>
