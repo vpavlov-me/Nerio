@@ -52,6 +52,7 @@ const previewRegistry = {
   "search-field": FormsPreview,
   dialog: OverlaysPreview,
   "alert-dialog": AlertDialogPreview,
+  "alert-dialog-confirmation": AlertDialogPreview,
   sheet: OverlaysPreview,
   toast: OverlaysPreview,
   tabs: OverlaysPreview,

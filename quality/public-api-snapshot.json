@@ -8229,7 +8229,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-7ac8f2f73b22562d7d54bac23d65d45dbb2de82f16c2345376546d7f0e1d205c",
+            "integrity": "sha256-777a3c6ac69435729d1240312de74eb73c8d286021289fed0912e9d11b04eb2a",
             "role": "component",
             "source": "../../ui/src/components/alert-dialog.tsx",
             "target": "components/alert-dialog.tsx"

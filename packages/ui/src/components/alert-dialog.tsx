@@ -186,7 +186,18 @@ export const AlertDialogDescription = React.forwardRef<
   );
 });
 
-export const AlertDialogHeader = DialogHeader;
+export const AlertDialogHeader = React.forwardRef<
+  HTMLElement,
+  React.ComponentPropsWithoutRef<"header">
+>(function AlertDialogHeader({ className, ...props }, ref) {
+  return (
+    <DialogHeader
+      ref={ref}
+      {...props}
+      className={cn("flex-col justify-start gap-(--n-dialog-header-gap)", className)}
+    />
+  );
+});
 export const AlertDialogBody = DialogBody;
 export const AlertDialogFooter = DialogFooter;
 
