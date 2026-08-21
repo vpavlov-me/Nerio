@@ -209,10 +209,11 @@ test("keeps the homepage concise while local tooling remains accessible", async 
       name: "One visual contract, tested through real product composition.",
     }),
   ).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Playground", exact: true })).toHaveAttribute(
-    "href",
-    "/playground",
-  );
+  await expect(
+    page
+      .getByRole("navigation", { name: "Primary navigation" })
+      .getByRole("link", { name: "Playground", exact: true }),
+  ).toHaveAttribute("href", "/playground");
   await expect(page.getByRole("link", { name: "Blocks", exact: true })).toHaveAttribute(
     "href",
     "/blocks",
