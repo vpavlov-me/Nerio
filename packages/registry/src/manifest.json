@@ -4337,7 +4337,7 @@
           "source": "../../ui/src/components/toast.tsx",
           "target": "components/toast.tsx",
           "role": "component",
-          "integrity": "sha256-15588aef80273e2538aff57849f1badf75fa77e15f0d1232fc9d7613e1d25855"
+          "integrity": "sha256-e326367e1b53ce2fba9277e287ecfbecb69f7c1d086c4386c3d1aa04a580c12d"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
