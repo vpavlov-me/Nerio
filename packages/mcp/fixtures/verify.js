@@ -628,6 +628,25 @@ async function verify() {
       throw new Error("MCP ToggleGroup usage is missing grouped state or focus metadata.");
     }
 
+    const checkboxGroupUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "checkbox-group" },
+    });
+    const checkboxGroupUsage = JSON.parse(checkboxGroupUsageResult.content[0].text);
+    assertRegistryParity("checkbox-group", checkboxGroupUsage, [
+      "components/checkbox-group.tsx",
+      "lib/compose-refs.ts",
+    ]);
+    if (
+      !checkboxGroupUsage.baseUiPrimitives.includes("checkbox-group") ||
+      !checkboxGroupUsage.registryDependencies.includes("checkbox") ||
+      !checkboxGroupUsage.slots.includes("group") ||
+      !checkboxGroupUsage.states.includes("read-only") ||
+      !checkboxGroupUsage.accessibility.some((item) => item.includes("native form reset"))
+    ) {
+      throw new Error("MCP CheckboxGroup usage is missing form, state, or boundary metadata.");
+    }
+
     const sliderUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "slider" },
@@ -1026,6 +1045,7 @@ async function verify() {
       "motion-adapter",
       "button-group",
       "toggle-group",
+      "checkbox-group",
       "dialog",
       "alert-dialog",
       "sheet",

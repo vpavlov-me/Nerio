@@ -2,6 +2,8 @@
 
 import {
   Checkbox,
+  CheckboxGroup,
+  CheckboxGroupItem,
   Combobox,
   Field,
   FileInput,
@@ -105,6 +107,24 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
             <span>Archived collections are unavailable</span>
           </label>
         </div>
+      ) : null}
+      {kind === "checkbox-group" ? (
+        <CheckboxGroup
+          label="Notifications"
+          description="Choose every update channel that applies."
+          name="notification-preview"
+          defaultValue={["email"]}
+        >
+          <CheckboxGroupItem value="email" description="A weekly project summary.">
+            Email
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="security" description="Important account changes.">
+            Security alerts
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="sms" disabled>
+            SMS
+          </CheckboxGroupItem>
+        </CheckboxGroup>
       ) : null}
       {kind === "radio-group" ? (
         <RadioGroup

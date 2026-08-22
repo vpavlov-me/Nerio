@@ -2879,6 +2879,67 @@
       "usage": "import { Checkbox } from '@/components/nerio/components/checkbox';\n\n<fieldset><legend>Visible collections</legend><Checkbox name=\"collections\" value=\"active\" defaultChecked label=\"Active collections\" /><Checkbox name=\"collections\" value=\"archived\" label=\"Archived collections\" /></fieldset>"
     },
     {
+      "name": "checkbox-group",
+      "title": "CheckboxGroup",
+      "description": "Coordinates a short visible set of independent form-backed checkbox values.",
+      "category": "forms",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["checkbox", "form-message"],
+      "files": [
+        {
+          "source": "../../ui/src/components/checkbox-group.tsx",
+          "target": "components/checkbox-group.tsx",
+          "role": "component",
+          "integrity": "sha256-dc58cd641a088569d7707838725098949870a5798ff9312361335e91248f360b"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
+        }
+      ],
+      "baseUiPrimitives": ["checkbox-group", "checkbox"],
+      "slots": [
+        "root",
+        "label",
+        "description",
+        "group",
+        "field",
+        "indicator",
+        "validation-control",
+        "message"
+      ],
+      "variants": ["options", "composed"],
+      "states": ["unchecked", "checked", "disabled", "read-only", "invalid", "required"],
+      "requiredTokens": [
+        "--n-checkbox-size",
+        "--n-checkbox-radius",
+        "--n-color-border-subtle",
+        "--n-color-action-primary",
+        "--n-color-action-on-primary",
+        "--n-input-border-danger",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses Base UI CheckboxGroup and Checkbox primitives for independent checkbox values and native keyboard behavior.",
+        "Requires a visible label that names the complete group and associates descriptions and messages through stable ids.",
+        "Supports controlled or uncontrolled string arrays through value, defaultValue, and onValueChange.",
+        "The shared name and optional form owner apply to every submitted checkbox value; required enforces at least one selected option, and uncontrolled values restore their initial selection on native form reset.",
+        "Disabled and read-only groups preserve truthful state and prevent changes; individual options may also be disabled.",
+        "Use CheckboxGroup for short visible independent choices, RadioGroup for one exclusive choice, ToggleGroup for retained button states, and not for popup MultiSelect, tags, filters, persistence, or product workflows.",
+        "Selection remains distinguishable in forced-colors mode and never depends on motion."
+      ],
+      "usage": "import { CheckboxGroup, CheckboxGroupItem } from '@/components/nerio/components/checkbox-group';\n\n<CheckboxGroup label=\"Notifications\" name=\"notifications\" defaultValue={[\"email\"]}>\n  <CheckboxGroupItem value=\"email\" description=\"Weekly project summary.\">Email</CheckboxGroupItem>\n  <CheckboxGroupItem value=\"security\">Security alerts</CheckboxGroupItem>\n</CheckboxGroup>\n\n// options remains supported for concise data-driven groups."
+    },
+    {
       "name": "switch",
       "title": "Switch",
       "description": "Toggles an immediate binary setting.",

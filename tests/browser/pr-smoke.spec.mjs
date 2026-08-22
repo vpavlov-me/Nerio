@@ -570,6 +570,40 @@ test("keeps ToggleGroup selection, roving focus, RTL, and narrow wrapping bounde
   await expectHealthyPage(page, problems);
 });
 
+test("keeps CheckboxGroup independent selection, narrow layout, RTL, and forced colors bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/checkbox-group");
+  const preview = page.getByRole("region", { name: "checkbox-group preview" });
+  const group = preview.getByRole("group", { name: "Notifications" });
+  const email = group.getByRole("checkbox", { name: /Email/ });
+  const security = group.getByRole("checkbox", { name: /Security alerts/ });
+  const sms = group.getByRole("checkbox", { name: "SMS" });
+
+  await expect(email).toBeChecked();
+  await security.click();
+  await expect(email).toBeChecked();
+  await expect(security).toBeChecked();
+  await expect(sms).toHaveAttribute("aria-disabled", "true");
+
+  await page.setViewportSize({ width: 320, height: 700 });
+  await page.locator("html").evaluate((root) => {
+    root.dir = "rtl";
+  });
+  const groupBox = await group.boundingBox();
+  expect(groupBox).not.toBeNull();
+  expect(groupBox.x).toBeGreaterThanOrEqual(0);
+  expect(groupBox.x + groupBox.width).toBeLessThanOrEqual(320);
+
+  await page.emulateMedia({ forcedColors: "active" });
+  await security.focus();
+  expect(await page.evaluate(() => matchMedia("(forced-colors: active)").matches)).toBe(true);
+  expect(await security.evaluate((control) => getComputedStyle(control).borderStyle)).toBe("solid");
+  await expect(security).toBeFocused();
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dialog");
