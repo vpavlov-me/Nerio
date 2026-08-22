@@ -12441,7 +12441,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-c8a9a550c29548267626ae07717b262e251fb5f8443c0903b468466ea2894c70",
+            "integrity": "sha256-e1e5e2488098fc37a63394b4d5bb600caaa0a87498b1e2c985d749678a559d3e",
             "role": "component",
             "source": "../../ui/src/components/toggle-group.tsx",
             "target": "components/toggle-group.tsx"

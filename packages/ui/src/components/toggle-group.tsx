@@ -96,12 +96,18 @@ type BaseUiKeyboardEvent = React.KeyboardEvent<HTMLDivElement> & {
   preventBaseUIHandler?: () => void;
 };
 
-function moveHorizontalRtlFocus(event: BaseUiKeyboardEvent, loopFocus: boolean) {
+function isHorizontalRtlKey(event: React.KeyboardEvent<HTMLDivElement>) {
   if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
 
   const group = event.currentTarget;
   const direction = group.closest("[dir]")?.getAttribute("dir") ?? document.dir;
-  if (direction !== "rtl" || group.getAttribute("data-orientation") !== "horizontal") return;
+  return direction === "rtl" && group.getAttribute("data-orientation") === "horizontal";
+}
+
+function moveHorizontalRtlFocus(event: BaseUiKeyboardEvent, loopFocus: boolean) {
+  if (!isHorizontalRtlKey(event)) return;
+
+  const group = event.currentTarget;
 
   const items = Array.from(
     group.querySelectorAll<HTMLElement>('[data-slot="item"]:not([data-disabled])'),
@@ -197,7 +203,11 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
         loopFocus={loopFocus}
         onKeyDown={(event) => {
           onKeyDown?.(event);
-          if (!event.defaultPrevented) moveHorizontalRtlFocus(event, loopFocus);
+          if (event.defaultPrevented) {
+            if (isHorizontalRtlKey(event)) event.preventBaseUIHandler?.();
+            return;
+          }
+          moveHorizontalRtlFocus(event, loopFocus);
         }}
         orientation={orientation}
       >

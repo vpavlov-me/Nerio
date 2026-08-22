@@ -157,6 +157,36 @@ describe("ToggleGroup contracts", () => {
     expect(right).toHaveFocus();
   });
 
+  it.each(["group", "item"] as const)(
+    "honors consumer cancellation on horizontal RTL keys from the %s",
+    async (cancellationTarget) => {
+      const user = userEvent.setup();
+      const cancelKeyDown = (event: React.KeyboardEvent) => event.preventDefault();
+      render(
+        <div dir="rtl">
+          <ToggleGroup
+            aria-label="Alignment"
+            onKeyDown={cancellationTarget === "group" ? cancelKeyDown : undefined}
+          >
+            <ToggleGroupItem value="left">Left</ToggleGroupItem>
+            <ToggleGroupItem
+              value="center"
+              onKeyDown={cancellationTarget === "item" ? cancelKeyDown : undefined}
+            >
+              Center
+            </ToggleGroupItem>
+            <ToggleGroupItem value="right">Right</ToggleGroupItem>
+          </ToggleGroup>
+        </div>,
+      );
+
+      const center = screen.getByRole("button", { name: "Center" });
+      center.focus();
+      await user.keyboard("{ArrowLeft}");
+      expect(center).toHaveFocus();
+    },
+  );
+
   it("blocks interaction when the complete group is disabled", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
