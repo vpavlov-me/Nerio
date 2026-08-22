@@ -410,6 +410,7 @@ function toStyle(
     standard: [140, 220, 360],
   };
   const [fast, normal, slow] = durations[motion];
+  const reducedMotion = motion === "reduced";
   const font = typographyTokens[typography];
   return {
     "--n-font-sans": font.sans,
@@ -749,6 +750,12 @@ function toStyle(
     "--n-duration-fast": `${fast}ms`,
     "--n-duration-normal": `${normal}ms`,
     "--n-duration-slow": `${slow}ms`,
+    "--n-duration-instant": reducedMotion ? "1ms" : "80ms",
+    "--n-motion-translate-sm": reducedMotion ? "0" : "0.125rem",
+    "--n-motion-translate-md": reducedMotion ? "0" : "0.375rem",
+    "--n-motion-scale-subtle": reducedMotion ? "1" : "0.98",
+    "--n-spinner-duration": reducedMotion ? "1ms" : "800ms",
+    "--n-skeleton-duration": reducedMotion ? "2.4s" : "1.5s",
     "--n-shadow-surface-raised":
       panel === "raised"
         ? "0 1px 2px rgb(31 45 68 / 0.05), 0 8px 24px rgb(31 45 68 / 0.07)"
@@ -839,6 +846,7 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
       fontClassName.split(" ").forEach((className) => {
         if (className) portal.classList.add(className);
       });
+      portal.classList.toggle(styles.reducedMotionScope!, motion === "reduced");
       portal.style.fontFamily = "var(--n-font-sans)";
       Object.entries(style).forEach(([property, value]) => {
         portal.style.setProperty(property, String(value));
@@ -854,6 +862,9 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
         });
       });
     });
+    document
+      .querySelectorAll<HTMLElement>("[data-playground-dynamic-portal]")
+      .forEach(applyPortalTheme);
     observer.observe(document.body, { childList: true });
     document.addEventListener("pointerover", registerPortalIntent, true);
     document.addEventListener("pointerdown", registerPortalIntent, true);
@@ -866,23 +877,8 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
       document.removeEventListener("pointerdown", registerPortalIntent, true);
       document.removeEventListener("focusin", registerPortalIntent, true);
       document.removeEventListener("keydown", registerPortalIntent, true);
-      document
-        .querySelectorAll<HTMLElement>("[data-playground-dynamic-portal]")
-        .forEach((portal) => {
-          delete portal.dataset.playgroundPortal;
-          delete portal.dataset.playgroundDynamicPortal;
-          delete portal.dataset.nerioThemeScope;
-          delete portal.dataset.theme;
-          delete portal.dataset.mode;
-          delete portal.dataset.density;
-          fontClassName.split(" ").forEach((className) => {
-            if (className) portal.classList.remove(className);
-          });
-          portal.style.removeProperty("font-family");
-          Object.keys(style).forEach((property) => portal.style.removeProperty(property));
-        });
     };
-  }, [density, fontClassName, resolvedMode, style, theme]);
+  }, [density, fontClassName, motion, resolvedMode, style, theme]);
 
   const applyTheme = (nextTheme: Theme) => {
     const [accent, hover, active] = themeAccents[nextTheme];
@@ -971,6 +967,10 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
   return (
     <ToastProvider>
       <div className={`visual-playground visual-playground--lab ${styles.root} ${fontClassName}`}>
+        <div className="playground-sr-only">
+          <h1>Playground</h1>
+          <p>Chart aliases remain token-only; there is no Chart component in Core.</p>
+        </div>
         <div className="visual-playground__workspace visual-playground__workspace--radix">
           <Card
             id="playground-theme-settings"
@@ -1083,7 +1083,9 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
           <section
             ref={playgroundRef}
             aria-label="Nerio scenario canvas"
-            className="playground-canvas playground-canvas--catalog"
+            className={`playground-canvas playground-canvas--catalog ${
+              motion === "reduced" ? styles.reducedMotionScope : ""
+            }`}
             data-density={density}
             data-mode={resolvedMode}
             data-nerio-theme-scope=""
@@ -1092,10 +1094,6 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
             style={style}
             tabIndex={0}
           >
-            <div className="playground-sr-only">
-              <h1>Playground</h1>
-              <p>Chart aliases remain token-only; there is no Chart component in Core.</p>
-            </div>
             <div className="playground-canvas__surface">
               <PlaygroundShowcase />
             </div>
@@ -1103,13 +1101,13 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
         </div>
       </div>
       <ToastViewport
-        className={fontClassName}
+        className={`${fontClassName} ${motion === "reduced" ? styles.reducedMotionScope : ""}`}
         data-density={density}
         data-mode={resolvedMode ?? undefined}
         data-nerio-theme-scope=""
         data-playground-portal=""
         data-theme={theme}
-        style={style}
+        style={style ? { ...style, fontFamily: "var(--n-font-sans)" } : undefined}
         swipeDirection={["left", "right", "up", "down"]}
       />
     </ToastProvider>

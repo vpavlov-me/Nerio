@@ -292,6 +292,17 @@ test("applies every Playground control to the product scenario canvas", async ({
     page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link"),
   ).toHaveText(["Playground", "Docs", "Components", "Blocks", "Templates"]);
   await expect(page.getByRole("heading", { name: "Playground", exact: true })).toBeAttached();
+  expect(
+    await page.evaluate(() => {
+      const pageHeading = document.querySelector("h1");
+      const settingsHeading = document.querySelector("#playground-theme-settings h2");
+      return Boolean(
+        pageHeading &&
+        settingsHeading &&
+        pageHeading.compareDocumentPosition(settingsHeading) & Node.DOCUMENT_POSITION_FOLLOWING,
+      );
+    }),
+  ).toBe(true);
   await expect(page.locator(".playground-scene")).toHaveCount(35);
   await expect(page.locator('.playground-scene[data-variant="default"]')).toHaveCount(35);
   await expect(page.locator('.playground-scene[data-variant="secondary"]')).toHaveCount(0);
@@ -817,6 +828,34 @@ test("applies every Playground control to the product scenario canvas", async ({
   });
   expect(Math.min(...scaledTextSizes)).toBeGreaterThanOrEqual(12);
   await chooseSetting("UI scale", "110%");
+  await chooseSetting("Motion", "Reduced");
+  expect(
+    await playground.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        instant: style.getPropertyValue("--n-duration-instant").trim(),
+        fast: style.getPropertyValue("--n-duration-fast").trim(),
+        normal: style.getPropertyValue("--n-duration-normal").trim(),
+        slow: style.getPropertyValue("--n-duration-slow").trim(),
+        translateSmall: style.getPropertyValue("--n-motion-translate-sm").trim(),
+        translateMedium: style.getPropertyValue("--n-motion-translate-md").trim(),
+        scale: style.getPropertyValue("--n-motion-scale-subtle").trim(),
+        spinner: style.getPropertyValue("--n-spinner-duration").trim(),
+        skeleton: style.getPropertyValue("--n-skeleton-duration").trim(),
+      };
+    }),
+  ).toEqual({
+    instant: "1ms",
+    fast: "1ms",
+    normal: "1ms",
+    slow: "1ms",
+    translateSmall: "0",
+    translateMedium: "0",
+    scale: "1",
+    spinner: "1ms",
+    skeleton: "2.4s",
+  });
+  await expect(playground.locator(".n-spinner").first()).toHaveCSS("animation-name", "none");
   await chooseSetting("Motion", "Standard");
   await chooseSetting("Font", "Space Grotesk");
   await chooseSetting("Color mode", "Light");
@@ -969,6 +1008,8 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
   await page.getByRole("option", { name: "Mauve", exact: true }).click();
   await settings.getByRole("combobox", { name: "UI scale" }).click();
   await page.getByRole("option", { name: "110%", exact: true }).click();
+  await settings.getByRole("combobox", { name: "Font" }).click();
+  await page.getByRole("option", { name: "Space Grotesk", exact: true }).click();
 
   await page.getByRole("button", { name: "Add social link" }).hover();
   const tooltip = page.getByRole("tooltip", { name: "Add another social link" });
@@ -1043,6 +1084,15 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
     await dialog.locator("xpath=ancestor::*[@data-playground-portal]").getAttribute("data-mode"),
   );
   await page.keyboard.press("Escape");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(dialog.locator("xpath=ancestor::*[@data-playground-portal]")).toHaveAttribute(
+    "data-mode",
+    "dark",
+  );
+  await expect(dialog.locator("xpath=ancestor::*[@data-playground-portal]")).toHaveAttribute(
+    "data-nerio-theme-scope",
+    "",
+  );
   await page.keyboard.press("Escape");
 
   await page.getByRole("button", { name: "Show success toast" }).click();
@@ -1061,11 +1111,13 @@ test("keeps Playground scenarios and themed overlays interactive", async ({ page
       canvasMode: document.querySelector("[data-playground-preview]")?.dataset.mode,
       mode: viewport.dataset.mode,
       scoped: viewport.hasAttribute("data-nerio-theme-scope"),
+      fontFamily: getComputedStyle(viewport).fontFamily,
     };
   });
   expect(toastTheme.actualBackground).toBe(toastTheme.expectedBackground);
   expect(toastTheme.mode).toBe(toastTheme.canvasMode);
   expect(toastTheme.scoped).toBe(true);
+  expect(toastTheme.fontFamily).toContain("Space Grotesk");
 
   await expectHealthyPage(page, problems);
 });
