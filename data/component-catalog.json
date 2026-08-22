@@ -76,6 +76,7 @@
     { "name": "kbd", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "button", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "toggle", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "toggle-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "button-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "badge", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "spinner", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
@@ -562,6 +563,14 @@
       "category": "actions",
       "status": "stable-core",
       "description": "Client-only Base UI two-state button with one controlled or uncontrolled pressed state, stable accessible naming, icon-only or visible-label content, variants, sizes, and prop/ref-safe render composition."
+    },
+    {
+      "name": "ToggleGroup",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "actions",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI grouped pressed-state control with single or multiple string values, controlled or uncontrolled ownership, horizontal or vertical roving focus, options or ToggleGroupItem composition, disabled items, and inherited Toggle variants and sizes."
     },
     {
       "name": "ButtonGroup",

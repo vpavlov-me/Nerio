@@ -607,9 +607,25 @@ async function verify() {
       !toggleUsage.states.includes("pressed") ||
       !toggleUsage.requiredTokens.includes("--n-toggle-background-pressed") ||
       !toggleUsage.accessibility.some((item) => item.includes("stable accessible name")) ||
-      !toggleUsage.accessibility.some((item) => item.includes("future ToggleGroup"))
+      !toggleUsage.accessibility.some((item) => item.includes("ToggleGroup"))
     ) {
       throw new Error("MCP Toggle usage is missing Base UI, naming, state, or boundary metadata.");
+    }
+
+    const toggleGroupUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "toggle-group" },
+    });
+    const toggleGroupUsage = JSON.parse(toggleGroupUsageResult.content[0].text);
+    assertRegistryParity("toggle-group", toggleGroupUsage, ["components/toggle-group.tsx"]);
+    if (
+      !toggleGroupUsage.baseUiPrimitives.includes("toggle-group") ||
+      !toggleGroupUsage.registryDependencies.includes("toggle") ||
+      !toggleGroupUsage.slots.includes("item") ||
+      !toggleGroupUsage.states.includes("multiple") ||
+      !toggleGroupUsage.accessibility.some((item) => item.includes("roving focus"))
+    ) {
+      throw new Error("MCP ToggleGroup usage is missing grouped state or focus metadata.");
     }
 
     const sliderUsageResult = await client.callTool({
@@ -1009,6 +1025,7 @@ async function verify() {
       "button",
       "motion-adapter",
       "button-group",
+      "toggle-group",
       "dialog",
       "alert-dialog",
       "sheet",

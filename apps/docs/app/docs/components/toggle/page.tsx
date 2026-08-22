@@ -42,7 +42,10 @@ const apiRows = [
   ["children / leadingIcon", "Visible-label mode with an optional leading Nerio icon."],
   ["variant", 'Selects "ghost" or "outline"; ghost is the default.'],
   ["size", 'Selects "sm", "md", or "lg"; md is the default.'],
-  ["value", "Stable identifier reserved for future direct ToggleGroup composition."],
+  [
+    "value",
+    "Exposes the underlying Base UI value. Use ToggleGroupItem, not Toggle, for grouped composition.",
+  ],
   [
     "disabled / className / style / render / nativeButton",
     "Preserves Nerio disabled and render-composition contracts.",

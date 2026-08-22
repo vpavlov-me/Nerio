@@ -45,6 +45,8 @@ export const snippets: Record<string, string> = {
     'import { Save, Settings } from \'@nerio-ui/adapters/icons\';\nimport { Badge, Kbd } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Button leadingIcon={Save} badge={<Badge size="sm" tone="info">24</Badge>} kbd={<Kbd>⌘S</Kbd>}>Save project</Button>\n<Button icon={Settings} aria-label="Workspace settings" tooltip="Workspace settings" />',
   toggle:
     "\"use client\";\n\nimport * as React from 'react';\nimport { Check, Save } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@nerio-ui/ui/client';\n\nexport function SaveToggle() {\n  const [saved, setSaved] = React.useState(false);\n\n  return (\n    <Toggle leadingIcon={saved ? Check : Save} pressed={saved} onPressedChange={setSaved}>\n      Save article\n    </Toggle>\n  );\n}",
+  "toggle-group":
+    'import { ToggleGroup } from \'@nerio-ui/ui/client\';\n\n<ToggleGroup\n  aria-label="Text alignment"\n  defaultValue={["left"]}\n  options={[\n    { value: "left", label: "Left" },\n    { value: "center", label: "Center" },\n    { value: "right", label: "Right" },\n  ]}\n/>',
   "button-group":
     'import { ButtonGroup } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio-ui/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
@@ -204,6 +206,25 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "stable accessible name",
       "aria-pressed state",
       "visible focus ring",
+    ],
+  },
+  "toggle-group": {
+    name: "ToggleGroup",
+    description:
+      "Groups related retained button states with single or multiple values and orientation-aware roving focus.",
+    status: "beta",
+    layer: "core",
+    category: "Actions",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Toggle", "CheckboxGroup", "RadioGroup", "Tabs"],
+    anatomy: ["group", "item", "toggle-icon", "toggle-label"],
+    motion: ["inherits Toggle hover, press, focus, and reduced motion"],
+    accessibility: [
+      "Base UI ToggleGroup and Toggle primitives",
+      "required accessible group name",
+      "orientation-aware roving focus",
+      "aria-pressed item state",
     ],
   },
   "button-group": {
@@ -1021,7 +1042,8 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "size", description: "sm, md, or lg through shared control-height contracts." },
       {
         title: "value",
-        description: "Stable identifier reserved for future direct ToggleGroup composition.",
+        description:
+          "Exposes the underlying Base UI value. Use ToggleGroupItem, not Toggle, for grouped composition.",
       },
       {
         title: "render / nativeButton",
@@ -1057,6 +1079,77 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toggle-border-pressed",
       "--n-toggle-border-pressed-hover",
       "--n-toggle-border-pressed-active",
+      "--n-toggle-foreground-pressed",
+      "--n-focus-ring",
+    ],
+  },
+  "toggle-group": {
+    category: "Actions",
+    purpose:
+      "Use ToggleGroup for a small visible set of related retained button states, such as text alignment or independently visible canvas layers.",
+    anatomy: [
+      { title: "group", description: "Named Base UI ToggleGroup and value-state owner." },
+      { title: "item", description: "Toggle button with a stable string value." },
+      {
+        title: "toggle-icon / toggle-label",
+        description: "Existing Toggle icon and visible-label anatomy.",
+      },
+    ],
+    variants: [
+      { title: "Single", description: "Keeps at most one item pressed at a time." },
+      { title: "Multiple", description: "Allows independent pressed values in one group." },
+      { title: "Horizontal / vertical", description: "Sets layout and arrow-key direction." },
+      { title: "Ghost / outline", description: "Reuses the existing Toggle variants." },
+      { title: "Small, medium, large", description: "Reuses shared Toggle control heights." },
+    ],
+    states: [
+      { title: "Unpressed / pressed", description: "Each item exposes truthful aria-pressed." },
+      { title: "Disabled item", description: "Is skipped by focus movement and cannot change." },
+      { title: "Disabled group", description: "Blocks interaction for every item." },
+      { title: "Controlled", description: "The value array remains consumer-owned." },
+    ],
+    motion: [
+      "Items inherit Toggle interaction motion.",
+      "Selection and focus never depend on animation.",
+    ],
+    accessibility: [
+      "Provide aria-label or aria-labelledby for the complete group.",
+      "Arrow keys follow orientation and inherited RTL direction while skipping disabled items.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
+      "Icon-only items require a stable aria-label.",
+      "Use RadioGroup for one form choice and CheckboxGroup for independently submitted options.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled arrays of stable string values.",
+      },
+      { title: "multiple", description: "Allows more than one pressed item when true." },
+      {
+        title: "orientation / loopFocus",
+        description: "Controls roving-focus direction and whether focus wraps.",
+      },
+      {
+        title: "options / ToggleGroupItem",
+        description: "Concise data-driven or composed item APIs.",
+      },
+    ],
+    designNotes: [
+      "ToggleGroup inherits Toggle visuals and does not create a parallel segmented-control family.",
+      "Wrapping is allowed in narrow containers; orientation continues to own keyboard behavior.",
+    ],
+    related: ["toggle", "radio-group", "tabs", "checkbox"],
+    guidance: {
+      do: ["Use a small, visible set with stable labels and values."],
+      dont: ["Do not use ToggleGroup for navigation, form-backed choices, tags, or filters."],
+    },
+    tokens: [
+      "--n-toggle-height-sm",
+      "--n-toggle-height-md",
+      "--n-toggle-height-lg",
+      "--n-toggle-radius",
+      "--n-toggle-background-pressed",
+      "--n-toggle-border-pressed",
       "--n-toggle-foreground-pressed",
       "--n-focus-ring",
     ],
