@@ -856,6 +856,17 @@ test("applies every Playground control to the product scenario canvas", async ({
     skeleton: "2.4s",
   });
   await expect(playground.locator(".n-spinner").first()).toHaveCSS("animation-name", "none");
+  const reducedSkeleton = playground.locator(".n-skeleton").first();
+  await expect(reducedSkeleton).toHaveCSS("animation-name", "none");
+  expect(
+    await reducedSkeleton.evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        actual: Number.parseFloat(style.opacity),
+        expected: Number.parseFloat(style.getPropertyValue("--n-opacity-skeleton")),
+      };
+    }),
+  ).toEqual({ actual: 0.82, expected: 0.82 });
   await chooseSetting("Motion", "Standard");
   await chooseSetting("Font", "Space Grotesk");
   await chooseSetting("Color mode", "Light");
