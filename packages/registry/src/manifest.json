@@ -780,7 +780,11 @@
         "media: icon | illustration",
         "actions orientation: horizontal | vertical"
       ],
-      "requiredTokens": ["--n-empty-state-mark-size", "--n-empty-state-gap", "--n-empty-state-gap-lg"],
+      "requiredTokens": [
+        "--n-empty-state-mark-size",
+        "--n-empty-state-gap",
+        "--n-empty-state-gap-lg"
+      ],
       "accessibility": [
         "EmptyState has no live region or alert role by default; add role=status for asynchronous results and role=alert for an error that needs immediate announcement.",
         "Keep a clear title, description, and any actions in reading order; decorative media should be aria-hidden.",
@@ -1276,17 +1280,7 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": [
-        "container",
-        "root",
-        "caption",
-        "header",
-        "body",
-        "footer",
-        "row",
-        "head",
-        "cell"
-      ],
+      "slots": ["container", "root", "caption", "header", "body", "footer", "row", "head", "cell"],
       "variants": [],
       "requiredTokens": [
         "--n-table-border",
@@ -3295,16 +3289,7 @@
         "panels",
         "content"
       ],
-      "variants": [
-        "bordered",
-        "separate",
-        "segmented",
-        "sm",
-        "md",
-        "lg",
-        "horizontal",
-        "vertical"
-      ],
+      "variants": ["bordered", "separate", "segmented", "sm", "md", "lg", "horizontal", "vertical"],
       "requiredTokens": [
         "--n-tabs-gap",
         "--n-tabs-content-gap",

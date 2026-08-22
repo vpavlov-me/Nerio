@@ -531,9 +531,9 @@ test("keeps OTPField paste, deletion, autofill, RTL, and narrow layout bounded",
   expect(overflow).toBeLessThanOrEqual(1);
   await page.emulateMedia({ forcedColors: "active" });
   await slots.first().focus();
-  expect(
-    await slots.first().evaluate((input) => getComputedStyle(input).outlineStyle),
-  ).not.toBe("none");
+  expect(await slots.first().evaluate((input) => getComputedStyle(input).outlineStyle)).not.toBe(
+    "none",
+  );
   await expectHealthyPage(page, problems);
 });
 
