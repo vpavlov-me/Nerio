@@ -967,6 +967,14 @@ const docsChrome = read("apps/docs/components/docs-chrome.tsx");
 const componentReference = read("apps/docs/components/component-reference.ts");
 const componentDocs = read("apps/docs/lib/component-docs.ts");
 const tokenStyles = read("packages/tokens/src/styles.css");
+const togglePage = read("apps/docs/app/docs/components/toggle/page.tsx");
+const toggleGroupCompositionGuidance = "Use ToggleGroupItem, not Toggle, for grouped composition.";
+const toggleCompositionDocumentationIssues = [
+  ["Toggle page", togglePage],
+  ["Component reference", componentReference],
+]
+  .filter(([, source]) => !source.includes(toggleGroupCompositionGuidance))
+  .map(([surface]) => `${surface} must direct grouped composition through ToggleGroupItem`);
 
 const navSlugs = unique(matchAll(docsChrome, /href: "\/docs\/components\/([^"]+)"/g));
 const dynamicRouteSlugs = unique(
@@ -1071,6 +1079,7 @@ reportMissing("Template architecture issues", templateArchitectureIssues);
 reportMissing("Block architecture issues", blockArchitectureIssues);
 reportMissing("Public documentation surface issues", publicSurfaceIssues);
 reportMissing("Documentation server/client architecture issues", docPageArchitectureIssues);
+reportMissing("ToggleGroup composition documentation issues", toggleCompositionDocumentationIssues);
 
 const failures = [
   missingNav,
@@ -1101,6 +1110,7 @@ const failures = [
   blockArchitectureIssues,
   publicSurfaceIssues,
   docPageArchitectureIssues,
+  toggleCompositionDocumentationIssues,
 ].flat();
 
 if (failures.length > 0) {

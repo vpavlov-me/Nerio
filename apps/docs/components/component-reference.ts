@@ -1042,7 +1042,8 @@ export const componentReference: Record<string, ComponentReference> = {
       { title: "size", description: "sm, md, or lg through shared control-height contracts." },
       {
         title: "value",
-        description: "Stable identifier reserved for future direct ToggleGroup composition.",
+        description:
+          "Exposes the underlying Base UI value. Use ToggleGroupItem, not Toggle, for grouped composition.",
       },
       {
         title: "render / nativeButton",
