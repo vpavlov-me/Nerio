@@ -130,6 +130,18 @@ export {
   type NumberFieldStep,
 } from "./components/number-field";
 export {
+  OTPField,
+  type OTPFieldChangeEventDetails,
+  type OTPFieldChangeReason,
+  type OTPFieldCompleteEventDetails,
+  type OTPFieldCompleteReason,
+  type OTPFieldInvalidEventDetails,
+  type OTPFieldInvalidReason,
+  type OTPFieldProps,
+  type OTPFieldSize,
+  type OTPFieldValidationType,
+} from "./components/otp-field";
+export {
   Tabs,
   TabsContent,
   TabsIndicator,

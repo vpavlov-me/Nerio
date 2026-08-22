@@ -91,6 +91,7 @@
     "/docs/components/label",
     "/docs/components/list",
     "/docs/components/number-field",
+    "/docs/components/otp-field",
     "/docs/components/pagination",
     "/docs/components/popover",
     "/docs/components/progress",
@@ -5046,6 +5047,105 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "OTPField",
+        "signature": "React.ForwardRefExoticComponent<OTPFieldProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type OTPFieldChangeEventDetails = NerioChangeEventDetails<OTPFieldChangeReason>;",
+          "export type OTPFieldChangeReason = \"input-change\" | \"input-clear\" | \"input-paste\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldChangeEventDetails",
+        "signature": "OTPFieldChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type OTPFieldChangeReason = \"input-change\" | \"input-clear\" | \"input-paste\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldChangeReason",
+        "signature": "OTPFieldChangeReason"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type OTPFieldCompleteEventDetails = NerioEventDetails<OTPFieldCompleteReason>;",
+          "export type OTPFieldCompleteReason = \"input-change\" | \"input-paste\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldCompleteEventDetails",
+        "signature": "OTPFieldCompleteEventDetails"
+      },
+      {
+        "definition": ["export type OTPFieldCompleteReason = \"input-change\" | \"input-paste\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldCompleteReason",
+        "signature": "OTPFieldCompleteReason"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type OTPFieldInvalidEventDetails = NerioEventDetails<OTPFieldInvalidReason>;",
+          "export type OTPFieldInvalidReason = \"input-change\" | \"input-paste\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldInvalidEventDetails",
+        "signature": "OTPFieldInvalidEventDetails"
+      },
+      {
+        "definition": ["export type OTPFieldInvalidReason = \"input-change\" | \"input-paste\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldInvalidReason",
+        "signature": "OTPFieldInvalidReason"
+      },
+      {
+        "definition": [
+          "export interface OTPFieldProps extends OTPFieldRootProps { label: React.ReactNode; length: number; description?: React.ReactNode; message?: React.ReactNode; invalid?: boolean; size?: OTPFieldSize; validationType?: OTPFieldValidationType; value?: string; defaultValue?: string; onValueChange?: (value: string, eventDetails: OTPFieldChangeEventDetails) => void; onValueComplete?: (value: string, eventDetails: OTPFieldCompleteEventDetails) => void; onValueInvalid?: (value: string, eventDetails: OTPFieldInvalidEventDetails) => void; name?: string; form?: string; required?: boolean; disabled?: boolean; readOnly?: boolean; autoComplete?: string; inputMode?: React.HTMLAttributes<HTMLInputElement>[\"inputMode\"]; getSlotLabel?: (index: number, length: number) => string; inputRef?: React.Ref<HTMLInputElement>; }",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type OTPFieldChangeEventDetails = NerioChangeEventDetails<OTPFieldChangeReason>;",
+          "export type OTPFieldChangeReason = \"input-change\" | \"input-clear\" | \"input-paste\" | \"keyboard\";",
+          "export type OTPFieldCompleteEventDetails = NerioEventDetails<OTPFieldCompleteReason>;",
+          "export type OTPFieldCompleteReason = \"input-change\" | \"input-paste\";",
+          "export type OTPFieldInvalidEventDetails = NerioEventDetails<OTPFieldInvalidReason>;",
+          "export type OTPFieldInvalidReason = \"input-change\" | \"input-paste\";",
+          "export type OTPFieldSize = \"sm\" | \"md\" | \"lg\";",
+          "export type OTPFieldValidationType = \"numeric\" | \"alpha\" | \"alphanumeric\";",
+          "type OTPFieldRootProps = Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"defaultValue\" | \"onChange\">;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldProps",
+        "signature": "OTPFieldProps"
+      },
+      {
+        "definition": ["export type OTPFieldSize = \"sm\" | \"md\" | \"lg\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldSize",
+        "signature": "OTPFieldSize"
+      },
+      {
+        "definition": [
+          "export type OTPFieldValidationType = \"numeric\" | \"alpha\" | \"alphanumeric\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "OTPFieldValidationType",
+        "signature": "OTPFieldValidationType"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "Pagination",
         "signature": "React.ForwardRefExoticComponent<PaginationProps & React.RefAttributes<HTMLElement>>"
       },
@@ -7022,7 +7122,13 @@
           }
         },
         {
-          "components": ["combobox", "command-primitive", "date-picker", "number-field"],
+          "components": [
+            "combobox",
+            "command-primitive",
+            "date-picker",
+            "number-field",
+            "otp-field"
+          ],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": ["string"],
@@ -7440,7 +7546,13 @@
           }
         },
         {
-          "components": ["combobox", "command-primitive", "date-picker", "number-field"],
+          "components": [
+            "combobox",
+            "command-primitive",
+            "date-picker",
+            "number-field",
+            "otp-field"
+          ],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": ["string"],
@@ -10555,6 +10667,70 @@
           "invalid"
         ],
         "variants": ["sm", "md", "lg", "decimal", "LTR", "RTL"]
+      },
+      {
+        "baseUiPrimitives": ["otp-field"],
+        "category": "forms",
+        "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-495ea1fa02048e0489f60292d2876b534d920a9a2847e6183864a126b905820b",
+            "role": "component",
+            "source": "../../ui/src/components/otp-field.tsx",
+            "target": "components/otp-field.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f",
+            "role": "utility",
+            "source": "../../ui/src/lib/compose-refs.ts",
+            "target": "lib/compose-refs.ts"
+          },
+          {
+            "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31",
+            "role": "utility",
+            "source": "../../ui/src/lib/tailwind-cn.ts",
+            "target": "lib/tailwind-cn.ts"
+          },
+          {
+            "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b",
+            "role": "utility",
+            "source": "../../ui/src/lib/motion.ts",
+            "target": "lib/motion.ts"
+          }
+        ],
+        "name": "otp-field",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["form-message"],
+        "requiredTokens": [
+          "--n-input-height-sm",
+          "--n-input-height-md",
+          "--n-input-height-lg",
+          "--n-input-addon-gap",
+          "--n-input-radius",
+          "--n-input-background",
+          "--n-input-background-hover",
+          "--n-input-border",
+          "--n-input-border-hover",
+          "--n-input-border-focus",
+          "--n-input-border-danger",
+          "--n-input-foreground",
+          "--n-input-disabled-background",
+          "--n-input-disabled-foreground",
+          "--n-color-text-primary",
+          "--n-color-text-tertiary",
+          "--n-color-surface-muted",
+          "--n-focus-ring"
+        ],
+        "slots": ["root", "label", "input-group", "input", "separator", "description", "message"],
+        "states": ["empty", "filled", "complete", "disabled", "read-only", "required", "invalid"],
+        "variants": ["sm", "md", "lg", "numeric", "alpha", "alphanumeric", "LTR", "RTL"]
       },
       {
         "baseUiPrimitives": [],

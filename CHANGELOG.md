@@ -8,6 +8,13 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added a bounded Core 1.1 OTPField on `dev` with one controlled or uncontrolled verification-code
+  value, deterministic paste and deletion, autofill and mobile hints, native form/reset behavior,
+  accessible slot context, and consumer-owned authentication policy.
+- Raised the docs home-route JavaScript allowance from 823,296 to 839,680 bytes and the UI tarball
+  allowance from 80,000 to 82,000 bytes for the additive Base UI OTPField source, documentation
+  preview, and source-install contract. The measured outputs are 831,911 and 80,391 bytes.
+
 - Added a bounded Core 1.1 NumberField on `dev` with one controlled or uncontrolled decimal value,
   localized parsing and formatting, finite bounds, deliberate keyboard and button stepping,
   form/reset support, disabled/read-only/invalid states, and localizable action labels. Currency

@@ -50,6 +50,8 @@ const componentLedes: Record<string, string> = {
     "SearchField collects one native search query with accessible clear, deliberate Enter events, and consumer-owned results.",
   "number-field":
     "NumberField collects one localized decimal value with deliberate stepping, bounds, form behavior, and consumer-owned business rules.",
+  "otp-field":
+    "OTPField collects one verification code with predictable paste, deletion, autofill, form behavior, and accessible slot context.",
   slider:
     "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
   calendar:
@@ -106,6 +108,7 @@ const componentTitles: Record<string, string> = {
   combobox: "Combobox",
   "search-field": "SearchField",
   "number-field": "NumberField",
+  "otp-field": "OTPField",
 };
 
 function getComponentTitle(slug: string) {

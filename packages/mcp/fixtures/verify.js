@@ -337,6 +337,24 @@ async function verify() {
       );
     }
 
+    const otpFieldUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "otp-field" },
+    });
+    const otpFieldUsage = JSON.parse(otpFieldUsageResult.content[0].text);
+    if (
+      !otpFieldUsage.baseUiPrimitives.includes("otp-field") ||
+      !otpFieldUsage.registryDependencies.includes("form-message") ||
+      !otpFieldUsage.slots.includes("separator") ||
+      !otpFieldUsage.states.includes("complete") ||
+      !otpFieldUsage.accessibility.some((item) => item.includes("one-time-code")) ||
+      !otpFieldUsage.accessibility.some((item) => item.includes("Authentication"))
+    ) {
+      throw new Error(
+        "MCP OTPField usage is missing autofill, form, completion, or consumer boundaries.",
+      );
+    }
+
     const tableUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "table" },
@@ -997,6 +1015,7 @@ async function verify() {
       "select",
       "search-field",
       "number-field",
+      "otp-field",
       "tabs",
       "toast",
       "input",

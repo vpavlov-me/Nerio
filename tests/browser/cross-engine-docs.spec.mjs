@@ -170,6 +170,48 @@ test("keeps Toggle touch activation portable", async ({ browser, browserName }, 
   }
 });
 
+test("keeps OTPField mobile paste, deletion, autofill, and reflow portable", async ({
+  browser,
+  browserName,
+}, testInfo) => {
+  const context = await browser.newContext({
+    baseURL: testInfo.project.use.baseURL,
+    hasTouch: true,
+    viewport: { width: 390, height: 844 },
+  });
+  try {
+    await context.route(metrikaRequestPattern, (route) => route.fulfill({ status: 204 }));
+    const page = await context.newPage();
+    const problems = monitorPage(page, browserName);
+    await page.goto("/docs/components/otp-field");
+    const preview = page.getByRole("region", { name: "otp-field preview" });
+    const group = preview.getByRole("group", { name: "Verification code" });
+    const slots = group.getByRole("textbox");
+    await expect(slots.first()).toHaveAttribute("autocomplete", "one-time-code");
+    await expect(slots.first()).toHaveAttribute("inputmode", "numeric");
+    await slots.first().focus();
+    await slots.first().evaluate((input) => {
+      const clipboardData = new DataTransfer();
+      clipboardData.setData("text/plain", "123456");
+      input.dispatchEvent(
+        new ClipboardEvent("paste", { bubbles: true, cancelable: true, clipboardData }),
+      );
+    });
+    await expect(slots.last()).toHaveValue("6");
+    await page.keyboard.press("Backspace");
+    await expect(slots.last()).toHaveValue("");
+    await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    expect(problems).toEqual([]);
+  } finally {
+    await context.close();
+  }
+});
+
 test("keeps Collapsible and Accordion disclosure behavior portable", async ({
   browserName,
   page,

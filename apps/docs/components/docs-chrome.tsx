@@ -152,6 +152,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/combobox", label: "Combobox", icon: Search },
       { href: "/docs/components/search-field", label: "SearchField", icon: Search },
       { href: "/docs/components/number-field", label: "NumberField", icon: Circle },
+      { href: "/docs/components/otp-field", label: "OTPField", icon: Circle },
       { href: "/docs/components/slider", label: "Slider", icon: Circle },
       { href: "/docs/components/calendar", label: "Calendar", icon: Circle },
       { href: "/docs/components/date-picker", label: "DatePicker", icon: Circle },
@@ -545,6 +546,8 @@ function MobileDocumentationNavigation({ pathname }: { pathname: string }) {
 
 function slugify(value: string) {
   return value
+    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
     .toLowerCase()
     .trim()
     .replace(/[^a-z0-9]+/g, "-")

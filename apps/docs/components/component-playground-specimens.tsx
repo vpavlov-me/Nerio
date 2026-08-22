@@ -79,6 +79,7 @@ import {
   List,
   Pagination,
   NumberField,
+  OTPField,
   Popover,
   Progress,
   RadioGroup,
@@ -933,6 +934,39 @@ export function ComponentPlayground() {
                   invalid
                 />,
                 <NumberField key="disabled" label="Quantity" disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="otp-field"
+        title="OTPField"
+        api="string value · length · paste · autofill · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Filled", "Alphanumeric", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <OTPField key="default" label="Verification code" length={6} />,
+                <OTPField key="filled" label="Verification code" length={6} defaultValue="247" />,
+                <OTPField
+                  key="alphanumeric"
+                  label="Recovery code"
+                  length={6}
+                  validationType="alphanumeric"
+                  defaultValue="A7C"
+                />,
+                <OTPField
+                  key="invalid"
+                  label="Verification code"
+                  length={6}
+                  message="Enter all six digits."
+                  invalid
+                />,
+                <OTPField key="disabled" label="Verification code" length={6} disabled />,
               ],
             },
           ]}

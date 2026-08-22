@@ -364,6 +364,7 @@ try {
     "switch",
     "select",
     "number-field",
+    "otp-field",
     "sheet",
     "toast",
     "sidebar-primitive",

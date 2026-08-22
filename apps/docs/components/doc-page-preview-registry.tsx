@@ -51,6 +51,7 @@ const previewRegistry = {
   combobox: FormsPreview,
   "search-field": FormsPreview,
   "number-field": FormsPreview,
+  "otp-field": FormsPreview,
   dialog: OverlaysPreview,
   "alert-dialog": AlertDialogPreview,
   "alert-dialog-confirmation": AlertDialogPreview,

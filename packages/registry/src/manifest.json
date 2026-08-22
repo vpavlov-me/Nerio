@@ -780,11 +780,7 @@
         "media: icon | illustration",
         "actions orientation: horizontal | vertical"
       ],
-      "requiredTokens": [
-        "--n-empty-state-mark-size",
-        "--n-empty-state-gap",
-        "--n-empty-state-gap-lg"
-      ],
+      "requiredTokens": ["--n-empty-state-mark-size", "--n-empty-state-gap", "--n-empty-state-gap-lg"],
       "accessibility": [
         "EmptyState has no live region or alert role by default; add role=status for asynchronous results and role=alert for an error that needs immediate announcement.",
         "Keep a clear title, description, and any actions in reading order; decorative media should be aria-hidden.",
@@ -1280,7 +1276,17 @@
         }
       ],
       "baseUiPrimitives": [],
-      "slots": ["container", "root", "caption", "header", "body", "footer", "row", "head", "cell"],
+      "slots": [
+        "container",
+        "root",
+        "caption",
+        "header",
+        "body",
+        "footer",
+        "row",
+        "head",
+        "cell"
+      ],
       "variants": [],
       "requiredTokens": [
         "--n-table-border",
@@ -1965,6 +1971,82 @@
         "Use native Input type=number when browser-native numeric entry is sufficient and custom stepping or locale-aware display adds no durable value."
       ],
       "usage": "import { NumberField } from '@/components/nerio/components/number-field';\n\n<NumberField label=\"Quantity\" name=\"quantity\" defaultValue={1} min={0} max={20} step={1} />"
+    },
+    {
+      "name": "otp-field",
+      "title": "OTPField",
+      "description": "Collects one verification-code value with deterministic paste and deletion, mobile autofill hints, native form behavior, and accessible slot labels.",
+      "category": "forms",
+      "dependencies": ["@base-ui/react", "clsx", "react", "tailwind-merge", "tailwindcss"],
+      "registryDependencies": ["form-message"],
+      "files": [
+        {
+          "source": "../../ui/src/components/otp-field.tsx",
+          "target": "components/otp-field.tsx",
+          "role": "component",
+          "integrity": "sha256-495ea1fa02048e0489f60292d2876b534d920a9a2847e6183864a126b905820b"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
+        }
+      ],
+      "baseUiPrimitives": ["otp-field"],
+      "slots": ["root", "label", "input-group", "input", "separator", "description", "message"],
+      "variants": ["sm", "md", "lg", "numeric", "alpha", "alphanumeric", "LTR", "RTL"],
+      "states": ["empty", "filled", "complete", "disabled", "read-only", "required", "invalid"],
+      "requiredTokens": [
+        "--n-input-height-sm",
+        "--n-input-height-md",
+        "--n-input-height-lg",
+        "--n-input-addon-gap",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-background-hover",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
+        "--n-input-border-danger",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
+        "--n-color-text-primary",
+        "--n-color-text-tertiary",
+        "--n-color-surface-muted",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI OTP Field primitive as one named group with real input slots and one hidden form value.",
+        "The first slot uses the visible field label and every following slot has a localizable positional label; descriptions and validation messages are associated with every input.",
+        "Typing, paste, deletion, focus movement, one-time-code autofill, and numeric mobile keyboard hints remain Base UI and browser owned.",
+        "Password managers and operating-system autofill may show an accessory on the first slot; keep the visible label stable and do not intercept the one-time-code path.",
+        "The visual separator is hidden from assistive technology and does not fragment the code into redundant announcements.",
+        "Read-only slots remain focusable without accepting edits; disabled slots are removed from interaction.",
+        "Name, form, required, controlled or uncontrolled state, and form reset preserve one verification-code form value.",
+        "Localize getSlotLabel for non-English products and keep error announcements concise through message and invalid.",
+        "Authentication requests, verification, resend, countdowns, masking, rate limits, recovery, and credential storage remain consumer responsibilities."
+      ],
+      "usage": "import { OTPField } from '@/components/nerio/components/otp-field';\n\n<OTPField label=\"Verification code\" length={6} name=\"code\" description=\"Enter the code sent to your device.\" />"
     },
     {
       "name": "radio-group",
@@ -3213,7 +3295,16 @@
         "panels",
         "content"
       ],
-      "variants": ["bordered", "separate", "segmented", "sm", "md", "lg", "horizontal", "vertical"],
+      "variants": [
+        "bordered",
+        "separate",
+        "segmented",
+        "sm",
+        "md",
+        "lg",
+        "horizontal",
+        "vertical"
+      ],
       "requiredTokens": [
         "--n-tabs-gap",
         "--n-tabs-content-gap",
