@@ -101,6 +101,7 @@ export const OTPField = React.forwardRef<HTMLDivElement, OTPFieldProps>(function
   validateLength(length);
   const generatedId = React.useId();
   const controlId = id ?? generatedId;
+  const firstInputId = `${controlId}-input-1`;
   const labelId = `${controlId}-label`;
   const descriptionId = description ? `${controlId}-description` : undefined;
   const messageId = message ? `${controlId}-message` : undefined;
@@ -181,7 +182,7 @@ export const OTPField = React.forwardRef<HTMLDivElement, OTPFieldProps>(function
       <label
         className="n-label text-(length:--n-label-font-size) font-(--n-label-font-weight) text-(--n-color-text-primary)"
         data-slot="label"
-        htmlFor={controlId}
+        htmlFor={firstInputId}
         id={labelId}
       >
         {label}
@@ -200,6 +201,7 @@ export const OTPField = React.forwardRef<HTMLDivElement, OTPFieldProps>(function
             ) : null}
             <BaseOTPField.Input
               ref={index === 0 ? composeRefs(firstInputRef, inputRef) : undefined}
+              id={index === 0 ? firstInputId : undefined}
               aria-describedby={describedBy}
               aria-invalid={isInvalid ? true : ariaInvalid}
               aria-label={resolveSlotLabel(index, length)}

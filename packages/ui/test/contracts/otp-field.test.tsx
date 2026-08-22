@@ -5,6 +5,15 @@ import { describe, expect, it, vi } from "vitest";
 import { OTPField } from "../../src/client";
 
 describe("OTPField contracts", () => {
+  it("focuses the first slot when the visible label is activated", async () => {
+    const user = userEvent.setup();
+    render(<OTPField label="Verification code" length={6} />);
+
+    await user.click(screen.getByText("Verification code"));
+
+    expect(screen.getAllByRole("textbox")[0]).toHaveFocus();
+  });
+
   it("keeps typing, paste, deletion, and completion deterministic", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
