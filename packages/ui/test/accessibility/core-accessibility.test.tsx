@@ -84,6 +84,23 @@ import {
   DatePicker,
   LabelHint,
   DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuCheckboxItemIndicator,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuItemDescription,
+  DropdownMenuItemLabel,
+  DropdownMenuLinkItem,
+  DropdownMenuPortal,
+  DropdownMenuPositioner,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuRadioItemIndicator,
+  DropdownMenuRoot,
+  DropdownMenuSubContent,
+  DropdownMenuSubmenu,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
   RadioGroup,
   RadioGroupItem,
   SearchField,
@@ -970,6 +987,57 @@ describe("Core accessibility contracts", () => {
     expect(screen.getByRole("menuitem", { name: "Share workspace" })).toHaveAccessibleDescription(
       "Invite people to this workspace",
     );
+    expect(
+      (
+        await axe(document.body, {
+          rules: { region: { enabled: false } },
+        })
+      ).violations,
+    ).toEqual([]);
+  });
+
+  it("keeps compound DropdownMenu selection, links, descriptions, and submenus accessible", async () => {
+    render(
+      <DropdownMenuRoot defaultOpen>
+        <DropdownMenuTrigger>View actions</DropdownMenuTrigger>
+        <DropdownMenuPortal>
+          <DropdownMenuPositioner>
+            <DropdownMenuContent>
+              <DropdownMenuLinkItem href="#activity">
+                <DropdownMenuItemLabel>Open activity</DropdownMenuItemLabel>
+                <DropdownMenuItemDescription>Review recent changes</DropdownMenuItemDescription>
+              </DropdownMenuLinkItem>
+              <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>
+                <DropdownMenuCheckboxItemIndicator />
+                Show archived
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuRadioGroup defaultValue="comfortable">
+                <DropdownMenuRadioItem closeOnClick={false} value="compact">
+                  <DropdownMenuRadioItemIndicator />
+                  Compact density
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem closeOnClick={false} value="comfortable">
+                  <DropdownMenuRadioItemIndicator />
+                  Comfortable density
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+              <DropdownMenuSubmenu>
+                <DropdownMenuSubTrigger>Share</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem>Copy link</DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSubmenu>
+            </DropdownMenuContent>
+          </DropdownMenuPositioner>
+        </DropdownMenuPortal>
+      </DropdownMenuRoot>,
+    );
+
+    expect(
+      await screen.findByRole("menuitem", { name: "Open activity" }),
+    ).toHaveAccessibleDescription("Review recent changes");
+    expect(screen.getByRole("menuitemcheckbox", { name: "Show archived" })).toBeChecked();
+    expect(screen.getByRole("menuitemradio", { name: "Comfortable density" })).toBeChecked();
     expect(
       (
         await axe(document.body, {

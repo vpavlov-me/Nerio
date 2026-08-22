@@ -124,7 +124,7 @@ export const snippets: Record<string, string> = {
   popover:
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { Copy, UserPlus, X } from \'@nerio-ui/adapters/icons\';\nimport { DropdownMenu } from \'@nerio-ui/ui/client\';\n\n<DropdownMenu\n  trigger="Actions"\n  items={[\n    { group: "Collaborate", label: "Share workspace", description: "Invite people and choose access", leadingIcon: UserPlus },\n    { group: "Collaborate", label: "Duplicate workspace", leadingIcon: Copy },\n    { group: "Manage", label: "Archive", leadingIcon: X, destructive: true },\n  ]}\n/>',
+    'import { Button, DropdownMenuCheckboxItem, DropdownMenuCheckboxItemIndicator, DropdownMenuContent, DropdownMenuItem, DropdownMenuItemDescription, DropdownMenuItemLabel, DropdownMenuLinkItem, DropdownMenuPortal, DropdownMenuPositioner, DropdownMenuRoot, DropdownMenuSubContent, DropdownMenuSubmenu, DropdownMenuSubTrigger, DropdownMenuTrigger } from \'@nerio-ui/ui/client\';\n\n<DropdownMenuRoot>\n  <DropdownMenuTrigger render={<Button variant="secondary">Actions</Button>} />\n  <DropdownMenuPortal>\n    <DropdownMenuPositioner>\n      <DropdownMenuContent>\n        <DropdownMenuLinkItem href="/workspace/share">\n          <DropdownMenuItemLabel>Share workspace</DropdownMenuItemLabel>\n          <DropdownMenuItemDescription>Invite people and choose access</DropdownMenuItemDescription>\n        </DropdownMenuLinkItem>\n        <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>\n          <DropdownMenuCheckboxItemIndicator /> Notify collaborators\n        </DropdownMenuCheckboxItem>\n        <DropdownMenuSubmenu>\n          <DropdownMenuSubTrigger>More actions</DropdownMenuSubTrigger>\n          <DropdownMenuSubContent><DropdownMenuItem>Duplicate workspace</DropdownMenuItem></DropdownMenuSubContent>\n        </DropdownMenuSubmenu>\n      </DropdownMenuContent>\n    </DropdownMenuPositioner>\n  </DropdownMenuPortal>\n</DropdownMenuRoot>',
   card: 'import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Card as="div">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle>Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
   separator:
     "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
@@ -4825,14 +4825,21 @@ export const componentReference: Record<string, ComponentReference> = {
     category: "Overlays",
     purpose: "Use DropdownMenu to group secondary commands behind a compact trigger.",
     anatomy: [
+      { title: "root", description: "Owns controlled or uncontrolled menu state." },
       { title: "trigger", description: "Control that opens the command list." },
-      { title: "content", description: "Layered menu surface." },
+      { title: "portal + positioner", description: "Mount and collision-aware placement layer." },
+      { title: "content", description: "Bounded, scrollable menu surface." },
       {
         title: "item",
         description:
-          "Command row with optional description, group, leading icon, trailing icon, hotkey, and intent.",
+          "Command row with optional label, description, shortcut, icon, disabled state, and destructive intent.",
       },
-      { title: "group", description: "Labeled command cluster separated from adjacent groups." },
+      { title: "group + group label", description: "Named command cluster." },
+      { title: "link item", description: "Native or router-rendered navigation target." },
+      { title: "checkbox item", description: "Independent toggled menu option." },
+      { title: "radio group + radio item", description: "Single-choice option set." },
+      { title: "submenu", description: "One nested level with its own trigger and content." },
+      { title: "separator", description: "Non-interactive boundary between related sets." },
     ],
     variants: [
       { title: "Default", description: "Neutral command groups." },
@@ -4840,22 +4847,33 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "Destructive item",
         description: "Marks risky commands without making the whole menu destructive.",
       },
+      { title: "Selection items", description: "Checkbox and radio item semantics." },
+      { title: "Submenu", description: "A bounded nested command branch." },
     ],
     states: [
       { title: "Open", description: "Items are keyboard navigable." },
       { title: "Highlighted", description: "Current item is ready for selection." },
       { title: "Disabled", description: "Unavailable items stay in context without activation." },
+      { title: "Checked", description: "Current checkbox or radio selection is announced." },
+      { title: "Nested open", description: "Submenu content opens from its parent item." },
     ],
     accessibility: [
       "Keep labels action-oriented and support keyboard navigation through Base UI.",
       "Optional descriptions remain separate from the accessible name and are exposed through aria-describedby.",
+      "Use LinkItem for navigation, CheckboxItem for independent toggles, and RadioGroup with RadioItem for one-of-many choices.",
+      "Submenus open with the direction-aware forward arrow and return focus to their trigger on Escape.",
       "Pair the document dir attribute with Base UI DirectionProvider so navigation and positioning follow LTR or RTL.",
     ],
     api: [
       {
-        title: "items",
+        title: "compound anatomy",
         description:
-          "Ordered list of label, description, group, leadingIcon, trailingIcon, hotkey, onSelect, disabled, and destructive values.",
+          "Root, Trigger, Portal, Positioner, Content, groups, items, selection items, and submenu parts support product composition.",
+      },
+      {
+        title: "items convenience API",
+        description:
+          "DropdownMenu trigger and items remain available for simple grouped command lists.",
       },
       {
         title: "description",
@@ -4870,10 +4888,18 @@ export const componentReference: Record<string, ComponentReference> = {
         title: "destructive item",
         description: "Marks risky commands without changing the whole menu tone.",
       },
+      { title: "closeOnClick", description: "Keeps selection menus open while options change." },
+      { title: "render", description: "Composes native links, router links, and custom triggers." },
     ],
     guidance: {
-      do: ["Use for Rename, Duplicate, Archive, and similar secondary commands."],
-      dont: ["Do not hide the primary page action inside a menu."],
+      do: [
+        "Use command items for actions, link items for navigation, and selection items for settings.",
+        "Keep submenu depth to one level when a flat grouping would become harder to scan.",
+      ],
+      dont: [
+        "Do not hide the primary page action inside a menu.",
+        "Do not use menu items as confirmation, permission, analytics, or command-execution policy.",
+      ],
     },
     tokens: [
       "--n-dropdown-min-width",

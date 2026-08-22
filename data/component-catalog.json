@@ -787,7 +787,7 @@
       "package": "@nerio-ui/ui/client",
       "category": "overlays",
       "status": "stable-core",
-      "description": "Dropdown menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkey metadata."
+      "description": "Base UI-backed dropdown menu with a compatible array API plus compound root, trigger, portal, positioner, content, group, action, link, checkbox, radio, submenu, separator, label, description, and shortcut anatomy."
     },
     {
       "name": "Collapsible",

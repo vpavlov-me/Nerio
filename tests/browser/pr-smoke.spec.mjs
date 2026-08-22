@@ -653,23 +653,53 @@ test("keeps Tooltip preview free of a redundant heading", async ({ page }) => {
   await expectHealthyPage(page, problems);
 });
 
-test("keeps DropdownMenu preview icon-complete and free of a redundant heading", async ({
+test("keeps DropdownMenu compound selection, navigation, and submenu behavior complete", async ({
   page,
 }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dropdown-menu", { waitUntil: "networkidle" });
 
   const preview = page.getByRole("region", { name: "dropdown-menu preview" });
-  await preview.getByRole("button", { name: "Actions" }).click();
-  const menu = page.getByRole("menu");
+  const trigger = preview.getByRole("button", { name: "Actions" });
+  await trigger.click();
+  const triggerId = await trigger.getAttribute("id");
+  const menu = page.locator(`[role="menu"][aria-labelledby="${triggerId}"]`);
   await expect(menu).toBeVisible();
-  await expect(menu.getByRole("menuitem")).toHaveCount(3);
-  await expect(menu.locator('[data-slot="leading-icon"]')).toHaveCount(3);
-  for (const label of ["Share workspace", "Duplicate workspace", "Archive"]) {
-    await expect(
-      menu.getByRole("menuitem", { name: label }).locator('[data-slot="leading-icon"]'),
-    ).toBeVisible();
-  }
+  const share = menu.getByRole("menuitem", { name: "Share workspace" });
+  await expect(share).toHaveAttribute("href", "#dropdown-menu-guidance");
+  await expect(share).toHaveAccessibleDescription("Invite people and choose access");
+
+  const notifications = menu.getByRole("menuitemcheckbox", { name: "Notify collaborators" });
+  await expect(notifications).toBeChecked();
+  await notifications.click();
+  await expect(notifications).not.toBeChecked();
+  await expect(menu).toBeVisible();
+
+  const viewer = menu.getByRole("menuitemradio", { name: "Viewer access" });
+  await viewer.click();
+  await expect(viewer).toBeChecked();
+  await expect(menu).toBeVisible();
+
+  const subTrigger = menu.getByRole("menuitem", { name: "More actions" });
+  await subTrigger.focus();
+  await page.keyboard.press("ArrowRight");
+  const copy = page.getByRole("menuitem", { name: "Duplicate workspace" });
+  await expect(copy).toBeVisible();
+  await expect(copy).toBeFocused();
+  await expect(page.getByRole("menuitem", { name: "Move unavailable" })).toHaveAttribute(
+    "aria-disabled",
+    "true",
+  );
+  await page.keyboard.press("Escape");
+  await expect(subTrigger).toBeFocused();
+  await expect(menu.getByRole("menuitem", { name: "Archive" })).toBeVisible();
+
+  const bounds = await menu.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { bottom: rect.bottom, right: rect.right };
+  });
+  expect(bounds.bottom).toBeLessThanOrEqual(await page.evaluate(() => innerHeight));
+  expect(bounds.right).toBeLessThanOrEqual(await page.evaluate(() => innerWidth));
   await expect(page.getByRole("heading", { name: "Preview", exact: true })).toHaveCount(0);
   await expect(
     page

@@ -65,12 +65,12 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "c631ffb65fc70e7185afe2f34b2fd9f0a9b2ead8afad4814ff022b282506e2b7",
+  "currentComponentCatalogSha256": "dd9db78400614a1d64f8771bd0b95a31ccdac7049fd1dbfac6b80a24b1526ed6",
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
   "currentRegistryItemCount": 55,
-  "currentRegistryManifestSha256": "645e3f3197222d28ebebc70923e2c9393ed0eccdff370765d346c773119d8214",
-  "currentPublicApiSnapshotSha256": "b424115b2b369024948b60d6b4479d56789bea47a8427fcfd46adac6d33097e7",
+  "currentRegistryManifestSha256": "2dbd5a99034a31e583380f39b54022e7ed76e80928dada70ce0e0e562fab46b3",
+  "currentPublicApiSnapshotSha256": "75a27162dc68c5d8cc13ee8568d1940f0f11aafa709b0872569e2f6f0bff9049",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -207,9 +207,17 @@
       "id": "primitive-parity-b",
       "target": "Core 1.1",
       "mayStart": "after the relevant #342 contract foundation",
-      "issues": [348, 350],
+      "issues": [348],
       "dependsOn": [151, 341, 342],
-      "rule": "Grouped selection and menu anatomy may proceed independently of the field family."
+      "rule": "Grouped selection may proceed independently of the field family."
+    },
+    {
+      "id": "compound-menu",
+      "target": "Core 1.1",
+      "mayStart": "after the relevant #342 contract foundation",
+      "issues": [350],
+      "dependsOn": [341, 342],
+      "rule": "Compound menu anatomy is additive dev work and does not wait for the isolated stable 1.0 release line."
     },
     {
       "id": "multi-select-decision",
@@ -332,7 +340,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Links, checkbox/radio items, and submenus are additive menu anatomy. ContextMenu, Menubar, and NavigationMenu remain separate non-goals."
     },
     {
@@ -600,7 +608,7 @@
     {
       "id": "menu-foundation",
       "kind": "component-family",
-      "userProblem": "Products need a bounded secondary-command menu.",
+      "userProblem": "Products need bounded secondary-command, navigation, and menu-selection anatomy.",
       "classification": "existing-core",
       "priority": "none",
       "target": "current",
@@ -612,8 +620,8 @@
       "complexity": "high",
       "dependencies": [],
       "semverImpact": "none",
-      "acceptanceBoundary": "The current convenience menu remains stable while #350 adds bounded anatomy.",
-      "nonGoals": ["ContextMenu", "Menubar", "NavigationMenu"]
+      "acceptanceBoundary": "Keep the convenience API compatible while compound action, link, checkbox, radio, and one-level submenu anatomy owns accessible interaction and bounded positioning.",
+      "nonGoals": ["ContextMenu", "Menubar", "NavigationMenu", "Command execution"]
     },
     {
       "id": "data-display",
@@ -929,9 +937,9 @@
       "competitorEvidence": ["shadcn-components:Dropdown Menu", "base-ui-components:Menu"],
       "value": "high",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
-      "acceptanceBoundary": "Add meaningful Menu parts while keeping the current data-array API compatible.",
+      "acceptanceBoundary": "Keep the data-array API compatible while adding action and link items, checkbox/radio selection, one-level submenus, descriptions, shortcuts, and bounded positioning.",
       "nonGoals": ["ContextMenu", "Menubar", "NavigationMenu", "Command execution"],
       "issue": 350
     },
