@@ -84,6 +84,22 @@ describe("ToggleGroup contracts", () => {
     expect(screen.getByRole("button", { name: "Guides" })).toHaveAttribute("aria-pressed", "true");
   });
 
+  it("normalizes initial single-mode values to one pressed item", () => {
+    render(
+      <ToggleGroup
+        aria-label="Text alignment"
+        defaultValue={["left", "center"]}
+        options={[
+          { value: "left", label: "Left" },
+          { value: "center", label: "Center" },
+        ]}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Left" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Center" })).toHaveAttribute("aria-pressed", "false");
+  });
+
   it("uses orientation-aware roving focus and skips disabled items", async () => {
     const user = userEvent.setup();
     render(

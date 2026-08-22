@@ -148,12 +148,15 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
   {
     children,
     className,
+    defaultValue,
     disabled,
     loopFocus = true,
+    multiple = false,
     onKeyDown,
     options,
     orientation = "horizontal",
     size = "md",
+    value,
     variant = "ghost",
     ...props
   },
@@ -199,8 +202,10 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
         data-size={size}
         data-slot="group"
         data-variant={variant}
+        defaultValue={multiple ? defaultValue : defaultValue?.slice(0, 1)}
         disabled={disabled}
         loopFocus={loopFocus}
+        multiple={multiple}
         onKeyDown={(event) => {
           onKeyDown?.(event);
           if (event.defaultPrevented) {
@@ -210,6 +215,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
           moveHorizontalRtlFocus(event, loopFocus);
         }}
         orientation={orientation}
+        value={multiple ? value : value?.slice(0, 1)}
       >
         {renderedItems}
       </BaseToggleGroup>
