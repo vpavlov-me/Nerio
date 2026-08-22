@@ -233,6 +233,18 @@ const expectedToggleFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedToggleGroupFiles = [
+  "components/icon.tsx",
+  "components/toggle-group.tsx",
+  "components/toggle.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedCalendarFiles = [
   "components/calendar.tsx",
   "lib/cn.ts",
@@ -1825,6 +1837,7 @@ async function verify() {
     await run(localTarget, "add", "checkbox");
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "toggle");
+    await run(localTarget, "add", "toggle-group");
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "combobox");
     await run(localTarget, "add", "search-field");
@@ -1871,6 +1884,22 @@ async function verify() {
     ) {
       throw new Error(
         "Installed Icon source is missing its adapter, Lucide isolation, or protected accessibility contract.",
+      );
+    }
+    assertFiles(localTarget, expectedToggleGroupFiles);
+    const toggleGroupSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/toggle-group.tsx"),
+      "utf8",
+    );
+    if (
+      !toggleGroupSource.includes("@base-ui/react/toggle-group") ||
+      !toggleGroupSource.includes("ToggleGroupItem") ||
+      !toggleGroupSource.includes("multiple?: boolean") ||
+      !toggleGroupSource.includes('data-slot="group"') ||
+      !toggleGroupSource.includes('data-slot="item"')
+    ) {
+      throw new Error(
+        "Installed ToggleGroup source did not preserve grouped values, composition, or public slots.",
       );
     }
     assertFiles(localTarget, [

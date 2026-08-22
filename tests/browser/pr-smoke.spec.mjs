@@ -537,6 +537,39 @@ test("keeps OTPField paste, deletion, autofill, RTL, and narrow layout bounded",
   await expectHealthyPage(page, problems);
 });
 
+test("keeps ToggleGroup selection, roving focus, RTL, and narrow wrapping bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.goto("/docs/components/toggle-group");
+  const preview = page.getByRole("region", { name: "toggle-group preview" });
+  const group = preview.getByRole("group", { name: "Text alignment", exact: true });
+  const left = group.getByRole("button", { name: "Left" });
+  const center = group.getByRole("button", { name: "Center" });
+
+  await expect(left).toHaveAttribute("aria-pressed", "true");
+  await center.click();
+  await expect(left).toHaveAttribute("aria-pressed", "false");
+  await expect(center).toHaveAttribute("aria-pressed", "true");
+
+  await center.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(group.getByRole("button", { name: "Right" })).toBeFocused();
+
+  const rtlGroup = preview.getByRole("group", { name: "Text alignment RTL", exact: true });
+  const rtlCenter = rtlGroup.getByRole("button", { name: "Center" });
+  await rtlCenter.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(rtlGroup.getByRole("button", { name: "Right" })).toBeFocused();
+
+  await page.setViewportSize({ width: 320, height: 700 });
+  const groupBox = await group.boundingBox();
+  expect(groupBox).not.toBeNull();
+  expect(groupBox.x).toBeGreaterThanOrEqual(0);
+  expect(groupBox.x + groupBox.width).toBeLessThanOrEqual(320);
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dialog");

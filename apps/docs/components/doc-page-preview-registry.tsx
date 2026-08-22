@@ -19,6 +19,7 @@ const AlertDialogPreview = dynamic(() =>
 
 const previewRegistry = {
   button: DisplayPreview,
+  "toggle-group": DisplayPreview,
   "button-group": DisplayPreview,
   typography: DisplayPreview,
   kbd: DisplayPreview,

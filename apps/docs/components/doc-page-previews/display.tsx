@@ -41,6 +41,7 @@ import {
   TableHeader,
   TableRow,
   Text,
+  ToggleGroup,
 } from "@nerio-ui/ui/client";
 import { PreviewFrame, type PreviewProps } from "./shared";
 
@@ -60,6 +61,30 @@ export function DisplayPreview({ kind, snippet }: PreviewProps) {
           <Button variant="secondary">Cancel</Button>
           <Button variant="secondary">Save</Button>
         </ButtonGroup>
+      ) : null}
+      {kind === "toggle-group" ? (
+        <div className="form-preview-stack">
+          <ToggleGroup
+            aria-label="Text alignment"
+            defaultValue={["left"]}
+            options={[
+              { value: "left", label: "Left" },
+              { value: "center", label: "Center" },
+              { value: "right", label: "Right" },
+            ]}
+          />
+          <div dir="rtl">
+            <ToggleGroup
+              aria-label="Text alignment RTL"
+              defaultValue={["right"]}
+              options={[
+                { value: "left", label: "Left" },
+                { value: "center", label: "Center" },
+                { value: "right", label: "Right" },
+              ]}
+            />
+          </div>
+        </div>
       ) : null}
       {kind === "typography" ? (
         <div className="preview-card">

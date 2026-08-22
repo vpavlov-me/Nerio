@@ -15,6 +15,8 @@ const componentLedes: Record<string, string> = {
     "Buttons trigger user actions with clear intent, accessible focus treatment, loading states, and icon support.",
   toggle:
     "Toggle represents one independent button state that remains pressed or not pressed with a stable accessible name.",
+  "toggle-group":
+    "ToggleGroup coordinates a small visible set of retained button states with single or multiple values and roving focus.",
   badge: "Badges label status, category, or lightweight metadata without becoming primary actions.",
   alert: "Alerts communicate inline feedback with clear tone, text, and accessible semantics.",
   spinner:
@@ -104,6 +106,7 @@ const componentTitles: Record<string, string> = {
   "file-input": "FileInput",
   "key-value": "KeyValue",
   "radio-group": "RadioGroup",
+  "toggle-group": "ToggleGroup",
   "sidebar-primitive": "Sidebar",
   combobox: "Combobox",
   "search-field": "SearchField",

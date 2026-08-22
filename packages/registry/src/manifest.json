@@ -430,10 +430,67 @@
         "Enter, Space, pointer, and touch activation toggle exactly one state while focus remains on the control.",
         "Disabled Toggle prevents state changes and preserves a visible pressed or unpressed state.",
         "Use Toggle for an independent retained button state, Button for momentary actions, Switch for immediate settings, and Checkbox for selection.",
-        "ButtonGroup does not add grouped selection; use a future ToggleGroup for exclusive or multiple grouped values.",
+        "ButtonGroup does not add grouped selection; use ToggleGroup for single or multiple grouped pressed values.",
         "Pressed state uses a secondary surface with primary foreground while preserving the variant border; forced-colors mode adds a system highlight boundary, and the state does not depend on motion."
       ],
       "usage": "import { Bell } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@/components/nerio/components/toggle';\n\n<Toggle icon={Bell} aria-label=\"Follow updates\" defaultPressed />"
+    },
+    {
+      "name": "toggle-group",
+      "title": "ToggleGroup",
+      "description": "Groups related pressed-state buttons with single or multiple string values and roving focus.",
+      "category": "actions",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["toggle"],
+      "files": [
+        {
+          "source": "../../ui/src/components/toggle-group.tsx",
+          "target": "components/toggle-group.tsx",
+          "role": "component",
+          "integrity": "sha256-aa35c084a7186bad7bdec8a6f9ea99dd2489c012d3eae8faacd25c951aa75b35"
+        }
+      ],
+      "baseUiPrimitives": ["toggle-group", "toggle"],
+      "slots": ["group", "item", "toggle-icon", "toggle-label"],
+      "variants": ["ghost", "outline", "sm", "md", "lg", "horizontal", "vertical"],
+      "states": ["single", "multiple", "unpressed", "pressed", "disabled"],
+      "requiredTokens": [
+        "--n-toggle-height-sm",
+        "--n-toggle-height-md",
+        "--n-toggle-height-lg",
+        "--n-toggle-radius",
+        "--n-toggle-font-size",
+        "--n-toggle-font-weight",
+        "--n-toggle-gap",
+        "--n-toggle-padding-inline-sm",
+        "--n-toggle-padding-inline-md",
+        "--n-toggle-padding-inline-lg",
+        "--n-toggle-border-width",
+        "--n-toggle-disabled-opacity",
+        "--n-toggle-background-ghost",
+        "--n-toggle-background-outline",
+        "--n-toggle-background-pressed",
+        "--n-toggle-border-pressed",
+        "--n-toggle-foreground-pressed",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Requires aria-label or aria-labelledby so the Base UI group has a stable accessible name.",
+        "Uses Base UI ToggleGroup and Toggle primitives for single or multiple pressed values, aria-pressed, and orientation-aware roving focus.",
+        "Arrow keys move focus according to orientation and inherited direction, skipping disabled items; loopFocus controls wrapping.",
+        "Icon-only items require aria-label at the TypeScript level, and visible labels remain the accessible name by default.",
+        "Disabled groups and items preserve truthful data-disabled and pressed-state presentation.",
+        "Use ToggleGroup for grouped retained button states, Tabs for panel navigation, RadioGroup for one form choice, and CheckboxGroup for independent form options.",
+        "Selection state remains visible in forced-colors mode and never depends on motion."
+      ],
+      "usage": "import { ToggleGroup } from '@/components/nerio/components/toggle-group';\n\n<ToggleGroup aria-label=\"Text alignment\" defaultValue={[\"left\"]} options={[{ value: \"left\", label: \"Left\" }, { value: \"center\", label: \"Center\" }, { value: \"right\", label: \"Right\" }]} />"
     },
     {
       "name": "button-group",

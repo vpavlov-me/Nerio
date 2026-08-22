@@ -102,6 +102,7 @@ import {
   Stat,
   Switch,
   Toggle,
+  ToggleGroup,
   Table,
   TableBody,
   TableCell,
@@ -468,6 +469,35 @@ export function ComponentPlayground() {
             },
           ]}
         />
+      </SpecimenSection>
+
+      <SpecimenSection
+        id="toggle-group"
+        title="Toggle Group"
+        api="single · multiple · orientation · options · disabled"
+      >
+        <div className="component-lab-inline">
+          <ToggleGroup
+            aria-label="Text alignment"
+            defaultValue={["left"]}
+            options={[
+              { value: "left", label: "Left" },
+              { value: "center", label: "Center" },
+              { value: "right", label: "Right" },
+            ]}
+          />
+          <ToggleGroup
+            aria-label="Visible layers"
+            defaultValue={["grid", "guides"]}
+            multiple
+            variant="outline"
+            options={[
+              { value: "grid", label: "Grid" },
+              { value: "guides", label: "Guides" },
+              { value: "snap", label: "Snap", disabled: true },
+            ]}
+          />
+        </div>
       </SpecimenSection>
 
       <SpecimenSection id="button-group" title="Button Group" api="horizontal grouped actions">

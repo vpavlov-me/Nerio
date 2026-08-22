@@ -8,6 +8,13 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the first #348 grouped-selection slice: a bounded Core 1.1 ToggleGroup on `dev` with
+  single or multiple string values, controlled or uncontrolled state, horizontal or vertical
+  roving focus, options or ToggleGroupItem composition, accessible group naming, disabled items,
+  and existing Toggle variants and sizes. CheckboxGroup and MultiSelect remain separate work.
+- Raised the Registry tarball allowance from 36,000 to 37,000 bytes for the additive ToggleGroup
+  source-install metadata. The measured Registry tarball is 36,394 bytes; the UI tarball remains
+  within its existing 82,000-byte allowance at 81,554 bytes.
 - Added a bounded Core 1.1 OTPField on `dev` with one controlled or uncontrolled verification-code
   value, deterministic paste and deletion, autofill and mobile hints, native form/reset behavior,
   accessible slot context, and consumer-owned authentication policy.

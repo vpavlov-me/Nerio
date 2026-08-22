@@ -65,12 +65,12 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "60b4f0575ed2fbaae8c3e186cf87a8ea5eff2a74462d7d2afa93afc47ed78183",
+  "currentComponentCatalogSha256": "ebe36732381a5305910e476958de82e70e986d0f98a6c459ec92dde23fb3ae30",
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
-  "currentRegistryItemCount": 53,
-  "currentRegistryManifestSha256": "16464267d0dcc840ab81aa565c9477afe198bb4fd4748e98c387f1a72d8167b8",
-  "currentPublicApiSnapshotSha256": "9fec24fcb1a92aee84d2fdefe5b9ab89c54feb736d6f6fff54ebaf5ec3d91e55",
+  "currentRegistryItemCount": 54,
+  "currentRegistryManifestSha256": "2fa926429d1cf8581d216e5b000b471f63dcd0098f35e78cc18e531a506bb38f",
+  "currentPublicApiSnapshotSha256": "56b1ee6cedfb0e26ee67921acf95674c3fb2756eb842f455d18d87e71967a50a",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -882,7 +882,7 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["ToggleGroup"],
       "baseUiPrimitives": ["checkbox-group", "toggle-group"],
       "platformCoverageIds": [],
       "competitorEvidence": [

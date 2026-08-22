@@ -47,6 +47,16 @@ export {
   type ToggleVariant,
 } from "./components/toggle";
 export {
+  ToggleGroup,
+  ToggleGroupItem,
+  type ToggleGroupChangeEventDetails,
+  type ToggleGroupItemProps,
+  type ToggleGroupOption,
+  type ToggleGroupProps,
+  type ToggleGroupState,
+  type ToggleGroupValue,
+} from "./components/toggle-group";
+export {
   Slider,
   type SliderChangeEventDetails,
   type SliderChangeEventReason,

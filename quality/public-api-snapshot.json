@@ -111,6 +111,7 @@
     "/docs/components/textarea",
     "/docs/components/toast",
     "/docs/components/toggle",
+    "/docs/components/toggle-group",
     "/docs/components/tooltip",
     "/docs/components/typography",
     "/docs/feedback",
@@ -6739,6 +6740,113 @@
         "signature": "ToggleChangeEventDetails"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ToggleGroup",
+        "signature": "React.ForwardRefExoticComponent<ToggleGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type ToggleGroupChangeEventDetails = NerioChangeEventDetails<\"none\">;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToggleGroupChangeEventDetails",
+        "signature": "ToggleGroupChangeEventDetails"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "ToggleGroupItem",
+        "signature": "React.ForwardRefExoticComponent<ToggleGroupItemProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface ToggleState { pressed: boolean; disabled: boolean; }",
+          "export type IconComponent = React.ElementType<IconSvgProps>;",
+          "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type ToggleChangeEventDetails = NerioChangeEventDetails<\"none\">;",
+          "export type ToggleGroupItemProps = DistributiveOmit<ToggleProps, \"defaultPressed\" | \"onPressedChange\" | \"pressed\" | \"size\" | \"variant\">;",
+          "export type ToggleProps = VisibleLabelToggleProps | IconOnlyToggleProps;",
+          "export type ToggleSize = \"sm\" | \"md\" | \"lg\";",
+          "export type ToggleVariant = \"ghost\" | \"outline\";",
+          "type DistributiveOmit<T, Key extends PropertyKey> = T extends unknown ? Omit<T, Extract<keyof T, Key>> : never;",
+          "type IconOnlyToggleProps = ToggleBaseProps & { icon: IconComponent; children?: never; leadingIcon?: never; \"aria-label\": string; };",
+          "type ToggleBaseProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"aria-label\" | \"children\" | \"className\" | \"color\" | \"defaultChecked\" | \"defaultValue\" | \"onChange\" | \"style\" | \"value\"> & { \"data-slot\"?: string; className?: NerioClassName<ToggleState>; defaultPressed?: boolean; nativeButton?: boolean; onPressedChange?: (pressed: boolean, eventDetails: ToggleChangeEventDetails) => void; pressed?: boolean; render?: NerioRenderProp<ToggleState>; style?: NerioStyle<ToggleState>; value?: string; variant?: ToggleVariant; size?: ToggleSize; };",
+          "type VisibleLabelToggleProps = ToggleBaseProps & { children: React.ReactNode; icon?: never; leadingIcon?: IconComponent; \"aria-label\"?: string; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToggleGroupItemProps",
+        "signature": "ToggleGroupItemProps"
+      },
+      {
+        "definition": [
+          "export type IconComponent = React.ElementType<IconSvgProps>;",
+          "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
+          "export type ToggleGroupOption = VisibleLabelToggleGroupOption | IconOnlyToggleGroupOption;",
+          "export type ToggleGroupValue = string;",
+          "type IconOnlyToggleGroupOption = { value: ToggleGroupValue; icon: IconComponent; \"aria-label\": string; label?: never; leadingIcon?: never; disabled?: boolean; };",
+          "type VisibleLabelToggleGroupOption = { value: ToggleGroupValue; label: React.ReactNode; leadingIcon?: IconComponent; icon?: never; \"aria-label\"?: string; disabled?: boolean; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToggleGroupOption",
+        "signature": "ToggleGroupOption"
+      },
+      {
+        "definition": [
+          "export interface ToggleGroupState { disabled: boolean; multiple: boolean; orientation: \"horizontal\" | \"vertical\"; }",
+          "export type IconComponent = React.ElementType<IconSvgProps>;",
+          "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "export type ToggleGroupChangeEventDetails = NerioChangeEventDetails<\"none\">;",
+          "export type ToggleGroupOption = VisibleLabelToggleGroupOption | IconOnlyToggleGroupOption;",
+          "export type ToggleGroupProps = SharedToggleGroupProps & ToggleGroupAccessibleName & (OptionsToggleGroupProps | ComposedToggleGroupProps);",
+          "export type ToggleGroupValue = string;",
+          "export type ToggleSize = \"sm\" | \"md\" | \"lg\";",
+          "export type ToggleVariant = \"ghost\" | \"outline\";",
+          "type ComposedToggleGroupProps = { children: React.ReactNode; options?: never; };",
+          "type IconOnlyToggleGroupOption = { value: ToggleGroupValue; icon: IconComponent; \"aria-label\": string; label?: never; leadingIcon?: never; disabled?: boolean; };",
+          "type OptionsToggleGroupProps = { options: readonly ToggleGroupOption[]; children?: never; };",
+          "type SharedToggleGroupProps = Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"defaultValue\" | \"onChange\" | \"style\"> & { className?: NerioClassName<ToggleGroupState>; defaultValue?: readonly ToggleGroupValue[]; disabled?: boolean; loopFocus?: boolean; multiple?: boolean; onValueChange?: (value: ToggleGroupValue[], eventDetails: ToggleGroupChangeEventDetails) => void; orientation?: \"horizontal\" | \"vertical\"; render?: NerioRenderProp<ToggleGroupState>; size?: ToggleSize; style?: NerioStyle<ToggleGroupState>; value?: readonly ToggleGroupValue[]; variant?: ToggleVariant; };",
+          "type ToggleGroupAccessibleName = { \"aria-label\": string; \"aria-labelledby\"?: string; } | { \"aria-label\"?: string; \"aria-labelledby\": string; };",
+          "type VisibleLabelToggleGroupOption = { value: ToggleGroupValue; label: React.ReactNode; leadingIcon?: IconComponent; icon?: never; \"aria-label\"?: string; disabled?: boolean; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToggleGroupProps",
+        "signature": "ToggleGroupProps"
+      },
+      {
+        "definition": [
+          "export interface ToggleGroupState { disabled: boolean; multiple: boolean; orientation: \"horizontal\" | \"vertical\"; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToggleGroupState",
+        "signature": "ToggleGroupState"
+      },
+      {
+        "definition": ["export type ToggleGroupValue = string;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "ToggleGroupValue",
+        "signature": "string"
+      },
+      {
         "definition": [
           "export interface ToggleState { pressed: boolean; disabled: boolean; }",
           "export type IconComponent = React.ElementType<IconSvgProps>;",
@@ -7127,7 +7235,8 @@
             "command-primitive",
             "date-picker",
             "number-field",
-            "otp-field"
+            "otp-field",
+            "toggle-group"
           ],
           "shape": {
             "accessibility": ["string"],
@@ -7551,7 +7660,8 @@
             "command-primitive",
             "date-picker",
             "number-field",
-            "otp-field"
+            "otp-field",
+            "toggle-group"
           ],
           "shape": {
             "accessibility": ["string"],
@@ -12315,6 +12425,53 @@
         "slots": ["toggle", "toggle-icon", "toggle-label"],
         "states": ["unpressed", "pressed", "disabled"],
         "variants": ["ghost", "outline", "sm", "md", "lg"]
+      },
+      {
+        "baseUiPrimitives": ["toggle-group", "toggle"],
+        "category": "actions",
+        "dependencies": [
+          "@base-ui/react",
+          "@nerio-ui/adapters",
+          "clsx",
+          "react",
+          "tailwind-merge",
+          "tailwindcss"
+        ],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-aa35c084a7186bad7bdec8a6f9ea99dd2489c012d3eae8faacd25c951aa75b35",
+            "role": "component",
+            "source": "../../ui/src/components/toggle-group.tsx",
+            "target": "components/toggle-group.tsx"
+          }
+        ],
+        "name": "toggle-group",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["toggle"],
+        "requiredTokens": [
+          "--n-toggle-height-sm",
+          "--n-toggle-height-md",
+          "--n-toggle-height-lg",
+          "--n-toggle-radius",
+          "--n-toggle-font-size",
+          "--n-toggle-font-weight",
+          "--n-toggle-gap",
+          "--n-toggle-padding-inline-sm",
+          "--n-toggle-padding-inline-md",
+          "--n-toggle-padding-inline-lg",
+          "--n-toggle-border-width",
+          "--n-toggle-disabled-opacity",
+          "--n-toggle-background-ghost",
+          "--n-toggle-background-outline",
+          "--n-toggle-background-pressed",
+          "--n-toggle-border-pressed",
+          "--n-toggle-foreground-pressed",
+          "--n-focus-ring"
+        ],
+        "slots": ["group", "item", "toggle-icon", "toggle-label"],
+        "states": ["single", "multiple", "unpressed", "pressed", "disabled"],
+        "variants": ["ghost", "outline", "sm", "md", "lg", "horizontal", "vertical"]
       },
       {
         "baseUiPrimitives": ["tooltip"],

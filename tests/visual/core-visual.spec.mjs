@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const categoryFixtures = {
   foundation: ["typography", "kbd"],
-  actions: ["button", "toggle", "button-group"],
+  actions: ["button", "toggle", "toggle-group", "button-group"],
   forms: [
     "input",
     "file-input",
@@ -34,6 +34,7 @@ const matrixSections = [
   "typography",
   "button",
   "toggle",
+  "toggle-group",
   "input",
   "file-input",
   "slider",

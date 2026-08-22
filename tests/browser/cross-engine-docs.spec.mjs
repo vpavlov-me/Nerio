@@ -214,6 +214,29 @@ test("keeps OTPField mobile paste, deletion, autofill, and reflow portable", asy
   }
 });
 
+test("keeps ToggleGroup selection and direction-aware roving focus portable", async ({ page }) => {
+  await page.goto("/docs/components/toggle-group");
+  const preview = page.getByRole("region", { name: "toggle-group preview" });
+  const group = preview.getByRole("group", { name: "Text alignment", exact: true });
+  const left = group.getByRole("button", { name: "Left" });
+  const center = group.getByRole("button", { name: "Center" });
+  const right = group.getByRole("button", { name: "Right" });
+
+  await center.click();
+  await expect(center).toHaveAttribute("aria-pressed", "true");
+  await expect(left).toHaveAttribute("aria-pressed", "false");
+
+  await center.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(right).toBeFocused();
+
+  const rtlGroup = preview.getByRole("group", { name: "Text alignment RTL", exact: true });
+  const rtlCenter = rtlGroup.getByRole("button", { name: "Center" });
+  await rtlCenter.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(rtlGroup.getByRole("button", { name: "Right" })).toBeFocused();
+});
+
 test("keeps Collapsible and Accordion disclosure behavior portable", async ({
   browserName,
   page,
