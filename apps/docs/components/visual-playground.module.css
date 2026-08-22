@@ -141,8 +141,13 @@
   scrollbar-width: none;
 }
 
-.reducedMotionScope :global(.n-spinner) {
+.reducedMotionScope :global(.n-spinner),
+.reducedMotionScope :global(.n-skeleton) {
   animation: none;
+}
+
+.reducedMotionScope :global(.n-skeleton) {
+  opacity: var(--n-opacity-skeleton);
 }
 
 .root :global(.playground-canvas--catalog)::-webkit-scrollbar {
