@@ -104,6 +104,8 @@ export const snippets: Record<string, string> = {
     "import { Combobox } from '@nerio-ui/ui/client';\n\n<Combobox\n  label=\"City\"\n  name=\"city\"\n  options={[\n    { value: 'paris', label: 'Paris', textValue: 'Paris' },\n    { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' },\n    { value: 'tokyo', label: 'Tokyo', textValue: 'Tokyo' },\n  ]}\n/>",
   "search-field":
     'import { SearchField } from \'@nerio-ui/ui/client\';\n\n<SearchField\n  label="Search projects"\n  name="query"\n  autoComplete="off"\n  onSearch={(query) => runSearch(query)}\n/>',
+  "number-field":
+    'import { NumberField } from \'@nerio-ui/ui/client\';\n\n<NumberField\n  label="Quantity"\n  name="quantity"\n  defaultValue={12.5}\n  min={0}\n  max={100}\n  step={0.5}\n  locale="en-US"\n/>',
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
@@ -655,6 +657,33 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "visible Field label and associated supporting content",
       "localizable clear action with input focus restoration",
       "IME-safe Enter search event without suppressed form submission",
+    ],
+  },
+  "number-field": {
+    name: "NumberField",
+    description: "Collects one localized decimal value with deliberate stepping and bounds.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "Slider", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "decrement",
+      "input",
+      "increment",
+      "description",
+      "message",
+    ],
+    motion: ["shared form-control transitions", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI Number Field semantics and localized text entry",
+      "visible Field label and associated supporting content",
+      "localizable increment and decrement action labels",
+      "read-only and disabled stepping protection",
     ],
   },
 };
@@ -2757,6 +2786,85 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-input-addon-foreground",
       "--n-focus-ring",
     ],
+  },
+  "number-field": {
+    category: "Forms",
+    purpose:
+      "Use NumberField for one decimal quantity that needs localized entry, deliberate stepping, finite bounds, and native form behavior.",
+    anatomy: [
+      {
+        title: "input",
+        description: "Localized decimal text entry and one form-backed numeric value.",
+      },
+      {
+        title: "decrement",
+        description: "Localizable action that steps down without crossing the minimum.",
+      },
+      {
+        title: "increment",
+        description: "Localizable action that steps up without crossing the maximum.",
+      },
+      { title: "description / message", description: "Associated help and validation content." },
+    ],
+    variants: [
+      { title: "Small, medium, large", description: "Shared form-control size contract." },
+      {
+        title: "LTR and RTL",
+        description: "Logical stepper placement follows document direction.",
+      },
+    ],
+    states: [
+      {
+        title: "Value",
+        description: "One controlled or uncontrolled finite number, or null when empty.",
+      },
+      {
+        title: "Bounds and step",
+        description: "Buttons and keyboard actions respect finite min, max, and positive steps.",
+      },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Preserves form and accessibility state while blocking changes.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label and localize decrementLabel, incrementLabel, and roleDescription for the product locale.",
+      "Keep business validation in the consumer and use invalid plus message for the resulting feedback.",
+      "Wheel-driven changes are deliberately disabled to avoid accidental edits while scrolling.",
+      "Read-only controls remain perceivable while all input, keyboard, and step actions are blocked.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled numeric value with a bounded change reason.",
+      },
+      {
+        title: "onValueCommitted",
+        description: "Receives the value after deliberate input or stepping is committed.",
+      },
+      {
+        title: "min / max / step / smallStep / largeStep",
+        description: "Finite bounds and positive decimal stepping behavior.",
+      },
+      {
+        title: "locale / format",
+        description: "Decimal-only Intl.NumberFormat presentation with an en-US default.",
+      },
+      {
+        title: "name / form / required",
+        description: "Native form identity, submission, validation, and reset.",
+      },
+    ],
+    guidance: {
+      do: [
+        "Use for quantities, percentages, durations, or other decimal values with clear units in surrounding content.",
+      ],
+      dont: [
+        "Do not add currency policy, arbitrary parsing, unit conversion, calculations, business validation, product steppers, or wheel changes.",
+      ],
+    },
+    related: ["input", "slider", "field"],
+    tokens: ["--n-input-background", "--n-input-border", "--n-input-placeholder", "--n-focus-ring"],
   },
   toast: {
     category: "Feedback",

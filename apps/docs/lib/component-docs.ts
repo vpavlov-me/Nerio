@@ -48,6 +48,8 @@ const componentLedes: Record<string, string> = {
     "Combobox filters one bounded synchronous option set and commits one form-backed value while data orchestration remains consumer-owned.",
   "search-field":
     "SearchField collects one native search query with accessible clear, deliberate Enter events, and consumer-owned results.",
+  "number-field":
+    "NumberField collects one localized decimal value with deliberate stepping, bounds, form behavior, and consumer-owned business rules.",
   slider:
     "Slider chooses one numeric value within a known bounded range through keyboard, pointer, or touch input.",
   calendar:
@@ -103,6 +105,7 @@ const componentTitles: Record<string, string> = {
   "sidebar-primitive": "Sidebar",
   combobox: "Combobox",
   "search-field": "SearchField",
+  "number-field": "NumberField",
 };
 
 function getComponentTitle(slug: string) {

@@ -318,6 +318,25 @@ async function verify() {
       );
     }
 
+    const numberFieldUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "number-field" },
+    });
+    const numberFieldUsage = JSON.parse(numberFieldUsageResult.content[0].text);
+    if (
+      !numberFieldUsage.baseUiPrimitives.includes("number-field") ||
+      !numberFieldUsage.registryDependencies.includes("form-message") ||
+      !numberFieldUsage.slots.includes("decrement") ||
+      !numberFieldUsage.slots.includes("increment") ||
+      !numberFieldUsage.states.includes("read-only") ||
+      !numberFieldUsage.accessibility.some((item) => item.includes("Wheel")) ||
+      !numberFieldUsage.accessibility.some((item) => item.includes("Currency"))
+    ) {
+      throw new Error(
+        "MCP NumberField usage is missing locale, stepping, wheel, or consumer boundaries.",
+      );
+    }
+
     const tableUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "table" },
@@ -977,6 +996,7 @@ async function verify() {
       "sheet",
       "select",
       "search-field",
+      "number-field",
       "tabs",
       "toast",
       "input",

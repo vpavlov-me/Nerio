@@ -94,6 +94,7 @@
     { "name": "select", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "combobox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "search-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "number-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "calendar", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "date-picker", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -672,6 +673,14 @@
       "category": "forms",
       "status": "implemented-initial",
       "description": "Client-only native search composition with one controlled or uncontrolled query, an accessible focus-restoring clear action, deliberate Enter search events, form reset, Field relationships, and loading presentation."
+    },
+    {
+      "name": "NumberField",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI decimal NumberField with one controlled or uncontrolled numeric value, locale-aware editing and display, bounded stepping, form metadata and reset, accessible increment and decrement controls, and a deliberate no-wheel default."
     },
     {
       "name": "Slider",

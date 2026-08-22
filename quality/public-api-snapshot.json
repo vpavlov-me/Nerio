@@ -90,6 +90,7 @@
     "/docs/components/key-value",
     "/docs/components/label",
     "/docs/components/list",
+    "/docs/components/number-field",
     "/docs/components/pagination",
     "/docs/components/popover",
     "/docs/components/progress",
@@ -4945,6 +4946,106 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "NumberField",
+        "signature": "React.ForwardRefExoticComponent<NumberFieldProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NumberFieldChangeEventDetails = NerioChangeEventDetails<NumberFieldChangeReason, { direction?: NumberFieldDirection; }>;",
+          "export type NumberFieldChangeReason = \"input-change\" | \"input-clear\" | \"input-blur\" | \"input-paste\" | \"keyboard\" | \"increment-press\" | \"decrement-press\" | \"wheel\" | \"scrub\" | \"none\";",
+          "export type NumberFieldDirection = -1 | 1;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldChangeEventDetails",
+        "signature": "NumberFieldChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type NumberFieldChangeReason = \"input-change\" | \"input-clear\" | \"input-blur\" | \"input-paste\" | \"keyboard\" | \"increment-press\" | \"decrement-press\" | \"wheel\" | \"scrub\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldChangeReason",
+        "signature": "NumberFieldChangeReason"
+      },
+      {
+        "definition": [
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type NumberFieldCommitEventDetails = NerioEventDetails<NumberFieldCommitReason>;",
+          "export type NumberFieldCommitReason = \"input-blur\" | \"input-clear\" | \"keyboard\" | \"increment-press\" | \"decrement-press\" | \"wheel\" | \"scrub\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldCommitEventDetails",
+        "signature": "NumberFieldCommitEventDetails"
+      },
+      {
+        "definition": [
+          "export type NumberFieldCommitReason = \"input-blur\" | \"input-clear\" | \"keyboard\" | \"increment-press\" | \"decrement-press\" | \"wheel\" | \"scrub\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldCommitReason",
+        "signature": "NumberFieldCommitReason"
+      },
+      {
+        "definition": ["export type NumberFieldDirection = -1 | 1;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldDirection",
+        "signature": "NumberFieldDirection"
+      },
+      {
+        "definition": [
+          "export type NumberFieldFormatOptions = Omit<Intl.NumberFormatOptions, UnsupportedNumberFormatKeys> & { style?: \"decimal\"; };",
+          "type UnsupportedNumberFormatKeys = \"currency\" | \"currencyDisplay\" | \"currencySign\" | \"style\" | \"unit\" | \"unitDisplay\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldFormatOptions",
+        "signature": "NumberFieldFormatOptions"
+      },
+      {
+        "definition": [
+          "export interface NumberFieldProps extends NumberFieldRootProps { label: React.ReactNode; description?: React.ReactNode; message?: React.ReactNode; invalid?: boolean; size?: NumberFieldSize; value?: number | null; defaultValue?: number; onValueChange?: (value: number | null, eventDetails: NumberFieldChangeEventDetails) => void; onValueCommitted?: (value: number | null, eventDetails: NumberFieldCommitEventDetails) => void; min?: number; max?: number; step?: NumberFieldStep; smallStep?: number; largeStep?: number; snapOnStep?: boolean; locale?: Intl.LocalesArgument; format?: NumberFieldFormatOptions; name?: string; form?: string; required?: boolean; disabled?: boolean; readOnly?: boolean; placeholder?: string; autoComplete?: string; decrementLabel?: string; incrementLabel?: string; roleDescription?: string; inputRef?: React.Ref<HTMLInputElement>; }",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; } & CustomProperties;",
+          "export type NumberFieldChangeEventDetails = NerioChangeEventDetails<NumberFieldChangeReason, { direction?: NumberFieldDirection; }>;",
+          "export type NumberFieldChangeReason = \"input-change\" | \"input-clear\" | \"input-blur\" | \"input-paste\" | \"keyboard\" | \"increment-press\" | \"decrement-press\" | \"wheel\" | \"scrub\" | \"none\";",
+          "export type NumberFieldCommitEventDetails = NerioEventDetails<NumberFieldCommitReason>;",
+          "export type NumberFieldCommitReason = \"input-blur\" | \"input-clear\" | \"keyboard\" | \"increment-press\" | \"decrement-press\" | \"wheel\" | \"scrub\" | \"none\";",
+          "export type NumberFieldDirection = -1 | 1;",
+          "export type NumberFieldFormatOptions = Omit<Intl.NumberFormatOptions, UnsupportedNumberFormatKeys> & { style?: \"decimal\"; };",
+          "export type NumberFieldSize = \"sm\" | \"md\" | \"lg\";",
+          "export type NumberFieldStep = number | \"any\";",
+          "type NumberFieldRootProps = Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"defaultValue\" | \"onChange\">;",
+          "type UnsupportedNumberFormatKeys = \"currency\" | \"currencyDisplay\" | \"currencySign\" | \"style\" | \"unit\" | \"unitDisplay\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldProps",
+        "signature": "NumberFieldProps"
+      },
+      {
+        "definition": ["export type NumberFieldSize = \"sm\" | \"md\" | \"lg\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldSize",
+        "signature": "NumberFieldSize"
+      },
+      {
+        "definition": ["export type NumberFieldStep = number | \"any\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "NumberFieldStep",
+        "signature": "NumberFieldStep"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "Pagination",
         "signature": "React.ForwardRefExoticComponent<PaginationProps & React.RefAttributes<HTMLElement>>"
       },
@@ -6921,7 +7022,7 @@
           }
         },
         {
-          "components": ["combobox", "command-primitive", "date-picker"],
+          "components": ["combobox", "command-primitive", "date-picker", "number-field"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": ["string"],
@@ -7339,7 +7440,7 @@
           }
         },
         {
-          "components": ["combobox", "command-primitive", "date-picker"],
+          "components": ["combobox", "command-primitive", "date-picker", "number-field"],
           "shape": {
             "accessibility": ["string"],
             "baseUiPrimitives": ["string"],
@@ -10365,6 +10466,95 @@
         "slots": ["motion-config"],
         "states": ["hidden", "visible", "exit"],
         "variants": ["fade", "fadeScale", "directional slide", "collapse"]
+      },
+      {
+        "baseUiPrimitives": ["number-field"],
+        "category": "forms",
+        "dependencies": [
+          "@nerio-ui/adapters",
+          "@base-ui/react",
+          "clsx",
+          "react",
+          "tailwind-merge",
+          "tailwindcss"
+        ],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-3cf7404ea834f696b7dbd361a2a97a1a8dd993102575fcb8dfc1274f09941cf4",
+            "role": "component",
+            "source": "../../ui/src/components/number-field.tsx",
+            "target": "components/number-field.tsx"
+          },
+          {
+            "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9",
+            "role": "component",
+            "source": "../../ui/src/components/icon.tsx",
+            "target": "components/icon.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31",
+            "role": "utility",
+            "source": "../../ui/src/lib/tailwind-cn.ts",
+            "target": "lib/tailwind-cn.ts"
+          },
+          {
+            "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b",
+            "role": "utility",
+            "source": "../../ui/src/lib/motion.ts",
+            "target": "lib/motion.ts"
+          }
+        ],
+        "name": "number-field",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["form-message"],
+        "requiredTokens": [
+          "--n-input-height-sm",
+          "--n-input-height-md",
+          "--n-input-height-lg",
+          "--n-input-padding-inline",
+          "--n-input-radius",
+          "--n-input-background",
+          "--n-input-background-hover",
+          "--n-input-border",
+          "--n-input-border-hover",
+          "--n-input-border-focus",
+          "--n-input-border-danger",
+          "--n-input-placeholder",
+          "--n-input-foreground",
+          "--n-input-disabled-background",
+          "--n-input-disabled-foreground",
+          "--n-color-text-tertiary",
+          "--n-color-surface-muted",
+          "--n-focus-ring"
+        ],
+        "slots": [
+          "root",
+          "label",
+          "input-group",
+          "decrement",
+          "input",
+          "increment",
+          "description",
+          "message"
+        ],
+        "states": [
+          "empty",
+          "value",
+          "minimum",
+          "maximum",
+          "disabled",
+          "read-only",
+          "required",
+          "invalid"
+        ],
+        "variants": ["sm", "md", "lg", "decimal", "LTR", "RTL"]
       },
       {
         "baseUiPrimitives": [],

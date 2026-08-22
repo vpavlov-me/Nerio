@@ -1866,6 +1866,107 @@
       "usage": "import { SearchField } from '@/components/nerio/components/search-field';\n\n<SearchField label=\"Search projects\" name=\"query\" onSearch={(query) => console.log(query)} />"
     },
     {
+      "name": "number-field",
+      "title": "NumberField",
+      "description": "Collects one decimal number with locale-aware editing, bounded stepping, native form behavior, and accessible increment and decrement actions.",
+      "category": "forms",
+      "dependencies": [
+        "@nerio-ui/adapters",
+        "@base-ui/react",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["form-message"],
+      "files": [
+        {
+          "source": "../../ui/src/components/number-field.tsx",
+          "target": "components/number-field.tsx",
+          "role": "component",
+          "integrity": "sha256-3cf7404ea834f696b7dbd361a2a97a1a8dd993102575fcb8dfc1274f09941cf4"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
+        }
+      ],
+      "baseUiPrimitives": ["number-field"],
+      "slots": [
+        "root",
+        "label",
+        "input-group",
+        "decrement",
+        "input",
+        "increment",
+        "description",
+        "message"
+      ],
+      "variants": ["sm", "md", "lg", "decimal", "LTR", "RTL"],
+      "states": [
+        "empty",
+        "value",
+        "minimum",
+        "maximum",
+        "disabled",
+        "read-only",
+        "required",
+        "invalid"
+      ],
+      "requiredTokens": [
+        "--n-input-height-sm",
+        "--n-input-height-md",
+        "--n-input-height-lg",
+        "--n-input-padding-inline",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-background-hover",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-focus",
+        "--n-input-border-danger",
+        "--n-input-placeholder",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
+        "--n-color-text-tertiary",
+        "--n-color-surface-muted",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses the Base UI Number Field primitive with one visible native label, a text input optimized for localized numeric editing, and native increment and decrement buttons.",
+        "One number or null is the public value; non-finite values, inverted bounds, non-positive steps, currency formats, and unit formats are rejected.",
+        "Arrow keys and Home or End step or reach bounds, buttons support pointer and touch, and min or max disables the corresponding action.",
+        "Read-only keeps the input focusable and exposes both step actions as aria-disabled; disabled removes the field from interaction.",
+        "Name, form, required, min, max, step, controlled or uncontrolled state, and form reset preserve the Base UI form contract.",
+        "Wheel stepping and scrub-area dragging are intentionally unavailable so scrolling cannot change the value unexpectedly.",
+        "Locale and decimal format options control visible editing and display with a deterministic en-US default. Localize decrementLabel, incrementLabel, and roleDescription for non-English products.",
+        "Currency, accounting, units, expression parsing, conversion, calculators, and business validation remain consumer responsibilities.",
+        "Use native Input type=number when browser-native numeric entry is sufficient and custom stepping or locale-aware display adds no durable value."
+      ],
+      "usage": "import { NumberField } from '@/components/nerio/components/number-field';\n\n<NumberField label=\"Quantity\" name=\"quantity\" defaultValue={1} min={0} max={20} step={1} />"
+    },
+    {
       "name": "radio-group",
       "title": "RadioGroup",
       "description": "Chooses one option from a small visible set through data-driven options or RadioGroupItem composition.",

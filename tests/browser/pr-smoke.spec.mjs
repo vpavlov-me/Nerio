@@ -455,6 +455,48 @@ test("keeps SearchField native query, clear focus, loading, RTL, and narrow layo
   await expectHealthyPage(page, problems);
 });
 
+test("keeps NumberField locale, stepping, bounds, wheel, RTL, and narrow layout bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/docs/components/number-field");
+
+  const preview = page.getByRole("region", { name: "number-field preview" });
+  const input = preview.getByRole("textbox", { name: "Quantity", exact: true });
+  await expect(input).toHaveValue("12.5");
+  await input.press("ArrowUp");
+  await expect(input).toHaveValue("13");
+  await preview.getByRole("button", { name: "Decrease value" }).first().click();
+  await expect(input).toHaveValue("12.5");
+  await input.hover();
+  await page.mouse.wheel(0, -100);
+  await expect(input).toHaveValue("12.5");
+
+  await page.locator("html").evaluate((root) => {
+    root.dir = "rtl";
+  });
+  const positions = await preview
+    .locator('[data-slot="input-group"]')
+    .first()
+    .evaluate((group) => {
+      const decrement = group.querySelector('[data-slot="decrement"]')?.getBoundingClientRect();
+      const increment = group.querySelector('[data-slot="increment"]')?.getBoundingClientRect();
+      const bounds = group.getBoundingClientRect();
+      return decrement && increment
+        ? {
+            decrementCenter: decrement.left + decrement.width / 2,
+            incrementCenter: increment.left + increment.width / 2,
+            overflow: group.scrollWidth - bounds.width,
+          }
+        : null;
+    });
+  expect(positions).not.toBeNull();
+  expect(positions.decrementCenter).toBeGreaterThan(positions.incrementCenter);
+  expect(positions.overflow).toBeLessThanOrEqual(1);
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dialog");

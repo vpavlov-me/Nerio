@@ -85,6 +85,7 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 | Select      | stable-core         | `@nerio-ui/ui/client` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior                           |
 | Combobox    | implemented-initial | `@nerio-ui/ui/client` | Bounded single-select control with synchronous filtering, options or composed items, form metadata, and independently controlled query, value, and popup state |
 | SearchField | implemented-initial | `@nerio-ui/ui/client` | Native search composition with one controlled or uncontrolled query, accessible clear, deliberate Enter search events, form reset, and loading presentation    |
+| NumberField | implemented-initial | `@nerio-ui/ui/client` | Base UI decimal number control with locale-aware editing and display, bounded stepping, form/reset semantics, and accessible increment/decrement actions       |
 | Slider      | stable-core         | `@nerio-ui/ui/client` | Base UI single-value range primitive with form metadata, horizontal/vertical orientation, read-only behavior, localized value text, and one thumb              |
 | FileInput   | stable-core         | `@nerio-ui/ui`        | Native file selection with forwarded FileList, form/reset semantics, single or multiple selection, and no upload workflow ownership                            |
 | Calendar    | stable-core         | `@nerio-ui/ui/client` | Timezone-safe single-date grid with ISO values, roving focus, locale labels, week starts, constraints, and controlled or uncontrolled state                    |
@@ -99,17 +100,17 @@ Calendar and DatePicker provide the bounded custom single-date path. FileInput i
 selection primitive delivered by #260; ranges, scheduling, parsing, and upload workflows remain
 consumer or Pro responsibility.
 
-| Component                                                                            | Tier            | Status | Boundary                                                                                          |
-| ------------------------------------------------------------------------------------ | --------------- | ------ | ------------------------------------------------------------------------------------------------- |
-| PasswordInput                                                                        | Core candidate  | future | Composes Input and InputGroup for an accessible visibility action; it never owns password policy. |
-| NumberField / OTPInput                                                               | Core candidates | future | Candidates only; no public API is committed.                                                      |
-| DateRangePicker / DateTimePicker / DatePickerWithPresets / NaturalLanguageDatePicker | Pro             | future | Product-ready date workflows.                                                                     |
-| GlobalSearch / EntitySearch / AdvancedSearch / CommandPalette / FilterBar            | Pro             | future | Result fetching, workflow behavior, and product-level search/filter composition.                  |
+| Component                                                                            | Tier           | Status | Boundary                                                                                          |
+| ------------------------------------------------------------------------------------ | -------------- | ------ | ------------------------------------------------------------------------------------------------- |
+| PasswordInput                                                                        | Core candidate | future | Composes Input and InputGroup for an accessible visibility action; it never owns password policy. |
+| OTPInput                                                                             | Core candidate | future | Candidate only; no public API is committed.                                                       |
+| DateRangePicker / DateTimePicker / DatePickerWithPresets / NaturalLanguageDatePicker | Pro            | future | Product-ready date workflows.                                                                     |
+| GlobalSearch / EntitySearch / AdvancedSearch / CommandPalette / FilterBar            | Pro            | future | Result fetching, workflow behavior, and product-level search/filter composition.                  |
 
 The accepted post-1.0 decision keeps SearchField in #346 and splits NumberField into #370 because
 their semantics, values, localization, and primitive contracts differ. Bounded single-select
-Combobox and SearchField are implemented on `dev` through #345 and #346. MultiSelect #349 is
-deferred to a Core 1.2 decision spike and is not an approved component.
+Combobox, SearchField, and decimal NumberField are implemented on `dev` through #345, #346, and
+#370. MultiSelect #349 is deferred to a Core 1.2 decision spike and is not an approved component.
 
 ### Overlays
 

@@ -113,7 +113,7 @@ After the relevant #342 foundation, these may proceed in parallel:
 - #345 — bounded single-select Combobox (complete on `dev`);
 - #346 — SearchField (complete on `dev`);
 - #347 — OTPField;
-- #370 — NumberField, split from #346.
+- #370 — NumberField, split from #346 (complete on `dev`).
 
 <!-- parity-track:primitive-parity-b issues:#348,#350 depends-on:#151,#341,#342 -->
 

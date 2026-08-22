@@ -135,6 +135,17 @@ const expectedSearchFieldFiles = [
   "styles/spinner.css",
   "styles/tailwind.css",
 ];
+const expectedNumberFieldFiles = [
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "components/number-field.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tokens.css",
+  "styles/tailwind.css",
+];
 const expectedPhase2BFiles = [
   "components/alert.tsx",
   "components/form-message.tsx",
@@ -1806,6 +1817,7 @@ async function verify() {
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "combobox");
     await run(localTarget, "add", "search-field");
+    await run(localTarget, "add", "number-field");
     await run(localTarget, "add", "slider");
     await run(localTarget, "add", "calendar");
     await run(localTarget, "add", "date-picker");
@@ -2097,6 +2109,22 @@ async function verify() {
     ) {
       throw new Error(
         "Installed SearchField source did not preserve native search, state, clear, or focus contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedNumberFieldFiles);
+    const numberFieldSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/number-field.tsx"),
+      "utf8",
+    );
+    if (
+      !numberFieldSource.includes("@base-ui/react/number-field") ||
+      !numberFieldSource.includes("setUncontrolledValue") ||
+      !numberFieldSource.includes("allowWheelScrub={false}") ||
+      !numberFieldSource.includes('data-slot="decrement"') ||
+      !numberFieldSource.includes('data-slot="increment"')
+    ) {
+      throw new Error(
+        "Installed NumberField source did not preserve decimal state, stepper, or wheel contracts.",
       );
     }
     assertFiles(localTarget, expectedSliderFiles);

@@ -50,6 +50,7 @@ const previewRegistry = {
   select: FormsPreview,
   combobox: FormsPreview,
   "search-field": FormsPreview,
+  "number-field": FormsPreview,
   dialog: OverlaysPreview,
   "alert-dialog": AlertDialogPreview,
   "alert-dialog-confirmation": AlertDialogPreview,

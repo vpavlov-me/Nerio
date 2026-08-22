@@ -118,6 +118,18 @@ export {
   type SearchFieldValueChangeReason,
 } from "./components/search-field";
 export {
+  NumberField,
+  type NumberFieldChangeEventDetails,
+  type NumberFieldChangeReason,
+  type NumberFieldCommitEventDetails,
+  type NumberFieldCommitReason,
+  type NumberFieldDirection,
+  type NumberFieldFormatOptions,
+  type NumberFieldProps,
+  type NumberFieldSize,
+  type NumberFieldStep,
+} from "./components/number-field";
+export {
   Tabs,
   TabsContent,
   TabsIndicator,

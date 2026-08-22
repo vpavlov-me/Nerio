@@ -363,6 +363,7 @@ try {
     "radio-group",
     "switch",
     "select",
+    "number-field",
     "sheet",
     "toast",
     "sidebar-primitive",
