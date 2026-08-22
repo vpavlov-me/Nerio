@@ -1978,7 +1978,7 @@
           "source": "../../ui/src/components/otp-field.tsx",
           "target": "components/otp-field.tsx",
           "role": "component",
-          "integrity": "sha256-41122f0be274d61fcb404ce14b887a05674dc45ab296f1b152256578e8f4c35f"
+          "integrity": "sha256-066e7fa97d7a40f1bbdf028f8190d0f540401bf901095961c6610a0f6e284334"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",

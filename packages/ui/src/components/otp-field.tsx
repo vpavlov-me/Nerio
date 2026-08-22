@@ -206,6 +206,7 @@ export const OTPField = React.forwardRef<HTMLDivElement, OTPFieldProps>(function
               aria-invalid={isInvalid ? true : ariaInvalid}
               aria-label={resolveSlotLabel(index, length)}
               className={cn(slotClasses, motionClasses.control)}
+              data-invalid={isInvalid ? "" : undefined}
               data-size={size}
               data-slot="input"
             />

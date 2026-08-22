@@ -25,10 +25,9 @@ describe("OTPField accessibility", () => {
     expect(screen.getByRole("textbox", { name: "Verification code" })).toHaveAccessibleDescription(
       "Enter the code sent to your device. The code is incomplete.",
     );
-    expect(screen.getByRole("textbox", { name: "Digit 6 of 6" })).toHaveAttribute(
-      "aria-invalid",
-      "true",
-    );
+    const invalidSlot = screen.getByRole("textbox", { name: "Digit 6 of 6" });
+    expect(invalidSlot).toHaveAttribute("aria-invalid", "true");
+    expect(invalidSlot).toHaveAttribute("data-invalid");
     expect(screen.getByRole("textbox", { name: "Locked code" })).toHaveAttribute("readonly");
     expect(screen.getByRole("textbox", { name: "Unavailable code" })).toBeDisabled();
     expect(container.querySelector('[data-slot="separator"]')).toHaveAttribute(
