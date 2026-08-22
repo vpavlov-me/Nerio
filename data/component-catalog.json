@@ -95,6 +95,7 @@
     { "name": "combobox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "search-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "number-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "otp-field", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "slider", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "calendar", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "date-picker", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -681,6 +682,14 @@
       "category": "forms",
       "status": "implemented-initial",
       "description": "Client-only Base UI decimal NumberField with one controlled or uncontrolled numeric value, locale-aware editing and display, bounded stepping, form metadata and reset, accessible increment and decrement controls, and a deliberate no-wheel default."
+    },
+    {
+      "name": "OTPField",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI verification-code field with one controlled or uncontrolled string value, deterministic paste and deletion, autofill and mobile keyboard hints, form metadata and reset, accessible slot labels, and a completion callback."
     },
     {
       "name": "Slider",

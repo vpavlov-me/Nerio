@@ -65,12 +65,12 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "6d8c7f16bfa9ac39fe0800b312c2540d87e5e3c729610a0fbd94c80e77033ad8",
+  "currentComponentCatalogSha256": "60b4f0575ed2fbaae8c3e186cf87a8ea5eff2a74462d7d2afa93afc47ed78183",
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
-  "currentRegistryItemCount": 52,
-  "currentRegistryManifestSha256": "a7d7c747f658f35fff683b8a272906bb833dd753148a2f59ac7cffcb1e95fa4b",
-  "currentPublicApiSnapshotSha256": "228e72bd4d75a9710d28104e50957387b802148970e28e17bb8cdaf7e944b0d6",
+  "currentRegistryItemCount": 53,
+  "currentRegistryManifestSha256": "16464267d0dcc840ab81aa565c9477afe198bb4fd4748e98c387f1a72d8167b8",
+  "currentPublicApiSnapshotSha256": "9fec24fcb1a92aee84d2fdefe5b9ab89c54feb736d6f6fff54ebaf5ec3d91e55",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -302,7 +302,7 @@
       "priority": "P1",
       "target": "Core 1.1",
       "classification": "core-1.1-primitive",
-      "dependsOn": [341, 342, 151],
+      "dependsOn": [341, 342],
       "decision": "Base UI 1.6.0 marks OTPField stable; Core owns one form value, not authentication or verification policy."
     },
     {
@@ -854,16 +854,25 @@
       "classification": "core-1.1-primitive",
       "priority": "P1",
       "target": "Core 1.1",
-      "nerioComponents": [],
+      "nerioComponents": ["OTPField"],
       "baseUiPrimitives": ["otp-field"],
       "platformCoverageIds": [],
       "competitorEvidence": ["shadcn-components:Input OTP", "heroui-components:InputOTP"],
       "value": "medium",
       "complexity": "high",
-      "dependencies": [151, 341, 342],
+      "dependencies": [341, 342],
       "semverImpact": "additive-minor",
       "acceptanceBoundary": "One bounded form value with mobile, paste, deletion, and accessible group behavior.",
-      "nonGoals": ["Authentication", "Resend", "Expiry", "Rate limiting"],
+      "nonGoals": [
+        "Authentication",
+        "Verification requests",
+        "Resend",
+        "Countdowns",
+        "Masking",
+        "Rate limiting",
+        "Recovery workflows",
+        "Credential storage"
+      ],
       "issue": 347
     },
     {

@@ -14,6 +14,7 @@ import {
   LabelRequired,
   LabelRow,
   NumberField,
+  OTPField,
   RadioGroup,
   RadioGroupItem,
   SearchField,
@@ -195,6 +196,24 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
             description="Enter a decimal quantity from 0 to 100."
           />
           <NumberField label="Read-only quantity" defaultValue={24} readOnly />
+        </div>
+      ) : null}
+      {kind === "otp-field" ? (
+        <div className="form-preview-stack">
+          <OTPField
+            label="Verification code"
+            length={6}
+            name="verification-code"
+            defaultValue="247"
+            description="Enter the six-digit code sent to your device."
+          />
+          <OTPField
+            label="Recovery code"
+            length={6}
+            validationType="alphanumeric"
+            defaultValue="A7C"
+            description="Letters and numbers are accepted."
+          />
         </div>
       ) : null}
     </PreviewFrame>

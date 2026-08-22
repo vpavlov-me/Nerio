@@ -146,6 +146,17 @@ const expectedNumberFieldFiles = [
   "styles/tokens.css",
   "styles/tailwind.css",
 ];
+const expectedOtpFieldFiles = [
+  "components/form-message.tsx",
+  "components/otp-field.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tokens.css",
+  "styles/tailwind.css",
+];
 const expectedPhase2BFiles = [
   "components/alert.tsx",
   "components/form-message.tsx",
@@ -1818,6 +1829,7 @@ async function verify() {
     await run(localTarget, "add", "combobox");
     await run(localTarget, "add", "search-field");
     await run(localTarget, "add", "number-field");
+    await run(localTarget, "add", "otp-field");
     await run(localTarget, "add", "slider");
     await run(localTarget, "add", "calendar");
     await run(localTarget, "add", "date-picker");
@@ -2125,6 +2137,22 @@ async function verify() {
     ) {
       throw new Error(
         "Installed NumberField source did not preserve decimal state, stepper, or wheel contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedOtpFieldFiles);
+    const otpFieldSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/otp-field.tsx"),
+      "utf8",
+    );
+    if (
+      !otpFieldSource.includes("@base-ui/react/otp-field") ||
+      !otpFieldSource.includes("setUncontrolledValue") ||
+      !otpFieldSource.includes('autoComplete = "one-time-code"') ||
+      !otpFieldSource.includes('data-slot="separator"') ||
+      !otpFieldSource.includes("onValueComplete")
+    ) {
+      throw new Error(
+        "Installed OTPField source did not preserve value, autofill, grouping, or completion contracts.",
       );
     }
     assertFiles(localTarget, expectedSliderFiles);

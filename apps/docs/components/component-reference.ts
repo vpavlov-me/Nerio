@@ -106,6 +106,8 @@ export const snippets: Record<string, string> = {
     'import { SearchField } from \'@nerio-ui/ui/client\';\n\n<SearchField\n  label="Search projects"\n  name="query"\n  autoComplete="off"\n  onSearch={(query) => runSearch(query)}\n/>',
   "number-field":
     'import { NumberField } from \'@nerio-ui/ui/client\';\n\n<NumberField\n  label="Quantity"\n  name="quantity"\n  defaultValue={12.5}\n  min={0}\n  max={100}\n  step={0.5}\n  locale="en-US"\n/>',
+  "otp-field":
+    'import { OTPField } from \'@nerio-ui/ui/client\';\n\n<OTPField\n  label="Verification code"\n  length={6}\n  name="code"\n  description="Enter the code sent to your device."\n  onValueComplete={(code) => verifyCode(code)}\n/>',
   toast:
     'import { Button, ToastProvider, ToastViewport, useToastManager } from \'@nerio-ui/ui/client\';\n\nfunction Example() {\n  const toasts = useToastManager();\n  return (\n    <Button onClick={() => toasts.add({\n      id: "save-result",\n      title: "Saved",\n      description: "The collection is available to your team.",\n      timeout: 5000, // Use 0 only for an intentionally persistent toast.\n      priority: "low",\n      data: { tone: "success" },\n    })}>\n      Show toast\n    </Button>\n  );\n}\n\n<ToastProvider limit={3}>\n  <Example />\n  <ToastViewport label="Notifications" />\n</ToastProvider>',
   tabs: 'import { Badge } from "@nerio-ui/ui";\nimport { Tabs, TabsContent, TabsIndicator, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";\n\n<Tabs defaultValue="overview" variant="segmented">\n  <TabsList aria-label="Workspace sections">\n    <TabsTrigger value="overview" badge={<Badge size="sm">12</Badge>}>Overview</TabsTrigger>\n    <TabsTrigger value="activity">Activity</TabsTrigger>\n    <TabsIndicator />\n  </TabsList>\n  <TabsPanels>\n    <TabsContent value="overview">Overview content</TabsContent>\n    <TabsContent value="activity">Activity content</TabsContent>\n  </TabsPanels>\n</Tabs>',
@@ -684,6 +686,24 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "visible Field label and associated supporting content",
       "localizable increment and decrement action labels",
       "read-only and disabled stepping protection",
+    ],
+  },
+  "otp-field": {
+    name: "OTPField",
+    description: "Collects one verification code with predictable input and form behavior.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Input", "Field", "FormMessage"],
+    anatomy: ["root", "label", "input-group", "input", "separator", "description", "message"],
+    motion: ["shared form-control transitions", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI OTP Field keyboard, paste, deletion, and autofill behavior",
+      "named group and localizable positional labels for following slots",
+      "associated supporting and validation content",
+      "decorative separator hidden from assistive technology",
     ],
   },
 };
@@ -3004,6 +3024,69 @@ export const componentReference: Record<string, ComponentReference> = {
       "--n-toast-status-danger",
       "--n-motion-reveal-duration",
       "--n-motion-focus-duration",
+    ],
+  },
+  "otp-field": {
+    category: "Forms",
+    purpose:
+      "Use OTPField for one short verification code that needs deterministic paste, deletion, autofill, and form behavior.",
+    anatomy: [
+      { title: "root / label", description: "One named verification-code group." },
+      { title: "input-group / input", description: "Real character slots backed by one value." },
+      { title: "separator", description: "Visual grouping hidden from assistive technology." },
+      { title: "description / message", description: "Associated help and validation content." },
+    ],
+    variants: [
+      { title: "Small, medium, large", description: "Shared form-control size contract." },
+      { title: "Numeric, alpha, alphanumeric", description: "Bounded accepted character sets." },
+    ],
+    states: [
+      { title: "Empty / filled / complete", description: "One controlled or uncontrolled string." },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Truthful interaction and form state.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label and localize getSlotLabel for the product locale.",
+      "Keep the default one-time-code autocomplete hint unless the product has a documented reason to override it.",
+      "Use concise invalid messages; do not announce every entered character through a live region.",
+      "The separator is decorative and never fragments the accessible code value.",
+    ],
+    api: [
+      { title: "length", description: "Required positive slot count and completion boundary." },
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "One string value and bounded change reason.",
+      },
+      {
+        title: "onValueComplete",
+        description: "Runs after all slots contain accepted characters.",
+      },
+      {
+        title: "validationType / inputMode",
+        description: "Accepted characters and mobile keyboard hint.",
+      },
+      {
+        title: "name / form / required / autoComplete",
+        description: "Native form and autofill contract.",
+      },
+    ],
+    guidance: {
+      do: ["Use for short numeric or alphanumeric verification and invite codes."],
+      dont: [
+        "Do not add verification requests, resend, countdowns, masking, rate limits, recovery, or credential storage.",
+      ],
+    },
+    related: ["input", "field", "form-message"],
+    tokens: [
+      "--n-input-height-md",
+      "--n-input-radius",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-border-focus",
+      "--n-input-border-danger",
+      "--n-focus-ring",
     ],
   },
   card: {

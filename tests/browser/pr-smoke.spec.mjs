@@ -497,6 +497,46 @@ test("keeps NumberField locale, stepping, bounds, wheel, RTL, and narrow layout 
   await expectHealthyPage(page, problems);
 });
 
+test("keeps OTPField paste, deletion, autofill, RTL, and narrow layout bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/docs/components/otp-field");
+
+  const preview = page.getByRole("region", { name: "otp-field preview" });
+  const group = preview.getByRole("group", { name: "Verification code" });
+  const slots = group.getByRole("textbox");
+  await expect(slots.first()).toHaveAttribute("autocomplete", "one-time-code");
+  await slots.first().click();
+  await slots.first().evaluate((input) => {
+    const clipboardData = new DataTransfer();
+    clipboardData.setData("text/plain", "123456");
+    input.dispatchEvent(
+      new ClipboardEvent("paste", { bubbles: true, cancelable: true, clipboardData }),
+    );
+  });
+  await expect(slots.last()).toHaveValue("6");
+  await page.keyboard.press("Backspace");
+  await expect(slots.last()).toHaveValue("");
+  await expect(group.locator('[data-slot="separator"]')).toHaveAttribute("aria-hidden", "true");
+
+  await page.locator("html").evaluate((root) => {
+    root.dir = "rtl";
+  });
+  const overflow = await group.locator('[data-slot="input-group"]').evaluate((slotGroup) => {
+    const bounds = slotGroup.getBoundingClientRect();
+    return slotGroup.scrollWidth - bounds.width;
+  });
+  expect(overflow).toBeLessThanOrEqual(1);
+  await page.emulateMedia({ forcedColors: "active" });
+  await slots.first().focus();
+  expect(await slots.first().evaluate((input) => getComputedStyle(input).outlineStyle)).not.toBe(
+    "none",
+  );
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps Dialog preview free of a redundant heading", async ({ page }) => {
   const problems = monitorPage(page);
   await page.goto("/docs/components/dialog");
