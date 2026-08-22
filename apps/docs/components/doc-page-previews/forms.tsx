@@ -13,6 +13,7 @@ import {
   LabelHint,
   LabelRequired,
   LabelRow,
+  NumberField,
   RadioGroup,
   RadioGroupItem,
   SearchField,
@@ -179,6 +180,21 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
             description="Submit one query; results and requests stay in the product."
           />
           <SearchField label="Search activity" loading loadingLabel="Searching activity" />
+        </div>
+      ) : null}
+      {kind === "number-field" ? (
+        <div className="form-preview-stack">
+          <NumberField
+            label="Quantity"
+            name="quantity"
+            defaultValue={12.5}
+            min={0}
+            max={100}
+            step={0.5}
+            locale="en-US"
+            description="Enter a decimal quantity from 0 to 100."
+          />
+          <NumberField label="Read-only quantity" defaultValue={24} readOnly />
         </div>
       ) : null}
     </PreviewFrame>

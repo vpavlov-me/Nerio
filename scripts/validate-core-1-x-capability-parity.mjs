@@ -353,7 +353,7 @@ const requiredCapabilityDependencies = new Map([
   ["compound-dialog-alert-dialog", [341, 342]],
   ["single-select-combobox", [341, 342]],
   ["search-field", [341, 342]],
-  ["number-field", [151, 341, 342]],
+  ["number-field", [341, 342]],
   ["otp-field", [151, 341, 342]],
   ["grouped-selection", [151, 341, 342]],
   ["multi-select", [151, 341, 342, 345, 348]],
@@ -464,7 +464,7 @@ const requiredIssueDependencies = new Map([
   [356, [341, 151]],
   [357, [341, 342, 151]],
   [369, [341, 151]],
-  [370, [341, 342, 151]],
+  [370, [341, 342]],
 ]);
 for (let issue = 342; issue <= 357; issue += 1) {
   assert(dispositionByIssue.has(issue), `Parity matrix is missing issue #${issue}.`);

@@ -8,6 +8,11 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added a bounded Core 1.1 NumberField on `dev` with one controlled or uncontrolled decimal value,
+  localized parsing and formatting, finite bounds, deliberate keyboard and button stepping,
+  form/reset support, disabled/read-only/invalid states, and localizable action labels. Currency
+  policy, arbitrary parsing, unit conversion, calculations, business validation, product steppers,
+  and wheel-driven value changes remain outside the Core contract.
 - Added a bounded Core 1.1 SearchField on `dev` with native search semantics, one controlled or
   uncontrolled query, an accessible focus-restoring clear action, deliberate Enter search events,
   Field relationships, form/reset support, loading presentation, and localizable action/status
@@ -43,6 +48,12 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Raised only the root documentation route JS and deterministic transfer ceilings needed for the
+  public NumberField API and Component Lab specimen. The measured route is 818,348 raw JS bytes
+  and 301,961 gzip-transfer bytes; CSS and browser-runtime ceilings remain unchanged.
+- Raised the UI tarball ceiling from 78,000 to 80,000 bytes for the additive NumberField source;
+  the measured tarball is 79,255 bytes. Existing unpacked, CSS, named-import bundle, and runtime
+  ceilings remain unchanged.
 - Raised the raw token CSS ceiling from 75,000 to 83,000 bytes and its gzip ceiling from 11,000
   to 11,500 bytes for the canvas-scoped theme selectors and complete semantic token axes used by
   the refreshed Playground. The measured stylesheet is 82,040 raw bytes and 11,081 gzip bytes;

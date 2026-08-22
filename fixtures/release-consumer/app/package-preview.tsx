@@ -3,6 +3,7 @@
 import { Settings } from "@nerio-ui/adapters/icons";
 import {
   Button,
+  NumberField,
   Select,
   Sheet,
   SheetBody,
@@ -27,6 +28,7 @@ export function PackagePreview() {
           defaultValue="purple"
           options={[{ label: "Purple", value: "purple" }]}
         />
+        <NumberField label="Package quantity" defaultValue={2.5} step={0.5} />
         <Sheet>
           <SheetTrigger>Open package sheet</SheetTrigger>
           <SheetContent>

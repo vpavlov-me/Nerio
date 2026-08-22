@@ -78,6 +78,7 @@ import {
   LabelRow,
   List,
   Pagination,
+  NumberField,
   Popover,
   Progress,
   RadioGroup,
@@ -906,6 +907,32 @@ export function ComponentPlayground() {
                   invalid
                 />,
                 <SearchField key="disabled" label="Search projects" disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="number-field"
+        title="NumberField"
+        api="decimal value · locale · step · bounds · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Decimal", "Read only", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <NumberField key="default" label="Quantity" />,
+                <NumberField key="decimal" label="Quantity" defaultValue={12.5} step={0.5} />,
+                <NumberField key="readonly" label="Quantity" defaultValue={24} readOnly />,
+                <NumberField
+                  key="invalid"
+                  label="Quantity"
+                  message="Enter 0 through 100."
+                  invalid
+                />,
+                <NumberField key="disabled" label="Quantity" disabled />,
               ],
             },
           ]}

@@ -9,6 +9,7 @@ import {
 } from "@/components/nerio/components/command";
 import { Item, ItemContent, ItemDescription, ItemTitle } from "@/components/nerio/components/item";
 import { List } from "@/components/nerio/components/list";
+import { NumberField } from "@/components/nerio/components/number-field";
 import { Pagination } from "@/components/nerio/components/pagination";
 import { Select } from "@/components/nerio/components/select";
 import {
@@ -69,6 +70,7 @@ export function SourcePreview() {
           defaultValue="comfortable"
           options={[{ label: "Comfortable", value: "comfortable" }]}
         />
+        <NumberField label="Source quantity" defaultValue={2.5} step={0.5} />
         <Sheet>
           <SheetTrigger>Open source sheet</SheetTrigger>
           <SheetContent>
