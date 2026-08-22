@@ -119,6 +119,30 @@ describe("CheckboxGroup contracts", () => {
     expect(form.checkValidity()).toBe(true);
   });
 
+  it("keeps required validation group-owned for untyped item props", async () => {
+    const user = userEvent.setup();
+    const unsafeItemProps = { required: true } as unknown as React.ComponentProps<
+      typeof CheckboxGroupItem
+    >;
+
+    render(
+      <form aria-label="Untyped item requirement">
+        <CheckboxGroup label="Channels" name="channels" required>
+          <CheckboxGroupItem {...unsafeItemProps} value="email">
+            Email
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="sms">SMS</CheckboxGroupItem>
+        </CheckboxGroup>
+      </form>,
+    );
+
+    const form = screen.getByRole("form", { name: "Untyped item requirement" }) as HTMLFormElement;
+    const email = screen.getByRole("checkbox", { name: "Email" });
+    expect(email).not.toBeRequired();
+    await user.click(screen.getByRole("checkbox", { name: "SMS" }));
+    expect(form.checkValidity()).toBe(true);
+  });
+
   it("does not restore defaults when the native reset is canceled", async () => {
     const user = userEvent.setup();
     render(

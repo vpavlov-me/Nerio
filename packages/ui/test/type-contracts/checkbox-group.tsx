@@ -47,5 +47,9 @@ void (
     <CheckboxGroupItem name="other-name" value="sms">
       SMS
     </CheckboxGroupItem>
+    {/* @ts-expect-error CheckboxGroup owns the group-level required constraint. */}
+    <CheckboxGroupItem required value="push">
+      Push
+    </CheckboxGroupItem>
   </CheckboxGroup>
 );
