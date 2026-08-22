@@ -55,7 +55,9 @@ test("keeps Dialog, Popover, Tooltip, and Dropdown Menu positioned and keyboard-
   const dialog = page.getByRole("dialog", { name: "Long review notes" });
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Tab");
-  expect(await dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+  await expect
+    .poll(() => dialog.evaluate((element) => element.contains(document.activeElement)))
+    .toBe(true);
   await expectInsideViewport(dialog, viewport);
   await page.keyboard.press("Escape");
   await expect(dialogTrigger).toBeFocused();
@@ -191,11 +193,11 @@ test("keeps OTPField mobile paste, deletion, autofill, and reflow portable", asy
     await expect(slots.first()).toHaveAttribute("inputmode", "numeric");
     await slots.first().focus();
     await slots.first().evaluate((input) => {
-      const clipboardData = new DataTransfer();
-      clipboardData.setData("text/plain", "123456");
-      input.dispatchEvent(
-        new ClipboardEvent("paste", { bubbles: true, cancelable: true, clipboardData }),
-      );
+      const pasteEvent = new Event("paste", { bubbles: true, cancelable: true });
+      Object.defineProperty(pasteEvent, "clipboardData", {
+        value: { getData: () => "123456" },
+      });
+      input.dispatchEvent(pasteEvent);
     });
     await expect(slots.last()).toHaveValue("6");
     await page.keyboard.press("Backspace");
