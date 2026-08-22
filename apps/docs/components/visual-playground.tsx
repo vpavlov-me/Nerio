@@ -846,6 +846,7 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
       fontClassName.split(" ").forEach((className) => {
         if (className) portal.classList.add(className);
       });
+      portal.classList.toggle(styles.reducedMotionScope!, motion === "reduced");
       portal.style.fontFamily = "var(--n-font-sans)";
       Object.entries(style).forEach(([property, value]) => {
         portal.style.setProperty(property, String(value));
@@ -877,7 +878,7 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
       document.removeEventListener("focusin", registerPortalIntent, true);
       document.removeEventListener("keydown", registerPortalIntent, true);
     };
-  }, [density, fontClassName, resolvedMode, style, theme]);
+  }, [density, fontClassName, motion, resolvedMode, style, theme]);
 
   const applyTheme = (nextTheme: Theme) => {
     const [accent, hover, active] = themeAccents[nextTheme];
@@ -1082,7 +1083,9 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
           <section
             ref={playgroundRef}
             aria-label="Nerio scenario canvas"
-            className="playground-canvas playground-canvas--catalog"
+            className={`playground-canvas playground-canvas--catalog ${
+              motion === "reduced" ? styles.reducedMotionScope : ""
+            }`}
             data-density={density}
             data-mode={resolvedMode}
             data-nerio-theme-scope=""
@@ -1098,7 +1101,7 @@ export function VisualPlayground({ fontClassName = "" }: { fontClassName?: strin
         </div>
       </div>
       <ToastViewport
-        className={fontClassName}
+        className={`${fontClassName} ${motion === "reduced" ? styles.reducedMotionScope : ""}`}
         data-density={density}
         data-mode={resolvedMode ?? undefined}
         data-nerio-theme-scope=""

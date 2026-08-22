@@ -855,6 +855,7 @@ test("applies every Playground control to the product scenario canvas", async ({
     spinner: "1ms",
     skeleton: "2.4s",
   });
+  await expect(playground.locator(".n-spinner").first()).toHaveCSS("animation-name", "none");
   await chooseSetting("Motion", "Standard");
   await chooseSetting("Font", "Space Grotesk");
   await chooseSetting("Color mode", "Light");
