@@ -8,6 +8,9 @@ out/
 dist/
 build/
 coverage/
+apps/showreel/out/
+apps/showreel/stills/
+apps/showreel/dist/
 storybook-static/
 .turbo/
 playwright-report/
