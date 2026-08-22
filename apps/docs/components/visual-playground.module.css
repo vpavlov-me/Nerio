@@ -24,14 +24,11 @@
   background: var(--n-color-surface-canvas);
   block-size: 100%;
   color: var(--n-color-text-primary);
+  font-family: var(--n-font-sans);
   inline-size: 100%;
   margin: 0;
   max-inline-size: none;
   overflow: hidden;
-}
-
-:global(.docs-main--playground):has(.root[data-mode="dark"]) {
-  background: var(--n-color-surface-canvas);
 }
 
 .root :global(.visual-playground__workspace--radix) {
@@ -41,52 +38,67 @@
   box-sizing: border-box;
   display: grid;
   gap: var(--n-space-6);
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(16rem, 18rem) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   min-block-size: 0;
   padding: 0 var(--n-space-6) var(--n-space-6);
   position: relative;
 }
 
 .root :global(.playground-settings--radix) {
-  align-items: end;
+  align-items: stretch;
   background: var(--n-card-background);
   border: var(--n-card-border-width) solid var(--n-card-border-color);
   border-radius: var(--n-card-radius);
   box-shadow: none;
-  gap: var(--n-space-4);
+  gap: 0;
   grid-column: 1;
-  grid-row: 2;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-row: 1;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
   inline-size: 100%;
-  justify-self: center;
-  max-inline-size: 56.25rem;
+  justify-self: stretch;
+  max-inline-size: none;
   min-block-size: 0;
   min-inline-size: 0;
-  padding: var(--n-space-4);
+  overflow: hidden;
+  padding: 0;
   position: relative;
   top: auto;
 }
 
+.root :global(.playground-settings__header) {
+  border-block-end: 1px solid var(--n-color-border-subtle);
+  padding: var(--n-space-5);
+}
+
+.root :global(.playground-settings__description) {
+  color: var(--n-color-text-secondary);
+  font-size: var(--n-font-size-sm);
+  line-height: var(--n-line-height-normal);
+  margin: var(--n-space-1) 0 0;
+}
+
 .root :global(.playground-settings__body) {
-  align-items: end;
   display: grid;
   gap: var(--n-space-4);
-  grid-template-columns: repeat(5, minmax(9rem, 1fr));
   min-block-size: 0;
   min-inline-size: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: var(--n-space-5);
   scrollbar-gutter: stable;
 }
 
 .root :global(.playground-settings--radix) :global(.playground-settings__actions) {
-  background: transparent;
+  align-items: center;
+  background: var(--n-card-background);
   border: 0;
-  align-self: end;
+  border-block-start: 1px solid var(--n-color-border-subtle);
+  display: flex;
+  justify-content: space-between;
   margin: 0;
-  padding: 0;
+  padding: var(--n-space-4) var(--n-space-5);
   position: static;
 }
 
@@ -97,14 +109,14 @@
   white-space: nowrap;
 }
 
-.root :global(.playground-color-option) {
+:global(.playground-color-option) {
   align-items: center;
   display: inline-flex;
   gap: var(--n-space-2);
   min-inline-size: 0;
 }
 
-.root :global(.playground-color-option__swatch) {
+:global(.playground-color-option__swatch) {
   background: var(--playground-option-color);
   block-size: var(--n-space-2-5);
   border: 1px solid color-mix(in srgb, var(--playground-option-color) 72%, transparent);
@@ -118,7 +130,8 @@
   block-size: 100%;
   border: 1px solid var(--n-color-border-default);
   border-radius: var(--n-radius-container);
-  grid-column: 1;
+  font-family: var(--n-font-sans);
+  grid-column: 2;
   grid-row: 1;
   min-block-size: 0;
   min-inline-size: 0;
@@ -126,6 +139,15 @@
   overscroll-behavior: contain;
   padding: 0;
   scrollbar-width: none;
+}
+
+.reducedMotionScope :global(.n-spinner),
+.reducedMotionScope :global(.n-skeleton) {
+  animation: none;
+}
+
+.reducedMotionScope :global(.n-skeleton) {
+  opacity: var(--n-opacity-skeleton);
 }
 
 .root :global(.playground-canvas--catalog)::-webkit-scrollbar {
@@ -196,7 +218,7 @@
   white-space: nowrap;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   :global(.docs-shell):has(.root) {
     block-size: auto;
     min-block-size: 100dvh;
@@ -216,18 +238,37 @@
 
   .root :global(.visual-playground__workspace--radix) {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 72dvh auto;
+    grid-template-rows: auto 72dvh;
   }
 
   .root :global(.playground-settings--radix) {
     grid-column: 1;
-    grid-row: 2;
+    grid-row: 1;
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    max-block-size: none;
+  }
+
+  .root :global(.playground-settings__body) {
+    gap: var(--n-space-4) var(--n-space-6);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
   }
 
   .root :global(.playground-canvas--catalog) {
     block-size: 72dvh;
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .root :global(.visual-playground__workspace--radix) {
+    gap: var(--n-space-4);
+    padding: 0 var(--n-space-4) var(--n-space-4);
+  }
+
+  .root :global(.playground-settings__body) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -291,7 +291,11 @@ function tailwindDocumentationFailures() {
     [docsChrome, 'href="/templates"', "Primary navigation must expose the Templates catalog"],
     [playgroundPage, 'path: "/playground"', "Playground metadata must use its canonical route"],
     [playgroundPage, "indexable: false", "Playground metadata must remain private"],
-    [playground, 'aria-label="Theme settings"', "Playground must expose labeled live settings"],
+    [
+      playground,
+      'aria-label="Playground settings"',
+      "Playground must expose labeled live settings",
+    ],
     [playground, "<h1>Playground</h1>", "Playground must use its concise canonical title"],
     [
       playground,

@@ -44,6 +44,70 @@ No unresolved P0, P1, or P2 visual findings remain in the reviewed states.
 
 final result: passed
 
+## Playground sidebar layout and design-system controls — 2026-08-22
+
+### Source visual truth
+
+- Layout-only reference supplied by the user:
+  `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-34a59e44-8316-441b-a561-a55feaba77bd.png`.
+- Source pixels: 2940 × 1670. The source was normalized to 1470 × 835 for comparison.
+- The reference defines composition only: a persistent settings sidebar on the left and a large
+  visualization canvas on the right. Its product header, dark sidebar treatment, cards, presets,
+  and Get Code action are explicitly outside the approved visual target.
+
+### Implementation evidence
+
+- URL: `http://127.0.0.1:3000/playground`.
+- Browser: Codex in-app browser.
+- CSS viewport and implementation pixels: 1470 × 837 at device pixel ratio 1.
+- State: Light, Purple, Slate, Comfortable, 100%, Full, Geist, Calm, Raised.
+- Implementation screenshot:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/playground-layout-implementation.png`.
+- Normalized full-view comparison:
+  `/Users/vladimirpavlov/Documents/Nerio Design System/playground-layout-comparison.png`.
+- Browser geometry: the 288px settings panel begins at x=26.4 and the 1102.8px canvas begins at
+  x=340.8. Both begin at y=68 and fill the available application height without body overflow.
+- Primary interactions tested: Font to Space Grotesk, UI scale to 110%, Color mode to Light, Reset,
+  and all nine settings present in the accessibility tree. The selected font token, scaled card
+  padding, local mode, and Reset state updated in the rendered page. A second font pass applied IBM
+  Plex Sans to the live Invite teammates Dialog portal.
+- Browser console: no warnings or errors.
+- Production route CSS resolves to 356543 bytes after adding paired root/canvas runtime selectors,
+  6335 bytes above the previous route budget. The reviewed budget is 360640 bytes, preserving the
+  policy's approximately 4 KiB headroom without changing JavaScript or runtime-transfer limits.
+
+### Required fidelity surfaces
+
+- Fonts and typography: passed. The sidebar keeps Nerio's existing hierarchy and the Font control
+  uses the seven official typography recipes. The reference type treatment was not copied because
+  the source is layout-only.
+- Spacing and layout rhythm: passed. The settings and visualization regions are adjacent desktop
+  columns with a token gap, aligned top edges, independent scrolling, and no document overflow.
+  The sidebar is intentionally wider than the normalized reference so nine labeled system controls
+  remain readable.
+- Colors and visual tokens: passed. The implementation retains Nerio semantic surfaces and supports
+  local Light, Dark, and System modes rather than copying the reference palette.
+- Image quality and asset fidelity: not applicable. No visual asset from the reference belongs to
+  the approved layout target; the existing Nerio scenario assets and adapter icons remain intact.
+- Copy and content: passed. Settings copy is concise and English-only. Presets, Copy Code, and Get
+  Code are absent; Shuffle is the only optional utility action.
+- Responsiveness: passed for the approved desktop target. Existing CSS contracts stack the settings
+  panel above a 72dvh canvas below 900px; a separate mobile visual was not part of the supplied
+  reference.
+
+### Findings and comparison history
+
+- Pass 1: no actionable P0, P1, or P2 difference remained after normalization. The source and
+  implementation share the approved left-settings/right-canvas composition. Differences in header,
+  colors, content cards, sidebar width, and utility actions are intentional product constraints from
+  the user's layout-only scope.
+- Focused-region comparison was unnecessary because the approved target is the full-page region
+  relationship, and the normalized full view keeps both boundaries and controls legible.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed
+
 ## Adaptive overlay surfaces with dark Tooltip exception — 2026-08-12
 
 ### Source truth

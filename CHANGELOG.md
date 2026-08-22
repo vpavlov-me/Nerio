@@ -43,6 +43,10 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Raised the raw token CSS ceiling from 75,000 to 83,000 bytes and its gzip ceiling from 11,000
+  to 11,500 bytes for the canvas-scoped theme selectors and complete semantic token axes used by
+  the refreshed Playground. The measured stylesheet is 82,040 raw bytes and 11,081 gzip bytes;
+  package tarball, unpacked, residual CSS, and named-import bundle ceilings remain unchanged.
 - Raised the UI tarball ceiling from 76,000 to 78,000 bytes for the additive SearchField source;
   the measured tarball is 76,291 bytes. The Registry tarball ceiling moves from 34,000 to 36,000
   bytes for the new installable metadata, measured at 34,486 bytes. Existing unpacked, CSS,

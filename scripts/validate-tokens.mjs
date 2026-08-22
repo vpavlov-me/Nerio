@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { collectRules, exactRule, parseCss } from "./css-structure.mjs";
+import { collectRules, exactRule, parseCss, scopedRule } from "./css-structure.mjs";
 import { parsePathOptions } from "./validator-options.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -329,14 +329,16 @@ function validate() {
   const themes = catalog.runtimeAxes?.theme ?? [];
   for (const theme of themes) {
     requireDeclarations(
-      exactRule(rules, `:root[data-theme="${theme}"]`),
+      scopedRule(rules, `:root[data-theme="${theme}"]`),
       accentTokens,
       `preset theme ${theme}`,
       failures,
     );
   }
   requireDeclarations(
-    exactRule(rules, ':root[data-mode="light"]'),
+    scopedRule(rules, ':root[data-mode="light"]', undefined, [
+      '[data-nerio-theme-scope][data-mode="system"]',
+    ]),
     modeSemanticTokens,
     "light mode",
     failures,
@@ -346,15 +348,20 @@ function validate() {
     for (const theme of themes) {
       const declarations = new Map(rootRule?.declarations ?? []);
       for (const rule of [
-        exactRule(rules, `:root[data-theme="${theme}"]`),
-        exactRule(rules, `:root[data-mode="${mode}"]`),
+        scopedRule(rules, `:root[data-theme="${theme}"]`),
+        scopedRule(
+          rules,
+          `:root[data-mode="${mode}"]`,
+          undefined,
+          mode === "light" ? ['[data-nerio-theme-scope][data-mode="system"]'] : [],
+        ),
         ...rules.filter(
           (rule) =>
             rule.atRules.length === 0 &&
             rule.selectors.length > 1 &&
             rule.selectors.includes(`:root[data-theme="${theme}"][data-mode="${mode}"]`),
         ),
-        exactRule(rules, `:root[data-theme="${theme}"][data-mode="${mode}"]`),
+        scopedRule(rules, `:root[data-theme="${theme}"][data-mode="${mode}"]`),
       ]) {
         for (const [token, value] of rule?.declarations ?? []) declarations.set(token, value);
       }
@@ -384,13 +391,13 @@ function validate() {
     }
   }
   requireDeclarations(
-    exactRule(rules, ':root[data-mode="dark"]'),
+    scopedRule(rules, ':root[data-mode="dark"]'),
     modeSemanticTokens,
     "dark mode",
     failures,
   );
   requireDeclarations(
-    exactRule(rules, ':root[data-mode="system"]', "(prefers-color-scheme: dark)"),
+    scopedRule(rules, ':root[data-mode="system"]', "(prefers-color-scheme: dark)"),
     modeSemanticTokens,
     "system dark mode",
     failures,
