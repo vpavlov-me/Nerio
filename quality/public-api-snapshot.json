@@ -12440,7 +12440,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-aa35c084a7186bad7bdec8a6f9ea99dd2489c012d3eae8faacd25c951aa75b35",
+            "integrity": "sha256-588201a41d459258e896c3247a92d111f0c2f1a2582cda8ba5150f5d844f0714",
             "role": "component",
             "source": "../../ui/src/components/toggle-group.tsx",
             "target": "components/toggle-group.tsx"
