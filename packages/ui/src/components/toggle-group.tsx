@@ -92,39 +92,6 @@ const ToggleGroupVisualContext = React.createContext<{
   variant: ToggleVariant;
 }>({ size: "md", variant: "ghost" });
 
-type BaseUiKeyboardEvent = React.KeyboardEvent<HTMLDivElement> & {
-  preventBaseUIHandler?: () => void;
-};
-
-function isHorizontalRtlKey(event: React.KeyboardEvent<HTMLDivElement>) {
-  if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-
-  const group = event.currentTarget;
-  const direction = group.closest("[dir]")?.getAttribute("dir") ?? document.dir;
-  return direction === "rtl" && group.getAttribute("data-orientation") === "horizontal";
-}
-
-function moveHorizontalRtlFocus(event: BaseUiKeyboardEvent, loopFocus: boolean) {
-  if (!isHorizontalRtlKey(event)) return;
-
-  const group = event.currentTarget;
-
-  const items = Array.from(
-    group.querySelectorAll<HTMLElement>('[data-slot="item"]:not([data-disabled])'),
-  );
-  const currentIndex = items.indexOf(document.activeElement as HTMLElement);
-  if (currentIndex < 0 || items.length < 2) return;
-
-  const step = event.key === "ArrowLeft" ? 1 : -1;
-  const nextIndex = currentIndex + step;
-
-  event.preventDefault();
-  event.preventBaseUIHandler?.();
-  if (!loopFocus && (nextIndex < 0 || nextIndex >= items.length)) return;
-
-  items[(nextIndex + items.length) % items.length]?.focus();
-}
-
 export const ToggleGroupItem = React.forwardRef<HTMLElement, ToggleGroupItemProps>(
   function ToggleGroupItem({ className, ...props }, ref) {
     const { size, variant } = React.useContext(ToggleGroupVisualContext);
@@ -152,7 +119,6 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
     disabled,
     loopFocus = true,
     multiple = false,
-    onKeyDown,
     options,
     orientation = "horizontal",
     size = "md",
@@ -206,14 +172,6 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
         disabled={disabled}
         loopFocus={loopFocus}
         multiple={multiple}
-        onKeyDown={(event) => {
-          onKeyDown?.(event);
-          if (event.defaultPrevented) {
-            if (isHorizontalRtlKey(event)) event.preventBaseUIHandler?.();
-            return;
-          }
-          moveHorizontalRtlFocus(event, loopFocus);
-        }}
         orientation={orientation}
         value={multiple ? value : value?.slice(0, 1)}
       >

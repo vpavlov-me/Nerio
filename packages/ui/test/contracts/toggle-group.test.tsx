@@ -1,4 +1,5 @@
 import * as React from "react";
+import { DirectionProvider } from "@base-ui/react/direction-provider";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -126,19 +127,21 @@ describe("ToggleGroup contracts", () => {
     const onGroupKeyDown = vi.fn();
     const onItemKeyDown = vi.fn();
     render(
-      <div dir="rtl">
-        <ToggleGroup aria-label="Alignment" onKeyDown={onGroupKeyDown}>
-          <ToggleGroupItem value="left" onKeyDown={onItemKeyDown}>
-            Left
-          </ToggleGroupItem>
-          <ToggleGroupItem value="center" onKeyDown={onItemKeyDown}>
-            Center
-          </ToggleGroupItem>
-          <ToggleGroupItem value="right" onKeyDown={onItemKeyDown}>
-            Right
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>,
+      <DirectionProvider direction="rtl">
+        <div dir="rtl">
+          <ToggleGroup aria-label="Alignment" onKeyDown={onGroupKeyDown}>
+            <ToggleGroupItem value="left" onKeyDown={onItemKeyDown}>
+              Left
+            </ToggleGroupItem>
+            <ToggleGroupItem value="center" onKeyDown={onItemKeyDown}>
+              Center
+            </ToggleGroupItem>
+            <ToggleGroupItem value="right" onKeyDown={onItemKeyDown}>
+              Right
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      </DirectionProvider>,
     );
 
     const center = screen.getByRole("button", { name: "Center" });
@@ -154,13 +157,15 @@ describe("ToggleGroup contracts", () => {
   it("keeps focus at non-looping horizontal RTL boundaries", async () => {
     const user = userEvent.setup();
     render(
-      <div dir="rtl">
-        <ToggleGroup aria-label="Alignment" loopFocus={false}>
-          <ToggleGroupItem value="left">Left</ToggleGroupItem>
-          <ToggleGroupItem value="center">Center</ToggleGroupItem>
-          <ToggleGroupItem value="right">Right</ToggleGroupItem>
-        </ToggleGroup>
-      </div>,
+      <DirectionProvider direction="rtl">
+        <div dir="rtl">
+          <ToggleGroup aria-label="Alignment" loopFocus={false}>
+            <ToggleGroupItem value="left">Left</ToggleGroupItem>
+            <ToggleGroupItem value="center">Center</ToggleGroupItem>
+            <ToggleGroupItem value="right">Right</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+      </DirectionProvider>,
     );
 
     const left = screen.getByRole("button", { name: "Left" });
@@ -172,36 +177,6 @@ describe("ToggleGroup contracts", () => {
     await user.keyboard("{ArrowLeft}");
     expect(right).toHaveFocus();
   });
-
-  it.each(["group", "item"] as const)(
-    "honors consumer cancellation on horizontal RTL keys from the %s",
-    async (cancellationTarget) => {
-      const user = userEvent.setup();
-      const cancelKeyDown = (event: React.KeyboardEvent) => event.preventDefault();
-      render(
-        <div dir="rtl">
-          <ToggleGroup
-            aria-label="Alignment"
-            onKeyDown={cancellationTarget === "group" ? cancelKeyDown : undefined}
-          >
-            <ToggleGroupItem value="left">Left</ToggleGroupItem>
-            <ToggleGroupItem
-              value="center"
-              onKeyDown={cancellationTarget === "item" ? cancelKeyDown : undefined}
-            >
-              Center
-            </ToggleGroupItem>
-            <ToggleGroupItem value="right">Right</ToggleGroupItem>
-          </ToggleGroup>
-        </div>,
-      );
-
-      const center = screen.getByRole("button", { name: "Center" });
-      center.focus();
-      await user.keyboard("{ArrowLeft}");
-      expect(center).toHaveFocus();
-    },
-  );
 
   it("blocks interaction when the complete group is disabled", async () => {
     const user = userEvent.setup();

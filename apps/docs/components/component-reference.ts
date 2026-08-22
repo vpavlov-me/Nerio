@@ -1115,6 +1115,7 @@ export const componentReference: Record<string, ComponentReference> = {
     accessibility: [
       "Provide aria-label or aria-labelledby for the complete group.",
       "Arrow keys follow orientation and inherited RTL direction while skipping disabled items.",
+      "Pair the document dir attribute with Base UI DirectionProvider for horizontal RTL behavior.",
       "Icon-only items require a stable aria-label.",
       "Use RadioGroup for one form choice and CheckboxGroup for independently submitted options.",
     ],
