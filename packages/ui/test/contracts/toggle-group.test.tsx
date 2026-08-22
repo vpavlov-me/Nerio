@@ -135,6 +135,28 @@ describe("ToggleGroup contracts", () => {
     expect(onGroupKeyDown).toHaveBeenCalledTimes(2);
   });
 
+  it("keeps focus at non-looping horizontal RTL boundaries", async () => {
+    const user = userEvent.setup();
+    render(
+      <div dir="rtl">
+        <ToggleGroup aria-label="Alignment" loopFocus={false}>
+          <ToggleGroupItem value="left">Left</ToggleGroupItem>
+          <ToggleGroupItem value="center">Center</ToggleGroupItem>
+          <ToggleGroupItem value="right">Right</ToggleGroupItem>
+        </ToggleGroup>
+      </div>,
+    );
+
+    const left = screen.getByRole("button", { name: "Left" });
+    const right = screen.getByRole("button", { name: "Right" });
+    left.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(left).toHaveFocus();
+    right.focus();
+    await user.keyboard("{ArrowLeft}");
+    expect(right).toHaveFocus();
+  });
+
   it("blocks interaction when the complete group is disabled", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();

@@ -6774,7 +6774,8 @@
           "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
           "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
           "export type ToggleChangeEventDetails = NerioChangeEventDetails<\"none\">;",
-          "export type ToggleGroupItemProps = DistributiveOmit<ToggleProps, \"defaultPressed\" | \"onPressedChange\" | \"pressed\" | \"size\" | \"variant\">;",
+          "export type ToggleGroupItemProps = DistributiveOmit<ToggleProps, \"defaultPressed\" | \"onPressedChange\" | \"pressed\" | \"size\" | \"value\" | \"variant\"> & { value: ToggleGroupValue; };",
+          "export type ToggleGroupValue = string;",
           "export type ToggleProps = VisibleLabelToggleProps | IconOnlyToggleProps;",
           "export type ToggleSize = \"sm\" | \"md\" | \"lg\";",
           "export type ToggleVariant = \"ghost\" | \"outline\";",
@@ -12440,7 +12441,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-588201a41d459258e896c3247a92d111f0c2f1a2582cda8ba5150f5d844f0714",
+            "integrity": "sha256-c8a9a550c29548267626ae07717b262e251fb5f8443c0903b468466ea2894c70",
             "role": "component",
             "source": "../../ui/src/components/toggle-group.tsx",
             "target": "components/toggle-group.tsx"

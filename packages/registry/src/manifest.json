@@ -454,7 +454,7 @@
           "source": "../../ui/src/components/toggle-group.tsx",
           "target": "components/toggle-group.tsx",
           "role": "component",
-          "integrity": "sha256-588201a41d459258e896c3247a92d111f0c2f1a2582cda8ba5150f5d844f0714"
+          "integrity": "sha256-c8a9a550c29548267626ae07717b262e251fb5f8443c0903b468466ea2894c70"
         }
       ],
       "baseUiPrimitives": ["toggle-group", "toggle"],

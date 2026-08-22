@@ -34,3 +34,10 @@ void (<ToggleGroup aria-label="Layers" options={[{ value: "alerts", icon: Bell }
 
 // @ts-expect-error ToggleGroup owns pressed values as string arrays.
 void (<ToggleGroup aria-label="Alignment" value="left" options={[]} />);
+
+void (
+  (
+    // @ts-expect-error Composed ToggleGroup items require a string selection value.
+    <ToggleGroupItem>Left</ToggleGroupItem>
+  )
+);

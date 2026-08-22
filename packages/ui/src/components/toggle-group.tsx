@@ -84,8 +84,8 @@ type DistributiveOmit<T, Key extends PropertyKey> = T extends unknown
 
 export type ToggleGroupItemProps = DistributiveOmit<
   ToggleProps,
-  "defaultPressed" | "onPressedChange" | "pressed" | "size" | "variant"
->;
+  "defaultPressed" | "onPressedChange" | "pressed" | "size" | "value" | "variant"
+> & { value: ToggleGroupValue };
 
 const ToggleGroupVisualContext = React.createContext<{
   size: ToggleSize;
@@ -111,10 +111,11 @@ function moveHorizontalRtlFocus(event: BaseUiKeyboardEvent, loopFocus: boolean) 
 
   const step = event.key === "ArrowLeft" ? 1 : -1;
   const nextIndex = currentIndex + step;
-  if (!loopFocus && (nextIndex < 0 || nextIndex >= items.length)) return;
 
   event.preventDefault();
   event.preventBaseUIHandler?.();
+  if (!loopFocus && (nextIndex < 0 || nextIndex >= items.length)) return;
+
   items[(nextIndex + items.length) % items.length]?.focus();
 }
 
