@@ -82,11 +82,13 @@ export type CheckboxGroupItemProps = DistributiveOmit<
   | "name"
   | "onCheckedChange"
   | "parent"
+  | "required"
   | "uncheckedValue"
   | "value"
 > & {
   children: React.ReactNode;
   description?: React.ReactNode;
+  required?: never;
   value: CheckboxGroupValue;
 };
 
@@ -106,9 +108,10 @@ const CheckboxGroupContext = React.createContext<{
 
 export const CheckboxGroupItem = React.forwardRef<HTMLElement, CheckboxGroupItemProps>(
   function CheckboxGroupItem(
-    { children, description, disabled, invalid, readOnly, ...props },
+    { children, description, disabled, invalid, readOnly, required: _required, ...props },
     ref,
   ) {
+    void _required;
     const group = React.useContext(CheckboxGroupContext);
     const registrationId = React.useId();
     const isDisabled = group.disabled || Boolean(disabled);

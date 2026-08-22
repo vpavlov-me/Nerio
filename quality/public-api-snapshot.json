@@ -3182,14 +3182,14 @@
         "deprecations": [],
         "kind": "value",
         "name": "CheckboxGroupItem",
-        "signature": "React.ForwardRefExoticComponent<Omit<CheckboxProps, \"form\" | \"label\" | \"name\" | \"defaultChecked\" | \"description\" | \"value\" | \"indeterminate\" | \"checked\" | \"onCheckedChange\" | \"parent\" | \"uncheckedValue\"> & { children: React.ReactNode; description?: React.ReactNode; value: CheckboxGroupValue; } & React.RefAttributes<HTMLElement>>"
+        "signature": "React.ForwardRefExoticComponent<Omit<CheckboxProps, \"form\" | \"label\" | \"name\" | \"defaultChecked\" | \"description\" | \"value\" | \"indeterminate\" | \"required\" | \"checked\" | \"onCheckedChange\" | \"parent\" | \"uncheckedValue\"> & { children: React.ReactNode; description?: React.ReactNode; required?: never; value: CheckboxGroupValue; } & React.RefAttributes<HTMLElement>>"
       },
       {
         "definition": [
           "export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLElement>, \"children\" | \"className\" | \"color\" | \"defaultChecked\" | \"onChange\" | \"style\"> { checked?: boolean; defaultChecked?: boolean; disabled?: boolean; form?: string; id?: string; indeterminate?: boolean; inputRef?: React.Ref<HTMLInputElement>; name?: string; nativeButton?: boolean; onCheckedChange?: (checked: boolean, eventDetails: CheckboxChangeEventDetails) => void; parent?: boolean; readOnly?: boolean; render?: NerioRenderProp<CheckboxState>; required?: boolean; uncheckedValue?: string; value?: string; className?: NerioClassName<CheckboxState>; style?: NerioStyle<CheckboxState>; children?: React.ReactNode; invalid?: boolean; label?: React.ReactNode; description?: React.ReactNode; }",
           "export interface CheckboxState { checked: boolean; disabled: boolean; readOnly: boolean; required: boolean; indeterminate: boolean; }",
           "export type CheckboxChangeEventDetails = NerioChangeEventDetails<\"none\">;",
-          "export type CheckboxGroupItemProps = DistributiveOmit<CheckboxProps, \"checked\" | \"defaultChecked\" | \"description\" | \"indeterminate\" | \"label\" | \"form\" | \"name\" | \"onCheckedChange\" | \"parent\" | \"uncheckedValue\" | \"value\"> & { children: React.ReactNode; description?: React.ReactNode; value: CheckboxGroupValue; };",
+          "export type CheckboxGroupItemProps = DistributiveOmit<CheckboxProps, \"checked\" | \"defaultChecked\" | \"description\" | \"indeterminate\" | \"label\" | \"form\" | \"name\" | \"onCheckedChange\" | \"parent\" | \"required\" | \"uncheckedValue\" | \"value\"> & { children: React.ReactNode; description?: React.ReactNode; required?: never; value: CheckboxGroupValue; };",
           "export type CheckboxGroupValue = string;",
           "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
           "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
@@ -9368,7 +9368,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-dc58cd641a088569d7707838725098949870a5798ff9312361335e91248f360b",
+            "integrity": "sha256-32b120bbfa815c51a2c325603c00ebbd8aa50d1e539efa56cacc5a3b550520d3",
             "role": "component",
             "source": "../../ui/src/components/checkbox-group.tsx",
             "target": "components/checkbox-group.tsx"

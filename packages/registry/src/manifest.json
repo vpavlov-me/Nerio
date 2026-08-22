@@ -2897,7 +2897,7 @@
           "source": "../../ui/src/components/checkbox-group.tsx",
           "target": "components/checkbox-group.tsx",
           "role": "component",
-          "integrity": "sha256-dc58cd641a088569d7707838725098949870a5798ff9312361335e91248f360b"
+          "integrity": "sha256-32b120bbfa815c51a2c325603c00ebbd8aa50d1e539efa56cacc5a3b550520d3"
         },
         {
           "source": "../../ui/src/lib/compose-refs.ts",
