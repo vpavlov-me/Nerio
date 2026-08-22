@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { DirectionProvider } from "@base-ui/react/direction-provider";
 import { Circle } from "@nerio-ui/adapters/icons";
 import {
   Alert,
@@ -73,17 +74,19 @@ export function DisplayPreview({ kind, snippet }: PreviewProps) {
               { value: "right", label: "Right" },
             ]}
           />
-          <div dir="rtl">
-            <ToggleGroup
-              aria-label="Text alignment RTL"
-              defaultValue={["right"]}
-              options={[
-                { value: "left", label: "Left" },
-                { value: "center", label: "Center" },
-                { value: "right", label: "Right" },
-              ]}
-            />
-          </div>
+          <DirectionProvider direction="rtl">
+            <div dir="rtl">
+              <ToggleGroup
+                aria-label="Text alignment RTL"
+                defaultValue={["right"]}
+                options={[
+                  { value: "left", label: "Left" },
+                  { value: "center", label: "Center" },
+                  { value: "right", label: "Right" },
+                ]}
+              />
+            </div>
+          </DirectionProvider>
         </div>
       ) : null}
       {kind === "typography" ? (
