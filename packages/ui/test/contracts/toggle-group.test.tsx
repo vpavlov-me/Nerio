@@ -107,12 +107,20 @@ describe("ToggleGroup contracts", () => {
 
   it("maps horizontal arrow focus through inherited RTL direction", async () => {
     const user = userEvent.setup();
+    const onGroupKeyDown = vi.fn();
+    const onItemKeyDown = vi.fn();
     render(
       <div dir="rtl">
-        <ToggleGroup aria-label="Alignment">
-          <ToggleGroupItem value="left">Left</ToggleGroupItem>
-          <ToggleGroupItem value="center">Center</ToggleGroupItem>
-          <ToggleGroupItem value="right">Right</ToggleGroupItem>
+        <ToggleGroup aria-label="Alignment" onKeyDown={onGroupKeyDown}>
+          <ToggleGroupItem value="left" onKeyDown={onItemKeyDown}>
+            Left
+          </ToggleGroupItem>
+          <ToggleGroupItem value="center" onKeyDown={onItemKeyDown}>
+            Center
+          </ToggleGroupItem>
+          <ToggleGroupItem value="right" onKeyDown={onItemKeyDown}>
+            Right
+          </ToggleGroupItem>
         </ToggleGroup>
       </div>,
     );
@@ -123,6 +131,8 @@ describe("ToggleGroup contracts", () => {
     expect(screen.getByRole("button", { name: "Right" })).toHaveFocus();
     await user.keyboard("{ArrowRight}");
     expect(center).toHaveFocus();
+    expect(onItemKeyDown).toHaveBeenCalledTimes(2);
+    expect(onGroupKeyDown).toHaveBeenCalledTimes(2);
   });
 
   it("blocks interaction when the complete group is disabled", async () => {

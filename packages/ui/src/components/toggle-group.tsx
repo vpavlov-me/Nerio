@@ -92,7 +92,11 @@ const ToggleGroupVisualContext = React.createContext<{
   variant: ToggleVariant;
 }>({ size: "md", variant: "ghost" });
 
-function moveHorizontalRtlFocus(event: React.KeyboardEvent<HTMLDivElement>, loopFocus: boolean) {
+type BaseUiKeyboardEvent = React.KeyboardEvent<HTMLDivElement> & {
+  preventBaseUIHandler?: () => void;
+};
+
+function moveHorizontalRtlFocus(event: BaseUiKeyboardEvent, loopFocus: boolean) {
   if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
 
   const group = event.currentTarget;
@@ -110,7 +114,7 @@ function moveHorizontalRtlFocus(event: React.KeyboardEvent<HTMLDivElement>, loop
   if (!loopFocus && (nextIndex < 0 || nextIndex >= items.length)) return;
 
   event.preventDefault();
-  event.stopPropagation();
+  event.preventBaseUIHandler?.();
   items[(nextIndex + items.length) % items.length]?.focus();
 }
 
@@ -139,7 +143,7 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
     className,
     disabled,
     loopFocus = true,
-    onKeyDownCapture,
+    onKeyDown,
     options,
     orientation = "horizontal",
     size = "md",
@@ -190,8 +194,8 @@ export const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(fu
         data-variant={variant}
         disabled={disabled}
         loopFocus={loopFocus}
-        onKeyDownCapture={(event) => {
-          onKeyDownCapture?.(event);
+        onKeyDown={(event) => {
+          onKeyDown?.(event);
           if (!event.defaultPrevented) moveHorizontalRtlFocus(event, loopFocus);
         }}
         orientation={orientation}
