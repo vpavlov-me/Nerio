@@ -28,6 +28,16 @@ export {
   type CheckboxState,
 } from "./components/checkbox";
 export {
+  CheckboxGroup,
+  CheckboxGroupItem,
+  type CheckboxGroupChangeEventDetails,
+  type CheckboxGroupItemProps,
+  type CheckboxGroupOption,
+  type CheckboxGroupProps,
+  type CheckboxGroupState,
+  type CheckboxGroupValue,
+} from "./components/checkbox-group";
+export {
   RadioGroup,
   RadioGroupItem,
   type RadioGroupItemProps,

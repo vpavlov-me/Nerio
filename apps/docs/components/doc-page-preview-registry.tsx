@@ -46,6 +46,7 @@ const previewRegistry = {
   "form-message": FormsPreview,
   "form-group": FormsPreview,
   checkbox: FormsPreview,
+  "checkbox-group": FormsPreview,
   "radio-group": FormsPreview,
   switch: FormsPreview,
   select: FormsPreview,

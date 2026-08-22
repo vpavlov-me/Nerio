@@ -237,6 +237,26 @@ test("keeps ToggleGroup selection and direction-aware roving focus portable", as
   await expect(rtlGroup.getByRole("button", { name: "Right" })).toBeFocused();
 });
 
+test("keeps CheckboxGroup independent values and form controls portable", async ({ page }) => {
+  await page.goto("/docs/components/checkbox-group");
+  const preview = page.getByRole("region", { name: "checkbox-group preview" });
+  const group = preview.getByRole("group", { name: "Notifications" });
+  const email = group.getByRole("checkbox", { name: /Email/ });
+  const security = group.getByRole("checkbox", { name: /Security alerts/ });
+
+  await expect(email).toBeChecked();
+  await security.focus();
+  await security.press("Space");
+  await expect(email).toBeChecked();
+  await expect(security).toBeChecked();
+  await page.locator("html").evaluate((element) => element.setAttribute("dir", "rtl"));
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    ),
+  ).toBeLessThanOrEqual(1);
+});
+
 test("keeps Collapsible and Accordion disclosure behavior portable", async ({
   browserName,
   page,

@@ -80,6 +80,8 @@ export const snippets: Record<string, string> = {
     'import { Field, FormGroup } from \'@nerio-ui/ui\';\nimport { Checkbox } from \'@nerio-ui/ui/client\';\n\n<FormGroup layout="grid" title="Notifications" description="Choose which updates should be sent by email.">\n  <Field label="Product updates"><Checkbox aria-label="Product updates" /></Field>\n  <Field label="Security alerts"><Checkbox aria-label="Security alerts" defaultChecked /></Field>\n</FormGroup>',
   checkbox:
     'import { Checkbox } from \'@nerio-ui/ui/client\';\n\n<Checkbox\n  defaultChecked\n  name="includeArchived"\n  label="Include archived collections"\n  description="Archived collections remain visible in search results."\n/>\n\n// Use indeterminate for an aggregate or partial selection.\n<Checkbox aria-label="Partially selected" indeterminate />',
+  "checkbox-group":
+    'import { CheckboxGroup, CheckboxGroupItem } from \'@nerio-ui/ui/client\';\n\n<CheckboxGroup label="Notifications" name="notifications" defaultValue={["email"]}>\n  <CheckboxGroupItem value="email" description="Weekly project summary.">Email</CheckboxGroupItem>\n  <CheckboxGroupItem value="security">Security alerts</CheckboxGroupItem>\n</CheckboxGroup>\n\n// Options remains available for concise data-driven groups.\n<CheckboxGroup label="Topics" options={[{ value: "product", label: "Product updates" }]} />',
   "radio-group":
     'import { RadioGroup, RadioGroupItem } from \'@nerio-ui/ui/client\';\n\n<RadioGroup label="Visibility" name="visibility" defaultValue="team">\n  <RadioGroupItem value="private" description="Only you can access it.">Private</RadioGroupItem>\n  <RadioGroupItem value="team">Team</RadioGroupItem>\n</RadioGroup>\n\n// Options API remains available for concise data-driven groups.\n<RadioGroup label="Visibility" options={[{ label: "Private", value: "private" }]} />',
   switch:
@@ -225,6 +227,25 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "required accessible group name",
       "orientation-aware roving focus",
       "aria-pressed item state",
+    ],
+  },
+  "checkbox-group": {
+    name: "CheckboxGroup",
+    description:
+      "Coordinates independent checkbox options with one controlled or uncontrolled string-array value.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Checkbox", "RadioGroup", "ToggleGroup", "FormGroup"],
+    anatomy: ["root", "label", "description", "group", "field", "message"],
+    motion: ["inherits Checkbox state and reduced-motion behavior"],
+    accessibility: [
+      "Base UI CheckboxGroup and Checkbox primitives",
+      "visible group label",
+      "independent native checkbox keyboard behavior",
+      "associated descriptions and validation message",
     ],
   },
   "button-group": {
@@ -2145,6 +2166,75 @@ export const componentReference: Record<string, ComponentReference> = {
       ],
     },
     related: ["radio-group", "switch", "field"],
+    tokens: [
+      "--n-checkbox-size",
+      "--n-checkbox-radius",
+      "--n-color-action-primary",
+      "--n-color-action-on-primary",
+      "--n-input-border-danger",
+      "--n-focus-ring",
+    ],
+  },
+  "checkbox-group": {
+    category: "Forms",
+    purpose:
+      "Use CheckboxGroup when zero or more independent options may be selected from a short visible set.",
+    anatomy: [
+      { title: "root", description: "Field wrapper with group metadata and message." },
+      { title: "label", description: "Required visible name for the complete group." },
+      { title: "description", description: "Optional group-level supporting text." },
+      { title: "group", description: "Base UI group and string-array value owner." },
+      { title: "field", description: "One labelled CheckboxGroupItem row." },
+      { title: "message", description: "Optional helper or validation message." },
+    ],
+    variants: [
+      { title: "Options", description: "Concise data-driven visible items." },
+      { title: "Composed", description: "CheckboxGroupItem children for explicit structure." },
+    ],
+    states: [
+      { title: "Unchecked / checked", description: "Items change independently." },
+      { title: "Disabled item", description: "One option is unavailable." },
+      { title: "Disabled group", description: "Every option is unavailable." },
+      { title: "Read-only", description: "Values remain visible and submitted without changing." },
+      { title: "Invalid", description: "Group and items expose explicit invalid state." },
+      {
+        title: "Required",
+        description: "Exposes a group requirement hook for validation composition.",
+      },
+    ],
+    accessibility: [
+      "CheckboxGroup is interactive and imports from @nerio-ui/ui/client.",
+      "A visible label names the complete Base UI group.",
+      "Each item keeps native checkbox Space-key and Tab behavior.",
+      "Descriptions and messages are connected through stable accessible ids.",
+      "Disabled and read-only groups preserve values without accepting changes.",
+      "Selection remains visible in forced-colors mode and does not depend on motion.",
+    ],
+    api: [
+      {
+        title: "value / defaultValue / onValueChange",
+        description: "Controlled or uncontrolled arrays of stable string values.",
+      },
+      {
+        title: "options / CheckboxGroupItem",
+        description: "Concise data-driven or explicit composed item APIs.",
+      },
+      {
+        title: "label / description / message",
+        description: "Visible group context and associated supporting text.",
+      },
+      {
+        title: "name / form / disabled / readOnly / invalid / required",
+        description: "Shared form metadata and semantic group states.",
+      },
+    ],
+    guidance: {
+      do: ["Use a short visible set of independent form-backed choices."],
+      dont: [
+        "Do not use CheckboxGroup for one exclusive choice, pressed buttons, a popup MultiSelect, filters, tags, or persistence.",
+      ],
+    },
+    related: ["checkbox", "radio-group", "toggle-group", "form-group"],
     tokens: [
       "--n-checkbox-size",
       "--n-checkbox-radius",

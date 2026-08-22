@@ -35,6 +35,8 @@ const componentLedes: Record<string, string> = {
   label: "Labels provide accessible names and stable form hierarchy.",
   checkbox:
     "Checkboxes select zero or more options in a visible group and support checked, unchecked, indeterminate, invalid, disabled, and read-only states.",
+  "checkbox-group":
+    "CheckboxGroup coordinates independently submitted checkbox options with one string-array value, visible group context, and form reset behavior.",
   "radio-group":
     "Radio groups let people choose one option from a short visible set through options or RadioGroupItem composition.",
   switch:
@@ -106,6 +108,7 @@ const componentTitles: Record<string, string> = {
   "file-input": "FileInput",
   "key-value": "KeyValue",
   "radio-group": "RadioGroup",
+  "checkbox-group": "CheckboxGroup",
   "toggle-group": "ToggleGroup",
   "sidebar-primitive": "Sidebar",
   combobox: "Combobox",

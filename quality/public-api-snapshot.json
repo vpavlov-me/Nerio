@@ -72,6 +72,7 @@
     "/docs/components/calendar",
     "/docs/components/card",
     "/docs/components/checkbox",
+    "/docs/components/checkbox-group",
     "/docs/components/collapsible",
     "/docs/components/combobox",
     "/docs/components/command-primitive",
@@ -3158,6 +3159,96 @@
         "kind": "type",
         "name": "CheckboxChangeEventDetails",
         "signature": "CheckboxChangeEventDetails"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "CheckboxGroup",
+        "signature": "React.ForwardRefExoticComponent<CheckboxGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export type CheckboxGroupChangeEventDetails = NerioChangeEventDetails<\"none\">;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CheckboxGroupChangeEventDetails",
+        "signature": "CheckboxGroupChangeEventDetails"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "CheckboxGroupItem",
+        "signature": "React.ForwardRefExoticComponent<Omit<CheckboxProps, \"label\" | \"defaultChecked\" | \"description\" | \"value\" | \"indeterminate\" | \"checked\" | \"onCheckedChange\" | \"parent\" | \"uncheckedValue\"> & { children: React.ReactNode; description?: React.ReactNode; value: CheckboxGroupValue; } & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface CheckboxProps extends Omit<React.HTMLAttributes<HTMLElement>, \"children\" | \"className\" | \"color\" | \"defaultChecked\" | \"onChange\" | \"style\"> { checked?: boolean; defaultChecked?: boolean; disabled?: boolean; form?: string; id?: string; indeterminate?: boolean; inputRef?: React.Ref<HTMLInputElement>; name?: string; nativeButton?: boolean; onCheckedChange?: (checked: boolean, eventDetails: CheckboxChangeEventDetails) => void; parent?: boolean; readOnly?: boolean; render?: NerioRenderProp<CheckboxState>; required?: boolean; uncheckedValue?: string; value?: string; className?: NerioClassName<CheckboxState>; style?: NerioStyle<CheckboxState>; children?: React.ReactNode; invalid?: boolean; label?: React.ReactNode; description?: React.ReactNode; }",
+          "export interface CheckboxState { checked: boolean; disabled: boolean; readOnly: boolean; required: boolean; indeterminate: boolean; }",
+          "export type CheckboxChangeEventDetails = NerioChangeEventDetails<\"none\">;",
+          "export type CheckboxGroupItemProps = DistributiveOmit<CheckboxProps, \"checked\" | \"defaultChecked\" | \"description\" | \"indeterminate\" | \"label\" | \"onCheckedChange\" | \"parent\" | \"uncheckedValue\" | \"value\"> & { children: React.ReactNode; description?: React.ReactNode; value: CheckboxGroupValue; };",
+          "export type CheckboxGroupValue = string;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "type DistributiveOmit<T, Key extends PropertyKey> = T extends unknown ? Omit<T, Extract<keyof T, Key>> : never;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CheckboxGroupItemProps",
+        "signature": "CheckboxGroupItemProps"
+      },
+      {
+        "definition": [
+          "export interface CheckboxGroupOption { label: React.ReactNode; value: CheckboxGroupValue; description?: React.ReactNode; disabled?: boolean; }",
+          "export type CheckboxGroupValue = string;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CheckboxGroupOption",
+        "signature": "CheckboxGroupOption"
+      },
+      {
+        "definition": [
+          "export interface CheckboxGroupOption { label: React.ReactNode; value: CheckboxGroupValue; description?: React.ReactNode; disabled?: boolean; }",
+          "export interface CheckboxGroupState { disabled: boolean; readOnly: boolean; required: boolean; }",
+          "export type CheckboxGroupChangeEventDetails = NerioChangeEventDetails<\"none\">;",
+          "export type CheckboxGroupProps = SharedCheckboxGroupProps & (OptionsCheckboxGroupProps | ComposedCheckboxGroupProps);",
+          "export type CheckboxGroupValue = string;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);",
+          "type ComposedCheckboxGroupProps = { children: React.ReactNode; options?: never; };",
+          "type OptionsCheckboxGroupProps = { options: readonly CheckboxGroupOption[]; children?: never; };",
+          "type SharedCheckboxGroupProps = Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"className\" | \"defaultValue\" | \"onChange\" | \"style\"> & { className?: NerioClassName<CheckboxGroupState>; defaultValue?: readonly CheckboxGroupValue[]; description?: React.ReactNode; disabled?: boolean; form?: string; invalid?: boolean; label: React.ReactNode; message?: React.ReactNode; name?: string; onValueChange?: (value: CheckboxGroupValue[], eventDetails: CheckboxGroupChangeEventDetails) => void; readOnly?: boolean; render?: NerioRenderProp<CheckboxGroupState>; required?: boolean; style?: NerioStyle<CheckboxGroupState>; value?: readonly CheckboxGroupValue[]; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CheckboxGroupProps",
+        "signature": "CheckboxGroupProps"
+      },
+      {
+        "definition": [
+          "export interface CheckboxGroupState { disabled: boolean; readOnly: boolean; required: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CheckboxGroupState",
+        "signature": "CheckboxGroupState"
+      },
+      {
+        "definition": ["export type CheckboxGroupValue = string;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "CheckboxGroupValue",
+        "signature": "string"
       },
       {
         "definition": [
@@ -7232,6 +7323,7 @@
         },
         {
           "components": [
+            "checkbox-group",
             "combobox",
             "command-primitive",
             "date-picker",
@@ -7657,6 +7749,7 @@
         },
         {
           "components": [
+            "checkbox-group",
             "combobox",
             "command-primitive",
             "date-picker",
@@ -9260,6 +9353,57 @@
         "slots": ["field", "root", "indicator", "label", "description"],
         "states": [],
         "variants": ["checked", "unchecked", "indeterminate", "invalid", "disabled", "read-only"]
+      },
+      {
+        "baseUiPrimitives": ["checkbox-group", "checkbox"],
+        "category": "forms",
+        "dependencies": [
+          "@base-ui/react",
+          "@nerio-ui/adapters",
+          "clsx",
+          "react",
+          "tailwind-merge",
+          "tailwindcss"
+        ],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-70ef251efe5e86b03e78a1b400497d267ca0418adc8d385218a3d878e8f0c2b3",
+            "role": "component",
+            "source": "../../ui/src/components/checkbox-group.tsx",
+            "target": "components/checkbox-group.tsx"
+          },
+          {
+            "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f",
+            "role": "utility",
+            "source": "../../ui/src/lib/compose-refs.ts",
+            "target": "lib/compose-refs.ts"
+          }
+        ],
+        "name": "checkbox-group",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["checkbox", "form-message"],
+        "requiredTokens": [
+          "--n-checkbox-size",
+          "--n-checkbox-radius",
+          "--n-color-border-subtle",
+          "--n-color-action-primary",
+          "--n-color-action-on-primary",
+          "--n-input-border-danger",
+          "--n-focus-ring"
+        ],
+        "slots": [
+          "root",
+          "label",
+          "description",
+          "group",
+          "field",
+          "indicator",
+          "validation-control",
+          "message"
+        ],
+        "states": ["unchecked", "checked", "disabled", "read-only", "invalid", "required"],
+        "variants": ["options", "composed"]
       },
       {
         "baseUiPrimitives": ["collapsible"],

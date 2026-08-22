@@ -110,6 +110,7 @@
     { "name": "field", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "form-group", "entrypoint": "@nerio-ui/ui", "runtime": "server" },
     { "name": "checkbox", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
+    { "name": "checkbox-group", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "switch", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "tabs", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
     { "name": "collapsible", "entrypoint": "@nerio-ui/ui/client", "runtime": "client" },
@@ -643,6 +644,14 @@
       "category": "forms",
       "status": "stable-core",
       "description": "Client-only Base UI checkbox for grouped multi-selection with checked, indeterminate, invalid, disabled, read-only, form metadata, and optional label and description support."
+    },
+    {
+      "name": "CheckboxGroup",
+      "tier": "core",
+      "package": "@nerio-ui/ui/client",
+      "category": "forms",
+      "status": "implemented-initial",
+      "description": "Client-only Base UI grouped checkbox control with controlled or uncontrolled string arrays, visible group metadata, options or CheckboxGroupItem composition, item descriptions, disabled and read-only states, form submission, and native reset behavior."
     },
     {
       "name": "Radio Group",

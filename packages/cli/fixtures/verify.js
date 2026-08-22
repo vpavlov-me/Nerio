@@ -245,6 +245,20 @@ const expectedToggleGroupFiles = [
   "styles/tailwind.css",
   "styles/tokens.css",
 ];
+const expectedCheckboxGroupFiles = [
+  "components/checkbox-group.tsx",
+  "components/checkbox.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/resolve-class-name.ts",
+  "lib/tailwind-cn.ts",
+  "styles/tailwind.css",
+  "styles/tokens.css",
+];
 const expectedCalendarFiles = [
   "components/calendar.tsx",
   "lib/cn.ts",
@@ -1835,6 +1849,7 @@ async function verify() {
     await run(localTarget, "add", "input-group");
     await run(localTarget, "add", "form-group");
     await run(localTarget, "add", "checkbox");
+    await run(localTarget, "add", "checkbox-group");
     await run(localTarget, "add", "switch");
     await run(localTarget, "add", "toggle");
     await run(localTarget, "add", "toggle-group");
@@ -1884,6 +1899,22 @@ async function verify() {
     ) {
       throw new Error(
         "Installed Icon source is missing its adapter, Lucide isolation, or protected accessibility contract.",
+      );
+    }
+    assertFiles(localTarget, expectedCheckboxGroupFiles);
+    const checkboxGroupSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/checkbox-group.tsx"),
+      "utf8",
+    );
+    if (
+      !checkboxGroupSource.includes("@base-ui/react/checkbox-group") ||
+      !checkboxGroupSource.includes("CheckboxGroupItem") ||
+      !checkboxGroupSource.includes("onValueChange") ||
+      !checkboxGroupSource.includes('data-slot="group"') ||
+      !checkboxGroupSource.includes('addEventListener("reset"')
+    ) {
+      throw new Error(
+        "Installed CheckboxGroup source did not preserve grouped values, composition, slots, or reset behavior.",
       );
     }
     assertFiles(localTarget, expectedToggleGroupFiles);

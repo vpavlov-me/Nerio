@@ -8,6 +8,9 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the client-only `CheckboxGroup` and `CheckboxGroupItem` APIs for controlled or uncontrolled string-array selection, visible group metadata, options or compound composition, item descriptions, group and item states, form submission, and native uncontrolled reset behavior.
+- Raised the reviewed UI and Registry tarball budgets to 85 KB and 38 KB for the CheckboxGroup source, metadata, and source-install contract; measured archives remain 83.3 KB and 37.1 KB.
+
 - Added the first #348 grouped-selection slice: a bounded Core 1.1 ToggleGroup on `dev` with
   single or multiple string values, controlled or uncontrolled state, horizontal or vertical
   roving focus, options or ToggleGroupItem composition, accessible group naming, disabled items,

@@ -36,6 +36,8 @@ import {
   CardTitle,
   CardVisual,
   Checkbox,
+  CheckboxGroup,
+  CheckboxGroupItem,
   Combobox,
   Command,
   CommandEmpty,
@@ -788,6 +790,28 @@ export function ComponentPlayground() {
             Public
           </RadioGroupItem>
         </RadioGroup>
+      </SpecimenSection>
+      <SpecimenSection
+        id="checkbox-group"
+        title="Checkbox Group"
+        api="label · description · message · options · composed items · disabled · readOnly"
+      >
+        <CheckboxGroup
+          label="Notifications"
+          description="Choose every channel that applies."
+          name="lab-notifications"
+          defaultValue={["email"]}
+        >
+          <CheckboxGroupItem value="email" description="Weekly project summary.">
+            Email
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="security" description="Important account changes.">
+            Security alerts
+          </CheckboxGroupItem>
+          <CheckboxGroupItem value="sms" disabled>
+            SMS
+          </CheckboxGroupItem>
+        </CheckboxGroup>
       </SpecimenSection>
       <SpecimenSection id="switch" title="Switch" api="off · on · disabled · readOnly">
         <Matrix

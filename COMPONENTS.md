@@ -71,27 +71,28 @@ Do not mark a component as `stable-core` until the Core quality checklist is sat
 
 ### Forms
 
-| Component   | Status              | Package               | Notes                                                                                                                                                          |
-| ----------- | ------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Input       | stable-core         | `@nerio-ui/ui`        | Thin native single-line control for text-like, numeric, and temporal values; native picker, form, and validation behavior stay browser-owned                   |
-| InputGroup  | stable-core         | `@nerio-ui/ui`        | Composable surface for an Input with explicit start/end addons                                                                                                 |
-| Textarea    | stable-core         | `@nerio-ui/ui`        | Multiline input with native disabled/read-only behavior and normalized focus and invalid-state hooks                                                           |
-| Label       | stable-core         | `@nerio-ui/ui`        | Accessible form label with a native non-submit supplementary hint trigger                                                                                      |
-| Field       | stable-core         | `@nerio-ui/ui`        | Label, help text, error, description                                                                                                                           |
-| FormMessage | stable-core         | `@nerio-ui/ui`        | Field message/error text                                                                                                                                       |
-| FormGroup   | stable-core         | `@nerio-ui/ui`        | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout                                                   |
-| Checkbox    | stable-core         | `@nerio-ui/ui/client` | Base UI checkbox for grouped multi-selection, indeterminate aggregates, and form-backed option sets                                                            |
-| Radio Group | stable-core         | `@nerio-ui/ui/client` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states                                                            |
-| Switch      | stable-core         | `@nerio-ui/ui/client` | Base UI toggle for immediate binary settings with invalid and read-only state support                                                                          |
-| Select      | stable-core         | `@nerio-ui/ui/client` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior                           |
-| Combobox    | implemented-initial | `@nerio-ui/ui/client` | Bounded single-select control with synchronous filtering, options or composed items, form metadata, and independently controlled query, value, and popup state |
-| SearchField | implemented-initial | `@nerio-ui/ui/client` | Native search composition with one controlled or uncontrolled query, accessible clear, deliberate Enter search events, form reset, and loading presentation    |
-| NumberField | implemented-initial | `@nerio-ui/ui/client` | Base UI decimal number control with locale-aware editing and display, bounded stepping, form/reset semantics, and accessible increment/decrement actions       |
-| OTPField    | implemented-initial | `@nerio-ui/ui/client` | Base UI verification-code field with one string value, paste/deletion/autofill behavior, form/reset semantics, accessible slot labels, and completion events   |
-| Slider      | stable-core         | `@nerio-ui/ui/client` | Base UI single-value range primitive with form metadata, horizontal/vertical orientation, read-only behavior, localized value text, and one thumb              |
-| FileInput   | stable-core         | `@nerio-ui/ui`        | Native file selection with forwarded FileList, form/reset semantics, single or multiple selection, and no upload workflow ownership                            |
-| Calendar    | stable-core         | `@nerio-ui/ui/client` | Timezone-safe single-date grid with ISO values, roving focus, locale labels, week starts, constraints, and controlled or uncontrolled state                    |
-| DatePicker  | stable-core         | `@nerio-ui/ui/client` | Form-backed single-date control composed from Calendar and Popover with ISO values, localization, constraints, reset, and focus restoration                    |
+| Component     | Status              | Package               | Notes                                                                                                                                                          |
+| ------------- | ------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Input         | stable-core         | `@nerio-ui/ui`        | Thin native single-line control for text-like, numeric, and temporal values; native picker, form, and validation behavior stay browser-owned                   |
+| InputGroup    | stable-core         | `@nerio-ui/ui`        | Composable surface for an Input with explicit start/end addons                                                                                                 |
+| Textarea      | stable-core         | `@nerio-ui/ui`        | Multiline input with native disabled/read-only behavior and normalized focus and invalid-state hooks                                                           |
+| Label         | stable-core         | `@nerio-ui/ui`        | Accessible form label with a native non-submit supplementary hint trigger                                                                                      |
+| Field         | stable-core         | `@nerio-ui/ui`        | Label, help text, error, description                                                                                                                           |
+| FormMessage   | stable-core         | `@nerio-ui/ui`        | Field message/error text                                                                                                                                       |
+| FormGroup     | stable-core         | `@nerio-ui/ui`        | Fieldset group with title, description, message, invalid state, and stack, inline, or responsive grid layout                                                   |
+| Checkbox      | stable-core         | `@nerio-ui/ui/client` | Base UI checkbox for grouped multi-selection, indeterminate aggregates, and form-backed option sets                                                            |
+| CheckboxGroup | implemented-initial | `@nerio-ui/ui/client` | Base UI grouped checkboxes with string-array state, group metadata, options or CheckboxGroupItem composition, item descriptions, and form/reset behavior       |
+| Radio Group   | stable-core         | `@nerio-ui/ui/client` | Base UI radio selection with options or RadioGroupItem composition, group metadata, and item states                                                            |
+| Switch        | stable-core         | `@nerio-ui/ui/client` | Base UI toggle for immediate binary settings with invalid and read-only state support                                                                          |
+| Select        | stable-core         | `@nerio-ui/ui/client` | Single-select control with options or curated item composition, form metadata, controlled popup state, and Base UI keyboard behavior                           |
+| Combobox      | implemented-initial | `@nerio-ui/ui/client` | Bounded single-select control with synchronous filtering, options or composed items, form metadata, and independently controlled query, value, and popup state |
+| SearchField   | implemented-initial | `@nerio-ui/ui/client` | Native search composition with one controlled or uncontrolled query, accessible clear, deliberate Enter search events, form reset, and loading presentation    |
+| NumberField   | implemented-initial | `@nerio-ui/ui/client` | Base UI decimal number control with locale-aware editing and display, bounded stepping, form/reset semantics, and accessible increment/decrement actions       |
+| OTPField      | implemented-initial | `@nerio-ui/ui/client` | Base UI verification-code field with one string value, paste/deletion/autofill behavior, form/reset semantics, accessible slot labels, and completion events   |
+| Slider        | stable-core         | `@nerio-ui/ui/client` | Base UI single-value range primitive with form metadata, horizontal/vertical orientation, read-only behavior, localized value text, and one thumb              |
+| FileInput     | stable-core         | `@nerio-ui/ui`        | Native file selection with forwarded FileList, form/reset semantics, single or multiple selection, and no upload workflow ownership                            |
+| Calendar      | stable-core         | `@nerio-ui/ui/client` | Timezone-safe single-date grid with ISO values, roving focus, locale labels, week starts, constraints, and controlled or uncontrolled state                    |
+| DatePicker    | stable-core         | `@nerio-ui/ui/client` | Form-backed single-date control composed from Calendar and Popover with ISO values, localization, constraints, reset, and focus restoration                    |
 
 ### Input-family roadmap
 
