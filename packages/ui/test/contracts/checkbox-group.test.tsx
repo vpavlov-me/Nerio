@@ -119,6 +119,56 @@ describe("CheckboxGroup contracts", () => {
     expect(form.checkValidity()).toBe(true);
   });
 
+  it("does not restore defaults when the native reset is canceled", async () => {
+    const user = userEvent.setup();
+    render(
+      <form aria-label="Canceled reset" onReset={(event) => event.preventDefault()}>
+        <CheckboxGroup defaultValue={["email"]} label="Channels" name="channels">
+          <CheckboxGroupItem value="email">Email</CheckboxGroupItem>
+          <CheckboxGroupItem value="sms">SMS</CheckboxGroupItem>
+        </CheckboxGroup>
+        <button type="reset">Reset</button>
+      </form>,
+    );
+
+    const email = screen.getByRole("checkbox", { name: "Email" });
+    const sms = screen.getByRole("checkbox", { name: "SMS" });
+    await user.click(email);
+    await user.click(sms);
+    await user.click(screen.getByRole("button", { name: "Reset" }));
+    expect(email).not.toBeChecked();
+    expect(sms).toBeChecked();
+  });
+
+  it("does not satisfy required validation with stale or disabled controlled values", () => {
+    const { rerender } = render(
+      <form aria-label="Controlled requirement">
+        <CheckboxGroup
+          label="Channels"
+          name="channels"
+          options={[{ value: "email", label: "Email" }]}
+          required
+          value={["removed"]}
+        />
+      </form>,
+    );
+    const form = screen.getByRole("form", { name: "Controlled requirement" }) as HTMLFormElement;
+    expect(form.checkValidity()).toBe(false);
+
+    rerender(
+      <form aria-label="Controlled requirement">
+        <CheckboxGroup
+          label="Channels"
+          name="channels"
+          options={[{ value: "email", label: "Email", disabled: true }]}
+          required
+          value={["email"]}
+        />
+      </form>,
+    );
+    expect(form.checkValidity()).toBe(false);
+  });
+
   it("blocks group and read-only interaction while preserving item values", async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();

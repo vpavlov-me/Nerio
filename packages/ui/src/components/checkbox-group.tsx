@@ -78,6 +78,8 @@ export type CheckboxGroupItemProps = DistributiveOmit<
   | "description"
   | "indeterminate"
   | "label"
+  | "form"
+  | "name"
   | "onCheckedChange"
   | "parent"
   | "uncheckedValue"
@@ -94,25 +96,38 @@ const CheckboxGroupContext = React.createContext<{
   invalid: boolean;
   name?: string;
   readOnly: boolean;
-}>({ disabled: false, invalid: false, readOnly: false });
+  registerItem: (id: string, value: CheckboxGroupValue, disabled: boolean) => () => void;
+}>({
+  disabled: false,
+  invalid: false,
+  readOnly: false,
+  registerItem: () => () => undefined,
+});
 
 export const CheckboxGroupItem = React.forwardRef<HTMLElement, CheckboxGroupItemProps>(
   function CheckboxGroupItem(
-    { children, description, disabled, form, invalid, name, readOnly, ...props },
+    { children, description, disabled, invalid, readOnly, ...props },
     ref,
   ) {
     const group = React.useContext(CheckboxGroupContext);
+    const registrationId = React.useId();
+    const isDisabled = group.disabled || Boolean(disabled);
+
+    React.useEffect(
+      () => group.registerItem(registrationId, props.value, isDisabled),
+      [group.registerItem, isDisabled, props.value, registrationId],
+    );
 
     return (
       <Checkbox
         ref={ref}
         {...props}
         description={description}
-        disabled={group.disabled || disabled}
-        form={form ?? group.form}
+        disabled={isDisabled}
+        form={group.form}
         invalid={group.invalid || invalid}
         label={children}
-        name={name ?? group.name}
+        name={group.name}
         readOnly={group.readOnly || readOnly}
         value={props.value}
       />
@@ -185,10 +200,34 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
         return;
       }
 
-      const handleReset = () => setUncontrolledValue([...initialValue.current]);
+      const handleReset = (event: Event) => {
+        queueMicrotask(() => {
+          if (!event.defaultPrevented) {
+            setUncontrolledValue([...initialValue.current]);
+          }
+        });
+      };
       ownerForm.addEventListener("reset", handleReset);
       return () => ownerForm.removeEventListener("reset", handleReset);
     }, [form, isControlled]);
+    const registeredItems = React.useRef(
+      new Map<string, { value: CheckboxGroupValue; disabled: boolean }>(),
+    );
+    const [, refreshRegisteredItems] = React.useReducer((version) => version + 1, 0);
+    const registerItem = React.useCallback(
+      (id: string, itemValue: CheckboxGroupValue, itemDisabled: boolean) => {
+        registeredItems.current.set(id, { value: itemValue, disabled: itemDisabled });
+        refreshRegisteredItems();
+        return () => {
+          registeredItems.current.delete(id);
+          refreshRegisteredItems();
+        };
+      },
+      [],
+    );
+    const hasSelectedEligibleItem = Array.from(registeredItems.current.values()).some(
+      (item) => !item.disabled && selectedValue.includes(item.value),
+    );
     const renderedItems = options
       ? options.map((option) => (
           <CheckboxGroupItem
@@ -227,7 +266,7 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
           </p>
         ) : null}
         <CheckboxGroupContext.Provider
-          value={{ disabled, form, invalid: isInvalid, name, readOnly }}
+          value={{ disabled, form, invalid: isInvalid, name, readOnly, registerItem }}
         >
           <BaseCheckboxGroup
             ref={composeRefs(ref, groupRef)}
@@ -269,7 +308,7 @@ export const CheckboxGroup = React.forwardRef<HTMLDivElement, CheckboxGroupProps
           {required ? (
             <input
               aria-hidden="true"
-              checked={selectedValue.length > 0}
+              checked={hasSelectedEligibleItem}
               className="pointer-events-none absolute size-px overflow-hidden whitespace-nowrap opacity-0"
               data-slot="validation-control"
               disabled={disabled}

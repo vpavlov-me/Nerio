@@ -36,3 +36,16 @@ void (
     <CheckboxGroupItem>Email</CheckboxGroupItem>
   </CheckboxGroup>
 );
+
+void (
+  <CheckboxGroup form="preferences" label="Notifications" name="notifications">
+    {/* @ts-expect-error CheckboxGroup owns shared item form metadata. */}
+    <CheckboxGroupItem form="other-form" value="email">
+      Email
+    </CheckboxGroupItem>
+    {/* @ts-expect-error CheckboxGroup owns the shared submitted field name. */}
+    <CheckboxGroupItem name="other-name" value="sms">
+      SMS
+    </CheckboxGroupItem>
+  </CheckboxGroup>
+);
