@@ -2488,9 +2488,17 @@ async function verify() {
     if (
       !dropdownSource.includes("destructive") ||
       !dropdownSource.includes("disabled={item.disabled}") ||
-      !dropdownSource.includes("onOpenChange")
+      !dropdownSource.includes("onOpenChange") ||
+      !dropdownSource.includes("DropdownMenuLinkItem") ||
+      !dropdownSource.includes("DropdownMenuCheckboxItem") ||
+      !dropdownSource.includes("DropdownMenuRadioGroup") ||
+      !dropdownSource.includes("DropdownMenuSubContent") ||
+      !dropdownSource.includes("aria-describedby={textRelationships.describedBy}") ||
+      !fs.existsSync(path.join(localTarget, "components/nerio/lib/resolve-class-name.ts"))
     ) {
-      throw new Error("Installed DropdownMenu source is missing item state or open control.");
+      throw new Error(
+        "Installed DropdownMenu source is missing compound menu anatomy or support files.",
+      );
     }
 
     const tooltipSource = fs.readFileSync(

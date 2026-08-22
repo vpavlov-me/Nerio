@@ -1,8 +1,8 @@
 {
   "approvedBy": "vpavlov-me",
   "baseline": "core-1.0",
-  "classification": "fix",
-  "issue": "348",
+  "classification": "feature",
+  "issue": "350",
   "schemaVersion": 1,
-  "snapshotSha256": "b424115b2b369024948b60d6b4479d56789bea47a8427fcfd46adac6d33097e7"
+  "snapshotSha256": "75a27162dc68c5d8cc13ee8568d1940f0f11aafa709b0872569e2f6f0bff9049"
 }

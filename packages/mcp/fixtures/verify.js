@@ -991,9 +991,16 @@ async function verify() {
     if (
       !dropdownUsage.requiredTokens.includes("--n-dropdown-min-width") ||
       !dropdownUsage.accessibility.some((item) => item.includes("Disabled items")) ||
-      !dropdownUsage.accessibility.some((item) => item.includes("destructive"))
+      !dropdownUsage.accessibility.some((item) => item.includes("destructive")) ||
+      !dropdownUsage.accessibility.some((item) => item.includes("Checkbox and radio")) ||
+      !dropdownUsage.accessibility.some((item) => item.includes("submenu")) ||
+      !dropdownUsage.slots.includes("link-item") ||
+      !dropdownUsage.slots.includes("checkbox-item") ||
+      !dropdownUsage.slots.includes("radio-item") ||
+      !dropdownUsage.slots.includes("sub-content") ||
+      !dropdownUsage.usage.includes("DropdownMenuRoot")
     ) {
-      throw new Error("MCP DropdownMenu usage is missing disabled/destructive metadata.");
+      throw new Error("MCP DropdownMenu usage is missing compound selection or submenu metadata.");
     }
 
     const toastUsageResult = await client.callTool({

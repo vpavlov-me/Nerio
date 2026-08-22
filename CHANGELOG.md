@@ -8,6 +8,15 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added the complete bounded Dropdown Menu family for Core 1.1. The existing trigger-and-items API
+  remains compatible, while compound Root, Trigger, Portal, Positioner, Content, groups, action and
+  link items, checkbox and radio selection, one-level submenus, separators, labels, descriptions,
+  and shortcuts now support product composition. ContextMenu, Menubar, NavigationMenu, routing,
+  permissions, analytics, command execution, and confirmation policy remain outside Core.
+- Raised the reviewed UI tarball budget from 85 KB to 89 KB for the additive compound menu source;
+  the measured archive is 87,188 bytes. Raised only the affected docs raw-JavaScript ceilings by
+  8-9 KB; measured routes remain between 489,564 and 850,459 bytes, while CSS, deterministic
+  transfer, browser-runtime transfer, and unrelated route ceilings remain unchanged.
 - Added the client-only `CheckboxGroup` and `CheckboxGroupItem` APIs for controlled or uncontrolled string-array selection, visible group metadata, options or compound composition, item descriptions, group and item states, form submission, and native uncontrolled reset behavior.
 - Raised the reviewed UI and Registry tarball budgets to 85 KB and 38 KB for the CheckboxGroup source, metadata, and source-install contract; measured archives remain 83.6 KB and 37.1 KB.
 - Raised the reviewed shared docs CSS budget to 356 KB and the homepage JS and deterministic-transfer budgets to 826 KB and 304 KB after adding CheckboxGroup discovery and reference content; measured output remains 360,670 CSS bytes, 841,344 homepage JS bytes, and 307,407 transfer bytes.
