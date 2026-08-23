@@ -171,9 +171,9 @@ The accepted Core 1.1 primitive sequence starts with direction/localization foun
 then adds
 Accordion and Collapsible, additive compound Dialog anatomy and AlertDialog, a bounded
 single-select Combobox, SearchField, NumberField, OTPField, separate ToggleGroup and CheckboxGroup
-contracts, and complete bounded DropdownMenu anatomy. MultiSelect remains a later decision spike,
-not an approved component. The capability parity decision is authoritative when this summary and
-the detailed sequence differ.
+contracts, and complete bounded DropdownMenu anatomy. The accepted Core 1.2 MultiSelect ADR adds a
+separate bounded multiple-selection field without changing Combobox or CheckboxGroup. The
+capability parity decision is authoritative when this summary and the detailed sequence differ.
 
 ## Pro component scope
 

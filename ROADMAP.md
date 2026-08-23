@@ -126,8 +126,9 @@ These are independent parallel slices:
 
 <!-- parity-track:multi-select-decision issues:#349 depends-on:#151,#341,#342,#345,#348 -->
 
-#349 moves to a Core 1.2 decision spike after #345 and #348. No MultiSelect implementation is
-approved until real composition and accessibility evidence proves a dedicated Core responsibility.
+#349 completed its Core 1.2 decision spike after #345 and #348. ADR 0006 accepts a separate bounded
+MultiSelect implementation while keeping remote data, creation, virtualization, quotas, and product
+filtering outside Core.
 
 ### Adoption
 

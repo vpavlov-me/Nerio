@@ -412,6 +412,54 @@ test("keeps Combobox query, keyboard, pointer, clear, and RTL behavior bounded",
   await expectHealthyPage(page, problems);
 });
 
+test("keeps MultiSelect selection, form reset, RTL traversal, and narrow reflow bounded", async ({
+  page,
+}) => {
+  const problems = monitorPage(page);
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/docs/components/multi-select");
+
+  const preview = page.getByRole("region", { name: "multi-select preview" });
+  const input = preview.getByRole("combobox", { name: "Disciplines" });
+  await input.fill("writing");
+  await page.getByRole("option", { name: "Technical writing" }).click();
+  await expect(preview.getByRole("button", { name: "Remove Technical writing" })).toBeVisible();
+  await expect(page.getByRole("listbox")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("listbox")).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await expect(preview.getByRole("button", { name: "Remove Technical writing" })).toBeVisible();
+  const form = preview.locator('[data-slot="multi-select-form"]');
+  await expect
+    .poll(() =>
+      form.evaluate((element) =>
+        new FormData(element).getAll("disciplines").map((value) => String(value)),
+      ),
+    )
+    .toEqual(["design", "writing"]);
+  await form.evaluate((element) => element.reset());
+  await expect(preview.getByRole("button", { name: "Remove Technical writing" })).toHaveCount(0);
+  await expect(preview.getByRole("button", { name: "Remove Design systems" })).toBeVisible();
+  await expect
+    .poll(() =>
+      form.evaluate((element) =>
+        new FormData(element).getAll("disciplines").map((value) => String(value)),
+      ),
+    )
+    .toEqual(["design"]);
+  await page.locator("html").evaluate((root) => {
+    root.dir = "rtl";
+  });
+  await input.fill("");
+  await input.focus();
+  await input.press("ArrowLeft");
+  await expect(preview.locator('[data-slot="value"]', { hasText: "Design systems" })).toBeFocused();
+  await preview.getByRole("button", { name: "Toggle options" }).click();
+  await expect(page.locator('[data-slot="content"]')).toHaveAttribute("data-align", "start");
+  await expect(preview.locator('[data-slot="input-group"]')).toBeVisible();
+  await expectHealthyPage(page, problems);
+});
+
 test("keeps SearchField native query, clear focus, loading, RTL, and narrow layout bounded", async ({
   page,
 }) => {

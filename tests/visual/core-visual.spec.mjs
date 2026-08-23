@@ -18,6 +18,7 @@ const categoryFixtures = {
     "switch",
     "select",
     "combobox",
+    "multi-select",
     "search-field",
     "number-field",
     "otp-field",

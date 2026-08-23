@@ -181,6 +181,7 @@ const requiredClassifications = [
   "existing-core",
   "native-guidance",
   "core-1.1-primitive",
+  "core-1.2-primitive",
   "later-core-candidate",
   "core-recipe",
   "adapter",
@@ -397,9 +398,13 @@ for (const capability of capabilities) {
   assert(capability.semverImpact, `${label} must define SemVer impact.`);
   assert(capability.acceptanceBoundary, `${label} must define an acceptance boundary.`);
   if (
-    ["core-1.1-primitive", "later-core-candidate", "core-recipe", "adapter"].includes(
-      capability.classification,
-    )
+    [
+      "core-1.1-primitive",
+      "core-1.2-primitive",
+      "later-core-candidate",
+      "core-recipe",
+      "adapter",
+    ].includes(capability.classification)
   ) {
     assert(
       Number.isInteger(capability.issue) || capability.reasonNoIssue,

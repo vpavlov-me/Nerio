@@ -299,6 +299,25 @@ async function verify() {
       );
     }
 
+    const multiSelectUsageResult = await client.callTool({
+      name: "get_component_usage",
+      arguments: { name: "multi-select" },
+    });
+    const multiSelectUsage = JSON.parse(multiSelectUsageResult.content[0].text);
+    if (
+      !multiSelectUsage.baseUiPrimitives.includes("combobox") ||
+      !multiSelectUsage.registryDependencies.includes("form-message") ||
+      !multiSelectUsage.slots.includes("selected-values") ||
+      !multiSelectUsage.slots.includes("announcement") ||
+      !multiSelectUsage.states.includes("read-only") ||
+      !multiSelectUsage.accessibility.some((item) => item.includes("independent controlled")) ||
+      !multiSelectUsage.accessibility.some((item) => item.includes("Fetching"))
+    ) {
+      throw new Error(
+        "MCP MultiSelect usage is missing multiple selection, announcements, or consumer boundaries.",
+      );
+    }
+
     const searchFieldUsageResult = await client.callTool({
       name: "get_component_usage",
       arguments: { name: "search-field" },

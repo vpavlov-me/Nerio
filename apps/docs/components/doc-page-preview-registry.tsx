@@ -51,6 +51,7 @@ const previewRegistry = {
   switch: FormsPreview,
   select: FormsPreview,
   combobox: FormsPreview,
+  "multi-select": FormsPreview,
   "search-field": FormsPreview,
   "number-field": FormsPreview,
   "otp-field": FormsPreview,

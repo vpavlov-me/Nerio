@@ -116,6 +116,18 @@ const expectedComboboxFiles = [
   "styles/spinner.css",
   "styles/tailwind.css",
 ];
+const expectedMultiSelectFiles = [
+  "components/multi-select.tsx",
+  "components/form-message.tsx",
+  "components/icon.tsx",
+  "lib/cn.ts",
+  "lib/component-props.ts",
+  "lib/compose-refs.ts",
+  "lib/motion.ts",
+  "lib/tailwind-cn.ts",
+  "styles/select.css",
+  "styles/tailwind.css",
+];
 const expectedSearchFieldFiles = [
   "components/button.tsx",
   "components/field.tsx",
@@ -1855,6 +1867,7 @@ async function verify() {
     await run(localTarget, "add", "toggle-group");
     await run(localTarget, "add", "select");
     await run(localTarget, "add", "combobox");
+    await run(localTarget, "add", "multi-select");
     await run(localTarget, "add", "search-field");
     await run(localTarget, "add", "number-field");
     await run(localTarget, "add", "otp-field");
@@ -2165,6 +2178,22 @@ async function verify() {
     ) {
       throw new Error(
         "Installed Combobox source did not preserve generic identity, state, or presentation contracts.",
+      );
+    }
+    assertFiles(localTarget, expectedMultiSelectFiles);
+    const multiSelectSource = fs.readFileSync(
+      path.join(localTarget, "components/nerio/components/multi-select.tsx"),
+      "utf8",
+    );
+    if (
+      !multiSelectSource.includes("<MultiSelectOption<Value>, true>") ||
+      !multiSelectSource.includes("pendingAnnouncementRef") ||
+      !multiSelectSource.includes("setUncontrolledOpen(false)") ||
+      !multiSelectSource.includes('data-slot="selected-values"') ||
+      !multiSelectSource.includes('data-slot="announcement"')
+    ) {
+      throw new Error(
+        "Installed MultiSelect source did not preserve multiple selection, reset, chip, or announcement contracts.",
       );
     }
     assertFiles(localTarget, expectedSearchFieldFiles);

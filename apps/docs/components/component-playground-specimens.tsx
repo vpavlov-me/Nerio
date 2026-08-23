@@ -79,6 +79,7 @@ import {
   LabelRequired,
   LabelRow,
   List,
+  MultiSelect,
   Pagination,
   NumberField,
   OTPField,
@@ -936,6 +937,44 @@ export function ComponentPlayground() {
                   invalid
                 />,
                 <Combobox key="disabled" label="City" options={cityOptions} disabled />,
+              ],
+            },
+          ]}
+        />
+      </SpecimenSection>
+      <SpecimenSection
+        id="multi-select"
+        title="MultiSelect"
+        api="ordered values · query · popup · groups · disabled · readOnly · invalid"
+      >
+        <Matrix
+          columns={["Default", "Selected", "Read only", "Invalid", "Disabled"]}
+          rows={[
+            {
+              label: "State",
+              cells: [
+                <MultiSelect key="default" label="Disciplines" options={cityOptions} />,
+                <MultiSelect
+                  key="selected"
+                  label="Disciplines"
+                  defaultValue={["paris", "tbilisi"]}
+                  options={cityOptions}
+                />,
+                <MultiSelect
+                  key="readonly"
+                  label="Disciplines"
+                  defaultValue={["paris"]}
+                  options={cityOptions}
+                  readOnly
+                />,
+                <MultiSelect
+                  key="invalid"
+                  label="Disciplines"
+                  message="Choose at least one discipline."
+                  options={cityOptions}
+                  invalid
+                />,
+                <MultiSelect key="disabled" label="Disciplines" options={cityOptions} disabled />,
               ],
             },
           ]}

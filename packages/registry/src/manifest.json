@@ -1843,6 +1843,159 @@
       "usage": "import { Combobox } from '@/components/nerio/components/combobox';\n\n<Combobox label=\"City\" name=\"city\" options={[{ value: 'paris', label: 'Paris', textValue: 'Paris' }, { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' }]} />"
     },
     {
+      "name": "multi-select",
+      "title": "MultiSelect",
+      "description": "Selects zero or more string values from one finite local filterable option set.",
+      "category": "forms",
+      "dependencies": [
+        "@base-ui/react",
+        "@nerio-ui/adapters",
+        "clsx",
+        "react",
+        "tailwind-merge",
+        "tailwindcss"
+      ],
+      "registryDependencies": ["form-message"],
+      "files": [
+        {
+          "source": "../../ui/src/components/multi-select.tsx",
+          "target": "components/multi-select.tsx",
+          "role": "component",
+          "integrity": "sha256-cd5913895413e1464c782a4bd5c9b20fc1ed004960666575552fed11cfc8a6a1"
+        },
+        {
+          "source": "../../ui/src/lib/component-props.ts",
+          "target": "lib/component-props.ts",
+          "role": "utility",
+          "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/compose-refs.ts",
+          "target": "lib/compose-refs.ts",
+          "role": "utility",
+          "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f"
+        },
+        {
+          "source": "../../ui/src/lib/motion.ts",
+          "target": "lib/motion.ts",
+          "role": "utility",
+          "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b"
+        },
+        {
+          "source": "../../ui/src/components/icon.tsx",
+          "target": "components/icon.tsx",
+          "role": "component",
+          "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9"
+        },
+        {
+          "source": "../../ui/src/lib/cn.ts",
+          "target": "lib/cn.ts",
+          "role": "utility",
+          "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c"
+        },
+        {
+          "source": "../../ui/src/lib/tailwind-cn.ts",
+          "target": "lib/tailwind-cn.ts",
+          "role": "utility",
+          "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31"
+        },
+        {
+          "source": "../../tokens/src/styles.css",
+          "target": "styles/tokens.css",
+          "role": "style",
+          "integrity": "sha256-4c452f1dbfb3b88173621121fd33a8ef4268d1c9cd1a341f7f6454effbf42ba4"
+        },
+        {
+          "source": "../../tokens/src/tailwind.css",
+          "target": "styles/tailwind.css",
+          "role": "style",
+          "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441"
+        },
+        {
+          "source": "../../ui/src/styles/select.css",
+          "target": "styles/select.css",
+          "role": "style",
+          "integrity": "sha256-058110182ddc952e91f58f2dace9e858cda3f54c2640f8b06ddf6487a346de33"
+        }
+      ],
+      "baseUiPrimitives": ["combobox"],
+      "slots": [
+        "root",
+        "label",
+        "input-group",
+        "selected-values",
+        "value",
+        "remove",
+        "input",
+        "clear",
+        "trigger",
+        "icon",
+        "content",
+        "list",
+        "item",
+        "item-content",
+        "item-label",
+        "item-description",
+        "indicator",
+        "group",
+        "group-label",
+        "empty",
+        "announcement",
+        "description",
+        "message"
+      ],
+      "variants": ["flat", "grouped", "sm", "md", "lg", "RTL"],
+      "states": [
+        "query",
+        "open",
+        "highlighted",
+        "selected",
+        "disabled",
+        "read-only",
+        "required",
+        "invalid",
+        "empty"
+      ],
+      "requiredTokens": [
+        "--n-select-height-sm",
+        "--n-select-height-md",
+        "--n-select-height-lg",
+        "--n-select-padding-inline",
+        "--n-select-item-gap",
+        "--n-select-item-padding-inline",
+        "--n-select-group-label-padding-inline",
+        "--n-select-empty-padding",
+        "--n-select-popup-radius",
+        "--n-input-radius",
+        "--n-input-background",
+        "--n-input-border",
+        "--n-input-border-hover",
+        "--n-input-border-danger",
+        "--n-input-placeholder",
+        "--n-input-foreground",
+        "--n-input-disabled-background",
+        "--n-input-disabled-foreground",
+        "--n-overlay-floating-z-index",
+        "--n-overlay-background",
+        "--n-overlay-border",
+        "--n-overlay-shadow",
+        "--n-focus-ring"
+      ],
+      "accessibility": [
+        "Uses Base UI Combobox multiple mode with a native visible label, an aria-multiselectable listbox, active-descendant navigation, and a selected-values toolbar.",
+        "Selection, query, and popup state each support independent controlled and uncontrolled ownership without mirrored state.",
+        "Options require stable unique string values and explicit textValue strings; selected values remain ordered, known, and unique.",
+        "Arrow keys navigate options and text values, Enter toggles an option without closing, Escape closes without clearing, and Backspace or Delete removes an enabled selected value.",
+        "Selected disabled values remain visible and submitted but cannot be toggled or directly removed; clear-all may remove every value.",
+        "Description and message content are associated with the input; invalid messages use alert semantics only when invalid is true.",
+        "Clear, toggle, removal, selection, and announcement copy is overridable through labels; selection changes use a permanently mounted polite status region.",
+        "Name, form, repeated values, required, disabled, readOnly, and uncanceled native form reset are supported.",
+        "Pair document dir with Base UI DirectionProvider and localize visible text plus labels for RTL and non-English products.",
+        "Fetching, debounce, ranking, creation, virtualization, selection quotas, rich product chips, persistence, analytics, and FilterBar workflows remain consumer or Pro responsibilities."
+      ],
+      "usage": "import { MultiSelect } from '@/components/nerio/components/multi-select';\n\n<MultiSelect label=\"Disciplines\" name=\"disciplines\" options={[{ value: 'design', label: 'Design systems', textValue: 'Design systems' }, { value: 'research', label: 'Research', textValue: 'Research' }]} />"
+    },
+    {
       "name": "search-field",
       "title": "SearchField",
       "description": "Collects one native search query with accessible clear and deliberate Enter search behavior.",

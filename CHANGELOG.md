@@ -8,6 +8,18 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added a separate bounded Core 1.2 MultiSelect for finite local options with synchronous
+  filtering, ordered removable text values, independent selection/query/popup state, repeated form
+  values, reset, groups, disabled selected values, localizable actions, and polite announcements.
+  Async data, creation, virtualization, selection quotas, rich product chips, persistence, and
+  FilterBar workflows remain consumer or Pro responsibilities.
+- Raised only the homepage raw-JavaScript and deterministic-transfer ceilings for MultiSelect
+  discovery, reference content, and the Component Lab specimen. The measured output is 864,690 raw
+  JavaScript bytes and 312,646 gzip-transfer bytes; CSS, browser-runtime transfer, and unrelated
+  route ceilings remain unchanged.
+- Raised the reviewed UI tarball ceiling from 89 KB to 94 KB for the additive MultiSelect source;
+  the measured archive is 91,858 bytes. Existing unpacked, CSS, named-import bundle, and runtime
+  ceilings remain unchanged.
 - Added the complete bounded Dropdown Menu family for Core 1.1. The existing trigger-and-items API
   remains compatible, while compound Root, Trigger, Portal, Positioner, Content, groups, action and
   link items, checkbox and radio selection, one-level submenus, separators, labels, descriptions,
