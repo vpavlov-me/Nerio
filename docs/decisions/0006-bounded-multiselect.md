@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed — explicit maintainer approval is required before implementation.
+Accepted
 
 ## Context
 
