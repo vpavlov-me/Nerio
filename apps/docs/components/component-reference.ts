@@ -124,7 +124,7 @@ export const snippets: Record<string, string> = {
   popover:
     'import { Popover } from \'@nerio-ui/ui/client\';\n\n<Popover trigger="Filters" title="View filters">...</Popover>',
   "dropdown-menu":
-    'import { Button, DropdownMenuCheckboxItem, DropdownMenuCheckboxItemIndicator, DropdownMenuContent, DropdownMenuItem, DropdownMenuItemDescription, DropdownMenuItemLabel, DropdownMenuLinkItem, DropdownMenuPortal, DropdownMenuPositioner, DropdownMenuRoot, DropdownMenuSubContent, DropdownMenuSubmenu, DropdownMenuSubTrigger, DropdownMenuTrigger } from \'@nerio-ui/ui/client\';\n\n<DropdownMenuRoot>\n  <DropdownMenuTrigger render={<Button variant="secondary">Actions</Button>} />\n  <DropdownMenuPortal>\n    <DropdownMenuPositioner>\n      <DropdownMenuContent>\n        <DropdownMenuLinkItem href="/workspace/share">\n          <DropdownMenuItemLabel>Share workspace</DropdownMenuItemLabel>\n          <DropdownMenuItemDescription>Invite people and choose access</DropdownMenuItemDescription>\n        </DropdownMenuLinkItem>\n        <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>\n          <DropdownMenuCheckboxItemIndicator /> Notify collaborators\n        </DropdownMenuCheckboxItem>\n        <DropdownMenuSubmenu>\n          <DropdownMenuSubTrigger>More actions</DropdownMenuSubTrigger>\n          <DropdownMenuSubContent><DropdownMenuItem>Duplicate workspace</DropdownMenuItem></DropdownMenuSubContent>\n        </DropdownMenuSubmenu>\n      </DropdownMenuContent>\n    </DropdownMenuPositioner>\n  </DropdownMenuPortal>\n</DropdownMenuRoot>',
+    "import { Copy, UserPlus } from '@nerio-ui/adapters/icons';\nimport { Button, DropdownMenuCheckboxItem, DropdownMenuCheckboxItemIndicator, DropdownMenuContent, DropdownMenuItem, DropdownMenuItemDescription, DropdownMenuItemLabel, DropdownMenuLinkItem, DropdownMenuPortal, DropdownMenuPositioner, DropdownMenuRoot, DropdownMenuSubContent, DropdownMenuSubmenu, DropdownMenuSubTrigger, DropdownMenuTrigger } from '@nerio-ui/ui/client';\n\n<DropdownMenuRoot>\n  <DropdownMenuTrigger render={<Button variant=\"secondary\">Complex menu</Button>} />\n  <DropdownMenuPortal>\n    <DropdownMenuPositioner>\n      <DropdownMenuContent>\n        <DropdownMenuLinkItem href=\"/workspace/invite\">\n          <UserPlus aria-hidden />\n          <DropdownMenuItemLabel>Invite members</DropdownMenuItemLabel>\n          <DropdownMenuItemDescription>Add people to this workspace</DropdownMenuItemDescription>\n        </DropdownMenuLinkItem>\n        <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>\n          <DropdownMenuCheckboxItemIndicator /> Show sidebar\n        </DropdownMenuCheckboxItem>\n        <DropdownMenuSubmenu>\n          <DropdownMenuSubTrigger>More actions</DropdownMenuSubTrigger>\n          <DropdownMenuSubContent><DropdownMenuItem><Copy aria-hidden /> Duplicate workspace</DropdownMenuItem></DropdownMenuSubContent>\n        </DropdownMenuSubmenu>\n      </DropdownMenuContent>\n    </DropdownMenuPositioner>\n  </DropdownMenuPortal>\n</DropdownMenuRoot>",
   card: 'import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, CardVisual } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<Card as="div">\n  <CardVisual placement="bleed">\n    <img src="/card/abstract-architecture.jpg" alt="Curved architectural forms illuminated by soft light" />\n  </CardVisual>\n  <CardHeader>\n    <CardTitle>Design system rollout</CardTitle>\n    <CardDescription>Bring components, owners, and release milestones into one shared workspace.</CardDescription>\n  </CardHeader>\n  <CardContent>Track implementation progress and keep the team aligned through every release stage.</CardContent>\n  <CardFooter>\n    <Button>Open workspace</Button>\n  </CardFooter>\n</Card>',
   separator:
     "import { Separator } from '@nerio-ui/ui';\n\n<Separator />\n<Separator orientation=\"vertical\" />",
@@ -4903,8 +4903,13 @@ export const componentReference: Record<string, ComponentReference> = {
     },
     tokens: [
       "--n-dropdown-min-width",
+      "--n-dropdown-content-padding",
+      "--n-dropdown-item-min-height",
+      "--n-dropdown-item-padding-block",
       "--n-dropdown-item-padding-inline",
       "--n-dropdown-item-gap",
+      "--n-dropdown-item-radius",
+      "--n-dropdown-icon-size",
       "--n-dropdown-radius",
       "--n-overlay-z-index",
       "--n-overlay-floating-z-index",

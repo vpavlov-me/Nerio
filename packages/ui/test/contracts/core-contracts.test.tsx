@@ -4237,7 +4237,7 @@ describe("Core interactive action contracts", () => {
     }
     expect(document.querySelectorAll('[data-slot="separator"]')).toHaveLength(1);
     expect(screen.getByRole("menuitem", { name: "Rename" })).toHaveClass(
-      "grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)]",
+      "grid-cols-[var(--n-dropdown-icon-size)_minmax(0,1fr)_auto_var(--n-dropdown-icon-size)]",
     );
     expect(screen.getByRole("menuitem", { name: "Archive" })).toContainElement(
       document.querySelector('[data-slot="trailing-icon"]'),
@@ -5225,7 +5225,10 @@ describe("Core interactive action contracts", () => {
     expect(tokenSource).toContain("--n-overlay-surface-filter: blur(24px) saturate(120%)");
     expect(tokenSource).toContain("--n-overlay-backdrop-filter: blur(10px)");
     expect(tokenSource).toContain("--n-popover-radius: var(--n-radius-lg)");
-    expect(tokenSource).toContain("--n-dropdown-radius: var(--n-radius-lg)");
+    expect(tokenSource).toContain("--n-dropdown-radius: var(--n-radius-sm)");
+    expect(tokenSource).toContain("--n-dropdown-icon-size: var(--n-icon-size-md)");
+    expect(tokenSource).toContain("--n-dropdown-item-min-height: var(--n-size-control-md)");
+    expect(tokenSource).toContain("--n-dropdown-item-radius:");
 
     for (const name of ["command", "dialog", "sheet", "popover", "tooltip", "dropdown-menu"]) {
       expect(componentSource(name), name).toContain(
@@ -5253,6 +5256,7 @@ describe("Core interactive action contracts", () => {
     expect(componentSource("sheet")).toContain("n-sheet-enter-right");
     expect(componentSource("popover")).toContain("rounded-(--n-popover-radius)");
     expect(componentSource("dropdown-menu")).toContain("rounded-(--n-dropdown-radius)");
+    expect(componentSource("dropdown-menu")).toContain("[&>svg]:size-(--n-dropdown-icon-size)");
     expect(componentSource("command")).toContain("rounded-(--n-radius-pill)");
 
     render(

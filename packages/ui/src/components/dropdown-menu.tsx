@@ -72,11 +72,11 @@ export type DropdownMenuFocusTarget =
 export const dropdownMenuPositionerClasses =
   "n-dropdown-positioner z-(--n-overlay-floating-z-index) max-w-(--available-width)";
 export const dropdownMenuContentClasses =
-  "n-dropdown grid max-h-(--available-height) min-w-[min(var(--n-dropdown-min-width),var(--available-width))] max-w-(--available-width) origin-(--transform-origin) gap-0 overflow-y-auto overscroll-contain rounded-(--n-dropdown-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-space-2) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [scrollbar-width:thin] [--n-color-action-primary:var(--n-overlay-foreground)] [--n-color-danger:var(--n-overlay-danger)] [--n-color-surface-muted:var(--n-overlay-control-background)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)]";
+  "n-dropdown grid max-h-(--available-height) min-w-[min(var(--n-dropdown-min-width),var(--available-width))] max-w-(--available-width) origin-(--transform-origin) gap-0 overflow-y-auto overscroll-contain rounded-(--n-dropdown-radius) border-(length:--n-overlay-border-width) border-(--n-overlay-border) bg-(--n-overlay-background) p-(--n-dropdown-content-padding) text-(--n-overlay-foreground) shadow-(--n-overlay-shadow) [backdrop-filter:var(--n-overlay-surface-filter)] [scrollbar-width:thin] [--n-color-action-primary:var(--n-overlay-foreground)] [--n-color-danger:var(--n-overlay-danger)] [--n-color-surface-muted:var(--n-overlay-control-background)] [--n-color-text-primary:var(--n-overlay-foreground)] [--n-color-text-secondary:var(--n-overlay-foreground-muted)] [--n-color-text-tertiary:var(--n-overlay-foreground-muted)]";
 const dropdownMenuItemClasses =
-  "n-dropdown__item flex w-full cursor-pointer items-center gap-(--n-dropdown-item-gap) rounded-(--n-radius-md) border-0 bg-(--n-button-background-ghost) px-(--n-dropdown-item-padding-inline) py-(--n-space-2) text-start text-(length:--n-font-size-sm) text-(--n-color-text-secondary) hover:not-data-disabled:bg-(--n-color-surface-muted) hover:not-data-disabled:text-(--n-color-text-primary) data-highlighted:bg-(--n-color-surface-muted) data-highlighted:text-(--n-color-text-primary) data-[variant=destructive]:text-(--n-color-danger) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-opacity-disabled) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-[-2px] forced-colors:focus-visible:outline-[Highlight]";
+  "n-dropdown__item flex min-h-(--n-dropdown-item-min-height) w-full cursor-pointer items-center gap-(--n-dropdown-item-gap) rounded-(--n-dropdown-item-radius) border-0 bg-(--n-button-background-ghost) px-(--n-dropdown-item-padding-inline) py-(--n-dropdown-item-padding-block) text-start text-(length:--n-font-size-sm) text-(--n-color-text-secondary) hover:not-data-disabled:bg-(--n-color-surface-muted) hover:not-data-disabled:text-(--n-color-text-primary) data-highlighted:bg-(--n-color-surface-muted) data-highlighted:text-(--n-color-text-primary) data-[variant=destructive]:text-(--n-color-danger) data-disabled:cursor-not-allowed data-disabled:opacity-(--n-opacity-disabled) focus-visible:outline-0 focus-visible:shadow-(--n-focus-ring) [&_.n-icon]:size-(--n-dropdown-icon-size) [&>svg]:size-(--n-dropdown-icon-size) [&>svg]:flex-none forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-[-2px] forced-colors:focus-visible:outline-[Highlight]";
 const dropdownMenuIndicatorClasses =
-  "n-dropdown__indicator inline-flex size-(--n-icon-inline-size) flex-none items-center justify-center text-(--n-color-action-primary) data-unchecked:invisible";
+  "n-dropdown__indicator inline-flex size-(--n-dropdown-icon-size) flex-none items-center justify-center text-(--n-color-action-primary) data-unchecked:invisible";
 
 function withClassName<State>(className: NerioClassName<State> | undefined, baseClassName: string) {
   return typeof className === "function"
@@ -707,7 +707,7 @@ export const DropdownMenuSubTrigger = React.forwardRef<HTMLElement, DropdownMenu
           {children}
           <span
             aria-hidden
-            className="ms-auto inline-flex size-(--n-icon-inline-size) flex-none items-center justify-center rtl:rotate-180"
+            className="ms-auto inline-flex size-(--n-dropdown-icon-size) flex-none items-center justify-center rtl:rotate-180"
             data-slot="submenu-icon"
           >
             <Icon icon={ChevronRight} />
@@ -899,7 +899,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
                     {group.items.map(({ item, index }) => (
                       <DropdownMenuItem
                         key={`${item.label}-${index}`}
-                        className="grid grid-cols-[var(--n-icon-inline-size)_minmax(0,1fr)_auto_var(--n-icon-inline-size)]"
+                        className="grid grid-cols-[var(--n-dropdown-icon-size)_minmax(0,1fr)_auto_var(--n-dropdown-icon-size)]"
                         closeOnClick={item.closeOnClick}
                         disabled={item.disabled}
                         textValue={
@@ -912,7 +912,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
                         {item.leadingIcon ? (
                           <span
                             aria-hidden
-                            className="col-start-1 inline-flex size-(--n-icon-inline-size) flex-none items-center justify-center"
+                            className="col-start-1 inline-flex size-(--n-dropdown-icon-size) flex-none items-center justify-center"
                             data-slot="leading-icon"
                           >
                             <Icon icon={item.leadingIcon} />
@@ -939,7 +939,7 @@ export const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
                         {item.trailingIcon ? (
                           <span
                             aria-hidden
-                            className="col-start-4 inline-flex size-(--n-icon-inline-size) flex-none items-center justify-center"
+                            className="col-start-4 inline-flex size-(--n-dropdown-icon-size) flex-none items-center justify-center"
                             data-slot="trailing-icon"
                           >
                             <Icon icon={item.trailingIcon} />
