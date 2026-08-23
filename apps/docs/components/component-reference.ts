@@ -106,6 +106,8 @@ export const snippets: Record<string, string> = {
     "import { Select } from '@nerio-ui/ui/client';\n\n<Select\n  label=\"Publication status\"\n  name=\"status\"\n  placeholder=\"Choose status\"\n  options={[\n    { label: 'Draft', value: 'draft' },\n    { label: 'In review', value: 'review' },\n    { label: 'Published', value: 'published' },\n    { label: 'Archived', value: 'archived', disabled: true },\n  ]}\n/>",
   combobox:
     "import { Combobox } from '@nerio-ui/ui/client';\n\n<Combobox\n  label=\"City\"\n  name=\"city\"\n  options={[\n    { value: 'paris', label: 'Paris', textValue: 'Paris' },\n    { value: 'tbilisi', label: 'Tbilisi', textValue: 'Tbilisi' },\n    { value: 'tokyo', label: 'Tokyo', textValue: 'Tokyo' },\n  ]}\n/>",
+  "multi-select":
+    "import { MultiSelect } from '@nerio-ui/ui/client';\n\n<MultiSelect\n  label=\"Disciplines\"\n  name=\"disciplines\"\n  defaultValue={['design']}\n  options={[\n    { value: 'design', label: 'Design systems', textValue: 'Design systems' },\n    { value: 'research', label: 'Research', textValue: 'Research' },\n    { value: 'writing', label: 'Technical writing', textValue: 'Technical writing' },\n  ]}\n/>",
   "search-field":
     'import { SearchField } from \'@nerio-ui/ui/client\';\n\n<SearchField\n  label="Search projects"\n  name="query"\n  autoComplete="off"\n  onSearch={(query) => runSearch(query)}\n/>',
   "number-field":
@@ -671,6 +673,40 @@ export const componentMetadata: Record<string, ComponentMetadata> = {
       "native visible label",
       "active descendant keyboard navigation",
       "polite empty and loading regions",
+    ],
+  },
+  "multi-select": {
+    name: "MultiSelect",
+    description: "Selects zero or more string values from one finite local filterable option set.",
+    status: "beta",
+    layer: "core",
+    category: "Forms",
+    package: "@nerio-ui/ui/client",
+    importPath: "@nerio-ui/ui/client",
+    related: ["Combobox", "CheckboxGroup", "Select", "Field"],
+    anatomy: [
+      "root",
+      "label",
+      "input-group",
+      "selected-values",
+      "value",
+      "remove",
+      "input",
+      "clear",
+      "trigger",
+      "content",
+      "list",
+      "item",
+      "group",
+      "empty",
+      "announcement",
+    ],
+    motion: ["overlay entry and exit", "reduced-motion immediate transition"],
+    accessibility: [
+      "Base UI multiple combobox and listbox semantics",
+      "native visible label",
+      "logical keyboard navigation across options and selected values",
+      "polite selection announcements",
     ],
   },
   "search-field": {
@@ -2912,6 +2948,73 @@ export const componentReference: Record<string, ComponentReference> = {
       ],
     },
     related: ["select", "command-primitive", "input", "field"],
+    tokens: [
+      "--n-select-height-md",
+      "--n-select-padding-inline",
+      "--n-input-background",
+      "--n-input-border",
+      "--n-input-placeholder",
+      "--n-overlay-background",
+      "--n-overlay-border",
+      "--n-overlay-shadow",
+      "--n-focus-ring",
+    ],
+  },
+  "multi-select": {
+    category: "Forms",
+    purpose:
+      "Use MultiSelect for zero or more string values from a finite local set that benefits from synchronous filtering.",
+    anatomy: [
+      { title: "input", description: "Editable query that retains DOM focus." },
+      {
+        title: "selected-values / value / remove",
+        description: "Keyboard-navigable removable text values inside the wrapping field.",
+      },
+      { title: "clear / trigger", description: "Localizable clear-all and popup actions." },
+      { title: "list / item", description: "Finite local multi-select listbox and options." },
+      { title: "announcement", description: "Permanently mounted polite selection updates." },
+    ],
+    variants: [
+      { title: "Flat", description: "One concise data-driven option collection." },
+      { title: "Grouped", description: "Labelled groups over the same options-only contract." },
+    ],
+    states: [
+      { title: "Selection", description: "Ordered unique known string values." },
+      { title: "Query", description: "Filters options without changing selection." },
+      { title: "Open", description: "Remains open while options are toggled." },
+      {
+        title: "Disabled / read-only / invalid",
+        description: "Preserves truthful interaction and form state.",
+      },
+    ],
+    accessibility: [
+      "Provide a visible label; placeholder text is only a hint.",
+      "Base UI owns active-descendant option navigation and logical selected-value traversal.",
+      "Localize every labels string when the product locale is not English.",
+      "Keep the polite announcement region mounted and do not announce query navigation.",
+      "Pair document dir with Base UI DirectionProvider for LTR or RTL behavior.",
+    ],
+    api: [
+      {
+        title: "value / query / open",
+        description: "Three independent controlled and uncontrolled state pairs.",
+      },
+      {
+        title: "options / filter / locale",
+        description: "Finite flat or grouped data and synchronous locale-aware filtering.",
+      },
+      {
+        title: "name / form / required",
+        description: "Repeated ordered form values, reset, and at-least-one validity.",
+      },
+    ],
+    guidance: {
+      do: ["Use for a bounded local set of disciplines, skills, labels, or recipients."],
+      dont: [
+        "Do not add fetching, creation, virtualization, quotas, rich product chips, persistence, analytics, or FilterBar policy.",
+      ],
+    },
+    related: ["combobox", "checkbox-group", "select", "field"],
     tokens: [
       "--n-select-height-md",
       "--n-select-padding-inline",

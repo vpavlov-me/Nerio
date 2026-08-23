@@ -50,6 +50,8 @@ const componentLedes: Record<string, string> = {
     "Select controls choose one option from a compact set such as status, owner, or view mode.",
   combobox:
     "Combobox filters one bounded synchronous option set and commits one form-backed value while data orchestration remains consumer-owned.",
+  "multi-select":
+    "MultiSelect selects zero or more string values from one finite local filterable option set with removable text values and repeated form values.",
   "search-field":
     "SearchField collects one native search query with accessible clear, deliberate Enter events, and consumer-owned results.",
   "number-field":
@@ -112,6 +114,7 @@ const componentTitles: Record<string, string> = {
   "toggle-group": "ToggleGroup",
   "sidebar-primitive": "Sidebar",
   combobox: "Combobox",
+  "multi-select": "MultiSelect",
   "search-field": "SearchField",
   "number-field": "NumberField",
   "otp-field": "OTPField",

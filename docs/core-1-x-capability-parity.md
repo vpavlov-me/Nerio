@@ -51,6 +51,7 @@ only interactive primitive layer.
 | Existing Core        | The frozen Core surface already owns the capability.                            |
 | Native guidance      | Native HTML or browser behavior is the preferred public contract.               |
 | Core 1.1 primitive   | A bounded additive primitive is accepted after stable 1.0.                      |
+| Core 1.2 primitive   | A bounded additive primitive is accepted for the Core 1.2 tranche.              |
 | Later Core candidate | A decision, evidence tranche, or platform dependency is still required.         |
 | Core recipe          | A tested copyable composition is better than a public component API.            |
 | Adapter              | An optional integration or deterministic interchange layer owns the capability. |
@@ -119,12 +120,14 @@ therefore retains SearchField only; NumberField is split into
 
 ### MultiSelect decision
 
-<!-- capability:multi-select classification:later-core-candidate priority:P2 target:Core 1.2 -->
+<!-- capability:multi-select classification:core-1.2-primitive priority:P2 target:Core 1.2 -->
 
-[#349](https://github.com/vpavlov-me/Nerio/issues/349) moves to a Core 1.2 decision spike. No
-MultiSelect implementation is approved by this matrix. The spike starts only after single-select
-Combobox and CheckboxGroup provide real composition and accessibility evidence. A final outcome of
-composition, Pro ownership, or explicit rejection remains valid.
+[#349](https://github.com/vpavlov-me/Nerio/issues/349) completed its Core 1.2 decision spike after
+single-select Combobox and CheckboxGroup supplied real composition and accessibility evidence.
+[ADR 0006](./decisions/0006-bounded-multiselect.md) accepts a separate bounded component for finite
+local options, synchronous filtering, removable text values, repeated form values, reset, and polite
+announcements. It does not add `multiple` to Combobox or absorb async data, creation,
+virtualization, selection quotas, rich product chips, or FilterBar workflows.
 
 ## Later primitive and ownership decisions
 
@@ -171,26 +174,26 @@ oversized issue or duplicate their instructions.
 
 ## Issue dispositions
 
-| Issue                                                  | Disposition                      | Priority / target | Dependency decision                                                                                             |
-| ------------------------------------------------------ | -------------------------------- | ----------------- | --------------------------------------------------------------------------------------------------------------- |
-| [#342](https://github.com/vpavlov-me/Nerio/issues/342) | Retain                           | P1 / Core 1.1     | Ready on dev after #341; minimum contract precedes direction-sensitive API merges, full audit runs in parallel. |
-| [#343](https://github.com/vpavlov-me/Nerio/issues/343) | Retain                           | P1 / Core 1.1     | After #151 and the relevant #342 foundation.                                                                    |
-| [#344](https://github.com/vpavlov-me/Nerio/issues/344) | Retain                           | P1 / Core 1.1     | Parallel with other primitive work after relevant #342 foundation.                                              |
-| [#345](https://github.com/vpavlov-me/Nerio/issues/345) | Retain                           | P1 / Core 1.1     | Single-select only; parallel field track.                                                                       |
-| [#346](https://github.com/vpavlov-me/Nerio/issues/346) | Split                            | P1 / Core 1.1     | Retain SearchField; NumberField moves to #370.                                                                  |
-| [#347](https://github.com/vpavlov-me/Nerio/issues/347) | Retain                           | P1 / Core 1.1     | Base UI 1.6.0 stable OTPField; no auth workflow.                                                                |
-| [#348](https://github.com/vpavlov-me/Nerio/issues/348) | Retain with parallel slices      | P1 / Core 1.1     | ToggleGroup and CheckboxGroup may use separate PRs.                                                             |
-| [#349](https://github.com/vpavlov-me/Nerio/issues/349) | Defer implementation             | P2 / Core 1.2     | Decision spike after #345 and #348.                                                                             |
-| [#350](https://github.com/vpavlov-me/Nerio/issues/350) | Retain                           | P1 / Core 1.1     | Complete shared menu anatomy; no ContextMenu/Menubar/NavigationMenu.                                            |
-| [#351](https://github.com/vpavlov-me/Nerio/issues/351) | Retain, decision-first           | P2 / Core 1.2     | Independent package track after #151.                                                                           |
-| [#352](https://github.com/vpavlov-me/Nerio/issues/352) | Retain with slices               | P2 / Core 1.2     | Modularization/lifecycle independent; bootstrap waits for #351.                                                 |
-| [#353](https://github.com/vpavlov-me/Nerio/issues/353) | Retain                           | P2 / Core 1.2     | Waits for CLI modularization, not full #352.                                                                    |
-| [#354](https://github.com/vpavlov-me/Nerio/issues/354) | Split                            | P2 / Core 1.2     | MCP only; Agent Skill moves to #369.                                                                            |
-| [#355](https://github.com/vpavlov-me/Nerio/issues/355) | Retain, decision-first           | P3 / Core 1.2     | Existing fixtures remain default pending measured prototype.                                                    |
-| [#356](https://github.com/vpavlov-me/Nerio/issues/356) | Retain with independent tranches | P2 / Core 1.2     | Stable-1.0 tranche does not wait for Core 1.1.                                                                  |
-| [#357](https://github.com/vpavlov-me/Nerio/issues/357) | Retain, mixed manual             | P3 / Ecosystem    | Export work after stable; component subset after first 1.1 tranche.                                             |
-| [#369](https://github.com/vpavlov-me/Nerio/issues/369) | Retain separately                | P2 / Core 1.2     | Canonical Agent Skill issue after #151.                                                                         |
-| [#370](https://github.com/vpavlov-me/Nerio/issues/370) | Created from split               | P1 / Core 1.1     | Independent NumberField after relevant #342 foundation.                                                         |
+| Issue                                                  | Disposition                      | Priority / target | Dependency decision                                                                                                  |
+| ------------------------------------------------------ | -------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [#342](https://github.com/vpavlov-me/Nerio/issues/342) | Retain                           | P1 / Core 1.1     | Ready on dev after #341; minimum contract precedes direction-sensitive API merges, full audit runs in parallel.      |
+| [#343](https://github.com/vpavlov-me/Nerio/issues/343) | Retain                           | P1 / Core 1.1     | After #151 and the relevant #342 foundation.                                                                         |
+| [#344](https://github.com/vpavlov-me/Nerio/issues/344) | Retain                           | P1 / Core 1.1     | Parallel with other primitive work after relevant #342 foundation.                                                   |
+| [#345](https://github.com/vpavlov-me/Nerio/issues/345) | Retain                           | P1 / Core 1.1     | Single-select only; parallel field track.                                                                            |
+| [#346](https://github.com/vpavlov-me/Nerio/issues/346) | Split                            | P1 / Core 1.1     | Retain SearchField; NumberField moves to #370.                                                                       |
+| [#347](https://github.com/vpavlov-me/Nerio/issues/347) | Retain                           | P1 / Core 1.1     | Base UI 1.6.0 stable OTPField; no auth workflow.                                                                     |
+| [#348](https://github.com/vpavlov-me/Nerio/issues/348) | Retain with parallel slices      | P1 / Core 1.1     | ToggleGroup and CheckboxGroup may use separate PRs.                                                                  |
+| [#349](https://github.com/vpavlov-me/Nerio/issues/349) | Accept bounded implementation    | P2 / Core 1.2     | Separate options-only MultiSelect after accepted ADR 0006; no async, creation, virtualization, quotas, or FilterBar. |
+| [#350](https://github.com/vpavlov-me/Nerio/issues/350) | Retain                           | P1 / Core 1.1     | Complete shared menu anatomy; no ContextMenu/Menubar/NavigationMenu.                                                 |
+| [#351](https://github.com/vpavlov-me/Nerio/issues/351) | Retain, decision-first           | P2 / Core 1.2     | Independent package track after #151.                                                                                |
+| [#352](https://github.com/vpavlov-me/Nerio/issues/352) | Retain with slices               | P2 / Core 1.2     | Modularization/lifecycle independent; bootstrap waits for #351.                                                      |
+| [#353](https://github.com/vpavlov-me/Nerio/issues/353) | Retain                           | P2 / Core 1.2     | Waits for CLI modularization, not full #352.                                                                         |
+| [#354](https://github.com/vpavlov-me/Nerio/issues/354) | Split                            | P2 / Core 1.2     | MCP only; Agent Skill moves to #369.                                                                                 |
+| [#355](https://github.com/vpavlov-me/Nerio/issues/355) | Retain, decision-first           | P3 / Core 1.2     | Existing fixtures remain default pending measured prototype.                                                         |
+| [#356](https://github.com/vpavlov-me/Nerio/issues/356) | Retain with independent tranches | P2 / Core 1.2     | Stable-1.0 tranche does not wait for Core 1.1.                                                                       |
+| [#357](https://github.com/vpavlov-me/Nerio/issues/357) | Retain, mixed manual             | P3 / Ecosystem    | Export work after stable; component subset after first 1.1 tranche.                                                  |
+| [#369](https://github.com/vpavlov-me/Nerio/issues/369) | Retain separately                | P2 / Core 1.2     | Canonical Agent Skill issue after #151.                                                                              |
+| [#370](https://github.com/vpavlov-me/Nerio/issues/370) | Created from split               | P1 / Core 1.1     | Independent NumberField after relevant #342 foundation.                                                              |
 
 ## Parallel implementation order
 

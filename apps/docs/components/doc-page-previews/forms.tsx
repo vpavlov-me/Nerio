@@ -15,6 +15,7 @@ import {
   LabelHint,
   LabelRequired,
   LabelRow,
+  MultiSelect,
   NumberField,
   OTPField,
   RadioGroup,
@@ -191,6 +192,27 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
             ]}
           />
         </div>
+      ) : null}
+      {kind === "multi-select" ? (
+        <form className="form-preview-stack" data-slot="multi-select-form">
+          <MultiSelect
+            defaultValue={["design"]}
+            description="Filter the local disciplines and choose every relevant value."
+            label="Disciplines"
+            name="disciplines"
+            options={[
+              { value: "design", label: "Design systems", textValue: "Design systems" },
+              { value: "research", label: "Research", textValue: "Research" },
+              { value: "writing", label: "Technical writing", textValue: "Technical writing" },
+              {
+                value: "unavailable",
+                label: "Unavailable",
+                textValue: "Unavailable",
+                disabled: true,
+              },
+            ]}
+          />
+        </form>
       ) : null}
       {kind === "search-field" ? (
         <div className="form-preview-stack">

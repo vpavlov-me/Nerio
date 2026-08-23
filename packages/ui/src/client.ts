@@ -131,6 +131,20 @@ export {
   type ComboboxSize,
 } from "./components/combobox";
 export {
+  MultiSelect,
+  type MultiSelectChangeEventDetails,
+  type MultiSelectChangeEventReason,
+  type MultiSelectFilter,
+  type MultiSelectItems,
+  type MultiSelectLabels,
+  type MultiSelectOpenChangeEventDetails,
+  type MultiSelectOption,
+  type MultiSelectOptionGroup,
+  type MultiSelectProps,
+  type MultiSelectQueryChangeEventDetails,
+  type MultiSelectSize,
+} from "./components/multi-select";
+export {
   SearchField,
   type SearchFieldProps,
   type SearchFieldSearchEventDetails,

@@ -152,6 +152,7 @@ const navGroups: NavGroup[] = [
       { href: "/docs/components/switch", label: "Switch", icon: Circle },
       { href: "/docs/components/select", label: "Select", icon: Circle },
       { href: "/docs/components/combobox", label: "Combobox", icon: Search },
+      { href: "/docs/components/multi-select", label: "MultiSelect", icon: Search },
       { href: "/docs/components/search-field", label: "SearchField", icon: Search },
       { href: "/docs/components/number-field", label: "NumberField", icon: Circle },
       { href: "/docs/components/otp-field", label: "OTPField", icon: Circle },

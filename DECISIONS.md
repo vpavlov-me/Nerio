@@ -58,9 +58,10 @@ recipe, adapter, Pro, consumer-owned, or explicitly rejected.
 The accepted Core 1.1 component set is additive. Roadmap #152 authorizes #342 on `dev` before stable
 1.0 because the isolated release candidate excludes forward development. #342 supplies the shared
 direction/localization foundation without forcing the complete audit to serialize all component
-work. SearchField remains #346 and NumberField is split into #370. MultiSelect #349 is a
-Core 1.2 decision spike with no implementation approval. MCP expansion stays in #354 while the
-repository-native Agent Skill is tracked separately in #369.
+work. SearchField remains #346 and NumberField is split into #370. The accepted ADR for MultiSelect
+#349 approves one separate bounded Core 1.2 primitive over Base UI Combobox multiple mode; async
+data, creation, virtualization, selection quotas, and product filtering remain outside Core. MCP
+expansion stays in #354 while the repository-native Agent Skill is tracked separately in #369.
 
 Toggle is an approved Core 1.0 action primitive through issue #290. It owns one independent
 pressed/not-pressed button state with `aria-pressed`; it does not absorb Switch, Checkbox, Tabs,

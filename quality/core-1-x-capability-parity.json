@@ -65,16 +65,17 @@
     ]
   },
   "currentComponentCatalogSchemaVersion": 1,
-  "currentComponentCatalogSha256": "dd9db78400614a1d64f8771bd0b95a31ccdac7049fd1dbfac6b80a24b1526ed6",
+  "currentComponentCatalogSha256": "236cc0b58d6cbe18e321b8a84ed9a2eb2b96ae03199629e20a219c2135b8c2fe",
   "currentCoreVersion": "1.0.0-beta.1",
   "currentRegistrySchemaVersion": "1.1.0",
-  "currentRegistryItemCount": 55,
-  "currentRegistryManifestSha256": "7f6bc3b001d7e9702b061f60e82d3325f0a2cda830d3d30a34e3ff6d119a3570",
-  "currentPublicApiSnapshotSha256": "bf871e0da3e1d732bb3b68e99612942d8d920c9c191b6234589b48902b075197",
+  "currentRegistryItemCount": 56,
+  "currentRegistryManifestSha256": "983c9bd2a1784cf2c9bf53f498cd08acd8be5073ec6e8ad0ad524bec63dcb19d",
+  "currentPublicApiSnapshotSha256": "25164fda41dd415aa3873830f2a5f33d924af25f3babf281bfb03bbfef68df73",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
     "core-1.1-primitive": "A bounded additive primitive is accepted for Core 1.1 after stable 1.0.",
+    "core-1.2-primitive": "A bounded additive primitive is accepted for the Core 1.2 tranche.",
     "later-core-candidate": "The capability needs a later decision or platform tranche before implementation.",
     "core-recipe": "The capability is best taught as a tested, copyable composition rather than a component API.",
     "adapter": "The capability belongs in an optional integration or deterministic interchange layer.",
@@ -225,7 +226,7 @@
       "mayStart": "after #345 and #348 provide real evidence",
       "issues": [349],
       "dependsOn": [151, 341, 342, 345, 348],
-      "rule": "Keep MultiSelect as a decision spike; no implementation is approved by this matrix."
+      "rule": "Implement only the separate bounded MultiSelect contract accepted by ADR 0006."
     },
     {
       "id": "adoption",
@@ -326,12 +327,12 @@
     {
       "issue": 349,
       "title": "MultiSelect decision spike",
-      "disposition": "defer-implementation",
+      "disposition": "accept-bounded-implementation",
       "priority": "P2",
       "target": "Core 1.2",
-      "classification": "later-core-candidate",
+      "classification": "core-1.2-primitive",
       "dependsOn": [341, 342, 345, 348, 151],
-      "decision": "No Core implementation is accepted yet. Re-evaluate after real Combobox and CheckboxGroup use; composition or Pro remains a valid final outcome."
+      "decision": "ADR 0006 accepts a separate options-only bounded MultiSelect over Base UI Combobox multiple mode; async data, creation, virtualization, quotas, and product filtering remain outside Core."
     },
     {
       "issue": 350,
@@ -907,20 +908,20 @@
     },
     {
       "id": "multi-select",
-      "kind": "decision",
+      "kind": "component",
       "userProblem": "Long popup option sets may require multiple form values.",
-      "classification": "later-core-candidate",
+      "classification": "core-1.2-primitive",
       "priority": "P2",
       "target": "Core 1.2",
-      "nerioComponents": [],
+      "nerioComponents": ["MultiSelect"],
       "baseUiPrimitives": [],
       "platformCoverageIds": [],
       "competitorEvidence": ["base-ui-components:Combobox multiple mode"],
       "value": "medium",
       "complexity": "high",
       "dependencies": [151, 341, 342, 345, 348],
-      "semverImpact": "decision-only",
-      "acceptanceBoundary": "Approve only after composition is proven insufficient and selected-value presentation remains bounded.",
+      "semverImpact": "additive-minor",
+      "acceptanceBoundary": "One options-only finite local collection, synchronous filtering, removable text values, repeated form values, reset, and polite announcements.",
       "nonGoals": ["Async search", "Creation", "Tagging", "FilterBar", "Max-selection policy"],
       "issue": 349
     },

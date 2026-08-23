@@ -91,6 +91,7 @@
     "/docs/components/key-value",
     "/docs/components/label",
     "/docs/components/list",
+    "/docs/components/multi-select",
     "/docs/components/number-field",
     "/docs/components/otp-field",
     "/docs/components/pagination",
@@ -5648,6 +5649,133 @@
         "signature": "MotionClassName"
       },
       {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "MultiSelect",
+        "signature": "<Value extends string = string>(props: MultiSelectProps<Value> & React.RefAttributes<HTMLDivElement>) => React.ReactElement"
+      },
+      {
+        "definition": [
+          "export type MultiSelectChangeEventDetails = NerioChangeEventDetails<MultiSelectChangeEventReason>;",
+          "export type MultiSelectChangeEventReason = \"item-press\" | \"chip-remove-press\" | \"clear-press\" | \"escape-key\" | \"input-change\" | \"input-clear\" | \"list-navigation\" | \"outside-press\" | \"focus-out\" | \"trigger-press\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectChangeEventDetails",
+        "signature": "MultiSelectChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export type MultiSelectChangeEventReason = \"item-press\" | \"chip-remove-press\" | \"clear-press\" | \"escape-key\" | \"input-change\" | \"input-clear\" | \"list-navigation\" | \"outside-press\" | \"focus-out\" | \"trigger-press\" | \"none\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectChangeEventReason",
+        "signature": "MultiSelectChangeEventReason"
+      },
+      {
+        "definition": [
+          "export interface MultiSelectOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }",
+          "export type MultiSelectFilter<Value extends string = string> = (option: MultiSelectOption<Value>, query: string) => boolean;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectFilter",
+        "signature": "MultiSelectFilter<Value>"
+      },
+      {
+        "definition": [
+          "export interface MultiSelectOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }",
+          "export interface MultiSelectOptionGroup<Value extends string = string> { value: string; label: React.ReactNode; options: readonly MultiSelectOption<Value>[]; }",
+          "export type MultiSelectItems<Value extends string = string> = readonly MultiSelectOption<Value>[] | readonly MultiSelectOptionGroup<Value>[];"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectItems",
+        "signature": "MultiSelectItems<Value>"
+      },
+      {
+        "definition": [
+          "export interface MultiSelectLabels { clear: string; toggle: string; remove: (textValue: string) => string; selected: (textValue: string) => string; removed: (textValue: string) => string; cleared: string; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectLabels",
+        "signature": "MultiSelectLabels"
+      },
+      {
+        "definition": [
+          "export type MultiSelectChangeEventDetails = NerioChangeEventDetails<MultiSelectChangeEventReason>;",
+          "export type MultiSelectChangeEventReason = \"item-press\" | \"chip-remove-press\" | \"clear-press\" | \"escape-key\" | \"input-change\" | \"input-clear\" | \"list-navigation\" | \"outside-press\" | \"focus-out\" | \"trigger-press\" | \"none\";",
+          "export type MultiSelectOpenChangeEventDetails = MultiSelectChangeEventDetails;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectOpenChangeEventDetails",
+        "signature": "MultiSelectChangeEventDetails"
+      },
+      {
+        "definition": [
+          "export interface MultiSelectOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectOption",
+        "signature": "MultiSelectOption<Value>"
+      },
+      {
+        "definition": [
+          "export interface MultiSelectOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }",
+          "export interface MultiSelectOptionGroup<Value extends string = string> { value: string; label: React.ReactNode; options: readonly MultiSelectOption<Value>[]; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectOptionGroup",
+        "signature": "MultiSelectOptionGroup<Value>"
+      },
+      {
+        "definition": [
+          "export interface MultiSelectLabels { clear: string; toggle: string; remove: (textValue: string) => string; selected: (textValue: string) => string; removed: (textValue: string) => string; cleared: string; }",
+          "export interface MultiSelectOption<Value extends string = string> { value: Value; label: React.ReactNode; textValue: string; description?: React.ReactNode; disabled?: boolean; }",
+          "export interface MultiSelectOptionGroup<Value extends string = string> { value: string; label: React.ReactNode; options: readonly MultiSelectOption<Value>[]; }",
+          "export type MultiSelectChangeEventDetails = NerioChangeEventDetails<MultiSelectChangeEventReason>;",
+          "export type MultiSelectChangeEventReason = \"item-press\" | \"chip-remove-press\" | \"clear-press\" | \"escape-key\" | \"input-change\" | \"input-clear\" | \"list-navigation\" | \"outside-press\" | \"focus-out\" | \"trigger-press\" | \"none\";",
+          "export type MultiSelectFilter<Value extends string = string> = (option: MultiSelectOption<Value>, query: string) => boolean;",
+          "export type MultiSelectItems<Value extends string = string> = readonly MultiSelectOption<Value>[] | readonly MultiSelectOptionGroup<Value>[];",
+          "export type MultiSelectOpenChangeEventDetails = MultiSelectChangeEventDetails;",
+          "export type MultiSelectProps<Value extends string = string> = Omit<React.HTMLAttributes<HTMLDivElement>, \"children\" | \"defaultValue\" | \"onChange\"> & { defaultOpen?: boolean; defaultQuery?: string; defaultValue?: readonly NoInfer<Value>[]; description?: React.ReactNode; disabled?: boolean; emptyMessage?: React.ReactNode; filter?: MultiSelectFilter<Value> | false; form?: string; id?: string; inputRef?: React.Ref<HTMLInputElement>; invalid?: boolean; label: React.ReactNode; labels?: Partial<MultiSelectLabels>; locale?: Intl.LocalesArgument; loopFocus?: boolean; message?: React.ReactNode; name?: string; onOpenChange?: (open: boolean, eventDetails: MultiSelectOpenChangeEventDetails) => void; onQueryChange?: (query: string, eventDetails: MultiSelectQueryChangeEventDetails) => void; onValueChange?: (value: Value[], eventDetails: MultiSelectChangeEventDetails) => void; open?: boolean; options: MultiSelectItems<Value>; placeholder?: string; query?: string; readOnly?: boolean; required?: boolean; size?: MultiSelectSize; value?: readonly NoInfer<Value>[]; \"data-slot\"?: string; };",
+          "export type MultiSelectQueryChangeEventDetails = MultiSelectChangeEventDetails;",
+          "export type MultiSelectSize = \"sm\" | \"md\" | \"lg\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectProps",
+        "signature": "MultiSelectProps<Value>"
+      },
+      {
+        "definition": [
+          "export type MultiSelectChangeEventDetails = NerioChangeEventDetails<MultiSelectChangeEventReason>;",
+          "export type MultiSelectChangeEventReason = \"item-press\" | \"chip-remove-press\" | \"clear-press\" | \"escape-key\" | \"input-change\" | \"input-clear\" | \"list-navigation\" | \"outside-press\" | \"focus-out\" | \"trigger-press\" | \"none\";",
+          "export type MultiSelectQueryChangeEventDetails = MultiSelectChangeEventDetails;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectQueryChangeEventDetails",
+        "signature": "MultiSelectChangeEventDetails"
+      },
+      {
+        "definition": ["export type MultiSelectSize = \"sm\" | \"md\" | \"lg\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "MultiSelectSize",
+        "signature": "MultiSelectSize"
+      },
+      {
         "definition": [
           "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
         ],
@@ -7994,6 +8122,7 @@
             "combobox",
             "command-primitive",
             "date-picker",
+            "multi-select",
             "number-field",
             "otp-field",
             "toggle-group"
@@ -8420,6 +8549,7 @@
             "combobox",
             "command-primitive",
             "date-picker",
+            "multi-select",
             "number-field",
             "otp-field",
             "toggle-group"
@@ -11530,6 +11660,146 @@
         "slots": ["motion-config"],
         "states": ["hidden", "visible", "exit"],
         "variants": ["fade", "fadeScale", "directional slide", "collapse"]
+      },
+      {
+        "baseUiPrimitives": ["combobox"],
+        "category": "forms",
+        "dependencies": [
+          "@base-ui/react",
+          "@nerio-ui/adapters",
+          "clsx",
+          "react",
+          "tailwind-merge",
+          "tailwindcss"
+        ],
+        "docsPath": null,
+        "files": [
+          {
+            "integrity": "sha256-cd5913895413e1464c782a4bd5c9b20fc1ed004960666575552fed11cfc8a6a1",
+            "role": "component",
+            "source": "../../ui/src/components/multi-select.tsx",
+            "target": "components/multi-select.tsx"
+          },
+          {
+            "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91",
+            "role": "utility",
+            "source": "../../ui/src/lib/component-props.ts",
+            "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-6683008fe95a0782abc5326bab10e52c027c4d0a8cebed3b8e0d73393471380f",
+            "role": "utility",
+            "source": "../../ui/src/lib/compose-refs.ts",
+            "target": "lib/compose-refs.ts"
+          },
+          {
+            "integrity": "sha256-60568caeb10aa224cb6788afdc85b72f39e036ba1b596555212e9ef566f7f30b",
+            "role": "utility",
+            "source": "../../ui/src/lib/motion.ts",
+            "target": "lib/motion.ts"
+          },
+          {
+            "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9",
+            "role": "component",
+            "source": "../../ui/src/components/icon.tsx",
+            "target": "components/icon.tsx"
+          },
+          {
+            "integrity": "sha256-14fb2f175bc4163670d3c29d81916c358e18b6b20a793e9b851428cf9aa9fb2c",
+            "role": "utility",
+            "source": "../../ui/src/lib/cn.ts",
+            "target": "lib/cn.ts"
+          },
+          {
+            "integrity": "sha256-a67ef8bb31372e98417710e2463d1d8e4cc2a7892c56a9559892ba982a7ffb31",
+            "role": "utility",
+            "source": "../../ui/src/lib/tailwind-cn.ts",
+            "target": "lib/tailwind-cn.ts"
+          },
+          {
+            "integrity": "sha256-4c452f1dbfb3b88173621121fd33a8ef4268d1c9cd1a341f7f6454effbf42ba4",
+            "role": "style",
+            "source": "../../tokens/src/styles.css",
+            "target": "styles/tokens.css"
+          },
+          {
+            "integrity": "sha256-1217ef6208d0c038e0e7e2a2df5b19f877d959b083e786bd128114a27ef9f441",
+            "role": "style",
+            "source": "../../tokens/src/tailwind.css",
+            "target": "styles/tailwind.css"
+          },
+          {
+            "integrity": "sha256-058110182ddc952e91f58f2dace9e858cda3f54c2640f8b06ddf6487a346de33",
+            "role": "style",
+            "source": "../../ui/src/styles/select.css",
+            "target": "styles/select.css"
+          }
+        ],
+        "name": "multi-select",
+        "optionalPeerDependencies": [],
+        "registryDependencies": ["form-message"],
+        "requiredTokens": [
+          "--n-select-height-sm",
+          "--n-select-height-md",
+          "--n-select-height-lg",
+          "--n-select-padding-inline",
+          "--n-select-item-gap",
+          "--n-select-item-padding-inline",
+          "--n-select-group-label-padding-inline",
+          "--n-select-empty-padding",
+          "--n-select-popup-radius",
+          "--n-input-radius",
+          "--n-input-background",
+          "--n-input-border",
+          "--n-input-border-hover",
+          "--n-input-border-danger",
+          "--n-input-placeholder",
+          "--n-input-foreground",
+          "--n-input-disabled-background",
+          "--n-input-disabled-foreground",
+          "--n-overlay-floating-z-index",
+          "--n-overlay-background",
+          "--n-overlay-border",
+          "--n-overlay-shadow",
+          "--n-focus-ring"
+        ],
+        "slots": [
+          "root",
+          "label",
+          "input-group",
+          "selected-values",
+          "value",
+          "remove",
+          "input",
+          "clear",
+          "trigger",
+          "icon",
+          "content",
+          "list",
+          "item",
+          "item-content",
+          "item-label",
+          "item-description",
+          "indicator",
+          "group",
+          "group-label",
+          "empty",
+          "announcement",
+          "description",
+          "message"
+        ],
+        "states": [
+          "query",
+          "open",
+          "highlighted",
+          "selected",
+          "disabled",
+          "read-only",
+          "required",
+          "invalid",
+          "empty"
+        ],
+        "variants": ["flat", "grouped", "sm", "md", "lg", "RTL"]
       },
       {
         "baseUiPrimitives": ["number-field"],
