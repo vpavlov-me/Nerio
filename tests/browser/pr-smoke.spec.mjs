@@ -660,39 +660,33 @@ test("keeps DropdownMenu compound selection, navigation, and submenu behavior co
   await page.goto("/docs/components/dropdown-menu", { waitUntil: "networkidle" });
 
   const preview = page.getByRole("region", { name: "dropdown-menu preview" });
-  const trigger = preview.getByRole("button", { name: "Actions" });
+  const trigger = preview.getByRole("button", { name: "Complex menu" });
   await trigger.click();
   const triggerId = await trigger.getAttribute("id");
   const menu = page.locator(`[role="menu"][aria-labelledby="${triggerId}"]`);
   await expect(menu).toBeVisible();
-  const share = menu.getByRole("menuitem", { name: "Share workspace" });
-  await expect(share).toHaveAttribute("href", "#dropdown-menu-guidance");
-  await expect(share).toHaveAccessibleDescription("Invite people and choose access");
+  const invite = menu.getByRole("menuitem", { name: "Invite members" });
+  await expect(invite).toHaveAttribute("href", "#dropdown-menu-guidance");
+  await expect(invite).toHaveAccessibleDescription("Add people to this workspace");
 
-  const notifications = menu.getByRole("menuitemcheckbox", { name: "Notify collaborators" });
-  await expect(notifications).toBeChecked();
-  await notifications.click();
-  await expect(notifications).not.toBeChecked();
+  const sidebar = menu.getByRole("menuitemcheckbox", { name: "Show sidebar" });
+  await expect(sidebar).toBeChecked();
+  await sidebar.click();
+  await expect(sidebar).not.toBeChecked();
   await expect(menu).toBeVisible();
 
-  const viewer = menu.getByRole("menuitemradio", { name: "Viewer access" });
-  await viewer.click();
-  await expect(viewer).toBeChecked();
-  await expect(menu).toBeVisible();
-
-  const subTrigger = menu.getByRole("menuitem", { name: "More actions" });
+  const subTrigger = menu.getByRole("menuitem", { name: "Theme" });
   await subTrigger.focus();
   await page.keyboard.press("ArrowRight");
-  const copy = page.getByRole("menuitem", { name: "Duplicate workspace" });
-  await expect(copy).toBeVisible();
-  await expect(copy).toBeFocused();
-  await expect(page.getByRole("menuitem", { name: "Move unavailable" })).toHaveAttribute(
-    "aria-disabled",
-    "true",
-  );
+  const light = page.getByRole("menuitemradio", { name: "Light" });
+  await expect(light).toBeVisible();
+  await expect(light).toBeFocused();
+  await light.click();
+  await expect(light).toBeChecked();
+  await expect(menu).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(subTrigger).toBeFocused();
-  await expect(menu.getByRole("menuitem", { name: "Archive" })).toBeVisible();
+  await expect(menu.getByRole("menuitem", { name: "Remove workspace" })).toBeVisible();
 
   const bounds = await menu.evaluate((element) => {
     const rect = element.getBoundingClientRect();

@@ -1,6 +1,21 @@
 "use client";
 
-import { Copy, UserPlus, X } from "@nerio-ui/adapters/icons";
+import {
+  BookOpen,
+  CircleQuestionMark,
+  Copy,
+  Eye,
+  FileText,
+  Layers,
+  Palette,
+  PanelLeft,
+  Save,
+  Settings,
+  Upload,
+  UserPlus,
+  WalletCards,
+  X,
+} from "@nerio-ui/adapters/icons";
 import {
   Button,
   Dialog,
@@ -177,52 +192,120 @@ export function OverlaysPreview({ kind, snippet }: PreviewProps) {
       ) : null}
       {kind === "dropdown-menu" ? (
         <DropdownMenuRoot>
-          <DropdownMenuTrigger render={<Button variant="secondary">Actions</Button>} />
+          <DropdownMenuTrigger render={<Button variant="secondary">Complex menu</Button>} />
           <DropdownMenuPortal>
             <DropdownMenuPositioner>
               <DropdownMenuContent>
                 <DropdownMenuGroup>
-                  <DropdownMenuGroupLabel>Collaborate</DropdownMenuGroupLabel>
+                  <DropdownMenuGroupLabel>File</DropdownMenuGroupLabel>
+                  <DropdownMenuItem>
+                    <FileText aria-hidden />
+                    <DropdownMenuItemLabel>New document</DropdownMenuItemLabel>
+                    <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Copy aria-hidden />
+                    <DropdownMenuItemLabel>Duplicate</DropdownMenuItemLabel>
+                    <DropdownMenuShortcut>⇧⌘D</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuSubmenu>
+                    <DropdownMenuSubTrigger>
+                      <Layers aria-hidden />
+                      <DropdownMenuItemLabel>Open recent</DropdownMenuItemLabel>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem>Design system</DropdownMenuItem>
+                      <DropdownMenuItem>Documentation</DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSubmenu>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Save aria-hidden />
+                  <DropdownMenuItemLabel>Save</DropdownMenuItemLabel>
+                  <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Upload aria-hidden />
+                  <DropdownMenuItemLabel>Export</DropdownMenuItemLabel>
+                  <DropdownMenuShortcut>⇧⌘E</DropdownMenuShortcut>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuGroupLabel>View</DropdownMenuGroupLabel>
+                  <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>
+                    <Eye aria-hidden />
+                    <DropdownMenuItemLabel>Show sidebar</DropdownMenuItemLabel>
+                    <DropdownMenuCheckboxItemIndicator className="ms-auto" />
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem closeOnClick={false}>
+                    <PanelLeft aria-hidden />
+                    <DropdownMenuItemLabel>Show details</DropdownMenuItemLabel>
+                    <DropdownMenuCheckboxItemIndicator className="ms-auto" />
+                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuSubmenu>
+                    <DropdownMenuSubTrigger>
+                      <Palette aria-hidden />
+                      <DropdownMenuItemLabel>Theme</DropdownMenuItemLabel>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuRadioGroup defaultValue="system">
+                        <DropdownMenuRadioItem closeOnClick={false} value="light">
+                          <DropdownMenuRadioItemIndicator />
+                          Light
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem closeOnClick={false} value="dark">
+                          <DropdownMenuRadioItemIndicator />
+                          Dark
+                        </DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem closeOnClick={false} value="system">
+                          <DropdownMenuRadioItemIndicator />
+                          System
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSubmenu>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuGroupLabel>Account</DropdownMenuGroupLabel>
                   <DropdownMenuLinkItem href="#dropdown-menu-guidance">
                     <UserPlus aria-hidden />
                     <DropdownMenuItemContent>
-                      <DropdownMenuItemLabel>Share workspace</DropdownMenuItemLabel>
+                      <DropdownMenuItemLabel>Invite members</DropdownMenuItemLabel>
                       <DropdownMenuItemDescription>
-                        Invite people and choose access
+                        Add people to this workspace
                       </DropdownMenuItemDescription>
                     </DropdownMenuItemContent>
-                    <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                    <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                   </DropdownMenuLinkItem>
-                  <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>
-                    <DropdownMenuCheckboxItemIndicator />
-                    <DropdownMenuItemLabel>Notify collaborators</DropdownMenuItemLabel>
-                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuItem>
+                    <WalletCards aria-hidden />
+                    <DropdownMenuItemLabel>Billing</DropdownMenuItemLabel>
+                  </DropdownMenuItem>
+                  <DropdownMenuSubmenu>
+                    <DropdownMenuSubTrigger>
+                      <Settings aria-hidden />
+                      <DropdownMenuItemLabel>Settings</DropdownMenuItemLabel>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem>Workspace settings</DropdownMenuItem>
+                      <DropdownMenuItem disabled>Organization settings</DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSubmenu>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup defaultValue="editor">
-                  <DropdownMenuRadioItem closeOnClick={false} value="viewer">
-                    <DropdownMenuRadioItemIndicator />
-                    Viewer access
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem closeOnClick={false} value="editor">
-                    <DropdownMenuRadioItemIndicator />
-                    Editor access
-                  </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuSubmenu>
-                  <DropdownMenuSubTrigger>More actions</DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuItem>
-                      <Copy aria-hidden />
-                      Duplicate workspace
-                    </DropdownMenuItem>
-                    <DropdownMenuItem disabled>Move unavailable</DropdownMenuItem>
-                  </DropdownMenuSubContent>
-                </DropdownMenuSubmenu>
+                <DropdownMenuLinkItem href="#dropdown-menu-guidance">
+                  <CircleQuestionMark aria-hidden />
+                  <DropdownMenuItemLabel>Help and support</DropdownMenuItemLabel>
+                </DropdownMenuLinkItem>
+                <DropdownMenuLinkItem href="#dropdown-menu-anatomy">
+                  <BookOpen aria-hidden />
+                  <DropdownMenuItemLabel>Documentation</DropdownMenuItemLabel>
+                </DropdownMenuLinkItem>
                 <DropdownMenuItem variant="destructive">
                   <X aria-hidden />
-                  Archive
+                  <DropdownMenuItemLabel>Remove workspace</DropdownMenuItemLabel>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenuPositioner>

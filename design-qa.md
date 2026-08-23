@@ -2734,3 +2734,50 @@ final result: passed
 No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
 
 final result: passed
+
+## DropdownMenu icon scale and compact geometry — 2026-08-23
+
+### Comparison setup
+
+- Source: `/var/folders/vj/7mc511px4dxbs9mxrj3ycyv00000gn/T/codex-clipboard-f73ba67d-14c1-4d40-ab61-eb288018c416.png`.
+- Implementation screenshot: `/private/tmp/nerio-dropdown-audit/03-implemented-dropdown.png`.
+- Focused implementation screenshot: `/private/tmp/nerio-dropdown-audit/04-implemented-menu-focused.png`.
+- Combined comparison: `/private/tmp/nerio-dropdown-audit/05-reference-vs-implementation.png`.
+- Viewport: 1118 × 837 CSS px for the Nerio docs capture.
+- State: light mode, comfortable density, root menu open; submenu verified separately.
+- Normalization: the 488 × 1116 source capture was displayed at 244 × 558 to normalize its 2× pixel density to CSS scale. The Nerio capture was displayed at its 1× CSS-pixel size. The source and implementation were opened together in the combined comparison before this result was recorded.
+
+### Full and focused comparison
+
+The updated docs specimen keeps the menu anchored to a compact trigger and bounded by the available viewport. The larger Nerio width is intentional: `--n-dropdown-min-width` remains 14rem so descriptions and workspace-oriented labels do not collapse. When the complete specimen exceeds the available vertical space, Base UI keeps it collision-bounded and scrollable instead of allowing page overflow.
+
+The implementation now matches the reference's compact popup anatomy while preserving Nerio's approved visual language:
+
+- 16px leading icons, selection indicators, and submenu chevrons share one token contract.
+- Popup padding is 4px; comfortable item padding is 6px × 8px.
+- Comfortable rows are 32px, and the compact token remap is 28px with 4px × 8px padding.
+- Popup and item radii are 12px and 8px respectively.
+- Group labels, separators, shortcuts, destructive tone, descriptions, checkboxes, radio items, links, disabled items, and nested commands remain distinct.
+
+Intentional differences from the Shadcn reference are the 14rem Nerio minimum width, Nerio's 13px compact control text, adaptive overlay colors, and the collision-bounded scroll region in the shorter docs viewport.
+
+### Findings and resolution history
+
+- P0: none.
+- P1: none.
+- P2: raw item icons rendered at 24px while indicators and chevrons inherited 13px from `1em`. Resolved with `--n-dropdown-icon-size: var(--n-icon-size-md)` across raw SVGs, Nerio `Icon`, indicators, chevrons, and convenience-component grid tracks.
+- P2: the 20px popup radius, 16px item radius, 8px popup padding, and 34px-plus row rhythm made the anchored surface look oversized. Resolved with tokenized 12px/8px radii, 4px popup padding, and 32px comfortable rows with a 28px compact remap.
+- P2: the public preview did not expose enough anatomy to judge icon alignment and complex-menu density. Resolved with a complete specimen covering grouped actions, shortcuts, two selection models, descriptions, links, submenus, disabled commands, and destructive tone.
+
+### Interaction and runtime checks
+
+- A checked menu item toggled without closing the root menu.
+- ArrowRight opened the Theme submenu and focused its first radio item.
+- Radio selection remained open, and Escape restored focus to the submenu trigger after the exit transition.
+- Root-menu raw icons, indicators, submenu icons, and submenu radio indicators measured 16 × 16px.
+- Comfortable first-row height measured 32px.
+- Popup padding measured 4px, popup radius 12px, item radius 8px, and the described-row height 48.99px.
+
+No unresolved P0, P1, or P2 visual findings remain in the reviewed state.
+
+final result: passed

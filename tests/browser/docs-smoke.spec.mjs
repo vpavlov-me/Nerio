@@ -1657,23 +1657,52 @@ test("keeps Navigation, Layout, and Overlays neutral, adaptive, and causally ani
   await page.locator("html").evaluate((element) => element.setAttribute("data-mode", "light"));
 
   await page.goto("/docs/components/dropdown-menu");
-  await page.getByRole("button", { name: "Actions", exact: true }).click();
+  await page.getByRole("button", { name: "Complex menu", exact: true }).click();
   const dropdown = page.locator(".n-dropdown");
   await expect(dropdown).toBeVisible();
   const dropdownVisual = await dropdown.evaluate((element) => {
     const style = getComputedStyle(element);
     const item = element.querySelector('[data-slot="item"]');
+    const rawIcon = item.querySelector(":scope > svg");
+    const submenuIcon = element.querySelector('[data-slot="submenu-icon"] .n-icon');
+    const indicatorIcon = element.querySelector('[data-slot="indicator"] .n-icon');
+    const itemStyle = getComputedStyle(item);
     return {
       background: style.backgroundColor,
-      itemDuration: getComputedStyle(item).transitionDuration,
+      contentPadding: Number.parseFloat(style.paddingTop),
+      iconSizes: [rawIcon, submenuIcon, indicatorIcon].map((icon) =>
+        Number.parseFloat(getComputedStyle(icon).width),
+      ),
+      itemDuration: itemStyle.transitionDuration,
+      itemHeight: item.getBoundingClientRect().height,
+      itemRadius: Number.parseFloat(itemStyle.borderRadius),
       radius: Number.parseFloat(style.borderRadius),
       surfaceFilter: style.backdropFilter,
     };
   });
   expect(dropdownVisual.background).toBe("rgb(255, 255, 255)");
+  expect(dropdownVisual.contentPadding).toBe(4);
+  expect(dropdownVisual.iconSizes).toEqual([16, 16, 16]);
   expect(dropdownVisual.itemDuration).not.toBe("0s");
-  expect(dropdownVisual.radius).toBe(popoverVisual.radius);
+  expect(dropdownVisual.itemHeight).toBe(32);
+  expect(dropdownVisual.itemRadius).toBe(8);
+  expect(dropdownVisual.radius).toBe(12);
+  expect(dropdownVisual.radius).toBeLessThan(popoverVisual.radius);
   expect(dropdownVisual.surfaceFilter).toContain("blur(24px)");
+
+  await page.locator("html").evaluate((element) => element.setAttribute("data-density", "compact"));
+  const compactDropdownVisual = await dropdown.evaluate((element) => {
+    const item = element.querySelector('[data-slot="item"]');
+    const icon = item.querySelector(":scope > svg");
+    return {
+      iconSize: Number.parseFloat(getComputedStyle(icon).width),
+      itemHeight: item.getBoundingClientRect().height,
+    };
+  });
+  expect(compactDropdownVisual).toEqual({ iconSize: 16, itemHeight: 28 });
+  await page
+    .locator("html")
+    .evaluate((element) => element.setAttribute("data-density", "comfortable"));
 
   await expectHealthyPage(page, problems);
 });
@@ -1725,10 +1754,12 @@ test("keeps the final Tailwind component families active across public docs", as
   });
 
   await page.goto("/docs/components/dropdown-menu");
-  const menuTrigger = page.getByRole("button", { name: "Actions", exact: true });
+  const menuTrigger = page.getByRole("button", { name: "Complex menu", exact: true });
   await expect(menuTrigger).toBeVisible();
   await menuTrigger.click();
-  await expect(page.getByRole("menuitem", { name: "Archive" })).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByRole("menuitem", { name: "Remove workspace" })).toBeVisible({
+    timeout: 10_000,
+  });
 
   await page.goto("/docs/components/sheet");
   await page.getByRole("button", { name: "Open settings" }).click();
