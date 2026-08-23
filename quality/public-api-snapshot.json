@@ -4237,15 +4237,338 @@
         "signature": "React.ForwardRefExoticComponent<DropdownMenuProps & React.RefAttributes<HTMLDivElement>>"
       },
       {
+        "definition": ["export type DropdownMenuAlign = \"start\" | \"center\" | \"end\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuAlign",
+        "signature": "DropdownMenuAlign"
+      },
+      {
         "definition": [
-          "export interface DropdownMenuItem { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; disabled?: boolean; destructive?: boolean; }",
+          "export type DropdownMenuCheckboxChangeEventDetails = DropdownMenuOpenChangeEventDetails;",
+          "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuCheckboxChangeEventDetails",
+        "signature": "DropdownMenuOpenChangeEventDetails"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuCheckboxItem",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuCheckboxItemProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuCheckboxItemIndicator",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuItemIndicatorProps & React.RefAttributes<HTMLSpanElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuCheckboxItemProps extends Omit<React.HTMLAttributes<HTMLElement>, \"className\" | \"color\" | \"defaultChecked\" | \"style\"> { checked?: boolean; className?: NerioClassName<DropdownMenuCheckboxItemState>; closeOnClick?: boolean; defaultChecked?: boolean; disabled?: boolean; nativeButton?: boolean; onCheckedChange?: (checked: boolean, eventDetails: DropdownMenuCheckboxChangeEventDetails) => void; render?: NerioRenderProp<DropdownMenuCheckboxItemState>; style?: NerioStyle<DropdownMenuCheckboxItemState>; textValue?: string; }",
+          "export interface DropdownMenuCheckboxItemState extends DropdownMenuItemState { checked: boolean; }",
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }",
+          "export type DropdownMenuCheckboxChangeEventDetails = DropdownMenuOpenChangeEventDetails;",
+          "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuCheckboxItemProps",
+        "signature": "DropdownMenuCheckboxItemProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuCheckboxItemState extends DropdownMenuItemState { checked: boolean; }",
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuCheckboxItemState",
+        "signature": "DropdownMenuCheckboxItemState"
+      },
+      {
+        "definition": [
+          "export type DropdownMenuCollisionAvoidance = { side?: \"flip\" | \"none\"; align?: \"flip\" | \"shift\" | \"none\"; fallbackAxisSide?: \"start\" | \"end\" | \"none\"; } | { side?: \"shift\" | \"none\"; align?: \"shift\" | \"none\"; fallbackAxisSide?: \"start\" | \"end\" | \"none\"; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuCollisionAvoidance",
+        "signature": "DropdownMenuCollisionAvoidance"
+      },
+      {
+        "definition": [
+          "export type DropdownMenuCollisionBoundary = \"clipping-ancestors\" | Element | Element[] | { x: number; y: number; width: number; height: number; };"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuCollisionBoundary",
+        "signature": "DropdownMenuCollisionBoundary"
+      },
+      {
+        "definition": [
+          "export type DropdownMenuCollisionPadding = number | Partial<Record<\"top\" | \"right\" | \"bottom\" | \"left\", number>>;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuCollisionPadding",
+        "signature": "DropdownMenuCollisionPadding"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuContent",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuContentProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DropdownMenuContentState>; finalFocus?: DropdownMenuFocusTarget; render?: NerioRenderProp<DropdownMenuContentState>; style?: NerioStyle<DropdownMenuContentState>; \"data-slot\"?: string; }",
+          "export interface DropdownMenuContentState { align: DropdownMenuAlign; instant: \"dismiss\" | \"click\" | \"group\" | \"trigger-change\" | undefined; nested: boolean; open: boolean; side: DropdownMenuSide; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type DropdownMenuAlign = \"start\" | \"center\" | \"end\";",
+          "export type DropdownMenuFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DropdownMenuInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DropdownMenuInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";",
+          "export type DropdownMenuSide = \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuContentProps",
+        "signature": "DropdownMenuContentProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuContentState { align: DropdownMenuAlign; instant: \"dismiss\" | \"click\" | \"group\" | \"trigger-change\" | undefined; nested: boolean; open: boolean; side: DropdownMenuSide; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export type DropdownMenuAlign = \"start\" | \"center\" | \"end\";",
+          "export type DropdownMenuSide = \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuContentState",
+        "signature": "DropdownMenuContentState"
+      },
+      {
+        "definition": [
+          "export type DropdownMenuFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DropdownMenuInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DropdownMenuInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuFocusTarget",
+        "signature": "DropdownMenuFocusTarget"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuGroup",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuGroupLabel",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<DropdownMenuPartState>; render?: NerioRenderProp<DropdownMenuPartState>; style?: NerioStyle<DropdownMenuPartState>; }",
+          "export type DropdownMenuGroupLabelProps = DropdownMenuGroupProps;",
+          "export type DropdownMenuPartState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuGroupLabelProps",
+        "signature": "DropdownMenuGroupProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<DropdownMenuPartState>; render?: NerioRenderProp<DropdownMenuPartState>; style?: NerioStyle<DropdownMenuPartState>; }",
+          "export type DropdownMenuPartState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuGroupProps",
+        "signature": "DropdownMenuGroupProps"
+      },
+      {
+        "definition": [
+          "export type DropdownMenuInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuInteractionType",
+        "signature": "DropdownMenuInteractionType"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuItem",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuItemProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuItemContent",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuTextPartProps & React.RefAttributes<HTMLSpanElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuItemData { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; closeOnClick?: boolean; disabled?: boolean; destructive?: boolean; textValue?: string; }",
           "export type IconComponent = React.ElementType<IconSvgProps>;",
           "export type IconSvgProps = React.SVGProps<SVGSVGElement> & { size?: string | number; strokeWidth?: string | number; };"
         ],
         "deprecations": [],
         "kind": "type",
-        "name": "DropdownMenuItem",
-        "signature": "DropdownMenuItem"
+        "name": "DropdownMenuItemData",
+        "signature": "DropdownMenuItemData"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuItemDescription",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuTextPartProps & React.RefAttributes<HTMLSpanElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuCheckboxItemState extends DropdownMenuItemState { checked: boolean; }",
+          "export interface DropdownMenuItemIndicatorProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, \"className\" | \"style\"> { className?: NerioClassName<DropdownMenuItemIndicatorState>; keepMounted?: boolean; render?: NerioRenderProp<DropdownMenuItemIndicatorState>; style?: NerioStyle<DropdownMenuItemIndicatorState>; }",
+          "export interface DropdownMenuItemIndicatorState extends DropdownMenuCheckboxItemState { transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuItemIndicatorProps",
+        "signature": "DropdownMenuItemIndicatorProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuCheckboxItemState extends DropdownMenuItemState { checked: boolean; }",
+          "export interface DropdownMenuItemIndicatorState extends DropdownMenuCheckboxItemState { transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuItemIndicatorState",
+        "signature": "DropdownMenuItemIndicatorState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuItemLabel",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuTextPartProps & React.RefAttributes<HTMLSpanElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuItemProps extends Omit<React.HTMLAttributes<HTMLElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DropdownMenuItemState>; closeOnClick?: boolean; disabled?: boolean; nativeButton?: boolean; render?: NerioRenderProp<DropdownMenuItemState>; style?: NerioStyle<DropdownMenuItemState>; textValue?: string; variant?: DropdownMenuItemVariant; }",
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }",
+          "export type DropdownMenuItemVariant = \"default\" | \"destructive\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuItemProps",
+        "signature": "DropdownMenuItemProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuItemState",
+        "signature": "DropdownMenuItemState"
+      },
+      {
+        "definition": ["export type DropdownMenuItemVariant = \"default\" | \"destructive\";"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuItemVariant",
+        "signature": "DropdownMenuItemVariant"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuLinkItem",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuLinkItemProps & React.RefAttributes<Element>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuLinkItemProps extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DropdownMenuLinkItemState>; closeOnClick?: boolean; render?: React.ReactElement | ((props: React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>, state: DropdownMenuLinkItemState) => React.ReactElement); style?: NerioStyle<DropdownMenuLinkItemState>; textValue?: string; variant?: DropdownMenuItemVariant; }",
+          "export interface DropdownMenuLinkItemState { highlighted: boolean; }",
+          "export type DropdownMenuItemVariant = \"default\" | \"destructive\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuLinkItemProps",
+        "signature": "DropdownMenuLinkItemProps"
+      },
+      {
+        "definition": ["export interface DropdownMenuLinkItemState { highlighted: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuLinkItemState",
+        "signature": "DropdownMenuLinkItemState"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuOffsetData { side: DropdownMenuSide; align: DropdownMenuAlign; anchor: { width: number; height: number; }; positioner: { width: number; height: number; }; }",
+          "export type DropdownMenuAlign = \"start\" | \"center\" | \"end\";",
+          "export type DropdownMenuOffset = number | ((data: DropdownMenuOffsetData) => number);",
+          "export type DropdownMenuSide = \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuOffset",
+        "signature": "DropdownMenuOffset"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuOffsetData { side: DropdownMenuSide; align: DropdownMenuAlign; anchor: { width: number; height: number; }; positioner: { width: number; height: number; }; }",
+          "export type DropdownMenuAlign = \"start\" | \"center\" | \"end\";",
+          "export type DropdownMenuSide = \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuOffsetData",
+        "signature": "DropdownMenuOffsetData"
       },
       {
         "definition": [
@@ -4268,9 +4591,83 @@
         "signature": "DropdownMenuOpenChangeEventReason"
       },
       {
+        "definition": ["export type DropdownMenuPartState = Record<never, never>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuPartState",
+        "signature": "DropdownMenuPartState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuPortal",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuPortalProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
         "definition": [
-          "export interface DropdownMenuItem { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; disabled?: boolean; destructive?: boolean; }",
-          "export interface DropdownMenuProps { defaultOpen?: boolean; onOpenChange?: (open: boolean, eventDetails: DropdownMenuOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; items: DropdownMenuItem[]; className?: string; }",
+          "export interface DropdownMenuPortalProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<DropdownMenuPortalState>; container?: HTMLElement | ShadowRoot | React.RefObject<HTMLElement | ShadowRoot | null> | null; keepMounted?: boolean; render?: NerioRenderProp<DropdownMenuPortalState>; style?: NerioStyle<DropdownMenuPortalState>; }",
+          "export type DropdownMenuPortalState = Record<never, never>;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuPortalProps",
+        "signature": "DropdownMenuPortalProps"
+      },
+      {
+        "definition": ["export type DropdownMenuPortalState = Record<never, never>;"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuPortalState",
+        "signature": "DropdownMenuPortalState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuPositioner",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuPositionerProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuOffsetData { side: DropdownMenuSide; align: DropdownMenuAlign; anchor: { width: number; height: number; }; positioner: { width: number; height: number; }; }",
+          "export interface DropdownMenuPositionerProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { align?: DropdownMenuAlign; alignOffset?: DropdownMenuOffset; arrowPadding?: number; className?: NerioClassName<DropdownMenuPositionerState>; collisionAvoidance?: DropdownMenuCollisionAvoidance; collisionBoundary?: DropdownMenuCollisionBoundary; collisionPadding?: DropdownMenuCollisionPadding; disableAnchorTracking?: boolean; positionMethod?: \"absolute\" | \"fixed\"; render?: NerioRenderProp<DropdownMenuPositionerState>; side?: DropdownMenuSide; sideOffset?: DropdownMenuOffset; sticky?: boolean; style?: NerioStyle<DropdownMenuPositionerState>; }",
+          "export interface DropdownMenuPositionerState { align: DropdownMenuAlign; anchorHidden: boolean; instant: string | undefined; nested: boolean; open: boolean; side: DropdownMenuSide; }",
+          "export type DropdownMenuAlign = \"start\" | \"center\" | \"end\";",
+          "export type DropdownMenuCollisionAvoidance = { side?: \"flip\" | \"none\"; align?: \"flip\" | \"shift\" | \"none\"; fallbackAxisSide?: \"start\" | \"end\" | \"none\"; } | { side?: \"shift\" | \"none\"; align?: \"shift\" | \"none\"; fallbackAxisSide?: \"start\" | \"end\" | \"none\"; };",
+          "export type DropdownMenuCollisionBoundary = \"clipping-ancestors\" | Element | Element[] | { x: number; y: number; width: number; height: number; };",
+          "export type DropdownMenuCollisionPadding = number | Partial<Record<\"top\" | \"right\" | \"bottom\" | \"left\", number>>;",
+          "export type DropdownMenuOffset = number | ((data: DropdownMenuOffsetData) => number);",
+          "export type DropdownMenuSide = \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuPositionerProps",
+        "signature": "DropdownMenuPositionerProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuPositionerState { align: DropdownMenuAlign; anchorHidden: boolean; instant: string | undefined; nested: boolean; open: boolean; side: DropdownMenuSide; }",
+          "export type DropdownMenuAlign = \"start\" | \"center\" | \"end\";",
+          "export type DropdownMenuSide = \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuPositionerState",
+        "signature": "DropdownMenuPositionerState"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuItemData { label: React.ReactNode; description?: React.ReactNode; group?: string; leadingIcon?: IconComponent; trailingIcon?: IconComponent; hotkey?: React.ReactNode; onSelect?: () => void; closeOnClick?: boolean; disabled?: boolean; destructive?: boolean; textValue?: string; }",
+          "export interface DropdownMenuProps { className?: string; defaultOpen?: boolean; items: DropdownMenuItemData[]; onOpenChange?: (open: boolean, eventDetails: DropdownMenuOpenChangeEventDetails) => void; open?: boolean; trigger: React.ReactNode; }",
           "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
           "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
           "export type IconComponent = React.ElementType<IconSvgProps>;",
@@ -4281,6 +4678,276 @@
         "kind": "type",
         "name": "DropdownMenuProps",
         "signature": "DropdownMenuProps"
+      },
+      {
+        "definition": [
+          "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
+          "export type DropdownMenuRadioChangeEventDetails = DropdownMenuOpenChangeEventDetails;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuRadioChangeEventDetails",
+        "signature": "DropdownMenuOpenChangeEventDetails"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuRadioGroup",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuRadioGroupProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuRadioGroupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"defaultValue\" | \"onChange\" | \"style\"> { className?: NerioClassName<DropdownMenuRadioGroupState>; defaultValue?: string; disabled?: boolean; onValueChange?: (value: string, eventDetails: DropdownMenuRadioChangeEventDetails) => void; render?: NerioRenderProp<DropdownMenuRadioGroupState>; style?: NerioStyle<DropdownMenuRadioGroupState>; value?: string; }",
+          "export interface DropdownMenuRadioGroupState { disabled: boolean; }",
+          "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
+          "export type DropdownMenuRadioChangeEventDetails = DropdownMenuOpenChangeEventDetails;",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuRadioGroupProps",
+        "signature": "DropdownMenuRadioGroupProps"
+      },
+      {
+        "definition": ["export interface DropdownMenuRadioGroupState { disabled: boolean; }"],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuRadioGroupState",
+        "signature": "DropdownMenuRadioGroupState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuRadioItem",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuRadioItemProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuRadioItemIndicator",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuItemIndicatorProps & React.RefAttributes<HTMLSpanElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }",
+          "export interface DropdownMenuRadioItemProps extends Omit<React.HTMLAttributes<HTMLElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DropdownMenuRadioItemState>; closeOnClick?: boolean; disabled?: boolean; nativeButton?: boolean; render?: NerioRenderProp<DropdownMenuRadioItemState>; style?: NerioStyle<DropdownMenuRadioItemState>; textValue?: string; value: string; }",
+          "export interface DropdownMenuRadioItemState extends DropdownMenuItemState { checked: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuRadioItemProps",
+        "signature": "DropdownMenuRadioItemProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }",
+          "export interface DropdownMenuRadioItemState extends DropdownMenuItemState { checked: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuRadioItemState",
+        "signature": "DropdownMenuRadioItemState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuRoot",
+        "signature": "({ children, ...props }: DropdownMenuRootProps) => React.JSX.Element"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuRootProps { children: React.ReactNode; defaultOpen?: boolean; disabled?: boolean; loopFocus?: boolean; modal?: boolean; onOpenChange?: (open: boolean, eventDetails: DropdownMenuOpenChangeEventDetails) => void; onOpenChangeComplete?: (open: boolean) => void; open?: boolean; }",
+          "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuRootProps",
+        "signature": "DropdownMenuRootProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuSeparator",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuSeparatorProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuSeparatorProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"style\"> { className?: NerioClassName<DropdownMenuSeparatorState>; orientation?: \"horizontal\" | \"vertical\"; render?: NerioRenderProp<DropdownMenuSeparatorState>; style?: NerioStyle<DropdownMenuSeparatorState>; }",
+          "export interface DropdownMenuSeparatorState { orientation: \"horizontal\" | \"vertical\"; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuSeparatorProps",
+        "signature": "DropdownMenuSeparatorProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuSeparatorState { orientation: \"horizontal\" | \"vertical\"; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuSeparatorState",
+        "signature": "DropdownMenuSeparatorState"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuShortcut",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuTextPartProps & React.RefAttributes<HTMLSpanElement>>"
+      },
+      {
+        "definition": [
+          "export type DropdownMenuSide = \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuSide",
+        "signature": "DropdownMenuSide"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuSubContent",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuSubContentProps & React.RefAttributes<HTMLDivElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuContentProps extends Omit<React.HTMLAttributes<HTMLDivElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DropdownMenuContentState>; finalFocus?: DropdownMenuFocusTarget; render?: NerioRenderProp<DropdownMenuContentState>; style?: NerioStyle<DropdownMenuContentState>; \"data-slot\"?: string; }",
+          "export interface DropdownMenuContentState { align: DropdownMenuAlign; instant: \"dismiss\" | \"click\" | \"group\" | \"trigger-change\" | undefined; nested: boolean; open: boolean; side: DropdownMenuSide; transitionStatus: \"starting\" | \"ending\" | \"idle\" | undefined; }",
+          "export interface DropdownMenuOffsetData { side: DropdownMenuSide; align: DropdownMenuAlign; anchor: { width: number; height: number; }; positioner: { width: number; height: number; }; }",
+          "export interface DropdownMenuPositionerState { align: DropdownMenuAlign; anchorHidden: boolean; instant: string | undefined; nested: boolean; open: boolean; side: DropdownMenuSide; }",
+          "export interface DropdownMenuSubContentProps extends DropdownMenuContentProps { align?: DropdownMenuAlign; alignOffset?: DropdownMenuOffset; collisionAvoidance?: DropdownMenuCollisionAvoidance; collisionBoundary?: DropdownMenuCollisionBoundary; collisionPadding?: DropdownMenuCollisionPadding; container?: HTMLElement | ShadowRoot | React.RefObject<HTMLElement | ShadowRoot | null> | null; keepMounted?: boolean; positionerClassName?: NerioClassName<DropdownMenuPositionerState>; positionMethod?: \"absolute\" | \"fixed\"; side?: DropdownMenuSide; sideOffset?: DropdownMenuOffset; sticky?: boolean; }",
+          "export type DropdownMenuAlign = \"start\" | \"center\" | \"end\";",
+          "export type DropdownMenuCollisionAvoidance = { side?: \"flip\" | \"none\"; align?: \"flip\" | \"shift\" | \"none\"; fallbackAxisSide?: \"start\" | \"end\" | \"none\"; } | { side?: \"shift\" | \"none\"; align?: \"shift\" | \"none\"; fallbackAxisSide?: \"start\" | \"end\" | \"none\"; };",
+          "export type DropdownMenuCollisionBoundary = \"clipping-ancestors\" | Element | Element[] | { x: number; y: number; width: number; height: number; };",
+          "export type DropdownMenuCollisionPadding = number | Partial<Record<\"top\" | \"right\" | \"bottom\" | \"left\", number>>;",
+          "export type DropdownMenuFocusTarget = boolean | React.RefObject<HTMLElement | null> | ((interactionType: DropdownMenuInteractionType) => boolean | HTMLElement | null | void);",
+          "export type DropdownMenuInteractionType = \"\" | \"mouse\" | \"touch\" | \"pen\" | \"keyboard\";",
+          "export type DropdownMenuOffset = number | ((data: DropdownMenuOffsetData) => number);",
+          "export type DropdownMenuSide = \"top\" | \"bottom\" | \"left\" | \"right\" | \"inline-start\" | \"inline-end\";",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuSubContentProps",
+        "signature": "DropdownMenuSubContentProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuSubmenu",
+        "signature": "(props: DropdownMenuSubmenuProps) => React.JSX.Element"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuSubmenuProps { children: React.ReactNode; closeParentOnEsc?: boolean; defaultOpen?: boolean; disabled?: boolean; loopFocus?: boolean; onOpenChange?: (open: boolean, eventDetails: DropdownMenuOpenChangeEventDetails) => void; onOpenChangeComplete?: (open: boolean) => void; open?: boolean; }",
+          "export type DropdownMenuOpenChangeEventDetails = NerioChangeEventDetails<DropdownMenuOpenChangeEventReason> & { preventUnmountOnClose: () => void; };",
+          "export type DropdownMenuOpenChangeEventReason = \"trigger-hover\" | \"trigger-focus\" | \"trigger-press\" | \"outside-press\" | \"focus-out\" | \"list-navigation\" | \"escape-key\" | \"item-press\" | \"close-press\" | \"sibling-open\" | \"cancel-open\" | \"imperative-action\" | \"none\";",
+          "export type NerioChangeEventDetails<Reason extends string, CustomProperties extends object = object> = { reason: Reason; event: Event; trigger: Element | undefined; cancel: () => void; allowPropagation: () => void; readonly isCanceled: boolean; readonly isPropagationAllowed: boolean; } & CustomProperties;"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuSubmenuProps",
+        "signature": "DropdownMenuSubmenuProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuSubTrigger",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuSubTriggerProps & React.RefAttributes<HTMLElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }",
+          "export interface DropdownMenuSubTriggerProps extends Omit<React.HTMLAttributes<HTMLElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DropdownMenuSubTriggerState>; closeDelay?: number; delay?: number; disabled?: boolean; nativeButton?: boolean; openOnHover?: boolean; render?: NerioRenderProp<DropdownMenuSubTriggerState>; style?: NerioStyle<DropdownMenuSubTriggerState>; textValue?: string; }",
+          "export interface DropdownMenuSubTriggerState extends DropdownMenuItemState { open: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuSubTriggerProps",
+        "signature": "DropdownMenuSubTriggerProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuItemState { disabled: boolean; highlighted: boolean; }",
+          "export interface DropdownMenuSubTriggerState extends DropdownMenuItemState { open: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuSubTriggerState",
+        "signature": "DropdownMenuSubTriggerState"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuTextPartProps extends React.HTMLAttributes<HTMLSpanElement> { \"data-slot\"?: string; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuTextPartProps",
+        "signature": "DropdownMenuTextPartProps"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "DropdownMenuTrigger",
+        "signature": "React.ForwardRefExoticComponent<DropdownMenuTriggerProps & React.RefAttributes<HTMLButtonElement>>"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuTriggerProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, \"className\" | \"color\" | \"style\"> { className?: NerioClassName<DropdownMenuTriggerState>; closeDelay?: number; delay?: number; nativeButton?: boolean; openOnHover?: boolean; render?: NerioRenderProp<DropdownMenuTriggerState>; style?: NerioStyle<DropdownMenuTriggerState>; }",
+          "export interface DropdownMenuTriggerState { disabled: boolean; open: boolean; }",
+          "export type NerioClassName<State> = string | ((state: State) => string | undefined);",
+          "export type NerioRenderProp<State> = React.ReactElement | ((props: NerioRenderProps, state: State) => React.ReactElement);",
+          "export type NerioRenderProps = React.HTMLAttributes<HTMLElement> & { disabled?: boolean; ref?: React.Ref<HTMLElement>; type?: \"button\" | \"reset\" | \"submit\"; };",
+          "export type NerioStyle<State> = React.CSSProperties | ((state: State) => React.CSSProperties | undefined);"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuTriggerProps",
+        "signature": "DropdownMenuTriggerProps"
+      },
+      {
+        "definition": [
+          "export interface DropdownMenuTriggerState { disabled: boolean; open: boolean; }"
+        ],
+        "deprecations": [],
+        "kind": "type",
+        "name": "DropdownMenuTriggerState",
+        "signature": "DropdownMenuTriggerState"
       },
       {
         "definition": [],
@@ -9924,7 +10591,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-c4d91010c0aed6668e6da344fd4c62c16d582a596d3fb40ae8d58c16019336df",
+            "integrity": "sha256-5196e48a3dd33f44006e586db831824a55ff22f9ef8ce50726d6b8b382d29eb7",
             "role": "component",
             "source": "../../ui/src/components/dropdown-menu.tsx",
             "target": "components/dropdown-menu.tsx"
@@ -9934,6 +10601,12 @@
             "role": "utility",
             "source": "../../ui/src/lib/component-props.ts",
             "target": "lib/component-props.ts"
+          },
+          {
+            "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737",
+            "role": "utility",
+            "source": "../../ui/src/lib/resolve-class-name.ts",
+            "target": "lib/resolve-class-name.ts"
           },
           {
             "integrity": "sha256-6b36bb3aa5b439148ca8cdf940b43916d3d29ddd253aba397db4761573b354d9",
@@ -10000,11 +10673,26 @@
           "--n-focus-ring"
         ],
         "slots": [
+          "trigger",
+          "portal",
+          "positioner",
           "content",
           "group",
           "group-label",
           "separator",
           "item",
+          "link-item",
+          "checkbox-item",
+          "radio-group",
+          "radio-item",
+          "indicator",
+          "sub-trigger",
+          "sub-content",
+          "submenu-icon",
+          "item-content",
+          "item-label",
+          "item-description",
+          "shortcut",
           "leading-icon",
           "label",
           "description",
@@ -10016,6 +10704,10 @@
           "default",
           "grouped",
           "destructive",
+          "link",
+          "checkbox",
+          "radio",
+          "submenu",
           "description",
           "leading icon",
           "trailing icon",

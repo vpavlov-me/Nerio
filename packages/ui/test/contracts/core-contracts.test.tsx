@@ -120,6 +120,28 @@ import {
   DialogTrigger,
   DatePicker,
   DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuCheckboxItemIndicator,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuGroupLabel,
+  DropdownMenuItem,
+  DropdownMenuItemContent,
+  DropdownMenuItemDescription,
+  DropdownMenuItemLabel,
+  DropdownMenuLinkItem,
+  DropdownMenuPortal,
+  DropdownMenuPositioner,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuRadioItemIndicator,
+  DropdownMenuRoot,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSubContent,
+  DropdownMenuSubmenu,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
   LabelHint,
   Popover,
   RadioGroup,
@@ -4225,6 +4247,93 @@ describe("Core interactive action contracts", () => {
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
     expect(trigger).toHaveFocus();
+  });
+
+  it("composes links, selection items, descriptions, and a keyboard submenu", async () => {
+    const user = userEvent.setup();
+    const onCheckedChange = vi.fn();
+    const onValueChange = vi.fn();
+
+    render(
+      <DropdownMenuRoot>
+        <DropdownMenuTrigger>View options</DropdownMenuTrigger>
+        <DropdownMenuPortal>
+          <DropdownMenuPositioner collisionPadding={8}>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuGroupLabel>Navigate</DropdownMenuGroupLabel>
+                <DropdownMenuLinkItem href="#menu-details" textValue="Open details">
+                  <DropdownMenuItemContent>
+                    <DropdownMenuItemLabel>Open details</DropdownMenuItemLabel>
+                    <DropdownMenuItemDescription>
+                      Review the current record
+                    </DropdownMenuItemDescription>
+                  </DropdownMenuItemContent>
+                  <DropdownMenuShortcut>⌘O</DropdownMenuShortcut>
+                </DropdownMenuLinkItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                closeOnClick={false}
+                defaultChecked
+                onCheckedChange={onCheckedChange}
+                textValue="Show archived"
+              >
+                <DropdownMenuCheckboxItemIndicator />
+                <DropdownMenuItemLabel>Show archived</DropdownMenuItemLabel>
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuRadioGroup defaultValue="comfortable" onValueChange={onValueChange}>
+                <DropdownMenuRadioItem closeOnClick={false} value="compact">
+                  <DropdownMenuRadioItemIndicator />
+                  Compact
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem closeOnClick={false} value="comfortable">
+                  <DropdownMenuRadioItemIndicator />
+                  Comfortable
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+              <DropdownMenuSubmenu>
+                <DropdownMenuSubTrigger textValue="Share">Share</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem>Copy link</DropdownMenuItem>
+                  <DropdownMenuItem disabled>Invite unavailable</DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSubmenu>
+            </DropdownMenuContent>
+          </DropdownMenuPositioner>
+        </DropdownMenuPortal>
+      </DropdownMenuRoot>,
+    );
+
+    const trigger = screen.getByRole("button", { name: "View options" });
+    trigger.focus();
+    await user.keyboard("{ArrowDown}");
+
+    const linkItem = await screen.findByRole("menuitem", { name: "Open details" });
+    expect(linkItem).toHaveAttribute("href", "#menu-details");
+    expect(linkItem).toHaveAccessibleDescription("Review the current record");
+    expect(screen.getByRole("group", { name: "Navigate" })).toBeInTheDocument();
+
+    const checkbox = screen.getByRole("menuitemcheckbox", { name: "Show archived" });
+    expect(checkbox).toBeChecked();
+    await user.click(checkbox);
+    expect(onCheckedChange).toHaveBeenCalledWith(false, expect.anything());
+    expect(screen.getByRole("menu")).toBeVisible();
+
+    await user.click(screen.getByRole("menuitemradio", { name: "Compact" }));
+    expect(onValueChange).toHaveBeenCalledWith("compact", expect.anything());
+    expect(screen.getByRole("menuitemradio", { name: "Compact" })).toBeChecked();
+
+    const subTrigger = screen.getByRole("menuitem", { name: "Share" });
+    subTrigger.focus();
+    await user.keyboard("{ArrowRight}");
+    expect(await screen.findByRole("menuitem", { name: "Copy link" })).toHaveFocus();
+    expect(screen.getByRole("menuitem", { name: "Invite unavailable" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
+    await user.keyboard("{Escape}");
+    expect(subTrigger).toHaveFocus();
   });
 
   it("keeps Input native behavior while normalizing protected state attributes", () => {

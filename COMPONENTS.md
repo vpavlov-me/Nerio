@@ -117,14 +117,14 @@ Combobox, SearchField, and decimal NumberField are implemented on `dev` through 
 
 ### Overlays
 
-| Component     | Status              | Package               | Notes                                                                                                                                                                               |
-| ------------- | ------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dialog        | stable-core         | `@nerio-ui/ui/client` | Compatible convenience API plus compound Root, Trigger, Portal, Backdrop, Content, Header, Title, Description, Body, Footer, and Close anatomy with Base UI modal focus behavior    |
-| AlertDialog   | implemented-initial | `@nerio-ui/ui/client` | Explicit confirmation primitive with alertdialog semantics, pointer-dismissal protection, deliberate initial focus, separate cancel/action boundaries, and consumer-owned mutations |
-| Sheet         | stable-core         | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral title and close composition, safe-area layout, four sides, sizes, and shared overlay motion                                                 |
-| Popover       | stable-core         | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                                                                                   |
-| Tooltip       | stable-core         | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                                                                                 |
-| Dropdown Menu | stable-core         | `@nerio-ui/ui/client` | Menu with disabled and destructive states, one nested submenu level, optional accessible descriptions, leading icons, trailing icons, and hotkeys                                   |
+| Component     | Status              | Package               | Notes                                                                                                                                                                                       |
+| ------------- | ------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dialog        | stable-core         | `@nerio-ui/ui/client` | Compatible convenience API plus compound Root, Trigger, Portal, Backdrop, Content, Header, Title, Description, Body, Footer, and Close anatomy with Base UI modal focus behavior            |
+| AlertDialog   | implemented-initial | `@nerio-ui/ui/client` | Explicit confirmation primitive with alertdialog semantics, pointer-dismissal protection, deliberate initial focus, separate cancel/action boundaries, and consumer-owned mutations         |
+| Sheet         | stable-core         | `@nerio-ui/ui/client` | Modal side-panel primitive with neutral title and close composition, safe-area layout, four sides, sizes, and shared overlay motion                                                         |
+| Popover       | stable-core         | `@nerio-ui/ui/client` | Floating content with optional context, controlled state, ref, and overlay tokens                                                                                                           |
+| Tooltip       | stable-core         | `@nerio-ui/ui/client` | Short non-essential contextual help through Base UI                                                                                                                                         |
+| Dropdown Menu | stable-core         | `@nerio-ui/ui/client` | Compatible array API plus compound Root, Trigger, Portal, Positioner, Content, Group, action, link, checkbox, radio, one-level submenu, Separator, label, description, and shortcut anatomy |
 
 ### Disclosure
 

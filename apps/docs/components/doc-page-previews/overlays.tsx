@@ -5,7 +5,28 @@ import {
   Button,
   Dialog,
   DialogFooter,
-  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuCheckboxItemIndicator,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuGroupLabel,
+  DropdownMenuItem,
+  DropdownMenuItemContent,
+  DropdownMenuItemDescription,
+  DropdownMenuItemLabel,
+  DropdownMenuLinkItem,
+  DropdownMenuPortal,
+  DropdownMenuPositioner,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuRadioItemIndicator,
+  DropdownMenuRoot,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSubContent,
+  DropdownMenuSubmenu,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
   Popover,
   Sheet,
   SheetBody,
@@ -155,27 +176,58 @@ export function OverlaysPreview({ kind, snippet }: PreviewProps) {
         </Popover>
       ) : null}
       {kind === "dropdown-menu" ? (
-        <DropdownMenu
-          trigger="Actions"
-          items={[
-            {
-              group: "Collaborate",
-              label: "Share workspace",
-              leadingIcon: UserPlus,
-            },
-            {
-              group: "Collaborate",
-              label: "Duplicate workspace",
-              leadingIcon: Copy,
-            },
-            {
-              group: "Manage",
-              label: "Archive",
-              leadingIcon: X,
-              destructive: true,
-            },
-          ]}
-        />
+        <DropdownMenuRoot>
+          <DropdownMenuTrigger render={<Button variant="secondary">Actions</Button>} />
+          <DropdownMenuPortal>
+            <DropdownMenuPositioner>
+              <DropdownMenuContent>
+                <DropdownMenuGroup>
+                  <DropdownMenuGroupLabel>Collaborate</DropdownMenuGroupLabel>
+                  <DropdownMenuLinkItem href="#dropdown-menu-guidance">
+                    <UserPlus aria-hidden />
+                    <DropdownMenuItemContent>
+                      <DropdownMenuItemLabel>Share workspace</DropdownMenuItemLabel>
+                      <DropdownMenuItemDescription>
+                        Invite people and choose access
+                      </DropdownMenuItemDescription>
+                    </DropdownMenuItemContent>
+                    <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                  </DropdownMenuLinkItem>
+                  <DropdownMenuCheckboxItem closeOnClick={false} defaultChecked>
+                    <DropdownMenuCheckboxItemIndicator />
+                    <DropdownMenuItemLabel>Notify collaborators</DropdownMenuItemLabel>
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup defaultValue="editor">
+                  <DropdownMenuRadioItem closeOnClick={false} value="viewer">
+                    <DropdownMenuRadioItemIndicator />
+                    Viewer access
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem closeOnClick={false} value="editor">
+                    <DropdownMenuRadioItemIndicator />
+                    Editor access
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuSubmenu>
+                  <DropdownMenuSubTrigger>More actions</DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>
+                      <Copy aria-hidden />
+                      Duplicate workspace
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled>Move unavailable</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSubmenu>
+                <DropdownMenuItem variant="destructive">
+                  <X aria-hidden />
+                  Archive
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenuPositioner>
+          </DropdownMenuPortal>
+        </DropdownMenuRoot>
       ) : null}
     </PreviewFrame>
   );

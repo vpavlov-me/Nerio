@@ -4405,7 +4405,7 @@
     {
       "name": "dropdown-menu",
       "title": "DropdownMenu",
-      "description": "Groups secondary commands behind a compact trigger.",
+      "description": "Groups actions, links, selection items, and one nested command level behind a compact trigger.",
       "category": "overlays",
       "dependencies": [
         "@base-ui/react",
@@ -4421,13 +4421,19 @@
           "source": "../../ui/src/components/dropdown-menu.tsx",
           "target": "components/dropdown-menu.tsx",
           "role": "component",
-          "integrity": "sha256-c4d91010c0aed6668e6da344fd4c62c16d582a596d3fb40ae8d58c16019336df"
+          "integrity": "sha256-5196e48a3dd33f44006e586db831824a55ff22f9ef8ce50726d6b8b382d29eb7"
         },
         {
           "source": "../../ui/src/lib/component-props.ts",
           "target": "lib/component-props.ts",
           "role": "utility",
           "integrity": "sha256-f5dc0015e46c5eb424cdb92aaf1d20640aa068bb6519996421d0f6f753fabb91"
+        },
+        {
+          "source": "../../ui/src/lib/resolve-class-name.ts",
+          "target": "lib/resolve-class-name.ts",
+          "role": "utility",
+          "integrity": "sha256-e2122dfc81d721980484c2b59f9e267effdbe8b25d19574fca85d1ad579b3737"
         },
         {
           "source": "../../ui/src/components/icon.tsx",
@@ -4468,11 +4474,26 @@
       ],
       "baseUiPrimitives": ["menu"],
       "slots": [
+        "trigger",
+        "portal",
+        "positioner",
         "content",
         "group",
         "group-label",
         "separator",
         "item",
+        "link-item",
+        "checkbox-item",
+        "radio-group",
+        "radio-item",
+        "indicator",
+        "sub-trigger",
+        "sub-content",
+        "submenu-icon",
+        "item-content",
+        "item-label",
+        "item-description",
+        "shortcut",
         "leading-icon",
         "label",
         "description",
@@ -4483,6 +4504,10 @@
         "default",
         "grouped",
         "destructive",
+        "link",
+        "checkbox",
+        "radio",
+        "submenu",
         "description",
         "leading icon",
         "trailing icon",
@@ -4515,14 +4540,17 @@
       "accessibility": [
         "Uses the Base UI Menu primitive.",
         "Items are keyboard reachable and can be disabled.",
+        "Link items retain native or router-link navigation semantics.",
+        "Checkbox and radio items expose checked state and can remain open while selection changes.",
+        "One nested submenu level uses direction-aware arrow navigation and restores focus to its trigger on Escape.",
         "Group labels and separators organize related commands without becoming menu items.",
         "Optional descriptions are associated with their menu items through aria-describedby.",
         "Pair the document dir attribute with Base UI DirectionProvider so menu navigation and positioned content follow LTR or RTL.",
         "Disabled items stay visible but cannot be selected.",
         "Use destructive tone only for irreversible or high-risk commands.",
-        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, and a forwarded menu popup ref."
+        "Supports controlled open, uncontrolled defaultOpen, onOpenChange, collision-aware bounded positioning, and forwarded trigger and popup refs."
       ],
-      "usage": "import { DropdownMenu } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenu trigger=\"Actions\" items={[{ group: 'Workspace', label: 'Share', description: 'Invite people and choose access' }, { group: 'Workspace', label: 'Duplicate' }, { group: 'Manage', label: 'Delete', destructive: true }]} />"
+      "usage": "import { DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuPositioner, DropdownMenuRoot, DropdownMenuSubContent, DropdownMenuSubmenu, DropdownMenuSubTrigger, DropdownMenuTrigger } from '@/components/nerio/components/dropdown-menu';\n\n<DropdownMenuRoot><DropdownMenuTrigger>Actions</DropdownMenuTrigger><DropdownMenuPortal><DropdownMenuPositioner><DropdownMenuContent><DropdownMenuItem>Rename</DropdownMenuItem><DropdownMenuSubmenu><DropdownMenuSubTrigger>Share</DropdownMenuSubTrigger><DropdownMenuSubContent><DropdownMenuItem>Copy link</DropdownMenuItem></DropdownMenuSubContent></DropdownMenuSubmenu></DropdownMenuContent></DropdownMenuPositioner></DropdownMenuPortal></DropdownMenuRoot>"
     },
     {
       "name": "tooltip",

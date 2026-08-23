@@ -115,12 +115,14 @@ After the relevant #342 foundation, these may proceed in parallel:
 - #347 — OTPField (complete on `dev`);
 - #370 — NumberField, split from #346 (complete on `dev`).
 
-<!-- parity-track:primitive-parity-b issues:#348,#350 depends-on:#151,#341,#342 -->
+<!-- parity-track:primitive-parity-b issues:#348 depends-on:#151,#341,#342 -->
+
+<!-- parity-track:compound-menu issues:#350 depends-on:#341,#342 -->
 
 These are independent parallel slices:
 
-- #348 — separate ToggleGroup and CheckboxGroup responsibilities;
-- #350 — complete bounded DropdownMenu anatomy.
+- #348 — separate ToggleGroup and CheckboxGroup responsibilities (complete on `dev`);
+- #350 — complete bounded DropdownMenu anatomy (complete on `dev`).
 
 <!-- parity-track:multi-select-decision issues:#349 depends-on:#151,#341,#342,#345,#348 -->
 
