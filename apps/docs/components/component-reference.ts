@@ -46,7 +46,7 @@ export const snippets: Record<string, string> = {
   toggle:
     "\"use client\";\n\nimport * as React from 'react';\nimport { Check, Save } from '@nerio-ui/adapters/icons';\nimport { Toggle } from '@nerio-ui/ui/client';\n\nexport function SaveToggle() {\n  const [saved, setSaved] = React.useState(false);\n\n  return (\n    <Toggle leadingIcon={saved ? Check : Save} pressed={saved} onPressedChange={setSaved}>\n      Save article\n    </Toggle>\n  );\n}",
   "toggle-group":
-    'import { Bold, Italic, Underline } from \'@nerio-ui/adapters/icons\';\nimport { ToggleGroup } from \'@nerio-ui/ui/client\';\n\n<ToggleGroup\n  aria-label="Text formatting"\n  defaultValue={["bold", "italic"]}\n  multiple\n  options={[\n    { value: "bold", icon: Bold, "aria-label": "Bold" },\n    { value: "italic", icon: Italic, "aria-label": "Italic" },\n    { value: "underline", icon: Underline, "aria-label": "Underline" },\n  ]}\n/>',
+    'import { ToggleGroup } from \'@nerio-ui/ui/client\';\n\n<ToggleGroup\n  aria-label="Text alignment"\n  defaultValue={["left"]}\n  options={[\n    { value: "left", label: "Left" },\n    { value: "center", label: "Center" },\n    { value: "right", label: "Right" },\n  ]}\n/>',
   "button-group":
     'import { ButtonGroup } from \'@nerio-ui/ui\';\nimport { Button } from \'@nerio-ui/ui/client\';\n\n<ButtonGroup aria-label="Document actions">\n  <Button variant="secondary">Cancel</Button>\n  <Button variant="secondary">Save</Button>\n</ButtonGroup>',
   kbd: "import { Kbd } from '@nerio-ui/ui';\n\n<Kbd>Esc</Kbd>\n<Kbd>⌘K</Kbd>\n<Kbd>⇧⌘P</Kbd>\n<Kbd>⌥←</Kbd>\n<Kbd>⌘↵</Kbd>",
