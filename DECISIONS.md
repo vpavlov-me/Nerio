@@ -87,6 +87,12 @@ second component styling layer.
 
 Nerio is source-first and independent. It has its own component APIs, registry format, CLI, documentation, MCP tooling, and visual language.
 
+[ADR 0007](./docs/decisions/0007-compiled-runtime-and-self-contained-registry.md) accepts
+unbundled compiled ESM plus declarations for the TypeScript runtime packages and a self-contained
+source Registry artifact. Package mode does not require Next.js `transpilePackages`; source mode
+remains editable and integrity-verified. Public import paths and the single Tailwind/token contract
+remain unchanged.
+
 Core distribution should be public through the repository, public docs, public registry, and public packages where needed.
 
 Pro distribution may use a private repository, private registry, private package, license token, paid Figma kit, and Pro MCP access.
