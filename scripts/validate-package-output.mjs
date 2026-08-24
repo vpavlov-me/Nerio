@@ -1,11 +1,12 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync, readFileSync, rmSync } from "node:fs";
 import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const packageNames = ["tokens", "adapters", "ui", "registry"];
+const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 
 function filesUnder(directory) {
   return readdirSync(directory, { recursive: true, withFileTypes: true })
@@ -25,6 +26,17 @@ function buildAll() {
       stdio: "pipe",
     });
   }
+}
+
+function validateStandaloneUiPrepack() {
+  for (const packageName of ["tokens", "adapters", "ui"]) {
+    rmSync(join(root, "packages", packageName, "dist"), { recursive: true, force: true });
+  }
+
+  execFileSync(npm, ["pack", "--dry-run"], {
+    cwd: join(root, "packages/ui"),
+    stdio: "pipe",
+  });
 }
 
 function outputFingerprint() {
@@ -121,6 +133,7 @@ function validateNodeImports() {
   );
 }
 
+validateStandaloneUiPrepack();
 buildAll();
 validateContents();
 validateNodeImports();

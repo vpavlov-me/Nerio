@@ -87,6 +87,9 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Standalone `@nerio-ui/ui` package packing now builds the compiled token and adapter workspace
+  dependencies first, so `pnpm --filter @nerio-ui/ui pack` succeeds from a clean checkout without
+  relying on a previous aggregate build.
 - Runtime package entrypoints now ship deterministic unbundled JavaScript plus declarations instead
   of TypeScript source. Supported Next.js consumers no longer need `transpilePackages`, while
   Tailwind package discovery scans `@nerio-ui/ui/dist`. The Registry artifact is now self-contained
