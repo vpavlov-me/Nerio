@@ -10159,6 +10159,10 @@
           "--n-color-action-primary",
           "--n-color-action-on-primary",
           "--n-input-border-danger",
+          "--n-label-gap",
+          "--n-density-space-md",
+          "--n-body-font-size",
+          "--n-body-line-height",
           "--n-focus-ring"
         ],
         "slots": ["field", "root", "indicator", "label", "description"],
@@ -10179,7 +10183,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-32b120bbfa815c51a2c325603c00ebbd8aa50d1e539efa56cacc5a3b550520d3",
+            "integrity": "sha256-18c00821c7bcaa1f516ad0b6dff382f8a62a4def103588ece7f30c1e8da8006f",
             "role": "component",
             "source": "../../ui/src/components/checkbox-group.tsx",
             "target": "components/checkbox-group.tsx"
@@ -12201,7 +12205,7 @@
         "docsPath": null,
         "files": [
           {
-            "integrity": "sha256-4fce00440a95379995ec17f26d6579c56a1a4030dd196fd4647a130c74c57b0b",
+            "integrity": "sha256-f6e04d7cf4781cf85f95ff8c835dceba49c8b325ac3338d6b0c839f33ebf0101",
             "role": "component",
             "source": "../../ui/src/components/radio-group.tsx",
             "target": "components/radio-group.tsx"
@@ -12260,6 +12264,10 @@
           "--n-input-border-hover",
           "--n-input-border-danger",
           "--n-color-action-primary",
+          "--n-label-gap",
+          "--n-density-space-md",
+          "--n-body-font-size",
+          "--n-body-line-height",
           "--n-field-gap",
           "--n-focus-ring"
         ],
