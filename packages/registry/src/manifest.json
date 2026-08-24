@@ -3022,10 +3022,6 @@
         "--n-color-action-primary",
         "--n-color-action-on-primary",
         "--n-input-border-danger",
-        "--n-label-gap",
-        "--n-density-space-md",
-        "--n-body-font-size",
-        "--n-body-line-height",
         "--n-focus-ring"
       ],
       "accessibility": [
@@ -3088,6 +3084,10 @@
         "--n-color-action-primary",
         "--n-color-action-on-primary",
         "--n-input-border-danger",
+        "--n-label-gap",
+        "--n-density-space-md",
+        "--n-body-font-size",
+        "--n-body-line-height",
         "--n-focus-ring"
       ],
       "accessibility": [
