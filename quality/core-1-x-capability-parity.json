@@ -70,7 +70,7 @@
   "currentRegistrySchemaVersion": "1.1.0",
   "currentRegistryItemCount": 56,
   "currentRegistryManifestSha256": "983c9bd2a1784cf2c9bf53f498cd08acd8be5073ec6e8ad0ad524bec63dcb19d",
-  "currentPublicApiSnapshotSha256": "25164fda41dd415aa3873830f2a5f33d924af25f3babf281bfb03bbfef68df73",
+  "currentPublicApiSnapshotSha256": "1b91bc47dadadf9738068b0d177323cb68d00727a29e5c9b86f8ade1f64bfa95",
   "classificationValues": {
     "existing-core": "The current stable Core surface already owns the capability.",
     "native-guidance": "Native HTML or browser behavior is the preferred public contract.",
@@ -347,12 +347,12 @@
     {
       "issue": 351,
       "title": "Package output decision",
-      "disposition": "accept-adr-0007",
+      "disposition": "implemented-adr-0007",
       "priority": "P2",
       "target": "Core 1.2",
-      "classification": "later-core-candidate",
+      "classification": "existing-core",
       "dependsOn": [341, 151],
-      "decision": "ADR 0007 accepts unbundled compiled runtime output and a self-contained editable source Registry after measured source, compiled, hybrid, and configuration-only prototypes."
+      "decision": "ADR 0007 is implemented with deterministic unbundled compiled runtime output, declarations, package-mode consumer evidence, and a self-contained integrity-verified editable source Registry."
     },
     {
       "issue": 352,
@@ -362,7 +362,7 @@
       "target": "Core 1.2",
       "classification": "later-core-candidate",
       "dependsOn": [341, 151],
-      "decision": "Modularization and source lifecycle can start independently. Project bootstrap waits only for #351."
+      "decision": "Modularization, source lifecycle, and project bootstrap can proceed independently now that #351 is complete."
     },
     {
       "issue": 353,
@@ -1133,7 +1133,7 @@
       "id": "package-output",
       "kind": "tooling",
       "userProblem": "Package consumers need the smallest reliable setup without losing source mode.",
-      "classification": "later-core-candidate",
+      "classification": "existing-core",
       "priority": "P2",
       "target": "Core 1.2",
       "nerioComponents": [],

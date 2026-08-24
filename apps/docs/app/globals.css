@@ -1,6 +1,13 @@
 @import "tailwindcss";
-@import "@nerio-ui/tokens/tailwind.css";
-@import "@nerio-ui/ui/styles.css";
+@import "../../../packages/tokens/src/styles.css";
+@import "../../../packages/tokens/src/tailwind.css";
+@import "../../../packages/ui/src/styles/motion.css";
+@import "../../../packages/ui/src/styles/spinner.css";
+@import "../../../packages/ui/src/styles/feedback.css";
+@import "../../../packages/ui/src/styles/progress.css";
+@import "../../../packages/ui/src/styles/select.css";
+@import "../../../packages/ui/src/styles/overlays.css";
+@import "../../../packages/ui/src/styles/compatibility.css";
 @source "../../../packages/ui/src";
 
 :root {

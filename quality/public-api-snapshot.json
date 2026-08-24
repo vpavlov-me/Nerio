@@ -9138,31 +9138,31 @@
       },
       "exports": {
         "./charts": {
-          "default": "./src/charts.ts",
-          "types": "./src/charts.ts"
+          "default": "./dist/charts.js",
+          "types": "./dist/charts.d.ts"
         },
         "./forms": {
-          "default": "./src/forms.ts",
-          "types": "./src/forms.ts"
+          "default": "./dist/forms.js",
+          "types": "./dist/forms.d.ts"
         },
         "./icons": {
-          "default": "./src/icons.ts",
-          "types": "./src/icons.ts"
+          "default": "./dist/icons.js",
+          "types": "./dist/icons.d.ts"
         },
         "./motion": {
-          "default": "./src/motion.tsx",
-          "types": "./src/motion.tsx"
+          "default": "./dist/motion.js",
+          "types": "./dist/motion.d.ts"
         },
         "./schema": {
-          "default": "./src/schema.ts",
-          "types": "./src/schema.ts"
+          "default": "./dist/schema.js",
+          "types": "./dist/schema.d.ts"
         },
         "./table": {
-          "default": "./src/table.ts",
-          "types": "./src/table.ts"
+          "default": "./dist/table.js",
+          "types": "./dist/table.d.ts"
         }
       },
-      "files": ["src"],
+      "files": ["dist"],
       "peerDependencies": {
         "@tanstack/react-table": "^8.21.3",
         "motion": "^12.42.2",
@@ -9188,7 +9188,8 @@
           "optional": true
         }
       },
-      "sideEffects": false
+      "sideEffects": false,
+      "type": "module"
     },
     "@nerio-ui/cli": {
       "bin": {
@@ -9204,7 +9205,8 @@
       "files": ["src"],
       "peerDependencies": null,
       "peerDependenciesMeta": null,
-      "sideEffects": null
+      "sideEffects": null,
+      "type": null
     },
     "@nerio-ui/mcp": {
       "bin": {
@@ -9227,27 +9229,28 @@
       "files": ["src"],
       "peerDependencies": null,
       "peerDependenciesMeta": null,
-      "sideEffects": null
+      "sideEffects": null,
+      "type": null
     },
     "@nerio-ui/registry": {
       "bin": null,
-      "dependencies": {
-        "@nerio-ui/adapters": "workspace:*",
-        "@nerio-ui/tokens": "workspace:*",
-        "@nerio-ui/ui": "workspace:*"
-      },
+      "dependencies": {},
       "engines": {
         "node": ">=22"
       },
       "exports": {
-        ".": "./src/index.ts",
-        "./manifest.json": "./src/manifest.json",
-        "./public-commands.json": "./src/public-commands.json"
+        ".": {
+          "default": "./dist/index.js",
+          "types": "./dist/index.d.ts"
+        },
+        "./manifest.json": "./dist/manifest.json",
+        "./public-commands.json": "./dist/public-commands.json"
       },
-      "files": ["src"],
+      "files": ["dist"],
       "peerDependencies": null,
       "peerDependenciesMeta": null,
-      "sideEffects": null
+      "sideEffects": null,
+      "type": null
     },
     "@nerio-ui/tokens": {
       "bin": null,
@@ -9256,14 +9259,18 @@
         "node": ">=22"
       },
       "exports": {
-        ".": "./src/index.ts",
-        "./styles.css": "./src/styles.css",
-        "./tailwind.css": "./src/tailwind.css"
+        ".": {
+          "default": "./dist/index.js",
+          "types": "./dist/index.d.ts"
+        },
+        "./styles.css": "./dist/styles.css",
+        "./tailwind.css": "./dist/tailwind.css"
       },
-      "files": ["src"],
+      "files": ["dist"],
       "peerDependencies": null,
       "peerDependenciesMeta": null,
-      "sideEffects": ["./src/styles.css", "./src/tailwind.css"]
+      "sideEffects": ["./dist/styles.css", "./dist/tailwind.css"],
+      "type": "module"
     },
     "@nerio-ui/ui": {
       "bin": null,
@@ -9278,18 +9285,25 @@
         "node": ">=22"
       },
       "exports": {
-        ".": "./src/index.ts",
-        "./client": "./src/client.ts",
-        "./styles.css": "./src/styles.css"
+        ".": {
+          "default": "./dist/index.js",
+          "types": "./dist/index.d.ts"
+        },
+        "./client": {
+          "default": "./dist/client.js",
+          "types": "./dist/client.d.ts"
+        },
+        "./styles.css": "./dist/styles.css"
       },
-      "files": ["src"],
+      "files": ["dist"],
       "peerDependencies": {
         "react": ">=19 <20",
         "react-dom": ">=19 <20",
         "tailwindcss": ">=4.1.0 <5"
       },
       "peerDependenciesMeta": null,
-      "sideEffects": ["./src/styles.css"]
+      "sideEffects": ["./dist/styles.css"],
+      "type": "module"
     }
   },
   "registry": {

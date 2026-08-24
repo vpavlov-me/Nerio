@@ -107,21 +107,17 @@ function assertPackedAdapterContract(tarball) {
       throw new Error(`${peer} must not remain a mandatory dependency.`);
     }
   }
-  const expectedSources = [
-    "icons.ts",
-    "table.ts",
-    "charts.ts",
-    "forms.ts",
-    "schema.ts",
-    "motion.tsx",
-  ];
-  for (const source of expectedSources) {
-    if (!entries.includes(`package/src/${source}`)) {
-      throw new Error(`Packed @nerio-ui/adapters is missing src/${source}.`);
+  const expectedOutputs = ["icons", "table", "charts", "forms", "schema", "motion"];
+  for (const output of expectedOutputs) {
+    if (
+      !entries.includes(`package/dist/${output}.js`) ||
+      !entries.includes(`package/dist/${output}.d.ts`)
+    ) {
+      throw new Error(`Packed @nerio-ui/adapters is missing compiled ${output} output.`);
     }
   }
-  if (entries.includes("package/src/index.ts")) {
-    throw new Error("Packed @nerio-ui/adapters includes the unsupported monolithic root source.");
+  if (entries.some((entry) => entry.startsWith("package/src/"))) {
+    throw new Error("Packed @nerio-ui/adapters must not include TypeScript runtime source.");
   }
 }
 
@@ -217,7 +213,15 @@ try {
     const configPath = join(optionalConsumer, `tsconfig.${subpath}.json`);
     writeFileSync(
       configPath,
-      `${JSON.stringify({ extends: "./tsconfig.json", include: [`./${subpath}.ts*`] }, null, 2)}\n`,
+      `${JSON.stringify(
+        {
+          extends: "./tsconfig.json",
+          compilerOptions: { skipLibCheck: false },
+          include: [`./${subpath}.ts*`],
+        },
+        null,
+        2,
+      )}\n`,
     );
     const missingPeer = runResult(pnpm, ["exec", "tsc", "--project", configPath], {
       cwd: optionalConsumer,
@@ -238,6 +242,10 @@ try {
         `${peer}@${peerVersions[peer]}`,
       ],
       { cwd: optionalConsumer },
+    );
+    writeFileSync(
+      configPath,
+      `${JSON.stringify({ extends: "./tsconfig.json", include: [`./${subpath}.ts*`] }, null, 2)}\n`,
     );
     run(pnpm, ["exec", "tsc", "--project", configPath], { cwd: optionalConsumer });
   }

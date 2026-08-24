@@ -160,6 +160,7 @@ function packageContracts() {
           peerDependencies: packageJson.peerDependencies ?? null,
           peerDependenciesMeta: packageJson.peerDependenciesMeta ?? null,
           sideEffects: packageJson.sideEffects ?? null,
+          type: packageJson.type ?? null,
         },
       ];
     }),

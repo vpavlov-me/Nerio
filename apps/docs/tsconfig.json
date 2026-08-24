@@ -1,7 +1,17 @@
 {
   "extends": "@nerio-ui/config/tsconfig/next",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@nerio-ui/adapters/*": ["../../packages/adapters/src/*"],
+      "@nerio-ui/registry": ["../../packages/registry/src/index.ts"],
+      "@nerio-ui/registry/*": ["../../packages/registry/src/*"],
+      "@nerio-ui/tokens": ["../../packages/tokens/src/index.ts"],
+      "@nerio-ui/tokens/*": ["../../packages/tokens/src/*"],
+      "@nerio-ui/ui": ["../../packages/ui/src/index.ts"],
+      "@nerio-ui/ui/client": ["../../packages/ui/src/client.ts"],
+      "@nerio-ui/ui/*": ["../../packages/ui/src/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

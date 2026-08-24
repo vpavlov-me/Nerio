@@ -1864,7 +1864,7 @@ function collectTailwindSetupProblems(config) {
   const usesPackageMode =
     importsPackageBridge ||
     importsPackageStyles ||
-    stylesheets.some((stylesheet) => /@source\s+[^;]*@nerio-ui\/ui\/src/.test(stylesheet.source));
+    stylesheets.some((stylesheet) => /@source\s+[^;]*@nerio-ui\/ui\/dist/.test(stylesheet.source));
   const usesSourceMode =
     fs.existsSync(sourceStylesRoot) ||
     sourceStyles.some((entry) => entry.target && isWithin(sourceStylesRoot, entry.target));
@@ -1893,10 +1893,12 @@ function collectTailwindSetupProblems(config) {
       );
     }
     if (
-      !stylesheets.some((stylesheet) => /@source\s+[^;]*@nerio-ui\/ui\/src/.test(stylesheet.source))
+      !stylesheets.some((stylesheet) =>
+        /@source\s+[^;]*@nerio-ui\/ui\/dist/.test(stylesheet.source),
+      )
     ) {
       problems.push(
-        "Package mode must register @nerio-ui/ui/src with @source so Tailwind detects Nerio component utilities.",
+        "Package mode must register @nerio-ui/ui/dist with @source so Tailwind detects Nerio component utilities.",
       );
     }
   }

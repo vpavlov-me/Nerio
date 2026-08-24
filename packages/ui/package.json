@@ -12,6 +12,7 @@
     "accessibility"
   ],
   "private": false,
+  "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -26,19 +27,26 @@
     "node": ">=22"
   },
   "files": [
-    "src"
+    "dist"
   ],
   "sideEffects": [
-    "./src/styles.css"
+    "./dist/styles.css"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./client": "./src/client.ts",
-    "./styles.css": "./src/styles.css"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "default": "./dist/client.js"
+    },
+    "./styles.css": "./dist/styles.css"
   },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "node ../../scripts/build-package-output.mjs ui",
     "lint": "eslint .",
+    "prepack": "pnpm build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run test/contracts",
     "test:watch": "vitest",

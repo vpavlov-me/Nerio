@@ -10,6 +10,7 @@
     "tailwindcss"
   ],
   "private": false,
+  "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -24,20 +25,24 @@
     "node": ">=22"
   },
   "files": [
-    "src"
+    "dist"
   ],
   "sideEffects": [
-    "./src/styles.css",
-    "./src/tailwind.css"
+    "./dist/styles.css",
+    "./dist/tailwind.css"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./styles.css": "./src/styles.css",
-    "./tailwind.css": "./src/tailwind.css"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./tailwind.css": "./dist/tailwind.css"
   },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "node ../../scripts/build-package-output.mjs tokens",
     "lint": "eslint .",
+    "prepack": "pnpm build",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

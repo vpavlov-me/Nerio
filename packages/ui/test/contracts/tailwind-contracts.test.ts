@@ -116,7 +116,7 @@ describe("Tailwind styling contract", () => {
   });
 
   it("preserves native Nerio control typography without requiring Preflight", () => {
-    const styles = readFileSync(resolve(process.cwd(), "src/styles.css"), "utf8");
+    const styles = readFileSync(resolve(process.cwd(), "src/styles/compatibility.css"), "utf8");
 
     expect(styles).toContain(
       ':where(button, input, select, textarea):where([class^="n-"], [class*=" n-"])',
@@ -126,7 +126,9 @@ describe("Tailwind styling contract", () => {
 
   it("keeps residual CSS on the documented keyframe and no-Preflight allowlist", () => {
     const stylesDirectory = resolve(process.cwd(), "src/styles");
-    expect(readdirSync(stylesDirectory).sort()).toEqual(Object.keys(residualKeyframes).sort());
+    expect(readdirSync(stylesDirectory).sort()).toEqual(
+      [...Object.keys(residualKeyframes), "compatibility.css"].sort(),
+    );
 
     for (const [file, keyframes] of Object.entries(residualKeyframes)) {
       const source = readFileSync(resolve(stylesDirectory, file), "utf8");
@@ -147,14 +149,18 @@ describe("Tailwind styling contract", () => {
       "./styles/progress.css",
       "./styles/select.css",
       "./styles/overlays.css",
+      "./styles/compatibility.css",
     ]);
-    expect(topLevelBlockHeaders(entrypoint.replaceAll(/@import\s+"[^"]+";/g, ""))).toEqual([
+    expect(topLevelBlockHeaders(entrypoint.replaceAll(/@import\s+"[^"]+";/g, ""))).toEqual([]);
+
+    const compatibility = readFileSync(resolve(stylesDirectory, "compatibility.css"), "utf8");
+    expect(topLevelBlockHeaders(compatibility)).toEqual([
       ':where([class^="n-"], [class*=" n-"])',
       ':where(button, input, select, textarea):where([class^="n-"], [class*=" n-"])',
     ]);
-    expect(entrypoint).toContain("box-sizing: border-box;");
-    expect(entrypoint).toContain("font-family: inherit;");
-    expect(entrypoint).not.toContain("@apply");
+    expect(compatibility).toContain("box-sizing: border-box;");
+    expect(compatibility).toContain("font-family: inherit;");
+    expect(`${entrypoint}\n${compatibility}`).not.toContain("@apply");
   });
 
   it("composes the Dialog close control from the secondary Button contract", () => {

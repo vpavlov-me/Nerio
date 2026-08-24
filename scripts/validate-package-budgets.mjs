@@ -104,12 +104,12 @@ try {
 
   const serverBundle = await bundleProbe(
     "Server Card named import",
-    'import { Card } from "./packages/ui/src/index.ts"; console.log(Card);',
+    'import { Card } from "./packages/ui/dist/index.js"; console.log(Card);',
     budgets.bundles.serverCardBytes,
   );
   const directServerBundle = await bundleProbe(
     "Direct Card import control",
-    'import { Card } from "./packages/ui/src/components/card.tsx"; console.log(Card);',
+    'import { Card } from "./packages/ui/dist/components/card.js"; console.log(Card);',
     budgets.bundles.serverCardBytes,
   );
   if (serverBundle.bytes > directServerBundle.bytes + 250) {
@@ -118,12 +118,12 @@ try {
 
   const clientBundle = await bundleProbe(
     "Client Button named import",
-    'import { Button } from "./packages/ui/src/client.ts"; console.log(Button);',
+    'import { Button } from "./packages/ui/dist/client.js"; console.log(Button);',
     budgets.bundles.clientButtonBytes,
   );
   const directClientBundle = await bundleProbe(
     "Direct Button import control",
-    'import { Button } from "./packages/ui/src/components/button.tsx"; console.log(Button);',
+    'import { Button } from "./packages/ui/dist/components/button.js"; console.log(Button);',
     budgets.bundles.clientButtonBytes,
   );
   if (clientBundle.bytes > directClientBundle.bytes + 250) {
@@ -132,7 +132,7 @@ try {
 
   const adapterIconBundle = await bundleProbe(
     "Named Search icon import",
-    'import { Search } from "./packages/adapters/src/icons.ts"; console.log(Search);',
+    'import { Search } from "./packages/adapters/dist/icons.js"; console.log(Search);',
     budgets.bundles.namedIconBytes,
     { includeLucide: true },
   );
@@ -155,7 +155,7 @@ try {
   ]) {
     await bundleProbe(
       `${name} adapter import`,
-      `import { ${exportName} } from "./packages/adapters/src/${name}${name === "motion" ? ".tsx" : ".ts"}"; console.log(${exportName});`,
+      `import { ${exportName} } from "./packages/adapters/dist/${name}.js"; console.log(${exportName});`,
       budgets.bundles[`${name}AdapterBytes`],
     );
   }

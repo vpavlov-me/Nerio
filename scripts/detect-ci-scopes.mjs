@@ -70,14 +70,17 @@ function isPackageBoundary(path) {
     "pnpm-lock.yaml",
     "pnpm-workspace.yaml",
     /^packages\/[^/]+\/package\.json$/,
+    /^packages\/[^/]+\/tsconfig\.build\.json$/,
     /^packages\/ui\/src\/(?:(?:index|client)\.ts|styles\.css)$/,
     /^packages\/(?:tokens|adapters|registry|cli|mcp)\/src\/index\.[cm]?[jt]s$/,
     "quality/package-budgets.json",
     "scripts/adapter-consumer-smoke.mjs",
+    "scripts/build-package-output.mjs",
     "scripts/pack-check.mjs",
     "scripts/release-smoke.mjs",
     "scripts/validate-motion-adapter.mjs",
     "scripts/validate-package-budgets.mjs",
+    "scripts/validate-package-output.mjs",
   ]);
 }
 

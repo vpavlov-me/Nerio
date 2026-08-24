@@ -51,7 +51,10 @@ if (!tokenSource.includes("--n-motion-translate-md: 0.375rem;")) {
 if (!adapterSource.includes('const slideDistance = "0.375rem";')) {
   throw new Error("Motion adapter directional distance drift.");
 }
-if (adapterPackage.exports?.["./motion"]?.default !== "./src/motion.tsx") {
+if (
+  adapterPackage.exports?.["./motion"]?.default !== "./dist/motion.js" ||
+  adapterPackage.exports?.["./motion"]?.types !== "./dist/motion.d.ts"
+) {
   throw new Error("@nerio-ui/adapters/motion export is missing.");
 }
 if (

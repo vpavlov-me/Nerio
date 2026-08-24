@@ -64,6 +64,7 @@ const requiredReleaseCommands = [
   "pnpm validate:stable-readiness",
   "pnpm test:sbom",
   "pnpm validate:platform-support",
+  "pnpm validate:package-output",
   "pnpm validate:package-budgets",
   "pnpm test:browser:pr",
   "pnpm test:browser:chromium",

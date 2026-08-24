@@ -729,7 +729,7 @@ test("keeps DropdownMenu compound selection, navigation, and submenu behavior co
   const light = page.getByRole("menuitemradio", { name: "Light" });
   await expect(light).toBeVisible();
   await expect(light).toBeFocused();
-  await light.click();
+  await page.keyboard.press("Enter");
   await expect(light).toBeChecked();
   await expect(menu).toBeVisible();
   await page.keyboard.press("Escape");

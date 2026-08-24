@@ -8,8 +8,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 const packageDirs = [
   "packages/tokens",
-  "packages/ui",
   "packages/adapters",
+  "packages/ui",
   "packages/registry",
   "packages/cli",
   "packages/mcp",

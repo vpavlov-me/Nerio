@@ -45,6 +45,19 @@ test("requires the production dependency audit in the release gate", () => {
   );
 });
 
+test("requires deterministic package output in the release gate", () => {
+  const sources = readCiWorkflowSources(root);
+  sources.releaseGate = sources.releaseGate.replace(
+    "      - run: pnpm validate:package-output\n",
+    "",
+  );
+  assert.ok(
+    ciWorkflowContractFailures(sources).includes(
+      `${ciWorkflowPaths.releaseGate}: missing pnpm validate:package-output`,
+    ),
+  );
+});
+
 test("keeps each workflow on its intended pull-request base", () => {
   const sources = readCiWorkflowSources(root);
   sources.prGate = sources.prGate.replace("      - dev", "      - main");

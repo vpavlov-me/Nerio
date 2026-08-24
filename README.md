@@ -158,8 +158,10 @@ Source-installed registry components keep their local paths, such as
 detects `src/app` or `src/pages`, matching the standard Next.js `@/*` alias; projects without a
 `src` application directory keep the `components/nerio` default. Use `--components` to override it.
 
-The Core packages ship TypeScript source. Next.js consumers must list the Nerio packages they use
-in `transpilePackages`; the complete configuration is documented in Getting started.
+The runtime Core packages ship unbundled JavaScript and declarations, so supported Next.js
+consumers do not need `transpilePackages`. Tailwind scans the compiled UI output through the
+package-mode `@source` path documented in Getting started. Editable source remains available
+through the version-aligned Registry and CLI workflow.
 
 Runtime, framework, browser-engine, operating-system, and assistive-technology expectations are
 defined in the [platform support policy](./docs/platform-support.md) and checked in CI.
