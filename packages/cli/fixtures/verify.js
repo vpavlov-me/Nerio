@@ -396,7 +396,7 @@ function writePackageTailwindSetup(target, { explicitPreflight = false } = {}) {
       '@import "tailwindcss/utilities.css" layer(utilities);',
       '@import "@nerio-ui/tokens/tailwind.css";',
       '@import "@nerio-ui/ui/styles.css";',
-      '@source "../node_modules/@nerio-ui/ui/src";',
+      '@source "../node_modules/@nerio-ui/ui/dist";',
       "",
     ]
       .filter(Boolean)

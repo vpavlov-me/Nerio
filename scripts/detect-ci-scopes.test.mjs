@@ -108,8 +108,11 @@ test("isolates workflow metadata and the focused branch-policy contract", () => 
 test("routes narrow public entrypoints and broad root package policy safely", () => {
   for (const path of [
     "packages/ui/src/client.ts",
+    "packages/ui/tsconfig.build.json",
     "quality/package-budgets.json",
+    "scripts/build-package-output.mjs",
     "scripts/pack-check.mjs",
+    "scripts/validate-package-output.mjs",
   ]) {
     assert.equal(scopes(path).packages, true, path);
   }

@@ -6,17 +6,17 @@ release-candidate gate, consumer fixtures, release documentation, and this polic
 
 ## Runtime and framework baseline
 
-| Surface           | Supported baseline | Notes                                                                                  |
-| ----------------- | ------------------ | -------------------------------------------------------------------------------------- |
-| Node.js           | `>=22`             | Node 22 is the minimum; clean consumer evidence runs on Node 22 and Node 24.           |
-| React             | `>=19 <20`         | `react` and `react-dom` use tested React 19; future majors require release evidence.   |
-| Next.js consumers | `>=16.2.0 <17`     | Packages ship TypeScript source; list every used Nerio package in `transpilePackages`. |
-| TypeScript        | `>=5.9 <6`         | Published source and declarations are checked with strict TypeScript 5.9.              |
-| Tailwind CSS      | `>=4.1.0 <5`       | Required for source installs and the package-mode `@source` contract.                  |
-| Motion adapter    | `motion@^12.42.2`  | Optional client-only peer; Core UI and unrelated adapters remain Motion-free.          |
+| Surface           | Supported baseline | Notes                                                                                |
+| ----------------- | ------------------ | ------------------------------------------------------------------------------------ |
+| Node.js           | `>=22`             | Node 22 is the minimum; clean consumer evidence runs on Node 22 and Node 24.         |
+| React             | `>=19 <20`         | `react` and `react-dom` use tested React 19; future majors require release evidence. |
+| Next.js consumers | `>=16.2.0 <17`     | Consume compiled package exports; Nerio does not require `transpilePackages`.        |
+| TypeScript        | `>=5.9 <6`         | Published declarations and editable Registry source are checked with TypeScript 5.9. |
+| Tailwind CSS      | `>=4.1.0 <5`       | Required for source installs and the package-mode `dist` `@source` contract.         |
+| Motion adapter    | `motion@^12.42.2`  | Optional client-only peer; Core UI and unrelated adapters remain Motion-free.        |
 
-Other React build systems may consume Nerio source when they transpile TypeScript, process Tailwind
-CSS v4, and honor package export maps, but they are not release-gate environments yet.
+Other React build systems may consume Nerio's compiled exports when they process Tailwind CSS v4
+and honor package export maps, but they are not release-gate environments yet.
 
 The bounded compatibility matrix uses these packed-artifact profiles:
 

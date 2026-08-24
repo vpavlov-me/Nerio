@@ -24,23 +24,23 @@
     "node": ">=22"
   },
   "files": [
-    "src"
+    "dist"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./manifest.json": "./src/manifest.json",
-    "./public-commands.json": "./src/public-commands.json"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./manifest.json": "./dist/manifest.json",
+    "./public-commands.json": "./dist/public-commands.json"
   },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "node ../../scripts/build-package-output.mjs registry",
     "lint": "eslint .",
+    "prepack": "pnpm build",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@nerio-ui/adapters": "workspace:*",
-    "@nerio-ui/tokens": "workspace:*",
-    "@nerio-ui/ui": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@nerio-ui/config": "workspace:*",
     "eslint": "^9.39.2",

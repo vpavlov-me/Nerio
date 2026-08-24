@@ -217,6 +217,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm validate:platform-support
       - run: pnpm audit:prod
+      - run: pnpm validate:package-output
       - run: pnpm validate:package-budgets
       - run: pnpm validate:release:metadata
       - run: pnpm pack:check

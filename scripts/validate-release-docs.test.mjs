@@ -34,8 +34,20 @@ test("release documentation validator fails when focused tests disappear from RE
   invalidFixture("--release", "RELEASE.md", "pnpm test:catalog");
 });
 
+test("release documentation validator requires package-output instructions", () => {
+  invalidFixture("--release", "RELEASE.md", "pnpm validate:package-output");
+});
+
 test("release documentation validator fails when focused tests disappear from the release gate", () => {
   invalidFixture("--release-gate", ".github/workflows/release-gate.yml", "pnpm test:tokens");
+});
+
+test("release documentation validator requires package output in the release gate", () => {
+  invalidFixture(
+    "--release-gate",
+    ".github/workflows/release-gate.yml",
+    "pnpm validate:package-output",
+  );
 });
 
 test("release documentation validator fails when focused tests disappear from the development gate", () => {

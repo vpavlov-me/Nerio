@@ -11,6 +11,7 @@
     "motion"
   ],
   "private": false,
+  "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -25,38 +26,39 @@
     "node": ">=22"
   },
   "files": [
-    "src"
+    "dist"
   ],
   "sideEffects": false,
   "exports": {
     "./icons": {
-      "types": "./src/icons.ts",
-      "default": "./src/icons.ts"
+      "types": "./dist/icons.d.ts",
+      "default": "./dist/icons.js"
     },
     "./table": {
-      "types": "./src/table.ts",
-      "default": "./src/table.ts"
+      "types": "./dist/table.d.ts",
+      "default": "./dist/table.js"
     },
     "./charts": {
-      "types": "./src/charts.ts",
-      "default": "./src/charts.ts"
+      "types": "./dist/charts.d.ts",
+      "default": "./dist/charts.js"
     },
     "./forms": {
-      "types": "./src/forms.ts",
-      "default": "./src/forms.ts"
+      "types": "./dist/forms.d.ts",
+      "default": "./dist/forms.js"
     },
     "./schema": {
-      "types": "./src/schema.ts",
-      "default": "./src/schema.ts"
+      "types": "./dist/schema.d.ts",
+      "default": "./dist/schema.js"
     },
     "./motion": {
-      "types": "./src/motion.tsx",
-      "default": "./src/motion.tsx"
+      "types": "./dist/motion.d.ts",
+      "default": "./dist/motion.js"
     }
   },
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "node ../../scripts/build-package-output.mjs adapters",
     "lint": "eslint .",
+    "prepack": "pnpm build",
     "test:motion": "tsc --project tsconfig.test.json && vitest run test/motion.test.tsx",
     "typecheck": "tsc --noEmit"
   },

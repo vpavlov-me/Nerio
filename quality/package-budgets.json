@@ -1,9 +1,9 @@
 {
   "packages": {
     "@nerio-ui/tokens": { "tarballBytes": 15000, "unpackedBytes": 100000 },
-    "@nerio-ui/ui": { "tarballBytes": 94000, "unpackedBytes": 500000 },
     "@nerio-ui/adapters": { "tarballBytes": 5000, "unpackedBytes": 30000 },
-    "@nerio-ui/registry": { "tarballBytes": 38000, "unpackedBytes": 250000 },
+    "@nerio-ui/ui": { "tarballBytes": 94000, "unpackedBytes": 500000 },
+    "@nerio-ui/registry": { "tarballBytes": 140000, "unpackedBytes": 800000 },
     "@nerio-ui/cli": { "tarballBytes": 20000, "unpackedBytes": 82000 },
     "@nerio-ui/mcp": { "tarballBytes": 4000, "unpackedBytes": 30000 }
   },

@@ -226,7 +226,7 @@ review rules without duplicating that contract.
   selectors MUST target stable attributes and MUST NOT depend on ambiguous BEM class parsing.
 - The public `@theme inline` bridge exposes stable foundation and semantic contracts only.
   Component-internal `--n-*` variables remain static component-recipe references.
-- Package consumers MUST register installed UI source with `@source`; source-installed components
+- Package consumers MUST register installed compiled UI output with `@source`; source-installed components
   are detected from the consumer project and must include the copied bridge and merge helper.
 - Consumers own Tailwind Preflight. Nerio's residual CSS is limited to the documented keyframes and
   scoped no-Preflight compatibility rules. A new residual category requires an architecture decision

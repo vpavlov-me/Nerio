@@ -87,6 +87,13 @@ Items under `Unreleased` may change before the next public release.
 
 ### Changed
 
+- Runtime package entrypoints now ship deterministic unbundled JavaScript plus declarations instead
+  of TypeScript source. Supported Next.js consumers no longer need `transpilePackages`, while
+  Tailwind package discovery scans `@nerio-ui/ui/dist`. The Registry artifact is now self-contained
+  and keeps integrity-verified editable source for the CLI workflow. Public import paths and
+  source-installed component behavior remain unchanged. The measured UI tarball is 88,104 bytes
+  against its unchanged 94,000-byte ceiling; the self-contained Registry is 137,703 bytes against a
+  new 140,000-byte ceiling. CSS and named-import bundle measurements remain unchanged.
 - Raised only the root documentation route JS and deterministic transfer ceilings needed for the
   public NumberField API and Component Lab specimen. The measured route is 818,348 raw JS bytes
   and 301,961 gzip-transfer bytes; CSS and browser-runtime ceilings remain unchanged.

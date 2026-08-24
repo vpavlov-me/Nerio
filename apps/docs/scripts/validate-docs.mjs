@@ -200,11 +200,14 @@ function uiEntrypointFailures() {
     failures.push("packages/ui/src/client.ts: client entrypoint must start with use client");
   }
 
-  if (packageJson.exports?.["./client"] !== "./src/client.ts") {
+  if (
+    packageJson.exports?.["./client"]?.default !== "./dist/client.js" ||
+    packageJson.exports?.["./client"]?.types !== "./dist/client.d.ts"
+  ) {
     failures.push("packages/ui/package.json: missing ./client export");
   }
 
-  if (packageJson.exports?.["./styles.css"] !== "./src/styles.css") {
+  if (packageJson.exports?.["./styles.css"] !== "./dist/styles.css") {
     failures.push("packages/ui/package.json: styles.css export changed");
   }
 
@@ -240,7 +243,7 @@ function packageReadinessFailures() {
     }
   }
 
-  if (tokensPackage.exports?.["./styles.css"] !== "./src/styles.css") {
+  if (tokensPackage.exports?.["./styles.css"] !== "./dist/styles.css") {
     failures.push("packages/tokens/package.json: missing ./styles.css export");
   }
 

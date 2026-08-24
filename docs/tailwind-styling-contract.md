@@ -25,11 +25,13 @@ contracts only; component-internal variables are referenced statically in compon
 @import "tailwindcss";
 @import "@nerio-ui/tokens/tailwind.css";
 @import "@nerio-ui/ui/styles.css";
-@source "../node_modules/@nerio-ui/ui/src";
+@source "../node_modules/@nerio-ui/ui/dist";
 ```
 
 The `@source` path is relative to the consumer stylesheet and must point at the installed package
-source under the package manager's layout. Consumers using a different layout adjust only that path.
+output under the package manager's layout. Consumers using a different layout adjust only that
+path. The runtime packages already contain unbundled JavaScript and declarations; framework-level
+TypeScript transpilation is not part of package mode.
 
 ## Source-install mode
 

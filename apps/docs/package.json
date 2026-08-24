@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "predev": "pnpm --workspace-root build:public-packages",
     "dev": "next dev --port 3000",
+    "prebuild": "pnpm --workspace-root build:public-packages",
     "build": "next build",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

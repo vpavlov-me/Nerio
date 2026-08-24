@@ -229,6 +229,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm validate:package-output
       - run: pnpm validate:package-budgets
       - run: pnpm test:consumer:vite
       - run: pnpm pack:check
