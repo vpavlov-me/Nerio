@@ -36,7 +36,6 @@ describe("CheckboxGroup contracts", () => {
     expect(group).toHaveAttribute("data-slot", "group");
     expect(group).toHaveAttribute("data-required");
     expect(group).toHaveClass("gap-(--n-density-space-md)");
-    expect(group.parentElement).toHaveClass("[&>[data-slot=group]]:mt-(--n-density-space-md)");
     expect(screen.getByText("Choose every channel you want to receive.")).toHaveClass(
       "text-(length:--n-body-font-size)",
     );

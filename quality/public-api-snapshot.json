@@ -10159,6 +10159,10 @@
           "--n-color-action-primary",
           "--n-color-action-on-primary",
           "--n-input-border-danger",
+          "--n-label-gap",
+          "--n-density-space-md",
+          "--n-body-font-size",
+          "--n-body-line-height",
           "--n-focus-ring"
         ],
         "slots": ["field", "root", "indicator", "label", "description"],
@@ -12260,6 +12264,10 @@
           "--n-input-border-hover",
           "--n-input-border-danger",
           "--n-color-action-primary",
+          "--n-label-gap",
+          "--n-density-space-md",
+          "--n-body-font-size",
+          "--n-body-line-height",
           "--n-field-gap",
           "--n-focus-ring"
         ],
