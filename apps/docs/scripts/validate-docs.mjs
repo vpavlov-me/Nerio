@@ -267,6 +267,7 @@ function packageReadinessFailures() {
 }
 
 function tailwindDocumentationFailures() {
+  const globals = read("apps/docs/app/globals.css");
   const motionPage = read("apps/docs/app/docs/foundations/motion/page.tsx");
   const tokenPage = read("apps/docs/app/docs/foundations/tokens/page.tsx");
   const componentPage = read("apps/docs/components/doc-page.tsx");
@@ -335,6 +336,25 @@ function tailwindDocumentationFailures() {
 
   for (const [source, expected, message] of required) {
     if (!source.replaceAll(/\s+/g, " ").includes(expected)) failures.push(message);
+  }
+
+  for (const sourceImport of [
+    "../../../packages/tokens/src/styles.css",
+    "../../../packages/tokens/src/tailwind.css",
+    "../../../packages/ui/src/styles/motion.css",
+    "../../../packages/ui/src/styles/spinner.css",
+    "../../../packages/ui/src/styles/feedback.css",
+    "../../../packages/ui/src/styles/progress.css",
+    "../../../packages/ui/src/styles/select.css",
+    "../../../packages/ui/src/styles/overlays.css",
+    "../../../packages/ui/src/styles/compatibility.css",
+  ]) {
+    if (!globals.includes(`@import "${sourceImport}";`)) {
+      failures.push(`Docs development CSS must import the live source file: ${sourceImport}`);
+    }
+  }
+  if (globals.includes('@import "@nerio-ui/')) {
+    failures.push("Docs development CSS must not read one-time package output");
   }
 
   if (
