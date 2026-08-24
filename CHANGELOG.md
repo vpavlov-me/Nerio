@@ -8,6 +8,8 @@ Items under `Unreleased` may change before the next public release.
 
 ### Added
 
+- Added `Bold`, `Italic`, and `Underline` to the public `@nerio-ui/adapters/icons` entrypoint for
+  accessible text-formatting controls and the focused ToggleGroup documentation example.
 - Added a separate bounded Core 1.2 MultiSelect for finite local options with synchronous
   filtering, ordered removable text values, independent selection/query/popup state, repeated form
   values, reset, groups, disabled selected values, localizable actions, and polite announcements.

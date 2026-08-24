@@ -11,6 +11,7 @@ import {
   TabsList,
   TabsPanels,
   TabsTrigger,
+  ToggleGroup,
 } from "@nerio-ui/ui/client";
 import { PreviewFrame } from "./doc-page-previews/shared";
 
@@ -29,6 +30,15 @@ export function LocalizationPreview({ snippet }: { snippet: string }) {
               <TabsContent value="details">Details content</TabsContent>
             </TabsPanels>
           </Tabs>
+          <ToggleGroup
+            aria-label="RTL text alignment"
+            defaultValue={["right"]}
+            options={[
+              { value: "left", label: "Left" },
+              { value: "center", label: "Center" },
+              { value: "right", label: "Right" },
+            ]}
+          />
           <Slider label="RTL priority" defaultValue={35} />
           {(["left", "right"] as const).map((side) => (
             <SidebarProvider

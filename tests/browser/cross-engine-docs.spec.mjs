@@ -613,6 +613,11 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
 
   const fixture = page.getByRole("region", { name: "RTL direction preview" });
   await expect(fixture.locator('[data-direction-fixture="rtl"]')).toHaveAttribute("dir", "rtl");
+  const toggleGroup = fixture.getByRole("group", { name: "RTL text alignment" });
+  const center = toggleGroup.getByRole("button", { name: "Center" });
+  await center.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(toggleGroup.getByRole("button", { name: "Right" })).toBeFocused();
   for (const side of ["left", "right"]) {
     const provider = fixture.locator(`[data-physical-side="${side}"]`);
     const sidebar = provider.getByRole("complementary", {

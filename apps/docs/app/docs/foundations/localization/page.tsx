@@ -20,7 +20,7 @@ const documentExample = `<html dir="rtl" data-theme="purple" data-mode="system" 
 </html>`;
 
 const fixtureExample = `import { DirectionProvider } from "@base-ui/react/direction-provider";
-import { SidebarProvider, Slider, Tabs, TabsContent, TabsList, TabsPanels, TabsTrigger } from "@nerio-ui/ui/client";
+import { SidebarProvider, Slider, Tabs, TabsContent, TabsList, TabsPanels, TabsTrigger, ToggleGroup } from "@nerio-ui/ui/client";
 
 <DirectionProvider direction="rtl">
   <div dir="rtl">
@@ -34,6 +34,15 @@ import { SidebarProvider, Slider, Tabs, TabsContent, TabsList, TabsPanels, TabsT
         <TabsContent value="details">Details content</TabsContent>
       </TabsPanels>
     </Tabs>
+    <ToggleGroup
+      aria-label="RTL text alignment"
+      defaultValue={["right"]}
+      options={[
+        { value: "left", label: "Left" },
+        { value: "center", label: "Center" },
+        { value: "right", label: "Right" },
+      ]}
+    />
     <Slider label="RTL priority" defaultValue={35} />
     <SidebarProvider side="left">Inherited left Sidebar direction</SidebarProvider>
     <SidebarProvider side="right">Inherited right Sidebar direction</SidebarProvider>
@@ -81,7 +90,7 @@ export default function Page() {
         </Heading>
         <Text>
           This fixture pairs inherited CSS direction with the behavioral provider. Arrow keys follow
-          RTL reading order in horizontal Tabs and Slider.
+          RTL reading order in horizontal Tabs, ToggleGroup, and Slider.
         </Text>
         <LocalizationPreview snippet={fixtureExample} />
       </section>

@@ -585,7 +585,7 @@ test("keeps OTPField paste, deletion, autofill, RTL, and narrow layout bounded",
   await expectHealthyPage(page, problems);
 });
 
-test("keeps ToggleGroup multiple selection, roving focus, and narrow wrapping bounded", async ({
+test("keeps ToggleGroup multiple selection, RTL roving focus, and narrow wrapping bounded", async ({
   page,
 }) => {
   const problems = monitorPage(page);
@@ -613,6 +613,14 @@ test("keeps ToggleGroup multiple selection, roving focus, and narrow wrapping bo
   expect(groupBox).not.toBeNull();
   expect(groupBox.x).toBeGreaterThanOrEqual(0);
   expect(groupBox.x + groupBox.width).toBeLessThanOrEqual(320);
+
+  await page.goto("/docs/foundations/localization");
+  const rtlFixture = page.getByRole("region", { name: "RTL direction preview" });
+  const rtlGroup = rtlFixture.getByRole("group", { name: "RTL text alignment" });
+  const rtlCenter = rtlGroup.getByRole("button", { name: "Center" });
+  await rtlCenter.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(rtlGroup.getByRole("button", { name: "Right" })).toBeFocused();
   await expectHealthyPage(page, problems);
 });
 
