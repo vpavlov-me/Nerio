@@ -234,6 +234,13 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "Bold",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "BookOpen",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
@@ -421,6 +428,13 @@
         "definition": [],
         "deprecations": [],
         "kind": "value",
+        "name": "Italic",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
         "name": "Layers",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
@@ -586,6 +600,13 @@
         "deprecations": [],
         "kind": "value",
         "name": "Type",
+        "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
+      },
+      {
+        "definition": [],
+        "deprecations": [],
+        "kind": "value",
+        "name": "Underline",
         "signature": "react.ForwardRefExoticComponent<Omit<LucideProps, \"ref\"> & react.RefAttributes<SVGSVGElement>>"
       },
       {
