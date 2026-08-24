@@ -490,7 +490,7 @@
         "Use ToggleGroup for grouped retained button states, Tabs for panel navigation, RadioGroup for one form choice, and CheckboxGroup for independent form options.",
         "Selection state remains visible in forced-colors mode and never depends on motion."
       ],
-      "usage": "import { ToggleGroup } from '@/components/nerio/components/toggle-group';\n\n<ToggleGroup aria-label=\"Text alignment\" defaultValue={[\"left\"]} options={[{ value: \"left\", label: \"Left\" }, { value: \"center\", label: \"Center\" }, { value: \"right\", label: \"Right\" }]} />"
+      "usage": "import { Bold, Italic, Underline } from '@nerio-ui/adapters/icons';\nimport { ToggleGroup } from '@/components/nerio/components/toggle-group';\n\n<ToggleGroup aria-label=\"Text formatting\" defaultValue={[\"bold\", \"italic\"]} multiple options={[{ value: \"bold\", icon: Bold, \"aria-label\": \"Bold\" }, { value: \"italic\", icon: Italic, \"aria-label\": \"Italic\" }, { value: \"underline\", icon: Underline, \"aria-label\": \"Underline\" }]} />"
     },
     {
       "name": "button-group",

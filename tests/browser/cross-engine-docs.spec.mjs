@@ -214,27 +214,25 @@ test("keeps OTPField mobile paste, deletion, autofill, and reflow portable", asy
   }
 });
 
-test("keeps ToggleGroup selection and direction-aware roving focus portable", async ({ page }) => {
+test("keeps ToggleGroup multiple selection and roving focus portable", async ({ page }) => {
   await page.goto("/docs/components/toggle-group");
   const preview = page.getByRole("region", { name: "toggle-group preview" });
-  const group = preview.getByRole("group", { name: "Text alignment", exact: true });
-  const left = group.getByRole("button", { name: "Left" });
-  const center = group.getByRole("button", { name: "Center" });
-  const right = group.getByRole("button", { name: "Right" });
+  const group = preview.getByRole("group", { name: "Text formatting", exact: true });
+  const bold = group.getByRole("button", { name: "Bold" });
+  const italic = group.getByRole("button", { name: "Italic" });
+  const underline = group.getByRole("button", { name: "Underline" });
 
-  await center.click();
-  await expect(center).toHaveAttribute("aria-pressed", "true");
-  await expect(left).toHaveAttribute("aria-pressed", "false");
+  await expect(bold).toHaveAttribute("aria-pressed", "true");
+  await expect(italic).toHaveAttribute("aria-pressed", "true");
+  await expect(underline).toHaveAttribute("aria-pressed", "false");
+  await underline.click();
+  await expect(bold).toHaveAttribute("aria-pressed", "true");
+  await expect(italic).toHaveAttribute("aria-pressed", "true");
+  await expect(underline).toHaveAttribute("aria-pressed", "true");
 
-  await center.focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(right).toBeFocused();
-
-  const rtlGroup = preview.getByRole("group", { name: "Text alignment RTL", exact: true });
-  const rtlCenter = rtlGroup.getByRole("button", { name: "Center" });
-  await rtlCenter.focus();
+  await underline.focus();
   await page.keyboard.press("ArrowLeft");
-  await expect(rtlGroup.getByRole("button", { name: "Right" })).toBeFocused();
+  await expect(italic).toBeFocused();
 });
 
 test("keeps CheckboxGroup independent values and form controls portable", async ({ page }) => {
@@ -615,6 +613,11 @@ test("keeps the public direction contract behavioral in RTL", async ({ browserNa
 
   const fixture = page.getByRole("region", { name: "RTL direction preview" });
   await expect(fixture.locator('[data-direction-fixture="rtl"]')).toHaveAttribute("dir", "rtl");
+  const toggleGroup = fixture.getByRole("group", { name: "RTL text alignment" });
+  const center = toggleGroup.getByRole("button", { name: "Center" });
+  await center.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(toggleGroup.getByRole("button", { name: "Right" })).toBeFocused();
   for (const side of ["left", "right"]) {
     const provider = fixture.locator(`[data-physical-side="${side}"]`);
     const sidebar = provider.getByRole("complementary", {
