@@ -510,7 +510,7 @@ function MultiSelectInner<Value extends string>(
                 key={option.value}
                 aria-disabled={option.disabled || undefined}
                 aria-label={option.textValue}
-                className="n-multi-select-value inline-flex max-w-full items-center gap-(--n-space-1) rounded-(--n-radius-pill) bg-(--n-color-surface-selected) py-(--n-space-0-5) ps-(--n-space-2) pe-(--n-space-1) text-(length:--n-font-size-sm) text-(--n-color-text-primary) outline-0 focus-visible:shadow-(--n-focus-ring) aria-disabled:opacity-(--n-opacity-disabled) forced-colors:border forced-colors:border-[ButtonText] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2 forced-colors:focus-visible:outline-[Highlight] forced-colors:focus-visible:shadow-none"
+                className="n-multi-select-value inline-flex max-w-full items-center gap-(--n-space-1) rounded-(--n-radius-pill) bg-(--n-multi-select-value-background) py-(--n-space-0-5) ps-(--n-space-2) pe-(--n-space-1) text-(length:--n-font-size-sm) text-(--n-color-text-primary) outline-0 focus-visible:shadow-(--n-focus-ring) aria-disabled:opacity-(--n-opacity-disabled) forced-colors:border forced-colors:border-[ButtonText] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2 forced-colors:focus-visible:outline-[Highlight] forced-colors:focus-visible:shadow-none"
                 data-disabled={option.disabled ? "" : undefined}
                 data-slot="value"
               >

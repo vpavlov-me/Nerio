@@ -620,6 +620,7 @@
   --n-select-group-label-padding-inline: var(--n-density-space-md);
   --n-select-empty-padding: var(--n-density-space-md);
   --n-select-popup-radius: var(--n-radius-md);
+  --n-multi-select-value-background: var(--n-color-surface-raised);
   --n-textarea-min-height: var(--n-size-textarea-min);
   --n-textarea-padding-block: var(--n-space-2);
   --n-textarea-padding-inline: var(--n-density-space-md);
@@ -1132,6 +1133,7 @@
   --n-color-canvas: var(--n-color-surface-canvas);
   --n-color-surface: var(--n-color-surface-default);
   --n-color-surface-muted: var(--n-color-surface-subtle);
+  --n-multi-select-value-background: var(--n-color-surface-raised);
   --n-tabs-indicator-background: var(--n-color-surface-raised);
   --n-avatar-border: var(--n-gray-0);
   --n-avatar-background: var(--n-gray-100);
@@ -1204,6 +1206,7 @@
   --n-color-canvas: var(--n-color-surface-canvas);
   --n-color-surface: var(--n-color-surface-default);
   --n-color-surface-muted: var(--n-color-surface-subtle);
+  --n-multi-select-value-background: var(--n-color-surface-control-active);
   --n-tabs-indicator-background: var(--n-color-surface-control-active);
   --n-avatar-border: var(--n-gray-1000);
   --n-avatar-background: var(--n-gray-900);
@@ -1268,6 +1271,7 @@
     --n-color-canvas: var(--n-color-surface-canvas);
     --n-color-surface: var(--n-color-surface-default);
     --n-color-surface-muted: var(--n-color-surface-subtle);
+    --n-multi-select-value-background: var(--n-color-surface-control-active);
     --n-tabs-indicator-background: var(--n-color-surface-control-active);
     --n-avatar-border: var(--n-gray-1000);
     --n-avatar-background: var(--n-gray-900);

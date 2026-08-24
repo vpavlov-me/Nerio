@@ -3018,6 +3018,7 @@ export const componentReference: Record<string, ComponentReference> = {
     tokens: [
       "--n-select-height-md",
       "--n-select-padding-inline",
+      "--n-multi-select-value-background",
       "--n-input-background",
       "--n-input-border",
       "--n-input-placeholder",

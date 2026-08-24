@@ -194,10 +194,9 @@ export function FormsPreview({ kind, snippet }: PreviewProps) {
         </div>
       ) : null}
       {kind === "multi-select" ? (
-        <form className="form-preview-stack" data-slot="multi-select-form">
+        <form className="form-preview-stack multi-select-preview" data-slot="multi-select-form">
           <MultiSelect
             defaultValue={["design"]}
-            description="Filter the local disciplines and choose every relevant value."
             label="Disciplines"
             name="disciplines"
             options={[
