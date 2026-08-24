@@ -46,7 +46,7 @@
   "scripts": {
     "build": "node ../../scripts/build-package-output.mjs ui",
     "lint": "eslint .",
-    "prepack": "pnpm build",
+    "prepack": "pnpm --filter @nerio-ui/tokens build && pnpm --filter @nerio-ui/adapters build && pnpm build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run test/contracts",
     "test:watch": "vitest",
