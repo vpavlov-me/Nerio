@@ -142,7 +142,8 @@ components they use.
 
 <!-- parity-track:developer-platform issues:#351,#352,#353,#354,#355 depends-on:#151,#341 -->
 
-- #351 remains a measured package-output decision, not a predetermined compiled-output rewrite.
+- #351 accepted ADR 0007 after measured source, compiled, hybrid, and configuration-only prototypes:
+  use unbundled compiled runtime output plus a self-contained editable source Registry.
 - #352 starts with CLI modularization; source lifecycle work is independent, while project
   bootstrap waits for #351.
 - #353 waits only for the CLI modularization slice and reuses the existing Registry engine.

@@ -347,12 +347,12 @@
     {
       "issue": 351,
       "title": "Package output decision",
-      "disposition": "retain-decision-first",
+      "disposition": "accept-adr-0007",
       "priority": "P2",
       "target": "Core 1.2",
       "classification": "later-core-candidate",
       "dependsOn": [341, 151],
-      "decision": "Measure source, compiled, hybrid, and configuration-only options. Compiled output is not predetermined."
+      "decision": "ADR 0007 accepts unbundled compiled runtime output and a self-contained editable source Registry after measured source, compiled, hybrid, and configuration-only prototypes."
     },
     {
       "issue": 352,
@@ -1143,8 +1143,8 @@
       "value": "high",
       "complexity": "high",
       "dependencies": [151, 341],
-      "semverImpact": "decision-first",
-      "acceptanceBoundary": "Choose source, compiled, hybrid, or configuration-only improvements by measured consumer evidence.",
+      "semverImpact": "additive-minor",
+      "acceptanceBoundary": "Ship unbundled compiled runtime output while keeping Registry source self-contained, editable, and integrity-verified.",
       "nonGoals": ["Replacing Registry source mode", "Unmeasured build rewrite"],
       "issue": 351
     },
